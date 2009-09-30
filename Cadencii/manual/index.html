@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8">
+<title>Cadencii Manual</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <h3>動作環境</h3>
+  <div class="indent">
+    必要なコンポーネントは以下の通りです
+    <ul>
+      <li>.NET Framework version 2.0以降のランタイム</li>
+    </ul>
+    <p>Cadenciiの全ての機能を使用するには、VOCALOIDおよびVOCALOID2システムがインストールされ、アクティベートが完了している必要があります。</p>
+    <p>マルチプラットフォームかつオープンソースの実行環境「mono」で使用することができます。（ただし、この場合VOCALOID VSTiを使用する機能は動作しません）</p>
+  </div>
+  <h3>実行環境の入手先</h3>
+    <ul>
+      <li>.NET Framework:<a href="http://www.microsoft.com/japan/msdn/netframework/downloads/">NET Framework Developer Center: ダウンロード</a></li>
+      <li>mono:<a href="http://www.go-mono.com/mono-downloads/download.html">mono download</a></li>
+    </ul>
+
+  <h3>アンインストール</h3>
+  <div class="indent">
+  ディレクトリごと削除してください。
+  </div>
+
+  <h3>使用方法</h3>
+    <h4>(1)初回の起動をする前に</h4>
+    <div class="indent">
+      ピアノロール左端の鍵盤を押すと音が鳴るようになっていますが、この音源のファイルを初回の起動前に作成する必要があります。<br>
+      同梱のGenerateKeySound.exeをダブルクリック等により実行し、Cadencii.exeのあるディレクトリ直下の「cache」フォルダに、
+      "0.wav", "1.wav", ..., "126.wav"の合計127個のWAVEファイルが作成されているのを確かめてから、Cadenciiを起動してください。<br>
+    </div>
+    <h4>(2)ゲームコントローラの使用について</h4>
+    <ul>
+      <li>現状ではPS/PS2コントローラが接続されているものとしてコードを書いているため、他のコントローラでは正しく動作しない場合があります。</li>
+      <li>起動後、ステータスバーに「(禁止マーク)無効」と表示される場合、デバイスの初期化に失敗しているので、ゲームコントローラは使用できません。</li>
+      <li>起動後、ステータスバーに「Normal」と表示されていればゲームコントローラが使用できます。</li>
+      <li>Cadenciiの起動中であってもゲームコントローラを取り外せます．</li>
+      <li>取り外したゲームコントローラを再び認識させたい場合，「設定」->「ゲームコントローラ」->「リロード」を順に選んでください．</li>
+      <li>ゲームコントローラのモードは「Normal」と「Keyboard」の2つが有ります。<br>
+  「Normal」モード時のボタンの割り当ては以下の通りです。<br>
+          <ul>
+            <li>○ =>「再生」／「停止」</li>
+            <li>→ => 1小節進む</li>
+            <li>← => 1小節戻る</li>
+            <li>↑ => ピアノロールを上にスクロール</li>
+            <li>↓ => ピアノロールを下にスクロール</li>
+            <li>SELECT => 「Keyboard」モードに移行</li>
+          </ul>
+  「Keyboard」モード時のボタンの割り当ては以下の通りです。
+          <ul>
+            <li>→ => C（ド）の音を出す</li>
+            <li>□ => D（レ）の音を出す</li>
+            <li>△ => E（ミ）の音を出す</li>
+            <li>○ => F（ファ）の音を出す</li>
+            <li>× => G（ソ）の音を出す</li>
+            <li>↓ => G（ソ）の音を出す</li>
+            <li>← => A（ラ）の音を出す</li>
+            <li>↑ => B（シ）の音を出す</li>
+            <li>R1 => 半音上げる</li>
+            <li>R2 => 半音下げる</li>
+            <li>L1 => 1オクターブ上げる</li>
+            <li>L2 => 1オクターブ下げる</li>
+            <li>SELECT => 「Normal」モードに移行</li>
+            <li>L1, L2, R1, R2同時押し => リアルタイム入力用のダイアログを出す</li>
+          </ul>
+      </li>
+      <li>「Keyboard」モード時にリアルタイム入力に移行するには、L1, L2, R1, R2を同時押しして下さい。
+          設定ダイアログが出るので、「Start」ボタンをクリック又は十字キーで「Start」ボタンを選択して○ボタンを押すとリアルタイム入力が始まります。
+          現状、「Speed」の設定は効きません。リアルタイム入力中にゲームコントローラを使って演奏すると、
+          演奏したものがピアノロールに記録されます（Undo可）。<br>
+          リアルタイムモードを中止するには、再び「L1,L2,R1,R2同時押し」をして下さい。</li>
+    </ul>
+  <h3>注意事項</h3>
+    <ul>
+      <li>Cadenciiでは、編集内容の保存のために独自形式のファイルフォーマット（拡張子*.xvsq）を使用しています。
+          この独自形式のファイルの保存時に、名前が同じで拡張子だけ異なるVSQファイルを同時に出力する仕様となっています。
+          同時出力するVSQファイルの上書きチェックは行われませんので、VSQファイルを誤って上書きしてしまわないよう、注意してください。
+      </li>
+    </ul>
+
+  <h3>ライセンスなど</h3>
+    <ul>
+      <li>ツールアイコンの著作者はYusuke Kamiyamane氏であり、Creative Commons Attribution Lisence 3.0に基づき，一部を改変して使用しています．</li>
+      <li>Cadenciiのソースコードの著作権は、作者である kbinani に帰属します。</li>
+      <li>CadenciiのソースコードはGPLv3ライセンスの元で、オープンソースです。
+      <li>Cadenciiは、一切の保証を伴わない「現状渡し」で提供されます。Cadenciiに不具合がないこと、
+          および、Cadenciiの不具合が修正されることを、作者は保証しません。</li>
+      <li>Cadenciiの使用により生じたあらゆる損害に対して、作者は一切責任を負いません。</li>
+      <li>VOCALOIDおよびVOCALOID2はヤマハ株式会社の登録商標です。</li>
+      <li>VSTはSteinberg Media Technologies GmbHの登録商標です。</li>
+      <li>UTAUおよびそのコンポーネントは飴屋氏の著作権物です。</li>
+    </ul>
+
+  <h3>連絡先</h3>
+    <ul>
+      <li>開発拠点 : http://www9.atwiki.jp/boare/</li>
+      <li>最新版配布元URL : http://www9.atwiki.jp/boare/pages/19.html</li>
+      <li>連絡用掲示板 : http://ppp.atbbs.jp/vecapture/</li>
+      <li>上記掲示板が使えない場合の連絡先 : kbinani@msn.com</li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,872 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Boare.Cadencii</RootNamespace>
+    <AssemblyName>Cadencii</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <StartupObject>
+    </StartupObject>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ManifestCertificateThumbprint>63BED1A1C41ED28363D4C805238B9A2437946CF1</ManifestCertificateThumbprint>
+    <ManifestKeyFile>Cadencii.pfx</ManifestKeyFile>
+    <GenerateManifests>false</GenerateManifests>
+    <SignManifests>false</SignManifests>
+    <ApplicationIcon>Properties\Icon1.ico</ApplicationIcon>
+    <TargetZone>LocalIntranet</TargetZone>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <SupportUrl>http://www9.atwiki.jp/boare/pages/18.html</SupportUrl>
+    <ProductName>Cadencii</ProductName>
+    <PublisherName>kbinani</PublisherName>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>DEBUG;TEST, USE_DOBJ</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DefineConstants>USE_DOBJ, TEST</DefineConstants>
+    <Optimize>true</Optimize>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AmplifyCoefficient.cs" />
+    <Compile Include="AttachedCurve.cs" />
+    <Compile Include="AttackVariation.cs" />
+    <Compile Include="AttackVariationConverter.cs" />
+    <Compile Include="AutoVibratoMinLength.cs" />
+    <Compile Include="BezierChain.cs" />
+    <Compile Include="BezierControlType.cs" />
+    <Compile Include="BezierCurves.cs" />
+    <Compile Include="BezierPickedSide.cs" />
+    <Compile Include="BezierPoint.cs" />
+    <Compile Include="BgmFile.cs" />
+    <Compile Include="BooleanEnum.cs" />
+    <Compile Include="BPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CadenciiCommand.cs" />
+    <Compile Include="CadenciiCommandType.cs" />
+    <Compile Include="CalculatableString.cs" />
+    <Compile Include="CalculatableStringConverter.cs" />
+    <Compile Include="ClipboardEntry.cs" />
+    <Compile Include="ClockProperty.cs" />
+    <Compile Include="ClockPropertyConverter.cs" />
+    <Compile Include="ClockResolution.cs" />
+    <Compile Include="FormMidiImExportConfig.cs" />
+    <Compile Include="FormNoteExpressionConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormNoteExpressionConfig.Designer.cs">
+      <DependentUpon>FormNoteExpressionConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NumberTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OtoArgs.cs" />
+    <Compile Include="PointD.cs" />
+    <Compile Include="Range.cs" />
+    <Compile Include="RenderingRunner.cs" />
+    <Compile Include="NoteNumberExpressionType.cs" />
+    <Compile Include="NoteNumberProperty.cs" />
+    <Compile Include="NoteNumberPropertyConverter.cs" />
+    <Compile Include="PropertyPanelContainer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPanelContainer.Designer.cs">
+      <DependentUpon>PropertyPanelContainer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPanelState.cs" />
+    <Compile Include="RenderQueue.cs" />
+    <Compile Include="ScriptReturnStatus.cs" />
+    <Compile Include="straightdrv.cs" />
+    <Compile Include="StraightRenderingQueue.cs" />
+    <Compile Include="StraightRenderingRunner.cs" />
+    <Compile Include="UtauVoiceDB.cs" />
+    <Compile Include="ValuePairOfStringArrayOfKeys.cs" />
+    <Compile Include="CommandTree.cs" />
+    <Compile Include="CommandTreeUnit.cs" />
+    <Compile Include="ContextProperty.cs">
+    </Compile>
+    <Compile Include="CurveType.cs" />
+    <Compile Include="DefaultVibratoLength.cs" />
+    <Compile Include="FileDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileDialog.Designer.cs">
+      <DependentUpon>FileDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormNoteProperty.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormNoteProperty.Designer.cs">
+      <DependentUpon>FormNoteProperty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMidiConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMidiConfig.Designer.cs">
+      <DependentUpon>FormMidiConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormShortcutKeys.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormShortcutKeys.Designer.cs">
+      <DependentUpon>FormShortcutKeys.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KanaDeRomanization.cs" />
+    <Compile Include="MidiDeviceImp.cs" />
+    <Compile Include="MidiPlayer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MidiPortConfig.cs" />
+    <Compile Include="MidiQueue.cs" />
+    <Compile Include="PropertyPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPanel.Designer.cs">
+      <DependentUpon>PropertyPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SymmetricMatrix.cs" />
+    <Compile Include="PlaySound.cs" />
+    <Compile Include="UtauRenderingRunner.cs" />
+    <Compile Include="ScreenStatus.cs" />
+    <Compile Include="DrawObject.cs" />
+    <Compile Include="EditMode.cs" />
+    <Compile Include="EditorConfig.cs" />
+    <Compile Include="EditTool.cs" />
+    <Compile Include="FormBezierPointEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBezierPointEdit.Designer.cs">
+      <DependentUpon>FormBezierPointEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCompileResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCompileResult.Designer.cs">
+      <DependentUpon>FormCompileResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormDeleteBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDeleteBar.Designer.cs">
+      <DependentUpon>FormDeleteBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormGameControlerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGameControlerConfig.Designer.cs">
+      <DependentUpon>FormGameControlerConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormImportLyric.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormImportLyric.Designer.cs">
+      <DependentUpon>FormImportLyric.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormInsertBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInsertBar.Designer.cs">
+      <DependentUpon>FormInsertBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormBeatConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBeatConfig.Designer.cs">
+      <DependentUpon>FormBeatConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMainUtil.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMidiImExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMidiImExport.Designer.cs">
+      <DependentUpon>FormMidiImExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMixer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMixer.Designer.cs">
+      <DependentUpon>FormMixer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormPlayBack.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPlayBack.Designer.cs">
+      <DependentUpon>FormPlayBack.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AppManager.cs">
+    </Compile>
+    <Compile Include="FormTrackProperty.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTrackProperty.Designer.cs">
+      <DependentUpon>FormTrackProperty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRealtimeConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRealtimeConfig.Designer.cs">
+      <DependentUpon>FormRealtimeConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSingerStyleConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSingerStyleConfig.Designer.cs">
+      <DependentUpon>FormSingerStyleConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSynthesize.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSynthesize.Designer.cs">
+      <DependentUpon>FormSynthesize.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTempoConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTempoConfig.Designer.cs">
+      <DependentUpon>FormTempoConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormVibratoConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormVibratoConfig.Designer.cs">
+      <DependentUpon>FormVibratoConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormWordDictionary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormWordDictionary.Designer.cs">
+      <DependentUpon>FormWordDictionary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ICommand.cs" />
+    <Compile Include="ICommandRunnable.cs" />
+    <Compile Include="IPaletteTool.cs" />
+    <Compile Include="KeySoundPlayer.cs" />
+    <Compile Include="NumericUpDownEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PaletteToolConfig.cs" />
+    <Compile Include="PaletteToolServer.cs" />
+    <Compile Include="PencilMode.cs" />
+    <Compile Include="PencilModeEnum.cs" />
+    <Compile Include="Platform.cs" />
+    <Compile Include="PlayPositionSpecifier.cs" />
+    <Compile Include="Preference.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Preference.Designer.cs">
+      <DependentUpon>Preference.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="QuantizeMode.cs" />
+    <Compile Include="RgbColor.cs" />
+    <Compile Include="SandBox.cs">
+    </Compile>
+    <Compile Include="ScriptInvoker.cs" />
+    <Compile Include="SelectedBezierPoint.cs" />
+    <Compile Include="SelectedEventEntry.cs" />
+    <Compile Include="SelectedRegion.cs" />
+    <Compile Include="SelectedTempoEntry.cs" />
+    <Compile Include="SelectedTimesigEntry.cs" />
+    <Compile Include="TagLyricTextBox.cs" />
+    <Compile Include="TextBoxEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMidiImExport.resx">
+      <DependentUpon>FormMidiImExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSynthesize.resx">
+      <DependentUpon>FormSynthesize.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Preference.resx">
+      <DependentUpon>Preference.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPanel.resx">
+      <DependentUpon>PropertyPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPanelContainer.resx">
+      <DependentUpon>PropertyPanelContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrackSelector.resx">
+      <DependentUpon>TrackSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VersionInfo.resx">
+      <DependentUpon>VersionInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="ToolStripLocation.cs" />
+    <Compile Include="TrackSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TrackSelector.Designer.cs">
+      <DependentUpon>TrackSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UtauFreq.cs" />
+    <Compile Include="ValuePair.cs" />
+    <Compile Include="Vector.cs" />
+    <Compile Include="VersionInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VersionInfo.Designer.cs">
+      <DependentUpon>VersionInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VibratoPoint.cs" />
+    <Compile Include="VibratoVariation.cs" />
+    <Compile Include="VibratoVariationConverter.cs" />
+    <Compile Include="VocaloRenderingRunner.cs" />
+    <Compile Include="VolumeTracker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VolumeTracker.Designer.cs">
+      <DependentUpon>VolumeTracker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VsqEventItemProxy.cs" />
+    <Compile Include="VsqEventItemProxyPropertyDescriptor.cs" />
+    <Compile Include="VsqEventItemProxyTypeConverter.cs" />
+    <Compile Include="VsqFileEx.cs" />
+    <Compile Include="vstidrv.cs" />
+    <Compile Include="VSTiProxy.cs" />
+    <Compile Include="VstiRenderer.cs" />
+    <Compile Include="VstSdk.cs" />
+    <Compile Include="WaveDrawContext.cs" />
+    <Compile Include="WaveView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="winmmhelp.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ja.po">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\arrow_135.png" />
+    <Content Include="manual\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="manual\style.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Properties\alarm-clock.png" />
+    <Content Include="Properties\arrow-180.png" />
+    <Content Include="Properties\arrow-skip-090.png" />
+    <Content Include="Properties\arrow_circle_double.png" />
+    <None Include="Properties\arrow_return.png" />
+    <Content Include="Properties\arrow_skip.png" />
+    <Content Include="Properties\arrow_skip_180.png" />
+    <Content Include="Properties\author_list.png" />
+    <Content Include="Properties\btn1.png" />
+    <Content Include="Properties\btn2.png" />
+    <Content Include="Properties\btn3.png" />
+    <Content Include="Properties\chevron-small-collapse.png" />
+    <Content Include="Properties\clipboard_paste.png" />
+    <Content Include="Properties\control.png" />
+    <None Include="Properties\control_double.png" />
+    <None Include="Properties\control_double_180.png" />
+    <Content Include="Properties\control_pause.png" />
+    <Content Include="Properties\control_stop.png" />
+    <Content Include="Properties\control_stop_180.png" />
+    <Content Include="Properties\cross-small.png" />
+    <Content Include="Properties\cursor.cur" />
+    <Content Include="Properties\disk.png" />
+    <Content Include="Properties\disk__plus.png" />
+    <Content Include="Properties\documents.png" />
+    <Content Include="Properties\drive.png" />
+    <Content Include="Properties\edit-list-order.png" />
+    <Content Include="Properties\end_marker.png" />
+    <None Include="Properties\eraser.png" />
+    <Content Include="Properties\folder--plus.png" />
+    <Content Include="Properties\folder.png" />
+    <Content Include="Properties\folder_horizontal_open.png" />
+    <Content Include="Properties\Icon1.ico" />
+    <Content Include="Properties\layer_shape_curve.png" />
+    <Content Include="Properties\layer_shape_line.png" />
+    <Content Include="Properties\pencil.png" />
+    <None Include="Properties\pin__arrow_inv.png" />
+    <None Include="Properties\pin__arrow.png" />
+    <None Include="Properties\ruler_crop.png" />
+    <None Include="zh-TW.po">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Properties\piano.png" />
+    <Content Include="Properties\scissors.png" />
+    <Content Include="Properties\slash.png" />
+    <Content Include="Properties\start_marker.png" />
+    <Content Include="Properties\target--pencil.png" />
+    <Content Include="Properties\VSTonWht.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Boare.Lib.AppUtil\Boare.Lib.AppUtil.csproj">
+      <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
+      <Name>Boare.Lib.AppUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Boare.Lib.Media\Boare.Lib.Media.csproj">
+      <Project>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</Project>
+      <Name>Boare.Lib.Media</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Boare.Lib.Vsq\Boare.Lib.Vsq.csproj">
+      <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
+      <Name>Boare.Lib.Vsq</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\bocoree\bocoree.csproj">
+      <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
+      <Name>bocoree</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="Properties\alarm-clock.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\arrow-180.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\arrow-skip-090.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\arrow_circle_double.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\arrow_skip.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\arrow_skip_180.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\author_list.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\btn1.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\btn2.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\btn3.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\chevron-small-collapse.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\clipboard_paste.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\control.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\control_pause.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\control_stop.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\control_stop_180.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\cross-small.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\cursor.cur">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\disk.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\disk__plus.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\documents.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\drive.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\edit-list-order.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\end_marker.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\folder--plus.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\folder.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\folder_horizontal_open.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\Icon1.ico">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\layer_shape_curve.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\layer_shape_line.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\pencil.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\piano.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\scissors.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\slash.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\start_marker.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\target--pencil.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Properties\VSTonWht.png">
+      <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <FileType>File</FileType>
+    </PublishFile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

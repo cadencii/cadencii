@@ -1,0 +1,575 @@
+﻿/*
+ * VsqCommand.cs
+ * Copyright (c) 2008-2009 kbinani
+ *
+ * This file is part of Boare.Lib.Vsq.
+ *
+ * Boare.Lib.Vsq is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
+ *
+ * Boare.VECapture is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+using System;
+using System.Collections.Generic;
+
+using bocoree;
+
+namespace Boare.Lib.Vsq {
+
+    using boolean = System.Boolean;
+    using Integer = System.Int32;
+    using Long = System.Int64;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Serializable]
+    public class VsqCommand {
+        public VsqCommandType Type;
+        /// <summary>
+        /// コマンドの処理内容を保持します。Args具体的な内容は、処理するクラスごとに異なります
+        /// </summary>
+        public object[] Args;
+        /// <summary>
+        /// 後続するコマンド
+        /// </summary>
+        public Vector<VsqCommand> Children = new Vector<VsqCommand>();
+        /// <summary>
+        /// このコマンドの親
+        /// </summary>
+        public VsqCommand Parent = null;
+
+        /// <summary>
+        /// VsqCommandはgenerateCommand*からコンストラクトしなければならない。
+        /// </summary>
+        public VsqCommand() {
+        }
+
+        public static VsqCommand generateCommandRoot() {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.ROOT;
+            command.Args = null;
+            return command;
+        }
+
+        public static VsqCommand generateCommandReplace( VsqFile vsq ) {
+            VsqCommand command = new VsqCommand();
+            command.Args = new object[1];
+            command.Type = VsqCommandType.REPLACE;
+            command.Args[0] = (VsqFile)vsq.Clone();
+            return command;
+        }
+
+        public static VsqCommand generateCommandTrackReplace( int track, VsqTrack item ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_REPLACE;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            command.Args[1] = (VsqTrack)item.Clone();
+            return command;
+        }
+
+        public static VsqCommand generateCommandUpdateTimesig( int bar_count, int new_barcount, int numerator, int denominator ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.UPDATE_TIMESIG;
+            command.Args = new object[4];
+            command.Args[0] = bar_count;
+            command.Args[1] = numerator;
+            command.Args[2] = denominator;
+            command.Args[3] = new_barcount;
+            return command;
+        }
+
+        public static VsqCommand generateCommandUpdateTimesigRange( int[] bar_counts, int[] new_barcounts, int[] numerators, int[] denominators ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.UPDATE_TIMESIG_RANGE;
+            command.Args = new object[4];
+            command.Args[0] = (int[])bar_counts.Clone();
+            command.Args[1] = (int[])numerators.Clone();
+            command.Args[2] = (int[])denominators.Clone();
+            command.Args[3] = (int[])new_barcounts.Clone();
+            return command;
+        }
+
+        public static VsqCommand generateCommandUpdateTempoRange( int[] clocks, int[] new_clocks, int[] tempos ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.UPDATE_TEMPO_RANGE;
+            command.Args = new object[3];
+            command.Args[0] = (int[])clocks.Clone();
+            command.Args[1] = (int[])tempos.Clone();
+            command.Args[2] = (int[])new_clocks.Clone();
+            return command;
+        }
+
+        public static VsqCommand generateCommandUpdateTempo( int clock, int new_clock, int tempo ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.UPDATE_TEMPO;
+            command.Args = new object[3];
+            command.Args[0] = clock;
+            command.Args[1] = tempo;
+            command.Args[2] = new_clock;
+            return command;
+        }
+
+        public static VsqCommand generateCommandChangePreMeasure( int pre_measure ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.CHANGE_PRE_MEASURE;
+            command.Args = new object[1];
+            command.Args[0] = pre_measure;
+            return command;
+        }
+
+        public static VsqCommand generateCommandDeleteTrack( int track ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_DELETE;
+            command.Args = new object[1];
+            command.Args[0] = track;
+            return command;
+        }
+
+        /// <summary>
+        /// トラックを追加するコマンドを発行します．trackはClone()して渡さなくてもよい
+        /// </summary>
+        /// <param name="track"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandAddTrack( VsqTrack track, VsqMixerEntry mixer, int position ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_ADD;
+            command.Args = new object[5];
+            command.Args[0] = track;
+            command.Args[1] = mixer;
+            command.Args[2] = position;
+            return command;
+        }
+
+        /// <summary>
+        /// トラック名を変更するコマンドを作成します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="new_name"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandTrackChangeName( int track, String new_name ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_CHANGE_NAME;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            command.Args[1] = new_name;
+            return command;
+        }
+
+        public static VsqCommand generateCommandTrackChangePlayMode( int track, int play_mode ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_CHANGE_PLAY_MODE;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            command.Args[1] = play_mode;
+            return command;
+        }
+
+        /// <summary>
+        /// VsqIDとClockを同時に変更するコマンドを発行します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_ids"></param>
+        /// <param name="clocks"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeClockAndIDContaintsRange( int track, int[] internal_ids, int[] clocks, VsqID[] values ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS_RANGE;
+            int count = internal_ids.Length;
+            command.Args = new object[4];
+            command.Args[0] = track;
+            command.Args[1] = (int[])internal_ids.Clone();
+            command.Args[2] = (int[])clocks.Clone();
+            command.Args[3] = (VsqID[])values.Clone();
+            return command;
+        }
+
+        /// <summary>
+        /// VsqIDとClockを同時に変更するコマンドを発行します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_id"></param>
+        /// <param name="clock"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeClockAndIDContaints( int track, int internal_id, int clock, VsqID value ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS;
+            command.Args = new object[4];
+            command.Args[0] = track;
+            command.Args[1] = internal_id;
+            command.Args[2] = clock;
+            command.Args[3] = (VsqID)value.clone();
+            return command;
+        }
+
+        /// <summary>
+        /// VsqIDの内容を変更するコマンドを発行します。
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_ids"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeIDContaintsRange( int track, int[] internal_ids, VsqID[] values ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_ID_CONTAINTS_RANGE;
+            command.Args = new object[3];
+            command.Args[0] = track;
+            command.Args[1] = (int[])internal_ids.Clone();
+            VsqID[] list = new VsqID[values.Length];
+            for ( int i = 0; i < values.Length; i++ ) {
+                list[i] = (VsqID)values[i].clone();
+            }
+            command.Args[2] = list;
+            return command;
+        }
+
+        /// <summary>
+        /// VsqIDの内容を変更するコマンドを発行します。
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeIDContaints( int track, int internal_id, VsqID value ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_ID_CONTAINTS;
+            command.Args = new object[3];
+            command.Args[0] = track;
+            command.Args[1] = internal_id;
+            command.Args[2] = (VsqID)value.clone();
+            return command;
+        }
+
+        /// <summary>
+        /// ノートの長さを変更するコマンドを発行します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_id"></param>
+        /// <param name="new_clock"></param>
+        /// <param name="new_length"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeClockAndLength( int track, int internal_id, int new_clock, int new_length ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_CLOCK_AND_LENGTH;
+            command.Args = new object[4];
+            command.Args[0] = track;
+            command.Args[1] = internal_id;
+            command.Args[2] = new_clock;
+            command.Args[3] = new_length;
+            return command;
+        }
+
+        /// <summary>
+        /// ノートの長さを変更するコマンドを発行します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_id"></param>
+        /// <param name="new_length"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeLength( int track, int internal_id, int new_length ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_LENGTH;
+            command.Args = new object[3];
+            command.Args[0] = track;
+            command.Args[1] = internal_id;
+            command.Args[2] = new_length;
+            return command;
+        }
+
+        /// <summary>
+        /// 指定したトラックの，音符のベロシティ(VEL)を変更するコマンドを発行します．
+        /// リストvelocityには，音符を指定するInteralIDと，変更したいベロシティの値のペアを登録します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="velocity"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeVelocity( int track, Vector<KeyValuePair<Integer, Integer>> velocity ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_VELOCITY;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            Vector<KeyValuePair<Integer, Integer>> list = new Vector<KeyValuePair<Integer, Integer>>();
+            for( Iterator itr = velocity.iterator(); itr.hasNext(); ){
+                KeyValuePair<Int32, Int32> item = (KeyValuePair<Int32, Int32>)itr.next();
+                list.add( new KeyValuePair<Integer, Integer>( item.Key, item.Value ) );
+            }
+            command.Args[1] = list;
+            return command;
+        }
+
+        public static VsqCommand generateCommandEventReplace( int track, VsqEvent item ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_REPLACE;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            command.Args[1] = item.clone();
+            return command;
+        }
+
+        public static VsqCommand generateCommandEventReplaceRange( int track, VsqEvent[] items ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_REPLACE_RANGE;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            VsqEvent[] objs = new VsqEvent[items.Length];
+            for( int i = 0; i < items.Length; i++ ){
+                objs[i] = (VsqEvent)items[i].clone();
+            }
+            command.Args[1] = objs;
+            return command;
+        }
+
+        /// <summary>
+        /// 指定したトラックの、音符のアクセント(Accent)を変更するコマンドを発行します。
+        /// リストaccent_listには、音符を指定するInternalIDと、変更したいアクセント値のペアを登録します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="accent_list"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeAccent( int track, Vector<KeyValuePair<Integer, Integer>> accent_list ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_ACCENT;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            Vector<KeyValuePair<Integer, Integer>> list = new Vector<KeyValuePair<Integer, Integer>>();
+            for ( Iterator itr = accent_list.iterator(); itr.hasNext(); ){
+                KeyValuePair<Int32, Int32> item = (KeyValuePair<Int32, Int32>)itr.next();
+                list.add( new KeyValuePair<Integer, Integer>( item.Key, item.Value ) );
+            }
+            command.Args[1] = list;
+            return command;
+        }
+
+        /// <summary>
+        /// 指定したトラックの、音符のディケイ(Decay)を変更するコマンドを発行します。
+        /// リストdecay_listには、音符を指定するInternalIDと、変更したいディケイ値のペアを登録します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="decay_list"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeDecay( int track, Vector<KeyValuePair<Integer, Integer>> decay_list ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_DECAY;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            Vector<KeyValuePair<Integer, Integer>> list = new Vector<KeyValuePair<Integer, Integer>>();
+            for ( Iterator itr = decay_list.iterator(); itr.hasNext(); ){
+                KeyValuePair<Integer, Integer> item = (KeyValuePair<Integer, Integer>)itr.next();
+                list.add( new KeyValuePair<Integer, Integer>( item.Key, item.Value ) );
+            }
+            command.Args[1] = list;
+            return command;
+        }
+
+        public static VsqCommand generateCommandTrackCurveReplaceRange( int track, String[] target_curve, VsqBPList[] bplist ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_CURVE_REPLACE_RANGE;
+            command.Args = new object[3];
+            command.Args[0] = track;
+            String[] arr = new String[target_curve.Length];
+            for ( int i = 0; i < target_curve.Length; i++ ) {
+                arr[i] = target_curve[i];
+            }
+            command.Args[1] = arr;
+            VsqBPList[] cp = new VsqBPList[bplist.Length];
+            for ( int i = 0; i < bplist.Length; i++ ) {
+                cp[i] = (VsqBPList)bplist[i].clone();
+            }
+            command.Args[2] = cp;
+            return command;
+        }
+
+        public static VsqCommand generateCommandTrackCurveReplace( int track, String target_curve, VsqBPList bplist ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_CURVE_REPLACE;
+            command.Args = new object[3];
+            command.Args[0] = track;
+            command.Args[1] = target_curve;
+            command.Args[2] = bplist.clone();
+            return command;
+        }
+
+        /*public static VsqCommand generateCommandTrackRemovePoints( int track, String target, Vector<Long> ids ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_CURVE_REMOVE_POINTS;
+            command.Args = new object[3];
+            command.Args[0] = track;
+            command.Args[1] = target;
+            Vector<Long> cpy = new Vector<Long>();
+            if ( ids != null ){
+                int count = ids.size();
+                for ( int i = 0; i < count; i++ ) {
+                    cpy.add( ids.get( i ) );
+                }
+            }
+            command.Args[2] = cpy;
+            return command;
+        }*/
+
+        /// <summary>
+        /// vsqファイルのカーブを編集するコマンドを発行します．
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="target"></param>
+        /// <param name="edit"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandTrackCurveEdit( int track, String target, Vector<BPPair> edit ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_CURVE_EDIT;
+            command.Args = new object[5];
+            command.Args[0] = track;
+            command.Args[1] = target;
+            Vector<BPPair> copied = new Vector<BPPair>();
+            for ( Iterator itr = edit.iterator(); itr.hasNext(); ){
+                BPPair item = (BPPair)itr.next();
+                copied.add( item );
+            }
+            command.Args[2] = copied;
+            return command;
+        }
+
+        public static VsqCommand generateCommandTrackCurveEditRange( int track, String[] targets, Vector<BPPair>[] edits ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.TRACK_CURVE_EDIT_RANGE;
+            command.Args = new object[3];
+            command.Args[0] = track;
+            command.Args[1] = (String[])targets.Clone();
+            Vector<BPPair>[] cpy = new Vector<BPPair>[targets.Length];
+            for ( int i = 0; i < edits.Length; i++ ) {
+                Vector<BPPair> copied = new Vector<BPPair>();
+                for ( Iterator itr = edits[i].iterator(); itr.hasNext(); ){
+                    BPPair item = (BPPair)itr.next();
+                    copied.add( new BPPair( item.Clock, item.Value ) );
+                }
+                cpy[i] = copied;
+            }
+            command.Args[2] = cpy;
+            return command;
+        }
+
+        /// <summary>
+        /// 特定位置のイベントの歌詞と発音記号を変更するコマンドを発行します。
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_id"></param>
+        /// <param name="phrase"></param>
+        /// <param name="phonetic_symbol"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeLyric( int track, int internal_id, String phrase, String phonetic_symbol, boolean protect_symbol ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_LYRIC;
+            command.Args = new object[5];
+            command.Args[0] = track;
+            command.Args[1] = internal_id;
+            command.Args[2] = phrase;
+            command.Args[3] = phonetic_symbol;
+            command.Args[4] = protect_symbol;
+            return command;
+        }
+
+        /// <summary>
+        /// ノートのクロック位置を変更するコマンドを発行します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeClock( int track, int internal_id, int value ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_CLOCK;
+            command.Args = new object[3];
+            command.Args[0] = track;
+            command.Args[1] = internal_id;
+            command.Args[2] = value;
+            return command;
+        }
+
+        public static VsqCommand generateCommandEventDeleteRange( int track, int[] internal_ids ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_DELETE_RANGE;
+            command.Args = new object[2];
+            command.Args[0] = (int[])internal_ids.Clone();
+            command.Args[1] = track;
+            return command;
+        }
+
+        /// <summary>
+        /// ノートを削除するコマンドを発行します
+        /// </summary>
+        /// <param name="clock"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventDelete( int track, int internal_id ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_DELETE;
+            command.Args = new object[2];
+            command.Args[1] = track;
+            command.Args[0] = internal_id;
+            return command;
+        }
+
+        public static VsqCommand generateCommandEventAddRange( int track, VsqEvent[] items ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_ADD_RANGE;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            command.Args[1] = (VsqEvent[])items.Clone();
+            return command;
+        }
+
+        /// <summary>
+        /// ノートを追加するコマンドを発行します。
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventAdd( int track, VsqEvent item ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_ADD;
+            command.Args = new object[2];
+            command.Args[0] = track;
+            command.Args[1] = (VsqEvent)item.clone();
+            return command;
+        }
+
+        /// <summary>
+        /// ノートの音程を変更するコマンドを発行します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeNote( int track, int internal_id, int note ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_NOTE;
+            command.Args = new object[3];
+            command.Args[0] = track;
+            command.Args[1] = internal_id;
+            command.Args[2] = note;
+            return command;
+        }
+
+        /// <summary>
+        /// ノートの音程とクロックを変更するコマンドを発行します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="internal_id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static VsqCommand generateCommandEventChangeClockAndNote( int track, int internal_id, int clock, int note ) {
+            VsqCommand command = new VsqCommand();
+            command.Type = VsqCommandType.EVENT_CHANGE_CLOCK_AND_NOTE;
+            command.Args = new object[4];
+            command.Args[0] = track;
+            command.Args[1] = internal_id;
+            command.Args[2] = clock;
+            command.Args[3] = note;
+            return command;
+        }
+    }
+
+}
