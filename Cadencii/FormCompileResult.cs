@@ -24,7 +24,7 @@ namespace Boare.Cadencii {
             ApplyLanguage();
             label1.Text = message;
             textBox1.Text = errors;
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public void ApplyLanguage() {

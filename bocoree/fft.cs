@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * fft.cs
  * Copyright (c) 2008-2009 kbinani
  * 
@@ -3253,3 +3254,4 @@ namespace bocoree {
     }
 
 }
+#endif

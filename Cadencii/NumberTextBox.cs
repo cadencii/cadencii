@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+using bocoree;
+
 namespace Boare.Cadencii {
 
     public class NumberTextBox : TextBox {
@@ -9,7 +11,6 @@ namespace Boare.Cadencii {
             Double,
             Float,
             Integer,
-            Decimal,
         }
 
         private ValueType m_value_type = ValueType.Double;
@@ -31,21 +32,32 @@ namespace Boare.Cadencii {
             base.OnTextChanged( e );
             bool valid = false;
             switch ( m_value_type ) {
-                case ValueType.Decimal:
-                    decimal dec;
-                    valid = decimal.TryParse( base.Text, out dec );
-                    break;
                 case ValueType.Double:
                     double dou;
-                    valid = double.TryParse( base.Text, out dou );
+                    try {
+                        dou = PortUtil.parseDouble( base.Text );
+                        valid = true;
+                    } catch ( Exception ex ) {
+                        valid = false;
+                    }
                     break;
                 case ValueType.Float:
                     float flo;
-                    valid = float.TryParse( base.Text, out flo );
+                    try {
+                        flo = PortUtil.parseFloat( base.Text );
+                        valid = true;
+                    } catch ( Exception ex ) {
+                        valid = false;
+                    }
                     break;
                 case ValueType.Integer:
                     int inte;
-                    valid = int.TryParse( base.Text, out inte );
+                    try {
+                        inte = PortUtil.parseInt( base.Text );
+                        valid = true;
+                    } catch ( Exception ex ) {
+                        valid = false;
+                    }
                     break;
             }
             if ( valid ) {

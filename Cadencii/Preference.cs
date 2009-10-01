@@ -968,7 +968,7 @@ namespace Boare.Cadencii {
                 String character = Path.Combine( dir, "character.txt" );
                 String name = "";
                 sc.VOICEIDSTR = dir;
-                if ( File.Exists( character ) ) {
+                if ( PortUtil.isFileExists( character ) ) {
                     using ( cp932reader sr = new cp932reader( character ) ) {
                         while ( sr.Peek() >= 0 ) {
                             String line = sr.ReadLine();

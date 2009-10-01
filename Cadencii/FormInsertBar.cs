@@ -23,7 +23,7 @@ namespace Boare.Cadencii {
             InitializeComponent();
             ApplyLanguage();
             numPosition.Maximum = max_position;
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public void ApplyLanguage() {

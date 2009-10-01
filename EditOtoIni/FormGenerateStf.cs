@@ -60,7 +60,7 @@ namespace Boare.EditOtoIni {
             if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
-            if ( !File.Exists( m_oto_ini ) ) {
+            if ( !PortUtil.isFileExists( m_oto_ini ) ) {
                 return;
             }
             String straightVoiceDB = Path.Combine( Application.StartupPath, "straightVoiceDB.exe" );
@@ -71,7 +71,7 @@ namespace Boare.EditOtoIni {
             DateTime started_date = DateTime.Now;
             if ( m_mode == GenerateMode.STF ) {
                 #region STF
-                if ( !File.Exists( straightVoiceDB ) ) {
+                if ( !PortUtil.isFileExists( straightVoiceDB ) ) {
                     MessageBox.Show( _( "Analyzer, 'straightVoiceDB.exe' does not exist." ),
                                      _( "Error" ),
                                      MessageBoxButtons.OK,
@@ -93,7 +93,7 @@ namespace Boare.EditOtoIni {
                     String wav_name = item.waveName;
                     String wav_file = Path.Combine( dir, wav_name );
                     String stf_file = Path.Combine( analyzed, Path.GetFileNameWithoutExtension( wav_name ) + ".stf" );
-                    if ( File.Exists( stf_file ) ) {
+                    if ( PortUtil.isFileExists( stf_file ) ) {
                         continue;
                     }
                     try {
@@ -118,7 +118,7 @@ namespace Boare.EditOtoIni {
 #endif
                     String wav_file = Path.Combine( dir, wav_name );
                     String stf_file = Path.Combine( analyzed, Path.GetFileNameWithoutExtension( wav_name ) + ".stf" );
-                    if ( File.Exists( stf_file ) ) {
+                    if ( PortUtil.isFileExists( stf_file ) ) {
                         continue;
                     }
                     using ( Process process = new Process() ) {
@@ -148,7 +148,7 @@ namespace Boare.EditOtoIni {
                 bgWork.ReportProgress( 100, new int[] { actual_count, actual_count } );
                 #endregion
             } else {
-                if ( !File.Exists( resampler ) ) {
+                if ( !PortUtil.isFileExists( resampler ) ) {
                     MessageBox.Show( _( "Don't know the path of 'resampler.exe'. Please check the configuration of Cadencii." ),
                                      _( "Error" ),
                                      MessageBoxButtons.OK,
@@ -166,7 +166,7 @@ namespace Boare.EditOtoIni {
                     String wav_name = item.waveName;
                     String wav_file = Path.Combine( dir, wav_name );
                     String frq_file = Path.Combine( dir, wav_name.Replace( ".", "_" ) + ".frq" );
-                    if ( File.Exists( frq_file ) ) {
+                    if ( PortUtil.isFileExists( frq_file ) ) {
                         continue;
                     }
                     try {
@@ -190,7 +190,7 @@ namespace Boare.EditOtoIni {
 #endif
                     String wav_file = Path.Combine( dir, wav_name );
                     String frq_file = Path.Combine( dir, wav_name.Replace( ".", "_" ) + ".frq" );
-                    if ( File.Exists( frq_file ) ) {
+                    if ( PortUtil.isFileExists( frq_file ) ) {
                         continue;
                     }
                     using ( Process process = new Process() ) {
@@ -218,7 +218,7 @@ namespace Boare.EditOtoIni {
                     bgWork.ReportProgress( actual_progress * 100 / actual_count, new int[] { actual_progress, actual_count } );
                 }
                 try {
-                    File.Delete( temp_wav );
+                    PortUtil.deleteFile( temp_wav );
                 } catch {
                 }
                 bgWork.ReportProgress( 100, new int[] { actual_count, actual_count } );

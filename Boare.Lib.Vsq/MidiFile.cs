@@ -280,110 +280,119 @@ namespace Boare.Lib.Vsq {
 
         public MidiFile( String path ){
             RandomAccessFile stream = new RandomAccessFile( path, "r" );
-            // ヘッダ
-            byte[] byte4 = new byte[4];
-            stream.read( byte4, 0, 4 );
-            if ( makeUInt32( byte4 ) != 0x4d546864 ) {
-                throw new ApplicationException( "header error: MThd" );
-            }
-
-            // データ長
-            stream.read( byte4, 0, 4 );
-            uint length = makeUInt32( byte4 );
-
-            // フォーマット
-            stream.read( byte4, 0, 2 );
-            m_format = makeUint16( byte4 );
-
-            // トラック数
-            int tracks = 0;
-            stream.read( byte4, 0, 2 );
-            tracks = (int)makeUint16( byte4 );
-
-            // 時間分解能
-            stream.read( byte4, 0, 2 );
-            m_time_format = makeUint16( byte4 );
-
-            // 各トラックを読込み
-            m_events = new Vector<Vector<MidiEvent>>();
-            for ( int track = 0; track < tracks; track++ ) {
-                // ヘッダー
+            try {
+                // ヘッダ
+                byte[] byte4 = new byte[4];
                 stream.read( byte4, 0, 4 );
-                if ( makeUInt32( byte4 ) != 0x4d54726b ) {
-                    throw new ApplicationException( "header error; MTrk" );
+                if ( makeUInt32( byte4 ) != 0x4d546864 ) {
+                    throw new ApplicationException( "header error: MThd" );
                 }
-                m_events.add( new Vector<MidiEvent>() );
 
-                // チャンクサイズ
+                // データ長
                 stream.read( byte4, 0, 4 );
-                long size = (long)makeUInt32( byte4 );
-                long startpos = stream.getFilePointer();
+                uint length = makeUInt32( byte4 );
 
-                // チャンクの終わりまで読込み
-                long clock = 0;
-                byte last_status_byte = 0x00;
-                while ( stream.getFilePointer() < startpos + size ) {
-                    MidiEvent mi = MidiEvent.read( stream, ref clock, ref last_status_byte );
-                    m_events.get( track ).add( mi );
-                }
-                if ( m_time_format != 480 ) {
-                    int count = m_events.get( track ).size();
-                    for ( int i = 0; i < count; i++ ) {
-                        MidiEvent mi = m_events.get( track ).get( i );
-                        mi.clock = mi.clock * 480 / m_time_format;
-                        m_events.get( track ).set( i, mi );
+                // フォーマット
+                stream.read( byte4, 0, 2 );
+                m_format = makeUint16( byte4 );
+
+                // トラック数
+                int tracks = 0;
+                stream.read( byte4, 0, 2 );
+                tracks = (int)makeUint16( byte4 );
+
+                // 時間分解能
+                stream.read( byte4, 0, 2 );
+                m_time_format = makeUint16( byte4 );
+
+                // 各トラックを読込み
+                m_events = new Vector<Vector<MidiEvent>>();
+                for ( int track = 0; track < tracks; track++ ) {
+                    // ヘッダー
+                    stream.read( byte4, 0, 4 );
+                    if ( makeUInt32( byte4 ) != 0x4d54726b ) {
+                        throw new ApplicationException( "header error; MTrk" );
+                    }
+                    m_events.add( new Vector<MidiEvent>() );
+
+                    // チャンクサイズ
+                    stream.read( byte4, 0, 4 );
+                    long size = (long)makeUInt32( byte4 );
+                    long startpos = stream.getFilePointer();
+
+                    // チャンクの終わりまで読込み
+                    long clock = 0;
+                    byte last_status_byte = 0x00;
+                    while ( stream.getFilePointer() < startpos + size ) {
+                        MidiEvent mi = MidiEvent.read( stream, ref clock, ref last_status_byte );
+                        m_events.get( track ).add( mi );
+                    }
+                    if ( m_time_format != 480 ) {
+                        int count = m_events.get( track ).size();
+                        for ( int i = 0; i < count; i++ ) {
+                            MidiEvent mi = m_events.get( track ).get( i );
+                            mi.clock = mi.clock * 480 / m_time_format;
+                            m_events.get( track ).set( i, mi );
+                        }
                     }
                 }
-            }
-            m_time_format = 480;
+                m_time_format = 480;
 #if DEBUG
-            String dbg = Path.Combine( Path.GetDirectoryName( path ), Path.GetFileNameWithoutExtension( path ) + ".txt" );
-            using ( StreamWriter sw = new StreamWriter( dbg ) ) {
-                const String format = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2} 0x{4:X2}";
-                const String format0 = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2}";
-                for ( int track = 1; track < m_events.size(); track++ ) {
-                    sw.WriteLine( "MidiFile..ctor; track=" + track );
-                    byte msb, lsb, data_msb, data_lsb;
-                    msb = lsb = data_msb = data_lsb = 0x0;
-                    for ( int i = 0; i < m_events.get( track ).size(); i++ ) {
-                        if ( m_events.get( track ).get( i ).firstByte == 0xb0 ) {
-                            switch ( m_events.get( track ).get( i ).data[0] ) {
-                                case 0x63:
-                                    msb = m_events.get( track ).get( i ).data[1];
-                                    lsb = 0x0;
-                                    break;
-                                case 0x62:
-                                    lsb = m_events.get( track ).get( i ).data[1];
-                                    break;
-                                case 0x06:
-                                    data_msb = m_events.get( track ).get( i ).data[1];
-                                    ushort nrpn = (ushort)(msb << 8 | lsb);
-                                    String name = NRPN.getName( nrpn );
-                                    if ( name.Equals( "" ) ) {
-                                        name = "* * UNKNOWN * *";
-                                        sw.WriteLine( String.Format( format0, m_events.get( track ).get( i ).clock, nrpn, name, data_msb ) );
-                                    } else {
-                                        //if ( !NRPN.is_require_data_lsb( nrpn ) ) {
+                String dbg = PortUtil.combinePath( Path.GetDirectoryName( path ), Path.GetFileNameWithoutExtension( path ) + ".txt" );
+                using ( StreamWriter sw = new StreamWriter( dbg ) ) {
+                    const String format = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2} 0x{4:X2}";
+                    const String format0 = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2}";
+                    for ( int track = 1; track < m_events.size(); track++ ) {
+                        sw.WriteLine( "MidiFile..ctor; track=" + track );
+                        byte msb, lsb, data_msb, data_lsb;
+                        msb = lsb = data_msb = data_lsb = 0x0;
+                        for ( int i = 0; i < m_events.get( track ).size(); i++ ) {
+                            if ( m_events.get( track ).get( i ).firstByte == 0xb0 ) {
+                                switch ( m_events.get( track ).get( i ).data[0] ) {
+                                    case 0x63:
+                                        msb = m_events.get( track ).get( i ).data[1];
+                                        lsb = 0x0;
+                                        break;
+                                    case 0x62:
+                                        lsb = m_events.get( track ).get( i ).data[1];
+                                        break;
+                                    case 0x06:
+                                        data_msb = m_events.get( track ).get( i ).data[1];
+                                        ushort nrpn = (ushort)(msb << 8 | lsb);
+                                        String name = NRPN.getName( nrpn );
+                                        if ( name.Equals( "" ) ) {
+                                            name = "* * UNKNOWN * *";
                                             sw.WriteLine( String.Format( format0, m_events.get( track ).get( i ).clock, nrpn, name, data_msb ) );
-                                        //}
-                                    }
-                                    break;
-                                case 0x26:
-                                    data_lsb = m_events.get( track ).get( i ).data[1];
-                                    ushort nrpn2 = (ushort)(msb << 8 | lsb);
-                                    String name2 = NRPN.getName( nrpn2 );
-                                    if ( name2.Equals( "" ) ) {
-                                        name2 = "* * UNKNOWN * *";
-                                    }
-                                    sw.WriteLine( String.Format( format, m_events.get( track ).get( i ).clock, nrpn2, name2, data_msb, data_lsb ) );
-                                    break;
+                                        } else {
+                                            //if ( !NRPN.is_require_data_lsb( nrpn ) ) {
+                                            sw.WriteLine( String.Format( format0, m_events.get( track ).get( i ).clock, nrpn, name, data_msb ) );
+                                            //}
+                                        }
+                                        break;
+                                    case 0x26:
+                                        data_lsb = m_events.get( track ).get( i ).data[1];
+                                        ushort nrpn2 = (ushort)(msb << 8 | lsb);
+                                        String name2 = NRPN.getName( nrpn2 );
+                                        if ( name2.Equals( "" ) ) {
+                                            name2 = "* * UNKNOWN * *";
+                                        }
+                                        sw.WriteLine( String.Format( format, m_events.get( track ).get( i ).clock, nrpn2, name2, data_msb, data_lsb ) );
+                                        break;
+                                }
                             }
                         }
                     }
                 }
-            }
 #endif
-            stream.close();
+            } catch ( Exception ex ) {
+            } finally {
+                if ( stream != null ) {
+                    try {
+                        stream.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+            }
         }
 
         /*public void Write( String path ) {

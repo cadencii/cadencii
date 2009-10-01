@@ -41,7 +41,7 @@ namespace Boare.Lib.AppUtil {
         rflow_rainbow = 20,
     }
 
-    public static partial class Misc {
+    public static partial class Util {
         const double OPORT_OP_PI = 3.141592653589793238462643383279502884197169399;
         const double OPORT_OP_PI2 = 3.141592653589793238462643383279502884197169399 * 2.0;
         const double OPORT_OP_1P9 = 1.0 / 9.0;

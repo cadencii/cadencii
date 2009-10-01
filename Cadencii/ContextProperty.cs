@@ -163,7 +163,7 @@ namespace Boare.Cadencii {
             }
             set {
                 m_titlefont = value;
-                m_titlefont_yoffset = Misc.GetStringDrawOffset( value );
+                m_titlefont_yoffset = Util.GetStringDrawOffset( value );
             }
         }
 

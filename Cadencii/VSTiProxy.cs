@@ -61,7 +61,7 @@ namespace Boare.Cadencii {
 #endif
                 String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
                 String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
-                if ( vocalo2_dll_path != "" && File.Exists( vocalo2_dll_path ) ) {
+                if ( vocalo2_dll_path != "" && PortUtil.isFileExists( vocalo2_dll_path ) ) {
                     VstiRenderer vr = new VstiRenderer();
                     vr.path = vocalo2_dll_path;
                     vr.loaded = false;
@@ -69,7 +69,7 @@ namespace Boare.Cadencii {
                     vr.name = RENDERER_DSB3;
                     m_vstidrv.add( vr );
                 }
-                if ( vocalo1_dll_path != "" && File.Exists( vocalo1_dll_path ) ) {
+                if ( vocalo1_dll_path != "" && PortUtil.isFileExists( vocalo1_dll_path ) ) {
                     VstiRenderer vr = new VstiRenderer();
                     vr.path = vocalo1_dll_path;
                     vr.loaded = false;
@@ -122,21 +122,21 @@ namespace Boare.Cadencii {
                 }
             }
             if ( renderer.StartsWith( RENDERER_UTU0 ) ) {
-                if ( AppManager.editorConfig.PathResampler != "" && File.Exists( AppManager.editorConfig.PathResampler ) &&
-                     AppManager.editorConfig.PathWavtool != "" && File.Exists( AppManager.editorConfig.PathWavtool ) ) {
+                if ( AppManager.editorConfig.PathResampler != "" && PortUtil.isFileExists( AppManager.editorConfig.PathResampler ) &&
+                     AppManager.editorConfig.PathWavtool != "" && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) ) {
                     if ( AppManager.editorConfig.UtauSingers.size() > 0 ) {
                         return true;
                     }
                 }
             }
             if ( renderer.StartsWith( RENDERER_STR0 ) ) {
-                if ( File.Exists( Path.Combine( Application.StartupPath, StraightRenderingRunner.STRAIGHT_SYNTH ) ) ) {
+                if ( PortUtil.isFileExists( Path.Combine( Application.StartupPath, StraightRenderingRunner.STRAIGHT_SYNTH ) ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
                     for ( int i = 0; i < count; i++ ) {
                         String analyzed = Path.Combine( AppManager.editorConfig.UtauSingers.get( i ).VOICEIDSTR, "analyzed" );
                         if ( Directory.Exists( analyzed ) ) {
                             String analyzed_oto_ini = Path.Combine( analyzed, "oto.ini" );
-                            if ( File.Exists( analyzed_oto_ini ) ) {
+                            if ( PortUtil.isFileExists( analyzed_oto_ini ) ) {
                                 return true;
                             }
                         }

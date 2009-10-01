@@ -1,22 +1,22 @@
 ﻿/*
- * VsqMetaText/VsqMetaText.cs
- * Copyright (c) 2008-2009 kbinani
- *
- * This file is part of Boare.Lib.Vsq.
- *
- * Boare.Lib.Vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
- *
- * Boare.Lib.Vsq is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- */
+* VsqMetaText/VsqMetaText.cs
+* Copyright (c) 2008-2009 kbinani
+*
+* This file is part of Boare.Lib.Vsq.
+*
+* Boare.Lib.Vsq is free software; you can redistribute it and/or
+* modify it under the terms of the BSD License.
+*
+* Boare.Lib.Vsq is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Text;
 
+using Boare.Lib.Vsq;
 using bocoree;
 
 namespace Boare.Lib.Vsq {
@@ -768,7 +768,7 @@ namespace Boare.Lib.Vsq {
             id.IconHandle.Program = 0;
             Events.add( new VsqEvent( 0, id ) );
         }
-        
+
         public VsqMetaText( TextMemoryStream sr ) {
             Vector<KeyValuePair<Integer, Integer>> t_event_list = new Vector<KeyValuePair<Integer, Integer>>();
             TreeMap<Integer, VsqID> __id = new TreeMap<Integer, VsqID>();
@@ -776,7 +776,7 @@ namespace Boare.Lib.Vsq {
             PIT = new VsqBPList( 0, -8192, 8191 );
             PBS = new VsqBPList( 2, 0, 24 );
             DYN = new VsqBPList( 64, 0, 127 );
-            BRE = new VsqBPList( 0 , 0, 127);
+            BRE = new VsqBPList( 0, 0, 127 );
             BRI = new VsqBPList( 64, 0, 127 );
             CLE = new VsqBPList( 0, 0, 127 );
             reso1FreqBPList = new VsqBPList( 64, 0, 127 );
@@ -816,18 +816,18 @@ namespace Boare.Lib.Vsq {
                     case "[EventList]":
                         last_line = sr.readLine();
                         while ( !last_line.StartsWith( "[" ) ) {
-                            String[] spl2 = last_line.Split( new char[] { '=' } );
-                            int clock = int.Parse( spl2[0] );
+                            String[] spl2 = PortUtil.splitString( last_line, new char[] { '=' } );
+                            int clock = PortUtil.parseInt( spl2[0] );
                             int id_number = -1;
                             if ( spl2[1] != "EOS" ) {
-                                String[] ids = spl2[1].Split( ",".ToCharArray() );
+                                String[] ids = PortUtil.splitString( spl2[1], ',' );
                                 for ( int i = 0; i < ids.Length; i++ ) {
-                                    String[] spl3 = ids[i].Split( new char[] { '#' } );
-                                    id_number = int.Parse( spl3[1] );
-                                    t_event_list.add( new KeyValuePair<int,int>( clock, id_number ) );
+                                    String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
+                                    id_number = PortUtil.parseInt( spl3[1] );
+                                    t_event_list.add( new KeyValuePair<int, int>( clock, id_number ) );
                                 }
                             } else {
-                                t_event_list.add( new KeyValuePair<int,int>( clock, -1) );
+                                t_event_list.add( new KeyValuePair<int, int>( clock, -1 ) );
                             }
                             if ( sr.peek() < 0 ) {
                                 break;
@@ -909,8 +909,8 @@ namespace Boare.Lib.Vsq {
                         String buffer = last_line;
                         buffer = buffer.Replace( "[", "" );
                         buffer = buffer.Replace( "]", "" );
-                        String[] spl = buffer.Split( new char[] { '#' } );
-                        int index = int.Parse( spl[1] );
+                        String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
+                        int index = PortUtil.parseInt( spl[1] );
                         if ( last_line.StartsWith( "[ID#" ) ) {
                             __id.put( index, new VsqID( sr, index, ref last_line ) );
                         } else if ( last_line.StartsWith( "[h#" ) ) {
@@ -982,19 +982,6 @@ namespace Boare.Lib.Vsq {
 
             return true;
         }
-    }
-
-    public enum VsqIDType {
-        Singer,
-        Anote,
-        Unknown
-    }
-
-    public enum VsqHandleType {
-        Lyric,
-        Vibrato,
-        Singer,
-        NoteHeadHandle,
     }
 
 }

@@ -120,8 +120,8 @@ namespace Boare.Lib.Vsq {
         }
 
         public VsqEvent( String line ) {
-            String[] spl = line.Split( new char[] { '=' } );
-            Clock = int.Parse( spl[0] );
+            String[] spl = PortUtil.splitString( line, new char[] { '=' } );
+            Clock = PortUtil.parseInt( spl[0] );
             if ( spl[1].Equals( "EOS" ) ) {
                 ID = VsqID.EOS;
             }

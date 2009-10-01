@@ -58,7 +58,7 @@ namespace Boare.Cadencii {
                             String dir = Path.Combine( AppManager.getApplicationDataPath(), "tool" );
                             String cfg = Path.GetFileNameWithoutExtension( file.FullName ) + ".config";
                             String config = Path.Combine( dir, cfg );
-                            if ( File.Exists( config ) ) {
+                            if ( PortUtil.isFileExists( config ) ) {
                                 XmlStaticMemberSerializer xsms = new XmlStaticMemberSerializer( instance.GetType() );
                                 using ( FileStream fs = new FileStream( config, FileMode.Open ) ) {
                                     xsms.Deserialize( fs );

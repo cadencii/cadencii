@@ -51,7 +51,7 @@ namespace Boare.Cadencii {
                 btnSkip.Enabled = false;
                 btnReset.Enabled = false;
             }
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public void ApplyLanguage() {

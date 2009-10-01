@@ -16,6 +16,7 @@ using System.IO;
 using System.Media;
 using System.Windows.Forms;
 
+using bocoree;
 using Boare.Lib.Media;
 
 namespace Boare.Cadencii {
@@ -34,7 +35,7 @@ namespace Boare.Cadencii {
             String cache_path = Path.Combine( Application.StartupPath, "cache" );
             for ( int i = 0; i <= 126; i++ ) {
                 String path = Path.Combine( cache_path, i + ".wav" );
-                if ( File.Exists( path ) ) {
+                if ( PortUtil.isFileExists( path ) ) {
                     m_prepared[i] = true;
                     if ( 36 <= i && i <= 83 ) {
                         try {
@@ -72,7 +73,7 @@ namespace Boare.Cadencii {
                     m_temp_player = new SoundPlayer();
                 }
                 String path = Path.Combine( Path.Combine( Application.StartupPath, "cache" ), note + ".wav" );
-                if ( File.Exists( path ) ) {
+                if ( PortUtil.isFileExists( path ) ) {
                     m_temp_player.SoundLocation = path;
                     m_temp_player.Play();
                 }

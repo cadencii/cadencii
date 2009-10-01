@@ -36,24 +36,24 @@ namespace Boare.Lib.Vsq {
 
         public UstEnvelope( String line ) {
             if ( line.ToLower().StartsWith( "envelope=" ) ) {
-                String[] spl = line.Split( '=' );
-                spl = spl[1].Split( ',' );
+                String[] spl = PortUtil.splitString( line, '=' );
+                spl = PortUtil.splitString( spl[1], ',' );
                 if ( spl.Length < 7 ) {
                     return;
                 }
                 //Separator = "";
-                p1 = int.Parse( spl[0] );
-                p2 = int.Parse( spl[1] );
-                p3 = int.Parse( spl[2] );
-                v1 = int.Parse( spl[3] );
-                v2 = int.Parse( spl[4] );
-                v3 = int.Parse( spl[5] );
-                v4 = int.Parse( spl[6] );
+                p1 = PortUtil.parseInt( spl[0] );
+                p2 = PortUtil.parseInt( spl[1] );
+                p3 = PortUtil.parseInt( spl[2] );
+                v1 = PortUtil.parseInt( spl[3] );
+                v2 = PortUtil.parseInt( spl[4] );
+                v3 = PortUtil.parseInt( spl[5] );
+                v4 = PortUtil.parseInt( spl[6] );
                 if ( spl.Length == 11 ) {
                     //Separator = "%";
-                    p4 = int.Parse( spl[8] );
-                    p5 = int.Parse( spl[9] );
-                    v5 = int.Parse( spl[10] );
+                    p4 = PortUtil.parseInt( spl[8] );
+                    p5 = PortUtil.parseInt( spl[9] );
+                    v5 = PortUtil.parseInt( spl[10] );
                 }
             }
         }

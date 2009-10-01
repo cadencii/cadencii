@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using bocoree;
 using Boare.Lib.AppUtil;
 
 namespace Boare.Cadencii {
@@ -29,7 +30,7 @@ namespace Boare.Cadencii {
             ApplyLanguage();
             m_master_tuning = master_tuning_in_cent;
             txtMasterTuning.Text = master_tuning_in_cent.ToString();
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public void ApplyLanguage() {
@@ -51,8 +52,10 @@ namespace Boare.Cadencii {
 
         private void txtMasterTuning_TextChanged( object sender, EventArgs e ) {
             int v = m_master_tuning;
-            if ( int.TryParse( txtMasterTuning.Text, out v ) ) {
+            try {
+                v = PortUtil.parseInt( txtMasterTuning.Text );
                 m_master_tuning = v;
+            } catch ( Exception ex ) {
             }
         }
     }

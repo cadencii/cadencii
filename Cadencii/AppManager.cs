@@ -510,19 +510,19 @@ namespace Boare.Cadencii {
         }
 
         private static void handleAutoBackupTimerTick( object sender, EventArgs e ) {
-            if ( !s_file.Equals( "" ) && File.Exists( s_file ) ) {
+            if ( !s_file.Equals( "" ) && PortUtil.isFileExists( s_file ) ) {
                 String path = Path.GetDirectoryName( s_file );
                 String backup = Path.Combine( path, "~$" + Path.GetFileName( s_file ) );
                 String file2 = Path.Combine( path, Path.GetFileNameWithoutExtension( backup ) + ".vsq" );
-                if ( File.Exists( backup ) ) {
+                if ( PortUtil.isFileExists( backup ) ) {
                     try {
-                        File.Delete( backup );
+                        PortUtil.deleteFile( backup );
                     } catch ( Exception ex ) {
                     }
                 }
-                if ( File.Exists( file2 ) ) {
+                if ( PortUtil.isFileExists( file2 ) ) {
                     try {
-                        File.Delete( file2 );
+                        PortUtil.deleteFile( file2 );
                     } catch ( Exception ex ) {
                     }
                 }
@@ -725,7 +725,7 @@ namespace Boare.Cadencii {
                         ret.scriptDelegate = scriptDelegate;
                         ret.Serializer = new XmlStaticMemberSerializer( implemented );
 
-                        if ( !File.Exists( config_file ) ) {
+                        if ( !PortUtil.isFileExists( config_file ) ) {
                             continue;
                         }
 
@@ -1682,8 +1682,9 @@ namespace Boare.Cadencii {
                 current.add( new ValuePair<String, boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
             }
             Vector<ValuePair<String, boolean>> config_data = new Vector<ValuePair<String, boolean>>();
-            for ( int i = 0; i < editorConfig.UserDictionaries.size(); i++ ) {
-                String[] spl = editorConfig.UserDictionaries.get( i ).Split( "\t".ToCharArray(), 2 );
+            int count = editorConfig.UserDictionaries.size();
+            for ( int i = 0; i < count; i++ ) {
+                String[] spl = PortUtil.splitString( editorConfig.UserDictionaries.get( i ), new char[]{ '\t' }, 2 );
                 config_data.add( new ValuePair<String, boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
 #if DEBUG
                 AppManager.debugWriteLine( "    " + spl[0] + "," + spl[1] );
@@ -1714,7 +1715,7 @@ namespace Boare.Cadencii {
             PaletteToolServer.Init();
 
 #if !TREECOM
-            s_id = bocoree.misc.getmd5( DateTime.Now.ToBinary().ToString() );
+            s_id = bocoree.Misc.getmd5( DateTime.Now.ToBinary().ToString() );
             String log = Path.Combine( getTempWaveDir(), "run.log" );
 #endif
             propertyPanel = new PropertyPanel();
@@ -2000,7 +2001,7 @@ namespace Boare.Cadencii {
         public static void loadConfig() {
             String config_file = Path.Combine( getApplicationDataPath(), CONFIG_FILE_NAME );
             EditorConfig ret = null;
-            if ( File.Exists( config_file ) ) {
+            if ( PortUtil.isFileExists( config_file ) ) {
                 try {
                     ret = EditorConfig.Deserialize( editorConfig, config_file );
                 } catch {
@@ -2008,7 +2009,7 @@ namespace Boare.Cadencii {
                 }
             } else {
                 config_file = Path.Combine( Application.StartupPath, CONFIG_FILE_NAME );
-                if ( File.Exists( config_file ) ) {
+                if ( PortUtil.isFileExists( config_file ) ) {
                     try {
                         ret = EditorConfig.Deserialize( editorConfig, config_file );
                     } catch {
@@ -2025,7 +2026,7 @@ namespace Boare.Cadencii {
                 boolean found = false;
                 for( Iterator itr = editorConfig.UserDictionaries.iterator(); itr.hasNext() ; ){
                     String s = (String)itr.next();
-                    String[] spl = s.Split( "\t".ToCharArray(), 2 );
+                    String[] spl = PortUtil.splitString( s, new char[]{ '\t' }, 2 );
                     if ( st.getName().Equals( spl[0] ) ) {
                         found = true;
                         break;
@@ -2059,7 +2060,7 @@ namespace Boare.Cadencii {
                 SingerConfig sc = editorConfig.UtauSingers.get( index );
                 int lang = 0;//utauは今のところ全部日本語
                 ret.IconHandle = new IconHandle();
-                ret.IconHandle.IconID = "$0701" + index.ToString( "0000" );
+                ret.IconHandle.IconID = "$0701" + string.Format( "{0:x4}", index );
                 ret.IconHandle.IDS = sc.VOICENAME;
                 ret.IconHandle.Index = 0;
                 ret.IconHandle.Language = lang;
@@ -2072,7 +2073,7 @@ namespace Boare.Cadencii {
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.Program = 0;
                 ret.IconHandle.Language = 0;
-                ret.IconHandle.IconID = "$0701" + 0.ToString( "0000" );
+                ret.IconHandle.IconID = "$0701" + string.Format( "{0:x4}", (int)0 );
                 ret.IconHandle.IDS = "Unknown";
                 ret.type = VsqIDType.Singer;
                 return ret;
@@ -2090,15 +2091,15 @@ namespace Boare.Cadencii {
         public static String getVersion() {
             String prefix = "";
             String rev = "";
-            // $Id: AppManager.cs 501 2009-09-28 16:30:08Z kbinani $
+            // $Id: AppManager.cs 474 2009-09-23 11:31:07Z kbinani $
             String id = getAssemblyConfigurationAttribute();
-            String[] spl0 = id.Split( " ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries );
+            String[] spl0 = PortUtil.splitString( id, new String[]{ " " }, true );
             if ( spl0.Length >= 3 ) {
                 String s = spl0[2];
 #if DEBUG
                 AppManager.debugWriteLine( "AppManager.get__VERSION; s=" + s );
 #endif
-                String[] spl = s.Split( " ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries );
+                String[] spl = PortUtil.splitString( s, new String[]{ " " }, true );
                 if ( spl.Length > 0 ) {
                     rev = spl[0];
                 }

@@ -37,7 +37,7 @@ namespace Boare.Cadencii {
         public FormMidiConfig() {
             InitializeComponent();
             ApplyLanguage();
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
 
             m_program_normal = MidiPlayer.ProgramNormal;
             m_program_bell = MidiPlayer.ProgramBell;

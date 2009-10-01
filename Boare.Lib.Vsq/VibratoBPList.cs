@@ -92,13 +92,13 @@ namespace Boare.Lib.Vsq {
             }
             set {
                 m_list.clear();
-                String[] spl = value.Split( ',' );
+                String[] spl = PortUtil.splitString( value, ',' );
                 for ( int i = 0; i < spl.Length; i++ ) {
-                    String[] spl2 = spl[i].Split( '=' );
+                    String[] spl2 = PortUtil.splitString( spl[i], '=' );
                     if ( spl2.Length < 2 ) {
                         continue;
                     }
-                    m_list.add( new VibratoBPPair( float.Parse( spl2[0] ), int.Parse( spl2[1] ) ) );
+                    m_list.add( new VibratoBPPair( PortUtil.parseFloat( spl2[0] ), PortUtil.parseInt( spl2[1] ) ) );
                 }
             }
         }

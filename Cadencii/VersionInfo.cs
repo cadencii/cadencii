@@ -65,8 +65,8 @@ namespace Boare.Cadencii {
         public void ApplyLanguage() {
             String about = String.Format( _( "About {0}" ), m_app_name );
             String credit = _( "Credit" );
-            Size size1 = Misc.MeasureString( about, btnFlip.Font );
-            Size size2 = Misc.MeasureString( credit, btnFlip.Font );
+            Size size1 = Util.MeasureString( about, btnFlip.Font );
+            Size size2 = Util.MeasureString( credit, btnFlip.Font );
             m_button_width_about = Math.Max( 75, (int)(size1.Width * 1.3) );
             m_button_width_credit = Math.Max( 75, (int)(size2.Width * 1.3) );
             if ( m_credit_mode ) {
@@ -144,7 +144,7 @@ namespace Boare.Cadencii {
             const String font_name = "Arial";
             const int font_size = 10;
             Font font = new Font( font_name, font_size );
-            Size size = Boare.Lib.AppUtil.Misc.MeasureString( "the quick brown fox jumped over the lazy dogs. THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS. 0123456789", font );
+            Size size = Boare.Lib.AppUtil.Util.MeasureString( "the quick brown fox jumped over the lazy dogs. THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS. 0123456789", font );
             float width = this.Width;
             float height = size.Height;
             StringFormat sf = new StringFormat();
@@ -289,7 +289,7 @@ namespace Boare.Cadencii {
         private void VersionInfoEx_FontChanged( object sender, EventArgs e ) {
             Font font = this.Font;
             for ( int i = 0; i < this.Controls.Count; i++ ) {
-                Misc.ApplyFontRecurse( this.Controls[i], font );
+                Util.ApplyFontRecurse( this.Controls[i], font );
             }
         }
     }

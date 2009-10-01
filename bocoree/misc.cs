@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * misc.cs
  * Copyright (c) 2009 kbinani
  *
@@ -19,87 +20,7 @@ using System.Collections.Generic;
 
 namespace bocoree {
 
-    public class _FOO_BAR_STRING {
-        public static bool operator !=( _FOO_BAR_STRING a, _FOO_BAR_STRING b ) {
-            return false;
-        }
-
-        public static bool operator ==( _FOO_BAR_STRING a, _FOO_BAR_STRING b ) {
-            return true;
-        }
-
-        public int Length {
-            get {
-                return 0;
-            }
-        }
-
-        public _FOO_BAR_STRING[] Split( params char[] separator ) {
-            return null;
-        }
-
-        public _FOO_BAR_STRING[] Split( char[] separator, int count ) {
-            return null;
-        }
-
-        public _FOO_BAR_STRING[] Split( char[] separator, StringSplitOptions options ) {
-            return null;
-        }
-
-        public _FOO_BAR_STRING[] Split( _FOO_BAR_STRING[] separator, StringSplitOptions options ) {
-            return null;
-        }
-
-        public _FOO_BAR_STRING[] Split( char[] separator, int count, StringSplitOptions options ) {
-            return null;
-        }
-
-        public _FOO_BAR_STRING[] Split( _FOO_BAR_STRING[] separator, int count, StringSplitOptions options ) {
-            return null;
-        }
-
-        public _FOO_BAR_STRING Substring( int startIndex ) {
-            return null;
-        }
-
-        public _FOO_BAR_STRING Substring( int startIndex, int length ) {
-            return null;
-        }
-
-        public char[] ToCharArray() {
-            return null;
-        }
-
-        public char[] ToCharArray( int startIndex, int length ) {
-            return null;
-        }
-
-        public _FOO_BAR_STRING ToLower() {
-            return null;
-        }
-
-        public _FOO_BAR_STRING ToLowerInvariant() {
-            return null;
-        }
-
-        public override string ToString() {
-            return "";
-        }
-
-        public _FOO_BAR_STRING ToUpper() {
-            return null;
-        }
-
-        public _FOO_BAR_STRING ToUpperInvariant() {
-            return null;
-        }
-
-        public _FOO_BAR_STRING Trim() {
-            return null;
-        }
-    }
-
-    public static class misc {
+    public static class Misc {
         /// <summary>
         /// Reflectionを利用して、インスタンスのディープなクローニングを行います。
         /// クローン操作の対象はインスタンスのフィールドであり、値型のものは単なる代入を、
@@ -248,3 +169,4 @@ namespace bocoree {
     }
 
 }
+#endif

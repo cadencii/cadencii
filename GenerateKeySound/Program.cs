@@ -481,10 +481,10 @@ namespace GenerateKeySound {
             for ( int i = 0; i < 127; i++ ) {
                 string path = Path.Combine( dir, i + ".wav" );
                 Console.Write( "writing \"" + path + "\" ..." );
-                if ( replace || (!replace && !File.Exists( path )) ) {
+                if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
                     try {
                         GenerateSinglePhone( i, singer, path, amp );
-                        if ( File.Exists( path ) ) {
+                        if ( PortUtil.isFileExists( path ) ) {
                             try {
                                 Wave wv = new Wave( path );
                                 wv.TrimSilence();
@@ -519,10 +519,10 @@ namespace GenerateKeySound {
             for ( int i = 0; i < 127; i++ ) {
                 string path = Path.Combine( dir, i + ".wav" );
                 Console.Write( "writing \"" + path + "\" ..." );
-                if ( replace || (!replace && !File.Exists( path )) ) {
+                if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
                     try {
                         GenerateSinglePhone( i, singer, path, amp );
-                        if ( File.Exists( path ) ) {
+                        if ( PortUtil.isFileExists( path ) ) {
                             try {
                                 Wave wv = new Wave( path );
                                 wv.TrimSilence();

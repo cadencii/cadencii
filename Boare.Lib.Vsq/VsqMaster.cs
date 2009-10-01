@@ -1,20 +1,21 @@
 ﻿/*
- * VsqMetaText/Master.cs
- * Copyright (c) 2008-2009 kbinani
- *
- * This file is part of Boare.Lib.Vsq.
- *
- * Boare.Lib.Vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
- *
- * Boare.Lib.Vsq is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- */
+* VsqMetaText/Master.cs
+* Copyright (c) 2008-2009 kbinani
+*
+* This file is part of Boare.Lib.Vsq.
+*
+* Boare.Lib.Vsq is free software; you can redistribute it and/or
+* modify it under the terms of the BSD License.
+*
+* Boare.Lib.Vsq is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
 using System;
 using System.IO;
 using System.Text;
 
+using Boare.Lib.Vsq;
 using bocoree;
 
 namespace Boare.Lib.Vsq {
@@ -55,10 +56,10 @@ namespace Boare.Lib.Vsq {
             String[] spl;
             last_line = sr.readLine();
             while ( !last_line.StartsWith( "[" ) ) {
-                spl = last_line.Split( new char[] { '=' } );
+                spl = PortUtil.splitString( last_line, new char[] { '=' } );
                 switch ( spl[0] ) {
                     case "PreMeasure":
-                        this.PreMeasure = int.Parse( spl[1] );
+                        this.PreMeasure = PortUtil.parseInt( spl[1] );
                         break;
                 }
                 if ( sr.peek() < 0 ) {
@@ -99,7 +100,7 @@ namespace Boare.Lib.Vsq {
                     result = false;
                 }
             }
-            File.Delete( fpath );
+            PortUtil.deleteFile( fpath );
             return result;
         }
     }

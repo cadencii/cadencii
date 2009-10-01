@@ -26,7 +26,7 @@ namespace Boare.Cadencii {
     using boolean = System.Boolean;
 
     public class StraightRenderingRunner : RenderingRunner {
-        public static String STRAIGHT_SYNTH = "straightdrv.exe";
+        public static String STRAIGHT_SYNTH = "vConnect.exe";
         private const int MAX_CACHE = 512;
         private static TreeMap<String, DateTime> s_cache = new TreeMap<String, DateTime>();
         const int TEMPO = 120;
@@ -140,7 +140,7 @@ namespace Boare.Cadencii {
                 return;
             }
             string oto_ini = Path.Combine( Path.Combine( singer_path, "analyzed" ), "oto.ini" );
-            if ( !File.Exists( oto_ini ) ) {
+            if ( !PortUtil.isFileExists( oto_ini ) ) {
                 // STRAIGHT合成用のoto.iniが存在しないので離脱
                 return;
             }
@@ -339,7 +339,7 @@ namespace Boare.Cadencii {
             m_rendering = true;
             m_abort_required = false;
             String straight_synth = Path.Combine( Application.StartupPath, STRAIGHT_SYNTH );
-            if ( !File.Exists( straight_synth ) ) {
+            if ( !PortUtil.isFileExists( straight_synth ) ) {
 #if DEBUG
                 Console.WriteLine( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
 #endif
@@ -404,15 +404,15 @@ namespace Boare.Cadencii {
                     prepareMetaText( sw, queue.track, queue.oto_ini, queue.endClock );
                 }
                 using ( FileStream fs = new FileStream( tmp_file, FileMode.Open, FileAccess.Read ) ) {
-                    hash = misc.getmd5( fs );
+                    hash = Misc.getmd5( fs );
                 }
                 try {
                     File.Copy( tmp_file, Path.Combine( tmp_dir, hash + ".usq" ) );
-                    File.Delete( tmp_file );
+                    PortUtil.deleteFile( tmp_file );
                 } catch {
                 }
                 tmp_file = Path.Combine( tmp_dir, hash );
-                if ( !s_cache.containsKey( hash ) || !File.Exists( tmp_file + ".wav" ) ) {
+                if ( !s_cache.containsKey( hash ) || !PortUtil.isFileExists( tmp_file + ".wav" ) ) {
                     using ( Process process = new Process() ) {
                         process.StartInfo.FileName = straight_synth;
                         process.StartInfo.Arguments = "\"" + tmp_file + ".usq\" \"" + tmp_file + ".wav\"";
@@ -440,7 +440,7 @@ namespace Boare.Cadencii {
                     straightdrv.uninitialize();*/
 
                     try {
-                        File.Delete( tmp_file + ".usq" );
+                        PortUtil.deleteFile( tmp_file + ".usq" );
                     } catch {
                     }
 
@@ -464,7 +464,7 @@ namespace Boare.Cadencii {
                         }
                         s_cache.remove( old_key );
                         try {
-                            File.Delete( Path.Combine( tmp_dir, old_key + ".wav" ) );
+                            PortUtil.deleteFile( Path.Combine( tmp_dir, old_key + ".wav" ) );
                         } catch ( Exception ex ) {
                         }
                     }
@@ -479,7 +479,7 @@ namespace Boare.Cadencii {
 
                 WaveReader wr = null;
                 try {
-                    if ( File.Exists( tmp_file + ".wav" ) ) {
+                    if ( PortUtil.isFileExists( tmp_file + ".wav" ) ) {
                         wr = new WaveReader( tmp_file + ".wav" );
                     }
                 } catch {
@@ -788,7 +788,7 @@ namespace Boare.Cadencii {
             for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ) {
                 String key = (String)itr.next();
                 try {
-                    File.Delete( Path.Combine( tmp_dir, key + ".wav" ) );
+                    PortUtil.deleteFile( Path.Combine( tmp_dir, key + ".wav" ) );
                 } catch {
                 }
             }

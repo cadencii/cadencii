@@ -102,7 +102,7 @@ namespace Boare.Lib.Vsq {
                 Console.WriteLine( "SingerConfig.readSingerConfig; str=" + str );
 #endif
                 String crlf = ((char)0x0d).ToString() + ((char)0x0a).ToString();
-                String[] spl = str.Split( new String[] { crlf }, StringSplitOptions.RemoveEmptyEntries );
+                String[] spl = PortUtil.splitString( str, new String[] { crlf }, true );
 
                 foreach ( String s in spl ) {
                     int first = s.IndexOf( '"' );
@@ -116,7 +116,10 @@ namespace Boare.Lib.Vsq {
                     value = value.Substring( 1, value.Length - 2 );
                     value = value.Replace( "\\\"", "\"" );
                     int parsed_int = 64;
-                    int.TryParse( value, out parsed_int );
+                    try {
+                        parsed_int = PortUtil.parseInt( value );
+                    } catch ( Exception ex ) {
+                    }
                     if ( id.Equals( "ID" ) ) {
                         sc.ID = value;
                     } else if ( id.Equals( "FORMAT" ) ) {

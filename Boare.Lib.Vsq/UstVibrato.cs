@@ -51,18 +51,18 @@ namespace Boare.Lib.Vsq {
 
         public UstVibrato( String line ) {
             if ( line.ToLower().StartsWith( "vbr=" ) ) {
-                String[] spl = line.Split( '=' );
-                spl = spl[1].Split( ',' );
+                String[] spl = PortUtil.splitString( line, '=' );
+                spl = PortUtil.splitString( spl[1], ',' );
                 //VBR=65,180,70,20.0,17.6,82.8,49.8,100
                 if ( spl.Length >= 8 ) {
-                    Length = float.Parse( spl[0] );
-                    Period = float.Parse( spl[1] );
-                    Depth = float.Parse( spl[2] );
-                    In = float.Parse( spl[3] );
-                    Out = float.Parse( spl[4] );
-                    Phase = float.Parse( spl[5] );
-                    Shift = float.Parse( spl[6] );
-                    Unknown = float.Parse( spl[7] );
+                    Length = PortUtil.parseFloat( spl[0] );
+                    Period = PortUtil.parseFloat( spl[1] );
+                    Depth = PortUtil.parseFloat( spl[2] );
+                    In = PortUtil.parseFloat( spl[3] );
+                    Out = PortUtil.parseFloat( spl[4] );
+                    Phase = PortUtil.parseFloat( spl[5] );
+                    Shift = PortUtil.parseFloat( spl[6] );
+                    Unknown = PortUtil.parseFloat( spl[7] );
                 }
             }
         }

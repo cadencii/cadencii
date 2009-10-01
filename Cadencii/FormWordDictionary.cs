@@ -27,7 +27,7 @@ namespace Boare.Cadencii {
         public FormWordDictionary() {
             InitializeComponent();
             ApplyLanguage();
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public void ApplyLanguage() {

@@ -21,29 +21,49 @@ namespace Boare.Cadencii {
 
     public class UtauVoiceDB {
         private Vector<OtoArgs> m_configs = new Vector<OtoArgs>();
+        private String m_name = "Unknown";
 
         public UtauVoiceDB( String oto_ini ) {
-            if ( File.Exists( oto_ini ) ) {
-                using ( StreamReader sr = new StreamReader( oto_ini, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
-                    String line;
-                    while ( sr.Peek() >= 0 ) {
-                        try {
-                            line = sr.ReadLine();
-                            String[] spl = line.Split( '=' );
-                            String file_name = spl[0]; // あ.wav
-                            String a2 = spl[1]; // ,0,36,64,0,0
-                            String a1 = Path.GetFileNameWithoutExtension( file_name );
-                            spl = a2.Split( ',' );
-                            OtoArgs oa = new OtoArgs();
-                            oa.fileName = file_name;
-                            oa.Alias = spl[0];
-                            oa.msOffset = int.Parse( spl[1] );
-                            oa.msConsonant = int.Parse( spl[2] );
-                            oa.msBlank = int.Parse( spl[3] );
-                            oa.msPreUtterance = int.Parse( spl[4] );
-                            oa.msOverlap = int.Parse( spl[5] );
-                            m_configs.add( oa );
-                        } catch {
+            if ( !PortUtil.isFileExists( oto_ini ) ) {
+                return;
+            }
+
+            // oto.ini読込み
+            using ( StreamReader sr = new StreamReader( oto_ini, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
+                String line;
+                while ( sr.Peek() >= 0 ) {
+                    try {
+                        line = sr.ReadLine();
+                        String[] spl = line.Split( '=' );
+                        String file_name = spl[0]; // あ.wav
+                        String a2 = spl[1]; // ,0,36,64,0,0
+                        String a1 = Path.GetFileNameWithoutExtension( file_name );
+                        spl = a2.Split( ',' );
+                        OtoArgs oa = new OtoArgs();
+                        oa.fileName = file_name;
+                        oa.Alias = spl[0];
+                        oa.msOffset = int.Parse( spl[1] );
+                        oa.msConsonant = int.Parse( spl[2] );
+                        oa.msBlank = int.Parse( spl[3] );
+                        oa.msPreUtterance = int.Parse( spl[4] );
+                        oa.msOverlap = int.Parse( spl[5] );
+                        m_configs.add( oa );
+                    } catch {
+                    }
+                }
+            }
+
+            // character.txt読込み
+            String character = Path.Combine( Path.GetDirectoryName( oto_ini ), "character.txt" );
+            if ( PortUtil.isFileExists( character ) ) {
+                using ( StreamReader sr = new StreamReader( character, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
+                    String line = "";
+                    while ( (line = sr.ReadLine()) != null ) {
+                        String[] spl = line.Split( '=' );
+                        if ( spl.Length > 1 ) {
+                            if ( spl[0].ToLower() == "name" ) {
+                                m_name = spl[1];
+                            }
                         }
                     }
                 }
@@ -67,6 +87,10 @@ namespace Boare.Cadencii {
                 }
             }
             return new OtoArgs();
+        }
+
+        public String getName() {
+            return m_name;
         }
     }
 

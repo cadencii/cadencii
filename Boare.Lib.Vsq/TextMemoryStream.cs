@@ -61,7 +61,7 @@ namespace Boare.Lib.Vsq {
         public TextMemoryStream( String path, Encoding encoding ) {
             m_lines = new Vector<String>();
             m_index = 0;
-            if ( File.Exists( path ) ) {
+            if ( PortUtil.isFileExists( path ) ) {
                 using ( StreamReader sr = new StreamReader( path, encoding ) ) {
                     while ( sr.Peek() >= 0 ) {
                         String line = sr.ReadLine();
@@ -82,11 +82,11 @@ namespace Boare.Lib.Vsq {
 
         private static Vector<String> splitLine( String line ) {
             Vector<String> ret = new Vector<String>();
-            String[] spl_0x0d_0x0a = line.Split( new String[] { NL }, StringSplitOptions.None );
+            String[] spl_0x0d_0x0a = PortUtil.splitString( line, new String[] { NL }, false );
             for ( int i = 0; i < spl_0x0d_0x0a.Length; i++ ) {
-                String[] spl_0x0d = spl_0x0d_0x0a[i].Split( (char)0x0d );
+                String[] spl_0x0d = PortUtil.splitString( spl_0x0d_0x0a[i], (char)0x0d );
                 for ( int j = 0; j < spl_0x0d.Length; j++ ) {
-                    String[] spl_0x0a = spl_0x0d[j].Split( (char)0x0a );
+                    String[] spl_0x0a = PortUtil.splitString( spl_0x0d[j], (char)0x0a );
                     for ( int k = 0; k < spl_0x0a.Length; k++ ) {
                         ret.add( spl_0x0a[k] );
                     }

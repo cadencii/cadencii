@@ -2733,6 +2733,7 @@ namespace Boare.Lib.Vsq {
                 #endregion
 
             } catch ( Exception ex ) {
+            } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();

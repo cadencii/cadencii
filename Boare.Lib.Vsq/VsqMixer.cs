@@ -1,21 +1,22 @@
 ﻿/*
- * VsqMetaText/Mixer.cs
- * Copyright (c) 2008-2009 kbinani
- *
- * This file is part of Boare.Lib.Vsq.
- *
- * Boare.Lib.Vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
- *
- * Boare.Lib.Vsq is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- */
+* VsqMetaText/Mixer.cs
+* Copyright (c) 2008-2009 kbinani
+*
+* This file is part of Boare.Lib.Vsq.
+*
+* Boare.Lib.Vsq is free software; you can redistribute it and/or
+* modify it under the terms of the BSD License.
+*
+* Boare.Lib.Vsq is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using Boare.Lib.Vsq;
 using bocoree;
 
 namespace Boare.Lib.Vsq {
@@ -40,7 +41,7 @@ namespace Boare.Lib.Vsq {
         public object Clone() {
             VsqMixer res = new VsqMixer( MasterFeder, MasterPanpot, MasterMute, OutputMode );
             res.Slave = new Vector<VsqMixerEntry>();
-            for ( Iterator itr = Slave.iterator(); itr.hasNext(); ){
+            for ( Iterator itr = Slave.iterator(); itr.hasNext(); ) {
                 VsqMixerEntry item = (VsqMixerEntry)itr.next();
                 res.Slave.add( (VsqMixerEntry)item.Clone() );
             }
@@ -82,22 +83,22 @@ namespace Boare.Lib.Vsq {
             String buffer = "";
             last_line = sr.readLine();
             while ( !last_line.StartsWith( "[" ) ) {
-                spl = last_line.Split( new char[] { '=' } );
+                spl = PortUtil.splitString( last_line, new char[] { '=' } );
                 switch ( spl[0] ) {
                     case "MasterFeder":
-                        MasterFeder = int.Parse( spl[1] );
+                        MasterFeder = PortUtil.parseInt( spl[1] );
                         break;
                     case "MasterPanpot":
-                        MasterPanpot = int.Parse( spl[1] );
+                        MasterPanpot = PortUtil.parseInt( spl[1] );
                         break;
                     case "MasterMute":
-                        MasterMute = int.Parse( spl[1] );
+                        MasterMute = PortUtil.parseInt( spl[1] );
                         break;
                     case "OutputMode":
-                        OutputMode = int.Parse( spl[1] );
+                        OutputMode = PortUtil.parseInt( spl[1] );
                         break;
                     case "Tracks":
-                        tracks = int.Parse( spl[1] );
+                        tracks = PortUtil.parseInt( spl[1] );
                         break;
                     default:
                         if ( spl[0].StartsWith( "Feder" ) ||
@@ -118,28 +119,28 @@ namespace Boare.Lib.Vsq {
             for ( int i = 0; i < tracks; i++ ) {
                 Slave.add( new VsqMixerEntry( 0, 0, 0, 0 ) );
             }
-            spl = buffer.Split( new String[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries );
+            spl = PortUtil.splitString( buffer, new String[] { Environment.NewLine }, true );
             String[] spl2;
             for ( int i = 0; i < spl.Length; i++ ) {
                 String ind = "";
                 int index;
-                spl2 = spl[i].Split( new char[] { '=' } );
+                spl2 = PortUtil.splitString( spl[i], new char[] { '=' } );
                 if ( spl2[0].StartsWith( "Feder" ) ) {
                     ind = spl2[0].Replace( "Feder", "" );
-                    index = int.Parse( ind );
-                    Slave.get( index ).Feder = int.Parse( spl2[1] );
+                    index = PortUtil.parseInt( ind );
+                    Slave.get( index ).Feder = PortUtil.parseInt( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Panpot" ) ) {
                     ind = spl2[0].Replace( "Panpot", "" );
-                    index = int.Parse( ind );
-                    Slave.get( index ).Panpot = int.Parse( spl2[1] );
+                    index = PortUtil.parseInt( ind );
+                    Slave.get( index ).Panpot = PortUtil.parseInt( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Mute" ) ) {
                     ind = spl2[0].Replace( "Mute", "" );
-                    index = int.Parse( ind );
-                    Slave.get( index ).Mute = int.Parse( spl2[1] );
+                    index = PortUtil.parseInt( ind );
+                    Slave.get( index ).Mute = PortUtil.parseInt( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Solo" ) ) {
                     ind = spl2[0].Replace( "Solo", "" );
-                    index = int.Parse( ind );
-                    Slave.get( index ).Solo = int.Parse( spl2[1] );
+                    index = PortUtil.parseInt( ind );
+                    Slave.get( index ).Solo = PortUtil.parseInt( spl2[1] );
                 }
 
             }
@@ -215,29 +216,29 @@ namespace Boare.Lib.Vsq {
             String last_line = "";
             VsqMixer vsqMixer = new VsqMixer( sr, ref last_line );
 
-            if( vsqMixer.MasterFeder == 12 &&
+            if ( vsqMixer.MasterFeder == 12 &&
                 vsqMixer.MasterPanpot == 13 &&
                 vsqMixer.MasterMute == 14 &&
                 vsqMixer.OutputMode == 15 &&
-                vsqMixer.Slave.size() == 8 ){
-                for( int i = 0; i < vsqMixer.Slave.size(); i++ ){
+                vsqMixer.Slave.size() == 8 ) {
+                for ( int i = 0; i < vsqMixer.Slave.size(); i++ ) {
                     int start = 4 * i;
                     if ( vsqMixer.Slave.get( i ).Feder != start + 1 ||
                         vsqMixer.Slave.get( i ).Panpot != start + 2 ||
                         vsqMixer.Slave.get( i ).Mute != start + 3 ||
                         vsqMixer.Slave.get( i ).Solo != start + 4 ) {
                         sr.close();
-                        File.Delete( fpath );
+                        PortUtil.deleteFile( fpath );
                         return false;
                     }
                 }
-            }else{
+            } else {
                 sr.close();
-                File.Delete( fpath );
+                PortUtil.deleteFile( fpath );
                 return false;
             }
             sr.close();
-            File.Delete( fpath );
+            PortUtil.deleteFile( fpath );
             return true;
         }
     }

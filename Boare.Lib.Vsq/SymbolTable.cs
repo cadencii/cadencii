@@ -484,7 +484,7 @@ namespace Boare.Lib.Vsq {
             // 辞書フォルダからの読込み
             String editor_path = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID2 );
             if ( editor_path != "" ) {
-                String path = Path.Combine( Path.GetDirectoryName( editor_path ), "UDIC" );
+                String path = PortUtil.combinePath( Path.GetDirectoryName( editor_path ), "UDIC" );
                 if ( !Directory.Exists( path ) ) {
                     return;
                 }
@@ -495,13 +495,13 @@ namespace Boare.Lib.Vsq {
                     Console.WriteLine( "    files[i]=" + files[i] );
 #endif
                     count++;
-                    String dict = Path.Combine( path, files[i] );
+                    String dict = PortUtil.combinePath( path, files[i] );
                     s_table.Add( count, new SymbolTable( dict, true, false ) );
                 }
             }
 
             // 起動ディレクトリ
-            String path2 = Path.Combine( Application.StartupPath, "udic" );
+            String path2 = PortUtil.combinePath( Application.StartupPath, "udic" );
             if ( Directory.Exists( path2 ) ) {
                 String[] files2 = Directory.GetFiles( path2, "*.eudc" );
                 for ( int i = 0; i < files2.Length; i++ ) {
@@ -510,7 +510,7 @@ namespace Boare.Lib.Vsq {
                     Console.WriteLine( "    files2[i]=" + files2[i] );
 #endif
                     count++;
-                    String dict = Path.Combine( path2, files2[i] );
+                    String dict = PortUtil.combinePath( path2, files2[i] );
                     s_table.Add( count, new SymbolTable( dict, false, false ) );
                 }
             }
@@ -597,7 +597,7 @@ namespace Boare.Lib.Vsq {
         public SymbolTable( String path, boolean is_udc_mode, boolean enabled ) {
             m_dict = new TreeMap<String, String>();
             m_enabled = enabled;
-            if ( !File.Exists( path ) ) {
+            if ( !PortUtil.isFileExists( path ) ) {
                 return;
             }
             m_name = Path.GetFileName( path );
@@ -620,7 +620,7 @@ namespace Boare.Lib.Vsq {
                 while ( peek >= 0 ) {
                     line = (is_udc_mode) ? sr1.ReadLine() : sr2.ReadLine();
                     if ( !line.StartsWith( "//" ) ) {
-                        String[] spl = line.Split( "\t".ToCharArray(), 2, StringSplitOptions.RemoveEmptyEntries );
+                        String[] spl = PortUtil.splitString( line, new String[]{ "\t" }, 2, true );
                         if ( spl.Length >= 2 ) {
                             if ( m_dict.containsKey( spl[0] ) ) {
                                 bocoree.debug.push_log( "SymbolTable..ctor" );

@@ -478,7 +478,7 @@ namespace Boare.Lib.Vsq {
                                 line = line.Substring( second_colon + 1 );
                                 line = line.Replace( "\\n", "\n" );
                                 //line = line.Replace( "\n", Environment.NewLine );
-                                String[] lines = line.Split( '\n' );
+                                String[] lines = PortUtil.splitString( line, '\n' );
                                 int c = lines.Length;
                                 for ( int j = 0; j < c; j++ ) {
                                     if ( j < c - 1 ) {

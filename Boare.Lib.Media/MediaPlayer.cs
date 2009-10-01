@@ -229,7 +229,7 @@ namespace Boare.Lib.Media {
                 Close();
             }
             this.m_filename = filename;
-            m_alias = bocoree.misc.getmd5( m_filename );
+            m_alias = bocoree.Misc.getmd5( m_filename );
 #if DEBUG
             Console.WriteLine( "    m_alias=" + m_alias );
 #endif

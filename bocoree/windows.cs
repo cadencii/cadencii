@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * windows.cs
  * Copyright (c) 2008-2009 kbinani
  *
@@ -200,3 +201,4 @@ namespace bocoree {
         public string szTypeName;
     }
 }
+#endif

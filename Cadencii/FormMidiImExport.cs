@@ -37,7 +37,7 @@ namespace Boare.Cadencii {
             InitializeComponent();
             ApplyLanguage();
             Mode = FormMidiMode.Export;
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public void ApplyLanguage() {

@@ -86,7 +86,7 @@ namespace Boare.Cadencii {
             this.txtVibratoLength.TextChanged += new System.EventHandler( txtVibratoLength_TextChanged );
 
             m_note_length = note_length;
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public void ApplyLanguage() {

@@ -19,7 +19,7 @@ public class Misc{
     /**
      * 先頭と末尾の空要素を無視せずに，文字列itemをsplitterで区切ります．
      */
-    public static String[] splitString( String item, String splitter ){
+    public static String[] splitString( String item, String[] splitter ){
         Vector<String> ret = new Vector<String>();
         String remain = item;
         int len = splitter.length();

@@ -56,4 +56,6 @@ namespace Boare.Lib.Vsq {
         }
     }
 
+#if !JAVA
 }
+#endif

@@ -1,22 +1,23 @@
 ﻿/*
- * VsqMetaText/Lyric.cs
- * Copyright (c) 2008-2009 kbinani
- *
- * This file is part of Boare.Lib.Vsq.
- *
- * Boare.Lib.Vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
- *
- * Boare.Lib.Vsq is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- */
+* VsqMetaText/Lyric.cs
+* Copyright (c) 2008-2009 kbinani
+*
+* This file is part of Boare.Lib.Vsq.
+*
+* Boare.Lib.Vsq is free software; you can redistribute it and/or
+* modify it under the terms of the BSD License.
+*
+* Boare.Lib.Vsq is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
 
+using Boare.Lib.Vsq;
 using bocoree;
 
 namespace Boare.Lib.Vsq {
@@ -85,7 +86,7 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         public void setPhoneticSymbol( String value ) {
             String s = value.Replace( "  ", " " );
-            m_phonetic_symbol = s.Split( " ".ToCharArray(), 16 );
+            m_phonetic_symbol = PortUtil.splitString( s, new char[]{ ' ' }, 16 );
             for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
                 m_phonetic_symbol[i] = m_phonetic_symbol[i].Replace( @"\\", @"\" );
             }
@@ -124,7 +125,7 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         /// <param name="_line">生成元の文字列</param>
         public Lyric( String _line ) {
-            String[] spl = _line.Split( new char[] { ',' } );
+            String[] spl = PortUtil.splitString( _line, ',' );
             int c_length = spl.Length - 3;
             if ( spl.Length < 4 ) {
                 Phrase = "a";
@@ -147,7 +148,7 @@ namespace Boare.Lib.Vsq {
                     symbols = symbols.Substring( 0, symbols.Length - 1 );
                 }
                 setPhoneticSymbol( symbols );
-                UnknownFloat = float.Parse( spl[2] );
+                UnknownFloat = PortUtil.parseFloat( spl[2] );
                 PhoneticSymbolProtected = (spl[spl.Length - 1].Equals( "0" )) ? false : true;
             }
         }

@@ -970,7 +970,7 @@ namespace Boare.Cadencii {
                         continue;
                     }
                     String file = Path.Combine( tmppath, track + ".wav" );
-                    if ( !File.Exists( file ) ) {
+                    if ( !PortUtil.isFileExists( file ) ) {
                         render_all.add( track );
                     }
                 }
@@ -2962,8 +2962,8 @@ namespace Boare.Cadencii {
             String log = Path.Combine( tempdir, "run.log" );
             bocoree.debug.close();
             try {
-                if ( File.Exists( log ) ) {
-                    File.Delete( log );
+                if ( PortUtil.isFileExists( log ) ) {
+                    PortUtil.deleteFile( log );
                 }
                 Directory.Delete( tempdir, true );
             } catch ( Exception ex ) {
@@ -3148,7 +3148,7 @@ namespace Boare.Cadencii {
             Refresh();
 #if DEBUG
             //VocaloSysUtil_DRAFT.getLanguageFromName( "" );
-            ExpressionConfigSys exp_config_sys = new ExpressionConfigSys( @"C:\Program Files\VOCALOID2\expdbdir" );
+            /*ExpressionConfigSys exp_config_sys = new ExpressionConfigSys( @"C:\Program Files\VOCALOID2\expdbdir" );
             Console.WriteLine( "vibrato:" );
             for ( Iterator itr = exp_config_sys.vibratoConfigIterator(); itr.hasNext(); ) {
                 VibratoConfig vc = (VibratoConfig)itr.next();
@@ -3183,7 +3183,7 @@ namespace Boare.Cadencii {
                 UtauFreq uf = UtauFreq.FromFrq( @"C:\あ_wav.frq" );
                 uf.Write( new FileStream( @"C:\regenerated.frq", FileMode.Create, FileAccess.Write ) );
             } catch {
-            }
+            }*/
             menuHidden.Visible = true;
             /*using ( StreamWriter sw = new StreamWriter( Path.Combine( Application.StartupPath, "Keys.txt" ) ) ) {
                 foreach ( Keys key in Enum.GetValues( typeof( Keys ) ) ) {
@@ -4081,7 +4081,6 @@ namespace Boare.Cadencii {
                     RandomAccessFile fs = null;
                     try {
                         fs = new RandomAccessFile( saveMidiDialog.FileName, "rw" );
-                        //using ( FileStream fs = new FileStream( saveMidiDialog.FileName, FileMode.Create ) ) {
                         // ヘッダー
                         fs.write( new byte[] { 0x4d, 0x54, 0x68, 0x64 }, 0, 4 );
                         //データ長
@@ -4274,6 +4273,7 @@ namespace Boare.Cadencii {
                             fs.seek( pos );
                         }
                     } catch ( Exception ex ) {
+                    } finally {
                         if ( fs != null ) {
                             try {
                                 fs.close();
@@ -6249,7 +6249,7 @@ namespace Boare.Cadencii {
         #region menuHelp
         private void menuHelpAbout_Click( object sender, EventArgs e ) {
             String version_str = AppManager.getVersion() + "\n\n" +
-                                 AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.AppUtil.Misc ) ) + "\n" +
+                                 AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.AppUtil.Util ) ) + "\n" +
                                  AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.Media.Wave ) ) + "\n" +
                                  AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.Vsq.VsqFile ) ) + "\n" +
                                  AppManager.getAssemblyNameAndFileVersion( typeof( bocoree.math ) /*) + "\n" +
@@ -6561,7 +6561,7 @@ namespace Boare.Cadencii {
             Vector<Integer> t = new Vector<Integer>( tracks );
             if ( t.contains( AppManager.getSelected() ) ) {
                 String file = Path.Combine( AppManager.getTempWaveDir(), AppManager.getSelected() + ".wav" );
-                if ( File.Exists( file ) ) {
+                if ( PortUtil.isFileExists( file ) ) {
                     Thread loadwave_thread = new Thread( new ParameterizedThreadStart( this.LoadWaveThreadProc ) );
                     loadwave_thread.IsBackground = true;
                     loadwave_thread.Start( file );
@@ -6577,7 +6577,7 @@ namespace Boare.Cadencii {
             if ( menuVisualWaveform.Checked ) {
                 waveView.Clear();
                 String file = Path.Combine( AppManager.getTempWaveDir(), selected + ".wav" );
-                if ( File.Exists( file ) ) {
+                if ( PortUtil.isFileExists( file ) ) {
                     Thread load_wave = new Thread( new ParameterizedThreadStart( this.LoadWaveThreadProc ) );
                     load_wave.IsBackground = true;
                     load_wave.Start( (object)file );
@@ -7645,11 +7645,13 @@ namespace Boare.Cadencii {
         private void stripDDBtnSpeedTextbox_KeyDown( object sender, KeyEventArgs e ) {
             if ( e.KeyCode == Keys.Enter ) {
                 float v;
-                if ( float.TryParse( stripDDBtnSpeedTextbox.Text, out v ) ) {
+                try {
+                    v = PortUtil.parseFloat( stripDDBtnSpeedTextbox.Text );
                     changeRealtimeInputSpeed( v / 100.0f );
                     AppManager.editorConfig.RealtimeInputSpeed = v / 100.0f;
                     stripDDBtnSpeed.HideDropDown();
                     UpdateStripDDBtnSpeed();
+                } catch ( Exception ex ) {
                 }
             }
         }
@@ -7689,7 +7691,7 @@ namespace Boare.Cadencii {
 
         private void menuSettingUtauVoiceDB_Click( object sender, EventArgs e ) {
             String edit_oto_ini = Path.Combine( Application.StartupPath, "EditOtoIni.exe" );
-            if ( !File.Exists( edit_oto_ini ) ) {
+            if ( !PortUtil.isFileExists( edit_oto_ini ) ) {
                 return;
             }
 

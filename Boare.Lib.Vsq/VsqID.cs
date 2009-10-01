@@ -1,22 +1,23 @@
 ﻿/*
- * VsqMetaText/ID.cs
- * Copyright (c) 2008-2009 kbinani
- *
- * This file is part of Boare.Lib.Vsq.
- *
- * Boare.Lib.Vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
- *
- * Boare.Lib.Vsq is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- */
+* VsqMetaText/ID.cs
+* Copyright (c) 2008-2009 kbinani
+*
+* This file is part of Boare.Lib.Vsq.
+*
+* Boare.Lib.Vsq is free software; you can redistribute it and/or
+* modify it under the terms of the BSD License.
+*
+* Boare.Lib.Vsq is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
 using bocoree;
+using Boare.Lib.Vsq;
 
 namespace Boare.Lib.Vsq {
 
@@ -141,7 +142,7 @@ namespace Boare.Lib.Vsq {
             this.VibratoDelay = 0;
             last_line = sr.readLine();
             while ( !last_line.StartsWith( "[" ) ) {
-                spl = last_line.Split( new char[] { '=' } );
+                spl = PortUtil.splitString( last_line, new char[] { '=' } );
                 switch ( spl[0] ) {
                     case "Type":
                         if ( spl[1].Equals( "Anote" ) ) {
@@ -153,25 +154,25 @@ namespace Boare.Lib.Vsq {
                         }
                         break;
                     case "Length":
-                        this.Length = int.Parse( spl[1] );
+                        this.Length = PortUtil.parseInt( spl[1] );
                         break;
                     case "Note#":
-                        this.Note = int.Parse( spl[1] );
+                        this.Note = PortUtil.parseInt( spl[1] );
                         break;
                     case "Dynamics":
-                        this.Dynamics = int.Parse( spl[1] );
+                        this.Dynamics = PortUtil.parseInt( spl[1] );
                         break;
                     case "PMBendDepth":
-                        this.PMBendDepth = int.Parse( spl[1] );
+                        this.PMBendDepth = PortUtil.parseInt( spl[1] );
                         break;
                     case "PMBendLength":
-                        this.PMBendLength = int.Parse( spl[1] );
+                        this.PMBendLength = PortUtil.parseInt( spl[1] );
                         break;
                     case "DEMdecGainRate":
-                        this.DEMdecGainRate = int.Parse( spl[1] );
+                        this.DEMdecGainRate = PortUtil.parseInt( spl[1] );
                         break;
                     case "DEMaccent":
-                        this.DEMaccent = int.Parse( spl[1] );
+                        this.DEMaccent = PortUtil.parseInt( spl[1] );
                         break;
                     case "LyricHandle":
                         this.LyricHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
@@ -183,10 +184,10 @@ namespace Boare.Lib.Vsq {
                         this.VibratoHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
                         break;
                     case "VibratoDelay":
-                        this.VibratoDelay = int.Parse( spl[1] );
+                        this.VibratoDelay = PortUtil.parseInt( spl[1] );
                         break;
                     case "PMbPortamentoUse":
-                        PMbPortamentoUse = int.Parse( spl[1] );
+                        PMbPortamentoUse = PortUtil.parseInt( spl[1] );
                         break;
                     case "NoteHeadHandle":
                         NoteHeadHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
@@ -207,17 +208,17 @@ namespace Boare.Lib.Vsq {
                     ret += ", Length=" + Length;
                     ret += ", Note#=" + Note;
                     ret += ", Dynamics=" + Dynamics;
-                    ret += ", PMBendDepth=" + PMBendDepth ;
-                    ret += ", PMBendLength=" + PMBendLength ;
-                    ret += ", PMbPortamentoUse=" + PMbPortamentoUse ;
-                    ret += ", DEMdecGainRate=" + DEMdecGainRate ;
-                    ret += ", DEMaccent=" + DEMaccent ;
+                    ret += ", PMBendDepth=" + PMBendDepth;
+                    ret += ", PMBendLength=" + PMBendLength;
+                    ret += ", PMbPortamentoUse=" + PMbPortamentoUse;
+                    ret += ", DEMdecGainRate=" + DEMdecGainRate;
+                    ret += ", DEMaccent=" + DEMaccent;
                     if ( LyricHandle != null ) {
-                        ret += ", LyricHandle=h#" + LyricHandle_index.ToString( "0000" ) ;
+                        ret += ", LyricHandle=h#" + LyricHandle_index.ToString( "0000" );
                     }
                     if ( VibratoHandle != null ) {
                         ret += ", VibratoHandle=h#" + VibratoHandle_index.ToString( "0000" );
-                        ret += ", VibratoDelay=" + VibratoDelay ;
+                        ret += ", VibratoDelay=" + VibratoDelay;
                     }
                     break;
                 case VsqIDType.Singer:
@@ -302,9 +303,10 @@ namespace Boare.Lib.Vsq {
                     result = false;
                 }
             }
-            File.Delete( fpath );
+            PortUtil.deleteFile( fpath );
             return result;
         }
 
     }
+
 }

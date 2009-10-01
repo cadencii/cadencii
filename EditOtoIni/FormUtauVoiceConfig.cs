@@ -201,9 +201,9 @@ namespace Boare.EditOtoIni {
         public void ApplyFont( Font font ) {
             this.Font = font;
             foreach ( Control c in this.Controls ) {
-                Misc.ApplyFontRecurse( c, font );
+                Util.ApplyFontRecurse( c, font );
             }
-            Misc.ApplyToolStripFontRecurse( menuFile, font );
+            Util.ApplyToolStripFontRecurse( menuFile, font );
         }
 
         private void HoverWaitThread(){
@@ -318,7 +318,7 @@ namespace Boare.EditOtoIni {
             }
             m_drawer.clear();
 
-            if ( !File.Exists( oto_ini_path ) ) {
+            if ( !PortUtil.isFileExists( oto_ini_path ) ) {
                 return;
             }
 
@@ -343,7 +343,7 @@ namespace Boare.EditOtoIni {
                     String ext = Path.GetExtension( file ).Replace( ".", "" );
                     String f2 = wave_name + "_" + ext + ".frq"; // f.Replace( ".wav", "_wav.frq" );
                     String freq = Path.Combine( dir, f2 );
-                    boolean freq_exists = File.Exists( freq );
+                    boolean freq_exists = PortUtil.isFileExists( freq );
                     if ( freq_exists ) {
                         wdc.Freq = Boare.Cadencii.UtauFreq.FromFrq( freq );
                     }
@@ -352,12 +352,12 @@ namespace Boare.EditOtoIni {
                     columns.insertElementAt( f, 0 );
                     columns.add( freq_exists ? "○" : "" );
                     String stf = Path.Combine( Path.Combine( dir, "analyzed" ), wave_name + ".stf" );
-                    boolean stf_exists = File.Exists( stf );
+                    boolean stf_exists = PortUtil.isFileExists( stf );
                     columns.add( stf_exists ? "○" : "" );
                     Boare.Cadencii.BSimpleDelegate<Boare.Cadencii.ValuePair<boolean, String[]>> deleg =
                         new Boare.Cadencii.BSimpleDelegate<Boare.Cadencii.ValuePair<boolean, String[]>>( AddItem );
                     this.Invoke( deleg,
-                                 new Boare.Cadencii.ValuePair<boolean, String[]>( File.Exists( file ),
+                                 new Boare.Cadencii.ValuePair<boolean, String[]>( PortUtil.isFileExists( file ),
                                                                                   columns.toArray( new String[] { } ) ) );
                 }
             }
@@ -504,7 +504,7 @@ namespace Boare.EditOtoIni {
                 e.Graphics.DrawString( m_file, font, Brushes.Black, new PointF( 1, LINE_HEIGHT ) );
 
                 if ( font.Name != m_font_name || font.SizeInPoints != m_font_size ) {
-                    m_font_draw_offset = Misc.GetStringDrawOffset( font ) - 1;
+                    m_font_draw_offset = Util.GetStringDrawOffset( font ) - 1;
                     m_font_name = font.Name;
                     m_font_size = font.SizeInPoints;
                 }
@@ -589,7 +589,7 @@ namespace Boare.EditOtoIni {
                     s = _( "Overlap" ) + ": " + m_overlap + " ms";
                     break;
             }
-            SizeF size = Misc.MeasureString( s, font );
+            SizeF size = Util.MeasureString( s, font );
             return new Rectangle( x, LINE_HEIGHT * (i + 2), (int)(size.Width * 1.1f), (int)(size.Height * 1.1f) );
         }
 
@@ -661,7 +661,7 @@ namespace Boare.EditOtoIni {
 
                 if ( 0 <= m_index && m_index < listFiles.Items.Count ){
                     String file = Path.Combine( Path.GetDirectoryName( m_oto_ini ), listFiles.Items[m_index].SubItems[0].Text );
-                    if ( File.Exists( file ) && m_player.SoundLocation != file ) {
+                    if ( PortUtil.isFileExists( file ) && m_player.SoundLocation != file ) {
                         m_player.Close();
                         m_player.Load( file );
                     }
@@ -936,7 +936,7 @@ namespace Boare.EditOtoIni {
         private void FormUtauVoiceConfig_Load( object sender, EventArgs e ) {
             FormConfigUtauVoiceConfig config = null;
             String config_path = Path.Combine( getApplicationDataPath(), "config.xml" );
-            if ( File.Exists( config_path ) ) {
+            if ( PortUtil.isFileExists( config_path ) ) {
                 using ( FileStream fs = new FileStream( config_path, FileMode.Open, FileAccess.Read ) ) {
                     XmlSerializer xs = new XmlSerializer( typeof( FormConfigUtauVoiceConfig ) );
                     try {
@@ -961,7 +961,7 @@ namespace Boare.EditOtoIni {
                 return;
             }
             String path_config_cadencii = Path.Combine( dir2, "config.xml" );
-            if ( !File.Exists( path_config_cadencii ) ) {
+            if ( !PortUtil.isFileExists( path_config_cadencii ) ) {
                 return;
             }
             Boare.Cadencii.EditorConfig cadencii_config = null;
@@ -1030,7 +1030,7 @@ namespace Boare.EditOtoIni {
                 ListViewItem item = listFiles.Items[i];
                 String wav_name = item.SubItems[0].Text;
                 String stf_path = Path.Combine( analyzed, Path.GetFileNameWithoutExtension( wav_name ) + ".stf" );
-                item.SubItems[8].Text = File.Exists( stf_path ) ? "○" : "";
+                item.SubItems[8].Text = PortUtil.isFileExists( stf_path ) ? "○" : "";
             }
         }
 
@@ -1044,7 +1044,7 @@ namespace Boare.EditOtoIni {
                 ListViewItem item = listFiles.Items[i];
                 String wav_name = item.SubItems[0].Text;
                 String frq_path = Path.Combine( dir, wav_name.Replace( ".", "_" ) + ".frq" );
-                item.SubItems[7].Text = File.Exists( frq_path ) ? "○" : "";
+                item.SubItems[7].Text = PortUtil.isFileExists( frq_path ) ? "○" : "";
             }
         }
 
@@ -1058,13 +1058,13 @@ namespace Boare.EditOtoIni {
             String dir = Path.GetDirectoryName( m_oto_ini );
             String analyzed = Path.Combine( dir, "analyzed" );
             String wav_path = Path.Combine( dir, m_file );
-            if ( !File.Exists( wav_path ) ) {
+            if ( !PortUtil.isFileExists( wav_path ) ) {
                 return;
             }
             String stf_path = Path.Combine( analyzed, Path.GetFileNameWithoutExtension( m_file ) + ".stf" );
-            if ( File.Exists( stf_path ) ) {
+            if ( PortUtil.isFileExists( stf_path ) ) {
                 try {
-                    File.Delete( stf_path );
+                    PortUtil.deleteFile( stf_path );
                 } catch ( Exception ex ) {
                 }
             }
@@ -1090,13 +1090,13 @@ namespace Boare.EditOtoIni {
             }
             String dir = Path.GetDirectoryName( m_oto_ini );
             String wav_path = Path.Combine( dir, m_file );
-            if ( !File.Exists( wav_path ) ) {
+            if ( !PortUtil.isFileExists( wav_path ) ) {
                 return;
             }
             String frq_path = Path.Combine( dir, m_file.Replace( ".", "_" ) + ".frq" );
-            if ( File.Exists( frq_path ) ) {
+            if ( PortUtil.isFileExists( frq_path ) ) {
                 try {
-                    File.Delete( frq_path );
+                    PortUtil.deleteFile( frq_path );
                 } catch ( Exception ex ) {
                 }
             }

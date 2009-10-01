@@ -15,12 +15,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Windows.Forms;
 
 using bocoree;
 using Boare.Lib.Media;
-using Boare.Lib.AppUtil;
 using VstSdk;
 
 namespace Boare.Cadencii {
@@ -97,9 +94,7 @@ namespace Boare.Cadencii {
         int g_numTempoList;
         boolean g_cancelRequired;
         double g_progress;
-        double m_running_rate;
-        DateTime m_started_date;
-        IntPtr m_ptr_aeffect;
+
 
         /// <summary>
         /// 指定したタイムコードにおける，曲頭から測った時間を調べる
@@ -149,10 +144,6 @@ namespace Boare.Cadencii {
             s_instance.s_first_buffer_written_callback();
         }
 
-        private static String _( String id ) {
-            return Messaging.GetMessage( id );
-        }
-
         public boolean Init( char[] dll_path, int block_size, int sample_rate ) {
 #if DEBUG
             bocoree.debug.push_log( "vstidrv.Init" );
@@ -190,20 +181,9 @@ namespace Boare.Cadencii {
                 s_audio_master = new audioMasterCallback( AudioMaster );
                 System.Threading.Thread.Sleep( 250 );
 
-                m_ptr_aeffect = IntPtr.Zero;
+                IntPtr ptr_aeffect = IntPtr.Zero;
                 try {
-                    Thread th = new Thread( new ThreadStart( invokeVstiMainDelegate ) );
-                    th.Start();
-                    Thread.Sleep( 500 );
-                    if ( m_ptr_aeffect == IntPtr.Zero ) {
-                        int wait_seconds = 20;
-                        Thread.Sleep( wait_seconds * 1000 );
-                        th.Abort();
-                        MessageBox.Show( string.Format( _( "DLL '{0}' did not respond in {1} seconds." ), str, wait_seconds ), 
-                                         _( "Error" ), 
-                                         MessageBoxButtons.OK, 
-                                         MessageBoxIcon.Exclamation );
-                    }
+                    ptr_aeffect = s_main_delegate( s_audio_master );
                 } catch ( Exception ex ){
 #if TEST
                     AppManager.debugWriteLine( "    vstidrv.Init; invoking s_main_delegate; ex=" + ex );
@@ -212,11 +192,10 @@ namespace Boare.Cadencii {
 #if TEST
                 //bocoree.debug.push_log( "    s_aeffect=0x" + Convert.ToString( (int)(&s_aeffect), 16 ) );
 #endif
-                if ( m_ptr_aeffect == IntPtr.Zero ) {
-                    
+                if ( ptr_aeffect == IntPtr.Zero ) {
                     return false;
                 }
-                s_aeffect = (AEffect)Marshal.PtrToStructure( m_ptr_aeffect, typeof( AEffect ) );
+                s_aeffect = (AEffect)Marshal.PtrToStructure( ptr_aeffect, typeof( AEffect ) );
                 s_aeffect.Dispatch( ref s_aeffect, AEffectOpcodes.effOpen, 0, 0, (void*)0, 0 );
                 s_aeffect.Dispatch( ref s_aeffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)g_sample_rate );
                 s_aeffect.Dispatch( ref s_aeffect, AEffectOpcodes.effSetBlockSize, 0, g_block_size, (void*)0, 0 );
@@ -232,10 +211,6 @@ namespace Boare.Cadencii {
                 return false;
             }
             return true;
-        }
-
-        private void invokeVstiMainDelegate() {
-            m_ptr_aeffect = s_main_delegate( s_audio_master );
         }
 
         public int SendEvent( byte[] src, int[] deltaFrames/*, int numEvents*/, int targetTrack ) {
@@ -324,7 +299,6 @@ namespace Boare.Cadencii {
 #endif
             g_cancelRequired = false;
             g_progress = 0.0;
-            m_started_date = DateTime.Now;
 
             Vector<MIDI_EVENT> lpEvents = merge_events( s_track_events.get( 0 ), s_track_events.get( 1 ) );
             int current_count = -1;
@@ -564,8 +538,6 @@ namespace Boare.Cadencii {
                 dwPrev = dwNow;
                 dwNow = (int)current.clock;
                 g_progress = total_processed / (double)total_samples * 100.0;
-                double elapsed = DateTime.Now.Subtract( m_started_date ).TotalSeconds;
-                m_running_rate = g_progress / elapsed;
             }
 
             double msLast = msec_from_clock( dwNow );
@@ -634,20 +606,6 @@ namespace Boare.Cadencii {
 
         public double GetProgress() {
             return g_progress;
-        }
-
-        public double ComputeRemainingSeconds() {
-            double elapsed = GetElapsedSeconds();
-            double estimated = 100.0 / m_running_rate;
-            double draft = estimated - elapsed;
-            if ( draft < 0 ) {
-                draft = 0;
-            }
-            return draft;
-        }
-
-        public double GetElapsedSeconds() {
-            return DateTime.Now.Subtract( m_started_date ).TotalSeconds;
         }
 
         public void Terminate() {

@@ -16,7 +16,7 @@ package com.boare.vsq;
 #else
 using System;
 using System.Collections.Generic;
-using System.IO;
+//using System.IO;
 using System.Text;
 
 using bocoree;
@@ -25,70 +25,111 @@ namespace Boare.Lib.Vsq {
 #endif
 
     public class ExpressionConfigSys {
+#if JAVA
+        private final int MAX_VIBRATO = 0x400;
+#else
         private const int MAX_VIBRATO = 0x400;
+#endif
         private Vector<VibratoConfig> m_vibrato_configs;
         private Vector<AttackConfig> m_attack_configs;
 
         internal void printTo( String file ) {
-            using ( StreamWriter sw = new StreamWriter( file ) ) {
+            BufferedWriter sw = null;
+            try {
+                sw = new BufferedWriter( new FileWriter( file ) );
                 int count = 0;
                 for ( Iterator itr = m_vibrato_configs.iterator(); itr.hasNext(); ) {
                     count++;
                     VibratoConfig vconfig = (VibratoConfig)itr.next();
                     String name = "v" + count;
-                    sw.WriteLine( "VibratoConfig " + name + " = new VibratoConfig();" );
-                    sw.WriteLine( name + ".author = \"" + vconfig.author + "\";" );
-                    sw.WriteLine( name + ".file = \"" + vconfig.file + "\";" );
-                    sw.WriteLine( name + ".number = " + vconfig.number + ";" );
-                    sw.WriteLine( name + ".vendor = \"" + vconfig.vendor + "\";" );
-                    sw.WriteLine( name + ".contents.IconID = \"" + vconfig.contents.IconID + "\";" );
-                    sw.WriteLine( name + ".contents.IDS = \"" + vconfig.contents.IDS + "\";" );
-                    sw.WriteLine( name + ".contents.Original = " + vconfig.contents.Original + ";" );
-                    sw.WriteLine( name + ".contents.Caption = \"" + vconfig.contents.Caption + "\";" );
-                    sw.WriteLine( name + ".contents.Length = " + vconfig.contents.Length + ";" );
-                    sw.WriteLine( name + ".contents.StartDepth = " + vconfig.contents.StartDepth + ";" );
-                    sw.Write( name + ".contents.DepthBP = new VibratoBPList( new float[]{ " );
-                    for( int i = 0; i < vconfig.contents.DepthBP.getCount(); i++ ){
-                        sw.Write( ((i > 0) ? ", " : "") + vconfig.contents.DepthBP.getElement( i ).X + "f" );
+                    sw.write( "VibratoConfig " + name + " = new VibratoConfig();" );
+                    sw.newLine();
+                    sw.write( name + ".author = \"" + vconfig.author + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".file = \"" + vconfig.file + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".number = " + vconfig.number + ";" );
+                    sw.newLine();
+                    sw.write( name + ".vendor = \"" + vconfig.vendor + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.IconID = \"" + vconfig.contents.IconID + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.IDS = \"" + vconfig.contents.IDS + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.Original = " + vconfig.contents.Original + ";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.Caption = \"" + vconfig.contents.Caption + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.Length = " + vconfig.contents.Length + ";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.StartDepth = " + vconfig.contents.StartDepth + ";" );
+                    sw.write( name + ".contents.DepthBP = new VibratoBPList( new float[]{ " );
+                    for ( int i = 0; i < vconfig.contents.DepthBP.getCount(); i++ ) {
+                        sw.write( ((i > 0) ? ", " : "") + vconfig.contents.DepthBP.getElement( i ).X + "f" );
                     }
-                    sw.Write( " }, new int[]{ " );
-                    for ( int i = 0; i < vconfig.contents.DepthBP.getCount(); i++ ){
-                        sw.Write( ((i > 0) ? ", " : "") + vconfig.contents.DepthBP.getElement( i ).Y );
+                    sw.write( " }, new int[]{ " );
+                    for ( int i = 0; i < vconfig.contents.DepthBP.getCount(); i++ ) {
+                        sw.write( ((i > 0) ? ", " : "") + vconfig.contents.DepthBP.getElement( i ).Y );
                     }
-                    sw.WriteLine( " } );" );
-                    sw.WriteLine( name + ".contents.StartRate = " + vconfig.contents.StartRate + ";" );
-                    sw.Write( name + ".contents.RateBP = new VibratoBPList( new float[]{ " );
-                    for( int i = 0; i < vconfig.contents.RateBP.getCount(); i++ ){
-                        sw.Write( ((i > 0) ? ", " : "") + vconfig.contents.RateBP.getElement( i ).X + "f" );
+                    sw.write( " } );" );
+                    sw.newLine();
+                    sw.write( name + ".contents.StartRate = " + vconfig.contents.StartRate + ";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.RateBP = new VibratoBPList( new float[]{ " );
+                    for ( int i = 0; i < vconfig.contents.RateBP.getCount(); i++ ) {
+                        sw.write( ((i > 0) ? ", " : "") + vconfig.contents.RateBP.getElement( i ).X + "f" );
                     }
-                    sw.Write( " }, new int[]{ " );
-                    for ( int i = 0; i < vconfig.contents.RateBP.getCount(); i++ ){
-                        sw.Write( ((i > 0) ? ", " : "") + vconfig.contents.RateBP.getElement( i ).Y );
+                    sw.write( " }, new int[]{ " );
+                    for ( int i = 0; i < vconfig.contents.RateBP.getCount(); i++ ) {
+                        sw.write( ((i > 0) ? ", " : "") + vconfig.contents.RateBP.getElement( i ).Y );
                     }
-                    sw.WriteLine( " } );" );
-                    sw.WriteLine( "ret.m_vibrato_configs.add( " + name + " );" );
-                    sw.WriteLine();
+                    sw.write( " } );" );
+                    sw.newLine();
+                    sw.write( "ret.m_vibrato_configs.add( " + name + " );" );
+                    sw.newLine();
+                    sw.newLine();
                 }
-                count=0;
+                count = 0;
 
                 for ( Iterator itr = m_attack_configs.iterator(); itr.hasNext(); ) {
                     count++;
                     AttackConfig aconfig = (AttackConfig)itr.next();
                     String name = "a" + count;
-                    sw.WriteLine( "AttackConfig " + name + " = new AttackConfig();" );
-                    sw.WriteLine( name + ".author = \"" + aconfig.author + "\";" );
-                    sw.WriteLine( name + ".file = \"" + aconfig.file + "\";" );
-                    sw.WriteLine( name + ".number = " + aconfig.number + ";" );
-                    sw.WriteLine( name + ".vendor = \"" + aconfig.vendor + "\";" );
-                    sw.WriteLine( name + ".contents.IconID = \"" + aconfig.contents.IconID + "\";" );
-                    sw.WriteLine( name + ".contents.IDS = \"" + aconfig.contents.IDS + "\";" );
-                    sw.WriteLine( name + ".contents.Original = " + aconfig.contents.Original + ";" );
-                    sw.WriteLine( name + ".contents.Caption = \"" + aconfig.contents.Caption + "\";" );
-                    sw.WriteLine( name + ".contents.Length = " + aconfig.contents.Length + ";" );
-                    sw.WriteLine( name + ".contents.Duration = " + aconfig.contents.Duration + ";" );
-                    sw.WriteLine( name + ".contents.Depth = " + aconfig.contents.Depth + ";" );
-                    sw.WriteLine( "ret.m_attack_configs.add( " + name + " );" );
-                    sw.WriteLine();
+                    sw.write( "AttackConfig " + name + " = new AttackConfig();" );
+                    sw.newLine();
+                    sw.write( name + ".author = \"" + aconfig.author + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".file = \"" + aconfig.file + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".number = " + aconfig.number + ";" );
+                    sw.newLine();
+                    sw.write( name + ".vendor = \"" + aconfig.vendor + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.IconID = \"" + aconfig.contents.IconID + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.IDS = \"" + aconfig.contents.IDS + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.Original = " + aconfig.contents.Original + ";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.Caption = \"" + aconfig.contents.Caption + "\";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.Length = " + aconfig.contents.Length + ";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.Duration = " + aconfig.contents.Duration + ";" );
+                    sw.newLine();
+                    sw.write( name + ".contents.Depth = " + aconfig.contents.Depth + ";" );
+                    sw.newLine();
+                    sw.write( "ret.m_attack_configs.add( " + name + " );" );
+                    sw.newLine();
+                    sw.newLine();
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw != null ) {
+                    try {
+                        sw.close();
+                    } catch ( Exception ex2 ) {
+                    }
                 }
             }
         }
@@ -621,8 +662,8 @@ namespace Boare.Lib.Vsq {
         public ExpressionConfigSys( String path_expdb ) {
             m_vibrato_configs = new Vector<VibratoConfig>();
             m_attack_configs = new Vector<AttackConfig>();
-            String expression = Path.Combine( path_expdb, "expression.map" );
-            if ( !File.Exists( expression ) ) {
+            String expression = PortUtil.combinePath( path_expdb, "expression.map" );
+            if ( !PortUtil.isFileExists( expression ) ) {
 #if DEBUG
                 Console.WriteLine( "ExpressionConfigSys#.ctor; expression.map does not exist" );
 #endif
@@ -641,12 +682,12 @@ namespace Boare.Lib.Vsq {
                         continue;
                     }
 
-                    String ved = Path.Combine( path_expdb, "vexp" + value + ".ved" );
-                    if ( !File.Exists( ved ) ) {
+                    String ved = PortUtil.combinePath( path_expdb, "vexp" + value + ".ved" );
+                    if ( !PortUtil.isFileExists( ved ) ) {
                         continue;
                     }
-                    String vexp_dir = Path.Combine( path_expdb, "vexp" + value );
-                    if ( !Directory.Exists( vexp_dir ) ) {
+                    String vexp_dir = PortUtil.combinePath( path_expdb, "vexp" + value );
+                    if ( !PortUtil.isFileExists( vexp_dir ) ) {
                         continue;
                     }
 
@@ -662,12 +703,12 @@ namespace Boare.Lib.Vsq {
                         TransCodeUtil.decodeBytes( ref byte_ved );
                         String str = new String( Encoding.ASCII.GetChars( byte_ved ) );
 #if DEBUG
-                        String txt_file = Path.Combine( path_expdb, "vexp" + value + ".txt" );
-                        using ( StreamWriter sw = new StreamWriter( txt_file ) ) {
+                        String txt_file = PortUtil.combinePath( path_expdb, "vexp" + value + ".txt" );
+                        using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( txt_file ) ) {
                             sw.Write( str );
                         }
 #endif
-                        String[] spl = str.Split( new String[] { NL }, StringSplitOptions.RemoveEmptyEntries );
+                        String[] spl = PortUtil.splitString( str, new String[] { NL }, true );
                         String current_entry = "";
                         for ( int j = 0; j < spl.Length; j++ ) {
 #if DEBUG
@@ -680,41 +721,41 @@ namespace Boare.Lib.Vsq {
                                 continue;
                             }
                             if ( current_entry.Equals( "[VIBRATO]" ) ) {
-                                String[] spl2 = spl[j].Split( ',' );
+                                String[] spl2 = PortUtil.splitString( spl[j], ',' );
                                 if ( spl2.Length < 6 ) {
                                     continue;
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 VibratoConfig item = new VibratoConfig();
-                                item.number = int.Parse( spl2[0] );
+                                item.number = PortUtil.parseInt( spl2[0] );
                                 item.contents.IDS = spl2[2].Replace( "\"", "" );
                                 item.file = spl2[3].Replace( "\"", "" );
                                 item.contents.Caption = spl2[4].Replace( ":", " " ).Replace( "\"", "" );
                                 item.author = spl2[5].Replace( "\"", "" );
                                 item.vendor = spl2[6].Replace( "\"", "" );
                                 item.contents.IconID = "$0404" + string.Format( "{0:x4}", item.number );
-                                String aic_file = Path.Combine( vexp_dir, item.file );
-                                if ( !File.Exists( aic_file ) ) {
+                                String aic_file = PortUtil.combinePath( vexp_dir, item.file );
+                                if ( !PortUtil.isFileExists( aic_file ) ) {
                                     continue;
                                 }
                                 item.parseAic( aic_file );
                                 m_vibrato_configs.add( item );
                             } if ( current_entry.Equals( "[NOTEATTACK]" ) ) {
-                                String[] spl2 = spl[j].Split( ',' );
+                                String[] spl2 = PortUtil.splitString( spl[j], ',' );
                                 if ( spl2.Length < 6 ) {
                                     continue;
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 AttackConfig item = new AttackConfig();
-                                item.number = int.Parse( spl2[0] );
+                                item.number = PortUtil.parseInt( spl2[0] );
                                 item.contents.IDS = spl2[2].Replace( "\"", "" );
                                 item.file = spl2[3].Replace( "\"", "" );
                                 item.contents.Caption = spl2[4].Replace( ":", " " ).Replace( "\"", "" );
                                 item.author = spl2[5].Replace( "\"", "" );
                                 item.vendor = spl2[6].Replace( "\"", "" );
                                 item.contents.IconID = "$0101" + string.Format( "{0:x4}", item.number );
-                                String aic_file = Path.Combine( vexp_dir, item.file );
-                                if ( !File.Exists( aic_file ) ) {
+                                String aic_file = PortUtil.combinePath( vexp_dir, item.file );
+                                if ( !PortUtil.isFileExists( aic_file ) ) {
                                     continue;
                                 }
                                 item.parseAic( aic_file );

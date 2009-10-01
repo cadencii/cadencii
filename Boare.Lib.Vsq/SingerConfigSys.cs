@@ -13,7 +13,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 using bocoree;
 
@@ -33,8 +32,8 @@ namespace Boare.Lib.Vsq {
         public SingerConfigSys( String path_voicedb, String[] path_installed_singers ) {
             m_installed_singers = new Vector<SingerConfig>();
             m_singer_configs = new Vector<SingerConfig>();
-            String map = Path.Combine( path_voicedb, "voice.map" );
-            if ( !File.Exists( map ) ) {
+            String map = PortUtil.combinePath( path_voicedb, "voice.map" );
+            if ( !PortUtil.isFileExists( map ) ) {
                 return;
             }
             RandomAccessFile fs = null;
@@ -46,7 +45,7 @@ namespace Boare.Lib.Vsq {
                     fs.read( dat, 0, 8 );
                     ulong value = VocaloSysUtil.makelong_le( dat );
                     if ( value >= 1 ) {
-                        String vvd = Path.Combine( path_voicedb, "vvoice" + value + ".vvd" );
+                        String vvd = PortUtil.combinePath( path_voicedb, "vvoice" + value + ".vvd" );
                         SingerConfig item = SingerConfig.fromVvd( vvd, 0 );
                         item.Program = i;
 
@@ -61,7 +60,7 @@ namespace Boare.Lib.Vsq {
                         if ( original < 0 ) {
                             foreach ( String ipath in path_installed_singers ) {
                                 if ( ipath.EndsWith( item.VOICEIDSTR ) ) {
-                                    String[] vvds = Directory.GetFiles( ipath, "*.vvd" );
+                                    String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
                                     if ( vvds.Length > 0 ) {
                                         original = m_installed_singers.size();
                                         SingerConfig installed = SingerConfig.fromVvd( vvds[0], original );
@@ -78,6 +77,7 @@ namespace Boare.Lib.Vsq {
                     }
                 }
             } catch ( Exception ex ) {
+            } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();

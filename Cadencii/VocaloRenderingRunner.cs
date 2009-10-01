@@ -48,6 +48,8 @@ namespace Boare.Cadencii {
         /// menuFileExportWaveで出力した場合はtrue，そのほかの場合はキャッシュに書き込むので，falseにしておく．
         /// </summary>
         private bool m_reflect_amp_to_wave = false;
+        private DateTime m_started_date;
+        private double m_running_rate;
 
         public VocaloRenderingRunner( String renderer_,
                                 NrpnData[] nrpn_,
@@ -83,11 +85,17 @@ namespace Boare.Cadencii {
         }
 
         public double getElapsedSeconds() {
-            return driver.dllInstance.GetElapsedSeconds();
+            return DateTime.Now.Subtract( m_started_date ).TotalSeconds;
         }
 
         public double computeRemainingSeconds() {
-            return driver.dllInstance.ComputeRemainingSeconds();
+            double elapsed = getElapsedSeconds();
+            double estimated = 100.0 / m_running_rate;
+            double draft = estimated - elapsed;
+            if ( draft < 0 ) {
+                draft = 0;
+            }
+            return draft;
         }
 
         public void abortRendering() {
@@ -119,6 +127,7 @@ namespace Boare.Cadencii {
 #if DEBUG
             Console.WriteLine( "VocaloRenderingRunner#run" );
 #endif
+            m_started_date = DateTime.Now;
             if ( driver == null ) {
 #if DEBUG
                 Console.WriteLine( "VocaloRenderingRunner#run; error: driver is null" );

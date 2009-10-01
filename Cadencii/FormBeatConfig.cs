@@ -128,7 +128,7 @@ namespace Boare.Cadencii {
             } else {
                 numEnd.Value = bar_count;
             }
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
         
         private void chkEnd_CheckedChanged( object sender, EventArgs e ) {

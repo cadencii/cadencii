@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C8AAE632-9C6C-4372-8175-811528A66742}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -56,16 +56,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BufferedReader.cs" />
+    <Compile Include="BufferedWriter.cs" />
     <Compile Include="Collections.cs" />
     <Compile Include="cp932.cs" />
     <Compile Include="cp932reader.cs" />
     <Compile Include="cp932writer.cs" />
     <Compile Include="fft.cs" />
+    <Compile Include="File.cs" />
     <Compile Include="Graphics.cs" />
     <Compile Include="Iterator.cs" />
     <Compile Include="ListIterator.cs" />
     <Compile Include="math.cs" />
-    <Compile Include="misc.cs" />
+    <Compile Include="Misc.cs" />
+    <Compile Include="PortUtil.cs" />
     <Compile Include="RandomAccessFile.cs" />
     <Compile Include="TreeMap.cs" />
     <Compile Include="Vector.cs" />

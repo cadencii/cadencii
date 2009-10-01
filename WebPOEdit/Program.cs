@@ -417,7 +417,7 @@ namespace Boare.WebPOEdit {
                         mb0.Write( newpo );
                     }
 
-                    bool is_rtl = Misc.IsRightToLeftLanguage( lang );
+                    bool is_rtl = Util.IsRightToLeftLanguage( lang );
                     logger.WriteLine( DateTime.Now + " " + command0 + "; lang=" + lang + "; author=" + dec_b64( author ) );
 
                     print( "<title>" + project_name + "&nbsp;&gt;&gt;&nbsp;" + lang + "</title>" );

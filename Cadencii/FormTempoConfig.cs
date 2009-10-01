@@ -33,7 +33,7 @@ namespace Boare.Cadencii {
             numClock.Maximum = clock_max;
             numClock.Value = clock;
             numTempo.Value = tempo;
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public static String _( String id ) {

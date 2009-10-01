@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * cp932reader.cs
  * Copyright (c) 2009 kbinani
  *
@@ -108,3 +109,4 @@ namespace bocoree {
     }
 
 }
+#endif

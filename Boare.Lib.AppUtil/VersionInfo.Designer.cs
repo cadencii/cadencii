@@ -115,8 +115,8 @@ namespace Boare.Lib.AppUtil {
         public void ApplyLanguage() {
             string about = string.Format( _( "About {0}" ), m_app_name );
             string credit = _( "Credit" );
-            Size size1 = Misc.MeasureString( about, btnFlip.Font );
-            Size size2 = Misc.MeasureString( credit, btnFlip.Font );
+            Size size1 = Util.MeasureString( about, btnFlip.Font );
+            Size size2 = Util.MeasureString( credit, btnFlip.Font );
             m_button_width_about = Math.Max( 75, (int)(size1.Width * 1.3) );
             m_button_width_credit = Math.Max( 75, (int)(size2.Width * 1.3) );
             if( m_credit_mode ) {

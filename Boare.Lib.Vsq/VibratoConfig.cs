@@ -56,7 +56,7 @@ namespace Boare.Lib.Vsq {
                         continue;
                     }
 
-                    String[] spl = line.Split( new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries );
+                    String[] spl = PortUtil.splitString( line, new char[] { '=' }, true );
                     if ( spl.Length < 2 ) {
                         continue;
                     }
@@ -69,15 +69,15 @@ namespace Boare.Lib.Vsq {
                     } else if ( current_entry.Equals( "[Parameter]" ) ) {
                         if ( spl[0].Equals( "Length" ) ) {
                             try {
-                                this.contents.Length = int.Parse( spl[1] );
+                                this.contents.Length = PortUtil.parseInt( spl[1] );
                             } catch { }
                         } else if ( spl[0].Equals( "StartDepth" ) ) {
                             try {
-                                this.contents.StartDepth = int.Parse( spl[1] );
+                                this.contents.StartDepth = PortUtil.parseInt( spl[1] );
                             } catch { }
                         } else if ( spl[0].Equals( "DepthBPNum" ) ) {
                             try {
-                                depth_bpnum = int.Parse( spl[1] );
+                                depth_bpnum = PortUtil.parseInt( spl[1] );
                             } catch { }
                         } else if ( spl[0].Equals( "DepthBPX" ) ) {
                             depth_bpx = spl[1];
@@ -85,11 +85,11 @@ namespace Boare.Lib.Vsq {
                             depth_bpy = spl[1];
                         } else if ( spl[0].Equals( "StartRate" ) ) {
                             try {
-                                this.contents.StartRate = int.Parse( spl[1] );
+                                this.contents.StartRate = PortUtil.parseInt( spl[1] );
                             } catch { }
                         } else if ( spl[0].Equals( "RateBPNum" ) ) {
                             try {
-                                rate_bpnum = int.Parse( spl[1] );
+                                rate_bpnum = PortUtil.parseInt( spl[1] );
                             } catch { }
                         } else if ( spl[0].Equals( "RateBPX" ) ) {
                             rate_bpx = spl[1];
@@ -104,15 +104,15 @@ namespace Boare.Lib.Vsq {
 
                 // depth bp
                 if ( depth_bpnum > 0 && !depth_bpx.Equals( "" ) && !depth_bpy.Equals( "" ) ) {
-                    String[] bpx = depth_bpx.Split( ',' );
-                    String[] bpy = depth_bpy.Split( ',' );
+                    String[] bpx = PortUtil.splitString( depth_bpx, ',' );
+                    String[] bpy = PortUtil.splitString( depth_bpy, ',' );
                     if ( depth_bpnum == bpx.Length && depth_bpnum == bpy.Length ) {
                         float[] x = new float[depth_bpnum];
                         int[] y = new int[depth_bpnum];
                         try {
                             for ( int i = 0; i < depth_bpnum; i++ ) {
-                                x[i] = float.Parse( bpx[i] );
-                                y[i] = int.Parse( bpy[i] );
+                                x[i] = PortUtil.parseFloat( bpx[i] );
+                                y[i] = PortUtil.parseInt( bpy[i] );
                             }
                             this.contents.DepthBP = new VibratoBPList( x, y );
                         } catch { }
@@ -121,15 +121,15 @@ namespace Boare.Lib.Vsq {
 
                 // rate bp
                 if ( rate_bpnum > 0 && !rate_bpx.Equals( "" ) && !rate_bpy.Equals( "" ) ) {
-                    String[] bpx = rate_bpx.Split( ',' );
-                    String[] bpy = rate_bpy.Split( ',' );
+                    String[] bpx = PortUtil.splitString( rate_bpx, ',' );
+                    String[] bpy = PortUtil.splitString( rate_bpy, ',' );
                     if ( rate_bpnum == bpx.Length && rate_bpnum == bpy.Length ) {
                         float[] x = new float[rate_bpnum];
                         int[] y = new int[rate_bpnum];
                         try {
                             for ( int i = 0; i < rate_bpnum; i++ ) {
-                                x[i] = float.Parse( bpx[i] );
-                                y[i] = int.Parse( bpy[i] );
+                                x[i] = PortUtil.parseFloat( bpx[i] );
+                                y[i] = PortUtil.parseInt( bpy[i] );
                             }
                             this.contents.RateBP = new VibratoBPList( x, y );
                         } catch { }

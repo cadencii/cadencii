@@ -20,6 +20,8 @@ using bocoree;
 
 namespace Boare.Lib.Vsq{
 
+    using boolean = System.Boolean;
+
     public class UstFile : ICloneable {
         public object Tag;
         private float m_tempo = 120.00f;
@@ -62,7 +64,10 @@ namespace Boare.Lib.Vsq{
                         index = int.MinValue;
                     } else {
                         String s = line.Replace( "[#", "" ).Replace( "#", "" ).Trim();
-                        int.TryParse( s, out index );
+                        try {
+                            index = PortUtil.parseInt( s );
+                        } catch ( Exception ex ) {
+                        }
                     }
 #if DEBUG
                     bocoree.debug.push_log( "index=" + index );
@@ -75,14 +80,16 @@ namespace Boare.Lib.Vsq{
 #if DEBUG
                         Console.WriteLine( "line=" + line );
 #endif
-                        String[] spl = line.Split( "=".ToCharArray(), 2 );
+                        String[] spl = PortUtil.splitString( line, new char[]{ '=' }, 2 );
                         if ( type == 0 ) {
                             // reading "SETTING" section
                             if ( spl[0].Equals( "Tempo" ) ) {
                                 m_tempo = 125f;
                                 float v = 125f;
-                                if ( float.TryParse( spl[1], out v ) ) {
+                                try{
+                                    v = PortUtil.parseFloat( spl[1] );
                                     m_tempo = v;
+                                } catch( Exception ex ){
                                 }
                             } else if ( spl[0].Equals( "ProjectName" ) ) {
                                 m_project_name = spl[1];
@@ -102,43 +109,56 @@ namespace Boare.Lib.Vsq{
                             if ( spl[0].Equals( "Length" ) ) {
                                 ue.Length = 0;
                                 int v = 0;
-                                if ( int.TryParse( spl[1], out v ) ) {
+                                try {
+                                    v = PortUtil.parseInt( spl[1] );
                                     ue.Length = v;
+                                } catch ( Exception ex ) {
                                 }
                             } else if ( spl[0].Equals( "Lyric" ) ) {
                                 ue.Lyric = spl[1];
                             } else if ( spl[0].Equals( "NoteNum" ) ) {
                                 ue.Note = 0;
                                 int v = 0;
-                                if ( int.TryParse( spl[1], out v ) ) {
+                                try {
+                                    v = PortUtil.parseInt( spl[1] );
                                     ue.Note = v;
+                                } catch ( Exception ex ) {
                                 }
                             } else if ( spl[0].Equals( "Intensity" ) ) {
                                 ue.Intensity = 64;
                                 int v = 64;
-                                if ( int.TryParse( spl[1], out v ) ) {
+                                try {
+                                    v = PortUtil.parseInt( spl[1] );
                                     ue.Intensity = v;
+                                } catch ( Exception ex ) {
                                 }
                             } else if ( spl[0].Equals( "PBType" ) ) {
                                 ue.PBType = 5;
                                 int v = 5;
-                                if ( int.TryParse( spl[1], out v ) ) {
+                                try {
+                                    v = PortUtil.parseInt( spl[1] );
                                     ue.PBType = v;
+                                } catch ( Exception ex ) {
                                 }
                             } else if ( spl[0].Equals( "Piches" ) ) {
-                                String[] spl2 = spl[1].Split( ",".ToCharArray() );
+                                String[] spl2 = PortUtil.splitString( spl[1], ',' );
                                 float[] t = new float[spl2.Length];
                                 for ( int i = 0; i < spl2.Length; i++ ) {
                                     float v = 0;
-                                    float.TryParse( spl2[i], out v );
-                                    t[i] = v;
+                                    try {
+                                        v = PortUtil.parseFloat( spl2[i] );
+                                        t[i] = v;
+                                    } catch ( Exception ex ) {
+                                    }
                                 }
                                 ue.Pitches = t;
                             } else if ( spl[0].Equals( "Tempo" ) ) {
                                 ue.Tempo = 125f;
                                 float v;
-                                if ( float.TryParse( spl[1], out v ) ) {
+                                try {
+                                    v = PortUtil.parseFloat( spl[1] );
                                     ue.Tempo = v;
+                                } catch ( Exception ex ) {
                                 }
                             } else if ( spl[0].Equals( "VBR" ) ) {
                                 ue.Vibrato = new UstVibrato( line );
@@ -159,11 +179,11 @@ namespace Boare.Lib.Vsq{
                                 //VoiceOverlap=6
                             } else if ( spl[0].Equals( "VoiceOverlap" ) ) {
                                 if ( spl[1] != "" ) {
-                                    ue.VoiceOverlap = int.Parse( spl[1] );
+                                    ue.VoiceOverlap = PortUtil.parseInt( spl[1] );
                                 }
                             } else if ( spl[0].Equals( "PreUtterance" ) ) {
                                 if ( spl[1] != "" ) {
-                                    ue.PreUtterance = int.Parse( spl[1] );
+                                    ue.PreUtterance = PortUtil.parseInt( spl[1] );
                                 }
                             } else if ( spl[0].Equals( "Flags" ) ) {
                                 ue.Flags = line.Substring( 6 );
@@ -255,7 +275,7 @@ namespace Boare.Lib.Vsq{
                 clock += (int)m_tracks.get( 0 ).getEvent( i ).Length;
             }
 #if DEBUG
-            using ( StreamWriter sw = new StreamWriter( Path.Combine( System.Windows.Forms.Application.StartupPath, "ust_tempo_info.txt" ) ) ) {
+            using ( StreamWriter sw = new StreamWriter( PortUtil.combinePath( System.Windows.Forms.Application.StartupPath, "ust_tempo_info.txt" ) ) ) {
                 sw.WriteLine( "Clock\tTime\tTempo" );
                 for ( int i = 0; i < m_tempo_table.size(); i++ ) {
                     sw.WriteLine( m_tempo_table.get( i ).Clock + "\t" + m_tempo_table.get( i ).Time + "\t" + m_tempo_table.get( i ).Tempo );

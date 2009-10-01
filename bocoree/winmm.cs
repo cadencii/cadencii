@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * windows.cs
  * Copyright (c) 2009 kbinani
  *
@@ -793,3 +794,4 @@ namespace bocoree {
     }
 
 }
+#endif

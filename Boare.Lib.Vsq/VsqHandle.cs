@@ -1,228 +1,37 @@
 ﻿/*
- * VsqMetaText/Handle.cs
- * Copyright (c) 2008-2009 kbinani
- *
- * This file is part of Boare.Lib.Vsq.
- *
- * Boare.Lib.Vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
- *
- * Boare.Lib.Vsq is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- */
+* VsqMetaText/Handle.cs
+* Copyright (c) 2008-2009 kbinani
+*
+* This file is part of Boare.Lib.Vsq.
+*
+* Boare.Lib.Vsq is free software; you can redistribute it and/or
+* modify it under the terms of the BSD License.
+*
+* Boare.Lib.Vsq is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
+#if JAVA
+package com.boare.vsq;
+
+import com.boare;
+#else
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using Boare.Lib.Vsq;
 
 using bocoree;
 
 namespace Boare.Lib.Vsq {
-
     using boolean = System.Boolean;
-
-    [Serializable]
-    public class IconHandle : ICloneable {
-        public String Caption = "";
-        public String IconID = "";
-        public String IDS = "";
-        public int Index;
-        public int Length;
-        public int Original;
-        public int Program;
-        public int Language;
-
-        public IconHandle() {
-        }
-
-        public object Clone() {
-            IconHandle ret = new IconHandle();
-            ret.Caption = Caption;
-            ret.IconID = IconID;
-            ret.IDS = IDS;
-            ret.Index = Index;
-            ret.Language = Language;
-            ret.Length = Length;
-            ret.Original = Original;
-            ret.Program = Program;
-            return ret;
-        }
-
-        public VsqHandle castToVsqHandle() {
-            VsqHandle ret = new VsqHandle();
-            ret.m_type = VsqHandleType.Singer;
-            ret.Caption = Caption;
-            ret.IconID = IconID;
-            ret.IDS = IDS;
-            ret.Index = Index;
-            ret.Language = Language;
-            ret.Length = Length;
-            ret.Program = Program;
-            return ret;
-        }
-    }
-
-    [Serializable]
-    public class LyricHandle : ICloneable {
-        public Lyric L0;
-        public int Index;
-
-        public LyricHandle() {
-        }
-
-        /// <summary>
-        /// type = Lyric用のhandleのコンストラクタ
-        /// </summary>
-        /// <param name="phrase">歌詞</param>
-        /// <param name="phonetic_symbol">発音記号</param>
-        public LyricHandle( String phrase, String phonetic_symbol ) {
-            L0 = new Lyric( phrase, phonetic_symbol );
-        }
-
-        public object Clone() {
-            LyricHandle ret = new LyricHandle();
-            ret.Index = Index;
-            ret.L0 = (Lyric)L0.Clone();
-            return ret;
-        }
-
-        public VsqHandle castToVsqHandle() {
-            VsqHandle ret = new VsqHandle();
-            ret.m_type = VsqHandleType.Lyric;
-            ret.L0 = (Lyric)L0.Clone();
-            ret.Index = Index;
-            return ret;
-        }
-    }
-
-
-    [Serializable]
-    public class VibratoHandle : ICloneable {
-        public int StartDepth;
-        public VibratoBPList DepthBP;
-        public int StartRate;
-        public VibratoBPList RateBP;
-        public int Index;
-        public String IconID = "";
-        public String IDS = "";
-        public int Original;
-        public String Caption = "";
-        public int Length;
-
-        public VibratoHandle(){
-            StartRate = 64;
-            StartDepth = 64;
-            RateBP = new VibratoBPList();
-            DepthBP = new VibratoBPList();
-        }
-
-        public String getDisplayString() {
-            String s = IDS;
-            if ( !Caption.Equals( "" ) ) {
-                s += " (" + Caption + ")";
-            }
-            return s;
-        }
-
-        /*public static VibratoHandle[] fromVED( String ved_file, int original ){
-            
-        }*/
-
-        public object Clone() {
-            return clone();
-        }
-
-        public Object clone() {
-            VibratoHandle result = new VibratoHandle();
-            result.Index = Index;
-            result.IconID = IconID;
-            result.IDS = this.IDS;
-            result.Original = this.Original;
-            result.Caption = this.Caption;
-            result.Length = this.Length;
-            result.StartDepth = this.StartDepth;
-            result.DepthBP = (VibratoBPList)DepthBP.Clone();
-            result.StartRate = this.StartRate;
-            result.RateBP = (VibratoBPList)RateBP.Clone();
-            return result;
-        }
-
-        public VsqHandle castToVsqHandle() {
-            VsqHandle ret = new VsqHandle();
-            ret.m_type = VsqHandleType.Vibrato;
-            ret.Index = Index;
-            ret.IconID = IconID;
-            ret.IDS = IDS;
-            ret.Original = Original;
-            ret.Caption = Caption;
-            ret.Length = Length;
-            ret.StartDepth = StartDepth;
-            ret.StartRate = StartRate;
-            ret.DepthBP = (VibratoBPList)DepthBP.Clone();
-            ret.RateBP = (VibratoBPList)RateBP.Clone();
-            return ret;
-        }
-    }
-
-    [Serializable]
-    public class NoteHeadHandle : ICloneable {
-        public int Index;
-        public String IconID = "";
-        public String IDS = "";
-        public int Original;
-        public String Caption = "";
-        public int Length;
-        public int Duration;
-        public int Depth;
-
-        public NoteHeadHandle() {
-        }
-
-        public String getDisplayString() {
-            String s = IDS;
-            if ( !Caption.Equals( "" ) ) {
-                s += " (" + Caption + ")";
-            }
-            return s;
-        }
-        
-        public object Clone() {
-            return clone();
-        }
-
-        public Object clone() {
-            NoteHeadHandle result = new NoteHeadHandle();
-            result.Index = Index;
-            result.IconID = IconID;
-            result.IDS = this.IDS;
-            result.Original = this.Original;
-            result.Caption = this.Caption;
-            result.Length = this.Length;
-            result.Duration = Duration;
-            result.Depth = Depth;
-            return result;
-        }
-
-        public VsqHandle castToVsqHandle() {
-            VsqHandle ret = new VsqHandle();
-            ret.m_type = VsqHandleType.NoteHeadHandle;
-            ret.Index = Index;
-            ret.IconID = IconID;
-            ret.IDS = IDS;
-            ret.Original = Original;
-            ret.Caption = Caption;
-            ret.Length = Length;
-            ret.Duration = Duration;
-            ret.Depth = Depth;
-            return ret;
-        }
-    }
+#endif
 
     /// <summary>
     /// ハンドルを取り扱います。ハンドルにはLyricHandle、VibratoHandle、IconHandleおよびNoteHeadHandleがある
     /// </summary>
+#if !JAVA
     [Serializable]
+#endif
     public class VsqHandle {
         public VsqHandleType m_type;
         public int Index;
@@ -292,7 +101,7 @@ namespace Boare.Lib.Vsq {
 
         internal VsqHandle() {
         }
-        
+
         /// <summary>
         /// インスタンスをストリームに書き込みます。
         /// encode=trueの場合、2バイト文字をエンコードして出力します。
@@ -347,14 +156,14 @@ namespace Boare.Lib.Vsq {
             // "["にぶち当たるまで読込む
             last_line = sr.readLine();
             while ( !last_line.StartsWith( "[" ) ) {
-                spl = last_line.Split( new char[] { '=' } );
+                spl = PortUtil.splitString( last_line, new char[] { '=' } );
                 switch ( spl[0] ) {
                     case "Language":
                         m_type = VsqHandleType.Singer;
-                        Language = int.Parse( spl[1] );
+                        Language = PortUtil.parseInt( spl[1] );
                         break;
                     case "Program":
-                        Program = int.Parse( spl[1] );
+                        Program = PortUtil.parseInt( spl[1] );
                         break;
                     case "IconID":
                         IconID = spl[1];
@@ -363,7 +172,7 @@ namespace Boare.Lib.Vsq {
                         IDS = spl[1];
                         break;
                     case "Original":
-                       Original = int.Parse( spl[1] );
+                        Original = PortUtil.parseInt( spl[1] );
                         break;
                     case "Caption":
                         Caption = spl[1];
@@ -372,13 +181,13 @@ namespace Boare.Lib.Vsq {
                         }
                         break;
                     case "Length":
-                        Length = int.Parse( spl[1] );
+                        Length = PortUtil.parseInt( spl[1] );
                         break;
                     case "StartDepth":
-                        StartDepth = int.Parse( spl[1] );
+                        StartDepth = PortUtil.parseInt( spl[1] );
                         break;
                     case "DepthBPNum":
-                        depth_bp_num = int.Parse( spl[1] );
+                        depth_bp_num = PortUtil.parseInt( spl[1] );
                         break;
                     case "DepthBPX":
                         tmpDepthBPX = spl[1];
@@ -388,10 +197,10 @@ namespace Boare.Lib.Vsq {
                         break;
                     case "StartRate":
                         m_type = VsqHandleType.Vibrato;
-                        StartRate = int.Parse( spl[1] );
+                        StartRate = PortUtil.parseInt( spl[1] );
                         break;
                     case "RateBPNum":
-                        rate_bp_num = int.Parse( spl[1] );
+                        rate_bp_num = PortUtil.parseInt( spl[1] );
                         break;
                     case "RateBPX":
                         tmpRateBPX = spl[1];
@@ -408,10 +217,10 @@ namespace Boare.Lib.Vsq {
                         break;
                     case "Duration":
                         m_type = VsqHandleType.NoteHeadHandle;
-                        Duration = int.Parse( spl[1] );
+                        Duration = PortUtil.parseInt( spl[1] );
                         break;
                     case "Depth":
-                        Duration = int.Parse( spl[1] );
+                        Duration = PortUtil.parseInt( spl[1] );
                         break;
                 }
                 if ( sr.peek() < 0 ) {
@@ -431,15 +240,15 @@ namespace Boare.Lib.Vsq {
             if ( m_type == VsqHandleType.Vibrato ) {
                 if ( rate_bp_num > 0 ) {
                     float[] rate_bp_x = new float[rate_bp_num];
-                    spl2 = tmpRateBPX.Split( new char[] { ',' } );
+                    spl2 = PortUtil.splitString( tmpRateBPX, new char[] { ',' } );
                     for ( int i = 0; i < rate_bp_num; i++ ) {
-                        rate_bp_x[i] = float.Parse( spl2[i] );
+                        rate_bp_x[i] = PortUtil.parseFloat( spl2[i] );
                     }
 
                     int[] rate_bp_y = new int[rate_bp_num];
-                    spl2 = tmpRateBPY.Split( new char[] { ',' } );
+                    spl2 = PortUtil.splitString( tmpRateBPY, new char[] { ',' } );
                     for ( int i = 0; i < rate_bp_num; i++ ) {
-                        rate_bp_y[i] = int.Parse( spl2[i] );
+                        rate_bp_y[i] = PortUtil.parseInt( spl2[i] );
                     }
                     RateBP = new VibratoBPList( rate_bp_x, rate_bp_y );
                 } else {
@@ -451,15 +260,15 @@ namespace Boare.Lib.Vsq {
                 // DepthBPX, DepthBPYの設定
                 if ( depth_bp_num > 0 ) {
                     float[] depth_bp_x = new float[depth_bp_num];
-                    spl2 = tmpDepthBPX.Split( new char[] { ',' } );
+                    spl2 = PortUtil.splitString( tmpDepthBPX, new char[] { ',' } );
                     for ( int i = 0; i < depth_bp_num; i++ ) {
-                        depth_bp_x[i] = float.Parse( spl2[i] );
+                        depth_bp_x[i] = PortUtil.parseFloat( spl2[i] );
                     }
 
                     int[] depth_bp_y = new int[depth_bp_num];
-                    spl2 = tmpDepthBPY.Split( new char[] { ',' } );
+                    spl2 = PortUtil.splitString( tmpDepthBPY, new char[] { ',' } );
                     for ( int i = 0; i < depth_bp_num; i++ ) {
-                        depth_bp_y[i] = int.Parse( spl2[i] );
+                        depth_bp_y[i] = PortUtil.parseInt( spl2[i] );
                     }
                     DepthBP = new VibratoBPList( depth_bp_x, depth_bp_y );
                 } else {
@@ -479,8 +288,8 @@ namespace Boare.Lib.Vsq {
         /// <param name="_string">ハンドル指定子</param>
         /// <returns>ハンドル番号</returns>
         public static int HandleIndexFromString( String _string ) {
-            String[] spl = _string.Split( new char[] { '#' } );
-            return int.Parse( spl[1] );
+            String[] spl = PortUtil.splitString( _string, new char[] { '#' } );
+            return PortUtil.parseInt( spl[1] );
         }
 
         /// <summary>
@@ -568,5 +377,6 @@ namespace Boare.Lib.Vsq {
             return result;
         }
     }
-
+#if !JAVA
 }
+#endif

@@ -11,6 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#define MAKEBAT_SP
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -104,7 +105,7 @@ namespace Boare.Cadencii {
                 ValuePair<String, DateTime> value = s_cache.get( key );
                 String file = value.Key;
                 try {
-                    File.Delete( file );
+                    PortUtil.deleteFile( file );
                 } catch {
                 }
             }
@@ -138,6 +139,10 @@ namespace Boare.Cadencii {
 #endif
             m_started_date = DateTime.Now;
             m_rendering = true;
+#if MAKEBAT_SP
+            StreamWriter bat = null;
+            StreamWriter log = null;
+#endif
             try {
                 double sample_length = m_vsq.getSecFromClock( m_vsq.TotalClocks ) * m_sample_rate;
                 m_abort_required = false;
@@ -145,11 +150,17 @@ namespace Boare.Cadencii {
                 if ( !Directory.Exists( m_temp_dir ) ) {
                     Directory.CreateDirectory( m_temp_dir );
                 }
-                
+
+#if MAKEBAT_SP
+                log = new StreamWriter( Path.Combine( m_temp_dir, "UtauRenderingRunner.log" ), false, Encoding.GetEncoding( "Shift_JIS" ) );
+#endif
                 // 原音設定を読み込み
                 TreeMap<Integer, UtauVoiceDB> config = new TreeMap<Integer, UtauVoiceDB>();
                 Vector<SingerConfig> singers = m_singer_config_sys;
                 VsqTrack target = m_vsq.Track.get( m_rendering_track );
+#if MAKEBAT_SP
+                log.WriteLine( "reading voice db. configs..." );
+#endif
                 for ( int pc = 0; pc < singers.size(); pc++ ) {
                     String singer_name = singers.get( pc ).VOICENAME;
                     String singer_path = singers.get( pc ).VOICEIDSTR;
@@ -157,20 +168,27 @@ namespace Boare.Cadencii {
                     //TODO: mono on linuxにて、singer_pathが取得できていない？
                     String config_file = Path.Combine( singer_path, "oto.ini" );
                     UtauVoiceDB db = new UtauVoiceDB( config_file );
+#if MAKEBAT_SP
+                    log.Write( "    #" + pc + "; PortUtil.isFileExists( oto.ini )=" + PortUtil.isFileExists( config_file ) );
+                    log.WriteLine( "; name=" + db.getName() );
+#endif
                     config.put( pc, db );
                 }
+#if MAKEBAT_SP
+                log.WriteLine( "...done" );
+#endif
 
                 String file = Path.Combine( m_temp_dir, FILEBASE );
-                if ( File.Exists( file ) ) {
-                    File.Delete( file );
+                if ( PortUtil.isFileExists( file ) ) {
+                    PortUtil.deleteFile( file );
                 }
                 String file_whd = Path.Combine( m_temp_dir, FILEBASE + ".whd" );
-                if ( File.Exists( file_whd ) ) {
-                    File.Delete( file_whd );
+                if ( PortUtil.isFileExists( file_whd ) ) {
+                    PortUtil.deleteFile( file_whd );
                 }
                 String file_dat = Path.Combine( m_temp_dir, FILEBASE + ".dat" );
-                if ( File.Exists( file_dat ) ) {
-                    File.Delete( file_dat );
+                if ( PortUtil.isFileExists( file_dat ) ) {
+                    PortUtil.deleteFile( file_dat );
                 }
 #if DEBUG
                 AppManager.debugWriteLine( "temp_dir=" + m_temp_dir );
@@ -189,16 +207,25 @@ namespace Boare.Cadencii {
                 for ( Iterator itr = target.getNoteEventIterator(); itr.hasNext(); ) {
                     events.add( (VsqEvent)itr.next() );
                 }
-
+                
+#if MAKEBAT_SP
+                log.WriteLine( "making resampler queue..." );
+#endif
                 int events_count = events.size();
                 for ( int k = 0; k < events_count; k++ ) {
                     VsqEvent item = events.get( k );
+#if MAKEBAT_SP
+                    log.Write( "    #" + k + "; clock=" + item.Clock );
+#endif
                     VsqEvent singer_event = target.getSingerEventAt( item.Clock );
                     if ( singer_event == null ) {
                         program_change = 0;
                     } else {
                         program_change = singer_event.ID.IconHandle.Program;
                     }
+#if MAKEBAT_SP
+                    log.Write( "; pc=" + program_change );
+#endif
                     if ( m_abort_required ) {
                         m_rendering = false;
                         return;
@@ -248,6 +275,9 @@ namespace Boare.Cadencii {
                         UtauVoiceDB db = config.get( program_change );
                         oa = db.attachFileNameFromLyric( lyric );
                     }
+#if MAKEBAT_SP
+                    log.Write( "; lyric=" + lyric + "; fileName=" + oa.fileName );
+#endif
                     String singer2 = "";
                     if ( 0 <= program_change && program_change < singers.size() ) {
                         singer2 = singers.get( program_change ).VOICEIDSTR;
@@ -315,7 +345,7 @@ namespace Boare.Cadencii {
                     }
 
                     //4_あ_C#4_550.wav
-                    String filename = Path.Combine( m_temp_dir, misc.getmd5( s_cache.size() + resampler_arg_prefix + resampler_arg_suffix + pitch ) + ".wav" );
+                    String filename = Path.Combine( m_temp_dir, Misc.getmd5( s_cache.size() + resampler_arg_prefix + resampler_arg_suffix + pitch ) + ".wav" );
 
                     rq2.ResamplerArg = resampler_arg_prefix + " \"" + filename + "\" " + resampler_arg_suffix;
                     if ( !allzero ) {
@@ -342,7 +372,7 @@ namespace Boare.Cadencii {
 #if DEBUG
                                 bocoree.debug.push_log( "deleting... \"" + delfile + "\"" );
 #endif
-                                File.Delete( delfile );
+                                PortUtil.deleteFile( delfile );
                             } catch {
                             }
                             s_cache.remove( delkey );
@@ -364,7 +394,13 @@ namespace Boare.Cadencii {
                     rq2.secEnd = sec_end;
                     rq2.ResamplerFinished = exist_in_cache;
                     m_resampler_queue.add( rq2 );
+#if MAKEBAT_SP
+                    log.WriteLine();
+#endif
                 }
+#if MAKEBAT_SP
+                log.WriteLine( "...done" );
+#endif
 
 #if DEBUG
                 bocoree.debug.push_log( "s_cache:" );
@@ -387,6 +423,9 @@ namespace Boare.Cadencii {
                 bocoree.debug.push_log( "trim_remain=" + trim_remain );
 #endif
                 VsqBPList dyn_curve = m_vsq.Track.get( m_rendering_track ).getCurve( "dyn" );
+#if MAKEBAT_SP
+                bat = new StreamWriter( Path.Combine( m_temp_dir, "utau.bat" ), false, Encoding.GetEncoding( "Shift_JIS" ) );
+#endif
                 for ( int i = 0; i < num_queues; i++ ) {
                     RenderQueue rq = m_resampler_queue.get( i );
                     if ( !rq.ResamplerFinished ) {
@@ -394,15 +433,10 @@ namespace Boare.Cadencii {
 #if DEBUG
                         bocoree.debug.push_log( "resampler arg=" + arg );
 #endif
+#if MAKEBAT_SP
+                        bat.WriteLine( "\"" + m_resampler + "\" " + arg );
+#endif
                         using ( Process process = new Process() ) {
-                            /*ProcessStartInfo psi = new ProcessStartInfo();
-                            psi.FileName = (m_invoke_with_wine ? "wine" : Environment.GetEnvironmentVariable( "ComSpec" ));
-                            psi.Arguments = (m_invoke_with_wine ? "" : "/c ") + "\"" + m_resampler + "\" " + arg;
-                            psi.WindowStyle = ProcessWindowStyle.Hidden;
-                            psi.CreateNoWindow = true;
-                            psi.UseShellExecute = false;
-                            Console.WriteLine( "UtauRenderingRunner#run; psi.Filename=" + psi.FileName );
-                            Console.WriteLine( "UtauRenderingRunner#run; psi.Arguments=" + psi.Arguments );*/
                             process.StartInfo.FileName = (m_invoke_with_wine ? "wine \"" : "\"") + m_resampler + "\"";
                             process.StartInfo.Arguments = arg;
                             process.StartInfo.WorkingDirectory = m_temp_dir;
@@ -433,6 +467,9 @@ namespace Boare.Cadencii {
 #endif
                     int mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
                     String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
+#if MAKEBAT_SP
+                    bat.WriteLine( "\"" + m_wavtool + "\" " + arg_wavtool );
+#endif
                     ProcessWavtool( arg_wavtool, file, m_temp_dir, m_wavtool, m_invoke_with_wine );
 
                     // できたwavを読み取ってWaveIncomingイベントを発生させる
@@ -442,12 +479,14 @@ namespace Boare.Cadencii {
 #endif
                     // whdを読みに行く
                     if ( first ) {
-                        using ( FileStream whd = new FileStream( file_whd, FileMode.Open, FileAccess.Read ) ) {
+                        RandomAccessFile whd = null;
+                        try {
+                            whd = new RandomAccessFile( file_whd, "r" );
                             #region whdを読みに行く
-                            whd.Seek( 0, SeekOrigin.Begin );
+                            whd.seek( 0 );
                             // RIFF
                             byte[] buf = new byte[4];
-                            int gcount = whd.Read( buf, 0, 4 );
+                            int gcount = whd.read( buf, 0, 4 );
                             if ( buf[0] != 'R' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != 'F' ) {
 #if DEBUG
                                 AppManager.debugWriteLine( "RenderUtau.startRendering; whd header error" );
@@ -456,9 +495,9 @@ namespace Boare.Cadencii {
                                 continue;
                             }
                             // ファイルサイズ
-                            whd.Read( buf, 0, 4 );
+                            whd.read( buf, 0, 4 );
                             // WAVE
-                            whd.Read( buf, 0, 4 );
+                            whd.read( buf, 0, 4 );
                             if ( buf[0] != 'W' || buf[1] != 'A' || buf[2] != 'V' || buf[3] != 'E' ) {
 #if DEBUG
                                 AppManager.debugWriteLine( "RenderUtau.startRendering; whd header error" );
@@ -467,7 +506,7 @@ namespace Boare.Cadencii {
                                 continue;
                             }
                             // fmt 
-                            whd.Read( buf, 0, 4 );
+                            whd.read( buf, 0, 4 );
                             if ( buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ' ) {
 #if DEBUG
                                 AppManager.debugWriteLine( "RenderUtau.startRendering; whd header error" );
@@ -476,32 +515,32 @@ namespace Boare.Cadencii {
                                 continue;
                             }
                             // fmt チャンクのサイズ
-                            whd.Read( buf, 0, 4 );
-                            long loc_end_of_fmt = whd.Position; //fmtチャンクの終了位置．ここは一定値でない可能性があるので読込み
+                            whd.read( buf, 0, 4 );
+                            long loc_end_of_fmt = whd.getFilePointer(); //fmtチャンクの終了位置．ここは一定値でない可能性があるので読込み
                             loc_end_of_fmt += buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
                             // format ID
-                            whd.Read( buf, 0, 2 );
+                            whd.read( buf, 0, 2 );
                             int id = buf[0] | buf[1] << 8;
                             if ( id != 0x0001 ) { //0x0001はリニアPCM
                                 continue;
                             }
                             // チャンネル数
-                            whd.Read( buf, 0, 2 );
+                            whd.read( buf, 0, 2 );
                             channel = buf[1] << 8 | buf[0];
                             // サンプリングレート
-                            whd.Read( buf, 0, 4 );
+                            whd.read( buf, 0, 4 );
                             int this_sample_rate = buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
                             // データ速度
-                            whd.Read( buf, 0, 4 );
+                            whd.read( buf, 0, 4 );
                             // ブロックサイズ
-                            whd.Read( buf, 0, 2 );
+                            whd.read( buf, 0, 2 );
                             // 1チャンネル、1サンプルあたりのビット数
-                            whd.Read( buf, 0, 2 );
+                            whd.read( buf, 0, 2 );
                             int bit_per_sample = buf[1] << 8 | buf[0];
                             byte_per_sample = bit_per_sample / 8;
-                            whd.Seek( loc_end_of_fmt, SeekOrigin.Begin );
+                            whd.seek( loc_end_of_fmt );
                             // data
-                            whd.Read( buf, 0, 4 );
+                            whd.read( buf, 0, 4 );
                             if ( buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a' ) {
 #if DEBUG
                                 AppManager.debugWriteLine( "RenderUtau.startRendering; whd header error" );
@@ -510,10 +549,18 @@ namespace Boare.Cadencii {
                                 continue;
                             }
                             // size of data chunk
-                            whd.Read( buf, 0, 4 );
+                            whd.read( buf, 0, 4 );
                             int size = buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0];
                             int total_samples = size / (channel * byte_per_sample);
                             #endregion
+                        } catch ( Exception ex ) {
+                        } finally {
+                            if ( whd != null ) {
+                                try {
+                                    whd.close();
+                                } catch ( Exception ex2 ) {
+                                }
+                            }
                         }
                         first = false;
                     }
@@ -533,10 +580,10 @@ namespace Boare.Cadencii {
                         const int buflen = 1024;
                         byte[] wavbuf = new byte[buflen];
                         int pos = 0;
-                        FileStream dat = null;
+                        RandomAccessFile dat = null;
                         try {
-                            dat = new FileStream( file_dat, FileMode.Open, FileAccess.Read );
-                            dat.Seek( processed_sample * channel * byte_per_sample, SeekOrigin.Begin );
+                            dat = new RandomAccessFile( file_dat, "r" );
+                            dat.seek( processed_sample * channel * byte_per_sample );
                             double sec_start = processed_sample / (double)m_sample_rate;
                             double sec_per_sa = 1.0 / (double)m_sample_rate;
                             int index = 0;
@@ -547,7 +594,7 @@ namespace Boare.Cadencii {
                                         if ( m_abort_required ) {
                                             break;
                                         }
-                                        int len = dat.Read( wavbuf, 0, buflen );
+                                        int len = dat.read( wavbuf, 0, buflen );
                                         if ( len <= 0 ) {
                                             break;
                                         }
@@ -583,7 +630,7 @@ namespace Boare.Cadencii {
                                         if ( m_abort_required ) {
                                             break;
                                         }
-                                        int len = dat.Read( wavbuf, 0, buflen );
+                                        int len = dat.read( wavbuf, 0, buflen );
                                         if ( len <= 0 ) {
                                             break;
                                         }
@@ -622,7 +669,7 @@ namespace Boare.Cadencii {
                                         if ( m_abort_required ) {
                                             break;
                                         }
-                                        int len = dat.Read( wavbuf, 0, buflen );
+                                        int len = dat.read( wavbuf, 0, buflen );
                                         if ( len <= 0 ) {
                                             break;
                                         }
@@ -658,7 +705,7 @@ namespace Boare.Cadencii {
                                         if ( m_abort_required ) {
                                             break;
                                         }
-                                        int len = dat.Read( wavbuf, 0, buflen );
+                                        int len = dat.read( wavbuf, 0, buflen );
                                         if ( len <= 0 ) {
                                             break;
                                         }
@@ -694,16 +741,15 @@ namespace Boare.Cadencii {
                             }
                             #endregion
                         } catch ( Exception ex ) {
-                            if ( dat != null ) {
-                                dat.Close();
-                                dat = null;
-                            }
 #if DEBUG
                             AppManager.debugWriteLine( "RenderUtau.StartRendering; ex=" + ex );
 #endif
                         } finally {
                             if ( dat != null ) {
-                                dat.Close();
+                                try {
+                                    dat.close();
+                                } catch ( Exception ex2 ) {
+                                }
                                 dat = null;
                             }
                         }
@@ -740,6 +786,11 @@ namespace Boare.Cadencii {
                     }
                 }
 
+#if MAKEBAT_SP
+                bat.Close();
+                bat = null;
+#endif
+
                 if ( m_mode_infinite ) {
                     double[] silence_l = new double[44100];
                     double[] silence_r = new double[44100];
@@ -751,6 +802,16 @@ namespace Boare.Cadencii {
                 }
             } catch ( Exception ex ) {
             } finally {
+#if MAKEBAT_SP
+                if ( bat != null ) {
+                    bat.WriteLine( "copy \"" + m_temp_dir + "\\temp.wav.whd\" /b + \"" + m_temp_dir + "\\temp.wav.dat\" /b \"" + m_temp_dir + "\\temp.wav\" /b" );
+                    bat.Close();
+                    bat = null;
+                }
+                if ( log != null ) {
+                    log.Close();
+                }
+#endif
                 m_rendering = false;
             }
         }

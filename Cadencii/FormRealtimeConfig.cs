@@ -24,7 +24,7 @@ namespace Boare.Cadencii {
 
         public FormRealtimeConfig() {
             InitializeComponent();
-            Boare.Lib.AppUtil.Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Boare.Lib.AppUtil.Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public float Speed {

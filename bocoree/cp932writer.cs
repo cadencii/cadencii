@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * cp932writer.cs
  * Copyright (c) 2009 kbinani
  *
@@ -58,3 +59,4 @@ namespace bocoree {
     }
 
 }
+#endif

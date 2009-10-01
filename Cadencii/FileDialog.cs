@@ -396,7 +396,7 @@ namespace Boare.Cadencii {
                 if ( Directory.Exists( next ) ) {
                     m_history.add( m_current_directory );
                     m_current_directory = next;
-                } else if ( File.Exists( next ) ) {
+                } else if ( PortUtil.isFileExists( next ) ) {
                     DialogResult = DialogResult.OK;
                     this.Close();
                 }

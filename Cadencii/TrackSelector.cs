@@ -384,10 +384,10 @@ namespace Boare.Cadencii {
 
         public void applyFont( Font font ) {
             foreach ( Control c in Controls ) {
-                Boare.Lib.AppUtil.Misc.ApplyFontRecurse( c, font );
+                Boare.Lib.AppUtil.Util.ApplyFontRecurse( c, font );
             }
-            Misc.ApplyContextMenuFontRecurse( cmenuSinger, font );
-            Misc.ApplyContextMenuFontRecurse( cmenuCurve, font );
+            Util.ApplyContextMenuFontRecurse( cmenuSinger, font );
+            Util.ApplyContextMenuFontRecurse( cmenuCurve, font );
         }
 
         /// <summary>

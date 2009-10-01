@@ -30,7 +30,7 @@ namespace Boare.Cadencii {
         private float m_length;
 
         public WaveDrawContext( String file ) {
-            if ( !File.Exists( file ) ) {
+            if ( !PortUtil.isFileExists( file ) ) {
                 m_wave = new byte[0];
                 m_length = 0.0f;
                 return;

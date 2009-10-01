@@ -72,7 +72,7 @@ namespace Boare.Cadencii {
                 }
             }
             UpdateStatus();
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         private void UpdateStatus() {

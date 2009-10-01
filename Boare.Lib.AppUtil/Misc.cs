@@ -21,7 +21,7 @@ using System.Windows.Forms;
 
 namespace Boare.Lib.AppUtil {
     
-    public static partial class Misc {
+    public static partial class Util {
         public static void ApplyContextMenuFontRecurse( ContextMenuStrip item, Font font ) {
             item.Font = font;
             foreach ( ToolStripItem tsi in item.Items ) {

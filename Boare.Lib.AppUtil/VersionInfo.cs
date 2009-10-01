@@ -119,7 +119,7 @@ namespace Boare.Lib.AppUtil {
             const string font_name = "Arial";
             const int font_size = 10;
             Font font = new Font( font_name, font_size );
-            Size size = Boare.Lib.AppUtil.Misc.MeasureString( "Qjqp", font );
+            Size size = Boare.Lib.AppUtil.Util.MeasureString( "Qjqp", font );
             float width = this.Width;
             float height = size.Height;
             StringFormat sf = new StringFormat();
@@ -255,7 +255,7 @@ namespace Boare.Lib.AppUtil {
         private void VersionInfoEx_FontChanged( object sender, EventArgs e ) {
             Font font = this.Font;
             for ( int i = 0; i < this.Controls.Count; i++ ) {
-                Misc.ApplyFontRecurse( this.Controls[i], font );
+                Util.ApplyFontRecurse( this.Controls[i], font );
             }
         }
     }

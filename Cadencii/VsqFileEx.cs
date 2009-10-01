@@ -1001,7 +1001,7 @@ namespace Boare.Cadencii {
             AttachedCurves = new AttachedCurve();
 
             String xml = Path.Combine( Path.GetDirectoryName( _fpath ), Path.GetFileName( _fpath ) + ".xml" );
-            if ( File.Exists( xml ) ) {
+            if ( PortUtil.isFileExists( xml ) ) {
                 AttachedCurve tmp = null;
                 FileStream fs = null;
                 try {

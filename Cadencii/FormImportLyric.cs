@@ -29,7 +29,7 @@ namespace Boare.Cadencii {
             String notes = (max_notes > 1) ? " [notes]" : " [note]";
             lblNotes.Text = "Max : " + max_notes + notes;
             m_max_notes = max_notes;
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public void ApplyLanguage() {

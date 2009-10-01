@@ -117,7 +117,7 @@ namespace Boare.Cadencii {
             InitializeComponent();
             ApplyLanguage();
 
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
             Size current_size = this.ClientSize;
         }
 

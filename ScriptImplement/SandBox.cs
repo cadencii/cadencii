@@ -16,6 +16,7 @@ using Boare.Cadencii;
 public class Search {
     public static bool Edit( VsqFile vsq ) {
         int selectedid = -1;
+        Form f;
         int track = AppManager.getSelected();
         bool begin_count = false;
         if ( AppManager.getSelectedEventCount() <= 0 ) {

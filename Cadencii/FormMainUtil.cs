@@ -92,9 +92,11 @@ namespace Boare.Cadencii {
                     return;
                 }
                 double draft;
-                if ( double.TryParse( ib.Result, out draft ) ) {
+                try {
+                    draft = PortUtil.parseDouble( ib.Result );
                     item.readOffsetSeconds = draft;
                     parent.ToolTipText = draft + " " + _( "seconds" );
+                } catch ( Exception ) {
                 }
             }
         }
@@ -1490,7 +1492,7 @@ namespace Boare.Cadencii {
                 menuScript.DropDownItems.Add( new ToolStripSeparator() );
             }
             menuScript.DropDownItems.Add( menuScriptUpdate );
-            Misc.ApplyToolStripFontRecurse( menuScript, AppManager.editorConfig.BaseFont );
+            Util.ApplyToolStripFontRecurse( menuScript, AppManager.editorConfig.BaseFont );
             ApplyShortcut();
         }
 
@@ -2313,10 +2315,10 @@ namespace Boare.Cadencii {
 
             for ( int i = 1; i <= 16; i++ ) {
                 String file = Path.Combine( tmppath, i + ".wav" );
-                if ( File.Exists( file ) ) {
+                if ( PortUtil.isFileExists( file ) ) {
                     for ( int error = 0; error < 100; error++ ) {
                         try {
-                            File.Delete( file );
+                            PortUtil.deleteFile( file );
                             break;
                         } catch ( Exception ex ) {
 #if DEBUG
@@ -2330,16 +2332,16 @@ namespace Boare.Cadencii {
                 }
             }
             String whd = Path.Combine( tmppath, UtauRenderingRunner.FILEBASE + ".whd" );
-            if ( File.Exists( whd ) ) {
+            if ( PortUtil.isFileExists( whd ) ) {
                 try {
-                    File.Delete( whd );
+                    PortUtil.deleteFile( whd );
                 } catch {
                 }
             }
             String dat = Path.Combine( tmppath, UtauRenderingRunner.FILEBASE + ".dat" );
-            if ( File.Exists( dat ) ) {
+            if ( PortUtil.isFileExists( dat ) ) {
                 try {
-                    File.Delete( dat );
+                    PortUtil.deleteFile( dat );
                 } catch {
                 }
             }
@@ -4750,7 +4752,7 @@ namespace Boare.Cadencii {
                     }
                     if ( item != "" ) {
                         String short_name = Path.GetFileName( item );
-                        boolean available = File.Exists( item );
+                        boolean available = PortUtil.isFileExists( item );
                         ToolStripItem itm = (ToolStripItem)(new ToolStripMenuItem( short_name ));
                         if ( !available ) {
                             itm.ToolTipText = _( "[file not found]" ) + " ";
@@ -5065,47 +5067,47 @@ namespace Boare.Cadencii {
             Font font = AppManager.editorConfig.BaseFont;
             this.Font = font;
             foreach ( Control c in this.Controls ) {
-                Misc.ApplyFontRecurse( c, font );
+                Util.ApplyFontRecurse( c, font );
             }
-            Misc.ApplyContextMenuFontRecurse( cMenuPiano, font );
-            Misc.ApplyContextMenuFontRecurse( cMenuTrackSelector, font );
+            Util.ApplyContextMenuFontRecurse( cMenuPiano, font );
+            Util.ApplyContextMenuFontRecurse( cMenuTrackSelector, font );
             if ( AppManager.mixerWindow != null ) {
-                Misc.ApplyFontRecurse( AppManager.mixerWindow, font );
+                Util.ApplyFontRecurse( AppManager.mixerWindow, font );
             }
-            Misc.ApplyContextMenuFontRecurse( cMenuTrackTab, font );
+            Util.ApplyContextMenuFontRecurse( cMenuTrackTab, font );
             trackSelector.applyFont( font );
-            Misc.ApplyToolStripFontRecurse( menuFile, font );
-            Misc.ApplyToolStripFontRecurse( menuEdit, font );
-            Misc.ApplyToolStripFontRecurse( menuVisual, font );
-            Misc.ApplyToolStripFontRecurse( menuJob, font );
-            Misc.ApplyToolStripFontRecurse( menuTrack, font );
-            Misc.ApplyToolStripFontRecurse( menuLyric, font );
-            Misc.ApplyToolStripFontRecurse( menuScript, font );
-            Misc.ApplyToolStripFontRecurse( menuSetting, font );
-            Misc.ApplyToolStripFontRecurse( menuHelp, font );
+            Util.ApplyToolStripFontRecurse( menuFile, font );
+            Util.ApplyToolStripFontRecurse( menuEdit, font );
+            Util.ApplyToolStripFontRecurse( menuVisual, font );
+            Util.ApplyToolStripFontRecurse( menuJob, font );
+            Util.ApplyToolStripFontRecurse( menuTrack, font );
+            Util.ApplyToolStripFontRecurse( menuLyric, font );
+            Util.ApplyToolStripFontRecurse( menuScript, font );
+            Util.ApplyToolStripFontRecurse( menuSetting, font );
+            Util.ApplyToolStripFontRecurse( menuHelp, font );
             foreach ( ToolStripItem tsi in toolStripFile.Items ) {
-                Misc.ApplyToolStripFontRecurse( tsi, font );
+                Util.ApplyToolStripFontRecurse( tsi, font );
             }
             foreach ( ToolStripItem tsi in toolStripMeasure.Items ) {
-                Misc.ApplyToolStripFontRecurse( tsi, font );
+                Util.ApplyToolStripFontRecurse( tsi, font );
             }
             foreach ( ToolStripItem tsi in toolStripPosition.Items ) {
-                Misc.ApplyToolStripFontRecurse( tsi, font );
+                Util.ApplyToolStripFontRecurse( tsi, font );
             }
             foreach ( ToolStripItem tsi in toolStripTool.Items ) {
-                Misc.ApplyToolStripFontRecurse( tsi, font );
+                Util.ApplyToolStripFontRecurse( tsi, font );
             }
             if ( m_preference_dlg != null ) {
-                Misc.ApplyFontRecurse( m_preference_dlg, font );
+                Util.ApplyFontRecurse( m_preference_dlg, font );
             }
 
             AppManager.baseFont10Bold = new Font( AppManager.editorConfig.BaseFontName, 10, FontStyle.Bold );
             AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, 8 );
             AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, 10 );
             AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, 9 );
-            AppManager.baseFont10OffsetHeight = Misc.GetStringDrawOffset( AppManager.baseFont10 );
-            AppManager.baseFont8OffsetHeight = Misc.GetStringDrawOffset( AppManager.baseFont8 );
-            AppManager.baseFont9OffsetHeight = Misc.GetStringDrawOffset( AppManager.baseFont9 );
+            AppManager.baseFont10OffsetHeight = Util.GetStringDrawOffset( AppManager.baseFont10 );
+            AppManager.baseFont8OffsetHeight = Util.GetStringDrawOffset( AppManager.baseFont8 );
+            AppManager.baseFont9OffsetHeight = Util.GetStringDrawOffset( AppManager.baseFont9 );
         }
 
         private void picturePositionIndicatorDrawTo( Graphics g ) {

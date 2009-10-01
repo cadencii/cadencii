@@ -40,7 +40,7 @@ namespace Boare.Lib.Vsq {
                     String header1 = "HKLM\\SOFTWARE\\VOCALOID";
                     print( key1, header1, dir1 );
 #if DEBUG
-                    using ( StreamWriter sw = new StreamWriter( Path.Combine( System.Windows.Forms.Application.StartupPath, "reg_keys_vocalo1.txt" ) ) ) {
+                    using ( StreamWriter sw = new StreamWriter( PortUtil.combinePath( System.Windows.Forms.Application.StartupPath, "reg_keys_vocalo1.txt" ) ) ) {
                         foreach ( String s in dir1 ) {
                             sw.WriteLine( s );
                         }
@@ -60,7 +60,7 @@ namespace Boare.Lib.Vsq {
                     s_path_editor.put( SynthesizerType.VOCALOID1, path_editor );
                 }
                 SingerConfigSys singer_config_sys = new SingerConfigSys( path_voicedb1, installed_singers1.toArray( new String[] { } ) );
-                if ( File.Exists( Path.Combine( path_expdb1, "expression.map" ) ) ) {
+                if ( PortUtil.isFileExists( PortUtil.combinePath( path_expdb1, "expression.map" ) ) ) {
                     exp_config_sys1 = new ExpressionConfigSys( path_expdb1 );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
@@ -89,7 +89,7 @@ namespace Boare.Lib.Vsq {
                     String header2 = "HKLM\\SOFTWARE\\VOCALOID2";
                     print( key2, header2, dir2 );
 #if DEBUG
-                    using ( StreamWriter sw = new StreamWriter( Path.Combine( System.Windows.Forms.Application.StartupPath, "reg_keys_vocalo2.txt" ) ) ) {
+                    using ( StreamWriter sw = new StreamWriter( PortUtil.combinePath( System.Windows.Forms.Application.StartupPath, "reg_keys_vocalo2.txt" ) ) ) {
                         foreach ( String s in dir2 ) {
                             sw.WriteLine( s );
                         }
@@ -109,7 +109,7 @@ namespace Boare.Lib.Vsq {
                     s_path_editor.put( SynthesizerType.VOCALOID2, path_editor );
                 }
                 SingerConfigSys singer_config_sys = new SingerConfigSys( path_voicedb2, installed_singers2.toArray( new String[] { } ) );
-                if ( File.Exists( Path.Combine( path_expdb2, "expression.map" ) ) ) {
+                if ( PortUtil.isFileExists( PortUtil.combinePath( path_expdb2, "expression.map" ) ) ) {
                     exp_config_sys2 = new ExpressionConfigSys( path_expdb2 );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
@@ -179,7 +179,7 @@ namespace Boare.Lib.Vsq {
             // path_vstiを取得
             for( Iterator itr = application.iterator(); itr.hasNext(); ){
                 String s = (String)itr.next();
-                String[] spl = s.Split( '\t' );
+                String[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length >= 3 && spl[1].Equals( "PATH" ) ){
                     if ( spl[2].ToLower().EndsWith( ".dll" ) ) {
                         path_vsti = spl[2];
@@ -194,12 +194,12 @@ namespace Boare.Lib.Vsq {
             // 最初はpath_voicedbの取得と、id（BHXXXXXXXXXXXXXXXX）のようなシリアルを取得
             for( Iterator itr = voice.iterator(); itr.hasNext(); ){
                 String s = (String)itr.next();
-                String[] spl = s.Split( '\t' );
+                String[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length >= 2 ) {
                     if ( spl[0].Equals( "VOICEDIR" ) ) {
                         path_voicedb = spl[1];
                     } else if ( spl.Length >= 3 ) {
-                        String[] spl2 = spl[0].Split( '\\' );
+                        String[] spl2 = PortUtil.splitString( spl[0], '\\' );
                         if ( spl2.Length == 1 ) {
                             if ( !voice_ids.contains( spl2[0] ) ) {
                                 voice_ids.add( spl2[0] );
@@ -215,15 +215,15 @@ namespace Boare.Lib.Vsq {
                 for( Iterator itr2 = voice.iterator(); itr2.hasNext(); ){
                     String s2 = (String)itr2.next();
                     if ( s2.StartsWith( header + "\\" + s + "\t" ) ) {
-                        String[] spl = s2.Split( '\t' );
+                        String[] spl = PortUtil.splitString( s2, '\t' );
                         if ( spl.Length >= 3 && spl[1].Equals( "INSTALLDIR" ) ) {
-                            install_dir = Path.Combine( spl[2], s );
+                            install_dir = PortUtil.combinePath( spl[2], s );
                             break;
                         }
                     }
                 }
                 if ( install_dir.Equals( "" ) ) {
-                    install_dir = Path.Combine( path_voicedb, s );
+                    install_dir = PortUtil.combinePath( path_voicedb, s );
                 }
                 installed_singers.add( install_dir );
             }
@@ -236,12 +236,12 @@ namespace Boare.Lib.Vsq {
 #if DEBUG
                 Console.WriteLine( "VocaloSysUtil#extract; s=" + s );
 #endif
-                String[] spl = s.Split( new char[]{ '\t' }, StringSplitOptions.RemoveEmptyEntries );
+                String[] spl = PortUtil.splitString( s, new char[]{ '\t' }, true );
                 if ( spl.Length >= 2 ) {
                     if ( spl[0].Equals( "EXPRESSIONDIR" ) ) {
                         path_expdb = spl[1];
                     } else if ( spl.Length >= 3 ) {
-                        String[] spl2 = spl[0].Split( '\\' );
+                        String[] spl2 = PortUtil.splitString( spl[0], '\\' );
                         if ( spl2.Length == 1 ) {
                             if ( !exp_ids.contains( spl2[0] ) ) {
                                 exp_ids.add( spl2[0] );
@@ -257,13 +257,13 @@ namespace Boare.Lib.Vsq {
                     if ( s2.StartsWith( header + "\\" + s + "\t" ) ) {
                         String[] spl = s2.Split( '\t' );
                         if ( spl.Length >= 3 && spl[1].Equals( "INSTALLDIR" ) ) {
-                            install_dir = Path.Combine( spl[2], s );
+                            install_dir = PortUtil.combinePath( spl[2], s );
                             break;
                         }
                     }
                 }
                 if ( install_dir.Equals( "" ) ) {
-                    install_dir = Path.Combine( path_expdb, s );
+                    install_dir = PortUtil.combinePath( path_expdb, s );
                 }
                 installed_singers.Add( install_dir );
             }*/
@@ -674,7 +674,7 @@ namespace Boare.Lib.Vsq {
 
                         // インストールされた歌手の.vvdを読みにいく
                         // installdir以下の、拡張子.vvdのファイルを探す
-                        foreach ( String file in Directory.GetFiles( Path.Combine( s_voicedbdir1, voiceidstr ), "*.vvd" ) ) {
+                        foreach ( String file in Directory.GetFiles( PortUtil.combinePath( s_voicedbdir1, voiceidstr ), "*.vvd" ) ) {
                             SingerConfig config = SingerConfig.fromVvd( file, 0 ); //とりあえずプログラムチェンジは0
                             s_installed_singers1.add( config );
                         }
@@ -684,8 +684,8 @@ namespace Boare.Lib.Vsq {
 #if DEBUG
                             Console.WriteLine( "s=" + s );
 #endif
-                            String file = Path.Combine( s_voicedbdir1, s + ".vvd" );
-                            if ( File.Exists( file ) ) {
+                            String file = PortUtil.combinePath( s_voicedbdir1, s + ".vvd" );
+                            if ( PortUtil.isFileExists( file ) ) {
                                 SingerConfig config = SingerConfig.fromVvd( file, 0 );
                                 vvoice_keys.add( s );
                                 vvoice_values.add( config );
@@ -696,8 +696,8 @@ namespace Boare.Lib.Vsq {
                 }
 
                 // voice.mapを読み込んで、s_singer_configs1のプログラムチェンジを更新する
-                String map = Path.Combine( s_voicedbdir1, "voice.map" );
-                if ( File.Exists( map ) ) {
+                String map = PortUtil.combinePath( s_voicedbdir1, "voice.map" );
+                if ( PortUtil.isFileExists( map ) ) {
                     using ( FileStream fs = new FileStream( map, FileMode.Open, FileAccess.Read ) ) {
                         byte[] dat = new byte[8];
                         fs.Seek( 0x20, SeekOrigin.Begin );
@@ -802,15 +802,15 @@ namespace Boare.Lib.Vsq {
 
                         // インストールされた歌手の.vvdを読みにいく
                         // installdir以下の、拡張子.vvdのファイルを探す
-                        foreach ( String file in Directory.GetFiles( Path.Combine( installdir, voiceidstr ), "*.vvd" ) ) {
+                        foreach ( String file in Directory.GetFiles( PortUtil.combinePath( installdir, voiceidstr ), "*.vvd" ) ) {
                             SingerConfig config = SingerConfig.fromVvd( file, 0 ); //とりあえずプログラムチェンジは0
                             s_installed_singers2.add( config );
                         }
 
                         // vvoice*.vvdを読みにいく。場所は、installdirではなく、s_voicedbdir2
                         foreach ( String s in vvoices ) {
-                            String file = Path.Combine( s_voicedbdir2, s + ".vvd" );
-                            if ( File.Exists( file ) ) {
+                            String file = PortUtil.combinePath( s_voicedbdir2, s + ".vvd" );
+                            if ( PortUtil.isFileExists( file ) ) {
                                 SingerConfig config = SingerConfig.fromVvd( file, 0 );
                                 vvoice_keys.add( s );
                                 vvoice_values.add( config );
@@ -821,8 +821,8 @@ namespace Boare.Lib.Vsq {
                 }
 
                 // voice.mapを読み込んで、s_singer_configs2のプログラムチェンジを更新する
-                String map = Path.Combine( s_voicedbdir2, "voice.map" );
-                if ( File.Exists( map ) ) {
+                String map = PortUtil.combinePath( s_voicedbdir2, "voice.map" );
+                if ( PortUtil.isFileExists( map ) ) {
                     using ( FileStream fs = new FileStream( map, FileMode.Open, FileAccess.Read ) ) {
                         byte[] dat = new byte[8];
                         fs.Seek( 0x20, SeekOrigin.Begin );

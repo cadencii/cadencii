@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * cp932.cs
  * Copyright (c) 2008-2009 kbinani
  *
@@ -11,34 +12,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !__cp932__
-#define __cp932__
-#if __cplusplus
-//bool bocoree::cp932::m_initialized = false;
-#else
 using System;
 using System.Text;
 using System.Collections.Generic;
 using System.IO;
-#endif
 
 namespace bocoree {
 
-#if __cplusplus
-    class cp932 {
-#else
     public class cp932 {
-#endif
 
-
-#if __cplusplus
-        const static int _LEN_DICT = 9484;
-        static int _DICT_SRC[_LEN_DICT][2];
-        static void init_cor(){
-            int n[_LEN_DICT][2] = {
-#else
         private static readonly Dictionary<int, int> _DICT = new Dictionary<int, int>() {
-#endif
             { 0, 0 },
             { 1, 1 },
             { 2, 2 },
@@ -9524,193 +9507,93 @@ namespace bocoree {
             { 65508, 64085 },
             { 65509, 33167 }
         };
-#if __cplusplus
-            for( int i = 0; i < _LEN_DICT; i++ ){
-                _DICT_SRC[i][0] = n[i][0];
-                _DICT_SRC[i][1] = n[i][1];
-            }
-        }
-#endif
 
-#if __cplusplus
-        static bool m_initialized;
-        static std::map<int, int> _DICT;
-#else
         static bool m_initialized = false;
         static bool m_cp932_available = false;
         static Encoding m_cp932 = null;
-#endif
 
         static void init() {
-#if __cplusplus
-            init_cor();
-            for( int i = 0; i < _LEN_DICT; i++ ){
-                _DICT.insert( map<int, int>::value_type( _DICT_SRC[i][0], _DICT_SRC[i][1] ) );
-            }
-#else
             try {
                 m_cp932 = Encoding.GetEncoding( 932 );
                 m_cp932_available = true;
             } catch {
                 m_cp932_available = false;
             }
-#endif
 #if DEBUG
             m_cp932_available = false;
 #endif
             m_initialized = true;
         }
 
-#if __cplusplus
-    public:
-        static vector<byte> convert( std::string str ){
-#else
         public static byte[] convert( string str ) {
-#endif
-#if !__cplusplus
             if ( !m_initialized ) {
                 init();
             }
             if ( m_cp932_available ) {
                 return m_cp932.GetBytes( str );
             } else {
-#endif
-#if __cplusplus
-                int len = str.size();
-                wchar_t *arr = new wchar_t[len];
-                vector<byte> list( 0 );
-                for( int i = 0; i < len; i++ ){
-#else
                 char[] arr = str.ToCharArray();
                 List<byte> list = new List<byte>();
                 for ( int i = 0; i < arr.Length; i++ ) {
-#endif
 #if DEBUG
                     System.Diagnostics.Debug.WriteLine( "arr[i]=" + arr[i] );
 #endif
-#if __cplusplus
-                    map<int, int>::const_iterator finder = _DICT.find( (int)arr[i] );
-                    if( finder != _DICT.end() ){
-#else
                     if ( _DICT.ContainsKey( (int)arr[i] ) ) {
-#endif
                         int t = _DICT[(int)arr[i]];
                         if ( t > 0xff ) {
                             byte b1 = (byte)(t >> 8);
                             byte b2 = (byte)(t - (b1 << 8));
-#if __cplusplus
-                            list.push_back( b1 );
-                            list.push_back( b2 );
-#else
                             list.Add( b1 );
                             list.Add( b2 );
-#endif
                         } else {
-#if __cplusplus
-                            list.push_back( (byte)t );
-#else
                             list.Add( (byte)t );
-#endif
                         }
                     } else {
-#if __cplusplus
-                        list.push_back( 0x63 );
-#else
                         list.Add( 0x63 );
-#endif
                     }
                 }
-#if __cplusplus
-                return list;
-#else
                 return list.ToArray();
             }
-#endif
         }
 
-
-#if __cplusplus
-    public:
-        static string convert( vector<byte> dat ){
-#else
         public static string convert( byte[] dat ) {
-#endif
             if ( !m_initialized ) {
                 init();
             }
-#if !__cplusplus
             if ( m_cp932_available ) {
                 char[] res = m_cp932.GetChars( dat );
                 return new string( res );
             } else {
-#endif
-#if __cplusplus
-                string sb( "" );
-#else
                 StringBuilder sb = new StringBuilder();
-#endif
                 int i = 0;
-#if __cplusplus
-                while( i < dat.size() ){
-#else
                 while ( i < dat.Length ) {
-#endif
                     int b1 = dat[i];
                     bool found = false;
-#if __cplusplus
-                    for( int j = 0; j < _LEN_DICT; j++ ){
-                        int key = _DICT_SRC[j][0];
-                        int test = _DICT_SRC[j][1];
-#else
                     foreach ( int key in _DICT.Keys ) {
                         int test = _DICT[key];
-#endif
                         if ( b1 == test ) {
                             found = true;
-#if __cplusplus
-                            sb = sb + (char)key;
-#else
                             sb.Append( ((char)key).ToString() );
-#endif
                             break;
                         }
                     }
                     i++;
-#if __cplusplus
-                    if( !found && i < dat.size() ){
-#else
                     if ( !found && i < dat.Length ) {
-#endif
                         int b2 = (dat[i - 1] << 8) + dat[i];
-#if __cplusplus
-                        for( int j = 0; j < _LEN_DICT; j++ ){
-                            int key = _DICT_SRC[j][0];
-                            int test = _DICT_SRC[j][1];
-#else
                         foreach ( int key in _DICT.Keys ) {
                             int test = _DICT[key];
-#endif
                             if ( test == b2 ) {
-#if __cplusplus
-                                sb = sb + (char)key;
-#else
                                 sb.Append( ((char)key).ToString() );
-#endif
                                 break;
                             }
                         }
                         i++;
                     }
                 }
-#if __cplusplus
-                return sb;
-#else
                 return sb.ToString();
             }
-#endif
         }
     };
 
 }
-
-#endif //__cp932__
+#endif

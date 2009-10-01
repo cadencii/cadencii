@@ -119,14 +119,14 @@ namespace Boare.Lib.Vsq {
             set {
                 m_list.Clear();
                 m_max_id = 0;
-                String[] spl = value.Split( ',' );
+                String[] spl = PortUtil.splitString( value, ',' );
                 for ( int i = 0; i < spl.Length; i++ ) {
-                    String[] spl2 = spl[i].Split( '=' );
+                    String[] spl2 = PortUtil.splitString( spl[i], '=' );
                     if ( spl2.Length < 2 ) {
                         continue;
                     }
                     try {
-                        m_list.Add( int.Parse( spl2[0] ), new VsqBPPair( int.Parse( spl2[1] ), m_max_id + 1 ) );
+                        m_list.Add( PortUtil.parseInt( spl2[0] ), new VsqBPPair( PortUtil.parseInt( spl2[1] ), m_max_id + 1 ) );
                         m_max_id++;
                     } catch ( Exception ex ) {
 #if DEBUG
@@ -424,9 +424,9 @@ namespace Boare.Lib.Vsq {
         public String appendFromText( TextMemoryStream reader ) {
             String last_line = reader.readLine();
             while ( !last_line.StartsWith( "[" ) ) {
-                String[] spl = last_line.Split( new char[] { '=' } );
-                int i1 = int.Parse( spl[0] );
-                int i2 = int.Parse( spl[1] );
+                String[] spl = PortUtil.splitString( last_line, new char[] { '=' } );
+                int i1 = PortUtil.parseInt( spl[0] );
+                int i2 = PortUtil.parseInt( spl[1] );
                 VsqBPPair v = new VsqBPPair( i2, m_max_id + 1 );
                 m_max_id++;
                 m_list.Add( i1, v );

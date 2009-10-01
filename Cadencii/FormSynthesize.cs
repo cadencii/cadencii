@@ -63,7 +63,7 @@ namespace Boare.Cadencii {
             m_temp_premeasure = temp_premeasure;
             m_reflect_amp_to_wave = reflect_amp_to_wave;
             ApplyLanguage();
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
         
         public FormSynthesize( VsqFileEx vsq, int presend, int[] tracks, String[] files, int end, boolean reflect_amp_to_wave ) {
@@ -78,7 +78,7 @@ namespace Boare.Cadencii {
             m_clock_end = end;
             m_reflect_amp_to_wave = reflect_amp_to_wave;
             ApplyLanguage();
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public void ApplyLanguage() {

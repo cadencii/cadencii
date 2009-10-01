@@ -36,7 +36,7 @@ namespace Boare.Cadencii {
         public PropertyPanel() {
             InitializeComponent();
             m_items = new Vector<VsqEventItemProxy>();
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
 
         public boolean Editing {

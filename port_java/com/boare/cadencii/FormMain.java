@@ -16,8 +16,10 @@ package com.boare.cadencii;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import com.boare.windows.forms.*;
+import com.boare.*;
 
-public class FormMain extends JFrame implements ActionListener, MouseListener{
+public class FormMain extends BForm implements ActionListener, MouseListener{
     private JMenuBar menuStripMain;
     private JMenu menuFile;
     private JMenu menuEdit;
@@ -34,8 +36,8 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private JCheckBoxMenuItem menuVisualEndMarker;
     private JCheckBoxMenuItem menuVisualLyrics;
     private JCheckBoxMenuItem menuVisualNoteProperty;
-    private JMenuItem menuSettingPreference;
-    private JMenuItem menuSettingDefaultSingerStyle;
+    private BMenuItem menuSettingPreference;
+    private BMenuItem menuSettingDefaultSingerStyle;
     private JMenu menuSettingPositionQuantize;
     private JCheckBoxMenuItem menuSettingPositionQuantize04;
     private JCheckBoxMenuItem menuSettingPositionQuantize08;
@@ -43,7 +45,7 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private JCheckBoxMenuItem menuSettingPositionQuantize32;
     private JCheckBoxMenuItem menuSettingPositionQuantize64;
     private JCheckBoxMenuItem menuSettingPositionQuantizeOff;
-    private JMenuItem menuSettingSingerProperty;
+    private BMenuItem menuSettingSingerProperty;
     private JCheckBoxMenuItem menuSettingPositionQuantizeTriplet;
     private JMenu menuSettingLengthQuantize;
     private JCheckBoxMenuItem menuSettingLengthQuantize04;
@@ -53,15 +55,15 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private JCheckBoxMenuItem menuSettingLengthQuantize64;
     private JCheckBoxMenuItem menuSettingLengthQuantizeOff;
     private JCheckBoxMenuItem menuSettingLengthQuantizeTriplet;
-    private JMenuItem menuFileNew;
-    private JMenuItem menuFileOpen;
-    private JMenuItem menuFileSave;
-    private JMenuItem menuFileSaveNamed;
+    private BMenuItem menuFileNew;
+    private BMenuItem menuFileOpen;
+    private BMenuItem menuFileSave;
+    private BMenuItem menuFileSaveNamed;
     private JMenu menuFileImport;
     private JMenu menuFileExport;
-    private JMenuItem menuFileQuit;
-    private JMenuItem menuEditUndo;
-    private JMenuItem menuEditRedo;
+    private BMenuItem menuFileQuit;
+    private BMenuItem menuEditUndo;
+    private BMenuItem menuEditRedo;
     private JPanel pictureBox2;
     private JPanel pictureBox3;
     private JPanel picturePositionIndicator;
@@ -119,21 +121,21 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private JMenu menuFileRecent;
     //private System.Windows.Forms.ToolTip toolTip;
     //private System.Windows.Forms.OpenFileDialog openXmlVsqDialog;
-    private JMenuItem menuEditCut;
-    private JMenuItem menuEditCopy;
-    private JMenuItem menuEditPaste;
-    private JMenuItem menuEditDelete;
-    private JMenuItem menuEditAutoNormalizeMode;
-    private JMenuItem menuEditSelectAll;
-    private JMenuItem menuEditSelectAllEvents;
+    private BMenuItem menuEditCut;
+    private BMenuItem menuEditCopy;
+    private BMenuItem menuEditPaste;
+    private BMenuItem menuEditDelete;
+    private BMenuItem menuEditAutoNormalizeMode;
+    private BMenuItem menuEditSelectAll;
+    private BMenuItem menuEditSelectAllEvents;
     public PictPianoRoll pictPianoRoll;
     private JCheckBoxMenuItem menuTrackOn;
-    private JMenuItem menuTrackAdd;
-    private JMenuItem menuTrackCopy;
-    private JMenuItem menuTrackChangeName;
-    private JMenuItem menuTrackDelete;
-    private JMenuItem menuTrackRenderCurrent;
-    private JMenuItem menuTrackRenderAll;
+    private BMenuItem menuTrackAdd;
+    private BMenuItem menuTrackCopy;
+    private BMenuItem menuTrackChangeName;
+    private BMenuItem menuTrackDelete;
+    private BMenuItem menuTrackRenderCurrent;
+    private BMenuItem menuTrackRenderAll;
     private JCheckBoxMenuItem menuTrackOverlay;
     /*private JMenu cMenuTrackTabTrackOn;
     private System.Windows.Forms.ToolStripSeparator toolStripMenuItem24;
@@ -161,20 +163,20 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private JMenu cMenuTrackSelectorDelete;
     private System.Windows.Forms.ToolStripSeparator toolStripMenuItem31;
     private JMenu cMenuTrackSelectorSelectAll;*/
-    private JMenuItem menuJobNormalize;
-    private JMenuItem menuJobInsertBar;
-    private JMenuItem menuJobDeleteBar;
-    private JMenuItem menuJobRandomize;
-    private JMenuItem menuJobConnect;
-    private JMenuItem menuJobLyric;
-    private JMenuItem menuJobRewire;
-    private JMenuItem menuLyricExpressionProperty;
-    private JMenuItem menuLyricSymbol;
-    private JMenuItem menuLyricDictionary;
-    private JMenuItem menuHelpAbout;
-    private JMenuItem menuHelpDebug;
-    private JMenuItem menuFileExportWave;
-    private JMenuItem menuFileExportMidi;
+    private BMenuItem menuJobNormalize;
+    private BMenuItem menuJobInsertBar;
+    private BMenuItem menuJobDeleteBar;
+    private BMenuItem menuJobRandomize;
+    private BMenuItem menuJobConnect;
+    private BMenuItem menuJobLyric;
+    private BMenuItem menuJobRewire;
+    private BMenuItem menuLyricExpressionProperty;
+    private BMenuItem menuLyricSymbol;
+    private BMenuItem menuLyricDictionary;
+    private BMenuItem menuHelpAbout;
+    private BMenuItem menuHelpDebug;
+    private BMenuItem menuFileExportWave;
+    private BMenuItem menuFileExportMidi;
     private JMenu menuScript;
     private JMenu menuHidden;
     /*private JMenu menuHiddenEditLyric;
@@ -184,7 +186,7 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private JMenu menuHiddenVisualBackwardParameter;
     private JMenu menuHiddenTrackNext;
     private JMenu menuHiddenTrackBack;*/
-    private JMenuItem menuJobReloadVsti;
+    private BMenuItem menuJobReloadVsti;
     //private JMenu cMenuPianoCurve;
     //private JMenu cMenuTrackSelectorCurve;
     private JSplitPane splitContainer1;
@@ -236,7 +238,7 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private System.Windows.Forms.ToolStripButton stripBtnEndMarker;*/
     private JScrollBar hScroll;
     private JScrollBar vScroll;
-    private JMenuItem menuLyricVibratoProperty;
+    private BMenuItem menuLyricVibratoProperty;
     //private JMenu cMenuPianoVibratoProperty;
     /*private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
     private System.Windows.Forms.StatusStrip statusStrip1;
@@ -248,14 +250,14 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
     private System.Windows.Forms.ToolStripLabel toolStripLabel10;
     private System.Windows.Forms.ToolStripLabel stripLblBeat;*/
-    private JMenuItem menuScriptUpdate;
+    private BMenuItem menuScriptUpdate;
     private JMenu menuSettingGameControler;
     /*private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     private System.Windows.Forms.ToolStripStatusLabel stripLblGameCtrlMode;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
     private System.Windows.Forms.ToolStripDropDownButton stripDDBtnSpeed;*/
-    private JMenuItem menuSettingGameControlerSetting;
-    private JMenuItem menuSettingGameControlerLoad;
+    private BMenuItem menuSettingGameControlerSetting;
+    private BMenuItem menuSettingGameControlerLoad;
     //private JMenu stripDDBtnLength128;
     //private JMenu stripDDBtnQuantize128;
     private JCheckBoxMenuItem menuSettingPositionQuantize128;
@@ -272,7 +274,7 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private System.Windows.Forms.OpenFileDialog openUstDialog;
     private System.Windows.Forms.ToolStripStatusLabel stripLblMidiIn;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;*/
-    private JMenuItem menuJobRealTime;
+    private BMenuItem menuJobRealTime;
     /*private JMenu cMenuTrackTabRenderer;
     private JMenu cMenuTrackTabRendererVOCALOID1;
     private JMenu cMenuTrackTabRendererVOCALOID2;
@@ -280,7 +282,7 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private JCheckBoxMenuItem menuVisualPitchLine;
     /*private System.Windows.Forms.OpenFileDialog openMidiDialog;
     private System.Windows.Forms.SaveFileDialog saveMidiDialog;*/
-    private JMenuItem menuFileImportMidi;
+    private BMenuItem menuFileImportMidi;
     /*private System.Windows.Forms.ToolStrip toolStripFile;
     private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
@@ -299,63 +301,63 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
     private JMenu cMenuPianoPaletteTool;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;*/
-    private JMenuItem menuSettingPaletteTool;
-    private JMenuItem menuTrackMasterTuning;
+    private BMenuItem menuSettingPaletteTool;
+    private BMenuItem menuTrackMasterTuning;
     //private JMenu cMenuTrackTabMasterTuning;
     private JMenu menuTrackRenderer;
     private JCheckBoxMenuItem menuTrackRendererVOCALOID1;
     private JCheckBoxMenuItem menuTrackRendererVOCALOID2;
     private JCheckBoxMenuItem menuTrackRendererUtau;
-    private JMenuItem menuFileImportVsq;
-    private JMenuItem menuSettingShortcut;
+    private BMenuItem menuFileImportVsq;
+    private BMenuItem menuSettingShortcut;
     /*private System.Windows.Forms.ToolStripTextBox stripDDBtnSpeedTextbox;
     private JMenu stripDDBtnSpeed033;
     private JMenu stripDDBtnSpeed050;
     private JMenu stripDDBtnSpeed100;*/
-    private JMenuItem menuSettingMidi;
+    private BMenuItem menuSettingMidi;
     private JCheckBoxMenuItem menuVisualProperty;
-    private JMenuItem menuFileOpenVsq;
-    private JMenuItem menuFileOpenUst;
-    private JMenuItem menuSettingGameControlerRemove;
+    private BMenuItem menuFileOpenVsq;
+    private BMenuItem menuFileOpenUst;
+    private BMenuItem menuSettingGameControlerRemove;
     /*private JMenu menuHiddenCopy;
     private JMenu menuHiddenPaste;
     private JMenu menuHiddenCut;*/
-    private JMenuItem menuSettingUtauVoiceDB;
+    private BMenuItem menuSettingUtauVoiceDB;
     //private System.Windows.Forms.ToolStrip toolStripBottom;
     private JLabel statusLabel;
 
     public FormMain(){
         super( "Cadencii - Untitled" );
-        InitializeComponent();
+        initializeComponent();
     }
 
-    private void InitializeComponent() {
+    private void initializeComponent() {
         menuStripMain = new JMenuBar();
         menuFile = new JMenu();
-        menuFileNew = new JMenuItem();
-        menuFileOpen = new JMenuItem();
-        menuFileSave = new JMenuItem();
-        menuFileSaveNamed = new JMenuItem();
-        menuFileOpenVsq = new JMenuItem();
-        menuFileOpenUst = new JMenuItem();
+        menuFileNew = new BMenuItem();
+        menuFileOpen = new BMenuItem();
+        menuFileSave = new BMenuItem();
+        menuFileSaveNamed = new BMenuItem();
+        menuFileOpenVsq = new BMenuItem();
+        menuFileOpenUst = new BMenuItem();
         menuFileImport = new JMenu();
-        menuFileImportVsq = new JMenuItem();
-        menuFileImportMidi = new JMenuItem();
+        menuFileImportVsq = new BMenuItem();
+        menuFileImportMidi = new BMenuItem();
         menuFileExport = new JMenu();
-        menuFileExportWave = new JMenuItem();
-        menuFileExportMidi = new JMenuItem();
+        menuFileExportWave = new BMenuItem();
+        menuFileExportMidi = new BMenuItem();
         menuFileRecent = new JMenu();
-        menuFileQuit = new JMenuItem();
+        menuFileQuit = new BMenuItem();
         menuEdit = new JMenu();
-        menuEditUndo = new JMenuItem();
-        menuEditRedo = new JMenuItem();
-        menuEditCut = new JMenuItem();
-        menuEditCopy = new JMenuItem();
-        menuEditPaste = new JMenuItem();
-        menuEditDelete = new JMenuItem();
-        menuEditAutoNormalizeMode = new JMenuItem();
-        menuEditSelectAll = new JMenuItem();
-        menuEditSelectAllEvents = new JMenuItem();
+        menuEditUndo = new BMenuItem();
+        menuEditRedo = new BMenuItem();
+        menuEditCut = new BMenuItem();
+        menuEditCopy = new BMenuItem();
+        menuEditPaste = new BMenuItem();
+        menuEditDelete = new BMenuItem();
+        menuEditAutoNormalizeMode = new BMenuItem();
+        menuEditSelectAll = new BMenuItem();
+        menuEditSelectAllEvents = new BMenuItem();
         menuVisual = new JMenu();
         menuVisualControlTrack = new JCheckBoxMenuItem();
         menuVisualMixer = new JCheckBoxMenuItem();
@@ -368,47 +370,47 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
         menuVisualNoteProperty = new JCheckBoxMenuItem();
         menuVisualPitchLine = new JCheckBoxMenuItem();
         menuJob = new JMenu();
-        menuJobNormalize = new JMenuItem();
-        menuJobInsertBar = new JMenuItem();
-        menuJobDeleteBar = new JMenuItem();
-        menuJobRandomize = new JMenuItem();
-        menuJobConnect = new JMenuItem();
-        menuJobLyric = new JMenuItem();
-        menuJobRewire = new JMenuItem();
-        menuJobRealTime = new JMenuItem();
-        menuJobReloadVsti = new JMenuItem();
+        menuJobNormalize = new BMenuItem();
+        menuJobInsertBar = new BMenuItem();
+        menuJobDeleteBar = new BMenuItem();
+        menuJobRandomize = new BMenuItem();
+        menuJobConnect = new BMenuItem();
+        menuJobLyric = new BMenuItem();
+        menuJobRewire = new BMenuItem();
+        menuJobRealTime = new BMenuItem();
+        menuJobReloadVsti = new BMenuItem();
         menuTrack = new JMenu();
         menuTrackOn = new JCheckBoxMenuItem();
-        menuTrackAdd = new JMenuItem();
-        menuTrackCopy = new JMenuItem();
-        menuTrackChangeName = new JMenuItem();
-        menuTrackDelete = new JMenuItem();
-        menuTrackRenderCurrent = new JMenuItem();
-        menuTrackRenderAll = new JMenuItem();
+        menuTrackAdd = new BMenuItem();
+        menuTrackCopy = new BMenuItem();
+        menuTrackChangeName = new BMenuItem();
+        menuTrackDelete = new BMenuItem();
+        menuTrackRenderCurrent = new BMenuItem();
+        menuTrackRenderAll = new BMenuItem();
         menuTrackOverlay = new JCheckBoxMenuItem();
         menuTrackRenderer = new JMenu();
         menuTrackRendererVOCALOID1 = new JCheckBoxMenuItem();
         menuTrackRendererVOCALOID2 = new JCheckBoxMenuItem();
         menuTrackRendererUtau = new JCheckBoxMenuItem();
-        menuTrackMasterTuning = new JMenuItem();
+        menuTrackMasterTuning = new BMenuItem();
         menuLyric = new JMenu();
-        menuLyricExpressionProperty = new JMenuItem();
-        menuLyricVibratoProperty = new JMenuItem();
-        menuLyricSymbol = new JMenuItem();
-        menuLyricDictionary = new JMenuItem();
+        menuLyricExpressionProperty = new BMenuItem();
+        menuLyricVibratoProperty = new BMenuItem();
+        menuLyricSymbol = new BMenuItem();
+        menuLyricDictionary = new BMenuItem();
         menuScript = new JMenu();
-        menuScriptUpdate = new JMenuItem();
+        menuScriptUpdate = new BMenuItem();
         menuSetting = new JMenu();
-        menuSettingPreference = new JMenuItem();
+        menuSettingPreference = new BMenuItem();
         menuSettingGameControler = new JMenu();
-        menuSettingGameControlerSetting = new JMenuItem();
-        menuSettingGameControlerLoad = new JMenuItem();
-        menuSettingGameControlerRemove = new JMenuItem();
-        menuSettingPaletteTool = new JMenuItem();
-        menuSettingShortcut = new JMenuItem();
-        menuSettingMidi = new JMenuItem();
-        menuSettingUtauVoiceDB = new JMenuItem();
-        menuSettingDefaultSingerStyle = new JMenuItem();
+        menuSettingGameControlerSetting = new BMenuItem();
+        menuSettingGameControlerLoad = new BMenuItem();
+        menuSettingGameControlerRemove = new BMenuItem();
+        menuSettingPaletteTool = new BMenuItem();
+        menuSettingShortcut = new BMenuItem();
+        menuSettingMidi = new BMenuItem();
+        menuSettingUtauVoiceDB = new BMenuItem();
+        menuSettingDefaultSingerStyle = new BMenuItem();
         menuSettingPositionQuantize = new JMenu();
         menuSettingPositionQuantize04 = new JCheckBoxMenuItem();
         menuSettingPositionQuantize08 = new JCheckBoxMenuItem();
@@ -427,10 +429,10 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
         menuSettingLengthQuantize128 = new JCheckBoxMenuItem();
         menuSettingLengthQuantizeOff = new JCheckBoxMenuItem();
         menuSettingLengthQuantizeTriplet = new JCheckBoxMenuItem();
-        menuSettingSingerProperty = new JMenuItem();
+        menuSettingSingerProperty = new BMenuItem();
         menuHelp = new JMenu();
-        menuHelpAbout = new JMenuItem();
-        menuHelpDebug = new JMenuItem();
+        menuHelpAbout = new BMenuItem();
+        menuHelpDebug = new BMenuItem();
         menuHidden = new JMenu();
         /*menuHiddenEditLyric = new JMenu();
         menuHiddenEditFlipToolPointerPencil = new JMenu();
@@ -707,8 +709,8 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
         menuFileOpen.setName( "menuFileOpen" );
         menuFileOpen.setText( "Open(O)" );
         menuFileOpen.addMouseListener( new MenuDescriptionActivator( statusLabel, "Open Cadencii project." ) );
-        menuFileOpen.setActionCommand( "commonFileOpen_Click" );
-        menuFileOpen.addActionListener( this );
+        menuFileOpen.clickEvent.add( new BEventHandler( this, "commonFileOpen_Click" ) );
+      //menuFileOpen.Click += new EventHandler( this.commonFileOpen_Click );
         // 
         // menuFileSave
         // 
@@ -3466,6 +3468,10 @@ public class FormMain extends JFrame implements ActionListener, MouseListener{
         }
     }
     
+    public void commonFileOpen_Click( Object sender, BEventArgs e ){
+        System.out.println( "FormMain#commonFileOpen_Click" );
+    }
+
     public void actionPerformed( ActionEvent e ){
         String cmd = e.getActionCommand();
         if( cmd.equals( "commonFileNew_Click" ) ){

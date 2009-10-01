@@ -37,7 +37,7 @@ namespace Boare.Cadencii {
             CopyDict( m_dict, ref m_first_dict );
             ApplyLanguage();
             UpdateList();
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont ); 
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont ); 
         }
 
         public void ApplyLanguage() {

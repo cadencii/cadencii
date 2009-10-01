@@ -159,7 +159,7 @@ namespace Boare.Cadencii {
             }
             comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
 
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
             Size current_size = this.ClientSize;
             this.ClientSize = new Size( current_size.Width, flowLayoutPanel.ClientSize.Height + flowLayoutPanel.Top * 2 );
             this.FormBorderStyle = FormBorderStyle.FixedDialog;

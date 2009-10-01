@@ -24,7 +24,7 @@ namespace Boare.Cadencii {
             ApplyLanguage();
             numStart.Maximum = max_barcount;
             numEnd.Maximum = max_barcount;
-            Misc.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
         }
         
         public void ApplyLanguage() {

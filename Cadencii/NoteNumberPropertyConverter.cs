@@ -15,6 +15,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 
+using bocoree;
 using Boare.Lib.Vsq;
 
 namespace Boare.Cadencii {
@@ -237,13 +238,15 @@ namespace Boare.Cadencii {
 
                 value = value.Substring( trim );
                 int draft_scale;
-                if ( int.TryParse( value, out draft_scale ) ) {
+                try {
+                    draft_scale = PortUtil.parseInt( value );
                     scale = draft_scale;
                     break;
+                } catch ( Exception ex ) {
                 }
             }
             if ( AppManager.editorConfig != null ) {
-                if ( exp_type                                             == NoteNumberExpressionType.International && 
+                if ( exp_type == NoteNumberExpressionType.International &&
                      AppManager.editorConfig.PropertyWindowStatus.LastUsedNoteNumberExpression == NoteNumberExpressionType.Deutsche ) {
                     // do nothing
                 } else {

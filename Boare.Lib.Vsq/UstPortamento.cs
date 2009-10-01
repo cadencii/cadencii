@@ -72,20 +72,20 @@ namespace Boare.Lib.Vsq {
         */
         public void ParseLine( String line ) {
             line = line.ToLower();
-            String[] spl = line.Split( '=' );
+            String[] spl = PortUtil.splitString( line, '=' );
             if ( spl.Length == 0 ) {
                 return;
             }
-            String[] values = spl[1].Split( ',' );
+            String[] values = PortUtil.splitString( spl[1], ',' );
             if ( line.StartsWith( "pbs=" ) ) {
-                Start = int.Parse( values[0] );
+                Start = PortUtil.parseInt( values[0] );
             } else if ( line.StartsWith( "pbw=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
                     if ( i >= Points.size() ) {
                         Points.add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
-                    up.Step = int.Parse( values[i] );
+                    up.Step = PortUtil.parseInt( values[i] );
                     Points.set( i, up );
                 }
             } else if ( line.StartsWith( "pby=" ) ) {
@@ -94,7 +94,7 @@ namespace Boare.Lib.Vsq {
                         Points.add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
-                    up.Value = float.Parse( values[i] );
+                    up.Value = PortUtil.parseFloat( values[i] );
                     Points.set( i, up );
                 }
             } else if ( line.StartsWith( "pbm=" ) ) {
