@@ -13,12 +13,12 @@
  */
 using System;
 using System.Windows.Forms;
-
 using Boare.Lib.AppUtil;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     
-    partial class FormTempoConfig : Form {
+    partial class FormTempoConfig : BForm {
         public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, decimal tempo, int pre_measure ) {
             InitializeComponent();
             ApplyLanguage();
@@ -33,11 +33,11 @@ namespace Boare.Cadencii {
             numClock.Maximum = clock_max;
             numClock.Value = clock;
             numTempo.Value = tempo;
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
         public void ApplyLanguage() {

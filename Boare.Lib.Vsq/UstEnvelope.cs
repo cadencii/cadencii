@@ -11,14 +11,26 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
+#if JAVA
+package org.kbinani.vsq;
 
+import java.io.*;
+import org.kbinani.*;
+#else
+using System;
 using bocoree;
 
-namespace Boare.Lib.Vsq {
+namespace Boare.Lib.Vsq
+{
+#endif
 
+#if JAVA
+    public class UstEnvelope implements Cloneable, Serializable
+#else
     [Serializable]
-    public class UstEnvelope : ICloneable {
+    public class UstEnvelope : ICloneable
+#endif
+    {
         public int p1 = 0;
         public int p2 = 5;
         public int p3 = 35;
@@ -31,14 +43,18 @@ namespace Boare.Lib.Vsq {
         public int p5 = 0;
         public int v5 = 100;
 
-        public UstEnvelope() {
+        public UstEnvelope()
+        {
         }
 
-        public UstEnvelope( String line ) {
-            if ( line.ToLower().StartsWith( "envelope=" ) ) {
+        public UstEnvelope( String line )
+        {
+            if ( line.ToLower().StartsWith( "envelope=" ) )
+            {
                 String[] spl = PortUtil.splitString( line, '=' );
                 spl = PortUtil.splitString( spl[1], ',' );
-                if ( spl.Length < 7 ) {
+                if ( spl.Length < 7 )
+                {
                     return;
                 }
                 //Separator = "";
@@ -49,7 +65,8 @@ namespace Boare.Lib.Vsq {
                 v2 = PortUtil.parseInt( spl[4] );
                 v3 = PortUtil.parseInt( spl[5] );
                 v4 = PortUtil.parseInt( spl[6] );
-                if ( spl.Length == 11 ) {
+                if ( spl.Length == 11 )
+                {
                     //Separator = "%";
                     p4 = PortUtil.parseInt( spl[8] );
                     p5 = PortUtil.parseInt( spl[9] );
@@ -58,23 +75,42 @@ namespace Boare.Lib.Vsq {
             }
         }
 
-        public object Clone() {
-            return new UstEnvelope( ToString() );
+        public Object clone()
+        {
+            return new UstEnvelope( toString() );
         }
 
-        public override String ToString() {
+#if !JAVA
+        public object Clone()
+        {
+            return clone();
+        }
+#endif
+
+#if !JAVA
+        public override string ToString()
+        {
+            return toString();
+        }
+#endif
+
+        public String toString()
+        {
             String ret = "Envelope=" + p1 + "," + p2 + "," + p3 + "," + v1 + "," + v2 + "," + v3 + "," + v4;
             ret += ",%," + p4 + "," + p5 + "," + v5;
             return ret;
         }
 
-        public int getCount() {
+        public int getCount()
+        {
             //if ( Separator == "%" ) {
-                return 5;
+            return 5;
             //} else {
-                //return 4;
+            //return 4;
             //}
         }
     }
 
+#if !JAVA
 }
+#endif

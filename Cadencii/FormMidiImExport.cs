@@ -16,18 +16,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Boare.Lib.AppUtil;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
 
-    public partial class FormMidiImExport : Form {
+    public partial class FormMidiImExport : BForm {
         public enum FormMidiMode {
-            Import,
-            Export,
-            ImportVsq,
+            IMPORT,
+            EXPORT,
+            IMPORT_VSQ,
         }
 
         private FormMidiMode m_mode;
@@ -36,124 +35,120 @@ namespace Boare.Cadencii {
         public FormMidiImExport() {
             InitializeComponent();
             ApplyLanguage();
-            Mode = FormMidiMode.Export;
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            setMode( FormMidiMode.EXPORT );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public void ApplyLanguage() {
-            if ( m_mode == FormMidiMode.Export ) {
-                this.Text = _( "Midi Export" );
-            } else if ( m_mode == FormMidiMode.Import ) {
-                this.Text = _( "Midi Import" );
+            if ( m_mode == FormMidiMode.EXPORT ) {
+                setTitle( _( "Midi Export" ) );
+            } else if ( m_mode == FormMidiMode.IMPORT ) {
+                setTitle( _( "Midi Import" ) );
             } else {
-                this.Text = _( "VSQ/Vocaloid Midi Import" );
+                setTitle( _( "VSQ/Vocaloid Midi Import" ) );
             }
             columnTrack.Text = _( "Track" );
             columnName.Text = _( "Name" );
             columnNumNotes.Text = _( "Notes" );
-            btnCheckAll.Text = _( "Check All" );
-            btnUnckeckAll.Text = _( "Uncheck All" );
+            btnCheckAll.setText( _( "Check All" ) );
+            btnUnckeckAll.setText( _( "Uncheck All" ) );
             groupCommonOption.Text = _( "Option" );
-            btnOK.Text = _( "OK" );
-            btnCancel.Text = _( "Cancel" );
-            chkTempo.Text = _( "Tempo" );
-            chkBeat.Text = _( "Beat" );
-            chkNote.Text = _( "Note" );
-            chkLyric.Text = _( "Lyrics" );
-            chkExportVocaloidNrpn.Text = _( "vocaloid NRPN" );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
+            chkTempo.setText( _( "Tempo" ) );
+            chkBeat.setText( _( "Beat" ) );
+            chkNote.setText( _( "Note" ) );
+            chkLyric.setText( _( "Lyrics" ) );
+            chkExportVocaloidNrpn.setText( _( "vocaloid NRPN" ) );
         }
 
-        public FormMidiMode Mode {
-            get {
+        public FormMidiMode getMode() {
                 return m_mode;
-            }
-            set {
-                m_mode = value;
-                chkExportVocaloidNrpn.Enabled = (m_mode == FormMidiMode.Export);
-                chkLyric.Enabled = (m_mode != FormMidiMode.ImportVsq);
-                chkNote.Enabled = (m_mode != FormMidiMode.ImportVsq);
-                chkPreMeasure.Enabled = (m_mode != FormMidiMode.ImportVsq);
-                if ( m_mode == FormMidiMode.Export ) {
-                    this.Text = _( "Midi Export" );
-                    chkPreMeasure.Text = _( "Export pre-measure part" );
-                    if ( chkExportVocaloidNrpn.Checked ) {
-                        chkPreMeasure.Enabled = false;
-                        AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus = chkPreMeasure.Checked;
-                        chkPreMeasure.Checked = true;
-                    } else {
-                        chkPreMeasure.Checked = AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus;
-                    }
-                    if ( chkNote.Checked ) {
-                        chkMetaText.Enabled = false;
-                        AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.Checked;
-                        chkMetaText.Checked = false;
-                    } else {
-                        chkMetaText.Checked = AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus;
-                    }
-                } else if ( m_mode == FormMidiMode.Import ) {
-                    this.Text = _( "Midi Import" );
-                    chkPreMeasure.Text = _( "Inserting start at pre-measure" );
-                    chkMetaText.Enabled = false;
-                    AppManager.editorConfig.MidiImExportConfigImport.LastMetatextCheckStatus = chkMetaText.Checked;
-                    chkMetaText.Checked = false;
+        }
+
+        public void setMode( FormMidiMode value ) {
+            m_mode = value;
+            chkExportVocaloidNrpn.setEnabled( (m_mode == FormMidiMode.EXPORT) );
+            chkLyric.setEnabled( (m_mode != FormMidiMode.IMPORT_VSQ) );
+            chkNote.setEnabled( (m_mode != FormMidiMode.IMPORT_VSQ) );
+            chkPreMeasure.setEnabled( (m_mode != FormMidiMode.IMPORT_VSQ) );
+            if ( m_mode == FormMidiMode.EXPORT ) {
+                this.Text = _( "Midi Export" );
+                chkPreMeasure.setText( _( "Export pre-measure part" ) );
+                if ( chkExportVocaloidNrpn.isSelected() ) {
+                    chkPreMeasure.setEnabled( false );
+                    AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus = chkPreMeasure.isSelected();
+                    chkPreMeasure.setSelected( true );
                 } else {
-                    this.Text = _( "VSQ/Vocaloid Midi Import" );
-                    chkPreMeasure.Text = _( "Inserting start at pre-measure" );
-                    chkPreMeasure.Checked = false;
-                    AppManager.editorConfig.MidiImExportConfigImportVsq.LastMetatextCheckStatus = chkMetaText.Checked;
-                    chkMetaText.Checked = true;
+                    chkPreMeasure.setSelected( AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus );
                 }
+                if ( chkNote.isSelected() ) {
+                    chkMetaText.setEnabled( false );
+                    AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.isSelected();
+                    chkMetaText.setSelected( false );
+                } else {
+                    chkMetaText.setSelected( AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus );
+                }
+            } else if ( m_mode == FormMidiMode.IMPORT ) {
+                setTitle( _( "Midi Import" ) );
+                chkPreMeasure.setText( _( "Inserting start at pre-measure" ) );
+                chkMetaText.setEnabled( false );
+                AppManager.editorConfig.MidiImExportConfigImport.LastMetatextCheckStatus = chkMetaText.isSelected();
+                chkMetaText.setSelected( false );
+            } else {
+                setTitle( _( "VSQ/Vocaloid Midi Import" ) );
+                chkPreMeasure.setText( _( "Inserting start at pre-measure" ) );
+                chkPreMeasure.setSelected( false );
+                AppManager.editorConfig.MidiImExportConfigImportVsq.LastMetatextCheckStatus = chkMetaText.isSelected();
+                chkMetaText.setSelected( true );
             }
         }
 
         private static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
-        public boolean VocaloidMetatext {
-            get {
-                return chkMetaText.Checked;
+        public boolean isVocaloidMetatext() {
+            if ( chkNote.isSelected() )
+            {
+                return false;
             }
-        }
-
-        public boolean VocaloidNrpn {
-            get {
-                return chkExportVocaloidNrpn.Checked;
-            }
-        }
-
-        public boolean Tempo {
-            get {
-                return chkTempo.Checked;
-            }
-            set {
-                chkTempo.Checked = value;
+            else
+            {
+                return chkMetaText.isSelected();
             }
         }
 
-        public boolean Timesig {
-            get {
-                return chkBeat.Checked;
-            }
-            set {
-                chkBeat.Checked = value;
-            }
+        public boolean isVocaloidNrpn() {
+            return chkExportVocaloidNrpn.isSelected();
         }
 
-        public boolean Notes {
-            get {
-                return chkNote.Checked;
-            }
+        public boolean isTempo() {
+            return chkTempo.isSelected();
         }
 
-        public boolean Lyric {
-            get {
-                return chkLyric.Checked;
-            }
+        public void setTempo( boolean value ) {
+            chkTempo.setSelected( value );
+        }
+
+        public boolean isTimesig() {
+            return chkBeat.isSelected();
+        }
+
+        public void setTimesig( boolean value ) {
+            chkBeat.setSelected( value );
+        }
+
+        public boolean isNotes() {
+            return chkNote.isSelected();
+        }
+
+        public boolean isLyric() {
+            return chkLyric.isSelected();
         }
 
         public boolean isPreMeasure() {
-            return chkPreMeasure.Checked;
+            return chkPreMeasure.isSelected();
         }
 
         private void btnCheckAll_Click( object sender, EventArgs e ) {
@@ -169,7 +164,7 @@ namespace Boare.Cadencii {
         }
 
         private void chkExportVocaloidNrpn_CheckedChanged( object sender, EventArgs e ) {
-            if ( m_mode == FormMidiMode.Export ) {
+            if ( m_mode == FormMidiMode.EXPORT ) {
                 if ( chkExportVocaloidNrpn.Checked ) {
                     chkPreMeasure.Enabled = false;
                     AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus = chkPreMeasure.Checked;
@@ -182,7 +177,7 @@ namespace Boare.Cadencii {
         }
 
         private void chkNote_CheckedChanged( object sender, EventArgs e ) {
-            if ( m_mode == FormMidiMode.Export ) {
+            if ( m_mode == FormMidiMode.EXPORT ) {
                 if ( chkNote.Checked ) {
                     chkMetaText.Enabled = false;
                     AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.Checked;
@@ -195,7 +190,7 @@ namespace Boare.Cadencii {
         }
 
         private void chkMetaText_Click( object sender, EventArgs e ) {
-            if ( m_mode == FormMidiMode.Export ) {
+            if ( m_mode == FormMidiMode.EXPORT ) {
                 AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.Checked;
             }
         }

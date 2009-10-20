@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * ISO639.cs
  * Copyright (c) 2008-2009 kbinani
  *
@@ -27,3 +28,4 @@ namespace Boare.Lib.AppUtil {
     }
 
 }
+#endif

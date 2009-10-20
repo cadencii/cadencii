@@ -12,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
+using bocoree.xml;
 
 namespace Boare.Cadencii {
 
@@ -49,7 +49,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// スクリプト設定を保存し/読み込むためのXMLシリアライザ
         /// </summary>
-        public XmlStaticMemberSerializer Serializer;
+        public XmlSerializer Serializer;
         /// <summary>
         /// 最後にスクリプトをコンパイルしたときの，スクリプトが記述されたファイルのタイムスタンプ
         /// </summary>

@@ -11,29 +11,47 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
+#if JAVA
+package org.kbinani.Cadencii;
 
-using Boare.Lib.Vsq;
+import java.util.*;
+import org.kbinani.*;
+#else
+using System;
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Cadencii {
+#endif
 
+#if JAVA
+    public class AttachedCurve implements Cloneable{
+#else
     public class AttachedCurve : ICloneable {
+#endif
         private Vector<BezierCurves> m_curves = new Vector<BezierCurves>();
 
+#if !JAVA
         /// <summary>
         /// XML保存用
         /// </summary>
         public Vector<BezierCurves> Curves {
             get {
-                return m_curves;
+                return getCurves();
             }
             set {
-                m_curves = value;
+                setCurves( value );
             }
+        }
+#endif
+
+        public Vector<BezierCurves> getCurves() {
+            return m_curves;
+        }
+
+        public void setCurves( Vector<BezierCurves> value ) {
+            m_curves = value;
         }
 
         public BezierCurves get( int index ) {
@@ -65,9 +83,13 @@ namespace Boare.Cadencii {
             return ret;
         }
 
+#if !JAVA
         public object Clone() {
             return clone();
         }
+#endif
     }
 
+#if !JAVA
 }
+#endif

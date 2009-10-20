@@ -11,12 +11,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 namespace Boare.Cadencii {
+#endif
 
+    /// <summary>
+    /// プラットフォームを表す列挙型．
+    /// （互換性のため，Javaの命名規則に基づくリファクタリングは未実施．）
+    /// </summary>
     public enum Platform {
         Windows,
         Macintosh,
         Linux,
     }
 
+#if !JAVA
 }
+#endif

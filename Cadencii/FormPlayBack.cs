@@ -14,6 +14,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using bocoree;
 
 namespace Boare.Cadencii {
 
@@ -36,7 +37,7 @@ namespace Boare.Cadencii {
                 for ( int j = 0; j < n; j++ ) {
                     Console.Write( "  " + c[i, j] );
                 }
-                Console.WriteLine();
+                PortUtil.println( "" );
             }
 #endif
             dots = new dot[n];
@@ -50,7 +51,7 @@ namespace Boare.Cadencii {
 
         public static void CalculateStaticPosition( int n, ref dot[] dots, int[,] c, int max_step ) {
 #if DEBUG
-            Console.WriteLine( "CalculateStaticPosition" );
+            PortUtil.println( "CalculateStaticPosition" );
 #endif
             const double _M = 20.0;
             const double _DT2 = 0.001; // dt^2 / 2
@@ -130,7 +131,7 @@ namespace Boare.Cadencii {
                     dots[i].x = old[i].x + dx;
                     dots[i].y = old[i].y + dy;
 #if DEBUG
-                    Console.WriteLine( "(i,x,y)=" + i + "," + dots[i].x + "," + dots[i].y );
+                    PortUtil.println( "(i,x,y)=" + i + "," + dots[i].x + "," + dots[i].y );
 #endif
                 }
 
@@ -157,9 +158,9 @@ namespace Boare.Cadencii {
 
         private void btnRecalculation_Click( object sender, EventArgs e ) {
             try {
-                Console.WriteLine( "btnRecalculation_Click" );
+                PortUtil.println( "btnRecalculation_Click" );
                 int max = int.Parse( txtCalcNum.Text );
-                Console.WriteLine( "    max=" + max );
+                PortUtil.println( "    max=" + max );
                 CalculateStaticPosition( n, ref dots, c, max );
                 this.Refresh();
             } catch {

@@ -11,14 +11,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
+#if JAVA
+package org.kbinani.vsq;
 
+import java.io.*;
+#else
+using System;
 using bocoree;
 
-namespace Boare.Lib.Vsq{
+namespace Boare.Lib.Vsq
+{
+#endif
 
+#if JAVA
+    public class TimeSigTableEntry implements Comparable<TimeSigTableEntry>, Cloneable, Serializable
+#else
     [Serializable]
-    public class TimeSigTableEntry : IComparable<TimeSigTableEntry>, ICloneable {
+    public class TimeSigTableEntry : IComparable<TimeSigTableEntry>, ICloneable
+#endif
+    {
         /// <summary>
         /// クロック数
         /// </summary>
@@ -40,27 +51,48 @@ namespace Boare.Lib.Vsq{
             int clock,
             int numerator,
             int denominator,
-            int bar_count ) {
+            int bar_count )
+        {
             Clock = clock;
             Numerator = numerator;
             Denominator = denominator;
             BarCount = bar_count;
         }
 
-        public TimeSigTableEntry() {
+        public TimeSigTableEntry()
+        {
         }
 
-        public override String ToString() {
+        public override String ToString()
+        {
             return "{Clock=" + Clock + ", Numerator=" + Numerator + ", Denominator=" + Denominator + ", BarCount=" + BarCount + "}";
         }
 
-        public object Clone() {
+        public Object clone()
+        {
             return new TimeSigTableEntry( Clock, Numerator, Denominator, BarCount );
         }
 
-        public int CompareTo( TimeSigTableEntry item ) {
+#if !JAVA
+        public object Clone()
+        {
+            return clone();
+        }
+#endif
+
+        public int compareTo( TimeSigTableEntry item )
+        {
             return this.BarCount - item.BarCount;
         }
+
+#if !JAVA
+        public int CompareTo( TimeSigTableEntry item )
+        {
+            return compareTo( item );
+        }
+#endif
     }
 
+#if !JAVA
 }
+#endif

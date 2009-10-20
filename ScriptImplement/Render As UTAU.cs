@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Boare.Lib.Vsq;
 using Boare.Lib.AppUtil;
 using bocoree;
+using bocoree.util;
 
 public class RenderAsUtau : Form {
     private System.ComponentModel.IContainer components = null;
@@ -102,7 +103,7 @@ public class RenderAsUtau : Form {
     }
 
     void ApplyLanguage() {
-        if ( Messaging.Language == "ja" ) {
+        if ( Messaging.getLanguage() == "ja" ) {
             groupSinger.Text = "音源";
             groupConfig.Text = "設定";
             btnCancel.Text = "取消";

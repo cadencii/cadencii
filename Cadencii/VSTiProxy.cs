@@ -20,17 +20,18 @@ using System.Threading;
 using System.ComponentModel;
 using System.Security;
 using System.Windows.Forms;
-
 using Boare.Lib.Vsq;
 using Boare.Lib.Media;
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Cadencii {
 
     using boolean = System.Boolean;
 
     public delegate void WaveIncomingEventHandler( double[] L, double[] R );
-    public delegate void RenderingFinishedEventHandler();
+    //public delegate void RenderingFinishedEventHandler();
 
     public static class VSTiProxy {
         public const String RENDERER_DSB2 = "DSB2";
@@ -38,7 +39,7 @@ namespace Boare.Cadencii {
         public const String RENDERER_UTU0 = "UTU0";
         public const String RENDERER_STR0 = "STR0";
         public const int SAMPLE_RATE = 44100;
-        private const int BLOCK_SIZE = 4410;
+        public const int BLOCK_SIZE = 4410;
 
         public static String CurrentUser = "";
         private static String s_working_renderer = "";
@@ -54,8 +55,7 @@ namespace Boare.Cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "VSTiProxy..cctor" );
 #endif
-            PlaySound.Init( BLOCK_SIZE, SAMPLE_RATE );
-            PlaySound.SetResolution( 4410 );
+            PlaySound.init( SAMPLE_RATE );
 #if !DEBUG
             try {
 #endif
@@ -190,7 +190,7 @@ namespace Boare.Cadencii {
         ) {
             s_working_renderer = VSTiProxy.RENDERER_DSB3;
             if ( direct_play ) {
-                PlaySound.Reset();
+                PlaySound.reset();
             }
             Vector<WaveReader> reader = new Vector<WaveReader>();
             for ( int i = 0; i < files.Length; i++ ) {
@@ -237,6 +237,9 @@ namespace Boare.Cadencii {
             split.updateTotalClocks();
             long total_samples = (long)((end_sec - start_sec) * SAMPLE_RATE);
             int trim_msec = (int)(trim_sec * 1000.0);
+#if DEBUG
+            PortUtil.println( "VSTiProxy#render; trim_msec=" + trim_msec );
+#endif
 
             s_rendering_context = null;
             if ( s_working_renderer.Equals( VSTiProxy.RENDERER_UTU0 ) ) {
@@ -358,7 +361,7 @@ namespace Boare.Cadencii {
         }
 
         public static float getPlayTime() {
-            double pos = PlaySound.GetPosition();
+            double pos = PlaySound.getPosition();
             return (float)pos;
         }
     }

@@ -11,16 +11,32 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import org.kbinani.windows.forms.*;
+#else
 using System;
 using System.Windows.Forms;
+using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
-
+namespace Boare.Cadencii
+{
     using boolean = System.Boolean;
+#endif
 
-    class TextBoxEx : TextBox {
-        protected override boolean IsInputKey( Keys keyData ) {
-            switch ( keyData ) {
+#if JAVA
+    public class TextBoxEx extends BTextBox
+#else
+    public class TextBoxEx : BTextBox
+#endif
+    {
+
+#if !JAVA
+        protected override boolean IsInputKey( Keys keyData )
+        {
+            switch ( keyData )
+            {
                 case Keys.Tab:
                 case Keys.Tab | Keys.Shift:
                     break;
@@ -29,7 +45,9 @@ namespace Boare.Cadencii {
             }
             return true;
         }
-
+#endif
     }
 
+#if !JAVA
 }
+#endif

@@ -11,32 +11,46 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.awt.*;
+import java.util.*;
+import java.io.*;
+import org.kbinani.*;
+#else
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.Serialization;
-
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class BezierChain implements Cloneable{
+#else
     [Serializable]
     public class BezierChain : IDisposable, ICloneable {
+#endif
         public Vector<BezierPoint> points;
         public double Default;
         public int id;
         private Color m_color;
+        const double EPSILON = 1e-9;
 
         /// <summary>
         /// このベジエ曲線の開始位置を取得します。データ点が1つも無い場合はdouble.NaNを返します
         /// </summary>
         public double getStart() {
             if ( points.size() <= 0 ) {
-                return double.NaN;
+                return Double.NaN;
             } else {
-                return points.get( 0 ).getBase().X;
+                return points.get( 0 ).getBase().getX();
             }
         }
 
@@ -45,9 +59,9 @@ namespace Boare.Cadencii {
         /// </summary>
         public double getEnd() {
             if ( points.size() <= 0 ) {
-                return double.NaN;
+                return Double.NaN;
             } else {
-                return points.get( points.size() - 1 ).getBase().X;
+                return points.get( points.size() - 1 ).getBase().getX();
             }
         }
 
@@ -62,37 +76,37 @@ namespace Boare.Cadencii {
         /// <param name="x"></param>
         /// <returns></returns>
         public static PointD[] cutUnitBezier( PointD X0, PointD C0, PointD C1, PointD X1, double x ) {
-            if ( X0.X >= x || x >= X1.X ) {
+            if ( X0.getX() >= x || x >= X1.getX() ) {
                 throw new ArgumentOutOfRangeException();
             }
             PointD[] ret = new PointD[7];
             for ( int i = 0; i < 7; i++ ) {
                 ret[i] = new PointD();
             }
-            ret[0].X = X0.X;
-            ret[0].Y = X0.Y;
-            ret[6].X = X1.X;
-            ret[6].Y = X1.Y;
+            ret[0].setX( X0.getX() );
+            ret[0].setY( X0.getY() );
+            ret[6].setX( X1.getX() );
+            ret[6].setY( X1.getY() );
 
-            double x1 = X0.X;
-            double x2 = C0.X;
-            double x3 = C1.X;
-            double x4 = X1.X;
+            double x1 = X0.getX();
+            double x2 = C0.getX();
+            double x3 = C1.getX();
+            double x4 = X1.getX();
             double a3 = x4 - 3.0 * x3 + 3.0 * x2 - x1;
             double a2 = 3.0 * x3 - 6.0 * x2 + 3.0 * x1;
             double a1 = 3.0 * (x2 - x1);
             double a0 = x1;
             double t = solveCubicEquation( a3, a2, a1, a0, x );
-            x1 = X0.Y;
-            x2 = C0.Y;
-            x3 = C1.Y;
-            x4 = X1.Y;
+            x1 = X0.getY();
+            x2 = C0.getY();
+            x3 = C1.getY();
+            x4 = X1.getY();
             a3 = x4 - 3 * x3 + 3 * x2 - x1;
             a2 = 3 * x3 - 6 * x2 + 3 * x1;
             a1 = 3 * (x2 - x1);
             a0 = x1;
-            ret[3].X = x;
-            ret[3].Y = ((a3 * t + a2) * t + a1) * t + a0;
+            ret[3].setX( x );
+            ret[3].setY( ((a3 * t + a2) * t + a1) * t + a0 );
             ret[1] = getMidPoint( X0, C0, t );
             ret[5] = getMidPoint( C1, X1, t );
             PointD m = getMidPoint( C0, C1, t );
@@ -109,8 +123,8 @@ namespace Boare.Cadencii {
         /// <param name="t"></param>
         /// <returns></returns>
         private static PointD getMidPoint( PointD p0, PointD p1, double t ) {
-            double x = p0.X + (p1.X - p0.X) * t;
-            double y = p0.Y + (p1.Y - p0.Y) * t;
+            double x = p0.getX() + (p1.getX() - p0.getX()) * t;
+            double y = p0.getY() + (p1.getY() - p0.getY()) * t;
             return new PointD( x, y );
         }
 
@@ -118,8 +132,8 @@ namespace Boare.Cadencii {
             if ( this.size() <= 1 ) {
                 throw new ArgumentException( "chain must has two or more bezier points" );
             }
-            double start = this.points.get( 0 ).getBase().X;
-            double end = this.points.get( this.size() - 1 ).getBase().X;
+            double start = this.points.get( 0 ).getBase().getX();
+            double end = this.points.get( this.size() - 1 ).getBase().getX();
             
             // [from, to]が、このベジエ曲線の範囲内にあるかどうかを検査
             if ( start > t_start || t_end > end ) {
@@ -128,11 +142,11 @@ namespace Boare.Cadencii {
 
             // t_start, t_endが既存のベジエデータ点位置を被っていないかどうか検査しながらコピー
             boolean t_start_added = false; // 最初の区間が追加された直後だけ立つフラグ
-            BezierChain edited = new BezierChain( this.Color );
+            BezierChain edited = new BezierChain( m_color );
             int count = 0;
             for ( int i = 0; i < this.points.size() - 1; i++ ) {
-                if ( this.points.get( i ).getBase().X < t_start && t_start < this.points.get( i + 1 ).getBase().X ) {
-                    if ( this.points.get( i ).getBase().X < t_end && t_end < this.points.get( i + 1 ).getBase().X ) {
+                if ( this.points.get( i ).getBase().getX() < t_start && t_start < this.points.get( i + 1 ).getBase().getX() ) {
+                    if ( this.points.get( i ).getBase().getX() < t_end && t_end < this.points.get( i + 1 ).getBase().getX() ) {
 #if DEBUG
                         AppManager.debugWriteLine( "points[i].Base.X < t_start < t_end < points[i + 1].Base.X" );
 #endif
@@ -189,7 +203,7 @@ namespace Boare.Cadencii {
                         t_start_added = true;
                     }
                 }
-                if ( t_start <= this.points.get( i ).getBase().X && this.points.get( i ).getBase().X <= t_end ) {
+                if ( t_start <= this.points.get( i ).getBase().getX() && this.points.get( i ).getBase().getX() <= t_end ) {
                     if ( !t_start_added ) {
                         edited.points.add( (BezierPoint)this.points.get( i ).Clone() );
                         count++;
@@ -197,7 +211,7 @@ namespace Boare.Cadencii {
                         t_start_added = false;
                     }
                 }
-                if ( this.points.get( i ).getBase().X < t_end && t_end < this.points.get( i + 1 ).getBase().X ) {
+                if ( this.points.get( i ).getBase().getX() < t_end && t_end < this.points.get( i + 1 ).getBase().getX() ) {
                     PointD x0 = this.points.get( i ).getBase();
                     PointD x1 = this.points.get( i + 1 ).getBase();
                     PointD c0 = (this.points.get( i ).getControlRightType() == BezierControlType.None) ?
@@ -217,13 +231,13 @@ namespace Boare.Cadencii {
                 }
             }
 
-            if ( this.points.get( this.points.size() - 1 ).getBase().X == t_end && !t_start_added ) {
+            if ( this.points.get( this.points.size() - 1 ).getBase().getX() == t_end && !t_start_added ) {
                 edited.add( (BezierPoint)this.points.get( this.points.size() - 1 ).Clone() );
                 count++;
             }
 
             for ( int i = 0; i < edited.size(); i++ ) {
-                edited.points.get( i ).ID = i;
+                edited.points.get( i ).setID( i );
             }
             return edited;
         }
@@ -242,10 +256,10 @@ namespace Boare.Cadencii {
         /// <returns></returns>
         public static boolean isBezierImplicit( BezierChain chain ) {
             for ( int i = 0; i < chain.points.size() - 1; i++ ) {
-                double pt1 = chain.points.get( i ).getBase().X;
-                double pt2 = (chain.points.get( i ).getControlRightType() == BezierControlType.None) ? pt1 : chain.points.get( i ).getControlRight().X;
-                double pt4 = chain.points.get( i + 1 ).getBase().X;
-                double pt3 = (chain.points.get( i + 1 ).getControlLeftType() == BezierControlType.None) ? pt4 : chain.points.get( i + 1 ).getControlLeft().X;
+                double pt1 = chain.points.get( i ).getBase().getX();
+                double pt2 = (chain.points.get( i ).getControlRightType() == BezierControlType.None) ? pt1 : chain.points.get( i ).getControlRight().getX();
+                double pt4 = chain.points.get( i + 1 ).getBase().getX();
+                double pt3 = (chain.points.get( i + 1 ).getControlLeftType() == BezierControlType.None) ? pt4 : chain.points.get( i + 1 ).getControlLeft().getX();
                 if ( !isUnitBezierImplicit( pt1, pt2, pt3, pt4 ) ) {
                     return false;
                 }
@@ -308,12 +322,14 @@ namespace Boare.Cadencii {
             }
         }
 
+#if !JAVA
         [OnDeserialized]
         private void onDeserialized( StreamingContext sc ) {
             for ( int i = 0; i < points.size(); i++ ) {
-                points.get( i ).ID = i;
+                points.get( i ).setID( i );
             }
         }
+#endif
 
         public void Dispose() {
             if ( points != null ) {
@@ -323,9 +339,9 @@ namespace Boare.Cadencii {
 
         public int getNextId() {
             if ( points.size() > 0 ) {
-                int max = points.get( 0 ).ID;
+                int max = points.get( 0 ).getID();
                 for ( int i = 1; i < points.size(); i++ ) {
-                    max = Math.Max( max, points.get( i ).ID );
+                    max = Math.Max( max, points.get( i ).getID() );
                 }
                 return max + 1;
             } else {
@@ -333,24 +349,24 @@ namespace Boare.Cadencii {
             }
         }
         
-        public void getValueMinMax( out double min, out double max ) {
+        public void getValueMinMax( ByRef<Double> min, ByRef<Double> max ) {
             //todo: ベジエが有効なときに、曲線の描く最大値、最小値も考慮
-            min = Default;
-            max = Default;
+            min.value = Default;
+            max.value = Default;
             for ( Iterator itr = points.iterator(); itr.hasNext(); ){
                 BezierPoint bp = (BezierPoint)itr.next();
-                min = Math.Min( min, bp.getBase().Y );
-                max = Math.Max( max, bp.getBase().Y );
+                min.value = Math.Min( min.value, bp.getBase().getY() );
+                max.value = Math.Max( max.value, bp.getBase().getY() );
             }
         }
 
-        public void getKeyMinMax( out double min, out double max ) {
-            min = Default;
-            max = Default;
+        public void getKeyMinMax( ByRef<Double> min, ByRef<Double> max ) {
+            min.value = Default;
+            max.value = Default;
             for ( Iterator itr = points.iterator(); itr.hasNext(); ){
                 BezierPoint bp = (BezierPoint)itr.next();
-                min = Math.Min( min, bp.getBase().X );
-                max = Math.Max( max, bp.getBase().X );
+                min.value = Math.Min( min.value, bp.getBase().getX() );
+                max.value = Math.Max( max.value, bp.getBase().getX() );
             }
         }
         
@@ -365,9 +381,11 @@ namespace Boare.Cadencii {
             return result;
         }
 
+#if !JAVA
         public object Clone() {
             return clone();
         }
+#endif
 
         public BezierChain( Color curve ) {
             points = new Vector<BezierPoint>();
@@ -379,13 +397,23 @@ namespace Boare.Cadencii {
             m_color = Color.Black;
         }
 
-        public Color Color {
+#if !JAVA
+        /*public Color Color {
             get {
-                return m_color;
+                return getColor();
             }
             set {
-                m_color = value;
+                setColor( value );
             }
+        }*/
+#endif
+
+        public Color getColor() {
+            return m_color;
+        }
+
+        public void setColor( Color value ) {
+            m_color = value;
         }
 
         public void add( BezierPoint bp ) {
@@ -399,7 +427,7 @@ namespace Boare.Cadencii {
 
         public void removeElementAt( int id_ ) {
             for ( int i = 0; i < points.size(); i++ ) {
-                if ( points.get( i ).ID == id_ ) {
+                if ( points.get( i ).getID() == id_ ) {
                     points.removeElementAt( i );
                     break;
                 }
@@ -418,25 +446,25 @@ namespace Boare.Cadencii {
             for ( int i = 0; i < count - 1; i++ ) {
                 BezierPoint bpi = points.get( i );
                 BezierPoint bpi1 = points.get( i + 1 );
-                if ( bpi.getBase().X <= x && x <= bpi1.getBase().X ) {
-                    double x1 = bpi.getBase().X;
-                    double x4 = bpi1.getBase().X;
+                if ( bpi.getBase().getX() <= x && x <= bpi1.getBase().getX() ) {
+                    double x1 = bpi.getBase().getX();
+                    double x4 = bpi1.getBase().getX();
                     if ( x1 == x ) {
-                        return bpi.getBase().Y;
+                        return bpi.getBase().getY();
                     } else if ( x4 == x ) {
-                        return bpi1.getBase().Y;
+                        return bpi1.getBase().getY();
                     } else {
-                        double x2 = bpi.getControlRight().X;
-                        double x3 = bpi1.getControlLeft().X;
+                        double x2 = bpi.getControlRight().getX();
+                        double x3 = bpi1.getControlLeft().getX();
                         double a3 = x4 - 3 * x3 + 3 * x2 - x1;
                         double a2 = 3 * x3 - 6 * x2 + 3 * x1;
                         double a1 = 3 * (x2 - x1);
                         double a0 = x1;
                         double t = solveCubicEquation( a3, a2, a1, a0, x );
-                        x1 = bpi.getBase().Y;
-                        x2 = bpi.getControlRight().Y;
-                        x3 = bpi1.getControlLeft().Y;
-                        x4 = bpi1.getBase().Y;
+                        x1 = bpi.getBase().getY();
+                        x2 = bpi.getControlRight().getY();
+                        x3 = bpi1.getControlLeft().getY();
+                        x4 = bpi1.getBase().getY();
                         a3 = x4 - 3 * x3 + 3 * x2 - x1;
                         a2 = 3 * x3 - 6 * x2 + 3 * x1;
                         a1 = 3 * (x2 - x1);
@@ -458,7 +486,6 @@ namespace Boare.Cadencii {
         /// <param name="ans"></param>
         /// <returns></returns>
         private static double solveCubicEquation( double a3, double a2, double a1, double a0, double ans ) {
-            const double EPSILON = 1e-9;
             double suggested_t = 0.5;
             double a3_3 = a3 * 3.0;
             double a2_2 = a2 * 2.0;
@@ -478,4 +505,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

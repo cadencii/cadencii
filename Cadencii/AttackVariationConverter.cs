@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * AttackVariationConverter.cs
  * Copyright (c) 2009 kbinani
  *
@@ -14,9 +15,10 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Cadencii {
 
@@ -97,3 +99,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

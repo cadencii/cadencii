@@ -12,16 +12,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
 using System.ComponentModel;
-using System.Drawing;
-
+using System.Windows.Forms;
 using Boare.Cadencii;
-using Boare.Lib.Vsq;
 using Boare.Lib.Media;
+using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
 
 namespace GenerateKeySound {
     class Program : Form {
@@ -62,7 +59,7 @@ namespace GenerateKeySound {
                 comboSingingSynthSystem.SelectedIndex = 0;
             }
             updateSinger();
-            txtDir.Text = Path.Combine( Application.StartupPath, "cache" );
+            txtDir.Text = PortUtil.combinePath( Application.StartupPath, "cache" );
         }
 
         private void updateSinger() {
@@ -102,7 +99,7 @@ namespace GenerateKeySound {
             String singer = "Miku";
             object locker = new object();
             double amp = 1.0;
-            String dir = Path.Combine( Application.StartupPath, "cache" );
+            String dir = PortUtil.combinePath( Application.StartupPath, "cache" );
             bool replace = true;
             int search = -1;
             int arguments = 0;
@@ -209,7 +206,7 @@ namespace GenerateKeySound {
             Console.WriteLine( "                     AMP must be 0 <= AMP (defualt is 1.0)" );
             //Console.WriteLine( "    -pchange NUMBER  Sets the value of Program Change (short: -p)" );
             Console.WriteLine( "    -dir DIRECTORY   Specifies the directory of output (short: -d)" );
-            Console.WriteLine( "                     default of DIRECTORY is \"." + Path.DirectorySeparatorChar + "cache\"" );
+            Console.WriteLine( "                     default of DIRECTORY is \"." + System.IO.Path.DirectorySeparatorChar + "cache\"" );
             Console.WriteLine( "    -replace         Switch to overwrite exisiting WAVs (short: -r)" );
             Console.WriteLine( "    -singer          Specifies singer (short: -s)" );
             Console.WriteLine();
@@ -474,12 +471,12 @@ namespace GenerateKeySound {
             String dir = arg.directory;
             bool replace = arg.replace;
             // 音源を準備
-            if ( !Directory.Exists( dir ) ) {
-                Directory.CreateDirectory( dir );
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
+                System.IO.Directory.CreateDirectory( dir );
             }
 
             for ( int i = 0; i < 127; i++ ) {
-                string path = Path.Combine( dir, i + ".wav" );
+                string path = PortUtil.combinePath( dir, i + ".wav" );
                 Console.Write( "writing \"" + path + "\" ..." );
                 if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
                     try {
@@ -487,9 +484,9 @@ namespace GenerateKeySound {
                         if ( PortUtil.isFileExists( path ) ) {
                             try {
                                 Wave wv = new Wave( path );
-                                wv.TrimSilence();
-                                wv.Monoralize();
-                                wv.Write( path );
+                                wv.trimSilence();
+                                wv.monoralize();
+                                wv.write( path );
                             } catch {
                             }
                         }
@@ -512,12 +509,12 @@ namespace GenerateKeySound {
             String dir = arg.directory;
             bool replace = arg.replace;
             // 音源を準備
-            if ( !Directory.Exists( dir ) ) {
-                Directory.CreateDirectory( dir );
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
+                System.IO.Directory.CreateDirectory( dir );
             }
 
             for ( int i = 0; i < 127; i++ ) {
-                string path = Path.Combine( dir, i + ".wav" );
+                string path = PortUtil.combinePath( dir, i + ".wav" );
                 Console.Write( "writing \"" + path + "\" ..." );
                 if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
                     try {
@@ -525,9 +522,9 @@ namespace GenerateKeySound {
                         if ( PortUtil.isFileExists( path ) ) {
                             try {
                                 Wave wv = new Wave( path );
-                                wv.TrimSilence();
-                                wv.Monoralize();
-                                wv.Write( path );
+                                wv.trimSilence();
+                                wv.monoralize();
+                                wv.write( path );
                             } catch {
                             }
                         }

@@ -58,19 +58,14 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="AddItemEventHandler.cs" />
     <Compile Include="AppManager.cs" />
     <Compile Include="FormConfigUtauVoiceConfig.cs" />
     <Compile Include="FormGenerateStf.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormGenerateStf.Designer.cs">
-      <DependentUpon>FormGenerateStf.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormUtauVoiceConfig.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormUtauVoiceConfig.designer.cs">
-      <DependentUpon>FormUtauVoiceConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

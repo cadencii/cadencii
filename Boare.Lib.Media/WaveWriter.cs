@@ -14,21 +14,25 @@
 using System;
 using System.IO;
 
-namespace Boare.Lib.Media {
+namespace Boare.Lib.Media
+{
 
-    public class WaveWriter : IDisposable {
-        private WaveChannel m_channel;
+    public class WaveWriter : IDisposable
+    {
+        private Wave.WaveChannel m_channel;
         private ushort m_bit_per_sample;
         private uint m_sample_rate;
         private uint m_total_samples = 0;
         private FileStream m_stream = null;
         private string m_path = "";
 
-        public WaveWriter( string path ) : 
-            this ( path, WaveChannel.Stereo, 16, 44100 ) {
+        public WaveWriter( string path ) :
+            this( path, Wave.WaveChannel.Stereo, 16, 44100 )
+        {
         }
 
-        public WaveWriter( string path, WaveChannel channel, ushort bit_per_sample, uint sample_rate ) {
+        public WaveWriter( string path, Wave.WaveChannel channel, ushort bit_per_sample, uint sample_rate )
+        {
             m_path = path;
             m_stream = new FileStream( m_path, FileMode.Create, FileAccess.Write );
             m_channel = channel;
@@ -41,7 +45,8 @@ namespace Boare.Lib.Media {
         /// <summary>
         /// Writes header of WAVE file
         /// </summary>
-        private void WriteHeader() {
+        private void WriteHeader()
+        {
             // RIFF
             m_stream.WriteByte( 0x52 ); // loc=0x00
             m_stream.WriteByte( 0x49 );
@@ -77,10 +82,13 @@ namespace Boare.Lib.Media {
             m_stream.WriteByte( 0x00 );
 
             // チャンネル数
-            if ( m_channel == WaveChannel.Monoral ) {
+            if ( m_channel == Wave.WaveChannel.Monoral )
+            {
                 m_stream.WriteByte( 0x01 ); // loc=0x16
                 m_stream.WriteByte( 0x00 );
-            } else {
+            }
+            else
+            {
                 m_stream.WriteByte( 0x02 ); //loc=0x16
                 m_stream.WriteByte( 0x00 );
             }
@@ -90,7 +98,8 @@ namespace Boare.Lib.Media {
             WriteByteArray( m_stream, buf, 4 ); // 0x18
 
             // データ速度
-            ushort block_size = (ushort)(m_bit_per_sample / 8 * (int)m_channel);
+            int ichannel = m_channel == Wave.WaveChannel.Stereo ? 2 : 1;
+            ushort block_size = (ushort)(m_bit_per_sample / 8 * ichannel);
             uint data_rate = m_sample_rate * block_size;
             buf = BitConverter.GetBytes( data_rate );
             WriteByteArray( m_stream, buf, 4 );//loc=0x1c
@@ -119,8 +128,10 @@ namespace Boare.Lib.Media {
             WriteByteArray( m_stream, buf, 4 );
         }
 
-        public void Close(){
-            if ( m_stream != null ) {
+        public void Close()
+        {
+            if ( m_stream != null )
+            {
                 // 最後にWAVEチャンクのサイズ
                 uint position = (uint)m_stream.Position;
                 m_stream.Seek( 4, SeekOrigin.Begin );
@@ -128,7 +139,8 @@ namespace Boare.Lib.Media {
                 WriteByteArray( m_stream, buf, 4 );
 
                 // size of data chunk
-                ushort block_size = (ushort)(m_bit_per_sample / 8 * (int)m_channel);
+                int ichannel = m_channel == Wave.WaveChannel.Stereo ? 2 : 1;
+                ushort block_size = (ushort)(m_bit_per_sample / 8 * ichannel);
                 uint size = block_size * m_total_samples;
                 m_stream.Seek( 42, SeekOrigin.Begin );
                 buf = BitConverter.GetBytes( size );
@@ -138,39 +150,56 @@ namespace Boare.Lib.Media {
             }
         }
 
-        public uint SampleRate {
-            get {
+        public uint SampleRate
+        {
+            get
+            {
                 return m_sample_rate;
             }
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             Close();
         }
 
-        public void Append( float[] L ) {
+        public void Append( float[] L )
+        {
             int total = L.Length;
-            if ( m_bit_per_sample == 8 ) {
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+            if ( m_bit_per_sample == 8 )
+            {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + 1.0f) * 127.5f) );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         byte b = (byte)((L[i] + 1.0f) * 127.5f);
                         m_stream.WriteByte( b );
                         m_stream.WriteByte( b );
                     }
                 }
-            } else {
+            }
+            else
+            {
                 byte[] buf;
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)(L[i] * 32768f) );
                         WriteByteArray( m_stream, buf, 2 );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)(L[i] * 32768f) );
                         WriteByteArray( m_stream, buf, 2 );
                         WriteByteArray( m_stream, buf, 2 );
@@ -180,29 +209,43 @@ namespace Boare.Lib.Media {
             m_total_samples += (uint)total;
         }
 
-        public void Append( double[] L ) {
+        public void Append( double[] L )
+        {
             int total = L.Length;
-            if ( m_bit_per_sample == 8 ) {
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+            if ( m_bit_per_sample == 8 )
+            {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + 1.0) * 127.5) );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         byte b = (byte)((L[i] + 1.0) * 127.5);
                         m_stream.WriteByte( b );
                         m_stream.WriteByte( b );
                     }
                 }
-            } else {
+            }
+            else
+            {
                 byte[] buf;
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)(L[i] * 32768.0) );
                         WriteByteArray( m_stream, buf, 2 );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)(L[i] * 32768.0) );
                         WriteByteArray( m_stream, buf, 2 );
                         WriteByteArray( m_stream, buf, 2 );
@@ -212,28 +255,42 @@ namespace Boare.Lib.Media {
             m_total_samples += (uint)total;
         }
 
-        public void Append( float[] L, float[] R ) {
+        public void Append( float[] L, float[] R )
+        {
             int total = Math.Min( L.Length, R.Length );
-            if ( m_bit_per_sample == 8 ) {
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+            if ( m_bit_per_sample == 8 )
+            {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + R[i] + 2.0f) * 63.75f) );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + 1.0f) * 127.5f) );
                         m_stream.WriteByte( (byte)((R[i] + 1.0f) * 127.5f) );
                     }
                 }
-            } else {
+            }
+            else
+            {
                 byte[] buf;
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)((L[i] + R[i]) * 16384f) );
                         WriteByteArray( m_stream, buf, 2 );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)(L[i] * 32768f) );
                         WriteByteArray( m_stream, buf, 2 );
                         buf = BitConverter.GetBytes( (short)(R[i] * 32768f) );
@@ -244,27 +301,41 @@ namespace Boare.Lib.Media {
             m_total_samples += (uint)total;
         }
 
-        public unsafe void Append( float* L, float* R, int length ) {
-            if ( m_bit_per_sample == 8 ) {
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < length; i++ ) {
+        public unsafe void Append( float* L, float* R, int length )
+        {
+            if ( m_bit_per_sample == 8 )
+            {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < length; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + R[i] + 2.0f) * 63.75f) );
                     }
-                } else {
-                    for ( int i = 0; i < length; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < length; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + 1.0f) * 127.5f) );
                         m_stream.WriteByte( (byte)((R[i] + 1.0f) * 127.5f) );
                     }
                 }
-            } else {
+            }
+            else
+            {
                 byte[] buf;
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < length; i++ ) {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < length; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)((L[i] + R[i]) * 16384f) );
                         WriteByteArray( m_stream, buf, 2 );
                     }
-                } else {
-                    for ( int i = 0; i < length; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < length; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)(L[i] * 32768f) );
                         WriteByteArray( m_stream, buf, 2 );
                         buf = BitConverter.GetBytes( (short)(R[i] * 32768f) );
@@ -275,31 +346,45 @@ namespace Boare.Lib.Media {
             m_total_samples += (uint)length;
         }
 
-        public void Append( double[] L, double[] R ) {
+        public void Append( double[] L, double[] R )
+        {
             int total = Math.Min( L.Length, R.Length );
 #if DEBUG
             Console.WriteLine( "WaveWriter#Append(double[], double[]); total=" + total );
 #endif
-            if ( m_bit_per_sample == 8 ) {
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+            if ( m_bit_per_sample == 8 )
+            {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + R[i] + 2.0) * 63.75) );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + 1.0) * 127.5) );
                         m_stream.WriteByte( (byte)((R[i] + 1.0) * 127.5) );
                     }
                 }
-            } else {
+            }
+            else
+            {
                 byte[] buf;
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)((L[i] + R[i]) * 16384.0) );
                         WriteByteArray( m_stream, buf, 2 );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)(L[i] * 32768.0) );
                         WriteByteArray( m_stream, buf, 2 );
                         buf = BitConverter.GetBytes( (short)(R[i] * 32768.0) );
@@ -310,28 +395,42 @@ namespace Boare.Lib.Media {
             m_total_samples += (uint)total;
         }
 
-        public void Append( byte[] L, byte[] R ) {
+        public void Append( byte[] L, byte[] R )
+        {
             int total = Math.Min( L.Length, R.Length );
-            if ( m_bit_per_sample == 8 ) {
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+            if ( m_bit_per_sample == 8 )
+            {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + R[i]) / 2) );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( L[i] );
                         m_stream.WriteByte( R[i] );
                     }
                 }
-            } else {
+            }
+            else
+            {
                 byte[] buf;
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)((L[i] + R[i]) * 128.5f - 32768f) );
                         WriteByteArray( m_stream, buf, 2 );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (short)(L[i] * 257f - 32768f) );
                         WriteByteArray( m_stream, buf, 2 );
                         buf = BitConverter.GetBytes( (short)(R[i] * 257f - 32768f) );
@@ -342,28 +441,42 @@ namespace Boare.Lib.Media {
             m_total_samples += (uint)total;
         }
 
-        public void Append( short[] L, short[] R ) {
+        public void Append( short[] L, short[] R )
+        {
             int total = Math.Min( L.Length, R.Length );
-            if ( m_bit_per_sample == 8 ) {
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+            if ( m_bit_per_sample == 8 )
+            {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( (byte)(((L[i] + R[i]) / 2f + 32768f) / 255f) );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         m_stream.WriteByte( (byte)((L[i] + 32768f) / 255f) );
                         m_stream.WriteByte( (byte)((R[i] + 32768f) / 255f) );
                     }
                 }
-            } else {
+            }
+            else
+            {
                 byte[] buf;
-                if ( m_channel == WaveChannel.Monoral ) {
-                    for ( int i = 0; i < total; i++ ) {
+                if ( m_channel == Wave.WaveChannel.Monoral )
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( (L[i] + R[i]) / 2 );
                         WriteByteArray( m_stream, buf, 2 );
                     }
-                } else {
-                    for ( int i = 0; i < total; i++ ) {
+                }
+                else
+                {
+                    for ( int i = 0; i < total; i++ )
+                    {
                         buf = BitConverter.GetBytes( L[i] );
                         WriteByteArray( m_stream, buf, 2 );
                         buf = BitConverter.GetBytes( R[i] );
@@ -374,10 +487,13 @@ namespace Boare.Lib.Media {
             m_total_samples += (uint)total;
         }
 
-        private static void WriteByteArray( FileStream fs, byte[] dat, int limit ) {
+        private static void WriteByteArray( FileStream fs, byte[] dat, int limit )
+        {
             fs.Write( dat, 0, (dat.Length > limit) ? limit : dat.Length );
-            if ( dat.Length < limit ) {
-                for ( int i = 0; i < limit - dat.Length; i++ ) {
+            if ( dat.Length < limit )
+            {
+                for ( int i = 0; i < limit - dat.Length; i++ )
+                {
                     fs.WriteByte( 0x00 );
                 }
             }

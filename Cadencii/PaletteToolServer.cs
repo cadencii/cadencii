@@ -19,10 +19,10 @@ using System.Reflection;
 using System.CodeDom.Compiler;
 using System.Drawing;
 using System.Xml.Serialization;
-
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
 
 namespace Boare.Cadencii {
 
@@ -78,7 +78,7 @@ namespace Boare.Cadencii {
 
         public static boolean InvokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( LoadedTools.containsKey( id ) ) {
-                VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( track ).Clone();
+                VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( track ).clone();
                 boolean edited = ((IPaletteTool)LoadedTools.get( id )).edit( item, vsq_event_intrenal_ids, button );
                 if ( edited ) {
                     //CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( track, item, AppManager.VsqFile.AttachedCurves[track - 1], AppManager.VsqFile.getPitchCurve( track ) );

@@ -11,11 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
     public class BgmFile : ICloneable {
         public String file;
@@ -36,9 +39,13 @@ namespace Boare.Cadencii {
             return ret;
         }
 
+#if !JAVA
         public object Clone() {
             return clone();
         }
+#endif
     }
 
+#if !JAVA
 }
+#endif

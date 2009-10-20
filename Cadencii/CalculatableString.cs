@@ -11,19 +11,31 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 using System.ComponentModel;
+using bocoree;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
+#if !JAVA
     [TypeConverter( typeof( CalculatableStringConverter ) )]
+#endif
     public class CalculatableString {
         private String m_value = "0";
         private int m_int = 0;
 
-        public CalculatableString() : this( 0 ) {
+#if JAVA
+        public CalculatableString(){
+            this( 0 );
+#else
+        public CalculatableString()
+            : this( 0 ) {
+#endif
         }
 
         public CalculatableString( int value ) {
@@ -31,7 +43,7 @@ namespace Boare.Cadencii {
             m_value = "" + value;
         }
 
-        public override boolean Equals( object obj ) {
+        public boolean equals( Object obj ) {
             if ( obj is CalculatableString ) {
                 if ( m_int == ((CalculatableString)obj).m_int ) {
                     return true;
@@ -43,28 +55,34 @@ namespace Boare.Cadencii {
             }
         }
 
-        public String str {
-            get {
-                return m_value;
-            }
-            set {
-                int i = m_int;
-                try {
-                    i = (int)eval( 0.0, value );
-                    String trim = value.Trim();
-                    if ( trim.StartsWith( "-" ) ) {
-                        m_int -= i;
-                    } else if ( trim.StartsWith( "+" ) ) {
-                        m_int += i;
-                    } else {
-                        m_int = i;
-                    }
-                    m_value = "" + m_int;
-                } catch ( Exception ex ) {
-#if DEBUG
-                    Console.WriteLine( "CalculatableString#set_str; ex=" + ex );
+#if !JAVA
+        public override bool Equals( object obj )
+        {
+            return equals( obj );
+        }
 #endif
+
+        public String getStr() {
+            return m_value;
+        }
+
+        public void setStr( String value ) {
+            int i = m_int;
+            try {
+                i = (int)eval( 0.0, value );
+                String trim = value.Trim();
+                if ( trim.StartsWith( "-" ) ) {
+                    m_int -= i;
+                } else if ( trim.StartsWith( "+" ) ) {
+                    m_int += i;
+                } else {
+                    m_int = i;
                 }
+                m_value = "" + m_int;
+            } catch ( Exception ex ) {
+#if DEBUG
+                PortUtil.println( "CalculatableString#set_str; ex=" + ex );
+#endif
             }
         }
 
@@ -111,7 +129,7 @@ namespace Boare.Cadencii {
                 }
                 if ( m0 > equ.Length - 1 ) { break; }
             }
-            double valResult = double.Parse( evalMy0( equ ) );
+            double valResult = PortUtil.parseDouble( evalMy0( equ ) );
             return valResult;
         }
 
@@ -137,16 +155,16 @@ namespace Boare.Cadencii {
                     if ( equ.Substring( n2 - 3, n2 - n2 + 3 ).Equals( "log" ) ) {
                         // Math.log(A,B) のとき
                         String strA = str.Substring( 0, ne0 - 0 ); // Math.log(A,B)の A の文字
-                        double valA = double.Parse( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
+                        double valA = PortUtil.parseDouble( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
                         String strB = str.Substring( ne0 + 1 ); // Math.log(A,B)の B の文字
-                        double valB = double.Parse( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
+                        double valB = PortUtil.parseDouble( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
                         val = Math.Log( valB ) / Math.Log( valA );
-                        equ = equ.Replace( "Math.log(" + strA + "," + strB + ")", "" + val );
+                        equ = equ.Replace( "Math.Log(" + strA + "," + strB + ")", "" + val );
                     } else if ( equ.Substring( n2 - 3, n2 - n2 + 3 ).Equals( "pow" ) ) { // Math.Pow(A,B) のとき
                         String strA = str.Substring( 0, ne0 - 0 ); // Math.Pow(A,B)の A の文字
-                        double valA = double.Parse( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
+                        double valA = PortUtil.parseDouble( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
                         String strB = str.Substring( ne0 + 1 ); // Math.Pow(A,B)の B の文字
-                        double valB = double.Parse( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
+                        double valB = PortUtil.parseDouble( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
                         val = Math.Pow( valA, valB );
                         equ = equ.Replace( "Math.Pow(" + strA + "," + strB + ")", "" + val );
                     }
@@ -169,7 +187,7 @@ namespace Boare.Cadencii {
                     if ( check0 == 1 ) {
                         val = evalMy1( str ); // ( ) の処理をし数値をもとめる
                     } else {
-                        val = double.Parse( str ); // 文字を数値に変換
+                        val = PortUtil.parseDouble( str ); // 文字を数値に変換
                     }
                     if ( n2 - 8 >= 0 ) {
                         String str1 = equ.Substring( n2 - 8, n2 - (n2 - 8) );
@@ -268,9 +286,9 @@ namespace Boare.Cadencii {
                         equ1 = equ0.Substring( 0, n1 - 0 ); 
                     } // 最初の / より前の項
                     if ( kai == 0 ) { 
-                        val1 = double.Parse( equ1 );
+                        val1 = PortUtil.parseDouble( equ1 );
                     } else { 
-                        val1 /= double.Parse( equ1 );
+                        val1 /= PortUtil.parseDouble( equ1 );
                     }
                     if ( n1 < 0 ) { 
                         break; 
@@ -290,4 +308,6 @@ namespace Boare.Cadencii {
         }
 
     }
+#if !JAVA
 }
+#endif

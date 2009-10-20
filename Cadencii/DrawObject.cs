@@ -11,23 +11,32 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.Drawing;
+#if JAVA
+package org.kbinani.Cadencii;
 
+import org.kbinani.vsq.*;
+import java.awt.*;
+#else
+using System;
 using Boare.Lib.Vsq;
+using bocoree.awt;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
     /// <summary>
     /// 画面に描画するアイテムを表します
     /// </summary>
-    class DrawObject : IComparable<DrawObject> {
+#if JAVA
+    public class DrawObject implements Comparable<DrawObject>{
+#else
+    public class DrawObject : IComparable<DrawObject> {
+#endif
         public Rectangle pxRectangle;
-        public String Text;
-        public int Accent;
-        public int InternalID;
+        public String text;
+        public int accent;
+        public int internalID;
         /// <summary>
         /// 音符の先頭から，ビブラート開始位置までの長さ(単位：ピクセル)
         /// </summary>
@@ -35,22 +44,22 @@ namespace Boare.Cadencii {
         /// <summary>
         /// このアイテムが他のアイテムと再生時にオーバーラップするかどうかを表すフラグ
         /// </summary>
-        public boolean Overwrapped;
-        public boolean SymbolProtected;
-        public VibratoBPList VibRate;
-        public VibratoBPList VibDepth;
-        public int VibStartRate;
-        public int VibStartDepth;
-        public int Note;
-        public UstEnvelope UstEnvelope;
+        public boolean overlappe;
+        public boolean symbolProtected;
+        public VibratoBPList vibRate;
+        public VibratoBPList vibDepth;
+        public int vibStartRate;
+        public int vibStartDepth;
+        public int note;
+        public UstEnvelope ustEnvelope;
         /// <summary>
         /// 音符の長さ（クロック）
         /// </summary>
-        public int Length;
+        public int length;
 
         public DrawObject( Rectangle rect, 
-                           String text,
-                           int accent,
+                           String text_,
+                           int accent_,
                            int internal_id,
                            int vibrato_delay,
                            boolean overwrapped, 
@@ -59,28 +68,36 @@ namespace Boare.Cadencii {
                            VibratoBPList vib_depth,
                            int vib_start_rate,
                            int vib_start_depth,
-                           int note,
+                           int note_,
                            UstEnvelope ust_envelope,
-                           int length ) {
+                           int length_ ) {
             pxRectangle = rect;
-            Text = text;
-            Accent = accent;
-            InternalID = internal_id;
+            text = text_;
+            accent = accent_;
+            internalID = internal_id;
             pxVibratoDelay = vibrato_delay;
-            Overwrapped = overwrapped;
-            SymbolProtected = symbol_protected;
-            VibRate = vib_rate;
-            VibDepth = vib_depth;
-            VibStartRate = vib_start_rate;
-            VibStartDepth = vib_start_depth;
-            Note = note;
-            UstEnvelope = ust_envelope;
-            Length = length;
+            overlappe = overwrapped;
+            symbolProtected = symbol_protected;
+            vibRate = vib_rate;
+            vibDepth = vib_depth;
+            vibStartRate = vib_start_rate;
+            vibStartDepth = vib_start_depth;
+            note = note_;
+            ustEnvelope = ust_envelope;
+            length = length_;
         }
 
-        public int CompareTo( DrawObject item ) {
-            return pxRectangle.X - item.pxRectangle.X;
+        public int compareTo( DrawObject item ) {
+            return pxRectangle.x - item.pxRectangle.x;
         }
+
+#if !JAVA
+        public int CompareTo( DrawObject item ){
+            return compareTo( item );
+        }
+#endif
     }
 
+#if !JAVA
 }
+#endif

@@ -12,14 +12,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
-using System.Drawing;
-
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
 
 namespace Boare.Cadencii {
 
@@ -36,7 +33,7 @@ namespace Boare.Cadencii {
         public PropertyPanel() {
             InitializeComponent();
             m_items = new Vector<VsqEventItemProxy>();
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public boolean Editing {
@@ -62,7 +59,11 @@ namespace Boare.Cadencii {
                 String s = getGridItemIdentifier( item );
                 for ( Iterator itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ){
                     ValuePair<String, boolean> v = (ValuePair<String, boolean>)itr.next();
-                    if ( v.Key.Equals( s ) ){
+                    String key = v.Key;
+                    if ( key == null ) {
+                        key = "";
+                    }
+                    if ( key.Equals( s ) ){
                         item.Expanded = v.Value;
                         break;
                     }
@@ -155,7 +156,7 @@ namespace Boare.Cadencii {
                 items[i] = proxy.GetItemDifference();
 
                 VsqEventItemProxy item = m_items.get( i );
-                item.original.Clock = proxy.Clock.Clock.getIntValue();
+                item.original.Clock = proxy.Clock.getClock().getIntValue();
                 item.original.ID.DEMaccent = proxy.Accent;
                 item.original.ID.DEMdecGainRate = proxy.Decay;
                 item.original.ID.Dynamics = proxy.Velocity;

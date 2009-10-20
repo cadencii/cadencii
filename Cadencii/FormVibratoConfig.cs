@@ -14,14 +14,15 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
 
-    partial class FormVibratoConfig : Form {
+    partial class FormVibratoConfig : BForm {
         private VibratoHandle m_vibrato;
         private int m_note_length;
         private SynthesizerType m_synthesizer_type;
@@ -34,11 +35,11 @@ namespace Boare.Cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "FormVibratoConfig.ctor(Vsqhandle,int,DefaultVibratoLength)" );
             AppManager.debugWriteLine( "    (vibrato_handle==null)=" + (vibrato_handle == null) );
-            Console.WriteLine( "    type=" + type );
+            PortUtil.println( "    type=" + type );
 #endif
             m_synthesizer_type = type;
             if ( vibrato_handle != null ) {
-                m_vibrato = (VibratoHandle)vibrato_handle.Clone();
+                m_vibrato = (VibratoHandle)vibrato_handle.clone();
             }
 
             InitializeComponent();
@@ -86,7 +87,7 @@ namespace Boare.Cadencii {
             this.txtVibratoLength.TextChanged += new System.EventHandler( txtVibratoLength_TextChanged );
 
             m_note_length = note_length;
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public void ApplyLanguage() {
@@ -98,7 +99,7 @@ namespace Boare.Cadencii {
         }
 
         public static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
         /// <summary>

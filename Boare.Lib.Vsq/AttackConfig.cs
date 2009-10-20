@@ -12,13 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.boare.vsq;
+package org.kbinani.vsq;
+
 import java.io.*;
+import org.kbinani.*;
 #else
 using System;
-using System.IO;
-
 using bocoree;
+using bocoree.io;
 
 namespace Boare.Lib.Vsq {
 #endif
@@ -78,16 +79,19 @@ namespace Boare.Lib.Vsq {
                     } else if ( current_entry.Equals( "[Parameter]" ) ) {
                         if ( spl[0].Equals( "Length" ) ) {
                             try {
-                                this.contents.Length = PortUtil.parseInt( spl[1] );
-                            } catch { }
+                                this.contents.setLength( PortUtil.parseInt( spl[1] ) );
+                            } catch ( Exception ex ) {
+                            }
                         } else if ( spl[0].Equals( "Duration" ) ) {
                             try {
                                 this.contents.Duration = PortUtil.parseInt( spl[1] );
-                            } catch { }
+                            } catch ( Exception ex ) {
+                            }
                         } else if ( spl[0].Equals( "Depth" ) ) {
                             try {
                                 this.contents.Depth = PortUtil.parseInt( spl[1] );
-                            } catch { }
+                            } catch ( Exception ex ) {
+                            }
                         }
                     }
                 }

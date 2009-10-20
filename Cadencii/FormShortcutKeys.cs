@@ -15,29 +15,32 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
-
 using Boare.Lib.AppUtil;
 using bocoree;
+using bocoree.util;
+using bocoree.windows.forms;
+using bocoreex.swing;
+using bocoree.awt.event_;
 
 namespace Boare.Cadencii {
-
+    using java = bocoree;
     using boolean = System.Boolean;
 
-    public partial class FormShortcutKeys : Form {
-        private ToolStripMenuItem m_dumy;
-        private TreeMap<String, ValuePair<String, Keys[]>> m_dict;
-        private TreeMap<String, ValuePair<String, Keys[]>> m_first_dict;
+    public partial class FormShortcutKeys : BForm {
+        private BMenuItem m_dumy;
+        private TreeMap<String, ValuePair<String, BKeys[]>> m_dict;
+        private TreeMap<String, ValuePair<String, BKeys[]>> m_first_dict;
 
-        public FormShortcutKeys( TreeMap<String, ValuePair<String, Keys[]>> dict ) {
+        public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict ) {
             InitializeComponent();
             m_dict = dict;
-            m_dumy = new ToolStripMenuItem();
+            m_dumy = new BMenuItem();
             m_dumy.ShowShortcutKeys = true;
-            m_first_dict = new TreeMap<String, ValuePair<String, Keys[]>>();
+            m_first_dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             CopyDict( m_dict, ref m_first_dict );
             ApplyLanguage();
             UpdateList();
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont ); 
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() ); 
         }
 
         public void ApplyLanguage() {
@@ -66,28 +69,28 @@ namespace Boare.Cadencii {
         }
 
         private static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
-        public TreeMap<String, ValuePair<String, Keys[]>> Result {
+        public TreeMap<String, ValuePair<String, BKeys[]>> Result {
             get {
-                TreeMap<String, ValuePair<String, Keys[]>> ret = new TreeMap<String, ValuePair<String, Keys[]>>();
+                TreeMap<String, ValuePair<String, BKeys[]>> ret = new TreeMap<String, ValuePair<String, BKeys[]>>();
                 CopyDict( m_dict, ref ret );
                 return ret;
             }
         }
 
-        private static void CopyDict( TreeMap<String, ValuePair<String, Keys[]>> src, ref TreeMap<String, ValuePair<String, Keys[]>> dest ) {
+        private static void CopyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, ref TreeMap<String, ValuePair<String, BKeys[]>> dest ) {
             dest.clear();
             for ( Iterator itr = src.keySet().iterator(); itr.hasNext(); ){
                 String name = (String)itr.next();
                 String key = src.get( name ).Key;
-                Keys[] values = src.get( name ).Value;
-                Vector<Keys> cp = new Vector<Keys>();
-                foreach ( Keys k in values ) {
+                BKeys[] values = src.get( name ).Value;
+                Vector<BKeys> cp = new Vector<BKeys>();
+                foreach ( BKeys k in values ) {
                     cp.add( k );
                 }
-                dest.put( name, new ValuePair<String, Keys[]>( key, cp.toArray( new Keys[]{} ) ) );
+                dest.put( name, new ValuePair<String, BKeys[]>( key, cp.toArray( new BKeys[]{} ) ) );
             }
         }
 
@@ -95,21 +98,19 @@ namespace Boare.Cadencii {
             list.Items.Clear();
             for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ){
                 String display = (String)itr.next();
-                Keys k = Keys.None;
-                Vector<Keys> a = new Vector<Keys>();
-                foreach( Keys key in m_dict.get( display ).Value ){
+                Vector<BKeys> a = new Vector<BKeys>();
+                foreach( BKeys key in m_dict.get( display ).Value ){
                     a.add( key );
-                    k = k | key;
                 }
                 try {
-                    m_dumy.ShortcutKeys = k;
+                    m_dumy.setAccelerator( PortUtil.getKeyStrokeFromBKeys( a.toArray( new BKeys[]{} ) ) );
                 } catch {
-                    k = Keys.None;
+                    a.clear();
                 }
-                ListViewItem item = new ListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new Keys[]{} ) ) } );
+                ListViewItem item = new ListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new BKeys[]{} ) ) } );
                 String name = m_dict.get( display ).Key;
                 item.Name = name;
-                item.Tag = k;
+                //item.Tag = a;
                 if ( name.StartsWith( "menuFile" ) ) {
                     item.Group = list.Groups["listGroupFile"];
                 } else if ( name.StartsWith( "menuEdit" ) ) {
@@ -144,46 +145,42 @@ namespace Boare.Cadencii {
                 return;
             }
             int index = list.SelectedIndices[0];
-            Keys code = e.KeyCode;
-            Keys capture = Keys.None;
-            Vector<Keys> capturelist = new Vector<Keys>();
+            KeyStroke stroke = KeyStroke.getKeyStroke( 0, 0 );
+            stroke.keys = e.KeyCode;
+            int code = stroke.getKeyCode();
+            int modifier = stroke.getModifiers();
+
+            Vector<BKeys> capturelist = new Vector<BKeys>();
+            BKeys capture = BKeys.None;
             for( Iterator itr = AppManager.SHORTCUT_ACCEPTABLE.iterator(); itr.hasNext() ; ){
-                Keys k = (Keys)itr.next();
-                if ( code == k ) {
+                BKeys k = (BKeys)itr.next();
+#if JAVA
+                if( code == k.getValue() )
+#else
+                if ( code == (int)k )
+#endif
+                {
                     capturelist.add( k );
                     capture = k;
                     break;
                 }
             }
-            Keys res = capture;
-            if ( (e.Modifiers & Keys.Menu) == Keys.Menu ) {
-                res = res | Keys.Menu;
-                capturelist.add( Keys.Menu );
-            }
-            if ( (e.Modifiers & Keys.Control) == Keys.Control ) {
-                res = res | Keys.Control;
-                capturelist.add( Keys.Control );
-            }
-            if ( (e.Modifiers & Keys.Shift) == Keys.Shift ) {
-                res = res | Keys.Shift;
-                capturelist.add( Keys.Shift );
-            }
-            if ( (e.Modifiers & Keys.Alt) == Keys.Alt ) {
-                res = res | Keys.Alt;
-                capturelist.add( Keys.Alt );
-            }
 
             // 指定されたキーの組み合わせが、ショートカットとして適切かどうか判定
             try {
-                m_dumy.ShortcutKeys = res;
+#if JAVA
+                m_dumy.setAccelerator( KeyStroke.getKeyStrok( capture.getValue(), modifier ) );
+#else
+                m_dumy.setAccelerator( KeyStroke.getKeyStroke( (int)capture, modifier ) );
+#endif
             } catch {
                 return;
             }
-            list.Items[index].Tag = res;
-            list.Items[index].SubItems[1].Text = AppManager.getShortcutDisplayString( capturelist.toArray( new Keys[]{} ) );
+            //list.Items[index].Tag = res;
+            list.Items[index].SubItems[1].Text = AppManager.getShortcutDisplayString( capturelist.toArray( new BKeys[]{} ) );
             String display = list.Items[index].SubItems[0].Text;
             if ( m_dict.containsKey( display ) ) {
-                m_dict.get( display ).Value = capturelist.toArray( new Keys[]{} );
+                m_dict.get( display ).Value = capturelist.toArray( new BKeys[]{} );
             }
             UpdateColor();
         }
@@ -196,7 +193,7 @@ namespace Boare.Cadencii {
         private void btnLoadDefault_Click( object sender, EventArgs e ) {
             for ( int i = 0; i < EditorConfig.DEFAULT_SHORTCUT_KEYS.size(); i++ ) {
                 String name = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Key;
-                Keys[] keys = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Value;
+                BKeys[] keys = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Value;
                 for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ){
                     String display = (String)itr.next();
                     if ( name.Equals( m_dict.get( display ).Key ) ) {

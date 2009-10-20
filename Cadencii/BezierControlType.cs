@@ -11,7 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 namespace Boare.Cadencii {
+#endif
 
     /// <summary>
     /// （互換性維持のため、None->NONE等とリファクタしていない）
@@ -31,4 +35,6 @@ namespace Boare.Cadencii {
         Master,
     }
 
+#if !JAVA
 }
+#endif

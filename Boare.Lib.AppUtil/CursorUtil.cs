@@ -1,4 +1,5 @@
-﻿#define RGB24
+﻿#if !JAVA
+#define RGB24
 using System;
 using System.Runtime.InteropServices;
 using System.Drawing;
@@ -208,3 +209,4 @@ namespace Boare.Lib.AppUtil {
     }
 
 }
+#endif

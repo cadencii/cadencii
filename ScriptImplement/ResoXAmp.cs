@@ -34,19 +34,19 @@ class ResoXAmp : Form {
             return false;
         }
         VsqTrack track = vsq.Track[AppManager.Selected];
-        VsqBPList source = track.getCurve( CurveType.reso1amp.Name );
-        VsqBPList reso2amp = (VsqBPList)track.getCurve( CurveType.reso2amp.Name ).clone();
-        VsqBPList reso3amp = (VsqBPList)track.getCurve( CurveType.reso3amp.Name ).clone();
-        VsqBPList reso4amp = (VsqBPList)track.getCurve( CurveType.reso4amp.Name ).clone();
+        VsqBPList source = track.getCurve( CurveType.reso1amp.getName() );
+        VsqBPList reso2amp = (VsqBPList)track.getCurve( CurveType.reso2amp.getName() ).clone();
+        VsqBPList reso3amp = (VsqBPList)track.getCurve( CurveType.reso3amp.getName() ).clone();
+        VsqBPList reso4amp = (VsqBPList)track.getCurve( CurveType.reso4amp.getName() ).clone();
         Console.WriteLine( "AmplifyCoeffReso2=" + AmplifyCoeffReso2 );
         Console.WriteLine( "AmplifyCoeffReso3=" + AmplifyCoeffReso3 );
         Console.WriteLine( "AmplifyCoeffReso4=" + AmplifyCoeffReso4 );
         amplify( source, reso2amp, AmplifyCoeffReso2 );
         amplify( source, reso3amp, AmplifyCoeffReso3 );
         amplify( source, reso4amp, AmplifyCoeffReso4 );
-        track.setCurve( CurveType.reso2amp.Name, reso2amp );
-        track.setCurve( CurveType.reso3amp.Name, reso3amp );
-        track.setCurve( CurveType.reso4amp.Name, reso4amp );
+        track.setCurve( CurveType.reso2amp.getName(), reso2amp );
+        track.setCurve( CurveType.reso3amp.getName(), reso3amp );
+        track.setCurve( CurveType.reso4amp.getName(), reso4amp );
         Console.WriteLine( "reso2amp.getCount()=" + reso2amp.size() );
         Console.WriteLine( "reso3amp.getCount()=" + reso3amp.size() );
         Console.WriteLine( "reso4amp.getCount()=" + reso4amp.size() );

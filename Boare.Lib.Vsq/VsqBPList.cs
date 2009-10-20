@@ -11,65 +11,89 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
+#if JAVA
+package org.kbinani.vsq;
 
+import java.util.*;
+import java.io.*;
+import org.kbinani.*;
+#else
+using System;
 using bocoree;
+using bocoree.io;
+using bocoree.util;
 
 namespace Boare.Lib.Vsq {
-
     using boolean = System.Boolean;
+    using Integer = System.Int32;
+#endif
 
-    /// <summary>
-    /// BPListのデータ部分を取り扱うためのクラス。
-    /// </summary>
+#if JAVA
+    public class VsqBPList implements Cloneable, Serializable{
+#else
     [Serializable]
-    public class VsqBPList : ICloneable {
-        private SortedList<int, VsqBPPair> m_list = new SortedList<int, VsqBPPair>();
+    public class VsqBPList : ICloneable{
+#endif
+        private Vector<Integer> m_clock = new Vector<Integer>();
+        private Vector<VsqBPPair> m_items = new Vector<VsqBPPair>();
         private int m_default = 0;
         private int m_maximum = 127;
         private int m_minimum = 0;
-        /// <summary>
-        /// このリストに設定されたidの最大値．次にデータ点が追加されたときは，個の値+1がidとして利用される．削除された場合でも減らない
-        /// </summary>
-        private int m_max_id = 0;
+        private long m_max_id = 0;
 
-        private class KeyClockIterator : Iterator {
-            private SortedList<int, VsqBPPair> m_list;
+        class KeyClockIterator : Iterator {
+            private VsqBPList m_list;
             private int m_pos;
 
-            public KeyClockIterator( SortedList<int, VsqBPPair> list ) {
+            public KeyClockIterator( VsqBPList list ) {
                 m_list = list;
                 m_pos = -1;
             }
 
             public boolean hasNext() {
-                if ( m_pos + 1 < m_list.Keys.Count ) {
+                if ( m_pos + 1 < m_list.m_clock.size() ) {
                     return true;
                 } else {
                     return false;
                 }
             }
 
-            public object next() {
+            public Object next() {
                 m_pos++;
-                return m_list.Keys[m_pos];
+                return m_list.m_clock.get( m_pos );
             }
 
             public void remove() {
-                if ( 0 <= m_pos && m_pos < m_list.Keys.Count ) {
-                    int key = m_list.Keys[m_pos];
-                    m_list.Remove( key );
+                if ( 0 <= m_pos && m_pos < m_list.m_clock.size() ) {
+                    int key = m_list.m_clock.get( m_pos );
+                    m_list.m_clock.removeElementAt( m_pos );
+                    m_list.m_items.removeElementAt( m_pos );
                 }
             }
         }
 
-        public VsqBPList()
-            : this( 0, 0, 64 ) {
+
+        /// <summary>
+        /// コンストラクタ。デフォルト値はココで指定する。
+        /// </summary>
+        /// <param name="default_value"></param>
+        public VsqBPList( int default_value, int minimum, int maximum ) {
+            m_default = default_value;
+            m_maximum = maximum;
+            m_minimum = minimum;
+            m_max_id = 0;
         }
 
+#if JAVA
+        public VsqBPList(){
+            this( 0, 0, 64 );
+#else
+        public VsqBPList()
+            : this( 0, 0, 64 ) {
+#endif
+        }
+
+#if !JAVA
         public int Default {
             get {
                 return getDefault();
@@ -78,6 +102,7 @@ namespace Boare.Lib.Vsq {
                 setDefault( value );
             }
         }
+#endif
 
         /// <summary>
         /// このBPListのデフォルト値を取得します
@@ -96,44 +121,60 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         public void renumberIDs() {
             m_max_id = 0;
-            for ( Iterator itr = keyClockIterator(); itr.hasNext(); ) {
-                VsqBPPair item = (VsqBPPair)itr.next();
+            int count = m_items.size();
+            for ( int i = 0; i < count; i++ ) {
                 m_max_id++;
-                item.id = m_max_id;
+                VsqBPPair v = m_items.get( i );
+                v.id = m_max_id;
+                m_items.set( i, v );
             }
         }
 
+#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
         public String Data {
             get {
-                String ret = "";
-                int count = -1;
-                foreach ( int key in m_list.Keys ) {
-                    count++;
-                    ret += (count == 0 ? "" : "," ) + key + "=" + m_list[key].value;
-                }
-                return ret;
+                return getData();
             }
             set {
-                m_list.Clear();
-                m_max_id = 0;
-                String[] spl = PortUtil.splitString( value, ',' );
-                for ( int i = 0; i < spl.Length; i++ ) {
-                    String[] spl2 = PortUtil.splitString( spl[i], '=' );
-                    if ( spl2.Length < 2 ) {
-                        continue;
-                    }
-                    try {
-                        m_list.Add( PortUtil.parseInt( spl2[0] ), new VsqBPPair( PortUtil.parseInt( spl2[1] ), m_max_id + 1 ) );
-                        m_max_id++;
-                    } catch ( Exception ex ) {
-#if DEBUG
-                        Console.WriteLine( "    ex=" + ex );
-                        Console.WriteLine( "    i=" + i + "; spl2[0]=" + spl2[0] + "; spl2[1]=" + spl2[1] );
+                setData( value );
+            }
+        }
 #endif
-                    }
+
+        public String getData() {
+            String ret = "";
+            int count = -1;
+            int size = m_clock.size();
+            for ( int i = 0; i < size; i++ ) {
+                count++;
+                ret += (count == 0 ? "" : ",") + m_clock.get( i ) + "=" + m_items.get( i ).value;
+            }
+            return ret;
+        }
+
+        public void setData( String value ) {
+            m_clock.clear();
+            m_items.clear();
+            m_max_id = 0;
+            String[] spl = PortUtil.splitString( value, ',' );
+            for ( int i = 0; i < spl.Length; i++ ) {
+                String[] spl2 = PortUtil.splitString( spl[i], '=' );
+                if ( spl2.Length < 2 ) {
+                    continue;
+                }
+                try {
+                    int clock = PortUtil.parseInt( spl2[0] );
+                    m_clock.add( clock );
+                    m_items.add( new VsqBPPair( PortUtil.parseInt( spl2[1] ), m_max_id + 1 ) );
+                    m_max_id++;
+                } catch ( Exception ex ) {
+#if DEBUG
+                    PortUtil.println( "    ex=" + ex );
+                    PortUtil.println( "    i=" + i + "; spl2[0]=" + spl2[0] + "; spl2[1]=" + spl2[1] );
+#endif
                 }
             }
         }
@@ -143,29 +184,27 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         /// <returns></returns>
         public Object clone() {
-            VsqBPList res = new VsqBPList( getDefault(), getMinimum(), getMaximum() );
-            foreach ( int key in m_list.Keys ) {
-                res.m_list.Add( key, m_list[key] );
+            VsqBPList res = new VsqBPList( m_default, m_minimum, m_maximum );
+            int count = m_clock.size();
+            for ( int i = 0; i < count; i++ ) {
+                res.m_clock.add( m_clock.get( i ) );
+#if JAVA
+                res.m_items.add( (VsqBPPair)m_items.get( i ).clone() );
+#else
+                res.m_items.add( m_items.get( i ) );
+#endif
             }
             res.m_max_id = m_max_id;
             return res;
         }
 
+#if !JAVA
         public object Clone() {
             return clone();
         }
+#endif
 
-        /// <summary>
-        /// コンストラクタ。デフォルト値はココで指定する。
-        /// </summary>
-        /// <param name="default_value"></param>
-        public VsqBPList( int default_value, int minimum, int maximum ) {
-            m_default = default_value;
-            m_maximum = maximum;
-            m_minimum = minimum;
-            m_max_id = 0;
-        }
-
+#if !JAVA
         public int Maximum {
             get {
                 return getMaximum();
@@ -174,6 +213,7 @@ namespace Boare.Lib.Vsq {
                 setMaximum( value );
             }
         }
+#endif
 
         /// <summary>
         /// このリストに設定された最大値を取得します。
@@ -182,10 +222,11 @@ namespace Boare.Lib.Vsq {
             return m_maximum;
         }
 
-        public void setMaximum( int value ){
+        public void setMaximum( int value ) {
             m_maximum = value;
         }
 
+#if !JAVA
         public int Minimum {
             get {
                 return getMinimum();
@@ -194,6 +235,7 @@ namespace Boare.Lib.Vsq {
                 setMinimum( value );
             }
         }
+#endif
 
         /// <summary>
         /// このリストに設定された最小値を取得します
@@ -206,31 +248,29 @@ namespace Boare.Lib.Vsq {
             m_minimum = value;
         }
 
-        public Iterator keyClockIterator() {
-            return new KeyClockIterator( m_list );
+        public void remove( int clock ) {
+            int index = m_clock.indexOf( clock );
+            removeElementAt( index );
         }
 
-        public void remove( int clock ) {
-            if ( m_list.ContainsKey( clock ) ) {
-                m_list.Remove( clock );
+        public void removeElementAt( int index ) {
+            if ( index >= 0 ) {
+                m_clock.removeElementAt( index );
+                m_items.removeElementAt( index );
             }
         }
 
         public boolean isContainsKey( int clock ) {
-            return m_list.ContainsKey( clock );
+            return m_clock.contains( clock );
         }
 
-        public int size() {
-            return m_list.Count;
-        }
-
-        public int[] getKeys() {
-            Vector<int> t = new Vector<int>();
+        /* public int[] getKeys() {
+            Vector<Integer> t = new Vector<Integer>();
             foreach( int key in m_list.Keys ){
                 t.add( key );
             }
-            return t.toArray( new Int32[]{} );
-        }
+            return t.toArray( new Integer[]{} );
+        }*/
 
         /// <summary>
         /// 時刻clockのデータを時刻new_clockに移動します。
@@ -240,46 +280,30 @@ namespace Boare.Lib.Vsq {
         /// <param name="clock"></param>
         /// <param name="new_clock"></param>
         public void move( int clock, int new_clock, int new_value ) {
-            if ( !m_list.ContainsKey( clock ) ) {
+            int index = m_clock.indexOf( clock );
+            if ( index < 0 ) {
                 return;
             }
-            VsqBPPair item = m_list[clock];
-            m_list.Remove( clock );
-            if ( m_list.ContainsKey( new_clock ) ) {
-                m_list.Remove( new_clock );
+            VsqBPPair item = m_items.get( index );
+            m_clock.removeElementAt( index );
+            m_items.removeElementAt( index );
+            int index_new = m_clock.indexOf( new_clock );
+            if ( index_new >= 0 ) {
+                item.value = new_value;
+                m_items.set( index_new, item );
+                return;
+            } else {
+                m_clock.add( new_clock );
+                Collections.sort( m_clock );
+                index_new = m_clock.indexOf( new_clock );
+                item.value = new_value;
+                m_items.insertElementAt( item, index_new );
             }
-            item.value = new_value;
-            m_list.Add( new_clock, item );
         }
 
         public void clear() {
-            m_list.Clear();
-        }
-
-        /// <summary>
-        /// 新しいデータ点を追加します。
-        /// 戻り値に、新しいデータ点のIDを返します
-        /// </summary>
-        /// <param name="clock"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public long add( int clock, int value ) {
-            lock ( m_list ) {
-                if ( m_list.ContainsKey( clock ) ) {
-                    VsqBPPair v = m_list[clock];
-                    v.value = value;
-                    m_list[clock] = v;
-                    return v.id;
-                } else {
-                    VsqBPPair v = new VsqBPPair( value, m_max_id + 1 );
-                    m_max_id++;
-#if DEBUG
-                    //Console.WriteLine( "VsqBPList#add; m_max_id=" + m_max_id );
-#endif
-                    m_list.Add( clock, v );
-                    return m_max_id;
-                }
-            }
+            m_clock.clear();
+            m_items.clear();
         }
 
         public int getElement( int index ) {
@@ -287,22 +311,23 @@ namespace Boare.Lib.Vsq {
         }
 
         public int getElementA( int index ) {
-            return m_list[m_list.Keys[index]].value;
+            return m_items.get( index ).value;
         }
 
         public VsqBPPair getElementB( int index ) {
-            return m_list[m_list.Keys[index]];
+            return m_items.get( index );
         }
 
         public int getKeyClock( int index ) {
-            return m_list.Keys[index];
+            return m_clock.get( index );
         }
 
         public int findValueFromID( long id ) {
-            int c = m_list.Keys.Count;
-            foreach ( int key in m_list.Keys ) {
-                if ( m_list[key].id == id ) {
-                    return m_list[key].value;
+            int c = m_items.size();
+            for ( int i = 0; i < c; i++ ) {
+                VsqBPPair item = m_items.get( i );
+                if ( item.id == id ) {
+                    return item.value;
                 }
             }
             return m_default;
@@ -315,12 +340,11 @@ namespace Boare.Lib.Vsq {
         /// <returns></returns>
         public VsqBPPairSearchContext findElement( long id ) {
             VsqBPPairSearchContext context = new VsqBPPairSearchContext();
-            int c = m_list.Keys.Count;
+            int c = m_items.size();
             for ( int i = 0; i < c; i++ ) {
-                int clock = m_list.Keys[i];
-                VsqBPPair item = m_list[clock];
+                VsqBPPair item = m_items.get( i );
                 if ( item.id == id ) {
-                    context.clock = clock;
+                    context.clock = m_clock.get( i );
                     context.index = i;
                     context.point = item;
                     return context;
@@ -333,68 +357,53 @@ namespace Boare.Lib.Vsq {
         }
 
         public void setValueForID( long id, int value ) {
-            int c = m_list.Keys.Count;
-            foreach ( int key in m_list.Keys ) {
-                if ( m_list[key].id == id ) {
-                    VsqBPPair v = m_list[key];
-                    v.value = value;
-                    m_list[key] = v;
+            int c = m_items.size();
+            for ( int i = 0; i < c; i++ ) {
+                VsqBPPair item = m_items.get( i );
+                if ( item.id == id ) {
+                    item.value = value;
+                    m_items.set( i, item );
                     break;
                 }
             }
         }
 
-        public int getValue( int clock, ref int index ) {
-            if ( m_list.Count == 0 ) {
+        public int getValue( int clock, ByRef<Integer> index ) {
+            int count = m_clock.size();
+            if ( count == 0 ) {
                 return m_default;
             } else {
-                if ( index < 0 ) {
-                    index = 0;
+                if ( index.value < 0 ) {
+                    index.value = 0;
                 }
-                for ( int i = index ; i < m_list.Keys.Count; i++ ) {
-                    int keyclock = m_list.Keys[i];
+                for ( int i = index.value; i < count; i++ ) {
+                    int keyclock = m_clock.get( i );
                     if ( clock < keyclock ) {
                         if ( i > 0 ) {
-                            index = i;
-                            return m_list[m_list.Keys[i - 1]].value;
+                            index.value = i;
+                            return m_items.get( i - 1 ).value;
                         } else {
-                            index = i;
+                            index.value = i;
                             return m_default;
                         }
                     }
                 }
-                index = m_list.Keys.Count - 1;
-                return m_list[m_list.Keys[m_list.Keys.Count - 1]].value;
+                index.value = count - 1;
+                return m_items.get( count - 1 ).value;
             }
         }
 
-        public int getValue( int clock ) {
-            if ( m_list.Count == 0 ) {
-                return m_default;
-            } else {
-                for ( int i = 0; i < m_list.Keys.Count; i++ ) {
-                    int keyclock = m_list.Keys[i];
-                    if ( clock < keyclock ) {
-                        if ( i > 0 ) {
-                            return m_list[m_list.Keys[i - 1]].value;
-                        } else {
-                            return m_default;
-                        }
-                    }
-                }
-                return m_list[m_list.Keys[m_list.Keys.Count - 1]].value;
-            }
-        }
-
-        private void printCor( ITextWriter writer, int start, String header ) {
-            boolean first = true;
-            foreach ( int key in m_list.Keys ) {
-                if ( start <= key ) {
-                    if ( first ) {
-                        writer.writeLine( header );
-                        first = false;
-                    }
-                    int val = m_list[key].value;
+        private void printCor( ITextWriter writer, int start_clock, String header )
+#if JAVA
+            throws IOException
+#endif
+ {
+            writer.writeLine( header );
+            int c = m_clock.size();
+            for ( int i = 0; i < c; i++ ) {
+                int key = m_clock.get( i );
+                if ( start_clock <= key ) {
+                    int val = m_items.get( i ).value;
                     writer.writeLine( key + "=" + val );
                 }
             }
@@ -404,7 +413,11 @@ namespace Boare.Lib.Vsq {
         /// このBPListの内容をテキストファイルに書き出します
         /// </summary>
         /// <param name="writer"></param>
-        public void print( StreamWriter writer, int start, String header ) {
+        public void print( BufferedWriter writer, int start, String header )
+#if JAVA
+            throws IOException
+#endif
+ {
             printCor( new WrappedStreamWriter( writer ), start, header );
         }
 
@@ -412,7 +425,11 @@ namespace Boare.Lib.Vsq {
         /// このBPListの内容をテキストファイルに書き出します
         /// </summary>
         /// <param name="writer"></param>
-        public void print( TextMemoryStream writer, int start, String header ) {
+        public void print( TextMemoryStream writer, int start, String header )
+#if JAVA
+            throws IOException
+#endif
+ {
             printCor( writer, start, header );
         }
 
@@ -425,11 +442,9 @@ namespace Boare.Lib.Vsq {
             String last_line = reader.readLine();
             while ( !last_line.StartsWith( "[" ) ) {
                 String[] spl = PortUtil.splitString( last_line, new char[] { '=' } );
-                int i1 = PortUtil.parseInt( spl[0] );
-                int i2 = PortUtil.parseInt( spl[1] );
-                VsqBPPair v = new VsqBPPair( i2, m_max_id + 1 );
-                m_max_id++;
-                m_list.Add( i1, v );
+                int clock = PortUtil.parseInt( spl[0] );
+                int value = PortUtil.parseInt( spl[1] );
+                this.add( clock, value );
                 if ( reader.peek() < 0 ) {
                     break;
                 } else {
@@ -438,6 +453,59 @@ namespace Boare.Lib.Vsq {
             }
             return last_line;
         }
+
+        public int size() {
+            return m_clock.size();
+        }
+
+        public Iterator keyClockIterator() {
+            return new KeyClockIterator( this );
+        }
+
+        public long add( int clock, int value ) {
+            int index = m_clock.indexOf( clock );
+            if ( index >= 0 ) {
+                VsqBPPair v = m_items.get( index );
+                v.value = value;
+                m_items.set( index, v );
+                return v.id;
+            } else {
+                m_clock.add( clock );
+                Collections.sort( m_clock );
+                index = m_clock.indexOf( clock );
+                m_max_id++;
+                m_items.insertElementAt( new VsqBPPair( value, m_max_id ), index );
+                return m_max_id;
+            }
+        }
+
+        public int getValue( int clock ) {
+            int index = m_clock.indexOf( clock );
+            if ( index >= 0 ) {
+                return m_items.get( index ).value;
+            } else {
+                int count = m_clock.size();
+                if ( count <= 0 ) {
+                    return m_default;
+                } else {
+                    int draft = -1;
+                    for ( int i = 0; i < count; i++ ) {
+                        int c = m_clock.get( i );
+                        if ( clock < c ) {
+                            break;
+                        }
+                        draft = i;
+                    }
+                    if ( draft < 0 ) {
+                        return m_default;
+                    } else {
+                        return m_items.get( draft ).value;
+                    }
+                }
+            }
+        }
     }
 
+#if !JAVA
 }
+#endif

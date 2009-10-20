@@ -11,24 +11,33 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+#define NEW_IMPL
+#if JAVA
+package org.kbinani.vsq;
 
+import java.util.*;
+import java.io.*;
+import org.kbinani.*;
+#else
+using System;
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Lib.Vsq {
-
     using boolean = System.Boolean;
     using Integer = Int32;
-    using Long = Int64;
+#endif
 
     /// <summary>
     /// VSQファイルの内容を保持するクラス
     /// </summary>
+#if JAVA
+    public class VsqFile implements Cloneable, Serializable{
+#else
     [Serializable]
-    public class VsqFile : ICloneable {
+    public class VsqFile : ICloneable{
+#endif
         /// <summary>
         /// トラックのリスト．最初のトラックはMasterTrackであり，通常の音符が格納されるトラックはインデックス1以降となる
         /// </summary>
@@ -36,11 +45,7 @@ namespace Boare.Lib.Vsq {
         /// <summary>
         /// テンポ情報を保持したテーブル
         /// </summary>
-#if USE_TEMPO_LIST
-        protected TempoTable m_tempo_table;
-#else
         public Vector<TempoTableEntry> TempoTable;
-#endif
         public Vector<TimeSigTableEntry> TimesigTable;
         protected int m_tpq;
         /// <summary>
@@ -50,11 +55,11 @@ namespace Boare.Lib.Vsq {
         protected int m_base_tempo;
         public VsqMaster Master;  // VsqMaster, VsqMixerは通常，最初の非Master Trackに記述されるが，可搬性のため，
         public VsqMixer Mixer;    // ここではVsqFileに直属するものとして取り扱う．
-        public object Tag;
+        public Object Tag;
 
-        static readonly byte[] _MTRK = new byte[] { 0x4d, 0x54, 0x72, 0x6b };
-        static readonly byte[] _MTHD = new byte[] { 0x4d, 0x54, 0x68, 0x64 };
-        static readonly byte[] _MASTER_TRACK = new byte[] { 0x4D, 0x61, 0x73, 0x74, 0x65, 0x72, 0x20, 0x54, 0x72, 0x61, 0x63, 0x6B, };
+        static readonly byte[] _MTRK = new byte[] { (byte)0x4d, (byte)0x54, (byte)0x72, (byte)0x6b };
+        static readonly byte[] _MTHD = new byte[] { (byte)0x4d, (byte)0x54, (byte)0x68, (byte)0x64 };
+        static readonly byte[] _MASTER_TRACK = new byte[] { (byte)0x4D, (byte)0x61, (byte)0x73, (byte)0x74, (byte)0x65, (byte)0x72, (byte)0x20, (byte)0x54, (byte)0x72, (byte)0x61, (byte)0x63, (byte)0x6B, };
         static readonly String[] _CURVES = new String[] { "VEL", "DYN", "BRE", "BRI", "CLE", "OPE", "GEN", "POR", "PIT", "PBS" };
 
         /// <summary>
@@ -62,7 +67,7 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         /// <param name="ms_pre_send_time"></param>
         /// <returns></returns>
-        public bool checkPreSendTimeValidity( int ms_pre_send_time ) {
+        public boolean checkPreSendTimeValidity( int ms_pre_send_time ) {
             int track_count = Track.size();
             for ( int i = 1; i < track_count; i++ ) {
                 VsqTrack track = Track.get( i );
@@ -99,38 +104,38 @@ namespace Boare.Lib.Vsq {
         /// <returns>編集結果を元に戻すためのコマンドを返します</returns>
         public VsqCommand executeCommand( VsqCommand command ) {
 #if DEBUG
-            Console.WriteLine( "VsqFile.Execute(VsqCommand)" );
-            Console.WriteLine( "    type=" + command.Type );
+            PortUtil.println( "VsqFile.Execute(VsqCommand)" );
+            PortUtil.println( "    type=" + command.Type );
 #endif
             VsqCommandType type = command.Type;
             if ( type == VsqCommandType.CHANGE_PRE_MEASURE ) {
-                #region ChangePreMeasure
+                #region CHANGE_PRE_MEASURE
                 VsqCommand ret = VsqCommand.generateCommandChangePreMeasure( Master.PreMeasure );
-                int value = (int)command.Args[0];
+                int value = (Integer)command.Args[0];
                 Master.PreMeasure = value;
                 updateTimesigInfo();
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.TRACK_ADD ) {
-                #region AddTrack
+                #region TRACK_ADD
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine( "    AddTrack" );
 #endif
                 VsqTrack track = (VsqTrack)command.Args[0];
                 VsqMixerEntry mixer = (VsqMixerEntry)command.Args[1];
-                int position = (int)command.Args[2];
+                int position = (Integer)command.Args[2];
                 VsqCommand ret = VsqCommand.generateCommandDeleteTrack( position );
                 if ( Track.size() <= 17 ) {
-                    Track.insertElementAt( (VsqTrack)track.Clone(), position );
-                    Mixer.Slave.add( (VsqMixerEntry)mixer.Clone() );
+                    Track.insertElementAt( (VsqTrack)track.clone(), position );
+                    Mixer.Slave.add( (VsqMixerEntry)mixer.clone() );
                     return ret;
                 } else {
                     return null;
                 }
                 #endregion
             } else if ( type == VsqCommandType.TRACK_DELETE ) {
-                #region DeleteTrack
-                int track = (int)command.Args[0];
+                #region TRACK_DELETE
+                int track = (Integer)command.Args[0];
                 VsqCommand ret = VsqCommand.generateCommandAddTrack( Track.get( track ), Mixer.Slave.get( track - 1 ), track );
                 Track.removeElementAt( track );
                 Mixer.Slave.removeElementAt( track - 1 );
@@ -138,10 +143,10 @@ namespace Boare.Lib.Vsq {
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.UPDATE_TEMPO ) {
-                #region UpdateTempo
-                int clock = (int)command.Args[0];
-                int tempo = (int)command.Args[1];
-                int new_clock = (int)command.Args[2];
+                #region UPDATE_TEMPO
+                int clock = (Integer)command.Args[0];
+                int tempo = (Integer)command.Args[1];
+                int new_clock = (Integer)command.Args[2];
 
                 int index = -1;
                 int c = TempoTable.size();
@@ -158,8 +163,8 @@ namespace Boare.Lib.Vsq {
                         TempoTable.removeElementAt( index );
                     } else {
                         ret = VsqCommand.generateCommandUpdateTempo( new_clock, clock, TempoTable.get( index ).Tempo );
-                        TempoTable.get( index ).Tempo= tempo ;
-                        TempoTable.get( index ).Clock= new_clock ;
+                        TempoTable.get( index ).Tempo = tempo;
+                        TempoTable.get( index ).Clock = new_clock;
                     }
                 } else {
                     ret = VsqCommand.generateCommandUpdateTempo( clock, clock, -1 );
@@ -180,7 +185,7 @@ namespace Boare.Lib.Vsq {
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.UPDATE_TEMPO_RANGE ) {
-                #region UpdateTempoRange
+                #region UPDATE_TEMPO_RANGE
                 int[] clocks = (int[])command.Args[0];
                 int[] tempos = (int[])command.Args[1];
                 int[] new_clocks = (int[])command.Args[2];
@@ -222,11 +227,11 @@ namespace Boare.Lib.Vsq {
                 return VsqCommand.generateCommandUpdateTempoRange( new_clocks, clocks, new_tempos );
                 #endregion
             } else if ( type == VsqCommandType.UPDATE_TIMESIG ) {
-                #region UpdateTimesig
-                int barcount = (int)command.Args[0];
-                int numerator = (int)command.Args[1];
-                int denominator = (int)command.Args[2];
-                int new_barcount = (int)command.Args[3];
+                #region UPDATE_TIMESIG
+                int barcount = (Integer)command.Args[0];
+                int numerator = (Integer)command.Args[1];
+                int denominator = (Integer)command.Args[2];
+                int new_barcount = (Integer)command.Args[3];
                 int index = -1;
                 int timesig_table_count = TimesigTable.size();
                 for ( int i = 0; i < timesig_table_count; i++ ) {
@@ -255,7 +260,7 @@ namespace Boare.Lib.Vsq {
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.UPDATE_TIMESIG_RANGE ) {
-                #region UpdateTimesigRange
+                #region UPDATE_TIMESIG_RANGE
                 int[] barcounts = (int[])command.Args[0];
                 int[] numerators = (int[])command.Args[1];
                 int[] denominators = (int[])command.Args[2];
@@ -295,39 +300,37 @@ namespace Boare.Lib.Vsq {
                 return VsqCommand.generateCommandUpdateTimesigRange( new_barcounts, barcounts, new_numerators, new_denominators );
                 #endregion
             } else if ( type == VsqCommandType.REPLACE ) {
-                #region Replace
+                #region REPLACE
                 VsqFile vsq = (VsqFile)command.Args[0];
-                VsqFile inv = (VsqFile)this.Clone();
+                VsqFile inv = (VsqFile)this.clone();
                 Track.clear();
                 int track_count = vsq.Track.size();
                 for ( int i = 0; i < track_count; i++ ) {
-                    Track.add( (VsqTrack)vsq.Track.get( i ).Clone() );
+                    Track.add( (VsqTrack)vsq.Track.get( i ).clone() );
                 }
-#if USE_TEMPO_LIST
-                m_tempo_table = (TempoTable)vsq.m_tempo_table.Clone();
-#else
+
                 TempoTable.clear();
                 int tempo_table_count = vsq.TempoTable.size();
                 for ( int i = 0; i < tempo_table_count; i++ ) {
-                    TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).Clone() );
+                    TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
                 }
-#endif
+
                 TimesigTable.clear();
                 int timesig_table_count = vsq.TimesigTable.size();
                 for ( int i = 0; i < timesig_table_count; i++ ) {
-                    TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).Clone() );
+                    TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
                 }
                 m_tpq = vsq.m_tpq;
                 TotalClocks = vsq.TotalClocks;
                 m_base_tempo = vsq.m_base_tempo;
-                Master = (VsqMaster)vsq.Master.Clone();
-                Mixer = (VsqMixer)vsq.Mixer.Clone();
+                Master = (VsqMaster)vsq.Master.clone();
+                Mixer = (VsqMixer)vsq.Mixer.clone();
                 updateTotalClocks();
                 return VsqCommand.generateCommandReplace( inv );
                 #endregion
             } else if ( type == VsqCommandType.EVENT_ADD ) {
-                #region EventAdd
-                int track = (int)command.Args[0];
+                #region EVENT_ADD
+                int track = (Integer)command.Args[0];
                 VsqEvent item = (VsqEvent)command.Args[1];
                 Track.get( track ).addEvent( item );
                 VsqCommand ret = VsqCommand.generateCommandEventDelete( track, item.InternalID );
@@ -335,34 +338,34 @@ namespace Boare.Lib.Vsq {
                 if ( item.Clock < Track.get( track ).getEditedStart() ) {
                     Track.get( track ).setEditedStart( item.Clock );
                 }
-                if ( Track.get( track ).getEditedEnd() < item.Clock + item.ID.Length ) {
-                    Track.get( track ).setEditedEnd( item.Clock + item.ID.Length );
+                if ( Track.get( track ).getEditedEnd() < item.Clock + item.ID.getLength() ) {
+                    Track.get( track ).setEditedEnd( item.Clock + item.ID.getLength() );
                 }
                 Track.get( track ).sortEvent();
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_ADD_RANGE ) {
-                #region TrackAddNoteRange
+                #region EVENT_ADD_RANGE
 #if DEBUG
-                Console.WriteLine( "    TrackAddNoteRange" );
+                PortUtil.println( "    TrackAddNoteRange" );
 #endif
-                int track = (int)command.Args[0];
+                int track = (Integer)command.Args[0];
                 VsqEvent[] items = (VsqEvent[])command.Args[1];
-                Vector<int> inv_ids = new Vector<int>();
+                Vector<Integer> inv_ids = new Vector<Integer>();
                 int min_clock = (int)TotalClocks;
                 int max_clock = 0;
                 VsqTrack target = Track.get( track );
                 for ( int i = 0; i < items.Length; i++ ) {
                     VsqEvent item = (VsqEvent)items[i].clone();
                     min_clock = Math.Min( min_clock, item.Clock );
-                    max_clock = Math.Max( max_clock, item.Clock + item.ID.Length );
+                    max_clock = Math.Max( max_clock, item.Clock + item.ID.getLength() );
 #if DEBUG
                     Console.Write( "        i=" + i + "; item.InternalID=" + item.InternalID );
 #endif
                     target.addEvent( item );
                     inv_ids.add( item.InternalID );
 #if DEBUG
-                    Console.WriteLine( " => " + item.InternalID );
+                    PortUtil.println( " => " + item.InternalID );
 #endif
                 }
                 updateTotalClocks();
@@ -373,12 +376,12 @@ namespace Boare.Lib.Vsq {
                     target.setEditedEnd( max_clock );
                 }
                 target.sortEvent();
-                return VsqCommand.generateCommandEventDeleteRange( track, inv_ids.toArray( new Integer[]{} ) );
+                return VsqCommand.generateCommandEventDeleteRange( track, inv_ids );
                 #endregion
             } else if ( type == VsqCommandType.EVENT_DELETE ) {
-                #region TrackDeleteNote
-                int internal_id = (int)command.Args[0];
-                int track = (int)command.Args[1];
+                #region EVENT_DELETE
+                int track = (Integer)command.Args[0];
+                int internal_id = (Integer)command.Args[1];
                 VsqEvent[] original = new VsqEvent[1];
                 VsqTrack target = Track.get( track );
                 for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
@@ -391,8 +394,8 @@ namespace Boare.Lib.Vsq {
                 if ( original[0].Clock < target.getEditedStart() ) {
                     target.setEditedStart( original[0].Clock );
                 }
-                if ( target.getEditedEnd() < original[0].Clock + original[0].ID.Length ) {
-                    target.setEditedEnd( original[0].Clock + original[0].ID.Length );
+                if ( target.getEditedEnd() < original[0].Clock + original[0].ID.getLength() ) {
+                    target.setEditedEnd( original[0].Clock + original[0].ID.getLength() );
                 }
                 VsqCommand ret = VsqCommand.generateCommandEventAddRange( track, original );
                 int count = target.getEventCount();
@@ -406,20 +409,21 @@ namespace Boare.Lib.Vsq {
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_DELETE_RANGE ) {
-                #region TrackDeleteNoteRange
-                int[] internal_ids = (int[])command.Args[0];
-                int track = (int)command.Args[1];
+                #region EVENT_DELETE_RANGE
+                Vector<Integer> internal_ids = (Vector<Integer>)command.Args[1];
+                int track = (Integer)command.Args[0];
                 Vector<VsqEvent> inv = new Vector<VsqEvent>();
                 int min_clock = int.MaxValue;
                 int max_clock = int.MinValue;
                 VsqTrack target = this.Track.get( track );
-                for ( int j = 0; j < internal_ids.Length; j++ ) {
+                int count = internal_ids.size();
+                for ( int j = 0; j < count; j++ ) {
                     for ( int i = 0; i < target.getEventCount(); i++ ) {
                         VsqEvent item = target.getEvent( i );
-                        if ( internal_ids[j] == item.InternalID ) {
+                        if ( internal_ids.get( j ) == item.InternalID ) {
                             inv.add( (VsqEvent)item.clone() );
                             min_clock = Math.Min( min_clock, item.Clock );
-                            max_clock = Math.Max( max_clock, item.Clock + item.ID.Length );
+                            max_clock = Math.Max( max_clock, item.Clock + item.ID.getLength() );
                             target.removeEvent( i );
                             break;
                         }
@@ -428,20 +432,20 @@ namespace Boare.Lib.Vsq {
                 updateTotalClocks();
                 target.setEditedStart( min_clock );
                 target.setEditedEnd( max_clock );
-                return VsqCommand.generateCommandEventAddRange( track, inv.toArray( new VsqEvent[]{} ) );
+                return VsqCommand.generateCommandEventAddRange( track, inv.toArray( new VsqEvent[] { } ) );
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK ) {
-                #region TrackChangeClock
-                int track = (int)command.Args[0];
-                int internal_id = (int)command.Args[1];
-                int value = (int)command.Args[2];
+                #region EVENT_CHANGE_CLOCK
+                int track = (Integer)command.Args[0];
+                int internal_id = (Integer)command.Args[1];
+                int value = (Integer)command.Args[2];
                 VsqTrack target = this.Track.get( track );
                 for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeClock( track, internal_id, item.Clock );
                         int min = Math.Min( item.Clock, value );
-                        int max = Math.Max( item.Clock + item.ID.Length, value + item.ID.Length );
+                        int max = Math.Max( item.Clock + item.ID.getLength(), value + item.ID.getLength() );
                         target.setEditedStart( min );
                         target.setEditedEnd( max );
                         item.Clock = value;
@@ -453,12 +457,12 @@ namespace Boare.Lib.Vsq {
                 return null;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_LYRIC ) {
-                #region TrackChangeLyric
-                int track = (int)command.Args[0];
-                int internal_id = (int)command.Args[1];
+                #region EVENT_CHANGE_LYRIC
+                int track = (Integer)command.Args[0];
+                int internal_id = (Integer)command.Args[1];
                 String phrase = (String)command.Args[2];
                 String phonetic_symbol = (String)command.Args[3];
-                boolean protect_symbol = (boolean)command.Args[4];
+                boolean protect_symbol = (Boolean)command.Args[4];
                 VsqTrack target = this.Track.get( track );
                 for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
@@ -469,7 +473,7 @@ namespace Boare.Lib.Vsq {
                             item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol );
                             item.ID.LyricHandle.L0.PhoneticSymbolProtected = protect_symbol;
                             target.setEditedStart( item.Clock );
-                            target.setEditedEnd( item.Clock + item.ID.Length );
+                            target.setEditedEnd( item.Clock + item.ID.getLength() );
                             updateTotalClocks();
                             return ret;
                         }
@@ -478,10 +482,10 @@ namespace Boare.Lib.Vsq {
                 return null;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_NOTE ) {
-                #region TrackChangeNote
-                int track = (int)command.Args[0];
-                int internal_id = (int)command.Args[1];
-                int note = (int)command.Args[2];
+                #region EVENT_CHANGE_NOTE
+                int track = (Integer)command.Args[0];
+                int internal_id = (Integer)command.Args[1];
+                int note = (Integer)command.Args[2];
                 VsqTrack target = this.Track.get( track );
                 for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
@@ -490,25 +494,25 @@ namespace Boare.Lib.Vsq {
                         item.ID.Note = note;
                         updateTotalClocks();
                         target.setEditedStart( item.Clock );
-                        target.setEditedEnd( item.Clock + item.ID.Length );
+                        target.setEditedEnd( item.Clock + item.ID.getLength() );
                         return ret;
                     }
                 }
                 return null;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_NOTE ) {
-                #region TrackChangeClockAndNote
-                int track = (int)command.Args[0];
-                int internal_id = (int)command.Args[1];
-                int clock = (int)command.Args[2];
-                int note = (int)command.Args[3];
+                #region EVENT_CHANGE_CLOCK_AND_NOTE
+                int track = (Integer)command.Args[0];
+                int internal_id = (Integer)command.Args[1];
+                int clock = (Integer)command.Args[2];
+                int note = (Integer)command.Args[3];
                 VsqTrack target = this.Track.get( track );
                 for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeClockAndNote( track, internal_id, item.Clock, item.ID.Note );
                         int min = Math.Min( item.Clock, clock );
-                        int max = Math.Max( item.Clock + item.ID.Length, clock + item.ID.Length );
+                        int max = Math.Max( item.Clock + item.ID.getLength(), clock + item.ID.getLength() );
                         target.setEditedStart( min );
                         target.setEditedEnd( max );
                         item.Clock = clock;
@@ -522,7 +526,7 @@ namespace Boare.Lib.Vsq {
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT ) {
                 #region TRACK_CURVE_EDIT
-                int track = (int)command.Args[0];
+                int track = (Integer)command.Args[0];
                 String curve = (String)command.Args[1];
                 Vector<BPPair> com = (Vector<BPPair>)command.Args[2];
                 VsqCommand inv = null;
@@ -532,7 +536,7 @@ namespace Boare.Lib.Vsq {
                     if ( com.size() > 0 ) {
                         int start_clock = com.get( 0 ).Clock;
                         int end_clock = com.get( 0 ).Clock;
-                        for ( Iterator itr = com.iterator(); itr.hasNext(); ){
+                        for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
                             BPPair item = (BPPair)itr.next();
                             start_clock = Math.Min( start_clock, item.Clock );
                             end_clock = Math.Max( end_clock, item.Clock );
@@ -541,8 +545,8 @@ namespace Boare.Lib.Vsq {
                         Track.get( track ).setEditedEnd( end_clock );
                         int start_value = target_list.getValue( start_clock );
                         int end_value = target_list.getValue( end_clock );
-                        for ( Iterator i = target_list.keyClockIterator(); i.hasNext(); ){
-                            int clock = (int)i.next();
+                        for ( Iterator i = target_list.keyClockIterator(); i.hasNext(); ) {
+                            int clock = (Integer)i.next();
                             if ( start_clock <= clock && clock <= end_clock ) {
                                 edit.add( new BPPair( clock, target_list.getValue( clock ) ) );
                             }
@@ -586,8 +590,8 @@ namespace Boare.Lib.Vsq {
                     return inv;
                 } else if ( com.size() == 1 ) {
                     boolean found = false;
-                    for ( Iterator itr = target_list.keyClockIterator(); itr.hasNext(); ){
-                        int clock = (int)itr.next();
+                    for ( Iterator itr = target_list.keyClockIterator(); itr.hasNext(); ) {
+                        int clock = (Integer)itr.next();
                         if ( clock == com.get( 0 ).Clock ) {
                             found = true;
                             target_list.add( clock, com.get( 0 ).Value );
@@ -604,7 +608,7 @@ namespace Boare.Lib.Vsq {
                     while ( removed ) {
                         removed = false;
                         for ( Iterator itr = target_list.keyClockIterator(); itr.hasNext(); ) {
-                            int clock = (int)itr.next();
+                            int clock = (Integer)itr.next();
                             if ( start_clock <= clock && clock <= end_clock ) {
                                 target_list.remove( clock );
                                 removed = true;
@@ -612,16 +616,62 @@ namespace Boare.Lib.Vsq {
                             }
                         }
                     }
-                    for ( Iterator itr = com.iterator(); itr.hasNext(); ){
+                    for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
                         BPPair item = (BPPair)itr.next();
                         target_list.add( item.Clock, item.Value );
                     }
                 }
                 return inv;
                 #endregion
-            } else if ( type == VsqCommandType.TRACK_CURVE_REPLACE ) {
+            }
+                /*else if ( type == VsqCommandType.TRACK_CURVE_EDIT2 )
+                {
+                    #region TRACK_CURVE_EDIT2
+                    int track = (Integer)command.Args[0];
+                    String curve = (String)command.Args[1];
+                    Vector<VsqBPPair> com = (Vector<VsqBPPair>)command.Args[2];
+                    Vector<Integer> clocks = (Vector<Integer>)command.Args[3];
+
+                    VsqBPList list = Track.get( track ).getCurve( curve );
+
+                    // 現在の編集範囲を取得
+                    int edited_start = Track.get( track ).getEditedStart();
+                    int edited_end = Track.get( track ).getEditedEnd();
+
+                    Vector<VsqBPPair> inv_com = new Vector<VsqBPPair>();
+                    Vector<Integer> inv_clocks = new Vector<Integer>();
+                    // 現在の状態をコピー
+                    int com_size = com.size();
+                    for ( int i = 0; i < com_size; i++ )
+                    {
+                        VsqBPPair bp = com.get( i );
+                        long search_id = bp.id;
+                        VsqBPPairSearchContext search_result = list.findElement( search_id );
+                        inv_com.add( search_result.point );
+                        inv_clocks.add( search_result.clock );
+                    }
+
+                    // 編集を実行
+                    for ( int i = 0; i < com_size; i++ )
+                    {
+                        int clock = inv_clocks.get( i );
+                        int new_clock = clocks.get( i );
+                        list.move( inv_clocks.get( i ), clocks.get( i ), com.get( i ).value );
+                        edited_start = Math.Min( edited_start, Math.Min( clock, new_clock ) );
+                        edited_end = Math.Max( edited_end, Math.Max( clock, new_clock ) );
+                    }
+
+                    // 編集範囲の更新
+                    Track.get( track ).setEditedStart( edited_start );
+                    Track.get( track ).setEditedEnd( edited_end );
+                    updateTotalClocks();
+
+                    return VsqCommand.generateCommandTrackCurveEdit2( track, curve, inv_com, inv_clocks );
+                    #endregion
+                }*/
+              else if ( type == VsqCommandType.TRACK_CURVE_REPLACE ) {
                 #region TRACK_CURVE_REPLACE
-                int track = (int)command.Args[0];
+                int track = (Integer)command.Args[0];
                 String target_curve = (String)command.Args[1];
                 VsqBPList bplist = (VsqBPList)command.Args[2];
                 VsqCommand inv = VsqCommand.generateCommandTrackCurveReplace( track, target_curve, Track.get( track ).getCurve( target_curve ) );
@@ -630,7 +680,7 @@ namespace Boare.Lib.Vsq {
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CURVE_REPLACE_RANGE ) {
                 #region TRACK_CURVE_REPLACE_RANGE
-                int track = (int)command.Args[0];
+                int track = (Integer)command.Args[0];
                 String[] target_curve = (String[])command.Args[1];
                 VsqBPList[] bplist = (VsqBPList[])command.Args[2];
                 VsqBPList[] inv_bplist = new VsqBPList[bplist.Length];
@@ -645,23 +695,24 @@ namespace Boare.Lib.Vsq {
                 return inv;
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
-                #region TrackEditCurveRange
-                int track = (int)command.Args[0];
-                String[] curves = (String[])command.Args[1];
-                Vector<BPPair>[] coms = (Vector<BPPair>[])command.Args[2];
-                Vector<BPPair>[] inv_coms = new Vector<BPPair>[curves.Length];
+                #region TRACK_CURVE_EDIT_RANGE
+                int track = (Integer)command.Args[0];
+                Vector<String> curves = (Vector<String>)command.Args[1];
+                Vector<Vector<BPPair>> coms = (Vector<Vector<BPPair>>)command.Args[2];
+                Vector<Vector<BPPair>> inv_coms = new Vector<Vector<BPPair>>();
                 VsqCommand inv = null;
 
-                for ( int k = 0; k < curves.Length; k++ ) {
-                    String curve = curves[k];
-                    Vector<BPPair> com = coms[k];
+                int count = curves.size();
+                for ( int k = 0; k < count; k++ ) {
+                    String curve = curves.get( k );
+                    Vector<BPPair> com = coms.get( k );
                     //SortedList<int, int> list = Tracks[track][curve].List;
                     Vector<BPPair> edit = new Vector<BPPair>();
                     if ( com != null ) {
                         if ( com.size() > 0 ) {
                             int start_clock = com.get( 0 ).Clock;
                             int end_clock = com.get( 0 ).Clock;
-                            for ( Iterator itr = com.iterator(); itr.hasNext(); ){
+                            for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
                                 BPPair item = (BPPair)itr.next();
                                 start_clock = Math.Min( start_clock, item.Clock );
                                 end_clock = Math.Max( end_clock, item.Clock );
@@ -671,7 +722,7 @@ namespace Boare.Lib.Vsq {
                             int start_value = Track.get( track ).getCurve( curve ).getValue( start_clock );
                             int end_value = Track.get( track ).getCurve( curve ).getValue( end_clock );
                             for ( Iterator itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
-                                int clock = (int)itr.next();
+                                int clock = (Integer)itr.next();
                                 if ( start_clock <= clock && clock <= end_clock ) {
                                     edit.add( new BPPair( clock, Track.get( track ).getCurve( curve ).getValue( clock ) ) );
                                 }
@@ -703,11 +754,11 @@ namespace Boare.Lib.Vsq {
 
                             // 並べ替え
                             Collections.sort( edit );
-                            inv_coms[k] = edit;
+                            inv_coms.add( edit );
                             //inv = generateCommandTrackEditCurve( track, curve, edit );
                         } else if ( com.size() == 0 ) {
                             //inv = generateCommandTrackEditCurve( track, curve, new Vector<BPPair>() );
-                            inv_coms[k] = new Vector<BPPair>();
+                            inv_coms.add( new Vector<BPPair>() );
                         }
                     }
 
@@ -717,7 +768,7 @@ namespace Boare.Lib.Vsq {
                     } else if ( com.size() == 1 ) {
                         boolean found = false;
                         for ( Iterator itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
-                            int clock = (int)itr.next();
+                            int clock = (Integer)itr.next();
                             if ( clock == com.get( 0 ).Clock ) {
                                 found = true;
                                 Track.get( track ).getCurve( curve ).add( clock, com.get( 0 ).Value );
@@ -734,7 +785,7 @@ namespace Boare.Lib.Vsq {
                         while ( removed ) {
                             removed = false;
                             for ( Iterator itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
-                                int clock = (int)itr.next();
+                                int clock = (Integer)itr.next();
                                 if ( start_clock <= clock && clock <= end_clock ) {
                                     Track.get( track ).getCurve( curve ).remove( clock );
                                     removed = true;
@@ -742,7 +793,7 @@ namespace Boare.Lib.Vsq {
                                 }
                             }
                         }
-                        for ( Iterator itr = com.iterator(); itr.hasNext(); ){
+                        for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
                             BPPair item = (BPPair)itr.next();
                             Track.get( track ).getCurve( curve ).add( item.Clock, item.Value );
                         }
@@ -750,26 +801,20 @@ namespace Boare.Lib.Vsq {
                 }
                 return VsqCommand.generateCommandTrackCurveEditRange( track, curves, inv_coms );
                 #endregion
-            /*} else if ( type == VsqCommandType.TRACK_CURVE_REMOVE_POINTS ) {
-                #region TRACK_CURVE_REMOVE_POINTS
-                int track = (int)command.Args[0];
-                String curve = (String)command.Args[1];
-                Vector<Long> ids = (Vector<Long>)command.Args[2];
-                #endregion*/
             } else if ( type == VsqCommandType.EVENT_CHANGE_VELOCITY ) {
-                #region TrackChangeVelocity
-                int track = (int)command.Args[0];
-                Vector<KeyValuePair<Integer, Integer>> veloc = (Vector<KeyValuePair<Integer, Integer>>)command.Args[1];
-                Vector<KeyValuePair<Integer, Integer>> inv = new Vector<KeyValuePair<Integer, Integer>>();
+                #region EVENT_CHANGE_VELOCITY
+                int track = (Integer)command.Args[0];
+                Vector<ValuePair<Integer, Integer>> veloc = (Vector<ValuePair<Integer, Integer>>)command.Args[1];
+                Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = (VsqEvent)itr.next();
-                    for ( Iterator itr2 = veloc.iterator(); itr2.hasNext(); ){
-                        KeyValuePair<Integer, Integer> add = (KeyValuePair<Integer, Integer>)itr2.next();
-                        if ( ev.InternalID == add.Key ) {
-                            inv.add( new KeyValuePair<Integer, Integer>( ev.InternalID, ev.ID.Dynamics ) );
-                            ev.ID.Dynamics = add.Value;
+                    for ( Iterator itr2 = veloc.iterator(); itr2.hasNext(); ) {
+                        ValuePair<Integer, Integer> add = (ValuePair<Integer, Integer>)itr2.next();
+                        if ( ev.InternalID == add.getKey() ) {
+                            inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.Dynamics ) );
+                            ev.ID.Dynamics = add.getValue();
                             Track.get( track ).setEditedStart( ev.Clock );
-                            Track.get( track ).setEditedEnd( ev.Clock + ev.ID.Length );
+                            Track.get( track ).setEditedEnd( ev.Clock + ev.ID.getLength() );
                             break;
                         }
                     }
@@ -777,19 +822,19 @@ namespace Boare.Lib.Vsq {
                 return VsqCommand.generateCommandEventChangeVelocity( track, inv );
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_ACCENT ) {
-                #region TrackChangeAccent
-                int track = (int)command.Args[0];
-                Vector<KeyValuePair<Integer, Integer>> veloc = (Vector<KeyValuePair<Integer, Integer>>)command.Args[1];
-                Vector<KeyValuePair<Integer, Integer>> inv = new Vector<KeyValuePair<Integer, Integer>>();
+                #region EVENT_CHANGE_ACCENT
+                int track = (Integer)command.Args[0];
+                Vector<ValuePair<Integer, Integer>> veloc = (Vector<ValuePair<Integer, Integer>>)command.Args[1];
+                Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = (VsqEvent)itr.next();
-                    for ( Iterator itr2 = veloc.iterator(); itr2.hasNext(); ){
-                        KeyValuePair<Integer, Integer> add = (KeyValuePair<Integer, Integer>)itr2.next();
-                        if ( ev.InternalID == add.Key ) {
-                            inv.add( new KeyValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMaccent ) );
-                            ev.ID.DEMaccent = add.Value;
+                    for ( Iterator itr2 = veloc.iterator(); itr2.hasNext(); ) {
+                        ValuePair<Integer, Integer> add = (ValuePair<Integer, Integer>)itr2.next();
+                        if ( ev.InternalID == add.getKey() ) {
+                            inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMaccent ) );
+                            ev.ID.DEMaccent = add.getValue();
                             Track.get( track ).setEditedStart( ev.Clock );
-                            Track.get( track ).setEditedEnd( ev.Clock + ev.ID.Length );
+                            Track.get( track ).setEditedEnd( ev.Clock + ev.ID.getLength() );
                             break;
                         }
                     }
@@ -797,19 +842,19 @@ namespace Boare.Lib.Vsq {
                 return VsqCommand.generateCommandEventChangeAccent( track, inv );
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_DECAY ) {
-                #region TrackChangeDecay
-                int track = (int)command.Args[0];
-                Vector<KeyValuePair<Integer, Integer>> veloc = (Vector<KeyValuePair<Integer, Integer>>)command.Args[1];
-                Vector<KeyValuePair<Integer, Integer>> inv = new Vector<KeyValuePair<Integer, Integer>>();
+                #region EVENT_CHANGE_DECAY
+                int track = (Integer)command.Args[0];
+                Vector<ValuePair<Integer, Integer>> veloc = (Vector<ValuePair<Integer, Integer>>)command.Args[1];
+                Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = (VsqEvent)itr.next();
-                    for ( Iterator itr2 = veloc.iterator(); itr2.hasNext(); ){
-                        KeyValuePair<Integer, Integer> add = (KeyValuePair<Integer, Integer>)itr.next();
-                        if ( ev.InternalID == add.Key ) {
-                            inv.add( new KeyValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMdecGainRate ) );
-                            ev.ID.DEMdecGainRate = add.Value;
+                    for ( Iterator itr2 = veloc.iterator(); itr2.hasNext(); ) {
+                        ValuePair<Integer, Integer> add = (ValuePair<Integer, Integer>)itr2.next();
+                        if ( ev.InternalID == add.getKey() ) {
+                            inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMdecGainRate ) );
+                            ev.ID.DEMdecGainRate = add.getValue();
                             Track.get( track ).setEditedStart( ev.Clock );
-                            Track.get( track ).setEditedEnd( ev.Clock + ev.ID.Length );
+                            Track.get( track ).setEditedEnd( ev.Clock + ev.ID.getLength() );
                             break;
                         }
                     }
@@ -817,18 +862,18 @@ namespace Boare.Lib.Vsq {
                 return VsqCommand.generateCommandEventChangeDecay( track, inv );
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_LENGTH ) {
-                #region TrackChangeLength
-                int track = (int)command.Args[0];
-                int internal_id = (int)command.Args[1];
-                int new_length = (int)command.Args[2];
+                #region EVENT_CHANGE_LENGTH
+                int track = (Integer)command.Args[0];
+                int internal_id = (Integer)command.Args[1];
+                int new_length = (Integer)command.Args[2];
                 for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
                     if ( item.InternalID == internal_id ) {
-                        VsqCommand ret = VsqCommand.generateCommandEventChangeLength( track, internal_id, item.ID.Length );
+                        VsqCommand ret = VsqCommand.generateCommandEventChangeLength( track, internal_id, item.ID.getLength() );
                         Track.get( track ).setEditedStart( item.Clock );
-                        int max = Math.Max( item.Clock + item.ID.Length, item.Clock + new_length );
+                        int max = Math.Max( item.Clock + item.ID.getLength(), item.Clock + new_length );
                         Track.get( track ).setEditedEnd( max );
-                        item.ID.Length = new_length;
+                        item.ID.setLength( new_length );
                         updateTotalClocks();
                         return ret;
                     }
@@ -836,21 +881,21 @@ namespace Boare.Lib.Vsq {
                 return null;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_LENGTH ) {
-                #region TrackChangeClockAndLength
-                int track = (int)command.Args[0];
-                int internal_id = (int)command.Args[1];
-                int new_clock = (int)command.Args[2];
-                int new_length = (int)command.Args[3];
+                #region EVENT_CHANGE_CLOCK_AND_LENGTH
+                int track = (Integer)command.Args[0];
+                int internal_id = (Integer)command.Args[1];
+                int new_clock = (Integer)command.Args[2];
+                int new_length = (Integer)command.Args[3];
                 for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
                     if ( item.InternalID == internal_id ) {
-                        VsqCommand ret = VsqCommand.generateCommandEventChangeClockAndLength( track, internal_id, item.Clock, item.ID.Length );
+                        VsqCommand ret = VsqCommand.generateCommandEventChangeClockAndLength( track, internal_id, item.Clock, item.ID.getLength() );
                         int min = Math.Min( item.Clock, new_clock );
-                        int max_length = Math.Max( item.ID.Length, new_length );
+                        int max_length = Math.Max( item.ID.getLength(), new_length );
                         int max = Math.Max( item.Clock + max_length, new_clock + max_length );
                         Track.get( track ).setEditedStart( min );
                         Track.get( track ).setEditedEnd( max );
-                        item.ID.Length = new_length;
+                        item.ID.setLength( new_length );
                         item.Clock = new_clock;
                         Track.get( track ).sortEvent();
                         updateTotalClocks();
@@ -860,21 +905,21 @@ namespace Boare.Lib.Vsq {
                 return null;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS ) {
-                #region TrackChangeIDContaints
-                int track = (int)command.Args[0];
-                int internal_id = (int)command.Args[1];
+                #region EVENT_CHANGE_ID_CONTAINTS
+                int track = (Integer)command.Args[0];
+                int internal_id = (Integer)command.Args[1];
                 VsqID value = (VsqID)command.Args[2];
                 for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeIDContaints( track, internal_id, item.ID );
-                        int max_length = Math.Max( item.ID.Length, value.Length );
+                        int max_length = Math.Max( item.ID.getLength(), value.getLength() );
                         Track.get( track ).setEditedStart( item.Clock );
                         Track.get( track ).setEditedEnd( item.Clock + max_length );
                         item.ID = (VsqID)value.clone();
                         if ( item.ID.type == VsqIDType.Singer ) {
 #if DEBUG
-                            Console.WriteLine( "    EventChangeIDContaints" );
+                            PortUtil.println( "    EventChangeIDContaints" );
 #endif
                             // 歌手変更の場合、次に現れる歌手変更の位置まで編集の影響が及ぶ
                             boolean found = false;
@@ -890,11 +935,11 @@ namespace Boare.Lib.Vsq {
                                 // 変更対象が、該当トラック最後の歌手変更イベントだった場合
                                 if ( Track.get( track ).getEventCount() >= 1 ) {
                                     VsqEvent last_event = Track.get( track ).getEvent( Track.get( track ).getEventCount() - 1 );
-                                    Track.get( track ).setEditedEnd( last_event.Clock + last_event.ID.Length );
+                                    Track.get( track ).setEditedEnd( last_event.Clock + last_event.ID.getLength() );
                                 }
                             }
 #if DEBUG
-                            Console.WriteLine( "        EditedStart,EditedEnd=" + Track.get( track ).getEditedStart() + "," + Track.get( track ).getEditedEnd() );
+                            PortUtil.println( "        EditedStart,EditedEnd=" + Track.get( track ).getEditedStart() + "," + Track.get( track ).getEditedEnd() );
 #endif
                         }
                         updateTotalClocks();
@@ -904,8 +949,8 @@ namespace Boare.Lib.Vsq {
                 return null;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS_RANGE ) {
-                #region TrackChangeIDContaintsRange
-                int track = (int)command.Args[0];
+                #region EVENT_CHANGE_ID_CONTAINTS_RANGE
+                int track = (Integer)command.Args[0];
                 int[] internal_ids = (int[])command.Args[1];
                 VsqID[] values = (VsqID[])command.Args[2];
                 VsqID[] inv_values = new VsqID[values.Length];
@@ -914,7 +959,7 @@ namespace Boare.Lib.Vsq {
                         VsqEvent item = (VsqEvent)itr.next();
                         if ( item.InternalID == internal_ids[i] ) {
                             inv_values[i] = (VsqID)item.ID.clone();
-                            int max_length = Math.Max( item.ID.Length, values[i].Length );
+                            int max_length = Math.Max( item.ID.getLength(), values[i].getLength() );
                             Track.get( track ).setEditedStart( item.Clock );
                             Track.get( track ).setEditedEnd( item.Clock + max_length );
                             item.ID = (VsqID)values[i].clone();
@@ -933,7 +978,7 @@ namespace Boare.Lib.Vsq {
                                     // 変更対象が、該当トラック最後の歌手変更イベントだった場合
                                     if ( Track.get( track ).getEventCount() >= 1 ) {
                                         VsqEvent last_event = Track.get( track ).getEvent( Track.get( track ).getEventCount() - 1 );
-                                        Track.get( track ).setEditedEnd( last_event.Clock + last_event.ID.Length );
+                                        Track.get( track ).setEditedEnd( last_event.Clock + last_event.ID.getLength() );
                                     }
                                 }
                             }
@@ -945,17 +990,17 @@ namespace Boare.Lib.Vsq {
                 return VsqCommand.generateCommandEventChangeIDContaintsRange( track, internal_ids, inv_values );
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS ) {
-                #region TrackChangeClockAndIDContaints
-                int track = (int)command.Args[0];
-                int internal_id = (int)command.Args[1];
-                int new_clock = (int)command.Args[2];
+                #region EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS
+                int track = (Integer)command.Args[0];
+                int internal_id = (Integer)command.Args[1];
+                int new_clock = (Integer)command.Args[2];
                 VsqID value = (VsqID)command.Args[3];
                 VsqTrack target = Track.get( track );
                 for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeClockAndIDContaints( track, internal_id, item.Clock, item.ID );
-                        int max_length = Math.Max( item.ID.Length, value.Length );
+                        int max_length = Math.Max( item.ID.getLength(), value.getLength() );
                         int min = Math.Min( item.Clock, new_clock );
                         int max = Math.Max( item.Clock + max_length, new_clock + max_length );
                         item.ID = (VsqID)value.clone();
@@ -970,20 +1015,20 @@ namespace Boare.Lib.Vsq {
                 return null;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS_RANGE ) {
-                #region TrackChangeClockAndIDContaintsRange
-                int track = (int)command.Args[0];
+                #region EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS_RANGE
+                int track = (Integer)command.Args[0];
                 int[] internal_ids = (int[])command.Args[1];
                 int[] clocks = (int[])command.Args[2];
                 VsqID[] values = (VsqID[])command.Args[3];
                 Vector<VsqID> inv_id = new Vector<VsqID>();
-                Vector<int> inv_clock = new Vector<int>();
+                Vector<Integer> inv_clock = new Vector<Integer>();
                 for ( int i = 0; i < internal_ids.Length; i++ ) {
                     for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
                         VsqEvent item = (VsqEvent)itr.next();
                         if ( item.InternalID == internal_ids[i] ) {
                             inv_id.add( (VsqID)item.ID.clone() );
                             inv_clock.add( item.Clock );
-                            int max_length = Math.Max( item.ID.Length, values[i].Length );
+                            int max_length = Math.Max( item.ID.getLength(), values[i].getLength() );
                             int min = Math.Min( item.Clock, clocks[i] );
                             int max = Math.Max( item.Clock + max_length, clocks[i] + max_length );
                             Track.get( track ).setEditedStart( min );
@@ -999,27 +1044,27 @@ namespace Boare.Lib.Vsq {
                 return VsqCommand.generateCommandEventChangeClockAndIDContaintsRange(
                     track,
                     internal_ids,
-                    inv_clock.toArray( new Integer[]{} ),
-                    inv_id.toArray( new VsqID[]{} ) );
+                    PortUtil.convertIntArray( inv_clock.toArray( new Integer[] { } ) ),
+                    inv_id.toArray( new VsqID[] { } ) );
 #if DEBUG
-                Console.WriteLine( "    TrackChangeClockAndIDContaintsRange" );
-                Console.WriteLine( "    track=" + track );
+                PortUtil.println( "    TrackChangeClockAndIDContaintsRange" );
+                PortUtil.println( "    track=" + track );
                 for ( int i = 0; i < internal_ids.Length; i++ ) {
-                    Console.WriteLine( "    id=" + internal_ids[i] + "; clock=" + clocks[i] + "; ID=" + values[i].ToString() );
+                    PortUtil.println( "    id=" + internal_ids[i] + "; clock=" + clocks[i] + "; ID=" + values[i].ToString() );
                 }
 #endif
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CHANGE_NAME ) {
-                #region TrackCangeName
-                int track = (int)command.Args[0];
+                #region TRACK_CHANGE_NAME
+                int track = (Integer)command.Args[0];
                 String new_name = (String)command.Args[1];
                 VsqCommand ret = VsqCommand.generateCommandTrackChangeName( track, Track.get( track ).getName() );
                 Track.get( track ).setName( new_name );
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.TRACK_REPLACE ) {
-                #region TrackReplace
-                int track = (int)command.Args[0];
+                #region TRACK_REPLACE
+                int track = (Integer)command.Args[0];
                 VsqTrack item = (VsqTrack)command.Args[1];
                 VsqCommand ret = VsqCommand.generateCommandTrackReplace( track, Track.get( track ) );
                 Track.set( track, item );
@@ -1027,16 +1072,16 @@ namespace Boare.Lib.Vsq {
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CHANGE_PLAY_MODE ) {
-                #region TrackChangePlayMode
-                int track = (int)command.Args[0];
-                int play_mode = (int)command.Args[1];
+                #region TRACK_CHANGE_PLAY_MODE
+                int track = (Integer)command.Args[0];
+                int play_mode = (Integer)command.Args[1];
                 VsqCommand ret = VsqCommand.generateCommandTrackChangePlayMode( track, Track.get( track ).getCommon().PlayMode );
                 Track.get( track ).getCommon().PlayMode = play_mode;
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_REPLACE ) {
-                #region EventReplace
-                int track = (int)command.Args[0];
+                #region EVENT_REPLACE
+                int track = (Integer)command.Args[0];
                 VsqEvent item = (VsqEvent)command.Args[1];
                 VsqCommand ret = null;
                 for ( int i = 0; i < Track.get( track ).getEventCount(); i++ ) {
@@ -1052,18 +1097,18 @@ namespace Boare.Lib.Vsq {
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_REPLACE_RANGE ) {
-                #region EventReplaceRange
-                int track = (int)command.Args[0];
-                object[] items = (object[])command.Args[1];
+                #region EVENT_REPLACE_RANGE
+                int track = (Integer)command.Args[0];
+                VsqEvent[] items = (VsqEvent[])command.Args[1];
                 VsqCommand ret = null;
                 VsqEvent[] reverse = new VsqEvent[items.Length];
                 for ( int i = 0; i < items.Length; i++ ) {
-                    VsqEvent ve = (VsqEvent)items[i];
+                    VsqEvent ve = items[i];
                     for ( int j = 0; j < Track.get( track ).getEventCount(); j++ ) {
                         VsqEvent ve2 = (VsqEvent)Track.get( track ).getEvent( j );
                         if ( ve2.InternalID == ve.InternalID ) {
                             reverse[i] = (VsqEvent)ve2.clone();
-                            Track.get( track ).setEvent( j, (VsqEvent)items[i] );
+                            Track.get( track ).setEvent( j, items[i] );
                             break;
                         }
                     }
@@ -1084,7 +1129,7 @@ namespace Boare.Lib.Vsq {
         /// <param name="vsq">編集対象のVsqFileインスタンス</param>
         /// <param name="clock_start">削除を行う範囲の開始クロック</param>
         /// <param name="clock_end">削除を行う範囲の終了クロック</param>
-        public virtual void removePart( int clock_start, int clock_end ) {
+        public void removePart( int clock_start, int clock_end ) {
             int dclock = clock_end - clock_start;
 
             // テンポ情報の削除、シフト
@@ -1096,9 +1141,9 @@ namespace Boare.Lib.Vsq {
             boolean just_on_clock_end_added = false;
             for ( int i = 0; i < buf.size(); i++ ) {
                 if ( buf.get( i ).Clock < clock_start ) {
-                    TempoTable.add( (TempoTableEntry)buf.get( i ).Clone() );
+                    TempoTable.add( (TempoTableEntry)buf.get( i ).clone() );
                 } else if ( clock_end <= buf.get( i ).Clock ) {
-                    TempoTableEntry tte = (TempoTableEntry)buf.get( i ).Clone();
+                    TempoTableEntry tte = (TempoTableEntry)buf.get( i ).clone();
                     tte.Clock = tte.Clock - dclock;
                     if ( clock_end == buf.get( i ).Clock ) {
                         TempoTable.add( tte );
@@ -1160,16 +1205,17 @@ namespace Boare.Lib.Vsq {
                     }
                 }
 
-                foreach ( String curve in _CURVES ) {
+                for ( int i = 0; i < _CURVES.Length; i++ ) {
+                    String curve = _CURVES[i];
                     if ( curve.Equals( "VEL" ) ) {
                         continue;
                     }
-                    VsqBPList buf_bplist = (VsqBPList)Track.get( track ).getCurve( curve ).Clone();
+                    VsqBPList buf_bplist = (VsqBPList)Track.get( track ).getCurve( curve ).clone();
                     Track.get( track ).getCurve( curve ).clear();
                     int value_at_end = buf_bplist.getValue( clock_end );
                     boolean at_end_added = false;
                     for ( Iterator itr = buf_bplist.keyClockIterator(); itr.hasNext(); ) {
-                        int key = (int)itr.next();
+                        int key = (Integer)itr.next();
                         if ( key < clock_start ) {
                             Track.get( track ).getCurve( curve ).add( key, buf_bplist.getValue( key ) );
                         } else if ( clock_end <= key ) {
@@ -1192,14 +1238,14 @@ namespace Boare.Lib.Vsq {
         /// この操作を行うことで，TimesigTableの情報は破綻します（仕様です）．
         /// </summary>
         /// <param name="delta_clock"></param>
-        public static void shift( VsqFile vsq, uint delta_clock ) {
+        public static void shift( VsqFile vsq, int delta_clock ) {
             if ( delta_clock == 0 ) {
                 return;
             }
             int dclock = (int)delta_clock;
             for ( int i = 0; i < vsq.TempoTable.size(); i++ ) {
                 if ( vsq.TempoTable.get( i ).Clock > 0 ) {
-                    vsq.TempoTable.get( i ).Clock =vsq.TempoTable.get( i ).Clock + dclock;
+                    vsq.TempoTable.get( i ).Clock = vsq.TempoTable.get( i ).Clock + dclock;
                 }
             }
             vsq.updateTempoInfo();
@@ -1209,15 +1255,17 @@ namespace Boare.Lib.Vsq {
                         vsq.Track.get( track ).getEvent( i ).Clock += dclock;
                     }
                 }
-                foreach ( String curve in _CURVES ) {
+                for ( int i = 0; i < _CURVES.Length; i++ ) {
+                    String curve = _CURVES[i];
                     if ( curve.Equals( "VEL" ) ) {
                         continue;
-                    
+
                     }
                     // 順番に+=dclockしていくとVsqBPList内部のSortedListの値がかぶる可能性がある．
                     VsqBPList edit = vsq.Track.get( track ).getCurve( curve );
                     VsqBPList new_one = new VsqBPList( edit.getDefault(), edit.getMinimum(), edit.getMaximum() );
-                    foreach( int key in edit.getKeys() ){
+                    for ( Iterator itr2 = edit.keyClockIterator(); itr2.hasNext(); ) {
+                        int key = (Integer)itr2.next();
                         new_one.add( key + dclock, edit.getValue( key ) );
                     }
                     vsq.Track.get( track ).setCurve( curve, new_one );
@@ -1230,37 +1278,45 @@ namespace Boare.Lib.Vsq {
         /// このインスタンスのコピーを作成します
         /// </summary>
         /// <returns>このインスタンスのコピー</returns>
-        public virtual object Clone() {
+        public Object clone() {
             VsqFile ret = new VsqFile();
             ret.Track = new Vector<VsqTrack>();
             for ( int i = 0; i < Track.size(); i++ ) {
-                ret.Track.add( (VsqTrack)Track.get( i ).Clone() );
+                ret.Track.add( (VsqTrack)Track.get( i ).clone() );
             }
-#if USE_TEMPO_LIST
-            ret.m_tempo_table = (TempoTable)m_tempo_table.Clone();
-#else
+
             ret.TempoTable = new Vector<TempoTableEntry>();
             for ( int i = 0; i < TempoTable.size(); i++ ) {
-                ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).Clone() );
+                ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).clone() );
             }
-#endif
+
             ret.TimesigTable = new Vector<TimeSigTableEntry>();
             for ( int i = 0; i < TimesigTable.size(); i++ ) {
-                ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).Clone() );
+                ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
             }
             ret.m_tpq = m_tpq;
             ret.TotalClocks = TotalClocks;
             ret.m_base_tempo = m_base_tempo;
-            ret.Master = (VsqMaster)Master.Clone();
-            ret.Mixer = (VsqMixer)Mixer.Clone();
+            ret.Master = (VsqMaster)Master.clone();
+            ret.Mixer = (VsqMixer)Mixer.clone();
             //ret.m_premeasure_clocks = m_premeasure_clocks;
             return ret;
         }
 
+#if !JAVA
+        public object Clone() {
+            return clone();
+        }
+#endif
+
         private VsqFile() {
         }
 
+#if JAVA
+        private class BarLineIterator implements Iterator{
+#else
         private class BarLineIterator : Iterator {
+#endif
             private Vector<TimeSigTableEntry> m_list;
             private int m_end_clock;
             private int i;
@@ -1273,12 +1329,6 @@ namespace Boare.Lib.Vsq {
             int bar_counter;
 
             public BarLineIterator( Vector<TimeSigTableEntry> list, int end_clock ) {
-                /*lock ( list ) {
-                    m_list = new Vector<TimeSigTableEntry>();
-                    for ( int j = 0; j < list.Count; j++ ) {
-                        m_list.Add( (TimeSigTableEntry)list[j].Clone() );
-                    }
-                }*/
                 m_list = list;
                 m_end_clock = end_clock;
                 i = 0;
@@ -1301,7 +1351,7 @@ namespace Boare.Lib.Vsq {
                     }
                 }
 
-                if( i < m_list.size() ) {
+                if ( i < m_list.size() ) {
                     local_denominator = m_list.get( i ).Denominator;
                     local_numerator = m_list.get( i ).Numerator;
                     local_clock = m_list.get( i ).Clock;
@@ -1315,7 +1365,7 @@ namespace Boare.Lib.Vsq {
                     }
                     i++;
                     clock = local_clock;
-                    if( clock < t_end ){
+                    if ( clock < t_end ) {
                         if ( (clock - local_clock) % mod == 0 ) {
                             bar_counter++;
                             VsqBarLineType ret = new VsqBarLineType( clock, true, local_denominator, local_numerator, bar_counter );
@@ -1332,10 +1382,10 @@ namespace Boare.Lib.Vsq {
             }
 
             public void remove() {
-                throw new NotImplementedException();
+                //throw new Exception( "com.boare.vsq.VsqFile.BarLineIterator#remove; not implemented" );
             }
 
-            public Boolean hasNext() {
+            public boolean hasNext() {
                 if ( clock < m_end_clock ) {
                     return true;
                 } else {
@@ -1349,7 +1399,7 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         /// <returns></returns>
         public Iterator getBarLineIterator( int end_clock ) {
-            return new BarLineIterator( TimesigTable, end_clock ); 
+            return new BarLineIterator( TimesigTable, end_clock );
         }
 
         /// <summary>
@@ -1425,9 +1475,6 @@ namespace Boare.Lib.Vsq {
         /// <returns></returns>
         public double getClockFromSec( double time ) {
             // timeにおけるテンポを取得
-#if USE_TEMPO_LIST
-            return m_tempo_table.getClockFromSec( time );
-#else
             int tempo = m_base_tempo;
             double base_clock = 0;
             double base_time = 0f;
@@ -1450,7 +1497,6 @@ namespace Boare.Lib.Vsq {
             }
             double dt = time - base_time;
             return base_clock + dt * m_tpq * 1000000.0 / (double)tempo;
-#endif
         }
 
         /// <summary>
@@ -1459,7 +1505,10 @@ namespace Boare.Lib.Vsq {
         /// <param name="clock"></param>
         /// <param name="numerator"></param>
         /// <param name="denominator"></param>
-        public void getTimesigAt( int clock, out int numerator, out int denominator ) {
+        public Timesig getTimesigAt( int clock ) {
+            Timesig ret = new Timesig();
+            ret.numerator = 4;
+            ret.denominator = 4;
             int index = 0;
             int c = TimesigTable.size();
             for ( int i = c - 1; i >= 0; i-- ) {
@@ -1468,11 +1517,12 @@ namespace Boare.Lib.Vsq {
                     break;
                 }
             }
-            numerator = TimesigTable.get( index ).Numerator;
-            denominator = TimesigTable.get( index ).Denominator;
+            ret.numerator = TimesigTable.get( index ).Numerator;
+            ret.denominator = TimesigTable.get( index ).Denominator;
+            return ret;
         }
 
-        public void getTimesigAt( int clock, out int numerator, out int denominator, out int bar_count ) {
+        public Timesig getTimesigAt( int clock, ByRef<Integer> bar_count ) {
             int index = 0;
             int c = TimesigTable.size();
             for ( int i = c - 1; i >= 0; i-- ) {
@@ -1482,11 +1532,13 @@ namespace Boare.Lib.Vsq {
                 }
             }
             TimeSigTableEntry item = TimesigTable.get( index );
-            numerator = item.Numerator;
-            denominator = item.Denominator;
+            Timesig ret = new Timesig();
+            ret.numerator = item.Numerator;
+            ret.denominator = item.Denominator;
             int diff = clock - item.Clock;
-            int clock_per_bar = 480 * 4 / denominator * numerator;
-            bar_count = item.BarCount + diff / clock_per_bar;
+            int clock_per_bar = 480 * 4 / ret.denominator * ret.numerator;
+            bar_count.value = item.BarCount + diff / clock_per_bar;
+            return ret;
         }
 
         /// <summary>
@@ -1562,34 +1614,6 @@ namespace Boare.Lib.Vsq {
             return m_tpq;
         }
 
-#if USE_TEMPO_LIST
-        public TempoTable TempoTable {
-            return m_tempo_table;
-        }
-#else
-        /*/// <summary>
-        /// テンポの変更情報を格納したテーブルを取得します
-        /// </summary>
-        public Vector<TempoTableEntry> getTempoList() {
-            return TempoTable;
-        }*/
-#endif
-
-        /*/// <summary>
-        /// 拍子の変更情報を格納したテーブルを取得します
-        /// </summary>
-        public Vector<TimeSigTableEntry> getTimeSigList() {
-            return TimesigTable;
-        }*/
-
-        /*public VsqTrack Track( int track ) {
-            return Track.get( track );
-        }*/
-
-        /*public int getTrackCount() {
-            return Tracks.Count;
-        }*/
-
         /// <summary>
         /// 空のvsqファイルを構築します
         /// </summary>
@@ -1606,7 +1630,7 @@ namespace Boare.Lib.Vsq {
             Track.add( new VsqTrack( "Voice1", singer ) );
             Master = new VsqMaster( pre_measure );
 #if DEBUG
-            Console.WriteLine( "VsqFile.ctor()" );
+            PortUtil.println( "VsqFile.ctor()" );
 #endif
             Mixer = new VsqMixer( 0, 0, 0, 0 );
             Mixer.Slave.add( new VsqMixerEntry( 0, 0, 0, 0 ) );
@@ -1622,23 +1646,28 @@ namespace Boare.Lib.Vsq {
         /// vsqファイルからのコンストラクタ
         /// </summary>
         /// <param name="_fpath"></param>
-        public VsqFile( String _fpath, Encoding encoding ) {
+        public VsqFile( String _fpath, String encoding )
+#if JAVA
+            throws FileNotFoundException
+#endif
+ {
             TempoTable = new Vector<TempoTableEntry>();
             TimesigTable = new Vector<TimeSigTableEntry>();
             m_tpq = 480;
 
             // SMFをコンバートしたテキストファイルを作成
-            //using ( TextMemoryStream tms = new TextMemoryStream( FileAccess.ReadWrite ) ) {
-                MidiFile mf = new MidiFile( _fpath );
-                Track = new Vector<VsqTrack>();
-                int num_track = mf.getTrackCount();
-                for ( int i = 0; i < num_track; i++ ) {
-                    Track.add( new VsqTrack( mf.getMidiEventList( i ), encoding ) );
-                }
-            //}
+            MidiFile mf = new MidiFile( _fpath );
+            Track = new Vector<VsqTrack>();
+            int num_track = mf.getTrackCount();
+#if DEBUG
+            PortUtil.println( "VsqFile#.ctor; num_track=" + num_track );
+#endif
+            for ( int i = 0; i < num_track; i++ ) {
+                Track.add( new VsqTrack( mf.getMidiEventList( i ), encoding ) );
+            }
 
-            Master = (VsqMaster)Track.get( 1 ).getMaster().Clone();
-            Mixer = (VsqMixer)Track.get( 1 ).getMixer().Clone();
+            Master = (VsqMaster)Track.get( 1 ).getMaster().clone();
+            Mixer = (VsqMixer)Track.get( 1 ).getMixer().clone();
             Track.get( 1 ).setMaster( null );
             Track.get( 1 ).setMixer( null );
 
@@ -1670,15 +1699,17 @@ namespace Boare.Lib.Vsq {
                 double thistime;
                 prev_time = 0.0;
                 int count = -1;
-                for ( int j = 0; j < midi_event.size(); j++ ) {
-                    if ( midi_event.get( j ).firstByte == 0xff && midi_event.get( j ).data.Length >= 4 && midi_event.get( j ).data[0] == 0x51 ) {
+                int midi_event_size = midi_event.size();
+                for ( int j = 0; j < midi_event_size; j++ ) {
+                    MidiEvent itemj = midi_event.get( j );
+                    if ( itemj.firstByte == (byte)0xff && itemj.data.Length >= 4 && itemj.data[0] == (byte)0x51 ) {
                         count++;
-                        if ( count == 0 && midi_event.get( j ).clock != 0 ) {
+                        if ( count == 0 && itemj.clock != 0 ) {
                             TempoTable.add( new TempoTableEntry( 0, 500000, 0.0 ) );
                             m_base_tempo = 500000;
                             prev_tempo = 500000;
                         }
-                        int current_tempo = midi_event.get( j ).data[1] << 16 | midi_event.get( j ).data[2] << 8 | midi_event.get( j ).data[3];
+                        int current_tempo = itemj.data[1] << 16 | itemj.data[2] << 8 | itemj.data[3];
                         int current_index = (int)midi_event.get( j ).clock;
                         thistime = prev_time + (double)(prev_tempo) * (double)(current_index - prev_index) / (m_tpq * 1000000.0);
                         TempoTable.add( new TempoTableEntry( current_index, current_tempo, thistime ) );
@@ -1700,14 +1731,14 @@ namespace Boare.Lib.Vsq {
                 //m_timesig_table.Add( new TimeSigTableEntry( 0, numer, dnomi, 0 ) );
                 count = -1;
                 for ( int j = 0; j < midi_event.size(); j++ ) {
-                    if ( midi_event.get( j ).firstByte == 0xff && midi_event.get( j ).data.Length >= 5 && midi_event.get( j ).data[0] == 0x58 ) {
+                    if ( midi_event.get( j ).firstByte == (byte)0xff && midi_event.get( j ).data.Length >= 5 && midi_event.get( j ).data[0] == (byte)0x58 ) {
                         count++;
                         numer = midi_event.get( j ).data[1];
                         dnomi = 1;
                         for ( int i = 0; i < midi_event.get( j ).data[2]; i++ ) {
                             dnomi = dnomi * 2;
                         }
-                        if ( count == 0 ){
+                        if ( count == 0 ) {
                             int numerator = 4;
                             int denominator = 4;
                             int clock = 0;
@@ -1748,26 +1779,28 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         public void updateTimesigInfo() {
 #if DEBUG
-            Console.WriteLine( "VsqFile.UpdateTimesigInfo()" );
+            PortUtil.println( "VsqFile.UpdateTimesigInfo()" );
 #endif
             if ( TimesigTable.get( 0 ).Clock != 0 ) {
-                throw new ApplicationException( "initial timesig does not found" );
+                return;
             }
             TimesigTable.get( 0 ).Clock = 0;
             Collections.sort( TimesigTable );
-            for ( int j = 1; j < TimesigTable.size(); j++ ) {
-                int numerator = TimesigTable.get( j - 1 ).Numerator;
-                int denominator = TimesigTable.get( j - 1 ).Denominator;
-                int clock = TimesigTable.get( j - 1 ).Clock;
-                int bar_count = TimesigTable.get( j - 1 ).BarCount;
+            int count = TimesigTable.size();
+            for ( int j = 1; j < count; j++ ) {
+                TimeSigTableEntry item = TimesigTable.get( j - 1 );
+                int numerator = item.Numerator;
+                int denominator = item.Denominator;
+                int clock = item.Clock;
+                int bar_count = item.BarCount;
                 int dif = 480 * 4 / denominator * numerator;//1小節が何クロックか？
                 clock += (TimesigTable.get( j ).BarCount - bar_count) * dif;
                 TimesigTable.get( j ).Clock = clock;
             }
 #if DEBUG
-            Console.WriteLine( "TimesigTable;" );
+            PortUtil.println( "TimesigTable;" );
             for ( int i = 0; i < TimesigTable.size(); i++ ) {
-                Console.WriteLine( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
+                PortUtil.println( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
             }
 #endif
         }
@@ -1802,20 +1835,21 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         public void updateTotalClocks() {
             int max = getPreMeasureClocks();
-            for( int i = 1; i < Track.size(); i++ ){
+            for ( int i = 1; i < Track.size(); i++ ) {
                 VsqTrack track = Track.get( i );
                 for ( Iterator itr = track.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
-                    max = Math.Max( max, ve.Clock + ve.ID.Length );
+                    max = Math.Max( max, ve.Clock + ve.ID.getLength() );
                 }
-                foreach ( String vct in _CURVES ) {
+                for ( int j = 0; j < _CURVES.Length; j++ ) {
+                    String vct = _CURVES[j];
                     if ( vct.Equals( "VEL" ) ) {
                         continue;
                     }
                     VsqBPList list = track.getCurve( vct );
                     if ( list != null && list.size() > 0 ) {
                         int keys = list.size();
-                        int last_key = list.getKeys()[keys - 1];
+                        int last_key = list.getKeyClock( keys - 1 );
                         max = Math.Max( max, last_key );
                     }
                 }
@@ -1836,7 +1870,9 @@ namespace Boare.Lib.Vsq {
         /// <param name="track"></param>
         /// <param name="fpath"></param>
         public void printLyricTable( int track, String fpath ) {
-            using ( StreamWriter sw = new StreamWriter( fpath ) ) {
+            BufferedWriter sw = null;
+            try {
+                sw = new BufferedWriter( new FileWriter( fpath ) );
                 for ( int i = 0; i < Track.get( track ).getEventCount(); i++ ) {
                     int Length;
                     // timesignal
@@ -1844,7 +1880,7 @@ namespace Boare.Lib.Vsq {
                     // イベントで指定されたIDがLyricであった場合
                     if ( Track.get( track ).getEvent( i ).ID.type == VsqIDType.Anote ) {
                         // 発音長を取得
-                        Length = Track.get( track ).getEvent( i ).ID.Length;
+                        Length = Track.get( track ).getEvent( i ).ID.getLength();
 
                         // tempo_tableから、発音開始時のtempoを取得
                         int last = TempoTable.size() - 1;
@@ -1863,47 +1899,123 @@ namespace Boare.Lib.Vsq {
                         double start_time = prev_time + (double)(current_index - prev_index) * (double)tempo / (m_tpq * 1000000.0);
                         // TODO: 単純に + Lengthしただけではまずいはず。要検討
                         double end_time = start_time + ((double)Length) * ((double)tempo) / (m_tpq * 1000000.0);
-                        sw.WriteLine( Track.get( track ).getEvent( i ).Clock + "," +
-                                      start_time.ToString( "0.000000" ) + "," +
-                                      end_time.ToString( "0.000000" ) + "," +
-                                      Track.get( track ).getEvent( i ).ID.LyricHandle.L0.Phrase + "," +
-                                      Track.get( track ).getEvent( i ).ID.LyricHandle.L0.getPhoneticSymbol() );
+                        sw.write( Track.get( track ).getEvent( i ).Clock + "," +
+                                  PortUtil.formatDecimal( "0.000000", start_time ) + "," +
+                                  PortUtil.formatDecimal( "0.000000", end_time ) + "," +
+                                  Track.get( track ).getEvent( i ).ID.LyricHandle.L0.Phrase + "," +
+                                  Track.get( track ).getEvent( i ).ID.LyricHandle.L0.getPhoneticSymbol() );
+                        sw.newLine();
                     }
 
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw != null ) {
+                    try {
+                        sw.close();
+                    } catch ( Exception ex2 ) {
+                    }
                 }
             }
         }
 
-        public Vector<MidiEvent> generateMetaTextEvent( int track, Encoding encoding ) {
-            String _NL = "" + (char)0x0a;
+        public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding ) {
+            String _NL = "" + (char)(byte)0x0a;
             Vector<MidiEvent> ret = new Vector<MidiEvent>();
-            using ( TextMemoryStream sr = new TextMemoryStream() ) {
+            TextMemoryStream sr = null;
+            try {
+                sr = new TextMemoryStream();
                 Track.get( track ).printMetaText( sr, TotalClocks + 120, calculatePreMeasureInClock() );
                 sr.rewind();
                 int line_count = -1;
                 String tmp = "";
                 if ( sr.peek() >= 0 ) {
+#if NEW_IMPL
+                    Vector<Byte> buffer = new Vector<Byte>();
+                    boolean first = true;
+                    while ( sr.peek() >= 0 ) {
+                        if ( first ) {
+                            tmp = sr.readLine();
+                            first = false;
+                        } else {
+                            tmp = _NL + sr.readLine();
+                        }
+                        byte[] linebytes = PortUtil.getEncodedByte( encoding, tmp );
+                        buffer.addAll( Arrays.asList( linebytes ) );
+                        while ( getLinePrefixBytes( line_count + 1 ).Length + buffer.size() >= 127 ) {
+                            line_count++;
+                            byte[] prefix = getLinePrefixBytes( line_count );
+                            MidiEvent add = new MidiEvent();
+                            add.clock = 0;
+                            add.firstByte = (byte)0xff;
+                            add.data = new byte[128];
+                            add.data[0] = (byte)0x01;
+                            int remain = 127;
+                            for ( int i = 0; i < prefix.Length; i++ ) {
+                                add.data[i + 1] = prefix[i];
+                            }
+                            for ( int i = prefix.Length; i < remain; i++ ) {
+                                byte d = buffer.get( 0 );
+                                add.data[i + 1] = d;
+                                buffer.removeElementAt( 0 );
+                            }
+                            ret.add( add );
+                        }
+                    }
+                    if ( buffer.size() > 0 ) {
+                        while ( getLinePrefixBytes( line_count + 1 ).Length + buffer.size() >= 127 ) {
+                            line_count++;
+                            byte[] prefix = getLinePrefixBytes( line_count );
+                            MidiEvent add = new MidiEvent();
+                            add.clock = 0;
+                            add.firstByte = (byte)0xff;
+                            add.data = new byte[128];
+                            add.data[0] = (byte)0x01;
+                            int remain = 127;
+                            for ( int i = 0; i < prefix.Length; i++ ) {
+                                add.data[i + 1] = prefix[i];
+                            }
+                            for ( int i = prefix.Length; i < remain; i++ ) {
+                                add.data[i + 1] = buffer.get( 0 );
+                                buffer.removeElementAt( 0 );
+                            }
+                            ret.add( add );
+                        }
+                        if ( buffer.size() > 0 ) {
+                            line_count++;
+                            byte[] prefix = getLinePrefixBytes( line_count );
+                            MidiEvent add = new MidiEvent();
+                            add.clock = 0;
+                            add.firstByte = (byte)0xff;
+                            int remain = prefix.Length + buffer.size();
+                            add.data = new byte[remain + 1];
+                            add.data[0] = (byte)0x01;
+                            for ( int i = 0; i < prefix.Length; i++ ) {
+                                add.data[i + 1] = prefix[i];
+                            }
+                            for ( int i = prefix.Length; i < remain; i++ ) {
+                                add.data[i + 1] = buffer.get( 0 );
+                                buffer.removeElementAt( 0 );
+                            }
+                            ret.add( add );
+                        }
+                    }
+#else
                     tmp = sr.readLine();
                     byte[] line_bytes;
                     while ( sr.peek() >= 0 ) {
                         tmp += _NL + sr.readLine();
-                        while ( encoding.GetByteCount( tmp + getLinePrefix( line_count + 1 ) ) >= 127 ) {
+                        while ( PortUtil.getEncodedByteCount( encoding, tmp + getLinePrefix( line_count + 1 ) ) >= 127 ) {
                             line_count++;
                             tmp = getLinePrefix( line_count ) + tmp;
                             String work = substring127Bytes( tmp, encoding );// tmp.Substring( 0, 127 );
-#if DEBUG
-                            Console.WriteLine( "VsqFile#generateMetaTextEvent; tmp=" + tmp + "; work=" + work );
-#endif
-                            tmp = tmp.Substring( work.Length );
-#if DEBUG
-                            Console.WriteLine( "VsqFile#generateMetaTextEvent; new tmp=" + tmp );
-#endif
-                            line_bytes = encoding.GetBytes( work );
+                            tmp = tmp.Substring( PortUtil.getStringLength( work ) );
+                            line_bytes = PortUtil.getEecodedByte( encoding, work );
                             MidiEvent add = new MidiEvent();
                             add.clock = 0;
-                            add.firstByte = 0xff; //ステータス メタ＊
+                            add.firstByte = (byte)0xff; //ステータス メタ＊
                             add.data = new byte[line_bytes.Length + 1];
-                            add.data[0] = 0x01; //メタテキスト
+                            add.data[0] = (byte)0x01; //メタテキスト
                             for ( int i = 0; i < line_bytes.Length; i++ ) {
                                 add.data[i + 1] = line_bytes[i];
                             }
@@ -1913,15 +2025,15 @@ namespace Boare.Lib.Vsq {
                     // 残りを出力
                     line_count++;
                     tmp = getLinePrefix( line_count ) + tmp + _NL;
-                    while ( encoding.GetByteCount( tmp ) > 127 ) {
+                    while ( PortUtil.getEncodedByteCount( encoding, tmp ) > 127 ) {
                         String work = substring127Bytes( tmp, encoding );
-                        tmp = tmp.Substring( work.Length );
-                        line_bytes = encoding.GetBytes( work );
+                        tmp = tmp.Substring( PortUtil.getStringLength( work ) );
+                        line_bytes = PortUtil.getEecodedByte( encoding, work );
                         MidiEvent add = new MidiEvent();
                         add.clock = 0;
-                        add.firstByte = 0xff;
+                        add.firstByte = (byte)0xff;
                         add.data = new byte[line_bytes.Length + 1];
-                        add.data[0] = 0x01;
+                        add.data[0] = (byte)0x01;
                         for ( int i = 0; i < line_bytes.Length; i++ ) {
                             add.data[i + 1] = line_bytes[i];
                         }
@@ -1929,17 +2041,29 @@ namespace Boare.Lib.Vsq {
                         line_count++;
                         tmp = getLinePrefix( line_count );
                     }
-                    line_bytes = encoding.GetBytes( tmp );
+                    line_bytes = PortUtil.getEecodedByte( encoding, tmp );
                     MidiEvent add0 = new MidiEvent();
-                    add0.firstByte = 0xff;
+                    add0.firstByte = (byte)0xff;
                     add0.data = new byte[line_bytes.Length + 1];
-                    add0.data[0] = 0x01;
+                    add0.data[0] = (byte)0x01;
                     for ( int i = 0; i < line_bytes.Length; i++ ) {
                         add0.data[i + 1] = line_bytes[i];
                     }
                     ret.add( add0 );
+#endif
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sr != null ) {
+                    try {
+                        sr.close();
+                    } catch ( Exception ex2 ) {
+                    }
                 }
             }
+#if DEBUG
+            Console.WriteLine( "VsqFile#generateMetaTextEvent; ret.size()=" + ret.size() );
+#endif
             return ret;
         }
 
@@ -1949,9 +2073,9 @@ namespace Boare.Lib.Vsq {
         /// <param name="s"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        private static String substring127Bytes( String s, Encoding encoding ) {
-            int count = Math.Min( 127, s.Length );
-            int c = encoding.GetByteCount( s.Substring( 0, count ) );
+        private static String substring127Bytes( String s, String encoding ) {
+            int count = Math.Min( 127, PortUtil.getStringLength( s ) );
+            int c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
             if ( c == 127 ) {
                 return s.Substring( 0, count );
             }
@@ -1960,38 +2084,42 @@ namespace Boare.Lib.Vsq {
                 count += delta;
                 if ( delta == -1 && count == 0 ) {
                     break;
-                } else if ( delta == 1 && count == s.Length ) {
+                } else if ( delta == 1 && count == PortUtil.getStringLength( s ) ) {
                     break;
                 }
-                c = encoding.GetByteCount( s.Substring( 0, count ) );
+                c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
             }
             return s.Substring( 0, count );
         }
 
-        private static void printTrack( VsqFile vsq, int track, RandomAccessFile fs, int msPreSend, Encoding encoding ) {
+        private static void printTrack( VsqFile vsq, int track, RandomAccessFile fs, int msPreSend, String encoding )
+#if JAVA
+            throws IOException
+#endif
+ {
 #if DEBUG
-            Console.WriteLine( "PrintTrack" );
+            PortUtil.println( "PrintTrack" );
 #endif
             //VsqTrack item = Tracks[track];
-            String _NL = "" + (char)0x0a;
+            String _NL = "" + (char)(byte)0x0a;
             //ヘッダ
             fs.write( _MTRK, 0, 4 );
             //データ長。とりあえず0
-            fs.write( new byte[] { 0x00, 0x00, 0x00, 0x00 }, 0, 4 );
+            fs.write( new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00 }, 0, 4 );
             long first_position = fs.getFilePointer();
             //トラック名
-            writeFlexibleLengthUnsignedLong( fs, 0x00 );//デルタタイム
+            writeFlexibleLengthUnsignedLong( fs, (byte)0x00 );//デルタタイム
             fs.write( (byte)0xff );//ステータスタイプ
             fs.write( (byte)0x03 );//イベントタイプSequence/Track Name
-            byte[] seq_name = encoding.GetBytes( vsq.Track.get( track ).getName() );
-            writeFlexibleLengthUnsignedLong( fs, (ulong)seq_name.Length );//seq_nameの文字数
+            byte[] seq_name = PortUtil.getEncodedByte( encoding, vsq.Track.get( track ).getName() );
+            writeFlexibleLengthUnsignedLong( fs, (long)seq_name.Length );//seq_nameの文字数
             fs.write( seq_name, 0, seq_name.Length );
-            
+
             //Meta Textを準備
             Vector<MidiEvent> meta = vsq.generateMetaTextEvent( track, encoding );
             long lastclock = 0;
             for ( int i = 0; i < meta.size(); i++ ) {
-                writeFlexibleLengthUnsignedLong( fs, (ulong)(meta.get( i ).clock - lastclock) );
+                writeFlexibleLengthUnsignedLong( fs, (long)(meta.get( i ).clock - lastclock) );
                 meta.get( i ).writeData( fs );
                 lastclock = meta.get( i ).clock;
             }
@@ -2000,7 +2128,7 @@ namespace Boare.Lib.Vsq {
             VsqNrpn[] data = generateNRPN( vsq, track, msPreSend );
             NrpnData[] nrpns = VsqNrpn.convert( data );
             for ( int i = 0; i < nrpns.Length; i++ ) {
-                writeFlexibleLengthUnsignedLong( fs, (ulong)(nrpns[i].getClock() - last) );
+                writeFlexibleLengthUnsignedLong( fs, (long)(nrpns[i].getClock() - last) );
                 fs.write( (byte)0xb0 );
                 fs.write( nrpns[i].getParameter() );
                 fs.write( nrpns[i].Value );
@@ -2009,14 +2137,14 @@ namespace Boare.Lib.Vsq {
 
             //トラックエンド
             VsqEvent last_event = vsq.Track.get( track ).getEvent( vsq.Track.get( track ).getEventCount() - 1 );
-            int last_clock = last_event.Clock + last_event.ID.Length;
-            writeFlexibleLengthUnsignedLong( fs, (ulong)last_clock );
+            int last_clock = last_event.Clock + last_event.ID.getLength();
+            writeFlexibleLengthUnsignedLong( fs, (long)last_clock );
             fs.write( (byte)0xff );
             fs.write( (byte)0x2f );
             fs.write( (byte)0x00 );
             long pos = fs.getFilePointer();
             fs.seek( first_position - 4 );
-            writeUnsignedInt( fs, (uint)(pos - first_position) );
+            writeUnsignedInt( fs, (long)(pos - first_position) );
             fs.seek( pos );
         }
 
@@ -2046,14 +2174,14 @@ namespace Boare.Lib.Vsq {
             for ( int i = 0; i < count; i++ ) {
                 int clock = dyn.getKeyClock( i );
                 int c = clock - vsq.getPresendClockAt( clock, msPreSend );
-                if ( c >= 0 ){
-                    VsqNrpn add = new VsqNrpn( c, 
+                if ( c >= 0 ) {
+                    VsqNrpn add = new VsqNrpn( c,
                                                NRPN.CC_E_EXPRESSION,
                                                (byte)dyn.getElement( i ) );
                     ret.add( add );
                 }
             }
-            return ret.toArray( new VsqNrpn[]{} );
+            return ret.toArray( new VsqNrpn[] { } );
         }
 
         public static VsqNrpn[] generateFx2DepthNRPN( VsqFile vsq, int track, int msPreSend ) {
@@ -2070,7 +2198,7 @@ namespace Boare.Lib.Vsq {
                     ret.add( add );
                 }
             }
-            return ret.toArray( new VsqNrpn[]{} );
+            return ret.toArray( new VsqNrpn[] { } );
         }
 
         /// <summary>
@@ -2078,9 +2206,9 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         /// <returns></returns>
         public static VsqNrpn generateHeaderNRPN() {
-            VsqNrpn ret = new VsqNrpn( 0, (ushort)NRPN.CC_BS_VERSION_AND_DEVICE, 0x00, 0x00 );
-            ret.append( NRPN.CC_BS_DELAY, 0x00, 0x00 );
-            ret.append( NRPN.CC_BS_LANGUAGE_TYPE, 0x00 );
+            VsqNrpn ret = new VsqNrpn( 0, NRPN.CC_BS_VERSION_AND_DEVICE, (byte)0x00, (byte)0x00 );
+            ret.append( NRPN.CC_BS_DELAY, (byte)0x00, (byte)0x00 );
+            ret.append( NRPN.CC_BS_LANGUAGE_TYPE, (byte)0x00 );
             return ret;
         }
 
@@ -2099,20 +2227,22 @@ namespace Boare.Lib.Vsq {
             int ttempo = vsq.getTempoAt( clock );
             double tempo = 6e7 / ttempo;
             //double sStart = SecFromClock( ve.Clock );
-            double msEnd = vsq.getSecFromClock( ve.Clock + ve.ID.Length ) * 1000.0;
-            ushort duration = (ushort)Math.Ceiling( msEnd - clock_msec );
+            double msEnd = vsq.getSecFromClock( ve.Clock + ve.ID.getLength() ) * 1000.0;
+            int duration = (int)Math.Ceiling( msEnd - clock_msec );
 #if DEBUG
-            Console.WriteLine( "GenerateNoteNRPN" );
-            Console.WriteLine( "    duration=" + duration );
+            PortUtil.println( "GenerateNoteNRPN" );
+            PortUtil.println( "    duration=" + duration );
 #endif
-            byte duration0, duration1;
-            getMsbAndLsb( duration, out duration0, out duration1 );
-            byte delay0, delay1;
-            getMsbAndLsb( (ushort)msPreSend, out delay0, out delay1 );
+            ValuePair<Byte, Byte> d = getMsbAndLsb( duration );
+            byte duration0 = d.getKey();
+            byte duration1 = d.getValue();
+            ValuePair<Byte, Byte> d2 = getMsbAndLsb( msPreSend );
+            byte delay0 = d2.getKey();
+            byte delay1 = d2.getValue();
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
 
             int i = clock - vsq.getPresendClockAt( clock, msPreSend );
-            VsqNrpn add = new VsqNrpn( i, (ushort)NRPN.CC_BS_VERSION_AND_DEVICE, 0x00, 0x00 );
+            VsqNrpn add = new VsqNrpn( i, NRPN.CC_BS_VERSION_AND_DEVICE, (byte)0x00, (byte)0x00 );
             add.append( NRPN.CC_BS_DELAY, delay0, delay1, true );
             add.append( NRPN.CC_BS_LANGUAGE_TYPE, (byte)ve.ID.IconHandle.Language, true );
             add.append( NRPN.PC_VOICE_TYPE, (byte)ve.ID.IconHandle.Program );
@@ -2134,16 +2264,18 @@ namespace Boare.Lib.Vsq {
 
             int ttempo = vsq.getTempoAt( clock );
             double tempo = 6e7 / ttempo;
-            double msEnd = vsq.getSecFromClock( ve.Clock + ve.ID.Length ) * 1000.0;
-            ushort duration = (ushort)(msEnd - clock_msec);
-            byte duration0, duration1;
-            getMsbAndLsb( duration, out duration0, out duration1 );
+            double msEnd = vsq.getSecFromClock( ve.Clock + ve.ID.getLength() ) * 1000.0;
+            int duration = (int)(msEnd - clock_msec);
+            ValuePair<Byte, Byte> dur = getMsbAndLsb( duration );
+            byte duration0 = dur.getKey();
+            byte duration1 = dur.getValue();
 
             VsqNrpn add;
             if ( add_delay_sign ) {
-                byte delay0, delay1;
-                getMsbAndLsb( (ushort)msPreSend, out delay0, out delay1 );
-                add = new VsqNrpn( clock - vsq.getPresendClockAt( clock, msPreSend ), NRPN.CVM_NM_VERSION_AND_DEVICE, 0x00, 0x00 );
+                ValuePair<Byte, Byte> msp = getMsbAndLsb( msPreSend );
+                byte delay0 = msp.getKey();
+                byte delay1 = msp.getValue();
+                add = new VsqNrpn( clock - vsq.getPresendClockAt( clock, msPreSend ), NRPN.CVM_NM_VERSION_AND_DEVICE, (byte)0x00, (byte)0x00 );
                 add.append( NRPN.CVM_NM_DELAY, delay0, delay1, true );
                 add.append( NRPN.CVM_NM_NOTE_NUMBER, (byte)ve.ID.Note, true ); // Note number
             } else {
@@ -2154,14 +2286,14 @@ namespace Boare.Lib.Vsq {
             add.append( NRPN.CVM_NM_NOTE_LOCATION, note_loc, true ); // Note Location
 
             if ( ve.ID.VibratoHandle != null ) {
-                add.append( NRPN.CVM_NM_INDEX_OF_VIBRATO_DB, 0x00, 0x00, true );
+                add.append( NRPN.CVM_NM_INDEX_OF_VIBRATO_DB, (byte)0x00, (byte)0x00, true );
                 String icon_id = ve.ID.VibratoHandle.IconID;
-                String num = icon_id.Substring( icon_id.Length - 4 );
-                int vibrato_type = Convert.ToInt32( num, 16 );
-                int note_length = ve.ID.Length;
+                String num = icon_id.Substring( PortUtil.getStringLength( icon_id ) - 4 );
+                int vibrato_type = (int)PortUtil.fromHexString( num );
+                int note_length = ve.ID.getLength();
                 int vibrato_delay = ve.ID.VibratoDelay;
                 byte bVibratoDuration = (byte)((float)(note_length - vibrato_delay) / (float)note_length * 127);
-                byte bVibratoDelay = (byte)(0x7f - bVibratoDuration);
+                byte bVibratoDelay = (byte)((byte)0x7f - bVibratoDuration);
                 add.append( NRPN.CVM_NM_VIBRATO_CONFIG, (byte)vibrato_type, bVibratoDuration, true );
                 add.append( NRPN.CVM_NM_VIBRATO_DELAY, bVibratoDelay, true );
             }
@@ -2173,23 +2305,23 @@ namespace Boare.Lib.Vsq {
             }
             char[] symbols = s.ToCharArray();
             if ( renderer.StartsWith( "DSB2" ) ) {
-                add.append( 0x5011, (byte)0x01, true );//TODO: 0x5011の意味は解析中
+                add.append( 0x5011, (byte)0x01, true );//TODO: (byte)0x5011の意味は解析中
             }
-            add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_BYTES, (byte)symbols.Length, true );// 0x12(Number of phonetic symbols in bytes)
+            add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_BYTES, (byte)symbols.Length, true );// (byte)0x12(Number of phonetic symbols in bytes)
             int count = -1;
             for ( int j = 0; j < spl.Length; j++ ) {
                 char[] chars = spl[j].ToCharArray();
                 for ( int k = 0; k < chars.Length; k++ ) {
                     count++;
                     if ( k == 0 ) {
-                        add.append( (ushort)((0x50 << 8) | (byte)(0x13 + count)), (byte)chars[k], (byte)ve.ID.LyricHandle.L0.getConsonantAdjustment()[j], true ); // Phonetic symbol j
+                        add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], (byte)ve.ID.LyricHandle.L0.getConsonantAdjustment()[j], true ); // Phonetic symbol j
                     } else {
-                        add.append( (ushort)((0x50 << 8) | (byte)(0x13 + count)), (byte)chars[k], true ); // Phonetic symbol j
+                        add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], true ); // Phonetic symbol j
                     }
                 }
             }
             if ( !renderer.StartsWith( "DSB2" ) ) {
-                add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_CONTINUATION, 0x7f, true ); // End of phonetic symbols
+                add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_CONTINUATION, (byte)0x7f, true ); // End of phonetic symbols
             }
             if ( renderer.StartsWith( "DSB3" ) ) {
                 int v1mean = ve.ID.PMBendDepth * 60 / 100;
@@ -2201,19 +2333,19 @@ namespace Boare.Lib.Vsq {
                 }
                 int d1mean = (int)(0.3196 * ve.ID.PMBendLength + 8.0);
                 int d2mean = (int)(0.92 * ve.ID.PMBendLength + 28.0);
-                add.append( NRPN.CVM_NM_V1MEAN, (byte)v1mean, true );// 0x50(v1mean)
-                add.append( NRPN.CVM_NM_D1MEAN, (byte)d1mean, true );// 0x51(d1mean)
-                add.append( NRPN.CVM_NM_D1MEAN_FIRST_NOTE, 0x14, true );// 0x52(d1meanFirstNote)
-                add.append( NRPN.CVM_NM_D2MEAN, (byte)d2mean, true );// 0x53(d2mean)
-                add.append( NRPN.CVM_NM_D4MEAN, (byte)ve.ID.d4mean, true );// 0x54(d4mean)
+                add.append( NRPN.CVM_NM_V1MEAN, (byte)v1mean, true );// (byte)0x50(v1mean)
+                add.append( NRPN.CVM_NM_D1MEAN, (byte)d1mean, true );// (byte)0x51(d1mean)
+                add.append( NRPN.CVM_NM_D1MEAN_FIRST_NOTE, (byte)0x14, true );// (byte)0x52(d1meanFirstNote)
+                add.append( NRPN.CVM_NM_D2MEAN, (byte)d2mean, true );// (byte)0x53(d2mean)
+                add.append( NRPN.CVM_NM_D4MEAN, (byte)ve.ID.d4mean, true );// (byte)0x54(d4mean)
                 add.append( NRPN.CVM_NM_PMEAN_ONSET_FIRST_NOTE, (byte)ve.ID.pMeanOnsetFirstNote, true ); // 055(pMeanOnsetFirstNote)
-                add.append( NRPN.CVM_NM_VMEAN_NOTE_TRNSITION, (byte)ve.ID.vMeanNoteTransition, true ); // 0x56(vMeanNoteTransition)
-                add.append( NRPN.CVM_NM_PMEAN_ENDING_NOTE, (byte)ve.ID.pMeanEndingNote, true );// 0x57(pMeanEndingNote)
-                add.append( NRPN.CVM_NM_ADD_PORTAMENTO, (byte)ve.ID.PMbPortamentoUse, true );// 0x58(AddScoopToUpInternals&AddPortamentoToDownIntervals)
-                byte decay = (byte)(ve.ID.DEMdecGainRate / 100.0 * 0x64);
-                add.append( NRPN.CVM_NM_CHANGE_AFTER_PEAK, decay, true );// 0x59(changeAfterPeak)
-                byte accent = (byte)(0x64 * ve.ID.DEMaccent / 100.0);
-                add.append( NRPN.CVM_NM_ACCENT, accent, true );// 0x5a(Accent)
+                add.append( NRPN.CVM_NM_VMEAN_NOTE_TRNSITION, (byte)ve.ID.vMeanNoteTransition, true ); // (byte)0x56(vMeanNoteTransition)
+                add.append( NRPN.CVM_NM_PMEAN_ENDING_NOTE, (byte)ve.ID.pMeanEndingNote, true );// (byte)0x57(pMeanEndingNote)
+                add.append( NRPN.CVM_NM_ADD_PORTAMENTO, (byte)ve.ID.PMbPortamentoUse, true );// (byte)0x58(AddScoopToUpInternals&AddPortamentoToDownIntervals)
+                byte decay = (byte)(ve.ID.DEMdecGainRate / 100.0 * (byte)0x64);
+                add.append( NRPN.CVM_NM_CHANGE_AFTER_PEAK, decay, true );// (byte)0x59(changeAfterPeak)
+                byte accent = (byte)((byte)0x64 * ve.ID.DEMaccent / 100.0);
+                add.append( NRPN.CVM_NM_ACCENT, accent, true );// (byte)0x5a(Accent)
             }
             if ( renderer.StartsWith( "UTU0" ) ) {
                 // エンベロープ
@@ -2225,7 +2357,7 @@ namespace Boare.Lib.Vsq {
                         env = new UstEnvelope();
                     }
                     int[] vals = null;
-                        vals = new int[10];
+                    vals = new int[10];
                     vals[0] = env.p1;
                     vals[1] = env.p2;
                     vals[2] = env.p3;
@@ -2237,36 +2369,36 @@ namespace Boare.Lib.Vsq {
                     vals[8] = env.p5;
                     vals[9] = env.v5;
                     for ( int i = 0; i < vals.Length; i++ ) {
-                        //(value3.msb & 0xf) << 28 | (value2.msb & 0x7f) << 21 | (value2.lsb & 0x7f) << 14 | (value1.msb & 0x7f) << 7 | (value1.lsb & 0x7f)
+                        //(value3.msb & (byte)0xf) << 28 | (value2.msb & (byte)0x7f) << 21 | (value2.lsb & (byte)0x7f) << 14 | (value1.msb & (byte)0x7f) << 7 | (value1.lsb & (byte)0x7f)
                         byte msb, lsb;
                         int v = vals[i];
-                        lsb = (byte)(v & 0x7f);
+                        lsb = (byte)(v & (byte)0x7f);
                         v = v >> 7;
-                        msb = (byte)(v & 0x7f);
+                        msb = (byte)(v & (byte)0x7f);
                         v = v >> 7;
                         add.append( NRPN.CVM_EXNM_ENV_DATA1, msb, lsb );
-                        lsb = (byte)(v & 0x7f);
+                        lsb = (byte)(v & (byte)0x7f);
                         v = v >> 7;
-                        msb = (byte)(v & 0x7f);
+                        msb = (byte)(v & (byte)0x7f);
                         v = v >> 7;
                         add.append( NRPN.CVM_EXNM_ENV_DATA2, msb, lsb );
-                        msb = (byte)(v & 0xf);
+                        msb = (byte)(v & (byte)0xf);
                         add.append( NRPN.CVM_EXNM_ENV_DATA3, msb );
-                        add.append( NRPN.CVM_EXNM_ENV_DATA_CONTINUATION, 0x00 );
+                        add.append( NRPN.CVM_EXNM_ENV_DATA_CONTINUATION, (byte)0x00 );
                     }
-                    add.append( NRPN.CVM_EXNM_ENV_DATA_CONTINUATION, 0x7f );
+                    add.append( NRPN.CVM_EXNM_ENV_DATA_CONTINUATION, (byte)0x7f );
 
                     // モジュレーション
-                    byte m, l;
+                    ValuePair<Byte, Byte> m;
                     if ( -100 <= ve.UstEvent.Moduration && ve.UstEvent.Moduration <= 100 ) {
-                        getMsbAndLsb( (ushort)(ve.UstEvent.Moduration + 100), out m, out l );
-                        add.append( NRPN.CVM_EXNM_MODURATION, m, l );
+                        m = getMsbAndLsb( ve.UstEvent.Moduration + 100 );
+                        add.append( NRPN.CVM_EXNM_MODURATION, m.getKey(), m.getValue() );
                     }
 
                     // 先行発声
                     if ( ve.UstEvent.PreUtterance != 0 ) {
-                        getMsbAndLsb( (ushort)(ve.UstEvent.PreUtterance + 8192), out m, out l );
-                        add.append( NRPN.CVM_EXNM_PRE_UTTERANCE, m, l );
+                        m = getMsbAndLsb( ve.UstEvent.PreUtterance + 8192 );
+                        add.append( NRPN.CVM_EXNM_PRE_UTTERANCE, m.getKey(), m.getValue() );
                     }
 
                     // Flags
@@ -2277,17 +2409,17 @@ namespace Boare.Lib.Vsq {
                             byte b = (byte)arr[i];
                             add.append( NRPN.CVM_EXNM_FLAGS, b );
                         }
-                        add.append( NRPN.CVM_EXNM_FLAGS_CONINUATION, 0x7f );
+                        add.append( NRPN.CVM_EXNM_FLAGS_CONINUATION, (byte)0x7f );
                     }
 
                     // オーバーラップ
                     if ( ve.UstEvent.VoiceOverlap != 0 ) {
-                        getMsbAndLsb( (ushort)(ve.UstEvent.VoiceOverlap + 8192), out m, out l );
-                        add.append( NRPN.CVM_EXNM_VOICE_OVERLAP, m, l );
+                        m = getMsbAndLsb( ve.UstEvent.VoiceOverlap + 8192 );
+                        add.append( NRPN.CVM_EXNM_VOICE_OVERLAP, m.getKey(), m.getValue() );
                     }
                 }
             }
-            add.append( NRPN.CVM_NM_NOTE_MESSAGE_CONTINUATION, 0x7f, true );// 0x7f(Note message continuation)
+            add.append( NRPN.CVM_NM_NOTE_MESSAGE_CONTINUATION, (byte)0x7f, true );// (byte)0x7f(Note message continuation)
             return add;
         }
 
@@ -2301,7 +2433,7 @@ namespace Boare.Lib.Vsq {
         /// <param name="clock_end"></param>
         /// <returns></returns>
         public static VsqNrpn[] generateNRPN( VsqFile vsq, int track, int msPreSend, int clock_start, int clock_end ) {
-            VsqFile temp = (VsqFile)vsq.Clone();
+            VsqFile temp = (VsqFile)vsq.clone();
             temp.removePart( clock_end, vsq.TotalClocks );
             if ( 0 < clock_start ) {
                 temp.removePart( 0, clock_start );
@@ -2322,7 +2454,7 @@ namespace Boare.Lib.Vsq {
         /// <returns></returns>
         public static VsqNrpn[] generateNRPN( VsqFile vsq, int track, int msPreSend ) {
 #if DEBUG
-            Console.WriteLine( "GenerateNRPN(VsqTrack,int,int,int,int)" );
+            PortUtil.println( "GenerateNRPN(VsqTrack,int,int,int,int)" );
 #endif
             Vector<VsqNrpn> list = new Vector<VsqNrpn>();
 
@@ -2332,7 +2464,7 @@ namespace Boare.Lib.Vsq {
             int count = target.getEventCount();
             int note_start = 0;
             int note_end = target.getEventCount() - 1;
-            for ( int i = 0; i < target.getEventCount(); i++ ) {
+            for ( int i = 0; i < count; i++ ) {
                 if ( 0 <= target.getEvent( i ).Clock ) {
                     note_start = i;
                     break;
@@ -2355,16 +2487,16 @@ namespace Boare.Lib.Vsq {
                 }
             }
             if ( singer_event >= 0 ) { //見つかった場合
-                list.addAll( generateSingerNRPN( vsq, target.getEvent( singer_event ), 0 ) );
+                list.addAll( Arrays.asList( generateSingerNRPN( vsq, target.getEvent( singer_event ), 0 ) ) );
             } else {                   //多分ありえないと思うが、歌手が不明の場合。
-                throw new ApplicationException( "first singer was not specified" );
-                list.add( new VsqNrpn( 0, NRPN.CC_BS_LANGUAGE_TYPE, 0 ) );
-                list.add( new VsqNrpn( 0, NRPN.PC_VOICE_TYPE, 0 ) );
+                //throw new Exception( "first singer was not specified" );
+                list.add( new VsqNrpn( 0, NRPN.CC_BS_LANGUAGE_TYPE, (byte)0x0 ) );
+                list.add( new VsqNrpn( 0, NRPN.PC_VOICE_TYPE, (byte)0x0 ) );
             }
 
-            list.addAll( generateVoiceChangeParameterNRPN( vsq, track, msPreSend ) );
+            list.addAll( Arrays.asList( generateVoiceChangeParameterNRPN( vsq, track, msPreSend ) ) );
             if ( version.StartsWith( "DSB2" ) ) {
-                list.addAll( generateFx2DepthNRPN( vsq, track, msPreSend ) );
+                list.addAll( Arrays.asList( generateFx2DepthNRPN( vsq, track, msPreSend ) ) );
             }
 
             int ms_presend = msPreSend;
@@ -2372,28 +2504,28 @@ namespace Boare.Lib.Vsq {
                 double sec_maxlen = 0.0;
                 for ( Iterator itr = target.getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
-                    double len = vsq.getSecFromClock( ve.Clock + ve.ID.Length ) - vsq.getSecFromClock( ve.Clock );
+                    double len = vsq.getSecFromClock( ve.Clock + ve.ID.getLength() ) - vsq.getSecFromClock( ve.Clock );
                     sec_maxlen = Math.Max( sec_maxlen, len );
                 }
                 ms_presend += (int)(sec_maxlen * 1000.0);
             }
             VsqBPList dyn = target.getCurve( "dyn" );
             if ( dyn.size() > 0 ) {
-                Vector<VsqNrpn> listdyn = new Vector<VsqNrpn>( generateExpressionNRPN( vsq, track, ms_presend ) );
+                Vector<VsqNrpn> listdyn = new Vector<VsqNrpn>( Arrays.asList( generateExpressionNRPN( vsq, track, ms_presend ) ) );
                 if ( listdyn.size() > 0 ) {
                     list.addAll( listdyn );
                 }
             }
             VsqBPList pbs = target.getCurve( "pbs" );
             if ( pbs.size() > 0 ) {
-                Vector<VsqNrpn> listpbs = new Vector<VsqNrpn>( generatePitchBendSensitivityNRPN( vsq, track, ms_presend ) );
+                Vector<VsqNrpn> listpbs = new Vector<VsqNrpn>( Arrays.asList( generatePitchBendSensitivityNRPN( vsq, track, ms_presend ) ) );
                 if ( listpbs.size() > 0 ) {
                     list.addAll( listpbs );
                 }
             }
             VsqBPList pit = target.getCurve( "pit" );
             if ( pit.size() > 0 ) {
-                Vector<VsqNrpn> listpit = new Vector<VsqNrpn>( generatePitchBendNRPN( vsq, track, ms_presend ) );
+                Vector<VsqNrpn> listpit = new Vector<VsqNrpn>( Arrays.asList( generatePitchBendNRPN( vsq, track, ms_presend ) ) );
                 if ( listpit.size() > 0 ) {
                     list.addAll( listpit );
                 }
@@ -2404,21 +2536,23 @@ namespace Boare.Lib.Vsq {
             for ( int i = note_start; i <= note_end; i++ ) {
                 VsqEvent item = target.getEvent( i );
                 if ( item.ID.type == VsqIDType.Anote ) {
-                    byte note_loc = 0x03;
+                    byte note_loc = (byte)0x03;
                     if ( item.Clock == last_note_end ) {
-                        note_loc -= 0x02;
+                        note_loc -= (byte)0x02;
                     }
 
                     // 次に現れる音符イベントを探す
-                    int nextclock = item.Clock + item.ID.Length + 1;
-                    for ( int j = i + 1; j < target.getEventCount(); j++ ) {
-                        if ( target.getEvent( j ).ID.type == VsqIDType.Anote ) {
-                            nextclock = target.getEvent( j ).Clock;
+                    int nextclock = item.Clock + item.ID.getLength() + 1;
+                    int event_count = target.getEventCount();
+                    for ( int j = i + 1; j < event_count; j++ ) {
+                        VsqEvent itemj = target.getEvent( j );
+                        if ( itemj.ID.type == VsqIDType.Anote ) {
+                            nextclock = itemj.Clock;
                             break;
                         }
                     }
-                    if ( item.Clock + item.ID.Length == nextclock ) {
-                        note_loc -= 0x01;
+                    if ( item.Clock + item.ID.getLength() == nextclock ) {
+                        note_loc -= (byte)0x01;
                     }
 
                     list.add( generateNoteNRPN( vsq,
@@ -2428,13 +2562,13 @@ namespace Boare.Lib.Vsq {
                                                 note_loc,
                                                 first ) );
                     first = false;
-                    list.addAll( generateVibratoNRPN( vsq,
-                                                        item,
-                                                        msPreSend ) );
-                    last_note_end = item.Clock + item.ID.Length;
+                    list.addAll( Arrays.asList( generateVibratoNRPN( vsq,
+                                                                     item,
+                                                                     msPreSend ) ) );
+                    last_note_end = item.Clock + item.ID.getLength();
                 } else if ( item.ID.type == VsqIDType.Singer ) {
                     if ( i > note_start && i != singer_event ) {
-                        list.addAll( generateSingerNRPN( vsq, item, msPreSend ) );
+                        list.addAll( Arrays.asList( generateSingerNRPN( vsq, item, msPreSend ) ) );
                     }
                 }
             }
@@ -2442,9 +2576,9 @@ namespace Boare.Lib.Vsq {
             list = VsqNrpn.sort( list );
             Vector<VsqNrpn> merged = new Vector<VsqNrpn>();
             for ( int i = 0; i < list.size(); i++ ) {
-                merged.addAll( list.get( i ).expand() );
+                merged.addAll( Arrays.asList( list.get( i ).expand() ) );
             }
-            return merged.toArray( new VsqNrpn[]{} );
+            return merged.toArray( new VsqNrpn[] { } );
         }
 
         /// <summary>
@@ -2460,19 +2594,19 @@ namespace Boare.Lib.Vsq {
             int count = pit.size();
             for ( int i = 0; i < count; i++ ) {
                 int clock = pit.getKeyClock( i );
-                ushort value = (ushort)(pit.getElement( i ) + 0x2000);
-                byte value0, value1;
-                getMsbAndLsb( value, out value0, out value1 );
+                int value = pit.getElement( i ) + 0x2000;
+
+                ValuePair<Byte, Byte> val = getMsbAndLsb( value );
                 int c = clock - vsq.getPresendClockAt( clock, msPreSend );
                 if ( c >= 0 ) {
                     VsqNrpn add = new VsqNrpn( c,
                                                NRPN.PB_PITCH_BEND,
-                                               value0,
-                                               value1 );
+                                               val.getKey(),
+                                               val.getValue() );
                     ret.add( add );
                 }
             }
-            return ret.toArray( new VsqNrpn[]{} );
+            return ret.toArray( new VsqNrpn[] { } );
         }
 
         /// <summary>
@@ -2493,11 +2627,11 @@ namespace Boare.Lib.Vsq {
                     VsqNrpn add = new VsqNrpn( c,
                                                NRPN.CC_PBS_PITCH_BEND_SENSITIVITY,
                                                (byte)pbs.getElement( i ),
-                                               0x00 );
+                                               (byte)0x00 );
                     ret.add( add );
                 }
             }
-            return ret.toArray( new VsqNrpn[]{} );
+            return ret.toArray( new VsqNrpn[] { } );
         }
 
         /// <summary>
@@ -2509,26 +2643,25 @@ namespace Boare.Lib.Vsq {
         /// <returns></returns>
         public static VsqNrpn[] generateVibratoNRPN( VsqFile vsq, VsqEvent ve, int msPreSend ) {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
-            if ( ve.ID.VibratoHandle != null ){
+            if ( ve.ID.VibratoHandle != null ) {
                 int vclock = ve.Clock + ve.ID.VibratoDelay;
-                byte delay0, delay1;
-                getMsbAndLsb( (ushort)msPreSend, out delay0, out delay1 );
+                ValuePair<Byte, Byte> del = getMsbAndLsb( msPreSend );
                 VsqNrpn add2 = new VsqNrpn( vclock - vsq.getPresendClockAt( vclock, msPreSend ),
                                             NRPN.CC_VD_VERSION_AND_DEVICE,
-                                            0x00,
-                                            0x00 );
-                add2.append( NRPN.CC_VD_DELAY, delay0, delay1, true );
+                                            (byte)0x00,
+                                            (byte)0x00 );
+                add2.append( NRPN.CC_VD_DELAY, del.getKey(), del.getValue(), true );
                 add2.append( NRPN.CC_VD_VIBRATO_DEPTH, (byte)ve.ID.VibratoHandle.StartDepth, true );
                 add2.append( NRPN.CC_VR_VIBRATO_RATE, (byte)ve.ID.VibratoHandle.StartRate );
                 ret.add( add2 );
-                int vlength = ve.ID.Length - ve.ID.VibratoDelay;
+                int vlength = ve.ID.getLength() - ve.ID.VibratoDelay;
                 int count = ve.ID.VibratoHandle.RateBP.getCount();
                 if ( count > 0 ) {
                     for ( int i = 0; i < count; i++ ) {
                         float percent = ve.ID.VibratoHandle.RateBP.getElement( i ).X;
                         int cl = vclock + (int)(percent * vlength);
-                        ret.add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ), 
-                                              NRPN.CC_VR_VIBRATO_RATE, 
+                        ret.add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ),
+                                              NRPN.CC_VR_VIBRATO_RATE,
                                               (byte)ve.ID.VibratoHandle.RateBP.getElement( i ).Y ) );
                     }
                 }
@@ -2537,14 +2670,14 @@ namespace Boare.Lib.Vsq {
                     for ( int i = 0; i < count; i++ ) {
                         float percent = ve.ID.VibratoHandle.DepthBP.getElement( i ).X;
                         int cl = vclock + (int)(percent * vlength);
-                        ret.add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ), 
-                                              NRPN.CC_VD_VIBRATO_DEPTH, 
+                        ret.add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ),
+                                              NRPN.CC_VD_VIBRATO_DEPTH,
                                               (byte)ve.ID.VibratoHandle.DepthBP.getElement( i ).Y ) );
                     }
                 }
             }
             Collections.sort( ret );
-            return ret.toArray( new VsqNrpn[]{} );
+            return ret.toArray( new VsqNrpn[] { } );
         }
 
         /// <summary>
@@ -2580,7 +2713,7 @@ namespace Boare.Lib.Vsq {
                     for ( int j = 0; j < count; j++ ) {
                         int clock = vbpl.getKeyClock( j );
                         int c = clock - vsq.getPresendClockAt( clock, msPreSend );
-                        if ( c >= 0 ){
+                        if ( c >= 0 ) {
                             VsqNrpn add = new VsqNrpn( c,
                                                        NRPN.VCP_VOICE_CHANGE_PARAMETER_ID,
                                                        lsb );
@@ -2591,22 +2724,25 @@ namespace Boare.Lib.Vsq {
                 }
             }
             Collections.sort( res );
-            return res.toArray( new VsqNrpn[]{} );
+            return res.toArray( new VsqNrpn[] { } );
         }
 
-        private static void getMsbAndLsb( ushort value, out byte msb, out byte lsb ) {
+        private static ValuePair<Byte, Byte> getMsbAndLsb( int value ) {
+            ValuePair<Byte, Byte> ret = new ValuePair<Byte, Byte>();
             if ( 0x3fff < value ) {
-                msb = 0x7f;
-                lsb = 0x7f;
+                ret.setKey( (byte)0x7f );
+                ret.setValue( (byte)0x7f );
             } else {
-                msb = (byte)(value >> 7);
-                lsb = (byte)(value - (msb << 7));
+                byte msb = (byte)(value >> 7);
+                ret.setKey( msb );
+                ret.setValue( (byte)(value - (msb << 7)) );
             }
+            return ret;
         }
 
         public Vector<MidiEvent> generateTimeSig() {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
-            for ( Iterator itr = TimesigTable.iterator(); itr.hasNext(); ){
+            for ( Iterator itr = TimesigTable.iterator(); itr.hasNext(); ) {
                 TimeSigTableEntry entry = (TimeSigTableEntry)itr.next();
                 events.add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
             }
@@ -2615,7 +2751,7 @@ namespace Boare.Lib.Vsq {
 
         public Vector<MidiEvent> generateTempoChange() {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
-            for( Iterator itr = TempoTable.iterator(); itr.hasNext(); ){
+            for ( Iterator itr = TempoTable.iterator(); itr.hasNext(); ) {
                 TempoTableEntry entry = (TempoTableEntry)itr.next();
                 events.add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
                 //last_clock = Math.Max( last_clock, entry.Clock );
@@ -2627,8 +2763,8 @@ namespace Boare.Lib.Vsq {
         /// このインスタンスをファイルに出力します
         /// </summary>
         /// <param name="file"></param>
-        public virtual void write( String file ) {
-            write( file, 500, Encoding.GetEncoding( "Shift_JIS" ) );
+        public void write( String file ) {
+            write( file, 500, "Shift_JIS" );
         }
 
         /// <summary>
@@ -2636,16 +2772,24 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         /// <param name="file"></param>
         /// <param name="msPreSend">プリセンドタイム(msec)</param>
-        public virtual void write( String file, int msPreSend, Encoding encoding ) {
+        public void write( String file, int msPreSend, String encoding ) {
 #if DEBUG
-            Console.WriteLine( "VsqFile.Write(String)" );
+            PortUtil.println( "VsqFile.Write(String)" );
 #endif
             int last_clock = 0;
-            for ( int track = 1; track < Track.size(); track++ ) {
+            int track_size = Track.size();
+            for ( int track = 1; track < track_size; track++ ) {
                 if ( Track.get( track ).getEventCount() > 0 ) {
                     int index = Track.get( track ).getEventCount() - 1;
                     VsqEvent last = Track.get( track ).getEvent( index );
-                    last_clock = Math.Max( last_clock, last.Clock + last.ID.Length );
+                    last_clock = Math.Max( last_clock, last.Clock + last.ID.getLength() );
+                }
+            }
+
+            if ( PortUtil.isFileExists( file ) ) {
+                try {
+                    PortUtil.deleteFile( file );
+                } catch ( Exception ex ) {
                 }
             }
 
@@ -2666,7 +2810,7 @@ namespace Boare.Lib.Vsq {
                 fs.write( (byte)0x00 );
                 fs.write( (byte)0x01 );
                 //トラック数
-                writeUnsignedShort( fs, (ushort)this.Track.size() );
+                writeUnsignedShort( fs, Track.size() );
                 //時間単位
                 fs.write( (byte)0x01 );
                 fs.write( (byte)0xe0 );
@@ -2676,7 +2820,7 @@ namespace Boare.Lib.Vsq {
                 //チャンクタイプ
                 fs.write( _MTRK, 0, 4 );
                 //データ長。とりあえず0を入れておく
-                fs.write( new byte[] { 0x00, 0x00, 0x00, 0x00 }, 0, 4 );
+                fs.write( new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00 }, 0, 4 );
                 first_position = fs.getFilePointer();
                 //トラック名
                 writeFlexibleLengthUnsignedLong( fs, 0 );//デルタタイム
@@ -2697,16 +2841,16 @@ namespace Boare.Lib.Vsq {
                     last_clock = Math.Max( last_clock, entry.Clock );
                 }
 #if DEBUG
-                Console.WriteLine( "    events.Count=" + events.size() );
+                PortUtil.println( "    events.Count=" + events.size() );
 #endif
                 Collections.sort( events );
                 long last = 0;
                 for ( Iterator itr = events.iterator(); itr.hasNext(); ) {
                     MidiEvent me = (MidiEvent)itr.next();
 #if DEBUG
-                    Console.WriteLine( "me.Clock=" + me.clock );
+                    PortUtil.println( "me.Clock=" + me.clock );
 #endif
-                    writeFlexibleLengthUnsignedLong( fs, (ulong)(me.clock - last) );
+                    writeFlexibleLengthUnsignedLong( fs, (long)(me.clock - last) );
                     me.writeData( fs );
                     last = me.clock;
                 }
@@ -2718,20 +2862,20 @@ namespace Boare.Lib.Vsq {
                 fs.write( (byte)0x00 );
                 long pos = fs.getFilePointer();
                 fs.seek( first_position - 4 );
-                writeUnsignedInt( fs, (uint)(pos - first_position) );
+                writeUnsignedInt( fs, pos - first_position );
                 fs.seek( pos );
                 #endregion
 
                 #region トラック
-                VsqFile temp = (VsqFile)this.Clone();
-                temp.Track.get( 1 ).setMaster( (VsqMaster)Master.Clone() );
-                temp.Track.get( 1 ).setMixer( (VsqMixer)Mixer.Clone() );
+                VsqFile temp = (VsqFile)this.clone();
+                temp.Track.get( 1 ).setMaster( (VsqMaster)Master.clone() );
+                temp.Track.get( 1 ).setMixer( (VsqMixer)Mixer.clone() );
                 printTrack( temp, 1, fs, msPreSend, encoding );
-                for ( int track = 2; track < Track.size(); track++ ) {
+                int count = Track.size();
+                for ( int track = 2; track < count; track++ ) {
                     printTrack( this, track, fs, msPreSend, encoding );
                 }
                 #endregion
-
             } catch ( Exception ex ) {
             } finally {
                 if ( fs != null ) {
@@ -2755,7 +2899,19 @@ namespace Boare.Lib.Vsq {
             for ( int i = 0; i < c; i++ ) {
                 format += "0000";
             }
-            return "DM:" + count.ToString( format ) + ":";
+            return "DM:" + PortUtil.formatDecimal( format, count ) + ":";
+        }
+
+        public static byte[] getLinePrefixBytes( int count ) {
+            int digits = getHowManyDigits( count );
+            int c = (digits - 1) / 4 + 1;
+            String format = "";
+            for ( int i = 0; i < c; i++ ) {
+                format += "0000";
+            }
+            String str = "DM:" + PortUtil.formatDecimal( format, count ) + ":";
+            byte[] ret = PortUtil.getEncodedByte( "ASCII", str );
+            return ret;
         }
 
         /// <summary>
@@ -2786,7 +2942,11 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         /// <param name="fs"></param>
         /// <param name="item"></param>
-        public static void writeCharArray( RandomAccessFile fs, char[] item ) {
+        public static void writeCharArray( RandomAccessFile fs, char[] item )
+#if JAVA
+            throws IOException
+#endif
+        {
             for ( int i = 0; i < item.Length; i++ ) {
                 fs.write( (byte)item[i] );
             }
@@ -2796,11 +2956,12 @@ namespace Boare.Lib.Vsq {
         /// ushort値をビッグエンディアンでfsに書き込みます
         /// </summary>
         /// <param name="data"></param>
-        public static void writeUnsignedShort( RandomAccessFile fs, ushort data ) {
-            byte[] dat = BitConverter.GetBytes( data );
-            if ( BitConverter.IsLittleEndian ) {
-                Array.Reverse( dat );
-            }
+        public static void writeUnsignedShort( RandomAccessFile fs, int data )
+#if JAVA
+            throws IOException
+#endif
+        {
+            byte[] dat = PortUtil.getbytes_uint16_be( data );
             fs.write( dat, 0, dat.Length );
         }
 
@@ -2808,11 +2969,12 @@ namespace Boare.Lib.Vsq {
         /// uint値をビッグエンディアンでfsに書き込みます
         /// </summary>
         /// <param name="data"></param>
-        public static void writeUnsignedInt( RandomAccessFile fs, uint data ) {
-            byte[] dat = BitConverter.GetBytes( data );
-            if ( BitConverter.IsLittleEndian ) {
-                Array.Reverse( dat );
-            }
+        public static void writeUnsignedInt( RandomAccessFile fs, long data )
+#if JAVA
+            throws IOException
+#endif
+        {
+            byte[] dat = PortUtil.getbytes_uint32_be( data );
             fs.write( dat, 0, dat.Length );
         }
 
@@ -2820,9 +2982,9 @@ namespace Boare.Lib.Vsq {
         /// SMFの可変長数値表現を使って、ulongをbyte[]に変換します
         /// </summary>
         /// <param name="number"></param>
-        public static byte[] getBytesFlexibleLengthUnsignedLong( ulong number ) {
+        public static byte[] getBytesFlexibleLengthUnsignedLong( long number ) {
             boolean[] bits = new boolean[64];
-            ulong val = 0x1;
+            long val = (byte)0x1;
             bits[0] = (number & val) == val;
             for ( int i = 1; i < 64; i++ ) {
                 val = val << 1;
@@ -2839,8 +3001,8 @@ namespace Boare.Lib.Vsq {
             int bytes = first / 7 + 1;
             byte[] ret = new byte[bytes];
             for ( int i = 1; i <= bytes; i++ ) {
-                uint num = 0;
-                uint count = 0x80;
+                int num = 0;
+                int count = (byte)0x80;
                 for ( int j = (bytes - i + 1) * 7 - 1; j >= (bytes - i + 1) * 7 - 6 - 1; j-- ) {
                     count = count >> 1;
                     if ( bits[j] ) {
@@ -2848,7 +3010,7 @@ namespace Boare.Lib.Vsq {
                     }
                 }
                 if ( i != bytes ) {
-                    num += 0x80;
+                    num += (byte)0x80;
                 }
                 ret[i - 1] = (byte)num;
             }
@@ -2860,10 +3022,16 @@ namespace Boare.Lib.Vsq {
         /// </summary>
         /// <param name="fs"></param>
         /// <param name="number"></param>
-        public static void writeFlexibleLengthUnsignedLong( RandomAccessFile fs, ulong number ) {
+        public static void writeFlexibleLengthUnsignedLong( RandomAccessFile fs, long number )
+#if JAVA
+            throws IOException
+#endif
+        {
             byte[] bytes = getBytesFlexibleLengthUnsignedLong( number );
             fs.write( bytes, 0, bytes.Length );
         }
     }
 
+#if !JAVA
 }
+#endif

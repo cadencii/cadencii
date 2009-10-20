@@ -8,11 +8,11 @@ public class GenerateVLF{
     public static bool Edit( VsqFile vsq ){
         int track = 1;
         InputBox ib = new InputBox( "Input target track index" );
-        ib.Result = track.ToString();
+        ib.setResult( track.ToString() );
         if ( ib.ShowDialog() != DialogResult.OK ) {
             return false;
         }
-        if ( !int.TryParse( ib.Result, out track ) ) {
+        if ( !int.TryParse( ib.getResult(), out track ) ) {
             MessageBox.Show( "integer parse error" );
             return false;
         }

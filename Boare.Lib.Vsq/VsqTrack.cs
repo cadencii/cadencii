@@ -11,22 +11,32 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+#if JAVA
+package org.kbinani.vsq;
 
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+#else
+using System;
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Lib.Vsq {
-
     using boolean = System.Boolean;
+#endif
 
     /// <summary>
     /// Stores the data of a vsq track.
     /// </summary>
+#if JAVA
+    public class VsqTrack implements Cloneable, Serializable
+#else
     [Serializable]
-    public partial class VsqTrack : ICloneable {
+    public class VsqTrack : ICloneable
+#endif
+ {
         public String Tag;
         /// <summary>
         /// トラックの名前。
@@ -36,7 +46,11 @@ namespace Boare.Lib.Vsq {
         private int m_edited_start = int.MaxValue;
         private int m_edited_end = int.MinValue;
 
+#if JAVA
+        private class SingerEventIterator implements Iterator{
+#else
         private class SingerEventIterator : Iterator {
+#endif
             VsqEventList m_list;
             int m_pos;
 
@@ -54,7 +68,7 @@ namespace Boare.Lib.Vsq {
                 return false;
             }
 
-            public object next() {
+            public Object next() {
                 for ( int i = m_pos + 1; i < m_list.getCount(); i++ ) {
                     VsqEvent item = m_list.getElement( i );
                     if ( item.ID.type == VsqIDType.Singer ) {
@@ -72,7 +86,11 @@ namespace Boare.Lib.Vsq {
             }
         }
 
+#if JAVA
+        private class NoteEventIterator implements Iterator{
+#else
         private class NoteEventIterator : Iterator {
+#endif
             VsqEventList m_list;
             int m_pos;
 
@@ -91,7 +109,7 @@ namespace Boare.Lib.Vsq {
                 return false;
             }
 
-            public object next() {
+            public Object next() {
                 int count = m_list.getCount();
                 for ( int i = m_pos + 1; i < count; i++ ) {
                     VsqEvent item = m_list.getElement( i );
@@ -110,7 +128,11 @@ namespace Boare.Lib.Vsq {
             }
         }
 
-        private class EventIterator : Iterator{
+#if JAVA
+        private class EventIterator implements Iterator{
+#else
+        private class EventIterator : Iterator {
+#endif
             private VsqEventList m_list;
             private int m_pos;
 
@@ -119,7 +141,7 @@ namespace Boare.Lib.Vsq {
                 m_pos = -1;
             }
 
-            public Boolean hasNext() {
+            public boolean hasNext() {
                 if ( 0 <= m_pos + 1 && m_pos + 1 < m_list.getCount() ) {
                     return true;
                 }
@@ -155,6 +177,7 @@ namespace Boare.Lib.Vsq {
             }
         }
 
+#if !JAVA
         [Obsolete]
         public String Name {
             get {
@@ -164,6 +187,7 @@ namespace Boare.Lib.Vsq {
                 setName( value );
             }
         }
+#endif
 
         /// <summary>
         /// ピッチベンド。Cent単位
@@ -225,7 +249,11 @@ namespace Boare.Lib.Vsq {
         /// <param name="encode"></param>
         /// <param name="eos"></param>
         /// <param name="start"></param>
-        public void printMetaText( TextMemoryStream sw, int eos, int start ) {
+        public void printMetaText( TextMemoryStream sw, int eos, int start )
+#if JAVA
+            throws IOException
+#endif
+ {
             MetaText.print( sw, false, eos, start );
         }
 
@@ -233,16 +261,31 @@ namespace Boare.Lib.Vsq {
         /// メタテキストを，指定されたファイルに出力します
         /// </summary>
         /// <param name="file"></param>
-        public void printMetaText( String file ) {
+        public void printMetaText( String file )
+#if JAVA
+            throws IOException
+#endif
+ {
             TextMemoryStream tms = new TextMemoryStream();
             int count = MetaText.getEventList().getCount();
             int clLast = MetaText.getEventList().getElement( count - 1 ).Clock + 480;
             MetaText.print( tms, true, clLast, 0 );
-            using ( StreamWriter sw = new StreamWriter( file ) ) {
+            BufferedWriter sw = null;
+            try {
+                sw = new BufferedWriter( new FileWriter( file ) );
                 tms.rewind();
                 while ( tms.peek() >= 0 ) {
                     String line = tms.readLine();
-                    sw.WriteLine( line );
+                    sw.write( line );
+                    sw.newLine();
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw != null ) {
+                    try {
+                        sw.close();
+                    } catch ( Exception ex2 ) {
+                    }
                 }
             }
         }
@@ -254,7 +297,7 @@ namespace Boare.Lib.Vsq {
             return MetaText.master;
         }
 
-        internal void setMaster( VsqMaster value ) {
+        public void setMaster( VsqMaster value ) {
             MetaText.master = value;
         }
 
@@ -265,7 +308,7 @@ namespace Boare.Lib.Vsq {
             return MetaText.mixer;
         }
 
-        internal void setMixer( VsqMixer value ) {
+        public void setMixer( VsqMixer value ) {
             MetaText.mixer = value;
         }
 
@@ -285,28 +328,31 @@ namespace Boare.Lib.Vsq {
         /// <param name="singers"></param>
         public void changeRenderer( String new_renderer, Vector<VsqID> singers ) {
             VsqID default_id = null;
-            if ( singers.size() <= 0 ) {
+            int singers_size = singers.size();
+            if ( singers_size <= 0 ) {
                 default_id = new VsqID();
                 default_id.type = VsqIDType.Singer;
                 default_id.IconHandle = new IconHandle();
-                default_id.IconHandle.IconID = "$0701" + 0.ToString( "0000" );
+                default_id.IconHandle.IconID = "$0701" + PortUtil.toHexString( 0, 4 );
                 default_id.IconHandle.IDS = "Unknown";
                 default_id.IconHandle.Index = 0;
                 default_id.IconHandle.Language = 0;
-                default_id.IconHandle.Length = 1;
+                default_id.IconHandle.setLength( 1 );
                 default_id.IconHandle.Original = 0;
                 default_id.IconHandle.Program = 0;
                 default_id.IconHandle.Caption = "";
             } else {
                 default_id = singers.get( 0 );
             }
+
             for ( Iterator itr = getSingerEventIterator(); itr.hasNext(); ) {
                 VsqEvent ve = (VsqEvent)itr.next();
                 int program = ve.ID.IconHandle.Program;
                 boolean found = false;
-                for ( int i = 0; i < singers.size(); i++ ) {
-                    if ( program == singers.get( i ).IconHandle.Program ) {
-                        ve.ID = (VsqID)singers.get( i ).clone();
+                for ( int i = 0; i < singers_size; i++ ) {
+                    VsqID id = singers.get( i );
+                    if ( program == id.IconHandle.Program ) {
+                        ve.ID = (VsqID)id.clone();
                         found = true;
                         break;
                     }
@@ -403,7 +449,7 @@ namespace Boare.Lib.Vsq {
             VsqTrack res = new VsqTrack();
             res.setName( getName() );
             if ( MetaText != null ) {
-                res.MetaText = (VsqMetaText)MetaText.Clone();
+                res.MetaText = (VsqMetaText)MetaText.clone();
             }
             res.m_edited_start = m_edited_start;
             res.m_edited_end = m_edited_end;
@@ -411,9 +457,11 @@ namespace Boare.Lib.Vsq {
             return res;
         }
 
+#if !JAVA
         public object Clone() {
             return clone();
         }
+#endif
 
         /// <summary>
         /// Master Trackを構築
@@ -436,8 +484,13 @@ namespace Boare.Lib.Vsq {
             MetaText = new VsqMetaText( name, singer );
         }
 
+#if JAVA
+        public VsqTrack(){
+            this( "Voice1", "Miku" );
+#else
         public VsqTrack()
             : this( "Voice1", "Miku" ) {
+#endif
         }
 
         /// <summary>
@@ -454,30 +507,56 @@ namespace Boare.Lib.Vsq {
             return counter;
         }
 
-        public VsqTrack( Vector<Boare.Lib.Vsq.MidiEvent> midi_event, Encoding encoding ) {
+        public VsqTrack( Vector<MidiEvent> midi_event, String encoding ) {
 #if DEBUG
             bocoree.debug.push_log( "VsqTrack..ctor" );
 #endif
             String track_name = "";
-            using ( TextMemoryStream sw = new TextMemoryStream() ) {
-                for ( int i = 0; i < midi_event.size(); i++ ) {
-                    if ( midi_event.get( i ).firstByte == 0xff && midi_event.get( i ).data.Length > 0 ) {
+
+            TextMemoryStream sw = null;
+            try {
+                sw = new TextMemoryStream();
+                int count = midi_event.size();
+                Vector<Byte> buffer = new Vector<Byte>();
+                for ( int i = 0; i < count; i++ ) {
+                    MidiEvent item = midi_event.get( i );
+                    if ( item.firstByte == 0xff && item.data.Length > 0 ) {
                         // meta textを抽出
-                        byte type = midi_event.get( i ).data[0];
+                        byte type = item.data[0];
                         if ( type == 0x01 || type == 0x03 ) {
-                            /*char[] ch = new char[midi_event.get( i ).data.Length - 1];
-                            for ( int j = 1; j < midi_event.get( i ).data.Length; j++ ) {
-                                ch[j - 1] = (char)midi_event.get( i ).data[j];
-                            }
-                            
-                            String line = new String( ch );*/
-                            byte[] dat = midi_event.get( i ).data;
-                            String line = encoding.GetString( dat, 1, dat.Length - 1 );
+                            //String line = PortUtil.getDecodedString( encoding, dat, 1, dat.Length - 1 );
                             if ( type == 0x01 ) {
-                                int second_colon = line.IndexOf( ':', 3 );
+                                int colon_count = 0;
+                                for ( int j = 0; j < item.data.Length - 1; j++ ) {
+                                    byte d = item.data[j + 1];
+                                    if ( d == 0x3a ) {
+                                        colon_count++;
+                                        if ( colon_count <= 2 ) {
+                                            continue;
+                                        }
+                                    }
+                                    if ( colon_count < 2 ) {
+                                        continue;
+                                    }
+                                    buffer.add( d );
+                                }
+
+                                int index_0x0a = buffer.indexOf( 0x0a );
+                                while ( index_0x0a >= 0 ) {
+                                    byte[] cpy = new byte[index_0x0a];
+                                    for ( int j = 0; j < index_0x0a; j++ ) {
+                                        cpy[j] = buffer.get( 0 );
+                                        buffer.removeElementAt( 0 );
+                                    }
+
+                                    String line = PortUtil.getDecodedString( encoding, cpy );
+                                    sw.writeLine( line );
+                                    buffer.removeElementAt( 0 );
+                                    index_0x0a = buffer.indexOf( 0x0a );
+                                }
+                                /*int second_colon = line.IndexOf( ':', 3 );
                                 line = line.Substring( second_colon + 1 );
                                 line = line.Replace( "\\n", "\n" );
-                                //line = line.Replace( "\n", Environment.NewLine );
                                 String[] lines = PortUtil.splitString( line, '\n' );
                                 int c = lines.Length;
                                 for ( int j = 0; j < c; j++ ) {
@@ -486,10 +565,16 @@ namespace Boare.Lib.Vsq {
                                     } else {
                                         sw.write( lines[j] );
                                     }
-                                }
-                                //sw.write( line );
+                                }*/
                             } else {
-                                track_name = line;
+                                for ( int j = 0; j < item.data.Length - 1; j++ ) {
+                                    buffer.add( item.data[j + 1] );
+                                }
+                                track_name = PortUtil.getDecodedString( encoding, buffer.toArray( new byte[] { } ) );
+#if DEBUG
+                                Console.WriteLine( "VsqTrack#.ctor; track_name=" + track_name );
+#endif
+                                buffer.clear();
                             }
                         }
                     } else {
@@ -499,8 +584,19 @@ namespace Boare.Lib.Vsq {
                 sw.rewind();
                 MetaText = new VsqMetaText( sw );
                 setName( track_name );
+            } catch ( Exception ex ) {
+                PortUtil.println( "com.boare.vsq.VsqTrack#.ctor; ex=" + ex );
+            } finally {
+                if ( sw != null ) {
+                    try {
+                        sw.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
             }
         }
     }
 
+#if !JAVA
 }
+#endif

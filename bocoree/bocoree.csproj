@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C8AAE632-9C6C-4372-8175-811528A66742}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -56,27 +56,98 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arrays.cs" />
+    <Compile Include="awt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="awt.event.cs" />
+    <Compile Include="awt.geom.cs" />
+    <Compile Include="awt.image.cs" />
+    <Compile Include="Base64.cs" />
+    <Compile Include="BBackgroundWorker.cs" />
+    <Compile Include="BButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BDelegate.cs" />
+    <Compile Include="BDialogResult.cs" />
+    <Compile Include="BDoWorkEventArgs.cs" />
+    <Compile Include="BDoWorkEventHandler.cs" />
+    <Compile Include="BEvent.cs" />
+    <Compile Include="BEventArgs.cs" />
+    <Compile Include="BEventHandler.cs" />
+    <Compile Include="BForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BFormWindowState.cs" />
+    <Compile Include="BKeyEventArgs.cs" />
+    <Compile Include="BKeys.cs" />
+    <Compile Include="BLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BMenuBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BMouseButtons.cs" />
+    <Compile Include="BMouseEventArgs.cs" />
+    <Compile Include="BMouseEventHandler.cs" />
+    <Compile Include="BPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BPopupMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BProgressChangedEventArgs.cs" />
+    <Compile Include="BProgressChangedEventHandler.cs" />
+    <Compile Include="BRunWorkerCompletedEventHandler.cs" />
+    <Compile Include="BRunWorkerCompletedEventArgs.cs" />
+    <Compile Include="BTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolStripButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BufferedReader.cs" />
     <Compile Include="BufferedWriter.cs" />
+    <Compile Include="ByRef.cs" />
     <Compile Include="Collections.cs" />
     <Compile Include="cp932.cs" />
     <Compile Include="cp932reader.cs" />
     <Compile Include="cp932writer.cs" />
     <Compile Include="fft.cs" />
-    <Compile Include="File.cs" />
-    <Compile Include="Graphics.cs" />
+    <Compile Include="IEventHandler.cs" />
+    <Compile Include="imageio.cs" />
+    <Compile Include="io.cs" />
     <Compile Include="Iterator.cs" />
     <Compile Include="ListIterator.cs" />
     <Compile Include="math.cs" />
     <Compile Include="Misc.cs" />
     <Compile Include="PortUtil.cs" />
     <Compile Include="RandomAccessFile.cs" />
-    <Compile Include="TreeMap.cs" />
+    <Compile Include="swing.cs">
+    </Compile>
+    <Compile Include="util.cs" />
+    <Compile Include="ValuePair.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="winmm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="windows.cs" />
     <Compile Include="wingdi.cs" />
+    <Compile Include="XmlMember.cs" />
+    <Compile Include="XmlPoint.cs" />
+    <Compile Include="XmlRectangle.cs" />
+    <Compile Include="XmlSerializable.cs" />
+    <Compile Include="XmlSerializer.cs" />
+    <Compile Include="XmlSerializeWithDescription.cs" />
+    <Compile Include="XmlStaticMemberSerializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -11,7 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 namespace Boare.Cadencii {
+#endif
 
     public enum CadenciiCommandType {
         VSQ_COMMAND,
@@ -27,4 +31,6 @@ namespace Boare.Cadencii {
         BGM_UPDATE,
     }
 
+#if !JAVA
 }
+#endif

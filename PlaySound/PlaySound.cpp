@@ -198,6 +198,7 @@ void waveplay::append_cor( double** a_data, unsigned int length, double amp_left
         logger << "append_cor; waiting(1) " << s_current_buffer << "..." << endl;
 #endif
         while( true ){
+        	Sleep( 0 );
             if( s_abort_required ){
                 s_abort_required = false;
                 goto clean_and_exit;
@@ -312,6 +313,7 @@ void waveplay::append_cor( double** a_data, unsigned int length, double amp_left
 #endif
         while( !s_done[s_current_buffer] ){
         //while( (s_wave_header[s_current_buffer].dwFlags & WHDR_INQUEUE) == WHDR_INQUEUE ){
+        	Sleep( 0 );
             if( s_abort_required ){
                 s_abort_required = false;
                 goto clean_and_exit;

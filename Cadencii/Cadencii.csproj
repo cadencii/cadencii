@@ -97,6 +97,7 @@
     <Compile Include="AttackVariation.cs" />
     <Compile Include="AttackVariationConverter.cs" />
     <Compile Include="AutoVibratoMinLength.cs" />
+    <Compile Include="AutoVibratoMinLengthUtil.cs" />
     <Compile Include="BezierChain.cs" />
     <Compile Include="BezierControlType.cs" />
     <Compile Include="BezierCurves.cs" />
@@ -115,6 +116,11 @@
     <Compile Include="ClockProperty.cs" />
     <Compile Include="ClockPropertyConverter.cs" />
     <Compile Include="ClockResolution.cs" />
+    <Compile Include="DefaultVibratoLengthUtil.cs" />
+    <Compile Include="EditorStatus.cs" />
+    <Compile Include="FormCurvePointEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormMidiImExportConfig.cs" />
     <Compile Include="FormNoteExpressionConfig.cs">
       <SubType>Form</SubType>
@@ -126,7 +132,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="OtoArgs.cs" />
+    <Compile Include="PanelState.cs" />
+    <Compile Include="PictPianoRoll.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PointD.cs" />
+    <Compile Include="QuantizeModeUtil.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="RenderingRunner.cs" />
     <Compile Include="NoteNumberExpressionType.cs" />
@@ -140,16 +151,21 @@
     </Compile>
     <Compile Include="PropertyPanelState.cs" />
     <Compile Include="RenderQueue.cs" />
+    <Compile Include="RenderRequiredEventHandler.cs" />
     <Compile Include="ScriptReturnStatus.cs" />
+    <Compile Include="SelectedCurveChangedEventHandler.cs" />
+    <Compile Include="SelectedEventChangedEventHandler.cs" />
+    <Compile Include="SelectedTrackChangedEventHandler.cs" />
+    <Compile Include="StateChangeRequiredEventHandler.cs" />
     <Compile Include="straightdrv.cs" />
     <Compile Include="StraightRenderingQueue.cs" />
     <Compile Include="StraightRenderingRunner.cs" />
+    <Compile Include="TopMostChangedEventHandler.cs" />
+    <Compile Include="UpdateProgressEventHandler.cs" />
     <Compile Include="UtauVoiceDB.cs" />
     <Compile Include="ValuePairOfStringArrayOfKeys.cs" />
     <Compile Include="CommandTree.cs" />
     <Compile Include="CommandTreeUnit.cs" />
-    <Compile Include="ContextProperty.cs">
-    </Compile>
     <Compile Include="CurveType.cs" />
     <Compile Include="DefaultVibratoLength.cs" />
     <Compile Include="FileDialog.cs">
@@ -200,52 +216,25 @@
     <Compile Include="FormBezierPointEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormBezierPointEdit.Designer.cs">
-      <DependentUpon>FormBezierPointEdit.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormCompileResult.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormCompileResult.Designer.cs">
-      <DependentUpon>FormCompileResult.cs</DependentUpon>
     </Compile>
     <Compile Include="FormDeleteBar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormDeleteBar.Designer.cs">
-      <DependentUpon>FormDeleteBar.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormGameControlerConfig.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormGameControlerConfig.Designer.cs">
-      <DependentUpon>FormGameControlerConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="FormImportLyric.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormImportLyric.Designer.cs">
-      <DependentUpon>FormImportLyric.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormInsertBar.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormInsertBar.Designer.cs">
-      <DependentUpon>FormInsertBar.cs</DependentUpon>
     </Compile>
     <Compile Include="FormBeatConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormBeatConfig.Designer.cs">
-      <DependentUpon>FormBeatConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormMain.Designer.cs">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormMainUtil.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMidiImExport.cs">
@@ -288,9 +277,6 @@
     </Compile>
     <Compile Include="FormSynthesize.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSynthesize.Designer.cs">
-      <DependentUpon>FormSynthesize.cs</DependentUpon>
     </Compile>
     <Compile Include="FormTempoConfig.cs">
       <SubType>Form</SubType>
@@ -390,17 +376,10 @@
     <Compile Include="TrackSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TrackSelector.Designer.cs">
-      <DependentUpon>TrackSelector.cs</DependentUpon>
-    </Compile>
     <Compile Include="UtauFreq.cs" />
-    <Compile Include="ValuePair.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="VersionInfo.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VersionInfo.Designer.cs">
-      <DependentUpon>VersionInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="VibratoPoint.cs" />
     <Compile Include="VibratoVariation.cs" />

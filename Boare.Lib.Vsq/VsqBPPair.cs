@@ -11,19 +11,40 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.vsq;
+
+import java.io.*;
+#else
 using System;
 
-namespace Boare.Lib.Vsq {
+namespace Boare.Lib.Vsq
+{
+#endif
 
+#if JAVA
+    public class VsqBPPair implements Cloneable, Serializable
+#else
     [Serializable]
-    public struct VsqBPPair {
+    public struct VsqBPPair
+#endif
+    {
         public int value;
         public long id;
 
-        public VsqBPPair( int value_, long id_ ) {
+        public VsqBPPair( int value_, long id_ )
+        {
             value = value_;
             id = id_;
         }
+
+#if JAVA
+        public Object clone(){
+            return new VsqBPPair( value, id );
+        }
+#endif
     }
 
+#if !JAVA
 }
+#endif

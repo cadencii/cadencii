@@ -121,7 +121,7 @@ namespace Boare.Cadencii {
         }
 
         private static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
     }
 

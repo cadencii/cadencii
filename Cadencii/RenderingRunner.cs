@@ -11,11 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 
 namespace Boare.Cadencii {
-
     using boolean = Boolean;
+#endif
 
     public interface RenderingRunner {
         void run();
@@ -26,4 +29,6 @@ namespace Boare.Cadencii {
         double computeRemainingSeconds();
     }
 
+#if !JAVA
 }
+#endif

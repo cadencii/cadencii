@@ -11,63 +11,75 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Boare.Cadencii {
-
+namespace Boare.Cadencii
+{
     using boolean = Boolean;
+#endif
 
-    struct PencilMode {
+    public struct PencilMode
+    {
         private PencilModeEnum m_mode;
         private boolean m_triplet;
         private boolean m_dot;
 
-        public int GetUnitLength() {
+        public int getUnitLength()
+        {
             int b = (int)m_mode;
-            if ( m_triplet ) {
+            if ( m_triplet )
+            {
                 b = b * 2 / 3;
-            } else if ( m_dot ) {
+            }
+            else if ( m_dot )
+            {
                 b = b + b / 2;
             }
             return b;
         }
 
+        public PencilModeEnum getMode()
+        {
+            return m_mode;
+        }
 
-        public PencilModeEnum Mode {
-            get {
-                return m_mode;
-            }
-            set {
-                m_mode = value;
+        public void setMode( PencilModeEnum value )
+        {
+            m_mode = value;
+        }
+
+        public boolean isTriplet()
+        {
+            return m_triplet;
+        }
+
+        public void setTriplet( boolean value )
+        {
+            m_triplet = value;
+            if ( m_triplet && m_dot )
+            {
+                m_dot = false;
             }
         }
 
-
-        public boolean Triplet {
-            get {
-                return m_triplet;
-            }
-            set {
-                m_triplet = value;
-                if ( m_triplet && m_dot ) {
-                    m_dot = false;
-                }
-            }
+        public boolean isDot()
+        {
+            return m_dot;
         }
 
-
-        public boolean Dot {
-            get {
-                return m_dot;
-            }
-            set {
-                m_dot = value;
-                if ( m_dot && m_triplet ) {
-                    m_triplet = false;
-                }
+        public void setDot( boolean value )
+        {
+            m_dot = value;
+            if ( m_dot && m_triplet )
+            {
+                m_triplet = false;
             }
         }
     }
+
+#if !JAVA
 }
+#endif

@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * VersionInfo.cs
  * Copyright (c) 2008-2009 kbinani
  *
@@ -12,13 +13,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
+//using System.Drawing;
+//using System.Drawing.Drawing2D;
+//using System.Windows.Forms;
+using bocoree;
+using bocoree.awt;
+using bocoree.awt.image;
 
 namespace Boare.Lib.AppUtil {
+    using java = bocoree;
+    using javax = bocoreex;
+    using Graphics = bocoree.awt.Graphics2D;
 
-    public partial class VersionInfo : Form {
+    public partial class VersionInfo : System.Windows.Forms.Form {
         DateTime m_scroll_started;
         private AuthorListEntry[] m_credit;
         const float m_speed = 35f;
@@ -29,12 +36,12 @@ namespace Boare.Lib.AppUtil {
         float m_shift = 0f;
         int m_button_width_about = 75;
         int m_button_width_credit = 75;
-        Bitmap m_scroll;
+        BufferedImage m_scroll;
         const int m_height = 380;
-        readonly Color m_background = Color.White;
+        readonly Color m_background = Color.white;
         private string m_app_name = "";
-        private Color m_app_name_color = Color.Black;
-        private Color m_version_color = Color.FromArgb( 105, 105, 105 );
+        private Color m_app_name_color = Color.black;
+        private Color m_version_color = new Color( 105, 105, 105 );
         private bool m_shadow_enablde = true;
 
         public VersionInfo( string app_name, string version ) {
@@ -43,9 +50,9 @@ namespace Boare.Lib.AppUtil {
             InitializeComponent();
             ApplyLanguage();
 
-            this.SetStyle( ControlStyles.DoubleBuffer, true );
-            this.SetStyle( ControlStyles.UserPaint, true );
-            this.SetStyle( ControlStyles.AllPaintingInWmPaint, true );
+            this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
+            this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
+            this.SetStyle( System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true );
 
             m_credit = new AuthorListEntry[] { };
             btnSaveAuthorList.Visible = false;
@@ -63,7 +70,7 @@ namespace Boare.Lib.AppUtil {
         }
 
         public static string _( string s ) {
-            return Messaging.GetMessage( s );
+            return Messaging.getMessage( s );
         }
 
         /// <summary>
@@ -90,7 +97,7 @@ namespace Boare.Lib.AppUtil {
             }
         }
 
-        public Bitmap Credit {
+        public BufferedImage Credit {
             set {
                 m_scroll = value;
             }
@@ -118,55 +125,44 @@ namespace Boare.Lib.AppUtil {
             const float shadow_shift = 2f;
             const string font_name = "Arial";
             const int font_size = 10;
-            Font font = new Font( font_name, font_size );
-            Size size = Boare.Lib.AppUtil.Util.MeasureString( "Qjqp", font );
+            Font font = new Font( font_name, java.awt.Font.PLAIN, font_size );
+            Dimension size = Boare.Lib.AppUtil.Util.measureString( "Qjqp", font );
             float width = this.Width;
-            float height = size.Height;
-            StringFormat sf = new StringFormat();
-            m_scroll = new Bitmap( (int)width, (int)(40f + m_credit.Length * height * 1.1f) );
-            using ( Graphics g = Graphics.FromImage( m_scroll ) ) {
-                sf.Alignment = StringAlignment.Center;
+            float height = size.height;
+            //StringFormat sf = new StringFormat();
+            m_scroll = new BufferedImage( (int)width, (int)(40f + m_credit.Length * height * 1.1f), BufferedImage.TYPE_INT_BGR );
+            Graphics2D g = m_scroll.createGraphics();
+            //sf.Alignment = StringAlignment.Center;
+            g.setFont( new Font( font_name, java.awt.Font.BOLD, (int)(font_size * 1.1f) ) );
+            if ( m_shadow_enablde ) {
+                g.setColor( new Color( 0, 0, 0, 40 ) );
+                g.drawString( m_app_name, shadow_shift, shadow_shift ); //, width, height ), sf );
+            }
+            g.setColor( Color.black );
+            g.drawString( m_app_name, 0f, 0f ); //, width, height ), sf );
+            for ( int i = 0; i < m_credit.Length; i++ ) {
+                g.setFont( new Font( font_name, m_credit[i].getStyle(), font_size ) );
                 if ( m_shadow_enablde ) {
-                    g.DrawString( m_app_name,
-                                  new Font( font_name, (int)(font_size * 1.1f), FontStyle.Bold ),
-                                  new SolidBrush( Color.FromArgb( 40, Color.Black ) ),
-                                  new RectangleF( shadow_shift, shadow_shift, width, height ),
-                                  sf );
+                    g.setColor( new Color( 0, 0, 0, 40 ) );
+                    g.drawString( m_credit[i].getName(), 0f + shadow_shift, 40f + i * height * 1.1f + shadow_shift ); //, width, height ), sf );
                 }
-                g.DrawString( m_app_name,
-                              new Font( font_name, (int)(font_size * 1.1f), FontStyle.Bold ),
-                              Brushes.Black,
-                              new RectangleF( 0f, 0f, width, height ),
-                              sf );
-                for ( int i = 0; i < m_credit.Length; i++ ) {
-                    if ( m_shadow_enablde ) {
-                        g.DrawString( m_credit[i].Name,
-                                      new Font( font_name, font_size, m_credit[i].Style ),
-                                      new SolidBrush( Color.FromArgb( 40, Color.Black ) ),
-                                      new RectangleF( 0f + shadow_shift, 40f + i * height * 1.1f + shadow_shift, width, height ),
-                                      sf );
-                    }
-                    g.DrawString( m_credit[i].Name,
-                                  new Font( font_name, font_size, m_credit[i].Style ),
-                                  Brushes.Black,
-                                  new RectangleF( 0f, 40f + i * height * 1.1f, width, height ),
-                                  sf );
-                }
+                g.setColor( Color.black );
+                g.drawString( m_credit[i].getName(), 0f, 40f + i * height * 1.1f );// , width, height ), sf );
             }
         }
 
         void btnSaveAuthorList_Click( object sender, EventArgs e ) {
 #if DEBUG
-            using ( SaveFileDialog dlg = new SaveFileDialog() ){
-                if( dlg.ShowDialog() == DialogResult.OK ){
-                    m_scroll.Save( dlg.FileName, System.Drawing.Imaging.ImageFormat.Png );
+            using ( System.Windows.Forms.SaveFileDialog dlg = new System.Windows.Forms.SaveFileDialog() ){
+                if( dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK ){
+                    javax.imageio.ImageIO.write( m_scroll, "png", new java.io.File( dlg.FileName ) );
                 }
             }
 #endif
         }
 
         private void btnOK_Click( object sender, EventArgs e ) {
-            this.DialogResult = DialogResult.OK;
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }
         
@@ -193,50 +189,9 @@ namespace Boare.Lib.AppUtil {
             this.Invalidate();
         }
         
-        private void VersionInfoEx_Paint( object sender, PaintEventArgs e ) {
+        private void VersionInfoEx_Paint( object sender, System.Windows.Forms.PaintEventArgs e ) {
             try {
-                Graphics g = e.Graphics;
-                g.Clip = new Region( new Rectangle( 0, 0, this.Width, m_height ) );
-                g.Clear( m_background );
-                if ( m_credit_mode ) {
-                    float times = (float)(((DateTime.Now).Subtract( m_scroll_started )).TotalSeconds) - 3f;
-                    float speed = (float)((2.0 - bocoree.math.erfcc( times * 0.8 )) / 2.0) * m_speed;
-                    float dt = times - m_last_t;
-                    m_shift += (speed + m_last_speed) * dt / 2f;
-                    m_last_t = times;
-                    m_last_speed = speed;
-                    float dx = (this.Width - m_scroll.Width) * 0.5f;
-                    if ( m_scroll != null ) {
-                        g.DrawImage( m_scroll,
-                                     dx, 90f - m_shift,
-                                     m_scroll.Width, m_scroll.Height );
-                        if ( 90f - m_shift + m_scroll.Height < 0 ) {
-                            m_shift = -m_height * 1.5f;
-                        }
-                    }
-                    int grad_height = 60;
-                    Rectangle top = new Rectangle( 0, 0, this.Width, grad_height );
-                    using ( LinearGradientBrush lgb = new LinearGradientBrush( top, Color.White, Color.Transparent, LinearGradientMode.Vertical ) ) {
-                        g.FillRectangle( lgb, top );
-                    }
-                    Rectangle bottom = new Rectangle( 0, m_height - grad_height, this.Width, grad_height );
-                    g.Clip = new Region( new Rectangle( 0, m_height - grad_height + 1, this.Width, grad_height - 1 ) );
-                    using ( LinearGradientBrush lgb = new LinearGradientBrush( bottom, Color.Transparent, Color.White, LinearGradientMode.Vertical ) ) {
-                        g.FillRectangle( lgb, bottom );
-                    }
-                    g.ResetClip();
-                } else {
-                    g.DrawString(
-                        m_app_name,
-                        new Font( "Century Gorhic", 24, FontStyle.Bold ),
-                        new SolidBrush( m_app_name_color ),
-                        new PointF( 20, 110 ) );
-                    g.DrawString(
-                        "version " + m_version,
-                        new Font( "Arial", 10 ),
-                        new SolidBrush( m_version_color ),
-                        new PointF( 25, 150 ) );
-                }
+                paint( new Graphics2D( e.Graphics ) );
             } catch ( Exception ex ) {
 #if DEBUG
                 Console.WriteLine( "VersionInfoEx_Paint" );
@@ -245,19 +200,57 @@ namespace Boare.Lib.AppUtil {
             }
         }
 
-        private void VersionInfoEx_KeyDown( object sender, KeyEventArgs e ) {
-            if ( (e.KeyCode & Keys.Escape) == Keys.Escape ) {
-                this.DialogResult = DialogResult.Cancel;
+        public void paint( Graphics g1 ) {
+            Graphics2D g = (Graphics2D)g1;
+            g.clipRect( 0, 0, this.Width, m_height );
+            g.clearRect( 0, 0, this.Width, this.Height );
+            if ( m_credit_mode ) {
+                float times = (float)(((DateTime.Now).Subtract( m_scroll_started )).TotalSeconds) - 3f;
+                float speed = (float)((2.0 - bocoree.math.erfcc( times * 0.8 )) / 2.0) * m_speed;
+                float dt = times - m_last_t;
+                m_shift += (speed + m_last_speed) * dt / 2f;
+                m_last_t = times;
+                m_last_speed = speed;
+                float dx = (this.Width - m_scroll.getWidth( null )) * 0.5f;
+                if ( m_scroll != null ) {
+                    g.drawImage( m_scroll, (int)dx, (int)(90f - m_shift), null );
+                    if ( 90f - m_shift + m_scroll.getHeight( null ) < 0 ) {
+                        m_shift = -m_height * 1.5f;
+                    }
+                }
+                int grad_height = 60;
+                Rectangle top = new Rectangle( 0, 0, this.Width, grad_height );
+                /*using ( LinearGradientBrush lgb = new LinearGradientBrush( top, Color.White, Color.Transparent, LinearGradientMode.Vertical ) ) {
+                    g.FillRectangle( lgb, top );
+                }*/
+                Rectangle bottom = new Rectangle( 0, m_height - grad_height, this.Width, grad_height );
+                g.clipRect( 0, m_height - grad_height + 1, this.Width, grad_height - 1 );
+                /*using ( LinearGradientBrush lgb = new LinearGradientBrush( bottom, Color.Transparent, Color.White, LinearGradientMode.Vertical ) ) {
+                    g.FillRectangle( lgb, bottom );
+                }*/
+                g.setClip( null );
+            } else {
+                g.setFont( new Font( "Century Gorhic", java.awt.Font.BOLD, 24 ) );
+                g.setColor( m_app_name_color );
+                g.drawString( m_app_name, 20, 110 );
+                g.setFont( new Font( "Arial", 0, 10 ) );
+                g.drawString( "version " + m_version, 25, 150 );
+            }
+        }
+
+        private void VersionInfoEx_KeyDown( object sender, System.Windows.Forms.KeyEventArgs e ) {
+            if ( (e.KeyCode & System.Windows.Forms.Keys.Escape) == System.Windows.Forms.Keys.Escape ) {
+                this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
                 this.Close();
             }
         }
 
         private void VersionInfoEx_FontChanged( object sender, EventArgs e ) {
-            Font font = this.Font;
             for ( int i = 0; i < this.Controls.Count; i++ ) {
-                Util.ApplyFontRecurse( this.Controls[i], font );
+                Util.applyFontRecurse( this.Controls[i], new java.awt.Font( this.Font ) );
             }
         }
     }
 
 }
+#endif

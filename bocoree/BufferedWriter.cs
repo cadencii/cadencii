@@ -16,7 +16,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace bocoree {
+namespace bocoree.io {
 
     public class FileWriter {
         public StreamWriter m_writer;
@@ -26,12 +26,49 @@ namespace bocoree {
         }
     }
 
-    public class FileOutputStream : FileStream {
+    public class FileOutputStream : FileStream, OutputStream {
         public FileOutputStream( String fileName )
-            : base( fileName, FileMode.Open, FileAccess.Write ) {
+            : base( fileName, FileMode.Create, FileAccess.Write ) {
+        }
+
+        public void close() {
+            base.Close();
+        }
+
+        /// <summary>
+        /// 出力ストリームをフラッシュして、バッファリングされていたすべての出力バイトを強制的にストリームに書き込みます。
+        /// </summary>
+        public void flush() {
+            base.Flush();
+        }
+
+        /// <summary>
+        /// b.length バイトのデータを出力ストリームに書き込みます。
+        /// </summary>
+        /// <param name="b"></param>
+        public void write( byte[] b ) {
+            base.Write( b, 0, b.Length );
+        }
+
+        /// <summary>
+        /// 指定された byte 配列の、オフセット位置 off から始まる len バイトを出力ストリームに書き込みます。
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="off"></param>
+        /// <param name="len"></param>
+        public void write( byte[] b, int off, int len ) {
+            base.Write( b, off, len );
+        }
+
+        /// <summary>
+        /// 指定された byte を出力ストリームに書き込みます。
+        /// </summary>
+        /// <param name="b"></param>
+        public void write( int b ) {
+            base.WriteByte( (byte)b );
         }
     }
-
+          
     public class OutputStreamWriter {
         public StreamWriter m_writer;
 

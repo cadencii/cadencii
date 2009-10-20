@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Boare.Cadencii;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
 
 namespace Boare.Cadencii {
 
@@ -36,7 +37,7 @@ namespace Boare.Cadencii {
             }
             txtNumerator.Text = "1";
             // アイコンを作成
-            byte[] b = Convert.FromBase64String( iconbase64 );
+            byte[] b = Base64.decode( iconbase64 );
             using ( MemoryStream ms = new MemoryStream( b ) ) {
                 m_icon = new Bitmap( ms );
             }

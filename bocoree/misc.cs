@@ -63,13 +63,13 @@ namespace bocoree {
             MD5 md5 = MD5.Create();
             byte[] data = Encoding.Unicode.GetBytes( s );
             byte[] hash = md5.ComputeHash( data );
-            return BitConverter.ToString( hash ).ToLower().Replace( "-", "" );
+            return BitConverter.ToString( hash ).ToLower().Replace( "-", "_" );
         }
 
         public static string getmd5( FileStream file_stream ) {
             MD5 md5 = MD5.Create();
             byte[] hash = md5.ComputeHash( file_stream );
-            return BitConverter.ToString( hash ).ToLower().Replace( "-", "" );
+            return BitConverter.ToString( hash ).ToLower().Replace( "-", "_" );
         }
 
         /// <summary>

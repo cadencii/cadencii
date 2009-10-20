@@ -39,7 +39,7 @@ namespace Boare.Cadencii {
         private void InitializeComponent() {
             this.trackFeder = new System.Windows.Forms.TrackBar();
             this.trackPanpot = new System.Windows.Forms.TrackBar();
-            this.lblPanpot = new System.Windows.Forms.Label();
+            this.txtPanpot = new System.Windows.Forms.TextBox();
             this.lblTitle = new System.Windows.Forms.Label();
             this.txtFeder = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).BeginInit();
@@ -80,15 +80,18 @@ namespace Boare.Cadencii {
             // 
             // lblPanpot
             // 
-            this.lblPanpot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtPanpot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblPanpot.Location = new System.Drawing.Point( 10, 206 );
-            this.lblPanpot.Margin = new System.Windows.Forms.Padding( 10, 0, 10, 0 );
-            this.lblPanpot.Name = "lblPanpot";
-            this.lblPanpot.Size = new System.Drawing.Size( 65, 23 );
-            this.lblPanpot.TabIndex = 3;
-            this.lblPanpot.Text = "0";
-            this.lblPanpot.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.txtPanpot.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
+            this.txtPanpot.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPanpot.Location = new System.Drawing.Point( 10, 206 );
+            this.txtPanpot.Margin = new System.Windows.Forms.Padding( 10, 0, 10, 0 );
+            this.txtPanpot.Name = "lblPanpot";
+            this.txtPanpot.Size = new System.Drawing.Size( 65, 19 );
+            this.txtPanpot.TabIndex = 3;
+            this.txtPanpot.Text = "0";
+            this.txtPanpot.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtPanpot.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtPanpot_KeyDown );
             // 
             // lblTitle
             // 
@@ -114,6 +117,7 @@ namespace Boare.Cadencii {
             this.txtFeder.TabIndex = 5;
             this.txtFeder.Text = "0";
             this.txtFeder.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtFeder.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtFeder_KeyDown );
             // 
             // VolumeTracker
             // 
@@ -121,7 +125,7 @@ namespace Boare.Cadencii {
             this.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
             this.Controls.Add( this.txtFeder );
             this.Controls.Add( this.lblTitle );
-            this.Controls.Add( this.lblPanpot );
+            this.Controls.Add( this.txtPanpot );
             this.Controls.Add( this.trackPanpot );
             this.Controls.Add( this.trackFeder );
             this.DoubleBuffered = true;
@@ -139,7 +143,7 @@ namespace Boare.Cadencii {
 
         private System.Windows.Forms.TrackBar trackFeder;
         private System.Windows.Forms.TrackBar trackPanpot;
-        private System.Windows.Forms.Label lblPanpot;
+        private System.Windows.Forms.TextBox txtPanpot;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.TextBox txtFeder;
     }

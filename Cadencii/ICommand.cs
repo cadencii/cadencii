@@ -11,27 +11,31 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System.Collections.Generic;
+#if JAVA
+package org.kbinani.Cadencii;
 
+import java.util.*;
+#else
+using System.Collections.Generic;
 using bocoree;
+using bocoree.util;
 
 namespace Boare.Cadencii {
+#endif
 
     public interface ICommand {
         /// <summary>
         /// 子コマンドのリスト
         /// </summary>
-        Vector<ICommand> Child {
-            get;
-        }
+        Vector<ICommand> getChild();
 
         /// <summary>
         /// 親コマンドへの参照
         /// </summary>
-        ICommand parent {
-            get;
-            set;
-        }
+        ICommand getParent();
+        void setParent( ICommand value );
     }
 
+#if !JAVA
 }
+#endif

@@ -16,7 +16,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace bocoree {
+namespace bocoree.io {
 
     public class FileReader{
         public StreamReader m_reader;
@@ -26,9 +26,25 @@ namespace bocoree {
         }
     }
 
-    public class FileInputStream : FileStream {
+    public class FileInputStream : FileStream, InputStream {
         public FileInputStream( String fileName )
-            : base( fileName, FileMode.Open, FileAccess.Write ) {
+            : base( fileName, FileMode.Open, FileAccess.Read ) {
+        }
+
+        public void close() {
+            base.Close();
+        }
+
+        public int read( byte[] b, int off, int len ) {
+            return base.Read( b, off, len );
+        }
+
+        public int read( byte[] b ) {
+            return read( b, 0, b.Length );
+        }
+
+        public int read() {
+            return base.ReadByte();
         }
     }
 

@@ -15,10 +15,10 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
-
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
 
 namespace Boare.Cadencii {
 
@@ -37,7 +37,7 @@ namespace Boare.Cadencii {
         public event PanpotChangedEventHandler PanpotChanged;
         public event SoloChangedEventHandler SoloChanged;
         public event MuteChangedEventHandler MuteChanged;
-        public event BSimpleDelegate<boolean> TopMostChanged;
+        public event TopMostChangedEventHandler TopMostChanged;
 
         public void ApplyLanguage() {
             Text = _( "Mixer" );
@@ -45,13 +45,13 @@ namespace Boare.Cadencii {
         }
 
         private static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
         public void updateStatus() {
             int num = AppManager.getVsqFile().Mixer.Slave.size() + AppManager.getBgmCount();
 #if DEBUG
-            Console.WriteLine( "FormMixer#UpdateStatus; num=" + num );
+            PortUtil.println( "FormMixer#UpdateStatus; num=" + num );
 #endif
             if ( m_tracker != null ) {
                 for ( int i = 0; i < m_tracker.Length; i++ ) {
@@ -256,7 +256,7 @@ namespace Boare.Cadencii {
 
         private void chkTopmost_CheckedChanged( object sender, EventArgs e ) {
             if ( TopMostChanged != null ) {
-                TopMostChanged( chkTopmost.Checked );
+                TopMostChanged( this, chkTopmost.Checked );
             }
             this.TopMost = chkTopmost.Checked; // ここはthis.ShowTopMostにしてはいけない
         }

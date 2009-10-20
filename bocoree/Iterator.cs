@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace bocoree {
+namespace bocoree.util {
 
     public interface Iterator {
         bool hasNext();

@@ -14,10 +14,10 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
-
 using Boare.Lib.Vsq;
 using Boare.Lib.AppUtil;
 using bocoree;
+using bocoree.util;
 
 namespace Boare.Cadencii {
 
@@ -53,7 +53,7 @@ namespace Boare.Cadencii {
         public VsqEventItemProxy( VsqEvent item ) {
             original = (VsqEvent)item.clone();
             m_clock = new ClockProperty();
-            m_clock.Clock = new CalculatableString( item.Clock );
+            m_clock.setClock( new CalculatableString( item.Clock ) );
             m_length = new CalculatableString( item.ID.Length );
             m_note = new NoteNumberProperty();
             m_note.noteNumber = item.ID.Note;
@@ -120,14 +120,14 @@ namespace Boare.Cadencii {
         private static int lastVibratoLength {
             get {
 #if DEBUG
-                Console.WriteLine( "VsqEventItemProxy#get_lastVibratoLength; m_vibrato_percent_last=" + s_vibrato_percent_last );
+                PortUtil.println( "VsqEventItemProxy#get_lastVibratoLength; m_vibrato_percent_last=" + s_vibrato_percent_last );
 #endif
                 return s_vibrato_percent_last;
             }
             set {
                 s_vibrato_percent_last = value;
 #if DEBUG
-                Console.WriteLine( "VsqEventItemProxy#set_lastVibratoLength; m_vibrato_percent_last=" + s_vibrato_percent_last );
+                PortUtil.println( "VsqEventItemProxy#set_lastVibratoLength; m_vibrato_percent_last=" + s_vibrato_percent_last );
 #endif
             }
         }
@@ -152,13 +152,13 @@ namespace Boare.Cadencii {
         public VsqEvent GetItemDifference() {
             VsqEvent item = original;
             VsqEvent ret = new VsqEvent();
-            ret.Clock = m_clock.Clock.getIntValue();
+            ret.Clock = m_clock.getClock().getIntValue();
             ret.ID = new VsqID();
             ret.ID.DEMaccent = m_accent;
             ret.ID.DEMdecGainRate = m_decay;
             ret.ID.Dynamics = m_velocity;
             if ( item.ID.IconHandle != null ) {
-                ret.ID.IconHandle = (IconHandle)item.ID.IconHandle.Clone();
+                ret.ID.IconHandle = (IconHandle)item.ID.IconHandle.clone();
             }
             int note_length = m_length.getIntValue();
             ret.ID.Length = note_length;
@@ -209,11 +209,11 @@ namespace Boare.Cadencii {
             } else {
                 ret.ID.VibratoDelay = GetVibratoDelay( m_vibrato_percent, note_length );
 #if DEBUG
-                Console.WriteLine( "VsqEventItemProxy#GetItemDifference" );
-                Console.WriteLine( "    m_vibrato_percent=" + m_vibrato_percent );
-                Console.WriteLine( "    ret.ID.VibratoDelay=" + ret.ID.VibratoDelay );
-                Console.WriteLine( "    ret.ID.Length=" + ret.ID.Length );
-                Console.WriteLine( "    percent=" + getVibatoPercent( ret.ID.VibratoDelay, ret.ID.Length ) );
+                PortUtil.println( "VsqEventItemProxy#GetItemDifference" );
+                PortUtil.println( "    m_vibrato_percent=" + m_vibrato_percent );
+                PortUtil.println( "    ret.ID.VibratoDelay=" + ret.ID.VibratoDelay );
+                PortUtil.println( "    ret.ID.Length=" + ret.ID.Length );
+                PortUtil.println( "    percent=" + getVibatoPercent( ret.ID.VibratoDelay, ret.ID.Length ) );
 #endif
                 if ( ret.ID.VibratoHandle != null ) {
                     ret.ID.VibratoHandle.Length = ret.ID.Length - ret.ID.VibratoDelay;
@@ -221,7 +221,7 @@ namespace Boare.Cadencii {
             }
             ret.ID.LyricHandle = new LyricHandle( m_phrase, m_phonetic_symbol );
             ret.InternalID = original.InternalID;
-            ret.UstEvent = (UstEvent)m_ust_event.Clone();
+            ret.UstEvent = (UstEvent)m_ust_event.clone();
 
             ret.ID.pMeanOnsetFirstNote = m_pMeanOnsetFirstNote;
             ret.ID.vMeanNoteTransition = m_vMeanNoteTransition;
@@ -237,7 +237,16 @@ namespace Boare.Cadencii {
                 return m_phrase;
             }
             set {
+                String old = m_phrase;
                 m_phrase = value;
+                if ( !old.Equals( m_phrase ) ) {
+                    if ( AppManager.editorConfig.SelfDeRomanization ) {
+                        m_phrase = KanaDeRomanization.Attach( m_phrase );
+                        ByRef<String> phonetic_symbol = new ByRef<String>( "" );
+                        SymbolTable.attatch( m_phrase, phonetic_symbol );
+                        m_phonetic_symbol = phonetic_symbol.value;
+                    }
+                }
             }
         }
 
@@ -274,7 +283,7 @@ namespace Boare.Cadencii {
                     m_length = new CalculatableString( 0 );
                 } else {
                     VsqFileEx vsq = AppManager.getVsqFile();
-                    int clock = m_clock.Clock.getIntValue();
+                    int clock = m_clock.getClock().getIntValue();
                     if ( vsq != null ) {
                         double ms_clock = vsq.getSecFromClock( clock ) * 1000.0;
                         double ms_end = vsq.getSecFromClock( clock + draft ) * 1000.0;
@@ -585,7 +594,7 @@ namespace Boare.Cadencii {
         public int VibratoLength {
             get {
 #if DEBUG
-                Console.WriteLine( "VsqEventItemProxy#get_VibratoLength; m_vibrato.description=" + m_vibrato.description );
+                PortUtil.println( "VsqEventItemProxy#get_VibratoLength; m_vibrato.description=" + m_vibrato.description );
 #endif
                 //if ( m_vibrato.description.Equals( VibratoVariation.empty.description ) ) {
                 //    return 0;
@@ -595,7 +604,7 @@ namespace Boare.Cadencii {
             }
             set {
 #if DEBUG
-                Console.WriteLine( "VsqEventItemProxy#set_VibratoLength; value=" + value );
+                PortUtil.println( "VsqEventItemProxy#set_VibratoLength; value=" + value );
 #endif
                 if ( value <= 0 ) {
                     m_vibrato = new VibratoVariation( VibratoVariation.empty.description );

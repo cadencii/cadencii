@@ -11,6 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+using bocoree.windows.forms;
+
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
     partial class FormNoteProperty {
@@ -39,7 +41,7 @@ namespace Boare.Cadencii {
         private void InitializeComponent() {
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuWindow = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuClose = new BMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -96,7 +98,7 @@ namespace Boare.Cadencii {
 
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem menuWindow;
-        private System.Windows.Forms.ToolStripMenuItem menuClose;
+        private BMenuItem menuClose;
 
     }
 }

@@ -11,7 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 namespace Boare.Cadencii {
+#endif
 
     public enum EditTool {
         ARROW,
@@ -21,4 +25,6 @@ namespace Boare.Cadencii {
         PALETTE_TOOL,
     }
 
+#if !JAVA
 }
+#endif

@@ -11,22 +11,34 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import org.kbinani.windows.forms.*;
+#else
 using System;
-using System.Windows.Forms;
+using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace Boare.Cadencii
+{
+#endif
 
-    public class ValuePairOfStringArrayOfKeys {
+    public class ValuePairOfStringArrayOfKeys
+    {
         public String Key;
-        public Keys[] Value;
+        public BKeys[] Value;
 
-        public ValuePairOfStringArrayOfKeys() {
+        public ValuePairOfStringArrayOfKeys()
+        {
         }
 
-        public ValuePairOfStringArrayOfKeys( String key, Keys[] value ) {
+        public ValuePairOfStringArrayOfKeys( String key, BKeys[] value )
+        {
             Key = key;
             Value = value;
         }
     }
 
+#if !JAVA
 }
+#endif

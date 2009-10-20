@@ -11,9 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace Boare.Cadencii {
+#if JAVA
+package org.kbinani.Cadencii;
+#else
+namespace Boare.Cadencii
+{
+#endif
 
-    public enum NoteNumberExpressionType {
+    public enum NoteNumberExpressionType
+    {
         Numeric,
         International,
         Japanese,
@@ -21,4 +27,6 @@ namespace Boare.Cadencii {
         Deutsche,
     }
 
+#if !JAVA
 }
+#endif

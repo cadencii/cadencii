@@ -11,28 +11,45 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.vsq;
+
+import java.util.*;
+import java.io.*;
+import org.kbinani.*;
+#else
 using System;
-using System.IO;
 using System.Text;
-using System.Collections.Generic;
 using System.Windows.Forms;
-
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
-namespace Boare.Lib.Vsq {
-
+namespace Boare.Lib.Vsq
+{
     using boolean = System.Boolean;
+    using Integer = System.Int32;
+#endif
 
-    public class SymbolTable : ICloneable {
+#if JAVA
+    public class SymbolTable implements Cloneable
+#else
+    public class SymbolTable : ICloneable
+#endif
+    {
         private TreeMap<String, String> m_dict;
         private String m_name;
         private boolean m_enabled;
 
         #region Static Field
-        private static SortedList<int, SymbolTable> s_table = new SortedList<int, SymbolTable>();
+        private static TreeMap<Integer, SymbolTable> s_table = new TreeMap<Integer, SymbolTable>();
         private static SymbolTable s_default_jp = null;
         private static boolean s_initialized = false;
+#if JAVA
+        public static final String[][] _KEY_JP = {
+#else
         public static readonly String[,] _KEY_JP = {
+#endif
             {"あ", "a"},
             {"い", "i"},
             {"う", "M"},
@@ -60,7 +77,7 @@ namespace Boare.Lib.Vsq {
             {"の", "n o"},
             {"は", "h a"},
             {"ひ", "C i"},
-            {"ふ", @"p\ M"},
+            {"ふ", "p\\ M"},
             {"へ", "h e"},
             {"ほ", "h o"},
             {"ま", "m a"},
@@ -134,10 +151,10 @@ namespace Boare.Lib.Vsq {
             {"ひゅ", "C M"},
             {"ひぇ", "C e"},
             {"ひょ", "C o"},
-            {"ふゃ", @"p\' a"},
-            {"ふぃ", @"p\' i"},
-            {"ふゅ", @"p\' M"},
-            {"ふぇ", @"p\ e"},
+            {"ふゃ", "p\\' a"},
+            {"ふぃ", "p\\' i"},
+            {"ふゅ", "p\\' M"},
+            {"ふぇ", "p\\ e"},
             {"みゃ", "m' a"},
             {"みゅ", "m' M"},
             {"みぇ", "m' e"},
@@ -162,8 +179,8 @@ namespace Boare.Lib.Vsq {
             {"ぴゅ", "p' M"},
             {"ぴぇ", "p' e"},
             {"ぴょ", "p' o"},
-            {"ふぁ", @"p\ a"},
-            {"ふぉ", @"p\ o"},
+            {"ふぁ", "p\\ a"},
+            {"ふぉ", "p\\ o"},
             {"てゃ", "t' a"},
             {"てぃ", "t' i"},
             {"てゅ", "t' M"},
@@ -209,7 +226,7 @@ namespace Boare.Lib.Vsq {
             {"ノ", "n o"},
             {"ハ", "h a"},
             {"ヒ", "C i"},
-            {"フ", @"p\ M"},
+            {"フ", "p\\ M"},
             {"ヘ", "h e"},
             {"ホ", "h o"},
             {"マ", "m a"},
@@ -283,10 +300,10 @@ namespace Boare.Lib.Vsq {
             {"ヒュ", "C M"},
             {"ヒェ", "C e"},
             {"ヒョ", "C o"},
-            {"フャ", @"p\' a"},
-            {"フィ", @"p\' i"},
-            {"フュ", @"p\' M"},
-            {"フェ", @"p\ e"},
+            {"フャ", "p\\' a"},
+            {"フィ", "p\\' i"},
+            {"フュ", "p\\' M"},
+            {"フェ", "p\\ e"},
             {"ミャ", "m' a"},
             {"ミュ", "m' M"},
             {"ミェ", "m' e"},
@@ -311,8 +328,8 @@ namespace Boare.Lib.Vsq {
             {"ピュ", "p' M"},
             {"ピェ", "p' e"},
             {"ピョ", "p' o"},
-            {"ファ", @"p\ a"},
-            {"フォ", @"p\ o"},
+            {"ファ", "p\\ a"},
+            {"フォ", "p\\ o"},
             {"テャ", "t' a"},
             {"ティ", "t' i"},
             {"テュ", "t' M"},
@@ -452,7 +469,7 @@ namespace Boare.Lib.Vsq {
             {"chi", "tS i"},
             {"chu", "tS M"},
             {"cho", "tS o"},
-            {"fu", @"p\ M"},
+            {"fu", "p\\ M"},
             {"ja", "dZ a"},
             {"ji", "dZ i"},
             {"ju", "dZ M"},
@@ -461,105 +478,130 @@ namespace Boare.Lib.Vsq {
         #endregion
 
         #region Static Method and Property
-        public static SymbolTable getSymbolTable( int index ) {
-            if ( !s_initialized ) {
+        public static SymbolTable getSymbolTable( int index )
+        {
+            if ( !s_initialized )
+            {
                 loadDictionary();
             }
-            if ( 0 <= index && index < s_table.Count ) {
-                return s_table[index];
-            } else {
+            if ( 0 <= index && index < s_table.size() )
+            {
+                return s_table.get( index );
+            }
+            else
+            {
                 return null;
             }
         }
 
-        public static void loadDictionary() {
+        public static void loadDictionary()
+        {
 #if DEBUG
-            Console.WriteLine( "SymbolTable.LoadDictionary()" );
+            PortUtil.println( "SymbolTable.LoadDictionary()" );
 #endif
             s_default_jp = new SymbolTable( "DEFAULT_JP", _KEY_JP, true );
-            s_table.Clear();
-            s_table.Add( 0, s_default_jp );
+            s_table.clear();
+            s_table.put( 0, s_default_jp );
             int count = 0;
 
             // 辞書フォルダからの読込み
             String editor_path = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID2 );
-            if ( editor_path != "" ) {
-                String path = PortUtil.combinePath( Path.GetDirectoryName( editor_path ), "UDIC" );
-                if ( !Directory.Exists( path ) ) {
+            if ( editor_path != "" )
+            {
+                String path = PortUtil.combinePath( PortUtil.getDirectoryName( editor_path ), "UDIC" );
+                if ( !PortUtil.isDirectoryExists( path ) )
+                {
                     return;
                 }
-                String[] files = Directory.GetFiles( path, "*.udc" );
-                for ( int i = 0; i < files.Length; i++ ) {
-                    files[i] = Path.GetFileName( files[i] );
+                String[] files = PortUtil.listFiles( path, "*.udc" );
+                for ( int i = 0; i < files.Length; i++ )
+                {
+                    files[i] = PortUtil.getFileName( files[i] );
 #if DEBUG
-                    Console.WriteLine( "    files[i]=" + files[i] );
+                    PortUtil.println( "    files[i]=" + files[i] );
 #endif
                     count++;
                     String dict = PortUtil.combinePath( path, files[i] );
-                    s_table.Add( count, new SymbolTable( dict, true, false ) );
+                    s_table.put( count, new SymbolTable( dict, true, false ) );
                 }
             }
 
             // 起動ディレクトリ
-            String path2 = PortUtil.combinePath( Application.StartupPath, "udic" );
-            if ( Directory.Exists( path2 ) ) {
-                String[] files2 = Directory.GetFiles( path2, "*.eudc" );
-                for ( int i = 0; i < files2.Length; i++ ) {
-                    files2[i] = Path.GetFileName( files2[i] );
+            String path2 = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "udic" );
+            if ( PortUtil.isDirectoryExists( path2 ) )
+            {
+                String[] files2 = PortUtil.listFiles( path2, "*.eudc" );
+                for ( int i = 0; i < files2.Length; i++ )
+                {
+                    files2[i] = PortUtil.getFileName( files2[i] );
 #if DEBUG
-                    Console.WriteLine( "    files2[i]=" + files2[i] );
+                    PortUtil.println( "    files2[i]=" + files2[i] );
 #endif
                     count++;
                     String dict = PortUtil.combinePath( path2, files2[i] );
-                    s_table.Add( count, new SymbolTable( dict, false, false ) );
+                    s_table.put( count, new SymbolTable( dict, false, false ) );
                 }
             }
             s_initialized = true;
         }
 
 
-        public static boolean attatch( String phrase, out String result ) {
+        public static boolean attatch( String phrase, ByRef<String> result )
+        {
 #if DEBUG
-            Console.WriteLine( "SymbolTable.Attatch" );
-            Console.WriteLine( "    phrase=" + phrase );
+            PortUtil.println( "SymbolTable.Attatch" );
+            PortUtil.println( "    phrase=" + phrase );
 #endif
-            for ( int i = 0; i < s_table.Keys.Count; i++ ) {
-                int key = s_table.Keys[i];
-                if ( s_table[key].isEnabled() ) {
-                    if ( s_table[key].attatchImp( phrase, out result ) ) {
+            for ( Iterator itr = s_table.keySet().iterator(); itr.hasNext(); )
+            {
+                int key = (Integer)itr.next();
+                SymbolTable table = s_table.get( key );
+                if ( table.isEnabled() )
+                {
+                    if ( table.attatchImp( phrase, result ) )
+                    {
                         return true;
                     }
                 }
             }
-            result = "a";
+            result.value = "a";
             return false;
         }
 
-        public static int getCount() {
-            if ( !s_initialized ) {
+        public static int getCount()
+        {
+            if ( !s_initialized )
+            {
                 loadDictionary();
             }
-            return s_table.Count;
+            return s_table.size();
         }
 
-        public static void changeOrder( KeyValuePair<String, boolean>[] list ) {
+        public static void changeOrder( ValuePair<String, Boolean>[] list )
+        {
 #if DEBUG
-            Console.WriteLine( "SymbolTable.Sort()" );
+            PortUtil.println( "SymbolTable.Sort()" );
 #endif
-            SortedList<int, SymbolTable> buff = new SortedList<int, SymbolTable>();
-            foreach ( int key in s_table.Keys ) {
-                buff.Add( key, (SymbolTable)s_table[key].Clone() );
+            TreeMap<Integer, SymbolTable> buff = new TreeMap<Integer, SymbolTable>();
+            for ( Iterator itr = s_table.keySet().iterator(); itr.hasNext(); )
+            {
+                int key = (Integer)itr.next();
+                buff.put( key, (SymbolTable)s_table.get( key ).clone() );
             }
-            s_table.Clear();
-            for ( int i = 0; i < list.Length; i++ ) {
+            s_table.clear();
+            for ( int i = 0; i < list.Length; i++ )
+            {
 #if DEBUG
-                Console.WriteLine( "    list[i]=" + list[i].Key + "," + list[i].Value );
+                PortUtil.println( "    list[i]=" + list[i].getKey() + "," + list[i].getValue() );
 #endif
-                for ( int j = 0; j < buff.Keys.Count; j++ ) {
-                    int key = buff.Keys[j];
-                    if ( buff[key].getName().Equals( list[i].Key ) ) {
-                        buff[key].setEnabled( list[i].Value );
-                        s_table.Add( i, buff[key] );
+                for ( Iterator itr = buff.keySet().iterator(); itr.hasNext(); )
+                {
+                    int key = (Integer)itr.next();
+                    SymbolTable table = buff.get( key );
+                    if ( table.getName().Equals( list[i].getKey() ) )
+                    {
+                        table.setEnabled( list[i].getValue() );
+                        s_table.put( i, table );
                         break;
                     }
                 }
@@ -567,10 +609,19 @@ namespace Boare.Lib.Vsq {
         }
         #endregion
 
-        public object Clone() {
+#if !JAVA
+        public object Clone()
+        {
+            return clone();
+        }
+#endif
+
+        public Object clone()
+        {
             SymbolTable ret = new SymbolTable();
             ret.m_dict = new TreeMap<String, String>();
-            for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ){
+            for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); )
+            {
                 String key = (String)itr.next();
                 ret.m_dict.put( key, m_dict.get( key ) );
             }
@@ -579,101 +630,141 @@ namespace Boare.Lib.Vsq {
             return ret;
         }
 
-        private SymbolTable() {
+        private SymbolTable()
+        {
         }
 
-        public String getName() {
+        public String getName()
+        {
             return m_name;
         }
 
-        public boolean isEnabled() {
+        public boolean isEnabled()
+        {
             return m_enabled;
         }
-        
-        public void setEnabled( boolean value ){
+
+        public void setEnabled( boolean value )
+        {
             m_enabled = value;
         }
 
-        public SymbolTable( String path, boolean is_udc_mode, boolean enabled ) {
+        public SymbolTable( String path, boolean is_udc_mode, boolean enabled )
+        {
             m_dict = new TreeMap<String, String>();
             m_enabled = enabled;
-            if ( !PortUtil.isFileExists( path ) ) {
+            if ( !PortUtil.isFileExists( path ) )
+            {
                 return;
             }
-            m_name = Path.GetFileName( path );
-            cp932reader sr1 = null;
-            StreamReader sr2 = null;
-            try {
-                if ( is_udc_mode ) {
-                    sr1 = new cp932reader( path );
-                    if ( sr1 == null ) {
+            m_name = PortUtil.getFileName( path );
+            BufferedReader sr = null;
+            try
+            {
+                if ( is_udc_mode )
+                {
+                    sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "Shift_JIS" ) );
+                    if ( sr == null )
+                    {
                         return;
                     }
-                } else {
-                    sr2 = new StreamReader( path, Encoding.UTF8 );
-                    if ( sr2 == null ) {
+                }
+                else
+                {
+                    sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "UTF8" ) );
+                    if ( sr == null )
+                    {
                         return;
                     }
                 }
                 String line;
-                int peek = (is_udc_mode) ? sr1.Peek() : sr2.Peek();
-                while ( peek >= 0 ) {
-                    line = (is_udc_mode) ? sr1.ReadLine() : sr2.ReadLine();
-                    if ( !line.StartsWith( "//" ) ) {
-                        String[] spl = PortUtil.splitString( line, new String[]{ "\t" }, 2, true );
-                        if ( spl.Length >= 2 ) {
-                            if ( m_dict.containsKey( spl[0] ) ) {
-                                bocoree.debug.push_log( "SymbolTable..ctor" );
-                                bocoree.debug.push_log( "    dictionary already contains key: " + spl[0] );
-                            } else {
+                while ( sr.ready() )
+                {
+                    line = sr.readLine();
+                    if ( !line.StartsWith( "//" ) )
+                    {
+                        String[] spl = PortUtil.splitString( line, new String[] { "\t" }, 2, true );
+                        if ( spl.Length >= 2 )
+                        {
+                            if ( m_dict.containsKey( spl[0] ) )
+                            {
+                                PortUtil.println( "SymbolTable..ctor" );
+                                PortUtil.println( "    dictionary already contains key: " + spl[0] );
+                            }
+                            else
+                            {
                                 m_dict.put( spl[0], spl[1] );
                             }
                         }
                     }
-                    peek = (is_udc_mode) ? sr1.Peek() : sr2.Peek();
                 }
-            } catch ( Exception ex ) {
-                bocoree.debug.push_log( "SymbolTable..ctor" );
-                bocoree.debug.push_log( "    " + ex );
-            } finally {
-                if ( sr1 != null ) {
-                    sr1.Close();
-                }
-                if ( sr2 != null ) {
-                    sr2.Close();
+            }
+            catch ( Exception ex )
+            {
+                PortUtil.println( "SymbolTable..ctor" );
+                PortUtil.println( "    " + ex );
+            }
+            finally
+            {
+                if ( sr != null )
+                {
+                    try
+                    {
+                        sr.close();
+                    }
+                    catch ( Exception ex2 )
+                    {
+                    }
                 }
             }
         }
 
-        private boolean attatchImp( String phrase, out String result ) {
+        private boolean attatchImp( String phrase, ByRef<String> result )
+        {
             String s = phrase.ToLower();
-            if ( m_dict.containsKey( s ) ) {
-                result = m_dict.get( s );
+            if ( m_dict.containsKey( s ) )
+            {
+                result.value = m_dict.get( s );
                 return true;
-            } else {
-                result = "a";
+            }
+            else
+            {
+                result.value = "a";
                 return false;
             }
         }
 
-        private SymbolTable( String name, String[,] key, boolean enabled ) {
-#if DEBUG
-            Console.WriteLine( "SymolTable.ctor(String,String[,])" );
-            Console.WriteLine( "    key.GetLength(0)=" + key.GetLength( 0 ) );
+#if JAVA
+        private SymbolTable( String name, String[][] key, boolean enabled ){
+#else
+        private SymbolTable( String name, String[,] key, boolean enabled )
+        {
 #endif
             m_enabled = enabled;
             m_name = name;
             m_dict = new TreeMap<String, String>();
-            for ( int i = 0; i < key.GetLength( 0 ); i++ ) {
-                if ( m_dict.containsKey( key[i, 0] ) ) {
-#if DEBUG
-                    throw new ApplicationException( "dictionary already contains key: " + key[i, 0] );
-#endif
-                } else {
+#if JAVA
+            for( int i = 0; i < key.length; i++ ){
+                if( m_dict.containsKey( key[i][0] ) ){
+                }else{
+                    m_dict.put( key[i][0], key[i][1] );
+                }
+            }
+#else
+            for ( int i = 0; i < key.GetLength( 0 ); i++ )
+            {
+                if ( m_dict.containsKey( key[i, 0] ) )
+                {
+                }
+                else
+                {
                     m_dict.put( key[i, 0], key[i, 1] );
                 }
             }
+#endif
         }
     }
 
+#if !JAVA
 }
+#endif

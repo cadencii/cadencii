@@ -13,19 +13,17 @@
  */
 using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
-using System.Xml.Serialization;
-using Microsoft.CSharp;
-
+//using System.Xml.Serialization;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.io;
+using bocoree.util;
+using bocoree.windows.forms;
+using bocoree.xml;
+using Microsoft.CSharp;
 /*
 -コントロールカーブのテンプレートの登録＆貼付け機能
 -選択したノートを指定したクロック数分一括シフトする機能
@@ -36,12 +34,10 @@ using bocoree;
 -コントロールカーブエディタを幾つか積めるような機能
  */
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
     using Integer = System.Int32;
+    using java = bocoree;
     using Long = System.Int64;
-
-    public delegate void BSimpleDelegate<T>( T arg );
 
     public static class AppManager {
         /// <summary>
@@ -63,16 +59,16 @@ namespace Boare.Cadencii {
         /// AttachedCurve用のシリアライザ
         /// </summary>
         public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer( typeof( AttachedCurve ) );
-        public static Font baseFont8 = null;
-        public static Font baseFont9 = null;
+        public static java.awt.Font baseFont8 = new java.awt.Font( java.awt.Font.DIALOG, java.awt.Font.PLAIN, 8 );
+        public static java.awt.Font baseFont9 = new java.awt.Font( java.awt.Font.DIALOG, java.awt.Font.PLAIN, 9 );
         /// <summary>
         /// ピアノロールの歌詞の描画に使用されるフォント。
         /// </summary>
-        public static Font baseFont10 = null;
+        public static java.awt.Font baseFont10 = new java.awt.Font( java.awt.Font.DIALOG, java.awt.Font.PLAIN, 10 );
         /// <summary>
         /// ピアノロールの歌詞の描画に使用されるフォント。（発音記号固定の物の場合）
         /// </summary>
-        public static Font baseFont10Bold = null;
+        public static java.awt.Font baseFont10Bold = new java.awt.Font( java.awt.Font.DIALOG, java.awt.Font.BOLD, 10 );
         /// <summary>
         /// 歌詞を音符の（高さ方向の）真ん中に描画するためのオフセット
         /// </summary>
@@ -83,40 +79,40 @@ namespace Boare.Cadencii {
         public static FormNoteProperty propertyWindow;
 
         #region Static Readonly Fields
-        public static readonly Color[] HILIGHT = new Color[] { 
-            Color.FromArgb( 181, 220, 16 ),
-            Color.FromArgb( 231, 244, 49 ),
-            Color.FromArgb( 252, 230, 29 ),
-            Color.FromArgb( 247, 171, 20 ),
-            Color.FromArgb( 249, 94, 17 ),
-            Color.FromArgb( 234, 27, 47 ),
-            Color.FromArgb( 175, 20, 80 ),
-            Color.FromArgb( 183, 24, 149 ),
-            Color.FromArgb( 105, 22, 158 ),
-            Color.FromArgb( 22, 36, 163 ),
-            Color.FromArgb( 37, 121, 204 ),
-            Color.FromArgb( 29, 179, 219 ),
-            Color.FromArgb( 24, 239, 239 ),
-            Color.FromArgb( 25, 206, 175 ),
-            Color.FromArgb( 23, 160, 134 ),
-            Color.FromArgb( 79, 181, 21 ) };
-        public static readonly Color[] RENDER = new Color[]{
-            Color.FromArgb( 19, 143, 52 ),
-            Color.FromArgb( 158, 154, 18 ),
-            Color.FromArgb( 160, 143, 23 ),
-            Color.FromArgb( 145, 98, 15 ),
-            Color.FromArgb( 142, 52, 12 ),
-            Color.FromArgb( 142, 19, 37 ),
-            Color.FromArgb( 96, 13, 47 ),
-            Color.FromArgb( 117, 17, 98 ),
-            Color.FromArgb( 62, 15, 99 ),
-            Color.FromArgb( 13, 23, 84 ),
-            Color.FromArgb( 25, 84, 132 ),
-            Color.FromArgb( 20, 119, 142 ),
-            Color.FromArgb( 19, 142, 139 ),
-            Color.FromArgb( 17, 122, 102 ),
-            Color.FromArgb( 13, 86, 72 ),
-            Color.FromArgb( 43, 91, 12 ) };
+        public static readonly bocoree.awt.Color[] HILIGHT = new bocoree.awt.Color[] { 
+            new bocoree.awt.Color( 181, 220, 16 ),
+            new bocoree.awt.Color( 231, 244, 49 ),
+            new bocoree.awt.Color( 252, 230, 29 ),
+            new bocoree.awt.Color( 247, 171, 20 ),
+            new bocoree.awt.Color( 249, 94, 17 ),
+            new bocoree.awt.Color( 234, 27, 47 ),
+            new bocoree.awt.Color( 175, 20, 80 ),
+            new bocoree.awt.Color( 183, 24, 149 ),
+            new bocoree.awt.Color( 105, 22, 158 ),
+            new bocoree.awt.Color( 22, 36, 163 ),
+            new bocoree.awt.Color( 37, 121, 204 ),
+            new bocoree.awt.Color( 29, 179, 219 ),
+            new bocoree.awt.Color( 24, 239, 239 ),
+            new bocoree.awt.Color( 25, 206, 175 ),
+            new bocoree.awt.Color( 23, 160, 134 ),
+            new bocoree.awt.Color( 79, 181, 21 ) };
+        public static readonly new bocoree.awt.Color[] RENDER = new bocoree.awt.Color[]{
+            new bocoree.awt.Color( 19, 143, 52 ),
+            new bocoree.awt.Color( 158, 154, 18 ),
+            new bocoree.awt.Color( 160, 143, 23 ),
+            new bocoree.awt.Color( 145, 98, 15 ),
+            new bocoree.awt.Color( 142, 52, 12 ),
+            new bocoree.awt.Color( 142, 19, 37 ),
+            new bocoree.awt.Color( 96, 13, 47 ),
+            new bocoree.awt.Color( 117, 17, 98 ),
+            new bocoree.awt.Color( 62, 15, 99 ),
+            new bocoree.awt.Color( 13, 23, 84 ),
+            new bocoree.awt.Color( 25, 84, 132 ),
+            new bocoree.awt.Color( 20, 119, 142 ),
+            new bocoree.awt.Color( 19, 142, 139 ),
+            new bocoree.awt.Color( 17, 122, 102 ),
+            new bocoree.awt.Color( 13, 86, 72 ),
+            new bocoree.awt.Color( 43, 91, 12 ) };
         public static readonly String[] USINGS = new String[] { "using System;",
                                              "using System.IO;",
                                              "using Boare.Lib.Vsq;",
@@ -237,7 +233,7 @@ namespace Boare.Cadencii {
 
         #region Private Static Fields
         private static int s_base_tempo = 480000;
-        private static SolidBrush s_hilight_brush = new SolidBrush( Color.CornflowerBlue );
+        private static java.awt.Color s_hilight_brush = PortUtil.CornflowerBlue;
         private static object s_locker;
         private static Timer s_auto_backup_timer;
         #endregion
@@ -256,10 +252,6 @@ namespace Boare.Cadencii {
         private static boolean s_repeat_mode = false;
         private static boolean s_grid_visible = false;
         private static EditMode s_edit_mode = EditMode.NONE;
-        /// <summary>
-        /// トラックのレンダリングが必要かどうかを表すフラグ
-        /// </summary>
-        private static boolean[] s_render_required = new boolean[16] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
         /// <summary>
         /// トラックのオーバーレイ表示
         /// </summary>
@@ -303,14 +295,33 @@ namespace Boare.Cadencii {
         private static CurveType selectedPointCurveType = CurveType.Empty;
         private static Vector<Long> selectedPointIDs = new Vector<Long>();
 
+        #region 選択範囲の管理
         /// <summary>
         /// SelectedRegionが有効かどうかを表すフラグ
         /// </summary>
-        public static boolean selectedRegionEnabled = false;
+        private static boolean wholeSelectedIntervalEnabled = false;
         /// <summary>
-        /// Ctrlキーを押しながらのマウスドラッグ操作による選択が行われた範囲
+        /// Ctrlキーを押しながらのマウスドラッグ操作による選択が行われた範囲(単位：クロック)
         /// </summary>
-        public static SelectedRegion selectedRegion;
+        public static SelectedRegion wholeSelectedInterval = new SelectedRegion( 0 );
+        /// <summary>
+        /// コントロールカーブ上で現在選択されている範囲（x:クロック、y:各コントロールカーブの単位に同じ）。マウスが動いているときのみ使用
+        /// </summary>
+        public static java.awt.Rectangle curveSelectingRectangle;
+        /// <summary>
+        /// コントロールカーブ上で選択された範囲（単位：クロック）
+        /// </summary>
+        public static SelectedRegion curveSelectedInterval = new SelectedRegion( 0 );
+        /// <summary>
+        /// 選択範囲が有効かどうか。
+        /// </summary>
+        private static boolean curveSelectedIntervalEnabled = false;
+        /// <summary>
+        /// 範囲選択モードで音符を動かしている最中の、選択範囲の開始位置（クロック）。マウスが動いているときのみ使用
+        /// </summary>
+        public static int wholeSelectedIntervalStartForMoving = 0;
+        #endregion
+
         /// <summary>
         /// 自動ノーマライズモードかどうかを表す値を取得、または設定します。
         /// </summary> 
@@ -348,7 +359,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// プレビュー再生が開始された時刻
         /// </summary>
-        public static DateTime previewStartedTime;
+        public static double previewStartedTime;
         /// <summary>
         /// 画面左端位置での、仮想画面上の仮想画面左端から測ったピクセル数．FormMain.hScroll.ValueとFormMain.trackBar.Valueで決まる．
         /// </summary>
@@ -361,6 +372,26 @@ namespace Boare.Cadencii {
         /// ミキサーダイアログ
         /// </summary>
         public static FormMixer mixerWindow;
+        /// <summary>
+        /// 画面に描かれるエントリのリスト．trackBar.Valueの変更やエントリの編集などのたびに更新される
+        /// </summary>
+        public static Vector<Vector<DrawObject>> drawObjects;
+        public static TextBoxEx inputTextBox = null;
+        public static int addingEventLength;
+        public static VsqEvent addingEvent;
+        /// <summary>
+        /// AppManager.m_draw_objectsを描く際の，最初に検索されるインデクス．
+        /// </summary>
+        public static int[] drawStartIndex = new int[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        /// <summary>
+        /// マウスが降りていて，かつ範囲選択をしているときに立つフラグ
+        /// </summary>
+        public static boolean isPointerDowned = false;
+        /// <summary>
+        /// マウスが降りた仮想スクリーン上の座標(ピクセル)
+        /// </summary>
+        public static java.awt.Point mouseDownLocation;
+        public static int lastTrackSelectorHeight;
 
         /// <summary>
         /// グリッド線を表示するか否かを表す値が変更された時発生します
@@ -368,7 +399,7 @@ namespace Boare.Cadencii {
         public static event EventHandler GridVisibleChanged;
         public static event EventHandler PreviewStarted;
         public static event EventHandler PreviewAborted;
-        public static event BSimpleDelegate<boolean> SelectedEventChanged;
+        public static event SelectedEventChangedEventHandler SelectedEventChanged;
         public static event EventHandler SelectedToolChanged;
         /// <summary>
         /// CurrentClockプロパティの値が変更された時発生します
@@ -381,6 +412,91 @@ namespace Boare.Cadencii {
             s_auto_backup_timer = new Timer();
             s_auto_backup_timer.Tick += handleAutoBackupTimerTick;
         }
+
+        /// <summary>
+        /// クロック数から、画面に描くべきx座標の値を取得します。
+        /// </summary>
+        /// <param name="clocks"></param>
+        /// <returns></returns>
+        public static int xCoordFromClocks( double clocks ) {
+            return (int)(KEY_LENGTH + clocks * scaleX - startToDrawX) + 6;
+        }
+
+        /// <summary>
+        /// 画面のx座標からクロック数を取得します
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        public static int clockFromXCoord( int x ) {
+            return (int)((x + startToDrawX - 6 - KEY_LENGTH) / scaleX);
+        }
+
+        #region 選択範囲の管理
+        public static boolean isWholeSelectedIntervalEnabled() {
+            return wholeSelectedIntervalEnabled;
+        }
+
+        public static boolean isCurveSelectedIntervalEnabled() {
+            return curveSelectedIntervalEnabled;
+        }
+
+        public static void setWholeSelectedIntervalEnabled( boolean value ) {
+            wholeSelectedIntervalEnabled = value;
+            if ( value ) {
+                curveSelectedIntervalEnabled = false;
+            }
+        }
+
+        public static void setCurveSelectedIntervalEnabled( boolean value ) {
+            curveSelectedIntervalEnabled = value;
+            if ( value ) {
+                wholeSelectedIntervalEnabled = false;
+            }
+        }
+        #endregion
+
+        #region MessageBoxのラッパー
+        public static BDialogResult showMessageBox( string text ) {
+            return showMessageBox( text, "", MessageBoxButtons.OK, MessageBoxIcon.None );
+        }
+
+        public static BDialogResult showMessageBox( string text, string caption ) {
+            return showMessageBox( text, caption, MessageBoxButtons.OK, MessageBoxIcon.None );
+        }
+
+        public static BDialogResult showMessageBox( string text, string caption, MessageBoxButtons buttons ) {
+            return showMessageBox( text, caption, buttons, MessageBoxIcon.None );
+        }
+
+        public static BDialogResult showMessageBox( string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon ) {
+            bool property = (propertyWindow != null) ? propertyWindow.TopMost : false;
+            bool mixer = (mixerWindow != null) ? mixerWindow.TopMost : false;
+            if ( property ) {
+                propertyWindow.TopMost = false;
+            }
+            if ( mixer ) {
+                mixerWindow.TopMost = false;
+            }
+            DialogResult dr = MessageBox.Show( text, caption, buttons, icon );
+            if ( property ) {
+                propertyWindow.TopMost = true;
+            }
+            if ( mixer ) {
+                mixerWindow.TopMost = true;
+            }
+
+            if ( dr == DialogResult.OK ) {
+                return BDialogResult.OK;
+            } else if ( dr == DialogResult.Cancel ) {
+                return BDialogResult.CANCEL;
+            } else if ( dr == DialogResult.Yes ) {
+                return BDialogResult.YES;
+            } else if ( dr == DialogResult.No ) {
+                return BDialogResult.NO;
+            }
+            return BDialogResult.CANCEL;
+        }
+        #endregion
 
         #region BGM 関連
         public static int getBgmCount() {
@@ -411,7 +527,7 @@ namespace Boare.Cadencii {
             }
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             register( s_vsq.executeCommand( run ) );
-            mainWindow.Edited = true;
+            mainWindow.setEdited( true );
             mixerWindow.updateStatus();
         }
 
@@ -422,7 +538,7 @@ namespace Boare.Cadencii {
             Vector<BgmFile> list = new Vector<BgmFile>();
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             register( s_vsq.executeCommand( run ) );
-            mainWindow.Edited = true;
+            mainWindow.setEdited( true );
             mixerWindow.updateStatus();
         }
 
@@ -442,7 +558,7 @@ namespace Boare.Cadencii {
             list.add( item );
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             register( s_vsq.executeCommand( run ) );
-            mainWindow.Edited = true;
+            mainWindow.setEdited( true );
             mixerWindow.updateStatus();
         }
         #endregion
@@ -511,9 +627,9 @@ namespace Boare.Cadencii {
 
         private static void handleAutoBackupTimerTick( object sender, EventArgs e ) {
             if ( !s_file.Equals( "" ) && PortUtil.isFileExists( s_file ) ) {
-                String path = Path.GetDirectoryName( s_file );
-                String backup = Path.Combine( path, "~$" + Path.GetFileName( s_file ) );
-                String file2 = Path.Combine( path, Path.GetFileNameWithoutExtension( backup ) + ".vsq" );
+                String path = PortUtil.getDirectoryName( s_file );
+                String backup = PortUtil.combinePath( path, "~$" + PortUtil.getFileName( s_file ) );
+                String file2 = PortUtil.combinePath( path, PortUtil.getFileNameWithoutExtension( backup ) + ".vsq" );
                 if ( PortUtil.isFileExists( backup ) ) {
                     try {
                         PortUtil.deleteFile( backup );
@@ -537,11 +653,11 @@ namespace Boare.Cadencii {
         /// <param name="p"></param>
         /// <param name="rc"></param>
         /// <returns></returns>
-        public static boolean isInRect( Point p, Rectangle rc ) {
-            if ( rc.X <= p.X ) {
-                if ( p.X <= rc.X + rc.Width ) {
-                    if ( rc.Y <= p.Y ) {
-                        if ( p.Y <= rc.Y + rc.Height ) {
+        public static boolean isInRect( java.awt.Point p, java.awt.Rectangle rc ) {
+            if ( rc.x <= p.x ) {
+                if ( p.x <= rc.x + rc.width ) {
+                    if ( rc.y <= p.y ) {
+                        if ( p.y <= rc.y + rc.height ) {
                             return true;
                         }
                     }
@@ -550,13 +666,13 @@ namespace Boare.Cadencii {
             return false;
         }
 
-        /// <summary>
+        /* /// <summary>
         /// fontを使って文字を描画したとき，文字の縦方向の中心線と，描画時に指定した座標との間にどれだけのオフセットが生じるかを調べる
         /// </summary>
         /// <param name="font"></param>
         /// <returns></returns>
-        public static unsafe int getStringOffset( Font font ) {
-            SizeF str_size = measureString( "Qjp", font );
+        public static unsafe int getStringOffset( javaFont font ) {
+            java.awt.Dimension str_size = Util.measureString( "Qjp", font );
             if ( str_size.Width <= 0 || str_size.Height <= 0 ) {
                 return 0;
             }
@@ -608,14 +724,14 @@ namespace Boare.Cadencii {
                 }
             }
             return (lasty + firsty) / 2 - draw_pos;
-        }
+        }*/
 
-        public static SizeF measureString( String item, Font font ) {
+        /*public static SizeF measureString( String item, java.awt.Font font ) {
             using ( Bitmap test = new Bitmap( 10, 10 ) )
             using ( Graphics g = Graphics.FromImage( test ) ) {
-                return g.MeasureString( item, font );
+                return g.MeasureString( item, font.font );
             }
-        }
+        }*/
 
         /// <summary>
         /// 文字列itemをfontを用いて描画したとき、幅widthピクセルに収まるようにitemを調節したものを返します。
@@ -625,12 +741,12 @@ namespace Boare.Cadencii {
         /// <param name="font"></param>
         /// <param name="width"></param>
         /// <returns></returns>
-        public static String trimString( String item, Font font, int width ) {
+        public static String trimString( String item, java.awt.Font font, int width ) {
             String edited = item;
             int delete_count = item.Length;
             while ( true ) {
-                SizeF measured = measureString( edited, font );
-                if ( measured.Width <= width ) {
+                java.awt.Dimension measured = Util.measureString( edited, font );
+                if ( measured.width <= width ) {
                     return edited;
                 }
                 delete_count -= 1;
@@ -645,7 +761,7 @@ namespace Boare.Cadencii {
 
         public static void debugWriteLine( String message ) {
 #if DEBUG
-            Console.WriteLine( message );
+            PortUtil.println( message );
 #endif
         }
 
@@ -657,22 +773,39 @@ namespace Boare.Cadencii {
         }
 
         public static String _( String id ) {
-            return Boare.Lib.AppUtil.Messaging.GetMessage( id );
+            return Boare.Lib.AppUtil.Messaging.getMessage( id );
         }
 
         public static ScriptInvoker loadScript( String file ) {
+#if JAVA
+            ScriptInvoker ret = new ScriptInvoker();
+            return ret;
+#else
 #if DEBUG
             AppManager.debugWriteLine( "Common.LoadScript(String)" );
-            AppManager.debugWriteLine( "    File.GetLastWriteTimeUtc( file )=" + File.GetLastWriteTimeUtc( file ) );
+            AppManager.debugWriteLine( "    File.GetLastWriteTimeUtc( file )=" + System.IO.File.GetLastWriteTimeUtc( file ) );
 #endif
             ScriptInvoker ret = new ScriptInvoker();
             ret.ScriptFile = file;
-            ret.FileTimestamp = File.GetLastWriteTimeUtc( file );
+            ret.FileTimestamp = System.IO.File.GetLastWriteTimeUtc( file );
             // スクリプトの記述のうち、以下のリストに当てはまる部分は空文字に置換される
             String config_file = configFileNameFromScriptFileName( file );
             String script = "";
-            using ( StreamReader sr = new StreamReader( file ) ) {
-                script = sr.ReadToEnd();
+            BufferedReader sr = null;
+            try {
+                sr = new BufferedReader( new FileReader( file ) );
+                String line = "";
+                while ( (line = sr.readLine()) != null ) {
+                    script += line + "\n";
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sr != null ) {
+                    try {
+                        sr.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
             }
             foreach ( String s in AppManager.USINGS ) {
                 script = script.Replace( s, "" );
@@ -705,7 +838,7 @@ namespace Boare.Cadencii {
                 foreach ( Type implemented in testAssembly.GetTypes() ) {
                     Object scriptDelegate = null;
                     MethodInfo tmi = implemented.GetMethod( "Edit", new Type[] { typeof( VsqFile ) } );
-                    if ( tmi != null && tmi.IsStatic && tmi.IsPublic ){
+                    if ( tmi != null && tmi.IsStatic && tmi.IsPublic ) {
                         if ( tmi.ReturnType.Equals( typeof( boolean ) ) ) {
                             scriptDelegate = (EditVsqScriptDelegate)Delegate.CreateDelegate( typeof( EditVsqScriptDelegate ), tmi );
                         } else if ( tmi.ReturnType.Equals( typeof( ScriptReturnStatus ) ) ) {
@@ -713,30 +846,31 @@ namespace Boare.Cadencii {
                         }
                     }
                     tmi = implemented.GetMethod( "Edit", new Type[] { typeof( VsqFileEx ) } );
-                    if ( tmi != null && tmi.IsStatic && tmi.IsPublic ){
+                    if ( tmi != null && tmi.IsStatic && tmi.IsPublic ) {
                         if ( tmi.ReturnType.Equals( typeof( boolean ) ) ) {
                             scriptDelegate = (EditVsqScriptDelegateEx)Delegate.CreateDelegate( typeof( EditVsqScriptDelegateEx ), tmi );
                         } else if ( tmi.ReturnType.Equals( typeof( ScriptReturnStatus ) ) ) {
                             scriptDelegate = (EditVsqScriptDelegateExWithStatus)Delegate.CreateDelegate( typeof( EditVsqScriptDelegateExWithStatus ), tmi );
-                        }                        
+                        }
                     }
                     if ( scriptDelegate != null ) {
                         ret.ScriptType = implemented;
                         ret.scriptDelegate = scriptDelegate;
-                        ret.Serializer = new XmlStaticMemberSerializer( implemented );
+                        ret.Serializer = new XmlSerializer( implemented, true );
 
                         if ( !PortUtil.isFileExists( config_file ) ) {
                             continue;
                         }
 
                         // 設定ファイルからDeserialize
-                        using ( FileStream fs = new FileStream( config_file, FileMode.Open ) ) {
-                            ret.Serializer.Deserialize( fs );
+                        using ( System.IO.FileStream fs = new System.IO.FileStream( config_file, System.IO.FileMode.Open ) ) {
+                            ret.Serializer.deserialize( fs );
                         }
                     }
                 }
             }
             return ret;
+#endif
         }
 
         /// <summary>
@@ -748,9 +882,9 @@ namespace Boare.Cadencii {
                 try {
                     VsqFileEx work = (VsqFileEx)s_vsq.Clone();
                     ScriptReturnStatus ret = ScriptReturnStatus.ERROR;
-                    if ( script_invoker.scriptDelegate is EditVsqScriptDelegate ){
+                    if ( script_invoker.scriptDelegate is EditVsqScriptDelegate ) {
                         boolean b_ret = ((EditVsqScriptDelegate)script_invoker.scriptDelegate).Invoke( work );
-                        if( b_ret ){
+                        if ( b_ret ) {
                             ret = ScriptReturnStatus.EDITED;
                         } else {
                             ret = ScriptReturnStatus.ERROR;
@@ -762,7 +896,7 @@ namespace Boare.Cadencii {
                         } else {
                             ret = ScriptReturnStatus.ERROR;
                         }
-                    } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateWithStatus ){
+                    } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateWithStatus ) {
                         ret = ((EditVsqScriptDelegateWithStatus)script_invoker.scriptDelegate).Invoke( work );
                     } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateExWithStatus ) {
                         ret = ((EditVsqScriptDelegateExWithStatus)script_invoker.scriptDelegate).Invoke( work );
@@ -770,60 +904,70 @@ namespace Boare.Cadencii {
                         ret = ScriptReturnStatus.ERROR;
                     }
                     if ( ret == ScriptReturnStatus.ERROR ) {
-                        MessageBox.Show( _( "Script aborted" ), "Cadencii", MessageBoxButtons.OK, MessageBoxIcon.Information );
+                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", MessageBoxButtons.OK, MessageBoxIcon.Information );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
 #if DEBUG
-                        Console.WriteLine( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso1amp\" ).getCount()=" + work.Track[1].getCurve( "reso1amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso2amp\" ).getCount()=" + work.Track[1].getCurve( "reso2amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso3amp\" ).getCount()=" + work.Track[1].getCurve( "reso3amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso4amp\" ).getCount()=" + work.Track[1].getCurve( "reso4amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso1amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso1amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso2amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso2amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso3amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso3amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso4amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso4amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso1amp\" ).getCount()=" + work.Track[1].getCurve( "reso1amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso2amp\" ).getCount()=" + work.Track[1].getCurve( "reso2amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso3amp\" ).getCount()=" + work.Track[1].getCurve( "reso3amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso4amp\" ).getCount()=" + work.Track[1].getCurve( "reso4amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso1amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso1amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso2amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso2amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso3amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso3amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso4amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso4amp" ).size() );
 #endif
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
                         register( s_vsq.executeCommand( run ) );
 #if DEBUG
-                        Console.WriteLine( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso1amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso1amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso2amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso2amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso3amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso3amp" ).size() );
-                        Console.WriteLine( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso4amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso4amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso1amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso1amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso2amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso2amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso3amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso3amp" ).size() );
+                        PortUtil.println( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso4amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso4amp" ).size() );
 #endif
                     }
                     String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
-                    using ( FileStream fs = new FileStream( config_file, FileMode.Create ) ) {
-                        script_invoker.Serializer.Serialize( fs );
+                    FileOutputStream fs = null;
+                    try {
+                        fs = new FileOutputStream( config_file );
+                        script_invoker.Serializer.serialize( fs, null );
+                    } catch ( Exception ex ) {
+                    } finally {
+                        if ( fs != null ) {
+                            try {
+                                fs.close();
+                            } catch ( Exception ex2 ) {
+                            }
+                        }
                     }
                     return (ret == ScriptReturnStatus.EDITED);
                 } catch ( Exception ex ) {
-                    MessageBox.Show( _( "Script runtime error:" ) + " " + ex, _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Information );
+                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Information );
 #if DEBUG
                     AppManager.debugWriteLine( "    " + ex );
 #endif
                 }
             } else {
-                MessageBox.Show( _( "Script compilation failed." ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
             }
             return false;
         }
 
         private static String configFileNameFromScriptFileName( String script_file ) {
-            String dir = Path.Combine( AppManager.getApplicationDataPath(), "script" );
-            if ( !Directory.Exists( dir ) ) {
-                Directory.CreateDirectory( dir );
+            String dir = PortUtil.combinePath( AppManager.getApplicationDataPath(), "script" );
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
+                PortUtil.createDirectory( dir );
             }
-            return Path.Combine( dir, Path.GetFileNameWithoutExtension( script_file ) + ".config" );
+            return PortUtil.combinePath( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
         }
 
         public static String getTempWaveDir() {
-            String temp = Path.Combine( Path.GetTempPath(), TEMPDIR_NAME );
-            String dir = Path.Combine( temp, getID() );
-            if ( !Directory.Exists( temp ) ) {
-                Directory.CreateDirectory( temp );
+            String temp = PortUtil.combinePath( PortUtil.getTempPath(), TEMPDIR_NAME );
+            String dir = PortUtil.combinePath( temp, getID() );
+            if ( !PortUtil.isDirectoryExists( temp ) ) {
+                PortUtil.createDirectory( temp );
             }
-            if ( !Directory.Exists( dir ) ) {
-                Directory.CreateDirectory( dir );
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
+                PortUtil.createDirectory( dir );
             }
             return dir;
         }
@@ -959,10 +1103,12 @@ namespace Boare.Cadencii {
         }
 
         #region SelectedBezier
-        public static IEnumerable<SelectedBezierPoint> getSelectedBezierEnumerator() {
-            for ( int i = 0; i < s_selected_bezier.size(); i++ ) {
-                yield return s_selected_bezier.get( i );
-            }
+        public static Iterator getSelectedBezierEnumerator() {
+#if JAVA
+            return s_selected_bezier.iterator();
+#else
+            return new ListIterator<SelectedBezierPoint>( s_selected_bezier );
+#endif
         }
 
         /// <summary>
@@ -1027,10 +1173,10 @@ namespace Boare.Cadencii {
             clearSelectedTempo();
             s_last_selected_timesig = barcount;
             if ( !s_selected_timesig.containsKey( barcount ) ) {
-                for ( Iterator itr = s_vsq.TimesigTable.iterator(); itr.hasNext(); ){
+                for ( Iterator itr = s_vsq.TimesigTable.iterator(); itr.hasNext(); ) {
                     TimeSigTableEntry tte = (TimeSigTableEntry)itr.next();
                     if ( tte.BarCount == barcount ) {
-                        s_selected_timesig.put( barcount, new SelectedTimesigEntry( tte, (TimeSigTableEntry)tte.Clone() ) );
+                        s_selected_timesig.put( barcount, new SelectedTimesigEntry( tte, (TimeSigTableEntry)tte.clone() ) );
                         break;
                     }
                 }
@@ -1095,10 +1241,10 @@ namespace Boare.Cadencii {
             clearSelectedTimesig();
             s_last_selected_tempo = clock;
             if ( !s_selected_tempo.containsKey( clock ) ) {
-                for ( Iterator itr = s_vsq.TempoTable.iterator(); itr.hasNext(); ){
+                for ( Iterator itr = s_vsq.TempoTable.iterator(); itr.hasNext(); ) {
                     TempoTableEntry tte = (TempoTableEntry)itr.next();
                     if ( tte.Clock == clock ) {
-                        s_selected_tempo.put( clock, new SelectedTempoEntry( tte, (TempoTableEntry)tte.Clone() ) );
+                        s_selected_tempo.put( clock, new SelectedTempoEntry( tte, (TempoTableEntry)tte.clone() ) );
                         break;
                     }
                 }
@@ -1200,7 +1346,7 @@ namespace Boare.Cadencii {
             checkSelectedItemExistence();
         }
 
-        public static void addSelectedEventRange( int[] ids ) {
+        public static void addSelectedEventAll( int[] ids ) {
             clearSelectedTempo();
             clearSelectedTimesig();
             Vector<Integer> list = new Vector<Integer>( ids );
@@ -1253,12 +1399,12 @@ namespace Boare.Cadencii {
                         // まだ選択されていなかった場合
                         s_selected_events.add( new SelectedEventEntry( s_selected, ev, (VsqEvent)ev.clone() ) );
                         if ( !silent && SelectedEventChanged != null ) {
-                            SelectedEventChanged( false );
+                            SelectedEventChanged( typeof( AppManager ), false );
                         }
                     } else {
                         // すでに選択されているアイテムの再選択
                         int count = s_selected_events.size();
-                        for ( int i = 0; i < count; i++ ){
+                        for ( int i = 0; i < count; i++ ) {
                             SelectedEventEntry item = s_selected_events.get( i );
                             if ( item.original.InternalID == id ) {
                                 s_selected_events.removeElementAt( i );
@@ -1285,7 +1431,7 @@ namespace Boare.Cadencii {
             int count = s_selected_events.size();
             for ( int i = 0; i < count; i++ ) {
                 SelectedEventEntry item = s_selected_events.get( i );
-                if ( item.original.InternalID == id && item.track == track ){
+                if ( item.original.InternalID == id && item.track == track ) {
                     return true;
                 }
             }
@@ -1366,7 +1512,7 @@ namespace Boare.Cadencii {
                               s_selected_tempo.size() == 0 &&
                               s_selected_timesig.size() == 0 &&
                               selectedPointIDs.size() == 0;
-                SelectedEventChanged( ret );
+                SelectedEventChanged( typeof( AppManager ), ret );
             }
         }
 
@@ -1379,11 +1525,17 @@ namespace Boare.Cadencii {
         }
 
         public static boolean getRenderRequired( int track ) {
-            return s_render_required[track - 1];
+            if ( s_vsq == null ) {
+                return false;
+            }
+            return s_vsq.editorStatus.renderRequired[track - 1];
         }
 
         public static void setRenderRequired( int track, boolean value ) {
-            s_render_required[track - 1] = value;
+            if ( s_vsq == null ) {
+                return;
+            }
+            s_vsq.editorStatus.renderRequired[track - 1] = value;
         }
 
         /// <summary>
@@ -1454,17 +1606,19 @@ namespace Boare.Cadencii {
         private static void saveToCor( String file ) {
             const boolean hide = false;
             if ( s_vsq != null ) {
-                String path = Path.GetDirectoryName( file );
-                String file2 = Path.Combine( path, Path.GetFileNameWithoutExtension( file ) + ".vsq" );
+                String path = PortUtil.getDirectoryName( file );
+                String file2 = PortUtil.combinePath( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
                 s_vsq.writeAsXml( file );
                 s_vsq.write( file2 );
+#if !JAVA
                 if ( hide ) {
                     try {
-                        File.SetAttributes( file, FileAttributes.Hidden );
-                        File.SetAttributes( file2, FileAttributes.Hidden );
+                        System.IO.File.SetAttributes( file, System.IO.FileAttributes.Hidden );
+                        System.IO.File.SetAttributes( file2, System.IO.FileAttributes.Hidden );
                     } catch ( Exception ex ) {
                     }
                 }
+#endif
             }
         }
 
@@ -1551,17 +1705,17 @@ namespace Boare.Cadencii {
             s_current_clock = value;
             int barcount = s_vsq.getBarCountFromClock( s_current_clock );
             int bar_top_clock = s_vsq.getClockFromBarCount( barcount );
-            int numerator = 4;
-            int denominator = 4;
-            s_vsq.getTimesigAt( s_current_clock, out numerator, out denominator );
-            int clock_per_beat = 480 / 4 * denominator;
+            //int numerator = 4;
+            //int denominator = 4;
+            Timesig timesig = s_vsq.getTimesigAt( s_current_clock );
+            int clock_per_beat = 480 / 4 * timesig.denominator;
             int beat = (s_current_clock - bar_top_clock) / clock_per_beat;
-            s_current_play_position.BarCount = barcount - s_vsq.getPreMeasure() + 1;
-            s_current_play_position.Beat = beat + 1;
-            s_current_play_position.Clock = s_current_clock - bar_top_clock - clock_per_beat * beat;
-            s_current_play_position.Denominator = denominator;
-            s_current_play_position.Numerator = numerator;
-            s_current_play_position.Tempo = s_vsq.getTempoAt( s_current_clock );
+            s_current_play_position.barCount = barcount - s_vsq.getPreMeasure() + 1;
+            s_current_play_position.beat = beat + 1;
+            s_current_play_position.clock = s_current_clock - bar_top_clock - clock_per_beat * beat;
+            s_current_play_position.denominator = timesig.denominator;
+            s_current_play_position.numerator = timesig.numerator;
+            s_current_play_position.tempo = s_vsq.getTempoAt( s_current_clock );
             if ( old != s_current_clock && CurrentClockChanged != null ) {
                 CurrentClockChanged( typeof( AppManager ), new EventArgs() );
             }
@@ -1616,11 +1770,11 @@ namespace Boare.Cadencii {
                 return;
             }
             s_vsq = newvsq;
-            for ( int i = 0; i < s_render_required.Length; i++ ) {
+            for ( int i = 0; i < s_vsq.editorStatus.renderRequired.Length; i++ ) {
                 if ( i < s_vsq.Track.size() - 1 ) {
-                    s_render_required[i] = true;
+                    s_vsq.editorStatus.renderRequired[i] = true;
                 } else {
-                    s_render_required[i] = false;
+                    s_vsq.editorStatus.renderRequired[i] = false;
                 }
             }
             startMarker = s_vsq.getPreMeasureClocks();
@@ -1652,11 +1806,11 @@ namespace Boare.Cadencii {
 
         public static void setVsqFile( VsqFileEx vsq ) {
             s_vsq = vsq;
-            for ( int i = 0; i < s_render_required.Length; i++ ) {
+            for ( int i = 0; i < s_vsq.editorStatus.renderRequired.Length; i++ ) {
                 if ( i < s_vsq.Track.size() - 1 ) {
-                    s_render_required[i] = true;
+                    s_vsq.editorStatus.renderRequired[i] = true;
                 } else {
-                    s_render_required[i] = false;
+                    s_vsq.editorStatus.renderRequired[i] = false;
                 }
             }
             s_file = "";
@@ -1684,39 +1838,39 @@ namespace Boare.Cadencii {
             Vector<ValuePair<String, boolean>> config_data = new Vector<ValuePair<String, boolean>>();
             int count = editorConfig.UserDictionaries.size();
             for ( int i = 0; i < count; i++ ) {
-                String[] spl = PortUtil.splitString( editorConfig.UserDictionaries.get( i ), new char[]{ '\t' }, 2 );
+                String[] spl = PortUtil.splitString( editorConfig.UserDictionaries.get( i ), new char[] { '\t' }, 2 );
                 config_data.add( new ValuePair<String, boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
 #if DEBUG
                 AppManager.debugWriteLine( "    " + spl[0] + "," + spl[1] );
 #endif
             }
-            Vector<KeyValuePair<String, boolean>> common = new Vector<KeyValuePair<String, boolean>>();
+            Vector<ValuePair<String, Boolean>> common = new Vector<ValuePair<String, Boolean>>();
             for ( int i = 0; i < config_data.size(); i++ ) {
                 for ( int j = 0; j < current.size(); j++ ) {
                     if ( config_data.get( i ).Key.Equals( current.get( j ).Key ) ) {
                         current.get( j ).Value = true; //こっちのbooleanは、AppManager.EditorConfigのUserDictionariesにもKeyが含まれているかどうかを表すので注意
-                        common.add( new KeyValuePair<String, boolean>( config_data.get( i ).Key, config_data.get( i ).Value ) );
+                        common.add( new ValuePair<String, Boolean>( config_data.get( i ).Key, config_data.get( i ).Value ) );
                         break;
                     }
                 }
             }
             for ( int i = 0; i < current.size(); i++ ) {
                 if ( !current.get( i ).Value ) {
-                    common.add( new KeyValuePair<String, boolean>( current.get( i ).Key, false ) );
+                    common.add( new ValuePair<String, Boolean>( current.get( i ).Key, false ) );
                 }
             }
-            SymbolTable.changeOrder( common.toArray( new KeyValuePair<String, boolean>[] { } ) );
+            SymbolTable.changeOrder( common.toArray( new ValuePair<String, Boolean>[] { } ) );
             #endregion
 
-            Boare.Lib.AppUtil.Messaging.LoadMessages();
-            Boare.Lib.AppUtil.Messaging.Language = editorConfig.Language;
+            Boare.Lib.AppUtil.Messaging.loadMessages();
+            Boare.Lib.AppUtil.Messaging.setLanguage( editorConfig.Language );
 
             KeySoundPlayer.Init();
             PaletteToolServer.Init();
 
 #if !TREECOM
-            s_id = bocoree.Misc.getmd5( DateTime.Now.ToBinary().ToString() );
-            String log = Path.Combine( getTempWaveDir(), "run.log" );
+            s_id = bocoree.Misc.getmd5( DateTime.Now.ToBinary().ToString() ).Replace( "_", "" );
+            String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
 #endif
             propertyPanel = new PropertyPanel();
             propertyWindow = new FormNoteProperty();
@@ -1724,27 +1878,27 @@ namespace Boare.Cadencii {
             propertyPanel.Dock = DockStyle.Fill;
         }
 
-        public static String getShortcutDisplayString( Keys[] keys ) {
+        public static String getShortcutDisplayString( BKeys[] keys ) {
             String ret = "";
-            Vector<Keys> list = new Vector<Keys>( keys );
-            if ( list.contains( Keys.Menu ) ) {
+            Vector<BKeys> list = new Vector<BKeys>( keys );
+            if ( list.contains( BKeys.Menu ) ) {
                 ret = new String( '\x2318', 1 );
             }
-            if ( list.contains( Keys.Control ) ) {
+            if ( list.contains( BKeys.Control ) ) {
                 ret += (ret.Equals( "" ) ? "" : "+") + "Ctrl";
             }
-            if ( list.contains( Keys.Shift ) ) {
+            if ( list.contains( BKeys.Shift ) ) {
                 ret += (ret.Equals( "" ) ? "" : "+") + "Shift";
             }
-            if ( list.contains( Keys.Alt ) ) {
+            if ( list.contains( BKeys.Alt ) ) {
                 ret += (ret.Equals( "" ) ? "" : "+") + "Alt";
             }
-            Vector<Keys> list2 = new Vector<Keys>();
-            foreach ( Keys key in keys ) {
+            Vector<BKeys> list2 = new Vector<BKeys>();
+            foreach ( BKeys key in keys ) {
 #if DEBUG
                 AppManager.debugWriteLine( "    " + key );
 #endif
-                if ( key != Keys.Control && key != Keys.Shift && key != Keys.Alt ) {
+                if ( key != BKeys.Control && key != BKeys.Shift && key != BKeys.Alt ) {
                     list2.add( key );
                 }
             }
@@ -1755,33 +1909,33 @@ namespace Boare.Cadencii {
             return ret;
         }
 
-        private static String getKeyDisplayString( Keys key ) {
+        private static String getKeyDisplayString( BKeys key ) {
             switch ( key ) {
-                case Keys.PageDown:
+                case BKeys.PageDown:
                     return "PgDn";
-                case Keys.PageUp:
+                case BKeys.PageUp:
                     return "PgUp";
-                case Keys.D0:
+                case BKeys.D0:
                     return "0";
-                case Keys.D1:
+                case BKeys.D1:
                     return "1";
-                case Keys.D2:
+                case BKeys.D2:
                     return "2";
-                case Keys.D3:
+                case BKeys.D3:
                     return "3";
-                case Keys.D4:
+                case BKeys.D4:
                     return "4";
-                case Keys.D5:
+                case BKeys.D5:
                     return "5";
-                case Keys.D6:
+                case BKeys.D6:
                     return "6";
-                case Keys.D7:
+                case BKeys.D7:
                     return "7";
-                case Keys.D8:
+                case BKeys.D8:
                     return "8";
-                case Keys.D9:
+                case BKeys.D9:
                     return "9";
-                case Keys.Menu:
+                case BKeys.Menu:
                     return new String( '\x2318', 1 );
                 default:
                     return key.ToString();
@@ -1794,16 +1948,14 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private static String getSerializedText( object obj ) {
+        private static String getSerializedText( Object obj ) {
             String str = "";
-            using ( MemoryStream ms = new MemoryStream() ) {
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize( ms, obj );
-                ms.Seek( 0, SeekOrigin.Begin );
-                byte[] arr = new byte[ms.Length];
-                ms.Read( arr, 0, arr.Length );
-                str = CLIP_PREFIX + ":" + obj.GetType().FullName + ":" + Convert.ToBase64String( arr );
-            }
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream( outputStream );
+            objectOutputStream.writeObject( obj );
+
+            byte[] arr = outputStream.toByteArray();
+            str = CLIP_PREFIX + ":" + obj.GetType().FullName + ":" + Base64.encode( arr );
             return str;
         }
 
@@ -1818,11 +1970,10 @@ namespace Boare.Cadencii {
                 index = s.IndexOf( ":", index + 1 );
                 object ret = null;
                 try {
-                    using ( MemoryStream ms = new MemoryStream( Convert.FromBase64String( s.Substring( index + 1 ) ) ) ) {
-                        BinaryFormatter bf = new BinaryFormatter();
-                        ret = bf.Deserialize( ms );
-                    }
-                } catch ( Exception ex ){
+                    ByteArrayInputStream bais = new ByteArrayInputStream( Base64.decode( s.Substring( index + 1 ) ) );
+                    ObjectInputStream ois = new ObjectInputStream( bais );
+                    ret = ois.readObject();
+                } catch ( Exception ex ) {
                     ret = null;
                 }
                 return ret;
@@ -1870,7 +2021,7 @@ namespace Boare.Cadencii {
             if ( ce.events == null ) {
                 ce.events = new Vector<VsqEvent>();
             }
-            if ( ce.points ==null ) {
+            if ( ce.points == null ) {
                 ce.points = new TreeMap<CurveType, VsqBPList>();
             }
             if ( ce.tempo == null ) {
@@ -1928,11 +2079,11 @@ namespace Boare.Cadencii {
             CSharpCodeProvider provider = new CSharpCodeProvider();
             String path = Application.StartupPath;
             CompilerParameters parameters = new CompilerParameters( new String[] {
-                Path.Combine( path, "Boare.Lib.Vsq.dll" ),
-                Path.Combine( path, "Cadencii.exe" ),
-                Path.Combine( path, "Boare.Lib.Media.dll" ),
-                Path.Combine( path, "Boare.Lib.AppUtil.dll" ),
-                Path.Combine( path, "bocoree.dll" ) } );
+                PortUtil.combinePath( path, "Boare.Lib.Vsq.dll" ),
+                PortUtil.combinePath( path, "Cadencii.exe" ),
+                PortUtil.combinePath( path, "Boare.Lib.Media.dll" ),
+                PortUtil.combinePath( path, "Boare.Lib.AppUtil.dll" ),
+                PortUtil.combinePath( path, "bocoree.dll" ) } );
             parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
             parameters.ReferencedAssemblies.Add( "System.dll" );
             parameters.ReferencedAssemblies.Add( "System.Drawing.dll" );
@@ -1943,7 +2094,7 @@ namespace Boare.Cadencii {
             try {
                 results = provider.CompileAssemblyFromSource( parameters, code );
                 return results.CompiledAssembly;
-            } catch ( Exception ex ){
+            } catch ( Exception ex ) {
 #if DEBUG
                 AppManager.debugWriteLine( "AppManager.CompileScript; ex=" + ex );
 #endif
@@ -1957,13 +2108,13 @@ namespace Boare.Cadencii {
         /// Gets the path for application data
         /// </summary>
         public static String getApplicationDataPath() {
-            String dir = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
-            if ( !Directory.Exists( dir ) ) {
-                Directory.CreateDirectory( dir );
+            String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
+                PortUtil.createDirectory( dir );
             }
-            String dir2 = Path.Combine( dir, CONFIG_DIR_NAME );
-            if ( !Directory.Exists( dir2 ) ) {
-                Directory.CreateDirectory( dir2 );
+            String dir2 = PortUtil.combinePath( dir, CONFIG_DIR_NAME );
+            if ( !PortUtil.isDirectoryExists( dir2 ) ) {
+                PortUtil.createDirectory( dir2 );
             }
             return dir2;
         }
@@ -1973,7 +2124,7 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <returns></returns>
         public static int getPositionQuantizeClock() {
-            return QuantizeModeUtil.GetQuantizeClock( editorConfig.PositionQuantize, editorConfig.PositionQuantizeTriplet );
+            return QuantizeModeUtil.getQuantizeClock( editorConfig.PositionQuantize, editorConfig.PositionQuantizeTriplet );
         }
 
         /// <summary>
@@ -1981,7 +2132,7 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <returns></returns>
         public static int getLengthQuantizeClock() {
-            return QuantizeModeUtil.GetQuantizeClock( editorConfig.LengthQuantize, editorConfig.LengthQuantizeTriplet );
+            return QuantizeModeUtil.getQuantizeClock( editorConfig.LengthQuantize, editorConfig.LengthQuantizeTriplet );
         }
 
         public static void saveConfig() {
@@ -1991,7 +2142,7 @@ namespace Boare.Cadencii {
                 editorConfig.UserDictionaries.add( SymbolTable.getSymbolTable( i ).getName() + "\t" + (SymbolTable.getSymbolTable( i ).isEnabled() ? "T" : "F") );
             }
 
-            String file = Path.Combine( getApplicationDataPath(), CONFIG_FILE_NAME );
+            String file = PortUtil.combinePath( getApplicationDataPath(), CONFIG_FILE_NAME );
             try {
                 EditorConfig.Serialize( editorConfig, file );
             } catch {
@@ -1999,7 +2150,7 @@ namespace Boare.Cadencii {
         }
 
         public static void loadConfig() {
-            String config_file = Path.Combine( getApplicationDataPath(), CONFIG_FILE_NAME );
+            String config_file = PortUtil.combinePath( getApplicationDataPath(), CONFIG_FILE_NAME );
             EditorConfig ret = null;
             if ( PortUtil.isFileExists( config_file ) ) {
                 try {
@@ -2008,7 +2159,7 @@ namespace Boare.Cadencii {
                     ret = null;
                 }
             } else {
-                config_file = Path.Combine( Application.StartupPath, CONFIG_FILE_NAME );
+                config_file = PortUtil.combinePath( Application.StartupPath, CONFIG_FILE_NAME );
                 if ( PortUtil.isFileExists( config_file ) ) {
                     try {
                         ret = EditorConfig.Deserialize( editorConfig, config_file );
@@ -2024,9 +2175,9 @@ namespace Boare.Cadencii {
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                 SymbolTable st = SymbolTable.getSymbolTable( i );
                 boolean found = false;
-                for( Iterator itr = editorConfig.UserDictionaries.iterator(); itr.hasNext() ; ){
+                for ( Iterator itr = editorConfig.UserDictionaries.iterator(); itr.hasNext(); ) {
                     String s = (String)itr.next();
-                    String[] spl = PortUtil.splitString( s, new char[]{ '\t' }, 2 );
+                    String[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
                     if ( st.getName().Equals( spl[0] ) ) {
                         found = true;
                         break;
@@ -2093,13 +2244,13 @@ namespace Boare.Cadencii {
             String rev = "";
             // $Id: AppManager.cs 474 2009-09-23 11:31:07Z kbinani $
             String id = getAssemblyConfigurationAttribute();
-            String[] spl0 = PortUtil.splitString( id, new String[]{ " " }, true );
+            String[] spl0 = PortUtil.splitString( id, new String[] { " " }, true );
             if ( spl0.Length >= 3 ) {
                 String s = spl0[2];
 #if DEBUG
                 AppManager.debugWriteLine( "AppManager.get__VERSION; s=" + s );
 #endif
-                String[] spl = PortUtil.splitString( s, new String[]{ " " }, true );
+                String[] spl = PortUtil.splitString( s, new String[] { " " }, true );
                 if ( spl.Length > 0 ) {
                     rev = spl[0];
                 }
@@ -2110,7 +2261,7 @@ namespace Boare.Cadencii {
 #if DEBUG
             prefix = "(rev: " + rev + "; build: debug)";
 #else
-                prefix = "(rev: " + rev + "; build: release)";
+            prefix = "\n(rev: " + rev + "; build: release)";
 #endif
             return getAssemblyFileVersion( typeof( AppManager ) ) + " " + prefix;
         }
@@ -2136,16 +2287,16 @@ namespace Boare.Cadencii {
             return a.GetName().Name + " v" + afva.Version;
         }
 
-        public static SolidBrush getHilightBrush() {
+        /*public static SolidBrush getHilightBrush() {
+            return s_hilight_brush;
+        }*/
+
+        public static java.awt.Color getHilightColor() {
             return s_hilight_brush;
         }
 
-        public static Color getHilightColor() {
-            return s_hilight_brush.Color;
-        }
-
-        public static void setHilightColor( Color value ) {
-            s_hilight_brush = new SolidBrush( value );
+        public static void setHilightColor( java.awt.Color value ) {
+            s_hilight_brush = value;
         }
 
         /// <summary>

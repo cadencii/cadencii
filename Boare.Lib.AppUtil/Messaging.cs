@@ -11,109 +11,121 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.apputil;
+
+import org.kbinani.*;
+import java.util.*;
+#else
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
+using bocoree;
+using bocoree.util;
 
 namespace Boare.Lib.AppUtil {
+#endif
 
-    public static class Messaging {
-        private static string s_lang = "";
-        private static List<MessageBody> s_messages = new List<MessageBody>();
+    public class Messaging {
+        private static String s_lang = "";
+        private static Vector<MessageBody> s_messages = new Vector<MessageBody>();
         
-        public static string[] GetKeys( string lang ) {
-            foreach ( MessageBody dict in s_messages ) {
-                if ( lang == dict.lang ) {
-                    List<string> list = new List<string>();
-                    foreach ( string key in dict.list.Keys ) {
-                        list.Add( key );
+        public static String[] getKeys( String lang ) {
+            for( Iterator itr = s_messages.iterator(); itr.hasNext(); ){
+                MessageBody dict = (MessageBody)itr.next();
+                if ( lang.Equals( dict.lang ) ) {
+                    Vector<String> list = new Vector<String>();
+                    for ( Iterator itr2 = dict.list.keySet().iterator(); itr2.hasNext(); ) {
+                        String key = (String)itr2.next();
+                        list.add( key );
                     }
-                    return list.ToArray();
+                    return list.toArray( new String[] { } );
                 }
             }
             return null;
         }
 
-        public static string[] GetRegisteredLanguage() {
-            List<string> res = new List<string>();
-            foreach ( MessageBody dict in s_messages ) {
-                res.Add( dict.lang );
+        public static String[] getRegisteredLanguage() {
+            Vector<String> res = new Vector<String>();
+            for ( Iterator itr = s_messages.iterator(); itr.hasNext(); ) {
+                MessageBody dict = (MessageBody)itr.next();
+                res.add( dict.lang );
             }
-            return res.ToArray();
+            return res.toArray( new String[] { } );
         }
 
-        public static string Language {
-            get {
-                if ( s_lang != "" ) {
-                    return s_lang;
-                } else {
-                    s_lang = "en";
-                    return s_lang;
-                }
+        public static String getLanguage() {
+            if ( !s_lang.Equals( "" ) ) {
+                return s_lang;
+            } else {
+                s_lang = "en";
+                return s_lang;
             }
-            set {
-                if ( value != "" ) {
-                    s_lang = value;
-                } else {
-                    s_lang = "en";
-                }
+        }
+
+        public static void setLanguage( String value ) {
+            if ( !value.Equals( "" ) ) {
+                s_lang = value;
+            } else {
+                s_lang = "en";
             }
         }
 
         /// <summary>
         /// 現在の実行ディレクトリにある言語設定ファイルを全て読込み、メッセージリストに追加します
         /// </summary>
-        public static void LoadMessages() {
-            LoadMessages( Application.StartupPath );
+        public static void loadMessages() {
+            loadMessages( PortUtil.getApplicationStartupPath() );
         }
 
         /// <summary>
         /// 指定されたディレクトリにある言語設定ファイルを全て読込み、メッセージリストに追加します
         /// </summary>
         /// <param name="directory"></param>
-        public static void LoadMessages( string directory ) {
-            DirectoryInfo current = new DirectoryInfo( directory );
-            s_messages.Clear();
+        public static void loadMessages( String directory ) {
+            s_messages.clear();
 #if DEBUG
             Console.WriteLine( "Messaging+LoadMessages()" );
 #endif
-            foreach ( FileInfo fi in current.GetFiles( "*.po" ) ) {
-                string fname = fi.FullName;
+            String[] files = PortUtil.listFiles( directory, ".po" );
+            for ( int i = 0; i < files.Length; i++ ){
+                String fname = PortUtil.combinePath( directory, files[i] );
 #if DEBUG
                 Console.WriteLine( "    fname=" + fname );
 #endif
-                AppendFromFile( fname );
+                appendFromFile( fname );
             }
         }
 
-        public static void AppendFromFile( string file ) {
-            s_messages.Add( new MessageBody( Path.GetFileNameWithoutExtension( file ), file ) );
+        public static void appendFromFile( String file ) {
+            s_messages.add( new MessageBody( PortUtil.getFileNameWithoutExtension( file ), file ) );
         }
 
-        public static MessageBodyEntry GetMessageDetail( string id ) {
-            if ( s_lang.Length <= 0 ) {
+        public static MessageBodyEntry getMessageDetail( String id ) {
+            if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }
-            foreach ( MessageBody mb in s_messages ) {
-                if ( mb.lang == s_lang ) {
-                    return mb.GetMessageDetail( id );
+            for ( Iterator itr = s_messages.iterator(); itr.hasNext(); ){
+                MessageBody mb = (MessageBody)itr.next();
+                if ( mb.lang.Equals( s_lang ) ) {
+                    return mb.getMessageDetail( id );
                 }
             }
-            return new MessageBodyEntry( id, new string[] { } );
+            return new MessageBodyEntry( id, new String[] { } );
         }
 
-        public static string GetMessage( string id ) {
-            if ( s_lang.Length <= 0 ) {
+        public static String getMessage( String id ) {
+            if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }
-            foreach ( MessageBody mb in s_messages ) {
-                if ( mb.lang == s_lang ) {
-                    return mb.GetMessage( id );
+            for ( Iterator itr = s_messages.iterator(); itr.hasNext(); ){
+                MessageBody mb = (MessageBody)itr.next();
+                if ( mb.lang.Equals( s_lang ) ) {
+                    return mb.getMessage( id );
                 }
             }
             return id;
         }
     }
 
+#if !JAVA
 }
+#endif

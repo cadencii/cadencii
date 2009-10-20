@@ -11,13 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 
-namespace Boare.Cadencii {
+namespace Boare.Cadencii
+{
+#endif
 
-    public class MidiPortConfig {
+    public class MidiPortConfig
+    {
         public int PortNumber;
         public String PortName;
     }
 
+#if !JAVA
 }
+#endif

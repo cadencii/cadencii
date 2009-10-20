@@ -11,12 +11,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.EditOtoIni;
+#else
+using System;
+
 namespace Boare.EditOtoIni {
+#endif
 
     public struct StfQueueArgs {
-        public string waveName;
-        public string offset;
-        public string blank;
+        public String waveName;
+        public String offset;
+        public String blank;
     }
 
+#if !JAVA
 }
+#endif

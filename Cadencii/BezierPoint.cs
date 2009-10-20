@@ -11,46 +11,68 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 using System.Drawing;
 using System.Xml.Serialization;
 using System.ComponentModel;
 
 namespace Boare.Cadencii {
+    using boolean = System.Boolean;
+#endif
 
     /// <summary>
     /// ベジエ曲線を構成するデータ点。
     /// </summary>
+#if JAVA
+    public class BezierPoint implements Comparable<BezierPoint>, Cloneable {
+#else
     [Serializable]
     public class BezierPoint : IComparable<BezierPoint>, ICloneable {
+#endif
         PointD m_base;
+#if !JAVA
         [XmlIgnore]
+#endif
         public PointD controlLeft;
+#if !JAVA
         [XmlIgnore]
+#endif
         public PointD controlRight;
         BezierControlType m_type_left;
         BezierControlType m_type_right;
+#if !JAVA
         [NonSerialized]
+#endif
         int m_id;
 
-        [XmlIgnore]
-        public int ID {
-            get {
-                return m_id;
+        public static boolean isXmlIgnored( String name ) {
+            if ( name.Equals( "ID" ) ) {
+                return true;
             }
-            internal set {
-                m_id = value;
-            }
+            return false;
         }
 
+        public int getID() {
+            return m_id;
+        }
+
+        public void setID( int value ) {
+            m_id = value;
+        }
+
+#if !JAVA
         public override string ToString() {
             return toString();
         }
+#endif
 
         public String toString() {
-            return "m_base=" + m_base.X + "," + m_base.Y + "\n" +
-                "m_control_left=" + controlLeft.X + "," + controlLeft.Y + "\n" +
-                "m_control_right=" + controlRight.X + "," + controlRight.Y + "\n" +
+            return "m_base=" + m_base.getX() + "," + m_base.getY() + "\n" +
+                "m_control_left=" + controlLeft.getX() + "," + controlLeft.getY() + "\n" +
+                "m_control_right=" + controlRight.getX() + "," + controlRight.getY() + "\n" +
                 "m_type_left=" + m_type_left + "\n" +
                 "m_type_right=" + m_type_right + "\n";
         }
@@ -58,7 +80,13 @@ namespace Boare.Cadencii {
         private BezierPoint() {
         }
 
-        public BezierPoint( PointD p1 ) : this( p1.X, p1.Y ) {
+#if JAVA
+        public BezierPoint( PointD p1 ){
+            this( p1.X, p1.Y );
+#else
+        public BezierPoint( PointD p1 )
+            : this( p1.getX(), p1.getY() ) {
+#endif
         }
 
         public BezierPoint( double x, double y ) {
@@ -72,8 +100,8 @@ namespace Boare.Cadencii {
 
         public BezierPoint( PointD p1, PointD left, PointD right ) {
             m_base = p1;
-            controlLeft = new PointD( left.X - m_base.X, left.Y - m_base.Y );
-            controlRight = new PointD( right.X - m_base.X, right.Y - m_base.Y );
+            controlLeft = new PointD( left.getX() - m_base.getX(), left.getY() - m_base.getY() );
+            controlRight = new PointD( right.getX() - m_base.getX(), right.getY() - m_base.getY() );
             m_type_left = BezierControlType.None;
             m_type_right = BezierControlType.None;
         }
@@ -88,21 +116,29 @@ namespace Boare.Cadencii {
             return result;
         }
 
+#if !JAVA
         public object Clone() {
             return clone();
         }
+#endif
 
+#if !JAVA
         public int CompareTo( BezierPoint item ) {
-            double thisx = this.getBase().X;
-            double itemx = item.getBase().X;
+            return compareTo( item );
+        }
+#endif
+
+        public int compareTo( BezierPoint item ) {
+            double thisx = this.getBase().getX();
+            double itemx = item.getBase().getX();
             if ( thisx > itemx ) {
                 return 1;
             } else if ( thisx < itemx ) {
                 return -1;
             } else {
-                if ( this.ID > item.ID ) {
+                if ( this.getID() > item.getID() ) {
                     return 1;
-                } else if ( this.ID < item.ID ) {
+                } else if ( this.getID() < item.getID() ) {
                     return -1;
                 } else {
                     return 0;
@@ -110,6 +146,7 @@ namespace Boare.Cadencii {
             }
         }
 
+#if !JAVA
         /// <summary>
         /// XmlSerialize用
         /// </summary>
@@ -121,6 +158,7 @@ namespace Boare.Cadencii {
                 setBase( value );
             }
         }
+#endif
 
         public PointD getBase() {
             return m_base;
@@ -134,9 +172,9 @@ namespace Boare.Cadencii {
             if ( picked_side == BezierPickedSide.BASE ) {
                 this.setBase( new_position );
             } else if ( picked_side == BezierPickedSide.LEFT ) {
-                this.controlLeft = new PointD( new_position.X - this.getBase().X, new_position.Y - this.getBase().Y );
+                this.controlLeft = new PointD( new_position.getX() - this.getBase().getX(), new_position.getY() - this.getBase().getY() );
             } else {
-                this.controlRight = new PointD( new_position.X - this.getBase().X, new_position.Y - this.getBase().Y );
+                this.controlRight = new PointD( new_position.getX() - this.getBase().getX(), new_position.getY() - this.getBase().getY() );
             }
         }
 
@@ -160,6 +198,7 @@ namespace Boare.Cadencii {
             }
         }
 
+#if !JAVA
         /// <summary>
         /// XmlSerialize用
         /// </summary>
@@ -171,19 +210,21 @@ namespace Boare.Cadencii {
                 setControlLeft( value );
             }
         }
+#endif
 
         public PointD getControlLeft() {
             if ( m_type_left != BezierControlType.None ) {
-                return new PointD( m_base.X + controlLeft.X, m_base.Y + controlLeft.Y );
+                return new PointD( m_base.getX() + controlLeft.getX(), m_base.getY() + controlLeft.getY() );
             } else {
                 return m_base;
             }
         }
 
         public void setControlLeft( PointD value ) {
-            controlLeft = new PointD( value.X - m_base.X, value.Y - m_base.Y );
+            controlLeft = new PointD( value.getX() - m_base.getX(), value.getY() - m_base.getY() );
         }
 
+#if !JAVA
         /// <summary>
         /// XmlSerialize用
         /// </summary>
@@ -195,19 +236,21 @@ namespace Boare.Cadencii {
                 setControlRight( value );
             }
         }
+#endif
 
         public PointD getControlRight() {
             if ( m_type_right != BezierControlType.None ) {
-                return new PointD( m_base.X + controlRight.X, m_base.Y + controlRight.Y );
+                return new PointD( m_base.getX() + controlRight.getX(), m_base.getY() + controlRight.getY() );
             } else {
                 return m_base;
             }
         }
 
         public void setControlRight( PointD value ) {
-            controlRight = new PointD( value.X - m_base.X, value.Y - m_base.Y );
+            controlRight = new PointD( value.getX() - m_base.getX(), value.getY() - m_base.getY() );
         }
 
+#if !JAVA
         /// <summary>
         /// XmlSerializer用
         /// </summary>
@@ -219,6 +262,7 @@ namespace Boare.Cadencii {
                 setControlLeftType( value );
             }
         }
+#endif
 
         public BezierControlType getControlLeftType() {
             return m_type_left;
@@ -231,6 +275,7 @@ namespace Boare.Cadencii {
             }
         }
 
+#if !JAVA
         /// <summary>
         /// XmlSerializer用
         /// </summary>
@@ -242,6 +287,7 @@ namespace Boare.Cadencii {
                 setControlRightType( value );
             }
         }
+#endif
 
         public BezierControlType getControlRightType() {
             return m_type_right;
@@ -255,4 +301,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

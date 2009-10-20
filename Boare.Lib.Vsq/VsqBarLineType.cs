@@ -11,40 +11,51 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.vsq;
+#else
 using System;
 
-namespace Boare.Lib.Vsq {
-
+namespace Boare.Lib.Vsq
+{
     using boolean = System.Boolean;
+#endif
 
-    public struct VsqBarLineType {
+    public struct VsqBarLineType
+    {
         private int m_clock;
         private boolean m_is_separator;
         private int m_denominator;
         private int m_numerator;
         private int m_bar_count;
 
-        public int getBarCount() {
+        public int getBarCount()
+        {
             return m_bar_count;
         }
 
-        public int getLocalDenominator() {
+        public int getLocalDenominator()
+        {
             return m_denominator;
         }
 
-        public int getLocalNumerator() {
+        public int getLocalNumerator()
+        {
             return m_numerator;
         }
 
-        public int clock() {
+        public int clock()
+        {
             return m_clock;
         }
 
-        public boolean isSeparator() {
+        public boolean isSeparator()
+        {
             return m_is_separator;
         }
 
-        public VsqBarLineType( int clock, boolean is_separator, int denominator, int numerator, int bar_count ) {
+        public VsqBarLineType( int clock, boolean is_separator, int denominator, int numerator, int bar_count )
+        {
             m_clock = clock;
             m_is_separator = is_separator;
             m_denominator = denominator;
@@ -53,4 +64,6 @@ namespace Boare.Lib.Vsq {
         }
     }
 
+#if !JAVA
 }
+#endif

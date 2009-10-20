@@ -11,9 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace Boare.Lib.Vsq {
+#if JAVA
+package org.kbinani.vsq;
+#else
+namespace Boare.Lib.Vsq
+{
+#endif
 
-    public enum VsqCommandType {
+    public enum VsqCommandType
+    {
         ROOT,
         CHANGE_PRE_MEASURE,
         EVENT_ADD,
@@ -24,6 +30,7 @@ namespace Boare.Lib.Vsq {
         EVENT_CHANGE_CLOCK_AND_NOTE,
         TRACK_CURVE_EDIT,
         TRACK_CURVE_EDIT_RANGE,
+        //TRACK_CURVE_EDIT2,
         //TRACK_CURVE_REMOVE_POINTS,
         TRACK_CURVE_REPLACE,
         TRACK_CURVE_REPLACE_RANGE,
@@ -52,4 +59,6 @@ namespace Boare.Lib.Vsq {
         EVENT_REPLACE_RANGE,
     }
 
+#if !JAVA
 }
+#endif

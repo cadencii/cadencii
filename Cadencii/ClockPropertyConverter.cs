@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * ClockPropertyConverter.cs
  * Copyright (c) 2009 kbinani
  *
@@ -16,7 +17,6 @@ using System.ComponentModel;
 using System.Globalization;
 
 namespace Boare.Cadencii {
-
     using boolean = Boolean;
 
     public class ClockPropertyConverter : ExpandableObjectConverter {
@@ -35,7 +35,7 @@ namespace Boare.Cadencii {
         public override object ConvertTo( ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType ) {
             if ( destinationType == typeof( String ) && value is ClockProperty ) {
                 ClockProperty cp = (ClockProperty)value;
-                return cp.Measure.getIntValue() + " : " + cp.Beat.getIntValue() + " : " + cp.Gate.getIntValue();
+                return cp.getMeasure().getIntValue() + " : " + cp.getBeat().getIntValue() + " : " + cp.getGate().getIntValue();
             }
             return base.ConvertTo( context, culture, value, destinationType );
         }
@@ -56,11 +56,11 @@ namespace Boare.Cadencii {
             if ( value is String ) {
                 String[] ss = ((String)value).Split( new char[] { ':' }, 3 );
                 CalculatableString cs = new CalculatableString();
-                cs.str = ss[0];
+                cs.setStr( ss[0] );
                 int measure = cs.getIntValue();
-                cs.str = ss[1];
+                cs.setStr( ss[1] );
                 int beat = cs.getIntValue();
-                cs.str = ss[2];
+                cs.setStr( ss[2] );
                 int gate = cs.getIntValue();
                 return new ClockProperty( measure, beat, gate );
             }
@@ -69,3 +69,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

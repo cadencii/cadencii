@@ -12,14 +12,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.boare.vsq;
+package org.kbinani.vsq;
+
+import java.util.*;
+import java.io.*;
+import org.kbinani.*;
 #else
 using System;
-using System.Collections.Generic;
-//using System.IO;
 using System.Text;
-
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Lib.Vsq {
 #endif
@@ -33,7 +36,7 @@ namespace Boare.Lib.Vsq {
         private Vector<VibratoConfig> m_vibrato_configs;
         private Vector<AttackConfig> m_attack_configs;
 
-        internal void printTo( String file ) {
+        private void printTo( String file ) {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new FileWriter( file ) );
@@ -60,7 +63,7 @@ namespace Boare.Lib.Vsq {
                     sw.newLine();
                     sw.write( name + ".contents.Caption = \"" + vconfig.contents.Caption + "\";" );
                     sw.newLine();
-                    sw.write( name + ".contents.Length = " + vconfig.contents.Length + ";" );
+                    sw.write( name + ".contents.Length = " + vconfig.contents.getLength() + ";" );
                     sw.newLine();
                     sw.write( name + ".contents.StartDepth = " + vconfig.contents.StartDepth + ";" );
                     sw.write( name + ".contents.DepthBP = new VibratoBPList( new float[]{ " );
@@ -113,7 +116,7 @@ namespace Boare.Lib.Vsq {
                     sw.newLine();
                     sw.write( name + ".contents.Caption = \"" + aconfig.contents.Caption + "\";" );
                     sw.newLine();
-                    sw.write( name + ".contents.Length = " + aconfig.contents.Length + ";" );
+                    sw.write( name + ".contents.Length = " + aconfig.contents.getLength() + ";" );
                     sw.newLine();
                     sw.write( name + ".contents.Duration = " + aconfig.contents.Duration + ";" );
                     sw.newLine();
@@ -147,7 +150,7 @@ namespace Boare.Lib.Vsq {
             v1.contents.IDS = "normal";
             v1.contents.Original = 0;
             v1.contents.Caption = "Normal Vibrato";
-            v1.contents.Length = 480;
+            v1.contents.setLength( 480 );
             v1.contents.StartDepth = 64;
             v1.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v1.contents.StartRate = 64;
@@ -163,7 +166,7 @@ namespace Boare.Lib.Vsq {
             v2.contents.IDS = "normal";
             v2.contents.Original = 0;
             v2.contents.Caption = "Subtle Vibrato";
-            v2.contents.Length = 480;
+            v2.contents.setLength( 480 );
             v2.contents.StartDepth = 32;
             v2.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v2.contents.StartRate = 56;
@@ -179,7 +182,7 @@ namespace Boare.Lib.Vsq {
             v3.contents.IDS = "slight";
             v3.contents.Original = 0;
             v3.contents.Caption = "Slight Vibrato";
-            v3.contents.Length = 480;
+            v3.contents.setLength( 480 );
             v3.contents.StartDepth = 32;
             v3.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v3.contents.StartRate = 64;
@@ -195,7 +198,7 @@ namespace Boare.Lib.Vsq {
             v4.contents.IDS = "deep";
             v4.contents.Original = 0;
             v4.contents.Caption = "Deep Vibrato";
-            v4.contents.Length = 480;
+            v4.contents.setLength( 480 );
             v4.contents.StartDepth = 64;
             v4.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v4.contents.StartRate = 64;
@@ -211,7 +214,7 @@ namespace Boare.Lib.Vsq {
             v5.contents.IDS = "extreme";
             v5.contents.Original = 0;
             v5.contents.Caption = "Very Deep Vibrato";
-            v5.contents.Length = 480;
+            v5.contents.setLength( 480 );
             v5.contents.StartDepth = 64;
             v5.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v5.contents.StartRate = 120;
@@ -227,7 +230,7 @@ namespace Boare.Lib.Vsq {
             v6.contents.IDS = "extreme";
             v6.contents.Original = 0;
             v6.contents.Caption = "Extreme Vibrato (like Japanese Enka)";
-            v6.contents.Length = 480;
+            v6.contents.setLength( 480 );
             v6.contents.StartDepth = 64;
             v6.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v6.contents.StartRate = 64;
@@ -243,7 +246,7 @@ namespace Boare.Lib.Vsq {
             a1.contents.IDS = "tenuto";
             a1.contents.Original = 0;
             a1.contents.Caption = "Tenuto";
-            a1.contents.Length = 120;
+            a1.contents.setLength( 120 );
             a1.contents.Duration = 64;
             a1.contents.Depth = 64;
             ret.m_attack_configs.add( a1 );
@@ -257,7 +260,7 @@ namespace Boare.Lib.Vsq {
             a2.contents.IDS = "accent";
             a2.contents.Original = 0;
             a2.contents.Caption = "Accent";
-            a2.contents.Length = 120;
+            a2.contents.setLength( 120 );
             a2.contents.Duration = 64;
             a2.contents.Depth = 64;
             ret.m_attack_configs.add( a2 );
@@ -271,7 +274,7 @@ namespace Boare.Lib.Vsq {
             a3.contents.IDS = "accent_extreme";
             a3.contents.Original = 0;
             a3.contents.Caption = "Extreme Accent";
-            a3.contents.Length = 120;
+            a3.contents.setLength( 120 );
             a3.contents.Duration = 64;
             a3.contents.Depth = 64;
             ret.m_attack_configs.add( a3 );
@@ -285,7 +288,7 @@ namespace Boare.Lib.Vsq {
             a4.contents.IDS = "legato";
             a4.contents.Original = 0;
             a4.contents.Caption = "Legato";
-            a4.contents.Length = 120;
+            a4.contents.setLength( 120 );
             a4.contents.Duration = 64;
             a4.contents.Depth = 64;
             ret.m_attack_configs.add( a4 );
@@ -299,7 +302,7 @@ namespace Boare.Lib.Vsq {
             a5.contents.IDS = "bendup_fast";
             a5.contents.Original = 0;
             a5.contents.Caption = "Fast Bendu";
-            a5.contents.Length = 120;
+            a5.contents.setLength( 120 );
             a5.contents.Duration = 64;
             a5.contents.Depth = 64;
             ret.m_attack_configs.add( a5 );
@@ -313,7 +316,7 @@ namespace Boare.Lib.Vsq {
             a6.contents.IDS = "bendup_slow";
             a6.contents.Original = 0;
             a6.contents.Caption = "Slow Bendup";
-            a6.contents.Length = 120;
+            a6.contents.setLength( 120 );
             a6.contents.Duration = 64;
             a6.contents.Depth = 64;
             ret.m_attack_configs.add( a6 );
@@ -327,7 +330,7 @@ namespace Boare.Lib.Vsq {
             a7.contents.IDS = "trill_semi";
             a7.contents.Original = 0;
             a7.contents.Caption = "Trill Semitone";
-            a7.contents.Length = 120;
+            a7.contents.setLength( 120 );
             a7.contents.Duration = 64;
             a7.contents.Depth = 64;
             ret.m_attack_configs.add( a7 );
@@ -341,7 +344,7 @@ namespace Boare.Lib.Vsq {
             a8.contents.IDS = "trill_whole";
             a8.contents.Original = 0;
             a8.contents.Caption = "Trill Wholetone";
-            a8.contents.Length = 120;
+            a8.contents.setLength( 120 );
             a8.contents.Duration = 64;
             a8.contents.Depth = 64;
             ret.m_attack_configs.add( a8 );
@@ -355,7 +358,7 @@ namespace Boare.Lib.Vsq {
             a9.contents.IDS = "mordent_semi";
             a9.contents.Original = 0;
             a9.contents.Caption = "Mordent Semitone";
-            a9.contents.Length = 120;
+            a9.contents.setLength( 120 );
             a9.contents.Duration = 64;
             a9.contents.Depth = 64;
             ret.m_attack_configs.add( a9 );
@@ -369,7 +372,7 @@ namespace Boare.Lib.Vsq {
             a10.contents.IDS = "mordent_whole";
             a10.contents.Original = 0;
             a10.contents.Caption = "Mordent Wholetone";
-            a10.contents.Length = 120;
+            a10.contents.setLength( 120 );
             a10.contents.Duration = 64;
             a10.contents.Depth = 64;
             ret.m_attack_configs.add( a10 );
@@ -390,7 +393,7 @@ namespace Boare.Lib.Vsq {
             v1.contents.IDS = "normal";
             v1.contents.Original = 0;
             v1.contents.Caption = "[Normal] Type 1";
-            v1.contents.Length = 480;
+            v1.contents.setLength( 480 );
             v1.contents.StartDepth = 64;
             v1.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v1.contents.StartRate = 50;
@@ -406,7 +409,7 @@ namespace Boare.Lib.Vsq {
             v2.contents.IDS = "normal";
             v2.contents.Original = 0;
             v2.contents.Caption = "[Normal] Type 2";
-            v2.contents.Length = 480;
+            v2.contents.setLength( 480 );
             v2.contents.StartDepth = 40;
             v2.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v2.contents.StartRate = 50;
@@ -422,7 +425,7 @@ namespace Boare.Lib.Vsq {
             v3.contents.IDS = "normal";
             v3.contents.Original = 0;
             v3.contents.Caption = "[Normal] Type 3";
-            v3.contents.Length = 480;
+            v3.contents.setLength( 480 );
             v3.contents.StartDepth = 127;
             v3.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v3.contents.StartRate = 50;
@@ -438,7 +441,7 @@ namespace Boare.Lib.Vsq {
             v4.contents.IDS = "normal";
             v4.contents.Original = 0;
             v4.contents.Caption = "[Normal] Type 4";
-            v4.contents.Length = 480;
+            v4.contents.setLength( 480 );
             v4.contents.StartDepth = 64;
             v4.contents.DepthBP = new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } );
             v4.contents.StartRate = 50;
@@ -454,7 +457,7 @@ namespace Boare.Lib.Vsq {
             v5.contents.IDS = "extreme";
             v5.contents.Original = 0;
             v5.contents.Caption = "[Extreme] Type 1";
-            v5.contents.Length = 480;
+            v5.contents.setLength( 480 );
             v5.contents.StartDepth = 64;
             v5.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v5.contents.StartRate = 64;
@@ -470,7 +473,7 @@ namespace Boare.Lib.Vsq {
             v6.contents.IDS = "extreme";
             v6.contents.Original = 0;
             v6.contents.Caption = "[Extreme] Type 2";
-            v6.contents.Length = 480;
+            v6.contents.setLength( 480 );
             v6.contents.StartDepth = 32;
             v6.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v6.contents.StartRate = 32;
@@ -486,7 +489,7 @@ namespace Boare.Lib.Vsq {
             v7.contents.IDS = "extreme";
             v7.contents.Original = 0;
             v7.contents.Caption = "[Extreme] Type 3";
-            v7.contents.Length = 480;
+            v7.contents.setLength( 480 );
             v7.contents.StartDepth = 100;
             v7.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v7.contents.StartRate = 50;
@@ -502,7 +505,7 @@ namespace Boare.Lib.Vsq {
             v8.contents.IDS = "extreme";
             v8.contents.Original = 0;
             v8.contents.Caption = "[Extreme] Type 4";
-            v8.contents.Length = 480;
+            v8.contents.setLength( 480 );
             v8.contents.StartDepth = 64;
             v8.contents.DepthBP = new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } );
             v8.contents.StartRate = 64;
@@ -518,7 +521,7 @@ namespace Boare.Lib.Vsq {
             v9.contents.IDS = "fast";
             v9.contents.Original = 0;
             v9.contents.Caption = "[Fast] Type 1";
-            v9.contents.Length = 480;
+            v9.contents.setLength( 480 );
             v9.contents.StartDepth = 64;
             v9.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v9.contents.StartRate = 64;
@@ -534,7 +537,7 @@ namespace Boare.Lib.Vsq {
             v10.contents.IDS = "fast";
             v10.contents.Original = 0;
             v10.contents.Caption = "[Fast] Type 2";
-            v10.contents.Length = 480;
+            v10.contents.setLength( 480 );
             v10.contents.StartDepth = 40;
             v10.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v10.contents.StartRate = 50;
@@ -550,7 +553,7 @@ namespace Boare.Lib.Vsq {
             v11.contents.IDS = "fast";
             v11.contents.Original = 0;
             v11.contents.Caption = "[Fast] Type 3";
-            v11.contents.Length = 480;
+            v11.contents.setLength( 480 );
             v11.contents.StartDepth = 80;
             v11.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v11.contents.StartRate = 70;
@@ -566,7 +569,7 @@ namespace Boare.Lib.Vsq {
             v12.contents.IDS = "fast";
             v12.contents.Original = 0;
             v12.contents.Caption = "[Fast] Type 4";
-            v12.contents.Length = 480;
+            v12.contents.setLength( 480 );
             v12.contents.StartDepth = 64;
             v12.contents.DepthBP = new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } );
             v12.contents.StartRate = 64;
@@ -582,7 +585,7 @@ namespace Boare.Lib.Vsq {
             v13.contents.IDS = "slight";
             v13.contents.Original = 0;
             v13.contents.Caption = "[Slight] Type 1";
-            v13.contents.Length = 480;
+            v13.contents.setLength( 480 );
             v13.contents.StartDepth = 64;
             v13.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v13.contents.StartRate = 64;
@@ -598,7 +601,7 @@ namespace Boare.Lib.Vsq {
             v14.contents.IDS = "slight";
             v14.contents.Original = 0;
             v14.contents.Caption = "[Slight] Type 2";
-            v14.contents.Length = 480;
+            v14.contents.setLength( 480 );
             v14.contents.StartDepth = 40;
             v14.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v14.contents.StartRate = 64;
@@ -614,7 +617,7 @@ namespace Boare.Lib.Vsq {
             v15.contents.IDS = "slight";
             v15.contents.Original = 0;
             v15.contents.Caption = "[Slight] Type 3";
-            v15.contents.Length = 480;
+            v15.contents.setLength( 480 );
             v15.contents.StartDepth = 72;
             v15.contents.DepthBP = new VibratoBPList( new float[] { }, new int[] { } );
             v15.contents.StartRate = 64;
@@ -630,7 +633,7 @@ namespace Boare.Lib.Vsq {
             v16.contents.IDS = "slight";
             v16.contents.Original = 0;
             v16.contents.Caption = "[Slight] Type 4";
-            v16.contents.Length = 480;
+            v16.contents.setLength( 480 );
             v16.contents.StartDepth = 64;
             v16.contents.DepthBP = new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } );
             v16.contents.StartRate = 64;
@@ -648,12 +651,20 @@ namespace Boare.Lib.Vsq {
             return m_attack_configs.size();
         }
 
-        public ListIterator<VibratoConfig> vibratoConfigIterator() {
+        public Iterator vibratoConfigIterator() {
+#if JAVA
+            return m_vibrato_configs.iterator();
+#else
             return new ListIterator<VibratoConfig>( m_vibrato_configs );
+#endif
         }
 
-        public ListIterator<AttackConfig> attackConfigIterator() {
+        public Iterator attackConfigIterator() {
+#if JAVA
+            return m_attack_configs.iterator();
+#else
             return new ListIterator<AttackConfig>( m_attack_configs );
+#endif
         }
 
         private ExpressionConfigSys() {
@@ -665,7 +676,7 @@ namespace Boare.Lib.Vsq {
             String expression = PortUtil.combinePath( path_expdb, "expression.map" );
             if ( !PortUtil.isFileExists( expression ) ) {
 #if DEBUG
-                Console.WriteLine( "ExpressionConfigSys#.ctor; expression.map does not exist" );
+                PortUtil.println( "ExpressionConfigSys#.ctor; expression.map does not exist" );
 #endif
                 return;
             }
@@ -677,7 +688,7 @@ namespace Boare.Lib.Vsq {
                 fs.seek( 0x20 );
                 for ( int i = 0; i < MAX_VIBRATO; i++ ) {
                     fs.read( dat, 0, 8 );
-                    ulong value = VocaloSysUtil.makelong_le( dat );
+                    long value = VocaloSysUtil.makelong_le( dat );
                     if ( value <= 0 ) {
                         continue;
                     }
@@ -692,16 +703,16 @@ namespace Boare.Lib.Vsq {
                     }
 
 #if DEBUG
-                    Console.WriteLine( "ExpresionConfigSys#.ctor; ved=" + ved + "; vexp_dir=" + vexp_dir );
+                    PortUtil.println( "ExpresionConfigSys#.ctor; ved=" + ved + "; vexp_dir=" + vexp_dir );
 #endif
                     String NL = (char)0x0D + "" + (char)0x0A;
                     RandomAccessFile fs_ved = null;
                     try {
                         fs_ved = new RandomAccessFile( ved, "r" );
-                        byte[] byte_ved = new byte[fs_ved.length()];
+                        byte[] byte_ved = new byte[(int)fs_ved.length()];
                         fs_ved.read( byte_ved, 0, byte_ved.Length );
-                        TransCodeUtil.decodeBytes( ref byte_ved );
-                        String str = new String( Encoding.ASCII.GetChars( byte_ved ) );
+                        TransCodeUtil.decodeBytes( byte_ved );
+                        String str = PortUtil.getDecodedString( "ASCII", byte_ved );
 #if DEBUG
                         String txt_file = PortUtil.combinePath( path_expdb, "vexp" + value + ".txt" );
                         using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( txt_file ) ) {
@@ -712,7 +723,7 @@ namespace Boare.Lib.Vsq {
                         String current_entry = "";
                         for ( int j = 0; j < spl.Length; j++ ) {
 #if DEBUG
-                            //Console.WriteLine( "ExpressionConfigSys#.ctor; line=" + spl[j] );
+                            //PortUtil.println( "ExpressionConfigSys#.ctor; line=" + spl[j] );
 #endif
                             if ( spl[j].StartsWith( "[" ) ) {
                                 current_entry = spl[j];
@@ -733,7 +744,7 @@ namespace Boare.Lib.Vsq {
                                 item.contents.Caption = spl2[4].Replace( ":", " " ).Replace( "\"", "" );
                                 item.author = spl2[5].Replace( "\"", "" );
                                 item.vendor = spl2[6].Replace( "\"", "" );
-                                item.contents.IconID = "$0404" + string.Format( "{0:x4}", item.number );
+                                item.contents.IconID = "$0404" + PortUtil.toHexString( item.number, 4 );
                                 String aic_file = PortUtil.combinePath( vexp_dir, item.file );
                                 if ( !PortUtil.isFileExists( aic_file ) ) {
                                     continue;
@@ -753,7 +764,7 @@ namespace Boare.Lib.Vsq {
                                 item.contents.Caption = spl2[4].Replace( ":", " " ).Replace( "\"", "" );
                                 item.author = spl2[5].Replace( "\"", "" );
                                 item.vendor = spl2[6].Replace( "\"", "" );
-                                item.contents.IconID = "$0101" + string.Format( "{0:x4}", item.number );
+                                item.contents.IconID = "$0101" + PortUtil.toHexString( item.number, 4 );
                                 String aic_file = PortUtil.combinePath( vexp_dir, item.file );
                                 if ( !PortUtil.isFileExists( aic_file ) ) {
                                     continue;
@@ -764,7 +775,7 @@ namespace Boare.Lib.Vsq {
                         }
                     } catch ( Exception ex ) {
 #if DEBUG
-                        Console.WriteLine( "ExpressionConfigSys#.ctor; ex=" + ex );
+                        PortUtil.println( "ExpressionConfigSys#.ctor; ex=" + ex );
 #endif
                     } finally {
                         if ( fs_ved != null ) {
@@ -772,7 +783,7 @@ namespace Boare.Lib.Vsq {
                                 fs_ved.close();
                             } catch ( Exception ex2 ) {
 #if DEBUG
-                                Console.WriteLine( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
+                                PortUtil.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
 #endif
                             }
                         }
@@ -780,7 +791,7 @@ namespace Boare.Lib.Vsq {
                 }
             } catch ( Exception ex ) {
 #if DEBUG
-                Console.WriteLine( "ExpressionConfigSys#.ctor; ex=" + ex );
+                PortUtil.println( "ExpressionConfigSys#.ctor; ex=" + ex );
 #endif
             } finally {
                 if ( fs != null ) {
@@ -788,7 +799,7 @@ namespace Boare.Lib.Vsq {
                         fs.close();
                     } catch ( Exception ex2 ) {
 #if DEBUG
-                        Console.WriteLine( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
+                        PortUtil.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
 #endif
                     }
                 }
@@ -797,4 +808,6 @@ namespace Boare.Lib.Vsq {
 
     }
 
+#if !JAVA
 }
+#endif

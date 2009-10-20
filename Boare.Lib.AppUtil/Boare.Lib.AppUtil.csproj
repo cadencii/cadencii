@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -60,14 +60,10 @@
     <Compile Include="InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InputBox.Designer.cs">
-      <DependentUpon>InputBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="ISO639.cs" />
     <Compile Include="MessageBodyEntry.cs" />
     <Compile Include="Messaging.cs" />
     <Compile Include="MessageBody.cs" />
-    <Compile Include="Misc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BSplitContainer.cs">
       <SubType>Component</SubType>
@@ -78,6 +74,7 @@
     <Compile Include="BTrackBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Util.cs" />
     <Compile Include="VersionInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,8 +87,6 @@
     <Compile Include="BVScrollBar.Designer.cs">
       <DependentUpon>BVScrollBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="XmlSerializeWithDescription.cs" />
-    <Compile Include="XmlStaticMemberSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\bocoree\bocoree.csproj">

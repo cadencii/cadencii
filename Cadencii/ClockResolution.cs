@@ -11,11 +11,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.util.*;
+#else
 using System;
+using bocoree.util;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
     public struct ClockResolution {
         private int m_value;
@@ -31,44 +37,43 @@ namespace Boare.Cadencii {
         public static readonly ClockResolution L240 = new ClockResolution( 240 );
         public static readonly ClockResolution L480 = new ClockResolution( 480 );
         public static readonly ClockResolution Free = new ClockResolution( 1 );
-        
+
+#if !JAVA
         public override boolean Equals( object obj ) {
+            return equals( obj );
+        }
+#endif
+
+        public boolean equals( Object obj ) {
             if ( obj is ClockResolution ) {
-                return ((ClockResolution)obj).Value == m_value;
+                return ((ClockResolution)obj).getValue() == m_value;
             } else {
                 return false;
             }
         }
 
-        public int Value {
-            get {
-                if ( m_value == 0 ) {
-                    m_value = 30;
-                }
-                return m_value;
+        public int getValue() {
+            if ( m_value == 0 ) {
+                m_value = 30;
             }
+            return m_value;
         }
-        
-        public static System.Collections.Generic.IEnumerable<ClockResolution> GetEnumerator() {
-            yield return L1;
-            yield return L2;
-            yield return L4;
-            yield return L8;
-            yield return L16;
-            yield return L30;
-            yield return L60;
-            yield return L90;
-            yield return L120;
-            yield return L240;
-            yield return L480;
-            yield return Free;
+
+        public static Iterator iterator() {
+            return new Vector<ClockResolution>( new ClockResolution[] { L1, L2, L4, L8, L16, L30, L60, L90, L120, L240, L480, Free } ).iterator();
         }
 
         private ClockResolution( int value ) {
             m_value = value;
         }
 
-        public override String ToString() {
+#if !JAVA
+        public override string ToString() {
+            return toString();
+        }
+#endif
+
+        public String toString() {
             if ( m_value == 1 ) {
                 return "Free";
             } else {
@@ -77,4 +82,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Boare.Lib.Vsq;
 using Boare.Lib.AppUtil;
 using bocoree;
+using bocoree.util;
 using Boare.Cadencii;
 
 public class Search {
@@ -110,7 +111,7 @@ public static class AutoBRI {
         Boare.Lib.Vsq.VsqTrack track = vsq.Track.get( Boare.Cadencii.AppManager.getSelected() );
 
         // コントロールカーブの時間方向の解像度を，Cadenciiの設定値から取得
-        int resol = Boare.Cadencii.AppManager.editorConfig.ControlCurveResolution.Value;
+        int resol = Boare.Cadencii.AppManager.editorConfig.ControlCurveResolution.getValue();
         for ( int i = 0; i < ids.Count; i++ ) {
             int internal_id = ids[i];
 
@@ -124,14 +125,12 @@ public static class AutoBRI {
                     // 音符の最後の位置でのBRIを取得．処理の最後で追加
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
 
-                    // BRIが指定されているクロックの一覧を取得
-                    int[] keyclock = bri.getKeys();
-
                     // これから編集しようとしている範囲にすでに値がある場合，邪魔なので削除する
-                    foreach ( int clock in keyclock ) {
+                    for ( Iterator itr2 = bri.keyClockIterator(); itr.hasNext(); ){
+                        int clock = (int)itr2.next();
                         System.Console.WriteLine( "clock=" + clock );
                         if ( item.Clock <= clock && clock <= item.Clock + item.ID.Length ) {
-                            bri.remove( clock );
+                            itr2.remove();
                         }
                     }
 
@@ -184,7 +183,7 @@ public class AutoBRITool : Boare.Cadencii.IPaletteTool {
     /// <returns></returns>
     public bool edit( Boare.Lib.Vsq.VsqTrack track, int[] ids, System.Windows.Forms.MouseButtons button ) {
         // コントロールカーブの時間方向の解像度を，Cadenciiの設定値から取得
-        int resol = Boare.Cadencii.AppManager.editorConfig.ControlCurveResolution.Value;
+        int resol = Boare.Cadencii.AppManager.editorConfig.ControlCurveResolution.getValue();
         for ( int i = 0; i < ids.Length; i++ ) {
             int internal_id = ids[i];
             
@@ -197,15 +196,13 @@ public class AutoBRITool : Boare.Cadencii.IPaletteTool {
                     
                     // 音符の最後の位置でのBRIを取得．処理の最後で追加
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
-                    
-                    // BRIが指定されているクロックの一覧を取得
-                    int[] keyclock = bri.getKeys();
-                    
+
                     // これから編集しようとしている範囲にすでに値がある場合，邪魔なので削除する
-                    foreach ( int clock in keyclock ) {
+                    for ( Iterator itr2 = bri.keyClockIterator(); itr2.hasNext(); ){
+                        int clock = (int)itr2.next();
                         System.Console.WriteLine( "clock=" + clock );
                         if ( item.Clock <= clock && clock <= item.Clock + item.ID.Length ) {
-                            bri.remove( clock );
+                            itr2.remove();
                         }
                     }
                     

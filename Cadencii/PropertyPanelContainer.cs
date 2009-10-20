@@ -22,7 +22,7 @@ using System.Windows.Forms;
 namespace Boare.Cadencii {
     public partial class PropertyPanelContainer : UserControl {
         public const int _TITLE_HEIGHT = 29;
-        public event BSimpleDelegate<PropertyPanelState.PanelState> StateChangeRequired;
+        public event StateChangeRequiredEventHandler StateChangeRequired;
 
         public PropertyPanelContainer() {
             InitializeComponent();
@@ -35,19 +35,19 @@ namespace Boare.Cadencii {
 
         private void panelTitle_MouseDoubleClick( object sender, MouseEventArgs e ) {
             if ( StateChangeRequired != null ) {
-                StateChangeRequired( PropertyPanelState.PanelState.Window );
+                StateChangeRequired( this, PanelState.Window );
             }
         }
 
         private void btnClose_Click( object sender, EventArgs e ) {
             if ( StateChangeRequired != null ) {
-                StateChangeRequired( PropertyPanelState.PanelState.Hidden );
+                StateChangeRequired( this, PanelState.Hidden );
             }
         }
 
         private void btnWindow_Click( object sender, EventArgs e ) {
             if ( StateChangeRequired != null ) {
-                StateChangeRequired( PropertyPanelState.PanelState.Window );
+                StateChangeRequired( this, PanelState.Window );
             }
         }
 

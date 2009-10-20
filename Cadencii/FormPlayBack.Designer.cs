@@ -39,6 +39,7 @@ namespace Boare.Cadencii {
         private void InitializeComponent() {
             this.txtCalcNum = new System.Windows.Forms.TextBox();
             this.btnRecalculation = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtCalcNum
@@ -61,11 +62,19 @@ namespace Boare.Cadencii {
             this.btnRecalculation.UseVisualStyleBackColor = true;
             this.btnRecalculation.Click += new System.EventHandler( this.btnRecalculation_Click );
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point( 85, 153 );
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size( 100, 19 );
+            this.textBox1.TabIndex = 2;
+            // 
             // FormPlayBack
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size( 384, 357 );
+            this.Controls.Add( this.textBox1 );
             this.Controls.Add( this.btnRecalculation );
             this.Controls.Add( this.txtCalcNum );
             this.DoubleBuffered = true;
@@ -81,5 +90,6 @@ namespace Boare.Cadencii {
 
         private System.Windows.Forms.TextBox txtCalcNum;
         private System.Windows.Forms.Button btnRecalculation;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

@@ -1,0 +1,30 @@
+CurveType同士の比較が全て==、!=で行われているので修正が必要
+com.boare.vsqの各クラスのgetXmlElementName, ixXmlIgnoredメソッドを実装
+EditorConfig.PropertyWindowExpandStatus
+EditorConfig.LastUsedNoteNumberExpression
+SingerConfig.Resonance*
+SingerConfig.Harmonics
+SingerConfig.Noise
+
+現在のport進捗。クラスの依存関係ツリー基準で
+    AppManager -> VSTiProxy#Render
+
+com.boare.cadencii.VSTiProxy#render( ... ){
+    if( VOCALOID / VOCALOID2でrendering ){
+        StartRenderArg rendering_instance = new StartRenderArg( ... );
+        if( スレッド使う ){
+            Thread thread = new Thread( rendering_instance );
+            thread.start();
+        }else{
+            rendering_instance.run();
+        }
+    }else{
+        StartUtauRenderArg rendering_instance = new StartUtauRenderArg( ... );
+        if( スレッド使う ){
+            Thread thread = new Thread( rendering_instance );
+            thread.start();
+        }else{
+            rendering_instance.run();
+        }
+    }
+}

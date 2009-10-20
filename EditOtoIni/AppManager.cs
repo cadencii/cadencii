@@ -11,10 +11,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.EditOtoIni;
+
+import org.kbinani.Cadencii.*;
+#else
+using Boare.Cadencii;
+
 namespace Boare.EditOtoIni {
+#endif
 
     public class AppManager {
-        public static Boare.Cadencii.EditorConfig cadenciiConfig = new Boare.Cadencii.EditorConfig();
+        public static EditorConfig cadenciiConfig = new EditorConfig();
     }
 
+#if !JAVA
 }
+#endif

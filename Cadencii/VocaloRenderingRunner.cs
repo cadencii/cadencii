@@ -14,10 +14,11 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using Boare.Lib.Vsq;
 using Boare.Lib.Media;
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Cadencii {
 
@@ -48,8 +49,7 @@ namespace Boare.Cadencii {
         /// menuFileExportWaveで出力した場合はtrue，そのほかの場合はキャッシュに書き込むので，falseにしておく．
         /// </summary>
         private bool m_reflect_amp_to_wave = false;
-        private DateTime m_started_date;
-        private double m_running_rate;
+        private double m_started_date;
 
         public VocaloRenderingRunner( String renderer_,
                                 NrpnData[] nrpn_,
@@ -85,12 +85,19 @@ namespace Boare.Cadencii {
         }
 
         public double getElapsedSeconds() {
-            return DateTime.Now.Subtract( m_started_date ).TotalSeconds;
+            return PortUtil.getCurrentTime() - m_started_date;
         }
 
         public double computeRemainingSeconds() {
             double elapsed = getElapsedSeconds();
-            double estimated = 100.0 / m_running_rate;
+            double running_rate = 1;
+            if ( driver != null && driver.dllInstance != null ) {
+                try {
+                    running_rate = driver.dllInstance.GetProgress() / elapsed;
+                } catch ( Exception ex ) {
+                }
+            }
+            double estimated = 100.0 / running_rate;
             double draft = estimated - elapsed;
             if ( draft < 0 ) {
                 draft = 0;
@@ -125,18 +132,18 @@ namespace Boare.Cadencii {
 
         public void run() {
 #if DEBUG
-            Console.WriteLine( "VocaloRenderingRunner#run" );
+            PortUtil.println( "VocaloRenderingRunner#run" );
 #endif
-            m_started_date = DateTime.Now;
+            m_started_date = PortUtil.getCurrentTime();
             if ( driver == null ) {
 #if DEBUG
-                Console.WriteLine( "VocaloRenderingRunner#run; error: driver is null" );
+                PortUtil.println( "VocaloRenderingRunner#run; error: driver is null" );
 #endif
                 return;
             }
             if ( !driver.loaded ) {
 #if DEBUG
-                Console.WriteLine( "VocaloRenderingRunner#run; error: driver not loaded" );
+                PortUtil.println( "VocaloRenderingRunner#run; error: driver not loaded" );
 #endif
                 return;
             }
@@ -210,11 +217,11 @@ namespace Boare.Cadencii {
             driver.dllInstance.WaveIncoming -= vstidrv_WaveIncoming;
             driver.dllInstance.RenderingFinished -= vstidrv_RenderingFinished;
             if ( direct_play ) {
-                PlaySound.WaitForExit();
+                PlaySound.waitForExit();
             }
         }
 
-        private void vstidrv_RenderingFinished() {
+        private void vstidrv_RenderingFinished( Object sendre, EventArgs e ) {
             m_rendering = false;
         }
 
@@ -261,7 +268,7 @@ namespace Boare.Cadencii {
                             if ( wr.Tag != null && wr.Tag is int ) {
                                 int track = (int)wr.Tag;
 #if DEBUG
-                                Console.WriteLine( "VocaloRenderingRunner#vstidrv_WaveIncoming; track=" + track );
+                                PortUtil.println( "VocaloRenderingRunner#vstidrv_WaveIncoming; track=" + track );
 #endif
                                 if ( 0 < track ) {
                                     amplify = AppManager.getAmplifyCoeffNormalTrack( track );
@@ -280,7 +287,7 @@ namespace Boare.Cadencii {
                             reader_r = null;
                         }
                         if ( direct_play ) {
-                            PlaySound.Append( dL, dR, actual_append );
+                            PlaySound.append( dL, dR, actual_append );
                         }
                         dL = null;
                         dR = null;
@@ -314,7 +321,7 @@ namespace Boare.Cadencii {
                             if ( wr.Tag != null && wr.Tag is int ) {
                                 int track = (int)wr.Tag;
 #if DEBUG
-                                Console.WriteLine( "VocaloRenderingRunner#vstidrv_WaveIncoming; track=" + track );
+                                PortUtil.println( "VocaloRenderingRunner#vstidrv_WaveIncoming; track=" + track );
 #endif
                                 if ( 0 < track ) {
                                     amplify = AppManager.getAmplifyCoeffNormalTrack( track );
@@ -333,14 +340,14 @@ namespace Boare.Cadencii {
                             reader_r = null;
                         }
                         if ( direct_play ) {
-                            PlaySound.Append( L, R, L.Length );
+                            PlaySound.append( L, R, L.Length );
                         }
                         m_total_append += length;
                     }
                 }
             } catch ( Exception ex ) {
 #if DEBUG
-                Console.WriteLine( "VocaloRenderingRunner#vstidrv_WaveIncoming; ex=" + ex );
+                PortUtil.println( "VocaloRenderingRunner#vstidrv_WaveIncoming; ex=" + ex );
 #endif
             }
         }

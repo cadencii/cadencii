@@ -172,7 +172,7 @@ namespace bocoree {
         public ushort wMid;
         public ushort wPid;
         public uint vDriverVersion;
-        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = windows.MAXPNAMELEN )]
+        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = win32.MAXPNAMELEN )]
         public string szPname;
         public uint dwSupport;
 
@@ -199,7 +199,7 @@ namespace bocoree {
         public WORD wMid;
         public WORD wPid;
         public uint vDriverVersion;
-        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = windows.MAXPNAMELEN )]
+        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = win32.MAXPNAMELEN )]
         public string szPname;
         public WORD wTechnology;
         public WORD wVoices;
@@ -208,7 +208,7 @@ namespace bocoree {
         public DWORD dwSupport;
     }
 
-    public static partial class windows {
+    public static partial class win32 {
         private enum DllStatus {
             Unknown,
             Found,

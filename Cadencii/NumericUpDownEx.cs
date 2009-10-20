@@ -15,7 +15,7 @@ using System;
 using System.Windows.Forms;
 
 namespace Boare.Cadencii {
-    
+
     /// <summary>
     /// MouseWheel‚ÅIncrement‚¸‚Â’l‚ğ‘Œ¸‚³‚¹‚é‚±‚Æ‚Ì‚Å‚«‚éNumericUpDown
     /// </summary>
@@ -43,7 +43,7 @@ namespace Boare.Cadencii {
             if ( this.Minimum <= new_val && new_val <= this.Maximum ) {
                 this.Value = new_val;
             }
-        }    
+        }
     }
 
 }

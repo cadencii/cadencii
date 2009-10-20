@@ -11,30 +11,35 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.util.*;
+import java.io.*;
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
+#else
 using System;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Windows.Forms;
-
 using bocoree;
+using bocoree.util;
+using bocoree.io;
+using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
-
+namespace Boare.Cadencii
+{
     using boolean = System.Boolean;
+#endif
 
-    public class PropertyPanelState {
-        public enum PanelState {
-            Hidden,
-            Window,
-            Docked,
-        }
-
+    public class PropertyPanelState
+    {
         public PanelState State = PanelState.Docked;
-        public Rectangle Bounds = new Rectangle( 0, 0, 200, 300 );
-        public Vector<ValuePair<String, boolean>> ExpandStatus = new Vector<ValuePair<String,boolean>>();
+        public XmlRectangle Bounds = new XmlRectangle( 0, 0, 200, 300 );
+        public Vector<ValuePair<String, Boolean>> ExpandStatus = new Vector<ValuePair<String, Boolean>>();
         public NoteNumberExpressionType LastUsedNoteNumberExpression = NoteNumberExpressionType.International;
-        public FormWindowState WindowState = FormWindowState.Normal;
+        public BFormWindowState WindowState = BFormWindowState.Normal;
         public int DockWidth = 200;
     }
 
+#if !JAVA
 }
+#endif

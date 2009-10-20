@@ -11,21 +11,29 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.apputil;
+
+import java.util.*;
+#else
 using System;
-using System.Collections.Generic;
+using bocoree.util;
 
 namespace Boare.Lib.AppUtil {
+#endif
 
     public class MessageBodyEntry {
-        public string Message;
-        public List<string> Location = new List<string>();
+        public String message;
+        public Vector<String> location = new Vector<String>();
 
-        public MessageBodyEntry( string message, string[] location ) {
-            Message = message;
-            for ( int i = 0; i < location.Length; i++ ) {
-                Location.Add( location[i] );
+        public MessageBodyEntry( String message_, String[] location_ ) {
+            message = message_;
+            for ( int i = 0; i < location_.Length; i++ ) {
+                location.add( location_[i] );
             }
         }
     }
 
+#if !JAVA
 }
+#endif

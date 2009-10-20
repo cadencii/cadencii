@@ -11,11 +11,18 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 namespace Boare.Cadencii {
+#endif
 
     public struct AmplifyCoefficient {
         public double left;
         public double right;
     }
 
+#if !JAVA
 }
+#endif

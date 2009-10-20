@@ -11,31 +11,50 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 
 namespace Boare.Cadencii {
+    using boolean = System.Boolean;
+#endif
 
+#if !JAVA
     [TypeConverter( typeof( AttackVariationConverter ) )]
+#endif
     public class AttackVariation {
-        public string description = "";
+        public String description = "";
 
         public AttackVariation() {
             description = "-";
         }
 
-        public AttackVariation( string description ) {
+        public AttackVariation( String description ) {
             this.description = description;
         }
 
-        public override bool Equals( object obj ) {
+        public boolean equals( Object obj ) {
+#if JAVA
+            if( obj != null && obj.getClass() == AttackVariation.class ){
+#else
             if ( obj != null && obj is AttackVariation ) {
+#endif
                 return ((AttackVariation)obj).description.Equals( description );
             } else {
                 return base.Equals( obj );
             }
         }
+
+#if !JAVA
+        public override bool Equals( object obj ) {
+            return equals( obj );
+        }
+#endif
     }
 
+#if !JAVA
 }
+#endif

@@ -62,20 +62,26 @@
     <Compile Include="AttackConfig.cs" />
     <Compile Include="BPPair.cs" />
     <Compile Include="IconHandle.cs" />
+    <Compile Include="ITextWriter.cs" />
     <Compile Include="Lyric.cs" />
     <Compile Include="LyricHandle.cs" />
+    <Compile Include="MidiEvent.cs" />
     <Compile Include="MidiFile.cs" />
     <Compile Include="NoteHeadHandle.cs" />
     <Compile Include="NRPN.cs" />
+    <Compile Include="NrpnIterator.cs" />
     <Compile Include="SingerConfig.cs" />
     <Compile Include="SingerConfigSys.cs" />
     <Compile Include="SymbolTable.cs" />
     <Compile Include="SynthesizerType.cs" />
+    <Compile Include="Timesig.cs" />
     <Compile Include="TransCodeUtil.cs" />
     <Compile Include="UstEnvelope.cs" />
     <Compile Include="UstEvent.cs" />
     <Compile Include="UstFile.cs" />
     <Compile Include="UstPortamento.cs" />
+    <Compile Include="UstPortamentoPoint.cs" />
+    <Compile Include="UstPortamentoType.cs" />
     <Compile Include="UstTrack.cs" />
     <Compile Include="UstVibrato.cs" />
     <Compile Include="VibratoBPList.cs" />
@@ -95,6 +101,7 @@
     <Compile Include="VsqMaster.cs" />
     <Compile Include="VsqMetaText.cs" />
     <Compile Include="VsqMixer.cs" />
+    <Compile Include="VsqMixerEntry.cs" />
     <Compile Include="VsqNrpn.cs" />
     <Compile Include="NrpnData.cs" />
     <Compile Include="VsqCommandType.cs" />
@@ -111,6 +118,7 @@
     <Compile Include="VsqPhoneticSymbol.cs" />
     <Compile Include="VsqTrack.cs" />
     <Compile Include="VsqVoiceLanguage.cs" />
+    <Compile Include="WrappedStreamWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\bocoree\bocoree.csproj">

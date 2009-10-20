@@ -21,7 +21,9 @@ namespace Boare.Cadencii{
         [STAThread]
         static void Main() {
 #if DEBUG
-            //test.run();
+            /*Boare.Lib.AppUtil.Messaging.AppendFromFile( Path.Combine( Application.StartupPath, "ja.po" ) );
+            Application.Run( new Form() );
+            return;*/
 #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );

@@ -11,40 +11,49 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System.Drawing;
+#if JAVA
+package org.kbinani.apputil;
+
+import java.awt.*;
+#else
+using System;
+using bocoree.awt;
 
 namespace Boare.Lib.AppUtil {
+#endif
 
     public class AuthorListEntry {
-        string m_name;
-        FontStyle m_style;
+        String m_name;
+        int m_style;
 
-        public AuthorListEntry( string name, FontStyle style )
-            : this( name ) {
+        public AuthorListEntry( String name, int style ) {
+            m_name = name;
             m_style = style;
         }
 
-        public AuthorListEntry( string name ) {
-            m_name = name;
-            m_style = FontStyle.Regular;
+#if JAVA
+        public AuthorListEntry( String name ){
+            this( name, Font.PLAIN );
+#else
+        public AuthorListEntry( String name )
+            : this( name, Font.PLAIN ) {
+#endif
         }
 
         public AuthorListEntry() {
             m_name = "";
-            m_style = FontStyle.Regular;
+            m_style = Font.PLAIN;
         }
 
-        public string Name {
-            get {
-                return m_name;
-            }
+        public String getName() {
+            return m_name;
         }
 
-        public FontStyle Style {
-            get {
-                return m_style;
-            }
+        public int getStyle() {
+            return m_style;
         }
     }
 
+#if !JAVA
 }
+#endif

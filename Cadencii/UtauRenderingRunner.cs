@@ -11,23 +11,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#define MAKEBAT_SP
+//#define MAKEBAT_SP
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Drawing;
-using System.Windows.Forms;
+using System.IO;
 using System.Text;
-
-using Boare.Lib.Vsq;
+using System.Windows.Forms;
 using Boare.Lib.Media;
+using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.io;
+using bocoree.util;
 
 namespace Boare.Cadencii {
-
     using boolean = Boolean;
     using Integer = Int32;
+    using java = bocoree;
 
     public class UtauRenderingRunner : RenderingRunner {
         public const String FILEBASE = "temp.wav";
@@ -135,7 +135,7 @@ namespace Boare.Cadencii {
 
         public void run() {
 #if DEBUG
-            Console.WriteLine( "UtauRenderingRunner#run" );
+            PortUtil.println( "UtauRenderingRunner#run" );
 #endif
             m_started_date = DateTime.Now;
             m_rendering = true;
@@ -323,7 +323,7 @@ namespace Boare.Cadencii {
                             }
                             totalcount++;
                         }
-                        Vector<PointF> ret = FormMain.getVibratoPoints( m_vsq,
+                        Vector<PointD> ret = FormMain.getVibratoPoints( m_vsq,
                                                                       item.ID.VibratoHandle.RateBP,
                                                                       item.ID.VibratoHandle.StartRate,
                                                                       item.ID.VibratoHandle.DepthBP,
@@ -332,10 +332,10 @@ namespace Boare.Cadencii {
                                                                       item.ID.Length - item.ID.VibratoDelay,
                                                                       (float)delta_sec );
                         for ( int i = 0; i < ret.size(); i++ ) {
-                            float gtime = ret.get( i ).X;
+                            float gtime = (float)ret.get( i ).getX();
                             int clock = (int)m_vsq.getClockFromSec( gtime );
                             float pvalue = (float)target.getPitchAt( clock );
-                            pitch += " " + (pvalue + ret.get( i ).Y * 100.0f).ToString( "0.00" );
+                            pitch += " " + (pvalue + ret.get( i ).getY() * 100.0f).ToString( "0.00" );
                             if ( totalcount == 0 ) {
                                 pitch += "Q" + tempo;
                             }
@@ -586,7 +586,7 @@ namespace Boare.Cadencii {
                             dat.seek( processed_sample * channel * byte_per_sample );
                             double sec_start = processed_sample / (double)m_sample_rate;
                             double sec_per_sa = 1.0 / (double)m_sample_rate;
-                            int index = 0;
+                            ByRef<Integer> index = new ByRef<Integer>( 0 );
                             #region チャンネル数／ビット深度ごとの読み取り操作
                             if ( byte_per_sample == 1 ) {
                                 if ( channel == 1 ) {
@@ -612,7 +612,7 @@ namespace Boare.Cadencii {
                                             }
                                             double gtime_dyn = sec_start + pos * sec_per_sa;
                                             int clock = (int)m_vsq.getClockFromSec( gtime_dyn );
-                                            int dyn = dyn_curve.getValue( clock, ref index );
+                                            int dyn = dyn_curve.getValue( clock, index );
                                             float amp = (float)dyn * k_inv64;
                                             float v = (wavbuf[c] - 64.0f) * k_inv64 * amp;
                                             c++;
@@ -648,7 +648,7 @@ namespace Boare.Cadencii {
                                             }
                                             double gtime_dyn = sec_start + pos * sec_per_sa;
                                             int clock = (int)m_vsq.getClockFromSec( gtime_dyn );
-                                            int dyn = dyn_curve.getValue( clock, ref index );
+                                            int dyn = dyn_curve.getValue( clock, index );
                                             float amp = (float)dyn * k_inv64;
                                             float vl = (wavbuf[c] - 64.0f) * k_inv64 * amp;
                                             float vr = (wavbuf[c + 1] - 64.0f) * k_inv64 * amp;
@@ -687,7 +687,7 @@ namespace Boare.Cadencii {
                                             }
                                             double gtime_dyn = sec_start + pos * sec_per_sa;
                                             int clock = (int)m_vsq.getClockFromSec( gtime_dyn );
-                                            int dyn = dyn_curve.getValue( clock, ref index );
+                                            int dyn = dyn_curve.getValue( clock, index );
                                             float amp = (float)dyn * k_inv64;
                                             float v = ((short)(wavbuf[c] | wavbuf[c + 1] << 8)) * k_inv32768 * amp;
                                             m_left[pos] = v;
@@ -723,7 +723,7 @@ namespace Boare.Cadencii {
                                             }
                                             double gtime_dyn = sec_start + pos * sec_per_sa;
                                             int clock = (int)m_vsq.getClockFromSec( gtime_dyn );
-                                            int dyn = dyn_curve.getValue( clock, ref index );
+                                            int dyn = dyn_curve.getValue( clock, index );
                                             float amp = (float)dyn * k_inv64;
                                             float vl = ((short)(wavbuf[c] | wavbuf[c + 1] << 8)) * k_inv32768 * amp;
                                             float vr = ((short)(wavbuf[c + 2] | wavbuf[c + 3] << 8)) * k_inv32768 * amp;
@@ -881,7 +881,7 @@ namespace Boare.Cadencii {
                     reader_r = null;
                 }
                 if ( m_direct_play ) {
-                    PlaySound.Append( L, R, L.Length );
+                    PlaySound.append( L, R, L.Length );
                 }
                 m_total_append += length;
             }

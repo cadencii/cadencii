@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
 
@@ -41,22 +42,22 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new BButton();
+            this.btnOK = new BButton();
             this.ListTrack = new System.Windows.Forms.ListView();
             this.columnTrack = new System.Windows.Forms.ColumnHeader();
             this.columnName = new System.Windows.Forms.ColumnHeader();
             this.columnNumNotes = new System.Windows.Forms.ColumnHeader();
-            this.btnCheckAll = new System.Windows.Forms.Button();
-            this.btnUnckeckAll = new System.Windows.Forms.Button();
-            this.chkBeat = new System.Windows.Forms.CheckBox();
-            this.chkTempo = new System.Windows.Forms.CheckBox();
-            this.chkNote = new System.Windows.Forms.CheckBox();
-            this.chkLyric = new System.Windows.Forms.CheckBox();
+            this.btnCheckAll = new BButton();
+            this.btnUnckeckAll = new BButton();
+            this.chkBeat = new BCheckBox();
+            this.chkTempo = new BCheckBox();
+            this.chkNote = new BCheckBox();
+            this.chkLyric = new BCheckBox();
             this.groupCommonOption = new System.Windows.Forms.GroupBox();
-            this.chkMetaText = new System.Windows.Forms.CheckBox();
-            this.chkPreMeasure = new System.Windows.Forms.CheckBox();
-            this.chkExportVocaloidNrpn = new System.Windows.Forms.CheckBox();
+            this.chkMetaText = new BCheckBox();
+            this.chkPreMeasure = new BCheckBox();
+            this.chkExportVocaloidNrpn = new BCheckBox();
             this.groupCommonOption.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -278,22 +279,22 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
+        private BButton btnCancel;
+        private BButton btnOK;
         private System.Windows.Forms.ColumnHeader columnTrack;
         private System.Windows.Forms.ColumnHeader columnName;
         private System.Windows.Forms.ColumnHeader columnNumNotes;
-        private System.Windows.Forms.Button btnCheckAll;
-        private System.Windows.Forms.Button btnUnckeckAll;
-        private System.Windows.Forms.CheckBox chkBeat;
-        private System.Windows.Forms.CheckBox chkTempo;
-        private System.Windows.Forms.CheckBox chkNote;
-        private System.Windows.Forms.CheckBox chkLyric;
+        private BButton btnCheckAll;
+        private BButton btnUnckeckAll;
+        private BCheckBox chkBeat;
+        private BCheckBox chkTempo;
+        private BCheckBox chkNote;
+        private BCheckBox chkLyric;
         private System.Windows.Forms.GroupBox groupCommonOption;
-        private System.Windows.Forms.CheckBox chkExportVocaloidNrpn;
+        private BCheckBox chkExportVocaloidNrpn;
         public System.Windows.Forms.ListView ListTrack;
-        private System.Windows.Forms.CheckBox chkPreMeasure;
-        private System.Windows.Forms.CheckBox chkMetaText;
+        private BCheckBox chkPreMeasure;
+        private BCheckBox chkMetaText;
 
     }
 }

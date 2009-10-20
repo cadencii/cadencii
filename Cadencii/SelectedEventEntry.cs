@@ -11,22 +11,32 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
+#if JAVA
+package org.kbinani.Cadencii;
 
+import org.kbinani.vsq.*;
+#else
+using System;
 using Boare.Lib.Vsq;
 
-namespace Boare.Cadencii {
+namespace Boare.Cadencii
+{
+#endif
 
-    public class SelectedEventEntry {
+    public class SelectedEventEntry
+    {
         public int track;
         public VsqEvent original;
         public VsqEvent editing;
 
-        public SelectedEventEntry( int track_, VsqEvent original_, VsqEvent editing_ ) {
+        public SelectedEventEntry( int track_, VsqEvent original_, VsqEvent editing_ )
+        {
             track = track_;
             original = original_;
             editing = editing_;
         }
     }
 
+#if !JAVA
 }
+#endif

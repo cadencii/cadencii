@@ -32,7 +32,7 @@ namespace Boare.Cadencii {
                 JoyReset();
             }
             s_initialized = true;
-            int num_joydev = (int)windows.joyGetNumDevs();
+            int num_joydev = (int)win32.joyGetNumDevs();
 #if DEBUG
             bocoree.debug.push_log( "winmmhelp.JoyInit" );
             bocoree.debug.push_log( "    num_joydev=" + num_joydev );
@@ -46,10 +46,10 @@ namespace Boare.Cadencii {
             int count = 0;
             for ( int k = 0; k < num_joydev; k++ ) {
                 JOYINFO ji = new JOYINFO();
-                if ( windows.joyGetPos( (uint)k, ref ji ) == windows.JOYERR_NOERROR ) {
+                if ( win32.joyGetPos( (uint)k, ref ji ) == win32.JOYERR_NOERROR ) {
                     s_joy_attatched[k] = true;
                     JOYCAPSW jc = new JOYCAPSW();
-                    windows.joyGetDevCapsW( (uint)k, ref jc, (uint)Marshal.SizeOf( jc ) );
+                    win32.joyGetDevCapsW( (uint)k, ref jc, (uint)Marshal.SizeOf( jc ) );
                     s_button_num[k] = (int)jc.wNumButtons;
                     count++;
                 } else {
@@ -133,10 +133,10 @@ namespace Boare.Cadencii {
             int index = s_joy_available[index_];
             JOYINFOEX ji_ex = new JOYINFOEX();
             ji_ex.dwSize = (ushort)Marshal.SizeOf( ji_ex );
-            ji_ex.dwFlags = windows.JOY_RETURNPOV | windows.JOY_RETURNBUTTONS;
+            ji_ex.dwFlags = win32.JOY_RETURNPOV | win32.JOY_RETURNBUTTONS;
 
             if ( s_joy_attatched[index] ) {
-                windows.joyGetPosEx( (uint)index, ref ji_ex );
+                win32.joyGetPosEx( (uint)index, ref ji_ex );
                 pov = (int)ji_ex.dwPOV;
                 if ( pov == 0xffff ) {
                     pov = -1;

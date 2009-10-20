@@ -11,25 +11,34 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.Collections.Generic;
+#if JAVA
+package org.kbinani.Cadencii;
 
+import java.util.*;
+import org.kbinani.vsq.*;
+#else
+using System;
 using Boare.Lib.Vsq;
-using bocoree;
+using bocoree.util;
 
 namespace Boare.Cadencii {
+#endif
 
     /// <summary>
     /// Undo/Redoを実現するためのコマンド。
     /// Boare.Lib.Vsq.VsqFileレベルのコマンドは、Type=VsqCommandとして取り扱う。
     /// Boare.Cadencii.VsqFileExレベルのコマンドは、Argsに処理内容を格納して取り扱う。
     /// </summary>
+#if JAVA
+    public class CadenciiCommand implements ICommand{
+#else
     [Serializable]
     public class CadenciiCommand : ICommand {
+#endif
         public CadenciiCommandType type;
         public VsqCommand vsqCommand;
         private ICommand m_parent;
-        public object[] args;
+        public Object[] args;
         private Vector<ICommand> m_child = new Vector<ICommand>();
 
         public CadenciiCommand( VsqCommand command ) {
@@ -42,20 +51,19 @@ namespace Boare.Cadencii {
             m_child = new Vector<ICommand>();
         }
 
-        public ICommand parent {
-            get {
-                return m_parent;
-            }
-            set {
-                m_parent = value;
-            }
+        public ICommand getParent() {
+            return m_parent;
         }
 
-        public Vector<ICommand> Child {
-            get {
-                return m_child;
-            }
+        public void setParent( ICommand value ) {
+            m_parent = value;
+        }
+
+        public Vector<ICommand> getChild() {
+            return m_child;
         }
     }
 
+#if !JAVA
 }
+#endif

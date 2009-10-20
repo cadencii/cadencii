@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace bocoree {
+namespace bocoree.util {
 
     [Serializable]
 #if VECTOR_TEST
@@ -96,12 +96,12 @@ namespace bocoree {
             : base( array.toArray( new T[]{} ) ){
         }
 
-        public void addAll( T[] array ) {
+        public void addAll( Vector<T> array ) {
             base.AddRange( array );
         }
 
-        public void addAll( Vector<T> array ) {
-            base.AddRange( array );
+        public int indexOf( T obj ) {
+            return base.IndexOf( obj );
         }
 
         public void insertElementAt( T obj, int index ){
@@ -114,10 +114,6 @@ namespace bocoree {
 
         public void removeElementAt( int index ){
             base.RemoveAt( index );
-        }
-
-        public Vector( T[] array )
-            : base( array ) {
         }
 
         public Vector()

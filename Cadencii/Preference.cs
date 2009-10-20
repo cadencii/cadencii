@@ -16,19 +16,20 @@ using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using Boare.Lib.Vsq;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
-
 using bocoree;
+using bocoree.util;
+using bocoree.io;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-
+    using java = bocoree;
     using boolean = System.Boolean;
 
-    partial class Preference : Form {
-        Font m_base_font;
+    partial class Preference : BForm {
+        java.awt.Font m_base_font;
         Font m_screen_font;
         Font m_counter_font;
         Vector<String> m_program_change = null;
@@ -41,13 +42,13 @@ namespace Boare.Cadencii {
 
             comboVibratoLength.Items.Clear();
             foreach ( DefaultVibratoLength dvl in Enum.GetValues( typeof( DefaultVibratoLength ) ) ) {
-                comboVibratoLength.Items.Add( (int)dvl + "" );
+                comboVibratoLength.Items.Add( DefaultVibratoLengthUtil.toString( dvl ) );
             }
             comboVibratoLength.SelectedIndex = 1;
 
             comboAutoVibratoMinLength.Items.Clear();
             foreach ( AutoVibratoMinLength avml in Enum.GetValues( typeof( AutoVibratoMinLength ) ) ) {
-                comboAutoVibratoMinLength.Items.Add( (int)avml + "" );
+                comboAutoVibratoMinLength.Items.Add( AutoVibratoMinLengthUtil.toString( avml ) );
             }
             comboAutoVibratoMinLength.SelectedIndex = 0;
 
@@ -72,7 +73,8 @@ namespace Boare.Cadencii {
             comboDynamics.Items.Clear();
             comboAmplitude.Items.Clear();
             comboPeriod.Items.Clear();
-            foreach ( ClockResolution cr in ClockResolution.GetEnumerator() ) {
+            for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ){
+                ClockResolution cr = (ClockResolution)itr.next();
                 comboDynamics.Items.Add( cr.ToString() );
                 comboAmplitude.Items.Add( cr.ToString() );
                 comboPeriod.Items.Add( cr.ToString() );
@@ -82,14 +84,14 @@ namespace Boare.Cadencii {
             comboPeriod.SelectedIndex = 0;
 
             comboLanguage.Items.Clear();
-            String[] list = Messaging.GetRegisteredLanguage();
+            String[] list = Messaging.getRegisteredLanguage();
             int index = 0;
             comboLanguage.Items.Add( "Default" );
             int count = 0;
             foreach ( String s in list ) {
                 count++;
                 comboLanguage.Items.Add( s );
-                if ( s.Equals( Messaging.Language ) ) {
+                if ( s.Equals( Messaging.getLanguage() ) ) {
                     index = count;
                 }
             }
@@ -587,7 +589,7 @@ namespace Boare.Cadencii {
         }
 
         public static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
         public String Language {
@@ -610,7 +612,8 @@ namespace Boare.Cadencii {
             get {
                 int count = -1;
                 int index = comboDynamics.SelectedIndex;
-                foreach ( ClockResolution vt in ClockResolution.GetEnumerator() ) {
+                for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ){
+                    ClockResolution vt = (ClockResolution)itr.next();
                     count++;
                     if ( count == index ) {
                         return vt;
@@ -621,7 +624,8 @@ namespace Boare.Cadencii {
             }
             set {
                 int count = -1;
-                foreach ( ClockResolution vt in ClockResolution.GetEnumerator() ) {
+                for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ){
+                    ClockResolution vt = (ClockResolution)itr.next();
                     count++;
                     if ( vt.Equals( value ) ) {
                         comboDynamics.SelectedIndex = count;
@@ -792,15 +796,14 @@ namespace Boare.Cadencii {
             }
         }
 
-        public Font BaseFont {
-            get {
-                return m_base_font;
-            }
-            set {
-                m_base_font = value;
-                labelMenuFontName.Text = m_base_font.Name;
-                UpdateFonts( m_base_font.Name );
-            }
+        public java.awt.Font getBaseFont() {
+            return m_base_font;
+        }
+
+        public void setBaseFont( java.awt.Font value ) {
+            m_base_font = value;
+            labelMenuFontName.Text = m_base_font.getName();
+            UpdateFonts( m_base_font.getName() );
         }
 
         public String DefaultSingerName {
@@ -826,9 +829,9 @@ namespace Boare.Cadencii {
         }
 
         private void btnChangeMenuFont_Click( object sender, EventArgs e ) {
-            fontDialog.Font = BaseFont;
+            fontDialog.Font = getBaseFont().font;
             if ( fontDialog.ShowDialog() == DialogResult.OK ) {
-                BaseFont = (Font)fontDialog.Font.Clone();
+                m_base_font.font = (Font)fontDialog.Font.Clone();
             }
         }
 
@@ -945,7 +948,7 @@ namespace Boare.Cadencii {
             set {
                 m_utau_singers.clear();
                 for ( int i = 0; i < value.size(); i++ ) {
-                    m_utau_singers.add( (SingerConfig)value.get( i ).Clone() );
+                    m_utau_singers.add( (SingerConfig)value.get( i ).clone() );
                 }
                 UpdateUtauSingerList();
             }
@@ -1029,8 +1032,8 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "Preference.btnDown_Click; index=" + index );
 #endif
             if ( 0 <= index && index + 1 < m_utau_singers.size() ) {
-                SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).Clone();
-                m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).Clone() );
+                SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
+                m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).clone() );
                 m_utau_singers.set( index + 1, buf );
                 UpdateUtauSingerList();
                 listSingers.Items[index + 1].Selected = true;
@@ -1043,8 +1046,8 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "Preference.btnUp_Click; index=" + index );
 #endif
             if ( 0 <= index - 1 && index < m_utau_singers.size() ) {
-                SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).Clone();
-                m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).Clone() );
+                SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
+                m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).clone() );
                 m_utau_singers.set( index - 1, buf );
                 UpdateUtauSingerList();
                 listSingers.Items[index - 1].Selected = true;

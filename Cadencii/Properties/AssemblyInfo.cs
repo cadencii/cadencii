@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle( "Cadencii" )]
 [assembly: AssemblyDescription( "" )]
-[assembly: AssemblyConfiguration( "$Id: AssemblyInfo.cs 501 2009-09-28 16:30:08Z kbinani $" )]
+[assembly: AssemblyConfiguration( "$Id: AssemblyInfo.cs 574 2009-10-19 16:58:41Z kbinani $" )]
 [assembly: AssemblyCompany( "Boare" )]
 [assembly: AssemblyProduct( "Cadencii" )]
 [assembly: AssemblyCopyright( "Copyright (C) 2008-2009 kbinani. All Rights Reserved." )]
@@ -27,4 +27,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid( "5028b296-d7be-4278-a799-ffaf50026128" )]
 [assembly: AssemblyVersion( "1.0.0.0" )]
 
-[assembly: AssemblyFileVersion( "3.1.0_DRAFT_28Sep2009" )]
+[assembly: AssemblyFileVersion( "3.0.4_DRAFT_20Oct2009" )]

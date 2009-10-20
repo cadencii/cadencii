@@ -25,12 +25,12 @@ namespace Boare.Lib.Media {
 
         public MidiOutDevice( uint device_id ) {
             m_device_id = device_id;
-            windows.midiOutOpen( ref m_handle, m_device_id, null, 0, windows.CALLBACK_NULL );
+            win32.midiOutOpen( ref m_handle, m_device_id, null, 0, win32.CALLBACK_NULL );
         }
 
         public void Close() {
             if ( !m_handle.Equals( IntPtr.Zero ) ) {
-                windows.midiOutClose( m_handle );
+                win32.midiOutClose( m_handle );
             }
         }
 
@@ -55,7 +55,7 @@ namespace Boare.Lib.Media {
             for ( int i = 0; i < data.Length; i++ ) {
                 message |= ((uint)data[i]) << (i * 8);
             }
-            windows.midiOutShortMsg( m_handle, message );
+            win32.midiOutShortMsg( m_handle, message );
         }
 
         private void SendLong( byte[] data ) {
@@ -66,15 +66,15 @@ namespace Boare.Lib.Media {
                 hdr.lpData = (byte*)dataHandle.AddrOfPinnedObject().ToPointer();
                 hdr.dwBufferLength = (uint)data.Length;
                 hdr.dwFlags = 0;
-                windows.midiOutPrepareHeader( m_handle, ref hdr, size );
-                while ( (hdr.dwFlags & windows.WHDR_PREPARED) != windows.WHDR_PREPARED ) {
+                win32.midiOutPrepareHeader( m_handle, ref hdr, size );
+                while ( (hdr.dwFlags & win32.WHDR_PREPARED) != win32.WHDR_PREPARED ) {
                     Application.DoEvents();
                 }
-                windows.midiOutLongMsg( m_handle, ref hdr, size );
-                while ( (hdr.dwFlags & windows.WHDR_DONE) != windows.WHDR_DONE ) {
+                win32.midiOutLongMsg( m_handle, ref hdr, size );
+                while ( (hdr.dwFlags & win32.WHDR_DONE) != win32.WHDR_DONE ) {
                     Application.DoEvents();
                 }
-                windows.midiOutUnprepareHeader( m_handle, ref hdr, size );
+                win32.midiOutUnprepareHeader( m_handle, ref hdr, size );
             } finally {
                 dataHandle.Free();
             }

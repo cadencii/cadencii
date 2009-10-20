@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * BHScrollBar.Designer.cs
  * Copyright (c) 2009 kbinani
  *
@@ -64,3 +65,4 @@ namespace Boare.Lib.AppUtil {
         private System.Windows.Forms.HScrollBar hScroll;
     }
 }
+#endif

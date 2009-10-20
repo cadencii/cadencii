@@ -248,7 +248,7 @@ namespace Boare.WebPOEdit {
                         }
                     }
                 }
-                Messaging.LoadMessages( project_name );
+                Messaging.loadMessages( project_name );
 #if DEBUG
                 if ( commands.Count > 0 ) print( "commands[0].Key=" + commands[0].Key + "; commands[0].Value=" + commands[0].Value );
 #endif
@@ -277,7 +277,7 @@ namespace Boare.WebPOEdit {
                     print( "      <td class=\"header\">Progress</td>" );
                     print( "      <td class=\"header\">Download language config</td>" );
                     print( "    </tr>" );
-                    List<string> languages = new List<string>( Messaging.GetRegisteredLanguage() );
+                    List<string> languages = new List<string>( Messaging.getRegisteredLanguage() );
                     int count = -1;
                     MessageBody mben = new MessageBody( "en", Path.Combine( project_name, "en.po" ) );
                     foreach ( string lang in languages ) {
@@ -304,7 +304,7 @@ namespace Boare.WebPOEdit {
                         int lang_count = 0;
                         foreach ( string id in mben.list.Keys ) {
                             if ( mb.list.ContainsKey( id ) ) {
-                                if ( mb.list[id].Message != id ) {
+                                if ( mb.list[id].message != id ) {
                                     lang_count++;
                                 }
                             }
@@ -373,7 +373,7 @@ namespace Boare.WebPOEdit {
                     // 指定された言語の現在の状態を表示。
                     string lang = commands[0].Value;
 
-                    List<string> keys = new List<string>( Messaging.GetKeys( "en" ) );
+                    List<string> keys = new List<string>( Messaging.getKeys( "en" ) );
                     keys.Sort();
 
                     if ( command0 == "create" ) {
@@ -391,11 +391,11 @@ namespace Boare.WebPOEdit {
                         } else {
                             mb0 = new MessageBody( lang );
                         }
-                        Messaging.Language = "en";
+                        Messaging.setLanguage( "en" );
                         foreach ( string id in keys ) {
                             if ( !mb0.list.ContainsKey( id ) ) {
-                                MessageBodyEntry item = Messaging.GetMessageDetail( id );
-                                MessageBodyEntry add = new MessageBodyEntry( item.Message, item.Location.ToArray() );
+                                MessageBodyEntry item = Messaging.getMessageDetail( id );
+                                MessageBodyEntry add = new MessageBodyEntry( item.message, item.location.ToArray() );
                                 mb0.list.Add( id, add );
                             }
                         }
@@ -404,20 +404,20 @@ namespace Boare.WebPOEdit {
                         //url: http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q=hello%20world&langpair=en%7Cit
                         //{"responseData": {"translatedText":"ciao mondo"}, "responseDetails": null, "responseStatus": 200}
                         foreach ( string en_query in keys ) {
-                            if ( en_query == mb0.GetMessage( en_query ) ) {
+                            if ( en_query == mb0.getMessage( en_query ) ) {
                                 string lang_query = translate( en_query, "en", lang );
                                 string en_revert = translate( lang_query, lang, "en" );
                                 if ( en_query.ToLower() == en_revert.ToLower() ) {
-                                    mb0.list[en_query].Message = lang_query;
+                                    mb0.list[en_query].message = lang_query;
                                     logger.WriteLine( "    translated: {id,value}={" + en_query + "," + lang_query + "}" );
                                 }
                             }
                         }
 
-                        mb0.Write( newpo );
+                        mb0.write( newpo );
                     }
 
-                    bool is_rtl = Util.IsRightToLeftLanguage( lang );
+                    bool is_rtl = Util.isRightToLeftLanguage( lang );
                     logger.WriteLine( DateTime.Now + " " + command0 + "; lang=" + lang + "; author=" + dec_b64( author ) );
 
                     print( "<title>" + project_name + "&nbsp;&gt;&gt;&nbsp;" + lang + "</title>" );
@@ -435,7 +435,7 @@ namespace Boare.WebPOEdit {
                     print( "    <td class=\"header\">English</td>" );
                     print( "    <td class=\"header\">translation</td>" );
                     print( "  </tr>" );
-                    Messaging.Language = lang;
+                    Messaging.setLanguage( lang );
                     MessageBody mb = new MessageBody( lang, Path.Combine( project_name, lang + ".po" ) );
                     if ( command0 == "update" ) {
                         string[] spl = stdin.Split( '&' );
@@ -446,8 +446,8 @@ namespace Boare.WebPOEdit {
                                 string value = dec_url( spl2[1] ).Replace( "\\n", "\n" );
                                 if ( mb.list.ContainsKey( id ) ) {
                                     if ( keys.Contains( id ) ) {
-                                        string old = mb.list[id].Message;
-                                        mb.list[id].Message = value;
+                                        string old = mb.list[id].message;
+                                        mb.list[id].message = value;
                                         if ( old != value ) {
                                             logger.WriteLine( "    replaced: {id,value,old_value}={" + id + "," + value + "," + old + "}" );
                                         }
@@ -460,7 +460,7 @@ namespace Boare.WebPOEdit {
                                 }
                             }
                         }
-                        mb.Write( Path.Combine( project_name, lang + ".po" ) );
+                        mb.write( Path.Combine( project_name, lang + ".po" ) );
                     }
                     int count = -1;
                     foreach ( string key in keys ) {
@@ -472,7 +472,7 @@ namespace Boare.WebPOEdit {
                         string id = enc_b64( key );
                         print( "  <tr>" );
                         print( "    <td class=" + class_kind + ">" + key.Replace( "\n", "\\" + "n" ) + "</td>" );
-                        string msg = mb.GetMessage( key );
+                        string msg = mb.getMessage( key );
                         print( "    <td nowrap class=" + class_kind + ">" );
                         if ( msg == key ) {
                             print( "      <input type=\"text\" name=\"" + id + "\" class=\"highlight\" size=60 value=\"" + msg.Replace( "\n", "\\" + "n" ) + "\">" );
@@ -555,13 +555,13 @@ namespace Boare.WebPOEdit {
 
         static string dec_b64( string s ) {
             s = s.Replace( '_', '=' );
-            byte[] b = Convert.FromBase64String( s );
+            byte[] b = bocoree.Base64.decode( s );
             return Encoding.UTF8.GetString( b );
         }
 
         static string enc_b64( string s ) {
             byte[] b = Encoding.UTF8.GetBytes( s );
-            string ret = Convert.ToBase64String( b );
+            string ret = bocoree.Base64.encode( b );
             return ret.Replace( '=', '_' );
         }
 

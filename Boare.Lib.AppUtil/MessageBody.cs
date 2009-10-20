@@ -11,192 +11,235 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.apputil;
+
+import java.util.*;
+import java.io.*;
+import java.awt.image.*;
+import org.kbinani.*;
+#else
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
+using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Lib.AppUtil {
+    using boolean = System.Boolean;
+#endif
 
     public class MessageBody {
-        public string lang;
-        public string po_header = "";
-        public Dictionary<string, MessageBodyEntry> list = new Dictionary<string, MessageBodyEntry>();
+        public String lang;
+        public String poHeader = "";
+        public TreeMap<String, MessageBodyEntry> list = new TreeMap<String, MessageBodyEntry>();
 
-        public MessageBody( string lang_ ) {
+        public MessageBody( String lang_ ) {
             lang = lang_;
         }
 
-        public MessageBody( string lang, string[] ids, string[] messages ) {
+        public MessageBody( String lang, String[] ids, String[] messages ) {
             this.lang = lang;
-            list = new Dictionary<string, MessageBodyEntry>();
+            list = new TreeMap<String, MessageBodyEntry>();
             for( int i = 0; i < ids.Length; i++ ) {
-                list.Add( ids[i], new MessageBodyEntry( messages[i], new string[] { } ) );
+                list.put( ids[i], new MessageBodyEntry( messages[i], new String[] { } ) );
             }
         }
 
-        public MessageBody( string lang_, string file ) {
+        public MessageBody( String lang_, String file ) {
             lang = lang_;
-            po_header = "";
-            using ( StreamReader sr = new StreamReader( file ) ) {
-                while ( sr.Peek() >= 0 ) {
-                    string msgid;
-                    string first_line = sr.ReadLine();
-                    string[] location;
-                    string last_line = ReadTillMessageEnd( sr, first_line, "msgid", out msgid, out location );
-                    string msgstr;
-                    string[] location_dumy;
-                    last_line = ReadTillMessageEnd( sr, last_line, "msgstr", out msgstr, out location_dumy );
-                    if ( msgid.Length > 0 ) {
-                        if ( list.ContainsKey( msgid ) ) {
-                            list[msgid] = new MessageBodyEntry( msgstr, location );
-                        } else {
-                            list.Add( msgid, new MessageBodyEntry( msgstr, location ) );
-                        }
+            poHeader = "";
+            BufferedReader sr = null;
+            try {
+                sr = new BufferedReader( new FileReader( file ) );
+                String line2 = "";
+                while ( (line2 = sr.readLine()) != null ) {
+                    ByRef<String> msgid = new ByRef<String>( "" );
+                    String first_line = line2;
+                    ByRef<String[]> location = new ByRef<String[]>();
+                    String last_line = readTillMessageEnd( sr, first_line, "msgid", msgid, location );
+                    ByRef<String> msgstr = new ByRef<String>( "" );
+                    ByRef<String[]> location_dumy = new ByRef<String[]>();
+                    last_line = readTillMessageEnd( sr, last_line, "msgstr", msgstr, location_dumy );
+                    if ( PortUtil.getStringLength( msgid.value ) > 0 ) {
+                        list.put( msgid.value, new MessageBodyEntry( msgstr.value, location.value ) );
                     } else {
-                        po_header = msgstr;
-                        string[] spl = po_header.Split( new char[] { (char)0x0d, (char)0x0a }, StringSplitOptions.RemoveEmptyEntries );
-                        po_header = "";
+                        poHeader = msgstr.value;
+                        String[] spl = PortUtil.splitString( poHeader, new char[] { (char)0x0d, (char)0x0a }, true );
+                        poHeader = "";
                         int count = 0;
-                        foreach ( string line in spl ) {
-                            string[] spl2 = line.Split( new char[] { ':' }, 2 );
+                        for ( int i = 0; i < spl.Length; i++ ) {
+                            String line = spl[i];
+                            String[] spl2 = PortUtil.splitString( line, new char[] { ':' }, 2 );
                             if ( spl2.Length == 2 ) {
-                                string name = spl2[0].Trim();
-                                if ( name.ToLower() == "Content-Type".ToLower() ) {
-                                    po_header += (count == 0 ? "" : "\n") + "Content-Type: text/plain; charset=UTF-8";
-                                } else if ( name.ToLower() == "Content-Transfer-Encoding".ToLower() ) {
-                                    po_header += (count == 0 ? "" : "\n") + "Content-Transfer-Encoding: 8bit";
+                                String name = spl2[0].Trim();
+                                String ct = "Content-Type";
+                                String cte = "Content-Transfer-Encoding";
+                                if ( name.ToLower().Equals( ct.ToLower() ) ) {
+                                    poHeader += (count == 0 ? "" : "\n") + "Content-Type: text/plain; charset=UTF-8";
+                                } else if ( name.ToLower().Equals( cte.ToLower() ) ) {
+                                    poHeader += (count == 0 ? "" : "\n") + "Content-Transfer-Encoding: 8bit";
                                 } else {
-                                    po_header += (count == 0 ? "" : "\n") + line;
+                                    poHeader += (count == 0 ? "" : "\n") + line;
                                 }
                             } else {
-                                po_header += (count == 0 ? "" : "\n") + line;
+                                poHeader += (count == 0 ? "" : "\n") + line;
                             }
                             count++;
                         }
                     }
                 }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sr != null ) {
+                    try {
+                        sr.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
             }
-#if DEBUG
-            Console.WriteLine( "MessageBody..ctor; po_header=" + po_header );
-#endif
         }
 
-        public string GetMessage( string id ) {
-            if ( list.ContainsKey( id ) ) {
-                string ret = list[id].Message;
-                if ( ret == "" ) {
+        public String getMessage( String id ) {
+            if ( list.containsKey( id ) ) {
+                String ret = list.get( id ).message;
+                if ( ret.Equals( "" ) ) {
                     return id;
                 } else {
-                    return list[id].Message;
+                    return list.get( id ).message;
                 }
             }
             return id;
         }
 
-        public MessageBodyEntry GetMessageDetail( string id ) {
-            if ( list.ContainsKey( id ) ) {
-                string ret = list[id].Message;
-                if ( ret == "" ) {
-                    return new MessageBodyEntry( id, new string[] { } );
+        public MessageBodyEntry getMessageDetail( String id ) {
+            if ( list.containsKey( id ) ) {
+                String ret = list.get( id ).message;
+                if ( ret.Equals( "" ) ) {
+                    return new MessageBodyEntry( id, new String[] { } );
                 } else {
-                    return list[id];
+                    return list.get( id );
                 }
             }
-            return new MessageBodyEntry( id, new string[] { } );
+            return new MessageBodyEntry( id, new String[] { } );
         }
 
-        public void Write( string file ) {
-            using ( StreamWriter sw = new StreamWriter( file ) ) {
-                if ( po_header != "" ) {
-                    sw.WriteLine( "msgid \"\"" );
-                    sw.WriteLine( "msgstr \"\"" );
-                    string[] spl = po_header.Split( new char[] { (char)0x0d, (char)0x0a }, StringSplitOptions.RemoveEmptyEntries );
-                    foreach ( string line in spl ) {
-                        sw.WriteLine( "\"" + line + "\\" + "n\"" );
+        public void write( String file ) {
+            BufferedWriter sw = null;
+            try {
+                sw = new BufferedWriter( new FileWriter( file ) );
+                if ( !poHeader.Equals( "" ) ) {
+                    sw.write( "msgid \"\"" );
+                    sw.newLine();
+                    sw.write( "msgstr \"\"" );
+                    sw.newLine();
+                    String[] spl = PortUtil.splitString( poHeader, new char[] { (char)0x0d, (char)0x0a }, true );
+                    for ( int i = 0; i < spl.Length; i++ ){
+                        String line = spl[i];
+                        sw.write( "\"" + line + "\\" + "n\"" );
+                        sw.newLine();
                     }
-                    sw.WriteLine();
+                    sw.newLine();
                 } else {
-                    sw.WriteLine( "msgid \"\"" );
-                    sw.WriteLine( "msgstr \"\"" );
-                    sw.WriteLine( "\"Content-Type: text/plain; charset=UTF-8\\" + "n\"" );
-                    sw.WriteLine( "\"Content-Transfer-Encoding: 8bit\\" + "n\"" );
-                    sw.WriteLine();
+                    sw.write( "msgid \"\"" );
+                    sw.newLine();
+                    sw.write( "msgstr \"\"" );
+                    sw.newLine();
+                    sw.write( "\"Content-Type: text/plain; charset=UTF-8\\" + "n\"" );
+                    sw.newLine();
+                    sw.write( "\"Content-Transfer-Encoding: 8bit\\" + "n\"" );
+                    sw.newLine();
+                    sw.newLine();
                 }
-                foreach ( string key in list.Keys ) {
-                    string skey = key.Replace( "\n", "\\n\"\n\"" );
-                    string s = list[key].Message;
-                    List<string> location = list[key].Location;
-                    for ( int i = 0; i < location.Count; i++ ) {
-                        sw.WriteLine( "#: " + location[i] );
+                for ( Iterator itr = list.keySet().iterator(); itr.hasNext(); ){
+                    String key = (String)itr.next();
+                    String skey = key.Replace( "\n", "\\n\"\n\"" );
+                    MessageBodyEntry mbe = list.get( key );
+                    String s = mbe.message;
+                    Vector<String> location = mbe.location;
+                    int count = location.size();
+                    for ( int i = 0; i < count; i++ ) {
+                        sw.write( "#: " + location.get( i ) );
+                        sw.newLine();
                     }
-                    sw.WriteLine( "msgid \"" + skey + "\"" );
+                    sw.write( "msgid \"" + skey + "\"" );
+                    sw.newLine();
                     s = s.Replace( "\n", "\\n\"\n\"" );
-                    sw.WriteLine( "msgstr \"" + s + "\"" );
-                    sw.WriteLine();
+                    sw.write( "msgstr \"" + s + "\"" );
+                    sw.newLine();
+                    sw.newLine();
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw != null ) {
+                    try {
+                        sw.close();
+                    } catch ( Exception ex2 ) {
+                    }
                 }
             }
         }
 
-        private static void SeparateEntryAndMessage( string source, out string entry, out string message ) {
-            string line = source.Trim();
-            entry = "";
-            message = "";
-            if ( line.Length <= 0 ) {
+        private static void separateEntryAndMessage( String source, ByRef<String> entry, ByRef<String> message ) {
+            String line = source.Trim();
+            entry.value = "";
+            message.value = "";
+            if ( PortUtil.getStringLength( line ) <= 0 ) {
                 return;
             }
             int index_space = line.IndexOf( ' ' );
             int index_dquoter = line.IndexOf( '"' );
             int index = Math.Min( index_dquoter, index_space );
-            entry = line.Substring( 0, index );
-            message = line.Substring( index_dquoter + 1 );
-            message = message.Substring( 0, message.Length - 1 );
+            entry.value = line.Substring( 0, index );
+            message.value = line.Substring( index_dquoter + 1 );
+            message.value = message.value.Substring( 0, PortUtil.getStringLength( message.value ) - 1 );
         }
 
-        private static string ReadTillMessageEnd( StreamReader sr, string first_line, string entry, out string msg, out string[] locations ) {
-            msg = "";
-            string line = first_line;
-            List<string> location = new List<string>();
-            bool entry_found = false;
+        private static String readTillMessageEnd( BufferedReader sr, String first_line, String entry, ByRef<String> msg, ByRef<String[]> locations )
+#if JAVA
+            throws IOException
+#endif
+        {
+            msg.value = "";
+            String line = first_line;
+            Vector<String> location = new Vector<String>();
+            boolean entry_found = false;
             if ( line.StartsWith( entry ) ) {
                 // 1行目がすでに"entry"の行だった場合
-                string dum, dum2;
-                SeparateEntryAndMessage( line, out dum, out dum2 );
-                msg += dum2;
+                ByRef<String> dum = new ByRef<String>( "" );
+                ByRef<String> dum2 = new ByRef<String>( "" );
+                separateEntryAndMessage( line, dum, dum2 );
+                msg.value += dum2.value;
             } else {
-                while ( true ) {
+                while ( (line = sr.readLine()) != null ) {
                     if ( line.StartsWith( "#:" ) ) {
                         line = line.Substring( 2 ).Trim();
-                        location.Add( line );
+                        location.add( line );
                     } else if ( line.StartsWith( entry ) ) {
-                        string dum, dum2;
-                        SeparateEntryAndMessage( line, out dum, out dum2 );
-                        msg += dum2;
-                        break;
-                    }
-                    if ( sr.Peek() >= 0 ) {
-                        line = sr.ReadLine();
-                    } else {
+                        ByRef<String> dum = new ByRef<String>( "" );
+                        ByRef<String> dum2 = new ByRef<String>( "" );
+                        separateEntryAndMessage( line, dum, dum2 );
+                        msg.value += dum2.value;
                         break;
                     }
                 }
             }
-            locations = location.ToArray();
-            string ret = "";
-            while ( sr.Peek() >= 0 ) {
-                line = sr.ReadLine();
+            locations.value = location.toArray( new String[] { } );
+            String ret = "";
+            while ( (line = sr.readLine()) != null ) {
                 if ( !line.StartsWith( "\"" ) ) {
-                    msg = msg.Replace( "\\\"", "\"" );
-                    msg = msg.Replace( "\\n", "\n" );
+                    msg.value = msg.value.Replace( "\\\"", "\"" );
+                    msg.value = msg.value.Replace( "\\n", "\n" );
                     return line;
                 }
                 int index = line.LastIndexOf( "\"" );
-                msg += line.Substring( 1, index - 1 );
+                msg.value += line.Substring( 1, index - 1 );
             }
-            msg = msg.Replace( "\\\"", "\"" );
-            msg = msg.Replace( "\\n", "\n" );
+            msg.value = msg.value.Replace( "\\\"", "\"" );
+            msg.value = msg.value.Replace( "\\n", "\n" );
             return line;
         }
     }
 
+#if !JAVA
 }
+#endif

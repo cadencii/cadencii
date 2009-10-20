@@ -62,7 +62,7 @@ namespace Boare.Lib.Media {
 #if DEBUG
             Console.WriteLine( "WavePlay.wave_callback; uMsg=" + uMsg );
 #endif
-            if ( uMsg == windows.MM_WOM_DONE ) {
+            if ( uMsg == win32.MM_WOM_DONE ) {
                 int index_done = 0;
                 WAVEHDR whdr = (WAVEHDR)Marshal.PtrToStructure( new IntPtr( dwParam1 ), typeof( WAVEHDR ) );
                 int dwuser = whdr.dwUser.ToInt32();
@@ -163,7 +163,7 @@ namespace Boare.Lib.Media {
 #if DEBUG
                     bocoree.debug.push_log( "calling waveOutWrite...; s_hawve_out=0x" + Convert.ToString( s_hwave_out.ToInt32(), 16 ) );
 #endif
-                    uint ret = windows.waveOutWrite( s_hwave_out, ref s_wave_header[0], (uint)sizeof( WAVEHDR ) );
+                    uint ret = win32.waveOutWrite( s_hwave_out, ref s_wave_header[0], (uint)sizeof( WAVEHDR ) );
 #if DEBUG
                     bocoree.debug.push_log( "...done; ret=" + ret );
 #endif
@@ -181,7 +181,7 @@ namespace Boare.Lib.Media {
 #if DEBUG
                         bocoree.debug.push_log( "calling waveOutWrite...; s_hawve_out=0x" + Convert.ToString( s_hwave_out.ToInt32(), 16 ) );
 #endif
-                        uint ret2 = windows.waveOutWrite( s_hwave_out, ref s_wave_header[buffer_index], (uint)sizeof( WAVEHDR ) );
+                        uint ret2 = win32.waveOutWrite( s_hwave_out, ref s_wave_header[buffer_index], (uint)sizeof( WAVEHDR ) );
 #if DEBUG
                         bocoree.debug.push_log( "...done; ret2=" + ret2 );
 #endif
@@ -192,7 +192,7 @@ namespace Boare.Lib.Media {
 #if DEBUG
                     bocoree.debug.push_log( "calling waveOutWrite...; s_hawve_out=0x" + Convert.ToString( s_hwave_out.ToInt32(), 16 ) );
 #endif
-                    uint ret3 = windows.waveOutWrite( s_hwave_out, ref s_wave_header[s_current_buffer], (uint)sizeof( WAVEHDR ) );
+                    uint ret3 = win32.waveOutWrite( s_hwave_out, ref s_wave_header[s_current_buffer], (uint)sizeof( WAVEHDR ) );
 #if DEBUG
                     bocoree.debug.push_log( "...done; ret3=" + ret3 );
 #endif
@@ -229,7 +229,7 @@ namespace Boare.Lib.Media {
 #if DEBUG
                     bocoree.debug.push_log( "calling waveOutWrite...; s_hawve_out=0x" + Convert.ToString( s_hwave_out.ToInt32(), 16 ) );
 #endif
-                    uint ret35 = windows.waveOutWrite( s_hwave_out, ref s_wave_header[0], (uint)sizeof( WAVEHDR ) );
+                    uint ret35 = win32.waveOutWrite( s_hwave_out, ref s_wave_header[0], (uint)sizeof( WAVEHDR ) );
 #if DEBUG
                     bocoree.debug.push_log( "...done; ret35=" + ret35 );
                     bocoree.debug.push_log( "(s_first_buffer_written_callback==null)=" + (s_first_buffer_written_callback == null) );
@@ -247,7 +247,7 @@ namespace Boare.Lib.Media {
 #if DEBUG
                         bocoree.debug.push_log( "calling waveOutWrite...; s_hawve_out=0x" + Convert.ToString( s_hwave_out.ToInt32(), 16 ) );
 #endif
-                        uint ret36 = windows.waveOutWrite( s_hwave_out, ref s_wave_header[i], (uint)sizeof( WAVEHDR ) );
+                        uint ret36 = win32.waveOutWrite( s_hwave_out, ref s_wave_header[i], (uint)sizeof( WAVEHDR ) );
 #if DEBUG
                         bocoree.debug.push_log( "...done; ret36=" + ret36 );
 #endif
@@ -276,7 +276,7 @@ namespace Boare.Lib.Media {
 #if DEBUG
                 bocoree.debug.push_log( "calling waveOutWrite...; s_hawve_out=0x" + Convert.ToString( s_hwave_out.ToInt32(), 16 ) );
 #endif
-                uint ret4 = windows.waveOutWrite( s_hwave_out, ref s_wave_header[s_current_buffer], (uint)sizeof( WAVEHDR ) );
+                uint ret4 = win32.waveOutWrite( s_hwave_out, ref s_wave_header[s_current_buffer], (uint)sizeof( WAVEHDR ) );
 #if DEBUG
                 bocoree.debug.push_log( "...done; ret4=" + ret4 );
 #endif
@@ -316,7 +316,7 @@ namespace Boare.Lib.Media {
             //byte* err = (byte*)ptr_err.ToPointer();
             //System.Text.StringBuilder sb = new System.Text.StringBuilder( 260 );
             string ret = "";
-            windows.mciGetErrorStringA( msg, ret, 260 );
+            win32.mciGetErrorStringA( msg, ret, 260 );
             /*int len = 260;
             for ( int i = 1; i < 260; i++ ) {
                 if ( err[i] == '\0' ) {
@@ -349,7 +349,7 @@ namespace Boare.Lib.Media {
             Console.WriteLine( "    s_wave_fomratx.cbSize=" + s_wave_formatx.cbSize );
             Console.WriteLine( "    sizeof( WAVEHDR )=" + sizeof( WAVEHDR ) );
 #endif
-            s_wave_formatx.wFormatTag = windows.WAVE_FORMAT_PCM;
+            s_wave_formatx.wFormatTag = win32.WAVE_FORMAT_PCM;
             s_wave_formatx.nChannels = 2;
             s_wave_formatx.wBitsPerSample = 16;
             s_wave_formatx.nBlockAlign = (ushort)(s_wave_formatx.nChannels * s_wave_formatx.wBitsPerSample / 8);
@@ -359,12 +359,12 @@ namespace Boare.Lib.Media {
             s_wave_callback = new delegateWaveOutProc( wave_callback );
             s_hwave_out = IntPtr.Zero;
             Console.WriteLine( "    calling waveOutOpen..." );
-            uint ret = windows.waveOutOpen( ref s_hwave_out, 
-                                            windows.WAVE_MAPPER, 
+            uint ret = win32.waveOutOpen( ref s_hwave_out,
+                                            win32.WAVE_MAPPER, 
                                             ref s_wave_formatx,
                                             s_wave_callback,
-                                            IntPtr.Zero, 
-                                            (uint)windows.CALLBACK_FUNCTION );
+                                            IntPtr.Zero,
+                                            (uint)win32.CALLBACK_FUNCTION );
             Console.WriteLine( "    ...done; ret=" + ret );
 #if DEBUG
             bocoree.debug.push_log( "    s_hwave_out=0x" + Convert.ToString( s_hwave_out.ToInt32(), 16 ) );
@@ -377,13 +377,13 @@ namespace Boare.Lib.Media {
                 s_wave_header[k] = (WAVEHDR)Marshal.PtrToStructure( s_ptr_wave_header[k], typeof( WAVEHDR ) );
                 s_wave_header[k].lpData = s_ptr_wave[k];
                 s_wave_header[k].dwBufferLength = (uint)(sizeof( uint ) * s_block_size);
-                s_wave_header[k].dwFlags = windows.WHDR_BEGINLOOP | windows.WHDR_ENDLOOP;
+                s_wave_header[k].dwFlags = win32.WHDR_BEGINLOOP | win32.WHDR_ENDLOOP;
                 s_wave_header[k].dwLoops = 1;
 
 #if DEBUG
                 Console.WriteLine( "calling waveOutPrepareHeader..." );
 #endif
-                uint ret2 = windows.waveOutPrepareHeader( s_hwave_out, ref s_wave_header[k], (uint)sizeof( WAVEHDR ) );
+                uint ret2 = win32.waveOutPrepareHeader( s_hwave_out, ref s_wave_header[k], (uint)sizeof( WAVEHDR ) );
 #if DEBUG
                 Console.WriteLine( "...done; ret2=" + ret2 );
 #endif
@@ -428,18 +428,18 @@ namespace Boare.Lib.Media {
             if ( s_playing ) {
                 MMTIME mmt = new MMTIME();
                 mmt.cb = (uint)sizeof( MMTIME );
-                mmt.wType = windows.TIME_MS;
-                uint ret = windows.waveOutGetPosition( s_hwave_out, ref mmt, (uint)sizeof( MMTIME ) );
+                mmt.wType = win32.TIME_MS;
+                uint ret = win32.waveOutGetPosition( s_hwave_out, ref mmt, (uint)sizeof( MMTIME ) );
 #if DEBUG
                 bocoree.debug.push_log( "    ret=" + ret );
 #endif
                 float ms = 0.0f;
                 switch ( mmt.wType ) {
-                    case windows.TIME_MS:
+                    case win32.TIME_MS:
                         return mmt.ms * 0.001f;
-                    case windows.TIME_SAMPLES:
+                    case win32.TIME_SAMPLES:
                         return (float)mmt.sample / (float)s_wave_formatx.nSamplesPerSec;
-                    case windows.TIME_BYTES:
+                    case win32.TIME_BYTES:
                         return (float)mmt.cb / (float)s_wave_formatx.nAvgBytesPerSec;
                     default:
                         return -1.0f;
@@ -456,7 +456,7 @@ namespace Boare.Lib.Media {
                 for ( int k = 0; k < _NUM_BUF; k++ ) {
                     s_wave_header[k].dwUser = new IntPtr( _NUM_BUF + k );
                 }
-                windows.waveOutReset( s_hwave_out );
+                win32.waveOutReset( s_hwave_out );
                 uint zero = MAKELONG( 0, 0 );
                 for ( int k = 0; k < _NUM_BUF; k++ ) {
                     for ( int i = 0; i < s_block_size; i++ ) {
@@ -560,14 +560,14 @@ namespace Boare.Lib.Media {
 
         public void terminate() {
             if ( s_hwave_out.ToInt32() != 0 ) {
-                windows.waveOutReset( s_hwave_out );
+                win32.waveOutReset( s_hwave_out );
 #if DEBUG
                 bocoree.debug.push_log( "waveplay::terminate; waveOutReset" );
 #endif
                 for ( int k = 0; k < _NUM_BUF; k++ ) {
-                    windows.waveOutUnprepareHeader( s_hwave_out, ref s_wave_header[k], (uint)sizeof( WAVEHDR ) );
+                    win32.waveOutUnprepareHeader( s_hwave_out, ref s_wave_header[k], (uint)sizeof( WAVEHDR ) );
                 }
-                windows.waveOutClose( s_hwave_out );
+                win32.waveOutClose( s_hwave_out );
             }
             for ( int i = 0; i < _NUM_BUF; i++ ) {
                 if ( s_ptr_wave[i].ToInt32() != 0 ) {

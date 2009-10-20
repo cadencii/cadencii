@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * CommandTreeUnit.cs
  * Copyright (c) 2008-2009 kbinani
  *
@@ -13,9 +14,9 @@
  */
 using System;
 using System.Collections.Generic;
-
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
 
 namespace Boare.Cadencii {
 
@@ -27,3 +28,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

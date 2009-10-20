@@ -1,11 +1,35 @@
-﻿using System;
+﻿/*
+ * IconHandle.cs
+ * Copyright (c) 2008-2009 kbinani
+ *
+ * This file is part of Boare.Lib.Vsq.
+ *
+ * Boare.Lib.Vsq is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
+ *
+ * Boare.Lib.Vsq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+#if JAVA
+package org.kbinani.vsq;
 
-namespace Boare.Lib.Vsq {
+import java.io.*;
+#else
+using System;
 
+namespace Boare.Lib.Vsq
+{
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class IconHandle implements Cloneable, Serializable
+#else
     [Serializable]
-    public class IconHandle : ICloneable {
+    public class IconHandle : ICloneable
+#endif
+    {
         public String Caption = "";
         public String IconID = "";
         public String IDS = "";
@@ -15,37 +39,55 @@ namespace Boare.Lib.Vsq {
         public int Program;
         public int Language;
 
-        public IconHandle() {
+        public IconHandle()
+        {
         }
 
-        public boolean equals( IconHandle item ) {
-            if ( item == null ) {
+        public int getLength()
+        {
+            return Length;
+        }
+
+        public void setLength( int value )
+        {
+            Length = value;
+        }
+
+        public boolean equals( IconHandle item )
+        {
+            if ( item == null )
+            {
                 return false;
-            } else {
+            }
+            else
+            {
                 return IconID.Equals( item.IconID );
             }
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             IconHandle ret = new IconHandle();
             ret.Caption = Caption;
             ret.IconID = IconID;
             ret.IDS = IDS;
             ret.Index = Index;
             ret.Language = Language;
-            ret.Length = Length;
+            ret.setLength( Length );
             ret.Original = Original;
             ret.Program = Program;
             return ret;
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
-        public VsqHandle castToVsqHandle() {
+        public VsqHandle castToVsqHandle()
+        {
             VsqHandle ret = new VsqHandle();
             ret.m_type = VsqHandleType.Singer;
             ret.Caption = Caption;
@@ -53,10 +95,12 @@ namespace Boare.Lib.Vsq {
             ret.IDS = IDS;
             ret.Index = Index;
             ret.Language = Language;
-            ret.Length = Length;
+            ret.setLength( Length );
             ret.Program = Program;
             return ret;
         }
     }
 
+#if !JAVA
 }
+#endif

@@ -45,7 +45,7 @@ namespace Boare.Cadencii {
         public override object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, object value ) {
             if ( value is String ) {
                 CalculatableString obj = new CalculatableString();
-                obj.str = (String)value;
+                obj.setStr( (String)value );
                 return obj;
             }
             return base.ConvertFrom( context, culture, value );

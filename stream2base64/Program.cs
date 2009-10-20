@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-
+using bocoree;
 //using Boare.Lib.AppUtil;
 
 namespace DevUtl {
@@ -23,7 +23,7 @@ namespace DevUtl {
             using ( FileStream fs = new FileStream( args[0], FileMode.Open ) ) {
                 byte[] b = new byte[fs.Length];
                 fs.Read( b, 0, b.Length );
-                str = Convert.ToBase64String( b );
+                str = Base64.encode( b );
             }
             int length = str.Length;
             int split_length = 100;

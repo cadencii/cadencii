@@ -11,25 +11,40 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.media.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
+#else
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-
 using Boare.Lib.AppUtil;
-using Boare.Lib.Vsq;
 using Boare.Lib.Media;
-using bocoree;
+using Boare.Lib.Vsq;
+using bocoree.util;
+using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
-
+namespace Boare.Cadencii
+{
     using boolean = System.Boolean;
     using Integer = Int32;
+#endif
 
     /// <summary>
     /// レンダリングの進捗状況を表示しながら，バックグラウンドでレンダリングを行うフォーム．フォームのLoadと同時にレンダリングが始まる．
     /// </summary>
-    public partial class FormSynthesize : Form {
+#if JAVA
+    public class FormSynthesize extends BForm
+#else
+    public class FormSynthesize : BForm
+#endif
+    {
         private VsqFileEx m_vsq;
         private int m_presend = 500;
         private int[] m_tracks;
@@ -49,7 +64,8 @@ namespace Boare.Cadencii {
                                int clock_start,
                                int clock_end,
                                int temp_premeasure,
-                               boolean reflect_amp_to_wave ) {
+                               boolean reflect_amp_to_wave )
+        {
             m_vsq = vsq;
             m_presend = presend;
             m_tracks = new int[] { track };
@@ -63,10 +79,11 @@ namespace Boare.Cadencii {
             m_temp_premeasure = temp_premeasure;
             m_reflect_amp_to_wave = reflect_amp_to_wave;
             ApplyLanguage();
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
-        
-        public FormSynthesize( VsqFileEx vsq, int presend, int[] tracks, String[] files, int end, boolean reflect_amp_to_wave ) {
+
+        public FormSynthesize( VsqFileEx vsq, int presend, int[] tracks, String[] files, int end, boolean reflect_amp_to_wave )
+        {
             m_vsq = vsq;
             m_presend = presend;
             m_tracks = tracks;
@@ -78,66 +95,80 @@ namespace Boare.Cadencii {
             m_clock_end = end;
             m_reflect_amp_to_wave = reflect_amp_to_wave;
             ApplyLanguage();
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
+        public void ApplyLanguage()
+        {
             this.Text = _( "Synthesize" );
             lblSynthesizing.Text = _( "now synthesizing..." );
             btnCancel.Text = _( "Cancel" );
         }
 
-        private static String _( String id ) {
-            return Messaging.GetMessage( id );
+        private static String _( String id )
+        {
+            return Messaging.getMessage( id );
         }
 
         /// <summary>
         /// レンダリングが完了したトラックのリストを取得します
         /// </summary>
-        public int[] Finished {
-            get {
+        public int[] Finished
+        {
+            get
+            {
                 Vector<Integer> list = new Vector<Integer>();
-                for ( int i = 0; i <= m_finished; i++ ) {
+                for ( int i = 0; i <= m_finished; i++ )
+                {
                     list.Add( m_tracks[i] );
                 }
-                return list.toArray( new Integer[]{} );
+                return list.toArray( new Integer[] { } );
             }
         }
 
-        private void FormSynthesize_Load( object sender, EventArgs e ) {
+        private void FormSynthesize_Load( object sender, EventArgs e )
+        {
             Start();
         }
 
-        private void Start() {
-            if ( VSTiProxy.CurrentUser.Equals( "" ) ) {
+        private void Start()
+        {
+            if ( VSTiProxy.CurrentUser.Equals( "" ) )
+            {
                 VSTiProxy.CurrentUser = AppManager.getID();
                 timer.Enabled = true;
                 m_rendering_started = true;
                 bgWork.RunWorkerAsync();
-            } else {
+            }
+            else
+            {
                 m_rendering_started = false;
                 this.DialogResult = DialogResult.Cancel;
             }
         }
 
-        private void UpdateProgress( int value ) {
+        private void UpdateProgress( Object sender, int value )
+        {
             progressWhole.Value = value > progressWhole.Maximum ? progressWhole.Maximum : value;
             lblProgress.Text = value + "/" + m_tracks.Length;
             m_finished = value - 1;
         }
 
-        private void bgWork_DoWork( object sender, DoWorkEventArgs e ) {
+        private void bgWork_DoWork( object sender, DoWorkEventArgs e )
+        {
             double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
             double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.MasterPanpot );
             double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.MasterPanpot );
-            if ( m_partial_mode ) {
-                this.Invoke( new BSimpleDelegate<int>( this.UpdateProgress ), new object[] { (object)1 } );
+            if ( m_partial_mode )
+            {
+                this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (object)1 );
                 double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Feder );
                 double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
                 double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
                 double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
                 double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
-                using ( WaveWriter ww = new WaveWriter( m_files[0] ) ) {
+                using ( WaveWriter ww = new WaveWriter( m_files[0] ) )
+                {
                     VSTiProxy.render( m_vsq,
                                       m_tracks[0],
                                       ww,
@@ -151,12 +182,16 @@ namespace Boare.Cadencii {
                                       AppManager.getTempWaveDir(),
                                       m_reflect_amp_to_wave );
                 }
-            } else {
-                for ( int i = 0; i < m_tracks.Length; i++ ) {
-                    this.Invoke( new BSimpleDelegate<int>( this.UpdateProgress ), new object[] { (object)(i + 1) } );
+            }
+            else
+            {
+                for ( int i = 0; i < m_tracks.Length; i++ )
+                {
+                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (object)(i + 1) );
                     Vector<VsqNrpn> nrpn = new Vector<VsqNrpn>( VsqFile.generateNRPN( m_vsq, m_tracks[i], m_presend ) );
                     int count = m_vsq.Track.get( m_tracks[i] ).getEventCount();
-                    if ( count > 0 ) {
+                    if ( count > 0 )
+                    {
 #if DEBUG
                         AppManager.debugWriteLine( "FormSynthesize+bgWork_DoWork" );
                         AppManager.debugWriteLine( "    System.IO.Directory.GetCurrentDirectory()=" + System.IO.Directory.GetCurrentDirectory() );
@@ -169,7 +204,8 @@ namespace Boare.Cadencii {
                         double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
                         int total_clocks = m_vsq.TotalClocks;
                         double total_sec = m_vsq.getSecFromClock( total_clocks );
-                        using ( WaveWriter ww = new WaveWriter( m_files[i] ) ) {
+                        using ( WaveWriter ww = new WaveWriter( m_files[i] ) )
+                        {
                             VSTiProxy.render( m_vsq,
                                               m_tracks[i],
                                               ww,
@@ -188,58 +224,223 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void FormSynthesize_FormClosing( object sender, FormClosingEventArgs e ) {
+        private void FormSynthesize_FormClosing( object sender, FormClosingEventArgs e )
+        {
             timer.Enabled = false;
-            if ( m_rendering_started ) {
+            if ( m_rendering_started )
+            {
                 VSTiProxy.CurrentUser = "";
             }
-            if ( bgWork.IsBusy ) {
+            if ( bgWork.IsBusy )
+            {
                 VSTiProxy.abortRendering();
                 bgWork.CancelAsync();
-                while ( bgWork.IsBusy ) {
+                while ( bgWork.IsBusy )
+                {
                     Application.DoEvents();
                 }
                 DialogResult = DialogResult.Cancel;
-            } else {
+            }
+            else
+            {
                 DialogResult = DialogResult.OK;
             }
         }
 
-        private void bgWork_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e ) {
+        private void bgWork_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e )
+        {
             timer.Enabled = false;
             DialogResult = DialogResult.OK;
             this.Close();
         }
 
-        private void timer_Tick( object sender, EventArgs e ) {
+        private void timer_Tick( object sender, EventArgs e )
+        {
             double progress = VSTiProxy.getProgress();
             TimeSpan elapsed = new TimeSpan( 0, 0, (int)VSTiProxy.getElapsedSeconds() );
-            if ( progress >= 0.0 ) {
-                TimeSpan remaining = new TimeSpan( 0, 0, 0, (int)VSTiProxy.computeRemainintSeconds() );
+            TimeSpan remaining = new TimeSpan( 0, 0, 0, (int)VSTiProxy.computeRemainintSeconds() );
+            if ( progress >= 0.0 && remaining.TotalSeconds >= 0.0 )
+            {
                 lblTime.Text = _( "Remaining" ) + " " + getTimeSpanString( remaining ) + " (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")";
-            } else {
+            }
+            else
+            {
                 lblTime.Text = _( "Remaining" ) + " [unknown] (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")";
             }
             progressOne.Value = (int)progress > 100 ? 100 : (int)progress;
         }
 
-        private static String getTimeSpanString( TimeSpan span ) {
+        private static String getTimeSpanString( TimeSpan span )
+        {
             String ret = "";
             boolean added = false;
-            if ( span.Days > 0 ) {
+            if ( span.Days > 0 )
+            {
                 ret += span.Days + _( "day" ) + " ";
                 added = true;
             }
-            if ( added || span.Hours > 0 ) {
+            if ( added || span.Hours > 0 )
+            {
                 ret += string.Format( added ? "{0:d2}" : "{0}", span.Hours ) + _( "hour" ) + " ";
                 added = true;
             }
-            if ( added || span.Minutes > 0 ) {
+            if ( added || span.Minutes > 0 )
+            {
                 ret += string.Format( added ? "{0:d2}" : "{0}", span.Minutes ) + _( "min" ) + " ";
                 added = true;
             }
             return ret + string.Format( added ? "{0:d2}" : "{0}", span.Seconds ) + _( "sec" );
         }
+
+#if JAVA
+        #region UI Impl for Java
+        #endregion
+#else
+        #region UI Impl for C#
+        /// <summary>
+        /// 必要なデザイナ変数です。
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// 使用中のリソースをすべてクリーンアップします。
+        /// </summary>
+        /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
+        protected override void Dispose( boolean disposing )
+        {
+            if ( disposing && (components != null) )
+            {
+                components.Dispose();
+            }
+            base.Dispose( disposing );
+        }
+
+        #region Windows フォーム デザイナで生成されたコード
+
+        /// <summary>
+        /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
+        /// コード エディタで変更しないでください。
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.progressWhole = new System.Windows.Forms.ProgressBar();
+            this.lblSynthesizing = new System.Windows.Forms.Label();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.progressOne = new System.Windows.Forms.ProgressBar();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.bgWork = new System.ComponentModel.BackgroundWorker();
+            this.timer = new System.Windows.Forms.Timer( this.components );
+            this.lblTime = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            // 
+            // progressWhole
+            // 
+            this.progressWhole.Location = new System.Drawing.Point( 12, 49 );
+            this.progressWhole.Name = "progressWhole";
+            this.progressWhole.Size = new System.Drawing.Size( 345, 23 );
+            this.progressWhole.TabIndex = 0;
+            // 
+            // lblSynthesizing
+            // 
+            this.lblSynthesizing.AutoSize = true;
+            this.lblSynthesizing.Location = new System.Drawing.Point( 12, 9 );
+            this.lblSynthesizing.Name = "lblSynthesizing";
+            this.lblSynthesizing.Size = new System.Drawing.Size( 98, 12 );
+            this.lblSynthesizing.TabIndex = 1;
+            this.lblSynthesizing.Text = "now synthesizing...";
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Location = new System.Drawing.Point( 336, 9 );
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size( 23, 12 );
+            this.lblProgress.TabIndex = 2;
+            this.lblProgress.Text = "1/1";
+            this.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // progressOne
+            // 
+            this.progressOne.Location = new System.Drawing.Point( 12, 78 );
+            this.progressOne.Name = "progressOne";
+            this.progressOne.Size = new System.Drawing.Size( 345, 23 );
+            this.progressOne.TabIndex = 3;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point( 277, 113 );
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size( 80, 23 );
+            this.btnCancel.TabIndex = 4;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // bgWork
+            // 
+            this.bgWork.WorkerReportsProgress = true;
+            this.bgWork.WorkerSupportsCancellation = true;
+            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
+            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
+            // 
+            // timer
+            // 
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler( this.timer_Tick );
+            // 
+            // lblTime
+            // 
+            this.lblTime.AutoSize = true;
+            this.lblTime.Location = new System.Drawing.Point( 12, 29 );
+            this.lblTime.Name = "lblTime";
+            this.lblTime.Size = new System.Drawing.Size( 137, 12 );
+            this.lblTime.TabIndex = 5;
+            this.lblTime.Text = "remaining 0s (elapsed 0s)";
+            // 
+            // FormSynthesize
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size( 371, 158 );
+            this.Controls.Add( this.lblTime );
+            this.Controls.Add( this.btnCancel );
+            this.Controls.Add( this.progressOne );
+            this.Controls.Add( this.lblProgress );
+            this.Controls.Add( this.lblSynthesizing );
+            this.Controls.Add( this.progressWhole );
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "FormSynthesize";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Synthesize";
+            this.Load += new System.EventHandler( this.FormSynthesize_Load );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormSynthesize_FormClosing );
+            this.ResumeLayout( false );
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.ProgressBar progressWhole;
+        private System.Windows.Forms.Label lblSynthesizing;
+        private System.Windows.Forms.Label lblProgress;
+        private System.Windows.Forms.ProgressBar progressOne;
+        private System.Windows.Forms.Button btnCancel;
+        private System.ComponentModel.BackgroundWorker bgWork;
+        private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.Label lblTime;
+        #endregion
+#endif
+
     }
 
+#if !JAVA
 }
+#endif

@@ -14,13 +14,14 @@
 using System;
 using System.Threading;
 using System.Collections.Generic;
-
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+    using Integer = System.Int32;
 
     public static class MidiPlayer {
         /// <summary>
@@ -51,7 +52,7 @@ namespace Boare.Cadencii {
 
         private static System.Threading.Thread m_thread;
         private static boolean m_stop_required = false;
-        private static DateTime m_started;
+        private static double m_started;
         private static VsqFileEx m_vsq;
         private static float m_speed = 1.0f;
         private static int m_started_clock;
@@ -81,14 +82,14 @@ namespace Boare.Cadencii {
         public static void RestartMetronome() {
             m_stop_metronome_required = false;
             if ( m_vsq != null ) {
-                DateTime now = DateTime.Now;
-                double elapsed = (now.Subtract( m_started ).TotalSeconds + 0.25) * m_speed;
+                double now = PortUtil.getCurrentTime();
+                double elapsed = ((now - m_started) + 0.25) * m_speed;
                 int clock = (int)m_vsq.getClockFromSec( m_started_sec + elapsed );
 
-                int numerator, denominator, bar;
-                m_vsq.getTimesigAt( clock, out numerator, out denominator, out bar );
-                int clock_at_bartop = m_vsq.getClockFromBarCount( bar );
-                int clock_step = 480 * 4 / denominator;
+                ByRef<Integer> bar = new ByRef<Integer>();
+                Timesig timesig = m_vsq.getTimesigAt( clock, bar );
+                int clock_at_bartop = m_vsq.getClockFromBarCount( bar.value );
+                int clock_step = 480 * 4 / timesig.denominator;
                 int next_clock = clock_at_bartop + ((clock - clock_at_bartop) / clock_step + 1) * clock_step;
 
                 MidiQueue mq = new MidiQueue();
@@ -101,7 +102,7 @@ namespace Boare.Cadencii {
                 mq.Done += new MidiQueueDoneEventHandler( ReGenerateMidiQueue );
                 s_queue.add( mq );
 
-                if ( (next_clock - clock_at_bartop) % (numerator * clock_step) == 0 ) {
+                if ( (next_clock - clock_at_bartop) % (timesig.numerator * clock_step) == 0 ) {
                     MidiQueue mq_bell = new MidiQueue();
                     mq_bell.Track = 0;
                     mq_bell.Clock = next_clock;
@@ -133,8 +134,8 @@ namespace Boare.Cadencii {
             return m_speed;
         }
 
-        public static void SetSpeed( float speed, DateTime now ) {
-            m_started = now;
+        public static void SetSpeed( float speed, double now_sec ) {
+            m_started = now_sec;
             m_speed = speed;
             m_temp_exit = true;
         }
@@ -179,7 +180,7 @@ namespace Boare.Cadencii {
         /// <param name="vsq"></param>
         /// <param name="start_clock"></param>
         /// <param name="start"></param>
-        public static void Start( VsqFileEx vsq, int start_clock, DateTime start ) {
+        public static void Start( VsqFileEx vsq, int start_clock, double start_time ) {
             s_queue.clear();
             m_stop_required = false;
             m_stop_metronome_required = false;
@@ -194,20 +195,20 @@ namespace Boare.Cadencii {
 
             m_vsq = (VsqFileEx)vsq.Clone();
             m_started_sec = m_vsq.getSecFromClock( start_clock );
-            int numerator, denominator, bar;
-            m_vsq.getTimesigAt( start_clock, out numerator, out denominator, out bar );
-            int clock_at_bartop = m_vsq.getClockFromBarCount( bar );
-            int clock_step = 480 * 4 / denominator;
+            ByRef<Integer> bar = new ByRef<Integer>();
+            Timesig timesig = m_vsq.getTimesigAt( start_clock, bar );
+            int clock_at_bartop = m_vsq.getClockFromBarCount( bar.value );
+            int clock_step = 480 * 4 / timesig.denominator;
             int next_clock = clock_at_bartop + ((start_clock - clock_at_bartop) / clock_step + 1) * clock_step;
-            m_started = start;
+            m_started = start_time;
             m_started_clock = start_clock;
             m_temp_exit = false;
 
             if ( AppManager.editorConfig.MetronomeEnabled ) {
                 MidiQueue mq = new MidiQueue();
                 double tick_sec = m_vsq.getSecFromClock( next_clock );
-                int next_bar;
-                m_vsq.getTimesigAt( next_clock, out numerator, out denominator, out next_bar );
+                ByRef<Integer> next_bar = new ByRef<Integer>();
+                timesig = m_vsq.getTimesigAt( next_clock, next_bar );
                 mq.Track = 0;
                 mq.Clock = next_clock;
                 mq.Channel = 14;
@@ -217,7 +218,7 @@ namespace Boare.Cadencii {
                 mq.Done += new MidiQueueDoneEventHandler( ReGenerateMidiQueue );
                 s_queue.add( mq );
 
-                if ( RingBell && next_bar != bar ) {
+                if ( RingBell && next_bar.value != bar.value ) {
                     MidiQueue mq_bell = new MidiQueue();
                     mq_bell.Track = 0;
                     mq_bell.Clock = next_clock;
@@ -262,13 +263,13 @@ namespace Boare.Cadencii {
             Vector<MidiQueue> ret = new Vector<MidiQueue>();
             if ( sender.Track == 0 ) {
                 if ( AppManager.editorConfig.MetronomeEnabled ) {
-                    int numerator, denominator, bar;
-                    m_vsq.getTimesigAt( sender.Clock, out numerator, out denominator, out bar );
-                    int clock_step = 480 * 4 / denominator;
+                    ByRef<Integer> bar = new ByRef<Integer>();
+                    Timesig timesig = m_vsq.getTimesigAt( sender.Clock, bar );
+                    int clock_step = 480 * 4 / timesig.denominator;
                     int next_clock = sender.Clock + clock_step;
 
-                    int next_bar;
-                    m_vsq.getTimesigAt( next_clock, out numerator, out denominator, out next_bar );
+                    ByRef<Integer> next_bar = new ByRef<Integer>();
+                    timesig = m_vsq.getTimesigAt( next_clock, next_bar );
 
                     MidiQueue mq = new MidiQueue();
                     mq.Track = 0;
@@ -280,7 +281,7 @@ namespace Boare.Cadencii {
                     mq.Done += new MidiQueueDoneEventHandler( ReGenerateMidiQueue );
                     ret.add( mq );
 
-                    if ( RingBell && next_bar != bar ) {
+                    if ( RingBell && next_bar.value != bar.value ) {
                         MidiQueue mq_bell = new MidiQueue();
                         mq_bell.Track = 0;
                         mq_bell.Clock = next_clock;
@@ -353,10 +354,10 @@ namespace Boare.Cadencii {
                 }
                 int clock = s_queue.get( 0 ).Clock;
                 double tick_sec = m_vsq.getSecFromClock( clock );
-                DateTime next_tick = m_started.AddSeconds( (tick_sec - m_started_sec) / m_speed );
-                DateTime now = DateTime.Now;
-                TimeSpan ts = next_tick.Subtract( now );
-                if ( ts.TotalMilliseconds <= 0 ) {
+                double next_tick = m_started + ((tick_sec - m_started_sec) / m_speed);
+                double now = PortUtil.getCurrentTime();
+                double time_span = next_tick - now;
+                if ( time_span <= 0 ) {
                     Vector<MidiQueue> add = new Vector<MidiQueue>();
                     while ( s_queue.size() > 0 && s_queue.get( 0 ).Clock == clock ) {
                         if ( s_queue.get( 0 ).Done != null ) {
@@ -374,14 +375,14 @@ namespace Boare.Cadencii {
                     Collections.sort( s_queue );
                     continue;
                 }
-                int wait_millisec = (int)next_tick.Subtract( DateTime.Now ).TotalMilliseconds - PreUtterance;
+                int wait_millisec = (int)((next_tick - PortUtil.getCurrentTime()) * 1000.0) - PreUtterance;
                 int thiswait = (wait_millisec > TOLERANCE_MILLISEC * 2) ? TOLERANCE_MILLISEC * 2 : wait_millisec;
 #if DEBUG
                 AppManager.debugWriteLine( "Metronome.ThreadProc; wait_millisec=" + wait_millisec );
 #endif
                 while ( thiswait > TOLERANCE_MILLISEC ) {
                     Thread.Sleep( thiswait );
-                    wait_millisec = (int)next_tick.Subtract( DateTime.Now ).TotalMilliseconds - PreUtterance;
+                    wait_millisec = (int)((next_tick - PortUtil.getCurrentTime()) * 1000.0) - PreUtterance;
                     if ( wait_millisec < TOLERANCE_MILLISEC || m_stop_required ) {
                         break;
                     }

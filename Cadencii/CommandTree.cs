@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * CommandTree.cs
  * Copyright (c)2009 kbinani
  *
@@ -123,3 +124,4 @@ namespace Boare.Cadencii {
     }
 #endif
 }
+#endif

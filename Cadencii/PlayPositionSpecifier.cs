@@ -11,15 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 namespace Boare.Cadencii {
+#endif
 
     public struct PlayPositionSpecifier {
-        public int BarCount;
-        public int Beat;
-        public int Clock;
-        public int Numerator;
-        public int Denominator;
-        public int Tempo;
+        public int barCount;
+        public int beat;
+        public int clock;
+        public int numerator;
+        public int denominator;
+        public int tempo;
     }
 
+#if !JAVA
 }
+#endif

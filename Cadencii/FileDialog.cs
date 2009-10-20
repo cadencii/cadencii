@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * FileDialog.cs
  * Copyright (c) 2009 kbinani
  *
@@ -19,14 +20,16 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
-
 using bocoree;
+using bocoree.util;
+using bocoree.io;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
 
     using boolean = System.Boolean;
 
-    public partial class FileDialog : Form {
+    public partial class FileDialog : BForm {
         private String m_initial_directory = "";
         private String m_current_directory = "";
         private SortType m_sort_type = SortType.Name;
@@ -470,3 +473,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

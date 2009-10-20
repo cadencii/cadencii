@@ -30,7 +30,7 @@ namespace Boare.Cadencii {
             ApplyLanguage();
             m_master_tuning = master_tuning_in_cent;
             txtMasterTuning.Text = master_tuning_in_cent.ToString();
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public void ApplyLanguage() {
@@ -41,7 +41,7 @@ namespace Boare.Cadencii {
         }
 
         private String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
         public int MasterTuningInCent {

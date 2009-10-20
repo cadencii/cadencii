@@ -14,15 +14,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-
 using Boare.Lib.AppUtil;
 using bocoree;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
 
     using boolean = System.Boolean;
 
-    public unsafe partial class FormMidiConfig : Form {
+    public unsafe partial class FormMidiConfig : BForm {
         private byte m_program_normal;
         private byte m_program_bell;
         private byte m_note_normal;
@@ -31,13 +31,14 @@ namespace Boare.Cadencii {
         private int m_pre_utterance;
         private uint m_device_metronome;
         private uint m_device_general;
-        private DateTime m_preview_started;
+        private double m_preview_started;
         private float m_speed;
+        private boolean m_metronome_enabled_init_stat;
 
         public FormMidiConfig() {
             InitializeComponent();
             ApplyLanguage();
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
 
             m_program_normal = MidiPlayer.ProgramNormal;
             m_program_bell = MidiPlayer.ProgramBell;
@@ -49,15 +50,17 @@ namespace Boare.Cadencii {
             m_device_general = MidiPlayer.DeviceGeneral;
             m_speed = MidiPlayer.GetSpeed();
 
-            MidiPlayer.SetSpeed( 1.0f, DateTime.Now );
+            m_metronome_enabled_init_stat = AppManager.editorConfig.MetronomeEnabled;
+            AppManager.editorConfig.MetronomeEnabled = true;
+            MidiPlayer.SetSpeed( 1.0f, PortUtil.getCurrentTime() );
 
             comboDeviceMetronome.Items.Clear();
             comboDeviceGeneral.Items.Clear();
             try {
-                uint num_devs = windows.midiOutGetNumDevs();
+                uint num_devs = win32.midiOutGetNumDevs();
                 for ( uint i = 0; i < num_devs; i++ ) {
                     MIDIOUTCAPSA caps = new MIDIOUTCAPSA();
-                    windows.midiOutGetDevCapsA( i, ref caps, (uint)Marshal.SizeOf( caps ) );
+                    win32.midiOutGetDevCapsA( i, ref caps, (uint)Marshal.SizeOf( caps ) );
                     comboDeviceMetronome.Items.Add( i + ": " + caps.szPname );
                     comboDeviceGeneral.Items.Add( i + ": " + caps.szPname );
                 }
@@ -79,7 +82,7 @@ namespace Boare.Cadencii {
         }
 
         public static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
         public void ApplyLanguage() {
@@ -139,7 +142,7 @@ namespace Boare.Cadencii {
 
         private void chkPreview_CheckedChanged( object sender, EventArgs e ) {
             if ( chkPreview.Checked ) {
-                m_preview_started = DateTime.Now;
+                m_preview_started = PortUtil.getCurrentTime();
                 MidiPlayer.Start( new VsqFileEx( "Miku", 2, 4, 4, 500000 ), 0, m_preview_started );
             } else {
                 MidiPlayer.Stop();
@@ -148,7 +151,7 @@ namespace Boare.Cadencii {
 
         private void FormMidiConfig_FormClosing( object sender, FormClosingEventArgs e ) {
             MidiPlayer.Stop();
-            MidiPlayer.SetSpeed( m_speed, DateTime.Now );
+            MidiPlayer.SetSpeed( m_speed, PortUtil.getCurrentTime() );
             if ( this.DialogResult == DialogResult.OK ) {
                 AppManager.editorConfig.MidiRingBell = MidiPlayer.RingBell;
                 AppManager.editorConfig.MidiDeviceGeneral.PortNumber = (int)MidiPlayer.DeviceGeneral;
@@ -169,6 +172,7 @@ namespace Boare.Cadencii {
                 MidiPlayer.ProgramBell = m_program_bell;
                 MidiPlayer.ProgramNormal = m_program_normal;
             }
+            AppManager.editorConfig.MetronomeEnabled = m_metronome_enabled_init_stat;
         }
     }
 

@@ -115,10 +115,10 @@ namespace Boare.Lib.AppUtil {
         public void ApplyLanguage() {
             string about = string.Format( _( "About {0}" ), m_app_name );
             string credit = _( "Credit" );
-            Size size1 = Util.MeasureString( about, btnFlip.Font );
-            Size size2 = Util.MeasureString( credit, btnFlip.Font );
-            m_button_width_about = Math.Max( 75, (int)(size1.Width * 1.3) );
-            m_button_width_credit = Math.Max( 75, (int)(size2.Width * 1.3) );
+            bocoree.awt.Dimension size1 = Util.measureString( about, new bocoree.awt.Font( btnFlip.Font ) );
+            bocoree.awt.Dimension size2 = Util.measureString( credit, new bocoree.awt.Font( btnFlip.Font ) );
+            m_button_width_about = Math.Max( 75, (int)(size1.width * 1.3) );
+            m_button_width_credit = Math.Max( 75, (int)(size2.width * 1.3) );
             if( m_credit_mode ) {
                 btnFlip.Width = m_button_width_about;
                 btnFlip.Text = about;

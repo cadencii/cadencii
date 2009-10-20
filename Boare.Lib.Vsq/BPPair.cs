@@ -12,7 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.boare.vsq;
+package org.kbinani.vsq;
+
+import java.io.*;
 #else
 using System;
 
@@ -23,10 +25,10 @@ namespace Boare.Lib.Vsq {
     /// Stores the paired value of "Clock" and integer. Mainly used in VsqBPList
     /// </summary>
 #if JAVA
-    class BPPair implements Comparable<BPPair> {
+    public class BPPair implements Comparable<BPPair>, Serializable{
 #else
     [Serializable]
-    public class BPPair : IComparable<BPPair> {
+    public class BPPair : IComparable<BPPair>{
 #endif
         public int Clock;
         public int Value;
@@ -46,9 +48,11 @@ namespace Boare.Lib.Vsq {
             }
         }
 
+#if !JAVA
         public int CompareTo( BPPair item ) {
             return compareTo( item );
         }
+#endif
 
         public BPPair( int clock_, int value_ ) {
             Clock = clock_;

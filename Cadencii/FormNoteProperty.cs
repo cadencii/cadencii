@@ -14,17 +14,19 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using Boare.Lib.Vsq;
 using Boare.Lib.AppUtil;
+using bocoree.windows.forms;
+using bocoree;
+using bocoreex.swing;
 
 namespace Boare.Cadencii {
 
-    public partial class FormNoteProperty : Form {
+    public partial class FormNoteProperty : BForm {
         public FormNoteProperty() {
             InitializeComponent();
             ApplyLanguage();
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public void ApplyLanguage() {
@@ -32,16 +34,15 @@ namespace Boare.Cadencii {
         }
 
         private static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
-        public Keys FormCloseShortcutKey {
-            get {
-                return menuClose.ShortcutKeys;
-            }
-            set {
-                menuClose.ShortcutKeys = value;
-            }
+        public BKeys[] getFormCloseShortcutKey() {
+            return PortUtil.getBKeysFromKeyStroke( menuClose.getAccelerator() );
+        }
+
+        public void setFormCloseShortcutKey( BKeys[] value ) {
+            menuClose.setAccelerator( PortUtil.getKeyStrokeFromBKeys( value ) );
         }
 
         private void menuClose_Click( object sender, EventArgs e ) {

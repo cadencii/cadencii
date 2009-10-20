@@ -82,7 +82,7 @@ namespace Boare.Lib.Media {
             //Open the file
             int result = VFW.AVIFileOpenW(
                 ref aviFile, fileName,
-                (int)windows.OF_SHARE_DENY_WRITE, 0 );
+                (int)win32.OF_SHARE_DENY_WRITE, 0 );
 
             if ( result != 0 ) {
                 throw new Exception( "Exception in AVIFileOpen: " + result.ToString() );

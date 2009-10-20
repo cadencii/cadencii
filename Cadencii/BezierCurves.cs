@@ -11,15 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.util.*;
+#else
 using System;
 using System.Collections.Generic;
-
 using bocoree;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
     using Integer = Int32;
+#endif
 
     /// <summary>
     /// AtatchedCurveをXMLシリアライズするためのクラス
@@ -81,7 +87,8 @@ namespace Boare.Cadencii {
 
         public BezierChain getBezierChain( CurveType curve_type, int chain_id ) {
             Vector<BezierChain> list = this.get( curve_type );
-            for ( int i = 0; i < list.size(); i++ ) {
+            int count = list.size();
+            for ( int i = 0; i < count; i++ ) {
                 if ( list.get( i ).id == chain_id ) {
                     return list.get( i );
                 }
@@ -91,7 +98,8 @@ namespace Boare.Cadencii {
 
         public void setBezierChain( CurveType curve_type, int chain_id, BezierChain item ) {
             Vector<BezierChain> list = this.get( curve_type );
-            for ( int i = 0; i < list.size(); i++ ) {
+            int count = list.size();
+            for ( int i = 0; i < count; i++ ) {
                 if ( list.get( i ).id == chain_id ) {
                     list.set( i, item );
                     break;
@@ -162,7 +170,7 @@ namespace Boare.Cadencii {
                         chain.points.get( 0 ).setControlLeftType( BezierControlType.None );
 
                         int copy_start = 0;
-                        if ( bc_edit.points.get( last ).getBase().Y == chain.points.get( 0 ).getBase().Y ) {
+                        if ( bc_edit.points.get( last ).getBase().getY() == chain.points.get( 0 ).getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
                             if ( bc_edit.points.get( last ).getControlLeftType() != BezierControlType.None ) {
                                 bc_edit.points.get( last ).setControlLeftType( BezierControlType.Master );
@@ -174,7 +182,7 @@ namespace Boare.Cadencii {
                             copy_start = 1;
                         }
                         for ( int i = copy_start; i < chain.points.size(); i++ ) {
-                            chain.points.get( i ).ID = bc_edit.getNextId();
+                            chain.points.get( i ).setID( bc_edit.getNextId() );
                             bc_edit.add( chain.points.get( i ) );
                         }
                         //this[curve].Remove( id );
@@ -195,7 +203,7 @@ namespace Boare.Cadencii {
                         chain.points.get( last ).setControlRightType( BezierControlType.None );
 
                         int copy_end = last;
-                        if ( chain.points.get( last ).getBase().Y == bc_edit.points.get( 0 ).getBase().Y ) {
+                        if ( chain.points.get( last ).getBase().getY() == bc_edit.points.get( 0 ).getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
                             if ( chain.points.get( last ).getControlLeftType() != BezierControlType.None ) {
                                 chain.points.get( last ).setControlLeftType( BezierControlType.Master );
@@ -207,7 +215,7 @@ namespace Boare.Cadencii {
                             copy_end = last - 1;
                         }
                         for ( int i = 0; i <= copy_end; i++ ) {
-                            chain.points.get( i ).ID = bc_edit.getNextId();
+                            chain.points.get( i ).setID( bc_edit.getNextId() );
                             bc_edit.add( chain.points.get( i ) );
                         }
                         //this[curve].Remove( id );
@@ -233,7 +241,7 @@ namespace Boare.Cadencii {
                         int copy_start = 0;
                         int copy_end = chain.size() - 1;
 
-                        if ( left.points.get( left.size() - 1 ).getBase().Y == chain.points.get( 0 ).getBase().Y ) {
+                        if ( left.points.get( left.size() - 1 ).getBase().getY() == chain.points.get( 0 ).getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
                             if ( left.points.get( left.size() - 1 ).getControlLeftType() != BezierControlType.None ) {
                                 left.points.get( left.size() - 1 ).setControlLeftType( BezierControlType.Master );
@@ -245,7 +253,7 @@ namespace Boare.Cadencii {
                             copy_start = 1;
                         }
 
-                        if ( chain.points.get( chain.size() - 1 ).getBase().Y == right.points.get( 0 ).getBase().Y ) {
+                        if ( chain.points.get( chain.size() - 1 ).getBase().getY() == right.points.get( 0 ).getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
                             if ( chain.points.get( chain.size() - 1 ).getControlLeftType() != BezierControlType.None ) {
                                 chain.points.get( chain.size() - 1 ).setControlLeftType( BezierControlType.Master );
@@ -259,11 +267,11 @@ namespace Boare.Cadencii {
 
                         // 追加
                         for ( int i = copy_start; i <= copy_end; i++ ) {
-                            chain.points.get( i ).ID = left.getNextId();
+                            chain.points.get( i ).setID( left.getNextId() );
                             left.add( chain.points.get( i ) );
                         }
                         for ( int i = 0; i < right.points.size(); i++ ) {
-                            right.points.get( i ).ID = left.getNextId();
+                            right.points.get( i ).setID( left.getNextId() );
                             left.add( right.points.get( i ) );
                         }
                         //this[curve].Remove( id );
@@ -292,7 +300,7 @@ namespace Boare.Cadencii {
             boolean edited = false;
             for ( Iterator itr1 = target_curve.iterator(); itr1.hasNext(); ){
                 CurveType curve = (CurveType)itr1.next();
-                if ( curve.IsScalar || curve.IsAttachNote ) {
+                if ( curve.isScalar() || curve.isAttachNote() ) {
                     continue;
                 }
                 Vector<BezierChain> tmp = new Vector<BezierChain>();
@@ -302,12 +310,12 @@ namespace Boare.Cadencii {
                     if ( len < 1 ) {
                         continue;
                     }
-                    int chain_start = (int)bc.points.get( 0 ).getBase().X;
+                    int chain_start = (int)bc.points.get( 0 ).getBase().getX();
                     int chain_end;
                     if ( len < 2 ) {
                         chain_end = chain_start;
                     } else {
-                        chain_end = (int)bc.points.get( len - 1 ).getBase().X;
+                        chain_end = (int)bc.points.get( len - 1 ).getBase().getX();
                     }
                     if ( clock_end < chain_start && chain_start < clock_end && clock_end < chain_end ) {
                         // end ~ chain_endを残す
@@ -372,7 +380,7 @@ namespace Boare.Cadencii {
         /// <param name="curve_type"></param>
         /// <param name="chain"></param>
         public void addBezierChain( CurveType curve_type, BezierChain chain, int chain_id ) {
-            int index = curve_type.Index;
+            int index = curve_type.getIndex();
             BezierChain add = (BezierChain)chain.Clone();
             add.id = chain_id;
             this.get( curve_type ).add( add );
@@ -380,22 +388,26 @@ namespace Boare.Cadencii {
 
         public Object clone() {
             BezierCurves ret = new BezierCurves();
-            foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
+            for( int j = 0; j < AppManager.CURVE_USAGE.Length; j++ ){
+                CurveType ct = AppManager.CURVE_USAGE[j];
                 Vector<BezierChain> src = this.get( ct );
                 ret.set( ct, new Vector<BezierChain>() );
-                for ( int i = 0; i < src.size(); i++ ) {
-                    ret.get( ct ).add( (BezierChain)src.get( i ).Clone() );
+                int count = src.size();
+                for ( int i = 0; i < count; i++ ) {
+                    ret.get( ct ).add( (BezierChain)src.get( i ).clone() );
                 }
             }
             return ret;
         }
 
+#if !JAVA
         public object Clone() {
             return clone();
         }
+#endif
 
         public int getNextId( CurveType curve_type ) {
-            int index = curve_type.Index;
+            int index = curve_type.getIndex();
             Vector<BezierChain> bc = this.get( curve_type );
             int ret = bc.size();// m_curves[index].Count;
             /*while ( m_curves[index].ContainsKey( ret ) ) {
@@ -526,4 +538,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

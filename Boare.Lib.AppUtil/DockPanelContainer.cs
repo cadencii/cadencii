@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !JAVA
+using System;
 using System.Windows.Forms;
 
 namespace Boare.Lib.AppUtil {
@@ -7,3 +8,4 @@ namespace Boare.Lib.AppUtil {
     }
 
 }
+#endif

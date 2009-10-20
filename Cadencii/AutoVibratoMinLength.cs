@@ -11,15 +11,19 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 namespace Boare.Cadencii {
+#endif
 
-    public enum AutoVibratoMinLength : int {
-        L1 = 1,
-        L2 = 2,
-        L3 = 3,
-        L4 = 4,
+    public enum AutoVibratoMinLength {
+        L1,
+        L2,
+        L3,
+        L4,
     }
 
+#if !JAVA
 }
+#endif

@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 //#define VECTOR_TEST
-namespace bocoree {
+namespace bocoree.util {
 
     public static class Collections {
         public static void sort<T>( Vector<T> list ) {

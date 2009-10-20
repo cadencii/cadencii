@@ -11,9 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System.Drawing;
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.awt.*;
+#else
+using bocoree.awt;
 
 namespace Boare.Cadencii {
+#endif
 
     public struct RgbColor {
         public int R;
@@ -26,11 +32,11 @@ namespace Boare.Cadencii {
             B = b;
         }
 
-        public Color Color {
-            get {
-                return Color.FromArgb( R, G, B );
-            }
+        public Color getColor() {
+            return new Color( R, G, B );
         }
     }
 
+#if !JAVA
 }
+#endif

@@ -1,3 +1,4 @@
+#if !JAVA
 /*
  * ColorBar.cs
  * Copyright (c) 2008-2009 kbinani
@@ -120,7 +121,7 @@ namespace Boare.Lib.AppUtil {
                         h = oport_colorbar_rainbow_banded_h( y );
                         s = oport_colorbar_rainbow_banded_s( y );
                         v = oport_colorbar_rainbow_banded_v( y );
-                        HsvToRgb( h, s, v, out r, out g, out b );
+                        Util.HsvToRgb( h, s, v, out r, out g, out b );
                         red = (int)(r * 255.0);
                         green = (int)(g * 255.0);
                         blue = (int)(b * 255.0);
@@ -139,7 +140,7 @@ namespace Boare.Lib.AppUtil {
                         h = oport_colorbar_rainbow_striped_h( y );
                         s = oport_colorbar_rainbow_striped_s( y );
                         v = oport_colorbar_rainbow_striped_v( y );
-                        HsvToRgb( h, s, v, out r, out g, out  b );
+                        Util.HsvToRgb( h, s, v, out r, out g, out  b );
                         red = (int)(r * 255.0);
                         green = (int)(g * 255.0);
                         blue = (int)(b * 255.0);
@@ -1116,3 +1117,4 @@ namespace Boare.Lib.AppUtil {
     }
 
 }
+#endif

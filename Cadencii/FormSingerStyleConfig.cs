@@ -14,16 +14,16 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
-
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
 
     using boolean = Boolean;
 
-    partial class FormSingerStyleConfig : Form {
+    partial class FormSingerStyleConfig : BForm {
         boolean m_apply_current_track = false;
 
         public void ApplyLanguage() {
@@ -45,7 +45,7 @@ namespace Boare.Cadencii {
         }
 
         public static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
         public int PMBendDepth {
@@ -117,7 +117,7 @@ namespace Boare.Cadencii {
             InitializeComponent();
             ApplyLanguage();
 
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             Size current_size = this.ClientSize;
         }
 
@@ -254,10 +254,10 @@ namespace Boare.Cadencii {
         }
 
         private void btnApply_Click( object sender, EventArgs e ) {
-            if ( MessageBox.Show( _( "Would you like to change singer style for all events?" ),
+            if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME, 
                                   MessageBoxButtons.YesNo, 
-                                  MessageBoxIcon.Exclamation ) == DialogResult.Yes ) {
+                                  MessageBoxIcon.Exclamation ) == BDialogResult.YES ) {
                 m_apply_current_track = true;
                 DialogResult = DialogResult.OK;
             }

@@ -11,17 +11,27 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.vsq;
+
+import java.io.*;
+import org.kbinani.*;
+#else
 using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Text;
-
 using bocoree;
+using bocoree.io;
 
-namespace Boare.Lib.Vsq {
+namespace Boare.Lib.Vsq
+{
+#endif
 
+#if JAVA
+    public class UstEvent implements Cloneable, Serializable
+#else
     [Serializable]
-    public class UstEvent : ICloneable {
+    public class UstEvent : ICloneable
+#endif
+    {
         public String Tag;
         public int Length = 0;
         public String Lyric = "";
@@ -39,31 +49,48 @@ namespace Boare.Lib.Vsq {
         public int Moduration = 100;
         public int Index;
 
-        public UstEvent(){
+        public UstEvent()
+        {
         }
 
-        public object Clone() {
+        public int getLength()
+        {
+            return Length;
+        }
+
+        public void setLength( int value )
+        {
+            Length = value;
+        }
+
+        public Object clone()
+        {
             UstEvent ret = new UstEvent();
-            ret.Length = Length;
+            ret.setLength( Length );
             ret.Lyric = Lyric;
             ret.Note = Note;
             ret.Intensity = Intensity;
             ret.PBType = PBType;
-            if ( Pitches != null ) {
+            if ( Pitches != null )
+            {
                 ret.Pitches = new float[Pitches.Length];
-                for ( int i = 0; i < Pitches.Length; i++ ) {
+                for ( int i = 0; i < Pitches.Length; i++ )
+                {
                     ret.Pitches[i] = Pitches[i];
                 }
             }
             ret.Tempo = Tempo;
-            if ( Vibrato != null ) {
-                ret.Vibrato = (UstVibrato)Vibrato.Clone();
+            if ( Vibrato != null )
+            {
+                ret.Vibrato = (UstVibrato)Vibrato.clone();
             }
-            if ( Portamento != null ) {
-                ret.Portamento = (UstPortamento)Portamento.Clone();
+            if ( Portamento != null )
+            {
+                ret.Portamento = (UstPortamento)Portamento.clone();
             }
-            if ( Envelope != null ) {
-                ret.Envelope = (UstEnvelope)Envelope.Clone();
+            if ( Envelope != null )
+            {
+                ret.Envelope = (UstEnvelope)Envelope.clone();
             }
             ret.PreUtterance = PreUtterance;
             ret.VoiceOverlap = VoiceOverlap;
@@ -73,57 +100,104 @@ namespace Boare.Lib.Vsq {
             return ret;
         }
 
-        public void print( StreamWriter sw ) {
-            if ( this.Index == int.MinValue ) {
-                sw.WriteLine( "[#PREV]" );
-            } else if ( this.Index == int.MaxValue ) {
-                sw.WriteLine( "[#NEXT]" );
-            } else {
-                sw.WriteLine( String.Format( "[#{0:d4}]", Index ) );
+#if !JAVA
+        public object Clone()
+        {
+            return clone();
+        }
+#endif
+
+        public void print( BufferedWriter sw )
+#if JAVA
+            throws IOException
+#endif
+        {
+            if ( this.Index == int.MinValue )
+            {
+                sw.write( "[#PREV]" );
+                sw.newLine();
             }
-            sw.WriteLine( "Length=" + Length );
-            sw.WriteLine( "Lyric=" + Lyric );
-            sw.WriteLine( "NoteNum=" + Note );
-            if ( Intensity >= 0 ) {
-                sw.WriteLine( "Intensity=" + Intensity );
+            else if ( this.Index == int.MaxValue )
+            {
+                sw.write( "[#NEXT]" );
+                sw.newLine();
             }
-            if ( PBType >= 0 && Pitches != null ) {
-                sw.WriteLine( "PBType=" + PBType );
-                sw.Write( "Piches=" );
-                for ( int i = 0; i < Pitches.Length; i++ ) {
-                    if ( i == 0 ) {
-                        sw.Write( Pitches[i] );
-                    } else {
-                        sw.Write( "," + Pitches[i] );
+            else
+            {
+                sw.write( "[#" + PortUtil.formatDecimal( "0000", Index ) );
+                sw.newLine();
+            }
+            sw.write( "Length=" + Length );
+            sw.newLine();
+            sw.write( "Lyric=" + Lyric );
+            sw.newLine();
+            sw.write( "NoteNum=" + Note );
+            sw.newLine();
+            if ( Intensity >= 0 )
+            {
+                sw.write( "Intensity=" + Intensity );
+                sw.newLine();
+            }
+            if ( PBType >= 0 && Pitches != null )
+            {
+                sw.write( "PBType=" + PBType );
+                sw.newLine();
+                sw.write( "Piches=" );
+                for ( int i = 0; i < Pitches.Length; i++ )
+                {
+                    if ( i == 0 )
+                    {
+                        sw.write( Pitches[i] + "" );
+                    }
+                    else
+                    {
+                        sw.write( "," + Pitches[i] );
                     }
                 }
-                sw.WriteLine();
+                sw.newLine();
             }
-            if ( Tempo > 0 ) {
-                sw.WriteLine( "Tempo=" + Tempo );
+            if ( Tempo > 0 )
+            {
+                sw.write( "Tempo=" + Tempo );
+                sw.newLine();
             }
-            if ( Vibrato != null ) {
-                sw.WriteLine( Vibrato.ToString() );
+            if ( Vibrato != null )
+            {
+                sw.write( Vibrato.ToString() );
+                sw.newLine();
             }
-            if ( Portamento != null ) {
+            if ( Portamento != null )
+            {
                 Portamento.print( sw );
             }
-            if ( Envelope != null ) {
-                if ( PreUtterance >= 0 ) {
-                    sw.WriteLine( "PreUtterance=" + PreUtterance );
+            if ( Envelope != null )
+            {
+                if ( PreUtterance >= 0 )
+                {
+                    sw.write( "PreUtterance=" + PreUtterance );
+                    sw.newLine();
                 }
-                if ( VoiceOverlap != 0 ) {
-                    sw.WriteLine( "VoiceOverlap=" + VoiceOverlap );
+                if ( VoiceOverlap != 0 )
+                {
+                    sw.write( "VoiceOverlap=" + VoiceOverlap );
+                    sw.newLine();
                 }
-                sw.WriteLine( Envelope.ToString() );
+                sw.write( Envelope.ToString() );
+                sw.newLine();
             }
-            if ( Flags != "" ) {
-                sw.WriteLine( "Flags=" + Flags );
+            if ( Flags != "" )
+            {
+                sw.write( "Flags=" + Flags );
+                sw.newLine();
             }
-            if ( Moduration >= 0 ) {
-                sw.WriteLine( "Moduration=" + Moduration );
+            if ( Moduration >= 0 )
+            {
+                sw.write( "Moduration=" + Moduration );
+                sw.newLine();
             }
         }
     }
 
+#if !JAVA
 }
+#endif

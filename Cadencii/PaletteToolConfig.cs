@@ -13,7 +13,7 @@
  */
 using System;
 
-namespace Boare.Cadencii {
+/*namespace Boare.Cadencii {
 
     public class PaletteToolConfig {
         public String FileName;
@@ -21,4 +21,4 @@ namespace Boare.Cadencii {
         public String Config;
     }
 
-}
+}*/

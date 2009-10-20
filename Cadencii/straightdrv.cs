@@ -14,6 +14,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using bocoree;
 
 namespace Boare.Cadencii {
 
@@ -36,7 +37,7 @@ namespace Boare.Cadencii {
                 straightdrvUninitialize();
             } catch ( Exception ex ) {
 #if DEBUG
-                Console.WriteLine( "straightdrv#uninitialize; ex=" + ex );
+                PortUtil.println( "straightdrv#uninitialize; ex=" + ex );
 #endif
             }
         }
@@ -46,7 +47,7 @@ namespace Boare.Cadencii {
                 straightdrvAbort();
             } catch ( Exception ex ) {
 #if DEBUG
-                Console.WriteLine( "straightdrv#abort; ex=" + ex );
+                PortUtil.println( "straightdrv#abort; ex=" + ex );
 #endif
             }
         }
@@ -57,7 +58,7 @@ namespace Boare.Cadencii {
                     int length;
                     double* ret = straightdrvSynthesize( &length );
 #if DEBUG
-                    Console.WriteLine( "straightdrv#synthesize; length=" + length );
+                    PortUtil.println( "straightdrv#synthesize; length=" + length );
 #endif
                     double[] buf = new double[length];
                     for ( int i = 0; i < length; i++ ) {
@@ -66,7 +67,7 @@ namespace Boare.Cadencii {
                     return buf;
                 } catch ( Exception ex ) {
 #if DEBUG
-                    Console.WriteLine( "straightdrv#synthesize; ex=" + ex );
+                    PortUtil.println( "straightdrv#synthesize; ex=" + ex );
 #endif
                     return new double[0];
                 }
@@ -82,7 +83,7 @@ namespace Boare.Cadencii {
                 }
             } catch ( Exception ex ) {
 #if DEBUG
-                Console.WriteLine( "straightdrv#init; ex=" + ex );
+                PortUtil.println( "straightdrv#init; ex=" + ex );
 #endif
                 return false;
             }
@@ -93,7 +94,7 @@ namespace Boare.Cadencii {
                 return straightdrvGetProgress();
             } catch ( Exception ex ) {
 #if DEBUG
-                Console.WriteLine( "straightdrv#getProgress; ex=" + ex );
+                PortUtil.println( "straightdrv#getProgress; ex=" + ex );
 #endif
                 return 0.0;
             }

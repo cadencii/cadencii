@@ -11,11 +11,19 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace Boare.Lib.Vsq {
+#if JAVA
+package org.kbinani.vsq;
+#else
+namespace Boare.Lib.Vsq
+{
+#endif
 
-    public enum SynthesizerType {
+    public enum SynthesizerType
+    {
         VOCALOID1,
         VOCALOID2,
     }
 
+#if !JAVA
 }
+#endif

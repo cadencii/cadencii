@@ -11,18 +11,26 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace Boare.Cadencii {
-    
-    enum PencilModeEnum : int {
-        Off = 1,
-        L1 = 1920,
-        L2 = 960,
-        L4 = 480,
-        L8 = 240,
-        L16 = 120,
-        L32 = 60,
-        L64 = 30,
-        L128 = 15,
+#if JAVA
+package org.kbinani.Cadencii;
+#else
+namespace Boare.Cadencii
+{
+#endif
+
+    public enum PencilModeEnum
+    {
+        Off,
+        L1,
+        L2,
+        L4,
+        L8,
+        L16,
+        L32,
+        L64,
+        L128,
     }
 
+#if !JAVA
 }
+#endif

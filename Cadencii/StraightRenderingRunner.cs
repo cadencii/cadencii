@@ -12,17 +12,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.IO;
-using System.Windows.Forms;
-using System.Text;
 using System.Diagnostics;
-
+//using System.Windows.Forms;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.io;
+using bocoree.util;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
 
     public class StraightRenderingRunner : RenderingRunner {
@@ -30,7 +28,7 @@ namespace Boare.Cadencii {
         private const int MAX_CACHE = 512;
         private static TreeMap<String, DateTime> s_cache = new TreeMap<String, DateTime>();
         const int TEMPO = 120;
-        
+
         boolean m_rendering = false;
         Vector<StraightRenderingQueue> m_queue;
         Vector<SingerConfig> m_singer_config_sys;
@@ -50,7 +48,7 @@ namespace Boare.Cadencii {
         int m_trim_remain = 0;
         TreeMap<String, UtauVoiceDB> m_voicedb_configs = new TreeMap<String, UtauVoiceDB>();
         long m_vsq_length_samples;
-        DateTime m_started_date;
+        double m_started_date;
         /// <summary>
         /// 現在の処理速度．progress%/sec
         /// </summary>
@@ -112,7 +110,7 @@ namespace Boare.Cadencii {
                 appendQueue( work, track, events, current_singer_event, sample_rate );
             }
             if ( m_queue.size() > 0 ) {
-                StraightRenderingQueue q = m_queue.get( m_queue.size() - 1);
+                StraightRenderingQueue q = m_queue.get( m_queue.size() - 1 );
                 m_vsq_length_samples = q.startFrame + q.abstractFrameLength;
             }
         }
@@ -139,7 +137,7 @@ namespace Boare.Cadencii {
             if ( singer_path.Equals( "" ) ) {
                 return;
             }
-            string oto_ini = Path.Combine( Path.Combine( singer_path, "analyzed" ), "oto.ini" );
+            string oto_ini = PortUtil.combinePath( PortUtil.combinePath( singer_path, "analyzed" ), "oto.ini" );
             if ( !PortUtil.isFileExists( oto_ini ) ) {
                 // STRAIGHT合成用のoto.iniが存在しないので離脱
                 return;
@@ -210,7 +208,7 @@ namespace Boare.Cadencii {
             if ( list.size() <= 0 ) {
                 return;
             }
-            
+
             const int OFFSET = 1920;
             CurveType[] CURVE = new CurveType[]{
                     CurveType.PIT,
@@ -276,7 +274,7 @@ namespace Boare.Cadencii {
             m_queue.add( queue );
         }
 
-        private void prepareMetaText( StreamWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) {
+        private void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) {
             CurveType[] CURVE = new CurveType[]{
                     CurveType.PIT,
                     CurveType.PBS,
@@ -284,10 +282,14 @@ namespace Boare.Cadencii {
                     CurveType.BRE,
                     CurveType.GEN, };
             // メモリーストリームに出力
-            writer.WriteLine( "[Tempo]" );
-            writer.WriteLine( TEMPO.ToString() );
-            writer.WriteLine( "[oto.ini]" );
-            writer.WriteLine( oto_ini );
+            writer.write( "[Tempo]" );
+            writer.newLine();
+            writer.write( TEMPO.ToString() );
+            writer.newLine();
+            writer.write( "[oto.ini]" );
+            writer.newLine();
+            writer.write( oto_ini );
+            writer.newLine();
             Vector<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
             Vector<String> print_targets = new Vector<String>( new String[]{ "Length",
                                                                              "Note#",
@@ -330,18 +332,18 @@ namespace Boare.Cadencii {
         }
 
         public double getElapsedSeconds() {
-            return DateTime.Now.Subtract( m_started_date ).TotalSeconds;
+            return PortUtil.getCurrentTime() - m_started_date;
         }
 
         public void run() {
-            m_started_date = DateTime.Now;
+            m_started_date = PortUtil.getCurrentTime();
             const int BUF_LEN = 1024;
             m_rendering = true;
             m_abort_required = false;
-            String straight_synth = Path.Combine( Application.StartupPath, STRAIGHT_SYNTH );
+            String straight_synth = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
             if ( !PortUtil.isFileExists( straight_synth ) ) {
 #if DEBUG
-                Console.WriteLine( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
+                PortUtil.println( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
 #endif
                 m_rendering = false;
                 return;
@@ -354,10 +356,13 @@ namespace Boare.Cadencii {
                 total_samples += m_queue.get( i ).abstractFrameLength;
             }
 #if DEBUG
-            Console.WriteLine( "StraightRenderingRunner#run; total_samples=" + total_samples );
+            PortUtil.println( "StraightRenderingRunner#run; total_samples=" + total_samples );
 #endif
 
             m_trim_remain = (int)(m_trim_msec / 1000.0 * m_sample_rate); //先頭から省かなければならないサンプル数の残り
+#if DEBUG
+            PortUtil.println( "StraightRenderingRunner#run; m_trim_remain=" + m_trim_remain );
+#endif
             long max_next_wave_start = m_vsq_length_samples;
 
             if ( m_queue.size() > 0 ) {
@@ -382,41 +387,55 @@ namespace Boare.Cadencii {
             double[] cached_data_r = null;
             double processed_samples = 0.0;
 #if DEBUG
-            StreamWriter log = new StreamWriter( Path.Combine( Application.StartupPath, "StraightRenderingRunner.log" ) );
-            log.AutoFlush = true;
-            log.WriteLine( "#startFrame\tstartFrame+wave_length\tnext_wave_start\tchache length" );
+            BufferedWriter log = new BufferedWriter( new FileWriter( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "StraightRenderingRunner.log" ) ) );
+            log.write( "#startFrame\tstartFrame+wave_length\tnext_wave_start\tchache length" );
+            log.newLine();
 #endif
-            for ( int i = 0; i < count; i++ ){
+            for ( int i = 0; i < count; i++ ) {
                 if ( m_abort_required ) {
                     m_rendering = false;
                     m_abort_required = false;
 #if DEBUG
-                    log.Close();
+                    log.close();
 #endif
                     return;
                 }
                 StraightRenderingQueue queue = m_queue.get( i );
                 String tmp_dir = AppManager.getTempWaveDir();
 
-                String tmp_file = Path.Combine( tmp_dir, "tmp.usq" );
+                String tmp_file = PortUtil.combinePath( tmp_dir, "tmp.usq" );
                 String hash = "";
-                using ( StreamWriter sw = new StreamWriter( tmp_file, false, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
-                    prepareMetaText( sw, queue.track, queue.oto_ini, queue.endClock );
-                }
-                using ( FileStream fs = new FileStream( tmp_file, FileMode.Open, FileAccess.Read ) ) {
-                    hash = Misc.getmd5( fs );
-                }
+                BufferedWriter sw = null;
                 try {
-                    File.Copy( tmp_file, Path.Combine( tmp_dir, hash + ".usq" ) );
-                    PortUtil.deleteFile( tmp_file );
-                } catch {
+                    sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( tmp_file ), "Shift_JIS" ) );
+                    prepareMetaText( sw, queue.track, queue.oto_ini, queue.endClock );
+                } catch ( Exception ex ) {
+#if DEBUG
+                    PortUtil.println( "StraightRenderingRunner#run; ex=" + ex );
+#endif
+                } finally {
+                    if ( sw != null ) {
+                        try {
+                            sw.close();
+                        } catch ( Exception ex2 ) {
+#if DEBUG
+                            PortUtil.println( "StraightRenderingRunner#run; ex2=" + ex2 );
+#endif
+                        }
+                    }
                 }
-                tmp_file = Path.Combine( tmp_dir, hash );
+                hash = PortUtil.getMD5( tmp_file ).Replace( "_", "" );
+                try {
+                    PortUtil.copyFile( tmp_file, PortUtil.combinePath( tmp_dir, hash + ".usq" ) );
+                    PortUtil.deleteFile( tmp_file );
+                } catch ( Exception ex ) {
+                }
+                tmp_file = PortUtil.combinePath( tmp_dir, hash );
                 if ( !s_cache.containsKey( hash ) || !PortUtil.isFileExists( tmp_file + ".wav" ) ) {
                     using ( Process process = new Process() ) {
                         process.StartInfo.FileName = straight_synth;
                         process.StartInfo.Arguments = "\"" + tmp_file + ".usq\" \"" + tmp_file + ".wav\"";
-                        process.StartInfo.WorkingDirectory = Application.StartupPath;
+                        process.StartInfo.WorkingDirectory = PortUtil.getApplicationStartupPath();
                         process.StartInfo.CreateNoWindow = true;
                         process.StartInfo.UseShellExecute = false;
                         process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
@@ -428,8 +447,8 @@ namespace Boare.Cadencii {
 #if DEBUG
                         //String stdout = process.StandardOutput.ReadToEnd();
                         //String stderr = process.StandardError.ReadToEnd();
-                        //Console.WriteLine( "StraightRenderingRunner#run; stdout=" + stdout );
-                        //Console.WriteLine( "StraightRenderingRunner#run; stderr=" + stderr );
+                        //PortUtil.println( "StraightRenderingRunner#run; stdout=" + stdout );
+                        //PortUtil.println( "StraightRenderingRunner#run; stderr=" + stderr );
 #endif
                         process.WaitForExit();
                     }
@@ -464,7 +483,7 @@ namespace Boare.Cadencii {
                         }
                         s_cache.remove( old_key );
                         try {
-                            PortUtil.deleteFile( Path.Combine( tmp_dir, old_key + ".wav" ) );
+                            PortUtil.deleteFile( PortUtil.combinePath( tmp_dir, old_key + ".wav" ) );
                         } catch ( Exception ex ) {
                         }
                     }
@@ -489,7 +508,8 @@ namespace Boare.Cadencii {
                 if ( wr != null ) wave_samples = wr.TotalSamples;
                 int overlapped = 0;
 #if DEBUG
-                log.WriteLine( queue.startFrame + "\t" + (queue.startFrame + wave_samples) + "\t" + next_wave_start + "\t" + (cached_data_l == null ? 0 : cached_data_l.Length) );
+                log.write( queue.startFrame + "\t" + (queue.startFrame + wave_samples) + "\t" + next_wave_start + "\t" + (cached_data_l == null ? 0 : cached_data_l.Length) );
+                log.newLine();
 #endif
                 if ( next_wave_start <= queue.startFrame + wave_samples ) {
                     // 次のキューの開始位置が、このキューの終了位置よりも早い場合
@@ -503,7 +523,7 @@ namespace Boare.Cadencii {
 
                 if ( cached_data_l == null || cached_data_r == null ) {
 #if DEBUG
-                    Console.WriteLine( "StraightRenderingRunner#run; cache is null" );
+                    PortUtil.println( "StraightRenderingRunner#run; cache is null" );
 #endif
                     // キャッシュが残っていない場合
                     int remain = wave_samples;
@@ -535,7 +555,7 @@ namespace Boare.Cadencii {
                     }
                 } else {
 #if DEBUG
-                    Console.WriteLine( "StraightRenderingRunner#run; cache is NOT null" );
+                    PortUtil.println( "StraightRenderingRunner#run; cache is NOT null" );
 #endif
                     // キャッシュが残っている場合
                     int rendered_length = 0;
@@ -543,7 +563,7 @@ namespace Boare.Cadencii {
                     if ( rendered_length < cached_data_l.Length ) {
                         if ( next_wave_start < queue.startFrame + rendered_length ) {
 #if DEBUG
-                            Console.WriteLine( "StraightRenderingRunner#run; (i) or (ii)" );
+                            PortUtil.println( "StraightRenderingRunner#run; (i) or (ii)" );
 #endif
                             // PATTERN A
                             //  ----[*****************************]----------------->  cache
@@ -595,7 +615,7 @@ namespace Boare.Cadencii {
                             }
                         } else {
 #if DEBUG
-                            Console.WriteLine( "StraightRenderingRunner#run; (iii)" );
+                            PortUtil.println( "StraightRenderingRunner#run; (iii)" );
 #endif
                             // PATTERN C
                             //  ----[*****************************]----------------->   cache
@@ -628,7 +648,7 @@ namespace Boare.Cadencii {
                     } else {
                         if ( next_wave_start < queue.startFrame + cached_data_l.Length ) {
 #if DEBUG
-                            Console.WriteLine( "StraightRenderingRunner#run; (iv)" );
+                            PortUtil.println( "StraightRenderingRunner#run; (iv)" );
 #endif
                             // PATTERN D
                             //  ----[*************]--------------------------------->  cache
@@ -647,11 +667,11 @@ namespace Boare.Cadencii {
                                     cached_data_r[j] += right[j];
                                 }
 #if DEBUG
-                                Console.WriteLine( "    next_wave_start=" + next_wave_start + "; queue.startFrame=" + queue.startFrame );
+                                PortUtil.println( "    next_wave_start=" + next_wave_start + "; queue.startFrame=" + queue.startFrame );
 #endif
                                 int append_len = (int)(next_wave_start - queue.startFrame);
 #if DEBUG
-                                Console.WriteLine( "    append_len=" + append_len );
+                                PortUtil.println( "    append_len=" + append_len );
 #endif
                                 double[] buf_l = new double[append_len];
                                 double[] buf_r = new double[append_len];
@@ -680,7 +700,7 @@ namespace Boare.Cadencii {
                             }
                         } else if ( next_wave_start < queue.startFrame + rendered_length ) {
 #if DEBUG
-                            Console.WriteLine( "StraightRenderingRunner#run; (v)" );
+                            PortUtil.println( "StraightRenderingRunner#run; (v)" );
 #endif
                             // PATTERN E
                             //  ----[*************]--------------------------------->  cache
@@ -710,7 +730,7 @@ namespace Boare.Cadencii {
                             }
                         } else {
 #if DEBUG
-                            Console.WriteLine( "StraightRenderingRunner#run; (vi)" );
+                            PortUtil.println( "StraightRenderingRunner#run; (vi)" );
 #endif
                             // PATTERN F
                             //  ----[*************]--------------------------------->  cache
@@ -752,11 +772,11 @@ namespace Boare.Cadencii {
 
                 processed_samples += queue.abstractFrameLength;
                 m_progress_percent = processed_samples / total_samples * 100.0;
-                double elapsed = DateTime.Now.Subtract( m_started_date ).TotalSeconds;
+                double elapsed = PortUtil.getCurrentTime() - m_started_date;
                 m_running_rate = m_progress_percent / elapsed;
             }
 #if DEBUG
-            log.Close();
+            log.close();
 #endif
 
             if ( m_mode_infinite ) {
@@ -774,7 +794,7 @@ namespace Boare.Cadencii {
         }
 
         public double computeRemainingSeconds() {
-            double elapsed = DateTime.Now.Subtract( m_started_date ).TotalSeconds;
+            double elapsed = PortUtil.getCurrentTime() - m_started_date;
             double estimated_total_time = 100.0 / m_running_rate;
             double draft = estimated_total_time - elapsed;
             if ( draft < 0 ) {
@@ -788,7 +808,7 @@ namespace Boare.Cadencii {
             for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ) {
                 String key = (String)itr.next();
                 try {
-                    PortUtil.deleteFile( Path.Combine( tmp_dir, key + ".wav" ) );
+                    PortUtil.deleteFile( PortUtil.combinePath( tmp_dir, key + ".wav" ) );
                 } catch {
                 }
             }
@@ -807,7 +827,11 @@ namespace Boare.Cadencii {
             if ( m_rendering ) {
                 m_abort_required = true;
                 while ( m_abort_required ) {
-                    Application.DoEvents();
+#if JAVA
+                    Thread.sleep( 0 ); ここいけてる？
+#else
+                    System.Threading.Thread.Sleep( 0 );
+#endif
                 }
             }
             m_rendering = false;
@@ -820,26 +844,32 @@ namespace Boare.Cadencii {
             m_reader.clear();
         }
 
-        private void WaveIncoming( double[] L, double[] R ) {
+        private void WaveIncoming( double[] t_L, double[] t_R ) {
             if ( !m_rendering ) {
                 return;
             }
 
-            int length = L.Length;
-            int i_start = 0;
+            double[] L = t_L;
+            double[] R = t_R;
             if ( m_trim_remain > 0 ) {
                 if ( L.Length <= m_trim_remain ) {
                     m_trim_remain -= L.Length;
                     return;
                 } else {
-                    i_start = L.Length - m_trim_remain;
+                    L = new double[t_L.Length - m_trim_remain];
+                    R = new double[t_L.Length - m_trim_remain];
+                    for ( int i = m_trim_remain; i < t_L.Length; i++ ) {
+                        L[i - m_trim_remain] = t_L[i];
+                        R[i - m_trim_remain] = t_R[i];
+                    }
                     m_trim_remain = 0;
                 }
             }
+            int length = L.Length;
 
             AmplifyCoefficient amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
             if ( m_reflect_amp_to_wave ) {
-                for ( int i = i_start; i < length; i++ ) {
+                for ( int i = 0; i < length; i++ ) {
                     if ( i % 100 == 0 ) {
                         amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
                     }
@@ -853,7 +883,7 @@ namespace Boare.Cadencii {
                 if ( m_wave_writer != null ) {
                     m_wave_writer.Append( L, R );
                 }
-                for ( int i = i_start; i < length; i++ ) {
+                for ( int i = 0; i < length; i++ ) {
                     if ( i % 100 == 0 ) {
                         amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
                     }
@@ -878,7 +908,7 @@ namespace Boare.Cadencii {
                 double[] reader_r;
                 double[] reader_l;
                 wr.Read( start, length, out reader_l, out reader_r );
-                for ( int j = i_start; j < length; j++ ) {
+                for ( int j = 0; j < length; j++ ) {
                     L[j] += reader_l[j] * amplify.left;
                     R[j] += reader_r[j] * amplify.right;
                 }
@@ -886,17 +916,9 @@ namespace Boare.Cadencii {
                 reader_r = null;
             }
             if ( m_direct_play ) {
-                if ( i_start == 0 ) {
-                    PlaySound.Append( L, R, L.Length );
-                } else {
-                    for ( int i = i_start; i < length; i++ ) {
-                        L[i - i_start] = L[i];
-                        R[i - i_start] = R[i];
-                    }
-                    PlaySound.Append( L, R, length - i_start );
-                }
+                PlaySound.append( L, R, L.Length );
             }
-            m_total_append += (length - i_start);
+            m_total_append += length;
         }
     }
 

@@ -11,31 +11,53 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
-using System.Text;
+#if JAVA
+package org.kbinani.Cadencii;
 
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.vsq.*;
+import org.kbinani.xml.*;
+#else
+using System;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.io;
+using bocoree.util;
+using bocoree.xml;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
     using Integer = Int32;
+#endif
 
+#if JAVA
+    public class VsqFileEx extends VsqFile implements Cloneable, ICommandRunnable, Serializable{
+#else
     [Serializable]
-    public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable {
+    public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable{
+#endif
+
         static XmlSerializer s_vsq_serializer;
 
         public AttachedCurve AttachedCurves;
         public Vector<BgmFile> BgmFiles = new Vector<BgmFile>();
+#if !JAVA
+        [System.Xml.Serialization.XmlIgnore]
+#endif
+        public EditorStatus editorStatus = new EditorStatus();
 
+#if JAVA
+        static
+        {
+            s_vsq_serializer = new XmlSerializer( VsqFileEx.class );
+        }
+#else
         static VsqFileEx() {
             s_vsq_serializer = new XmlSerializer( typeof( VsqFileEx ) );
         }
+#endif
 
         /// <summary>
         /// VsqEvent, VsqBPList, BezierCurvesの全てのクロックを、tempoに格納されているテンポテーブルに
@@ -43,11 +65,11 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <param name="work"></param>
         /// <param name="tempo"></param>
-        public void adjustClockToMatchWith( VsqFile tempo  ) {
+        public void adjustClockToMatchWith( VsqFile tempo ) {
             double premeasure_sec_target = getSecFromClock( getPreMeasureClocks() );
             double premeasure_sec_tempo = premeasure_sec_target;
 #if DEBUG
-            Console.WriteLine( "FormMain#ShiftClockToMatchWith; premeasure_sec_target=" + premeasure_sec_target + "; premeasre_sec_tempo=" + premeasure_sec_tempo );
+            PortUtil.println( "FormMain#ShiftClockToMatchWith; premeasure_sec_target=" + premeasure_sec_target + "; premeasre_sec_tempo=" + premeasure_sec_tempo );
 #endif
 
             // テンポをリプレースする場合。
@@ -75,8 +97,9 @@ namespace Boare.Cadencii {
                 }
 
                 // コントロールカーブをシフト
-                foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
-                    VsqBPList item = this.Track.get( track ).getCurve( ct.Name );
+                for ( int j = 0; j < AppManager.CURVE_USAGE.Length; j++ ) {
+                    CurveType ct = AppManager.CURVE_USAGE[j];
+                    VsqBPList item = this.Track.get( track ).getCurve( ct.getName() );
                     if ( item == null ) {
                         continue;
                     }
@@ -90,11 +113,12 @@ namespace Boare.Cadencii {
                             repl.add( clock_new, value );
                         }
                     }
-                    this.Track.get( track ).setCurve( ct.Name, repl );
+                    this.Track.get( track ).setCurve( ct.getName(), repl );
                 }
 
                 // ベジエカーブをシフト
-                foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
+                for ( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ) {
+                    CurveType ct = AppManager.CURVE_USAGE[i];
                     Vector<BezierChain> list = this.AttachedCurves.get( track - 1 ).get( ct );
                     if ( list == null ) {
                         continue;
@@ -103,15 +127,15 @@ namespace Boare.Cadencii {
                         BezierChain chain = (BezierChain)itr.next();
                         for ( Iterator itr2 = chain.points.iterator(); itr2.hasNext(); ) {
                             BezierPoint point = (BezierPoint)itr2.next();
-                            PointD bse = new PointD( tempo.getClockFromSec( this.getSecFromClock( point.getBase().X ) - premeasure_sec_target + premeasure_sec_tempo ),
-                                                     point.getBase().Y );
-                            double rx = point.getBase().X + point.controlRight.X;
+                            PointD bse = new PointD( tempo.getClockFromSec( this.getSecFromClock( point.getBase().getX() ) - premeasure_sec_target + premeasure_sec_tempo ),
+                                                     point.getBase().getY() );
+                            double rx = point.getBase().getX() + point.controlRight.getX();
                             double new_rx = tempo.getClockFromSec( this.getSecFromClock( rx ) - premeasure_sec_target + premeasure_sec_tempo );
-                            PointD ctrl_r = new PointD( new_rx - bse.X, point.controlRight.Y );
+                            PointD ctrl_r = new PointD( new_rx - bse.getX(), point.controlRight.getY() );
 
-                            double lx = point.getBase().X + point.controlLeft.X;
+                            double lx = point.getBase().getX() + point.controlLeft.getX();
                             double new_lx = tempo.getClockFromSec( this.getSecFromClock( lx ) - premeasure_sec_target + premeasure_sec_tempo );
-                            PointD ctrl_l = new PointD( new_lx - bse.X, point.controlLeft.Y );
+                            PointD ctrl_l = new PointD( new_lx - bse.getX(), point.controlLeft.getY() );
                             point.setBase( bse );
                             point.controlLeft = ctrl_l;
                             point.controlRight = ctrl_r;
@@ -121,23 +145,25 @@ namespace Boare.Cadencii {
             }
         }
 
-        public static void shift( VsqFileEx vsq, double sec ) {
+        /// <summary>
+        /// 指定秒数分，アイテムの時間をずらす．
+        /// </summary>
+        /// <param name="vsq">編集対象</param>
+        /// <param name="sec">ずらす秒数．正の場合アイテムは後ろにずれる</param>
+        /// <param name="first_tempo">ずらす秒数が正の場合に，最初のテンポをいくらにするか</param>
+        public static void shift( VsqFileEx vsq, double sec, int first_tempo ) {
             bool first = true; // 負になった最初のアイテムかどうか
 
             // 最初にテンポをずらす．
             // 古いのから情報をコピー
-            VsqFile tempo = new  VsqFile( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
+            VsqFile tempo = new VsqFile( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
             tempo.TempoTable.clear();
             for ( Iterator itr = vsq.TempoTable.iterator(); itr.hasNext(); ) {
                 TempoTableEntry item = (TempoTableEntry)itr.next();
                 tempo.TempoTable.add( item );
             }
             tempo.updateTempoInfo();
-            int first_tempo = 500000;
             int tempo_count = tempo.TempoTable.size();
-            if ( tempo_count > 0 ) {
-                first_tempo = tempo.TempoTable.get( 0 ).Tempo;
-            }
             if ( sec < 0.0 ) {
                 first = true;
                 for ( int i = tempo_count - 1; i >= 0; i-- ) {
@@ -155,9 +181,6 @@ namespace Boare.Cadencii {
             vsq.TempoTable.clear();
             vsq.TempoTable.add( new TempoTableEntry( 0, first_tempo, 0.0 ) );
             for ( int i = 0; i < tempo_count; i++ ) {
-                if ( sec >= 0.0 && i == 0 ) {
-                    continue;
-                }
                 TempoTableEntry item = tempo.TempoTable.get( i );
                 double t = item.Time + sec;
                 int new_clock = (int)vsq.getClockFromSec( t );
@@ -171,7 +194,7 @@ namespace Boare.Cadencii {
             for ( int i = 1; i < tracks; i++ ) {
                 VsqTrack track = vsq.Track.get( i );
                 Vector<Integer> remove_required_event = new Vector<Integer>(); // 削除が要求されたイベントのインデクス
-                
+
                 // 歌手変更・音符イベントをシフト
                 // 時刻が負になる場合は，後で考える
                 int events = track.getEventCount();
@@ -185,8 +208,8 @@ namespace Boare.Cadencii {
                         double t_end = vsq.getSecFromClock( item.Clock + item.ID.Length ) + sec;
                         int clock_end = (int)vsq.getClockFromSec( t_end );
                         int length = clock_end - clock;
-                        
-                        if ( clock < pre_measure_clocks ){
+
+                        if ( clock < pre_measure_clocks ) {
                             if ( pre_measure_clocks < clock_end ) {
                                 // 音符の開始位置がプリメジャーよりも早く，音符の開始位置がプリメジャーより後の場合
                                 clock = pre_measure_clocks;
@@ -253,15 +276,16 @@ namespace Boare.Cadencii {
                 }
 
                 // コントロールカーブをシフト
-                foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
-                    VsqBPList item = track.getCurve( ct.Name );
+                for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
+                    CurveType ct = AppManager.CURVE_USAGE[k];
+                    VsqBPList item = track.getCurve( ct.getName() );
                     if ( item == null ) {
                         continue;
                     }
                     VsqBPList repl = new VsqBPList( item.getDefault(), item.getMinimum(), item.getMaximum() );
                     int c = item.size();
                     first = true;
-                    for ( int j = c - 1; j >=0; j-- ) {
+                    for ( int j = c - 1; j >= 0; j-- ) {
                         int clock = item.getKeyClock( j );
                         int value = item.getElement( j );
                         double t = vsq.getSecFromClock( clock ) + sec;
@@ -280,7 +304,8 @@ namespace Boare.Cadencii {
                 }
 
                 // ベジエカーブをシフト
-                foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
+                for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
+                    CurveType ct = AppManager.CURVE_USAGE[k];
                     Vector<BezierChain> list = vsq.AttachedCurves.get( i - 1 ).get( ct );
                     if ( list == null ) {
                         continue;
@@ -291,15 +316,15 @@ namespace Boare.Cadencii {
                         BezierChain chain = list.get( j );
                         for ( Iterator itr2 = chain.points.iterator(); itr2.hasNext(); ) {
                             BezierPoint point = (BezierPoint)itr2.next();
-                            PointD bse = new PointD( vsq.getClockFromSec( vsq.getSecFromClock( point.getBase().X ) + sec ),
-                                                     point.getBase().Y );
-                            double rx = point.getBase().X + point.controlRight.X;
+                            PointD bse = new PointD( vsq.getClockFromSec( vsq.getSecFromClock( point.getBase().getX() ) + sec ),
+                                                     point.getBase().getY() );
+                            double rx = point.getBase().getX() + point.controlRight.getX();
                             double new_rx = vsq.getClockFromSec( vsq.getSecFromClock( rx ) + sec );
-                            PointD ctrl_r = new PointD( new_rx - bse.X, point.controlRight.Y );
+                            PointD ctrl_r = new PointD( new_rx - bse.getX(), point.controlRight.getY() );
 
-                            double lx = point.getBase().X + point.controlLeft.X;
+                            double lx = point.getBase().getX() + point.controlLeft.getX();
                             double new_lx = vsq.getClockFromSec( vsq.getSecFromClock( lx ) + sec );
-                            PointD ctrl_l = new PointD( new_lx - bse.X, point.controlLeft.Y );
+                            PointD ctrl_l = new PointD( new_lx - bse.getX(), point.controlLeft.getY() );
                             point.setBase( bse );
                             point.controlLeft = ctrl_l;
                             point.controlRight = ctrl_r;
@@ -323,9 +348,9 @@ namespace Boare.Cadencii {
                     for ( int j = 0; j < count; j++ ) {
                         int id = remove_required_event.get( j );
                         list_count = list.size();
-                        for ( int k = 0; k < list_count; k++ ) {
-                            if ( id == list.get( k ).id ) {
-                                list.removeElementAt( k );
+                        for ( int m = 0; m < list_count; m++ ) {
+                            if ( id == list.get( m ).id ) {
+                                list.removeElementAt( m );
                                 break;
                             }
                         }
@@ -334,36 +359,34 @@ namespace Boare.Cadencii {
             }
         }
 
-        public override object Clone() {
+#if !JAVA
+        public object Clone() {
             return clone();
         }
+#endif
 
         public Object clone() {
             VsqFileEx ret = new VsqFileEx( "Miku", 1, 4, 4, 500000 );
             ret.Track = new Vector<VsqTrack>();
             int c = Track.size();
             for ( int i = 0; i < c; i++ ) {
-                ret.Track.add( (VsqTrack)Track.get( i ).Clone() );
+                ret.Track.add( (VsqTrack)Track.get( i ).clone() );
             }
-#if USE_TEMPO_LIST
-
-#else
             ret.TempoTable = new Vector<TempoTableEntry>();
             c = TempoTable.size();
             for ( int i = 0; i < c; i++ ) {
-                ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).Clone() );
+                ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).clone() );
             }
-#endif
             ret.TimesigTable = new Vector<TimeSigTableEntry>();
             c = TimesigTable.size();
             for ( int i = 0; i < c; i++ ) {
-                ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).Clone() );
+                ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
             }
             ret.m_tpq = m_tpq;
             ret.TotalClocks = TotalClocks;
             ret.m_base_tempo = m_base_tempo;
-            ret.Master = (VsqMaster)Master.Clone();
-            ret.Mixer = (VsqMixer)Mixer.Clone();
+            ret.Master = (VsqMaster)Master.clone();
+            ret.Mixer = (VsqMixer)Mixer.clone();
             //ret.m_premeasure_clocks = m_premeasure_clocks;
             ret.AttachedCurves = (AttachedCurve)AttachedCurves.Clone();
             /*ret.m_pitch.Clear();
@@ -410,12 +433,12 @@ namespace Boare.Cadencii {
         }
 
         public static CadenciiCommand generateCommandTrackReplace( int track, VsqTrack item, BezierCurves attached_curve ) {
-        //public static CadenciiCommand generateCommandTrackReplace( int track, VsqTrack item, BezierCurves attached_curve, VsqBPList pitch ) {
+            //public static CadenciiCommand generateCommandTrackReplace( int track, VsqTrack item, BezierCurves attached_curve, VsqBPList pitch ) {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.TRACK_REPLACE;
             command.args = new object[3];
             command.args[0] = track;
-            command.args[1] = item.Clone();
+            command.args[1] = item.clone();
             command.args[2] = attached_curve.Clone();
             //command.Args[3] = pitch.Clone();
             return command;
@@ -430,7 +453,7 @@ namespace Boare.Cadencii {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.TRACK_ADD;
             command.args = new object[4];
-            command.args[0] = track.Clone();
+            command.args[0] = track.clone();
             command.args[1] = mixer;
             command.args[2] = position;
             command.args[3] = attached_curve.Clone();
@@ -517,7 +540,7 @@ namespace Boare.Cadencii {
                     if ( com.size() > 0 ) {
                         int start_clock = com.get( 0 ).Clock;
                         int end_clock = com.get( 0 ).Clock;
-                        for ( Iterator itr = com.iterator(); itr.hasNext(); ){
+                        for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
                             BPPair item = (BPPair)itr.next();
                             start_clock = Math.Min( start_clock, item.Clock );
                             end_clock = Math.Max( end_clock, item.Clock );
@@ -596,7 +619,7 @@ namespace Boare.Cadencii {
                             }
                         }
                     }
-                    for ( Iterator itr = com.iterator(); itr.hasNext(); ){
+                    for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
                         BPPair item = (BPPair)itr.next();
                         target.add( item.Clock, item.Value );
                     }
@@ -606,13 +629,14 @@ namespace Boare.Cadencii {
             } else if ( command.Type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
                 #region TrackEditCurveRange
                 int track = (int)command.Args[0];
-                String[] curves = (String[])command.Args[1];
-                Vector<BPPair>[] coms = (Vector<BPPair>[])command.Args[2];
-                Vector<BPPair>[] inv_coms = new Vector<BPPair>[curves.Length];
+                Vector<String> curves = (Vector<String>)command.Args[1];
+                Vector<Vector<BPPair>> coms = (Vector<Vector<BPPair>>)command.Args[2];
+                Vector<Vector<BPPair>> inv_coms = new Vector<Vector<BPPair>>();
                 VsqCommand inv = null;
 
-                for ( int k = 0; k < curves.Length; k++ ) {
-                    String curve = curves[k];
+                int count = curves.size();
+                for ( int k = 0; k < count; k++ ) {
+                    String curve = curves.get( k );
                     VsqBPList target = Track.get( track ).getCurve( curve );
                     Vector<BPPair> com = coms[k];
                     Vector<BPPair> edit = new Vector<BPPair>();
@@ -620,7 +644,7 @@ namespace Boare.Cadencii {
                         if ( com.size() > 0 ) {
                             int start_clock = com.get( 0 ).Clock;
                             int end_clock = com.get( 0 ).Clock;
-                            for ( Iterator itr = com.iterator(); itr.hasNext(); ){
+                            for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
                                 BPPair item = (BPPair)itr.next();
                                 start_clock = Math.Min( start_clock, item.Clock );
                                 end_clock = Math.Max( end_clock, item.Clock );
@@ -662,9 +686,9 @@ namespace Boare.Cadencii {
 
                             // 並べ替え
                             Collections.sort( edit );
-                            inv_coms[k] = edit;
+                            inv_coms.add( edit );
                         } else if ( com.size() == 0 ) {
-                            inv_coms[k] = new Vector<BPPair>();
+                            inv_coms.add( new Vector<BPPair>() );
                         }
                     }
 
@@ -699,7 +723,7 @@ namespace Boare.Cadencii {
                                 }
                             }
                         }
-                        for ( Iterator itr = com.iterator(); itr.hasNext(); ){
+                        for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
                             BPPair item = (BPPair)itr.next();
                             target.add( item.Clock, item.Value );
                         }
@@ -723,10 +747,61 @@ namespace Boare.Cadencii {
             if ( command.type == CadenciiCommandType.VSQ_COMMAND ) {
                 ret = new CadenciiCommand();
                 ret.type = CadenciiCommandType.VSQ_COMMAND;
-                if ( command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT || command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
+                if ( command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT || 
+                     command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
                     ret.vsqCommand = preprocessSpecialCommand( command.vsqCommand );
                 } else {
                     ret.vsqCommand = base.executeCommand( command.vsqCommand );
+
+                    // 再レンダリングが必要になったかどうかを判定
+                    VsqCommandType type = command.vsqCommand.Type;
+                    if ( type == VsqCommandType.CHANGE_PRE_MEASURE ||
+                         type == VsqCommandType.REPLACE ||
+                         type == VsqCommandType.UPDATE_TEMPO ||
+                         type == VsqCommandType.UPDATE_TEMPO_RANGE ){
+                        int count = Track.size();
+                        for ( int i = 0; i < count - 1; i++ ) {
+                            editorStatus.renderRequired[i] = true;
+                        }
+                    } else if ( type == VsqCommandType.EVENT_ADD ||
+                                type == VsqCommandType.EVENT_ADD_RANGE ||
+                                type == VsqCommandType.EVENT_CHANGE_ACCENT ||
+                                type == VsqCommandType.EVENT_CHANGE_CLOCK ||
+                                type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS ||
+                                type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS_RANGE ||
+                                type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_LENGTH ||
+                                type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_NOTE ||
+                                type == VsqCommandType.EVENT_CHANGE_DECAY ||
+                                type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS ||
+                                type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS_RANGE ||
+                                type == VsqCommandType.EVENT_CHANGE_LENGTH ||
+                                type == VsqCommandType.EVENT_CHANGE_LYRIC ||
+                                type == VsqCommandType.EVENT_CHANGE_NOTE ||
+                                type == VsqCommandType.EVENT_CHANGE_VELOCITY ||
+                                type == VsqCommandType.EVENT_DELETE ||
+                                type == VsqCommandType.EVENT_DELETE_RANGE ||
+                                type == VsqCommandType.EVENT_REPLACE ||
+                                type == VsqCommandType.EVENT_REPLACE_RANGE ||
+                                type == VsqCommandType.TRACK_CURVE_EDIT ||
+                                type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ||
+                                type == VsqCommandType.TRACK_CURVE_REPLACE ||
+                                type == VsqCommandType.TRACK_CURVE_REPLACE_RANGE ||
+                                type == VsqCommandType.TRACK_REPLACE ) {
+                        int track = (Integer)command.vsqCommand.Args[0];
+                        editorStatus.renderRequired[track - 1] = true;
+                    } else if ( type == VsqCommandType.TRACK_ADD ){
+                        int position = (Integer)command.vsqCommand.Args[2];
+                        for ( int i = 15; i >= position; i-- ) {
+                            editorStatus.renderRequired[i] = editorStatus.renderRequired[i - 1];
+                        }
+                        editorStatus.renderRequired[position - 1] = true;
+                    } else if ( type == VsqCommandType.TRACK_DELETE ) {
+                        int track = (Integer)command.vsqCommand.Args[0];
+                        for ( int i = track - 1; i < 15; i++ ) {
+                            editorStatus.renderRequired[i] = editorStatus.renderRequired[i + 1];
+                        }
+                        editorStatus.renderRequired[15] = false;
+                    }
                 }
             } else {
                 if ( command.type == CadenciiCommandType.BEZIER_CHAIN_ADD ) {
@@ -737,19 +812,19 @@ namespace Boare.Cadencii {
                     int track = (int)command.args[0];
                     CurveType curve_type = (CurveType)command.args[1];
                     BezierChain chain = (BezierChain)command.args[2];
-                    int clock_resolution = (int)command.args[3];
-                    int added_id = (int)command.args[4];
+                    int clock_resolution = (Integer)command.args[3];
+                    int added_id = (Integer)command.args[4];
                     AttachedCurves.get( track - 1 ).addBezierChain( curve_type, chain, added_id );
                     ret = generateCommandDeleteBezierChain( track, curve_type, added_id, clock_resolution );
                     if ( chain.size() > 1 ) {
-                        int min = (int)chain.points.get( 0 ).getBase().X;
+                        int min = (int)chain.points.get( 0 ).getBase().getX();
                         int max = min;
                         for ( int i = 1; i < chain.points.size(); i++ ) {
-                            min = Math.Min( min, (int)chain.points.get( i ).getBase().X );
-                            max = Math.Max( max, (int)chain.points.get( i ).getBase().X );
+                            min = Math.Min( min, (int)chain.points.get( i ).getBase().getX() );
+                            max = Math.Max( max, (int)chain.points.get( i ).getBase().getX() );
                         }
-                        int max_value = curve_type.Maximum;
-                        int min_value = curve_type.Minimum;
+                        int max_value = curve_type.getMaximum();
+                        int min_value = curve_type.getMinimum();
                         if ( min < max ) {
                             Vector<BPPair> edit = new Vector<BPPair>();
                             int last_value = int.MaxValue;
@@ -766,11 +841,13 @@ namespace Boare.Cadencii {
                                 }
                             }
                             int value2;
-                            value2 = Track.get( track ).getCurve( curve_type.Name ).getValue( max );
+                            value2 = Track.get( track ).getCurve( curve_type.getName() ).getValue( max );
                             edit.add( new BPPair( max, value2 ) );
-                            command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit( track, curve_type.Name, edit );
+                            command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit( track, curve_type.getName(), edit );
                         }
                     }
+
+                    editorStatus.renderRequired[track - 1] = true;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.BEZIER_CHAIN_DELETE ) {
                     #region DeleteBezierChain
@@ -788,6 +865,7 @@ namespace Boare.Cadencii {
                             ret.vsqCommand = base.executeCommand( command.vsqCommand );
                         }
                     }
+                    editorStatus.renderRequired[track - 1] = true;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.BEZIER_CHAIN_REPLACE ) {
                     #region ReplaceBezierChain
@@ -800,12 +878,12 @@ namespace Boare.Cadencii {
                     AttachedCurves.get( track - 1 ).setBezierChain( curve_type, chain_id, chain );
                     ret = generateCommandReplaceBezierChain( track, curve_type, chain_id, target, clock_resolution );
                     if ( chain.size() == 1 ) {
-                        int ex_min = (int)chain.points.get( 0 ).getBase().X;
+                        int ex_min = (int)chain.points.get( 0 ).getBase().getX();
                         int ex_max = ex_min;
                         if ( target.points.size() > 1 ) {
                             for ( int i = 1; i < target.points.size(); i++ ) {
-                                ex_min = Math.Min( ex_min, (int)target.points.get( i ).getBase().X );
-                                ex_max = Math.Max( ex_max, (int)target.points.get( i ).getBase().X );
+                                ex_min = Math.Min( ex_min, (int)target.points.get( i ).getBase().getX() );
+                                ex_max = Math.Max( ex_max, (int)target.points.get( i ).getBase().getX() );
                             }
                             if ( ex_min < ex_max ) {
                                 int default_value = curve_type.getDefault();
@@ -816,25 +894,25 @@ namespace Boare.Cadencii {
                             }
                         }
                     } else if ( chain.size() > 1 ) {
-                        int min = (int)chain.points.get( 0 ).getBase().X;
+                        int min = (int)chain.points.get( 0 ).getBase().getX();
                         int max = min;
                         for ( int i = 1; i < chain.points.size(); i++ ) {
-                            min = Math.Min( min, (int)chain.points.get( i ).getBase().X );
-                            max = Math.Max( max, (int)chain.points.get( i ).getBase().X );
+                            min = Math.Min( min, (int)chain.points.get( i ).getBase().getX() );
+                            max = Math.Max( max, (int)chain.points.get( i ).getBase().getX() );
                         }
                         int ex_min = min;
                         int ex_max = max;
                         if ( target.points.size() > 0 ) {
-                            ex_min = (int)target.points.get( 0 ).getBase().X;
+                            ex_min = (int)target.points.get( 0 ).getBase().getX();
                             ex_max = ex_min;
                             for ( int i = 1; i < target.points.size(); i++ ) {
-                                ex_min = Math.Min( ex_min, (int)target.points.get( i ).getBase().X );
-                                ex_max = Math.Max( ex_max, (int)target.points.get( i ).getBase().X );
+                                ex_min = Math.Min( ex_min, (int)target.points.get( i ).getBase().getX() );
+                                ex_max = Math.Max( ex_max, (int)target.points.get( i ).getBase().getX() );
                             }
                         }
-                        int max_value = curve_type.Maximum;
-                        int min_value = curve_type.Minimum;
-                        int default_value = curve_type.Default;
+                        int max_value = curve_type.getMaximum();
+                        int min_value = curve_type.getMinimum();
+                        int default_value = curve_type.getDefault();
                         Vector<BPPair> edit = new Vector<BPPair>();
                         if ( ex_min < min ) {
                             edit.add( new BPPair( ex_min, default_value ) );
@@ -862,7 +940,7 @@ namespace Boare.Cadencii {
                                     value2 = max_value;
                                 }
                             } else {
-                                value2 = Track.get( track ).getCurve( curve_type.Name ).getValue( max );
+                                value2 = Track.get( track ).getCurve( curve_type.getName() ).getValue( max );
                             }
                             edit.add( new BPPair( max, value2 ) );
                         }
@@ -873,9 +951,11 @@ namespace Boare.Cadencii {
                             edit.add( new BPPair( ex_max, default_value ) );
                         }
                         if ( edit.size() > 0 ) {
-                            command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit( track, curve_type.Name, edit );
+                            command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit( track, curve_type.getName(), edit );
                         }
                     }
+
+                    editorStatus.renderRequired[track - 1] = true;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.REPLACE ) {
                     #region Replace
@@ -883,46 +963,56 @@ namespace Boare.Cadencii {
                     VsqFileEx inv = (VsqFileEx)this.Clone();
                     Track.clear();
                     for ( int i = 0; i < vsq.Track.size(); i++ ) {
-                        Track.add( (VsqTrack)vsq.Track.get( i ).Clone() );
+                        Track.add( (VsqTrack)vsq.Track.get( i ).clone() );
                     }
                     TempoTable.clear();
                     for ( int i = 0; i < vsq.TempoTable.size(); i++ ) {
-                        TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).Clone() );
+                        TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
                     }
                     TimesigTable.clear();
                     for ( int i = 0; i < vsq.TimesigTable.size(); i++ ) {
-                        TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).Clone() );
+                        TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
                     }
                     m_tpq = vsq.m_tpq;
                     TotalClocks = vsq.TotalClocks;
                     m_base_tempo = vsq.m_base_tempo;
-                    Master = (VsqMaster)vsq.Master.Clone();
-                    Mixer = (VsqMixer)vsq.Mixer.Clone();
+                    Master = (VsqMaster)vsq.Master.clone();
+                    Mixer = (VsqMixer)vsq.Mixer.clone();
                     AttachedCurves = (AttachedCurve)vsq.AttachedCurves.Clone();
                     updateTotalClocks();
                     ret = generateCommandReplace( inv );
+
+                    int count = Track.size();
+                    for ( int i = 0; i < count - 1; i++ ) {
+                        editorStatus.renderRequired[i] = true;
+                    }
+                    for ( int i = count - 1; i < 16; i++ ) {
+                        editorStatus.renderRequired[i] = false;
+                    }
                     #endregion
                 } else if ( command.type == CadenciiCommandType.ATTACHED_CURVE_REPLACE_RANGE ) {
                     #region ReplaceAttachedCurveRange
                     int track = (int)command.args[0];
                     TreeMap<CurveType, Vector<BezierChain>> curves = (TreeMap<CurveType, Vector<BezierChain>>)command.args[1];
                     TreeMap<CurveType, Vector<BezierChain>> inv = new TreeMap<CurveType, Vector<BezierChain>>();
-                    for ( Iterator itr = curves.keySet().iterator(); itr.hasNext(); ){
+                    for ( Iterator itr = curves.keySet().iterator(); itr.hasNext(); ) {
                         CurveType ct = (CurveType)itr.next();
                         Vector<BezierChain> chains = new Vector<BezierChain>();
                         Vector<BezierChain> src = this.AttachedCurves.get( track - 1 ).get( ct );
-                        for ( int i = 0; i < src.size(); i++ ){
+                        for ( int i = 0; i < src.size(); i++ ) {
                             chains.add( (BezierChain)src.get( i ).Clone() );
                         }
                         inv.put( ct, chains );
 
                         this.AttachedCurves.get( track - 1 ).get( ct ).clear();
-                        for ( Iterator itr2 = curves.get( ct ).iterator(); itr2.hasNext(); ){
+                        for ( Iterator itr2 = curves.get( ct ).iterator(); itr2.hasNext(); ) {
                             BezierChain bc = (BezierChain)itr2.next();
                             this.AttachedCurves.get( track - 1 ).get( ct ).add( bc );
                         }
                     }
                     ret = generateCommandReplaceAttachedCurveRange( track, inv );
+
+                    editorStatus.renderRequired[track - 1] = true;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.TRACK_ADD ) {
                     #region AddTrack
@@ -932,10 +1022,15 @@ namespace Boare.Cadencii {
                     BezierCurves attached_curve = (BezierCurves)command.args[3];
                     ret = VsqFileEx.generateCommandDeleteTrack( position );
                     if ( Track.size() <= 17 ) {
-                        Track.insertElementAt( (VsqTrack)track.Clone(), position );
+                        Track.insertElementAt( (VsqTrack)track.clone(), position );
                         AttachedCurves.insertElementAt( position - 1, attached_curve );
-                        Mixer.Slave.insertElementAt( (VsqMixerEntry)mixer.Clone(), position - 1 );
+                        Mixer.Slave.insertElementAt( (VsqMixerEntry)mixer.clone(), position - 1 );
                     }
+
+                    for ( int i = 15; i >= position; i-- ) {
+                        editorStatus.renderRequired[i] = editorStatus.renderRequired[i - 1];
+                    }
+                    editorStatus.renderRequired[position - 1] = true;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.TRACK_DELETE ) {
                     #region DeleteTrack
@@ -945,6 +1040,11 @@ namespace Boare.Cadencii {
                     AttachedCurves.removeElementAt( track - 1 );
                     Mixer.Slave.removeElementAt( track - 1 );
                     updateTotalClocks();
+
+                    for ( int i = track - 1; i < 15; i++ ) {
+                        editorStatus.renderRequired[i] = editorStatus.renderRequired[i + 1];
+                    }
+                    editorStatus.renderRequired[15] = false;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.TRACK_REPLACE ) {
                     #region TrackReplace
@@ -955,6 +1055,8 @@ namespace Boare.Cadencii {
                     Track.set( track, item );
                     AttachedCurves.set( track - 1, bezier_curves );
                     updateTotalClocks();
+
+                    editorStatus.renderRequired[track - 1] = true;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.BGM_UPDATE ) {
                     #region BGM_UPDATE
@@ -971,7 +1073,8 @@ namespace Boare.Cadencii {
 #if DEBUG
                     AppManager.debugWriteLine( "VsqFileEx.executeCommand; command.VsqCommand.Type=" + command.vsqCommand.Type );
 #endif
-                    if ( command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT || command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
+                    if ( command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT || 
+                         command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
                         ret.vsqCommand = preprocessSpecialCommand( command.vsqCommand );
                     } else {
                         ret.vsqCommand = base.executeCommand( command.vsqCommand );
@@ -981,32 +1084,50 @@ namespace Boare.Cadencii {
             return ret;
         }
 
+#if JAVA
+        public VsqFileEx()
+        {
+            this( "Miku", 1, 4, 4, 500000 );
+#else
         public VsqFileEx()
             : this( "Miku", 1, 4, 4, 500000 ) {
+#endif
             Track.clear();
             TempoTable.clear();
             TimesigTable.clear();
         }
 
+#if JAVA
+        public VsqFileEx( String singer, int pre_measure, int numerator, int denominator, int tempo )
+        {
+            super( singer, pre_measure, numerator, denominator, tempo );
+#else
         public VsqFileEx( String singer, int pre_measure, int numerator, int denominator, int tempo ) :
             base( singer, pre_measure, numerator, denominator, tempo ) {
+#endif
             AttachedCurves = new AttachedCurve();
-            for ( int i = 1; i < Track.size(); i++ ) {
+            int count = Track.size();
+            for ( int i = 1; i < count; i++ ) {
                 AttachedCurves.add( new BezierCurves() );
             }
         }
 
-        public VsqFileEx( String _fpath, Encoding encoding ) :
-            base( _fpath, encoding ){
+#if JAVA
+        public VsqFileEx( String _fpath, String encoding ){
+            super( _fpath, encoding );
+#else
+        public VsqFileEx( String _fpath, String encoding ) :
+            base( _fpath, encoding ) {
+#endif
             AttachedCurves = new AttachedCurve();
 
-            String xml = Path.Combine( Path.GetDirectoryName( _fpath ), Path.GetFileName( _fpath ) + ".xml" );
+            String xml = PortUtil.combinePath( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
             if ( PortUtil.isFileExists( xml ) ) {
                 AttachedCurve tmp = null;
-                FileStream fs = null;
+                FileInputStream fs = null;
                 try {
-                    fs = new FileStream( xml, FileMode.Open );
-                    tmp = (AttachedCurve)AppManager.xmlSerializerListBezierCurves.Deserialize( fs );
+                    fs = new FileInputStream( xml );
+                    tmp = (AttachedCurve)AppManager.xmlSerializerListBezierCurves.deserialize( fs );
                 } catch ( Exception ex ) {
                     bocoree.debug.push_log( "ex=" + ex );
                     // 1.4.xのxmlとして読み込みを試みる
@@ -1014,22 +1135,23 @@ namespace Boare.Cadencii {
                         fs.Close();
                         fs = null;
                     }
-                    Rescue14xXml rx = new Rescue14xXml();
-                    tmp = rx.Rescue( xml, Track.size() - 1 );
+                    //Rescue14xXml rx = new Rescue14xXml();
+                    //tmp = rx.Rescue( xml, Track.size() - 1 );
                 } finally {
                     if ( fs != null ) {
                         fs.Close();
                     }
                 }
                 if ( tmp != null ) {
-                    for ( Iterator itr = tmp.Curves.iterator(); itr.hasNext(); ){
+                    for ( Iterator itr = tmp.Curves.iterator(); itr.hasNext(); ) {
                         BezierCurves bc = (BezierCurves)itr.next();
-                        foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
+                        for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
+                            CurveType ct = AppManager.CURVE_USAGE[k];
                             Vector<BezierChain> list = bc.get( ct );
                             for ( int i = 0; i < list.size(); i++ ) {
                                 list.get( i ).id = i + 1;
                                 for ( int j = 0; j < list.get( i ).points.size(); j++ ) {
-                                    list.get( i ).points.get( j ).ID = j + 1;
+                                    list.get( i ).points.get( j ).setID( j + 1 );
                                 }
                             }
                         }
@@ -1043,19 +1165,27 @@ namespace Boare.Cadencii {
             }
 
             // UTAUでエクスポートしたIconHandleは、IDS=UTAUとなっているので探知する
-            for ( int i = 1; i < Track.size(); i++ ) {
-                for ( Iterator itr = Track.get( i ).getSingerEventIterator(); itr.hasNext(); ) {
+            int count = Track.size();
+            for ( int i = 1; i < count; i++ ) {
+                VsqTrack track = Track.get( i );
+                for ( Iterator itr = track.getSingerEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
                     if ( ve.ID.IconHandle.IDS.ToLower().Equals( "utau" ) ) {
-                        Track.get( i ).getCommon().Version = "UTU000";
+                        track.getCommon().Version = "UTU000";
                         break;
                     }
                 }
             }
         }
 
+#if JAVA
+        public VsqFileEx( UstFile ust )
+        {
+            this( "Miku", 1, 4, 4, ust.getBaseTempo() );
+#else
         public VsqFileEx( UstFile ust )
             : this( "Miku", 1, 4, 4, ust.getBaseTempo() ) {
+#endif
             int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
             VsqBPList pitch = new VsqBPList( 0, -2400, 2400 );
             for ( Iterator itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
@@ -1063,15 +1193,15 @@ namespace Boare.Cadencii {
                 if ( ue.Lyric != "R" ) {
                     VsqID id = new VsqID( 0 );
                     id.Length = ue.Length;
-                    String psymbol = "a";
-                    if ( !SymbolTable.attatch( ue.Lyric, out psymbol ) ) {
-                        psymbol = "a";
+                    ByRef<String> psymbol = new ByRef<String>( "a" );
+                    if ( !SymbolTable.attatch( ue.Lyric, psymbol ) ) {
+                        psymbol.value = "a";
                     }
-                    id.LyricHandle = new LyricHandle( ue.Lyric, psymbol );
+                    id.LyricHandle = new LyricHandle( ue.Lyric, psymbol.value );
                     id.Note = ue.Note;
                     id.type = VsqIDType.Anote;
                     VsqEvent ve = new VsqEvent( clock_count, id );
-                    ve.UstEvent = (UstEvent)ue.Clone();
+                    ve.UstEvent = (UstEvent)ue.clone();
                     Track.get( 1 ).addEvent( ve );
 
                     if ( ue.Pitches != null ) {
@@ -1100,7 +1230,8 @@ namespace Boare.Cadencii {
         /// </summary>
         public static void reflectPitch( VsqFile vsq, int track, VsqBPList pitch ) {
             //double offset = AttachedCurves[track - 1].MasterTuningInCent * 100;
-            Vector<Integer> keyclocks = new Vector<Integer>( pitch.getKeys() );
+            //Vector<Integer> keyclocks = new Vector<Integer>( pitch.getKeys() );
+            int keyclock_size = pitch.size();
             VsqBPList pit = new VsqBPList( 0, -8192, 8191 );
             VsqBPList pbs = new VsqBPList( 2, 0, 24 );
             int premeasure_clock = vsq.getPreMeasureClocks();
@@ -1122,7 +1253,8 @@ namespace Boare.Cadencii {
                 }
             }
 
-            for ( int i = 0; i < parts.size(); i++ ) {
+            int parts_size = parts.size();
+            for ( int i = 0; i < parts_size; i++ ) {
                 int partstart = parts.get( i );
                 int partend = int.MaxValue;
                 if ( i + 1 < parts.size() ) {
@@ -1131,14 +1263,15 @@ namespace Boare.Cadencii {
 
                 // まず、区間内の最大ピッチベンド幅を調べる
                 double max = 0;
-                for ( int j = 0; j < keyclocks.size(); j++ ) {
-                    if ( keyclocks.get( j ) < partstart ) {
+                for ( int j = 0; j < keyclock_size; j++ ) {
+                    int clock = pitch.getKeyClock( j );
+                    if ( clock < partstart ) {
                         continue;
                     }
-                    if ( partend <= keyclocks.get( j ) ) {
+                    if ( partend <= clock ) {
                         break;
                     }
-                    max = Math.Max( max, Math.Abs( pitch.getValue( keyclocks.get( j ) ) / 10000.0 ) );
+                    max = Math.Max( max, Math.Abs( pitch.getValue( clock ) / 10000.0 ) );
                 }
 
                 // 最大ピッチベンド幅を表現できる最小のPBSを計算
@@ -1156,8 +1289,8 @@ namespace Boare.Cadencii {
                     pit.add( partstart, vpit );
                     lastpit = vpit;
                 }
-                for ( int j = 0; j < keyclocks.size(); j++ ) {
-                    int clock = keyclocks.get( j );
+                for ( int j = 0; j < keyclock_size; j++ ) {
+                    int clock = pit.getKeyClock( j );
                     if ( clock < partstart ) {
                         continue;
                     }
@@ -1180,152 +1313,194 @@ namespace Boare.Cadencii {
 
         public void writeAsXml( String file ) {
             //reflectPitch( MasterPitchControl.Pitch );
-            using ( XmlTextWriter xw = new XmlTextWriter( file, Encoding.UTF8 ) ){
-                xw.Indentation = 0;
-                s_vsq_serializer.Serialize( xw, this );
+            FileOutputStream xw = null;
+            try {
+                xw = new FileOutputStream( file );
+                s_vsq_serializer.serialize( xw, this );
+            } catch ( Exception ex ) {
+            } finally {
+                if ( xw != null ) {
+                    try {
+                        xw.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
             }
         }
 
         public static VsqFileEx readFromXml( String file ) {
             VsqFileEx ret = null;
-            using ( FileStream fs = new FileStream( file, FileMode.Open, FileAccess.Read ) ) {
-                ret = (VsqFileEx)s_vsq_serializer.Deserialize( fs );
+            FileInputStream fs = null;
+            try {
+                fs = new FileInputStream( file );
+                ret = (VsqFileEx)s_vsq_serializer.deserialize( fs );
+            } catch ( Exception ex ) {
+            } finally {
+                if ( fs != null ) {
+                    try {
+                        fs.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
             }
 
-            if( ret == null ){
+            if ( ret == null ) {
                 return null;
             }
             // ベジエ曲線のIDを播番
             if ( ret.AttachedCurves != null ) {
-                for ( Iterator itr = ret.AttachedCurves.Curves.iterator(); itr.hasNext(); ){
+                for ( Iterator itr = ret.AttachedCurves.Curves.iterator(); itr.hasNext(); ) {
                     BezierCurves bc = (BezierCurves)itr.next();
-                    foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
+                    for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
+                        CurveType ct = AppManager.CURVE_USAGE[k];
                         Vector<BezierChain> list = bc.get( ct );
-                        for ( int i = 0; i < list.size(); i++ ) {
-                            list.get( i ).id = i + 1;
-                            for ( int j = 0; j < list.get( i ).points.size(); j++ ) {
-                                list.get( i ).points.get( j ).ID = j + 1;
+                        int list_size = list.size();
+                        for ( int i = 0; i < list_size; i++ ) {
+                            BezierChain chain = list.get( i );
+                            chain.id = i + 1;
+                            int points_size = chain.points.size();
+                            for ( int j = 0; j < points_size; j++ ) {
+                                chain.points.get( j ).setID( j + 1 );
                             }
                         }
                     }
                 }
             } else {
-                for ( int i = 1; i < ret.Track.size(); i++ ) {
+                int count = ret.Track.size();
+                for ( int i = 1; i < count; i++ ) {
                     ret.AttachedCurves.add( new BezierCurves() );
                 }
             }
             return ret;
         }
 
-        public override void write( String file ) {
+        public void write( String file ) {
             base.write( file );
         }
 
-        public override void write( String file, int msPreSend, Encoding encoding ) {
+        public void write( String file, int msPreSend, String encoding ) {
             base.write( file, msPreSend, encoding );
         }
+    }
 
-        public class Rescue14xXml {
-            public class BezierCurves {
-                public BezierChain[] Dynamics;
-                public BezierChain[] Brethiness;
-                public BezierChain[] Brightness;
-                public BezierChain[] Clearness;
-                public BezierChain[] Opening;
-                public BezierChain[] GenderFactor;
-                public BezierChain[] PortamentoTiming;
-                public BezierChain[] PitchBend;
-                public BezierChain[] PitchBendSensitivity;
-                public BezierChain[] VibratoRate;
-                public BezierChain[] VibratoDepth;
+    /*public class Rescue14xXml
+    {
+        public class BezierCurves
+        {
+            public BezierChain[] Dynamics;
+            public BezierChain[] Brethiness;
+            public BezierChain[] Brightness;
+            public BezierChain[] Clearness;
+            public BezierChain[] Opening;
+            public BezierChain[] GenderFactor;
+            public BezierChain[] PortamentoTiming;
+            public BezierChain[] PitchBend;
+            public BezierChain[] PitchBendSensitivity;
+            public BezierChain[] VibratoRate;
+            public BezierChain[] VibratoDepth;
 
-                public BezierCurves() {
-                    Dynamics = new BezierChain[0];
-                    Brethiness = new BezierChain[0];
-                    Brightness = new BezierChain[0];
-                    Clearness = new BezierChain[0];
-                    Opening = new BezierChain[0];
-                    GenderFactor = new BezierChain[0];
-                    PortamentoTiming = new BezierChain[0];
-                    PitchBend = new BezierChain[0];
-                    PitchBendSensitivity = new BezierChain[0];
-                    VibratoRate = new BezierChain[0];
-                    VibratoDepth = new BezierChain[0];
-                }
+            public BezierCurves()
+            {
+                Dynamics = new BezierChain[0];
+                Brethiness = new BezierChain[0];
+                Brightness = new BezierChain[0];
+                Clearness = new BezierChain[0];
+                Opening = new BezierChain[0];
+                GenderFactor = new BezierChain[0];
+                PortamentoTiming = new BezierChain[0];
+                PitchBend = new BezierChain[0];
+                PitchBendSensitivity = new BezierChain[0];
+                VibratoRate = new BezierChain[0];
+                VibratoDepth = new BezierChain[0];
             }
+        }
 
-            public Boare.Cadencii.AttachedCurve Rescue( String file, int num_track ) {
+        public Boare.Cadencii.AttachedCurve Rescue( String file, int num_track )
+        {
 #if DEBUG
-                AppManager.debugWriteLine( "VsqFileEx.Rescue14xXml.Rescue; file=" + file + "; num_track=" + num_track );
-                bocoree.debug.push_log( "   constructing serializer..." );
+            AppManager.debugWriteLine( "VsqFileEx.Rescue14xXml.Rescue; file=" + file + "; num_track=" + num_track );
+            bocoree.debug.push_log( "   constructing serializer..." );
 #endif
-                XmlSerializer xs = null;
-                try {
-                    xs = new XmlSerializer( typeof( Vector<Boare.Cadencii.VsqFileEx.Rescue14xXml.BezierCurves> ) );
-                } catch ( Exception ex ) {
-                    bocoree.debug.push_log( "    ex=" + ex );
-                }
-                if ( xs == null ) {
-                    return null;
-                }
+            XmlSerializer xs = null;
+            try
+            {
+#if JAVA
+                    Vector<org.kbinani.Cadencii.VsqFileEx.Rescue14xXml.BezierCurves> dum = new Vector<org.kbinani.Cadencii.VsqFileEx.Rescue14xXml.BezierCurves>();
+                    xs = new XmlSerializer( dum.getClass() );
+#else
+                xs = new XmlSerializer( typeof( Vector<Boare.Cadencii.Rescue14xXml.BezierCurves> ) );
+#endif
+            }
+            catch ( Exception ex )
+            {
+                bocoree.debug.push_log( "    ex=" + ex );
+            }
+            if ( xs == null )
+            {
+                return null;
+            }
 #if DEBUG
-                bocoree.debug.push_log( "    ...done" );
-                bocoree.debug.push_log( "    constructing FileStream..." );
+            bocoree.debug.push_log( "    ...done" );
+            bocoree.debug.push_log( "    constructing FileStream..." );
 #endif
-                FileStream fs = new FileStream( file, FileMode.Open );
+            FileInputStream fs = new FileInputStream( file );
 #if DEBUG
-                bocoree.debug.push_log( "    ...done" );
+            bocoree.debug.push_log( "    ...done" );
 #endif
-                AttachedCurve ac = null;
+            AttachedCurve ac = null;
 #if !DEBUG
                 try {
 #endif
 #if DEBUG
-                bocoree.debug.push_log( "    serializing..." );
+            bocoree.debug.push_log( "    serializing..." );
 #endif
-                    Vector<Boare.Cadencii.VsqFileEx.Rescue14xXml.BezierCurves> list = (Vector<Boare.Cadencii.VsqFileEx.Rescue14xXml.BezierCurves>)xs.Deserialize( fs );
+            Vector<Boare.Cadencii.Rescue14xXml.BezierCurves> list = (Vector<Boare.Cadencii.Rescue14xXml.BezierCurves>)xs.deserialize( fs );
 #if DEBUG
-                    bocoree.debug.push_log( "    ...done" );
-                    bocoree.debug.push_log( "    (list==null)=" + (list == null) );
-                    bocoree.debug.push_log( "    list.Count=" + list.size() );
+            bocoree.debug.push_log( "    ...done" );
+            bocoree.debug.push_log( "    (list==null)=" + (list == null) );
+            bocoree.debug.push_log( "    list.Count=" + list.size() );
 #endif
-                    if ( list.size() >= num_track ) {
-                        ac = new AttachedCurve();
-                        ac.Curves = new Vector<Boare.Cadencii.BezierCurves>();
-                        for ( int i = 0; i < num_track; i++ ) {
+            if ( list.size() >= num_track )
+            {
+                ac = new AttachedCurve();
+                ac.Curves = new Vector<Boare.Cadencii.BezierCurves>();
+                for ( int i = 0; i < num_track; i++ )
+                {
 #if DEBUG
-                            bocoree.debug.push_log( "    i=" + i );
+                    bocoree.debug.push_log( "    i=" + i );
 #endif
-                            Boare.Cadencii.BezierCurves add = new Boare.Cadencii.BezierCurves();
-                            add.Brethiness = new Vector<BezierChain>( list.get( i ).Brethiness );
-                            add.Brightness = new Vector<BezierChain>( list.get( i ).Brightness );
-                            add.Clearness = new Vector<BezierChain>( list.get( i ).Clearness );
-                            add.Dynamics = new Vector<BezierChain>();
-                            foreach ( BezierChain bc in list.get( i ).Dynamics ) {
-                                add.Dynamics.add( (BezierChain)bc.Clone() );
-                            }
-                            add.FX2Depth = new Vector<BezierChain>();
-                            add.GenderFactor = new Vector<BezierChain>( list.get( i ).GenderFactor );
-                            add.Harmonics = new Vector<BezierChain>();
-                            add.Opening = new Vector<BezierChain>( list.get( i ).Opening );
-                            add.PortamentoTiming = new Vector<BezierChain>( list.get( i ).PortamentoTiming );
-                            add.Reso1Amp = new Vector<BezierChain>();
-                            add.Reso2Amp = new Vector<BezierChain>();
-                            add.Reso3Amp = new Vector<BezierChain>();
-                            add.Reso4Amp = new Vector<BezierChain>();
-                            add.Reso1BW = new Vector<BezierChain>();
-                            add.Reso2BW = new Vector<BezierChain>();
-                            add.Reso3BW = new Vector<BezierChain>();
-                            add.Reso4BW = new Vector<BezierChain>();
-                            add.Reso1Freq = new Vector<BezierChain>();
-                            add.Reso2Freq = new Vector<BezierChain>();
-                            add.Reso3Freq = new Vector<BezierChain>();
-                            add.Reso4Freq = new Vector<BezierChain>();
-                            add.VibratoDepth = new Vector<BezierChain>( list.get( i ).VibratoDepth );
-                            add.VibratoRate = new Vector<BezierChain>( list.get( i ).VibratoRate );
-                            ac.Curves.add( add );
-                        }
+                    Boare.Cadencii.BezierCurves add = new Boare.Cadencii.BezierCurves();
+                    add.Brethiness = new Vector<BezierChain>( list.get( i ).Brethiness );
+                    add.Brightness = new Vector<BezierChain>( list.get( i ).Brightness );
+                    add.Clearness = new Vector<BezierChain>( list.get( i ).Clearness );
+                    add.Dynamics = new Vector<BezierChain>();
+                    for ( int k = 0; k < list.get( i ).Dynamics.Length; k++ )
+                    {
+                        BezierChain bc = list.get( i ).Dynamics[k];
+                        add.Dynamics.add( (BezierChain)bc.Clone() );
                     }
+                    add.FX2Depth = new Vector<BezierChain>();
+                    add.GenderFactor = new Vector<BezierChain>( list.get( i ).GenderFactor );
+                    add.Harmonics = new Vector<BezierChain>();
+                    add.Opening = new Vector<BezierChain>( list.get( i ).Opening );
+                    add.PortamentoTiming = new Vector<BezierChain>( list.get( i ).PortamentoTiming );
+                    add.Reso1Amp = new Vector<BezierChain>();
+                    add.Reso2Amp = new Vector<BezierChain>();
+                    add.Reso3Amp = new Vector<BezierChain>();
+                    add.Reso4Amp = new Vector<BezierChain>();
+                    add.Reso1BW = new Vector<BezierChain>();
+                    add.Reso2BW = new Vector<BezierChain>();
+                    add.Reso3BW = new Vector<BezierChain>();
+                    add.Reso4BW = new Vector<BezierChain>();
+                    add.Reso1Freq = new Vector<BezierChain>();
+                    add.Reso2Freq = new Vector<BezierChain>();
+                    add.Reso3Freq = new Vector<BezierChain>();
+                    add.Reso4Freq = new Vector<BezierChain>();
+                    add.VibratoDepth = new Vector<BezierChain>( list.get( i ).VibratoDepth );
+                    add.VibratoRate = new Vector<BezierChain>( list.get( i ).VibratoRate );
+                    ac.Curves.add( add );
+                }
+            }
 #if !DEBUG
                 } catch ( Exception ex ) {
                     bocoree.debug.push_log( "Rescue14xXml; ex=" + ex );
@@ -1336,10 +1511,9 @@ namespace Boare.Cadencii {
                     }
                 }
 #endif
-                return ac;
-            }
+            return ac;
         }
-
-    }
-
+    }*/
+#if !JAVA
 }
+#endif

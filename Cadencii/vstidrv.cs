@@ -19,6 +19,8 @@ using System.Runtime.CompilerServices;
 using bocoree;
 using Boare.Lib.Media;
 using VstSdk;
+using bocoree.util;
+using bocoree.io;
 
 namespace Boare.Cadencii {
 
@@ -134,7 +136,7 @@ namespace Boare.Cadencii {
         }
 
         public event WaveIncomingEventHandler WaveIncoming;
-        public event RenderingFinishedEventHandler RenderingFinished;
+        public event EventHandler RenderingFinished;
 
         public void SetFirstBufferWrittenCallback( Boare.Lib.Media.FirstBufferWrittenCallback handler ) {
             s_first_buffer_written_callback = handler;
@@ -164,14 +166,14 @@ namespace Boare.Cadencii {
                 g_block_size = block_size;
                 g_sample_rate = sample_rate;
                 String str = new String( dll_path );
-                IntPtr dll_handle = windows.LoadLibraryExW( str, IntPtr.Zero, windows.LOAD_WITH_ALTERED_SEARCH_PATH );
+                IntPtr dll_handle = win32.LoadLibraryExW( str, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
                 System.Threading.Thread.Sleep( 250 );
 #if TEST
                 bocoree.debug.push_log( "    dll_handle=0x" + Convert.ToString( dll_handle.ToInt32(), 16 ) );
 #endif
                 g_dllHandle = dll_handle;
 
-                s_main_delegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( windows.GetProcAddress( g_dllHandle, "main" ), 
+                s_main_delegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( win32.GetProcAddress( g_dllHandle, "main" ), 
                                                                                    typeof( PVSTMAIN ) );
                 System.Threading.Thread.Sleep( 250 );
                 if ( s_main_delegate == null ) {
@@ -205,8 +207,8 @@ namespace Boare.Cadencii {
                 s_track_events.add( new Vector<MIDI_EVENT>() );
             } catch ( Exception ex ) {
 #if TEST
-                Console.WriteLine( "vstidrv+Init" );
-                Console.WriteLine( "    ex=" + ex );
+                PortUtil.println( "vstidrv+Init" );
+                PortUtil.println( "    ex=" + ex );
 #endif
                 return false;
             }
@@ -575,7 +577,7 @@ namespace Boare.Cadencii {
             }
 
 #if TEST
-            Console.WriteLine( "vstidrv::StartRendering; total_processed=" + total_processed );
+            PortUtil.println( "vstidrv::StartRendering; total_processed=" + total_processed );
 #endif
 
             if ( mode_infinite ) {
@@ -595,7 +597,7 @@ namespace Boare.Cadencii {
 
             s_aeffect.Dispatch( ref s_aeffect, AEffectOpcodes.effMainsChanged, 0, 0, (void*)0, 0 );
             lpEvents.clear();
-            RenderingFinished();
+            RenderingFinished( this, null );
 
             return 1;
         }

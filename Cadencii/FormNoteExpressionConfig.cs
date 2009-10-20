@@ -14,16 +14,17 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
-
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.util;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
 
     using boolean = Boolean;
 
-    partial class FormNoteExpressionConfig : Form {
+    partial class FormNoteExpressionConfig : BForm {
         boolean m_apply_current_track = false;
         NoteHeadHandle m_note_head_handle = null;
 
@@ -50,7 +51,7 @@ namespace Boare.Cadencii {
         }
 
         public static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
         public int PMBendDepth {
@@ -159,7 +160,7 @@ namespace Boare.Cadencii {
             }
             comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
 
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             Size current_size = this.ClientSize;
             this.ClientSize = new Size( current_size.Width, flowLayoutPanel.ClientSize.Height + flowLayoutPanel.Top * 2 );
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -325,10 +326,10 @@ namespace Boare.Cadencii {
         }
 
         private void btnApply_Click( object sender, EventArgs e ) {
-            if ( MessageBox.Show( _( "Would you like to change singer style for all events?" ),
+            if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME, 
                                   MessageBoxButtons.YesNo, 
-                                  MessageBoxIcon.Exclamation ) == DialogResult.Yes ) {
+                                  MessageBoxIcon.Exclamation ) == BDialogResult.YES ) {
                 m_apply_current_track = true;
                 DialogResult = DialogResult.OK;
             }

@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * BTrackBar.cs
  * Copyright (c) 2009 kbinani
  *
@@ -287,3 +288,4 @@ namespace Boare.Lib.AppUtil {
     }
 
 }
+#endif

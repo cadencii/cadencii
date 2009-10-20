@@ -11,31 +11,46 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System.Drawing;
+#if JAVA
+package org.kbinani.Cadencii;
 
-namespace Boare.Cadencii {
+import java.awt.*;
+import org.kbinani.*;
+#else
+using bocoree;
+using bocoree.awt;
+
+namespace Boare.Cadencii
+{
+#endif
 
     /// <summary>
     /// toolStrip*の位置を保存します
     /// </summary>
-    public class ToolStripLocation {
-        public enum ParentPanel {
+    public class ToolStripLocation
+    {
+        public enum ParentPanel
+        {
             Top,
             Bottom,
         }
-        
-        public Point Location;
+
+        public XmlPoint Location;
         public ParentPanel Parent;
 
-        public ToolStripLocation() {
-            Location = new Point( 0, 0 );
+        public ToolStripLocation()
+        {
+            Location = new XmlPoint( 0, 0 );
             Parent = ParentPanel.Top;
         }
 
-        public ToolStripLocation( Point location, ParentPanel parent ) {
-            Location = location;
+        public ToolStripLocation( Point location, ParentPanel parent )
+        {
+            Location = new XmlPoint( location );
             Parent = parent;
         }
     }
 
+#if !JAVA
 }
+#endif

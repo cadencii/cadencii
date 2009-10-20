@@ -35,13 +35,13 @@ namespace Boare.Lib.Media {
             m_port_number = port_number;
             m_delegate = new MidiInProcDelegate( MidiInProc );
             m_delegate_pointer = Marshal.GetFunctionPointerForDelegate( m_delegate );
-            windows.midiInOpen( ref m_hmidiin, port_number, m_delegate_pointer, 0, windows.CALLBACK_FUNCTION );
+            win32.midiInOpen( ref m_hmidiin, port_number, m_delegate_pointer, 0, win32.CALLBACK_FUNCTION );
         }
 
         public void Start() {
             if ( m_hmidiin > 0 ) {
                 try {
-                    windows.midiInStart( m_hmidiin );
+                    win32.midiInStart( m_hmidiin );
                 } catch ( Exception ex ) {
                     debug.push_log( "MidiInDevice.Start" );
                     debug.push_log( "    ex=" + ex );
@@ -52,7 +52,7 @@ namespace Boare.Lib.Media {
         public void Stop() {
             if ( m_hmidiin > 0 ) {
                 try {
-                    windows.midiInReset( m_hmidiin );
+                    win32.midiInReset( m_hmidiin );
                 } catch ( Exception ex ) {
                     debug.push_log( "MidiInDevice.Stop" );
                     debug.push_log( "    ex=" + ex );
@@ -63,7 +63,7 @@ namespace Boare.Lib.Media {
         public void Close() {
             if ( m_hmidiin > 0 ) {
                 try {
-                    windows.midiInClose( m_hmidiin );
+                    win32.midiInClose( m_hmidiin );
                 } catch ( Exception ex ) {
                     debug.push_log( "MidiInDevice.Close" );
                     debug.push_log( "    ex=" + ex );
@@ -78,7 +78,7 @@ namespace Boare.Lib.Media {
 
         public static int GetNumDevs() {
             try {
-                int i = (int)windows.midiInGetNumDevs();
+                int i = (int)win32.midiInGetNumDevs();
                 return i;
             } catch ( Exception ex ) {
                 debug.push_log( "MidiInDevice.GetNumDevs" );
@@ -91,13 +91,13 @@ namespace Boare.Lib.Media {
             List<MIDIINCAPS> ret = new List<MIDIINCAPS>();
             uint num = 0;
             try {
-                num = windows.midiInGetNumDevs();
+                num = win32.midiInGetNumDevs();
             } catch {
                 num = 0;
             }
             for ( uint i = 0; i < num; i++ ) {
                 MIDIINCAPS m = new MIDIINCAPS();
-                uint r = windows.midiInGetDevCaps( i, ref m, (uint)Marshal.SizeOf( m ) );
+                uint r = win32.midiInGetDevCaps( i, ref m, (uint)Marshal.SizeOf( m ) );
                 ret.Add( m );
             }
             return ret.ToArray();
@@ -106,11 +106,11 @@ namespace Boare.Lib.Media {
         public void MidiInProc( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 ) {
             try {
                 switch ( wMsg ) {
-                    case windows.MM_MIM_OPEN:
+                    case win32.MM_MIM_OPEN:
                         return;
-                    case windows.MM_MIM_CLOSE:
+                    case win32.MM_MIM_CLOSE:
                         return;
-                    case windows.MM_MIM_DATA:
+                    case win32.MM_MIM_DATA:
                         int receive = dwParam1;
                         DateTime now = DateTime.Now;
                         switch ( receive & 0xF0 ) {
@@ -134,11 +134,11 @@ namespace Boare.Lib.Media {
                                 break;
                         }
                         return;
-                    case windows.MM_MIM_LONGDATA:
+                    case win32.MM_MIM_LONGDATA:
                         return;
-                    case windows.MM_MIM_ERROR:
+                    case win32.MM_MIM_ERROR:
                         return;
-                    case windows.MM_MIM_LONGERROR:
+                    case win32.MM_MIM_LONGERROR:
                         return;
                 }
             } catch ( Exception ex ) {

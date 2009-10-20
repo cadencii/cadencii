@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 
 namespace bocoree {
 
-    public static partial class windows {
+    public static partial class win32 {
         #region winbase.h
         public const int OF_READ = 0;
         public const int OF_READWRITE = 2;

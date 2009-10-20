@@ -11,24 +11,28 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace Boare.Lib.Vsq {
+#if JAVA
+package org.kbinani.vsq;
+#else
+namespace Boare.Lib.Vsq
+{
+#endif
 
     /// <summary>
     /// Represents the voice language of singer.
     /// </summary>
-    public enum VsqVoiceLanguage : int {
-        /// <summary>
-        /// Default value, equivalent to "Japanese".
-        /// </summary>
-        Default = 0,
+    public enum VsqVoiceLanguage
+    {
         /// <summary>
         /// Japanese
         /// </summary>
-        Japanese = 0,
+        Japanese,
         /// <summary>
         /// English
         /// </summary>
-        English = 1,
+        English,
     }
 
+#if !JAVA
 }
+#endif

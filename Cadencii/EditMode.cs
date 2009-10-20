@@ -11,9 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 
 namespace Boare.Cadencii {
+#endif
 
     /// <summary>
     /// ピアノロール画面の編集モード
@@ -40,6 +44,14 @@ namespace Boare.Cadencii {
         /// </summary>
         MOVE_ENTRY_WAIT_MOVE,
         /// <summary>
+        /// コントロールカーブも同時移動するモードで、エントリを移動中
+        /// </summary>
+        MOVE_ENTRY_WHOLE,
+        /// <summary>
+        /// コントロールカーブも同時移動するモードで、マウスが動くのを待機中
+        /// </summary>
+        MOVE_ENTRY_WHOLE_WAIT_MOVE,
+        /// <summary>
         /// エントリの左端(開始時刻)を編集中
         /// </summary>
         EDIT_LEFT_EDGE,
@@ -61,4 +73,6 @@ namespace Boare.Cadencii {
         REALTIME,
     }
 
+#if !JAVA
 }
+#endif

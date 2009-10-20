@@ -14,20 +14,22 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using Boare.Lib.Vsq;
 using Boare.Lib.AppUtil;
 using bocoree;
+using bocoree.util;
+using bocoree.io;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
 
     using boolean = System.Boolean;
 
-    partial class FormWordDictionary : Form {
+    partial class FormWordDictionary : BForm {
         public FormWordDictionary() {
             InitializeComponent();
             ApplyLanguage();
-            Util.ApplyFontRecurse( this, AppManager.editorConfig.BaseFont );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public void ApplyLanguage() {
@@ -40,7 +42,7 @@ namespace Boare.Cadencii {
         }
 
         private static String _( String id ) {
-            return Messaging.GetMessage( id );
+            return Messaging.getMessage( id );
         }
 
         private void FormWordDictionary_Load( object sender, EventArgs e ) {
@@ -52,11 +54,11 @@ namespace Boare.Cadencii {
             }
         }
 
-        public Vector<KeyValuePair<String, boolean>> Result {
+        public Vector<ValuePair<String, Boolean>> Result {
             get {
-                Vector<KeyValuePair<String, boolean>> ret = new Vector<KeyValuePair<String, boolean>>();
+                Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
                 for ( int i = 0; i < listDictionaries.Items.Count; i++ ) {
-                    ret.add( new KeyValuePair<String, boolean>( (String)listDictionaries.Items[i], listDictionaries.GetItemChecked( i ) ) );
+                    ret.add( new ValuePair<String, Boolean>( (String)listDictionaries.Items[i], listDictionaries.GetItemChecked( i ) ) );
                 }
                 return ret;
             }

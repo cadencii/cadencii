@@ -11,20 +11,37 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.EditOtoIni;
+
+import java.util.*;
+import javax.swing.*;
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
+import org.kbinani.componentModel.*;
+#else
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
-
 using bocoree;
+using bocoree.util;
+using bocoree.windows.forms;
 
-namespace Boare.EditOtoIni {
-
+namespace Boare.EditOtoIni
+{
     using boolean = Boolean;
+    using BEventArgs = EventArgs;
+#endif
 
-    public partial class FormGenerateStf : Form {
-        public enum GenerateMode {
+#if JAVA
+    public class FormGenerateStf extends BForm {
+#else
+    public class FormGenerateStf : BForm
+    {
+#endif
+        public enum GenerateMode
+        {
             FRQ,
             STF,
         }
@@ -33,11 +50,22 @@ namespace Boare.EditOtoIni {
         private String m_oto_ini;
         private boolean m_abort_required = false;
         private GenerateMode m_mode = GenerateMode.STF;
-        private TimeSpan m_remaining = new TimeSpan( 0, 0, 0 );
-        private TimeSpan m_elapsed = new TimeSpan( 0, 0, 0 );
+        private long m_remaining = 0;
+        private long m_elapsed = 0;
 
-        public FormGenerateStf( String oto_ini, Vector<StfQueueArgs> list, GenerateMode mode ) {
+        public FormGenerateStf( String oto_ini, Vector<StfQueueArgs> list, GenerateMode mode )
+        {
+#if JAVA
+            super();
+            initialize();
+            loadEvent.add( new BEventHandler( this, "FormGenerateStf_Load" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
+            bgWork.progressChangedEvent.add( new BProgressChangedEventHandler( this, "bgWork_ProgressChanged" ) );
+            bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_WorkerCompleted" ) );
+#else
             InitializeComponent();
+#endif
             m_oto_ini = oto_ini;
             m_list_files = list;
             m_mode = mode;
@@ -45,68 +73,95 @@ namespace Boare.EditOtoIni {
             this.Text = string.Format( _( "Generate {0} file" ), mode + "" );
         }
 
-        private void FormGenerateStf_Load( object sender, EventArgs e ) {
+        private void FormGenerateStf_Load( Object sender, BEventArgs e )
+        {
             bgWork.RunWorkerAsync();
         }
 
-        private static String _( String id ) {
-            return Boare.Lib.AppUtil.Messaging.GetMessage( id );
+        private static String _( String id )
+        {
+            return Boare.Lib.AppUtil.Messaging.getMessage( id );
         }
 
-        private void bgWork_DoWork( object sender, DoWorkEventArgs e ) {
+#if JAVA
+        private void bgWork_DoWork( Object sender, BDoWorkEventArgs e )
+#else
+        private void bgWork_DoWork( Object sender, DoWorkEventArgs e )
+#endif
+        {
 #if DEBUG
             Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; m_oto_ini=" + m_oto_ini );
 #endif
-            if ( m_oto_ini.Equals( "" ) ) {
+            if ( m_oto_ini.Equals( "" ) )
+            {
                 return;
             }
-            if ( !PortUtil.isFileExists( m_oto_ini ) ) {
+            if ( !PortUtil.isFileExists( m_oto_ini ) )
+            {
                 return;
             }
-            String straightVoiceDB = Path.Combine( Application.StartupPath, "straightVoiceDB.exe" );
+            String straightVoiceDB = PortUtil.combinePath( Application.StartupPath, "straightVoiceDB.exe" );
             String resampler = AppManager.cadenciiConfig.PathResampler;
 #if DEBUG
             Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; straightVoiceDB=" + straightVoiceDB );
 #endif
-            DateTime started_date = DateTime.Now;
-            if ( m_mode == GenerateMode.STF ) {
+#if JAVA
+            long started_date = new Date().getTime();
+#else
+            long started_date = (long)(DateTime.Now.Ticks * 100.0 / 1e9);
+#if DEBUG
+            PortUtil.println( "DateTime.Now.Ticks=" + DateTime.Now.Ticks );
+            PortUtil.println( "started_date=" + started_date );
+#endif
+#endif
+            if ( m_mode == GenerateMode.STF )
+            {
                 #region STF
-                if ( !PortUtil.isFileExists( straightVoiceDB ) ) {
+                if ( !PortUtil.isFileExists( straightVoiceDB ) )
+                {
                     MessageBox.Show( _( "Analyzer, 'straightVoiceDB.exe' does not exist." ),
                                      _( "Error" ),
                                      MessageBoxButtons.OK,
                                      MessageBoxIcon.Exclamation );
                     return;
                 }
-                String dir = Path.GetDirectoryName( m_oto_ini );
-                String analyzed = Path.Combine( dir, "analyzed" );
-                if ( !Directory.Exists( analyzed ) ) {
-                    Directory.CreateDirectory( analyzed );
+                String dir = PortUtil.getDirectoryName( m_oto_ini );
+                String analyzed = PortUtil.combinePath( dir, "analyzed" );
+                if ( !PortUtil.isDirectoryExists( analyzed ) )
+                {
+                    PortUtil.createDirectory( analyzed );
                 }
 
                 int count = m_list_files.size();
                 int actual_count = 0;
                 double total_bytes = 0.0;//処理しなければならないwaveファイルの容量
                 double processed_bytes = 0.0;//処理済のwaveファイルの容量
-                for ( int i = 0; i < count; i++ ) {
+                for ( int i = 0; i < count; i++ )
+                {
                     StfQueueArgs item = m_list_files.get( i );
                     String wav_name = item.waveName;
-                    String wav_file = Path.Combine( dir, wav_name );
-                    String stf_file = Path.Combine( analyzed, Path.GetFileNameWithoutExtension( wav_name ) + ".stf" );
-                    if ( PortUtil.isFileExists( stf_file ) ) {
+                    String wav_file = PortUtil.combinePath( dir, wav_name );
+                    String stf_file = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
+                    if ( PortUtil.isFileExists( stf_file ) )
+                    {
                         continue;
                     }
-                    try {
-                        total_bytes += new FileInfo( wav_file ).Length;
-                    } catch {
+                    try
+                    {
+                        total_bytes += PortUtil.getFileLength( wav_file );
+                    }
+                    catch ( Exception ex )
+                    {
                     }
                     actual_count++;
                 }
                 bgWork.ReportProgress( 0, new int[] { 0, actual_count } );
 
                 int actual_progress = 0;
-                for ( int i = 0; i < count; i++ ) {
-                    if ( m_abort_required ) {
+                for ( int i = 0; i < count; i++ )
+                {
+                    if ( m_abort_required )
+                    {
                         break;
                     }
                     StfQueueArgs item = m_list_files.get( i );
@@ -116,12 +171,27 @@ namespace Boare.EditOtoIni {
 #if DEBUG
                     Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; wav_name=" + wav_name );
 #endif
-                    String wav_file = Path.Combine( dir, wav_name );
-                    String stf_file = Path.Combine( analyzed, Path.GetFileNameWithoutExtension( wav_name ) + ".stf" );
-                    if ( PortUtil.isFileExists( stf_file ) ) {
+                    String wav_file = PortUtil.combinePath( dir, wav_name );
+                    String stf_file = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
+                    if ( PortUtil.isFileExists( stf_file ) )
+                    {
                         continue;
                     }
-                    using ( Process process = new Process() ) {
+                    Process process = null;
+                    try
+                    {
+#if JAVA
+                        Runtime r = Runtime.getRuntime();
+                        Vector<String> cmds = new Vector<String>();
+                        cmds.add( straightVoiceDB );
+                        cmds.add( wav_file );
+                        cmds.add( stf_file );
+                        cmds.add( sOffset + "" );
+                        cmds.add( sBlank + "" );
+                        p = r.exec( cmds.toArray( new String[]{} ) );
+                        p.waitFor();
+#else
+                        process = new Process();
                         process.StartInfo.FileName = straightVoiceDB;
                         process.StartInfo.Arguments = "\"" + wav_file + "\" \"" + stf_file + "\" " + sOffset + " " + sBlank;
                         process.StartInfo.WorkingDirectory = Application.StartupPath;
@@ -131,56 +201,93 @@ namespace Boare.EditOtoIni {
                         process.Start();
                         process.PriorityClass = ProcessPriorityClass.BelowNormal;
                         process.WaitForExit();
+#endif
+                    }
+                    catch ( Exception ex )
+                    {
+                    }
+                    finally
+                    {
+                        if ( process != null )
+                        {
+                            try
+                            {
+#if JAVA
+                                process.destroy();
+#else
+                                process.Dispose();
+#endif
+                            }
+                            catch ( Exception ex2 )
+                            {
+                            }
+                        }
                     }
                     actual_progress++;
-                    try {
-                        processed_bytes += new FileInfo( wav_file ).Length;
-                    } catch {
+                    try
+                    {
+                        processed_bytes += PortUtil.getFileLength( wav_file );
+                    }
+                    catch ( Exception ex )
+                    {
                     }
 
-                    m_elapsed = DateTime.Now.Subtract( started_date );
-                    double elapsed_seconds = m_elapsed.TotalSeconds;
+#if JAVA
+#else
+                    m_elapsed = (long)(DateTime.Now.Ticks * 100.0 / 1e9) - started_date;
+#endif
+                    double elapsed_seconds = m_elapsed;
                     double remaining_seconds = total_bytes * elapsed_seconds / processed_bytes - elapsed_seconds;
-                    m_remaining = new TimeSpan( 0, 0, 0, (int)remaining_seconds );
+                    m_remaining = (long)remaining_seconds;
                     // 
                     bgWork.ReportProgress( actual_progress * 100 / actual_count, new int[] { actual_progress, actual_count } );
                 }
                 bgWork.ReportProgress( 100, new int[] { actual_count, actual_count } );
                 #endregion
-            } else {
-                if ( !PortUtil.isFileExists( resampler ) ) {
+            }
+            else
+            {
+                if ( !PortUtil.isFileExists( resampler ) )
+                {
                     MessageBox.Show( _( "Don't know the path of 'resampler.exe'. Please check the configuration of Cadencii." ),
                                      _( "Error" ),
                                      MessageBoxButtons.OK,
                                      MessageBoxIcon.Exclamation );
                     return;
                 }
-                String dir = Path.GetDirectoryName( m_oto_ini );
+                String dir = PortUtil.getDirectoryName( m_oto_ini );
 
                 int count = m_list_files.size();
                 int actual_count = 0;
                 double total_bytes = 0.0;
                 double processed_bytes = 0.0;
-                for ( int i = 0; i < count; i++ ) {
+                for ( int i = 0; i < count; i++ )
+                {
                     StfQueueArgs item = m_list_files.get( i );
                     String wav_name = item.waveName;
-                    String wav_file = Path.Combine( dir, wav_name );
-                    String frq_file = Path.Combine( dir, wav_name.Replace( ".", "_" ) + ".frq" );
-                    if ( PortUtil.isFileExists( frq_file ) ) {
+                    String wav_file = PortUtil.combinePath( dir, wav_name );
+                    String frq_file = PortUtil.combinePath( dir, wav_name.Replace( ".", "_" ) + ".frq" );
+                    if ( PortUtil.isFileExists( frq_file ) )
+                    {
                         continue;
                     }
-                    try {
-                        total_bytes += new FileInfo( wav_file ).Length;
-                    } catch {
+                    try
+                    {
+                        total_bytes += PortUtil.getFileLength( wav_file );
+                    }
+                    catch( Exception ex )
+                    {
                     }
                     actual_count++;
                 }
                 bgWork.ReportProgress( 0, new int[] { 0, actual_count } );
 
-                String temp_wav = Path.GetTempFileName() + ".wav";
+                String temp_wav = PortUtil.createTempFile() + ".wav";
                 int actual_progress = 0;
-                for ( int i = 0; i < count; i++ ) {
-                    if ( m_abort_required ) {
+                for ( int i = 0; i < count; i++ )
+                {
+                    if ( m_abort_required )
+                    {
                         break;
                     }
                     StfQueueArgs item = m_list_files.get( i );
@@ -188,12 +295,27 @@ namespace Boare.EditOtoIni {
 #if DEBUG
                     Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; wav_name=" + wav_name );
 #endif
-                    String wav_file = Path.Combine( dir, wav_name );
-                    String frq_file = Path.Combine( dir, wav_name.Replace( ".", "_" ) + ".frq" );
-                    if ( PortUtil.isFileExists( frq_file ) ) {
+                    String wav_file = PortUtil.combinePath( dir, wav_name );
+                    String frq_file = PortUtil.combinePath( dir, wav_name.Replace( ".", "_" ) + ".frq" );
+                    if ( PortUtil.isFileExists( frq_file ) )
+                    {
                         continue;
                     }
-                    using ( Process process = new Process() ) {
+                    Process process = null;
+                    try
+                    {
+#if JAVA
+                        Runtime r = Runtime.getRuntime();
+                        Vector<String> cmds = new Vector<String>();
+                        cmds.add( resampler );
+                        cmds.add( wav_file );
+                        cmds.add( temp_wav );
+                        cmds.add( "C3" );
+                        cmds.add( "100" );
+                        p = r.exec( cmds.toArray( new String[]{} ) );
+                        p.waitFor();
+#else
+                        process = new Process();
                         process.StartInfo.FileName = resampler;
                         process.StartInfo.Arguments = "\"" + wav_file + "\" \"" + temp_wav + "\" C3 100";
                         process.StartInfo.WorkingDirectory = Application.StartupPath;
@@ -203,70 +325,340 @@ namespace Boare.EditOtoIni {
                         process.Start();
                         process.PriorityClass = ProcessPriorityClass.BelowNormal;
                         process.WaitForExit();
+#endif
                     }
-                    actual_progress++;
-                    try {
-                        processed_bytes += new FileInfo( wav_file ).Length;
-                    } catch {
+                    catch ( Exception ex )
+                    {
+                    }
+                    finally
+                    {
+                        if ( process != null )
+                        {
+                            try
+                            {
+                                process.Dispose();
+                            }
+                            catch ( Exception ex2 )
+                            {
+                            }
+                        }
                     }
 
-                    m_elapsed = DateTime.Now.Subtract( started_date );
-                    double elapsed_seconds = m_elapsed.TotalSeconds;
+                    actual_progress++;
+                    try
+                    {
+                        processed_bytes += PortUtil.getFileLength( wav_file );
+                    }
+                    catch( Exception ex )
+                    {
+                    }
+
+#if JAVA
+                    m_elapsed = (new Date()).getTime() - started_date;
+#else
+                    m_elapsed = (long)(DateTime.Now.Ticks * 100.0 / 1e9) - started_date;
+#endif
+                    double elapsed_seconds = m_elapsed;
                     double remaining_seconds = total_bytes * elapsed_seconds / processed_bytes - elapsed_seconds;
-                    m_remaining = new TimeSpan( 0, 0, 0, (int)remaining_seconds );
+                    m_remaining = (long)remaining_seconds;
                     // 
                     bgWork.ReportProgress( actual_progress * 100 / actual_count, new int[] { actual_progress, actual_count } );
                 }
-                try {
+                try
+                {
                     PortUtil.deleteFile( temp_wav );
-                } catch {
+                }
+                catch( Exception ex )
+                {
                 }
                 bgWork.ReportProgress( 100, new int[] { actual_count, actual_count } );
             }
         }
 
-        private void bgWork_ProgressChanged( object sender, ProgressChangedEventArgs e ) {
+#if JAVA
+        private void bgWork_ProgressChanged( Object sender, BProgressChangedEventArgs e )
+#else
+        private void bgWork_ProgressChanged( Object sender, ProgressChangedEventArgs e )
+#endif
+        {
             progressBar.Value = e.ProgressPercentage;
 
-            if( e.UserState is int[] ){
+            if ( e.UserState is int[] )
+            {
                 int[] rational = (int[])e.UserState;
-                if ( rational.Length >= 2 ) {
+                if ( rational.Length >= 2 )
+                {
                     lblPercent.Text = e.ProgressPercentage + " % (" + rational[0] + "/" + rational[1] + ")";
-                } else {
+                }
+                else
+                {
                     lblPercent.Text = e.ProgressPercentage + " %";
                 }
-            }else{
+            }
+            else
+            {
                 lblPercent.Text = e.ProgressPercentage + " %";
             }
 
             lblTime.Text = _( "Remaining" ) + " " + getTimeSpanString( m_remaining ) + " (" + getTimeSpanString( m_elapsed ) + " " + _( "elapsed" ) + ")";
         }
 
-        private void btnCancel_Click( object sender, EventArgs e ) {
+        private void btnCancel_Click( Object sender, BEventArgs e )
+        {
             m_abort_required = true;
         }
 
-        private void bgWork_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e ) {
+#if JAVA
+        private void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e )
+#else
+        private void bgWork_RunWorkerCompleted( Object sender, RunWorkerCompletedEventArgs e )
+#endif
+        {
             this.Close();
         }
 
-        private static String getTimeSpanString( TimeSpan span ) {
+        private static String getTimeSpanString( long span )
+        {
+            int sec_per_day = 24 * 60 * 60;
+            int sec_per_hour = 60 * 60;
+            int sec_per_min = 60;
             String ret = "";
             boolean added = false;
-            if ( span.Days > 0 ) {
-                ret += span.Days + _( "day" ) + " ";
+            int i = (int)(span / sec_per_day);
+            if ( i > 0 )
+            {
+                ret += i + _( "day" ) + " ";
                 added = true;
+                span -= i * sec_per_day;
             }
-            if ( added || span.Hours > 0 ) {
-                ret += string.Format( added ? "{0:d2}" : "{0}", span.Hours ) + _( "hour" ) + " ";
+            i = (int)(span / sec_per_hour);
+            if ( added || i > 0 )
+            {
+                ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "hour" ) + " ";
                 added = true;
+                span -= i * sec_per_hour;
             }
-            if ( added || span.Minutes > 0 ) {
-                ret += string.Format( added ? "{0:d2}" : "{0}", span.Minutes ) + _( "min" ) + " ";
+            i = (int)(span / sec_per_min);
+            if ( added || i > 0 )
+            {
+                ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "min" ) + " ";
                 added = true;
+                span -= i * sec_per_min;
             }
-            return ret + string.Format( added ? "{0:d2}" : "{0}", span.Seconds ) + _( "sec" );
+            return ret + PortUtil.formatDecimal( added ? "00" : "0", span ) + _( "sec" );
         }
+#if JAVA
+        #region UI Impl for Java
+	    private BPanel jContentPane = null;
+	    private BLabel lblPercent = null;
+	    private BLabel lblTime = null;
+	    private JProgressBar progressBar = null;
+	    private BButton btnCancel = null;
+	    private BLabel jLabel2 = null;
+        private BBackgroundWorker bgWork = null;
+
+	    /**
+	     * This method initializes this
+	     * 
+	     * @return void
+	     */
+	    private void initialize() {
+		    this.setSize(387, 162);
+		    this.setContentPane(getJContentPane());
+		    this.setTitle("JFrame");
+            this.bgWork = new BBackgroundWorker();
+	    }
+
+	    /**
+	     * This method initializes jContentPane
+	     * 
+	     * @return javax.swing.JPanel
+	     */
+	    private JPanel getJContentPane() {
+		    if (jContentPane == null) {
+			    GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+			    gridBagConstraints4.gridx = 0;
+			    gridBagConstraints4.weighty = 1.0D;
+			    gridBagConstraints4.gridy = 4;
+			    jLabel2 = new BLabel();
+			    jLabel2.setText("");
+			    GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			    gridBagConstraints3.gridx = 0;
+			    gridBagConstraints3.anchor = GridBagConstraints.EAST;
+			    gridBagConstraints3.insets = new Insets(8, 0, 0, 16);
+			    gridBagConstraints3.gridy = 3;
+			    GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			    gridBagConstraints2.gridx = 0;
+			    gridBagConstraints2.weightx = 1.0D;
+			    gridBagConstraints2.fill = GridBagConstraints.HORIZONTAL;
+			    gridBagConstraints2.insets = new Insets(2, 16, 0, 16);
+			    gridBagConstraints2.gridy = 2;
+			    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			    gridBagConstraints1.gridx = 0;
+			    gridBagConstraints1.anchor = GridBagConstraints.WEST;
+			    gridBagConstraints1.insets = new Insets(2, 16, 2, 0);
+			    gridBagConstraints1.gridy = 1;
+			    lblTime = new BLabel();
+			    lblTime.setText("remaining 0s (elapsed 0s)");
+			    GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			    gridBagConstraints.gridx = 0;
+			    gridBagConstraints.insets = new Insets(16, 16, 2, 0);
+			    gridBagConstraints.anchor = GridBagConstraints.WEST;
+			    gridBagConstraints.gridy = 0;
+			    lblPercent = new BLabel();
+			    lblPercent.setText("0 %");
+			    jContentPane = new JPanel();
+			    jContentPane.setLayout(new GridBagLayout());
+			    jContentPane.add(lblPercent, gridBagConstraints);
+			    jContentPane.add(lblTime, gridBagConstraints1);
+			    jContentPane.add(getProgressBar(), gridBagConstraints2);
+			    jContentPane.add(getBtnCancel(), gridBagConstraints3);
+			    jContentPane.add(jLabel2, gridBagConstraints4);
+		    }
+		    return jContentPane;
+	    }
+
+	    /**
+	     * This method initializes progressBar	
+	     * 	
+	     * @return javax.swing.JProgressBar	
+	     */
+	    private JProgressBar getProgressBar() {
+		    if (progressBar == null) {
+			    progressBar = new JProgressBar();
+		    }
+		    return progressBar;
+	    }
+
+	    /**
+	     * This method initializes btnCancel	
+	     * 	
+	     * @return javax.swing.BButton	
+	     */
+	    private BButton getBtnCancel() {
+		    if (btnCancel == null) {
+			    btnCancel = new BButton();
+			    btnCancel.setText("Cancel");
+		    }
+		    return btnCancel;
+	    }
+        #endregion
+#else
+        #region UI Impl for C#
+        /// <summary>
+        /// 必要なデザイナ変数です。
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// 使用中のリソースをすべてクリーンアップします。
+        /// </summary>
+        /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
+        protected override void Dispose( bool disposing )
+        {
+            if ( disposing && (components != null) )
+            {
+                components.Dispose();
+            }
+            base.Dispose( disposing );
+        }
+
+        #region Windows フォーム デザイナで生成されたコード
+
+        /// <summary>
+        /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
+        /// コード エディタで変更しないでください。
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.lblPercent = new System.Windows.Forms.Label();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.bgWork = new System.ComponentModel.BackgroundWorker();
+            this.lblTime = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            // 
+            // lblPercent
+            // 
+            this.lblPercent.AutoSize = true;
+            this.lblPercent.Location = new System.Drawing.Point( 12, 17 );
+            this.lblPercent.Name = "lblPercent";
+            this.lblPercent.Size = new System.Drawing.Size( 21, 12 );
+            this.lblPercent.TabIndex = 0;
+            this.lblPercent.Text = "0 %";
+            // 
+            // progressBar
+            // 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Location = new System.Drawing.Point( 14, 50 );
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size( 345, 23 );
+            this.progressBar.TabIndex = 1;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point( 284, 86 );
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
+            this.btnCancel.TabIndex = 2;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
+            // 
+            // bgWork
+            // 
+            this.bgWork.WorkerReportsProgress = true;
+            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
+            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
+            this.bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
+            // 
+            // lblTime
+            // 
+            this.lblTime.AutoSize = true;
+            this.lblTime.Location = new System.Drawing.Point( 12, 35 );
+            this.lblTime.Name = "lblTime";
+            this.lblTime.Size = new System.Drawing.Size( 137, 12 );
+            this.lblTime.TabIndex = 3;
+            this.lblTime.Text = "remaining 0s (elapsed 0s)";
+            // 
+            // FormGenerateStf
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size( 371, 121 );
+            this.Controls.Add( this.lblTime );
+            this.Controls.Add( this.btnCancel );
+            this.Controls.Add( this.progressBar );
+            this.Controls.Add( this.lblPercent );
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "FormGenerateStf";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "FormGenerateStf";
+            this.Load += new System.EventHandler( this.FormGenerateStf_Load );
+            this.ResumeLayout( false );
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.Label lblPercent;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Button btnCancel;
+        private System.ComponentModel.BackgroundWorker bgWork;
+        private System.Windows.Forms.Label lblTime;
+        #endregion
+#endif
     }
 
+#if !JAVA
 }
+#endif

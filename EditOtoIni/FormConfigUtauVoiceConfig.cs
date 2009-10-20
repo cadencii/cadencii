@@ -11,15 +11,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.EditOtoIni;
+
+import org.kbinani.*;
+#else
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using bocoree;
+using bocoree.windows.forms;
 
 namespace Boare.EditOtoIni {
+#endif
 
     public class FormConfigUtauVoiceConfig {
-        public Rectangle Bounds = new Rectangle( 0, 0, 714, 533 );
-        public FormWindowState State = FormWindowState.Normal;
+        public XmlRectangle Bounds = new XmlRectangle( 0, 0, 714, 533 );
+        public int State = BForm.NORMAL;
         public float InnerSplitterDistancePercentage = 70.0f;
         public float OuterSplitterDistancePercentage = 60.0f;
         public int WaveViewScale;
@@ -34,4 +42,6 @@ namespace Boare.EditOtoIni {
         public int ColumnWidthStf = 60;
     }
 
+#if !JAVA
 }
+#endif
