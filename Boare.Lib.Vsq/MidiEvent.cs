@@ -32,9 +32,8 @@ namespace Boare.Lib.Vsq {
 #if JAVA
     public class MidiEvent implements Comparable<MidiEvent>
 #else
-    public struct MidiEvent : IComparable<MidiEvent>
+    public struct MidiEvent : IComparable<MidiEvent> {
 #endif
- {
         public long clock;
         public byte firstByte;
         public byte[] data;

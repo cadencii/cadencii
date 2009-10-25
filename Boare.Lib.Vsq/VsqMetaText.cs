@@ -1,5 +1,5 @@
 ﻿/*
-* VsqMetaText/VsqMetaText.cs
+* VsqMetaText.cs
 * Copyright (c) 2008-2009 kbinani
 *
 * This file is part of Boare.Lib.Vsq.
@@ -23,8 +23,7 @@ using bocoree;
 using bocoree.util;
 using bocoree.io;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -33,12 +32,11 @@ namespace Boare.Lib.Vsq
     /// vsqのメタテキストの中身を処理するためのクラス
     /// </summary>
 #if JAVA
-    public class VsqMetaText implements Cloneable, Serializable
+    public class VsqMetaText implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqMetaText : ICloneable
+    public class VsqMetaText : ICloneable {
 #endif
-    {
         public VsqCommon Common;
         public VsqMaster master;
         public VsqMixer mixer;
@@ -100,335 +98,208 @@ namespace Boare.Lib.Vsq
         /// </summary>
         public VsqBPList OPE;
 
-        public Object clone()
-        {
+        public Object clone() {
             VsqMetaText res = new VsqMetaText();
-            if ( Common != null )
-            {
+            if ( Common != null ) {
                 res.Common = (VsqCommon)Common.clone();
             }
-            if ( master != null )
-            {
+            if ( master != null ) {
                 res.master = (VsqMaster)master.clone();
             }
-            if ( mixer != null )
-            {
+            if ( mixer != null ) {
                 res.mixer = (VsqMixer)mixer.clone();
             }
-            if ( Events != null )
-            {
+            if ( Events != null ) {
                 res.Events = new VsqEventList();
-                for ( Iterator itr = Events.iterator(); itr.hasNext(); )
-                {
+                for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
                     res.Events.add( (VsqEvent)item.clone(), item.InternalID );
                 }
             }
-            if ( PIT != null )
-            {
+            if ( PIT != null ) {
                 res.PIT = (VsqBPList)PIT.clone();
             }
-            if ( PBS != null )
-            {
+            if ( PBS != null ) {
                 res.PBS = (VsqBPList)PBS.clone();
             }
-            if ( DYN != null )
-            {
+            if ( DYN != null ) {
                 res.DYN = (VsqBPList)DYN.clone();
             }
-            if ( BRE != null )
-            {
+            if ( BRE != null ) {
                 res.BRE = (VsqBPList)BRE.clone();
             }
-            if ( BRI != null )
-            {
+            if ( BRI != null ) {
                 res.BRI = (VsqBPList)BRI.clone();
             }
-            if ( CLE != null )
-            {
+            if ( CLE != null ) {
                 res.CLE = (VsqBPList)CLE.clone();
             }
-            if ( reso1FreqBPList != null )
-            {
+            if ( reso1FreqBPList != null ) {
                 res.reso1FreqBPList = (VsqBPList)reso1FreqBPList.clone();
             }
-            if ( reso2FreqBPList != null )
-            {
+            if ( reso2FreqBPList != null ) {
                 res.reso2FreqBPList = (VsqBPList)reso2FreqBPList.clone();
             }
-            if ( reso3FreqBPList != null )
-            {
+            if ( reso3FreqBPList != null ) {
                 res.reso3FreqBPList = (VsqBPList)reso3FreqBPList.clone();
             }
-            if ( reso4FreqBPList != null )
-            {
+            if ( reso4FreqBPList != null ) {
                 res.reso4FreqBPList = (VsqBPList)reso4FreqBPList.clone();
             }
-            if ( reso1BWBPList != null )
-            {
+            if ( reso1BWBPList != null ) {
                 res.reso1BWBPList = (VsqBPList)reso1BWBPList.clone();
             }
-            if ( reso2BWBPList != null )
-            {
+            if ( reso2BWBPList != null ) {
                 res.reso2BWBPList = (VsqBPList)reso2BWBPList.clone();
             }
-            if ( reso3BWBPList != null )
-            {
+            if ( reso3BWBPList != null ) {
                 res.reso3BWBPList = (VsqBPList)reso3BWBPList.clone();
             }
-            if ( reso4BWBPList != null )
-            {
+            if ( reso4BWBPList != null ) {
                 res.reso4BWBPList = (VsqBPList)reso4BWBPList.clone();
             }
-            if ( reso1AmpBPList != null )
-            {
+            if ( reso1AmpBPList != null ) {
                 res.reso1AmpBPList = (VsqBPList)reso1AmpBPList.clone();
             }
-            if ( reso2AmpBPList != null )
-            {
+            if ( reso2AmpBPList != null ) {
                 res.reso2AmpBPList = (VsqBPList)reso2AmpBPList.clone();
             }
-            if ( reso3AmpBPList != null )
-            {
+            if ( reso3AmpBPList != null ) {
                 res.reso3AmpBPList = (VsqBPList)reso3AmpBPList.clone();
             }
-            if ( reso4AmpBPList != null )
-            {
+            if ( reso4AmpBPList != null ) {
                 res.reso4AmpBPList = (VsqBPList)reso4AmpBPList.clone();
             }
-            if ( harmonics != null )
-            {
+            if ( harmonics != null ) {
                 res.harmonics = (VsqBPList)harmonics.clone();
             }
-            if ( fx2depth != null )
-            {
+            if ( fx2depth != null ) {
                 res.fx2depth = (VsqBPList)fx2depth.clone();
             }
-            if ( GEN != null )
-            {
+            if ( GEN != null ) {
                 res.GEN = (VsqBPList)GEN.clone();
             }
-            if ( POR != null )
-            {
+            if ( POR != null ) {
                 res.POR = (VsqBPList)POR.clone();
             }
-            if ( OPE != null )
-            {
+            if ( OPE != null ) {
                 res.OPE = (VsqBPList)OPE.clone();
             }
             return res;
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif
 
-        public VsqEventList getEventList()
-        {
+        public VsqEventList getEventList() {
             return Events;
         }
 
-        public VsqBPList getElement( String curve )
-        {
+        public VsqBPList getElement( String curve ) {
             String search = curve.Trim().ToLower();
-            if ( search.Equals( "bre" ) )
-            {
+            if ( search.Equals( "bre" ) ) {
                 return this.BRE;
-            }
-            else if ( search.Equals( "bri" ) )
-            {
+            } else if ( search.Equals( "bri" ) ) {
                 return this.BRI;
-            }
-            else if ( search.Equals( "cle" ) )
-            {
+            } else if ( search.Equals( "cle" ) ) {
                 return this.CLE;
-            }
-            else if ( search.Equals( "dyn" ) )
-            {
+            } else if ( search.Equals( "dyn" ) ) {
                 return this.DYN;
-            }
-            else if ( search.Equals( "gen" ) )
-            {
+            } else if ( search.Equals( "gen" ) ) {
                 return this.GEN;
-            }
-            else if ( search.Equals( "ope" ) )
-            {
+            } else if ( search.Equals( "ope" ) ) {
                 return this.OPE;
-            }
-            else if ( search.Equals( "pbs" ) )
-            {
+            } else if ( search.Equals( "pbs" ) ) {
                 return this.PBS;
-            }
-            else if ( search.Equals( "pit" ) )
-            {
+            } else if ( search.Equals( "pit" ) ) {
                 return this.PIT;
-            }
-            else if ( search.Equals( "por" ) )
-            {
+            } else if ( search.Equals( "por" ) ) {
                 return this.POR;
-            }
-            else if ( search.Equals( "harmonics" ) )
-            {
+            } else if ( search.Equals( "harmonics" ) ) {
                 return this.harmonics;
-            }
-            else if ( search.Equals( "fx2depth" ) )
-            {
+            } else if ( search.Equals( "fx2depth" ) ) {
                 return this.fx2depth;
-            }
-            else if ( search.Equals( "reso1amp" ) )
-            {
+            } else if ( search.Equals( "reso1amp" ) ) {
                 return this.reso1AmpBPList;
-            }
-            else if ( search.Equals( "reso1bw" ) )
-            {
+            } else if ( search.Equals( "reso1bw" ) ) {
                 return this.reso1BWBPList;
-            }
-            else if ( search.Equals( "reso1freq" ) )
-            {
+            } else if ( search.Equals( "reso1freq" ) ) {
                 return this.reso1FreqBPList;
-            }
-            else if ( search.Equals( "reso2amp" ) )
-            {
+            } else if ( search.Equals( "reso2amp" ) ) {
                 return this.reso2AmpBPList;
-            }
-            else if ( search.Equals( "reso2bw" ) )
-            {
+            } else if ( search.Equals( "reso2bw" ) ) {
                 return this.reso2BWBPList;
-            }
-            else if ( search.Equals( "reso2freq" ) )
-            {
+            } else if ( search.Equals( "reso2freq" ) ) {
                 return this.reso2FreqBPList;
-            }
-            else if ( search.Equals( "reso3amp" ) )
-            {
+            } else if ( search.Equals( "reso3amp" ) ) {
                 return this.reso3AmpBPList;
-            }
-            else if ( search.Equals( "reso3bw" ) )
-            {
+            } else if ( search.Equals( "reso3bw" ) ) {
                 return this.reso3BWBPList;
-            }
-            else if ( search.Equals( "reso3freq" ) )
-            {
+            } else if ( search.Equals( "reso3freq" ) ) {
                 return this.reso3FreqBPList;
-            }
-            else if ( search.Equals( "reso4amp" ) )
-            {
+            } else if ( search.Equals( "reso4amp" ) ) {
                 return this.reso4AmpBPList;
-            }
-            else if ( search.Equals( "reso4bw" ) )
-            {
+            } else if ( search.Equals( "reso4bw" ) ) {
                 return this.reso4BWBPList;
-            }
-            else if ( search.Equals( "reso4freq" ) )
-            {
+            } else if ( search.Equals( "reso4freq" ) ) {
                 return this.reso4FreqBPList;
-            }
-            else
-            {
+            } else {
                 return null;
             }
         }
 
-        public void setElement( String curve, VsqBPList value )
-        {
+        public void setElement( String curve, VsqBPList value ) {
             String search = curve.Trim().ToLower();
-            if ( search.Equals( "bre" ) )
-            {
+            if ( search.Equals( "bre" ) ) {
                 this.BRE = value;
-            }
-            else if ( search.Equals( "bri" ) )
-            {
+            } else if ( search.Equals( "bri" ) ) {
                 this.BRI = value;
-            }
-            else if ( search.Equals( "cle" ) )
-            {
+            } else if ( search.Equals( "cle" ) ) {
                 this.CLE = value;
-            }
-            else if ( search.Equals( "dyn" ) )
-            {
+            } else if ( search.Equals( "dyn" ) ) {
                 this.DYN = value;
-            }
-            else if ( search.Equals( "gen" ) )
-            {
+            } else if ( search.Equals( "gen" ) ) {
                 this.GEN = value;
-            }
-            else if ( search.Equals( "ope" ) )
-            {
+            } else if ( search.Equals( "ope" ) ) {
                 this.OPE = value;
-            }
-            else if ( search.Equals( "pbs" ) )
-            {
+            } else if ( search.Equals( "pbs" ) ) {
                 this.PBS = value;
-            }
-            else if ( search.Equals( "pit" ) )
-            {
+            } else if ( search.Equals( "pit" ) ) {
                 this.PIT = value;
-            }
-            else if ( search.Equals( "por" ) )
-            {
+            } else if ( search.Equals( "por" ) ) {
                 this.POR = value;
-            }
-            else if ( search.Equals( "harmonics" ) )
-            {
+            } else if ( search.Equals( "harmonics" ) ) {
                 this.harmonics = value;
-            }
-            else if ( search.Equals( "fx2depth" ) )
-            {
+            } else if ( search.Equals( "fx2depth" ) ) {
                 this.fx2depth = value;
-            }
-            else if ( search.Equals( "reso1amp" ) )
-            {
+            } else if ( search.Equals( "reso1amp" ) ) {
                 this.reso1AmpBPList = value;
-            }
-            else if ( search.Equals( "reso1bw" ) )
-            {
+            } else if ( search.Equals( "reso1bw" ) ) {
                 this.reso1BWBPList = value;
-            }
-            else if ( search.Equals( "reso1freq" ) )
-            {
+            } else if ( search.Equals( "reso1freq" ) ) {
                 this.reso1FreqBPList = value;
-            }
-            else if ( search.Equals( "reso2amp" ) )
-            {
+            } else if ( search.Equals( "reso2amp" ) ) {
                 this.reso2AmpBPList = value;
-            }
-            else if ( search.Equals( "reso2bw" ) )
-            {
+            } else if ( search.Equals( "reso2bw" ) ) {
                 this.reso2BWBPList = value;
-            }
-            else if ( search.Equals( "reso2freq" ) )
-            {
+            } else if ( search.Equals( "reso2freq" ) ) {
                 this.reso2FreqBPList = value;
-            }
-            else if ( search.Equals( "reso3amp" ) )
-            {
+            } else if ( search.Equals( "reso3amp" ) ) {
                 this.reso3AmpBPList = value;
-            }
-            else if ( search.Equals( "reso3bw" ) )
-            {
+            } else if ( search.Equals( "reso3bw" ) ) {
                 this.reso3BWBPList = value;
-            }
-            else if ( search.Equals( "reso3freq" ) )
-            {
+            } else if ( search.Equals( "reso3freq" ) ) {
                 this.reso3FreqBPList = value;
-            }
-            else if ( search.Equals( "reso4amp" ) )
-            {
+            } else if ( search.Equals( "reso4amp" ) ) {
                 this.reso4AmpBPList = value;
-            }
-            else if ( search.Equals( "reso4bw" ) )
-            {
+            } else if ( search.Equals( "reso4bw" ) ) {
                 this.reso4BWBPList = value;
-            }
-            else if ( search.Equals( "reso4freq" ) )
-            {
+            } else if ( search.Equals( "reso4freq" ) ) {
                 this.reso4FreqBPList = value;
-            }
-            else
-            {
+            } else {
 #if DEBUG
                 PortUtil.println( "VsqMetaText#setElement; warning:unknown curve; curve=" + curve );
 #endif
@@ -440,10 +311,8 @@ namespace Boare.Lib.Vsq
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public VsqBPList getCurve( int index )
-        {
-            switch ( index )
-            {
+        public VsqBPList getCurve( int index ) {
+            switch ( index ) {
                 case 1:
                     return DYN;
                 case 2:
@@ -473,10 +342,8 @@ namespace Boare.Lib.Vsq
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static String getCurveName( int index )
-        {
-            switch ( index )
-            {
+        public static String getCurveName( int index ) {
+            switch ( index ) {
                 case 0:
                     return "VEL";
                 case 1:
@@ -505,26 +372,20 @@ namespace Boare.Lib.Vsq
         /// <summary>
         /// Singerプロパティに指定されている
         /// </summary>
-        public String getSinger()
-        {
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); )
-            {
+        public String getSinger() {
+            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
-                if ( item.ID.type == VsqIDType.Singer )
-                {
+                if ( item.ID.type == VsqIDType.Singer ) {
                     return item.ID.IconHandle.IDS;
                 }
             }
             return "";
         }
 
-        public void setSinger( String value )
-        {
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); )
-            {
+        public void setSinger( String value ) {
+            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
-                if ( item.ID.type == VsqIDType.Singer )
-                {
+                if ( item.ID.type == VsqIDType.Singer ) {
                     item.ID.IconHandle.IDS = value;
                     break;
                 }
@@ -535,16 +396,12 @@ namespace Boare.Lib.Vsq
         /// EOSイベントが記録されているクロックを取得します。
         /// </summary>
         /// <returns></returns>
-        public int getIndexOfEOS()
-        {
+        public int getIndexOfEOS() {
             int result;
-            if ( Events.getCount() > 0 )
-            {
+            if ( Events.getCount() > 0 ) {
                 int ilast = Events.getCount() - 1;
                 result = Events.getElement( ilast ).Clock;
-            }
-            else
-            {
+            } else {
                 result = -1;
             }
             return result;
@@ -554,19 +411,16 @@ namespace Boare.Lib.Vsq
         /// このインスタンスから、Handleのリストを作成すると同時に、Eventsに登録されているVsqEventのvalue値および各ハンドルのvalue値を更新します
         /// </summary>
         /// <returns></returns>
-        private Vector<VsqHandle> buildHandleList()
-        {
+        private Vector<VsqHandle> buildHandleList() {
             Vector<VsqHandle> handle = new Vector<VsqHandle>();
             int current_id = -1;
             int current_handle = -1;
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); )
-            {
+            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 current_id++;
                 item.ID.value = current_id;
                 // IconHandle
-                if ( item.ID.IconHandle != null )
-                {
+                if ( item.ID.IconHandle != null ) {
                     current_handle++;
                     VsqHandle handle_item = item.ID.IconHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
@@ -574,8 +428,7 @@ namespace Boare.Lib.Vsq
                     item.ID.IconHandle_index = current_handle;
                 }
                 // LyricHandle
-                if ( item.ID.LyricHandle != null )
-                {
+                if ( item.ID.LyricHandle != null ) {
                     current_handle++;
                     VsqHandle handle_item = item.ID.LyricHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
@@ -583,8 +436,7 @@ namespace Boare.Lib.Vsq
                     item.ID.LyricHandle_index = current_handle;
                 }
                 // VibratoHandle
-                if ( item.ID.VibratoHandle != null )
-                {
+                if ( item.ID.VibratoHandle != null ) {
                     current_handle++;
                     VsqHandle handle_item = item.ID.VibratoHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
@@ -592,8 +444,7 @@ namespace Boare.Lib.Vsq
                     item.ID.VibratoHandle_index = current_handle;
                 }
                 // NoteHeadHandle
-                if ( item.ID.NoteHeadHandle != null )
-                {
+                if ( item.ID.NoteHeadHandle != null ) {
                     current_handle++;
                     VsqHandle handle_item = item.ID.NoteHeadHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
@@ -609,133 +460,103 @@ namespace Boare.Lib.Vsq
         /// </summary>
         /// <param name="sw"></param>
         /// <param name="encode"></param>
-        public void print( TextMemoryStream sw, boolean encode, int eos, int start )
+        public void print( TextMemoryStream sw, int eos, int start )
 #if JAVA
             throws IOException
 #endif
         {
-            if ( Common != null )
-            {
+            if ( Common != null ) {
                 Common.write( sw );
             }
-            if ( master != null )
-            {
+            if ( master != null ) {
                 master.write( sw );
             }
-            if ( mixer != null )
-            {
+            if ( mixer != null ) {
                 mixer.write( sw );
             }
             Vector<VsqHandle> handle = writeEventList( sw, eos );
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); )
-            {
+            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 item.write( sw );
             }
-            for ( int i = 0; i < handle.size(); i++ )
-            {
-                handle.get( i ).write( sw, encode );
+            for ( int i = 0; i < handle.size(); i++ ) {
+                handle.get( i ).write( sw );
             }
             String version = Common.Version;
-            if ( PIT.size() > 0 )
-            {
+            if ( PIT.size() > 0 ) {
                 PIT.print( sw, start, "[PitchBendBPList]" );
             }
-            if ( PBS.size() > 0 )
-            {
+            if ( PBS.size() > 0 ) {
                 PBS.print( sw, start, "[PitchBendSensBPList]" );
             }
-            if ( DYN.size() > 0 )
-            {
+            if ( DYN.size() > 0 ) {
                 DYN.print( sw, start, "[DynamicsBPList]" );
             }
-            if ( BRE.size() > 0 )
-            {
+            if ( BRE.size() > 0 ) {
                 BRE.print( sw, start, "[EpRResidualBPList]" );
             }
-            if ( BRI.size() > 0 )
-            {
+            if ( BRI.size() > 0 ) {
                 BRI.print( sw, start, "[EpRESlopeBPList]" );
             }
-            if ( CLE.size() > 0 )
-            {
+            if ( CLE.size() > 0 ) {
                 CLE.print( sw, start, "[EpRESlopeDepthBPList]" );
             }
-            if ( version.StartsWith( "DSB2" ) )
-            {
-                if ( harmonics.size() > 0 )
-                {
+            if ( version.StartsWith( "DSB2" ) ) {
+                if ( harmonics.size() > 0 ) {
                     harmonics.print( sw, start, "[EpRSineBPList]" );
                 }
-                if ( fx2depth.size() > 0 )
-                {
+                if ( fx2depth.size() > 0 ) {
                     fx2depth.print( sw, start, "[VibTremDepthBPList]" );
                 }
 
-                if ( reso1FreqBPList.size() > 0 )
-                {
+                if ( reso1FreqBPList.size() > 0 ) {
                     reso1FreqBPList.print( sw, start, "[Reso1FreqBPList]" );
                 }
-                if ( reso2FreqBPList.size() > 0 )
-                {
+                if ( reso2FreqBPList.size() > 0 ) {
                     reso2FreqBPList.print( sw, start, "[Reso2FreqBPList]" );
                 }
-                if ( reso3FreqBPList.size() > 0 )
-                {
+                if ( reso3FreqBPList.size() > 0 ) {
                     reso3FreqBPList.print( sw, start, "[Reso3FreqBPList]" );
                 }
-                if ( reso4FreqBPList.size() > 0 )
-                {
+                if ( reso4FreqBPList.size() > 0 ) {
                     reso4FreqBPList.print( sw, start, "[Reso4FreqBPList]" );
                 }
 
-                if ( reso1BWBPList.size() > 0 )
-                {
+                if ( reso1BWBPList.size() > 0 ) {
                     reso1BWBPList.print( sw, start, "[Reso1BWBPList]" );
                 }
-                if ( reso2BWBPList.size() > 0 )
-                {
+                if ( reso2BWBPList.size() > 0 ) {
                     reso2BWBPList.print( sw, start, "[Reso2BWBPList]" );
                 }
-                if ( reso3BWBPList.size() > 0 )
-                {
+                if ( reso3BWBPList.size() > 0 ) {
                     reso3BWBPList.print( sw, start, "[Reso3BWBPList]" );
                 }
-                if ( reso4BWBPList.size() > 0 )
-                {
+                if ( reso4BWBPList.size() > 0 ) {
                     reso4BWBPList.print( sw, start, "[Reso4BWBPList]" );
                 }
 
-                if ( reso1AmpBPList.size() > 0 )
-                {
+                if ( reso1AmpBPList.size() > 0 ) {
                     reso1AmpBPList.print( sw, start, "[Reso1AmpBPList]" );
                 }
-                if ( reso2AmpBPList.size() > 0 )
-                {
+                if ( reso2AmpBPList.size() > 0 ) {
                     reso2AmpBPList.print( sw, start, "[Reso2AmpBPList]" );
                 }
-                if ( reso3AmpBPList.size() > 0 )
-                {
+                if ( reso3AmpBPList.size() > 0 ) {
                     reso3AmpBPList.print( sw, start, "[Reso3AmpBPList]" );
                 }
-                if ( reso4AmpBPList.size() > 0 )
-                {
+                if ( reso4AmpBPList.size() > 0 ) {
                     reso4AmpBPList.print( sw, start, "[Reso4AmpBPList]" );
                 }
             }
 
-            if ( GEN.size() > 0 )
-            {
+            if ( GEN.size() > 0 ) {
                 GEN.print( sw, start, "[GenderFactorBPList]" );
             }
-            if ( POR.size() > 0 )
-            {
+            if ( POR.size() > 0 ) {
                 POR.print( sw, start, "[PortamentoTimingBPList]" );
             }
-            if ( version.StartsWith( "DSB3" ) )
-            {
-                if ( OPE.size() > 0 )
-                {
+            if ( version.StartsWith( "DSB3" ) ) {
+                if ( OPE.size() > 0 ) {
                     OPE.print( sw, start, "[OpeningBPList]" );
                 }
             }
@@ -749,21 +570,17 @@ namespace Boare.Lib.Vsq
             Vector<VsqHandle> handles = buildHandleList();
             writer.writeLine( "[EventList]" );
             Vector<VsqEvent> temp = new Vector<VsqEvent>();
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); )
-            {
+            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
                 temp.add( (VsqEvent)itr.next() );
             }
             Collections.sort( temp );
             int i = 0;
-            while ( i < temp.size() )
-            {
+            while ( i < temp.size() ) {
                 VsqEvent item = temp.get( i );
-                if ( !item.ID.Equals( VsqID.EOS ) )
-                {
+                if ( !item.ID.Equals( VsqID.EOS ) ) {
                     String ids = "ID#" + PortUtil.formatDecimal( "0000", item.ID.value );
                     int clock = temp.get( i ).Clock;
-                    while ( i + 1 < temp.size() && clock == temp.get( i + 1 ).Clock )
-                    {
+                    while ( i + 1 < temp.size() && clock == temp.get( i + 1 ).Clock ) {
                         i++;
                         ids += ",ID#" + PortUtil.formatDecimal( "0000", temp.get( i + 1 ).ID.value );
                     }
@@ -794,8 +611,7 @@ namespace Boare.Lib.Vsq
         /// <summary>
         /// 何も無いVsqMetaTextを構築する。これは、Master Track用のMetaTextとしてのみ使用されるべき
         /// </summary>
-        public VsqMetaText()
-        {
+        public VsqMetaText() {
         }
 
         /// <summary>
@@ -806,8 +622,7 @@ namespace Boare.Lib.Vsq
             this( name, 0, singer, false );
 #else
         public VsqMetaText( String name, String singer )
-            : this( name, 0, singer, false )
-        {
+            : this( name, 0, singer, false ) {
 #endif
         }
 
@@ -820,13 +635,11 @@ namespace Boare.Lib.Vsq
             this( name, pre_measure, singer, true );
 #else
         public VsqMetaText( String name, String singer, int pre_measure )
-            : this( name, pre_measure, singer, true )
-        {
+            : this( name, pre_measure, singer, true ) {
 #endif
         }
 
-        private VsqMetaText( String name, int pre_measure, String singer, boolean is_first_track )
-        {
+        private VsqMetaText( String name, int pre_measure, String singer, boolean is_first_track ) {
             Common = new VsqCommon( name, 179, 181, 123, 1, 1 );
             PIT = new VsqBPList( 0, -8192, 8191 );
             //PIT.add( 0, PIT.getDefault() );
@@ -896,12 +709,9 @@ namespace Boare.Lib.Vsq
             OPE = new VsqBPList( 127, 0, 127 );
             //OPE.add( 0, OPE.getDefault() );
 
-            if ( is_first_track )
-            {
+            if ( is_first_track ) {
                 master = new VsqMaster( pre_measure );
-            }
-            else
-            {
+            } else {
                 master = null;
             }
             Events = new VsqEventList();
@@ -918,8 +728,7 @@ namespace Boare.Lib.Vsq
             Events.add( new VsqEvent( 0, id ) );
         }
 
-        public VsqMetaText( TextMemoryStream sr )
-        {
+        public VsqMetaText( TextMemoryStream sr ) {
             Vector<ValuePair<Integer, Integer>> t_event_list = new Vector<ValuePair<Integer, Integer>>();
             TreeMap<Integer, VsqID> __id = new TreeMap<Integer, VsqID>();
             TreeMap<Integer, VsqHandle> __handle = new TreeMap<Integer, VsqHandle>();
@@ -948,214 +757,136 @@ namespace Boare.Lib.Vsq
             OPE = new VsqBPList( 127, 0, 127 );
 
             ByRef<String> last_line = new ByRef<String>( sr.readLine() );
-            while ( true )
-            {
+            while ( true ) {
                 #region "TextMemoryStreamから順次読込み"
-                if ( PortUtil.getStringLength( last_line.value ) == 0 )
-                {
+                if ( PortUtil.getStringLength( last_line.value ) == 0 ) {
                     break;
                 }
-                if ( last_line.value.Equals( "[Common]" ) )
-                {
+                if ( last_line.value.Equals( "[Common]" ) ) {
                     Common = new VsqCommon( sr, last_line );
-                }
-                else if ( last_line.value.Equals( "[Master]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Master]" ) ) {
                     master = new VsqMaster( sr, last_line );
-                }
-                else if ( last_line.value.Equals( "[Mixer]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Mixer]" ) ) {
                     mixer = new VsqMixer( sr, last_line );
-                }
-                else if ( last_line.value.Equals( "[EventList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[EventList]" ) ) {
                     last_line.value = sr.readLine();
-                    while ( !last_line.value.StartsWith( "[" ) )
-                    {
+                    while ( !last_line.value.StartsWith( "[" ) ) {
                         String[] spl2 = PortUtil.splitString( last_line.value, new char[] { '=' } );
                         int clock = PortUtil.parseInt( spl2[0] );
                         int id_number = -1;
-                        if ( spl2[1] != "EOS" )
-                        {
+                        if ( spl2[1] != "EOS" ) {
                             String[] ids = PortUtil.splitString( spl2[1], ',' );
-                            for ( int i = 0; i < ids.Length; i++ )
-                            {
+                            for ( int i = 0; i < ids.Length; i++ ) {
                                 String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
                                 id_number = PortUtil.parseInt( spl3[1] );
                                 t_event_list.add( new ValuePair<Integer, Integer>( clock, id_number ) );
                             }
-                        }
-                        else
-                        {
+                        } else {
                             t_event_list.add( new ValuePair<Integer, Integer>( clock, -1 ) );
                         }
-                        if ( sr.peek() < 0 )
-                        {
+                        if ( sr.peek() < 0 ) {
                             break;
-                        }
-                        else
-                        {
+                        } else {
                             last_line.value = sr.readLine();
                         }
                     }
-                }
-                else if ( last_line.value.Equals( "[PitchBendBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[PitchBendBPList]" ) ) {
                     last_line.value = PIT.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[PitchBendSensBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[PitchBendSensBPList]" ) ) {
                     last_line.value = PBS.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[DynamicsBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[DynamicsBPList]" ) ) {
                     last_line.value = DYN.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[EpRResidualBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[EpRResidualBPList]" ) ) {
                     last_line.value = BRE.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[EpRESlopeBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[EpRESlopeBPList]" ) ) {
                     last_line.value = BRI.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[EpRESlopeDepthBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[EpRESlopeDepthBPList]" ) ) {
                     last_line.value = CLE.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[EpRSineBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[EpRSineBPList]" ) ) {
                     last_line.value = harmonics.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[VibTremDepthBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[VibTremDepthBPList]" ) ) {
                     last_line.value = fx2depth.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso1FreqBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso1FreqBPList]" ) ) {
                     last_line.value = reso1FreqBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso2FreqBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso2FreqBPList]" ) ) {
                     last_line.value = reso2FreqBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso3FreqBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso3FreqBPList]" ) ) {
                     last_line.value = reso3FreqBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso4FreqBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso4FreqBPList]" ) ) {
                     last_line.value = reso4FreqBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso1BWBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso1BWBPList]" ) ) {
                     last_line.value = reso1BWBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso2BWBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso2BWBPList]" ) ) {
                     last_line.value = reso2BWBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso3BWBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso3BWBPList]" ) ) {
                     last_line.value = reso3BWBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso4BWBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso4BWBPList]" ) ) {
                     last_line.value = reso4BWBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso1AmpBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso1AmpBPList]" ) ) {
                     last_line.value = reso1AmpBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso2AmpBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso2AmpBPList]" ) ) {
                     last_line.value = reso2AmpBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso3AmpBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso3AmpBPList]" ) ) {
                     last_line.value = reso3AmpBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[Reso4AmpBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[Reso4AmpBPList]" ) ) {
                     last_line.value = reso4AmpBPList.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[GenderFactorBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[GenderFactorBPList]" ) ) {
                     last_line.value = GEN.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[PortamentoTimingBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[PortamentoTimingBPList]" ) ) {
                     last_line.value = POR.appendFromText( sr );
-                }
-                else if ( last_line.value.Equals( "[OpeningBPList]" ) )
-                {
+                } else if ( last_line.value.Equals( "[OpeningBPList]" ) ) {
                     last_line.value = OPE.appendFromText( sr );
-                }
-                else
-                {
+                } else {
                     String buffer = last_line.value;
                     buffer = buffer.Replace( "[", "" );
                     buffer = buffer.Replace( "]", "" );
                     String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
 #if DEBUG
-                    if ( spl.Length < 2 )
-                    {
+                    if ( spl.Length < 2 ) {
                         PortUtil.println( "VsqMetaText#.ctor; spl.Length=" + spl.Length + "; buffer=" + buffer );
                     }
 #endif
                     int index = PortUtil.parseInt( spl[1] );
-                    if ( last_line.value.StartsWith( "[ID#" ) )
-                    {
+                    if ( last_line.value.StartsWith( "[ID#" ) ) {
                         __id.put( index, new VsqID( sr, index, last_line ) );
-                    }
-                    else if ( last_line.value.StartsWith( "[h#" ) )
-                    {
+                    } else if ( last_line.value.StartsWith( "[h#" ) ) {
                         __handle.put( index, new VsqHandle( sr, index, last_line ) );
                     }
                 #endregion
                 }
 
-                if ( sr.peek() < 0 )
-                {
+                if ( sr.peek() < 0 ) {
                     break;
                 }
             }
 
             // まずhandleをidに埋め込み
-            for ( int i = 0; i < __id.size(); i++ )
-            {
-                if ( __handle.containsKey( __id.get( i ).IconHandle_index ) )
-                {
+            for ( int i = 0; i < __id.size(); i++ ) {
+                if ( __handle.containsKey( __id.get( i ).IconHandle_index ) ) {
                     __id.get( i ).IconHandle = __handle.get( __id.get( i ).IconHandle_index ).castToIconHandle();
                 }
-                if ( __handle.containsKey( __id.get( i ).LyricHandle_index ) )
-                {
+                if ( __handle.containsKey( __id.get( i ).LyricHandle_index ) ) {
                     __id.get( i ).LyricHandle = __handle.get( __id.get( i ).LyricHandle_index ).castToLyricHandle();
                 }
-                if ( __handle.containsKey( __id.get( i ).VibratoHandle_index ) )
-                {
+                if ( __handle.containsKey( __id.get( i ).VibratoHandle_index ) ) {
                     __id.get( i ).VibratoHandle = __handle.get( __id.get( i ).VibratoHandle_index ).castToVibratoHandle();
                 }
-                if ( __handle.containsKey( __id.get( i ).NoteHeadHandle_index ) )
-                {
+                if ( __handle.containsKey( __id.get( i ).NoteHeadHandle_index ) ) {
                     __id.get( i ).NoteHeadHandle = __handle.get( __id.get( i ).NoteHeadHandle_index ).castToNoteHeadHandle();
                 }
             }
 
             // idをeventListに埋め込み
             Events = new VsqEventList();
-            for ( int i = 0; i < t_event_list.size(); i++ )
-            {
+            for ( int i = 0; i < t_event_list.size(); i++ ) {
                 int clock = t_event_list.get( i ).getKey();
                 int id_number = t_event_list.get( i ).getValue();
-                if ( __id.containsKey( id_number ) )
-                {
+                if ( __id.containsKey( id_number ) ) {
                     Events.add( new VsqEvent( clock, (VsqID)__id.get( id_number ).clone() ) );
                 }
             }
 
-            if ( Common == null )
-            {
+            if ( Common == null ) {
                 Common = new VsqCommon();
             }
         }

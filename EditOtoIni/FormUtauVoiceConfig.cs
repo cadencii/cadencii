@@ -39,8 +39,7 @@ using bocoree.util;
 using bocoree.windows.forms;
 using bocoree.xml;
 
-namespace Boare.EditOtoIni
-{
+namespace Boare.EditOtoIni {
     using boolean = System.Boolean;
     using Float = System.Single;
     using Graphics = bocoree.awt.Graphics2D;
@@ -55,9 +54,8 @@ namespace Boare.EditOtoIni
 #else
     public class FormUtauVoiceConfig : BForm
 #endif
-    {
-        enum MouseMode
-        {
+ {
+        enum MouseMode {
             None,
             MiddleDrag,
             MoveOffset,
@@ -67,8 +65,7 @@ namespace Boare.EditOtoIni
             MoveOverlap,
         }
 
-        public class FlagType
-        {
+        public class FlagType {
             public static readonly FlagType Offset = new FlagType( 0 );
             public static readonly FlagType Consonant = new FlagType( 1 );
             public static readonly FlagType Blank = new FlagType( 2 );
@@ -77,13 +74,11 @@ namespace Boare.EditOtoIni
 
             private int m_value;
 
-            private FlagType( int value )
-            {
+            private FlagType( int value ) {
                 m_value = value;
             }
 
-            public int getValue()
-            {
+            public int getValue() {
                 return m_value;
             }
         }
@@ -132,8 +127,7 @@ namespace Boare.EditOtoIni
         private boolean m_cancel_required = false;
         private Rectangle m_current_bounds;
 
-        public FormUtauVoiceConfig()
-        {
+        public FormUtauVoiceConfig() {
 #if JAVA
             initialize();
 #else
@@ -172,18 +166,15 @@ namespace Boare.EditOtoIni
             form.setVisible( true );
 #else
         [STAThread]
-        public static void Main( string[] args )
-        {
+        public static void Main( string[] args ) {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             Application.Run( new FormUtauVoiceConfig() );
 #endif
         }
 
-        private void refreshScreen()
-        {
-            if ( !bgWorkScreen.IsBusy )
-            {
+        private void refreshScreen() {
+            if ( !bgWorkScreen.IsBusy ) {
                 bgWorkScreen.RunWorkerAsync();
             }
         }
@@ -192,23 +183,19 @@ namespace Boare.EditOtoIni
         /// アプリケーションデータの保存位置を取得します
         /// Gets the path for application data
         /// </summary>
-        public static String getApplicationDataPath()
-        {
+        public static String getApplicationDataPath() {
             String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
-            if ( !PortUtil.isDirectoryExists( dir ) )
-            {
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
             String dir2 = PortUtil.combinePath( dir, "EditOtoIni" );
-            if ( !PortUtil.isDirectoryExists( dir2 ) )
-            {
+            if ( !PortUtil.isDirectoryExists( dir2 ) ) {
                 PortUtil.createDirectory( dir2 );
             }
             return dir2;
         }
 
-        public FormConfigUtauVoiceConfig getCurrentConfig()
-        {
+        public FormConfigUtauVoiceConfig getCurrentConfig() {
             FormConfigUtauVoiceConfig ret = new FormConfigUtauVoiceConfig();
             ret.Bounds = new XmlRectangle( m_current_bounds );
             ret.State = this.getExtendedState();
@@ -227,31 +214,22 @@ namespace Boare.EditOtoIni
             return ret;
         }
 
-        public void setCurrentConfig( FormConfigUtauVoiceConfig value )
-        {
+        public void setCurrentConfig( FormConfigUtauVoiceConfig value ) {
 #if DEBUG
             Console.WriteLine( "FormUtauVoiceConfig#set_CurrentConfig" );
 #endif
-            if ( value.State != BForm.MAXIMIZED_BOTH )
-            {
+            if ( value.State != BForm.MAXIMIZED_BOTH ) {
                 this.setBounds( value.Bounds.toRectangle() );
-            }
-            else
-            {
+            } else {
                 this.WindowState = FormWindowState.Maximized;
             }
             splitContainerIn.SplitterDistance = (int)(splitContainerIn.Width * value.InnerSplitterDistancePercentage / 100.0f);
             splitContainerOut.SplitterDistance = (int)(splitContainerOut.Height * value.OuterSplitterDistancePercentage / 100.0f);
-            if ( value.WaveViewScale < TRACKBAR_MIN )
-            {
+            if ( value.WaveViewScale < TRACKBAR_MIN ) {
                 m_trackbar_value = TRACKBAR_MIN;
-            }
-            else if ( TRACKBAR_MAX < value.WaveViewScale )
-            {
+            } else if ( TRACKBAR_MAX < value.WaveViewScale ) {
                 m_trackbar_value = TRACKBAR_MAX;
-            }
-            else
-            {
+            } else {
                 m_trackbar_value = value.WaveViewScale;
             }
             columnHeaderAlias.Width = value.ColumnWidthAlias;
@@ -266,25 +244,21 @@ namespace Boare.EditOtoIni
             UpdateScale();
         }
 
-        public void ApplyFont( java.awt.Font font )
-        {
+        public void ApplyFont( java.awt.Font font ) {
             Util.applyFontRecurse( this, font );
             Util.applyToolStripFontRecurse( menuFile, font );
         }
 
-        private void HoverWaitThread()
-        {
+        private void HoverWaitThread() {
             Thread.Sleep( SystemInformation.MouseHoverTime );
             EventHandler eh = new EventHandler( pictWave_MouseHover );
             this.Invoke( eh, pictWave, new EventArgs() );
         }
 
-        private void pictWave_MouseHover( Object sender, EventArgs e )
-        {
+        private void pictWave_MouseHover( Object sender, EventArgs e ) {
         }
 
-        public void ApplyLanguage()
-        {
+        public void ApplyLanguage() {
             UpdateFormTitle();
 
             menuFile.setText( _( "File" ) + "(&F)" );
@@ -315,13 +289,10 @@ namespace Boare.EditOtoIni
             columnHeaderPreUtterance.Text = _( "Pre Utterance" );
             columnHeaderOverlap.Text = _( "Overlap" );
 
-            try
-            {
+            try {
                 openFileDialog.Filter = _( "Voice DB Config(*.ini)|*.ini" ) + "|" + _( "All Files(*.*)|*.*" );
                 saveFileDialog.Filter = _( "Voice DB Config(*.ini)|*.ini" ) + "|" + _( "All Files(*.*)|*.*" );
-            }
-            catch( Exception ex )
-            {
+            } catch ( Exception ex ) {
                 openFileDialog.Filter = "Voice DB Config(*.ini)|*.ini|All Files(*.*)|*.*";
                 saveFileDialog.Filter = "Voice DB Config(*.ini)|*.ini|All Files(*.*)|*.*";
             }
@@ -340,44 +311,35 @@ namespace Boare.EditOtoIni
 #endif
         }
 
-        private void UpdateFormTitle()
-        {
+        private void UpdateFormTitle() {
             String f = m_oto_ini;
-            if ( f.Equals( "" ) )
-            {
+            if ( f.Equals( "" ) ) {
                 f = "Untitled";
             }
             String title = _( "Voice DB Config" ) + " - " + f + (m_edited ? " *" : "");
-            if ( title != this.getTitle() )
-            {
+            if ( title != this.getTitle() ) {
                 this.setTitle( title );
             }
         }
 
-        private static String _( String id )
-        {
+        private static String _( String id ) {
             return Messaging.getMessage( id );
         }
 
-        private void pictWave_MouseWheel( Object sender, MouseEventArgs e )
-        {
+        private void pictWave_MouseWheel( Object sender, MouseEventArgs e ) {
             int draft = hScroll.Value - e.Delta / 120 * hScroll.LargeChange / 2;
-            if ( draft > hScroll.Maximum - hScroll.LargeChange + 1 )
-            {
+            if ( draft > hScroll.Maximum - hScroll.LargeChange + 1 ) {
                 draft = hScroll.Maximum - hScroll.LargeChange + 1;
             }
-            if ( draft < hScroll.Minimum )
-            {
+            if ( draft < hScroll.Minimum ) {
                 draft = hScroll.Minimum;
             }
-            if ( draft != hScroll.Value )
-            {
+            if ( draft != hScroll.Value ) {
                 hScroll.Value = draft;
             }
         }
 
-        public void Open( String oto_ini_path )
-        {
+        public void Open( String oto_ini_path ) {
             m_oto_ini = oto_ini_path;
             UpdateFormTitle();
             m_cancel_required = false;
@@ -389,8 +351,7 @@ namespace Boare.EditOtoIni
 #endif
         }
 
-        private void AddItem( Object sender, boolean bool_value, String[] stringarr_value )
-        {
+        private void AddItem( Object sender, boolean bool_value, String[] stringarr_value ) {
             String[] columns = stringarr_value;
             boolean exists = bool_value;
             ListViewItem item = new ListViewItem( columns );
@@ -398,12 +359,10 @@ namespace Boare.EditOtoIni
             listFiles.Items.Add( item );
         }
 
-        private void bgWorkRead_DoWork( Object sender, DoWorkEventArgs e )
-        {
+        private void bgWorkRead_DoWork( Object sender, DoWorkEventArgs e ) {
             String oto_ini_path = (String)e.Argument;
             int c = m_drawer.size();
-            for ( int i = 0; i < c; i++ )
-            {
+            for ( int i = 0; i < c; i++ ) {
                 m_drawer.get( i ).Dispose();
             }
             m_drawer.clear();
@@ -411,8 +370,7 @@ namespace Boare.EditOtoIni
 #if DEBUG
             PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; oto_init_path=" + oto_ini_path );
 #endif
-            if ( !PortUtil.isFileExists( oto_ini_path ) )
-            {
+            if ( !PortUtil.isFileExists( oto_ini_path ) ) {
 #if DEBUG
                 PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; '" + oto_ini_path + "' not found" );
 #endif
@@ -421,25 +379,21 @@ namespace Boare.EditOtoIni
 
             String dir = PortUtil.getDirectoryName( oto_ini_path );
             BufferedReader sr = null;
-            try
-            {
+            try {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( oto_ini_path ), "Shift_JIS" ) );
                 String line = "";
-                while ( (line = sr.readLine()) != null )
-                {
+                while ( (line = sr.readLine()) != null ) {
 #if DEBUG
                     PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; line=" + line );
 #endif
-                    if ( m_cancel_required )
-                    {
+                    if ( m_cancel_required ) {
 #if DEBUG
                         PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; cancel required" );
 #endif
                         break;
                     }
                     int eq = line.IndexOf( '=' );
-                    if ( eq <= 0 )
-                    {
+                    if ( eq <= 0 ) {
                         continue;
                     }
                     String f = line.Substring( 0, eq );
@@ -453,8 +407,7 @@ namespace Boare.EditOtoIni
                     String f2 = wave_name + "_" + ext + ".frq"; // f.Replace( ".wav", "_wav.frq" );
                     String freq = PortUtil.combinePath( dir, f2 );
                     boolean freq_exists = PortUtil.isFileExists( freq );
-                    if ( freq_exists )
-                    {
+                    if ( freq_exists ) {
                         wdc.Freq = Boare.Cadencii.UtauFreq.FromFrq( freq );
                     }
                     m_drawer.add( wdc );
@@ -471,60 +424,45 @@ namespace Boare.EditOtoIni
                                  PortUtil.isFileExists( file ),
                                  columns.toArray( new String[] { } ) );
                 }
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
 #if DEBUG
                 PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; ex=" + ex );
 #endif
-            }
-            finally
-            {
-                if ( sr != null )
-                {
-                    try
-                    {
+            } finally {
+                if ( sr != null ) {
+                    try {
                         sr.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
             m_edited = false;
         }
 
-        private void listFiles_SelectedIndexChanged( Object sender, EventArgs e )
-        {
-            if ( listFiles.SelectedIndices.Count <= 0 )
-            {
+        private void listFiles_SelectedIndexChanged( Object sender, EventArgs e ) {
+            if ( listFiles.SelectedIndices.Count <= 0 ) {
                 return;
             }
             int index = listFiles.SelectedIndices[0];
             ListViewItem selected_item = listFiles.Items[index];
             String name = selected_item.Text + selected_item.SubItems[1].Text;
             boolean enabled = true;
-            if ( selected_item.Tag != null && selected_item.Tag is boolean )
-            {
+            if ( selected_item.Tag != null && selected_item.Tag is boolean ) {
                 enabled = (boolean)selected_item.Tag;
             }
-            if ( !enabled )
-            {
+            if ( !enabled ) {
                 listFiles.SelectedIndices.Clear();
                 return;
             }
             int c = m_drawer.size();
             m_index = -1;
-            for ( int i = 0; i < c; i++ )
-            {
-                if ( name.Equals( m_drawer.get( i ).getName() ) )
-                {
+            for ( int i = 0; i < c; i++ ) {
+                if ( name.Equals( m_drawer.get( i ).getName() ) ) {
                     m_index = i;
                     m_length = m_drawer.get( i ).getLength();
                     int c2 = selected_item.SubItems.Count;
                     String[] spl = new String[c2];
-                    for ( int i2 = 0; i2 < c2; i2++ )
-                    {
+                    for ( int i2 = 0; i2 < c2; i2++ ) {
                         spl[i2] = selected_item.SubItems[i2].Text;
                     }
                     boolean old = getEdited();
@@ -533,32 +471,27 @@ namespace Boare.EditOtoIni
                     txtAlias.setText( spl[1] );
                     ByRef<Float> o = new ByRef<Float>();
 
-                    if ( PortUtil.tryParseFloat( spl[2], o ) )
-                    {
+                    if ( PortUtil.tryParseFloat( spl[2], o ) ) {
                         m_offset = round2Digits( o.value );
                         txtOffset.setText( m_offset.ToString() );
                     }
 
-                    if ( PortUtil.tryParseFloat( spl[3], o ) )
-                    {
+                    if ( PortUtil.tryParseFloat( spl[3], o ) ) {
                         m_consonant = round2Digits( o.value );
                         txtConsonant.setText( m_consonant.ToString() );
                     }
 
-                    if ( PortUtil.tryParseFloat( spl[4], o ) )
-                    {
+                    if ( PortUtil.tryParseFloat( spl[4], o ) ) {
                         m_blank = round2Digits( o.value );
                         txtBlank.setText( m_blank.ToString() );
                     }
 
-                    if ( PortUtil.tryParseFloat( spl[5], o ) )
-                    {
+                    if ( PortUtil.tryParseFloat( spl[5], o ) ) {
                         m_pre_utterance = round2Digits( o.value );
                         txtPreUtterance.setText( m_pre_utterance.ToString() );
                     }
 
-                    if ( PortUtil.tryParseFloat( spl[6], o ) )
-                    {
+                    if ( PortUtil.tryParseFloat( spl[6], o ) ) {
                         m_overlap = round2Digits( o.value );
                         txtOverlap.setText( m_overlap.ToString() );
                     }
@@ -572,8 +505,7 @@ namespace Boare.EditOtoIni
 #endif
                     hScroll.Minimum = (int)(minimum * ORDER);
                     hScroll.Maximum = (int)(m_drawer.get( i ).getLength() * 1000 * ORDER);
-                    if ( m_start_to_draw < hScroll.Minimum / 1000.0f / ORDER )
-                    {
+                    if ( m_start_to_draw < hScroll.Minimum / 1000.0f / ORDER ) {
                         m_start_to_draw = hScroll.Minimum / 1000.0f / ORDER;
                     }
 #if DEBUG
@@ -591,16 +523,11 @@ namespace Boare.EditOtoIni
         /// <param name="p"></param>
         /// <param name="rc"></param>
         /// <returns></returns>
-        public static boolean isInRect( Point p, Rectangle rc )
-        {
-            if ( rc.x <= p.x )
-            {
-                if ( p.x <= rc.x + rc.width )
-                {
-                    if ( rc.y <= p.y )
-                    {
-                        if ( p.y <= rc.y + rc.height )
-                        {
+        public static boolean isInRect( Point p, Rectangle rc ) {
+            if ( rc.x <= p.x ) {
+                if ( p.x <= rc.x + rc.width ) {
+                    if ( rc.y <= p.y ) {
+                        if ( p.y <= rc.y + rc.height ) {
                             return true;
                         }
                     }
@@ -609,16 +536,13 @@ namespace Boare.EditOtoIni
             return false;
         }
 
-        private void pictWave_Paint( Object sender, PaintEventArgs e )
-        {
-            if ( 0 <= m_index && m_index < m_drawer.size() )
-            {
+        private void pictWave_Paint( Object sender, PaintEventArgs e ) {
+            if ( 0 <= m_index && m_index < m_drawer.size() ) {
                 paint( new Graphics2D( e.Graphics ) );
             }
         }
 
-        private void paint( Graphics g1 )
-        {
+        private void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
             /*int c = listFiles.Items[m_index].SubItems.Count;
             String[] spl = new String[c];
@@ -668,8 +592,7 @@ namespace Boare.EditOtoIni
 
             g.drawString( m_file, 1, LINE_HEIGHT );
 
-            if ( font.font.Name != m_font_name || font.font.SizeInPoints != m_font_size )
-            {
+            if ( font.font.Name != m_font_name || font.font.SizeInPoints != m_font_size ) {
                 m_font_draw_offset = Util.getStringDrawOffset( font ) - 1;
                 m_font_name = font.font.Name;
                 m_font_size = font.font.SizeInPoints;
@@ -719,33 +642,23 @@ namespace Boare.EditOtoIni
             //}
         }
 
-        private Rectangle GetFlagRect( FlagType type, Font font )
-        {
+        private Rectangle GetFlagRect( FlagType type, Font font ) {
             int i = type.getValue();
             int x = 0;
             String s = "";
-            if ( i == FlagType.Offset.getValue() )
-            {
+            if ( i == FlagType.Offset.getValue() ) {
                 x = XFromSec( m_offset / 1000.0f );
                 s = _( "Offset" ) + ": " + m_offset + " ms";
-            }
-            else if ( i == FlagType.Consonant.getValue() )
-            {
+            } else if ( i == FlagType.Consonant.getValue() ) {
                 x = XFromSec( (m_offset + m_consonant) / 1000.0f );
                 s = _( "Consonant" ) + ": " + m_consonant + " ms";
-            }
-            else if ( i == FlagType.Blank.getValue() )
-            {
+            } else if ( i == FlagType.Blank.getValue() ) {
                 x = XFromSec( m_length - m_blank / 1000.0f );
                 s = _( "Blank" ) + ": " + m_blank + " ms";
-            }
-            else if ( i == FlagType.PreUtterance.getValue() )
-            {
+            } else if ( i == FlagType.PreUtterance.getValue() ) {
                 x = XFromSec( m_pre_utterance / 1000.0f );
                 s = _( "Pre Utterance" ) + ": " + m_pre_utterance + " ms";
-            }
-            else if ( i == FlagType.Overlap.getValue() )
-            {
+            } else if ( i == FlagType.Overlap.getValue() ) {
                 x = XFromSec( m_overlap / 1000.0f );
                 s = _( "Overlap" ) + ": " + m_overlap + " ms";
             }
@@ -753,61 +666,47 @@ namespace Boare.EditOtoIni
             return new Rectangle( x, LINE_HEIGHT * (i + 2), (int)(size.width * 1.1f), (int)(size.height * 1.1f) );
         }
 
-        private int XFromSec( float sec )
-        {
+        private int XFromSec( float sec ) {
             return (int)((sec - m_start_to_draw) * m_px_per_sec);
         }
 
-        private float SecFromX( int x )
-        {
+        private float SecFromX( int x ) {
             return x / (float)m_px_per_sec + m_start_to_draw;
         }
 
-        private static float round2Digits( float value )
-        {
+        private static float round2Digits( float value ) {
             return (float)Math.Round( value, 2 );
         }
 
-        private void UpdateScale()
-        {
+        private void UpdateScale() {
             m_px_per_sec = 10.0 * Math.Pow( 10.0, m_trackbar_value / 10.0 );
             hScroll.LargeChange = (int)(pictWave.Width / m_px_per_sec * 1000 * ORDER);
         }
 
-        private void hScroll_ValueChanged( Object sender, EventArgs e )
-        {
+        private void hScroll_ValueChanged( Object sender, EventArgs e ) {
             m_start_to_draw = hScroll.Value / 1000.0f / ORDER;
             refreshScreen();
         }
 
-        private void pictWave_MouseDown( Object sender, MouseEventArgs e )
-        {
+        private void pictWave_MouseDown( Object sender, MouseEventArgs e ) {
             m_mouse_downed = new Point( e.X, e.Y );
             m_mouse_downed_start_to_draw = m_start_to_draw;
-            if ( m_mouse_hover_generator != null && m_mouse_hover_generator.IsAlive )
-            {
+            if ( m_mouse_hover_generator != null && m_mouse_hover_generator.IsAlive ) {
                 m_mouse_hover_generator.Abort();
-                while ( m_mouse_hover_generator.IsAlive )
-                {
+                while ( m_mouse_hover_generator.IsAlive ) {
                     Application.DoEvents();
                 }
             }
             m_mouse_hover_generator = new Thread( new ThreadStart( this.HoverWaitThread ) );
             m_mouse_hover_generator.Start();
-            if ( e.Button == MouseButtons.Middle )
-            {
+            if ( e.Button == MouseButtons.Middle ) {
                 m_mode = MouseMode.MiddleDrag;
-            }
-            else if ( e.Button == MouseButtons.Left )
-            {
+            } else if ( e.Button == MouseButtons.Left ) {
                 m_mode = MouseMode.None;
-                for ( int i = 0; i < m_flag_box.Length; i++ )
-                {
+                for ( int i = 0; i < m_flag_box.Length; i++ ) {
                     Rectangle rc = m_flag_box[i];
-                    if ( isInRect( new Point( e.X, e.Y ), rc ) )
-                    {
-                        switch ( i )
-                        {
+                    if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
+                        switch ( i ) {
                             case 0:
                                 m_mode = MouseMode.MoveOffset;
                                 m_move_init = m_offset;
@@ -833,11 +732,9 @@ namespace Boare.EditOtoIni
                     }
                 }
 
-                if ( 0 <= m_index && m_index < listFiles.Items.Count )
-                {
+                if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
                     String file = PortUtil.combinePath( PortUtil.getDirectoryName( m_oto_ini ), listFiles.Items[m_index].SubItems[0].Text );
-                    if ( PortUtil.isFileExists( file ) && m_player.SoundLocation != file )
-                    {
+                    if ( PortUtil.isFileExists( file ) && m_player.SoundLocation != file ) {
                         m_player.Close();
                         m_player.Load( file );
                     }
@@ -849,75 +746,56 @@ namespace Boare.EditOtoIni
             }
         }
 
-        private void pictWave_MouseMove( Object sender, MouseEventArgs e )
-        {
-            if ( m_mouse_hover_generator != null && m_mouse_hover_generator.IsAlive )
-            {
+        private void pictWave_MouseMove( Object sender, MouseEventArgs e ) {
+            if ( m_mouse_hover_generator != null && m_mouse_hover_generator.IsAlive ) {
                 m_mouse_hover_generator.Abort();
             }
             boolean check_hscroll_minimum = false;
             float minimum = 0;
-            if ( m_mode == MouseMode.MiddleDrag )
-            {
+            if ( m_mode == MouseMode.MiddleDrag ) {
                 int dx = e.X - m_mouse_downed.x;
                 int draft = (int)((m_mouse_downed_start_to_draw - dx / (float)m_px_per_sec) * 1000 * ORDER);
-                if ( draft > hScroll.Maximum - hScroll.LargeChange + 1 )
-                {
+                if ( draft > hScroll.Maximum - hScroll.LargeChange + 1 ) {
                     draft = hScroll.Maximum - hScroll.LargeChange + 1;
                 }
-                if ( draft < hScroll.Minimum )
-                {
+                if ( draft < hScroll.Minimum ) {
                     draft = hScroll.Minimum;
                 }
-                if ( hScroll.Value != draft )
-                {
+                if ( hScroll.Value != draft ) {
                     hScroll.Value = draft;
                 }
-            }
-            else if ( m_mode == MouseMode.MoveOffset )
-            {
+            } else if ( m_mode == MouseMode.MoveOffset ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init + (float)(dx / m_px_per_sec * 1000) );
                 txtOffset.Text = draft.ToString();
                 check_hscroll_minimum = true;
                 minimum = Math.Min( draft, minimum );
-            }
-            else if ( m_mode == MouseMode.MoveConsonant )
-            {
+            } else if ( m_mode == MouseMode.MoveConsonant ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init + (float)(dx / m_px_per_sec * 1000) );
                 txtConsonant.Text = draft.ToString();
-            }
-            else if ( m_mode == MouseMode.MoveBlank )
-            {
+            } else if ( m_mode == MouseMode.MoveBlank ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init - (float)(dx / m_px_per_sec * 1000) );
                 txtBlank.Text = draft.ToString();
-            }
-            else if ( m_mode == MouseMode.MovePreUtterance )
-            {
+            } else if ( m_mode == MouseMode.MovePreUtterance ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init + (float)(dx / m_px_per_sec * 1000) );
                 txtPreUtterance.Text = draft.ToString();
                 check_hscroll_minimum = true;
                 minimum = Math.Min( draft, minimum );
-            }
-            else if ( m_mode == MouseMode.MoveOverlap )
-            {
+            } else if ( m_mode == MouseMode.MoveOverlap ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init + (float)(dx / m_px_per_sec * 1000) );
                 txtOverlap.Text = draft.ToString();
                 check_hscroll_minimum = true;
                 minimum = Math.Min( draft, minimum );
             }
-            if ( check_hscroll_minimum )
-            {
+            if ( check_hscroll_minimum ) {
                 float draft_minimum = minimum * ORDER;
-                if ( draft_minimum < hScroll.Minimum )
-                {
+                if ( draft_minimum < hScroll.Minimum ) {
                     hScroll.Minimum = (int)draft_minimum;
-                    if ( m_start_to_draw < draft_minimum / 1000.0f / ORDER )
-                    {
+                    if ( m_start_to_draw < draft_minimum / 1000.0f / ORDER ) {
                         m_start_to_draw = draft_minimum / 1000.0f / ORDER;
                     }
                     refreshScreen();
@@ -925,193 +803,148 @@ namespace Boare.EditOtoIni
             }
         }
 
-        private boolean getEdited()
-        {
+        private boolean getEdited() {
             return m_edited;
         }
 
-        private void setEdited( boolean value )
-        {
+        private void setEdited( boolean value ) {
             boolean old = m_edited;
             m_edited = value;
-            if ( m_edited != old )
-            {
+            if ( m_edited != old ) {
                 UpdateFormTitle();
             }
         }
 
-        private void pictWave_MouseUp( Object sender, MouseEventArgs e )
-        {
+        private void pictWave_MouseUp( Object sender, MouseEventArgs e ) {
             m_mode = MouseMode.None;
         }
 
-        private void txtAlias_TextChanged( Object sender, EventArgs e )
-        {
-            if ( 0 <= m_index && m_index < listFiles.Items.Count )
-            {
+        private void txtAlias_TextChanged( Object sender, EventArgs e ) {
+            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
                 listFiles.Items[m_index].SubItems[1].Text = txtAlias.Text;
                 setEdited( true );
                 pictWave.Invalidate();
             }
         }
 
-        private void txtOffset_TextChanged( Object sender, EventArgs e )
-        {
+        private void txtOffset_TextChanged( Object sender, EventArgs e ) {
             float i;
-            try
-            {
+            try {
                 i = PortUtil.parseFloat( txtOffset.getText() );
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
                 return;
             }
             m_offset = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count )
-            {
+            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
                 listFiles.Items[m_index].SubItems[2].Text = txtOffset.Text;
                 setEdited( true );
                 pictWave.Invalidate();
             }
         }
 
-        private void txtConsonant_TextChanged( Object sender, EventArgs e )
-        {
+        private void txtConsonant_TextChanged( Object sender, EventArgs e ) {
             float i;
-            try
-            {
+            try {
                 i = PortUtil.parseFloat( txtConsonant.getText() );
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
                 return;
             }
             m_consonant = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count )
-            {
+            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
                 listFiles.Items[m_index].SubItems[3].Text = txtConsonant.Text;
                 setEdited( true );
                 pictWave.Invalidate();
             }
         }
 
-        private void txtBlank_TextChanged( Object sender, EventArgs e )
-        {
+        private void txtBlank_TextChanged( Object sender, EventArgs e ) {
             float i;
-            try
-            {
+            try {
                 i = PortUtil.parseFloat( txtBlank.getText() );
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
                 return;
             }
             m_blank = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count )
-            {
+            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
                 listFiles.Items[m_index].SubItems[4].Text = txtBlank.Text;
                 setEdited( true );
                 pictWave.Invalidate();
             }
         }
 
-        private void txtPreUtterance_TextChanged( Object sender, EventArgs e )
-        {
+        private void txtPreUtterance_TextChanged( Object sender, EventArgs e ) {
             float i;
-            try
-            {
+            try {
                 i = PortUtil.parseFloat( txtPreUtterance.getText() );
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
                 return;
             }
             m_pre_utterance = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count )
-            {
+            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
                 listFiles.Items[m_index].SubItems[5].Text = txtPreUtterance.Text;
                 setEdited( true );
                 pictWave.Invalidate();
             }
         }
 
-        private void txtOverlap_TextChanged( Object sender, EventArgs e )
-        {
+        private void txtOverlap_TextChanged( Object sender, EventArgs e ) {
             float i;
-            try
-            {
+            try {
                 i = PortUtil.parseFloat( txtOverlap.getText() );
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
                 return;
             }
             m_overlap = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count )
-            {
+            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
                 listFiles.Items[m_index].SubItems[6].Text = txtOverlap.Text;
                 setEdited( true );
                 pictWave.Invalidate();
             }
         }
 
-        private void FormUtauVoiceConfig_FormClosed( Object sender, FormClosedEventArgs e )
-        {
+        private void FormUtauVoiceConfig_FormClosed( Object sender, FormClosedEventArgs e ) {
             m_cancel_required = true;
-            while ( bgWorkRead.IsBusy )
-            {
+            while ( bgWorkRead.IsBusy ) {
                 Application.DoEvents();
             }
-            if ( m_player != null )
-            {
+            if ( m_player != null ) {
                 m_player.Close();
             }
         }
 
-        private void btnMinus_Click( Object sender, EventArgs e )
-        {
-            if ( TRACKBAR_MIN < m_trackbar_value )
-            {
+        private void btnMinus_Click( Object sender, EventArgs e ) {
+            if ( TRACKBAR_MIN < m_trackbar_value ) {
                 m_trackbar_value--;
                 UpdateScale();
                 refreshScreen();
             }
         }
 
-        private void btnPlus_Click( Object sender, EventArgs e )
-        {
-            if ( m_trackbar_value < TRACKBAR_MAX )
-            {
+        private void btnPlus_Click( Object sender, EventArgs e ) {
+            if ( m_trackbar_value < TRACKBAR_MAX ) {
                 m_trackbar_value++;
                 UpdateScale();
                 refreshScreen();
             }
         }
 
-        private void bgWorkRead_RunWorkerCompleted( Object sender, RunWorkerCompletedEventArgs e )
-        {
+        private void bgWorkRead_RunWorkerCompleted( Object sender, RunWorkerCompletedEventArgs e ) {
             setEdited( false );
         }
 
-        private void menuFileOpen_Click( Object sender, EventArgs e )
-        {
-            if ( openFileDialog.ShowDialog() == DialogResult.OK )
-            {
+        private void menuFileOpen_Click( Object sender, EventArgs e ) {
+            if ( openFileDialog.ShowDialog() == DialogResult.OK ) {
                 Open( openFileDialog.FileName );
             }
         }
 
-        private void menuFileQuit_Click( Object sender, EventArgs e )
-        {
+        private void menuFileQuit_Click( Object sender, EventArgs e ) {
             this.Close();
         }
 
-        private void menuFileSave_Click( Object sender, EventArgs e )
-        {
-            if ( m_oto_ini.Equals( "" ) )
-            {
-                if ( saveFileDialog.ShowDialog() != DialogResult.OK )
-                {
+        private void menuFileSave_Click( Object sender, EventArgs e ) {
+            if ( m_oto_ini.Equals( "" ) ) {
+                if ( saveFileDialog.ShowDialog() != DialogResult.OK ) {
                     return;
                 }
                 m_oto_ini = saveFileDialog.FileName;
@@ -1120,10 +953,8 @@ namespace Boare.EditOtoIni
             setEdited( false );
         }
 
-        private void menuFileSaveAs_Click( Object sender, EventArgs e )
-        {
-            if ( saveFileDialog.ShowDialog() != DialogResult.OK )
-            {
+        private void menuFileSaveAs_Click( Object sender, EventArgs e ) {
+            if ( saveFileDialog.ShowDialog() != DialogResult.OK ) {
                 return;
             }
             m_oto_ini = saveFileDialog.FileName;
@@ -1131,38 +962,26 @@ namespace Boare.EditOtoIni
             setEdited( false );
         }
 
-        private void saveCor( String file )
-        {
+        private void saveCor( String file ) {
             // oto.ini
             BufferedWriter sw = null;
-            try
-            {
+            try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "Shift_JIS" ) );
                 int i1 = listFiles.Items.Count;
-                for ( int i = 0; i < i1; i++ )
-                {
+                for ( int i = 0; i < i1; i++ ) {
                     int i2 = listFiles.Items[i].SubItems.Count;
                     sw.write( listFiles.Items[i].SubItems[0].Text + "=" );
-                    for ( int j = 1; j <= 6; j++ )
-                    {
+                    for ( int j = 1; j <= 6; j++ ) {
                         sw.write( (j > 1 ? "," : "") + listFiles.Items[i].SubItems[j].Text );
                     }
                     sw.newLine();
                 }
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( sw != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw != null ) {
+                    try {
                         sw.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
@@ -1170,111 +989,79 @@ namespace Boare.EditOtoIni
             // analyzed/oto.ini
             String analyzed = PortUtil.combinePath( PortUtil.getDirectoryName( file ), "analyzed" );
             String analyzed_oto_ini = PortUtil.combinePath( analyzed, PortUtil.getFileName( file ) );
-            if ( !PortUtil.isDirectoryExists( analyzed ) )
-            {
+            if ( !PortUtil.isDirectoryExists( analyzed ) ) {
                 PortUtil.createDirectory( analyzed );
             }
             BufferedWriter sw2 = null;
-            try
-            {
+            try {
                 sw2 = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( analyzed_oto_ini ), "Shift_JIS" ) );
                 int count = listFiles.Items.Count;
-                for ( int i = 0; i < count; i++ )
-                {
+                for ( int i = 0; i < count; i++ ) {
                     int i2 = listFiles.Items[i].SubItems.Count;
                     sw2.write( listFiles.Items[i].SubItems[0].Text + "=" );
-                    for ( int j = 1; j <= 6; j++ )
-                    {
+                    for ( int j = 1; j <= 6; j++ ) {
                         String add = listFiles.Items[i].SubItems[j].Text;
-                        if ( j == 2 || j == 4 )
-                        { // j==2はoffset, j==4はblank。STF化した場合、この2つは0固定になる。
+                        if ( j == 2 || j == 4 ) { // j==2はoffset, j==4はblank。STF化した場合、この2つは0固定になる。
                             add = "0";
                         }
                         sw2.write( (j > 1 ? "," : "") + add );
                     }
                     sw2.newLine();
                 }
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( sw2 != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw2 != null ) {
+                    try {
                         sw2.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
         }
 
-        private void menuFileOpen_MouseEnter( Object sender, BEventArgs e )
-        {
+        private void menuFileOpen_MouseEnter( Object sender, BEventArgs e ) {
             statusLblTootip.Text = _( "Open Voice DB configuration file" );
         }
 
-        private void menuFileSave_MouseEnter( Object sender, BEventArgs e )
-        {
+        private void menuFileSave_MouseEnter( Object sender, BEventArgs e ) {
             statusLblTootip.Text = _( "Save Voice DB configuration file." );
         }
 
-        private void menuFileSaveAs_MouseEnter( Object sender, BEventArgs e )
-        {
+        private void menuFileSaveAs_MouseEnter( Object sender, BEventArgs e ) {
             statusLblTootip.Text = _( "Save Voice DB configuration file with new name." );
         }
 
-        private void menuFileQuit_MouseEnter( Object sender, BEventArgs e )
-        {
+        private void menuFileQuit_MouseEnter( Object sender, BEventArgs e ) {
             statusLblTootip.Text = _( "Close this window." );
         }
 
-        private void FormUtauVoiceConfig_Load( Object sender, BEventArgs e )
-        {
+        private void FormUtauVoiceConfig_Load( Object sender, BEventArgs e ) {
             FormConfigUtauVoiceConfig config = null;
             String config_path = PortUtil.combinePath( getApplicationDataPath(), "config.xml" );
-            if ( PortUtil.isFileExists( config_path ) )
-            {
+            if ( PortUtil.isFileExists( config_path ) ) {
                 FileInputStream fout = null;
-                try
-                {
+                try {
                     fout = new FileInputStream( config_path );
 #if JAVA
                     XmlSerializer xs = new XmlSerializer( FormConfigUtauVoiceConfig.class );
 #else
                     XmlSerializer xs = new XmlSerializer( typeof( FormConfigUtauVoiceConfig ) );
 #endif
-                    try
-                    {
+                    try {
                         config = (FormConfigUtauVoiceConfig)xs.deserialize( fout );
-                    }
-                    catch ( Exception ex )
-                    {
+                    } catch ( Exception ex ) {
                         config = null;
                     }
-                }
-                catch ( Exception ex1 )
-                {
-                }
-                finally
-                {
-                    if ( fout != null )
-                    {
-                        try
-                        {
+                } catch ( Exception ex1 ) {
+                } finally {
+                    if ( fout != null ) {
+                        try {
                             fout.close();
-                        }
-                        catch ( Exception ex2 )
-                        {
+                        } catch ( Exception ex2 ) {
                         }
                     }
                 }
-                if ( config != null )
-                {
+                if ( config != null ) {
                     this.setCurrentConfig( config );
                 }
             }
@@ -1282,24 +1069,20 @@ namespace Boare.EditOtoIni
             // Cadencii本体の設定を読み込む
             Messaging.loadMessages();
             String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
-            if ( !PortUtil.isDirectoryExists( dir ) )
-            {
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
                 return;
             }
             String dir2 = PortUtil.combinePath( dir, "Cadencii" );
-            if ( !PortUtil.isDirectoryExists( dir2 ) )
-            {
+            if ( !PortUtil.isDirectoryExists( dir2 ) ) {
                 return;
             }
             String path_config_cadencii = PortUtil.combinePath( dir2, "config.xml" );
-            if ( !PortUtil.isFileExists( path_config_cadencii ) )
-            {
+            if ( !PortUtil.isFileExists( path_config_cadencii ) ) {
                 return;
             }
             Boare.Cadencii.EditorConfig cadencii_config = null;
             FileInputStream fin = null;
-            try
-            {
+            try {
                 fin = new FileInputStream( path_config_cadencii );
 #if JAVA
                 XmlSerializer xs = new XmlSerializer( com.boare.cadencii.EditorConfig.class );
@@ -1310,56 +1093,36 @@ namespace Boare.EditOtoIni
 #endif
                 String lang = cadencii_config.Language;
                 Messaging.setLanguage( lang );
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( fin != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( fin != null ) {
+                    try {
                         fin.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
-            if ( cadencii_config != null )
-            {
+            if ( cadencii_config != null ) {
                 AppManager.cadenciiConfig = cadencii_config;
             }
             ApplyLanguage();
         }
 
-        private void FormUtauVoiceConfig_FormClosing( Object sender, FormClosingEventArgs e )
-        {
-            if ( getEdited() )
-            {
+        private void FormUtauVoiceConfig_FormClosing( Object sender, FormClosingEventArgs e ) {
+            if ( getEdited() ) {
                 DialogResult dr = MessageBox.Show( _( "Do you want to save this config?" ), "EditOtoIni", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
-                if ( dr == DialogResult.Cancel )
-                {
+                if ( dr == DialogResult.Cancel ) {
                     e.Cancel = true;
                     return;
-                }
-                else if ( dr == DialogResult.Yes )
-                {
-                    if ( !m_oto_ini.Equals( "" ) )
-                    {
+                } else if ( dr == DialogResult.Yes ) {
+                    if ( !m_oto_ini.Equals( "" ) ) {
                         saveCor( m_oto_ini );
-                    }
-                    else
-                    {
+                    } else {
                         DialogResult dr2 = saveFileDialog.ShowDialog();
-                        if ( dr2 == DialogResult.Cancel )
-                        {
+                        if ( dr2 == DialogResult.Cancel ) {
                             e.Cancel = true;
                             return;
-                        }
-                        else if ( dr2 == DialogResult.OK )
-                        {
+                        } else if ( dr2 == DialogResult.OK ) {
                             m_oto_ini = saveFileDialog.FileName;
                             saveCor( m_oto_ini );
                         }
@@ -1373,56 +1136,41 @@ namespace Boare.EditOtoIni
 #endif
             FormConfigUtauVoiceConfig config = this.getCurrentConfig();
             FileOutputStream fs = null;
-            try
-            {
+            try {
                 fs = new FileOutputStream( config_path );
                 XmlSerializer xs = new XmlSerializer( typeof( FormConfigUtauVoiceConfig ) );
                 xs.serialize( fs, config );
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
 #if DEBUG
                 Console.WriteLine( "FormUtauVoiceConfig#FormUtauVoiceConfig_FormClosing; ex=" + ex );
 #endif
-            }
-            finally
-            {
-                if ( fs != null )
-                {
-                    try
-                    {
+            } finally {
+                if ( fs != null ) {
+                    try {
                         fs.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
         }
 
-        private void FormUtauVoiceConfig_SizeChanged( Object sender, BEventArgs e )
-        {
-            if ( this.WindowState == FormWindowState.Normal )
-            {
+        private void FormUtauVoiceConfig_SizeChanged( Object sender, BEventArgs e ) {
+            if ( this.WindowState == FormWindowState.Normal ) {
                 m_current_bounds = new Rectangle( this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height );
             }
         }
 
-        private void menuEditGenerateSTF_Click( Object sender, BEventArgs e )
-        {
+        private void menuEditGenerateSTF_Click( Object sender, BEventArgs e ) {
             generateSTForFRQ( FormGenerateStf.GenerateMode.STF );
         }
 
-        private void checkSTFExistence()
-        {
+        private void checkSTFExistence() {
             int count = listFiles.Items.Count;
-            if ( m_oto_ini.Equals( "" ) )
-            {
+            if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
             String analyzed = PortUtil.combinePath( PortUtil.getDirectoryName( m_oto_ini ), "analyzed" );
-            for ( int i = 0; i < count; i++ )
-            {
+            for ( int i = 0; i < count; i++ ) {
                 ListViewItem item = listFiles.Items[i];
                 String wav_name = item.SubItems[0].Text;
                 String stf_path = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
@@ -1430,16 +1178,13 @@ namespace Boare.EditOtoIni
             }
         }
 
-        private void checkFRQExistence()
-        {
+        private void checkFRQExistence() {
             int count = listFiles.Items.Count;
-            if ( m_oto_ini.Equals( "" ) )
-            {
+            if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
             String dir = PortUtil.getDirectoryName( m_oto_ini );
-            for ( int i = 0; i < count; i++ )
-            {
+            for ( int i = 0; i < count; i++ ) {
                 ListViewItem item = listFiles.Items[i];
                 String wav_name = item.SubItems[0].Text;
                 String frq_path = PortUtil.combinePath( dir, wav_name.Replace( ".", "_" ) + ".frq" );
@@ -1447,32 +1192,24 @@ namespace Boare.EditOtoIni
             }
         }
 
-        private void btnRefreshStf_Click( Object sender, BEventArgs e )
-        {
-            if ( m_file.Equals( "" ) )
-            {
+        private void btnRefreshStf_Click( Object sender, BEventArgs e ) {
+            if ( m_file.Equals( "" ) ) {
                 return;
             }
-            if ( m_oto_ini.Equals( "" ) )
-            {
+            if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
             String dir = PortUtil.getDirectoryName( m_oto_ini );
             String analyzed = PortUtil.combinePath( dir, "analyzed" );
             String wav_path = PortUtil.combinePath( dir, m_file );
-            if ( !PortUtil.isFileExists( wav_path ) )
-            {
+            if ( !PortUtil.isFileExists( wav_path ) ) {
                 return;
             }
             String stf_path = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( m_file ) + ".stf" );
-            if ( PortUtil.isFileExists( stf_path ) )
-            {
-                try
-                {
+            if ( PortUtil.isFileExists( stf_path ) ) {
+                try {
                     PortUtil.deleteFile( stf_path );
-                }
-                catch ( Exception ex )
-                {
+                } catch ( Exception ex ) {
                 }
             }
             StfQueueArgs queue = new StfQueueArgs();
@@ -1488,31 +1225,23 @@ namespace Boare.EditOtoIni
             setEdited( true );
         }
 
-        private void btnRefreshFrq_Click( Object sender, BEventArgs e )
-        {
-            if ( m_file.Equals( "" ) )
-            {
+        private void btnRefreshFrq_Click( Object sender, BEventArgs e ) {
+            if ( m_file.Equals( "" ) ) {
                 return;
             }
-            if ( m_oto_ini.Equals( "" ) )
-            {
+            if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
             String dir = PortUtil.getDirectoryName( m_oto_ini );
             String wav_path = PortUtil.combinePath( dir, m_file );
-            if ( !PortUtil.isFileExists( wav_path ) )
-            {
+            if ( !PortUtil.isFileExists( wav_path ) ) {
                 return;
             }
             String frq_path = PortUtil.combinePath( dir, m_file.Replace( ".", "_" ) + ".frq" );
-            if ( PortUtil.isFileExists( frq_path ) )
-            {
-                try
-                {
+            if ( PortUtil.isFileExists( frq_path ) ) {
+                try {
                     PortUtil.deleteFile( frq_path );
-                }
-                catch ( Exception ex )
-                {
+                } catch ( Exception ex ) {
                 }
             }
             StfQueueArgs queue = new StfQueueArgs();
@@ -1527,17 +1256,14 @@ namespace Boare.EditOtoIni
             setEdited( true );
         }
 
-        private void menuEditGenerateFRQ_Click( Object sender, EventArgs e )
-        {
+        private void menuEditGenerateFRQ_Click( Object sender, EventArgs e ) {
             generateSTForFRQ( FormGenerateStf.GenerateMode.FRQ );
         }
 
-        private void generateSTForFRQ( FormGenerateStf.GenerateMode mode )
-        {
+        private void generateSTForFRQ( FormGenerateStf.GenerateMode mode ) {
             Vector<StfQueueArgs> list = new Vector<StfQueueArgs>();
             int count = listFiles.Items.Count;
-            for ( int i = 0; i < count; i++ )
-            {
+            for ( int i = 0; i < count; i++ ) {
                 ListViewItem item = listFiles.Items[i];
                 StfQueueArgs queue = new StfQueueArgs();
                 queue.waveName = item.SubItems[0].Text;
@@ -1545,69 +1271,53 @@ namespace Boare.EditOtoIni
                 queue.blank = item.SubItems[4].Text;
                 list.add( queue );
             }
-            if ( list.size() <= 0 )
-            {
-                if ( mode == FormGenerateStf.GenerateMode.STF )
-                {
+            if ( list.size() <= 0 ) {
+                if ( mode == FormGenerateStf.GenerateMode.STF ) {
                     checkSTFExistence();
-                }
-                else
-                {
+                } else {
                     checkFRQExistence();
                 }
                 return;
             }
-            using ( FormGenerateStf form = new FormGenerateStf( m_oto_ini, list, mode ) )
-            {
+            using ( FormGenerateStf form = new FormGenerateStf( m_oto_ini, list, mode ) ) {
                 form.ShowDialog();
             }
-            if ( mode == FormGenerateStf.GenerateMode.STF )
-            {
+            if ( mode == FormGenerateStf.GenerateMode.STF ) {
                 checkSTFExistence();
-            }
-            else
-            {
+            } else {
                 checkFRQExistence();
             }
             setEdited( true );
         }
 
-        private void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e )
-        {
+        private void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e ) {
             this.Invoke( new BEventHandler( this.refreshScreenCore ) );
         }
 
-        private void refreshScreenCore( Object sender, BEventArgs e )
-        {
+        private void refreshScreenCore( Object sender, BEventArgs e ) {
             pictWave.Invalidate();
         }
 
-        private void txtSearch_TextChanged( Object sender, BEventArgs e )
-        {
+        private void txtSearch_TextChanged( Object sender, BEventArgs e ) {
             searchCor( false );
         }
 
-        private void buttonNext_Click( Object sender, BEventArgs e )
-        {
+        private void buttonNext_Click( Object sender, BEventArgs e ) {
             searchCor( false );
         }
 
-        private void buttonPrevious_Click( Object sender, EventArgs e )
-        {
+        private void buttonPrevious_Click( Object sender, EventArgs e ) {
             searchCor( true );
         }
 
-        private bool checkListFileItem( int index, String search )
-        {
+        private bool checkListFileItem( int index, String search ) {
             ListViewItem item = listFiles.Items[index];
-            if ( item.SubItems[0].Text.Contains( search ) )
-            {
+            if ( item.SubItems[0].Text.Contains( search ) ) {
                 item.Selected = true;
                 listFiles.EnsureVisible( index );
                 return true;
             }
-            if ( item.SubItems[1].Text.Contains( search ) )
-            {
+            if ( item.SubItems[1].Text.Contains( search ) ) {
                 item.Selected = true;
                 listFiles.EnsureVisible( index );
                 return true;
@@ -1615,75 +1325,54 @@ namespace Boare.EditOtoIni
             return false;
         }
 
-        private void setSearchTextColor( bool found )
-        {
-            if ( found )
-            {
+        private void setSearchTextColor( bool found ) {
+            if ( found ) {
                 txtSearch.BackColor = System.Drawing.SystemColors.Window;
                 txtSearch.ForeColor = System.Drawing.SystemColors.WindowText;
-            }
-            else
-            {
+            } else {
                 txtSearch.BackColor = System.Drawing.Color.LightCoral;
                 txtSearch.ForeColor = System.Drawing.Color.White;
             }
         }
 
-        private void searchCor( bool go_back )
-        {
-            if ( txtSearch.Text.Equals( "" ) )
-            {
+        private void searchCor( bool go_back ) {
+            if ( txtSearch.Text.Equals( "" ) ) {
                 setSearchTextColor( false );
                 return;
             }
             int first_index;
-            if ( listFiles.SelectedIndices.Count <= 0 )
-            {
-                if ( listFiles.Items.Count <= 0 )
-                {
+            if ( listFiles.SelectedIndices.Count <= 0 ) {
+                if ( listFiles.Items.Count <= 0 ) {
                     setSearchTextColor( false );
                     return;
                 }
                 first_index = 0;
-            }
-            else
-            {
+            } else {
                 first_index = listFiles.SelectedIndices[0];
             }
             String search = txtSearch.Text;
-            if ( go_back )
-            {
-                for ( int i = first_index - 1; i >= 0; i-- )
-                {
-                    if ( checkListFileItem( i, search ) )
-                    {
+            if ( go_back ) {
+                for ( int i = first_index - 1; i >= 0; i-- ) {
+                    if ( checkListFileItem( i, search ) ) {
                         setSearchTextColor( true );
                         return;
                     }
                 }
-                for ( int i = listFiles.Items.Count - 1; i >= first_index; i-- )
-                {
-                    if ( checkListFileItem( i, search ) )
-                    {
+                for ( int i = listFiles.Items.Count - 1; i >= first_index; i-- ) {
+                    if ( checkListFileItem( i, search ) ) {
                         setSearchTextColor( true );
                         return;
                     }
                 }
-            }
-            else
-            {
-                for ( int i = first_index + 1; i < listFiles.Items.Count; i++ )
-                {
-                    if ( checkListFileItem( i, search ) )
-                    {
+            } else {
+                for ( int i = first_index + 1; i < listFiles.Items.Count; i++ ) {
+                    if ( checkListFileItem( i, search ) ) {
                         setSearchTextColor( true );
                         return;
                     }
                 }
-                for ( int i = 0; i <= first_index; i++ )
-                {
-                    if ( checkListFileItem( i, search ) )
-                    {
+                for ( int i = 0; i <= first_index; i++ ) {
+                    if ( checkListFileItem( i, search ) ) {
                         setSearchTextColor( true );
                         return;
                     }
@@ -1692,13 +1381,11 @@ namespace Boare.EditOtoIni
             setSearchTextColor( false );
         }
 
-        private void menuViewSearchNext_Click( Object sender, EventArgs e )
-        {
+        private void menuViewSearchNext_Click( Object sender, EventArgs e ) {
             searchCor( false );
         }
 
-        private void menuViewSearchPrevious_Click( Object sender, EventArgs e )
-        {
+        private void menuViewSearchPrevious_Click( Object sender, EventArgs e ) {
             searchCor( true );
         }
 #if JAVA
@@ -2535,10 +2222,8 @@ namespace Boare.EditOtoIni
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
-        {
-            if ( disposing && (components != null) )
-            {
+        protected override void Dispose( boolean disposing ) {
+            if ( disposing && (components != null) ) {
                 components.Dispose();
             }
             base.Dispose( disposing );
@@ -2550,8 +2235,7 @@ namespace Boare.EditOtoIni
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormUtauVoiceConfig ) );
             this.listFiles = new System.Windows.Forms.ListView();

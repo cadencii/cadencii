@@ -13,23 +13,23 @@
  */
 #if JAVA
 package org.kbinani.Cadencii;
+
+import java.io.*;
 #else
 using System;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
     using boolean = Boolean;
 #endif
 
     /// <summary>
     /// vsqファイルで編集可能なカーブ・プロパティの種類
     /// </summary>
-    [Serializable]
 #if JAVA
-    public class CurveType{
+    public class CurveType implements Serializable {
 #else
-    public struct CurveType : IEquatable<CurveType>, IComparable<CurveType>
-    {
+    [Serializable]
+    public struct CurveType : IEquatable<CurveType>, IComparable<CurveType> {
 #endif
         private String m_type;
         private boolean m_is_scalar;
@@ -149,8 +149,7 @@ namespace Boare.Cadencii
 
         public static readonly CurveType Empty = new CurveType( "Empty", false, false, 0, 0, 0, -1 );
 
-        private CurveType( String type, boolean is_scalar, boolean is_attach_note, int min, int max, int defalt_value, int index )
-        {
+        private CurveType( String type, boolean is_scalar, boolean is_attach_note, int min, int max, int defalt_value, int index ) {
             m_type = type;
             m_is_scalar = is_scalar;
             m_minimum = min;
@@ -160,92 +159,71 @@ namespace Boare.Cadencii
             m_index = index;
         }
 
-        public int compareTo( CurveType item )
-        {
-            if ( m_index == -1 )
-            {
-                if ( item.m_index == -1 )
-                {
+        public int compareTo( CurveType item ) {
+            if ( m_index == -1 ) {
+                if ( item.m_index == -1 ) {
                     return m_type.CompareTo( item.m_type );
-                }
-                else
-                {
+                } else {
                     return 1;
                 }
-            }
-            else
-            {
-                if ( item.m_index == -1 )
-                {
+            } else {
+                if ( item.m_index == -1 ) {
                     return -1;
-                }
-                else
-                {
+                } else {
                     return m_index - item.m_index;
                 }
             }
         }
 
 #if !JAVA
-        public int CompareTo( CurveType item ){
+        public int CompareTo( CurveType item ) {
             return compareTo( item );
         }
 #endif
 
 #if !JAVA
-        public override String ToString()
-        {
+        public override String ToString() {
             return toString();
         }
 #endif
 
-        public String toString()
-        {
+        public String toString() {
             return m_type;
         }
 
-        public int getIndex()
-        {
+        public int getIndex() {
             return m_index;
         }
 
-        public String getName()
-        {
+        public String getName() {
             return m_type;
         }
 
-        public boolean isAttachNote()
-        {
+        public boolean isAttachNote() {
             return m_is_attach_note;
         }
 
-        public boolean isScalar()
-        {
+        public boolean isScalar() {
             return m_is_scalar;
         }
 
-        public int getMaximum()
-        {
+        public int getMaximum() {
             return m_maximum;
         }
 
-        public int getMinimum()
-        {
+        public int getMinimum() {
             return m_minimum;
         }
 
-        public int getDefault()
-        {
+        public int getDefault() {
             return m_default;
         }
 
-        public boolean equals( CurveType other )
-        {
+        public boolean equals( CurveType other ) {
             return (m_type == other.m_type && m_is_scalar == other.m_is_scalar);
         }
 
-        public boolean Equals( CurveType other )
-        {
+        public boolean Equals( CurveType other ) {
             return equals( other );
         }
     }

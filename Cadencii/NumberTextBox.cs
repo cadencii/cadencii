@@ -21,14 +21,11 @@ using bocoree;
 using bocoree.windows.forms;
 using bocoree.awt;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
 #endif
 
-    public class NumberTextBox : BTextBox
-    {
-        public enum ValueType
-        {
+    public class NumberTextBox : BTextBox {
+        public enum ValueType {
             Double,
             Float,
             Integer,
@@ -44,79 +41,56 @@ namespace Boare.Cadencii
         /// <summary>
         /// IDEでのデザイン用
         /// </summary>
-        public ValueType Type
-        {
-            get
-            {
+        public ValueType Type {
+            get {
                 return getType();
             }
-            set
-            {
+            set {
                 setType( value );
             }
         }
 #endif
 
-        public ValueType getType()
-        {
+        public ValueType getType() {
             return m_value_type;
         }
 
-        public void setType( ValueType value )
-        {
+        public void setType( ValueType value ) {
             m_value_type = value;
         }
 
-        protected override void OnTextChanged( EventArgs e )
-        {
+        protected override void OnTextChanged( EventArgs e ) {
             base.OnTextChanged( e );
             bool valid = false;
-            if ( m_value_type == ValueType.Double )
-            {
+            if ( m_value_type == ValueType.Double ) {
                 double dou;
-                try
-                {
+                try {
                     dou = PortUtil.parseDouble( base.Text );
                     valid = true;
-                }
-                catch ( Exception ex )
-                {
+                } catch ( Exception ex ) {
                     valid = false;
                 }
-            }
-            else if ( m_value_type == ValueType.Float )
-            {
+            } else if ( m_value_type == ValueType.Float ) {
                 float flo;
-                try
-                {
+                try {
                     flo = PortUtil.parseFloat( base.Text );
                     valid = true;
-                }
-                catch ( Exception ex )
-                {
+                } catch ( Exception ex ) {
                     valid = false;
                 }
-            }
-            else if ( m_value_type == ValueType.Integer )
-            {
+            } else if ( m_value_type == ValueType.Integer ) {
                 int inte;
-                try
-                {
+                try {
                     inte = PortUtil.parseInt( base.Text );
                     valid = true;
-                }
-                catch ( Exception ex )
-                {
+                } catch ( Exception ex ) {
                     valid = false;
                 }
             }
-            if ( valid )
-            {
+            if ( valid ) {
                 this.setForeground( m_textcolor_normal );
                 this.setBackground( m_backcolor_normal );
-            }
-            else
-            {
+            } else {
                 this.setForeground( m_textcolor_invalid );
                 this.setBackground( m_backcolor_invalid );
             }

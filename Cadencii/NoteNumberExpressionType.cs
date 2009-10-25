@@ -14,12 +14,10 @@
 #if JAVA
 package org.kbinani.Cadencii;
 #else
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
 #endif
 
-    public enum NoteNumberExpressionType
-    {
+    public enum NoteNumberExpressionType {
         Numeric,
         International,
         Japanese,

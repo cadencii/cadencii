@@ -20,17 +20,15 @@ import org.kbinani.*;
 using System;
 using bocoree;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class UstVibrato implements Cloneable, Serializable
+    public class UstVibrato implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class UstVibrato : ICloneable
+    public class UstVibrato : ICloneable {
 #endif
-    {
         /// <summary>
         /// 音符の長さに対する、パーセントで表したビブラートの長さ。
         /// </summary>
@@ -61,15 +59,12 @@ namespace Boare.Lib.Vsq
         public float Shift;
         public float Unknown = 100;
 
-        public UstVibrato( String line )
-        {
-            if ( line.ToLower().StartsWith( "vbr=" ) )
-            {
+        public UstVibrato( String line ) {
+            if ( line.ToLower().StartsWith( "vbr=" ) ) {
                 String[] spl = PortUtil.splitString( line, '=' );
                 spl = PortUtil.splitString( spl[1], ',' );
                 //VBR=65,180,70,20.0,17.6,82.8,49.8,100
-                if ( spl.Length >= 8 )
-                {
+                if ( spl.Length >= 8 ) {
                     Length = PortUtil.parseFloat( spl[0] );
                     Period = PortUtil.parseFloat( spl[1] );
                     Depth = PortUtil.parseFloat( spl[2] );
@@ -82,34 +77,28 @@ namespace Boare.Lib.Vsq
             }
         }
 
-        public UstVibrato()
-        {
+        public UstVibrato() {
         }
 
-        public float getLength()
-        {
+        public float getLength() {
             return Length;
         }
 
-        public void setLength( float value )
-        {
+        public void setLength( float value ) {
             Length = value;
         }
 
 #if !JAVA
-        public override string ToString()
-        {
+        public override string ToString() {
             return toString();
         }
 #endif
 
-        public String toString()
-        {
+        public String toString() {
             return "VBR=" + Length + "," + Period + "," + Depth + "," + In + "," + Out + "," + Phase + "," + Shift + "," + Unknown;
         }
 
-        public Object clone()
-        {
+        public Object clone() {
             UstVibrato ret = new UstVibrato();
             ret.setLength( Length );
             ret.Period = Period;
@@ -123,8 +112,7 @@ namespace Boare.Lib.Vsq
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif

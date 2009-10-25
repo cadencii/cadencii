@@ -303,7 +303,6 @@
     <Compile Include="NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PaletteToolConfig.cs" />
     <Compile Include="PaletteToolServer.cs" />
     <Compile Include="PencilMode.cs" />
     <Compile Include="PencilModeEnum.cs" />
@@ -331,6 +330,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormCurvePointEdit.resx">
+      <DependentUpon>FormCurvePointEdit.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -377,7 +379,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UtauFreq.cs" />
-    <Compile Include="Vector.cs" />
     <Compile Include="VersionInfo.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -18,22 +18,19 @@ import java.io.*;
 #else
 using System;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class LyricHandle implements Cloneable, Serializable
+    public class LyricHandle implements Cloneable, Serializable{
 #else
     [Serializable]
-    public class LyricHandle : ICloneable
+    public class LyricHandle : ICloneable {
 #endif
-    {
         public Lyric L0;
         public int Index;
 
-        public LyricHandle()
-        {
+        public LyricHandle() {
         }
 
         /// <summary>
@@ -41,13 +38,11 @@ namespace Boare.Lib.Vsq
         /// </summary>
         /// <param name="phrase">歌詞</param>
         /// <param name="phonetic_symbol">発音記号</param>
-        public LyricHandle( String phrase, String phonetic_symbol )
-        {
+        public LyricHandle( String phrase, String phonetic_symbol ) {
             L0 = new Lyric( phrase, phonetic_symbol );
         }
 
-        public Object clone()
-        {
+        public Object clone() {
             LyricHandle ret = new LyricHandle();
             ret.Index = Index;
             ret.L0 = (Lyric)L0.Clone();
@@ -55,14 +50,12 @@ namespace Boare.Lib.Vsq
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif
 
-        public VsqHandle castToVsqHandle()
-        {
+        public VsqHandle castToVsqHandle() {
             VsqHandle ret = new VsqHandle();
             ret.m_type = VsqHandleType.Lyric;
             ret.L0 = (Lyric)L0.Clone();

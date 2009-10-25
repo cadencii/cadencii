@@ -14,12 +14,10 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
-    public class VsqBPPairSearchContext
-    {
+    public class VsqBPPairSearchContext {
         public int clock;
         public int index;
         public VsqBPPair point;

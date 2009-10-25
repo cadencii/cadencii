@@ -29,26 +29,26 @@ using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.awt;
+using bocoree.awt.event_;
 using bocoree.util;
 using bocoree.windows.forms;
-using bocoree.awt.event_;
 
 namespace Boare.Cadencii {
+    using BEventArgs = EventArgs;
+    using BKeyEventArgs = KeyEventArgs;
+    using BMouseEventArgs = MouseEventArgs;
     using boolean = System.Boolean;
     using Graphics = Graphics2D;
     using Integer = System.Int32;
-    using BEventArgs = EventArgs;
-    using BMouseEventArgs = MouseEventArgs;
-    using BKeyEventArgs = KeyEventArgs;
     using java = bocoree;
+    using Long = System.Int64;
 #endif
 
 #if JAVA
-    public class TrackSelector extends BPanel
+    public class TrackSelector extends BPanel {
 #else
-    public class TrackSelector : BPanel
+    public class TrackSelector : BPanel {
 #endif
- {
         #region Constants and internal enums
         private enum MouseDownMode {
             NONE,
@@ -152,6 +152,16 @@ namespace Boare.Cadencii {
         static readonly Rectangle MINUS_MARK = new Rectangle( 40, 38, 23, 21 );
         const int VSCROLL_WIDTH = 16;
         const int ZOOMPANEL_HEIGHT = 33;
+        /// <summary>
+        /// カーブの種類を表す部分の，1個あたりの高さ（ピクセル，余白を含む）
+        /// TrackSelectorの推奨表示高さは，HEIGHT_WITHOUT_CURVE + UNIT_HEIGHT_PER_CURVE * (カーブの個数)となる
+        /// </summary>
+        const int UNIT_HEIGHT_PER_CURVE = 18;
+        /// <summary>
+        /// カーブの種類を除いた部分の高さ（ピクセル）．
+        /// TrackSelectorの推奨表示高さは，HEIGHT_WITHOUT_CURVE + UNIT_HEIGHT_PER_CURVE * (カーブの個数)となる
+        /// </summary>
+        const int HEIGHT_WITHOUT_CURVE = 76;
         #endregion
 
         private CurveType m_selected_curve = CurveType.VEL;
@@ -327,7 +337,7 @@ namespace Boare.Cadencii {
         /// 移動しているデータ点のリスト
         /// </summary>
         private Vector<BPPair> m_moving_points = new Vector<BPPair>();
-
+        private int m_last_preferred_min_height;
 #if JAVA
         public BEvent<SelectedCurveChangedEventHandler> selectedCurveChangedEvent = new BEvent<SelectedCurveChangedEventHandler>();
         public BEvent<SelectedTrackChangedEventHandler> selectedTrackChangedEvent = new BEvent<SelectedTrackChangedEventHandler>();
@@ -338,6 +348,10 @@ namespace Boare.Cadencii {
         public event SelectedTrackChangedEventHandler SelectedTrackChanged;
         public event EventHandler CommandExecuted;
         public event RenderRequiredEventHandler RenderRequired;
+        /// <summary>
+        /// このコントロールの推奨表示高さが変わったとき発生します
+        /// </summary>
+        public event EventHandler PreferredMinHeightChanged;
 #endif
 
         public TrackSelector() {
@@ -421,11 +435,28 @@ namespace Boare.Cadencii {
         }
 #endif
 
+        private int getMaxColumns() {
+            int max_columns = AppManager.keyWidth / AppManager.MIN_KEY_WIDTH;
+            if ( max_columns < 1 ) {
+                max_columns = 1;
+            }
+            return max_columns;
+        }
+
+        private int getRowsPerColumn() {
+            int max_columns = getMaxColumns();
+            int row_per_column = m_viewing_curves.size() / max_columns;
+            if ( row_per_column * max_columns < m_viewing_curves.size() ) {
+                row_per_column++;
+            }
+            return row_per_column;
+        }
+
         /// <summary>
         /// このコントロールの推奨最小表示高さを取得します
         /// </summary>
         public int getPreferredMinSize() {
-            return 240 + 18 * (m_viewing_curves.size() - 10) + 16;
+            return HEIGHT_WITHOUT_CURVE + UNIT_HEIGHT_PER_CURVE * getRowsPerColumn();
         }
 
         /// <summary>
@@ -599,6 +630,8 @@ namespace Boare.Cadencii {
         }
 
         public Rectangle getRectFromCurveType( CurveType curve ) {
+            int row_per_column = getRowsPerColumn();
+
             int centre = 17 + getGraphHeight() / 2 + 8;
             int index = 100;
             for ( int i = 0; i < m_viewing_curves.size(); i++ ) {
@@ -607,8 +640,16 @@ namespace Boare.Cadencii {
                     break;
                 }
             }
-            int y = centre - m_viewing_curves.size() * 9 + 2 + 18 * index;
-            return new Rectangle( 7, y, 56, 14 );
+            int ix = index / row_per_column;
+            int iy = index - ix * row_per_column;
+            int x = 7 + ix * AppManager.MIN_KEY_WIDTH;
+            int y = centre - row_per_column * UNIT_HEIGHT_PER_CURVE / 2 + 2 + UNIT_HEIGHT_PER_CURVE * iy;
+            int min_size = getPreferredMinSize();
+            if ( m_last_preferred_min_height != min_size && PreferredMinHeightChanged != null ) {
+                PreferredMinHeightChanged( this, new BEventArgs() );
+                m_last_preferred_min_height = min_size;
+            }
+            return new Rectangle( x, y, 56, 14 );
         }
 
         public void paint( Graphics graphics ) {
@@ -628,13 +669,13 @@ namespace Boare.Cadencii {
             g.setColor( m_generic_line );
             g.drawLine( 2, size.Height - 2 * OFFSET_TRACK_TAB,
                         size.Width - 3, size.Height - 2 * OFFSET_TRACK_TAB );
-            g.drawLine( AppManager.KEY_LENGTH, size.Height - 2 * OFFSET_TRACK_TAB + 1,
-                        AppManager.KEY_LENGTH, size.Height - 2 * OFFSET_TRACK_TAB + 15 );
+            g.drawLine( AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB + 1,
+                        AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB + 15 );
             g.setFont( AppManager.baseFont8 );
             g.setColor( brs_string );
             g.drawString( "SINGER", 9, size.Height - 2 * OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
-            g.clipRect( AppManager.KEY_LENGTH, size.Height - 2 * OFFSET_TRACK_TAB,
-                        size.Width - AppManager.KEY_LENGTH, OFFSET_TRACK_TAB );
+            g.clipRect( AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB,
+                        size.Width - AppManager.keyWidth, OFFSET_TRACK_TAB );
             VsqTrack draw_target = null;
             if ( AppManager.getVsqFile() != null ) {
                 draw_target = AppManager.getVsqFile().Track.get( AppManager.getSelected() );
@@ -678,7 +719,7 @@ namespace Boare.Cadencii {
             g.drawString( "TRACK", 9, size.Height - OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
             if ( AppManager.getVsqFile() != null ) {
                 for ( int i = 0; i < 16; i++ ) {
-                    int x = AppManager.KEY_LENGTH + i * selecter_width;
+                    int x = AppManager.keyWidth + i * selecter_width;
 #if DEBUG
                     try {
 #endif
@@ -705,17 +746,17 @@ namespace Boare.Cadencii {
                 #region カーブエディタ
                 // カーブエディタの下の線
                 g.setColor( new Color( 156, 161, 169 ) );
-                g.drawLine( AppManager.KEY_LENGTH, size.Height - 42,
+                g.drawLine( AppManager.keyWidth, size.Height - 42,
                             size.Width - 3, size.Height - 42 );
 
                 // カーブエディタの上の線
                 g.setColor( new Color( 46, 47, 50 ) );
-                g.drawLine( AppManager.KEY_LENGTH, 8,
+                g.drawLine( AppManager.keyWidth, 8,
                             size.Width - 3, 8 );
 
                 g.setColor( new Color( 125, 123, 124 ) );
-                g.drawLine( AppManager.KEY_LENGTH, 0,
-                            AppManager.KEY_LENGTH, size.Height );
+                g.drawLine( AppManager.keyWidth, 0,
+                            AppManager.keyWidth, size.Height );
 
                 if ( AppManager.isCurveSelectedIntervalEnabled() ) {
                     int x0 = AppManager.xCoordFromClocks( AppManager.curveSelectedInterval.Start );
@@ -727,7 +768,7 @@ namespace Boare.Cadencii {
                 #region 小節ごとのライン
                 if ( AppManager.getVsqFile() != null ) {
                     int dashed_line_step = AppManager.getPositionQuantizeClock();
-                    g.clipRect( AppManager.KEY_LENGTH, HEADER, size.Width - AppManager.KEY_LENGTH, size.Height - 2 * OFFSET_TRACK_TAB );
+                    g.clipRect( AppManager.keyWidth, HEADER, size.Width - AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB );
                     Color white100 = new Color( 0, 0, 0, 100 );
                     for ( Iterator itr = AppManager.getVsqFile().getBarLineIterator( AppManager.clockFromXCoord( Width ) ); itr.hasNext(); ) {
                         VsqBarLineType blt = (VsqBarLineType)itr.next();
@@ -802,7 +843,7 @@ namespace Boare.Cadencii {
                             pbs_at_mouse = pbs.getValue( clock_at_mouse );
                             int c = pbs.size();
                             int premeasure = AppManager.getVsqFile().getPreMeasureClocks();
-                            int clock_start = AppManager.clockFromXCoord( AppManager.KEY_LENGTH );
+                            int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
                             int clock_end = AppManager.clockFromXCoord( this.Width );
                             if ( clock_start < premeasure && premeasure < clock_end ) {
                                 clock_start = premeasure;
@@ -811,7 +852,7 @@ namespace Boare.Cadencii {
                             int last_clock = clock_start;
                             int ycenter = yCoordFromValue( 0 );
                             g.setColor( nrml );
-                            g.drawLine( AppManager.KEY_LENGTH, ycenter, Width, ycenter );
+                            g.drawLine( AppManager.keyWidth, ycenter, Width, ycenter );
                             for ( int i = 0; i < c; i++ ) {
                                 int cl = pbs.getKeyClock( i );
                                 if ( cl < clock_start ) {
@@ -939,8 +980,8 @@ namespace Boare.Cadencii {
                             int xini = AppManager.xCoordFromClocks( AppManager.curveSelectingRectangle.x );
                             int xend = AppManager.xCoordFromClocks( AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
                             int x_start = Math.Min( xini, xend );
-                            if ( x_start < AppManager.KEY_LENGTH ) {
-                                x_start = AppManager.KEY_LENGTH;
+                            if ( x_start < AppManager.keyWidth ) {
+                                x_start = AppManager.keyWidth;
                             }
                             int x_end = Math.Max( xini, xend );
                             int yini = yCoordFromValue( AppManager.curveSelectingRectangle.y );
@@ -985,7 +1026,7 @@ namespace Boare.Cadencii {
                 #region カーブの種類一覧
                 Color font_color_normal = Color.black;
                 g.setColor( new Color( 212, 212, 212 ) );
-                g.fillRect( 0, 0, AppManager.KEY_LENGTH, size.Height - 2 * OFFSET_TRACK_TAB );
+                g.fillRect( 0, 0, AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB );
 
                 // 数値ビュー
                 Rectangle num_view = new Rectangle( 13, 4, 38, 16 );
@@ -1027,7 +1068,7 @@ namespace Boare.Cadencii {
 
             #region 現在のマーカー
             int marker_x = AppManager.xCoordFromClocks( AppManager.getCurrentClock() );
-            if ( AppManager.KEY_LENGTH <= marker_x && marker_x <= size.Width ) {
+            if ( AppManager.keyWidth <= marker_x && marker_x <= size.Width ) {
                 g.setColor( Color.white );
                 g.setStroke( new BasicStroke( 2f ) );
                 g.drawLine( marker_x, 0, marker_x, size.Height - 18 );
@@ -1036,8 +1077,10 @@ namespace Boare.Cadencii {
             #endregion
 
             // マウス位置での値
-            if ( isInRect( mouse.x, mouse.y, new Rectangle( AppManager.KEY_LENGTH, HEADER, this.Width, this.getGraphHeight() ) ) &&
-                 m_mouse_down_mode != MouseDownMode.PRE_UTTERANCE_MOVE && m_mouse_down_mode != MouseDownMode.OVERLAP_MOVE ) {
+            if ( isInRect( mouse.x, mouse.y, new Rectangle( AppManager.keyWidth, HEADER, this.Width, this.getGraphHeight() ) ) &&
+                 m_mouse_down_mode != MouseDownMode.PRE_UTTERANCE_MOVE &&
+                 m_mouse_down_mode != MouseDownMode.OVERLAP_MOVE &&
+                 m_mouse_down_mode != MouseDownMode.VEL_EDIT ) {
                 int align = 1;
                 int valign = 0;
                 int shift = 50;
@@ -1093,7 +1136,7 @@ namespace Boare.Cadencii {
         }
 
         private void drawEnvelope( Graphics2D g, VsqTrack track, Color fill_color ) {
-            int clock_start = AppManager.clockFromXCoord( AppManager.KEY_LENGTH );
+            int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
             int clock_end = AppManager.clockFromXCoord( this.Width );
 
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -1313,7 +1356,7 @@ namespace Boare.Cadencii {
                     int clock = list.getKeyClock( i );
                     VsqBPPair item = list.getElementB( i );
                     int x = AppManager.xCoordFromClocks( clock );
-                    if ( x + DOT_WID < AppManager.KEY_LENGTH ) {
+                    if ( x + DOT_WID < AppManager.keyWidth ) {
                         continue;
                     }
                     if ( this.Width < x - DOT_WID ) {
@@ -1337,7 +1380,7 @@ namespace Boare.Cadencii {
         /// <param name="point_kind">見つかったエンベロープ・ポイントのタイプ。(p1,v1)なら1、(p2,v2)なら2，(p5,v5)なら3，(p3,v3)なら4，(p4,v4)なら5</param>
         /// <returns>見つかった場合は真を、そうでなければ偽を返します</returns>
         private boolean findEnvelopePointAt( int locx, int locy, ByRef<Integer> internal_id, ByRef<Integer> point_kind ) {
-            int clock_start = AppManager.clockFromXCoord( AppManager.KEY_LENGTH );
+            int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
             int clock_end = AppManager.clockFromXCoord( this.Width );
             VsqEvent last = null;
             int dotwid = DOT_WID * 2 + 1;
@@ -1511,15 +1554,21 @@ namespace Boare.Cadencii {
         /// <param name="track"></param>
         /// <param name="color"></param>
         public void drawVEL( Graphics2D g, VsqTrack track, Color color, boolean is_front, CurveType type ) {
+            System.Drawing.Point pmouse = this.PointToClient( Control.MousePosition );
+            Point mouse = new Point( pmouse.X, pmouse.Y );
+
             int HEADER = 8;
             int height = getGraphHeight();
             float order = (type.equals( CurveType.VEL )) ? height / 127f : height / 100f;
             int oy = this.Height - 42;
             Shape last_clip = g.getClip();
-            int xoffset = 6 + AppManager.KEY_LENGTH - AppManager.startToDrawX;
-            g.clipRect( AppManager.KEY_LENGTH, HEADER, this.Width - AppManager.KEY_LENGTH - vScroll.Width, height );
+            int xoffset = 6 + AppManager.keyWidth - AppManager.startToDrawX;
+            g.clipRect( AppManager.keyWidth, HEADER, this.Width - AppManager.keyWidth - vScroll.Width, height );
             float scale = AppManager.scaleX;
             int count = track.getEventCount();
+
+            g.setFont( AppManager.baseFont10Bold );
+            boolean cursor_should_be_hand = false;
             for ( int i = 0; i < count; i++ ) {
                 VsqEvent ve = track.getEvent( i );
                 if ( ve.ID.type != VsqIDType.Anote ) {
@@ -1557,12 +1606,30 @@ namespace Boare.Cadencii {
                                 int edit_y = oy - (int)(editing * order);
                                 g.setColor( BRS_A244_255_023_012 );
                                 g.fillRect( x, edit_y, VEL_BAR_WIDTH, oy - edit_y );
+                                g.setColor( Color.white );
+                                g.drawString( editing + "", x + VEL_BAR_WIDTH, (edit_y > oy - 20) ? oy - 20 : edit_y );
                             }
                         }
                     } else {
                         g.setColor( color );
                         g.fillRect( x, y, VEL_BAR_WIDTH, oy - y );
                     }
+                    if ( m_mouse_down_mode == MouseDownMode.VEL_EDIT ) {
+                        cursor_should_be_hand = true;
+                    } else {
+                        if ( AppManager.getSelectedTool() == EditTool.ARROW && is_front && isInRect( mouse.x, mouse.y, new Rectangle( x, y, VEL_BAR_WIDTH, oy - y ) ) ) {
+                            cursor_should_be_hand = true;
+                        }
+                    }
+                }
+            }
+            if ( cursor_should_be_hand ) {
+                if ( this.Cursor != Cursors.Hand ) {
+                    this.Cursor = Cursors.Hand;
+                }
+            } else {
+                if ( this.Cursor != Cursors.Default ) {
+                    this.Cursor = Cursors.Default;
                 }
             }
             g.setClip( last_clip );
@@ -1704,11 +1771,11 @@ namespace Boare.Cadencii {
 #endif
             Shape last_clip = g.getClip();
             int graph_height = getGraphHeight();
-            g.clipRect( AppManager.KEY_LENGTH, HEADER,
-                        this.Width - AppManager.KEY_LENGTH - vScroll.Width, graph_height );
+            g.clipRect( AppManager.keyWidth, HEADER,
+                        this.Width - AppManager.keyWidth - vScroll.Width, graph_height );
 
             //int track = AppManager.Selected;
-            int cl_start = AppManager.clockFromXCoord( AppManager.KEY_LENGTH );
+            int cl_start = AppManager.clockFromXCoord( AppManager.keyWidth );
             int cl_end = AppManager.clockFromXCoord( this.Width - vScroll.Width );
             if ( is_front ) {
                 /* // draw shadow of non-note area
@@ -1746,7 +1813,7 @@ namespace Boare.Cadencii {
 
                 // draw curve
                 Color shadow = new Color( 0, 0, 0, 127 );
-                int last_shadow_x = AppManager.KEY_LENGTH;
+                int last_shadow_x = AppManager.keyWidth;
                 for ( Iterator itr = draw_target.getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
                     int start = ve.Clock + ve.ID.VibratoDelay;
@@ -1808,7 +1875,7 @@ namespace Boare.Cadencii {
                     }
                 }
                 g.setColor( shadow );
-                g.fillRect( last_shadow_x, HEADER, this.Width - AppManager.KEY_LENGTH - vScroll.Width, graph_height );
+                g.fillRect( last_shadow_x, HEADER, this.Width - AppManager.keyWidth - vScroll.Width, graph_height );
             }
             g.setClip( last_clip );
         }
@@ -1827,8 +1894,8 @@ namespace Boare.Cadencii {
             float order = height / (float)(max - min);
             int oy = this.Height - 42;
             Shape last_clip = g.getClip();
-            g.clipRect( AppManager.KEY_LENGTH, HEADER,
-                        this.Width - AppManager.KEY_LENGTH - vScroll.Width, this.Height - 2 * OFFSET_TRACK_TAB );
+            g.clipRect( AppManager.keyWidth, HEADER,
+                        this.Width - AppManager.keyWidth - vScroll.Width, this.Height - 2 * OFFSET_TRACK_TAB );
 
             // 選択範囲。この四角の中に入っていたら、選択されているとみなす
             Rectangle select_window = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
@@ -1838,7 +1905,7 @@ namespace Boare.Cadencii {
             EditTool selected_tool = AppManager.getSelectedTool();
             boolean select_enabled = !m_selected_curve.isScalar() && ((selected_tool == EditTool.ARROW) || (selected_tool == EditTool.ERASER)) && m_mouse_downed;
 
-            int start = AppManager.KEY_LENGTH;
+            int start = AppManager.keyWidth;
             int start_clock = AppManager.clockFromXCoord( start );
             int end = this.Width - vScroll.Width;
             int end_clock = AppManager.clockFromXCoord( end );
@@ -1852,7 +1919,7 @@ namespace Boare.Cadencii {
             Vector<Integer> pointsy = new Vector<Integer>();
             Vector<Integer> index_selected_in_points = new Vector<Integer>(); // pointsのうち、選択された状態のものが格納されたインデックス
             pointsx.add( this.Width - vScroll.Width ); pointsy.add( oy );
-            pointsx.add( AppManager.KEY_LENGTH ); pointsy.add( oy );
+            pointsx.add( AppManager.keyWidth ); pointsy.add( oy );
             int first_y = list.getValue( start_clock );
             int last_y = oy - (int)((first_y - min) * order);
 
@@ -1873,10 +1940,10 @@ namespace Boare.Cadencii {
                         break;
                     }
                     if ( first ) {
-                        last_y = yCoordFromValue( list.getValue( AppManager.clockFromXCoord( AppManager.KEY_LENGTH ) ),
+                        last_y = yCoordFromValue( list.getValue( AppManager.clockFromXCoord( AppManager.keyWidth ) ),
                                                   max,
                                                   min );
-                        pointsx.add( AppManager.KEY_LENGTH ); pointsy.add( last_y );
+                        pointsx.add( AppManager.keyWidth ); pointsy.add( last_y );
                         first = false;
                     }
 
@@ -1898,10 +1965,10 @@ namespace Boare.Cadencii {
                 }
             }
             if ( first ) {
-                last_y = yCoordFromValue( list.getValue( AppManager.clockFromXCoord( AppManager.KEY_LENGTH ) ),
+                last_y = yCoordFromValue( list.getValue( AppManager.clockFromXCoord( AppManager.keyWidth ) ),
                                           max,
                                           min );
-                pointsx.add( AppManager.KEY_LENGTH ); pointsy.add( last_y );
+                pointsx.add( AppManager.keyWidth ); pointsy.add( last_y );
             }
             last_y = oy - (int)((list.getValue( end_clock ) - min) * order);
             pointsx.add( this.Width - vScroll.Width ); pointsy.add( last_y );
@@ -1995,15 +2062,15 @@ namespace Boare.Cadencii {
             float order = height / (float)(max - min);
             int oy = this.Height - 42;
             Shape last_clip = g.getClip();
-            g.clipRect( position.x + AppManager.KEY_LENGTH, position.y + HEADER, this.Width - AppManager.KEY_LENGTH - vScroll.Width, this.Height - 2 * OFFSET_TRACK_TAB );
+            g.clipRect( position.x + AppManager.keyWidth, position.y + HEADER, this.Width - AppManager.keyWidth - vScroll.Width, this.Height - 2 * OFFSET_TRACK_TAB );
             int count = -1;
             count++;
-            m_pointsx[count] = position.x + AppManager.KEY_LENGTH;
+            m_pointsx[count] = position.x + AppManager.keyWidth;
             m_pointsy[count] = position.y + oy;
             int first_y = list.getValue( 0 );
             int last_y = oy - (int)((first_y - min) * order) + position.y;
             count++;
-            m_pointsx[count] = AppManager.KEY_LENGTH;
+            m_pointsx[count] = AppManager.keyWidth;
             m_pointsy[count] = last_y;
             count--;
 
@@ -2027,7 +2094,7 @@ namespace Boare.Cadencii {
                     }
                     if ( first ) {
                         count++;
-                        m_pointsx[count] = position.x + AppManager.KEY_LENGTH;
+                        m_pointsx[count] = position.x + AppManager.keyWidth;
                         m_pointsy[count] = last_y;
                         first = false;
                     }
@@ -2082,7 +2149,7 @@ namespace Boare.Cadencii {
         /// カーブエディタのグラフ部分の幅を取得します。(pixel)
         /// </summary>
         public int getGraphWidth() {
-            return this.Width - AppManager.KEY_LENGTH - vScroll.Width;
+            return this.Width - AppManager.keyWidth - vScroll.Width;
         }
 
         private void TrackSelector_Load( Object sender, BEventArgs e ) {
@@ -2104,7 +2171,7 @@ namespace Boare.Cadencii {
                         }
                     }
                 } else if ( e.Button == MouseButtons.Right ) {
-                    if ( 0 <= e.X && e.X <= AppManager.KEY_LENGTH &&
+                    if ( 0 <= e.X && e.X <= AppManager.keyWidth &&
                          0 <= e.Y && e.Y <= this.Height - 2 * OFFSET_TRACK_TAB ) {
                         MenuElement[] sub_cmenu_curve = cmenuCurve.getSubElements();
                         for ( int i = 0; i < sub_cmenu_curve.Length; i++ ) {
@@ -2114,7 +2181,7 @@ namespace Boare.Cadencii {
                                 tsmi.setSelected( false );
                                 MenuElement[] sub_tsmi = tsmi.getSubElements();
                                 for ( int j = 0; j < sub_tsmi.Length; j++ ) {
-                                    MenuElement tsi2 = sub_tsmi[i];
+                                    MenuElement tsi2 = sub_tsmi[j];
                                     if ( tsi2 is BMenuItem ) {
                                         BMenuItem tsmi2 = (BMenuItem)tsi2;
                                         tsmi2.setSelected( false );
@@ -2424,15 +2491,18 @@ namespace Boare.Cadencii {
             if ( e.Button == MouseButtons.None ) {
                 return;
             }
-            if ( (e.X + AppManager.startToDrawX != m_mouse_down_location.x || e.Y != m_mouse_down_location.y) &&
-                 m_mouse_hover_thread != null &&
-                 m_mouse_hover_thread.IsAlive ) {
-                m_mouse_hover_thread.Abort();
+            if ( (e.X + AppManager.startToDrawX != m_mouse_down_location.x || e.Y != m_mouse_down_location.y) ) {
+                if ( m_mouse_hover_thread != null && m_mouse_hover_thread.IsAlive ) {
+                    m_mouse_hover_thread.Abort();
+                }
+                if ( m_mouse_down_mode == MouseDownMode.VEL_WAIT_HOVER ) {
+                    m_mouse_down_mode = MouseDownMode.VEL_EDIT;
+                }
+                m_mouse_moved = true;
             }
             if ( AppManager.isPlaying() ) {
                 return;
             }
-            m_mouse_moved = true;
             int clock = AppManager.clockFromXCoord( e.X );
 
             if ( clock < AppManager.getVsqFile().getPreMeasure() ) {
@@ -2734,7 +2804,7 @@ namespace Boare.Cadencii {
             int clock = AppManager.clockFromXCoord( e.X );
             m_mouse_moved = false;
             m_mouse_downed = true;
-            if ( AppManager.KEY_LENGTH < e.X && clock < vsq.getPreMeasure() ) {
+            if ( AppManager.keyWidth < e.X && clock < vsq.getPreMeasure() ) {
                 System.Media.SystemSounds.Asterisk.Play();
                 return;
             }
@@ -2757,7 +2827,7 @@ namespace Boare.Cadencii {
                     int selecter_width = getSelectorWidth();
                     if ( AppManager.getVsqFile() != null ) {
                         for ( int i = 0; i < 16; i++ ) {
-                            int x = AppManager.KEY_LENGTH + i * selecter_width;
+                            int x = AppManager.keyWidth + i * selecter_width;
                             if ( AppManager.getVsqFile().Track.size() > i + 1 ) {
                                 if ( x <= e.X && e.X < x + selecter_width ) {
                                     int new_selected = i + 1;
@@ -2840,7 +2910,7 @@ namespace Boare.Cadencii {
             } else {
                 #region MouseDown occred on other position
                 boolean clock_inner_note = false; //マウスの降りたクロックが，ノートの範囲内かどうかをチェック
-                int left_clock = AppManager.clockFromXCoord( AppManager.KEY_LENGTH );
+                int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
                 int right_clock = AppManager.clockFromXCoord( this.Width - vScroll.Width );
                 for ( Iterator itr = vsq.Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
@@ -2862,7 +2932,7 @@ namespace Boare.Cadencii {
 #if DEBUG
                 AppManager.debugWriteLine( "    clock_inner_note=" + clock_inner_note );
 #endif
-                if ( AppManager.KEY_LENGTH <= e.X ) {
+                if ( AppManager.keyWidth <= e.X ) {
                     if ( e.Button == MouseButtons.Left && !m_spacekey_downed ) {
                         //AppManager.isCurveSelectedIntervalEnabled() = false;
                         m_mouse_down_mode = MouseDownMode.CURVE_EDIT;
@@ -3292,7 +3362,6 @@ namespace Boare.Cadencii {
                 }
                 #endregion
             }
-        last: ;
             Invalidate();
         }
 
@@ -3574,7 +3643,7 @@ namespace Boare.Cadencii {
                         continue;
                     }
                     if ( 0 <= locy && locy <= Height - 2 * OFFSET_TRACK_TAB &&
-                         AppManager.KEY_LENGTH <= locx && locx <= Width ) {
+                         AppManager.keyWidth <= locx && locx <= Width ) {
                         if ( y <= locy && locy <= Height - FOOTER && x <= locx && locx <= x + VEL_BAR_WIDTH ) {
                             return ve;
                         }
@@ -3604,50 +3673,48 @@ namespace Boare.Cadencii {
                 if ( m_mouse_down_mode == MouseDownMode.BEZIER_ADD_NEW ||
                      m_mouse_down_mode == MouseDownMode.BEZIER_MODE ||
                      m_mouse_down_mode == MouseDownMode.BEZIER_EDIT ) {
-                    if ( e.Button == MouseButtons.Left ) {
-                        if ( sender is TrackSelector ) {
-                            int chain_id = AppManager.getLastSelectedBezier().chainID;
-                            BezierChain edited = (BezierChain)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( m_selected_curve, chain_id ).Clone();
-                            if ( m_mouse_down_mode == MouseDownMode.BEZIER_ADD_NEW ) {
-                                edited.id = chain_id;
-                                CadenciiCommand pre = VsqFileEx.generateCommandDeleteBezierChain( AppManager.getSelected(),
-                                                                                                  m_selected_curve,
-                                                                                                  chain_id,
-                                                                                                  AppManager.editorConfig.ControlCurveResolution.getValue() );
-                                executeCommand( pre, false );
-                                CadenciiCommand run = VsqFileEx.generateCommandAddBezierChain( AppManager.getSelected(),
+                    if ( e.Button == MouseButtons.Left && sender is TrackSelector ) {
+                        int chain_id = AppManager.getLastSelectedBezier().chainID;
+                        BezierChain edited = (BezierChain)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( m_selected_curve, chain_id ).Clone();
+                        if ( m_mouse_down_mode == MouseDownMode.BEZIER_ADD_NEW ) {
+                            edited.id = chain_id;
+                            CadenciiCommand pre = VsqFileEx.generateCommandDeleteBezierChain( AppManager.getSelected(),
+                                                                                              m_selected_curve,
+                                                                                              chain_id,
+                                                                                              AppManager.editorConfig.ControlCurveResolution.getValue() );
+                            executeCommand( pre, false );
+                            CadenciiCommand run = VsqFileEx.generateCommandAddBezierChain( AppManager.getSelected(),
+                                                                                           m_selected_curve,
+                                                                                           chain_id,
+                                                                                           AppManager.editorConfig.ControlCurveResolution.getValue(),
+                                                                                           edited );
+                            executeCommand( run, true );
+                        } else if ( m_mouse_down_mode == MouseDownMode.BEZIER_EDIT ) {
+                            CadenciiCommand pre = VsqFileEx.generateCommandReplaceBezierChain( AppManager.getSelected(),
                                                                                                m_selected_curve,
                                                                                                chain_id,
-                                                                                               AppManager.editorConfig.ControlCurveResolution.getValue(),
-                                                                                               edited );
-                                executeCommand( run, true );
-                            } else if ( m_mouse_down_mode == MouseDownMode.BEZIER_EDIT ) {
-                                CadenciiCommand pre = VsqFileEx.generateCommandReplaceBezierChain( AppManager.getSelected(),
-                                                                                            m_selected_curve,
-                                                                                            chain_id,
-                                                                                            m_editing_bezier_original,
-                                                                                            AppManager.editorConfig.ControlCurveResolution.getValue() );
-                                executeCommand( pre, false );
-                                CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( AppManager.getSelected(),
-                                                                                            m_selected_curve,
-                                                                                            chain_id,
-                                                                                            edited,
-                                                                                            AppManager.editorConfig.ControlCurveResolution.getValue() );
-                                executeCommand( run, true );
-                            } else if ( m_mouse_down_mode == MouseDownMode.BEZIER_MODE ) {
-                                AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).setBezierChain( m_selected_curve, chain_id, m_editing_bezier_original );
-                                CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( AppManager.getSelected(),
-                                                                                            m_selected_curve,
-                                                                                            chain_id,
-                                                                                            edited,
-                                                                                            AppManager.editorConfig.ControlCurveResolution.getValue() );
-                                executeCommand( run, true );
+                                                                                               m_editing_bezier_original,
+                                                                                               AppManager.editorConfig.ControlCurveResolution.getValue() );
+                            executeCommand( pre, false );
+                            CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( AppManager.getSelected(),
+                                                                                               m_selected_curve,
+                                                                                               chain_id,
+                                                                                               edited,
+                                                                                               AppManager.editorConfig.ControlCurveResolution.getValue() );
+                            executeCommand( run, true );
+                        } else if ( m_mouse_down_mode == MouseDownMode.BEZIER_MODE && m_mouse_moved ) {
+                            AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).setBezierChain( m_selected_curve, chain_id, m_editing_bezier_original );
+                            CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( AppManager.getSelected(),
+                                                                                               m_selected_curve,
+                                                                                               chain_id,
+                                                                                               edited,
+                                                                                               AppManager.editorConfig.ControlCurveResolution.getValue() );
+                            executeCommand( run, true );
 #if DEBUG
-                                AppManager.debugWriteLine( "    m_mouse_down_mode=" + m_mouse_down_mode );
-                                AppManager.debugWriteLine( "    chain_id=" + chain_id );
+                            AppManager.debugWriteLine( "    m_mouse_down_mode=" + m_mouse_down_mode );
+                            AppManager.debugWriteLine( "    chain_id=" + chain_id );
 #endif
 
-                            }
                         }
                     }
                 } else if ( m_mouse_down_mode == MouseDownMode.CURVE_EDIT ||
@@ -3889,33 +3956,25 @@ namespace Boare.Cadencii {
 
                                 } else {
                                     #region Other Curves
-                                    Vector<Integer> remove_clock_list = new Vector<Integer>();
-                                    VsqBPList work = (VsqBPList)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_selected_curve.getName() ).clone();
+                                    VsqBPList work = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_selected_curve.getName() );
 
                                     // 削除するべきデータ点のリストを作成
                                     int x = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
                                     int y = Math.Min( AppManager.curveSelectingRectangle.y, AppManager.curveSelectingRectangle.y + AppManager.curveSelectingRectangle.height );
                                     Rectangle rc = new Rectangle( x, y, Math.Abs( AppManager.curveSelectingRectangle.width ), Math.Abs( AppManager.curveSelectingRectangle.height ) );
+                                    Vector<Long> delete = new Vector<Long>();
                                     int count = work.size();
                                     for ( int i = 0; i < count; i++ ) {
                                         int clock = work.getKeyClock( i );
-                                        int value = work.getElementA( i );
-                                        if ( isInRect( clock, value, rc ) ) {
-                                            remove_clock_list.add( clock );
+                                        VsqBPPair item = work.getElementB( i );
+                                        if ( isInRect( clock, item.value, rc ) ) {
+                                            delete.add( item.id );
                                         }
                                     }
 
-                                    if ( remove_clock_list.size() > 0 ) {
-                                        // 削除を実行
-                                        int c = remove_clock_list.size();
-                                        for ( int i = 0; i < c; i++ ) {
-                                            work.remove( remove_clock_list.get( i ) );
-                                        }
-
+                                    if ( delete.size() > 0 ) {
                                         CadenciiCommand run_eraser = new CadenciiCommand(
-                                            VsqCommand.generateCommandTrackCurveReplace( AppManager.getSelected(),
-                                                                                         m_selected_curve.getName(),
-                                                                                         work ) );
+                                            VsqCommand.generateCommandTrackCurveEdit2( AppManager.getSelected(), m_selected_curve.getName(), delete, new TreeMap<Integer, VsqBPPair>() ) );
                                         executeCommand( run_eraser, true );
                                     }
                                     #endregion
@@ -4125,7 +4184,7 @@ namespace Boare.Cadencii {
                                     #endregion
                                 } else {
                                     #region Other Curves
-                                    Vector<BPPair> edit = new Vector<BPPair>();
+                                    int track = AppManager.getSelected();
                                     int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
                                     int step_px = (int)(step_clock * AppManager.scaleX);
                                     if ( step_px <= 0 ) {
@@ -4133,12 +4192,35 @@ namespace Boare.Cadencii {
                                     }
                                     int start = m_mouse_trace.firstKey();
                                     int end = m_mouse_trace.lastKey();
+                                    int clock_start = AppManager.clockFromXCoord( start - stdx );
+                                    int clock_end = AppManager.clockFromXCoord( end - stdx );
                                     int last = start;
+
+#if DEBUG
+                                    PortUtil.println( "TrackSelector#TrackSelector_MouseUp; start, end=" + start + ", " + end );
+#endif
+                                    VsqBPList list = AppManager.getVsqFile().Track.get( track ).getCurve( m_selected_curve.getName() );
+                                    long maxid = list.getMaxID();
+
+                                    // 削除するものを列挙
+                                    Vector<Long> delete = new Vector<Long>();
+                                    int c = list.size();
+                                    for ( int i = 0; i < c; i++ ) {
+                                        int clock = list.getKeyClock( i );
+                                        if ( clock_start <= clock && clock <= clock_end ) {
+                                            delete.add( list.getElementB( i ).id );
+                                        } else if ( clock_end < clock ) {
+                                            break;
+                                        }
+                                    }
+
+                                    TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
 #if DEBUG
                                     AppManager.debugWriteLine( "    start=" + start );
                                     AppManager.debugWriteLine( "    end=" + end );
 #endif
                                     int last_value = int.MinValue;
+                                    int index = 0;
                                     for ( int i = start; i <= end; i += step_px ) {
                                         if ( m_mouse_trace.ContainsKey( i ) ) {
                                             int clock = AppManager.clockFromXCoord( i - stdx );
@@ -4149,7 +4231,8 @@ namespace Boare.Cadencii {
                                                 value = max;
                                             }
                                             if ( value != last_value ) {
-                                                edit.add( new BPPair( clock, value ) );
+                                                index++;
+                                                add.put( clock, new VsqBPPair( value, maxid + index ) );
                                                 last_value = value;
                                             }
                                         } else {
@@ -4180,7 +4263,8 @@ namespace Boare.Cadencii {
                                                         val = max;
                                                     }
                                                     if ( val != last_value ) {
-                                                        edit.add( new BPPair( clock, val ) );
+                                                        index++;
+                                                        add.put( clock, new VsqBPPair( value, maxid + index ) );
                                                         last_value = value;
                                                     }
                                                     break;
@@ -4198,12 +4282,11 @@ namespace Boare.Cadencii {
                                         } else if ( max < value ) {
                                             value = max;
                                         }
-                                        edit.add( new BPPair( clock, value ) );
+                                        index++;
+                                        add.put( clock, new VsqBPPair( value, maxid + index ) );
                                     }
-                                    int end_clock = AppManager.clockFromXCoord( end - stdx );
-                                    int last_v = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_selected_curve.getName() ).getValue( end_clock );
-                                    edit.get( edit.size() - 1 ).Value = last_v;
-                                    CadenciiCommand pen_run = new CadenciiCommand( VsqCommand.generateCommandTrackCurveEdit( AppManager.getSelected(), m_selected_curve.getName(), edit ) );
+                                    CadenciiCommand pen_run = new CadenciiCommand(
+                                        VsqCommand.generateCommandTrackCurveEdit2( track, m_selected_curve.getName(), delete, add ) );
                                     executeCommand( pen_run, true );
                                     #endregion
                                 }
@@ -4332,20 +4415,34 @@ namespace Boare.Cadencii {
                             } else if ( m_selected_curve.equals( CurveType.Env ) ) {
                                 // todo:
                             } else {
-                                Vector<BPPair> edit = new Vector<BPPair>();
-                                int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
-                                for ( int i = x0; i <= x1; i += step_clock ) {
-                                    int y = (int)(a0 * i + b0);
-                                    edit.add( new BPPair( i, y ) );
+                                VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_selected_curve.getName() );
+                                if ( list != null ) {
+                                    int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
+                                    Vector<Long> delete = new Vector<Long>();
+                                    TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                                    int c = list.size();
+                                    for ( int i = 0; i < c; i++ ) {
+                                        int cl = list.getKeyClock( i );
+                                        if ( x0 <= cl && cl <= x1 ) {
+                                            delete.add( list.getElementB( i ).id );
+                                        } else if ( x1 < cl ) {
+                                            break;
+                                        }
+                                    }
+                                    int index = 0;
+                                    long maxid = list.getMaxID();
+                                    for ( int i = x0; i <= x1; i += step_clock ) {
+                                        int y = (int)(a0 * i + b0);
+                                        index++;
+                                        add.put( i, new VsqBPPair( y, maxid + index ) );
+                                    }
+                                    CadenciiCommand run = new CadenciiCommand(
+                                        VsqCommand.generateCommandTrackCurveEdit2( AppManager.getSelected(),
+                                                                                   m_selected_curve.getName(),
+                                                                                   delete,
+                                                                                   add ) );
+                                    executeCommand( run, true );
                                 }
-                                int lasty = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_selected_curve.getName() ).getValue( x1 );
-                                if ( x1 == edit.get( edit.size() - 1 ).Clock ) {
-                                    edit.get( edit.size() - 1 ).Value = lasty;
-                                } else {
-                                    edit.add( new BPPair( x1, lasty ) );
-                                }
-                                CadenciiCommand pen_run = new CadenciiCommand( VsqCommand.generateCommandTrackCurveEdit( AppManager.getSelected(), m_selected_curve.getName(), edit ) );
-                                executeCommand( pen_run, true );
                             }
                             #endregion
                         }
@@ -4661,12 +4758,29 @@ namespace Boare.Cadencii {
                         executeCommand( run, true );
                     }
                 } else {
-                    Vector<BPPair> edit = new Vector<BPPair>();
-                    edit.add( new BPPair( clock, value ) );
-                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackCurveEdit( AppManager.getSelected(),
-                                                                                                         m_selected_curve.getName(),
-                                                                                                         edit ) );
-                    executeCommand( run, true );
+                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_selected_curve.getName() );
+                    if ( list != null ) {
+                        Vector<Long> delete = new Vector<Long>();
+                        TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                        long maxid = list.getMaxID();
+                        if ( list.isContainsKey( clock ) ) {
+                            int c = list.size();
+                            for ( int i = 0; i < c; i++ ) {
+                                int cl = list.getKeyClock( i );
+                                if ( cl == clock ) {
+                                    delete.add( list.getElementB( i ).id );
+                                    break;
+                                }
+                            }
+                        }
+                        add.put( clock, new VsqBPPair( value, maxid + 1 ) );
+                        CadenciiCommand run = new CadenciiCommand(
+                            VsqCommand.generateCommandTrackCurveEdit2( AppManager.getSelected(),
+                                                                       m_selected_curve.getName(),
+                                                                       delete,
+                                                                       add ) );
+                        executeCommand( run, true );
+                    }
                 }
             } else if ( m_mouse_down_mode == MouseDownMode.VEL_WAIT_HOVER ) {
 #if DEBUG
@@ -4702,7 +4816,7 @@ namespace Boare.Cadencii {
             Keys modifier = Control.ModifierKeys;
             if ( 0 <= e.Y && e.Y <= Height - 2 * OFFSET_TRACK_TAB ) {
                 #region MouseDown occured on curve-pane
-                if ( AppManager.KEY_LENGTH <= e.X && e.X <= Width ) {
+                if ( AppManager.keyWidth <= e.X && e.X <= Width ) {
                     if ( !m_selected_curve.equals( CurveType.VEL ) &&
                          !m_selected_curve.equals( CurveType.Accent ) &&
                          !m_selected_curve.equals( CurveType.Decay ) &&

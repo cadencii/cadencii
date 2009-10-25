@@ -22,8 +22,7 @@ using System.Collections.Generic;
 using bocoree;
 using bocoree.io;
 
-namespace Boare.Lib.Media
-{
+namespace Boare.Lib.Media {
     using boolean = System.Boolean;
 #endif
 
@@ -31,8 +30,7 @@ namespace Boare.Lib.Media
     /// <summary>
     /// Parameters of first formanto detection algorithm
     /// </summary>
-    public class FormantoDetectionArguments
-    {
+    public class FormantoDetectionArguments {
         private double m_peak_detection_threashold = 0.2;
         private double m_moving_average_width = 25.0;
 
@@ -41,14 +39,11 @@ namespace Boare.Lib.Media
         /// 密度関数の導関数の符号が正から負へ変わる位置をピークとみなす。周波数密度関数は、最大値で
         /// 規格化したのを使う。従って、0～1の値を指定する。
         /// </summary>
-        public double PeakDetectionThreshold
-        {
-            get
-            {
+        public double PeakDetectionThreshold {
+            get {
                 return m_peak_detection_threashold;
             }
-            set
-            {
+            set {
                 m_peak_detection_threashold = value;
             }
         }
@@ -56,14 +51,11 @@ namespace Boare.Lib.Media
         /// <summary>
         /// フーリエ変換した生の周波数の強度分布を平滑化する幅を2で割った値。Hzで指定。
         /// </summary>
-        public double MovingAverageWidth
-        {
-            get
-            {
+        public double MovingAverageWidth {
+            get {
                 return m_moving_average_width;
             }
-            set
-            {
+            set {
                 m_moving_average_width = value;
             }
         }
@@ -75,15 +67,13 @@ namespace Boare.Lib.Media
 #else
     public class Wave : IDisposable
 #endif
-    {
-        public enum Channel
-        {
+ {
+        public enum Channel {
             Right,
             Left,
         }
 
-        public enum WaveChannel
-        {
+        public enum WaveChannel {
             Monoral,
             Stereo
         }
@@ -100,14 +90,11 @@ namespace Boare.Lib.Media
 #if !JAVA
 #if DEBUG
         private static boolean s_test = false;
-        public static boolean TestEnabled
-        {
-            get
-            {
+        public static boolean TestEnabled {
+            get {
                 return s_test;
             }
-            set
-            {
+            set {
                 s_test = value;
             }
         }
@@ -115,36 +102,24 @@ namespace Boare.Lib.Media
 #endif
 
 #if !JAVA
-        public unsafe double TEST_GetF0( uint time, double[] window_function )
-        {
+        public unsafe double TEST_GetF0( uint time, double[] window_function ) {
             int window_size = window_function.Length;
             double[] formanto = GetFormanto( time, window_function );
 #if DEBUG
-            if ( s_test )
-            {
+            if ( s_test ) {
                 BufferedWriter sw = null;
-                try
-                {
+                try {
                     sw = new BufferedWriter( new FileWriter( @"C:\TEST_GetF0_formanto.txt" ) );
-                    for ( int i = 0; i < formanto.Length; i++ )
-                    {
+                    for ( int i = 0; i < formanto.Length; i++ ) {
                         sw.write( Math.Abs( formanto[i] ) + "" );
                         sw.newLine();
                     }
-                }
-                catch ( Exception ex )
-                {
-                }
-                finally
-                {
-                    if ( sw != null )
-                    {
-                        try
-                        {
+                } catch ( Exception ex ) {
+                } finally {
+                    if ( sw != null ) {
+                        try {
                             sw.close();
-                        }
-                        catch ( Exception ex2 )
-                        {
+                        } catch ( Exception ex2 ) {
                         }
                     }
                 }
@@ -152,8 +127,7 @@ namespace Boare.Lib.Media
 #endif
             int size = formanto.Length;
             double[] wv = new double[size + 1];
-            for ( int i = 0; i < size; i++ )
-            {
+            for ( int i = 0; i < size; i++ ) {
                 wv[i] = formanto[i];
             }
             int nmaxsqrt = (int)Math.Sqrt( size );
@@ -163,36 +137,24 @@ namespace Boare.Lib.Media
 
             fixed ( int* ip = &ip_[0] )
             fixed ( double* w = &w_[0] )
-            fixed ( double* a = &wv[0] )
-            {
+            fixed ( double* a = &wv[0] ) {
                 fft.rdft( size, 1, a, ip, w );
             }
 #if DEBUG
-            if ( s_test )
-            {
+            if ( s_test ) {
                 BufferedWriter sw = null;
-                try
-                {
+                try {
                     sw = new BufferedWriter( new FileWriter( @"C:\TEST_GetF0_fft_formanto.txt" ) );
-                    for ( int i = 0; i < wv.Length; i++ )
-                    {
+                    for ( int i = 0; i < wv.Length; i++ ) {
                         sw.write( Math.Abs( wv[i] ) + "" );
                         sw.newLine();
                     }
-                }
-                catch ( Exception ex )
-                {
-                }
-                finally
-                {
-                    if ( sw != null )
-                    {
-                        try
-                        {
+                } catch ( Exception ex ) {
+                } finally {
+                    if ( sw != null ) {
+                        try {
                             sw.close();
-                        }
-                        catch
-                        {
+                        } catch {
                         }
                     }
                 }
@@ -203,8 +165,7 @@ namespace Boare.Lib.Media
 #endif
 
 #if !JAVA
-        public double GetF0( uint time, double[] window_function )
-        {
+        public double GetF0( uint time, double[] window_function ) {
             return GetF0( time, window_function, new FormantoDetectionArguments() );
         }
 #endif
@@ -216,51 +177,37 @@ namespace Boare.Lib.Media
         /// <param name="time"></param>
         /// <param name="window_function"></param>
         /// <returns></returns>
-        public double GetF0( uint time, double[] window_function, FormantoDetectionArguments argument )
-        {
+        public double GetF0( uint time, double[] window_function, FormantoDetectionArguments argument ) {
             int window_size = window_function.Length;
             double[] formanto = GetFormanto( time, window_function );
             int length = formanto.Length;
             double max = 0.0;
-            for ( int i = 0; i < length; i++ )
-            {
+            for ( int i = 0; i < length; i++ ) {
                 formanto[i] = Math.Abs( formanto[i] );
                 max = Math.Max( max, formanto[i] );
             }
             double inv_max = 1.0 / max;
-            for ( int i = 0; i < length; i++ )
-            {
+            for ( int i = 0; i < length; i++ ) {
                 formanto[i] = formanto[i] * inv_max;
             }
 
             double hz_from_index = 1.0 / (double)window_size * m_sample_rate * 0.5;
 #if DEBUG
             Console.WriteLine( "Wave+GetF0" );
-            if ( s_test )
-            {
+            if ( s_test ) {
                 BufferedWriter sw = null;
-                try
-                {
+                try {
                     sw = new BufferedWriter( new FileWriter( "formanto.txt" ) );
-                    for ( int i = 0; i < length; i++ )
-                    {
+                    for ( int i = 0; i < length; i++ ) {
                         sw.write( (i * hz_from_index) + "\t" + formanto[i] );
                         sw.newLine();
                     }
-                }
-                catch ( Exception ex )
-                {
-                }
-                finally
-                {
-                    if ( sw != null )
-                    {
-                        try
-                        {
+                } catch ( Exception ex ) {
+                } finally {
+                    if ( sw != null ) {
+                        try {
                             sw.close();
-                        }
-                        catch( Exception ex2 )
-                        {
+                        } catch ( Exception ex2 ) {
                         }
                     }
                 }
@@ -269,22 +216,18 @@ namespace Boare.Lib.Media
             // 移動平均を計算
             double ma_width = argument.MovingAverageWidth; // 移動平均を取るHzを2で割ったもの
             int ma_width_sample = (int)(window_size * 2 * ma_width / (double)m_sample_rate);
-            if ( ma_width_sample < 1 )
-            {
+            if ( ma_width_sample < 1 ) {
                 ma_width_sample = 1;
             }
 #if DEBUG
             Console.WriteLine( "ma_width_sample=" + ma_width_sample );
 #endif
             double[] ma = new double[length];
-            for ( int i = 0; i < length; i++ )
-            {
+            for ( int i = 0; i < length; i++ ) {
                 int count = 0;
                 double sum = 0.0;
-                for ( int j = i - ma_width_sample; j < i + 2 * ma_width_sample; j++ )
-                {
-                    if ( 0 <= j && j < length )
-                    {
+                for ( int j = i - ma_width_sample; j < i + 2 * ma_width_sample; j++ ) {
+                    if ( 0 <= j && j < length ) {
                         sum += formanto[j];
                         count++;
                     }
@@ -292,31 +235,20 @@ namespace Boare.Lib.Media
                 ma[i] = sum / (double)count;
             }
 #if DEBUG
-            if ( s_test )
-            {
+            if ( s_test ) {
                 BufferedWriter sw = null;
-                try
-                {
+                try {
                     sw = new BufferedWriter( new FileWriter( "ma.txt" ) );
-                    for ( int i = 0; i < length; i++ )
-                    {
+                    for ( int i = 0; i < length; i++ ) {
                         sw.write( (i * hz_from_index) + "\t" + ma[i] );
                         sw.newLine();
                     }
-                }
-                catch ( Exception ex )
-                {
-                }
-                finally
-                {
-                    if ( sw != null )
-                    {
-                        try
-                        {
+                } catch ( Exception ex ) {
+                } finally {
+                    if ( sw != null ) {
+                        try {
                             sw.close();
-                        }
-                        catch( Exception ex2 )
-                        {
+                        } catch ( Exception ex2 ) {
                         }
                     }
                 }
@@ -328,13 +260,10 @@ namespace Boare.Lib.Media
             int index = -1;
             List<double> peak_positions = new List<double>();
             boolean first = true;
-            for ( int i = 1; i < window_size - 1; i++ )
-            {
+            for ( int i = 1; i < window_size - 1; i++ ) {
                 double slope = ma[i + 1] - ma[i - 1];
-                if ( ma[i] > threshold && slope <= 0.0 && 0.0 < last_slope )
-                {
-                    if ( first )
-                    {
+                if ( ma[i] > threshold && slope <= 0.0 && 0.0 < last_slope ) {
+                    if ( first ) {
                         index = i;
                         first = false;
                     }
@@ -344,76 +273,51 @@ namespace Boare.Lib.Media
                 last_slope = slope;
             }
 #if DEBUG
-            if ( s_test )
-            {
+            if ( s_test ) {
                 BufferedWriter sw = null;
-                try
-                {
+                try {
                     sw = new BufferedWriter( new FileWriter( "peak_positions.txt" ) );
-                    for ( int i = 0; i < peak_positions.Count; i++ )
-                    {
+                    for ( int i = 0; i < peak_positions.Count; i++ ) {
                         sw.write( peak_positions[i].ToString() );
                         sw.newLine();
                     }
-                }
-                catch ( Exception ex )
-                {
-                }
-                finally
-                {
-                    if ( sw != null )
-                    {
-                        try
-                        {
+                } catch ( Exception ex ) {
+                } finally {
+                    if ( sw != null ) {
+                        try {
                             sw.close();
-                        }
-                        catch( Exception ex2 )
-                        {
+                        } catch ( Exception ex2 ) {
                         }
                     }
                 }
             }
 #endif
-            if ( index > 0 )
-            {
+            if ( index > 0 ) {
                 List<double> peaks = new List<double>();
                 double peak_distance_tolerance = index * hz_from_index / 5.0; //最小の周波数の5分の1
                 double last_peak_pos = index * hz_from_index;
                 peaks.Add( last_peak_pos );
-                for ( int i = 1; i < peak_positions.Count; i++ )
-                {
-                    if ( peak_positions[i] - last_peak_pos > peak_distance_tolerance )
-                    {
+                for ( int i = 1; i < peak_positions.Count; i++ ) {
+                    if ( peak_positions[i] - last_peak_pos > peak_distance_tolerance ) {
                         peaks.Add( peak_positions[i] );
                         last_peak_pos = peak_positions[i];
                     }
                 }
 #if DEBUG
-                if ( s_test )
-                {
+                if ( s_test ) {
                     BufferedWriter sw = null;
-                    try
-                    {
+                    try {
                         sw = new BufferedWriter( new FileWriter( "peaks.txt" ) );
-                        for ( int i = 0; i < peaks.Count; i++ )
-                        {
+                        for ( int i = 0; i < peaks.Count; i++ ) {
                             sw.write( peaks[i] + "" );
                             sw.newLine();
                         }
-                    }
-                    catch ( Exception ex )
-                    {
-                    }
-                    finally
-                    {
-                        if ( sw != null )
-                        {
-                            try
-                            {
+                    } catch ( Exception ex ) {
+                    } finally {
+                        if ( sw != null ) {
+                            try {
                                 sw.close();
-                            }
-                            catch ( Exception ex2 )
-                            {
+                            } catch ( Exception ex2 ) {
                             }
                         }
                     }
@@ -425,31 +329,20 @@ namespace Boare.Lib.Media
                 }*/
 #if DEBUG
                 Console.WriteLine( "min_peak_distance=" + min_peak_distance );
-                if ( s_test )
-                {
+                if ( s_test ) {
                     BufferedWriter sw = null;
-                    try
-                    {
+                    try {
                         sw = new BufferedWriter( new FileWriter( "evaluation.txt" ) );
-                        for ( int i = (int)min_peak_distance; i < (int)(4 * min_peak_distance); i++ )
-                        {
+                        for ( int i = (int)min_peak_distance; i < (int)(4 * min_peak_distance); i++ ) {
                             sw.write( i + "\t" + GetFormantoGetEvaluationValue( peaks, i ) );
                             sw.newLine();
                         }
-                    }
-                    catch ( Exception ex )
-                    {
-                    }
-                    finally
-                    {
-                        if ( sw != null )
-                        {
-                            try
-                            {
+                    } catch ( Exception ex ) {
+                    } finally {
+                        if ( sw != null ) {
+                            try {
                                 sw.close();
-                            }
-                            catch ( Exception ex2 )
-                            {
+                            } catch ( Exception ex2 ) {
                             }
                         }
                     }
@@ -457,30 +350,24 @@ namespace Boare.Lib.Media
 #endif
                 int smallest = (int)min_peak_distance;
                 double min_eval = GetFormantoGetEvaluationValue( peaks, smallest );
-                for ( int i = (int)min_peak_distance; i < (int)(4 * min_peak_distance); i++ )
-                {
+                for ( int i = (int)min_peak_distance; i < (int)(4 * min_peak_distance); i++ ) {
                     double eval = GetFormantoGetEvaluationValue( peaks, i );
-                    if ( min_eval > eval )
-                    {
+                    if ( min_eval > eval ) {
                         min_eval = eval;
                         smallest = i;
                     }
                 }
                 return smallest;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
 #endif
 
 #if !JAVA
-        private static double GetFormantoGetEvaluationValue( List<double> peaks, double t )
-        {
+        private static double GetFormantoGetEvaluationValue( List<double> peaks, double t ) {
             double ret = 0.0;
-            for ( int i = 0; i < peaks.Count; i++ )
-            {
+            for ( int i = 0; i < peaks.Count; i++ ) {
                 int n_i = (int)(peaks[i] / t + 0.5);
                 double dt_i = peaks[i] - n_i * t;
                 ret += Math.Abs( dt_i );
@@ -496,13 +383,11 @@ namespace Boare.Lib.Media
         /// <param name="time"></param>
         /// <param name="window_function"></param>
         /// <returns></returns>
-        public unsafe double[] GetFormanto( uint time, double[] window_function )
-        {
+        public unsafe double[] GetFormanto( uint time, double[] window_function ) {
             int size = window_function.Length;
             double[] wv = getNormalizedWave( (int)(time - size / 2), (uint)(size + 1) );
             // 窓関数をかける
-            for ( int i = 0; i < size; i++ )
-            {
+            for ( int i = 0; i < size; i++ ) {
                 wv[i] = wv[i] * window_function[i];
             }
             int nmaxsqrt = (int)Math.Sqrt( size );
@@ -512,8 +397,7 @@ namespace Boare.Lib.Media
 
             fixed ( int* ip = &ip_[0] )
             fixed ( double* w = &w_[0] )
-            fixed ( double* a = &wv[0] )
-            {
+            fixed ( double* a = &wv[0] ) {
                 fft.rdft( size, 1, a, ip, w );
             }
             return wv;
@@ -521,14 +405,12 @@ namespace Boare.Lib.Media
 #endif
 
 #if !JAVA
-        public double GetVolume( int start_sample, double[] window_function )
-        {
+        public double GetVolume( int start_sample, double[] window_function ) {
             int window_size = window_function.Length;
             double[] conv = new double[window_size];
             getNormalizedWave( start_sample - window_size / 2, conv );
             double ret = 0.0;
-            for ( int i = 0; i < window_size; i++ )
-            {
+            for ( int i = 0; i < window_size; i++ ) {
                 ret += Math.Abs( conv[i] ) * window_function[i];
             }
             return ret / (double)window_size;
@@ -543,13 +425,11 @@ namespace Boare.Lib.Media
         /// <param name="window_size"></param>
         /// <param name="window_function_type"></param>
         /// <returns></returns>
-        public double GetVolume( int start_sample, int window_size, math.WindowFunctionType window_function_type )
-        {
+        public double GetVolume( int start_sample, int window_size, math.WindowFunctionType window_function_type ) {
             double[] conv = new double[window_size];
             getNormalizedWave( start_sample - window_size / 2, conv );
             double ret = 0.0;
-            for ( int i = 0; i < window_size; i++ )
-            {
+            for ( int i = 0; i < window_size; i++ ) {
                 double x = i / (double)window_size;
                 ret += Math.Abs( conv[i] ) * math.window_func( window_function_type, x );
             }
@@ -565,42 +445,35 @@ namespace Boare.Lib.Media
         /// <param name="window_function_type">使用する窓関数</param>
         /// <param name="resulution">解像度（サンプル数）</param>
         /// <returns></returns>
-        public double[] GetVolume( int window_size, math.WindowFunctionType window_function_type )
-        {
+        public double[] GetVolume( int window_size, math.WindowFunctionType window_function_type ) {
             double[] conv = getNormalizedWave();
-            for ( int i = 0; i < conv.Length; i++ )
-            {
+            for ( int i = 0; i < conv.Length; i++ ) {
                 conv[i] = Math.Abs( conv[i] );
             }
             // 最初に重み関数を取得
             double[] w = new double[window_size];
-            for ( int i = 0; i < window_size; i++ )
-            {
+            for ( int i = 0; i < window_size; i++ ) {
                 double x = i / (double)window_size;
                 w[i] = math.window_func( window_function_type, x );
             }
             double[] ret = new double[(int)m_total_samples];
             double inv = 1.0 / (double)window_size;
             int ws2 = window_size / 2;
-            for ( int i = 0; i < m_total_samples; i++ )
-            {
+            for ( int i = 0; i < m_total_samples; i++ ) {
                 int start0 = i - ws2;
                 int start = start0;
                 int end = i + ws2;
                 double tinv = inv;
-                if ( start < 0 )
-                {
+                if ( start < 0 ) {
                     start = 0;
                     tinv = 1.0 / (double)(end - start + 1);
                 }
-                if ( m_total_samples <= end )
-                {
+                if ( m_total_samples <= end ) {
                     end = (int)m_total_samples - 1;
                     tinv = 1.0 / (double)(end - start + 1);
                 }
                 ret[i] = 0.0;
-                for ( int j = start; j <= end; j++ )
-                {
+                for ( int j = start; j <= end; j++ ) {
                     ret[i] += conv[j] * w[i - start0];
                 }
                 ret[i] = ret[i] * tinv;
@@ -609,65 +482,46 @@ namespace Boare.Lib.Media
         }
 #endif
 
-        public void getNormalizedWave( int start_index, double[] conv )
-        {
+        public void getNormalizedWave( int start_index, double[] conv ) {
             int count = conv.Length;
             int cp_start = start_index;
             int cp_end = start_index + count;
-            if ( start_index < 0 )
-            {
-                for ( int i = 0; i < cp_start - start_index; i++ )
-                {
+            if ( start_index < 0 ) {
+                for ( int i = 0; i < cp_start - start_index; i++ ) {
                     conv[i] = 0.0;
                 }
                 cp_start = 0;
             }
-            if ( m_total_samples <= cp_end )
-            {
-                for ( int i = cp_end - start_index; i < count; i++ )
-                {
+            if ( m_total_samples <= cp_end ) {
+                for ( int i = cp_end - start_index; i < count; i++ ) {
                     conv[i] = 0.0;
                 }
                 cp_end = (int)m_total_samples - 1;
             }
-            if ( m_channel == WaveChannel.Monoral )
-            {
-                if ( m_bit_per_sample == 8 )
-                {
-                    for ( int i = cp_start; i < cp_end; i++ )
-                    {
+            if ( m_channel == WaveChannel.Monoral ) {
+                if ( m_bit_per_sample == 8 ) {
+                    for ( int i = cp_start; i < cp_end; i++ ) {
                         conv[i - start_index] = (L8[i] - 64.0) / 64.0;
                     }
-                }
-                else
-                {
-                    for ( int i = cp_start; i < cp_end; i++ )
-                    {
+                } else {
+                    for ( int i = cp_start; i < cp_end; i++ ) {
                         conv[i - start_index] = L16[i] / 32768.0;
                     }
                 }
-            }
-            else
-            {
-                if ( m_bit_per_sample == 8 )
-                {
-                    for ( int i = cp_start; i < cp_end; i++ )
-                    {
+            } else {
+                if ( m_bit_per_sample == 8 ) {
+                    for ( int i = cp_start; i < cp_end; i++ ) {
                         conv[i - start_index] = ((L8[i] + R8[i]) * 0.5 - 64.0) / 64.0;
                     }
-                }
-                else
-                {
-                    for ( int i = cp_start; i < cp_end; i++ )
-                    {
+                } else {
+                    for ( int i = cp_start; i < cp_end; i++ ) {
                         conv[i - start_index] = (L16[i] + R16[i]) * 0.5 / 32768.0;
                     }
                 }
             }
         }
 
-        public double[] getNormalizedWave()
-        {
+        public double[] getNormalizedWave() {
             return getNormalizedWave( 0, m_total_samples );
         }
 
@@ -675,157 +529,101 @@ namespace Boare.Lib.Media
         /// -1から1までに規格化された波形を取得します
         /// </summary>
         /// <returns></returns>
-        public double[] getNormalizedWave( int start_index, long count )
-        {
+        public double[] getNormalizedWave( int start_index, long count ) {
             double[] conv = new double[(int)count];
             getNormalizedWave( start_index, conv );
             return conv;
         }
 
-        private void set( int index, Channel channel, int value )
-        {
-            if ( m_channel == WaveChannel.Monoral || channel == Channel.Left )
-            {
-                if ( m_bit_per_sample == 8 )
-                {
+        private void set( int index, Channel channel, int value ) {
+            if ( m_channel == WaveChannel.Monoral || channel == Channel.Left ) {
+                if ( m_bit_per_sample == 8 ) {
                     L8[index] = (byte)value;
-                }
-                else
-                {
+                } else {
                     L16[index] = (short)value;
                 }
-            }
-            else
-            {
-                if ( m_bit_per_sample == 8 )
-                {
+            } else {
+                if ( m_bit_per_sample == 8 ) {
                     R8[index] = (byte)value;
-                }
-                else
-                {
+                } else {
                     R16[index] = (short)value;
                 }
             }
         }
 
-        private int get( int index, Channel channel )
-        {
-            if ( m_channel == WaveChannel.Monoral || channel == Channel.Left )
-            {
-                if ( m_bit_per_sample == 8 )
-                {
+        private int get( int index, Channel channel ) {
+            if ( m_channel == WaveChannel.Monoral || channel == Channel.Left ) {
+                if ( m_bit_per_sample == 8 ) {
                     return L8[index];
-                }
-                else
-                {
+                } else {
                     return L16[index];
                 }
-            }
-            else
-            {
-                if ( m_bit_per_sample == 8 )
-                {
+            } else {
+                if ( m_bit_per_sample == 8 ) {
                     return R8[index];
-                }
-                else
-                {
+                } else {
                     return R16[index];
                 }
             }
         }
 
-        private void set( int index, int value )
-        {
+        private void set( int index, int value ) {
             set( index, Channel.Left, value );
-            if ( m_channel == WaveChannel.Stereo )
-            {
+            if ( m_channel == WaveChannel.Stereo ) {
                 set( index, Channel.Right, value );
             }
         }
 
-        public double getDouble( int index )
-        {
-            if ( m_channel == WaveChannel.Monoral )
-            {
-                if ( m_bit_per_sample == 8 )
-                {
+        public double getDouble( int index ) {
+            if ( m_channel == WaveChannel.Monoral ) {
+                if ( m_bit_per_sample == 8 ) {
                     return (L8[index] - 64.0) / 64.0;
-                }
-                else
-                {
+                } else {
                     return L16[index] / 32768.0;
                 }
-            }
-            else
-            {
-                if ( m_bit_per_sample == 8 )
-                {
+            } else {
+                if ( m_bit_per_sample == 8 ) {
                     return ((L8[index] + R8[index]) * 0.5 - 64.0) / 64.0;
-                }
-                else
-                {
+                } else {
                     return (L16[index] + R16[index]) * 0.5 / 32768.0;
                 }
             }
         }
 
-        public long getSampleRate()
-        {
+        public long getSampleRate() {
             return m_sample_rate;
         }
 
-        private void setTotalSamples( long value )
-        {
+        private void setTotalSamples( long value ) {
             m_total_samples = value;
-            if ( m_channel == WaveChannel.Monoral )
-            {
-                if ( m_bit_per_sample == 8 )
-                {
-                    if ( L8 == null )
-                    {
+            if ( m_channel == WaveChannel.Monoral ) {
+                if ( m_bit_per_sample == 8 ) {
+                    if ( L8 == null ) {
                         L8 = new byte[(int)m_total_samples];
-                    }
-                    else
-                    {
+                    } else {
                         L8 = resizeArray( L8, (int)m_total_samples );
                     }
-                }
-                else
-                {
-                    if ( L16 == null )
-                    {
+                } else {
+                    if ( L16 == null ) {
                         L16 = new short[(int)m_total_samples];
-                    }
-                    else
-                    {
+                    } else {
                         L16 = resizeArray( L16, (int)m_total_samples );
                     }
                 }
-            }
-            else
-            {
-                if ( m_bit_per_sample == 8 )
-                {
-                    if ( L8 == null )
-                    {
+            } else {
+                if ( m_bit_per_sample == 8 ) {
+                    if ( L8 == null ) {
                         L8 = new byte[(int)m_total_samples];
                         R8 = new byte[(int)m_total_samples];
-                    }
-                    else
-                    {
+                    } else {
                         L8 = resizeArray( L8, (int)m_total_samples );
                         R8 = resizeArray( R8, (int)m_total_samples );
                     }
-                }
-                else
-                {
-                    if ( L16 == null )
-                    {
+                } else {
+                    if ( L16 == null ) {
                         L16 = new short[(int)m_total_samples];
                         R16 = new short[(int)m_total_samples];
-                    }
-                    else
-                    {
+                    } else {
                         L16 = resizeArray( L16, (int)m_total_samples );
                         R16 = resizeArray( R16, (int)m_total_samples );
                     }
@@ -833,50 +631,34 @@ namespace Boare.Lib.Media
             }
         }
 
-        public long getTotalSamples()
-        {
+        public long getTotalSamples() {
             return m_total_samples;
         }
 
-        public void replace( Wave srcWave, int srcStart, int destStart, int count )
-        {
+        public void replace( Wave srcWave, int srcStart, int destStart, int count ) {
 #if DEBUG
             Console.WriteLine( "Wave.Replace(Wave,uint,uint,uint)" );
 #endif
-            if ( m_channel != srcWave.m_channel || m_bit_per_sample != srcWave.m_bit_per_sample )
-            {
+            if ( m_channel != srcWave.m_channel || m_bit_per_sample != srcWave.m_bit_per_sample ) {
                 return;
             }
-            if ( m_channel == WaveChannel.Monoral )
-            {
-                if ( m_bit_per_sample == 8 )
-                {
-                    if ( L8 == null || srcWave.L8 == null )
-                    {
+            if ( m_channel == WaveChannel.Monoral ) {
+                if ( m_bit_per_sample == 8 ) {
+                    if ( L8 == null || srcWave.L8 == null ) {
+                        return;
+                    }
+                } else {
+                    if ( L16 == null || srcWave.L16 == null ) {
                         return;
                     }
                 }
-                else
-                {
-                    if ( L16 == null || srcWave.L16 == null )
-                    {
+            } else {
+                if ( m_bit_per_sample == 8 ) {
+                    if ( L8 == null || R8 == null || srcWave.L8 == null || srcWave.R8 == null ) {
                         return;
                     }
-                }
-            }
-            else
-            {
-                if ( m_bit_per_sample == 8 )
-                {
-                    if ( L8 == null || R8 == null || srcWave.L8 == null || srcWave.R8 == null )
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    if ( L16 == null || R16 == null || srcWave.L16 == null || srcWave.R16 == null )
-                    {
+                } else {
+                    if ( L16 == null || R16 == null || srcWave.L16 == null || srcWave.R16 == null ) {
                         return;
                     }
                 }
@@ -884,54 +666,35 @@ namespace Boare.Lib.Media
 
             count = (int)((count > srcWave.getTotalSamples() - srcStart) ? srcWave.getTotalSamples() - srcStart : count);
             long new_last_index = destStart + count;
-            if ( m_total_samples < new_last_index )
-            {
-                if ( m_channel == WaveChannel.Monoral )
-                {
-                    if ( m_bit_per_sample == 8 )
-                    {
+            if ( m_total_samples < new_last_index ) {
+                if ( m_channel == WaveChannel.Monoral ) {
+                    if ( m_bit_per_sample == 8 ) {
                         L8 = resizeArray( L8, (int)new_last_index );
-                    }
-                    else
-                    {
+                    } else {
                         L16 = resizeArray( L16, (int)new_last_index );
                     }
-                }
-                else
-                {
-                    if ( m_bit_per_sample == 8 )
-                    {
+                } else {
+                    if ( m_bit_per_sample == 8 ) {
                         L8 = resizeArray( L8, (int)new_last_index );
                         R8 = resizeArray( R8, (int)new_last_index );
-                    }
-                    else
-                    {
+                    } else {
                         L16 = resizeArray( L16, (int)new_last_index );
                         R16 = resizeArray( R16, (int)new_last_index );
                     }
                 }
                 m_total_samples = new_last_index;
             }
-            if ( m_channel == WaveChannel.Monoral )
-            {
-                if ( m_bit_per_sample == 8 )
-                {
+            if ( m_channel == WaveChannel.Monoral ) {
+                if ( m_bit_per_sample == 8 ) {
                     copyArray( srcWave.L8, srcStart, L8, destStart, count );
-                }
-                else
-                {
+                } else {
                     copyArray( srcWave.L16, srcStart, L16, destStart, count );
                 }
-            }
-            else
-            {
-                if ( m_bit_per_sample == 8 )
-                {
+            } else {
+                if ( m_bit_per_sample == 8 ) {
                     copyArray( srcWave.L8, srcStart, L8, destStart, count );
                     copyArray( srcWave.R8, srcStart, R8, destStart, count );
-                }
-                else
-                {
+                } else {
                     copyArray( srcWave.L16, srcStart, L16, destStart, count );
                     copyArray( srcWave.R16, srcStart, R16, destStart, count );
                 }
@@ -939,124 +702,93 @@ namespace Boare.Lib.Media
         }
 
 
-        public void replace( byte[] data, int start_index )
-        {
-            if ( m_channel != WaveChannel.Monoral || m_bit_per_sample != 8 || L8 == null )
-            {
+        public void replace( byte[] data, int start_index ) {
+            if ( m_channel != WaveChannel.Monoral || m_bit_per_sample != 8 || L8 == null ) {
                 return;
             }
             long new_last_index = (long)(start_index + data.Length);
-            if ( m_total_samples < new_last_index )
-            {
+            if ( m_total_samples < new_last_index ) {
                 L8 = resizeArray( L8, (int)new_last_index );
                 m_total_samples = new_last_index;
             }
-            for ( int i = 0; i < data.Length; i++ )
-            {
+            for ( int i = 0; i < data.Length; i++ ) {
                 L8[i + start_index] = data[i];
             }
         }
 
 
-        public void replace( short[] data, int start_index )
-        {
-            if ( m_channel != WaveChannel.Monoral || m_bit_per_sample != 16 || L16 == null )
-            {
+        public void replace( short[] data, int start_index ) {
+            if ( m_channel != WaveChannel.Monoral || m_bit_per_sample != 16 || L16 == null ) {
                 return;
             }
             long new_last_index = (long)(start_index + data.Length);
-            if ( m_total_samples < new_last_index )
-            {
+            if ( m_total_samples < new_last_index ) {
                 L16 = resizeArray( L16, (int)new_last_index );
                 m_total_samples = new_last_index;
             }
-            for ( int i = 0; i < data.Length; i++ )
-            {
+            for ( int i = 0; i < data.Length; i++ ) {
                 L16[i + start_index] = data[i];
             }
         }
 
 
-        public void replace( byte[] left, byte[] right, int start_index )
-        {
-            if ( m_channel != WaveChannel.Stereo || m_bit_per_sample != 8 || L8 == null || R8 == null )
-            {
+        public void replace( byte[] left, byte[] right, int start_index ) {
+            if ( m_channel != WaveChannel.Stereo || m_bit_per_sample != 8 || L8 == null || R8 == null ) {
                 return;
             }
             long new_last_index = (long)(start_index + left.Length);
-            if ( m_total_samples < new_last_index )
-            {
+            if ( m_total_samples < new_last_index ) {
                 L8 = resizeArray( L8, (int)new_last_index );
                 R8 = resizeArray( R8, (int)new_last_index );
                 m_total_samples = new_last_index;
             }
-            for ( int i = 0; i < left.Length; i++ )
-            {
+            for ( int i = 0; i < left.Length; i++ ) {
                 L8[i + start_index] = left[i];
                 R8[i + start_index] = right[i];
             }
         }
 
 
-        public void replace( short[] left, short[] right, int start_index )
-        {
-            if ( m_channel != WaveChannel.Stereo || m_bit_per_sample != 16 || L16 == null || R16 == null )
-            {
+        public void replace( short[] left, short[] right, int start_index ) {
+            if ( m_channel != WaveChannel.Stereo || m_bit_per_sample != 16 || L16 == null || R16 == null ) {
                 return;
             }
             long new_last_index = (long)(start_index + left.Length);
-            if ( m_total_samples < new_last_index )
-            {
+            if ( m_total_samples < new_last_index ) {
                 L16 = resizeArray( L16, (int)new_last_index );
                 R16 = resizeArray( R16, (int)new_last_index );
                 m_total_samples = new_last_index;
             }
-            for ( int i = 0; i < left.Length; i++ )
-            {
+            for ( int i = 0; i < left.Length; i++ ) {
                 L16[i + start_index] = left[i];
                 R16[i + start_index] = right[i];
             }
         }
 
-        public void replace( float[] left, float[] right, int start_index )
-        {
+        public void replace( float[] left, float[] right, int start_index ) {
             long new_last_index = (long)(start_index + left.Length);
-            if ( m_total_samples < new_last_index )
-            {
-                if ( m_channel == WaveChannel.Monoral )
-                {
-                    if ( m_bit_per_sample == 8 )
-                    {
-                        if ( L8 == null )
-                        {
+            if ( m_total_samples < new_last_index ) {
+                if ( m_channel == WaveChannel.Monoral ) {
+                    if ( m_bit_per_sample == 8 ) {
+                        if ( L8 == null ) {
                             return;
                         }
                         L8 = resizeArray( L8, (int)new_last_index );
-                    }
-                    else
-                    {
-                        if ( L16 == null )
-                        {
+                    } else {
+                        if ( L16 == null ) {
                             return;
                         }
                         L16 = resizeArray( L16, (int)new_last_index );
                     }
-                }
-                else
-                {
-                    if ( m_bit_per_sample == 8 )
-                    {
-                        if ( L8 == null || R8 == null )
-                        {
+                } else {
+                    if ( m_bit_per_sample == 8 ) {
+                        if ( L8 == null || R8 == null ) {
                             return;
                         }
                         L8 = resizeArray( L8, (int)new_last_index );
                         R8 = resizeArray( R8, (int)new_last_index );
-                    }
-                    else
-                    {
-                        if ( L16 == null || R16 == null )
-                        {
+                    } else {
+                        if ( L16 == null || R16 == null ) {
                             return;
                         }
                         L16 = resizeArray( L16, (int)new_last_index );
@@ -1065,42 +797,28 @@ namespace Boare.Lib.Media
                 }
                 m_total_samples = new_last_index;
             }
-            if ( m_channel == WaveChannel.Monoral )
-            {
+            if ( m_channel == WaveChannel.Monoral ) {
                 float[] mono = new float[left.Length];
-                for ( int i = 0; i < left.Length; i++ )
-                {
+                for ( int i = 0; i < left.Length; i++ ) {
                     mono[i] = (left[i] + right[i]) / 2f;
                 }
-                if ( m_bit_per_sample == 8 )
-                {
-                    for ( int i = 0; i < mono.Length; i++ )
-                    {
+                if ( m_bit_per_sample == 8 ) {
+                    for ( int i = 0; i < mono.Length; i++ ) {
                         L8[i + start_index] = (byte)((mono[i] + 1.0f) / 2f * 255f);
                     }
-                }
-                else
-                {
-                    for ( int i = 0; i < mono.Length; i++ )
-                    {
+                } else {
+                    for ( int i = 0; i < mono.Length; i++ ) {
                         L16[i + start_index] = (short)(mono[i] * 32768f);
                     }
                 }
-            }
-            else
-            {
-                if ( m_bit_per_sample == 8 )
-                {
-                    for ( int i = 0; i < left.Length; i++ )
-                    {
+            } else {
+                if ( m_bit_per_sample == 8 ) {
+                    for ( int i = 0; i < left.Length; i++ ) {
                         L8[i + start_index] = (byte)((left[i] + 1.0f) / 2f * 255f);
                         R8[i + start_index] = (byte)((right[i] + 1.0f) / 2f * 255f);
                     }
-                }
-                else
-                {
-                    for ( int i = 0; i < left.Length; i++ )
-                    {
+                } else {
+                    for ( int i = 0; i < left.Length; i++ ) {
                         L16[i + start_index] = (short)(left[i] * 32768f);
                         R16[i + start_index] = (short)(right[i] * 32768f);
                     }
@@ -1108,71 +826,47 @@ namespace Boare.Lib.Media
             }
         }
 
-        public void printToText( String path )
-        {
+        public void printToText( String path ) {
             BufferedWriter sw = null;
-            try
-            {
+            try {
                 sw = new BufferedWriter( new FileWriter( path ) );
-                if ( m_channel == WaveChannel.Monoral )
-                {
-                    if ( m_bit_per_sample == 8 )
-                    {
-                        for ( int i = 0; i < m_total_samples; i++ )
-                        {
+                if ( m_channel == WaveChannel.Monoral ) {
+                    if ( m_bit_per_sample == 8 ) {
+                        for ( int i = 0; i < m_total_samples; i++ ) {
                             sw.write( L8[i] + "" );
                             sw.newLine();
                         }
-                    }
-                    else
-                    {
-                        for ( int i = 0; i < m_total_samples; i++ )
-                        {
+                    } else {
+                        for ( int i = 0; i < m_total_samples; i++ ) {
                             sw.write( L16[i] + "" );
                             sw.newLine();
                         }
                     }
-                }
-                else
-                {
-                    if ( m_bit_per_sample == 8 )
-                    {
-                        for ( int i = 0; i < m_total_samples; i++ )
-                        {
+                } else {
+                    if ( m_bit_per_sample == 8 ) {
+                        for ( int i = 0; i < m_total_samples; i++ ) {
                             sw.write( L8[i] + "\t" + R8[i] );
                             sw.newLine();
                         }
-                    }
-                    else
-                    {
-                        for ( int i = 0; i < m_total_samples; i++ )
-                        {
+                    } else {
+                        for ( int i = 0; i < m_total_samples; i++ ) {
                             sw.write( L16[i] + "\t" + R16[i] );
                             sw.newLine();
                         }
                     }
                 }
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( sw != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw != null ) {
+                    try {
                         sw.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             L8 = null;
             R8 = null;
             L16 = null;
@@ -1187,28 +881,23 @@ namespace Boare.Lib.Media
         /// <summary>
         /// サンプルあたりのビット数を8に変更する
         /// </summary>
-        public void convertTo8Bit()
-        {
-            if ( m_bit_per_sample == 8 )
-            {
+        public void convertTo8Bit() {
+            if ( m_bit_per_sample == 8 ) {
                 return;
             }
 
             // 先ず左チャンネル
             L8 = new byte[L16.Length];
-            for ( int i = 0; i < L16.Length; i++ )
-            {
+            for ( int i = 0; i < L16.Length; i++ ) {
                 double new_val = (L16[i] + 32768.0) / 65535.0 * 255.0;
                 L8[i] = (byte)new_val;
             }
             L16 = null;
 
             // 存在すれば右チャンネルも
-            if ( m_channel == WaveChannel.Stereo )
-            {
+            if ( m_channel == WaveChannel.Stereo ) {
                 R8 = new byte[R16.Length];
-                for ( int i = 0; i < R16.Length; i++ )
-                {
+                for ( int i = 0; i < R16.Length; i++ ) {
                     double new_val = (R16[i] + 32768.0) / 65535.0 * 255.0;
                     R8[i] = (byte)new_val;
                 }
@@ -1222,11 +911,9 @@ namespace Boare.Lib.Media
         /// ファイルに保存
         /// </summary>
         /// <param name="file"></param>
-        public void write( String file )
-        {
+        public void write( String file ) {
             RandomAccessFile fs = null;
-            try
-            {
+            try {
                 fs = new RandomAccessFile( file, "rw" );
                 // RIFF
                 fs.write( 0x52 );
@@ -1263,13 +950,10 @@ namespace Boare.Lib.Media
                 fs.write( 0x00 );
 
                 // チャンネル数
-                if ( m_channel == WaveChannel.Monoral )
-                {
+                if ( m_channel == WaveChannel.Monoral ) {
                     fs.write( 0x01 );
                     fs.write( 0x00 );
-                }
-                else
-                {
+                } else {
                     fs.write( 0x02 );
                     fs.write( 0x00 );
                 }
@@ -1309,22 +993,16 @@ namespace Boare.Lib.Media
                 writeByteArray( fs, buf, 4 );
 
                 // 波形データ
-                for ( int i = 0; i < m_total_samples; i++ )
-                {
-                    if ( m_bit_per_sample == 8 )
-                    {
+                for ( int i = 0; i < m_total_samples; i++ ) {
+                    if ( m_bit_per_sample == 8 ) {
                         fs.write( L8[i] );
-                        if ( m_channel == WaveChannel.Stereo )
-                        {
+                        if ( m_channel == WaveChannel.Stereo ) {
                             fs.write( R8[i] );
                         }
-                    }
-                    else
-                    {
+                    } else {
                         buf = PortUtil.getbytes_int16_le( L16[i] );
                         writeByteArray( fs, buf, 2 );
-                        if ( m_channel == WaveChannel.Stereo )
-                        {
+                        if ( m_channel == WaveChannel.Stereo ) {
                             buf = PortUtil.getbytes_int16_le( R16[i] );
                             writeByteArray( fs, buf, 2 );
                         }
@@ -1336,20 +1014,12 @@ namespace Boare.Lib.Media
                 fs.seek( 4 );
                 buf = PortUtil.getbytes_uint32_le( position - 8 );
                 writeByteArray( fs, buf, 4 );
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( fs != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( fs != null ) {
+                    try {
                         fs.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
@@ -1359,12 +1029,10 @@ namespace Boare.Lib.Media
 #if JAVA
             throws IOException
 #endif
-        {
+ {
             fs.write( dat, 0, (dat.Length > limit) ? limit : dat.Length );
-            if ( dat.Length < limit )
-            {
-                for ( int i = 0; i < limit - dat.Length; i++ )
-                {
+            if ( dat.Length < limit ) {
+                for ( int i = 0; i < limit - dat.Length; i++ ) {
                     fs.write( 0x00 );
                 }
             }
@@ -1373,25 +1041,18 @@ namespace Boare.Lib.Media
         /// <summary>
         /// ステレオをモノラル化
         /// </summary>
-        public void monoralize()
-        {
-            if ( m_channel != WaveChannel.Stereo )
-            {
+        public void monoralize() {
+            if ( m_channel != WaveChannel.Stereo ) {
                 return;
             }
-            if ( m_bit_per_sample == 8 )
-            {
-                for ( int i = 0; i < L8.Length; i++ )
-                {
+            if ( m_bit_per_sample == 8 ) {
+                for ( int i = 0; i < L8.Length; i++ ) {
                     L8[i] = (byte)((L8[i] + R8[i]) / 2);
                 }
                 R8 = null;
                 m_channel = WaveChannel.Monoral;
-            }
-            else
-            {
-                for ( int i = 0; i < L16.Length; i++ )
-                {
+            } else {
+                for ( int i = 0; i < L16.Length; i++ ) {
                     L16[i] = (short)((L16[i] + R16[i]) / 2);
                 }
                 R16 = null;
@@ -1403,29 +1064,22 @@ namespace Boare.Lib.Media
         /// <summary>
         /// 前後の無音部分を削除します
         /// </summary>
-        public void trimSilence()
-        {
+        public void trimSilence() {
 #if DEBUG
             Console.WriteLine( "Wave.TrimSilence" );
 #endif
-            if ( m_bit_per_sample == 8 )
-            {
-                if ( m_channel == WaveChannel.Monoral )
-                {
+            if ( m_bit_per_sample == 8 ) {
+                if ( m_channel == WaveChannel.Monoral ) {
                     int non_silence_begin = 1;
-                    for ( int i = 1; i < L8.Length; i++ )
-                    {
-                        if ( L8[i] != 0x80 )
-                        {
+                    for ( int i = 1; i < L8.Length; i++ ) {
+                        if ( L8[i] != 0x80 ) {
                             non_silence_begin = i;
                             break;
                         }
                     }
                     int non_silence_end = L8.Length - 1;
-                    for ( int i = L8.Length - 1; i >= 0; i-- )
-                    {
-                        if ( L8[i] != 0x80 )
-                        {
+                    for ( int i = L8.Length - 1; i >= 0; i-- ) {
+                        if ( L8[i] != 0x80 ) {
                             non_silence_end = i;
                             break;
                         }
@@ -1437,23 +1091,17 @@ namespace Boare.Lib.Media
                     L8 = new byte[count];
                     copyArray( R8, 0, L8, 0, count );
                     R8 = null;
-                }
-                else
-                {
+                } else {
                     int non_silence_begin = 1;
-                    for ( int i = 1; i < L8.Length; i++ )
-                    {
-                        if ( L8[i] != 0x80 || R8[i] != 0x80 )
-                        {
+                    for ( int i = 1; i < L8.Length; i++ ) {
+                        if ( L8[i] != 0x80 || R8[i] != 0x80 ) {
                             non_silence_begin = i;
                             break;
                         }
                     }
                     int non_silence_end = L8.Length - 1;
-                    for ( int i = L8.Length - 1; i >= 0; i-- )
-                    {
-                        if ( L8[i] != 0x80 || R8[i] != 0x80 )
-                        {
+                    for ( int i = L8.Length - 1; i >= 0; i-- ) {
+                        if ( L8[i] != 0x80 || R8[i] != 0x80 ) {
                             non_silence_end = i;
                             break;
                         }
@@ -1470,25 +1118,18 @@ namespace Boare.Lib.Media
                     copyArray( buf, 0, R8, 0, count );
                     buf = null;
                 }
-            }
-            else
-            {
-                if ( m_channel == WaveChannel.Monoral )
-                {
+            } else {
+                if ( m_channel == WaveChannel.Monoral ) {
                     int non_silence_begin = 1;
-                    for ( int i = 1; i < L16.Length; i++ )
-                    {
-                        if ( L16[i] != 0 )
-                        {
+                    for ( int i = 1; i < L16.Length; i++ ) {
+                        if ( L16[i] != 0 ) {
                             non_silence_begin = i;
                             break;
                         }
                     }
                     int non_silence_end = L16.Length - 1;
-                    for ( int i = L16.Length - 1; i >= 0; i-- )
-                    {
-                        if ( L16[i] != 0 )
-                        {
+                    for ( int i = L16.Length - 1; i >= 0; i-- ) {
+                        if ( L16[i] != 0 ) {
                             non_silence_end = i;
                             break;
                         }
@@ -1499,23 +1140,17 @@ namespace Boare.Lib.Media
                     L16 = resizeArray( L16, count );
                     copyArray( R16, 0, L16, 0, count );
                     R16 = null;
-                }
-                else
-                {
+                } else {
                     int non_silence_begin = 1;
-                    for ( int i = 1; i < L16.Length; i++ )
-                    {
-                        if ( L16[i] != 0 || R16[i] != 0 )
-                        {
+                    for ( int i = 1; i < L16.Length; i++ ) {
+                        if ( L16[i] != 0 || R16[i] != 0 ) {
                             non_silence_begin = i;
                             break;
                         }
                     }
                     int non_silence_end = L16.Length - 1;
-                    for ( int i = L16.Length - 1; i >= 0; i-- )
-                    {
-                        if ( L16[i] != 0 || R16[i] != 0 )
-                        {
+                    for ( int i = L16.Length - 1; i >= 0; i-- ) {
+                        if ( L16[i] != 0 || R16[i] != 0 ) {
                             non_silence_end = i;
                             break;
                         }
@@ -1537,80 +1172,63 @@ namespace Boare.Lib.Media
                 }
             }
 
-            if ( m_bit_per_sample == 8 )
-            {
+            if ( m_bit_per_sample == 8 ) {
                 m_total_samples = (long)L8.Length;
-            }
-            else
-            {
+            } else {
                 m_total_samples = (long)L16.Length;
             }
         }
 
-        public Wave()
-        {
+        public Wave() {
             m_channel = WaveChannel.Stereo;
             m_bit_per_sample = 16;
             m_sample_rate = 44100;
         }
 
-        public Wave( WaveChannel channels, int bit_per_sample, int sample_rate, int initial_capacity )
-        {
+        public Wave( WaveChannel channels, int bit_per_sample, int sample_rate, int initial_capacity ) {
             m_channel = channels;
             m_bit_per_sample = bit_per_sample;
             m_sample_rate = sample_rate;
             m_total_samples = initial_capacity;
-            if ( m_bit_per_sample == 8 )
-            {
+            if ( m_bit_per_sample == 8 ) {
                 L8 = new byte[(int)m_total_samples];
-                if ( m_channel == WaveChannel.Stereo )
-                {
+                if ( m_channel == WaveChannel.Stereo ) {
                     R8 = new byte[(int)m_total_samples];
                 }
-            }
-            else if ( m_bit_per_sample == 16 )
-            {
+            } else if ( m_bit_per_sample == 16 ) {
                 L16 = new short[(int)m_total_samples];
-                if ( m_channel == WaveChannel.Stereo )
-                {
+                if ( m_channel == WaveChannel.Stereo ) {
                     R16 = new short[(int)m_total_samples];
                 }
             }
         }
 
-        public void append( double[] L, double[] R )
-        {
+        public void append( double[] L, double[] R ) {
             int length = Math.Min( L.Length, R.Length );
             int old_length = L16.Length;
-            if ( m_bit_per_sample == 16 && m_channel == WaveChannel.Stereo )
-            {
+            if ( m_bit_per_sample == 16 && m_channel == WaveChannel.Stereo ) {
                 L16 = resizeArray( L16, (int)(m_total_samples + length) );
                 R16 = resizeArray( R16, (int)(m_total_samples + length) );
                 m_total_samples += (long)length;
-                for ( int i = old_length; i < m_total_samples; i++ )
-                {
+                for ( int i = old_length; i < m_total_samples; i++ ) {
                     L16[i] = (short)(L[i - old_length] * 32768f);
                     R16[i] = (short)(R[i - old_length] * 32768f);
                 }
             } //else ... TODO: Wave+Append他のbitpersec, channelのとき
         }
 
-        public Wave( String path )
-        {
+        public Wave( String path ) {
             read( path );
         }
 
-        private boolean parseAiffHeader( RandomAccessFile fs )
-        {
-            try
-            {
+        private boolean parseAiffHeader( RandomAccessFile fs ) {
+            try {
                 byte[] buf = new byte[4];
                 fs.read( buf, 0, 4 );
                 long chunk_size_form = PortUtil.make_uint_be( buf );
                 fs.read( buf, 0, 4 ); // AIFF
                 String tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
-                if ( !tag.Equals( "AIFF" ) )
-                {
+                if ( !tag.Equals( "AIFF" ) ) {
 #if DEBUG
                     Console.WriteLine( "Wave#parseAiffHeader; error; tag=" + tag + " and must be AIFF" );
 #endif
@@ -1618,8 +1236,7 @@ namespace Boare.Lib.Media
                 }
                 fs.read( buf, 0, 4 ); // COMM
                 tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
-                if ( !tag.Equals( "COMM" ) )
-                {
+                if ( !tag.Equals( "COMM" ) ) {
 #if DEBUG
                     Console.WriteLine( "Wave#parseAiffHeader; error; tag=" + tag + " and must be COMM" );
 #endif
@@ -1630,12 +1247,9 @@ namespace Boare.Lib.Media
                 long chunk_loc_comm = fs.getFilePointer();
                 fs.read( buf, 0, 2 ); // number of channel
                 int num_channel = PortUtil.make_ushort_be( buf );
-                if ( num_channel == 1 )
-                {
+                if ( num_channel == 1 ) {
                     m_channel = WaveChannel.Monoral;
-                }
-                else
-                {
+                } else {
                     m_channel = WaveChannel.Stereo;
                 }
                 fs.read( buf, 0, 4 ); // number of samples
@@ -1655,8 +1269,7 @@ namespace Boare.Lib.Media
 
                 fs.read( buf, 0, 4 ); // SSND
                 tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
-                if ( !tag.Equals( "SSND" ) )
-                {
+                if ( !tag.Equals( "SSND" ) ) {
 #if DEBUG
                     Console.WriteLine( "Wave#parseAiffHeader; error; tag=" + tag + " and must be SSND" );
 #endif
@@ -1664,16 +1277,13 @@ namespace Boare.Lib.Media
                 }
                 fs.read( buf, 0, 4 ); // SSND chunk size
                 long chunk_size_ssnd = PortUtil.make_uint_be( buf );
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
                 return false;
             }
             return true;
         }
 
-        private static double make_double_from_extended( byte[] bytes )
-        {
+        private static double make_double_from_extended( byte[] bytes ) {
             double f;
             long hiMant, loMant;
 
@@ -1687,18 +1297,12 @@ namespace Boare.Lib.Media
                    | ((long)(bytes[8] & 0xFF) << 8)
                    | ((long)(bytes[9] & 0xFF));
 
-            if ( expon == 0 && hiMant == 0 && loMant == 0 )
-            {
+            if ( expon == 0 && hiMant == 0 && loMant == 0 ) {
                 f = 0;
-            }
-            else
-            {
-                if ( expon == 0x7FFF )
-                {
+            } else {
+                if ( expon == 0x7FFF ) {
                     f = double.MaxValue;
-                }
-                else
-                {
+                } else {
                     expon -= 16383;
                     //f = ldexp( double_from_uint( hiMant ), expon -= 31 );
                     f = Math.Pow( 2.0, expon - 31 ) * double_from_uint( hiMant );
@@ -1707,25 +1311,19 @@ namespace Boare.Lib.Media
                 }
             }
 
-            if ( (bytes[0] & 0x80) != 0 )
-            {
+            if ( (bytes[0] & 0x80) != 0 ) {
                 return -f;
-            }
-            else
-            {
+            } else {
                 return f;
             }
         }
 
-        private static double double_from_uint( long u )
-        {
+        private static double double_from_uint( long u ) {
             return (((double)((int)(u - 2147483647 - 1))) + 2147483648.0);
         }
 
-        private boolean parseWaveHeader( RandomAccessFile fs )
-        {
-            try
-            {
+        private boolean parseWaveHeader( RandomAccessFile fs ) {
+            try {
                 byte[] buf = new byte[4];
                 // detect size of RIFF chunk
                 fs.read( buf, 0, 4 );
@@ -1740,8 +1338,7 @@ namespace Boare.Lib.Media
                 if ( buf[0] != 0x57 ||
                     buf[1] != 0x41 ||
                     buf[2] != 0x56 ||
-                    buf[3] != 0x45 )
-                {
+                    buf[3] != 0x45 ) {
 #if DEBUG
                     System.Diagnostics.Debug.WriteLine( "invalid wave header" );
 #endif
@@ -1754,8 +1351,7 @@ namespace Boare.Lib.Media
                 if ( buf[0] != 0x66 ||
                     buf[1] != 0x6d ||
                     buf[2] != 0x74 ||
-                    buf[3] != 0x20 )
-                {
+                    buf[3] != 0x20 ) {
 #if DEBUG
                     System.Diagnostics.Debug.WriteLine( "invalid fmt header" );
 #endif
@@ -1774,8 +1370,7 @@ namespace Boare.Lib.Media
                 // get format ID
                 fs.read( buf, 0, 2 );
                 int format_id = PortUtil.make_uint16_le( buf );
-                if ( format_id != 1 )
-                {
+                if ( format_id != 1 ) {
                     fs.close();
                     return false;
                 }
@@ -1786,16 +1381,11 @@ namespace Boare.Lib.Media
                 // get the number of channel(s)
                 fs.read( buf, 0, 2 );
                 int num_channels = PortUtil.make_uint16_le( buf );
-                if ( num_channels == 1 )
-                {
+                if ( num_channels == 1 ) {
                     m_channel = WaveChannel.Monoral;
-                }
-                else if ( num_channels == 2 )
-                {
+                } else if ( num_channels == 2 ) {
                     m_channel = WaveChannel.Stereo;
-                }
-                else
-                {
+                } else {
                     fs.close();
                     return false;
                 }
@@ -1817,8 +1407,7 @@ namespace Boare.Lib.Media
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine( "m_bit_per_sample=" + m_bit_per_sample );
 #endif
-                if ( m_bit_per_sample != 0x08 && m_bit_per_sample != 0x10 )
-                {
+                if ( m_bit_per_sample != 0x08 && m_bit_per_sample != 0x10 ) {
                     fs.close();
                     return false;
                 }
@@ -1832,8 +1421,7 @@ namespace Boare.Lib.Media
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine( "tag=" + tag );
 #endif
-                while ( tag != "data" )
-                {
+                while ( tag != "data" ) {
                     fs.read( buf, 0, 4 );
                     long size = PortUtil.make_uint_le( buf );
                     fs.seek( fs.getFilePointer() + size );
@@ -1852,9 +1440,7 @@ namespace Boare.Lib.Media
                 System.Diagnostics.Debug.WriteLine( "m_total_samples=" + m_total_samples );
 #endif
 
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
 #if DEBUG
                 System.Diagnostics.Debug.Write( ex.StackTrace );
 #endif
@@ -1862,44 +1448,32 @@ namespace Boare.Lib.Media
             return true;
         }
 
-        public boolean read( String path )
-        {
+        public boolean read( String path ) {
             RandomAccessFile fs = null;
             boolean ret = false;
-            try
-            {
+            try {
                 fs = new RandomAccessFile( path, "r" );
                 // check RIFF header
                 byte[] buf = new byte[4];
                 fs.read( buf, 0, 4 );
                 boolean change_byte_order = false;
-                if ( buf[0] == 0x52 && buf[1] == 0x49 && buf[2] == 0x46 && buf[3] == 0x46 )
-                {
+                if ( buf[0] == 0x52 && buf[1] == 0x49 && buf[2] == 0x46 && buf[3] == 0x46 ) {
                     ret = parseWaveHeader( fs );
-                }
-                else if ( buf[0] == 0x46 && buf[1] == 0x4f && buf[2] == 0x52 && buf[3] == 0x4d )
-                {
+                } else if ( buf[0] == 0x46 && buf[1] == 0x4f && buf[2] == 0x52 && buf[3] == 0x4d ) {
                     ret = parseAiffHeader( fs );
                     change_byte_order = true;
-                }
-                else
-                {
+                } else {
                     ret = false;
                 }
                 // prepare data
-                if ( m_bit_per_sample == 8 )
-                {
+                if ( m_bit_per_sample == 8 ) {
                     L8 = new byte[(int)m_total_samples];
-                    if ( m_channel == WaveChannel.Stereo )
-                    {
+                    if ( m_channel == WaveChannel.Stereo ) {
                         R8 = new byte[(int)m_total_samples];
                     }
-                }
-                else
-                {
+                } else {
                     L16 = new short[(int)m_total_samples];
-                    if ( m_channel == WaveChannel.Stereo )
-                    {
+                    if ( m_channel == WaveChannel.Stereo ) {
                         R16 = new short[(int)m_total_samples];
                     }
                 }
@@ -1907,33 +1481,25 @@ namespace Boare.Lib.Media
                 // read data
                 // TODO: big endianのときの読込み。
                 byte[] buf2 = new byte[2];
-                for ( int i = 0; i < m_total_samples; i++ )
-                {
-                    if ( m_bit_per_sample == 8 )
-                    {
+                for ( int i = 0; i < m_total_samples; i++ ) {
+                    if ( m_bit_per_sample == 8 ) {
                         fs.read( buf, 0, 1 );
                         L8[i] = buf[0];
-                        if ( m_channel == WaveChannel.Stereo )
-                        {
+                        if ( m_channel == WaveChannel.Stereo ) {
                             fs.read( buf, 0, 1 );
                             R8[i] = buf[0];
                         }
-                    }
-                    else
-                    {
+                    } else {
                         fs.read( buf2, 0, 2 );
-                        if ( change_byte_order )
-                        {
+                        if ( change_byte_order ) {
                             byte b = buf2[0];
                             buf2[0] = buf2[1];
                             buf2[1] = b;
                         }
                         L16[i] = PortUtil.make_int16_le( buf2 );
-                        if ( m_channel == WaveChannel.Stereo )
-                        {
+                        if ( m_channel == WaveChannel.Stereo ) {
                             fs.read( buf2, 0, 2 );
-                            if ( change_byte_order )
-                            {
+                            if ( change_byte_order ) {
                                 byte b = buf2[0];
                                 buf2[0] = buf2[1];
                                 buf2[1] = b;
@@ -1942,78 +1508,54 @@ namespace Boare.Lib.Media
                         }
                     }
                 }
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( fs != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( fs != null ) {
+                    try {
                         fs.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
             return ret;
         }
 
-        private static short[] resizeArray( short[] src, int length )
-        {
+        private static short[] resizeArray( short[] src, int length ) {
             short[] ret = new short[length];
-            if ( src.Length <= length )
-            {
-                for ( int i = 0; i < src.Length; i++ )
-                {
+            if ( src.Length <= length ) {
+                for ( int i = 0; i < src.Length; i++ ) {
                     ret[i] = src[i];
                 }
-            }
-            else
-            {
-                for ( int i = 0; i < length; i++ )
-                {
+            } else {
+                for ( int i = 0; i < length; i++ ) {
                     ret[i] = src[i];
                 }
             }
             return ret;
         }
 
-        private static byte[] resizeArray( byte[] src, int length )
-        {
+        private static byte[] resizeArray( byte[] src, int length ) {
             byte[] ret = new byte[length];
-            if ( src.Length <= length )
-            {
-                for ( int i = 0; i < src.Length; i++ )
-                {
+            if ( src.Length <= length ) {
+                for ( int i = 0; i < src.Length; i++ ) {
                     ret[i] = src[i];
                 }
-            }
-            else
-            {
-                for ( int i = 0; i < length; i++ )
-                {
+            } else {
+                for ( int i = 0; i < length; i++ ) {
                     ret[i] = src[i];
                 }
             }
             return ret;
         }
 
-        private static void copyArray( short[] src, int src_start, short[] dest, int dest_start, int length )
-        {
-            for ( int i = 0; i < length; i++ )
-            {
+        private static void copyArray( short[] src, int src_start, short[] dest, int dest_start, int length ) {
+            for ( int i = 0; i < length; i++ ) {
                 dest[i + dest_start] = src[i + src_start];
             }
         }
 
-        private static void copyArray( byte[] src, int src_start, byte[] dest, int dest_start, int length )
-        {
-            for ( int i = 0; i < length; i++ )
-            {
+        private static void copyArray( byte[] src, int src_start, byte[] dest, int dest_start, int length ) {
+            for ( int i = 0; i < length; i++ ) {
                 dest[i + dest_start] = src[i + src_start];
             }
         }

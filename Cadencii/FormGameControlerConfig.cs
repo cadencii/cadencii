@@ -24,32 +24,27 @@ using Boare.Lib.AppUtil;
 using bocoree.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using BEventArgs = EventArgs;
 #endif
 
 #if JAVA
-    public class FormGameControlerConfig extends BForm
+    public class FormGameControlerConfig extends BForm {
 #else
-    public class FormGameControlerConfig : BForm
+    public class FormGameControlerConfig : BForm {
 #endif
-    {
         private Vector<Integer> m_list = new Vector<Integer>();
         private Vector<Integer> m_povs = new Vector<Integer>();
         private int index;
 
-        public FormGameControlerConfig()
-        {
+        public FormGameControlerConfig() {
             InitializeComponent();
-            for ( int i = 0; i < 10; i++ )
-            {
+            for ( int i = 0; i < 10; i++ ) {
                 m_list.add( -1 );
             }
-            for ( int i = 0; i < 4; i++ )
-            {
+            for ( int i = 0; i < 4; i++ ) {
                 m_povs.add( int.MinValue );
             }
             ApplyLanguage();
@@ -58,8 +53,7 @@ namespace Boare.Cadencii
 #else
             int num_dev = winmmhelp.JoyGetNumJoyDev();
 #endif
-            if ( num_dev > 0 )
-            {
+            if ( num_dev > 0 ) {
                 pictButton.Image = Boare.Cadencii.Properties.Resources.btn1;
                 progressCount.Maximum = 8;
                 progressCount.Minimum = 0;
@@ -68,28 +62,22 @@ namespace Boare.Cadencii
                 btnSkip.Enabled = true;
                 btnReset.Enabled = true;
                 timer.Start();
-            }
-            else
-            {
+            } else {
                 btnSkip.Enabled = false;
                 btnReset.Enabled = false;
             }
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage()
-        {
+        public void ApplyLanguage() {
 #if JAVA
             int num_dev = 0;
 #else
             int num_dev = winmmhelp.JoyGetNumJoyDev();
 #endif
-            if ( num_dev > 0 )
-            {
+            if ( num_dev > 0 ) {
                 lblMessage.setText( _( "Push buttons in turn as shown below" ) );
-            }
-            else
-            {
+            } else {
                 lblMessage.setText( _( "Game controler is not available" ) );
             }
             setTitle( _( "Game Controler Configuration" ) );
@@ -99,8 +87,7 @@ namespace Boare.Cadencii
             btnSkip.setText( _( "Skip" ) );
         }
 
-        private void timer_Tick( Object sender, BEventArgs e )
-        {
+        private void timer_Tick( Object sender, BEventArgs e ) {
             //int num_btn = vstidrv.JoyGetNumButtons( 0 );
             byte[] btn;
             int pov;
@@ -114,55 +101,39 @@ namespace Boare.Cadencii
             AppManager.debugWriteLine( "    pov=" + pov );
 #endif
             boolean added = false;
-            if ( index <= 4 )
-            {
-                if ( pov >= 0 && !m_povs.contains( pov ) )
-                {
+            if ( index <= 4 ) {
+                if ( pov >= 0 && !m_povs.contains( pov ) ) {
                     m_povs.set( index - 1, pov );
                     added = true;
                 }
-            }
-            else
-            {
-                for ( int i = 0; i < btn.Length; i++ )
-                {
-                    if ( btn[i] > 0x0 && !m_list.contains( i ) )
-                    {
+            } else {
+                for ( int i = 0; i < btn.Length; i++ ) {
+                    if ( btn[i] > 0x0 && !m_list.contains( i ) ) {
                         m_list.set( index - 5, i );
                         added = true;
                         break;
                     }
                 }
             }
-            if ( added )
-            {
-                if ( index <= 8 )
-                {
+            if ( added ) {
+                if ( index <= 8 ) {
                     progressCount.Value = index;
-                }
-                else if ( index <= 12 )
-                {
+                } else if ( index <= 12 ) {
                     progressCount.Value = index - 8;
-                }
-                else
-                {
+                } else {
                     progressCount.Value = index - 12;
                 }
 
-                if ( index == 8 )
-                {
+                if ( index == 8 ) {
                     pictButton.Image = Boare.Cadencii.Properties.Resources.btn2;
                     progressCount.Value = 0;
                     progressCount.Maximum = 4;
-                }
-                else if ( index == 12 )
-                {
+                } else if ( index == 12 ) {
                     pictButton.Image = Boare.Cadencii.Properties.Resources.btn3;
                     progressCount.Value = 0;
                     progressCount.Maximum = 2;
                 }
-                if ( index == 14 )
-                {
+                if ( index == 14 ) {
                     btnSkip.Enabled = false;
                     btnOK.Enabled = true;
                     timer.Stop();
@@ -171,118 +142,90 @@ namespace Boare.Cadencii
             }
         }
 
-        public int getRectangle()
-        {
+        public int getRectangle() {
             return m_list.get( 0 );
         }
 
-        public int getTriangle()
-        {
+        public int getTriangle() {
             return m_list.get( 1 );
         }
 
-        public int getCircle()
-        {
+        public int getCircle() {
             return m_list.get( 2 );
         }
 
-        public int getCross()
-        {
+        public int getCross() {
             return m_list.get( 3 );
         }
 
-        public int getL1()
-        {
+        public int getL1() {
             return m_list.get( 4 );
         }
 
-        public int getL2()
-        {
+        public int getL2() {
             return m_list.get( 5 );
         }
 
-        public int getR1()
-        {
+        public int getR1() {
             return m_list.get( 6 );
         }
 
-        public int getR2()
-        {
+        public int getR2() {
             return m_list.get( 7 );
         }
 
-        public int getSelect()
-        {
+        public int getSelect() {
             return m_list.get( 8 );
         }
 
-        public int getStart()
-        {
+        public int getStart() {
             return m_list.get( 9 );
         }
 
-        public int getPovDown()
-        {
+        public int getPovDown() {
             return m_povs.get( 0 );
         }
 
-        public int getPovLeft()
-        {
+        public int getPovLeft() {
             return m_povs.get( 1 );
         }
 
-        public int getPovUp()
-        {
+        public int getPovUp() {
             return m_povs.get( 2 );
         }
 
-        public int getPovRight()
-        {
+        public int getPovRight() {
             return m_povs.get( 3 );
         }
 
-        private static String _( String id )
-        {
+        private static String _( String id ) {
             return Messaging.getMessage( id );
         }
 
-        private void btnSkip_Click( Object sender, BEventArgs e )
-        {
-            if ( index <= 4 )
-            {
+        private void btnSkip_Click( Object sender, BEventArgs e ) {
+            if ( index <= 4 ) {
                 m_povs.set( index - 1, int.MinValue );
-            }
-            else
-            {
+            } else {
                 m_list.set( index - 5, -1 );
             }
-            if ( index <= 8 )
-            {
+            if ( index <= 8 ) {
                 progressCount.Value = index;
-            }
-            else if ( index <= 12 )
-            {
+            } else if ( index <= 12 ) {
                 progressCount.Value = index - 8;
-            }
-            else
-            {
+            } else {
                 progressCount.Value = index - 12;
             }
 
-            if ( index == 8 )
-            {
+            if ( index == 8 ) {
                 pictButton.Image = Boare.Cadencii.Properties.Resources.btn2;
                 progressCount.Value = 0;
                 progressCount.Maximum = 4;
-            }
-            else if ( index == 12 )
-            {
+            } else if ( index == 12 ) {
                 pictButton.Image = Boare.Cadencii.Properties.Resources.btn3;
                 progressCount.Value = 0;
                 progressCount.Maximum = 2;
             }
-            if ( index == 14 )
-            {
+            if ( index == 14 ) {
                 btnSkip.Enabled = false;
                 btnOK.Enabled = true;
                 timer.Stop();
@@ -290,8 +233,7 @@ namespace Boare.Cadencii
             index++;
         }
 
-        private void btnReset_Click( Object sender, BEventArgs e )
-        {
+        private void btnReset_Click( Object sender, BEventArgs e ) {
             m_list.set( 0, 3 ); // □
             m_list.set( 1, 0 ); // △
             m_list.set( 2, 1 ); // ○
@@ -322,10 +264,8 @@ namespace Boare.Cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
-        {
-            if ( disposing && (components != null) )
-            {
+        protected override void Dispose( boolean disposing ) {
+            if ( disposing && (components != null) ) {
                 components.Dispose();
             }
             base.Dispose( disposing );
@@ -337,8 +277,7 @@ namespace Boare.Cadencii
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.lblMessage = new BLabel();
             this.timer = new System.Windows.Forms.Timer( this.components );

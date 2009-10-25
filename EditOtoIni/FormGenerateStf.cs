@@ -28,8 +28,7 @@ using bocoree;
 using bocoree.util;
 using bocoree.windows.forms;
 
-namespace Boare.EditOtoIni
-{
+namespace Boare.EditOtoIni {
     using boolean = Boolean;
     using BEventArgs = EventArgs;
 #endif
@@ -37,11 +36,9 @@ namespace Boare.EditOtoIni
 #if JAVA
     public class FormGenerateStf extends BForm {
 #else
-    public class FormGenerateStf : BForm
-    {
+    public class FormGenerateStf : BForm {
 #endif
-        public enum GenerateMode
-        {
+        public enum GenerateMode {
             FRQ,
             STF,
         }
@@ -53,8 +50,7 @@ namespace Boare.EditOtoIni
         private long m_remaining = 0;
         private long m_elapsed = 0;
 
-        public FormGenerateStf( String oto_ini, Vector<StfQueueArgs> list, GenerateMode mode )
-        {
+        public FormGenerateStf( String oto_ini, Vector<StfQueueArgs> list, GenerateMode mode ) {
 #if JAVA
             super();
             initialize();
@@ -73,13 +69,11 @@ namespace Boare.EditOtoIni
             this.Text = string.Format( _( "Generate {0} file" ), mode + "" );
         }
 
-        private void FormGenerateStf_Load( Object sender, BEventArgs e )
-        {
+        private void FormGenerateStf_Load( Object sender, BEventArgs e ) {
             bgWork.RunWorkerAsync();
         }
 
-        private static String _( String id )
-        {
+        private static String _( String id ) {
             return Boare.Lib.AppUtil.Messaging.getMessage( id );
         }
 
@@ -88,16 +82,14 @@ namespace Boare.EditOtoIni
 #else
         private void bgWork_DoWork( Object sender, DoWorkEventArgs e )
 #endif
-        {
+ {
 #if DEBUG
             Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; m_oto_ini=" + m_oto_ini );
 #endif
-            if ( m_oto_ini.Equals( "" ) )
-            {
+            if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
-            if ( !PortUtil.isFileExists( m_oto_ini ) )
-            {
+            if ( !PortUtil.isFileExists( m_oto_ini ) ) {
                 return;
             }
             String straightVoiceDB = PortUtil.combinePath( Application.StartupPath, "straightVoiceDB.exe" );
@@ -114,11 +106,9 @@ namespace Boare.EditOtoIni
             PortUtil.println( "started_date=" + started_date );
 #endif
 #endif
-            if ( m_mode == GenerateMode.STF )
-            {
+            if ( m_mode == GenerateMode.STF ) {
                 #region STF
-                if ( !PortUtil.isFileExists( straightVoiceDB ) )
-                {
+                if ( !PortUtil.isFileExists( straightVoiceDB ) ) {
                     MessageBox.Show( _( "Analyzer, 'straightVoiceDB.exe' does not exist." ),
                                      _( "Error" ),
                                      MessageBoxButtons.OK,
@@ -127,8 +117,7 @@ namespace Boare.EditOtoIni
                 }
                 String dir = PortUtil.getDirectoryName( m_oto_ini );
                 String analyzed = PortUtil.combinePath( dir, "analyzed" );
-                if ( !PortUtil.isDirectoryExists( analyzed ) )
-                {
+                if ( !PortUtil.isDirectoryExists( analyzed ) ) {
                     PortUtil.createDirectory( analyzed );
                 }
 
@@ -136,32 +125,25 @@ namespace Boare.EditOtoIni
                 int actual_count = 0;
                 double total_bytes = 0.0;//処理しなければならないwaveファイルの容量
                 double processed_bytes = 0.0;//処理済のwaveファイルの容量
-                for ( int i = 0; i < count; i++ )
-                {
+                for ( int i = 0; i < count; i++ ) {
                     StfQueueArgs item = m_list_files.get( i );
                     String wav_name = item.waveName;
                     String wav_file = PortUtil.combinePath( dir, wav_name );
                     String stf_file = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
-                    if ( PortUtil.isFileExists( stf_file ) )
-                    {
+                    if ( PortUtil.isFileExists( stf_file ) ) {
                         continue;
                     }
-                    try
-                    {
+                    try {
                         total_bytes += PortUtil.getFileLength( wav_file );
-                    }
-                    catch ( Exception ex )
-                    {
+                    } catch ( Exception ex ) {
                     }
                     actual_count++;
                 }
                 bgWork.ReportProgress( 0, new int[] { 0, actual_count } );
 
                 int actual_progress = 0;
-                for ( int i = 0; i < count; i++ )
-                {
-                    if ( m_abort_required )
-                    {
+                for ( int i = 0; i < count; i++ ) {
+                    if ( m_abort_required ) {
                         break;
                     }
                     StfQueueArgs item = m_list_files.get( i );
@@ -173,13 +155,11 @@ namespace Boare.EditOtoIni
 #endif
                     String wav_file = PortUtil.combinePath( dir, wav_name );
                     String stf_file = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
-                    if ( PortUtil.isFileExists( stf_file ) )
-                    {
+                    if ( PortUtil.isFileExists( stf_file ) ) {
                         continue;
                     }
                     Process process = null;
-                    try
-                    {
+                    try {
 #if JAVA
                         Runtime r = Runtime.getRuntime();
                         Vector<String> cmds = new Vector<String>();
@@ -202,34 +182,23 @@ namespace Boare.EditOtoIni
                         process.PriorityClass = ProcessPriorityClass.BelowNormal;
                         process.WaitForExit();
 #endif
-                    }
-                    catch ( Exception ex )
-                    {
-                    }
-                    finally
-                    {
-                        if ( process != null )
-                        {
-                            try
-                            {
+                    } catch ( Exception ex ) {
+                    } finally {
+                        if ( process != null ) {
+                            try {
 #if JAVA
                                 process.destroy();
 #else
                                 process.Dispose();
 #endif
-                            }
-                            catch ( Exception ex2 )
-                            {
+                            } catch ( Exception ex2 ) {
                             }
                         }
                     }
                     actual_progress++;
-                    try
-                    {
+                    try {
                         processed_bytes += PortUtil.getFileLength( wav_file );
-                    }
-                    catch ( Exception ex )
-                    {
+                    } catch ( Exception ex ) {
                     }
 
 #if JAVA
@@ -244,11 +213,8 @@ namespace Boare.EditOtoIni
                 }
                 bgWork.ReportProgress( 100, new int[] { actual_count, actual_count } );
                 #endregion
-            }
-            else
-            {
-                if ( !PortUtil.isFileExists( resampler ) )
-                {
+            } else {
+                if ( !PortUtil.isFileExists( resampler ) ) {
                     MessageBox.Show( _( "Don't know the path of 'resampler.exe'. Please check the configuration of Cadencii." ),
                                      _( "Error" ),
                                      MessageBoxButtons.OK,
@@ -261,22 +227,17 @@ namespace Boare.EditOtoIni
                 int actual_count = 0;
                 double total_bytes = 0.0;
                 double processed_bytes = 0.0;
-                for ( int i = 0; i < count; i++ )
-                {
+                for ( int i = 0; i < count; i++ ) {
                     StfQueueArgs item = m_list_files.get( i );
                     String wav_name = item.waveName;
                     String wav_file = PortUtil.combinePath( dir, wav_name );
                     String frq_file = PortUtil.combinePath( dir, wav_name.Replace( ".", "_" ) + ".frq" );
-                    if ( PortUtil.isFileExists( frq_file ) )
-                    {
+                    if ( PortUtil.isFileExists( frq_file ) ) {
                         continue;
                     }
-                    try
-                    {
+                    try {
                         total_bytes += PortUtil.getFileLength( wav_file );
-                    }
-                    catch( Exception ex )
-                    {
+                    } catch ( Exception ex ) {
                     }
                     actual_count++;
                 }
@@ -284,10 +245,8 @@ namespace Boare.EditOtoIni
 
                 String temp_wav = PortUtil.createTempFile() + ".wav";
                 int actual_progress = 0;
-                for ( int i = 0; i < count; i++ )
-                {
-                    if ( m_abort_required )
-                    {
+                for ( int i = 0; i < count; i++ ) {
+                    if ( m_abort_required ) {
                         break;
                     }
                     StfQueueArgs item = m_list_files.get( i );
@@ -297,13 +256,11 @@ namespace Boare.EditOtoIni
 #endif
                     String wav_file = PortUtil.combinePath( dir, wav_name );
                     String frq_file = PortUtil.combinePath( dir, wav_name.Replace( ".", "_" ) + ".frq" );
-                    if ( PortUtil.isFileExists( frq_file ) )
-                    {
+                    if ( PortUtil.isFileExists( frq_file ) ) {
                         continue;
                     }
                     Process process = null;
-                    try
-                    {
+                    try {
 #if JAVA
                         Runtime r = Runtime.getRuntime();
                         Vector<String> cmds = new Vector<String>();
@@ -326,31 +283,20 @@ namespace Boare.EditOtoIni
                         process.PriorityClass = ProcessPriorityClass.BelowNormal;
                         process.WaitForExit();
 #endif
-                    }
-                    catch ( Exception ex )
-                    {
-                    }
-                    finally
-                    {
-                        if ( process != null )
-                        {
-                            try
-                            {
+                    } catch ( Exception ex ) {
+                    } finally {
+                        if ( process != null ) {
+                            try {
                                 process.Dispose();
-                            }
-                            catch ( Exception ex2 )
-                            {
+                            } catch ( Exception ex2 ) {
                             }
                         }
                     }
 
                     actual_progress++;
-                    try
-                    {
+                    try {
                         processed_bytes += PortUtil.getFileLength( wav_file );
-                    }
-                    catch( Exception ex )
-                    {
+                    } catch ( Exception ex ) {
                     }
 
 #if JAVA
@@ -364,12 +310,9 @@ namespace Boare.EditOtoIni
                     // 
                     bgWork.ReportProgress( actual_progress * 100 / actual_count, new int[] { actual_progress, actual_count } );
                 }
-                try
-                {
+                try {
                     PortUtil.deleteFile( temp_wav );
-                }
-                catch( Exception ex )
-                {
+                } catch ( Exception ex ) {
                 }
                 bgWork.ReportProgress( 100, new int[] { actual_count, actual_count } );
             }
@@ -380,31 +323,24 @@ namespace Boare.EditOtoIni
 #else
         private void bgWork_ProgressChanged( Object sender, ProgressChangedEventArgs e )
 #endif
-        {
+ {
             progressBar.Value = e.ProgressPercentage;
 
-            if ( e.UserState is int[] )
-            {
+            if ( e.UserState is int[] ) {
                 int[] rational = (int[])e.UserState;
-                if ( rational.Length >= 2 )
-                {
+                if ( rational.Length >= 2 ) {
                     lblPercent.Text = e.ProgressPercentage + " % (" + rational[0] + "/" + rational[1] + ")";
-                }
-                else
-                {
+                } else {
                     lblPercent.Text = e.ProgressPercentage + " %";
                 }
-            }
-            else
-            {
+            } else {
                 lblPercent.Text = e.ProgressPercentage + " %";
             }
 
             lblTime.Text = _( "Remaining" ) + " " + getTimeSpanString( m_remaining ) + " (" + getTimeSpanString( m_elapsed ) + " " + _( "elapsed" ) + ")";
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e )
-        {
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
             m_abort_required = true;
         }
 
@@ -413,34 +349,30 @@ namespace Boare.EditOtoIni
 #else
         private void bgWork_RunWorkerCompleted( Object sender, RunWorkerCompletedEventArgs e )
 #endif
-        {
+ {
             this.Close();
         }
 
-        private static String getTimeSpanString( long span )
-        {
+        private static String getTimeSpanString( long span ) {
             int sec_per_day = 24 * 60 * 60;
             int sec_per_hour = 60 * 60;
             int sec_per_min = 60;
             String ret = "";
             boolean added = false;
             int i = (int)(span / sec_per_day);
-            if ( i > 0 )
-            {
+            if ( i > 0 ) {
                 ret += i + _( "day" ) + " ";
                 added = true;
                 span -= i * sec_per_day;
             }
             i = (int)(span / sec_per_hour);
-            if ( added || i > 0 )
-            {
+            if ( added || i > 0 ) {
                 ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "hour" ) + " ";
                 added = true;
                 span -= i * sec_per_hour;
             }
             i = (int)(span / sec_per_min);
-            if ( added || i > 0 )
-            {
+            if ( added || i > 0 ) {
                 ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "min" ) + " ";
                 added = true;
                 span -= i * sec_per_min;
@@ -554,10 +486,8 @@ namespace Boare.EditOtoIni
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing )
-        {
-            if ( disposing && (components != null) )
-            {
+        protected override void Dispose( bool disposing ) {
+            if ( disposing && (components != null) ) {
                 components.Dispose();
             }
             base.Dispose( disposing );
@@ -569,8 +499,7 @@ namespace Boare.EditOtoIni
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.lblPercent = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.btnCancel = new System.Windows.Forms.Button();

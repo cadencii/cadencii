@@ -20,11 +20,6 @@ namespace Boare.Cadencii{
     public class Program {
         [STAThread]
         static void Main() {
-#if DEBUG
-            /*Boare.Lib.AppUtil.Messaging.AppendFromFile( Path.Combine( Application.StartupPath, "ja.po" ) );
-            Application.Run( new Form() );
-            return;*/
-#endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
 #if !DEBUG

@@ -306,11 +306,11 @@ namespace bocoree {
             byte[] dat = new byte[4];
             data = 0xffffffff & data;
             dat[3] = (byte)(data & (byte)0xff);
-            data = (byte)(data >>> 8);
+            data = (data >>> 8);
             dat[2] = (byte)(data & (byte)0xff);
-            data = (byte)(data >>> 8);
+            data = (data >>> 8);
             dat[1] = (byte)(data & (byte)0xff);
-            data = (byte)(data >>> 8);
+            data = (data >>> 8);
             dat[0] = (byte)(data & (byte)0xff);
             return dat;
 #else

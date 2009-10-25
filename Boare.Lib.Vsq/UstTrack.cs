@@ -20,51 +20,42 @@ using System;
 using bocoree;
 using bocoree.util;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class UstTrack implements Cloneable
+    public class UstTrack implements Cloneable {
 #else
-    public class UstTrack : ICloneable
+    public class UstTrack : ICloneable {
 #endif
-    {
         public Object Tag;
         private Vector<UstEvent> m_events;
 
-        public UstTrack()
-        {
+        public UstTrack() {
             m_events = new Vector<UstEvent>();
         }
 
-        public UstEvent getEvent( int index )
-        {
+        public UstEvent getEvent( int index ) {
             return m_events.get( index );
         }
 
-        public void setEvent( int index, UstEvent item )
-        {
+        public void setEvent( int index, UstEvent item ) {
             m_events.set( index, item );
         }
 
-        public void addEvent( UstEvent item )
-        {
+        public void addEvent( UstEvent item ) {
             m_events.add( item );
         }
 
-        public void removeEvent( int index )
-        {
+        public void removeEvent( int index ) {
             m_events.removeElementAt( index );
         }
 
-        public int getEventCount()
-        {
+        public int getEventCount() {
             return m_events.size();
         }
 
-        public Iterator getNoteEventIterator()
-        {
+        public Iterator getNoteEventIterator() {
 #if JAVA
             return m_events.iterator();
 #else
@@ -72,19 +63,16 @@ namespace Boare.Lib.Vsq
 #endif
         }
 
-        public Object clone()
-        {
+        public Object clone() {
             UstTrack ret = new UstTrack();
-            for ( int i = 0; i < m_events.size(); i++ )
-            {
+            for ( int i = 0; i < m_events.size(); i++ ) {
                 ret.m_events.set( i, (UstEvent)m_events.get( i ).clone() );
             }
             return ret;
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif

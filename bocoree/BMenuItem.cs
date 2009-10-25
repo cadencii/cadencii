@@ -54,7 +54,7 @@ namespace bocoree.windows.forms {
         }
 
         public void setSelected( bool value ) {
-            base.Checked = true;
+            base.Checked = value;
         }
 #endif
         #endregion

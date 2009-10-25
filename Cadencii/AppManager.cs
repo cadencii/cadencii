@@ -43,7 +43,9 @@ namespace Boare.Cadencii {
         /// <summary>
         /// 鍵盤の表示幅(pixel)
         /// </summary>
-        public const int KEY_LENGTH = 68;
+        public static int keyWidth = MIN_KEY_WIDTH;
+        public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
+        public const int MIN_KEY_WIDTH = 68;
         private const String CONFIG_FILE_NAME = "config.xml";
         private const String CONFIG_DIR_NAME = "Cadencii";
         /// <summary>
@@ -118,6 +120,9 @@ namespace Boare.Cadencii {
                                              "using Boare.Lib.Vsq;",
                                              "using Boare.Cadencii;",
                                              "using bocoree;",
+                                             "using bocoree.io;",
+                                             "using bocoree.util;",
+                                             "using bocoree.awt;",
                                              "using Boare.Lib.Media;",
                                              "using Boare.Lib.AppUtil;",
                                              "using System.Windows.Forms;",
@@ -419,7 +424,7 @@ namespace Boare.Cadencii {
         /// <param name="clocks"></param>
         /// <returns></returns>
         public static int xCoordFromClocks( double clocks ) {
-            return (int)(KEY_LENGTH + clocks * scaleX - startToDrawX) + 6;
+            return (int)(keyWidth + clocks * scaleX - startToDrawX) + 6;
         }
 
         /// <summary>
@@ -428,7 +433,7 @@ namespace Boare.Cadencii {
         /// <param name="x"></param>
         /// <returns></returns>
         public static int clockFromXCoord( int x ) {
-            return (int)((x + startToDrawX - 6 - KEY_LENGTH) / scaleX);
+            return (int)((x + startToDrawX - 6 - keyWidth) / scaleX);
         }
 
         #region 選択範囲の管理
@@ -485,6 +490,9 @@ namespace Boare.Cadencii {
                 mixerWindow.TopMost = true;
             }
 
+            if ( mainWindow != null ) {
+                mainWindow.Focus();
+            }
             if ( dr == DialogResult.OK ) {
                 return BDialogResult.OK;
             } else if ( dr == DialogResult.Cancel ) {
@@ -782,7 +790,7 @@ namespace Boare.Cadencii {
             return ret;
 #else
 #if DEBUG
-            AppManager.debugWriteLine( "Common.LoadScript(String)" );
+            AppManager.debugWriteLine( "AppManager#loadScript(String)" );
             AppManager.debugWriteLine( "    File.GetLastWriteTimeUtc( file )=" + System.IO.File.GetLastWriteTimeUtc( file ) );
 #endif
             ScriptInvoker ret = new ScriptInvoker();
@@ -799,6 +807,9 @@ namespace Boare.Cadencii {
                     script += line + "\n";
                 }
             } catch ( Exception ex ) {
+#if DEBUG
+                PortUtil.println( "AppManager#loadScript; ex=" + ex );
+#endif
             } finally {
                 if ( sr != null ) {
                     try {
@@ -819,22 +830,35 @@ namespace Boare.Cadencii {
             code += script;
             code += "}";
             ret.ErrorMessage = "";
-            CompilerResults results;
-            Assembly testAssembly = AppManager.compileScript( code, out results );
-            if ( testAssembly == null | results == null ) {
-                ret.ErrorMessage = "failed compiling";
-                return ret;
-            }
-            if ( results.Errors.Count != 0 ) {
-                for ( int i = 0; i < results.Errors.Count; i++ ) {
-                    ret.ErrorMessage += _( "line" ) + ":" + results.Errors[i].Line + " " + results.Errors[i].ErrorText + Environment.NewLine;
+
+            CompilerResults results = AppManager.compileScript( code );
+            Assembly testAssembly = null;
+            if ( results != null ) {
+                try {
+                    testAssembly = results.CompiledAssembly;
+                } catch ( Exception ex ) {
+                    testAssembly = null;
                 }
-                if ( results.Errors.HasErrors ) {
+            }
+#if DEBUG
+            PortUtil.println( "AppManager#loadScript; (results==null)=" + (results == null) );
+            PortUtil.println( "AppManager#loadScript; (testAssembly==null)=" + (testAssembly == null) );
+#endif
+
+            if ( testAssembly == null ) {
+                ret.scriptDelegate = null;
+                if ( results == null ) {
+                    ret.ErrorMessage = "failed compiling";
+                    return ret;
+                } else {
+                    if ( results.Errors.Count != 0 ) {
+                        for ( int i = 0; i < results.Errors.Count; i++ ) {
+                            ret.ErrorMessage += _( "line" ) + ":" + results.Errors[i].Line + " " + results.Errors[i].ErrorText + Environment.NewLine;
+                        }
+                    }
                     return ret;
                 }
-            }
-
-            if ( testAssembly != null ) {
+            } else {
                 foreach ( Type implemented in testAssembly.GetTypes() ) {
                     Object scriptDelegate = null;
                     MethodInfo tmi = implemented.GetMethod( "Edit", new Type[] { typeof( VsqFile ) } );
@@ -1015,6 +1039,11 @@ namespace Boare.Cadencii {
                     }
                 }
                 ICommand inv = s_vsq.executeCommand( run );
+                if ( run.type == CadenciiCommandType.BGM_UPDATE ) {
+                    if ( mainWindow != null ) {
+                        mainWindow.updateBgmMenuState();
+                    }
+                }
                 s_commands.set( s_command_position, inv );
                 s_command_position--;
             }
@@ -1039,6 +1068,11 @@ namespace Boare.Cadencii {
                     }
                 }
                 ICommand inv = s_vsq.executeCommand( run );
+                if ( run.type == CadenciiCommandType.BGM_UPDATE ) {
+                    if ( mainWindow != null ) {
+                        mainWindow.updateBgmMenuState();
+                    }
+                }
                 s_commands.set( s_command_position + 1, inv );
                 s_command_position++;
             }
@@ -2075,7 +2109,11 @@ namespace Boare.Cadencii {
         }
         #endregion
 
-        public static Assembly compileScript( String code, out CompilerResults results ) {
+        public static CompilerResults compileScript( String code ) {
+#if DEBUG
+            PortUtil.println( "AppManager#compileScript" );
+#endif
+            CompilerResults ret = null;
             CSharpCodeProvider provider = new CSharpCodeProvider();
             String path = Application.StartupPath;
             CompilerParameters parameters = new CompilerParameters( new String[] {
@@ -2092,15 +2130,13 @@ namespace Boare.Cadencii {
             parameters.GenerateExecutable = false;
             parameters.IncludeDebugInformation = true;
             try {
-                results = provider.CompileAssemblyFromSource( parameters, code );
-                return results.CompiledAssembly;
+                ret = provider.CompileAssemblyFromSource( parameters, code );
             } catch ( Exception ex ) {
 #if DEBUG
-                AppManager.debugWriteLine( "AppManager.CompileScript; ex=" + ex );
+                AppManager.debugWriteLine( "AppManager#compileScript; ex=" + ex );
 #endif
-                results = null;
-                return null;
             }
+            return ret;
         }
 
         /// <summary>
@@ -2141,6 +2177,7 @@ namespace Boare.Cadencii {
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                 editorConfig.UserDictionaries.add( SymbolTable.getSymbolTable( i ).getName() + "\t" + (SymbolTable.getSymbolTable( i ).isEnabled() ? "T" : "F") );
             }
+            editorConfig.KeyWidth = keyWidth;
 
             String file = PortUtil.combinePath( getApplicationDataPath(), CONFIG_FILE_NAME );
             try {
@@ -2195,6 +2232,14 @@ namespace Boare.Cadencii {
             MidiPlayer.ProgramBell = editorConfig.MidiProgramBell;
             MidiPlayer.ProgramNormal = editorConfig.MidiProgramNormal;
             MidiPlayer.RingBell = editorConfig.MidiRingBell;
+
+            int draft_key_width = editorConfig.KeyWidth;
+            if ( draft_key_width < MIN_KEY_WIDTH ) {
+                draft_key_width = MIN_KEY_WIDTH;
+            } else if ( MAX_KEY_WIDTH < draft_key_width ) {
+                draft_key_width = MAX_KEY_WIDTH;
+            }
+            keyWidth = draft_key_width;
         }
 
         public static VsqID getSingerIDUtau( String name ) {
@@ -2259,7 +2304,7 @@ namespace Boare.Cadencii {
                 rev = "?";
             }
 #if DEBUG
-            prefix = "(rev: " + rev + "; build: debug)";
+            prefix = "\n(rev: " + rev + "; build: debug)";
 #else
             prefix = "\n(rev: " + rev + "; build: release)";
 #endif

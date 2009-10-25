@@ -20,20 +20,17 @@ using System;
 using bocoree;
 using bocoree.io;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class WrappedStreamWriter implements ITextWriter
+    public class WrappedStreamWriter implements ITextWriter {
 #else
-    public class WrappedStreamWriter : ITextWriter
+    public class WrappedStreamWriter : ITextWriter {
 #endif
-    {
         BufferedWriter m_writer;
 
-        public WrappedStreamWriter( BufferedWriter stream_writer )
-        {
+        public WrappedStreamWriter( BufferedWriter stream_writer ) {
             m_writer = stream_writer;
         }
 

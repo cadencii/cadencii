@@ -27,21 +27,18 @@ using bocoree;
 using bocoree.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
     using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA
-    public class FormImportLyric extends BForm
+    public class FormImportLyric extends BForm {
 #else
-    class FormImportLyric : BForm
+    class FormImportLyric : BForm {
 #endif
-    {
         private int m_max_notes = 1;
 
-        public FormImportLyric( int max_notes )
-        {
+        public FormImportLyric( int max_notes ) {
 #if JAVA
             initialize();
 #else
@@ -54,81 +51,62 @@ namespace Boare.Cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage()
-        {
+        public void ApplyLanguage() {
             Text = _( "Import lyrics" );
             btnCancel.Text = _( "Cancel" );
             btnOK.Text = _( "OK" );
         }
 
-        public static String _( String id )
-        {
+        public static String _( String id ) {
             return Messaging.getMessage( id );
         }
 
-        public String[] GetLetters()
-        {
+        public String[] GetLetters() {
             Vector<char> _SMALL = new Vector<char>( new char[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'ゃ', 'ゅ', 'ょ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ャ', 'ュ', 'ョ' } );
             String tmp = "";
-            for ( int i = 0; i < m_max_notes; i++ )
-            {
-                if ( i >= txtLyrics.Lines.Length )
-                {
+            for ( int i = 0; i < m_max_notes; i++ ) {
+                if ( i >= txtLyrics.Lines.Length ) {
                     break;
                 }
                 tmp += txtLyrics.Lines[i] + " ";
             }
             String[] spl = PortUtil.splitString( tmp, new char[] { '\n', '\t', ' ', '　', '\r' }, true );
             Vector<String> ret = new Vector<String>();
-            for ( int j = 0; j < spl.Length; j++ )
-            {
+            for ( int j = 0; j < spl.Length; j++ ) {
                 String s = spl[j];
                 char[] list = s.ToCharArray();
                 String t = "";
                 int i = -1;
-                while ( i + 1 < list.Length )
-                {
+                while ( i + 1 < list.Length ) {
                     i++;
-                    if ( 0x41 <= list[i] && list[i] <= 0x176 )
-                    {
+                    if ( 0x41 <= list[i] && list[i] <= 0x176 ) {
                         t += list[i].ToString();
-                    }
-                    else
-                    {
-                        if ( t.Length > 0 )
-                        {
+                    } else {
+                        if ( t.Length > 0 ) {
                             ret.add( t );
                             t = "";
                         }
-                        if ( i + 1 < list.Length )
-                        {
-                            if ( _SMALL.contains( list[i + 1] ) )
-                            {
+                        if ( i + 1 < list.Length ) {
+                            if ( _SMALL.contains( list[i + 1] ) ) {
                                 // 次の文字が拗音の場合
                                 ret.add( list[i].ToString() + list[i + 1].ToString() );
                                 i++;
-                            }
-                            else
-                            {
+                            } else {
                                 ret.add( list[i].ToString() );
                             }
-                        }
-                        else
-                        {
+                        } else {
                             ret.add( list[i].ToString() );
                         }
                     }
                 }
-                if ( t.Length > 0 )
-                {
+                if ( t.Length > 0 ) {
                     ret.add( t );
                 }
             }
             return ret.toArray( new String[] { } );
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e )
-        {
+        private void btnOK_Click( Object sender, BEventArgs e ) {
             this.DialogResult = DialogResult.OK;
         }
 #if JAVA
@@ -259,10 +237,8 @@ namespace Boare.Cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing )
-        {
-            if ( disposing && (components != null) )
-            {
+        protected override void Dispose( bool disposing ) {
+            if ( disposing && (components != null) ) {
                 components.Dispose();
             }
             base.Dispose( disposing );
@@ -274,8 +250,7 @@ namespace Boare.Cadencii
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.txtLyrics = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();

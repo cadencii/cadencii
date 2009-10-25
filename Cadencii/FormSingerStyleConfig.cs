@@ -41,6 +41,8 @@ namespace Boare.Cadencii {
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
             btnApply.Text = _( "Apply to current track" ) + "(&C)";
+
+            lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
             this.Text = _( "Default Singer Style" );
         }
 
@@ -115,9 +117,8 @@ namespace Boare.Cadencii {
 
         public FormSingerStyleConfig() {
             InitializeComponent();
-            ApplyLanguage();
-
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+            ApplyLanguage();
             Size current_size = this.ClientSize;
         }
 

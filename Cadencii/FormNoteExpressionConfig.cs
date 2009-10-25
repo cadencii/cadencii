@@ -47,6 +47,8 @@ namespace Boare.Cadencii {
 
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
+
+            lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
             this.Text = _( "Expression control property" );
         }
 
@@ -124,6 +126,7 @@ namespace Boare.Cadencii {
                 m_note_head_handle = (NoteHeadHandle)note_head_handle.clone();
             }
             InitializeComponent();
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             ApplyLanguage();
             if ( type == SynthesizerType.VOCALOID1 ) {
                 flowLayoutPanel.Controls.Remove( groupDynamicsControl );
@@ -160,7 +163,6 @@ namespace Boare.Cadencii {
             }
             comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
 
-            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             Size current_size = this.ClientSize;
             this.ClientSize = new Size( current_size.Width, flowLayoutPanel.ClientSize.Height + flowLayoutPanel.Top * 2 );
             this.FormBorderStyle = FormBorderStyle.FixedDialog;

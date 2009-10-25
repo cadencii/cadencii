@@ -27,6 +27,7 @@ using bocoree.io;
 namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;
     using Integer = Int32;
+    using Long = System.Int64;
 #endif
 
     /// <summary>
@@ -36,7 +37,7 @@ namespace Boare.Lib.Vsq {
     public class VsqFile implements Cloneable, Serializable{
 #else
     [Serializable]
-    public class VsqFile : ICloneable{
+    public class VsqFile : ICloneable {
 #endif
         /// <summary>
         /// トラックのリスト．最初のトラックはMasterTrackであり，通常の音符が格納されるトラックはインデックス1以降となる
@@ -623,53 +624,42 @@ namespace Boare.Lib.Vsq {
                 }
                 return inv;
                 #endregion
-            }
-                /*else if ( type == VsqCommandType.TRACK_CURVE_EDIT2 )
-                {
-                    #region TRACK_CURVE_EDIT2
-                    int track = (Integer)command.Args[0];
-                    String curve = (String)command.Args[1];
-                    Vector<VsqBPPair> com = (Vector<VsqBPPair>)command.Args[2];
-                    Vector<Integer> clocks = (Vector<Integer>)command.Args[3];
+            } else if ( type == VsqCommandType.TRACK_CURVE_EDIT2 ) {
+                #region TRACK_CURVE_EDIT2
+                int track = (Integer)command.Args[0];
+                String curve = (String)command.Args[1];
+                Vector<Long> delete = (Vector<Long>)command.Args[2];
+                TreeMap<Integer, VsqBPPair> add = (TreeMap<Integer, VsqBPPair>)command.Args[3];
 
-                    VsqBPList list = Track.get( track ).getCurve( curve );
+                Vector<Long> inv_delete = new Vector<Long>();
+                TreeMap<Integer, VsqBPPair> inv_add = new TreeMap<Integer, VsqBPPair>();
+                processTrackCurveEdit( track, curve, delete, add, inv_delete, inv_add );
+                updateTotalClocks();
 
-                    // 現在の編集範囲を取得
-                    int edited_start = Track.get( track ).getEditedStart();
-                    int edited_end = Track.get( track ).getEditedEnd();
+                return VsqCommand.generateCommandTrackCurveEdit2( track, curve, inv_delete, inv_add );
+                #endregion
+            } else if ( type == VsqCommandType.TRACK_CURVE_EDIT2_ALL ) {
+                #region TRACK_CURVE_EDIT2_ALL
+                int track = (Integer)command.Args[0];
+                Vector<String> curve = (Vector<String>)command.Args[1];
+                Vector<Vector<Long>> delete = (Vector<Vector<Long>>)command.Args[2];
+                Vector<TreeMap<Integer, VsqBPPair>> add = (Vector<TreeMap<Integer, VsqBPPair>>)command.Args[3];
 
-                    Vector<VsqBPPair> inv_com = new Vector<VsqBPPair>();
-                    Vector<Integer> inv_clocks = new Vector<Integer>();
-                    // 現在の状態をコピー
-                    int com_size = com.size();
-                    for ( int i = 0; i < com_size; i++ )
-                    {
-                        VsqBPPair bp = com.get( i );
-                        long search_id = bp.id;
-                        VsqBPPairSearchContext search_result = list.findElement( search_id );
-                        inv_com.add( search_result.point );
-                        inv_clocks.add( search_result.clock );
-                    }
+                int c = curve.size();
+                Vector<Vector<Long>> inv_delete = new Vector<Vector<Long>>();
+                Vector<TreeMap<Integer, VsqBPPair>> inv_add = new Vector<TreeMap<Integer, VsqBPPair>>();
+                for ( int i = 0; i < c; i++ ) {
+                    Vector<Long> part_inv_delete = new Vector<Long>();
+                    TreeMap<Integer, VsqBPPair> part_inv_add = new TreeMap<Integer, VsqBPPair>();
+                    processTrackCurveEdit( track, curve.get( i ), delete.get( i ), add.get( i ), part_inv_delete, part_inv_add );
+                    inv_delete.add( part_inv_delete );
+                    inv_add.add( part_inv_add );
+                }
+                updateTotalClocks();
 
-                    // 編集を実行
-                    for ( int i = 0; i < com_size; i++ )
-                    {
-                        int clock = inv_clocks.get( i );
-                        int new_clock = clocks.get( i );
-                        list.move( inv_clocks.get( i ), clocks.get( i ), com.get( i ).value );
-                        edited_start = Math.Min( edited_start, Math.Min( clock, new_clock ) );
-                        edited_end = Math.Max( edited_end, Math.Max( clock, new_clock ) );
-                    }
-
-                    // 編集範囲の更新
-                    Track.get( track ).setEditedStart( edited_start );
-                    Track.get( track ).setEditedEnd( edited_end );
-                    updateTotalClocks();
-
-                    return VsqCommand.generateCommandTrackCurveEdit2( track, curve, inv_com, inv_clocks );
-                    #endregion
-                }*/
-              else if ( type == VsqCommandType.TRACK_CURVE_REPLACE ) {
+                return VsqCommand.generateCommandTrackCurveEdit2All( track, curve, inv_delete, inv_add );
+                #endregion
+            } else if ( type == VsqCommandType.TRACK_CURVE_REPLACE ) {
                 #region TRACK_CURVE_REPLACE
                 int track = (Integer)command.Args[0];
                 String target_curve = (String)command.Args[1];
@@ -1121,6 +1111,50 @@ namespace Boare.Lib.Vsq {
             }
 
             return null;
+        }
+
+        private void processTrackCurveEdit( int track, 
+                                            String curve, 
+                                            Vector<Long> delete,
+                                            TreeMap<Integer, VsqBPPair> add,
+                                            Vector<Long> inv_delete,
+                                            TreeMap<Integer, VsqBPPair> inv_add ){
+            VsqBPList list = Track.get( track ).getCurve( curve );
+
+            // 現在の編集範囲を取得
+            int edited_start = Track.get( track ).getEditedStart();
+            int edited_end = Track.get( track ).getEditedEnd();
+
+            // 逆コマンド発行用
+            inv_delete.clear();
+            inv_add.clear();
+
+            // 最初に削除コマンドを実行
+            for ( Iterator itr = delete.iterator(); itr.hasNext(); ) {
+                long id = (Long)itr.next();
+                VsqBPPairSearchContext item = list.findElement( id );
+                if ( item.index >= 0 ) {
+                    int clock = item.clock;
+                    list.removeElementAt( item.index );
+                    inv_add.put( clock, new VsqBPPair( item.point.value, item.point.id ) );
+                    edited_start = Math.Min( edited_start, clock );
+                    edited_end = Math.Max( edited_end, clock );
+                }
+            }
+
+            // 追加コマンドを実行
+            for ( Iterator itr = add.keySet().iterator(); itr.hasNext(); ) {
+                int clock = (Integer)itr.next();
+                VsqBPPair item = add.get( clock );
+                list.addWithID( clock, item.value, item.id );
+                inv_delete.add( item.id );
+                edited_start = Math.Min( edited_start, clock );
+                edited_end = Math.Max( edited_end, clock );
+            }
+
+            // 編集範囲の更新
+            Track.get( track ).setEditedStart( edited_start );
+            Track.get( track ).setEditedEnd( edited_end );
         }
 
         /// <summary>

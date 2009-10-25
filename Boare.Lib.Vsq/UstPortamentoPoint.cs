@@ -14,12 +14,10 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
-    public struct UstPortamentoPoint
-    {
+    public struct UstPortamentoPoint {
         public int Step;
         public float Value;
         public UstPortamentoType Type;

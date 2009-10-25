@@ -20,23 +20,19 @@ using System;
 using System.Windows.Forms;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
-    public class TextBoxEx extends BTextBox
+    public class TextBoxEx extends BTextBox {
 #else
-    public class TextBoxEx : BTextBox
+    public class TextBoxEx : BTextBox {
 #endif
-    {
 
 #if !JAVA
-        protected override boolean IsInputKey( Keys keyData )
-        {
-            switch ( keyData )
-            {
+        protected override boolean IsInputKey( Keys keyData ) {
+            switch ( keyData ) {
                 case Keys.Tab:
                 case Keys.Tab | Keys.Shift:
                     break;

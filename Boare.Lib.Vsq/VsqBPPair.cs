@@ -18,22 +18,19 @@ import java.io.*;
 #else
 using System;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class VsqBPPair implements Cloneable, Serializable
+    public class VsqBPPair implements Cloneable, Serializable {
 #else
     [Serializable]
-    public struct VsqBPPair
+    public struct VsqBPPair {
 #endif
-    {
         public int value;
         public long id;
 
-        public VsqBPPair( int value_, long id_ )
-        {
+        public VsqBPPair( int value_, long id_ ) {
             value = value_;
             id = id_;
         }

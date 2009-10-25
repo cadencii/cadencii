@@ -21,8 +21,7 @@ using System;
 using bocoree;
 using bocoree.io;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;
 #endif
 
@@ -30,12 +29,11 @@ namespace Boare.Lib.Vsq
     /// メタテキストに埋め込まれるIDを表すクラス。
     /// </summary>
 #if JAVA
-    public class VsqID implements Cloneable, Serializable
+    public class VsqID implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqID : ICloneable
+    public class VsqID : ICloneable {
 #endif
-    {
         public const int MAX_NOTE_LENGTH = 16383;
 #if JAVA
         public int value;
@@ -71,13 +69,11 @@ namespace Boare.Lib.Vsq
 
         public static VsqID EOS = new VsqID( -1 );
 
-        public int getLength()
-        {
+        public int getLength() {
             return Length;
         }
 
-        public void setLength( int value )
-        {
+        public void setLength( int value ) {
             Length = value;
         }
 
@@ -106,12 +102,10 @@ namespace Boare.Lib.Vsq
         /// このインスタンスの簡易コピーを取得します。
         /// </summary>
         /// <returns>このインスタンスの簡易コピー</returns>
-        public Object clone()
-        {
+        public Object clone() {
             VsqID result = new VsqID( this.value );
             result.type = this.type;
-            if ( this.IconHandle != null )
-            {
+            if ( this.IconHandle != null ) {
                 result.IconHandle = (IconHandle)this.IconHandle.clone();
             }
             result.setLength( Length );
@@ -126,25 +120,21 @@ namespace Boare.Lib.Vsq
             result.pMeanOnsetFirstNote = this.pMeanOnsetFirstNote;
             result.vMeanNoteTransition = this.vMeanNoteTransition;
             result.pMeanEndingNote = this.pMeanEndingNote;
-            if ( this.LyricHandle != null )
-            {
+            if ( this.LyricHandle != null ) {
                 result.LyricHandle = (LyricHandle)this.LyricHandle.clone();
             }
-            if ( this.VibratoHandle != null )
-            {
+            if ( this.VibratoHandle != null ) {
                 result.VibratoHandle = (VibratoHandle)this.VibratoHandle.clone();
             }
             result.VibratoDelay = this.VibratoDelay;
-            if ( NoteHeadHandle != null )
-            {
+            if ( NoteHeadHandle != null ) {
                 result.NoteHeadHandle = (NoteHeadHandle)NoteHeadHandle.clone();
             }
             return result;
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif
@@ -153,8 +143,7 @@ namespace Boare.Lib.Vsq
         /// IDの番号（ID#****の****）を指定したコンストラクタ。
         /// </summary>
         /// <param name="a_value">IDの番号</param>
-        public VsqID( int a_value )
-        {
+        public VsqID( int a_value ) {
             value = a_value;
         }
 
@@ -163,8 +152,7 @@ namespace Boare.Lib.Vsq
             this( 0 );
 #else
         public VsqID()
-            : this( 0 )
-        {
+            : this( 0 ) {
 #endif
         }
 
@@ -174,8 +162,7 @@ namespace Boare.Lib.Vsq
         /// <param name="sr">読み込み対象</param>
         /// <param name="value"></param>
         /// <param name="last_line">読み込んだ最後の行が返されます</param>
-        public VsqID( TextMemoryStream sr, int value, ByRef<String> last_line )
-        {
+        public VsqID( TextMemoryStream sr, int value, ByRef<String> last_line ) {
             String[] spl;
             this.value = value;
             this.type = VsqIDType.Unknown;
@@ -195,90 +182,54 @@ namespace Boare.Lib.Vsq
             //this.VibratoHandle_index = -2;
             this.VibratoDelay = 0;
             last_line.value = sr.readLine();
-            while ( !last_line.value.StartsWith( "[" ) )
-            {
+            while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
                 String search = spl[0];
-                if ( search.Equals( "Type" ) )
-                {
-                    if ( spl[1].Equals( "Anote" ) )
-                    {
+                if ( search.Equals( "Type" ) ) {
+                    if ( spl[1].Equals( "Anote" ) ) {
                         type = VsqIDType.Anote;
-                    }
-                    else if ( spl[1].Equals( "Singer" ) )
-                    {
+                    } else if ( spl[1].Equals( "Singer" ) ) {
                         type = VsqIDType.Singer;
-                    }
-                    else
-                    {
+                    } else {
                         type = VsqIDType.Unknown;
                     }
-                }
-                else if ( search.Equals( "Length" ) )
-                {
+                } else if ( search.Equals( "Length" ) ) {
                     this.setLength( PortUtil.parseInt( spl[1] ) );
-                }
-                else if ( search.Equals( "Note#" ) )
-                {
+                } else if ( search.Equals( "Note#" ) ) {
                     this.Note = PortUtil.parseInt( spl[1] );
-                }
-                else if ( search.Equals( "Dynamics" ) )
-                {
+                } else if ( search.Equals( "Dynamics" ) ) {
                     this.Dynamics = PortUtil.parseInt( spl[1] );
-                }
-                else if ( search.Equals( "PMBendDepth" ) )
-                {
+                } else if ( search.Equals( "PMBendDepth" ) ) {
                     this.PMBendDepth = PortUtil.parseInt( spl[1] );
-                }
-                else if ( search.Equals( "PMBendLength" ) )
-                {
+                } else if ( search.Equals( "PMBendLength" ) ) {
                     this.PMBendLength = PortUtil.parseInt( spl[1] );
-                }
-                else if ( search.Equals( "DEMdecGainRate" ) )
-                {
+                } else if ( search.Equals( "DEMdecGainRate" ) ) {
                     this.DEMdecGainRate = PortUtil.parseInt( spl[1] );
-                }
-                else if ( search.Equals( "DEMaccent" ) )
-                {
+                } else if ( search.Equals( "DEMaccent" ) ) {
                     this.DEMaccent = PortUtil.parseInt( spl[1] );
-                }
-                else if ( search.Equals( "LyricHandle" ) )
-                {
+                } else if ( search.Equals( "LyricHandle" ) ) {
                     this.LyricHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
-                }
-                else if ( search.Equals( "IconHandle" ) )
-                {
+                } else if ( search.Equals( "IconHandle" ) ) {
                     this.IconHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
-                }
-                else if ( search.Equals( "VibratoHandle" ) )
-                {
+                } else if ( search.Equals( "VibratoHandle" ) ) {
                     this.VibratoHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
-                }
-                else if ( search.Equals( "VibratoDelay" ) )
-                {
+                } else if ( search.Equals( "VibratoDelay" ) ) {
                     this.VibratoDelay = PortUtil.parseInt( spl[1] );
-                }
-                else if ( search.Equals( "PMbPortamentoUse" ) )
-                {
+                } else if ( search.Equals( "PMbPortamentoUse" ) ) {
                     PMbPortamentoUse = PortUtil.parseInt( spl[1] );
-                }
-                else if ( search.Equals( "NoteHeadHandle" ) )
-                {
+                } else if ( search.Equals( "NoteHeadHandle" ) ) {
                     NoteHeadHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
                 }
-                if ( sr.peek() < 0 )
-                {
+                if ( sr.peek() < 0 ) {
                     break;
                 }
                 last_line.value = sr.readLine();
             }
         }
 
-        public override String ToString()
-        {
+        public override String ToString() {
             String ret = "{Type=" + type;
-            if ( type == VsqIDType.Anote )
-            {
+            if ( type == VsqIDType.Anote ) {
                 ret += ", Length=" + Length;
                 ret += ", Note#=" + Note;
                 ret += ", Dynamics=" + Dynamics;
@@ -287,18 +238,14 @@ namespace Boare.Lib.Vsq
                 ret += ", PMbPortamentoUse=" + PMbPortamentoUse;
                 ret += ", DEMdecGainRate=" + DEMdecGainRate;
                 ret += ", DEMaccent=" + DEMaccent;
-                if ( LyricHandle != null )
-                {
+                if ( LyricHandle != null ) {
                     ret += ", LyricHandle=h#" + PortUtil.formatDecimal( "0000", LyricHandle_index );
                 }
-                if ( VibratoHandle != null )
-                {
+                if ( VibratoHandle != null ) {
                     ret += ", VibratoHandle=h#" + PortUtil.formatDecimal( "0000", VibratoHandle_index );
                     ret += ", VibratoDelay=" + VibratoDelay;
                 }
-            }
-            else if ( type == VsqIDType.Singer )
-            {
+            } else if ( type == VsqIDType.Singer ) {
                 ret += ", IconHandle=h#" + PortUtil.formatDecimal( "0000", IconHandle_index );
             }
             ret += "}";
@@ -309,12 +256,10 @@ namespace Boare.Lib.Vsq
         /// VsqIDを構築するテストを行います。
         /// </summary>
         /// <returns>テストに成功すればtrue、そうでなければfalseを返します</returns>
-        public static boolean test()
-        {
+        public static boolean test() {
             String fpath = PortUtil.createTempFile();
             BufferedWriter sw = null;
-            try
-            {
+            try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( fpath ), "UTF-8" ) );
                 sw.write( "Type=Anote" );
                 sw.newLine();
@@ -338,20 +283,12 @@ namespace Boare.Lib.Vsq
                 sw.newLine();
                 sw.write( "[ID#0104]" );
                 sw.newLine();
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( sw != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw != null ) {
+                    try {
                         sw.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
@@ -359,8 +296,7 @@ namespace Boare.Lib.Vsq
             ByRef<String> last_line = new ByRef<String>( "" );
             boolean result = false;
             TextMemoryStream sr = null;
-            try
-            {
+            try {
                 sr = new TextMemoryStream( fpath, "UTF8" );
                 VsqID vsqID = new VsqID( sr, 103, last_line );
                 if ( vsqID.type == VsqIDType.Anote &&
@@ -373,28 +309,17 @@ namespace Boare.Lib.Vsq
                     vsqID.DEMdecGainRate == 50 &&
                     vsqID.DEMaccent == 50 &&
                     vsqID.LyricHandle_index == 111 &&
-                    last_line.Equals( "[ID#0104]" ) )
-                {
+                    last_line.Equals( "[ID#0104]" ) ) {
                     result = true;
-                }
-                else
-                {
+                } else {
                     result = false;
                 }
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( sr != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sr != null ) {
+                    try {
                         sr.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }

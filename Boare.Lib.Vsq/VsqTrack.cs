@@ -31,12 +31,11 @@ namespace Boare.Lib.Vsq {
     /// Stores the data of a vsq track.
     /// </summary>
 #if JAVA
-    public class VsqTrack implements Cloneable, Serializable
+    public class VsqTrack implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqTrack : ICloneable
+    public class VsqTrack : ICloneable {
 #endif
- {
         public String Tag;
         /// <summary>
         /// トラックの名前。
@@ -254,7 +253,7 @@ namespace Boare.Lib.Vsq {
             throws IOException
 #endif
  {
-            MetaText.print( sw, false, eos, start );
+            MetaText.print( sw, eos, start );
         }
 
         /// <summary>
@@ -269,7 +268,7 @@ namespace Boare.Lib.Vsq {
             TextMemoryStream tms = new TextMemoryStream();
             int count = MetaText.getEventList().getCount();
             int clLast = MetaText.getEventList().getElement( count - 1 ).Clock + 480;
-            MetaText.print( tms, true, clLast, 0 );
+            MetaText.print( tms, clLast, 0 );
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new FileWriter( file ) );

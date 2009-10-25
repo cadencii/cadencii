@@ -14,15 +14,13 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
     /// <summary>
     /// Represents the voice language of singer.
     /// </summary>
-    public enum VsqVoiceLanguage
-    {
+    public enum VsqVoiceLanguage {
         /// <summary>
         /// Japanese
         /// </summary>

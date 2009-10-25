@@ -23,7 +23,6 @@ using bocoree.util;
 using bocoree.io;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
     using VstInt32 = Int32;
     using VstIntPtr = Int32;

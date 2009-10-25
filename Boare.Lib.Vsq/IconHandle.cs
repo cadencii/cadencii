@@ -18,18 +18,16 @@ import java.io.*;
 #else
 using System;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
-    public class IconHandle implements Cloneable, Serializable
+    public class IconHandle implements Cloneable, Serializable{
 #else
     [Serializable]
-    public class IconHandle : ICloneable
+    public class IconHandle : ICloneable{
 #endif
-    {
         public String Caption = "";
         public String IconID = "";
         public String IDS = "";
@@ -39,34 +37,26 @@ namespace Boare.Lib.Vsq
         public int Program;
         public int Language;
 
-        public IconHandle()
-        {
+        public IconHandle() {
         }
 
-        public int getLength()
-        {
+        public int getLength() {
             return Length;
         }
 
-        public void setLength( int value )
-        {
+        public void setLength( int value ) {
             Length = value;
         }
 
-        public boolean equals( IconHandle item )
-        {
-            if ( item == null )
-            {
+        public boolean equals( IconHandle item ) {
+            if ( item == null ) {
                 return false;
-            }
-            else
-            {
+            } else {
                 return IconID.Equals( item.IconID );
             }
         }
 
-        public Object clone()
-        {
+        public Object clone() {
             IconHandle ret = new IconHandle();
             ret.Caption = Caption;
             ret.IconID = IconID;
@@ -80,14 +70,12 @@ namespace Boare.Lib.Vsq
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif
 
-        public VsqHandle castToVsqHandle()
-        {
+        public VsqHandle castToVsqHandle() {
             VsqHandle ret = new VsqHandle();
             ret.m_type = VsqHandleType.Singer;
             ret.Caption = Caption;

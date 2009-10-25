@@ -32,7 +32,7 @@ namespace Boare.Lib.Vsq {
     public class VsqBPList implements Cloneable, Serializable{
 #else
     [Serializable]
-    public class VsqBPList : ICloneable{
+    public class VsqBPList : ICloneable {
 #endif
         private Vector<Integer> m_clock = new Vector<Integer>();
         private Vector<VsqBPPair> m_items = new Vector<VsqBPPair>();
@@ -103,6 +103,10 @@ namespace Boare.Lib.Vsq {
             }
         }
 #endif
+
+        public long getMaxID() {
+            return m_max_id;
+        }
 
         /// <summary>
         /// このBPListのデフォルト値を取得します
@@ -476,6 +480,33 @@ namespace Boare.Lib.Vsq {
                 m_max_id++;
                 m_items.insertElementAt( new VsqBPPair( value, m_max_id ), index );
                 return m_max_id;
+            }
+        }
+
+        public void addWithID( int clock, int value, long id ) {
+            int index = m_clock.indexOf( clock );
+            if ( index >= 0 ) {
+                VsqBPPair v = m_items.get( index );
+                v.value = value;
+                v.id = id;
+                m_items.set( index, v );
+            } else {
+                m_clock.add( clock );
+                Collections.sort( m_clock );
+                index = m_clock.indexOf( clock );
+                m_items.insertElementAt( new VsqBPPair( value, id ), index );
+                m_max_id = Math.Max( m_max_id, id );
+            }
+        }
+
+        public void removeWithID( long id ) {
+            int c = m_items.size();
+            for ( int i = 0; i < c; i++ ) {
+                if ( m_items.get( i ).id == id ) {
+                    m_items.removeElementAt( i );
+                    m_clock.removeElementAt( i );
+                    break;
+                }
             }
         }
 

@@ -38,7 +38,7 @@ namespace Boare.Cadencii {
 #if JAVA
     public class VersionInfo extends BForm
 #else
-    public class VersionInfo : BForm{
+    public class VersionInfo : BForm {
 #endif
         DateTime m_scroll_started;
         private AuthorListEntry[] m_credit;
@@ -417,14 +417,14 @@ namespace Boare.Cadencii {
             this.lblStraightAcknowledgement.Name = "lblStraightAcknowledgement";
             this.lblStraightAcknowledgement.Size = new System.Drawing.Size( 263, 40 );
             this.lblStraightAcknowledgement.TabIndex = 6;
-            this.lblStraightAcknowledgement.Text = "Components of Cadencii, \"straightdrv.exe\" and \"straightVoiceDB.exe\", are powererd" +
-                " by STRAIGHT LIBRARY.";
+            this.lblStraightAcknowledgement.Text = "Components of Cadencii, \"vConnect.exe\" and \"straightVoiceDB.exe\", are powererd by" +
+                " STRAIGHT LIBRARY.";
             // 
             // VersionInfo
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size( 300, 419 );
+            this.ClientSize = new System.Drawing.Size( 300, 423 );
             this.Controls.Add( this.pictVstLogo );
             this.Controls.Add( this.lblStraightAcknowledgement );
             this.Controls.Add( this.lblVstLogo );

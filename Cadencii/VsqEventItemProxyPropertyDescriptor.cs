@@ -18,7 +18,6 @@ using System.ComponentModel;
 using Boare.Lib.AppUtil;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
 
     public class VsqEventItemProxyPropertyDescriptor : PropertyDescriptor {

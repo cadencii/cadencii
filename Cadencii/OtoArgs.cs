@@ -16,15 +16,13 @@ package org.kbinani.Cadencii;
 #else
 using System;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
 #endif
 
     /// <summary>
     /// 原音設定の引数．
     /// </summary>
-    public struct OtoArgs
-    {
+    public struct OtoArgs {
         public String fileName;
         public String Alias;
         public int msOffset;

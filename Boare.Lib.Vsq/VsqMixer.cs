@@ -22,20 +22,18 @@ using System;
 using bocoree;
 using bocoree.util;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
     /// <summary>
     /// vsqファイルのメタテキストの[Mixer]セクションに記録される内容を取り扱う
     /// </summary>
 #if JAVA
-    public class VsqMixer implements Cloneable, Serializable
+    public class VsqMixer implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqMixer : ICloneable
+    public class VsqMixer : ICloneable {
 #endif
-    {
         public int MasterFeder;
         public int MasterPanpot;
         public int MasterMute;
@@ -46,12 +44,10 @@ namespace Boare.Lib.Vsq
         /// </summary>
         public Vector<VsqMixerEntry> Slave = new Vector<VsqMixerEntry>();
 
-        public Object clone()
-        {
+        public Object clone() {
             VsqMixer res = new VsqMixer( MasterFeder, MasterPanpot, MasterMute, OutputMode );
             res.Slave = new Vector<VsqMixerEntry>();
-            for ( Iterator itr = Slave.iterator(); itr.hasNext(); )
-            {
+            for ( Iterator itr = Slave.iterator(); itr.hasNext(); ) {
                 VsqMixerEntry item = (VsqMixerEntry)itr.next();
                 res.Slave.add( (VsqMixerEntry)item.clone() );
             }
@@ -59,8 +55,7 @@ namespace Boare.Lib.Vsq
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif
@@ -72,8 +67,7 @@ namespace Boare.Lib.Vsq
         /// <param name="master_panpot">MasterPanpot値</param>
         /// <param name="master_mute">MasterMute値</param>
         /// <param name="output_mode">OutputMode値</param>
-        public VsqMixer( int master_fader, int master_panpot, int master_mute, int output_mode )
-        {
+        public VsqMixer( int master_fader, int master_panpot, int master_mute, int output_mode ) {
             this.MasterFeder = master_fader;
             this.MasterMute = master_mute;
             this.MasterPanpot = master_panpot;
@@ -86,8 +80,7 @@ namespace Boare.Lib.Vsq
             this( 0, 0, 0, 0 );
 #else
         public VsqMixer()
-            : this( 0, 0, 0, 0 )
-        {
+            : this( 0, 0, 0, 0 ) {
 #endif
         }
 
@@ -96,8 +89,7 @@ namespace Boare.Lib.Vsq
         /// </summary>
         /// <param name="sr">読み込み対象</param>
         /// <param name="last_line">最後に読み込んだ行が返されます</param>
-        public VsqMixer( TextMemoryStream sr, ByRef<String> last_line )
-        {
+        public VsqMixer( TextMemoryStream sr, ByRef<String> last_line ) {
             MasterFeder = 0;
             MasterPanpot = 0;
             MasterMute = 0;
@@ -107,78 +99,55 @@ namespace Boare.Lib.Vsq
             String[] spl;
             String buffer = "";
             last_line.value = sr.readLine();
-            while ( !last_line.value.StartsWith( "[" ) )
-            {
+            while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                if ( spl[0].Equals( "MasterFeder" ) )
-                {
+                if ( spl[0].Equals( "MasterFeder" ) ) {
                     MasterFeder = PortUtil.parseInt( spl[1] );
-                }
-                else if ( spl[0].Equals( "MasterPanpot" ) )
-                {
+                } else if ( spl[0].Equals( "MasterPanpot" ) ) {
                     MasterPanpot = PortUtil.parseInt( spl[1] );
-                }
-                else if ( spl[0].Equals( "MasterMute" ) )
-                {
+                } else if ( spl[0].Equals( "MasterMute" ) ) {
                     MasterMute = PortUtil.parseInt( spl[1] );
-                }
-                else if ( spl[0].Equals( "OutputMode" ) )
-                {
+                } else if ( spl[0].Equals( "OutputMode" ) ) {
                     OutputMode = PortUtil.parseInt( spl[1] );
-                }
-                else if ( spl[0].Equals( "Tracks" ) )
-                {
+                } else if ( spl[0].Equals( "Tracks" ) ) {
                     tracks = PortUtil.parseInt( spl[1] );
-                }
-                else
-                {
+                } else {
                     if ( spl[0].StartsWith( "Feder" ) ||
                          spl[0].StartsWith( "Panpot" ) ||
                          spl[0].StartsWith( "Mute" ) ||
-                         spl[0].StartsWith( "Solo" ) )
-                    {
+                         spl[0].StartsWith( "Solo" ) ) {
                         buffer += spl[0] + "=" + spl[1] + "\n";
                     }
                 }
-                if ( sr.peek() < 0 )
-                {
+                if ( sr.peek() < 0 ) {
                     break;
                 }
                 last_line.value = sr.readLine();
             }
 
             Slave = new Vector<VsqMixerEntry>();
-            for ( int i = 0; i < tracks; i++ )
-            {
+            for ( int i = 0; i < tracks; i++ ) {
                 Slave.add( new VsqMixerEntry( 0, 0, 0, 0 ) );
             }
             spl = PortUtil.splitString( buffer, new String[] { "\n" }, true );
             String[] spl2;
-            for ( int i = 0; i < spl.Length; i++ )
-            {
+            for ( int i = 0; i < spl.Length; i++ ) {
                 String ind = "";
                 int index;
                 spl2 = PortUtil.splitString( spl[i], new char[] { '=' } );
-                if ( spl2[0].StartsWith( "Feder" ) )
-                {
+                if ( spl2[0].StartsWith( "Feder" ) ) {
                     ind = spl2[0].Replace( "Feder", "" );
                     index = PortUtil.parseInt( ind );
                     Slave.get( index ).Feder = PortUtil.parseInt( spl2[1] );
-                }
-                else if ( spl2[0].StartsWith( "Panpot" ) )
-                {
+                } else if ( spl2[0].StartsWith( "Panpot" ) ) {
                     ind = spl2[0].Replace( "Panpot", "" );
                     index = PortUtil.parseInt( ind );
                     Slave.get( index ).Panpot = PortUtil.parseInt( spl2[1] );
-                }
-                else if ( spl2[0].StartsWith( "Mute" ) )
-                {
+                } else if ( spl2[0].StartsWith( "Mute" ) ) {
                     ind = spl2[0].Replace( "Mute", "" );
                     index = PortUtil.parseInt( ind );
                     Slave.get( index ).Mute = PortUtil.parseInt( spl2[1] );
-                }
-                else if ( spl2[0].StartsWith( "Solo" ) )
-                {
+                } else if ( spl2[0].StartsWith( "Solo" ) ) {
                     ind = spl2[0].Replace( "Solo", "" );
                     index = PortUtil.parseInt( ind );
                     Slave.get( index ).Solo = PortUtil.parseInt( spl2[1] );
@@ -191,8 +160,7 @@ namespace Boare.Lib.Vsq
         /// このインスタンスをテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力対象</param>
-        public void write( TextMemoryStream sw )
-        {
+        public void write( TextMemoryStream sw ) {
             sw.writeLine( "[Mixer]" );
             sw.writeLine( "MasterFeder=" + MasterFeder );
             sw.writeLine( "MasterPanpot=" + MasterPanpot );
@@ -200,8 +168,7 @@ namespace Boare.Lib.Vsq
             sw.writeLine( "OutputMode=" + OutputMode );
             int count = Slave.size();
             sw.writeLine( "Tracks=" + count );
-            for ( int i = 0; i < count; i++ )
-            {
+            for ( int i = 0; i < count; i++ ) {
                 VsqMixerEntry item = Slave.get( i );
                 sw.writeLine( "Feder" + i + "=" + item.Feder );
                 sw.writeLine( "Panpot" + i + "=" + item.Panpot );

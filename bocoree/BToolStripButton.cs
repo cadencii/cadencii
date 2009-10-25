@@ -233,13 +233,11 @@ namespace bocoree.windows.forms
         #endregion
 
         #region javax.swing.AbstractButton
-        public string getText()
-        {
+        public string getText() {
             return base.Text;
         }
 
-        public void setText( string value )
-        {
+        public void setText( string value ) {
             base.Text = value;
         }
 #if ABSTRACT_BUTTON_ENABLE_IS_SELECTED
@@ -248,7 +246,7 @@ namespace bocoree.windows.forms
         }
 
         public void setSelected( bool value ) {
-            base.Checked = true;
+            base.Checked = value;
         }
 #endif
         #endregion

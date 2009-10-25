@@ -23,18 +23,15 @@ using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
 #endif
 
 #if JAVA
     public class FormCompileResult extends BForm {
 #else
-    public class FormCompileResult : BForm
-    {
+    public class FormCompileResult : BForm {
 #endif
-        public FormCompileResult( String message, String errors )
-        {
+        public FormCompileResult( String message, String errors ) {
 #if JAVA
             initialize();
 #else
@@ -46,13 +43,11 @@ namespace Boare.Cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage()
-        {
+        public void ApplyLanguage() {
             this.textBox1.setText( _( "Script Compilation Result" ) );
         }
 
-        private static String _( String id )
-        {
+        private static String _( String id ) {
             return Messaging.getMessage( id );
         }
 #if JAVA
@@ -144,10 +139,8 @@ namespace Boare.Cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing )
-        {
-            if ( disposing && (components != null) )
-            {
+        protected override void Dispose( bool disposing ) {
+            if ( disposing && (components != null) ) {
                 components.Dispose();
             }
             base.Dispose( disposing );
@@ -159,8 +152,7 @@ namespace Boare.Cadencii
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.label1 = new BLabel();
             this.textBox1 = new BTextBox();
             this.btnOK = new BButton();

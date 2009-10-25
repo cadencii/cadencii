@@ -27,7 +27,6 @@ using bocoree.util;
 using bocoree.io;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
 
     public delegate void WaveIncomingEventHandler( double[] L, double[] R );

@@ -170,13 +170,13 @@ namespace bocoree.windows.forms {
         public void setText( string value ) {
             base.Text = value;
         }
-#if ABSTRACT_BUTTON__ENABLE_IS_SELECTED
-        public bool isSelected(){
+#if ABSTRACT_BUTTON_ENABLE_IS_SELECTED
+        public bool isSelected() {
             return base.Checked;
         }
 
-        public void setSelected( bool value ){
-            base.Checked = true;
+        public void setSelected( bool value ) {
+            base.Checked = value;
         }
 #endif
         #endregion

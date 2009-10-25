@@ -16,13 +16,11 @@ package org.kbinani.Cadencii;
 #else
 using System;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
     using boolean = Boolean;
 #endif
 
-    public class FormMidiImExportConfig
-    {
+    public class FormMidiImExportConfig {
         public boolean LastPremeasureCheckStatus = true;
         public boolean LastMetatextCheckStatus = true;
     }

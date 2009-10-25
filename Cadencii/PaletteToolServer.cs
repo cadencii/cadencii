@@ -12,14 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
-using System.Reflection;
 using System.CodeDom.Compiler;
-using System.Drawing;
-using System.Xml.Serialization;
-using Boare.Lib.AppUtil;
+using System.IO;
+using System.Reflection;
+using System.Windows.Forms;
 using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.util;
@@ -43,9 +39,14 @@ namespace Boare.Cadencii {
                 using ( StreamReader sr = new StreamReader( file.FullName ) ){
                     code += sr.ReadToEnd();
                 }
-                CompilerResults results;
-                Assembly asm = AppManager.compileScript( code, out results );
-                if ( asm == null || results == null ) {
+                CompilerResults results = AppManager.compileScript( code );
+                if ( results == null ) {
+                    continue;
+                }
+                Assembly asm = null;
+                try {
+                    asm = results.CompiledAssembly;
+                } catch ( Exception ex ) {
                     continue;
                 }
                 foreach ( Type t in asm.GetTypes() ) {

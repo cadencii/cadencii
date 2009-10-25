@@ -18,17 +18,15 @@ import java.io.*;
 #else
 using System;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class VibratoHandle implements Cloneable, Serializable
+    public class VibratoHandle implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VibratoHandle : ICloneable
+    public class VibratoHandle : ICloneable {
 #endif
-    {
         public int StartDepth;
         public VibratoBPList DepthBP;
         public int StartRate;
@@ -40,43 +38,36 @@ namespace Boare.Lib.Vsq
         public String Caption = "";
         public int Length;
 
-        public VibratoHandle()
-        {
+        public VibratoHandle() {
             StartRate = 64;
             StartDepth = 64;
             RateBP = new VibratoBPList();
             DepthBP = new VibratoBPList();
         }
 
-        public int getLength()
-        {
+        public int getLength() {
             return Length;
         }
 
-        public void setLength( int value )
-        {
+        public void setLength( int value ) {
             Length = value;
         }
 
-        public String getDisplayString()
-        {
+        public String getDisplayString() {
             String s = IDS;
-            if ( !Caption.Equals( "" ) )
-            {
+            if ( !Caption.Equals( "" ) ) {
                 s += " (" + Caption + ")";
             }
             return s;
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif
 
-        public Object clone()
-        {
+        public Object clone() {
             VibratoHandle result = new VibratoHandle();
             result.Index = Index;
             result.IconID = IconID;
@@ -91,8 +82,7 @@ namespace Boare.Lib.Vsq
             return result;
         }
 
-        public VsqHandle castToVsqHandle()
-        {
+        public VsqHandle castToVsqHandle() {
             VsqHandle ret = new VsqHandle();
             ret.m_type = VsqHandleType.Vibrato;
             ret.Index = Index;

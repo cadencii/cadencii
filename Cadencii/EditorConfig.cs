@@ -286,6 +286,10 @@ namespace Boare.Cadencii {
         public FormMidiImExportConfig MidiImExportConfigImport = new FormMidiImExportConfig();
         public FormMidiImExportConfig MidiImExportConfigImportVsq = new FormMidiImExportConfig();
         public int AutoBackupIntervalMinutes = 10;
+        /// <summary>
+        /// 鍵盤の表示幅、ピクセル,AppManager.keyWidthに代入。
+        /// </summary>
+        public int KeyWidth = 68;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>(

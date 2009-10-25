@@ -30,13 +30,14 @@ using bocoree.xml;
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using Integer = Int32;
+    using Long = System.Int64;
 #endif
 
 #if JAVA
     public class VsqFileEx extends VsqFile implements Cloneable, ICommandRunnable, Serializable{
 #else
     [Serializable]
-    public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable{
+    public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable {
 #endif
 
         static XmlSerializer s_vsq_serializer;
@@ -523,218 +524,6 @@ namespace Boare.Cadencii {
             return ret;
         }
 
-        public VsqCommand preprocessSpecialCommand( VsqCommand command ) {
-#if DEBUG
-            AppManager.debugWriteLine( "preprocessSpecialCommand; command.Type=" + command.Type );
-#endif
-            if ( command.Type == VsqCommandType.TRACK_CURVE_EDIT ) {
-                #region TrackEditCurve
-                int track = (int)command.Args[0];
-                String curve = (String)command.Args[1];
-                Vector<BPPair> com = (Vector<BPPair>)command.Args[2];
-                VsqBPList target = target = Track.get( track ).getCurve( curve );
-
-                VsqCommand inv = null;
-                Vector<BPPair> edit = new Vector<BPPair>();
-                if ( com != null ) {
-                    if ( com.size() > 0 ) {
-                        int start_clock = com.get( 0 ).Clock;
-                        int end_clock = com.get( 0 ).Clock;
-                        for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
-                            BPPair item = (BPPair)itr.next();
-                            start_clock = Math.Min( start_clock, item.Clock );
-                            end_clock = Math.Max( end_clock, item.Clock );
-                        }
-                        Track.get( track ).setEditedStart( start_clock );
-                        Track.get( track ).setEditedEnd( end_clock );
-                        int start_value = target.getValue( start_clock );
-                        int end_value = target.getValue( end_clock );
-                        for ( Iterator i = target.keyClockIterator(); i.hasNext(); ) {
-                            int clock = (int)i.next();
-                            if ( start_clock <= clock && clock <= end_clock ) {
-                                edit.add( new BPPair( clock, target.getValue( clock ) ) );
-                            }
-                        }
-                        boolean start_found = false;
-                        boolean end_found = false;
-                        for ( int i = 0; i < edit.size(); i++ ) {
-                            if ( edit.get( i ).Clock == start_clock ) {
-                                start_found = true;
-                                edit.get( i ).Value = start_value;
-                                if ( start_found && end_found ) {
-                                    break;
-                                }
-                            }
-                            if ( edit.get( i ).Clock == end_clock ) {
-                                end_found = true;
-                                edit.get( i ).Value = end_value;
-                                if ( start_found && end_found ) {
-                                    break;
-                                }
-                            }
-                        }
-                        if ( !start_found ) {
-                            edit.add( new BPPair( start_clock, start_value ) );
-                        }
-                        if ( !end_found ) {
-                            edit.add( new BPPair( end_clock, end_value ) );
-                        }
-
-                        // 並べ替え
-                        Collections.sort( edit );
-                        inv = VsqCommand.generateCommandTrackCurveEdit( track, curve, edit );
-                    } else if ( com.size() == 0 ) {
-                        inv = VsqCommand.generateCommandTrackCurveEdit( track, curve, new Vector<BPPair>() );
-                    }
-                }
-
-                updateTotalClocks();
-                if ( com.size() == 0 ) {
-                    return inv;
-                } else if ( com.size() == 1 ) {
-                    boolean found = false;
-                    for ( Iterator itr = target.keyClockIterator(); itr.hasNext(); ) {
-                        int clock = (int)itr.next();
-                        if ( clock == com.get( 0 ).Clock ) {
-                            found = true;
-                            target.add( clock, com.get( 0 ).Value );
-                            break;
-                        }
-                    }
-                    if ( !found ) {
-                        target.add( com.get( 0 ).Clock, com.get( 0 ).Value );
-                    }
-                } else {
-                    int start_clock = com.get( 0 ).Clock;
-                    int end_clock = com.get( com.size() - 1 ).Clock;
-                    boolean removed = true;
-                    while ( removed ) {
-                        removed = false;
-                        for ( Iterator itr = target.keyClockIterator(); itr.hasNext(); ) {
-                            int clock = (int)itr.next();
-                            if ( start_clock <= clock && clock <= end_clock ) {
-                                target.remove( clock );
-                                removed = true;
-                                break;
-                            }
-                        }
-                    }
-                    for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
-                        BPPair item = (BPPair)itr.next();
-                        target.add( item.Clock, item.Value );
-                    }
-                }
-                return inv;
-                #endregion
-            } else if ( command.Type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
-                #region TrackEditCurveRange
-                int track = (int)command.Args[0];
-                Vector<String> curves = (Vector<String>)command.Args[1];
-                Vector<Vector<BPPair>> coms = (Vector<Vector<BPPair>>)command.Args[2];
-                Vector<Vector<BPPair>> inv_coms = new Vector<Vector<BPPair>>();
-                VsqCommand inv = null;
-
-                int count = curves.size();
-                for ( int k = 0; k < count; k++ ) {
-                    String curve = curves.get( k );
-                    VsqBPList target = Track.get( track ).getCurve( curve );
-                    Vector<BPPair> com = coms[k];
-                    Vector<BPPair> edit = new Vector<BPPair>();
-                    if ( com != null ) {
-                        if ( com.size() > 0 ) {
-                            int start_clock = com.get( 0 ).Clock;
-                            int end_clock = com.get( 0 ).Clock;
-                            for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
-                                BPPair item = (BPPair)itr.next();
-                                start_clock = Math.Min( start_clock, item.Clock );
-                                end_clock = Math.Max( end_clock, item.Clock );
-                            }
-                            Track.get( track ).setEditedStart( start_clock );
-                            Track.get( track ).setEditedEnd( end_clock );
-                            int start_value = target.getValue( start_clock );
-                            int end_value = target.getValue( end_clock );
-                            for ( Iterator itr = target.keyClockIterator(); itr.hasNext(); ) {
-                                int clock = (int)itr.next();
-                                if ( start_clock <= clock && clock <= end_clock ) {
-                                    edit.add( new BPPair( clock, target.getValue( clock ) ) );
-                                }
-                            }
-                            boolean start_found = false;
-                            boolean end_found = false;
-                            for ( int i = 0; i < edit.size(); i++ ) {
-                                if ( edit.get( i ).Clock == start_clock ) {
-                                    start_found = true;
-                                    edit.get( i ).Value = start_value;
-                                    if ( start_found && end_found ) {
-                                        break;
-                                    }
-                                }
-                                if ( edit.get( i ).Clock == end_clock ) {
-                                    end_found = true;
-                                    edit.get( i ).Value = end_value;
-                                    if ( start_found && end_found ) {
-                                        break;
-                                    }
-                                }
-                            }
-                            if ( !start_found ) {
-                                edit.add( new BPPair( start_clock, start_value ) );
-                            }
-                            if ( !end_found ) {
-                                edit.add( new BPPair( end_clock, end_value ) );
-                            }
-
-                            // 並べ替え
-                            Collections.sort( edit );
-                            inv_coms.add( edit );
-                        } else if ( com.size() == 0 ) {
-                            inv_coms.add( new Vector<BPPair>() );
-                        }
-                    }
-
-                    updateTotalClocks();
-                    if ( com.size() == 0 ) {
-                        return inv;
-                    } else if ( com.size() == 1 ) {
-                        boolean found = false;
-                        for ( Iterator itr = target.keyClockIterator(); itr.hasNext(); ) {
-                            int clock = (int)itr.next();
-                            if ( clock == com.get( 0 ).Clock ) {
-                                found = true;
-                                target.add( clock, com.get( 0 ).Value );
-                                break;
-                            }
-                        }
-                        if ( !found ) {
-                            target.add( com.get( 0 ).Clock, com.get( 0 ).Value );
-                        }
-                    } else {
-                        int start_clock = com.get( 0 ).Clock;
-                        int end_clock = com.get( com.size() - 1 ).Clock;
-                        boolean removed = true;
-                        while ( removed ) {
-                            removed = false;
-                            for ( Iterator itr = target.keyClockIterator(); itr.hasNext(); ) {
-                                int clock = (int)itr.next();
-                                if ( start_clock <= clock && clock <= end_clock ) {
-                                    target.remove( clock );
-                                    removed = true;
-                                    break;
-                                }
-                            }
-                        }
-                        for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
-                            BPPair item = (BPPair)itr.next();
-                            target.add( item.Clock, item.Value );
-                        }
-                    }
-                }
-                return VsqCommand.generateCommandTrackCurveEditRange( track, curves, inv_coms );
-                #endregion
-            }
-            return null;
-        }
-
         public ICommand executeCommand( ICommand com ) {
 #if DEBUG
             AppManager.debugWriteLine( "VsqFileEx.Execute" );
@@ -747,61 +536,57 @@ namespace Boare.Cadencii {
             if ( command.type == CadenciiCommandType.VSQ_COMMAND ) {
                 ret = new CadenciiCommand();
                 ret.type = CadenciiCommandType.VSQ_COMMAND;
-                if ( command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT || 
-                     command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
-                    ret.vsqCommand = preprocessSpecialCommand( command.vsqCommand );
-                } else {
-                    ret.vsqCommand = base.executeCommand( command.vsqCommand );
+                ret.vsqCommand = base.executeCommand( command.vsqCommand );
 
-                    // 再レンダリングが必要になったかどうかを判定
-                    VsqCommandType type = command.vsqCommand.Type;
-                    if ( type == VsqCommandType.CHANGE_PRE_MEASURE ||
-                         type == VsqCommandType.REPLACE ||
-                         type == VsqCommandType.UPDATE_TEMPO ||
-                         type == VsqCommandType.UPDATE_TEMPO_RANGE ){
-                        int count = Track.size();
-                        for ( int i = 0; i < count - 1; i++ ) {
-                            editorStatus.renderRequired[i] = true;
-                        }
-                    } else if ( type == VsqCommandType.EVENT_ADD ||
-                                type == VsqCommandType.EVENT_ADD_RANGE ||
-                                type == VsqCommandType.EVENT_CHANGE_ACCENT ||
-                                type == VsqCommandType.EVENT_CHANGE_CLOCK ||
-                                type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS ||
-                                type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS_RANGE ||
-                                type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_LENGTH ||
-                                type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_NOTE ||
-                                type == VsqCommandType.EVENT_CHANGE_DECAY ||
-                                type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS ||
-                                type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS_RANGE ||
-                                type == VsqCommandType.EVENT_CHANGE_LENGTH ||
-                                type == VsqCommandType.EVENT_CHANGE_LYRIC ||
-                                type == VsqCommandType.EVENT_CHANGE_NOTE ||
-                                type == VsqCommandType.EVENT_CHANGE_VELOCITY ||
-                                type == VsqCommandType.EVENT_DELETE ||
-                                type == VsqCommandType.EVENT_DELETE_RANGE ||
-                                type == VsqCommandType.EVENT_REPLACE ||
-                                type == VsqCommandType.EVENT_REPLACE_RANGE ||
-                                type == VsqCommandType.TRACK_CURVE_EDIT ||
-                                type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ||
-                                type == VsqCommandType.TRACK_CURVE_REPLACE ||
-                                type == VsqCommandType.TRACK_CURVE_REPLACE_RANGE ||
-                                type == VsqCommandType.TRACK_REPLACE ) {
-                        int track = (Integer)command.vsqCommand.Args[0];
-                        editorStatus.renderRequired[track - 1] = true;
-                    } else if ( type == VsqCommandType.TRACK_ADD ){
-                        int position = (Integer)command.vsqCommand.Args[2];
-                        for ( int i = 15; i >= position; i-- ) {
-                            editorStatus.renderRequired[i] = editorStatus.renderRequired[i - 1];
-                        }
-                        editorStatus.renderRequired[position - 1] = true;
-                    } else if ( type == VsqCommandType.TRACK_DELETE ) {
-                        int track = (Integer)command.vsqCommand.Args[0];
-                        for ( int i = track - 1; i < 15; i++ ) {
-                            editorStatus.renderRequired[i] = editorStatus.renderRequired[i + 1];
-                        }
-                        editorStatus.renderRequired[15] = false;
+                // 再レンダリングが必要になったかどうかを判定
+                VsqCommandType type = command.vsqCommand.Type;
+                if ( type == VsqCommandType.CHANGE_PRE_MEASURE ||
+                     type == VsqCommandType.REPLACE ||
+                     type == VsqCommandType.UPDATE_TEMPO ||
+                     type == VsqCommandType.UPDATE_TEMPO_RANGE ) {
+                    int count = Track.size();
+                    for ( int i = 0; i < count - 1; i++ ) {
+                        editorStatus.renderRequired[i] = true;
                     }
+                } else if ( type == VsqCommandType.EVENT_ADD ||
+                            type == VsqCommandType.EVENT_ADD_RANGE ||
+                            type == VsqCommandType.EVENT_CHANGE_ACCENT ||
+                            type == VsqCommandType.EVENT_CHANGE_CLOCK ||
+                            type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS ||
+                            type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS_RANGE ||
+                            type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_LENGTH ||
+                            type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_NOTE ||
+                            type == VsqCommandType.EVENT_CHANGE_DECAY ||
+                            type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS ||
+                            type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS_RANGE ||
+                            type == VsqCommandType.EVENT_CHANGE_LENGTH ||
+                            type == VsqCommandType.EVENT_CHANGE_LYRIC ||
+                            type == VsqCommandType.EVENT_CHANGE_NOTE ||
+                            type == VsqCommandType.EVENT_CHANGE_VELOCITY ||
+                            type == VsqCommandType.EVENT_DELETE ||
+                            type == VsqCommandType.EVENT_DELETE_RANGE ||
+                            type == VsqCommandType.EVENT_REPLACE ||
+                            type == VsqCommandType.EVENT_REPLACE_RANGE ||
+                            type == VsqCommandType.TRACK_CURVE_EDIT ||
+                            type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ||
+                            type == VsqCommandType.TRACK_CURVE_EDIT2 ||
+                            type == VsqCommandType.TRACK_CURVE_REPLACE ||
+                            type == VsqCommandType.TRACK_CURVE_REPLACE_RANGE ||
+                            type == VsqCommandType.TRACK_REPLACE ) {
+                    int track = (Integer)command.vsqCommand.Args[0];
+                    editorStatus.renderRequired[track - 1] = true;
+                } else if ( type == VsqCommandType.TRACK_ADD ) {
+                    int position = (Integer)command.vsqCommand.Args[2];
+                    for ( int i = 15; i >= position; i-- ) {
+                        editorStatus.renderRequired[i] = editorStatus.renderRequired[i - 1];
+                    }
+                    editorStatus.renderRequired[position - 1] = true;
+                } else if ( type == VsqCommandType.TRACK_DELETE ) {
+                    int track = (Integer)command.vsqCommand.Args[0];
+                    for ( int i = track - 1; i < 15; i++ ) {
+                        editorStatus.renderRequired[i] = editorStatus.renderRequired[i + 1];
+                    }
+                    editorStatus.renderRequired[15] = false;
                 }
             } else {
                 if ( command.type == CadenciiCommandType.BEZIER_CHAIN_ADD ) {
@@ -816,34 +601,60 @@ namespace Boare.Cadencii {
                     int added_id = (Integer)command.args[4];
                     AttachedCurves.get( track - 1 ).addBezierChain( curve_type, chain, added_id );
                     ret = generateCommandDeleteBezierChain( track, curve_type, added_id, clock_resolution );
-                    if ( chain.size() > 1 ) {
+                    if ( chain.size() >= 1 ) {
+                        // ベジエ曲線が，時間軸方向のどの範囲にわたって指定されているか判定
                         int min = (int)chain.points.get( 0 ).getBase().getX();
                         int max = min;
-                        for ( int i = 1; i < chain.points.size(); i++ ) {
-                            min = Math.Min( min, (int)chain.points.get( i ).getBase().getX() );
-                            max = Math.Max( max, (int)chain.points.get( i ).getBase().getX() );
+                        int points_size = chain.points.size();
+                        for ( int i = 1; i < points_size; i++ ) {
+                            int x = (int)chain.points.get( i ).getBase().getX();
+                            min = Math.Min( min, x );
+                            max = Math.Max( max, x );
                         }
+
                         int max_value = curve_type.getMaximum();
                         int min_value = curve_type.getMinimum();
-                        if ( min < max ) {
-                            Vector<BPPair> edit = new Vector<BPPair>();
-                            int last_value = int.MaxValue;
-                            for ( int clock = min; clock < max; clock += clock_resolution ) {
-                                int value = (int)chain.getValue( (float)clock );
-                                if ( value < min_value ) {
-                                    value = min_value;
-                                } else if ( max_value < value ) {
-                                    value = max_value;
-                                }
-                                if ( value != last_value ) {
-                                    edit.add( new BPPair( clock, value ) );
-                                    last_value = value;
+                        VsqBPList list = Track.get( track ).getCurve( curve_type.getName() );
+                        if ( min <= max && list != null ) {
+                            // minクロック以上maxクロック以下のコントロールカーブに対して，編集を実行
+
+                            // 最初に，min <= clock <= maxとなる範囲のデータ点を抽出（削除コマンドに指定）
+                            Vector<Long> delete = new Vector<Long>();
+                            int list_size = list.size();
+                            for ( int i = 0; i < list_size; i++ ) {
+                                int clock = list.getKeyClock( i );
+                                if ( min <= clock && clock <= max ) {
+                                    VsqBPPair item = list.getElementB( i );
+                                    delete.add( item.id );
                                 }
                             }
-                            int value2;
-                            value2 = Track.get( track ).getCurve( curve_type.getName() ).getValue( max );
-                            edit.add( new BPPair( max, value2 ) );
-                            command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit( track, curve_type.getName(), edit );
+
+                            // 追加するデータ点を列挙
+                            TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                            if ( chain.points.size() == 1 ) {
+                                BezierPoint p = chain.points.get( 0 );
+                                add.put( (int)p.getBase().getX(), new VsqBPPair( (int)p.getBase().getY(), list.getMaxID() + 1 ) );
+                            } else {
+                                int last_value = int.MaxValue;
+                                int index = 0;
+                                for ( int clock = min; clock <= max; clock += clock_resolution ) {
+                                    int value = (int)chain.getValue( (float)clock );
+                                    if ( value < min_value ) {
+                                        value = min_value;
+                                    } else if ( max_value < value ) {
+                                        value = max_value;
+                                    }
+                                    if ( value != last_value ) {
+#if DEBUG
+                                        PortUtil.println( "VsqFileEx#executeCommand; clock,value=" + clock + "," + value );
+#endif
+                                        index++;
+                                        add.put( clock, new VsqBPPair( value, list.getMaxID() + index ) );
+                                        last_value = value;
+                                    }
+                                }
+                            }
+                            command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, add );
                         }
                     }
 
@@ -858,67 +669,118 @@ namespace Boare.Cadencii {
                     BezierChain chain = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).Clone();
                     AttachedCurves.get( track - 1 ).remove( curve_type, chain_id );
                     ret = generateCommandAddBezierChain( track, curve_type, chain_id, clock_resolution, chain );
-                    if ( command.vsqCommand != null && ret != null ) {
-                        if ( command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT || command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
-                            ret.vsqCommand = preprocessSpecialCommand( command.vsqCommand );
-                        } else {
-                            ret.vsqCommand = base.executeCommand( command.vsqCommand );
+                    int points_size = chain.points.size();
+                    int min = (int)chain.points.get( 0 ).getBase().getX();
+                    int max = min;
+                    for ( int i = 1; i < points_size; i++ ) {
+                        int x = (int)chain.points.get( i ).getBase().getX();
+                        min = Math.Min( min, x );
+                        max = Math.Max( max, x );
+                    }
+                    VsqBPList list = Track.get( track ).getCurve( curve_type.getName() );
+                    int list_size = list.size();
+                    Vector<Long> delete = new Vector<Long>();
+                    for ( int i = 0; i < list_size; i++ ) {
+                        int clock = list.getKeyClock( i );
+                        if ( min <= clock && clock <= max ) {
+                            delete.add( list.getElementB( i ).id );
+                        } else if ( max < clock ) {
+                            break;
                         }
                     }
+                    command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, new TreeMap<Integer, VsqBPPair>() );
                     editorStatus.renderRequired[track - 1] = true;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.BEZIER_CHAIN_REPLACE ) {
                     #region ReplaceBezierChain
-                    int track = (int)command.args[0];
+                    int track = (Integer)command.args[0];
                     CurveType curve_type = (CurveType)command.args[1];
-                    int chain_id = (int)command.args[2];
+                    int chain_id = (Integer)command.args[2];
                     BezierChain chain = (BezierChain)command.args[3];
                     int clock_resolution = (int)command.args[4];
                     BezierChain target = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).Clone();
                     AttachedCurves.get( track - 1 ).setBezierChain( curve_type, chain_id, chain );
+                    VsqBPList list = Track.get( track ).getCurve( curve_type.getName() );
                     ret = generateCommandReplaceBezierChain( track, curve_type, chain_id, target, clock_resolution );
                     if ( chain.size() == 1 ) {
+                        // リプレース後のベジエ曲線が，1個のデータ点のみからなる場合
                         int ex_min = (int)chain.points.get( 0 ).getBase().getX();
                         int ex_max = ex_min;
                         if ( target.points.size() > 1 ) {
-                            for ( int i = 1; i < target.points.size(); i++ ) {
-                                ex_min = Math.Min( ex_min, (int)target.points.get( i ).getBase().getX() );
-                                ex_max = Math.Max( ex_max, (int)target.points.get( i ).getBase().getX() );
+                            // リプレースされる前のベジエ曲線が，どの時間範囲にあったか？
+                            int points_size = target.points.size();
+                            for ( int i = 1; i < points_size; i++ ) {
+                                int x = (int)target.points.get( i ).getBase().getX();
+                                ex_min = Math.Min( ex_min, x );
+                                ex_max = Math.Max( ex_max, x );
                             }
                             if ( ex_min < ex_max ) {
-                                int default_value = curve_type.getDefault();
-                                Vector<BPPair> edit = new Vector<BPPair>();
-                                edit.add( new BPPair( ex_min, default_value ) );
-                                edit.add( new BPPair( ex_max, default_value ) );
-                                command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit( track, curve_type.getName(), edit );
+                                // ex_min以上ex_max以下の範囲にあるデータ点を消す
+                                Vector<Long> delete = new Vector<Long>();
+                                int list_size = list.size();
+                                for ( int i = 0; i < list_size; i++ ) {
+                                    int clock = list.getKeyClock( i );
+                                    if ( ex_min <= clock && clock <= ex_max ) {
+                                        delete.add( list.getElementB( i ).id );
+                                    }
+                                    if ( ex_max < clock ) {
+                                        break;
+                                    }
+                                }
+
+                                // リプレース後のデータ点は1個だけ
+                                TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                                PointD p = chain.points.get( 0 ).getBase();
+                                add.put( (int)p.getX(), new VsqBPPair( (int)p.getY(), list.getMaxID() + 1 ) );
+
+                                command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, add );
                             }
                         }
                     } else if ( chain.size() > 1 ) {
+                        // リプレース後のベジエ曲線の範囲
                         int min = (int)chain.points.get( 0 ).getBase().getX();
                         int max = min;
-                        for ( int i = 1; i < chain.points.size(); i++ ) {
-                            min = Math.Min( min, (int)chain.points.get( i ).getBase().getX() );
-                            max = Math.Max( max, (int)chain.points.get( i ).getBase().getX() );
+                        int points_size = chain.points.size();
+                        for ( int i = 1; i < points_size; i++ ) {
+                            int x = (int)chain.points.get( i ).getBase().getX();
+                            min = Math.Min( min, x );
+                            max = Math.Max( max, x );
                         }
+
+                        // リプレース前のベジエ曲線の範囲
                         int ex_min = min;
                         int ex_max = max;
                         if ( target.points.size() > 0 ) {
                             ex_min = (int)target.points.get( 0 ).getBase().getX();
                             ex_max = ex_min;
-                            for ( int i = 1; i < target.points.size(); i++ ) {
-                                ex_min = Math.Min( ex_min, (int)target.points.get( i ).getBase().getX() );
-                                ex_max = Math.Max( ex_max, (int)target.points.get( i ).getBase().getX() );
+                            int target_points_size = target.points.size();
+                            for ( int i = 1; i < target_points_size; i++ ) {
+                                int x = (int)target.points.get( i ).getBase().getX();
+                                ex_min = Math.Min( ex_min, x );
+                                ex_max = Math.Max( ex_max, x );
                             }
                         }
+
+                        // 削除するのを列挙
+                        Vector<Long> delete = new Vector<Long>();
+                        int list_size = list.size();
+                        for ( int i = 0; i < list_size; i++ ) {
+                            int clock = list.getKeyClock( i );
+                            if ( ex_min <= clock && clock <= ex_max ) {
+                                delete.add( list.getElementB( i ).id );
+                            }
+                            if ( ex_max < clock ) {
+                                break;
+                            }
+                        }
+
+                        // 追加するのを列挙
                         int max_value = curve_type.getMaximum();
                         int min_value = curve_type.getMinimum();
-                        int default_value = curve_type.getDefault();
-                        Vector<BPPair> edit = new Vector<BPPair>();
-                        if ( ex_min < min ) {
-                            edit.add( new BPPair( ex_min, default_value ) );
-                        }
+                        TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
                         if ( min < max ) {
                             int last_value = int.MaxValue;
+                            int index = 0;
                             for ( int clock = min; clock < max; clock += clock_resolution ) {
                                 int value = (int)chain.getValue( (float)clock );
                                 if ( value < min_value ) {
@@ -927,32 +789,12 @@ namespace Boare.Cadencii {
                                     value = max_value;
                                 }
                                 if ( last_value != value ) {
-                                    edit.add( new BPPair( clock, value ) );
-                                    last_value = value;
+                                    index++;
+                                    add.put( clock, new VsqBPPair( value, list.getMaxID() + index ) );
                                 }
                             }
-                            int value2 = 0;
-                            if ( max < ex_max ) {
-                                value2 = (int)chain.getValue( max );
-                                if ( value2 < min_value ) {
-                                    value2 = min_value;
-                                } else if ( max_value < value2 ) {
-                                    value2 = max_value;
-                                }
-                            } else {
-                                value2 = Track.get( track ).getCurve( curve_type.getName() ).getValue( max );
-                            }
-                            edit.add( new BPPair( max, value2 ) );
                         }
-                        if ( max < ex_max ) {
-                            if ( max + 1 < ex_max ) {
-                                edit.add( new BPPair( max + 1, default_value ) );
-                            }
-                            edit.add( new BPPair( ex_max, default_value ) );
-                        }
-                        if ( edit.size() > 0 ) {
-                            command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit( track, curve_type.getName(), edit );
-                        }
+                        command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, add );
                     }
 
                     editorStatus.renderRequired[track - 1] = true;
@@ -1073,12 +915,7 @@ namespace Boare.Cadencii {
 #if DEBUG
                     AppManager.debugWriteLine( "VsqFileEx.executeCommand; command.VsqCommand.Type=" + command.vsqCommand.Type );
 #endif
-                    if ( command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT || 
-                         command.vsqCommand.Type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
-                        ret.vsqCommand = preprocessSpecialCommand( command.vsqCommand );
-                    } else {
-                        ret.vsqCommand = base.executeCommand( command.vsqCommand );
-                    }
+                    ret.vsqCommand = base.executeCommand( command.vsqCommand );
                 }
             }
             return ret;

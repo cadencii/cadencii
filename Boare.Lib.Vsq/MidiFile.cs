@@ -37,7 +37,7 @@ namespace Boare.Lib.Vsq {
 #if JAVA
             throws FileNotFoundException
 #endif
- {
+        {
             RandomAccessFile stream = new RandomAccessFile( path, "r" );
             try {
                 // ヘッダ

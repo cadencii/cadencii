@@ -1,15 +1,15 @@
 ﻿/*
-* VsqMetaText/Common.cs
-* Copyright (c) 2008-2009 kbinani
-*
-* This file is part of Boare.Lib.Vsq.
-*
-* Boare.Lib.Vsq is free software; you can redistribute it and/or
-* modify it under the terms of the BSD License.
-*
-* Boare.Lib.Vsq is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * VsqCommon.cs
+ * Copyright (c) 2008-2009 kbinani
+ *
+ * This file is part of Boare.Lib.Vsq.
+ *
+ * Boare.Lib.Vsq is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
+ *
+ * Boare.Lib.Vsq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 #if JAVA
 package org.kbinani.vsq;
@@ -21,8 +21,7 @@ using System;
 using bocoree;
 using bocoree.io;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 
     using boolean = System.Boolean;
 #endif
@@ -31,12 +30,11 @@ namespace Boare.Lib.Vsq
     /// vsqファイルのメタテキストの[Common]セクションに記録される内容を取り扱う
     /// </summary>
 #if JAVA
-    public class VsqCommon implements Cloneable, Serializable
+    public class VsqCommon implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqCommon : ICloneable
+    public class VsqCommon : ICloneable {
 #endif
-    {
         public String Version;
         public String Name;
         public String Color;
@@ -44,14 +42,12 @@ namespace Boare.Lib.Vsq
         public int PlayMode = 1;
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif
 
-        public Object clone()
-        {
+        public Object clone() {
             String[] spl = PortUtil.splitString( Color, new char[] { ',' }, 3 );
             int r = PortUtil.parseInt( spl[0] );
             int g = PortUtil.parseInt( spl[1] );
@@ -68,8 +64,7 @@ namespace Boare.Lib.Vsq
         /// <param name="color">Color値（意味は不明）</param>
         /// <param name="dynamics_mode">DynamicsMode（デフォルトは1）</param>
         /// <param name="play_mode">PlayMode（デフォルトは1）</param>
-        public VsqCommon( String name, int red, int green, int blue, int dynamics_mode, int play_mode )
-        {
+        public VsqCommon( String name, int red, int green, int blue, int dynamics_mode, int play_mode ) {
             this.Version = "DSB301";
             this.Name = name;
             this.Color = red + "," + green + "," + blue;
@@ -82,8 +77,7 @@ namespace Boare.Lib.Vsq
             this(  "Miku", 179, 181, 123, 1, 1 );
 #else
         public VsqCommon()
-            : this( "Miku", 179, 181, 123, 1, 1 )
-        {
+            : this( "Miku", 179, 181, 123, 1, 1 ) {
 #endif
         }
 
@@ -92,8 +86,7 @@ namespace Boare.Lib.Vsq
         /// </summary>
         /// <param name="sr">読み込むテキストファイル</param>
         /// <param name="last_line">読み込んだ最後の行が返される</param>
-        public VsqCommon( TextMemoryStream sr, ByRef<String> last_line )
-        {
+        public VsqCommon( TextMemoryStream sr, ByRef<String> last_line ) {
             Version = "";
             Name = "";
             Color = "0,0,0";
@@ -101,32 +94,21 @@ namespace Boare.Lib.Vsq
             PlayMode = 1;
             last_line.value = sr.readLine();
             String[] spl;
-            while ( !last_line.value.StartsWith( "[" ) )
-            {
+            while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
                 String search = spl[0];
-                if ( search.Equals( "Version" ) )
-                {
+                if ( search.Equals( "Version" ) ) {
                     this.Version = spl[1];
-                }
-                else if ( search.Equals( "Name" ) )
-                {
+                } else if ( search.Equals( "Name" ) ) {
                     this.Name = spl[1];
-                }
-                else if ( search.Equals( "Color" ) )
-                {
+                } else if ( search.Equals( "Color" ) ) {
                     this.Color = spl[1];
-                }
-                else if ( search.Equals( "DynamicsMode" ) )
-                {
+                } else if ( search.Equals( "DynamicsMode" ) ) {
                     this.DynamicsMode = PortUtil.parseInt( spl[1] );
-                }
-                else if ( search.Equals( "PlayMode" ) )
-                {
+                } else if ( search.Equals( "PlayMode" ) ) {
                     this.PlayMode = PortUtil.parseInt( spl[1] );
                 }
-                if ( sr.peek() < 0 )
-                {
+                if ( sr.peek() < 0 ) {
                     break;
                 }
                 last_line.value = sr.readLine();
@@ -137,8 +119,7 @@ namespace Boare.Lib.Vsq
         /// インスタンスの内容をテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力先</param>
-        public void write( TextMemoryStream sw )
-        {
+        public void write( TextMemoryStream sw ) {
             sw.writeLine( "[Common]" );
             sw.writeLine( "Version=" + Version );
             sw.writeLine( "Name=" + Name );
@@ -175,29 +156,19 @@ namespace Boare.Lib.Vsq
             VsqCommon vsqCommon = null;
             ByRef<String> last_line = new ByRef<String>( "" );
             TextMemoryStream sr = null;
-            try
-            {
+            try {
                 sr = new TextMemoryStream( fpath, "UTF8" );
                 vsqCommon = new VsqCommon( sr, last_line );
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( sr != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sr != null ) {
+                    try {
                         sr.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
-            if ( vsqCommon == null )
-            {
+            if ( vsqCommon == null ) {
                 vsqCommon = new VsqCommon();
             }
 
@@ -207,12 +178,9 @@ namespace Boare.Lib.Vsq
                 vsqCommon.Color.Equals( "181,162,123" ) &&
                 vsqCommon.DynamicsMode == 1 &&
                 vsqCommon.PlayMode == 1 &&
-                last_line.value.Equals( "[Master]" ) )
-            {
+                last_line.value.Equals( "[Master]" ) ) {
                 result = true;
-            }
-            else
-            {
+            } else {
                 result = false;
             }
 

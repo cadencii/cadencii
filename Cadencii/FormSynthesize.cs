@@ -30,8 +30,7 @@ using Boare.Lib.Vsq;
 using bocoree.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using Integer = Int32;
 #endif
@@ -40,11 +39,10 @@ namespace Boare.Cadencii
     /// レンダリングの進捗状況を表示しながら，バックグラウンドでレンダリングを行うフォーム．フォームのLoadと同時にレンダリングが始まる．
     /// </summary>
 #if JAVA
-    public class FormSynthesize extends BForm
+    public class FormSynthesize extends BForm {
 #else
-    public class FormSynthesize : BForm
+    public class FormSynthesize : BForm {
 #endif
-    {
         private VsqFileEx m_vsq;
         private int m_presend = 500;
         private int[] m_tracks;
@@ -64,8 +62,7 @@ namespace Boare.Cadencii
                                int clock_start,
                                int clock_end,
                                int temp_premeasure,
-                               boolean reflect_amp_to_wave )
-        {
+                               boolean reflect_amp_to_wave ) {
             m_vsq = vsq;
             m_presend = presend;
             m_tracks = new int[] { track };
@@ -82,8 +79,7 @@ namespace Boare.Cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public FormSynthesize( VsqFileEx vsq, int presend, int[] tracks, String[] files, int end, boolean reflect_amp_to_wave )
-        {
+        public FormSynthesize( VsqFileEx vsq, int presend, int[] tracks, String[] files, int end, boolean reflect_amp_to_wave ) {
             m_vsq = vsq;
             m_presend = presend;
             m_tracks = tracks;
@@ -98,77 +94,63 @@ namespace Boare.Cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage()
-        {
+        public void ApplyLanguage() {
             this.Text = _( "Synthesize" );
             lblSynthesizing.Text = _( "now synthesizing..." );
             btnCancel.Text = _( "Cancel" );
         }
 
-        private static String _( String id )
-        {
+        private static String _( String id ) {
             return Messaging.getMessage( id );
         }
 
         /// <summary>
         /// レンダリングが完了したトラックのリストを取得します
         /// </summary>
-        public int[] Finished
-        {
-            get
-            {
+        public int[] Finished {
+            get {
                 Vector<Integer> list = new Vector<Integer>();
-                for ( int i = 0; i <= m_finished; i++ )
-                {
+                for ( int i = 0; i <= m_finished; i++ ) {
                     list.Add( m_tracks[i] );
                 }
                 return list.toArray( new Integer[] { } );
             }
         }
 
-        private void FormSynthesize_Load( object sender, EventArgs e )
-        {
+        private void FormSynthesize_Load( object sender, EventArgs e ) {
             Start();
         }
 
-        private void Start()
-        {
-            if ( VSTiProxy.CurrentUser.Equals( "" ) )
-            {
+        private void Start() {
+            if ( VSTiProxy.CurrentUser.Equals( "" ) ) {
                 VSTiProxy.CurrentUser = AppManager.getID();
                 timer.Enabled = true;
                 m_rendering_started = true;
                 bgWork.RunWorkerAsync();
-            }
-            else
-            {
+            } else {
                 m_rendering_started = false;
                 this.DialogResult = DialogResult.Cancel;
             }
         }
 
-        private void UpdateProgress( Object sender, int value )
-        {
+        private void UpdateProgress( Object sender, int value ) {
             progressWhole.Value = value > progressWhole.Maximum ? progressWhole.Maximum : value;
             lblProgress.Text = value + "/" + m_tracks.Length;
             m_finished = value - 1;
         }
 
-        private void bgWork_DoWork( object sender, DoWorkEventArgs e )
-        {
+        private void bgWork_DoWork( object sender, DoWorkEventArgs e ) {
             double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
             double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.MasterPanpot );
             double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.MasterPanpot );
-            if ( m_partial_mode )
-            {
+            if ( m_partial_mode ) {
                 this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (object)1 );
                 double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Feder );
                 double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
                 double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
                 double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
                 double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
-                using ( WaveWriter ww = new WaveWriter( m_files[0] ) )
-                {
+                using ( WaveWriter ww = new WaveWriter( m_files[0] ) ) {
                     VSTiProxy.render( m_vsq,
                                       m_tracks[0],
                                       ww,
@@ -182,16 +164,12 @@ namespace Boare.Cadencii
                                       AppManager.getTempWaveDir(),
                                       m_reflect_amp_to_wave );
                 }
-            }
-            else
-            {
-                for ( int i = 0; i < m_tracks.Length; i++ )
-                {
+            } else {
+                for ( int i = 0; i < m_tracks.Length; i++ ) {
                     this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (object)(i + 1) );
                     Vector<VsqNrpn> nrpn = new Vector<VsqNrpn>( VsqFile.generateNRPN( m_vsq, m_tracks[i], m_presend ) );
                     int count = m_vsq.Track.get( m_tracks[i] ).getEventCount();
-                    if ( count > 0 )
-                    {
+                    if ( count > 0 ) {
 #if DEBUG
                         AppManager.debugWriteLine( "FormSynthesize+bgWork_DoWork" );
                         AppManager.debugWriteLine( "    System.IO.Directory.GetCurrentDirectory()=" + System.IO.Directory.GetCurrentDirectory() );
@@ -204,8 +182,7 @@ namespace Boare.Cadencii
                         double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
                         int total_clocks = m_vsq.TotalClocks;
                         double total_sec = m_vsq.getSecFromClock( total_clocks );
-                        using ( WaveWriter ww = new WaveWriter( m_files[i] ) )
-                        {
+                        using ( WaveWriter ww = new WaveWriter( m_files[i] ) ) {
                             VSTiProxy.render( m_vsq,
                                               m_tracks[i],
                                               ww,
@@ -224,68 +201,53 @@ namespace Boare.Cadencii
             }
         }
 
-        private void FormSynthesize_FormClosing( object sender, FormClosingEventArgs e )
-        {
+        private void FormSynthesize_FormClosing( object sender, FormClosingEventArgs e ) {
             timer.Enabled = false;
-            if ( m_rendering_started )
-            {
+            if ( m_rendering_started ) {
                 VSTiProxy.CurrentUser = "";
             }
-            if ( bgWork.IsBusy )
-            {
+            if ( bgWork.IsBusy ) {
                 VSTiProxy.abortRendering();
                 bgWork.CancelAsync();
-                while ( bgWork.IsBusy )
-                {
+                while ( bgWork.IsBusy ) {
                     Application.DoEvents();
                 }
                 DialogResult = DialogResult.Cancel;
-            }
-            else
-            {
+            } else {
                 DialogResult = DialogResult.OK;
             }
         }
 
-        private void bgWork_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e )
-        {
+        private void bgWork_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e ) {
             timer.Enabled = false;
             DialogResult = DialogResult.OK;
             this.Close();
         }
 
-        private void timer_Tick( object sender, EventArgs e )
-        {
+        private void timer_Tick( object sender, EventArgs e ) {
             double progress = VSTiProxy.getProgress();
             TimeSpan elapsed = new TimeSpan( 0, 0, (int)VSTiProxy.getElapsedSeconds() );
             TimeSpan remaining = new TimeSpan( 0, 0, 0, (int)VSTiProxy.computeRemainintSeconds() );
-            if ( progress >= 0.0 && remaining.TotalSeconds >= 0.0 )
-            {
+            if ( progress >= 0.0 && remaining.TotalSeconds >= 0.0 ) {
                 lblTime.Text = _( "Remaining" ) + " " + getTimeSpanString( remaining ) + " (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")";
-            }
-            else
-            {
+            } else {
                 lblTime.Text = _( "Remaining" ) + " [unknown] (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")";
             }
             progressOne.Value = (int)progress > 100 ? 100 : (int)progress;
         }
 
-        private static String getTimeSpanString( TimeSpan span )
-        {
+        private static String getTimeSpanString( TimeSpan span ) {
             String ret = "";
             boolean added = false;
-            if ( span.Days > 0 )
-            {
+            if ( span.Days > 0 ) {
                 ret += span.Days + _( "day" ) + " ";
                 added = true;
             }
-            if ( added || span.Hours > 0 )
-            {
+            if ( added || span.Hours > 0 ) {
                 ret += string.Format( added ? "{0:d2}" : "{0}", span.Hours ) + _( "hour" ) + " ";
                 added = true;
             }
-            if ( added || span.Minutes > 0 )
-            {
+            if ( added || span.Minutes > 0 ) {
                 ret += string.Format( added ? "{0:d2}" : "{0}", span.Minutes ) + _( "min" ) + " ";
                 added = true;
             }
@@ -306,10 +268,8 @@ namespace Boare.Cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
-        {
-            if ( disposing && (components != null) )
-            {
+        protected override void Dispose( boolean disposing ) {
+            if ( disposing && (components != null) ) {
                 components.Dispose();
             }
             base.Dispose( disposing );
@@ -321,8 +281,7 @@ namespace Boare.Cadencii
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.progressWhole = new System.Windows.Forms.ProgressBar();
             this.lblSynthesizing = new System.Windows.Forms.Label();

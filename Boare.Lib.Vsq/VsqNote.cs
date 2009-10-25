@@ -18,8 +18,7 @@ import java.io.*;
 #else
 using System;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;
 #endif
 
@@ -27,12 +26,11 @@ namespace Boare.Lib.Vsq
     /// 音階を表現するためのクラス
     /// </summary>
 #if JAVA
-    public class VsqNote implements Serializable
+    public class VsqNote implements Serializable {
 #else
     [Serializable]
-    public class VsqNote
+    public class VsqNote {
 #endif
-    {
         /// <summary>
         /// このインスタンスが表す音階のノート値
         /// </summary>
@@ -172,16 +170,14 @@ namespace Boare.Lib.Vsq
         /// 音階のノート値からのコンストラクタ。
         /// </summary>
         /// <param name="note">この音階を初期化するためのノート値</param>
-        public VsqNote( int note )
-        {
+        public VsqNote( int note ) {
             Value = note;
         }
 
         /// <summary>
         /// このインスタンスが表す音階が、ピアノの白鍵かどうかを返します
         /// </summary>
-        public boolean isWhiteKey()
-        {
+        public boolean isWhiteKey() {
             return isNoteWhiteKey( Value );
         }
 
@@ -190,17 +186,12 @@ namespace Boare.Lib.Vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static boolean isNoteWhiteKey( int note )
-        {
-            if ( 0 <= note && note <= 127 )
-            {
+        public static boolean isNoteWhiteKey( int note ) {
+            if ( 0 <= note && note <= 127 ) {
                 return _KEY_TYPE[note];
-            }
-            else
-            {
+            } else {
                 int odd = note % 12;
-                switch ( odd )
-                {
+                switch ( odd ) {
                     case 1:
                     case 3:
                     case 6:
@@ -213,12 +204,10 @@ namespace Boare.Lib.Vsq
             }
         }
 
-        public static String getNoteString( int note )
-        {
+        public static String getNoteString( int note ) {
             int odd = note % 12;
             int order = (note - odd) / 12 - 2;
-            switch ( odd )
-            {
+            switch ( odd ) {
                 case 0:
                     return "C" + order;
                 case 1:
@@ -249,14 +238,12 @@ namespace Boare.Lib.Vsq
         }
 
 #if !JAVA
-        public override string ToString()
-        {
+        public override string ToString() {
             return toString();
         }
 #endif
 
-        public String toString()
-        {
+        public String toString() {
             return getNoteString( Value );
         }
     }

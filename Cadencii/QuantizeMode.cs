@@ -14,12 +14,10 @@
 #if JAVA
 package org.kbinani.Cadencii;
 #else
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
 #endif
 
-    public enum QuantizeMode
-    {
+    public enum QuantizeMode {
         p4,
         p8,
         p16,

@@ -246,6 +246,9 @@ namespace Boare.Cadencii {
                     continue;
                 }
                 VsqBPList src = (VsqBPList)work.clone();
+                int value_at_first_clock = work.getValue( first_clock );
+                work.clear();
+                work.add( 0, value_at_first_clock );
                 int num_points = src.size();
                 for ( int j = 0; j < num_points; j++ ) {
                     int clock = src.getKeyClock( j );
@@ -297,14 +300,16 @@ namespace Boare.Cadencii {
                                                                              "DEMdecGainRate",
                                                                              "DEMaccent",
                                                                              "PreUtterance",
-                                                                             "VoiceOverlap" } );
+                                                                             "VoiceOverlap",
+                                                                             "PMBendDepth",
+                                                                             "PMBendLength" } );
             for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 item.write( writer, print_targets );
             }
             int count = handles.size();
             for ( int i = 0; i < count; i++ ) {
-                handles.get( i ).write( writer, false );
+                handles.get( i ).write( writer );
             }
             count = CURVE.Length;
             for ( int i = 0; i < count; i++ ) {
@@ -324,6 +329,10 @@ namespace Boare.Cadencii {
                     name = "[EpRResidualBPList]";
                 } else if ( curve.equals( CurveType.GEN ) ) {
                     name = "[GenderFactorBPList]";
+                } else if ( curve.equals( CurveType.BRI ) ) {
+                    name = "[EpRESlopeBPList]";
+                } else if ( curve.equals( CurveType.CLE ) ) {
+                    name = "[EpRESlopeDepthBPList]";
                 } else {
                     continue;
                 }

@@ -19,18 +19,15 @@ import org.kbinani.vsq.*;
 using System;
 using Boare.Lib.Vsq;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
 #endif
 
-    public class SelectedEventEntry
-    {
+    public class SelectedEventEntry {
         public int track;
         public VsqEvent original;
         public VsqEvent editing;
 
-        public SelectedEventEntry( int track_, VsqEvent original_, VsqEvent editing_ )
-        {
+        public SelectedEventEntry( int track_, VsqEvent original_, VsqEvent editing_ ) {
             track = track_;
             original = original_;
             editing = editing_;

@@ -317,7 +317,7 @@ namespace Boare.Cadencii {
                     } else {
                         chain_end = (int)bc.points.get( len - 1 ).getBase().getX();
                     }
-                    if ( clock_end < chain_start && chain_start < clock_end && clock_end < chain_end ) {
+                    if ( clock_start < chain_start && chain_start < clock_end && clock_end < chain_end ) {
                         // end ~ chain_endを残す
                         BezierChain chain = bc.extractPartialBezier( clock_end, chain_end );
                         chain.id = bc.id;
@@ -332,7 +332,7 @@ namespace Boare.Cadencii {
                         tmp.add( chain1 );
                         tmp.add( chain2 );
                         edited = true;
-                    } else if ( chain_start < clock_start && clock_start < chain_end && clock_end <= chain_end ) {
+                    } else if ( chain_start < clock_start && clock_start < chain_end && chain_end < clock_end ) {
                         // chain_start ~ startを残す
                         BezierChain chain = bc.extractPartialBezier( chain_start, clock_start );
                         chain.id = bc.id;

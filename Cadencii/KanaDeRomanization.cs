@@ -17,7 +17,7 @@ namespace Boare.Cadencii {
 
     using boolean = System.Boolean;
 
-    static class KanaDeRomanization {
+    public static class KanaDeRomanization {
         public static String Attach( String roman ) {
             char[] arr = roman.ToCharArray();
             String ret = "";

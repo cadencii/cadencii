@@ -19,21 +19,17 @@ import org.kbinani.windows.forms.*;
 using System;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
 #endif
 
-    public class ValuePairOfStringArrayOfKeys
-    {
+    public class ValuePairOfStringArrayOfKeys {
         public String Key;
         public BKeys[] Value;
 
-        public ValuePairOfStringArrayOfKeys()
-        {
+        public ValuePairOfStringArrayOfKeys() {
         }
 
-        public ValuePairOfStringArrayOfKeys( String key, BKeys[] value )
-        {
+        public ValuePairOfStringArrayOfKeys( String key, BKeys[] value ) {
             Key = key;
             Value = value;
         }

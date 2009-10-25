@@ -37,7 +37,7 @@ namespace bocoree.windows.forms {
         #region javax.swing.MenuElement
         public MenuElement[] getSubElements() {
             List<MenuElement> list = new List<MenuElement>();
-            foreach ( ToolStripMenuItem item in base.Items ) {
+            foreach ( ToolStripItem item in base.Items ) {
                 if ( item is MenuElement ) {
                     list.Add( (MenuElement)item );
                 }

@@ -1,4 +1,17 @@
-﻿#if JAVA
+﻿/*
+ * NrpnIterator.cs
+ * Copyright (c) 2009 kbinani
+ *
+ * This file is part of Boare.Lib.Vsq.
+ *
+ * Boare.Lib.Vsq is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
+ *
+ * Boare.Lib.Vsq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+#if JAVA
 package org.kbinani.vsq;
 
 import java.lang.reflect.*;
@@ -10,8 +23,7 @@ using System.Reflection;
 using bocoree;
 using bocoree.util;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -19,14 +31,12 @@ namespace Boare.Lib.Vsq
 #if JAVA
     public class NrpnIterator implements Iterator
 #else
-    public class NrpnIterator : Iterator
+    public class NrpnIterator : Iterator {
 #endif
-    {
         private Vector<ValuePair<String, Integer>> nrpns = new Vector<ValuePair<String, Integer>>();
         private int m_pos = -1;
 
-        public NrpnIterator()
-        {
+        public NrpnIterator() {
 #if JAVA
             try{
                 Field[] fields = NRPN.class.getFields();
@@ -43,36 +53,28 @@ namespace Boare.Lib.Vsq
             }
 #else
             Type t = typeof( NRPN );
-            foreach ( FieldInfo fi in t.GetFields() )
-            {
-                if ( fi.FieldType.Equals( typeof( int ) ) )
-                {
+            foreach ( FieldInfo fi in t.GetFields() ) {
+                if ( fi.FieldType.Equals( typeof( int ) ) ) {
                     nrpns.add( new ValuePair<String, Integer>( fi.Name, (int)fi.GetValue( t ) ) );
                 }
             }
 #endif
         }
 
-        public boolean hasNext()
-        {
-            if ( 0 <= m_pos + 1 && m_pos + 1 < nrpns.size() )
-            {
+        public boolean hasNext() {
+            if ( 0 <= m_pos + 1 && m_pos + 1 < nrpns.size() ) {
                 return true;
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
 
-        public Object next()
-        {
+        public Object next() {
             m_pos++;
             return nrpns.get( m_pos ).getValue();
         }
 
-        public void remove()
-        {
+        public void remove() {
         }
     }
 

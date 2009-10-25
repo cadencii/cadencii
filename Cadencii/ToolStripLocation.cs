@@ -20,17 +20,14 @@ import org.kbinani.*;
 using bocoree;
 using bocoree.awt;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
 #endif
 
     /// <summary>
     /// toolStrip*の位置を保存します
     /// </summary>
-    public class ToolStripLocation
-    {
-        public enum ParentPanel
-        {
+    public class ToolStripLocation {
+        public enum ParentPanel {
             Top,
             Bottom,
         }
@@ -38,14 +35,12 @@ namespace Boare.Cadencii
         public XmlPoint Location;
         public ParentPanel Parent;
 
-        public ToolStripLocation()
-        {
+        public ToolStripLocation() {
             Location = new XmlPoint( 0, 0 );
             Parent = ParentPanel.Top;
         }
 
-        public ToolStripLocation( Point location, ParentPanel parent )
-        {
+        public ToolStripLocation( Point location, ParentPanel parent ) {
             Location = new XmlPoint( location );
             Parent = parent;
         }

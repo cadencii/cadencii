@@ -14,12 +14,10 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
-    public enum VsqHandleType
-    {
+    public enum VsqHandleType {
         Lyric,
         Vibrato,
         Singer,

@@ -60,7 +60,7 @@ namespace Boare.Cadencii {
 #if JAVA
     public class FormMain extends BForm{
 #else
-    public class FormMain : BForm{
+    public class FormMain : BForm {
 #endif
         #region Static Readonly Field
         private readonly Color s_pen_105_105_105 = new Color( 105, 105, 105 );
@@ -411,7 +411,20 @@ namespace Boare.Cadencii {
         /// Overview画面で、マウスが下りた位置のx座標
         /// </summary>
         private int m_overview_mouse_downed_locationx;
+        private PictureBox pictKeyLengthSplitter;
         private int m_overview_scale_count = 5;
+        /// <summary>
+        /// AppManager.keyWidthを調節するモードに入ったかどうか
+        /// </summary>
+        private boolean m_key_length_splitter_mouse_downed = false;
+        /// <summary>
+        /// AppManager.keyWidthを調節するモードに入る直前での、マウスのスクリーン座標
+        /// </summary>
+        private Point m_key_length_splitter_initial_mouse;
+        /// <summary>
+        /// AppManager.keyWidthを調節するモードに入る直前での、keyWidthの値
+        /// </summary>
+        private int m_key_length_init_value = 68;
         #endregion
 
         public FormMain() {
@@ -453,6 +466,7 @@ namespace Boare.Cadencii {
             toolStripBottom.Items.Add( m_strip_ddbtn_metronome );
 
             trackSelector = new TrackSelector();
+            updateTrackSelectorVisibleCurve();
             trackSelector.setBackground( new Color( 108, 108, 108 ) );
             trackSelector.setCurveVisible( true );
             trackSelector.setLocation( new Point( 0, 242 ) );
@@ -471,7 +485,7 @@ namespace Boare.Cadencii {
             trackSelector.PreviewKeyDown += new PreviewKeyDownEventHandler( this.trackSelector_PreviewKeyDown );
             trackSelector.KeyDown += new KeyEventHandler( commonCaptureSpaceKeyDown );
             trackSelector.KeyUp += new KeyEventHandler( commonCaptureSpaceKeyUp );
-            updateTrackSelectorVisibleCurve();
+            trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
             this.setMinimumSize( getWindowMinimumSize() );
 
@@ -807,11 +821,11 @@ namespace Boare.Cadencii {
 #endif
                     // 画面上にAppManager.inputTextBoxが見えるように，移動
                     int SPACE = 20;
-                    if ( x < AppManager.KEY_LENGTH || pictPianoRoll.Width < x + AppManager.inputTextBox.Width ) {
+                    if ( x < AppManager.keyWidth || pictPianoRoll.Width < x + AppManager.inputTextBox.Width ) {
                         int clock, clock_x;
-                        if ( x < AppManager.KEY_LENGTH ) {
+                        if ( x < AppManager.keyWidth ) {
                             clock = item.Clock;
-                            clock_x = AppManager.KEY_LENGTH + SPACE;
+                            clock_x = AppManager.keyWidth + SPACE;
                         } else {
                             clock = item.Clock + clWidth;
                             clock_x = pictPianoRoll.Width - SPACE;
@@ -1295,12 +1309,12 @@ namespace Boare.Cadencii {
 #if USE_DOBJ
                         for ( int i = 0; i < AppManager.drawObjects.get( AppManager.getSelected() - 1 ).size(); i++ ) {
                             DrawObject dobj = AppManager.drawObjects.get( AppManager.getSelected() - 1 ).get( i );
-                            if ( dobj.pxRectangle.x + dobj.pxRectangle.width - stdx < 0 ) {
+                            if ( dobj.pxRectangle.x + AppManager.startToDrawX + dobj.pxRectangle.width - stdx < 0 ) {
                                 continue;
-                            } else if ( pictPianoRoll.Width < dobj.pxRectangle.x - stdx ) {
+                            } else if ( pictPianoRoll.Width < dobj.pxRectangle.x + AppManager.keyWidth - stdx ) {
                                 break;
                             }
-                            Rectangle rc = new Rectangle( dobj.pxRectangle.x + dobj.pxVibratoDelay - stdx,
+                            Rectangle rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxVibratoDelay - stdx,
                                                           dobj.pxRectangle.y + AppManager.editorConfig.PxTrackHeight - stdy,
                                                           dobj.pxRectangle.width - dobj.pxVibratoDelay,
                                                           AppManager.editorConfig.PxTrackHeight );
@@ -1352,7 +1366,7 @@ namespace Boare.Cadencii {
                     }
                 }
             } else if ( e.Button == BMouseButtons.Right ) {
-                boolean show_context_menu = (e.X > AppManager.KEY_LENGTH);
+                boolean show_context_menu = (e.X > AppManager.keyWidth);
                 if ( m_mouse_hover_thread != null ) {
                     if ( !m_mouse_hover_thread.IsAlive && AppManager.editorConfig.PlayPreviewWhenRightClick ) {
                         show_context_menu = false;
@@ -1452,7 +1466,7 @@ namespace Boare.Cadencii {
             } else {
                 AppManager.clearSelectedEvent();
                 hideInputTextBox();
-                if ( AppManager.editorConfig.ShowExpLine && AppManager.KEY_LENGTH <= e.X ) {
+                if ( AppManager.editorConfig.ShowExpLine && AppManager.keyWidth <= e.X ) {
                     int stdx = AppManager.startToDrawX;
                     int stdy = getStartToDrawY();
 #if USE_DOBJ
@@ -1460,7 +1474,7 @@ namespace Boare.Cadencii {
                         DrawObject dobj = (DrawObject)itr.next();
                         // 表情コントロールプロパティを表示するかどうかを決める
                         rect = new Rectangle(
-                            dobj.pxRectangle.x - stdx,
+                            dobj.pxRectangle.x + AppManager.keyWidth - stdx,
                             dobj.pxRectangle.y - stdy + AppManager.editorConfig.PxTrackHeight,
                             21,
                             AppManager.editorConfig.PxTrackHeight );
@@ -1541,7 +1555,7 @@ namespace Boare.Cadencii {
 
                         // ビブラートプロパティダイアログを表示するかどうかを決める
 #if USE_DOBJ
-                        rect = new Rectangle( dobj.pxRectangle.x - stdx + 21,
+                        rect = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth - stdx + 21,
                                               dobj.pxRectangle.y - stdy + AppManager.editorConfig.PxTrackHeight,
                                               dobj.pxRectangle.width - 21,
                                               AppManager.editorConfig.PxTrackHeight );
@@ -1619,7 +1633,7 @@ namespace Boare.Cadencii {
             }
 
             // 必要な操作が何も無ければ，クリック位置にソングポジションを移動
-            if ( e.Button == BMouseButtons.Left && AppManager.KEY_LENGTH < e.X ) {
+            if ( e.Button == BMouseButtons.Left && AppManager.keyWidth < e.X ) {
                 int unit = AppManager.getPositionQuantizeClock();
                 int clock = AppManager.clockFromXCoord( e.X );
                 int odd = clock % unit;
@@ -1640,7 +1654,7 @@ namespace Boare.Cadencii {
             }
 
             m_mouse_moved = false;
-            if ( !AppManager.isPlaying() && 0 <= e.X && e.X <= AppManager.KEY_LENGTH ) {
+            if ( !AppManager.isPlaying() && 0 <= e.X && e.X <= AppManager.keyWidth ) {
                 int note = noteFromYCoord( e.Y );
                 if ( 0 <= note && note <= 126 ) {
                     if ( e.Button == BMouseButtons.Left ) {
@@ -1735,12 +1749,12 @@ namespace Boare.Cadencii {
                             if ( dobj.pxRectangle.width <= dobj.pxVibratoDelay ) {
                                 continue;
                             }
-                            if ( dobj.pxRectangle.x + dobj.pxRectangle.width - stdx < 0 ) {
+                            if ( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx < 0 ) {
                                 continue;
-                            } else if ( pictPianoRoll.Width < dobj.pxRectangle.x - stdx ) {
+                            } else if ( pictPianoRoll.Width < dobj.pxRectangle.x + AppManager.keyWidth - stdx ) {
                                 break;
                             }
-                            Rectangle rc = new Rectangle( dobj.pxRectangle.x + dobj.pxVibratoDelay - stdx - _EDIT_HANDLE_WIDTH / 2,
+                            Rectangle rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxVibratoDelay - stdx - _EDIT_HANDLE_WIDTH / 2,
                                                 dobj.pxRectangle.y + AppManager.editorConfig.PxTrackHeight - stdy,
                                                 _EDIT_HANDLE_WIDTH,
                                                 AppManager.editorConfig.PxTrackHeight );
@@ -1772,6 +1786,7 @@ namespace Boare.Cadencii {
 #if USE_DOBJ
                                 m_vibrato_editing_id = dobj.internalID;
                                 pxFound = dobj.pxRectangle;
+                                pxFound.x += AppManager.keyWidth;
                                 px_vibrato_length = dobj.pxRectangle.width - dobj.pxVibratoDelay;
 #else
                                 m_vibrato_editing_id = evnt.InternalID;
@@ -1802,7 +1817,7 @@ namespace Boare.Cadencii {
                     if ( !vibrato_found ) {
                         if ( (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) &&
                             e.Button == BMouseButtons.Left &&
-                            e.X >= AppManager.KEY_LENGTH ) {
+                            e.X >= AppManager.keyWidth ) {
                             int clock = AppManager.clockFromXCoord( e.X );
                             if ( AppManager.getVsqFile().getPreMeasureClocks() - AppManager.editorConfig.PxTolerance / AppManager.scaleX <= clock ) {
                                 //10ピクセルまでは許容範囲
@@ -1876,7 +1891,7 @@ namespace Boare.Cadencii {
 #if USE_DOBJ
                     for ( Iterator itr = AppManager.drawObjects.get( selected_track - 1 ).iterator(); itr.hasNext(); ) {
                         DrawObject dobj = (DrawObject)itr.next();
-                        Rectangle rc = new Rectangle( dobj.pxRectangle.x - stdx, dobj.pxRectangle.y - stdy, _EDIT_HANDLE_WIDTH, dobj.pxRectangle.height );
+                        Rectangle rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth - stdx, dobj.pxRectangle.y - stdy, _EDIT_HANDLE_WIDTH, dobj.pxRectangle.height );
 #else
                     for( Iterator itr = AppManager.VsqFile.getTrack( AppManager.Selected ).getNoteEventIterator(); itr.hasNext(); ){
                         VsqEvent evnt = (VsqEvent)itr.next();
@@ -1911,7 +1926,7 @@ namespace Boare.Cadencii {
                             return;
                         }
 #if USE_DOBJ
-                        rc = new Rectangle( dobj.pxRectangle.x + dobj.pxRectangle.width - stdx - _EDIT_HANDLE_WIDTH,
+                        rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx - _EDIT_HANDLE_WIDTH,
                                             dobj.pxRectangle.y - stdy,
                                             _EDIT_HANDLE_WIDTH,
                                             dobj.pxRectangle.height );
@@ -2058,13 +2073,13 @@ namespace Boare.Cadencii {
             int clock = AppManager.clockFromXCoord( e.X );
             if ( m_mouse_downed ) {
                 if ( m_ext_dragx == ExtDragXMode.NONE ) {
-                    if ( AppManager.KEY_LENGTH > e.X ) {
+                    if ( AppManager.keyWidth > e.X ) {
                         m_ext_dragx = ExtDragXMode.LEFT;
                     } else if ( pictPianoRoll.Width < e.X ) {
                         m_ext_dragx = ExtDragXMode.RIGHT;
                     }
                 } else {
-                    if ( AppManager.KEY_LENGTH <= e.X && e.X <= pictPianoRoll.Width ) {
+                    if ( AppManager.keyWidth <= e.X && e.X <= pictPianoRoll.Width ) {
                         m_ext_dragx = ExtDragXMode.NONE;
                     }
                 }
@@ -2100,9 +2115,9 @@ namespace Boare.Cadencii {
                     d_draft = (73 - pictPianoRoll.Width) / AppManager.scaleX + right_clock + dclock;
                 } else {
                     px_move *= -1;
-                    int left_clock = AppManager.clockFromXCoord( AppManager.KEY_LENGTH );
+                    int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
                     int dclock = (int)(px_move / AppManager.scaleX);
-                    d_draft = (73 - AppManager.KEY_LENGTH) / AppManager.scaleX + left_clock + dclock;
+                    d_draft = (73 - AppManager.keyWidth) / AppManager.scaleX + left_clock + dclock;
                 }
                 if ( d_draft < 0.0 ) {
                     d_draft = 0.0;
@@ -2190,8 +2205,8 @@ namespace Boare.Cadencii {
 #if USE_DOBJ
                     for ( Iterator itr = AppManager.drawObjects.get( AppManager.getSelected() - 1 ).iterator(); itr.hasNext(); ) {
                         DrawObject dobj = (DrawObject)itr.next();
-                        int x0 = dobj.pxRectangle.x;
-                        int x1 = dobj.pxRectangle.x + dobj.pxRectangle.width;
+                        int x0 = dobj.pxRectangle.x + AppManager.keyWidth;
+                        int x1 = dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width;
                         int y0 = dobj.pxRectangle.y;
                         int y1 = dobj.pxRectangle.y + dobj.pxRectangle.height;
                         internal_id = dobj.internalID;
@@ -2433,7 +2448,7 @@ namespace Boare.Cadencii {
 
 #endif
                     Rectangle rc = new Rectangle(
-                                        dobj.pxRectangle.x - stdx,
+                                        dobj.pxRectangle.x + AppManager.keyWidth - stdx,
                                         dobj.pxRectangle.y - stdy,
                                         _EDIT_HANDLE_WIDTH,
                                         AppManager.editorConfig.PxTrackHeight );
@@ -2443,7 +2458,7 @@ namespace Boare.Cadencii {
                     }
 
                     // 音符右側の編集領域
-                    rc = new Rectangle( dobj.pxRectangle.x + dobj.pxRectangle.width - stdx - _EDIT_HANDLE_WIDTH,
+                    rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx - _EDIT_HANDLE_WIDTH,
                                         dobj.pxRectangle.y - stdy,
                                         _EDIT_HANDLE_WIDTH,
                                         AppManager.editorConfig.PxTrackHeight );
@@ -2453,7 +2468,7 @@ namespace Boare.Cadencii {
                     }
 
                     // 音符本体
-                    rc = new Rectangle( dobj.pxRectangle.x - stdx,
+                    rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth - stdx,
                                         dobj.pxRectangle.y - stdy,
                                         dobj.pxRectangle.width,
                                         dobj.pxRectangle.height );
@@ -2461,7 +2476,7 @@ namespace Boare.Cadencii {
                         rc.height *= 2;
                         if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
                             // ビブラートの開始位置
-                            rc = new Rectangle( dobj.pxRectangle.x + dobj.pxVibratoDelay - stdx - _EDIT_HANDLE_WIDTH / 2,
+                            rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxVibratoDelay - stdx - _EDIT_HANDLE_WIDTH / 2,
                                                 dobj.pxRectangle.y + AppManager.editorConfig.PxTrackHeight - stdy,
                                                 _EDIT_HANDLE_WIDTH,
                                                 AppManager.editorConfig.PxTrackHeight );
@@ -3184,6 +3199,7 @@ namespace Boare.Cadencii {
 
                 } else if ( ret == BDialogResult.CANCEL ) {
                     e.Cancel = true;
+                    return;
                 }
             }
             AppManager.editorConfig.WindowMaximized = (this.WindowState == FormWindowState.Maximized);
@@ -3215,7 +3231,7 @@ namespace Boare.Cadencii {
             updateRecentFileMenu();
 
             // C3が画面中央に来るように調整
-            int draft_start_to_draw_y = AppManager.KEY_LENGTH * AppManager.editorConfig.PxTrackHeight - pictPianoRoll.Height / 2;
+            int draft_start_to_draw_y = 68 * AppManager.editorConfig.PxTrackHeight - pictPianoRoll.Height / 2;
             int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.Maximum) / (128 * AppManager.editorConfig.PxTrackHeight - vScroll.Height));
             try {
                 vScroll.Value = draft_vscroll_value;
@@ -6024,7 +6040,7 @@ namespace Boare.Cadencii {
         }
 
         private void picturePositionIndicator_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
-            if ( e.X < AppManager.KEY_LENGTH || Width - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || Width - 3 < e.X ) {
                 return;
             }
             if ( e.Button == BMouseButtons.Left ) {
@@ -6176,7 +6192,7 @@ namespace Boare.Cadencii {
                 m_txtbox_track_name = null;
             }
 
-            if ( e.X < AppManager.KEY_LENGTH || Width - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || Width - 3 < e.X ) {
                 return;
             }
 
@@ -6327,7 +6343,7 @@ namespace Boare.Cadencii {
         }
 
         private void picturePositionIndicator_MouseClick( Object sender, BMouseEventArgs e ) {
-            if ( e.X < AppManager.KEY_LENGTH || Width - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || Width - 3 < e.X ) {
                 return;
             }
 
@@ -6916,7 +6932,7 @@ namespace Boare.Cadencii {
 
         private void trackSelector_MouseClick( Object sender, BMouseEventArgs e ) {
             if ( e.Button == BMouseButtons.Right ) {
-                if ( AppManager.KEY_LENGTH < e.X && e.X < trackSelector.Width - AppManager.KEY_LENGTH ) {
+                if ( AppManager.keyWidth < e.X && e.X < trackSelector.Width - AppManager.keyWidth ) {
                     if ( trackSelector.Height - TrackSelector.OFFSET_TRACK_TAB <= e.Y && e.Y <= trackSelector.Height ) {
                         cMenuTrackTab.Show( trackSelector, e.Location );
                     } else {
@@ -6933,7 +6949,7 @@ namespace Boare.Cadencii {
         }
 
         private void trackSelector_MouseDown( Object sender, BMouseEventArgs e ) {
-            if ( AppManager.KEY_LENGTH < e.X ) {
+            if ( AppManager.keyWidth < e.X ) {
                 m_mouse_downed_trackselector = true;
                 if ( e.Button == BMouseButtons.Middle || m_spacekey_downed ) {
                     m_edit_curve_mode = CurveEditMode.MIDDLE_DRAG;
@@ -6978,13 +6994,13 @@ namespace Boare.Cadencii {
             } else {
                 if ( m_mouse_downed_trackselector ) {
                     if ( m_ext_dragx_trackselector == ExtDragXMode.NONE ) {
-                        if ( AppManager.KEY_LENGTH > e.X ) {
+                        if ( AppManager.keyWidth > e.X ) {
                             m_ext_dragx_trackselector = ExtDragXMode.LEFT;
                         } else if ( parent_width < e.X ) {
                             m_ext_dragx_trackselector = ExtDragXMode.RIGHT;
                         }
                     } else {
-                        if ( AppManager.KEY_LENGTH <= e.X && e.X <= parent_width ) {
+                        if ( AppManager.keyWidth <= e.X && e.X <= parent_width ) {
                             m_ext_dragx_trackselector = ExtDragXMode.NONE;
                         }
                     }
@@ -7007,9 +7023,9 @@ namespace Boare.Cadencii {
                         d_draft = (73 - trackSelector.Width) / AppManager.scaleX + right_clock + dclock;
                     } else {
                         px_move *= -1;
-                        int left_clock = AppManager.clockFromXCoord( AppManager.KEY_LENGTH );
+                        int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
                         int dclock = (int)(px_move / AppManager.scaleX);
-                        d_draft = (73 - AppManager.KEY_LENGTH) / AppManager.scaleX + left_clock + dclock;
+                        d_draft = (73 - AppManager.keyWidth) / AppManager.scaleX + left_clock + dclock;
                     }
                     if ( d_draft < 0.0 ) {
                         d_draft = 0.0;
@@ -7051,6 +7067,15 @@ namespace Boare.Cadencii {
                 hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
             }
             refreshScreen();
+        }
+
+        private void trackSelector_PreferredMinHeightChanged( object sender, EventArgs e ) {
+            if ( menuVisualControlTrack.Checked ) {
+                splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
+#if DEBUG
+                PortUtil.println( "FormMain#trackSelector_PreferredMinHeightChanged; splitContainer1.Panel2MinSize changed" );
+#endif
+            }
         }
 
         private void trackSelector_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e ) {
@@ -7763,7 +7788,7 @@ namespace Boare.Cadencii {
             int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
             if ( clock > hScroll.Maximum ) {
                 if ( AppManager.getEditMode() == EditMode.REALTIME ) {
-                    hScroll.Maximum = clock + (int)((pictPianoRoll.Width - AppManager.KEY_LENGTH) / 2.0f / AppManager.scaleX);
+                    hScroll.Maximum = clock + (int)((pictPianoRoll.Width - AppManager.keyWidth) / 2.0f / AppManager.scaleX);
                 } else {
                     //AppManager.CurrentClock = 0;
                     //EnsureCursorVisible();
@@ -8250,7 +8275,7 @@ namespace Boare.Cadencii {
 
         private int getOverviewStartToDrawX( int mouse_x ) {
             float clock = mouse_x / m_overview_px_per_clock + m_overview_start_to_draw_clock;
-            int clock_at_left = (int)(clock - (pictPianoRoll.Width - AppManager.KEY_LENGTH) / AppManager.scaleX / 2);
+            int clock_at_left = (int)(clock - (pictPianoRoll.Width - AppManager.keyWidth) / AppManager.scaleX / 2);
             return (int)(clock_at_left * AppManager.scaleX);
         }
 
@@ -8312,7 +8337,7 @@ namespace Boare.Cadencii {
             }
             g.setStroke( new BasicStroke() );
             //}
-            int current_start = AppManager.clockFromXCoord( AppManager.KEY_LENGTH );
+            int current_start = AppManager.clockFromXCoord( AppManager.keyWidth );
             int current_end = AppManager.clockFromXCoord( pictPianoRoll.Width );
             int x_start = getOverviewXCoordFromClock( current_start );
             int x_end = getOverviewXCoordFromClock( current_end );
@@ -8324,14 +8349,15 @@ namespace Boare.Cadencii {
             g.setClip( null );
             BasicStroke pen_bold = new bocoree.awt.BasicStroke( 2 );
             Color pen_color = new bocoree.awt.Color( 0, 0, 0, 130 );
-            //using ( Pen pen_bold = new Pen( Color.FromArgb( 130, Color.Black ), 2 ) )
-            //using ( Pen pen = new Pen( Color.FromArgb( 130, Color.Black ) ) ) {
-            for ( Iterator itr = AppManager.getVsqFile().getBarLineIterator( clock_end ); itr.hasNext(); ) {
+
+            int barcountx = 0;
+            String barcountstr = "";
+            for ( Iterator itr = AppManager.getVsqFile().getBarLineIterator( clock_end * 3 / 2 ); itr.hasNext(); ) {
                 VsqBarLineType bar = (VsqBarLineType)itr.next();
                 if ( bar.clock() < clock_start ) {
                     continue;
                 }
-                if ( clock_end < bar.clock() ) {
+                if ( pictOverview.Width < barcountx ) {
                     break;
                 }
                 if ( bar.isSeparator() ) {
@@ -8341,24 +8367,38 @@ namespace Boare.Cadencii {
                         g.setColor( pen_color );
                         g.setStroke( pen_bold );
                         g.drawLine( x, 0, x, pictOverview.Height );
-                        Dimension size = Util.measureString( barcount + "", AppManager.baseFont9 );
-                        g.setColor( Color.white );
+
                         g.setStroke( new BasicStroke() );
-                        g.setFont( AppManager.baseFont9 );
-                        g.drawString( barcount + "", x + 1, 1 );
-                        //g.clipRect( x + 1, 1, (int)size.Width, (int)size.Height ); //, System.Drawing.Drawing2D.CombineMode.Exclude );
+                        if ( !barcountstr.Equals( "" ) ) {
+                            g.setColor( Color.white );
+                            g.setFont( AppManager.baseFont9 );
+                            g.drawString( barcountstr, barcountx + 1, 1 );
+                        }
+                        barcountstr = barcount + "";
+                        barcountx = x;
                     } else {
                         g.setColor( pen_color );
-                        g.setStroke( new BasicStroke() );
                         g.drawLine( x, 0, x, pictOverview.Height );
                     }
                 }
             }
             g.setClip( null );
 
+            // 移動中している最中に，移動開始直前の部分を影付で表示する
+            int act_start_to_draw_x = (int)(hScroll.Value * AppManager.scaleX);
+            if ( act_start_to_draw_x != AppManager.startToDrawX ) {
+                int act_start_clock = AppManager.clockFromXCoord( AppManager.keyWidth - AppManager.startToDrawX + act_start_to_draw_x );
+                int act_end_clock = AppManager.clockFromXCoord( pictPianoRoll.Width - AppManager.startToDrawX + act_start_to_draw_x );
+                int act_start_x = getOverviewXCoordFromClock( act_start_clock );
+                int act_end_x = getOverviewXCoordFromClock( act_end_clock );
+                Rectangle rcm = new Rectangle( act_start_x, 0, act_end_x - act_start_x, height );
+                g.setColor( new Color( 0, 0, 0, 100 ) );
+                g.fillRect( rcm.x, rcm.y, rcm.width, rcm.height );
+            }
+
             // 現在の表示範囲
             Rectangle rc = new Rectangle( x_start, 0, x_end - x_start, height - 1 );
-            g.setColor( new bocoree.awt.Color( 255, 255, 255, 50 ) );
+            g.setColor( new Color( 255, 255, 255, 50 ) );
             g.fillRect( rc.x, rc.y, rc.width, rc.height );
             g.setColor( AppManager.getHilightColor() );
             g.drawRect( rc.x, rc.y, rc.width, rc.height );
@@ -8476,6 +8516,9 @@ namespace Boare.Cadencii {
                     draft = 0;
                 }
                 m_overview_start_to_draw_clock = draft;
+                if ( this == null || (this != null && this.IsDisposed) ) {
+                    break;
+                }
                 this.Invoke( new BEventHandler( invalidatePictOverview ) );
             }
         }
@@ -8887,15 +8930,15 @@ namespace Boare.Cadencii {
                 panel3.Height = 0;
             }
             panel3.Width = width;
-            pictOverview.Left = AppManager.KEY_LENGTH;
-            pictOverview.Width = panel3.Width - AppManager.KEY_LENGTH;
+            pictOverview.Left = AppManager.keyWidth;
+            pictOverview.Width = panel3.Width - AppManager.keyWidth;
             pictOverview.Top = 0;
             pictOverview.Height = panel3.Height;
 
             picturePositionIndicator.Width = width;
             picturePositionIndicator.Height = _PICT_POSITION_INDICATOR_HEIGHT;
 
-            hScroll.Width = width - pictureBox2.Width - pictureBox3.Width - trackBar.Width;
+            hScroll.Width = width - pictKeyLengthSplitter.Width - pictureBox2.Width - pictureBox3.Width - trackBar.Width;
             hScroll.Height = _SCROLL_WIDTH;
 
             vScroll.Width = _SCROLL_WIDTH;
@@ -8904,7 +8947,8 @@ namespace Boare.Cadencii {
             pictPianoRoll.Width = width - _SCROLL_WIDTH;
             pictPianoRoll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH - panel3.Height;
 
-            pictureBox3.Width = AppManager.KEY_LENGTH;
+            pictureBox3.Width = AppManager.keyWidth - _SCROLL_WIDTH;
+            pictKeyLengthSplitter.Width = _SCROLL_WIDTH;
             pictureBox3.Height = _SCROLL_WIDTH;
             pictureBox2.Height = _SCROLL_WIDTH;
             trackBar.Height = _SCROLL_WIDTH;
@@ -8923,9 +8967,11 @@ namespace Boare.Cadencii {
 
             pictureBox3.Top = height - _SCROLL_WIDTH;
             pictureBox3.Left = 0;
+            pictKeyLengthSplitter.Top = height - _SCROLL_WIDTH;
+            pictKeyLengthSplitter.Left = pictureBox3.Width;
 
             hScroll.Top = height - _SCROLL_WIDTH;
-            hScroll.Left = pictureBox3.Width;
+            hScroll.Left = pictureBox3.Width + pictKeyLengthSplitter.Width;
 
             trackBar.Top = height - _SCROLL_WIDTH;
             trackBar.Left = width - _SCROLL_WIDTH - trackBar.Width;
@@ -9927,12 +9973,15 @@ namespace Boare.Cadencii {
                     }
                 }
             } catch ( Exception ex3 ) {
+#if DEBUG
+                PortUtil.println( "AppManager#dd_run_Click; ex3=" + ex3 );
+#endif
             }
         }
 
         public void ensureVisible( int clock ) {
             // カーソルが画面内にあるかどうか検査
-            int clock_left = AppManager.clockFromXCoord( AppManager.KEY_LENGTH );
+            int clock_left = AppManager.clockFromXCoord( AppManager.keyWidth );
             int clock_right = AppManager.clockFromXCoord( pictPianoRoll.Width );
             int uwidth = clock_right - clock_left;
             if ( clock < clock_left || clock_right < clock ) {
@@ -10320,7 +10369,7 @@ namespace Boare.Cadencii {
             if ( draft_length > hScroll.Maximum ) {
                 hScroll.Maximum = draft_length;
             }
-            int large_change = (int)((pictPianoRoll.Width - AppManager.KEY_LENGTH) / (float)AppManager.scaleX);
+            int large_change = (int)((pictPianoRoll.Width - AppManager.keyWidth) / (float)AppManager.scaleX);
             int box_width = (int)((hScroll.Width - _ARROWS) * large_change / (float)(hScroll.Maximum + large_change));
             if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
@@ -10613,7 +10662,7 @@ namespace Boare.Cadencii {
             }
             int current = AppManager.getVsqFile().getBarCountFromClock( AppManager.getCurrentClock() ) + 1;
             int new_clock = AppManager.getVsqFile().getClockFromBarCount( current );
-            if ( new_clock <= hScroll.Maximum + (pictPianoRoll.Width - AppManager.KEY_LENGTH) / AppManager.scaleX ) {
+            if ( new_clock <= hScroll.Maximum + (pictPianoRoll.Width - AppManager.keyWidth) / AppManager.scaleX ) {
                 AppManager.setCurrentClock( new_clock );
                 ensureCursorVisible();
                 AppManager.setPlaying( playing );
@@ -11530,6 +11579,9 @@ namespace Boare.Cadencii {
                     if ( curve.isScalar() ) {
                         continue;
                     }
+                    if ( list.size() <= 0 ) {
+                        continue;
+                    }
                     if ( curve.isAttachNote() ) {
                         //todo: FormMain+PasteEvent; VibratoRate, VibratoDepthカーブのペースト処理
                     } else {
@@ -11538,6 +11590,15 @@ namespace Boare.Cadencii {
 #if DEBUG
                         PortUtil.println( "FormMain#pasteEvent; list.getCount()=" + count );
 #endif
+                        int min = list.getKeyClock( 0 ) + dclock;
+                        int max = list.getKeyClock( count - 1 ) + dclock;
+                        for ( int i = 0; i < target.size(); i++ ) {
+                            int cl = target.getKeyClock( i );
+                            if ( min <= cl && cl <= max ) {
+                                target.removeElementAt( i );
+                                i--;
+                            }
+                        }
                         for ( int i = 0; i < count; i++ ) {
                             target.add( list.getKeyClock( i ) + dclock, list.getElementA( i ) );
                         }
@@ -11663,23 +11724,30 @@ namespace Boare.Cadencii {
                 ce.copyStartedClock = start_clock;
                 ce.points = new TreeMap<CurveType, VsqBPList>();
                 ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
-                foreach ( CurveType vct in AppManager.CURVE_USAGE ) {
-                    if ( vct.isScalar() || vct.isAttachNote() ) {
+                for( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ){
+                    CurveType vct = AppManager.CURVE_USAGE[i];
+                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
+                    if ( list == null ){
                         continue;
                     }
-                    ByRef<VsqBPList> tmp = new ByRef<VsqBPList>( new VsqBPList() );
-                    ByRef<Vector<BezierChain>> tmp_bezier = new ByRef<Vector<BezierChain>>( new Vector<BezierChain>() );
+                    Vector<BezierChain> tmp_bezier = new Vector<BezierChain>();
                     copyCurveCor( AppManager.getSelected(),
                                   vct,
                                   start_clock,
                                   end_clock,
-                                  tmp_bezier,
-                                  tmp );
-#if DEBUG
-                    AppManager.debugWriteLine( "CopyEvent; tmp.getCount()=" + tmp.value.size() + "; tmp_bezier.Count=" + tmp_bezier.value.size() );
-#endif
-                    ce.beziers.put( vct, tmp_bezier.value );
-                    ce.points.put( vct, tmp.value );
+                                  tmp_bezier );
+                    VsqBPList tmp_bplist = new VsqBPList( list.getDefault(), list.getMinimum(), list.getMaximum() );
+                    int c = list.size();
+                    for ( int j = 0; j < c; j++ ) {
+                        int clock = list.getKeyClock( j );
+                        if ( start_clock <= clock && clock <= end_clock ) {
+                            tmp_bplist.add( clock, list.getElement( j ) );
+                        } else if ( end_clock < clock ) {
+                            break;
+                        }
+                    }
+                    ce.beziers.put( vct, tmp_bezier );
+                    ce.points.put( vct, tmp_bplist );
                 }
 
                 if ( AppManager.getSelectedEventCount() > 0 ) {
@@ -11731,26 +11799,49 @@ namespace Boare.Cadencii {
                 int start = t.Key;
                 int end = t.Value;
                 ce.copyStartedClock = start;
-                ByRef<Vector<BezierChain>> tmp_bezier = new ByRef<Vector<BezierChain>>();
-                ByRef<VsqBPList> tmp_bppair = new ByRef<VsqBPList>();
+                Vector<BezierChain> tmp_bezier = new Vector<BezierChain>();
                 copyCurveCor( AppManager.getSelected(),
                               trackSelector.getSelectedCurve(),
                               start,
                               end,
-                              tmp_bezier,
-                              tmp_bppair );
-#if DEBUG
-                AppManager.debugWriteLine( "FormMain#copyEvent; AppManager.selectedPointIDs.size()>0; tmp_bppair.getCount()=" + tmp_bppair.value.size() + "; tmp_bezier.Count=" + tmp_bezier.value.size() );
-#endif
-                if ( tmp_bezier.value.size() > 0 ) {
-                    ce.beziers.put( trackSelector.getSelectedCurve(), tmp_bezier.value );
-                    if ( tmp_bppair.value.size() > 0 ) {
-                        ce.points.put( trackSelector.getSelectedCurve(), tmp_bppair.value );
+                              tmp_bezier );
+                if ( tmp_bezier.size() > 0 ) {
+                    // ベジエ曲線が1個以上コピーされた場合
+                    // 範囲内のデータ点を追加する
+                    ce.beziers.put( trackSelector.getSelectedCurve(), tmp_bezier );
+                    CurveType curve = trackSelector.getSelectedCurve();
+                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
+                    if ( list != null ) {
+                        VsqBPList tmp_bplist = new VsqBPList( list.getDefault(), list.getMinimum(), list.getMaximum() );
+                        int c = list.size();
+                        for ( int i = 0; i < c; i++ ) {
+                            int clock = list.getKeyClock( i );
+                            if ( start <= clock && clock <= end ) {
+                                tmp_bplist.add( clock, list.getElement( i ) );
+                            } else if ( end < clock ) {
+                                break;
+                            }
+                        }
+                        ce.points.put( curve, tmp_bplist );
                     }
                 } else {
-                    if ( tmp_bppair.value.size() > 0 ) {
-                        ce.copyStartedClock = tmp_bppair.value.getKeyClock( 0 );
-                        ce.points.put( trackSelector.getSelectedCurve(), tmp_bppair.value );
+                    // ベジエ曲線がコピーされなかった場合
+                    // AppManager.selectedPointIDIteratorの中身のみを選択
+                    CurveType curve = trackSelector.getSelectedCurve();
+                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
+                    if ( list != null ) {
+                        VsqBPList tmp_bplist = new VsqBPList( curve.getDefault(), curve.getMinimum(), curve.getMaximum() );
+                        for ( Iterator itr = AppManager.getSelectedPointIDIterator(); itr.hasNext(); ) {
+                            long id = (Long)itr.next();
+                            VsqBPPairSearchContext cxt = list.findElement( id );
+                            if ( cxt.index >= 0 ) {
+                                tmp_bplist.add( cxt.clock, cxt.point.value );
+                            }
+                        }
+                        if ( tmp_bplist.size() > 0 ) {
+                            ce.copyStartedClock = tmp_bplist.getKeyClock( 0 );
+                            ce.points.put( curve, tmp_bplist );
+                        }
                     }
                 }
                 AppManager.setClipboard( ce );
@@ -11760,6 +11851,8 @@ namespace Boare.Cadencii {
         private void cutEvent() {
             // まずコピー
             copyEvent();
+
+            int track = AppManager.getSelected();
 
             // 選択されたノートイベントがあれば、まず、削除を行うコマンドを発行
             VsqCommand delete_event = null;
@@ -11793,23 +11886,34 @@ namespace Boare.Cadencii {
                 }
 
                 // BPListに削除処理を施す
-                Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
-                Vector<String> types = new Vector<String>();
                 for ( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ) {
-                    CurveType vct = AppManager.CURVE_USAGE[i];
-                    if ( vct.isScalar() || vct.isAttachNote() ) {
+                    CurveType curve = AppManager.CURVE_USAGE[i];
+                    VsqBPList list = work.Track.get( track ).getCurve( curve.getName() );
+                    if ( list == null ) {
                         continue;
                     }
-                    Vector<BPPair> t = new Vector<BPPair>();
-                    t.add( new BPPair( start_clock, work.Track.get( AppManager.getSelected() ).getCurve( vct.getName() ).getValue( start_clock ) ) );
-                    t.add( new BPPair( end_clock, work.Track.get( AppManager.getSelected() ).getCurve( vct.getName() ).getValue( end_clock ) ) );
-                    curves.add( t );
-                    types.add( vct.getName() );
+                    int c = list.size();
+                    Vector<Long> delete = new Vector<Long>();
+                    if ( AppManager.isWholeSelectedIntervalEnabled() ) {
+                        // 一括選択モード
+                        for ( int j = 0; j < c; j++ ) {
+                            int clock = list.getKeyClock( j );
+                            if ( start_clock <= clock && clock <= end_clock ) {
+                                delete.add( list.getElementB( j ).id );
+                            } else if ( end_clock < clock ) {
+                                break;
+                            }
+                        }
+                    } else {
+                        // 普通の範囲選択
+                        for ( Iterator itr = AppManager.getSelectedPointIDIterator(); itr.hasNext(); ) {
+                            long id = (Long)itr.next();
+                            delete.add( id );
+                        }
+                    }
+                    VsqCommand tmp = VsqCommand.generateCommandTrackCurveEdit2( track, curve.getName(), delete, new TreeMap<Integer, VsqBPPair>() );
+                    work.executeCommand( tmp );
                 }
-                CadenciiCommand delete_curve = new CadenciiCommand( VsqCommand.generateCommandTrackCurveEditRange( AppManager.getSelected(),
-                                                                                                                   types,
-                                                                                                                   curves ) );
-                work.executeCommand( delete_curve );
 
                 // ベジエ曲線に削除処理を施す
                 Vector<CurveType> target_curve = new Vector<CurveType>();
@@ -11888,10 +11992,8 @@ namespace Boare.Cadencii {
             CurveType curve_type,
             int start,
             int end,
-            ByRef<Vector<BezierChain>> copied_chain,
-            ByRef<VsqBPList> copied_curve
+            Vector<BezierChain> copied_chain
         ) {
-            copied_chain.value = new Vector<BezierChain>();
             for ( Iterator itr = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( curve_type ).iterator(); itr.hasNext(); ) {
                 BezierChain bc = (BezierChain)itr.next();
                 int len = bc.points.size();
@@ -11902,52 +12004,18 @@ namespace Boare.Cadencii {
                 int chain_end = (int)bc.points.get( len - 1 ).getBase().getX();
                 if ( start < chain_start && chain_start < end && end < chain_end ) {
                     // (1) chain_start ~ end をコピー
-                    copied_chain.value.add( bc.extractPartialBezier( chain_start, end ) );
+                    copied_chain.add( bc.extractPartialBezier( chain_start, end ) );
                 } else if ( chain_start <= start && end <= chain_end ) {
                     // (2) start ~ endをコピー
-                    copied_chain.value.add( bc.extractPartialBezier( start, end ) );
+                    copied_chain.add( bc.extractPartialBezier( start, end ) );
                 } else if ( chain_start < start && start < chain_end && chain_end <= end ) {
                     // (3) start ~ chain_endをコピー
-                    copied_chain.value.add( bc.extractPartialBezier( start, chain_end ) );
+                    copied_chain.add( bc.extractPartialBezier( start, chain_end ) );
                 } else if ( start <= chain_start && chain_end <= end ) {
                     // (4) 全部コピーでOK
-                    copied_chain.value.add( (BezierChain)bc.Clone() );
+                    copied_chain.add( (BezierChain)bc.Clone() );
                 }
             }
-
-            copied_curve.value = new VsqBPList( curve_type.getDefault(), curve_type.getMinimum(), curve_type.getMaximum() );
-            VsqBPList target = AppManager.getVsqFile().Track.get( track ).getCurve( curve_type.getName() );
-            int count = target.size();
-            for ( int i = 0; i < count; i++ ) {
-                int clock = target.getKeyClock( i );
-                if ( start <= clock && clock <= end ) {
-                    copied_curve.value.add( clock, target.getElementA( i ) );
-                }
-            }
-            /*if ( copied_chain.size() > 0 )
-            {
-                copied_curve.add( start, target.getValue( start ) );
-                for ( Iterator itr = target.keyClockIterator(); itr.hasNext(); )
-                {
-                    int clock = (int)itr.next();
-                    if ( start < clock && clock <= end )
-                    {
-                        copied_curve.add( clock, target.getValue( clock ) );
-                    }
-                }
-            }
-            else
-            {
-                for ( Iterator itr = AppManager.getSelectedPointIDIterator(); itr.hasNext(); )
-                {
-                    long id = (Long)itr.next();
-                    VsqBPPairSearchContext context = target.findElement( id );
-                    if ( context.point.id == id )
-                    {
-                        copied_curve.add( context.clock, context.point.value );
-                    }
-                }
-            }*/
         }
         #endregion
 
@@ -11975,7 +12043,7 @@ namespace Boare.Cadencii {
             m_txtbox_track_name = new TextBoxEx();
             m_txtbox_track_name.Visible = false;
             int selector_width = trackSelector.getSelectorWidth();
-            int x = AppManager.KEY_LENGTH + (AppManager.getSelected() - 1) * selector_width;
+            int x = AppManager.keyWidth + (AppManager.getSelected() - 1) * selector_width;
             m_txtbox_track_name.setLocation( x, trackSelector.Height - TrackSelector.OFFSET_TRACK_TAB + 1 );
             m_txtbox_track_name.BorderStyle = BorderStyle.None;
             m_txtbox_track_name.Text = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName();
@@ -12176,17 +12244,15 @@ namespace Boare.Cadencii {
         private void applySelectedTool() {
             EditTool tool = AppManager.getSelectedTool();
             foreach ( ToolStripItem tsi in toolStripTool.Items ) {
-                if ( tsi is ToolStripButton ) {
-                    ToolStripButton tsb = (ToolStripButton)tsi;
-                    if ( tsb.Tag != null && tsb.Tag is String ) {
+                if ( tsi is BToolStripButton ) {
+                    BToolStripButton tsb = (BToolStripButton)tsi;
+                    Object tag = tsb.getTag();
+                    if ( tag != null && tag is String ) {
                         if ( tool == EditTool.PALETTE_TOOL ) {
-                            String id = (String)tsb.Tag;
-                            tsb.Checked = (AppManager.selectedPaletteTool.Equals( id ));
-#if DEBUG
-                            PortUtil.println( "FormMain#applySelectedTool; tsb.Name=" + tsb.Name + "; tsb.Checked=" + tsb.Checked );
-#endif
+                            String id = (String)tag;
+                            tsb.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
                         } else {
-                            tsb.Checked = false;
+                            tsb.setSelected( false );
                         }
                     }
                 }
@@ -12343,7 +12409,7 @@ namespace Boare.Cadencii {
                     AppManager.drawObjects.clear();
                 }
 
-                int xoffset = 6 + AppManager.KEY_LENGTH;
+                int xoffset = 6;// 6 + AppManager.keyWidth;
                 int yoffset = 127 * AppManager.editorConfig.PxTrackHeight;
                 float scalex = AppManager.scaleX;
                 Font SMALL_FONT = null;
@@ -12703,7 +12769,7 @@ namespace Boare.Cadencii {
         /// <returns></returns>
         VsqEvent getItemAtClickedPosition( Point mouse_position, ByRef<Rectangle> rect ) {
             rect.value = new Rectangle();
-            if ( AppManager.KEY_LENGTH <= mouse_position.x && mouse_position.x <= pictPianoRoll.Width ) {
+            if ( AppManager.keyWidth <= mouse_position.x && mouse_position.x <= pictPianoRoll.Width ) {
                 if ( 0 <= mouse_position.y && mouse_position.y <= pictPianoRoll.Height ) {
                     int selected = AppManager.getSelected();
                     if ( selected >= 1 ) {
@@ -12926,36 +12992,10 @@ namespace Boare.Cadencii {
                 g.drawLine( width - 2, 1, width - 2, height - 1 );
                 #endregion
 
-                #region TEMPO & BEAT
-                // TEMPO BEATの文字の部分。小節数が被っている可能性があるので、塗り潰す
-                g.setColor( new Color( picturePositionIndicator.BackColor ) );
-                g.fillRect( 2, 3, 65, 45 );
-                // 横ライン上
-                g.setColor( new Color( 104, 104, 104 ) );
-                g.drawLine( 2, 17, width - 3, 17 );
-                // 横ライン中央
-                g.drawLine( 2, 32, width - 3, 32 );
-                // 横ライン下
-                g.drawLine( 2, 47, width - 3, 47 );
-                // 縦ライン
-                g.drawLine( AppManager.KEY_LENGTH, 2, AppManager.KEY_LENGTH, 46 );
-                /* TEMPO&BEATとピアノロールの境界 */
-                g.drawLine( AppManager.KEY_LENGTH, 48, width - 18, 48 );
-                g.setFont( SMALL_FONT );
-                g.setColor( Color.black );
-                g.drawString( "TEMPO", 11, 20 );
-                g.drawString( "BEAT", 11, 35 );
-                g.setColor( new Color( 172, 168, 153 ) );
-                g.drawLine( 0, 0, width, 0 );
-                g.setColor( new Color( 113, 111, 100 ) );
-                g.drawLine( 1, 1, width - 1, 1 );
-
-                #endregion
-
                 #region 現在のマーカー
-                float xoffset = AppManager.KEY_LENGTH + 6 - AppManager.startToDrawX;
+                float xoffset = AppManager.keyWidth + 6 - AppManager.startToDrawX;
                 int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + xoffset);
-                if ( AppManager.KEY_LENGTH <= marker_x && marker_x <= width ) {
+                if ( AppManager.keyWidth <= marker_x && marker_x <= width ) {
                     g.setStroke( new BasicStroke( 2.0f ) );
                     g.setColor( Color.white );
                     g.drawLine( marker_x, 2, marker_x, height );
@@ -12972,6 +13012,32 @@ namespace Boare.Cadencii {
                         Properties.Resources.end_marker, x, 3 );
                 }
                 #endregion
+
+                #region TEMPO & BEAT
+                // TEMPO BEATの文字の部分。小節数が被っている可能性があるので、塗り潰す
+                g.setColor( new Color( picturePositionIndicator.BackColor ) );
+                g.fillRect( 2, 3, AppManager.keyWidth - 2, 45 );
+                // 横ライン上
+                g.setColor( new Color( 104, 104, 104 ) );
+                g.drawLine( 2, 17, width - 3, 17 );
+                // 横ライン中央
+                g.drawLine( 2, 32, width - 3, 32 );
+                // 横ライン下
+                g.drawLine( 2, 47, width - 3, 47 );
+                // 縦ライン
+                g.drawLine( AppManager.keyWidth, 2, AppManager.keyWidth, 46 );
+                /* TEMPO&BEATとピアノロールの境界 */
+                g.drawLine( AppManager.keyWidth, 48, width - 18, 48 );
+                g.setFont( SMALL_FONT );
+                g.setColor( Color.black );
+                g.drawString( "TEMPO", 11, 20 );
+                g.drawString( "BEAT", 11, 35 );
+                g.setColor( new Color( 172, 168, 153 ) );
+                g.drawLine( 0, 0, width, 0 );
+                g.setColor( new Color( 113, 111, 100 ) );
+                g.drawLine( 1, 1, width - 1, 1 );
+
+                #endregion
             } catch ( Exception ex ) {
             } finally {
 #if !JAVA
@@ -12986,6 +13052,31 @@ namespace Boare.Cadencii {
 
         }
 
+        private void pictKeyLengthSplitter_MouseDown( object sender, MouseEventArgs e ) {
+            m_key_length_splitter_mouse_downed = true;
+            m_key_length_splitter_initial_mouse = PortUtil.getMousePosition();
+            m_key_length_init_value = AppManager.keyWidth;
+        }
+
+        private void pictKeyLengthSplitter_MouseMove( object sender, MouseEventArgs e ) {
+            if ( !m_key_length_splitter_mouse_downed ) {
+                return;
+            }
+            int dx = PortUtil.getMousePosition().x - m_key_length_splitter_initial_mouse.x;
+            int draft = m_key_length_init_value + dx;
+            if ( draft < AppManager.MIN_KEY_WIDTH ) {
+                draft = AppManager.MIN_KEY_WIDTH;
+            } else if ( AppManager.MAX_KEY_WIDTH < draft ) {
+                draft = AppManager.MAX_KEY_WIDTH;
+            }
+            AppManager.keyWidth = draft;
+            updateLayout();
+            refreshScreen();
+        }
+
+        private void pictKeyLengthSplitter_MouseUp( object sender, MouseEventArgs e ) {
+            m_key_length_splitter_mouse_downed = false;
+        }
 #if JAVA
         #region UI Impl for Java
         private JMenuBar menuStripMain;
@@ -16686,6 +16777,7 @@ namespace Boare.Cadencii {
             this.bgWorkScreen = new System.ComponentModel.BackgroundWorker();
             this.timer = new System.Windows.Forms.Timer( this.components );
             this.panel1 = new System.Windows.Forms.Panel();
+            this.pictKeyLengthSplitter = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.btnRight1 = new System.Windows.Forms.Button();
             this.btnLeft2 = new System.Windows.Forms.Button();
@@ -16795,6 +16887,7 @@ namespace Boare.Cadencii {
             this.cMenuTrackSelector.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).BeginInit();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
@@ -18691,6 +18784,7 @@ namespace Boare.Cadencii {
             // 
             // panel1
             // 
+            this.panel1.Controls.Add( this.pictKeyLengthSplitter );
             this.panel1.Controls.Add( this.panel3 );
             this.panel1.Controls.Add( this.vScroll );
             this.panel1.Controls.Add( this.hScroll );
@@ -18703,6 +18797,22 @@ namespace Boare.Cadencii {
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size( 421, 282 );
             this.panel1.TabIndex = 16;
+            // 
+            // pictKeyLengthSplitter
+            // 
+            this.pictKeyLengthSplitter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pictKeyLengthSplitter.BackColor = System.Drawing.SystemColors.Control;
+            this.pictKeyLengthSplitter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pictKeyLengthSplitter.Cursor = System.Windows.Forms.Cursors.NoMoveHoriz;
+            this.pictKeyLengthSplitter.Location = new System.Drawing.Point( 50, 266 );
+            this.pictKeyLengthSplitter.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictKeyLengthSplitter.Name = "pictKeyLengthSplitter";
+            this.pictKeyLengthSplitter.Size = new System.Drawing.Size( 16, 16 );
+            this.pictKeyLengthSplitter.TabIndex = 20;
+            this.pictKeyLengthSplitter.TabStop = false;
+            this.pictKeyLengthSplitter.MouseMove += new System.Windows.Forms.MouseEventHandler( this.pictKeyLengthSplitter_MouseMove );
+            this.pictKeyLengthSplitter.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictKeyLengthSplitter_MouseDown );
+            this.pictKeyLengthSplitter.MouseUp += new System.Windows.Forms.MouseEventHandler( this.pictKeyLengthSplitter_MouseUp );
             // 
             // panel3
             // 
@@ -18897,7 +19007,7 @@ namespace Boare.Cadencii {
             this.pictureBox3.Location = new System.Drawing.Point( 0, 266 );
             this.pictureBox3.Margin = new System.Windows.Forms.Padding( 0 );
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size( 66, 16 );
+            this.pictureBox3.Size = new System.Drawing.Size( 49, 16 );
             this.pictureBox3.TabIndex = 8;
             this.pictureBox3.TabStop = false;
             this.pictureBox3.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictureBox3_MouseDown );
@@ -19831,6 +19941,7 @@ namespace Boare.Cadencii {
             this.cMenuTrackSelector.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.panel1.ResumeLayout( false );
+            ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).EndInit();
             this.panel3.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();

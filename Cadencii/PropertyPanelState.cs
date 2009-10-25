@@ -25,13 +25,11 @@ using bocoree.util;
 using bocoree.io;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii
-{
+namespace Boare.Cadencii {
     using boolean = System.Boolean;
 #endif
 
-    public class PropertyPanelState
-    {
+    public class PropertyPanelState {
         public PanelState State = PanelState.Docked;
         public XmlRectangle Bounds = new XmlRectangle( 0, 0, 200, 300 );
         public Vector<ValuePair<String, Boolean>> ExpandStatus = new Vector<ValuePair<String, Boolean>>();

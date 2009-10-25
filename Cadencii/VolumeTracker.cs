@@ -16,13 +16,10 @@ using System.Drawing;
 using System.Windows.Forms;
 using bocoree;
 
-namespace Boare.Cadencii
-{
-
+namespace Boare.Cadencii {
     using boolean = Boolean;
 
-    partial class VolumeTracker : UserControl
-    {
+    partial class VolumeTracker : UserControl {
         private int m_feder = 0;
         private boolean m_solo_button_visible;
         private boolean m_muted = false;
@@ -128,124 +125,93 @@ namespace Boare.Cadencii
         public event EventHandler IsSoloChanged;
 
 
-        public VolumeTracker()
-        {
+        public VolumeTracker() {
             InitializeComponent();
             this.SetStyle( ControlStyles.DoubleBuffer, true );
         }
 
-        public String Title
-        {
-            get
-            {
+        public String Title {
+            get {
                 return m_title;
             }
-            set
-            {
+            set {
                 m_title = value;
                 UpdateTitle();
             }
         }
 
-        private void UpdateTitle()
-        {
-            if ( m_number.Equals( "" ) )
-            {
+        private void UpdateTitle() {
+            if ( m_number.Equals( "" ) ) {
                 lblTitle.Text = m_title;
-            }
-            else if ( m_title.Equals( "" ) )
-            {
+            } else if ( m_title.Equals( "" ) ) {
                 lblTitle.Text = m_number;
-            }
-            else
-            {
+            } else {
                 lblTitle.Text = m_number + " " + m_title;
             }
         }
 
-        public String Number
-        {
-            get
-            {
+        public String Number {
+            get {
                 return m_number;
             }
-            set
-            {
+            set {
                 m_number = value;
                 UpdateTitle();
             }
         }
 
-        public boolean IsMuted
-        {
-            get
-            {
+        public boolean IsMuted {
+            get {
                 return m_muted;
             }
-            set
-            {
+            set {
                 boolean old = m_muted;
                 m_muted = value;
-                if ( old != m_muted && IsMutedChanged != null )
-                {
+                if ( old != m_muted && IsMutedChanged != null ) {
                     IsMutedChanged( this, new EventArgs() );
                 }
             }
         }
 
-        public boolean IsSolo
-        {
-            get
-            {
+        public boolean IsSolo {
+            get {
                 return m_solo;
             }
-            set
-            {
+            set {
                 boolean old = m_solo;
                 m_solo = value;
-                if ( old != m_solo && IsSoloChanged != null )
-                {
+                if ( old != m_solo && IsSoloChanged != null ) {
                     IsSoloChanged( this, new EventArgs() );
                 }
             }
         }
 
-        public int Panpot
-        {
-            get
-            {
+        public int Panpot {
+            get {
                 return trackPanpot.Value;
             }
-            set
-            {
+            set {
                 trackPanpot.Value = value;
             }
         }
 
-        public boolean SoloButtonVisible
-        {
-            get
-            {
+        public boolean SoloButtonVisible {
+            get {
                 return m_solo_button_visible;
             }
-            set
-            {
+            set {
                 m_solo_button_visible = value;
             }
         }
 
-        public int Feder
-        {
-            get
-            {
+        public int Feder {
+            get {
                 return m_feder;
             }
-            set
-            {
+            set {
                 int old = m_feder;
                 m_feder = value;
-                if ( old != m_feder && FederChanged != null )
-                {
+                if ( old != m_feder && FederChanged != null ) {
                     FederChanged( this, new EventArgs() );
                 }
                 int v = 177 - YCoordFromFeder( m_feder );
@@ -259,16 +225,11 @@ namespace Boare.Cadencii
         /// <param name="p"></param>
         /// <param name="rc"></param>
         /// <returns></returns>
-        private static boolean IsInRect( Point p, Rectangle rc )
-        {
-            if ( rc.X <= p.X )
-            {
-                if ( p.X <= rc.X + rc.Width )
-                {
-                    if ( rc.Y <= p.Y )
-                    {
-                        if ( p.Y <= rc.Y + rc.Height )
-                        {
+        private static boolean IsInRect( Point p, Rectangle rc ) {
+            if ( rc.X <= p.X ) {
+                if ( p.X <= rc.X + rc.Width ) {
+                    if ( rc.Y <= p.Y ) {
+                        if ( p.Y <= rc.Y + rc.Height ) {
                             return true;
                         }
                     }
@@ -277,22 +238,18 @@ namespace Boare.Cadencii
             return false;
         }
 
-        private void VolumeTracker_Resize( object sender, EventArgs e )
-        {
+        private void VolumeTracker_Resize( object sender, EventArgs e ) {
             this.Width = WIDTH;
             this.Height = _HEIGHT;
         }
 
-        private static int FederFromYCoord( int y )
-        {
+        private static int FederFromYCoord( int y ) {
             int feder = _KEY[0, 0];
             int min_diff = Math.Abs( _KEY[0, 1] - y );
             int index = 0;
-            for ( int i = 1; i < _KEY.GetUpperBound( 0 ) + 1; i++ )
-            {
+            for ( int i = 1; i < _KEY.GetUpperBound( 0 ) + 1; i++ ) {
                 int diff = Math.Abs( _KEY[i, 1] - y );
-                if ( diff < min_diff )
-                {
+                if ( diff < min_diff ) {
                     index = i;
                     min_diff = diff;
                     feder = _KEY[i, 0];
@@ -301,16 +258,13 @@ namespace Boare.Cadencii
             return feder;
         }
 
-        private static int YCoordFromFeder( int feder )
-        {
+        private static int YCoordFromFeder( int feder ) {
             int y = _KEY[0, 1];
             int min_diff = Math.Abs( _KEY[0, 0] - feder );
             int index = 0;
-            for ( int i = 1; i <= _KEY.GetUpperBound( 0 ); i++ )
-            {
+            for ( int i = 1; i <= _KEY.GetUpperBound( 0 ); i++ ) {
                 int diff = Math.Abs( _KEY[i, 0] - feder );
-                if ( diff < min_diff )
-                {
+                if ( diff < min_diff ) {
                     index = i;
                     min_diff = diff;
                     y = _KEY[i, 1];
@@ -319,76 +273,58 @@ namespace Boare.Cadencii
             return y;
         }
 
-        private void trackFeder_ValueChanged( object sender, EventArgs e )
-        {
+        private void trackFeder_ValueChanged( object sender, EventArgs e ) {
             m_feder = FederFromYCoord( 151 - (trackFeder.Value - 26) );
             txtFeder.Text = (m_feder / 10.0).ToString();
-            if ( FederChanged != null )
-            {
+            if ( FederChanged != null ) {
                 FederChanged( this, new EventArgs() );
             }
         }
 
-        private void trackPanpot_ValueChanged( object sender, EventArgs e )
-        {
+        private void trackPanpot_ValueChanged( object sender, EventArgs e ) {
             txtPanpot.Text = trackPanpot.Value.ToString();
-            if ( PanpotChanged != null )
-            {
+            if ( PanpotChanged != null ) {
                 PanpotChanged( this, new EventArgs() );
             }
         }
 
-        private void txtFeder_KeyDown( object sender, KeyEventArgs e )
-        {
-            if ( (e.KeyCode & Keys.Enter) != Keys.Enter )
-            {
+        private void txtFeder_KeyDown( object sender, KeyEventArgs e ) {
+            if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
-            try
-            {
+            try {
                 int feder = (int)(PortUtil.parseFloat( txtFeder.Text ) * 10.0f);
-                if ( 55 < feder )
-                {
+                if ( 55 < feder ) {
                     feder = 55;
                 }
-                if ( feder < -898 )
-                {
+                if ( feder < -898 ) {
                     feder = -898;
                 }
                 Feder = feder;
                 txtFeder.Text = Feder / 10.0f + "";
                 txtFeder.Focus();
                 txtFeder.SelectAll();
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
             }
         }
 
-        private void txtPanpot_KeyDown( object sender, KeyEventArgs e )
-        {
-            if ( (e.KeyCode & Keys.Enter) != Keys.Enter )
-            {
+        private void txtPanpot_KeyDown( object sender, KeyEventArgs e ) {
+            if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
-            try
-            {
+            try {
                 int panpot = PortUtil.parseInt( txtPanpot.Text );
-                if ( panpot < -64 )
-                {
+                if ( panpot < -64 ) {
                     panpot = -64;
                 }
-                if ( 64 < panpot )
-                {
+                if ( 64 < panpot ) {
                     panpot = 64;
                 }
                 Panpot = panpot;
                 txtPanpot.Text = Panpot + "";
                 txtPanpot.Focus();
                 txtPanpot.SelectAll();
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
             }
         }
     }

@@ -31,7 +31,7 @@ namespace Boare.Cadencii {
 #if JAVA
     public class FormInsertBar extends BForm{
 #else
-    public class FormInsertBar : BForm{
+    public class FormInsertBar : BForm {
 #endif
         public FormInsertBar( int max_position ) {
             InitializeComponent();
@@ -234,6 +234,7 @@ namespace Boare.Cadencii {
             lblBar.setText( _( "bar" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
+            lblPositionPrefix.Left = numPosition.Left - lblPositionPrefix.Width;
         }
 
         public static String _( String id ) {

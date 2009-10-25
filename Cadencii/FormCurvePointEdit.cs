@@ -33,11 +33,10 @@ namespace Boare.Cadencii {
 #endif
 
 #if JAVA
-    public class FormCurvePointEdit extends BForm
+    public class FormCurvePointEdit extends BForm {
 #else
-    public class FormCurvePointEdit : BForm
+    public class FormCurvePointEdit : BForm {
 #endif
- {
         long m_editing_id = -1;
         CurveType m_curve;
         private BButton btnUndo;

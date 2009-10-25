@@ -18,34 +18,30 @@ import java.io.*;
 #else
 using System;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
     /// <summary>
     /// VsqMixerのSlave要素に格納される各エントリ
     /// </summary>
 #if JAVA
-    public class VsqMixerEntry implements Cloneable, Serializable
+    public class VsqMixerEntry implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqMixerEntry : ICloneable
+    public class VsqMixerEntry : ICloneable {
 #endif
-    {
         public int Feder;
         public int Panpot;
         public int Mute;
         public int Solo;
 
-        public Object clone()
-        {
+        public Object clone() {
             VsqMixerEntry res = new VsqMixerEntry( Feder, Panpot, Mute, Solo );
             return res;
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif
@@ -57,8 +53,7 @@ namespace Boare.Lib.Vsq
         /// <param name="panpot">Panpot値</param>
         /// <param name="mute">Mute値</param>
         /// <param name="solo">Solo値</param>
-        public VsqMixerEntry( int feder, int panpot, int mute, int solo )
-        {
+        public VsqMixerEntry( int feder, int panpot, int mute, int solo ) {
             this.Feder = feder;
             this.Panpot = panpot;
             this.Mute = mute;
@@ -70,8 +65,7 @@ namespace Boare.Lib.Vsq
             this( 0, 0, 0, 0 );
 #else
         public VsqMixerEntry()
-            : this( 0, 0, 0, 0 )
-        {
+            : this( 0, 0, 0, 0 ) {
 #endif
         }
     }

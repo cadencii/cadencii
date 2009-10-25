@@ -23,16 +23,14 @@ using bocoree;
 using bocoree.util;
 using bocoree.io;
 
-namespace Boare.Lib.Vsq
-{
+namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class UstFile implements Cloneable
+    public class UstFile implements Cloneable {
 #else
-    public class UstFile : ICloneable
+    public class UstFile : ICloneable {
 #endif
-    {
         public Object Tag;
         private float m_tempo = 120.00f;
         private String m_project_name = "";
@@ -44,204 +42,134 @@ namespace Boare.Lib.Vsq
         private Vector<UstTrack> m_tracks = new Vector<UstTrack>();
         private Vector<TempoTableEntry> m_tempo_table;
 
-        public UstFile( String path )
-        {
+        public UstFile( String path ) {
             BufferedReader sr = null;
-            try
-            {
+            try {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "Shift_JIS" ) );
 #if DEBUG
                 bocoree.debug.push_log( "path=" + path );
                 bocoree.debug.push_log( "(sr==null)=" + (sr == null) );
 #endif
                 String line = sr.readLine();
-                if ( line != "[#SETTING]" )
-                {
+                if ( line != "[#SETTING]" ) {
                     throw new Exception( "invalid ust file" );
                 }
                 UstTrack track = new UstTrack();
                 int type = 0; //0 => reading "SETTING" section
-                while ( true )
-                {
+                while ( true ) {
 #if DEBUG
                     bocoree.debug.push_log( "line=" + line );
 #endif
                     UstEvent ue = null;
-                    if ( type == 1 )
-                    {
+                    if ( type == 1 ) {
                         ue = new UstEvent();
                     }
                     int index = 0;
-                    if ( line.Equals( "[#TRACKEND]" ) )
-                    {
+                    if ( line.Equals( "[#TRACKEND]" ) ) {
                         break;
-                    }
-                    else if ( line.ToUpper().Equals( "[#NEXT]" ) )
-                    {
+                    } else if ( line.ToUpper().Equals( "[#NEXT]" ) ) {
                         index = int.MaxValue;
-                    }
-                    else if ( line.ToUpper().Equals( "[#PREV]" ) )
-                    {
+                    } else if ( line.ToUpper().Equals( "[#PREV]" ) ) {
                         index = int.MinValue;
-                    }
-                    else
-                    {
+                    } else {
                         String s = line.Replace( "[#", "" ).Replace( "#", "" ).Trim();
-                        try
-                        {
+                        try {
                             index = PortUtil.parseInt( s );
-                        }
-                        catch ( Exception ex )
-                        {
+                        } catch ( Exception ex ) {
                         }
                     }
 #if DEBUG
                     bocoree.debug.push_log( "index=" + index );
 #endif
                     line = sr.readLine(); // "[#" 直下の行
-                    if ( line == null )
-                    {
+                    if ( line == null ) {
                         break;
                     }
-                    while ( !line.StartsWith( "[#" ) )
-                    {
+                    while ( !line.StartsWith( "[#" ) ) {
 #if DEBUG
                         PortUtil.println( "line=" + line );
 #endif
                         String[] spl = PortUtil.splitString( line, new char[] { '=' }, 2 );
-                        if ( type == 0 )
-                        {
+                        if ( type == 0 ) {
                             // reading "SETTING" section
-                            if ( spl[0].Equals( "Tempo" ) )
-                            {
+                            if ( spl[0].Equals( "Tempo" ) ) {
                                 m_tempo = 125f;
                                 float v = 125f;
-                                try
-                                {
+                                try {
                                     v = PortUtil.parseFloat( spl[1] );
                                     m_tempo = v;
+                                } catch ( Exception ex ) {
                                 }
-                                catch ( Exception ex )
-                                {
-                                }
-                            }
-                            else if ( spl[0].Equals( "ProjectName" ) )
-                            {
+                            } else if ( spl[0].Equals( "ProjectName" ) ) {
                                 m_project_name = spl[1];
-                            }
-                            else if ( spl[0].Equals( "VoiceDir" ) )
-                            {
+                            } else if ( spl[0].Equals( "VoiceDir" ) ) {
                                 m_voice_dir = spl[1];
-                            }
-                            else if ( spl[0].Equals( "OutFile" ) )
-                            {
+                            } else if ( spl[0].Equals( "OutFile" ) ) {
                                 m_out_file = spl[1];
-                            }
-                            else if ( spl[0].Equals( "CacheDir" ) )
-                            {
+                            } else if ( spl[0].Equals( "CacheDir" ) ) {
                                 m_cache_dir = spl[1];
-                            }
-                            else if ( spl[0].Equals( "Tool1" ) )
-                            {
+                            } else if ( spl[0].Equals( "Tool1" ) ) {
                                 m_tool1 = spl[1];
-                            }
-                            else if ( spl[0].Equals( "Tool2" ) )
-                            {
+                            } else if ( spl[0].Equals( "Tool2" ) ) {
                                 m_tool2 = spl[1];
                             }
-                        }
-                        else if ( type == 1 )
-                        {
+                        } else if ( type == 1 ) {
                             // readin event section
-                            if ( spl[0].Equals( "Length" ) )
-                            {
+                            if ( spl[0].Equals( "Length" ) ) {
                                 ue.setLength( 0 );
                                 int v = 0;
-                                try
-                                {
+                                try {
                                     v = PortUtil.parseInt( spl[1] );
                                     ue.setLength( v );
+                                } catch ( Exception ex ) {
                                 }
-                                catch ( Exception ex )
-                                {
-                                }
-                            }
-                            else if ( spl[0].Equals( "Lyric" ) )
-                            {
+                            } else if ( spl[0].Equals( "Lyric" ) ) {
                                 ue.Lyric = spl[1];
-                            }
-                            else if ( spl[0].Equals( "NoteNum" ) )
-                            {
+                            } else if ( spl[0].Equals( "NoteNum" ) ) {
                                 ue.Note = 0;
                                 int v = 0;
-                                try
-                                {
+                                try {
                                     v = PortUtil.parseInt( spl[1] );
                                     ue.Note = v;
+                                } catch ( Exception ex ) {
                                 }
-                                catch ( Exception ex )
-                                {
-                                }
-                            }
-                            else if ( spl[0].Equals( "Intensity" ) )
-                            {
+                            } else if ( spl[0].Equals( "Intensity" ) ) {
                                 ue.Intensity = 64;
                                 int v = 64;
-                                try
-                                {
+                                try {
                                     v = PortUtil.parseInt( spl[1] );
                                     ue.Intensity = v;
+                                } catch ( Exception ex ) {
                                 }
-                                catch ( Exception ex )
-                                {
-                                }
-                            }
-                            else if ( spl[0].Equals( "PBType" ) )
-                            {
+                            } else if ( spl[0].Equals( "PBType" ) ) {
                                 ue.PBType = 5;
                                 int v = 5;
-                                try
-                                {
+                                try {
                                     v = PortUtil.parseInt( spl[1] );
                                     ue.PBType = v;
+                                } catch ( Exception ex ) {
                                 }
-                                catch ( Exception ex )
-                                {
-                                }
-                            }
-                            else if ( spl[0].Equals( "Piches" ) )
-                            {
+                            } else if ( spl[0].Equals( "Piches" ) ) {
                                 String[] spl2 = PortUtil.splitString( spl[1], ',' );
                                 float[] t = new float[spl2.Length];
-                                for ( int i = 0; i < spl2.Length; i++ )
-                                {
+                                for ( int i = 0; i < spl2.Length; i++ ) {
                                     float v = 0;
-                                    try
-                                    {
+                                    try {
                                         v = PortUtil.parseFloat( spl2[i] );
                                         t[i] = v;
-                                    }
-                                    catch ( Exception ex )
-                                    {
+                                    } catch ( Exception ex ) {
                                     }
                                 }
                                 ue.Pitches = t;
-                            }
-                            else if ( spl[0].Equals( "Tempo" ) )
-                            {
+                            } else if ( spl[0].Equals( "Tempo" ) ) {
                                 ue.Tempo = 125f;
                                 float v;
-                                try
-                                {
+                                try {
                                     v = PortUtil.parseFloat( spl[1] );
                                     ue.Tempo = v;
+                                } catch ( Exception ex ) {
                                 }
-                                catch ( Exception ex )
-                                {
-                                }
-                            }
-                            else if ( spl[0].Equals( "VBR" ) )
-                            {
+                            } else if ( spl[0].Equals( "VBR" ) ) {
                                 ue.Vibrato = new UstVibrato( line );
                                 /*
                                 PBW=50,50,46,48,56,50,50,50,50
@@ -249,42 +177,28 @@ namespace Boare.Lib.Vsq
                                 PBY=-15.9,-20,-31.5,-26.6
                                 PBM=,s,r,j,s,s,s,s,s
                                 */
-                            }
-                            else if ( spl[0].Equals( "PBW" ) || spl[0].Equals( "PBS" ) || spl[0].Equals( "PBY" ) || spl[0].Equals( "PBM" ) )
-                            {
-                                if ( ue.Portamento == null )
-                                {
+                            } else if ( spl[0].Equals( "PBW" ) || spl[0].Equals( "PBS" ) || spl[0].Equals( "PBY" ) || spl[0].Equals( "PBM" ) ) {
+                                if ( ue.Portamento == null ) {
                                     ue.Portamento = new UstPortamento();
                                 }
                                 ue.Portamento.ParseLine( line );
-                            }
-                            else if ( spl[0].Equals( "Envelope" ) )
-                            {
+                            } else if ( spl[0].Equals( "Envelope" ) ) {
                                 ue.Envelope = new UstEnvelope( line );
                                 //PreUtterance=1
                                 //VoiceOverlap=6
-                            }
-                            else if ( spl[0].Equals( "VoiceOverlap" ) )
-                            {
-                                if ( spl[1] != "" )
-                                {
+                            } else if ( spl[0].Equals( "VoiceOverlap" ) ) {
+                                if ( spl[1] != "" ) {
                                     ue.VoiceOverlap = PortUtil.parseInt( spl[1] );
                                 }
-                            }
-                            else if ( spl[0].Equals( "PreUtterance" ) )
-                            {
-                                if ( spl[1] != "" )
-                                {
+                            } else if ( spl[0].Equals( "PreUtterance" ) ) {
+                                if ( spl[1] != "" ) {
                                     ue.PreUtterance = PortUtil.parseInt( spl[1] );
                                 }
-                            }
-                            else if ( spl[0].Equals( "Flags" ) )
-                            {
+                            } else if ( spl[0].Equals( "Flags" ) ) {
                                 ue.Flags = line.Substring( 6 );
                             }
                         }
-                        if ( !sr.ready() )
-                        {
+                        if ( !sr.ready() ) {
                             break;
                         }
                         line = sr.readLine();
@@ -292,62 +206,45 @@ namespace Boare.Lib.Vsq
 #if DEBUG
                     bocoree.debug.push_log( "(ue==null)=" + (ue == null) );
 #endif
-                    if ( type == 0 )
-                    {
+                    if ( type == 0 ) {
                         type = 1;
-                    }
-                    else if ( type == 1 )
-                    {
+                    } else if ( type == 1 ) {
                         ue.Index = index;
                         track.addEvent( ue );
                     }
                 }
                 m_tracks.add( track );
                 updateTempoInfo();
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
 #if DEBUG
                 bocoree.debug.push_log( "ex=" + ex );
 #endif
-            }
-            finally
-            {
-                if ( sr != null )
-                {
-                    try
-                    {
+            } finally {
+                if ( sr != null ) {
+                    try {
                         sr.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
         }
 
-        private UstFile()
-        {
+        private UstFile() {
         }
 
-        public String getProjectName()
-        {
+        public String getProjectName() {
             return m_project_name;
         }
 
-        public int getBaseTempo()
-        {
+        public int getBaseTempo() {
             return (int)(6e7 / m_tempo);
         }
 
-        public double getTotalSec()
-        {
+        public double getTotalSec() {
             int max = 0;
-            for ( int track = 0; track < m_tracks.size(); track++ )
-            {
+            for ( int track = 0; track < m_tracks.size(); track++ ) {
                 int count = 0;
-                for ( int i = 0; i < m_tracks.get( track ).getEventCount(); i++ )
-                {
+                for ( int i = 0; i < m_tracks.get( track ).getEventCount(); i++ ) {
                     count += (int)m_tracks.get( track ).getEvent( i ).getLength();
                 }
                 max = Math.Max( max, count );
@@ -355,18 +252,15 @@ namespace Boare.Lib.Vsq
             return getSecFromClock( max );
         }
 
-        public Vector<TempoTableEntry> getTempoList()
-        {
+        public Vector<TempoTableEntry> getTempoList() {
             return m_tempo_table;
         }
 
-        public UstTrack getTrack( int track )
-        {
+        public UstTrack getTrack( int track ) {
             return m_tracks.get( track );
         }
 
-        public int getTrackCount()
-        {
+        public int getTrackCount() {
             return m_tracks.size();
         }
 
@@ -374,24 +268,19 @@ namespace Boare.Lib.Vsq
         /// TempoTableの[*].Timeの部分を更新します
         /// </summary>
         /// <returns></returns>
-        public void updateTempoInfo()
-        {
+        public void updateTempoInfo() {
             m_tempo_table = new Vector<TempoTableEntry>();
-            if ( m_tracks.size() <= 0 )
-            {
+            if ( m_tracks.size() <= 0 ) {
                 return;
             }
             int clock = 0;
             double time = 0.0;
             int last_tempo_clock = 0;  //最後にTempo値が代入されていたイベントのクロック
             float last_tempo = m_tempo;   //最後に代入されていたテンポの値
-            for ( int i = 0; i < m_tracks.get( 0 ).getEventCount(); i++ )
-            {
-                if ( m_tracks.get( 0 ).getEvent( i ).Tempo > 0f )
-                {
+            for ( int i = 0; i < m_tracks.get( 0 ).getEventCount(); i++ ) {
+                if ( m_tracks.get( 0 ).getEvent( i ).Tempo > 0f ) {
                     time += (clock - last_tempo_clock) / (8.0 * last_tempo);
-                    if ( m_tempo_table.size() == 0 && clock != 0 )
-                    {
+                    if ( m_tempo_table.size() == 0 && clock != 0 ) {
                         m_tempo_table.add( new TempoTableEntry( 0, (int)(6e7 / m_tempo), 0.0 ) );
                     }
                     m_tempo_table.add( new TempoTableEntry( clock, (int)(6e7 / m_tracks.get( 0 ).getEvent( i ).Tempo), time ) );
@@ -407,12 +296,9 @@ namespace Boare.Lib.Vsq
         /// </summary>
         /// <param name="clock"></param>
         /// <returns></returns>
-        public double getSecFromClock( int clock )
-        {
-            for ( int i = m_tempo_table.size() - 1; i >= 0; i-- )
-            {
-                if ( m_tempo_table.get( i ).Clock < clock )
-                {
+        public double getSecFromClock( int clock ) {
+            for ( int i = m_tempo_table.size() - 1; i >= 0; i-- ) {
+                if ( m_tempo_table.get( i ).Clock < clock ) {
                     double init = m_tempo_table.get( i ).Time;
                     int dclock = clock - m_tempo_table.get( i ).Clock;
                     double sec_per_clock1 = m_tempo_table.get( i ).Tempo * 1e-6 / 480.0;
@@ -423,11 +309,9 @@ namespace Boare.Lib.Vsq
             return clock * sec_per_clock;
         }
 
-        public void write( String file )
-        {
+        public void write( String file ) {
             BufferedWriter sw = null;
-            try
-            {
+            try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "Shift_JIS" ) );
                 sw.write( "[#SETTING]" );
                 sw.newLine();
@@ -449,33 +333,23 @@ namespace Boare.Lib.Vsq
                 sw.newLine();
                 UstTrack target = m_tracks.get( 0 );
                 int count = target.getEventCount();
-                for ( int i = 0; i < count; i++ )
-                {
+                for ( int i = 0; i < count; i++ ) {
                     target.getEvent( i ).print( sw );
                 }
                 sw.write( "[#TRACKEND]" );
                 sw.newLine();
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( sw != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw != null ) {
+                    try {
                         sw.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
         }
 
-        public Object clone()
-        {
+        public Object clone() {
             UstFile ret = new UstFile();
             ret.m_tempo = m_tempo;
             ret.m_project_name = m_project_name;
@@ -484,21 +358,18 @@ namespace Boare.Lib.Vsq
             ret.m_cache_dir = m_cache_dir;
             ret.m_tool1 = m_tool1;
             ret.m_tool2 = m_tool2;
-            for ( int i = 0; i < m_tracks.size(); i++ )
-            {
+            for ( int i = 0; i < m_tracks.size(); i++ ) {
                 ret.m_tracks.set( i, (UstTrack)m_tracks.get( i ).clone() );
             }
             ret.m_tempo_table = new Vector<TempoTableEntry>();
-            for ( int i = 0; i < m_tempo_table.size(); i++ )
-            {
+            for ( int i = 0; i < m_tempo_table.size(); i++ ) {
                 ret.m_tempo_table.add( (TempoTableEntry)m_tempo_table.get( i ).clone() );
             }
             return ret;
         }
 
 #if !JAVA
-        public object Clone()
-        {
+        public object Clone() {
             return clone();
         }
 #endif

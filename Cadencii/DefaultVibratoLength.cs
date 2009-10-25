@@ -1,5 +1,5 @@
 ﻿/*
- * VibratoType.cs
+ * DefaultVibratoLength.cs
  * Copyright (c) 2008-2009 kbinani
  *
  * This file is part of Boare.Cadencii.
