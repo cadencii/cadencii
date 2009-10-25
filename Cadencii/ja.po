@@ -1249,3 +1249,30 @@ msgstr "一つ前を検索"
 msgid "Generate {0} file"
 msgstr "{0}ファイルを作成"
 
+msgid "Apply"
+msgstr "適用"
+
+msgid "day"
+msgstr "日"
+
+msgid "Edit Value"
+msgstr "値を編集"
+
+msgid "elapsed"
+msgstr "経過"
+
+msgid "Exit"
+msgstr "戻る"
+
+msgid "hour"
+msgstr "時間"
+
+msgid "min"
+msgstr "分"
+
+msgid "Remaining"
+msgstr "残り時間"
+
+msgid "sec"
+msgstr "秒"
+

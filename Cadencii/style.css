@@ -1,0 +1,54 @@
+body{
+    font-size: 0.86em;
+    font-family: "Verdana";
+    background: #dfdfdf;
+}
+
+.header{
+    padding: 0.2em 0.2em;
+    font-weight: bold;
+}
+
+.odd{
+    padding: 0.2em 0.2em;
+    background: #dfdfdf;
+}
+
+.even{
+    padding: 0.2em 0.2em;
+    background: #cccccc;
+}
+
+dt{
+    float: left;
+}
+
+td{
+    font-size: 0.86em;
+}
+
+input{
+    border: solid 1px;
+    border-color: #cccccc;
+    font-family: "Verdana";
+    font-size: 1.1em;
+}
+
+table{
+    border: none;
+}
+
+.top{
+    margin-bottom: 1em;
+    height: 3em;
+    background: #999999;
+    font-size: 2em;
+}
+
+input.highlight{
+    background-color: #fcb329;
+}
+
+.padleft{
+    padding-left: 40px;
+}
