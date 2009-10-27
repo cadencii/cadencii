@@ -75,7 +75,7 @@ namespace Boare.Cadencii {
             m_clock_end = clock_end;
             m_temp_premeasure = temp_premeasure;
             m_reflect_amp_to_wave = reflect_amp_to_wave;
-            ApplyLanguage();
+            applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -90,12 +90,12 @@ namespace Boare.Cadencii {
             m_partial_mode = false;
             m_clock_end = end;
             m_reflect_amp_to_wave = reflect_amp_to_wave;
-            ApplyLanguage();
+            applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
-            this.Text = _( "Synthesize" );
+        public void applyLanguage() {
+            setTitle( _( "Synthesize" ) );
             lblSynthesizing.Text = _( "now synthesizing..." );
             btnCancel.Text = _( "Cancel" );
         }
@@ -118,6 +118,7 @@ namespace Boare.Cadencii {
         }
 
         private void FormSynthesize_Load( object sender, EventArgs e ) {
+            lblTime.Text = "";
             Start();
         }
 

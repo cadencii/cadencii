@@ -23,18 +23,15 @@ import org.kbinani.xml.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-//using System.Drawing;
-using System.Windows.Forms;
 using Boare.Lib.Vsq;
+using bocoree.awt;
+using bocoree.io;
 using bocoree.util;
 using bocoree.windows.forms;
 using bocoree.xml;
-using bocoree.io;
-using bocoree.awt;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
-    using java = bocoree;
 #endif
 
     /// <summary>
@@ -374,17 +371,13 @@ namespace Boare.Cadencii {
         public static event EventHandler QuantizeModeChanged;
 #endif
 
-        public BKeys[] getShortcutKeyFor( BMenuItem menu_item )
-        {
+        public BKeys[] getShortcutKeyFor( BMenuItem menu_item ) {
             String name = menu_item.getName();
             Vector<BKeys> ret = new Vector<BKeys>();
-            for ( Iterator itr = ShortcutKeys.iterator(); itr.hasNext(); )
-            {
+            for ( Iterator itr = ShortcutKeys.iterator(); itr.hasNext(); ) {
                 ValuePairOfStringArrayOfKeys item = (ValuePairOfStringArrayOfKeys)itr.next();
-                if ( name.Equals( item.Key ) )
-                {
-                    for ( int i = 0; i < item.Value.Length; i++ )
-                    {
+                if ( name.Equals( item.Key ) ) {
+                    for ( int i = 0; i < item.Value.Length; i++ ) {
                         BKeys k = item.Value[i];
                         ret.add( k );
                     }
@@ -437,52 +430,34 @@ namespace Boare.Cadencii {
             return ret;
         }
 
-        public static void Serialize( EditorConfig instance, String file ) {
+        public static void serialize( EditorConfig instance, String file ) {
             FileOutputStream fs = null;
-            try
-            {
+            try {
                 fs = new FileOutputStream( file );
                 s_serializer.serialize( fs, instance );
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( fs != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( fs != null ) {
+                    try {
                         fs.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
         }
 
-        public static EditorConfig Deserialize( EditorConfig old_instance, String file ) {
+        public static EditorConfig deserialize( EditorConfig old_instance, String file ) {
             EditorConfig ret = null;
             FileInputStream fs = null;
-            try
-            {
+            try {
                 fs = new FileInputStream( file );
                 ret = (EditorConfig)s_serializer.deserialize( fs );
-            }
-            catch ( Exception ex )
-            {
-            }
-            finally
-            {
-                if ( fs != null )
-                {
-                    try
-                    {
+            } catch ( Exception ex ) {
+            } finally {
+                if ( fs != null ) {
+                    try {
                         fs.close();
-                    }
-                    catch ( Exception ex2 )
-                    {
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
@@ -501,8 +476,8 @@ namespace Boare.Cadencii {
             return ret;
         }
 
-        public java.awt.Font getBaseFont() {
-            return new java.awt.Font( BaseFontName, java.awt.Font.PLAIN, (int)BaseFontSize );
+        public Font getBaseFont() {
+            return new Font( BaseFontName, Font.PLAIN, (int)BaseFontSize );
         }
 
         public int getMouseHoverTime() {
@@ -653,7 +628,7 @@ namespace Boare.Cadencii {
         /// 「最近使用したファイル」のリストに、アイテムを追加します
         /// </summary>
         /// <param name="new_file"></param>
-        public void PushRecentFiles( String new_file ) {
+        public void pushRecentFiles( String new_file ) {
 #if DEBUG
             System.Diagnostics.Debug.WriteLine( "PushRecentFiles" );
 #endif
@@ -669,7 +644,7 @@ namespace Boare.Cadencii {
 
             // 重複があれば消す
             Vector<String> dict = new Vector<String>();
-            for( Iterator itr = RecentFiles.iterator(); itr.hasNext(); ){
+            for ( Iterator itr = RecentFiles.iterator(); itr.hasNext(); ) {
                 String s = (String)itr.next();
                 boolean found = false;
                 for ( int i = 0; i < dict.size(); i++ ) {
@@ -682,7 +657,7 @@ namespace Boare.Cadencii {
                 }
             }
             RecentFiles.clear();
-            for ( Iterator itr = dict.iterator(); itr.hasNext(); ){
+            for ( Iterator itr = dict.iterator(); itr.hasNext(); ) {
                 String s = (String)itr.next();
                 RecentFiles.add( s );
             }

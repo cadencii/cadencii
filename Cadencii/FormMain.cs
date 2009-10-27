@@ -12527,7 +12527,7 @@ namespace Boare.Cadencii {
                     }
                 }
             } else {
-                AppManager.editorConfig.PushRecentFiles( "" );
+                AppManager.editorConfig.pushRecentFiles( "" );
             }
             if ( added == 0 ) {
                 menuFileRecent.Enabled = false;
@@ -12810,7 +12810,7 @@ namespace Boare.Cadencii {
                 AppManager.setBaseTempo( AppManager.getVsqFile().getBaseTempo() );
                 setHScrollRange( AppManager.getVsqFile().TotalClocks );
             }
-            AppManager.editorConfig.PushRecentFiles( file );
+            AppManager.editorConfig.pushRecentFiles( file );
             updateRecentFileMenu();
             setEdited( false );
             AppManager.clearCommandBuffer();

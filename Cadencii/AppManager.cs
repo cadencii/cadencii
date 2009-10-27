@@ -15,10 +15,10 @@ using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Windows.Forms;
-//using System.Xml.Serialization;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.awt;
 using bocoree.io;
 using bocoree.util;
 using bocoree.windows.forms;
@@ -39,7 +39,7 @@ namespace Boare.Cadencii {
     using java = bocoree;
     using Long = System.Int64;
 
-    public static class AppManager {
+    public class AppManager {
         /// <summary>
         /// 鍵盤の表示幅(pixel)
         /// </summary>
@@ -61,16 +61,16 @@ namespace Boare.Cadencii {
         /// AttachedCurve用のシリアライザ
         /// </summary>
         public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer( typeof( AttachedCurve ) );
-        public static java.awt.Font baseFont8 = new java.awt.Font( java.awt.Font.DIALOG, java.awt.Font.PLAIN, 8 );
-        public static java.awt.Font baseFont9 = new java.awt.Font( java.awt.Font.DIALOG, java.awt.Font.PLAIN, 9 );
+        public static Font baseFont8 = new Font( Font.DIALOG, Font.PLAIN, 8 );
+        public static Font baseFont9 = new Font( Font.DIALOG, Font.PLAIN, 9 );
         /// <summary>
         /// ピアノロールの歌詞の描画に使用されるフォント。
         /// </summary>
-        public static java.awt.Font baseFont10 = new java.awt.Font( java.awt.Font.DIALOG, java.awt.Font.PLAIN, 10 );
+        public static Font baseFont10 = new Font( Font.DIALOG, Font.PLAIN, 10 );
         /// <summary>
         /// ピアノロールの歌詞の描画に使用されるフォント。（発音記号固定の物の場合）
         /// </summary>
-        public static java.awt.Font baseFont10Bold = new java.awt.Font( java.awt.Font.DIALOG, java.awt.Font.BOLD, 10 );
+        public static Font baseFont10Bold = new Font( Font.DIALOG, Font.BOLD, 10 );
         /// <summary>
         /// 歌詞を音符の（高さ方向の）真ん中に描画するためのオフセット
         /// </summary>
@@ -81,40 +81,40 @@ namespace Boare.Cadencii {
         public static FormNoteProperty propertyWindow;
 
         #region Static Readonly Fields
-        public static readonly bocoree.awt.Color[] HILIGHT = new bocoree.awt.Color[] { 
-            new bocoree.awt.Color( 181, 220, 16 ),
-            new bocoree.awt.Color( 231, 244, 49 ),
-            new bocoree.awt.Color( 252, 230, 29 ),
-            new bocoree.awt.Color( 247, 171, 20 ),
-            new bocoree.awt.Color( 249, 94, 17 ),
-            new bocoree.awt.Color( 234, 27, 47 ),
-            new bocoree.awt.Color( 175, 20, 80 ),
-            new bocoree.awt.Color( 183, 24, 149 ),
-            new bocoree.awt.Color( 105, 22, 158 ),
-            new bocoree.awt.Color( 22, 36, 163 ),
-            new bocoree.awt.Color( 37, 121, 204 ),
-            new bocoree.awt.Color( 29, 179, 219 ),
-            new bocoree.awt.Color( 24, 239, 239 ),
-            new bocoree.awt.Color( 25, 206, 175 ),
-            new bocoree.awt.Color( 23, 160, 134 ),
-            new bocoree.awt.Color( 79, 181, 21 ) };
-        public static readonly new bocoree.awt.Color[] RENDER = new bocoree.awt.Color[]{
-            new bocoree.awt.Color( 19, 143, 52 ),
-            new bocoree.awt.Color( 158, 154, 18 ),
-            new bocoree.awt.Color( 160, 143, 23 ),
-            new bocoree.awt.Color( 145, 98, 15 ),
-            new bocoree.awt.Color( 142, 52, 12 ),
-            new bocoree.awt.Color( 142, 19, 37 ),
-            new bocoree.awt.Color( 96, 13, 47 ),
-            new bocoree.awt.Color( 117, 17, 98 ),
-            new bocoree.awt.Color( 62, 15, 99 ),
-            new bocoree.awt.Color( 13, 23, 84 ),
-            new bocoree.awt.Color( 25, 84, 132 ),
-            new bocoree.awt.Color( 20, 119, 142 ),
-            new bocoree.awt.Color( 19, 142, 139 ),
-            new bocoree.awt.Color( 17, 122, 102 ),
-            new bocoree.awt.Color( 13, 86, 72 ),
-            new bocoree.awt.Color( 43, 91, 12 ) };
+        public static readonly Color[] HILIGHT = new Color[] { 
+            new Color( 181, 220, 16 ),
+            new Color( 231, 244, 49 ),
+            new Color( 252, 230, 29 ),
+            new Color( 247, 171, 20 ),
+            new Color( 249, 94, 17 ),
+            new Color( 234, 27, 47 ),
+            new Color( 175, 20, 80 ),
+            new Color( 183, 24, 149 ),
+            new Color( 105, 22, 158 ),
+            new Color( 22, 36, 163 ),
+            new Color( 37, 121, 204 ),
+            new Color( 29, 179, 219 ),
+            new Color( 24, 239, 239 ),
+            new Color( 25, 206, 175 ),
+            new Color( 23, 160, 134 ),
+            new Color( 79, 181, 21 ) };
+        public static readonly new Color[] RENDER = new Color[]{
+            new Color( 19, 143, 52 ),
+            new Color( 158, 154, 18 ),
+            new Color( 160, 143, 23 ),
+            new Color( 145, 98, 15 ),
+            new Color( 142, 52, 12 ),
+            new Color( 142, 19, 37 ),
+            new Color( 96, 13, 47 ),
+            new Color( 117, 17, 98 ),
+            new Color( 62, 15, 99 ),
+            new Color( 13, 23, 84 ),
+            new Color( 25, 84, 132 ),
+            new Color( 20, 119, 142 ),
+            new Color( 19, 142, 139 ),
+            new Color( 17, 122, 102 ),
+            new Color( 13, 86, 72 ),
+            new Color( 43, 91, 12 ) };
         public static readonly String[] USINGS = new String[] { "using System;",
                                              "using System.IO;",
                                              "using Boare.Lib.Vsq;",
@@ -238,8 +238,8 @@ namespace Boare.Cadencii {
 
         #region Private Static Fields
         private static int s_base_tempo = 480000;
-        private static java.awt.Color s_hilight_brush = PortUtil.CornflowerBlue;
-        private static object s_locker;
+        private static Color s_hilight_brush = PortUtil.CornflowerBlue;
+        private static Object s_locker;
         private static Timer s_auto_backup_timer;
         #endregion
 
@@ -395,7 +395,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// マウスが降りた仮想スクリーン上の座標(ピクセル)
         /// </summary>
-        public static java.awt.Point mouseDownLocation;
+        public static Point mouseDownLocation;
         public static int lastTrackSelectorHeight;
 
         /// <summary>
@@ -674,73 +674,6 @@ namespace Boare.Cadencii {
             return false;
         }
 
-        /* /// <summary>
-        /// fontを使って文字を描画したとき，文字の縦方向の中心線と，描画時に指定した座標との間にどれだけのオフセットが生じるかを調べる
-        /// </summary>
-        /// <param name="font"></param>
-        /// <returns></returns>
-        public static unsafe int getStringOffset( javaFont font ) {
-            java.awt.Dimension str_size = Util.measureString( "Qjp", font );
-            if ( str_size.Width <= 0 || str_size.Height <= 0 ) {
-                return 0;
-            }
-            int draw_pos = (int)(str_size.Height / 2);
-            Bitmap test = new Bitmap( (int)str_size.Width * 2, (int)str_size.Height * 2, System.Drawing.Imaging.PixelFormat.Format24bppRgb );
-            using ( Graphics g = Graphics.FromImage( test ) ) {
-                g.DrawString(
-                    "Qjp",
-                    font,
-                    Brushes.Black,
-                    new PointF( str_size.Width / 2, draw_pos ) );
-            }
-            BitmapData bdat = test.LockBits(
-                new Rectangle( 0, 0, test.Width, test.Height ),
-                ImageLockMode.ReadOnly,
-                PixelFormat.Format24bppRgb );
-            int stride = bdat.Stride;
-            byte* dat = (byte*)bdat.Scan0;
-            boolean found = false;
-            int firsty = draw_pos;
-            for ( int y = 0; y < bdat.Height; y++ ) {
-                int pos = y * stride - 3;
-                for ( int x = 0; x < bdat.Width; x++ ) {
-                    pos += 3;
-                    if ( dat[pos] == 0 ) {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( found ) {
-                    firsty = y;
-                    break;
-                }
-            }
-            found = false;
-            int lasty = draw_pos;
-            for ( int y = bdat.Height - 1; y >= 0; y-- ) {
-                int pos = y * stride - 3;
-                for ( int x = 0; x < bdat.Width; x++ ) {
-                    pos++;
-                    if ( dat[pos] == 0 ) {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( found ) {
-                    lasty = y;
-                    break;
-                }
-            }
-            return (lasty + firsty) / 2 - draw_pos;
-        }*/
-
-        /*public static SizeF measureString( String item, java.awt.Font font ) {
-            using ( Bitmap test = new Bitmap( 10, 10 ) )
-            using ( Graphics g = Graphics.FromImage( test ) ) {
-                return g.MeasureString( item, font.font );
-            }
-        }*/
-
         /// <summary>
         /// 文字列itemをfontを用いて描画したとき、幅widthピクセルに収まるようにitemを調節したものを返します。
         /// 例えば"1 Voice"→"1 Voi..."ナド。
@@ -749,11 +682,11 @@ namespace Boare.Cadencii {
         /// <param name="font"></param>
         /// <param name="width"></param>
         /// <returns></returns>
-        public static String trimString( String item, java.awt.Font font, int width ) {
+        public static String trimString( String item, Font font, int width ) {
             String edited = item;
             int delete_count = item.Length;
             while ( true ) {
-                java.awt.Dimension measured = Util.measureString( edited, font );
+                Dimension measured = Util.measureString( edited, font );
                 if ( measured.width <= width ) {
                     return edited;
                 }
@@ -781,7 +714,7 @@ namespace Boare.Cadencii {
         }
 
         public static String _( String id ) {
-            return Boare.Lib.AppUtil.Messaging.getMessage( id );
+            return Messaging.getMessage( id );
         }
 
         public static ScriptInvoker loadScript( String file ) {
@@ -904,7 +837,7 @@ namespace Boare.Cadencii {
         public static boolean invokeScript( ScriptInvoker script_invoker ) {
             if ( script_invoker != null && script_invoker.scriptDelegate != null ) {
                 try {
-                    VsqFileEx work = (VsqFileEx)s_vsq.Clone();
+                    VsqFileEx work = (VsqFileEx)s_vsq.clone();
                     ScriptReturnStatus ret = ScriptReturnStatus.ERROR;
                     if ( script_invoker.scriptDelegate is EditVsqScriptDelegate ) {
                         boolean b_ret = ((EditVsqScriptDelegate)script_invoker.scriptDelegate).Invoke( work );
@@ -1660,7 +1593,7 @@ namespace Boare.Cadencii {
             saveToCor( file );
             if ( s_vsq != null ) {
                 s_file = file;
-                editorConfig.PushRecentFiles( s_file );
+                editorConfig.pushRecentFiles( s_file );
                 if ( !s_auto_backup_timer.Enabled && editorConfig.AutoBackupIntervalMinutes > 0 ) {
                     double millisec = editorConfig.AutoBackupIntervalMinutes * 60.0 * 1000.0;
                     int draft = (int)millisec;
@@ -1896,14 +1829,14 @@ namespace Boare.Cadencii {
             SymbolTable.changeOrder( common.toArray( new ValuePair<String, Boolean>[] { } ) );
             #endregion
 
-            Boare.Lib.AppUtil.Messaging.loadMessages();
-            Boare.Lib.AppUtil.Messaging.setLanguage( editorConfig.Language );
+            Messaging.loadMessages();
+            Messaging.setLanguage( editorConfig.Language );
 
             KeySoundPlayer.Init();
             PaletteToolServer.Init();
 
 #if !TREECOM
-            s_id = bocoree.Misc.getmd5( DateTime.Now.ToBinary().ToString() ).Replace( "_", "" );
+            s_id = Misc.getmd5( DateTime.Now.ToBinary().ToString() ).Replace( "_", "" );
             String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
 #endif
             propertyPanel = new PropertyPanel();
@@ -2181,7 +2114,7 @@ namespace Boare.Cadencii {
 
             String file = PortUtil.combinePath( getApplicationDataPath(), CONFIG_FILE_NAME );
             try {
-                EditorConfig.Serialize( editorConfig, file );
+                EditorConfig.serialize( editorConfig, file );
             } catch {
             }
         }
@@ -2191,7 +2124,7 @@ namespace Boare.Cadencii {
             EditorConfig ret = null;
             if ( PortUtil.isFileExists( config_file ) ) {
                 try {
-                    ret = EditorConfig.Deserialize( editorConfig, config_file );
+                    ret = EditorConfig.deserialize( editorConfig, config_file );
                 } catch {
                     ret = null;
                 }
@@ -2199,7 +2132,7 @@ namespace Boare.Cadencii {
                 config_file = PortUtil.combinePath( Application.StartupPath, CONFIG_FILE_NAME );
                 if ( PortUtil.isFileExists( config_file ) ) {
                     try {
-                        ret = EditorConfig.Deserialize( editorConfig, config_file );
+                        ret = EditorConfig.deserialize( editorConfig, config_file );
                     } catch {
                         ret = null;
                     }
