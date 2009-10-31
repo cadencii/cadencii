@@ -1276,3 +1276,6 @@ msgstr "残り時間"
 msgid "sec"
 msgstr "秒"
 
+msgid "Use space key as Middle button modifier"
+msgstr "スペースキーを中ボタン用の修飾キーとして使用"
+
