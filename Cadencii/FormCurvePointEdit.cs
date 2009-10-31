@@ -185,7 +185,7 @@ namespace Boare.Cadencii {
             m_changed = true;
         }
 
-        private void handleUndoRedo_Click( object sender, EventArgs e ) {
+        private void handleUndoRedo_Click( Object sender, BEventArgs e ) {
             if ( sender == btnUndo ) {
                 AppManager.undo();
             } else if ( sender == btnRedo ) {

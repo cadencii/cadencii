@@ -22,7 +22,7 @@ namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class NoteHeadHandle implements Cloneable, Serializable
+    public class NoteHeadHandle implements Cloneable, Serializable {
 #else
     [Serializable]
     public class NoteHeadHandle : ICloneable {

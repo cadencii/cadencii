@@ -569,7 +569,8 @@ namespace Boare.Lib.Vsq {
                                 for ( int j = 0; j < item.data.Length - 1; j++ ) {
                                     buffer.add( item.data[j + 1] );
                                 }
-                                track_name = PortUtil.getDecodedString( encoding, buffer.toArray( new byte[] { } ) );
+                                track_name = PortUtil.getDecodedString( encoding, 
+                                                                        PortUtil.convertByteArray( buffer.toArray( new Byte[] { } ) ) );
 #if DEBUG
                                 Console.WriteLine( "VsqTrack#.ctor; track_name=" + track_name );
 #endif

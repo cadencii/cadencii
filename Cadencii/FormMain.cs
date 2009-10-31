@@ -369,7 +369,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// 前回ゲームコントローラのイベントを処理した時刻
         /// </summary>
-        private DateTime m_last_event_processed;
+        private double m_last_event_processed;
         /// <summary>
         /// splitContainer2.Panel2を最小化する直前の、splitContainer2.SplitterDistance
         /// </summary>
@@ -390,7 +390,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// btnLeftまたはbtnRightが下りた時刻
         /// </summary>
-        private DateTime m_overview_btn_downed;
+        private double m_overview_btn_downed;
         /// <summary>
         /// Overview画面左端でのクロック
         /// </summary>
@@ -871,8 +871,10 @@ namespace Boare.Cadencii {
         }
 
         private void m_input_textbox_KeyPress( Object sender, KeyPressEventArgs e ) {
+#if !JAVA
             //           Enter                                  Tab
             e.Handled = (e.KeyChar == Convert.ToChar( 13 )) || (e.KeyChar == Convert.ToChar( 09 ));
+#endif
         }
         #endregion
 
@@ -3597,14 +3599,14 @@ namespace Boare.Cadencii {
                 return;
             }
             try {
-                DateTime now = DateTime.Now;
+                double now = PortUtil.getCurrentTime();
                 byte[] buttons;
                 int pov0;
 #if !JAVA
                 winmmhelp.JoyGetStatus( 0, out buttons, out pov0 );
 #endif
                 boolean event_processed = false;
-                double dt_ms = now.Subtract( m_last_event_processed ).TotalMilliseconds;
+                double dt_ms = (now - m_last_event_processed) * 1000.0;
 
                 EditorConfig m = AppManager.editorConfig;
                 boolean btn_x = (0 <= m.GameControlerCross && m.GameControlerCross < buttons.Length && buttons[m.GameControlerCross] > 0x00);
@@ -8444,7 +8446,7 @@ namespace Boare.Cadencii {
         }
 
         private void btnLeft_MouseDown( Object sender, BMouseEventArgs e ) {
-            m_overview_btn_downed = DateTime.Now;
+            m_overview_btn_downed = PortUtil.getCurrentTime();
             m_overview_start_to_draw_clock_initial_value = m_overview_start_to_draw_clock;
             if ( m_overview_update_thread != null ) {
                 try {
@@ -8466,7 +8468,7 @@ namespace Boare.Cadencii {
         }
 
         private void btnRight_MouseDown( Object sender, BMouseEventArgs e ) {
-            m_overview_btn_downed = DateTime.Now;
+            m_overview_btn_downed = PortUtil.getCurrentTime();
             m_overview_start_to_draw_clock_initial_value = m_overview_start_to_draw_clock;
             if ( m_overview_update_thread != null ) {
                 try {
@@ -8492,7 +8494,7 @@ namespace Boare.Cadencii {
                 PortUtil.println( "updateOverview" );
 #endif
                 Thread.Sleep( 100 );
-                double dt = DateTime.Now.Subtract( m_overview_btn_downed ).TotalSeconds;
+                double dt = PortUtil.getCurrentTime() - m_overview_btn_downed;
                 int draft = (int)(m_overview_start_to_draw_clock_initial_value + m_overview_direction * dt * _OVERVIEW_SCROLL_SPEED / m_overview_px_per_clock);
                 int clock = getOverviewClockFromXCoord( pictOverview.Width, draft );
                 if ( AppManager.getVsqFile().TotalClocks < clock ) {
@@ -9775,7 +9777,7 @@ namespace Boare.Cadencii {
             updateMidiInStatus();
         }
 
-        private void m_midi_in_MidiReceived( DateTime time, byte[] data ) {
+        private void m_midi_in_MidiReceived( double time, byte[] data ) {
             if ( data.Length <= 2 ) {
                 return;
             }

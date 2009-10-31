@@ -30,7 +30,7 @@ namespace Boare.Lib.Vsq {
     /// midiイベント。メタイベントは、メタイベントのデータ長をData[1]に格納せず、生のデータをDataに格納するので、注意が必要
     /// </summary>
 #if JAVA
-    public class MidiEvent implements Comparable<MidiEvent>
+    public class MidiEvent implements Comparable<MidiEvent> {
 #else
     public struct MidiEvent : IComparable<MidiEvent> {
 #endif

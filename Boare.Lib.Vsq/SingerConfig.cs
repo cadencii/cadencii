@@ -27,7 +27,7 @@ namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class SingerConfig implements Cloneable
+    public class SingerConfig implements Cloneable {
 #else
     public class SingerConfig : ICloneable {
 #endif

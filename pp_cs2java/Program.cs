@@ -9,8 +9,7 @@ using bocoree.windows.forms;
 using bocoree.awt.event_;
 using bocoreex.swing;
 
-class pp_cs2java
-{
+class pp_cs2java {
     static String s_base_dir = "";     // 出力先
     static String s_target_dir = "";   // ファイルの検索開始位置
     static bool s_recurse = false;
@@ -61,8 +60,7 @@ class pp_cs2java
         {".LastIndexOf(", ".lastIndexOf(" },
     };
 
-    static void Main( string[] args )
-    {
+    static void Main( string[] args ) {
         /*Random r = new Random( DateTime.Now.Millisecond );
         for ( int k = 0; k < 10000; k++ )
         {
@@ -143,92 +141,63 @@ class pp_cs2java
         }*/
 
         String current_parse = "";
-        for ( int i = 0; i < args.Length; i++ )
-        {
-            if ( args[i].StartsWith( "-" ) && current_parse != "-s" )
-            {
+        for ( int i = 0; i < args.Length; i++ ) {
+            if ( args[i].StartsWith( "-" ) && current_parse != "-s" ) {
                 current_parse = args[i];
-                if ( current_parse == "-r" )
-                {
+                if ( current_parse == "-r" ) {
                     s_recurse = true;
                     current_parse = "";
-                }
-                else if ( current_parse == "-e" )
-                {
+                } else if ( current_parse == "-e" ) {
                     s_ignore_empty = false;
                     current_parse = "";
-                }
-                else if ( current_parse == "-c" )
-                {
+                } else if ( current_parse == "-c" ) {
                     s_parse_comment = true;
                     current_parse = "";
-                }
-                else if ( current_parse.StartsWith( "-D" ) )
-                {
+                } else if ( current_parse.StartsWith( "-D" ) ) {
                     String def = current_parse.Substring( 2 );
-                    if ( !s_defines.Contains( def ) )
-                    {
+                    if ( !s_defines.Contains( def ) ) {
                         s_defines.Add( def );
                     }
                     current_parse = "";
                 }
-            }
-            else
-            {
-                if ( current_parse == "-t" )
-                {
+            } else {
+                if ( current_parse == "-t" ) {
                     s_target_dir = args[i];
                     current_parse = "";
-                }
-                else if ( current_parse == "-b" )
-                {
+                } else if ( current_parse == "-b" ) {
                     s_base_dir = args[i];
                     current_parse = "";
-                }
-                else if ( current_parse == "-encoding" )
-                {
+                } else if ( current_parse == "-encoding" ) {
                     s_encoding = args[i];
                     current_parse = "";
-                }
-                else if ( current_parse == "-s" )
-                {
+                } else if ( current_parse == "-s" ) {
                     s_shift_indent = int.Parse( args[i] );
                     current_parse = "";
-                }
-                else if ( current_parse == "-m" )
-                {
+                } else if ( current_parse == "-m" ) {
                     s_main_class_path = args[i];
                 }
             }
         }
 
-        if ( s_base_dir == "" || s_target_dir == "" )
-        {
+        if ( s_base_dir == "" || s_target_dir == "" ) {
             return;
         }
 
-        if ( s_recurse )
-        {
+        if ( s_recurse ) {
             preprocessRecurse( s_target_dir );
-        }
-        else
-        {
+        } else {
             preprocess( s_target_dir );
         }
 
-        if ( s_main_class_path != "" )
-        {
-            using ( StreamWriter sw = new StreamWriter( s_main_class_path ) )
-            {
-                foreach ( string pkg in s_packages )
-                {
+        if ( s_main_class_path != "" ) {
+            using ( StreamWriter sw = new StreamWriter( s_main_class_path ) ) {
+                foreach ( string pkg in s_packages ) {
                     sw.WriteLine( "import " + pkg + ".*;" );
                 }
                 sw.WriteLine( "class " + Path.GetFileNameWithoutExtension( s_main_class_path ) + "{" );
                 sw.WriteLine( "    public static void main( String[] args ){" );
                 int count = 0;
-                foreach ( string cls in s_classes )
-                {
+                foreach ( string cls in s_classes ) {
                     count++;
                     sw.WriteLine( "        " + cls + " a" + count + ";" );
                 }
@@ -238,41 +207,32 @@ class pp_cs2java
         }
     }
 
-    static void preprocess( String path )
-    {
-        foreach ( String fi in Directory.GetFiles( path, "*.cs" ) )
-        {
+    static void preprocess( String path ) {
+        foreach ( String fi in Directory.GetFiles( path, "*.cs" ) ) {
             preprocessCor( fi );
         }
     }
 
-    static void preprocessRecurse( String dir )
-    {
+    static void preprocessRecurse( String dir ) {
         preprocess( dir );
-        foreach ( String subdir in Directory.GetDirectories( dir ) )
-        {
+        foreach ( String subdir in Directory.GetDirectories( dir ) ) {
             preprocessRecurse( subdir );
         }
     }
 
-    static void preprocessCor( String path )
-    {
+    static void preprocessCor( String path ) {
         String tmp = Path.GetTempFileName();
         String package = "";
         int lines = 0;
         Encoding enc = Encoding.Default;
         List<string> local_defines = new List<string>();
-        if ( s_encoding == "UTF-8" )
-        {
+        if ( s_encoding == "UTF-8" ) {
             enc = new UTF8Encoding( false );
-        }
-        else
-        {
+        } else {
             enc = Encoding.GetEncoding( s_encoding );
         }
         using ( StreamWriter sw = new StreamWriter( tmp, false, enc ) )
-        using ( StreamReader sr = new StreamReader( path, Encoding.GetEncoding( s_encoding ) ) )
-        {
+        using ( StreamReader sr = new StreamReader( path, Encoding.GetEncoding( s_encoding ) ) ) {
 #if DEBUG
             Console.WriteLine( "path=" + path );
 #endif
@@ -280,34 +240,23 @@ class pp_cs2java
             int line_num = 0;
             bool comment_mode = false;
             String comment_indent = "";
-            while ( (line = sr.ReadLine()) != null )
-            {
+            while ( (line = sr.ReadLine()) != null ) {
                 line_num++;
-                if ( line.StartsWith( "#" ) )
-                {
+                if ( line.StartsWith( "#" ) ) {
                     String trim = line.Replace( " ", "" );
-                    if ( trim.StartsWith( "#if!" ) )
-                    {
+                    if ( trim.StartsWith( "#if!" ) ) {
                         s_current_dirctive.Push( trim );
-                    }
-                    else if ( trim.StartsWith( "#if" ) )
-                    {
+                    } else if ( trim.StartsWith( "#if" ) ) {
                         s_current_dirctive.Push( trim );
-                    }
-                    else if ( trim.StartsWith( "#else" ) )
-                    {
-                        if ( s_current_dirctive.Count > 0 )
-                        {
+                    } else if ( trim.StartsWith( "#else" ) ) {
+                        if ( s_current_dirctive.Count > 0 ) {
                             string current = s_current_dirctive.Pop();
 #if DEBUG
                             //Console.Write( "  " + current + " -> " );
 #endif
-                            if ( current.StartsWith( "#if!" ) )
-                            {
+                            if ( current.StartsWith( "#if!" ) ) {
                                 current = "#if" + current.Substring( 4 );
-                            }
-                            else
-                            {
+                            } else {
                                 current = "#if!" + current.Substring( 3 );
                             }
 #if DEBUG
@@ -315,30 +264,25 @@ class pp_cs2java
 #endif
                             s_current_dirctive.Push( current );
                         }
-                    }
-                    else if ( trim.StartsWith( "#endif" ) )
-                    {
-                        s_current_dirctive.Pop();
-                    }
-                    else if ( trim.StartsWith( "#define" ) )
-                    {
+                    } else if ( trim.StartsWith( "#endif" ) ) {
+                        if ( s_current_dirctive.Count > 0 ) {
+                            s_current_dirctive.Pop();
+                        }
+                    } else if ( trim.StartsWith( "#define" ) ) {
                         string direct = trim.Replace( " ", "" );
                         direct = direct.Substring( 7 );
                         local_defines.Add( direct );
                     }
                     continue;
                 }
-                if ( line.StartsWith( "package" ) )
-                {
+                if ( line.StartsWith( "package" ) ) {
                     String trim = line.Substring( 7 ).Replace( " ", "" );
                     int index = trim.IndexOf( "//" );
-                    if ( index >= 1 )
-                    {
+                    if ( index >= 1 ) {
                         trim = trim.Substring( 0, index );
                     }
                     package = trim.Replace( ";", "" );
-                    if ( !s_packages.Contains( package ) )
-                    {
+                    if ( !s_packages.Contains( package ) ) {
                         s_packages.Add( package );
                     }
                 }
@@ -346,32 +290,22 @@ class pp_cs2java
                 bool print_this_line = s_current_dirctive.Count <= 0;
                 string dirs = "";
                 bool first = true;
-                foreach ( string c in s_current_dirctive )
-                {
+                foreach ( string c in s_current_dirctive ) {
                     dirs += c + " ";
-                    if ( c.StartsWith( "#if!" ) )
-                    {
+                    if ( c.StartsWith( "#if!" ) ) {
                         string search = c.Substring( 4 );
-                        if ( first )
-                        {
+                        if ( first ) {
                             print_this_line = !s_defines.Contains( search ) && !local_defines.Contains( search );
                             first = false;
-                        }
-                        else
-                        {
+                        } else {
                             print_this_line = print_this_line && (!s_defines.Contains( search ) && !local_defines.Contains( search ));
                         }
-                    }
-                    else if ( c.StartsWith( "#if" ) )
-                    {
+                    } else if ( c.StartsWith( "#if" ) ) {
                         string search = c.Substring( 3 );
-                        if ( first )
-                        {
+                        if ( first ) {
                             print_this_line = s_defines.Contains( search ) || local_defines.Contains( search );
                             first = false;
-                        }
-                        else
-                        {
+                        } else {
                             print_this_line = print_this_line && s_defines.Contains( search ) || local_defines.Contains( search );
                         }
                     }
@@ -381,83 +315,58 @@ class pp_cs2java
                 //Console.WriteLine( "dirs=" + dirs + "; line=" + line );
 #endif
 
-                if ( print_this_line )
-                {
-                    for ( int i = 0; i < REPLACE.GetLength( 0 ); i++ )
-                    {
+                if ( print_this_line ) {
+                    for ( int i = 0; i < REPLACE.GetLength( 0 ); i++ ) {
                         line = line.Replace( REPLACE[i, 0], REPLACE[i, 1] );
                     }
                     int index_foreach = line.IndexOf( "foreach" );
-                    if ( index_foreach >= 0 )
-                    {
+                    if ( index_foreach >= 0 ) {
                         int index_in = line.IndexOf( " in " );
-                        if ( index_in >= 0 )
-                        {
+                        if ( index_in >= 0 ) {
                             line = line.Substring( 0, index_foreach ) + "for" + line.Substring( index_foreach + 7, index_in - (index_foreach + 7) ) + " : " + line.Substring( index_in + 4 );
                         }
                     }
-                    if ( s_shift_indent < 0 )
-                    {
+                    if ( s_shift_indent < 0 ) {
                         string search = new string( ' ', -s_shift_indent );
-                        if ( line.StartsWith( search ) )
-                        {
+                        if ( line.StartsWith( search ) ) {
                             line = line.Substring( -s_shift_indent );
                         }
-                    }
-                    else if ( s_shift_indent > 0 )
-                    {
+                    } else if ( s_shift_indent > 0 ) {
                         line = new string( ' ', s_shift_indent ) + line;
                     }
 
                     // コメント処理
-                    if ( s_parse_comment )
-                    {
+                    if ( s_parse_comment ) {
                         bool draft_comment_mode;
                         int ind = line.IndexOf( "///" );
-                        if ( ind >= 0 )
-                        {
+                        if ( ind >= 0 ) {
                             draft_comment_mode = true;
-                        }
-                        else
-                        {
+                        } else {
                             draft_comment_mode = false;
                         }
-                        if ( comment_mode )
-                        {
-                            if ( draft_comment_mode )
-                            {
-                                if ( line.IndexOf( "</summary>" ) >= 0 )
-                                {
+                        if ( comment_mode ) {
+                            if ( draft_comment_mode ) {
+                                if ( line.IndexOf( "</summary>" ) >= 0 ) {
                                     comment_indent = line.Substring( 0, ind );
                                     comment_mode = draft_comment_mode;
                                     continue;
                                 }
                                 comment_indent = line.Substring( 0, ind );
                                 line = comment_indent + " *" + line.Substring( ind + 3 );
-                            }
-                            else
-                            {
+                            } else {
                                 // コメントモードが終了したとき
                                 sw.WriteLine( comment_indent + " */" );
                             }
-                        }
-                        else
-                        {
-                            if ( draft_comment_mode )
-                            {
-                                if ( line.IndexOf( "<summary>" ) >= 0 )
-                                {
+                        } else {
+                            if ( draft_comment_mode ) {
+                                if ( line.IndexOf( "<summary>" ) >= 0 ) {
                                     comment_indent = line.Substring( 0, ind );
                                     line = comment_indent + "/**";
-                                }
-                                else if ( line.IndexOf( "</summary>" ) >= 0 )
-                                {
+                                } else if ( line.IndexOf( "</summary>" ) >= 0 ) {
                                     comment_indent = line.Substring( 0, ind );
                                     comment_mode = draft_comment_mode;
                                     continue;
-                                }
-                                else
-                                {
+                                } else {
                                     comment_indent = line.Substring( 0, ind );
                                     line = comment_indent + " * " + line.Substring( ind + 3 );
                                 }
@@ -465,12 +374,10 @@ class pp_cs2java
                         }
                         comment_mode = draft_comment_mode;
                     }
-                    if ( line != "" )
-                    {
+                    if ( line != "" ) {
                         lines++;
                     }
-                    if ( !line.Contains( "#region" ) && !line.Contains( "#endregion" ) && !line.Contains( "[Serializable]" ) )
-                    {
+                    if ( !line.Contains( "#region" ) && !line.Contains( "#endregion" ) && !line.Contains( "[Serializable]" ) ) {
                         sw.WriteLine( line );
                     }
                 }
@@ -478,45 +385,34 @@ class pp_cs2java
         }
 
         String out_path = "";
-        if ( package == "" )
-        {
+        if ( package == "" ) {
             out_path = Path.Combine( s_base_dir, Path.GetFileNameWithoutExtension( path ) + ".java" );
-        }
-        else
-        {
+        } else {
             String[] spl = package.Split( '.' );
-            if ( !Directory.Exists( s_base_dir ) )
-            {
+            if ( !Directory.Exists( s_base_dir ) ) {
                 Directory.CreateDirectory( s_base_dir );
             }
-            for ( int i = 0; i < spl.Length; i++ )
-            {
+            for ( int i = 0; i < spl.Length; i++ ) {
                 String dir = s_base_dir;
-                for ( int j = 0; j <= i; j++ )
-                {
+                for ( int j = 0; j <= i; j++ ) {
                     dir = Path.Combine( dir, spl[j] );
                 }
-                if ( !Directory.Exists( dir ) )
-                {
+                if ( !Directory.Exists( dir ) ) {
                     Directory.CreateDirectory( dir );
                 }
             }
             out_path = s_base_dir;
-            for ( int i = 0; i < spl.Length; i++ )
-            {
+            for ( int i = 0; i < spl.Length; i++ ) {
                 out_path = Path.Combine( out_path, spl[i] );
             }
             out_path = Path.Combine( out_path, Path.GetFileNameWithoutExtension( path ) + ".java" );
         }
 
-        if ( File.Exists( out_path ) )
-        {
+        if ( File.Exists( out_path ) ) {
             File.Delete( out_path );
         }
-        if ( !s_ignore_empty || (s_ignore_empty && lines > 0) )
-        {
-            if ( package != "" || !s_ignore_unknown_package )
-            {
+        if ( !s_ignore_empty || (s_ignore_empty && lines > 0) ) {
+            if ( package != "" || !s_ignore_unknown_package ) {
                 s_classes.Add( Path.GetFileNameWithoutExtension( path ) );
                 File.Copy( tmp, out_path );
             }

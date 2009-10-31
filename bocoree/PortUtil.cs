@@ -1216,7 +1216,7 @@ namespace bocoree {
 #if JAVA
             throws FileNotFoundException, IOException
 #endif
- {
+        {
 #if JAVA
             InputStream in = new FileInputStream( file );
             MessageDigest digest = null;
@@ -1274,6 +1274,7 @@ namespace bocoree {
         }
 #endif
 
+        #region Array conversion
         public static Integer[] convertIntArray( int[] arr ) {
 #if JAVA
             Integer[] ret = new Integer[arr.length];
@@ -1289,6 +1290,18 @@ namespace bocoree {
         public static Long[] convertLongArray( long[] arr ) {
 #if JAVA
             Long[] ret = new Long[arr.length];
+            for( int i = 0; i < arr.length; i++ ){
+                ret[i] = arr[i];
+            }
+            return ret;
+#else
+            return arr;
+#endif
+        }
+
+        public static Byte[] convertByteArray( byte[] arr ) {
+#if JAVA
+            Byte[] ret = new Byte[arr.length];
             for( int i = 0; i < arr.length; i++ ){
                 ret[i] = arr[i];
             }
@@ -1314,7 +1327,16 @@ namespace bocoree {
             }
             return ret;
         }
+
+        public static byte[] convertByteArray( Byte[] arr ){
+            byte[] ret = new byte[arr.length];
+            for( int i = 0; i < arr.length; i++ ){
+                ret[i] = arr[i];
+            }
+            return ret;
+        }
 #endif
+        #endregion
 
         public static String getApplicationStartupPath() {
 #if JAVA

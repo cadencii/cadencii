@@ -11,6 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+#else
 using System;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
@@ -19,7 +21,7 @@ using bocoree;
 
 namespace Boare.Lib.Media {
 
-    public delegate void MidiReceivedEventHandler( DateTime time, byte[] data );
+    public delegate void MidiReceivedEventHandler( double time, byte[] data );
 
     public class MidiInDevice : IDisposable {
         delegate void MidiInProcDelegate( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 );
@@ -112,7 +114,7 @@ namespace Boare.Lib.Media {
                         return;
                     case win32.MM_MIM_DATA:
                         int receive = dwParam1;
-                        DateTime now = DateTime.Now;
+                        double now = PortUtil.getCurrentTime();
                         switch ( receive & 0xF0 ) {
                             case 0x80:
                             case 0x90:
@@ -149,3 +151,4 @@ namespace Boare.Lib.Media {
     }
 
 }
+#endif

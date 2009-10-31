@@ -1974,7 +1974,7 @@ namespace Boare.Lib.Vsq {
                         } else {
                             tmp = _NL + sr.readLine();
                         }
-                        byte[] linebytes = PortUtil.getEncodedByte( encoding, tmp );
+                        Byte[] linebytes = PortUtil.convertByteArray( PortUtil.getEncodedByte( encoding, tmp ) );
                         buffer.addAll( Arrays.asList( linebytes ) );
                         while ( getLinePrefixBytes( line_count + 1 ).Length + buffer.size() >= 127 ) {
                             line_count++;

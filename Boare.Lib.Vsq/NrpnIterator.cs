@@ -29,7 +29,7 @@ namespace Boare.Lib.Vsq {
 #endif
 
 #if JAVA
-    public class NrpnIterator implements Iterator
+    public class NrpnIterator implements Iterator {
 #else
     public class NrpnIterator : Iterator {
 #endif
