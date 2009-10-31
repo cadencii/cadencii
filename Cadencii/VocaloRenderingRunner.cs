@@ -261,6 +261,8 @@ namespace Boare.Cadencii {
                         }
                         long start = m_total_append + (long)(wave_read_offset_seconds * VSTiProxy.SAMPLE_RATE);
                         int count = m_reader.size();
+                        double[] reader_r = new double[actual_append];
+                        double[] reader_l = new double[actual_append];
                         for ( int i = 0; i < count; i++ ) {
                             WaveReader wr = m_reader.get( i );
                             amplify.left = 1.0;
@@ -276,15 +278,11 @@ namespace Boare.Cadencii {
                                     amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
                                 }
                             }
-                            double[] reader_r;
-                            double[] reader_l;
-                            wr.Read( start, actual_append, out reader_l, out reader_r );
+                            wr.Read( start, actual_append, reader_l, reader_r );
                             for ( int j = 0; j < actual_append; j++ ) {
                                 dL[j] += reader_l[j] * amplify.left;
                                 dR[j] += reader_r[j] * amplify.right;
                             }
-                            reader_l = null;
-                            reader_r = null;
                         }
                         if ( direct_play ) {
                             PlaySound.append( dL, dR, actual_append );
@@ -314,6 +312,9 @@ namespace Boare.Cadencii {
                         }
                         long start = m_total_append + (long)(wave_read_offset_seconds * VSTiProxy.SAMPLE_RATE);
                         int count = m_reader.size();
+
+                        double[] reader_r = new double[length];
+                        double[] reader_l = new double[length];
                         for ( int i = 0; i < count; i++ ) {
                             WaveReader wr = m_reader.get( i );
                             amplify.left = 1.0;
@@ -329,16 +330,14 @@ namespace Boare.Cadencii {
                                     amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
                                 }
                             }
-                            double[] reader_r;
-                            double[] reader_l;
-                            wr.Read( start, length, out reader_l, out reader_r );
+                            wr.Read( start, length, reader_l, reader_r );
                             for ( int j = 0; j < length; j++ ) {
                                 L[j] += reader_l[j] * amplify.left;
                                 R[j] += reader_r[j] * amplify.right;
                             }
-                            reader_l = null;
-                            reader_r = null;
                         }
+                        reader_l = null;
+                        reader_r = null;
                         if ( direct_play ) {
                             PlaySound.append( L, R, L.Length );
                         }

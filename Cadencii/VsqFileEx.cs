@@ -804,15 +804,18 @@ namespace Boare.Cadencii {
                     VsqFileEx vsq = (VsqFileEx)command.args[0];
                     VsqFileEx inv = (VsqFileEx)this.Clone();
                     Track.clear();
-                    for ( int i = 0; i < vsq.Track.size(); i++ ) {
+                    int c = vsq.Track.size();
+                    for ( int i = 0; i < c; i++ ) {
                         Track.add( (VsqTrack)vsq.Track.get( i ).clone() );
                     }
                     TempoTable.clear();
-                    for ( int i = 0; i < vsq.TempoTable.size(); i++ ) {
+                    c = vsq.TempoTable.size();
+                    for ( int i = 0; i < c; i++ ) {
                         TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
                     }
                     TimesigTable.clear();
-                    for ( int i = 0; i < vsq.TimesigTable.size(); i++ ) {
+                    c = vsq.TimesigTable.size();
+                    for ( int i = 0; i < c; i++ ) {
                         TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
                     }
                     m_tpq = vsq.m_tpq;

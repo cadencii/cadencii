@@ -4962,8 +4962,8 @@ namespace Boare.Cadencii {
                         if ( ve.ID.type != VsqIDType.Singer ) {
                             return;
                         }
-                        if ( m_cmenu_singer_prepared != renderer ) {
-                            InitCmenuSinger( renderer );
+                        if ( !m_cmenu_singer_prepared.Equals( renderer ) ) {
+                            prepareSingerMenu( renderer );
                         }
                         TagForCMenuSinger tag = new TagForCMenuSinger();
                         tag.SingerChangeExists = true;
@@ -4974,15 +4974,15 @@ namespace Boare.Cadencii {
                             BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
                             TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)tsmi.getTag();
                             if ( tag2.SingerName.Equals( ve.ID.IconHandle.IDS ) ) {
-                                tsmi.Checked = true;
+                                tsmi.setSelected( true );
                             } else {
-                                tsmi.Checked = false;
+                                tsmi.setSelected( false );
                             }
                         }
                         cmenuSinger.Show( this, e.Location );
                     } else {
-                        if ( m_cmenu_singer_prepared != renderer ) {
-                            InitCmenuSinger( renderer );
+                        if ( !m_cmenu_singer_prepared.Equals( renderer ) ) {
+                            prepareSingerMenu( renderer );
                         }
                         String singer = AppManager.editorConfig.DefaultSingerName;
                         int clock = AppManager.clockFromXCoord( e.X );
@@ -5011,7 +5011,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void InitCmenuSinger( String renderer ) {
+        public void prepareSingerMenu( String renderer ) {
             cmenuSinger.Items.Clear();
             //Vector<Integer> list = new Vector<Integer>();
             Vector<SingerConfig> items = null;
@@ -5060,7 +5060,8 @@ namespace Boare.Cadencii {
                     }
                 }
                 if ( sc != null ) {
-                    ToolStripMenuItem tsmi = new ToolStripMenuItem( sc.VOICENAME );
+                    BMenuItem tsmi = new BMenuItem();
+                    tsmi.setText( sc.VOICENAME );
                     TagForCMenuSingerDropDown tag = new TagForCMenuSingerDropDown();
                     tag.SingerName = sc.VOICENAME;
                     tag.ToolTipText = tip;
@@ -5069,7 +5070,7 @@ namespace Boare.Cadencii {
                     tsmi.Click += new EventHandler( tsmi_Click );
                     if ( AppManager.editorConfig.Platform == Platform.Windows ) {
                         // TODO: cmenuSinger.ItemsのToolTip。monoで実行するとMouseHoverで落ちる
-                        tsmi.MouseEnter += new EventHandler( tsmi_MouseEnter );
+                        tsmi.MouseHover += new EventHandler( tsmi_MouseHover );
                     }
                     cmenuSinger.Items.Add( tsmi );
                     //list.Add( i );
@@ -5090,13 +5091,12 @@ namespace Boare.Cadencii {
         }
 
         private void tsmi_MouseEnter( Object sender, BEventArgs e ) {
-            toolTip.Hide( cmenuSinger );
+            //toolTip.Hide( cmenuSinger );
+            tsmi_MouseHover( sender, e );
         }
 
         private void tsmi_MouseHover( Object sender, BEventArgs e ) {
-#if DEBUG
             try {
-#endif
                 TagForCMenuSingerDropDown tag = (TagForCMenuSingerDropDown)((ToolStripMenuItem)sender).Tag;
                 String tip = tag.ToolTipText;
                 String singer = tag.SingerName;
@@ -5123,12 +5123,10 @@ namespace Boare.Cadencii {
                 } else {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( cmenuSinger.Width, y ), 5000 );
                 }
-#if DEBUG
             } catch ( Exception ex ) {
                 PortUtil.println( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
                 AppManager.debugWriteLine( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
             }
-#endif
         }
 
         private struct TagForCMenuSinger {

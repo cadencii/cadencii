@@ -60,6 +60,7 @@ namespace Boare.Cadencii {
         boolean m_reflect_amp_to_wave = false;
         DateTime m_started_date;
         double m_running_rate;
+        long m_total_samples;
 
         public UtauRenderingRunner( VsqFileEx vsq,
                                     int track_,
@@ -70,6 +71,7 @@ namespace Boare.Cadencii {
                                     boolean invoke_with_wine,
                                     int sample_rate,
                                     int trim_msec,
+                                    long total_samples,
                                     boolean mode_infinite,
                                     WaveWriter wave_writer,
                                     double wave_read_offset_seconds,
@@ -86,6 +88,7 @@ namespace Boare.Cadencii {
             m_invoke_with_wine = invoke_with_wine;
             m_sample_rate = sample_rate;
             m_trim_msec = trim_msec;
+            m_total_samples = total_samples;
             m_mode_infinite = mode_infinite;
             m_wave_writer = wave_writer;
             m_wave_read_offset_seconds = wave_read_offset_seconds;
@@ -826,13 +829,33 @@ namespace Boare.Cadencii {
             return draft;
         }
 
-        private void WaveIncoming( double[] L, double[] R ) {
+        private void WaveIncoming( double[] t_L, double[] t_R ) {
             if ( !m_rendering ) {
                 return;
             }
             AmplifyCoefficient amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
             lock ( m_locker ) {
+                double[] L = t_L;
+                double[] R = t_R;
                 int length = L.Length;
+
+                if ( length > m_total_samples - m_total_append ) {
+                    length = (int)(m_total_samples - m_total_append);
+                    if ( length <= 0 ) {
+                        return;
+                    }
+                    double[] br = R;
+                    double[] bl = L;
+                    L = new double[length];
+                    R = new double[length];
+                    for ( int i = 0; i < length; i++ ) {
+                        L[i] = bl[i];
+                        R[i] = br[i];
+                    }
+                    br = null;
+                    bl = null;
+                }
+
                 if ( m_reflect_amp_to_wave ) {
                     for ( int i = 0; i < length; i++ ) {
                         if ( i % 100 == 0 ) {
@@ -858,6 +881,8 @@ namespace Boare.Cadencii {
                 }
                 long start = m_total_append + (long)(m_wave_read_offset_seconds * VSTiProxy.SAMPLE_RATE);
                 int count = m_reader.size();
+                double[] reader_r = new double[length];
+                double[] reader_l = new double[length];
                 for ( int i = 0; i < count; i++ ) {
                     WaveReader wr = m_reader.get( i );
                     amplify.left = 1.0;
@@ -870,16 +895,14 @@ namespace Boare.Cadencii {
                             amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
                         }
                     }
-                    double[] reader_r;
-                    double[] reader_l;
-                    wr.Read( start, length, out reader_l, out reader_r );
+                    wr.Read( start, length, reader_l, reader_r );
                     for ( int j = 0; j < length; j++ ) {
                         L[j] += reader_l[j] * amplify.left;
                         R[j] += reader_r[j] * amplify.right;
                     }
-                    reader_l = null;
-                    reader_r = null;
                 }
+                reader_l = null;
+                reader_r = null;
                 if ( m_direct_play ) {
                     PlaySound.append( L, R, L.Length );
                 }

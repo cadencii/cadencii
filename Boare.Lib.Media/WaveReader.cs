@@ -181,9 +181,9 @@ namespace Boare.Lib.Media {
             }
         }
 
-        public void Read( long start, int length, out double[] left, out double[] right ) {
-            left = new double[length];
-            right = new double[length];
+        public void Read( long start, int length, double[] left, double[] right ) {
+            //left = new double[length];
+            //right = new double[length];
             if ( !m_opened ) {
                 return;
             }

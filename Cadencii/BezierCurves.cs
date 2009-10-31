@@ -381,7 +381,7 @@ namespace Boare.Cadencii {
         /// <param name="chain"></param>
         public void addBezierChain( CurveType curve_type, BezierChain chain, int chain_id ) {
             int index = curve_type.getIndex();
-            BezierChain add = (BezierChain)chain.Clone();
+            BezierChain add = (BezierChain)chain.clone();
             add.id = chain_id;
             this.get( curve_type ).add( add );
         }

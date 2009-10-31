@@ -175,6 +175,7 @@ namespace Boare.Cadencii {
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.openUtauCore = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserSingers = new System.Windows.Forms.FolderBrowserDialog();
+            this.chkUseSpaceKeyAsMiddleButtonModifier = new System.Windows.Forms.CheckBox();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupAutoVibratoConfig.SuspendLayout();
@@ -241,10 +242,10 @@ namespace Boare.Cadencii {
             this.tabSequence.Controls.Add( this.comboVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoConfig );
-            this.tabSequence.Location = new System.Drawing.Point( 4, 40 );
+            this.tabSequence.Location = new System.Drawing.Point( 4, 38 );
             this.tabSequence.Name = "tabSequence";
             this.tabSequence.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSequence.Size = new System.Drawing.Size( 454, 349 );
+            this.tabSequence.Size = new System.Drawing.Size( 454, 351 );
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
@@ -542,10 +543,10 @@ namespace Boare.Cadencii {
             this.tabAnother.Controls.Add( this.numTiming );
             this.tabAnother.Controls.Add( this.numWait );
             this.tabAnother.Controls.Add( this.numPreSendTime );
-            this.tabAnother.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAnother.Location = new System.Drawing.Point( 4, 38 );
             this.tabAnother.Name = "tabAnother";
             this.tabAnother.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAnother.Size = new System.Drawing.Size( 454, 349 );
+            this.tabAnother.Size = new System.Drawing.Size( 454, 351 );
             this.tabAnother.TabIndex = 2;
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
@@ -804,10 +805,10 @@ namespace Boare.Cadencii {
             this.tabAppearance.Controls.Add( this.comboLanguage );
             this.tabAppearance.Controls.Add( this.lblLanguage );
             this.tabAppearance.Controls.Add( this.numTrackHeight );
-            this.tabAppearance.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAppearance.Location = new System.Drawing.Point( 4, 38 );
             this.tabAppearance.Name = "tabAppearance";
             this.tabAppearance.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAppearance.Size = new System.Drawing.Size( 454, 349 );
+            this.tabAppearance.Size = new System.Drawing.Size( 454, 351 );
             this.tabAppearance.TabIndex = 3;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -1175,10 +1176,10 @@ namespace Boare.Cadencii {
             // 
             this.tabOperation.Controls.Add( this.groupMisc );
             this.tabOperation.Controls.Add( this.groupPianoroll );
-            this.tabOperation.Location = new System.Drawing.Point( 4, 40 );
+            this.tabOperation.Location = new System.Drawing.Point( 4, 38 );
             this.tabOperation.Name = "tabOperation";
             this.tabOperation.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabOperation.Size = new System.Drawing.Size( 454, 349 );
+            this.tabOperation.Size = new System.Drawing.Size( 454, 351 );
             this.tabOperation.TabIndex = 5;
             this.tabOperation.Text = "Operation";
             this.tabOperation.UseVisualStyleBackColor = true;
@@ -1192,9 +1193,9 @@ namespace Boare.Cadencii {
             this.groupMisc.Controls.Add( this.lblMouseHoverTime );
             this.groupMisc.Controls.Add( this.lblMilliSecond );
             this.groupMisc.Controls.Add( this.numMouseHoverTime );
-            this.groupMisc.Location = new System.Drawing.Point( 6, 205 );
+            this.groupMisc.Location = new System.Drawing.Point( 6, 227 );
             this.groupMisc.Name = "groupMisc";
-            this.groupMisc.Size = new System.Drawing.Size( 442, 119 );
+            this.groupMisc.Size = new System.Drawing.Size( 442, 109 );
             this.groupMisc.TabIndex = 91;
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
@@ -1284,6 +1285,7 @@ namespace Boare.Cadencii {
             // 
             // groupPianoroll
             // 
+            this.groupPianoroll.Controls.Add( this.chkUseSpaceKeyAsMiddleButtonModifier );
             this.groupPianoroll.Controls.Add( this.labelWheelOrder );
             this.groupPianoroll.Controls.Add( this.numericUpDownEx1 );
             this.groupPianoroll.Controls.Add( this.chkCursorFix );
@@ -1293,7 +1295,7 @@ namespace Boare.Cadencii {
             this.groupPianoroll.Controls.Add( this.chkKeepLyricInputMode );
             this.groupPianoroll.Location = new System.Drawing.Point( 6, 6 );
             this.groupPianoroll.Name = "groupPianoroll";
-            this.groupPianoroll.Size = new System.Drawing.Size( 442, 193 );
+            this.groupPianoroll.Size = new System.Drawing.Size( 442, 215 );
             this.groupPianoroll.TabIndex = 90;
             this.groupPianoroll.TabStop = false;
             this.groupPianoroll.Text = "Piano Roll";
@@ -1384,10 +1386,10 @@ namespace Boare.Cadencii {
             this.tabPlatform.Controls.Add( this.groupUtauCores );
             this.tabPlatform.Controls.Add( this.groupVsti );
             this.tabPlatform.Controls.Add( this.groupPlatform );
-            this.tabPlatform.Location = new System.Drawing.Point( 4, 40 );
+            this.tabPlatform.Location = new System.Drawing.Point( 4, 38 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 349 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 351 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
@@ -1589,10 +1591,10 @@ namespace Boare.Cadencii {
             this.tabUtauSingers.Controls.Add( this.btnUp );
             this.tabUtauSingers.Controls.Add( this.btnDown );
             this.tabUtauSingers.Controls.Add( this.listSingers );
-            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 40 );
+            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 38 );
             this.tabUtauSingers.Name = "tabUtauSingers";
             this.tabUtauSingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 349 );
+            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 351 );
             this.tabUtauSingers.TabIndex = 6;
             this.tabUtauSingers.Text = "UTAU Singers";
             this.tabUtauSingers.UseVisualStyleBackColor = true;
@@ -1681,10 +1683,10 @@ namespace Boare.Cadencii {
             this.tabFile.Controls.Add( this.numAutoBackupInterval );
             this.tabFile.Controls.Add( this.lblAutoBackupInterval );
             this.tabFile.Controls.Add( this.chkAutoBackup );
-            this.tabFile.Location = new System.Drawing.Point( 4, 40 );
+            this.tabFile.Location = new System.Drawing.Point( 4, 38 );
             this.tabFile.Name = "tabFile";
             this.tabFile.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabFile.Size = new System.Drawing.Size( 454, 349 );
+            this.tabFile.Size = new System.Drawing.Size( 454, 351 );
             this.tabFile.TabIndex = 7;
             this.tabFile.Text = "File";
             this.tabFile.UseVisualStyleBackColor = true;
@@ -1768,6 +1770,16 @@ namespace Boare.Cadencii {
             // folderBrowserSingers
             // 
             this.folderBrowserSingers.ShowNewFolderButton = false;
+            // 
+            // chkUseSpaceKeyAsMiddleButtonModifier
+            // 
+            this.chkUseSpaceKeyAsMiddleButtonModifier.AutoSize = true;
+            this.chkUseSpaceKeyAsMiddleButtonModifier.Location = new System.Drawing.Point( 16, 181 );
+            this.chkUseSpaceKeyAsMiddleButtonModifier.Name = "chkUseSpaceKeyAsMiddleButtonModifier";
+            this.chkUseSpaceKeyAsMiddleButtonModifier.Size = new System.Drawing.Size( 234, 16 );
+            this.chkUseSpaceKeyAsMiddleButtonModifier.TabIndex = 89;
+            this.chkUseSpaceKeyAsMiddleButtonModifier.Text = "Use space key as Middle button modifier";
+            this.chkUseSpaceKeyAsMiddleButtonModifier.UseVisualStyleBackColor = true;
             // 
             // Preference
             // 
@@ -1968,5 +1980,6 @@ namespace Boare.Cadencii {
         private System.Windows.Forms.Label lblAutoBackupMinutes;
         private System.Windows.Forms.ComboBox comboAutoVibratoType2;
         private System.Windows.Forms.Label lblAutoVibratoType2;
+        private System.Windows.Forms.CheckBox chkUseSpaceKeyAsMiddleButtonModifier;
     }
 }

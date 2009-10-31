@@ -287,6 +287,10 @@ namespace Boare.Cadencii {
         /// 鍵盤の表示幅、ピクセル,AppManager.keyWidthに代入。
         /// </summary>
         public int KeyWidth = 68;
+        /// <summary>
+        /// スペースキーを押しながら左クリックで、中ボタンクリックとみなす動作をさせるかどうか。
+        /// </summary>
+        public boolean UseSpaceKeyAsMiddleButtonModifier = false;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>(

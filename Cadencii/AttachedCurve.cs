@@ -76,9 +76,10 @@ namespace Boare.Cadencii {
 
         public Object clone() {
             AttachedCurve ret = new AttachedCurve();
-            ret.Curves.clear();
-            for ( int i = 0; i < Curves.size(); i++ ) {
-                ret.Curves.add( (BezierCurves)Curves.get( i ).Clone() );
+            ret.m_curves.clear();
+            int c = m_curves.size();
+            for ( int i = 0; i < c; i++ ) {
+                ret.m_curves.add( (BezierCurves)m_curves.get( i ).clone() );
             }
             return ret;
         }

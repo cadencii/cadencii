@@ -122,6 +122,10 @@ void waveplay::append( double** data, unsigned int length, double amp_left, doub
     a_data[1] = new double[push_length];
     int offset = 0;
     while( remain > 0 ){
+        if( s_abort_required ){
+            s_abort_required = false;
+            break;
+        }
         for( int i = 0; i < push_length; i++ ){
             a_data[0][i] = data[0][i + offset];
             a_data[1][i] = data[1][i + offset];
@@ -542,6 +546,7 @@ extern "C" {
             waveplay::flush_and_exit( 1.0, 1.0 );
         }
         while( waveplay::is_alive() ){
+            Sleep( 0 );
         }
         waveplay::reset();
     }

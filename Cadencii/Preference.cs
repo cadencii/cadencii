@@ -147,6 +147,14 @@ namespace Boare.Cadencii {
             txtVOCALOID2.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
         }
 
+        public bool isUseSpaceKeyAsMiddleButtonModifier() {
+            return chkUseSpaceKeyAsMiddleButtonModifier.Checked;
+        }
+
+        public void setUseSpaceKeyAsMiddleButtonModifier( boolean value ) {
+            chkUseSpaceKeyAsMiddleButtonModifier.Checked = value;
+        }
+
         public int AutoBackupIntervalMinutes {
             get {
                 if ( chkAutoBackup.Checked ) {
@@ -551,6 +559,7 @@ namespace Boare.Cadencii {
             chkPlayPreviewWhenRightClick.Text = _( "Play Preview On Right Click" );
             chkCurveSelectingQuantized.Text = _( "Enable Quantize for Curve Selecting" );
             lblMidiInPort.Text = _( "MIDI In Port Number" );
+            chkUseSpaceKeyAsMiddleButtonModifier.Text = _( "Use space key as Middle button modifier" );
 
             groupPianoroll.Text = _( "Piano Roll" );
             groupMisc.Text = _( "Misc" );

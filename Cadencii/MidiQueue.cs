@@ -30,11 +30,15 @@ namespace Boare.Cadencii {
         public byte Velocity;
 
         public int CompareTo( MidiQueue item ) {
-            int ret = Clock - item.Clock;
-            if ( ret == 0 ) {
-                return (int)(Velocity - item.Velocity);
+            if ( item == null ) {
+                return 1;
             } else {
-                return ret;
+                int ret = Clock - item.Clock;
+                if ( ret == 0 ) {
+                    return (int)(Velocity - item.Velocity);
+                } else {
+                    return ret;
+                }
             }
         }
     }

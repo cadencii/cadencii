@@ -13,7 +13,12 @@ class diff2html{
         string outfile = Path.GetFileNameWithoutExtension( infile ) + ".html";
         using( StreamWriter sw = new StreamWriter( outfile ) )
         using( StreamReader sr = new StreamReader( infile ) ){
-            sw.WriteLine( "<html>" );
+            sw.WriteLine( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">" );
+            sw.WriteLine( "<html lang=\"ja-JP\">" );
+            sw.WriteLine( "<head>" );
+            sw.WriteLine( "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" );
+            sw.WriteLine( "<title>" + Path.GetFileNameWithoutExtension( infile ) + "</title>" );
+            sw.WriteLine( "</head>" );
             sw.WriteLine( "<body>" );
             sw.WriteLine( "<pre>" );
             string line = "";
@@ -42,8 +47,9 @@ class diff2html{
                 }else{
                     sw.Write( "<code style='" + style + "'>" );
                 }
+                sw.Write( line.Replace( "<", "&lt;" ).Replace( ">", "&gt;" ).Replace( "&", "&amp;" ) );
                 //sw.Write( line.Replace( "<", "&lt;" ).Replace( ">", "&gt;" ).Replace( "&", "&amp;" ) );
-                sw.Write( line );
+                //sw.Write( line );
                 sw.WriteLine( "</code>" );
             }
             sw.WriteLine( "</pre>" );

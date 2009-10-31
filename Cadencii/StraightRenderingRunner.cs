@@ -39,11 +39,15 @@ namespace Boare.Cadencii {
         Vector<WaveReader> m_reader;
         boolean m_direct_play = false;
         double m_wave_read_offset_seconds;
+        /// <summary>
+        /// WaveIncomingで追加されたサンプル数
+        /// </summary>
         long m_total_append = 0;
         boolean m_abort_required = false;
         boolean m_mode_infinite;
         double m_trim_msec;
         int m_sample_rate;
+        long m_total_samples;
 
         int m_trim_remain = 0;
         TreeMap<String, UtauVoiceDB> m_voicedb_configs = new TreeMap<String, UtauVoiceDB>();
@@ -53,18 +57,21 @@ namespace Boare.Cadencii {
         /// 現在の処理速度．progress%/sec
         /// </summary>
         double m_running_rate;
+        Object m_locker = null;
 
         public StraightRenderingRunner( VsqFileEx vsq,
                                         int track,
                                         Vector<SingerConfig> singer_config_sys,
                                         int sample_rate,
                                         int trim_msec,
+                                        long total_samples,
                                         boolean mode_infinite,
                                         WaveWriter wave_writer,
                                         double wave_read_offset_seconds,
                                         Vector<WaveReader> wave_reader,
                                         boolean direct_play,
                                         boolean reflect_amp_to_wave ) {
+            m_locker = new Object();
             m_queue = new Vector<StraightRenderingQueue>();
             m_singer_config_sys = singer_config_sys;
             m_rendering_track = track;
@@ -79,6 +86,7 @@ namespace Boare.Cadencii {
             m_wave_read_offset_seconds = wave_read_offset_seconds;
             m_mode_infinite = mode_infinite;
             m_trim_msec = trim_msec;
+            m_total_samples = total_samples;
             m_sample_rate = sample_rate;
             int midi_tempo = 60000000 / TEMPO;
             VsqFileEx work = (VsqFileEx)vsq.clone();
@@ -377,15 +385,21 @@ namespace Boare.Cadencii {
             if ( m_queue.size() > 0 ) {
                 StraightRenderingQueue queue = m_queue.get( 0 );
                 if ( queue.startFrame > 0 ) {
-                    double[] silence = new double[BUF_LEN];
+                    double[] silence_l = new double[BUF_LEN];
+                    double[] silence_r = new double[BUF_LEN];
                     int remain = queue.startFrame;
                     while ( remain > 0 ) {
                         int len = (remain > BUF_LEN) ? BUF_LEN : remain;
                         if ( len == BUF_LEN ) {
-                            WaveIncoming( silence, silence );
+                            for ( int i = 0; i < BUF_LEN; i++ ) {
+                                silence_l[i] = 0.0;
+                                silence_r[i] = 0.0;
+                            }
+                            WaveIncoming( silence_l, silence_r );
                         } else {
-                            double[] t_silence = new double[remain];
-                            WaveIncoming( t_silence, t_silence );
+                            double[] t_silence_l = new double[remain];
+                            double[] t_silence_r = new double[remain];
+                            WaveIncoming( t_silence_l, t_silence_r );
                         }
                         remain -= len;
                     }
@@ -467,10 +481,12 @@ namespace Boare.Cadencii {
                     ww.Close();
                     straightdrv.uninitialize();*/
 
+#if !DEBUG
                     try {
                         PortUtil.deleteFile( tmp_file + ".usq" );
                     } catch {
                     }
+#endif
 
                     if ( s_cache.size() > MAX_CACHE ) {
                         // キャッシュの許容個数を超えたので、古いものを削除
@@ -537,24 +553,49 @@ namespace Boare.Cadencii {
                     // キャッシュが残っていない場合
                     int remain = wave_samples;
                     long pos = 0;
+                    double[] left = null, right = null;
                     while ( remain > 0 ) {
                         int len = (remain > BUF_LEN) ? BUF_LEN : remain;
-                        double[] left, right;
-                        if ( wr != null ) {
-                            wr.Read( pos, len, out left, out right );
-                        } else {
+                        if ( left == null || right == null ) {
                             left = new double[len];
                             right = new double[len];
+                        } else {
+                            if ( left.Length != len || right.Length != len ) {
+                                left = null;
+                                right = null;
+                                left = new double[len];
+                                right = new double[len];
+                            }
+                        }
+                        if ( wr != null ) {
+                            wr.Read( pos, len, left, right );
                         }
                         WaveIncoming( left, right );
                         pos += len;
                         remain -= len;
                     }
+                    left = null;
+                    right = null;
+
                     int rendererd_length = 0;
                     if ( wr != null ) rendererd_length = wr.TotalSamples;
                     if ( wave_samples < rendererd_length ) {
                         // 次のキューのためにデータを残す
-                        if ( wr != null ) wr.Read( pos, overlapped, out cached_data_l, out cached_data_r );
+                        if ( wr != null ) {
+                            if ( cached_data_l == null ) {
+                                cached_data_l = new double[overlapped];
+                            } else if( cached_data_l.Length != overlapped ) {
+                                cached_data_l = null;
+                                cached_data_l = new double[overlapped];
+                            }
+                            if ( cached_data_r == null ) {
+                                cached_data_r = new double[overlapped];
+                            } else if ( cached_data_r.Length != overlapped ) {
+                                cached_data_r = null;
+                                cached_data_r = new double[overlapped];
+                            }
+                            wr.Read( pos, overlapped, cached_data_l, cached_data_r );
+                        }
                     } else if ( i + 1 < count ) {
                         // 次のキューのためにデータを残す必要がない場合で、かつ、最後のキューでない場合。
                         // キュー間の無音部分を0で埋める
@@ -594,8 +635,9 @@ namespace Boare.Cadencii {
                             //  ----------------------------[*****]----------------->   new chache
                             //  
                             try {
-                                double[] left, right;
-                                wr.Read( 0, rendered_length, out left, out right );
+                                double[] left = new double[rendered_length];
+                                double[] right = new double[rendered_length];
+                                wr.Read( 0, rendered_length, left, right );
                                 for ( int j = 0; j < left.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
@@ -637,8 +679,9 @@ namespace Boare.Cadencii {
                             //  -----------------------------------[****]----------->   append#2 (silence)
                             //  
                             try {
-                                double[] left, right;
-                                wr.Read( 0, rendered_length, out left, out right );
+                                double[] left = new double[rendered_length];
+                                double[] right = new double[rendered_length];
+                                wr.Read( 0, rendered_length, left, right );
                                 for ( int j = 0; j < left.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
@@ -669,8 +712,9 @@ namespace Boare.Cadencii {
                             //  ------------[*****][******]------------------------->  new cache
                             //  
                             try {
-                                double[] left, right;
-                                wr.Read( 0, cached_data_l.Length, out left, out right );
+                                double[] left = new double[cached_data_l.Length];
+                                double[] right = new double[cached_data_l.Length];
+                                wr.Read( 0, cached_data_l.Length, left, right );
                                 for ( int j = 0; j < cached_data_l.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
@@ -699,7 +743,10 @@ namespace Boare.Cadencii {
                                     cached_data_l[j - append_len] = buf_l[j];
                                     cached_data_r[j - append_len] = buf_r[j];
                                 }
-                                wr.Read( old_cache_len, rendered_length - old_cache_len, out buf_l, out buf_r );
+                                int tlen = rendered_length - old_cache_len;
+                                buf_l = new double[tlen];
+                                buf_r = new double[tlen];
+                                wr.Read( old_cache_len, rendered_length - old_cache_len, buf_l, buf_r );
                                 for ( int j = 0; j < buf_l.Length; j++ ) {
                                     cached_data_l[j + (old_cache_len - append_len)] = buf_l[j];
                                     cached_data_r[j + (old_cache_len - append_len)] = buf_r[j];
@@ -721,19 +768,28 @@ namespace Boare.Cadencii {
                             //  ----------------------[***]------------------------->  new cache
                             //  
                             try {
-                                double[] left, right;
-                                wr.Read( 0, cached_data_l.Length, out left, out right );
+                                double[] left = new double[cached_data_l.Length];
+                                double[] right = new double[cached_data_l.Length];
+                                wr.Read( 0, cached_data_l.Length, left, right );
                                 for ( int j = 0; j < cached_data_l.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
                                 }
                                 WaveIncoming( cached_data_l, cached_data_r );
                                 int append_len = (int)(next_wave_start - (queue.startFrame + cached_data_l.Length));
-                                wr.Read( cached_data_l.Length, append_len, out left, out right );
+                                left = null;
+                                right = null;
+                                left = new double[append_len];
+                                right = new double[append_len];
+                                wr.Read( cached_data_l.Length, append_len, left, right );
                                 WaveIncoming( left, right );
                                 int new_cache_len = (int)(queue.startFrame + rendered_length - next_wave_start);
                                 int old_cache_len = cached_data_l.Length;
-                                wr.Read( old_cache_len + append_len, new_cache_len, out cached_data_l, out cached_data_r );
+                                cached_data_l = null;
+                                cached_data_r = null;
+                                cached_data_l = new double[new_cache_len];
+                                cached_data_r = new double[new_cache_len];
+                                wr.Read( old_cache_len + append_len, new_cache_len, cached_data_l, cached_data_r );
                             } catch ( Exception ex ) {
                                 AppManager.debugWriteLine( "StraightRenderingRunner#run; (E); ex=" + ex );
                             }
@@ -752,14 +808,20 @@ namespace Boare.Cadencii {
                             //  ---------------------------[***]-------------------->  append#2 (silence)
                             //  
                             try {
-                                double[] left, right;
-                                wr.Read( 0, cached_data_l.Length, out left, out right );
+                                double[] left = new double[cached_data_l.Length];
+                                double[] right = new double[cached_data_l.Length];
+                                wr.Read( 0, cached_data_l.Length, left, right );
                                 for ( int j = 0; j < cached_data_l.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
                                 }
                                 WaveIncoming( cached_data_l, cached_data_r );
-                                wr.Read( cached_data_l.Length, rendered_length - cached_data_l.Length, out left, out right );
+                                left = null;
+                                right = null;
+                                int tlen = rendered_length - cached_data_l.Length;
+                                left = new double[tlen];
+                                right = new double[tlen];
+                                wr.Read( cached_data_l.Length, rendered_length - cached_data_l.Length, left, right );
                                 WaveIncoming( left, right );
                                 cached_data_l = null;
                                 cached_data_r = null;
@@ -785,6 +847,8 @@ namespace Boare.Cadencii {
                 m_running_rate = m_progress_percent / elapsed;
             }
 #if DEBUG
+            PortUtil.println( "StraightRenderingRunner#m_mode_infinite=" + m_mode_infinite );
+            log.newLine();
             log.close();
 #endif
 
@@ -833,13 +897,22 @@ namespace Boare.Cadencii {
         }
 
         public void abortRendering() {
+#if DEBUG
+            PortUtil.println( "StraightRenderingRunner#abortRendering; m_rendering=" + m_rendering );
+#endif
             if ( m_rendering ) {
+                if ( m_direct_play ) {
+                    PlaySound.reset();
+                }
                 m_abort_required = true;
                 while ( m_abort_required ) {
+#if DEBUG
+                    //PortUtil.println( "  waiting..." );
+#endif
 #if JAVA
                     Thread.sleep( 0 ); ここいけてる？
 #else
-                    System.Threading.Thread.Sleep( 0 );
+                    System.Windows.Forms.Application.DoEvents();
 #endif
                 }
             }
@@ -857,77 +930,101 @@ namespace Boare.Cadencii {
             if ( !m_rendering ) {
                 return;
             }
+            lock ( m_locker ) {
+#if DEBUG
+                PortUtil.println( "StraightRenderingRunner#WaveIncoming; length=" + t_L.Length );
+#endif
 
-            double[] L = t_L;
-            double[] R = t_R;
-            if ( m_trim_remain > 0 ) {
-                if ( L.Length <= m_trim_remain ) {
-                    m_trim_remain -= L.Length;
-                    return;
+                double[] L = t_L;
+                double[] R = t_R;
+                if ( m_trim_remain > 0 ) {
+                    if ( L.Length <= m_trim_remain ) {
+                        m_trim_remain -= L.Length;
+                        return;
+                    } else {
+                        L = new double[t_L.Length - m_trim_remain];
+                        R = new double[t_L.Length - m_trim_remain];
+                        for ( int i = m_trim_remain; i < t_L.Length; i++ ) {
+                            L[i - m_trim_remain] = t_L[i];
+                            R[i - m_trim_remain] = t_R[i];
+                        }
+                        m_trim_remain = 0;
+                    }
+                }
+                int length = L.Length;
+                if ( length > m_total_samples - m_total_append ) {
+                    length = (int)(m_total_samples - m_total_append);
+                    if ( length <= 0 ) {
+                        return;
+                    }
+                    double[] br = R;
+                    double[] bl = L;
+                    L = new double[length];
+                    R = new double[length];
+                    for ( int i = 0; i < length; i++ ) {
+                        L[i] = bl[i];
+                        R[i] = br[i];
+                    }
+                    br = null;
+                    bl = null;
+                }
+
+                AmplifyCoefficient amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
+                if ( m_reflect_amp_to_wave ) {
+                    for ( int i = 0; i < length; i++ ) {
+                        if ( i % 100 == 0 ) {
+                            amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
+                        }
+                        L[i] = L[i] * amplify.left;
+                        R[i] = R[i] * amplify.right;
+                    }
+                    if ( m_wave_writer != null ) {
+                        m_wave_writer.Append( L, R );
+                    }
                 } else {
-                    L = new double[t_L.Length - m_trim_remain];
-                    R = new double[t_L.Length - m_trim_remain];
-                    for ( int i = m_trim_remain; i < t_L.Length; i++ ) {
-                        L[i - m_trim_remain] = t_L[i];
-                        R[i - m_trim_remain] = t_R[i];
+                    if ( m_wave_writer != null ) {
+                        m_wave_writer.Append( L, R );
                     }
-                    m_trim_remain = 0;
-                }
-            }
-            int length = L.Length;
-
-            AmplifyCoefficient amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
-            if ( m_reflect_amp_to_wave ) {
-                for ( int i = 0; i < length; i++ ) {
-                    if ( i % 100 == 0 ) {
-                        amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
-                    }
-                    L[i] = L[i] * amplify.left;
-                    R[i] = R[i] * amplify.right;
-                }
-                if ( m_wave_writer != null ) {
-                    m_wave_writer.Append( L, R );
-                }
-            } else {
-                if ( m_wave_writer != null ) {
-                    m_wave_writer.Append( L, R );
-                }
-                for ( int i = 0; i < length; i++ ) {
-                    if ( i % 100 == 0 ) {
-                        amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
-                    }
-                    L[i] = L[i] * amplify.left;
-                    R[i] = R[i] * amplify.right;
-                }
-            }
-            long start = m_total_append + (long)(m_wave_read_offset_seconds * VSTiProxy.SAMPLE_RATE);
-            int count = m_reader.size();
-            for ( int i = 0; i < count; i++ ) {
-                WaveReader wr = m_reader.get( i );
-                amplify.left = 1.0;
-                amplify.right = 1.0;
-                if ( wr.Tag != null && wr.Tag is int ) {
-                    int track = (int)wr.Tag;
-                    if ( 0 < track ) {
-                        amplify = AppManager.getAmplifyCoeffNormalTrack( track );
-                    } else if ( 0 > track ) {
-                        amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
+                    for ( int i = 0; i < length; i++ ) {
+                        if ( i % 100 == 0 ) {
+                            amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
+                        }
+                        L[i] = L[i] * amplify.left;
+                        R[i] = R[i] * amplify.right;
                     }
                 }
-                double[] reader_r;
-                double[] reader_l;
-                wr.Read( start, length, out reader_l, out reader_r );
-                for ( int j = 0; j < length; j++ ) {
-                    L[j] += reader_l[j] * amplify.left;
-                    R[j] += reader_r[j] * amplify.right;
+                long start = m_total_append + (long)(m_wave_read_offset_seconds * VSTiProxy.SAMPLE_RATE);
+#if DEBUG
+                PortUtil.println( "StraightRenderingRunner#WaveIncoming; start=" + start );
+#endif
+                int count = m_reader.size();
+                double[] reader_r = new double[length];
+                double[] reader_l = new double[length];
+                for ( int i = 0; i < count; i++ ) {
+                    WaveReader wr = m_reader.get( i );
+                    amplify.left = 1.0;
+                    amplify.right = 1.0;
+                    if ( wr.Tag != null && wr.Tag is int ) {
+                        int track = (int)wr.Tag;
+                        if ( 0 < track ) {
+                            amplify = AppManager.getAmplifyCoeffNormalTrack( track );
+                        } else if ( 0 > track ) {
+                            amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
+                        }
+                    }
+                    wr.Read( start, length, reader_l, reader_r );
+                    for ( int j = 0; j < length; j++ ) {
+                        L[j] += reader_l[j] * amplify.left;
+                        R[j] += reader_r[j] * amplify.right;
+                    }
                 }
                 reader_l = null;
                 reader_r = null;
+                if ( m_direct_play ) {
+                    PlaySound.append( L, R, L.Length );
+                }
+                m_total_append += length;
             }
-            if ( m_direct_play ) {
-                PlaySound.append( L, R, L.Length );
-            }
-            m_total_append += length;
         }
     }
 

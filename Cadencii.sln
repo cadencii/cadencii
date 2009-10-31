@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pp_cs2java", "pp_cs2java\pp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "file2wav", "file2wav\file2wav.csproj", "{BAA0C259-A522-422A-89E1-6EBDC5DD841F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bin2graph", "bin2graph\bin2graph.csproj", "{2689130D-9853-42EC-8975-4AAB478BB7DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -196,6 +198,16 @@ Global
 		{BAA0C259-A522-422A-89E1-6EBDC5DD841F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BAA0C259-A522-422A-89E1-6EBDC5DD841F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BAA0C259-A522-422A-89E1-6EBDC5DD841F}.Release|x86.ActiveCfg = Release|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2689130D-9853-42EC-8975-4AAB478BB7DD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
