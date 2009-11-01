@@ -12,15 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-
 using bocoree;
-using Boare.Lib.Media;
-using VstSdk;
 using bocoree.util;
-using bocoree.io;
+using VstSdk;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
@@ -103,14 +98,16 @@ namespace Boare.Cadencii {
         private double msec_from_clock( int timeCode ) {
             double ret = 0.0;
             int index = -1;
-            for ( int i = 0; i < g_tempoList.size(); i++ ) {
+            int c = g_tempoList.size();
+            for ( int i = 0; i < c; i++ ) {
                 if ( timeCode <= g_tempoList.get( i ).Clock ) {
                     break;
                 }
                 index = i;
             }
             if ( index >= 0 ) {
-                ret = g_tempoList.get( index ).TotalSec + (timeCode - g_tempoList.get( index ).Clock) * (double)g_tempoList.get( index ).Tempo / (1000.0 * TIME_FORMAT);
+                TempoInfo item = g_tempoList.get( index );
+                ret = item.TotalSec + (timeCode - item.Clock) * (double)item.Tempo / (1000.0 * TIME_FORMAT);
             } else {
                 ret = timeCode * (double)DEF_TEMPO / (1000.0 * TIME_FORMAT);
             }
@@ -341,8 +338,10 @@ namespace Boare.Cadencii {
             bocoree.debug.push_log( "    getting dwDelay..." );
 #endif
             dwDelay = 0;
-            for ( int i = 0; i < s_track_events.get( 1 ).size(); i++ ) {
-                MIDI_EVENT work = s_track_events.get( 1 ).get( i );
+            Vector<MIDI_EVENT> list = s_track_events.get( 1 );
+            int list_size = list.size();
+            for ( int i = 0; i < list_size; i++ ) {
+                MIDI_EVENT work = list.get( i );
                 if ( (work.pMidiEvent[0] & 0xf0) == 0xb0 ) {
                     switch ( work.pMidiEvent[1] ) {
                         case 0x63:
@@ -442,13 +441,10 @@ namespace Boare.Cadencii {
                 bocoree.debug.push_log( "nEvents=" + nEvents );
 #endif
                 double msNow = msec_from_clock( dwNow );
-                double msPrev = msec_from_clock( dwPrev );
-                double dt = msNow - msPrev;
-                dwDelta = (int)(dt * g_sample_rate / 1000.0);
+                dwDelta = (int)(msNow / 1000.0 * g_sample_rate) - total_processed;
 #if TEST
                 bocoree.debug.push_log( "dwNow=" + dwNow );
                 bocoree.debug.push_log( "dwPrev=" + dwPrev );
-                bocoree.debug.push_log( "dt=" + dt );
                 bocoree.debug.push_log( "dwDelta=" + dwDelta );
 #endif
                 IntPtr ptr_pvst_events = Marshal.AllocHGlobal( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
@@ -527,11 +523,11 @@ namespace Boare.Cadencii {
                             send_data_r[i] = out_buffer[1][i];
                         }
                         WaveIncoming( send_data_l, send_data_r );
-                        total_processed += dwFrames;
                     } else {
                         dwDeltaDelay += iOffset;
                     }
                     dwDelta -= dwFrames;
+                    total_processed += dwFrames;
                 }
 
                 Marshal.FreeHGlobal( ptr_pvst_events );

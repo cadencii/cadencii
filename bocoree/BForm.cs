@@ -127,17 +127,13 @@ public class BForm extends JFrame implements WindowListener{
 #define COMPONENT_ENABLE_LOCATION
 #define COMPONENT_ENABLE_Y
 #define COMPONENT_ENABLE_X
-namespace bocoree.windows.forms
-{
+namespace bocoree.windows.forms {
 
-    public class BForm : System.Windows.Forms.Form
-    {
+    public class BForm : System.Windows.Forms.Form {
         protected BDialogResult m_result = BDialogResult.CANCEL;
 
-        public void setDialogResult( BDialogResult value )
-        {
-            switch ( value )
-            {
+        public void setDialogResult( BDialogResult value ) {
+            switch ( value ) {
                 case BDialogResult.YES:
                     this.DialogResult = System.Windows.Forms.DialogResult.Yes;
                     break;
@@ -153,28 +149,19 @@ namespace bocoree.windows.forms
             }
         }
 
-        public BDialogResult getDialogResult()
-        {
+        public BDialogResult getDialogResult() {
             return m_result;
         }
 
-        public BDialogResult showDialog()
-        {
+        public BDialogResult showDialog() {
             System.Windows.Forms.DialogResult dr = base.ShowDialog();
-            if ( dr == System.Windows.Forms.DialogResult.OK )
-            {
+            if ( dr == System.Windows.Forms.DialogResult.OK ) {
                 m_result = BDialogResult.OK;
-            }
-            else if ( dr == System.Windows.Forms.DialogResult.Cancel )
-            {
+            } else if ( dr == System.Windows.Forms.DialogResult.Cancel ) {
                 m_result = BDialogResult.CANCEL;
-            }
-            else if ( dr == System.Windows.Forms.DialogResult.Yes )
-            {
+            } else if ( dr == System.Windows.Forms.DialogResult.Yes ) {
                 m_result = BDialogResult.YES;
-            }
-            else if ( dr == System.Windows.Forms.DialogResult.No )
-            {
+            } else if ( dr == System.Windows.Forms.DialogResult.No ) {
                 m_result = BDialogResult.NO;
             }
             return m_result;
@@ -182,13 +169,11 @@ namespace bocoree.windows.forms
 
         // root implementation of java.awt.Component
         #region java.awt.Component
-        public bool isVisible()
-        {
+        public bool isVisible() {
             return base.Visible;
         }
 
-        public void setVisible( bool value )
-        {
+        public void setVisible( bool value ) {
             base.Visible = value;
         }
 
@@ -209,135 +194,111 @@ namespace bocoree.windows.forms
             return base.OwnerItem;
         }
 #else
-        public object getParent()
-        {
+        public object getParent() {
             return base.Parent;
         }
 #endif
 
-        public string getName()
-        {
+        public string getName() {
             return base.Name;
         }
 
-        public void setName( string value )
-        {
+        public void setName( string value ) {
             base.Name = value;
         }
 
 #if COMPONENT_ENABLE_LOCATION
-        public bocoree.awt.Point getLocation()
-        {
+        public bocoree.awt.Point getLocation() {
             System.Drawing.Point loc = this.Location;
             return new bocoree.awt.Point( loc.X, loc.Y );
         }
 
-        public void setLocation( int x, int y )
-        {
+        public void setLocation( int x, int y ) {
             base.Location = new System.Drawing.Point( x, y );
         }
 
-        public void setLocation( bocoree.awt.Point p )
-        {
+        public void setLocation( bocoree.awt.Point p ) {
             base.Location = new System.Drawing.Point( p.x, p.y );
         }
 #endif
 
-        public bocoree.awt.Rectangle getBounds()
-        {
+        public bocoree.awt.Rectangle getBounds() {
             System.Drawing.Rectangle r = base.Bounds;
             return new bocoree.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
         }
 
 #if COMPONENT_ENABLE_X
-        public int getX()
-        {
+        public int getX() {
             return base.Left;
         }
 #endif
 
 #if COMPONENT_ENABLE_Y
-        public int getY()
-        {
+        public int getY() {
             return base.Top;
         }
 #endif
 
-        public int getWidth()
-        {
+        public int getWidth() {
             return base.Width;
         }
 
-        public int getHeight()
-        {
+        public int getHeight() {
             return base.Height;
         }
 
-        public bocoree.awt.Dimension getSize()
-        {
+        public bocoree.awt.Dimension getSize() {
             return new bocoree.awt.Dimension( base.Size.Width, base.Size.Height );
         }
 
-        public void setSize( int width, int height )
-        {
+        public void setSize( int width, int height ) {
             base.Size = new System.Drawing.Size( width, height );
         }
 
-        public void setSize( bocoree.awt.Dimension d )
-        {
+        public void setSize( bocoree.awt.Dimension d ) {
             setSize( d.width, d.height );
         }
 
-        public void setBackground( bocoree.awt.Color color )
-        {
+        public void setBackground( bocoree.awt.Color color ) {
             base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
         }
 
-        public bocoree.awt.Color getBackground()
-        {
+        public bocoree.awt.Color getBackground() {
             return new bocoree.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
         }
 
-        public void setForeground( bocoree.awt.Color color )
-        {
+        public void setForeground( bocoree.awt.Color color ) {
             base.ForeColor = color.color;
         }
 
-        public bocoree.awt.Color getForeground()
-        {
+        public bocoree.awt.Color getForeground() {
             return new bocoree.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public void setFont( bocoree.awt.Font font )
-        {
+        public void setFont( bocoree.awt.Font font ) {
             base.Font = font.font;
         }
 
-        public bool getEnabled()
-        {
+        public bool getEnabled() {
             return base.Enabled;
         }
 
-        public void setEnabled( bool value )
-        {
+        public void setEnabled( bool value ) {
             base.Enabled = value;
         }
         #endregion
 
         // root implementation of java.awt.Window
         #region java.awt.Window
-        public void setBounds( int x, int y, int width, int height )
-        {
+        public void setBounds( int x, int y, int width, int height ) {
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
 
-        public void setBounds( bocoree.awt.Rectangle rc )
-        {
+        public void setBounds( bocoree.awt.Rectangle rc ) {
             base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
         }
 
-        public void setMinimumSize( bocoree.awt.Dimension size )
-        {
+        public void setMinimumSize( bocoree.awt.Dimension size ) {
             base.MinimumSize = new System.Drawing.Size( size.width, size.height );
         }
         #endregion
@@ -364,75 +325,51 @@ namespace bocoree.windows.forms
         public const int W_RESIZE_CURSOR = 10;
         public const int WAIT_CURSOR = 3;
 
-        public int getState()
-        {
-            if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized )
-            {
+        public int getState() {
+            if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
                 return ICONIFIED;
-            }
-            else
-            {
+            } else {
                 return NORMAL;
             }
         }
 
-        public void setState( int state )
-        {
-            if ( state == ICONIFIED )
-            {
-                if ( base.WindowState != System.Windows.Forms.FormWindowState.Minimized )
-                {
+        public void setState( int state ) {
+            if ( state == ICONIFIED ) {
+                if ( base.WindowState != System.Windows.Forms.FormWindowState.Minimized ) {
                     base.WindowState = System.Windows.Forms.FormWindowState.Minimized;
                 }
-            }
-            else
-            {
-                if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized )
-                {
+            } else {
+                if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
                     base.WindowState = System.Windows.Forms.FormWindowState.Normal;
                 }
             }
         }
 
-        public int getExtendedState()
-        {
-            if ( base.WindowState == System.Windows.Forms.FormWindowState.Maximized )
-            {
+        public int getExtendedState() {
+            if ( base.WindowState == System.Windows.Forms.FormWindowState.Maximized ) {
                 return MAXIMIZED_BOTH;
-            }
-            else if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized )
-            {
+            } else if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
                 return ICONIFIED;
-            }
-            else
-            {
+            } else {
                 return NORMAL;
             }
         }
 
-        public void setExtendedState( int value )
-        {
-            if ( value == ICONIFIED )
-            {
+        public void setExtendedState( int value ) {
+            if ( value == ICONIFIED ) {
                 base.WindowState = System.Windows.Forms.FormWindowState.Minimized;
-            }
-            else if ( value == MAXIMIZED_BOTH )
-            {
+            } else if ( value == MAXIMIZED_BOTH ) {
                 base.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            }
-            else
-            {
+            } else {
                 base.WindowState = System.Windows.Forms.FormWindowState.Normal;
             }
         }
 
-        public string getTitle()
-        {
+        public string getTitle() {
             return base.Text;
         }
 
-        public void setTitle( string value )
-        {
+        public void setTitle( string value ) {
             base.Text = value;
         }
         #endregion

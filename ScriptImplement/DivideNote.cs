@@ -8,13 +8,16 @@ using Boare.Cadencii;
 using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.util;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
 
     public partial class DivideNote : Form, IPaletteTool {
-        private Bitmap m_icon = null;
         public static int Numerator = 1;
         public static int Denominator = 32;
+        public static String Modifier = "Control";
+
+        private Bitmap m_icon = null;
         private Label lblLength;
         private Button btnOK;
         private Button btnCancel;
@@ -27,7 +30,10 @@ namespace Boare.Cadencii {
         private Label lblNumerator;
         private Label lblDenominator;
         private TextBox txtNumerator;
+        private Label lblModifierKey;
+        private ComboBox comboKeys;
         private static int[] _DENOMI = new int[] { 1, 2, 4, 8, 16, 32, 64, 128 };
+        private static String[] MODIFIER = new String[] { "None", "Control", "Shift", "Alt" };
 
         public DivideNote() {
             InitializeComponent();
@@ -36,6 +42,23 @@ namespace Boare.Cadencii {
                 comboDenominator.Items.Add( _DENOMI[i].ToString() );
             }
             txtNumerator.Text = "1";
+            
+            // ショートカットキー用のコンボボックスを更新
+            comboKeys.Items.Clear();
+            int selected = -1;
+            int count = -1;
+            for ( int i = 0; i < MODIFIER.Length; i++ ) {
+                String item = MODIFIER[i];
+                comboKeys.Items.Add( item );
+                count++;
+                if ( item.Equals( Modifier ) ) {
+                    selected = count;
+                }
+            }
+            if ( selected >= 0 ) {
+                comboKeys.SelectedIndex = selected;
+            }
+
             // アイコンを作成
             byte[] b = Base64.decode( iconbase64 );
             using ( MemoryStream ms = new MemoryStream( b ) ) {
@@ -51,20 +74,36 @@ namespace Boare.Cadencii {
                 lblLength.Text = "最初の音符の長さ";
                 btnCancel.Text = "キャンセル";
                 btnOK.Text = "OK";
+                lblModifierKey.Text = "[子音+母音]+[母音]分割操作のための修飾キー";
             } else {
                 lblDenominator.Text = "Denominator";
                 lblNumerator.Text = "Numerator";
                 lblLength.Text = "Length of precursor note";
                 btnCancel.Text = "Cancel";
                 btnOK.Text = "OK";
+                lblModifierKey.Text = "Modifier key for separating [consonant+vowel]+[vowel]";
             }
         }
 
         public bool edit( VsqTrack track, int[] event_internal_ids, MouseButtons button ) {
-            //TODO: buttonで処理を分ける
             bool edited = false;
             int divide_threshold = Numerator * 480 * 4 / Denominator;
             Console.WriteLine( "s_divide_threshold=" + divide_threshold );
+            Keys modifier = Control.ModifierKeys;
+            bool middle_mode = button == MouseButtons.Middle;
+            if ( Modifier.Equals( "Alt" ) ) {
+                if ( (modifier & Keys.Alt) == Keys.Alt ) {
+                    middle_mode = true;
+                }
+            } else if ( Modifier.Equals( "Control" ) ) {
+                if ( (modifier & Keys.Control) == Keys.Control ) {
+                    middle_mode = true;
+                }
+            } else if ( Modifier.Equals( "Shift" ) ) {
+                if ( (modifier & Keys.Shift) == Keys.Shift ) {
+                    middle_mode = true;
+                }
+            }
             foreach ( int id in event_internal_ids ) {
                 for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
@@ -91,7 +130,7 @@ namespace Boare.Cadencii {
                                 }
                             }
                             if ( symbol.Length >= 2 ) {
-                                if ( button == MouseButtons.Middle && !VsqPhoneticSymbol.isConsonant( symbol[1] ) ) {
+                                if ( middle_mode && !VsqPhoneticSymbol.isConsonant( symbol[1] ) ) {
                                     ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] + " " + symbol[1] );
                                 } else {
                                     ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] );
@@ -136,11 +175,13 @@ namespace Boare.Cadencii {
         public DialogResult openDialog() {
             int num = Numerator;
             int den = Denominator;
+            String key = Modifier;
             DialogResult ret = this.ShowDialog();
             if ( ret != DialogResult.OK ) {
                 // 元に戻す
                 Numerator = num;
                 Denominator = den;
+                Modifier = key;
             }
             return ret;
         }
@@ -157,14 +198,18 @@ namespace Boare.Cadencii {
             this.lblNumerator = new System.Windows.Forms.Label();
             this.lblDenominator = new System.Windows.Forms.Label();
             this.txtNumerator = new System.Windows.Forms.TextBox();
+            this.lblModifierKey = new System.Windows.Forms.Label();
+            this.comboKeys = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // lblLength
             // 
-            this.lblLength.AutoSize = true;
+            this.lblLength.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLength.AutoEllipsis = true;
             this.lblLength.Location = new System.Drawing.Point( 12, 18 );
             this.lblLength.Name = "lblLength";
-            this.lblLength.Size = new System.Drawing.Size( 131, 12 );
+            this.lblLength.Size = new System.Drawing.Size( 282, 19 );
             this.lblLength.TabIndex = 0;
             this.lblLength.Text = "Length of precursor note";
             // 
@@ -172,7 +217,7 @@ namespace Boare.Cadencii {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point( 62, 109 );
+            this.btnOK.Location = new System.Drawing.Point( 112, 165 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 88, 23 );
             this.btnOK.TabIndex = 3;
@@ -183,7 +228,7 @@ namespace Boare.Cadencii {
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 156, 109 );
+            this.btnCancel.Location = new System.Drawing.Point( 206, 165 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 88, 23 );
             this.btnCancel.TabIndex = 4;
@@ -226,11 +271,33 @@ namespace Boare.Cadencii {
             this.txtNumerator.Text = "1";
             this.txtNumerator.TextChanged += new System.EventHandler( this.txtNumerator_TextChanged );
             // 
+            // lblModifierKey
+            // 
+            this.lblModifierKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblModifierKey.AutoEllipsis = true;
+            this.lblModifierKey.Location = new System.Drawing.Point( 12, 103 );
+            this.lblModifierKey.Name = "lblModifierKey";
+            this.lblModifierKey.Size = new System.Drawing.Size( 282, 23 );
+            this.lblModifierKey.TabIndex = 31;
+            this.lblModifierKey.Text = "Modifier key for separating [consonant+vowel][vowel]";
+            // 
+            // comboKeys
+            // 
+            this.comboKeys.FormattingEnabled = true;
+            this.comboKeys.Location = new System.Drawing.Point( 28, 125 );
+            this.comboKeys.Name = "comboKeys";
+            this.comboKeys.Size = new System.Drawing.Size( 108, 20 );
+            this.comboKeys.TabIndex = 32;
+            this.comboKeys.SelectedIndexChanged += new System.EventHandler( this.comboKeys_SelectedIndexChanged );
+            // 
             // DivideNote
             // 
             this.AcceptButton = this.btnOK;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 256, 144 );
+            this.ClientSize = new System.Drawing.Size( 306, 200 );
+            this.Controls.Add( this.comboKeys );
+            this.Controls.Add( this.lblModifierKey );
             this.Controls.Add( this.txtNumerator );
             this.Controls.Add( this.lblDenominator );
             this.Controls.Add( this.lblNumerator );
@@ -281,6 +348,14 @@ namespace Boare.Cadencii {
             if ( int.TryParse( txtNumerator.Text, out v ) ) {
                 Numerator = v;
             }
+        }
+
+        private void comboKeys_SelectedIndexChanged( object sender, EventArgs e ) {
+            int index = comboKeys.SelectedIndex;
+            if ( index < 0 ) {
+                return;
+            }
+            Modifier = (String)comboKeys.Items[index];
         }
     }
 

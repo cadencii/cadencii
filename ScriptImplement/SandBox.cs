@@ -1,18 +1,9 @@
-﻿using System;
-using System.IO;
-
-using Boare.Lib.Vsq;
-using Boare.Lib.Media;
-using Boare.Cadencii;
-using bocoree;
-
-using System.Collections.Generic;
+﻿using System.IO;
 using System.Windows.Forms;
-using Boare.Lib.Vsq;
-using Boare.Lib.AppUtil;
-using bocoree;
-using bocoree.util;
 using Boare.Cadencii;
+using Boare.Lib.Media;
+using Boare.Lib.Vsq;
+using bocoree.util;
 
 public class Search {
     public static bool Edit( VsqFile vsq ) {

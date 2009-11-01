@@ -125,6 +125,8 @@ namespace Boare.Cadencii {
             new AuthorListEntry( "cocoonP" ),
             new AuthorListEntry( "かつ" ),
             new AuthorListEntry( "ちゃそ" ),
+            new AuthorListEntry( "ちょむ" ),
+            new AuthorListEntry( "whimsoft" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -5107,55 +5109,55 @@ namespace Boare.Cadencii {
                 m_preference_dlg = new Preference();
             }
             m_preference_dlg.setBaseFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
-            m_preference_dlg.ScreenFont = new System.Drawing.Font( AppManager.editorConfig.ScreenFontName, 9 );
-            m_preference_dlg.WheelOrder = AppManager.editorConfig.WheelOrder;
-            m_preference_dlg.CursorFixed = AppManager.editorConfig.CursorFixed;
-            m_preference_dlg.DefaultVibratoLength = AppManager.editorConfig.DefaultVibratoLength;
-            m_preference_dlg.AutoVibratoMinimumLength = AppManager.editorConfig.AutoVibratoMinimumLength;
-            m_preference_dlg.AutoVibratoType1 = AppManager.editorConfig.AutoVibratoType1;
-            m_preference_dlg.AutoVibratoType2 = AppManager.editorConfig.AutoVibratoType2;
-            m_preference_dlg.EnableAutoVibrato = AppManager.editorConfig.EnableAutoVibrato;
-            m_preference_dlg.PreMeasure = AppManager.getVsqFile().getPreMeasure();
-            m_preference_dlg.PreSendTime = AppManager.editorConfig.PreSendTime;
-            m_preference_dlg.ControlCurveResolution = AppManager.editorConfig.ControlCurveResolution;
-            m_preference_dlg.DefaultSingerName = AppManager.editorConfig.DefaultSingerName;
-            m_preference_dlg.ScrollHorizontalOnWheel = AppManager.editorConfig.ScrollHorizontalOnWheel;
-            m_preference_dlg.MaximumFrameRate = AppManager.editorConfig.MaximumFrameRate;
-            m_preference_dlg.Platform = AppManager.editorConfig.Platform;
-            m_preference_dlg.KeepLyricInputMode = AppManager.editorConfig.KeepLyricInputMode;
-            m_preference_dlg.PxTrackHeight = AppManager.editorConfig.PxTrackHeight;
-            m_preference_dlg.MouseHoverTime = AppManager.editorConfig.MouseHoverTime;
-            m_preference_dlg.PlayPreviewWhenRightClick = AppManager.editorConfig.PlayPreviewWhenRightClick;
-            m_preference_dlg.CurveSelectingQuantized = AppManager.editorConfig.CurveSelectingQuantized;
-            m_preference_dlg.CurveVisibleAccent = AppManager.editorConfig.CurveVisibleAccent;
-            m_preference_dlg.CurveVisibleBre = AppManager.editorConfig.CurveVisibleBreathiness;
-            m_preference_dlg.CurveVisibleBri = AppManager.editorConfig.CurveVisibleBrightness;
-            m_preference_dlg.CurveVisibleCle = AppManager.editorConfig.CurveVisibleClearness;
-            m_preference_dlg.CurveVisibleDecay = AppManager.editorConfig.CurveVisibleDecay;
-            m_preference_dlg.CurveVisibleDyn = AppManager.editorConfig.CurveVisibleDynamics;
-            m_preference_dlg.CurveVisibleGen = AppManager.editorConfig.CurveVisibleGendorfactor;
-            m_preference_dlg.CurveVisibleOpe = AppManager.editorConfig.CurveVisibleOpening;
-            m_preference_dlg.CurveVisiblePit = AppManager.editorConfig.CurveVisiblePit;
-            m_preference_dlg.CurveVisiblePbs = AppManager.editorConfig.CurveVisiblePbs;
-            m_preference_dlg.CurveVisiblePor = AppManager.editorConfig.CurveVisiblePortamento;
-            m_preference_dlg.CurveVisibleVel = AppManager.editorConfig.CurveVisibleVelocity;
-            m_preference_dlg.CurveVisibleVibratoDepth = AppManager.editorConfig.CurveVisibleVibratoDepth;
-            m_preference_dlg.CurveVisibleVibratoRate = AppManager.editorConfig.CurveVisibleVibratoRate;
-            m_preference_dlg.CurveVisibleFx2Depth = AppManager.editorConfig.CurveVisibleFx2Depth;
-            m_preference_dlg.CurveVisibleHarmonics = AppManager.editorConfig.CurveVisibleHarmonics;
-            m_preference_dlg.CurveVisibleReso1 = AppManager.editorConfig.CurveVisibleReso1;
-            m_preference_dlg.CurveVisibleReso2 = AppManager.editorConfig.CurveVisibleReso2;
-            m_preference_dlg.CurveVisibleReso3 = AppManager.editorConfig.CurveVisibleReso3;
-            m_preference_dlg.CurveVisibleReso4 = AppManager.editorConfig.CurveVisibleReso4;
-            m_preference_dlg.CurveVisibleEnvelope = AppManager.editorConfig.CurveVisibleEnvelope;
-            m_preference_dlg.MidiInPort = AppManager.editorConfig.MidiInPort.PortNumber;
-            m_preference_dlg.InvokeWithWine = AppManager.editorConfig.InvokeUtauCoreWithWine;
-            m_preference_dlg.PathResampler = AppManager.editorConfig.PathResampler;
-            m_preference_dlg.PathWavtool = AppManager.editorConfig.PathWavtool;
-            m_preference_dlg.UtauSingers = AppManager.editorConfig.UtauSingers;
-            m_preference_dlg.UseCustomFileDialog = AppManager.editorConfig.UseCustomFileDialog;
-            m_preference_dlg.SelfDeRomantization = AppManager.editorConfig.SelfDeRomanization;
-            m_preference_dlg.AutoBackupIntervalMinutes = AppManager.editorConfig.AutoBackupIntervalMinutes;
+            m_preference_dlg.setScreenFont( new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 9 ) );
+            m_preference_dlg.setWheelOrder( AppManager.editorConfig.WheelOrder );
+            m_preference_dlg.setCursorFixed( AppManager.editorConfig.CursorFixed );
+            m_preference_dlg.setDefaultVibratoLength( AppManager.editorConfig.DefaultVibratoLength );
+            m_preference_dlg.setAutoVibratoMinimumLength( AppManager.editorConfig.AutoVibratoMinimumLength );
+            m_preference_dlg.setAutoVibratoType1( AppManager.editorConfig.AutoVibratoType1 );
+            m_preference_dlg.setAutoVibratoType2( AppManager.editorConfig.AutoVibratoType2 );
+            m_preference_dlg.setEnableAutoVibrato( AppManager.editorConfig.EnableAutoVibrato );
+            m_preference_dlg.setPreMeasure( AppManager.getVsqFile().getPreMeasure() );
+            m_preference_dlg.setPreSendTime( AppManager.editorConfig.PreSendTime );
+            m_preference_dlg.setControlCurveResolution( AppManager.editorConfig.ControlCurveResolution );
+            m_preference_dlg.setDefaultSingerName( AppManager.editorConfig.DefaultSingerName );
+            m_preference_dlg.setScrollHorizontalOnWheel( AppManager.editorConfig.ScrollHorizontalOnWheel );
+            m_preference_dlg.setMaximumFrameRate( AppManager.editorConfig.MaximumFrameRate );
+            m_preference_dlg.setPlatform( AppManager.editorConfig.Platform );
+            m_preference_dlg.setKeepLyricInputMode( AppManager.editorConfig.KeepLyricInputMode );
+            m_preference_dlg.setPxTrackHeight( AppManager.editorConfig.PxTrackHeight );
+            m_preference_dlg.setMouseHoverTime( AppManager.editorConfig.MouseHoverTime );
+            m_preference_dlg.setPlayPreviewWhenRightClick( AppManager.editorConfig.PlayPreviewWhenRightClick );
+            m_preference_dlg.setCurveSelectingQuantized( AppManager.editorConfig.CurveSelectingQuantized );
+            m_preference_dlg.setCurveVisibleAccent( AppManager.editorConfig.CurveVisibleAccent );
+            m_preference_dlg.setCurveVisibleBre( AppManager.editorConfig.CurveVisibleBreathiness );
+            m_preference_dlg.setCurveVisibleBri( AppManager.editorConfig.CurveVisibleBrightness );
+            m_preference_dlg.setCurveVisibleCle( AppManager.editorConfig.CurveVisibleClearness );
+            m_preference_dlg.setCurveVisibleDecay( AppManager.editorConfig.CurveVisibleDecay );
+            m_preference_dlg.setCurveVisibleDyn( AppManager.editorConfig.CurveVisibleDynamics );
+            m_preference_dlg.setCurveVisibleGen( AppManager.editorConfig.CurveVisibleGendorfactor );
+            m_preference_dlg.setCurveVisibleOpe( AppManager.editorConfig.CurveVisibleOpening );
+            m_preference_dlg.setCurveVisiblePit( AppManager.editorConfig.CurveVisiblePit );
+            m_preference_dlg.setCurveVisiblePbs( AppManager.editorConfig.CurveVisiblePbs );
+            m_preference_dlg.setCurveVisiblePor( AppManager.editorConfig.CurveVisiblePortamento );
+            m_preference_dlg.setCurveVisibleVel( AppManager.editorConfig.CurveVisibleVelocity );
+            m_preference_dlg.setCurveVisibleVibratoDepth( AppManager.editorConfig.CurveVisibleVibratoDepth );
+            m_preference_dlg.setCurveVisibleVibratoRate( AppManager.editorConfig.CurveVisibleVibratoRate );
+            m_preference_dlg.setCurveVisibleFx2Depth( AppManager.editorConfig.CurveVisibleFx2Depth );
+            m_preference_dlg.setCurveVisibleHarmonics( AppManager.editorConfig.CurveVisibleHarmonics );
+            m_preference_dlg.setCurveVisibleReso1( AppManager.editorConfig.CurveVisibleReso1 );
+            m_preference_dlg.setCurveVisibleReso2( AppManager.editorConfig.CurveVisibleReso2 );
+            m_preference_dlg.setCurveVisibleReso3( AppManager.editorConfig.CurveVisibleReso3 );
+            m_preference_dlg.setCurveVisibleReso4( AppManager.editorConfig.CurveVisibleReso4 );
+            m_preference_dlg.setCurveVisibleEnvelope( AppManager.editorConfig.CurveVisibleEnvelope );
+            m_preference_dlg.setMidiInPort( AppManager.editorConfig.MidiInPort.PortNumber );
+            m_preference_dlg.setInvokeWithWine( AppManager.editorConfig.InvokeUtauCoreWithWine );
+            m_preference_dlg.setPathResampler( AppManager.editorConfig.PathResampler );
+            m_preference_dlg.setPathWavtool( AppManager.editorConfig.PathWavtool );
+            m_preference_dlg.setUtauSingers( AppManager.editorConfig.UtauSingers );
+            m_preference_dlg.setUseCustomFileDialog( AppManager.editorConfig.UseCustomFileDialog );
+            m_preference_dlg.setSelfDeRomantization( AppManager.editorConfig.SelfDeRomanization );
+            m_preference_dlg.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
             m_preference_dlg.setUseSpaceKeyAsMiddleButtonModifier( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier );
 
             m_preference_dlg.setLocation( getFormPreferedLocation( m_preference_dlg ) );
@@ -5165,25 +5167,25 @@ namespace Boare.Cadencii {
                 AppManager.editorConfig.BaseFontSize = m_preference_dlg.getBaseFont().getSize2D();
                 updateMenuFonts();
 
-                AppManager.editorConfig.ScreenFontName = m_preference_dlg.ScreenFont.Name;
+                AppManager.editorConfig.ScreenFontName = m_preference_dlg.getScreenFont().getName();
                 //AppManager.EditorConfig.CounterFontName = m_preference_dlg.CounterFont.Name;
-                AppManager.editorConfig.WheelOrder = m_preference_dlg.WheelOrder;
-                AppManager.editorConfig.CursorFixed = m_preference_dlg.CursorFixed;
+                AppManager.editorConfig.WheelOrder = m_preference_dlg.getWheelOrder();
+                AppManager.editorConfig.CursorFixed = m_preference_dlg.isCursorFixed();
 
-                AppManager.editorConfig.DefaultVibratoLength = m_preference_dlg.DefaultVibratoLength;
-                AppManager.editorConfig.AutoVibratoMinimumLength = m_preference_dlg.AutoVibratoMinimumLength;
-                AppManager.editorConfig.AutoVibratoType1 = m_preference_dlg.AutoVibratoType1;
-                AppManager.editorConfig.AutoVibratoType2 = m_preference_dlg.AutoVibratoType2;
+                AppManager.editorConfig.DefaultVibratoLength = m_preference_dlg.getDefaultVibratoLength();
+                AppManager.editorConfig.AutoVibratoMinimumLength = m_preference_dlg.getAutoVibratoMinimumLength();
+                AppManager.editorConfig.AutoVibratoType1 = m_preference_dlg.getAutoVibratoType1();
+                AppManager.editorConfig.AutoVibratoType2 = m_preference_dlg.getAutoVibratoType2();
 
-                AppManager.editorConfig.EnableAutoVibrato = m_preference_dlg.EnableAutoVibrato;
-                AppManager.editorConfig.PreSendTime = m_preference_dlg.PreSendTime;
-                AppManager.editorConfig.DefaultPreMeasure = m_preference_dlg.PreMeasure;
-                if ( m_preference_dlg.PreMeasure != AppManager.getVsqFile().getPreMeasure() ) {
-                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandChangePreMeasure( m_preference_dlg.PreMeasure ) );
+                AppManager.editorConfig.EnableAutoVibrato = m_preference_dlg.isEnableAutoVibrato();
+                AppManager.editorConfig.PreSendTime = m_preference_dlg.getPreSendTime();
+                AppManager.editorConfig.DefaultPreMeasure = m_preference_dlg.getPreMeasure();
+                if ( m_preference_dlg.getPreMeasure() != AppManager.getVsqFile().getPreMeasure() ) {
+                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandChangePreMeasure( m_preference_dlg.getPreMeasure() ) );
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
                 }
-                AppManager.editorConfig.Language = m_preference_dlg.Language;
+                AppManager.editorConfig.Language = m_preference_dlg.getLanguage();
                 if ( !Messaging.getLanguage().Equals( AppManager.editorConfig.Language ) ) {
                     Messaging.setLanguage( AppManager.editorConfig.Language );
                     applyLanguage();
@@ -5196,63 +5198,63 @@ namespace Boare.Cadencii {
                     AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
                 }
 
-                AppManager.editorConfig.ControlCurveResolution = m_preference_dlg.ControlCurveResolution;
-                AppManager.editorConfig.DefaultSingerName = m_preference_dlg.DefaultSingerName;
-                AppManager.editorConfig.ScrollHorizontalOnWheel = m_preference_dlg.ScrollHorizontalOnWheel;
-                AppManager.editorConfig.MaximumFrameRate = m_preference_dlg.MaximumFrameRate;
+                AppManager.editorConfig.ControlCurveResolution = m_preference_dlg.getControlCurveResolution();
+                AppManager.editorConfig.DefaultSingerName = m_preference_dlg.getDefaultSingerName();
+                AppManager.editorConfig.ScrollHorizontalOnWheel = m_preference_dlg.isScrollHorizontalOnWheel();
+                AppManager.editorConfig.MaximumFrameRate = m_preference_dlg.getMaximumFrameRate();
                 int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
                 timer.Interval = (fps <= 0) ? 1 : fps;
-                AppManager.editorConfig.Platform = m_preference_dlg.Platform;
+                AppManager.editorConfig.Platform = m_preference_dlg.getPlatform();
                 s_modifier_key = ((AppManager.editorConfig.Platform == Platform.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
                 applyShortcut();
-                AppManager.editorConfig.KeepLyricInputMode = m_preference_dlg.KeepLyricInputMode;
-                if ( AppManager.editorConfig.PxTrackHeight != m_preference_dlg.PxTrackHeight ) {
-                    AppManager.editorConfig.PxTrackHeight = m_preference_dlg.PxTrackHeight;
+                AppManager.editorConfig.KeepLyricInputMode = m_preference_dlg.isKeepLyricInputMode();
+                if ( AppManager.editorConfig.PxTrackHeight != m_preference_dlg.getPxTrackHeight() ) {
+                    AppManager.editorConfig.PxTrackHeight = m_preference_dlg.getPxTrackHeight();
 #if USE_DOBJ
                     updateDrawObjectList();
 #endif
                 }
-                AppManager.editorConfig.MouseHoverTime = m_preference_dlg.MouseHoverTime;
-                AppManager.editorConfig.PlayPreviewWhenRightClick = m_preference_dlg.PlayPreviewWhenRightClick;
-                AppManager.editorConfig.CurveSelectingQuantized = m_preference_dlg.CurveSelectingQuantized;
+                AppManager.editorConfig.MouseHoverTime = m_preference_dlg.getMouseHoverTime();
+                AppManager.editorConfig.PlayPreviewWhenRightClick = m_preference_dlg.isPlayPreviewWhenRightClick();
+                AppManager.editorConfig.CurveSelectingQuantized = m_preference_dlg.isCurveSelectingQuantized();
 
-                AppManager.editorConfig.CurveVisibleAccent = m_preference_dlg.CurveVisibleAccent;
-                AppManager.editorConfig.CurveVisibleBreathiness = m_preference_dlg.CurveVisibleBre;
-                AppManager.editorConfig.CurveVisibleBrightness = m_preference_dlg.CurveVisibleBri;
-                AppManager.editorConfig.CurveVisibleClearness = m_preference_dlg.CurveVisibleCle;
-                AppManager.editorConfig.CurveVisibleDecay = m_preference_dlg.CurveVisibleDecay;
-                AppManager.editorConfig.CurveVisibleDynamics = m_preference_dlg.CurveVisibleDyn;
-                AppManager.editorConfig.CurveVisibleGendorfactor = m_preference_dlg.CurveVisibleGen;
-                AppManager.editorConfig.CurveVisibleOpening = m_preference_dlg.CurveVisibleOpe;
-                AppManager.editorConfig.CurveVisiblePit = m_preference_dlg.CurveVisiblePit;
-                AppManager.editorConfig.CurveVisiblePbs = m_preference_dlg.CurveVisiblePbs;
-                AppManager.editorConfig.CurveVisiblePortamento = m_preference_dlg.CurveVisiblePor;
-                AppManager.editorConfig.CurveVisibleVelocity = m_preference_dlg.CurveVisibleVel;
-                AppManager.editorConfig.CurveVisibleVibratoDepth = m_preference_dlg.CurveVisibleVibratoDepth;
-                AppManager.editorConfig.CurveVisibleVibratoRate = m_preference_dlg.CurveVisibleVibratoRate;
-                AppManager.editorConfig.CurveVisibleFx2Depth = m_preference_dlg.CurveVisibleFx2Depth;
-                AppManager.editorConfig.CurveVisibleHarmonics = m_preference_dlg.CurveVisibleHarmonics;
-                AppManager.editorConfig.CurveVisibleReso1 = m_preference_dlg.CurveVisibleReso1;
-                AppManager.editorConfig.CurveVisibleReso2 = m_preference_dlg.CurveVisibleReso2;
-                AppManager.editorConfig.CurveVisibleReso3 = m_preference_dlg.CurveVisibleReso3;
-                AppManager.editorConfig.CurveVisibleReso4 = m_preference_dlg.CurveVisibleReso4;
-                AppManager.editorConfig.CurveVisibleEnvelope = m_preference_dlg.CurveVisibleEnvelope;
+                AppManager.editorConfig.CurveVisibleAccent = m_preference_dlg.isCurveVisibleAccent();
+                AppManager.editorConfig.CurveVisibleBreathiness = m_preference_dlg.isCurveVisibleBre();
+                AppManager.editorConfig.CurveVisibleBrightness = m_preference_dlg.isCurveVisibleBri();
+                AppManager.editorConfig.CurveVisibleClearness = m_preference_dlg.isCurveVisibleCle();
+                AppManager.editorConfig.CurveVisibleDecay = m_preference_dlg.isCurveVisibleDecay();
+                AppManager.editorConfig.CurveVisibleDynamics = m_preference_dlg.isCurveVisibleDyn();
+                AppManager.editorConfig.CurveVisibleGendorfactor = m_preference_dlg.isCurveVisibleGen();
+                AppManager.editorConfig.CurveVisibleOpening = m_preference_dlg.isCurveVisibleOpe();
+                AppManager.editorConfig.CurveVisiblePit = m_preference_dlg.isCurveVisiblePit();
+                AppManager.editorConfig.CurveVisiblePbs = m_preference_dlg.isCurveVisiblePbs();
+                AppManager.editorConfig.CurveVisiblePortamento = m_preference_dlg.isCurveVisiblePor();
+                AppManager.editorConfig.CurveVisibleVelocity = m_preference_dlg.isCurveVisibleVel();
+                AppManager.editorConfig.CurveVisibleVibratoDepth = m_preference_dlg.isCurveVisibleVibratoDepth();
+                AppManager.editorConfig.CurveVisibleVibratoRate = m_preference_dlg.isCurveVisibleVibratoRate();
+                AppManager.editorConfig.CurveVisibleFx2Depth = m_preference_dlg.isCurveVisibleFx2Depth();
+                AppManager.editorConfig.CurveVisibleHarmonics = m_preference_dlg.isCurveVisibleHarmonics();
+                AppManager.editorConfig.CurveVisibleReso1 = m_preference_dlg.isCurveVisibleReso1();
+                AppManager.editorConfig.CurveVisibleReso2 = m_preference_dlg.isCurveVisibleReso2();
+                AppManager.editorConfig.CurveVisibleReso3 = m_preference_dlg.isCurveVisibleReso3();
+                AppManager.editorConfig.CurveVisibleReso4 = m_preference_dlg.isCurveVisibleReso4();
+                AppManager.editorConfig.CurveVisibleEnvelope = m_preference_dlg.isCurveVisibleEnvelope();
 
-                AppManager.editorConfig.MidiInPort.PortNumber = m_preference_dlg.MidiInPort;
+                AppManager.editorConfig.MidiInPort.PortNumber = m_preference_dlg.getMidiInPort();
                 updateMidiInStatus();
                 reloadMidiIn();
 
-                AppManager.editorConfig.InvokeUtauCoreWithWine = m_preference_dlg.InvokeWithWine;
-                AppManager.editorConfig.PathResampler = m_preference_dlg.PathResampler;
-                AppManager.editorConfig.PathWavtool = m_preference_dlg.PathWavtool;
+                AppManager.editorConfig.InvokeUtauCoreWithWine = m_preference_dlg.isInvokeWithWine();
+                AppManager.editorConfig.PathResampler = m_preference_dlg.getPathResampler();
+                AppManager.editorConfig.PathWavtool = m_preference_dlg.getPathWavtool();
                 AppManager.editorConfig.UtauSingers.clear();
-                for ( Iterator itr = m_preference_dlg.UtauSingers.iterator(); itr.hasNext(); ) {
+                for ( Iterator itr = m_preference_dlg.getUtauSingers().iterator(); itr.hasNext(); ) {
                     SingerConfig sc = (SingerConfig)itr.next();
                     AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
                 }
-                AppManager.editorConfig.UseCustomFileDialog = m_preference_dlg.UseCustomFileDialog;
-                AppManager.editorConfig.SelfDeRomanization = m_preference_dlg.SelfDeRomantization;
-                AppManager.editorConfig.AutoBackupIntervalMinutes = m_preference_dlg.AutoBackupIntervalMinutes;
+                AppManager.editorConfig.UseCustomFileDialog = m_preference_dlg.isUseCustomFileDialog();
+                AppManager.editorConfig.SelfDeRomanization = m_preference_dlg.isSelfDeRomantization();
+                AppManager.editorConfig.AutoBackupIntervalMinutes = m_preference_dlg.getAutoBackupIntervalMinutes();
                 AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier = m_preference_dlg.isUseSpaceKeyAsMiddleButtonModifier();
 
                 Vector<CurveType> visible_curves = new Vector<CurveType>();
@@ -9719,6 +9721,7 @@ namespace Boare.Cadencii {
         }
 
         private void removeGameControler() {
+#if !JAVA
             if ( m_timer != null ) {
                 m_timer.Stop();
                 m_timer.Dispose();
@@ -9726,9 +9729,11 @@ namespace Boare.Cadencii {
             }
             m_game_mode = GameControlMode.DISABLED;
             updateGameControlerStatus( null, null );
+#endif
         }
 
         private void loadGameControler() {
+#if !JAVA
             try {
                 boolean init_success = false;
                 int num_joydev = winmmhelp.JoyInit();
@@ -9756,9 +9761,11 @@ namespace Boare.Cadencii {
 #endif
             }
             updateGameControlerStatus( null, null );
+#endif
         }
 
         private void reloadMidiIn() {
+#if !JAVA
 #if DEBUG
             AppManager.debugWriteLine( "FormMain.ReloadMidiIn" );
 #endif
@@ -9775,9 +9782,11 @@ namespace Boare.Cadencii {
 #endif
             }
             updateMidiInStatus();
+#endif
         }
 
         private void m_midi_in_MidiReceived( double time, byte[] data ) {
+#if !JAVA
             if ( data.Length <= 2 ) {
                 return;
             }
@@ -9841,12 +9850,14 @@ namespace Boare.Cadencii {
                     KeySoundPlayer.Play( note );
                 }
             }
+#endif
         }
 
         /// <summary>
         /// 現在のゲームコントローラのモードに応じてstripLblGameCtrlModeの表示状態を更新します。
         /// </summary>
         private void updateGameControlerStatus( Object sender, BEventArgs e ) {
+#if !JAVA
             if ( m_game_mode == GameControlMode.DISABLED ) {
                 stripLblGameCtrlMode.Text = _( "Disabled" );
                 stripLblGameCtrlMode.Image = (System.Drawing.Bitmap)Properties.Resources.slash.Clone();
@@ -9860,9 +9871,11 @@ namespace Boare.Cadencii {
                 stripLblGameCtrlMode.Text = _( "Normal" );
                 stripLblGameCtrlMode.Image = null;
             }
+#endif
         }
 
         private void updateMidiInStatus() {
+#if !JAVA
             int midiport = AppManager.editorConfig.MidiInPort.PortNumber;
             bocoree.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
             if ( midiport < 0 || devices.Length <= 0 ) {
@@ -9876,6 +9889,7 @@ namespace Boare.Cadencii {
                 stripLblMidiIn.Text = devices[midiport].szPname;
                 stripLblMidiIn.Image = (System.Drawing.Bitmap)Properties.Resources.piano.Clone();
             }
+#endif
         }
 
         /// <summary>
@@ -13079,13 +13093,13 @@ namespace Boare.Cadencii {
 
         }
 
-        private void pictKeyLengthSplitter_MouseDown( object sender, MouseEventArgs e ) {
+        private void pictKeyLengthSplitter_MouseDown( Object sender, BMouseEventArgs e ) {
             m_key_length_splitter_mouse_downed = true;
             m_key_length_splitter_initial_mouse = PortUtil.getMousePosition();
             m_key_length_init_value = AppManager.keyWidth;
         }
 
-        private void pictKeyLengthSplitter_MouseMove( object sender, MouseEventArgs e ) {
+        private void pictKeyLengthSplitter_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( !m_key_length_splitter_mouse_downed ) {
                 return;
             }
@@ -13101,11 +13115,11 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void pictKeyLengthSplitter_MouseUp( object sender, MouseEventArgs e ) {
+        private void pictKeyLengthSplitter_MouseUp( Object sender, BMouseEventArgs e ) {
             m_key_length_splitter_mouse_downed = false;
         }
 
-        private void overviewCommon_MouseLeave( object sender, EventArgs e ) {
+        private void overviewCommon_MouseLeave( Object sender, BEventArgs e ) {
 #if DEBUG
             PortUtil.println( "FormMain#overviewCommon_MouseLeave" );
 #endif

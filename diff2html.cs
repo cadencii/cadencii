@@ -17,39 +17,50 @@ class diff2html{
             sw.WriteLine( "<html lang=\"ja-JP\">" );
             sw.WriteLine( "<head>" );
             sw.WriteLine( "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" );
+            sw.WriteLine( "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\">" );
             sw.WriteLine( "<title>" + Path.GetFileNameWithoutExtension( infile ) + "</title>" );
+            sw.WriteLine( "<style type=\"text/css\">" );
+            sw.WriteLine( "<!--" );
+            sw.WriteLine( ".header{" );
+            sw.WriteLine( "    color: #800000;" );
+            sw.WriteLine( "    background-color: #ffff80;" );
+            sw.WriteLine( "}" );
+            sw.WriteLine( ".removed{" );
+            sw.WriteLine( "    background-color: #ff8080;" );
+            sw.WriteLine( "}" );
+            sw.WriteLine( ".added{" );
+            sw.WriteLine( "    background-color: #80ff80;" );
+            sw.WriteLine( "}" );
+            sw.WriteLine( ".location{" );
+            sw.WriteLine( "    color: #ff0000;" );
+            sw.WriteLine( "}" );
+            sw.WriteLine( "-->" );
+            sw.WriteLine( "</style>" );
             sw.WriteLine( "</head>" );
             sw.WriteLine( "<body>" );
             sw.WriteLine( "<pre>" );
             string line = "";
             while( (line = sr.ReadLine()) != null ){
-                string col_str = "";
-                string col_back = "";
+                if( line.Trim() == "" ){
+                    sw.WriteLine( "<br>" );
+                    continue;
+                }
+                string style_class = "";
                 if( line.StartsWith( "===" ) || line.StartsWith( "---" ) || line.StartsWith( "+++" ) ){
-                    col_str = "#800000";
-                    col_back = "#ffff80";
+                    style_class = "header";
                 }else if( line.StartsWith( "-" ) ){
-                    col_back = "#ff8080";
+                    style_class = "removed";
                 }else if( line.StartsWith( "+" ) ){
-                    col_back = "#80ff80";
+                    style_class = "added";
                 }else if( line.StartsWith( "@" ) ){
-                    col_str = "#ff0000";
+                    style_class = "location";
                 }
-                string style = "";
-                if( col_str != "" ){
-                    style += "color: " + col_str + "; ";
-                }
-                if( col_back != "" ){
-                    style += "background-color: " + col_back + "; ";
-                }
-                if( style == "" ){
+                if( style_class == "" ){
                     sw.Write( "<code>" );
                 }else{
-                    sw.Write( "<code style='" + style + "'>" );
+                    sw.Write( "<code class=" + style_class + ">" );
                 }
                 sw.Write( line.Replace( "<", "&lt;" ).Replace( ">", "&gt;" ).Replace( "&", "&amp;" ) );
-                //sw.Write( line.Replace( "<", "&lt;" ).Replace( ">", "&gt;" ).Replace( "&", "&amp;" ) );
-                //sw.Write( line );
                 sw.WriteLine( "</code>" );
             }
             sw.WriteLine( "</pre>" );

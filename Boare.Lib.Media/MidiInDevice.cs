@@ -12,11 +12,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+package org.kbinani.media;
+
+public class MidiInDevice{
+
+}
 #else
 using System;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
-
+using System.Runtime.InteropServices;
 using bocoree;
 
 namespace Boare.Lib.Media {

@@ -11,25 +11,31 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
-using System.Drawing;
-using System.IO;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using Boare.Lib.Vsq;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
+using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.awt;
 using bocoree.util;
-using bocoree.io;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using java = bocoree;
     using boolean = System.Boolean;
+    using java = bocoree;
+#endif
 
+#if JAVA
+    public class Preference extends BForm {
+#else
     partial class Preference : BForm {
-        java.awt.Font m_base_font;
+#endif
+        Font m_base_font;
         Font m_screen_font;
         Font m_counter_font;
         Vector<String> m_program_change = null;
@@ -73,7 +79,7 @@ namespace Boare.Cadencii {
             comboDynamics.Items.Clear();
             comboAmplitude.Items.Clear();
             comboPeriod.Items.Clear();
-            for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ){
+            for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ) {
                 ClockResolution cr = (ClockResolution)itr.next();
                 comboDynamics.Items.Add( cr.ToString() );
                 comboAmplitude.Items.Add( cr.ToString() );
@@ -125,9 +131,9 @@ namespace Boare.Cadencii {
                 chkCommandKeyAsControl.Enabled = false;
             } else {
 #endif
-                foreach ( Platform p in Enum.GetValues( typeof( Platform ) ) ) {
-                    comboPlatform.Items.Add( p + "" );
-                }
+            foreach ( Platform p in Enum.GetValues( typeof( Platform ) ) ) {
+                comboPlatform.Items.Add( p + "" );
+            }
 #if !DEBUG
             }
 #endif
@@ -155,340 +161,306 @@ namespace Boare.Cadencii {
             chkUseSpaceKeyAsMiddleButtonModifier.Checked = value;
         }
 
-        public int AutoBackupIntervalMinutes {
-            get {
-                if ( chkAutoBackup.Checked ) {
-                    return (int)numAutoBackupInterval.Value;
+        public int getAutoBackupIntervalMinutes() {
+            if ( chkAutoBackup.Checked ) {
+                return (int)numAutoBackupInterval.Value;
+            } else {
+                return 0;
+            }
+        }
+
+        public void setAutoBackupIntervalMinutes( int value ) {
+            if ( value <= 0 ) {
+                chkAutoBackup.Checked = false;
+            } else {
+                chkAutoBackup.Checked = true;
+                numAutoBackupInterval.Value = value;
+            }
+        }
+
+        public boolean isSelfDeRomantization() {
+            return chkTranslateRoman.Checked;
+        }
+
+        public void setSelfDeRomantization( boolean value ) {
+            chkTranslateRoman.Checked = value;
+        }
+
+        public boolean isUseCustomFileDialog() {
+            return chkUseCustomFileDialog.Checked;
+        }
+
+        public void setUseCustomFileDialog( boolean value ) {
+            chkUseCustomFileDialog.Checked = value;
+        }
+
+        public boolean isInvokeWithWine() {
+            return chkInvokeWithWine.Checked;
+        }
+
+        public void setInvokeWithWine( boolean value ) {
+            chkInvokeWithWine.Checked = value;
+        }
+
+        public int getMidiInPort() {
+            if ( comboMidiInPortNumber.Enabled ) {
+                if ( comboMidiInPortNumber.SelectedIndex >= 0 ) {
+                    return comboMidiInPortNumber.SelectedIndex;
                 } else {
                     return 0;
                 }
+            } else {
+                return -1;
             }
-            set {
-                if ( value <= 0 ) {
-                    chkAutoBackup.Checked = false;
+        }
+
+        public void setMidiInPort( int value ) {
+            if ( comboMidiInPortNumber.Enabled ) {
+                if ( 0 <= value && value < comboMidiInPortNumber.Items.Count ) {
+                    comboMidiInPortNumber.SelectedIndex = value;
                 } else {
-                    chkAutoBackup.Checked = true;
-                    numAutoBackupInterval.Value = value;
+                    comboMidiInPortNumber.SelectedIndex = 0;
                 }
             }
         }
 
-        public boolean SelfDeRomantization {
-            get {
-                return chkTranslateRoman.Checked;
-            }
-            set {
-                chkTranslateRoman.Checked = value;
-            }
+        public boolean isCurveVisibleVel() {
+            return chkVel.Checked;
         }
 
-        public boolean UseCustomFileDialog {
-            get {
-                return chkUseCustomFileDialog.Checked;
-            }
-            set {
-                chkUseCustomFileDialog.Checked = value;
-            }
+        public void setCurveVisibleVel( boolean value ) {
+            chkVel.Checked = value;
         }
 
-        public boolean InvokeWithWine {
-            get {
-                return chkInvokeWithWine.Checked;
-            }
-            set {
-                chkInvokeWithWine.Checked = value;
-            }
+        public boolean isCurveVisibleAccent() {
+            return chkAccent.Checked;
         }
 
-        public int MidiInPort {
-            get {
-                if ( comboMidiInPortNumber.Enabled ) {
-                    if ( comboMidiInPortNumber.SelectedIndex >= 0 ) {
-                        return comboMidiInPortNumber.SelectedIndex;
-                    } else {
-                        return 0;
-                    }
-                } else {
-                    return -1;
-                }
-            }
-            set {
-                if ( comboMidiInPortNumber.Enabled ) {
-                    if ( 0 <= value && value < comboMidiInPortNumber.Items.Count ) {
-                        comboMidiInPortNumber.SelectedIndex = value;
-                    } else {
-                        comboMidiInPortNumber.SelectedIndex = 0;
-                    }
-                }
-            }
+        public void setCurveVisibleAccent( boolean value ) {
+            chkAccent.Checked = value;
         }
 
-        public boolean CurveVisibleVel {
-            get {
-                return chkVel.Checked;
-            }
-            set {
-                chkVel.Checked = value;
-            }
+        public boolean isCurveVisibleDecay() {
+            return chkDecay.Checked;
         }
 
-        public boolean CurveVisibleAccent {
-            get {
-                return chkAccent.Checked;
-            }
-            set {
-                chkAccent.Checked = value;
-            }
+        public void setCurveVisibleDecay( boolean value ) {
+            chkDecay.Checked = value;
         }
 
-        public boolean CurveVisibleDecay {
-            get {
-                return chkDecay.Checked;
-            }
-            set {
-                chkDecay.Checked = value;
-            }
+        public boolean isCurveVisibleVibratoRate() {
+            return chkVibratoRate.Checked;
         }
 
-        public boolean CurveVisibleVibratoRate {
-            get {
-                return chkVibratoRate.Checked;
-            }
-            set {
-                chkVibratoRate.Checked = value;
-            }
+        public void setCurveVisibleVibratoRate( boolean value ) {
+            chkVibratoRate.Checked = value;
         }
 
-        public boolean CurveVisibleVibratoDepth {
-            get {
-                return chkVibratoDepth.Checked;
-            }
-            set {
-                chkVibratoDepth.Checked = value;
-            }
+        public boolean isCurveVisibleVibratoDepth() {
+            return chkVibratoDepth.Checked;
         }
 
-        public boolean CurveVisibleDyn {
-            get {
-                return chkDyn.Checked;
-            }
-            set {
-                chkDyn.Checked = value;
-            }
+        public void setCurveVisibleVibratoDepth( boolean value ) {
+            chkVibratoDepth.Checked = value;
         }
 
-        public boolean CurveVisibleBre {
-            get {
-                return chkBre.Checked;
-            }
-            set {
-                chkBre.Checked = value;
-            }
+        public boolean isCurveVisibleDyn() {
+            return chkDyn.Checked;
         }
 
-        public boolean CurveVisibleBri {
-            get {
-                return chkBri.Checked;
-            }
-            set {
-                chkBri.Checked = value;
-            }
+        public void setCurveVisibleDyn( boolean value ) {
+            chkDyn.Checked = value;
         }
 
-        public boolean CurveVisibleCle {
-            get {
-                return chkCle.Checked;
-            }
-            set {
-                chkCle.Checked = value;
-            }
+        public boolean isCurveVisibleBre() {
+            return chkBre.Checked;
         }
 
-        public boolean CurveVisibleOpe {
-            get {
-                return chkOpe.Checked;
-            }
-            set {
-                chkOpe.Checked = value;
-            }
+        public void setCurveVisibleBre( boolean value ) {
+            chkBre.Checked = value;
         }
 
-        public boolean CurveVisiblePor {
-            get {
-                return chkPor.Checked;
-            }
-            set {
-                chkPor.Checked = value;
-            }
+        public boolean isCurveVisibleBri() {
+            return chkBri.Checked;
         }
 
-        public boolean CurveVisibleGen {
-            get {
-                return chkGen.Checked;
-            }
-            set {
-                chkGen.Checked = value;
-            }
+        public void setCurveVisibleBri( boolean value ) {
+            chkBri.Checked = value;
         }
 
-        public boolean CurveVisiblePit {
-            get {
-                return chkPit.Checked;
-            }
-            set {
-                chkPit.Checked = value;
-            }
+        public boolean isCurveVisibleCle() {
+            return chkCle.Checked;
         }
 
-        public boolean CurveVisiblePbs {
-            get {
-                return chkPbs.Checked;
-            }
-            set {
-                chkPbs.Checked = value;
-            }
+        public void setCurveVisibleCle( boolean value ) {
+            chkCle.Checked = value;
         }
 
-        public boolean CurveVisibleFx2Depth {
-            get {
-                return chkFx2Depth.Checked;
-            }
-            set {
-                chkFx2Depth.Checked = value;
-            }
+        public boolean isCurveVisibleOpe() {
+            return chkOpe.Checked;
         }
 
-        public boolean CurveVisibleHarmonics {
-            get {
-                return chkHarmonics.Checked;
-            }
-            set {
-                chkHarmonics.Checked = value;
-            }
+        public void setCurveVisibleOpe( boolean value ) {
+            chkOpe.Checked = value;
         }
 
-        public boolean CurveVisibleReso1 {
-            get {
-                return chkReso1.Checked;
-            }
-            set {
-                chkReso1.Checked = value;
-            }
+        public boolean isCurveVisiblePor() {
+            return chkPor.Checked;
         }
 
-        public boolean CurveVisibleReso2 {
-            get {
-                return chkReso2.Checked;
-            }
-            set {
-                chkReso2.Checked = value;
-            }
-        }
-        
-        public boolean CurveVisibleReso3 {
-            get {
-                return chkReso3.Checked;
-            }
-            set {
-                chkReso3.Checked = value;
-            }
+        public void setCurveVisiblePor( boolean value ) {
+            chkPor.Checked = value;
         }
 
-        public boolean CurveVisibleReso4 {
-            get {
-                return chkReso4.Checked;
-            }
-            set {
-                chkReso4.Checked = value;
-            }
+        public boolean isCurveVisibleGen() {
+            return chkGen.Checked;
         }
 
-        public boolean CurveVisibleEnvelope {
-            get {
-                return chkEnvelope.Checked;
-            }
-            set {
-                chkEnvelope.Checked = value;
-            }
+        public void setCurveVisibleGen( boolean value ) {
+            chkGen.Checked = value;
         }
 
-        public boolean CurveSelectingQuantized {
-            get {
-                return chkCurveSelectingQuantized.Checked;
-            }
-            set {
-                chkCurveSelectingQuantized.Checked = value;
-            }
+        public boolean isCurveVisiblePit() {
+            return chkPit.Checked;
         }
 
-        public boolean PlayPreviewWhenRightClick {
-            get {
-                return chkPlayPreviewWhenRightClick.Checked;
-            }
-            set {
-                chkPlayPreviewWhenRightClick.Checked = value;
-            }
+        public void setCurveVisiblePit( boolean value ) {
+            chkPit.Checked = value;
         }
 
-        public int MouseHoverTime {
-            get {
-                return (int)numMouseHoverTime.Value;
-            }
-            set {
-                numMouseHoverTime.Value = value;
-            }
+        public boolean isCurveVisiblePbs() {
+            return chkPbs.Checked;
         }
 
-        public int PxTrackHeight {
-            get {
-                return (int)numTrackHeight.Value;
-            }
-            set {
-                numTrackHeight.Value = value;
-            }
+        public void setCurveVisiblePbs( boolean value ) {
+            chkPbs.Checked = value;
         }
 
-        public boolean KeepLyricInputMode {
-            get {
-                return chkKeepLyricInputMode.Checked;
-            }
-            set {
-                chkKeepLyricInputMode.Checked = value;
-            }
+        public boolean isCurveVisibleFx2Depth() {
+            return chkFx2Depth.Checked;
         }
 
-        public Platform Platform {
-            get {
-                return m_platform;
-            }
-            set {
-                m_platform = value;
-                for ( int i = 0; i < comboPlatform.Items.Count; i++ ) {
-                    String title = (String)comboPlatform.Items[i];
-                    if ( title.Equals( m_platform + "" ) ) {
-                        comboPlatform.SelectedIndex = i;
-                        break;
-                    }
+        public void setCurveVisibleFx2Depth( boolean value ) {
+            chkFx2Depth.Checked = value;
+        }
+
+        public boolean isCurveVisibleHarmonics() {
+            return chkHarmonics.Checked;
+        }
+
+        public void setCurveVisibleHarmonics( boolean value ) {
+            chkHarmonics.Checked = value;
+        }
+
+        public boolean isCurveVisibleReso1() {
+            return chkReso1.Checked;
+        }
+
+        public void setCurveVisibleReso1( boolean value ) {
+            chkReso1.Checked = value;
+        }
+
+        public boolean isCurveVisibleReso2() {
+            return chkReso2.Checked;
+        }
+
+        public void setCurveVisibleReso2( boolean value ) {
+            chkReso2.Checked = value;
+        }
+
+        public boolean isCurveVisibleReso3() {
+            return chkReso3.Checked;
+        }
+
+        public void setCurveVisibleReso3( boolean value ) {
+            chkReso3.Checked = value;
+        }
+
+        public boolean isCurveVisibleReso4() {
+            return chkReso4.Checked;
+        }
+
+        public void setCurveVisibleReso4( boolean value ) {
+            chkReso4.Checked = value;
+        }
+
+        public boolean isCurveVisibleEnvelope() {
+            return chkEnvelope.Checked;
+        }
+
+        public void setCurveVisibleEnvelope( boolean value ) {
+            chkEnvelope.Checked = value;
+        }
+
+        public boolean isCurveSelectingQuantized() {
+            return chkCurveSelectingQuantized.Checked;
+        }
+
+        public void setCurveSelectingQuantized( boolean value ) {
+            chkCurveSelectingQuantized.Checked = value;
+        }
+
+        public boolean isPlayPreviewWhenRightClick() {
+            return chkPlayPreviewWhenRightClick.Checked;
+        }
+
+        public void setPlayPreviewWhenRightClick( boolean value ) {
+            chkPlayPreviewWhenRightClick.Checked = value;
+        }
+
+        public int getMouseHoverTime() {
+            return (int)numMouseHoverTime.Value;
+        }
+
+        public void setMouseHoverTime( int value ) {
+            numMouseHoverTime.Value = value;
+        }
+
+        public int getPxTrackHeight() {
+            return (int)numTrackHeight.Value;
+        }
+
+        public void setPxTrackHeight( int value ) {
+            numTrackHeight.Value = value;
+        }
+
+        public boolean isKeepLyricInputMode() {
+            return chkKeepLyricInputMode.Checked;
+        }
+
+        public void setKeepLyricInputMode( boolean value ) {
+            chkKeepLyricInputMode.Checked = value;
+        }
+
+        public Platform getPlatform() {
+            return m_platform;
+        }
+
+        public void setPlatform( Platform value ) {
+            m_platform = value;
+            for ( int i = 0; i < comboPlatform.Items.Count; i++ ) {
+                String title = (String)comboPlatform.Items[i];
+                if ( title.Equals( m_platform + "" ) ) {
+                    comboPlatform.SelectedIndex = i;
+                    break;
                 }
             }
         }
 
-        public int MaximumFrameRate {
-            get {
-                return (int)numMaximumFrameRate.Value;
-            }
-            set {
-                numMaximumFrameRate.Value = value;
-            }
+        public int getMaximumFrameRate() {
+            return (int)numMaximumFrameRate.Value;
         }
 
-        public boolean ScrollHorizontalOnWheel {
-            get {
-                return chkScrollHorizontal.Checked;
-            }
-            set {
-                chkScrollHorizontal.Checked = value;
-            }
+        public void setMaximumFrameRate( int value ) {
+            numMaximumFrameRate.Value = value;
+        }
+
+        public boolean isScrollHorizontalOnWheel() {
+            return chkScrollHorizontal.Checked;
+        }
+
+        public void setScrollHorizontalOnWheel( boolean value ) {
+            chkScrollHorizontal.Checked = value;
         }
 
         public void ApplyLanguage() {
@@ -567,7 +539,7 @@ namespace Boare.Cadencii {
 
             #region tabPlatform
             tabPlatform.Text = _( "Platform" );
-            
+
             groupPlatform.Text = _( "Platform" );
             lblPlatform.Text = _( "Current Platform" );
             chkCommandKeyAsControl.Text = _( "Use Command key as Control key" );
@@ -601,208 +573,195 @@ namespace Boare.Cadencii {
             return Messaging.getMessage( id );
         }
 
-        public String Language {
-            get {
-                int index = comboLanguage.SelectedIndex;
-                if ( 0 <= index && index < comboLanguage.Items.Count ) {
-                    String title = (String)comboLanguage.Items[index];
-                    if ( title.Equals( "Default" ) ) {
-                        return "";
-                    } else {
-                        return title;
-                    }
-                } else {
+        public String getLanguage() {
+            int index = comboLanguage.SelectedIndex;
+            if ( 0 <= index && index < comboLanguage.Items.Count ) {
+                String title = (String)comboLanguage.Items[index];
+                if ( title.Equals( "Default" ) ) {
                     return "";
-                }
-            }
-        }
-
-        public ClockResolution ControlCurveResolution {
-            get {
-                int count = -1;
-                int index = comboDynamics.SelectedIndex;
-                for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ){
-                    ClockResolution vt = (ClockResolution)itr.next();
-                    count++;
-                    if ( count == index ) {
-                        return vt;
-                    }
-                }
-                comboDynamics.SelectedIndex = 0;
-                return ClockResolution.L30;
-            }
-            set {
-                int count = -1;
-                for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ){
-                    ClockResolution vt = (ClockResolution)itr.next();
-                    count++;
-                    if ( vt.Equals( value ) ) {
-                        comboDynamics.SelectedIndex = count;
-                        break;
-                    }
-                }
-            }
-        }
-
-        public int PreSendTime {
-            get {
-                return (int)numPreSendTime.Value;
-            }
-            set {
-                numPreSendTime.Value = value;
-            }
-        }
-
-        public int PreMeasure {
-            get {
-                return comboDefaultPremeasure.SelectedIndex + 1;
-            }
-            set {
-                comboDefaultPremeasure.SelectedIndex = value - 1;
-            }
-        }
-
-        public boolean EnableAutoVibrato {
-            get {
-                return chkEnableAutoVibrato.Checked;
-            }
-            set {
-                chkEnableAutoVibrato.Checked = value;
-            }
-        }
-
-        public String AutoVibratoType1 {
-            get {
-                int count = -1;
-                int index = comboAutoVibratoType1.SelectedIndex;
-                if( 0 <= index ){
-                    VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.SelectedItem;
-                    return vconfig.contents.IconID;
                 } else {
-                    return "$04040001";
+                    return title;
+                }
+            } else {
+                return "";
+            }
+        }
+
+        public ClockResolution getControlCurveResolution() {
+            int count = -1;
+            int index = comboDynamics.SelectedIndex;
+            for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ) {
+                ClockResolution vt = (ClockResolution)itr.next();
+                count++;
+                if ( count == index ) {
+                    return vt;
                 }
             }
-            set {
-                for ( int i = 0; i < comboAutoVibratoType1.Items.Count; i++ ) {
-                    VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.Items[i];
-                    if ( vconfig.contents.IconID.Equals( value ) ) {
-                        comboAutoVibratoType1.SelectedIndex = i;
-                        return;
-                    }
-                }
-                if ( comboAutoVibratoType1.Items.Count > 0 ) {
-                    comboAutoVibratoType1.SelectedIndex = 0;
+            comboDynamics.SelectedIndex = 0;
+            return ClockResolution.L30;
+        }
+
+        public void setControlCurveResolution( ClockResolution value ) {
+            int count = -1;
+            for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ) {
+                ClockResolution vt = (ClockResolution)itr.next();
+                count++;
+                if ( vt.Equals( value ) ) {
+                    comboDynamics.SelectedIndex = count;
+                    break;
                 }
             }
         }
 
-        public String AutoVibratoType2 {
-            get {
-                int count = -1;
-                int index = comboAutoVibratoType2.SelectedIndex;
-                if ( 0 <= index ) {
-                    VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.SelectedItem;
-                    return vconfig.contents.IconID;
-                } else {
-                    return "$04040001";
+        public int getPreSendTime() {
+            return (int)numPreSendTime.Value;
+        }
+
+        public void setPreSendTime( int value ) {
+            numPreSendTime.Value = value;
+        }
+
+        public int getPreMeasure() {
+            return comboDefaultPremeasure.SelectedIndex + 1;
+        }
+
+        public void setPreMeasure( int value ) {
+            comboDefaultPremeasure.SelectedIndex = value - 1;
+        }
+
+        public boolean isEnableAutoVibrato() {
+            return chkEnableAutoVibrato.Checked;
+        }
+
+        public void setEnableAutoVibrato( boolean value ) {
+            chkEnableAutoVibrato.Checked = value;
+        }
+
+        public String getAutoVibratoType1() {
+            int count = -1;
+            int index = comboAutoVibratoType1.SelectedIndex;
+            if ( 0 <= index ) {
+                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.SelectedItem;
+                return vconfig.contents.IconID;
+            } else {
+                return "$04040001";
+            }
+        }
+
+        public void setAutoVibratoType1( String value ) {
+            for ( int i = 0; i < comboAutoVibratoType1.Items.Count; i++ ) {
+                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.Items[i];
+                if ( vconfig.contents.IconID.Equals( value ) ) {
+                    comboAutoVibratoType1.SelectedIndex = i;
+                    return;
                 }
             }
-            set {
-                for ( int i = 0; i < comboAutoVibratoType2.Items.Count; i++ ) {
-                    VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.Items[i];
-                    if ( vconfig.contents.IconID.Equals( value ) ) {
-                        comboAutoVibratoType2.SelectedIndex = i;
-                        return;
-                    }
+            if ( comboAutoVibratoType1.Items.Count > 0 ) {
+                comboAutoVibratoType1.SelectedIndex = 0;
+            }
+        }
+
+        public String getAutoVibratoType2() {
+            int count = -1;
+            int index = comboAutoVibratoType2.SelectedIndex;
+            if ( 0 <= index ) {
+                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.SelectedItem;
+                return vconfig.contents.IconID;
+            } else {
+                return "$04040001";
+            }
+        }
+
+        public void setAutoVibratoType2( String value ) {
+            for ( int i = 0; i < comboAutoVibratoType2.Items.Count; i++ ) {
+                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.Items[i];
+                if ( vconfig.contents.IconID.Equals( value ) ) {
+                    comboAutoVibratoType2.SelectedIndex = i;
+                    return;
                 }
-                if ( comboAutoVibratoType2.Items.Count > 0 ) {
-                    comboAutoVibratoType2.SelectedIndex = 0;
+            }
+            if ( comboAutoVibratoType2.Items.Count > 0 ) {
+                comboAutoVibratoType2.SelectedIndex = 0;
+            }
+        }
+
+        public AutoVibratoMinLength getAutoVibratoMinimumLength() {
+            int count = -1;
+            int index = comboAutoVibratoMinLength.SelectedIndex;
+            foreach ( AutoVibratoMinLength avml in Enum.GetValues( typeof( AutoVibratoMinLength ) ) ) {
+                count++;
+                if ( count == index ) {
+                    return avml;
+                }
+            }
+            comboAutoVibratoMinLength.SelectedIndex = 0;
+            return AutoVibratoMinLength.L1;
+        }
+
+        public void setAutoVibratoMinimumLength( AutoVibratoMinLength value ) {
+            int count = -1;
+            foreach ( AutoVibratoMinLength avml in Enum.GetValues( typeof( AutoVibratoMinLength ) ) ) {
+                count++;
+                if ( avml == value ) {
+                    comboAutoVibratoMinLength.SelectedIndex = count;
+                    break;
                 }
             }
         }
 
-        public AutoVibratoMinLength AutoVibratoMinimumLength {
-            get {
-                int count = -1;
-                int index = comboAutoVibratoMinLength.SelectedIndex;
-                foreach ( AutoVibratoMinLength avml in Enum.GetValues( typeof( AutoVibratoMinLength ) ) ) {
-                    count++;
-                    if ( count == index ) {
-                        return avml;
-                    }
+        public DefaultVibratoLength getDefaultVibratoLength() {
+            int count = -1;
+            int index = comboVibratoLength.SelectedIndex;
+            foreach ( DefaultVibratoLength vt in Enum.GetValues( typeof( DefaultVibratoLength ) ) ) {
+                count++;
+                if ( index == count ) {
+                    return vt;
                 }
-                comboAutoVibratoMinLength.SelectedIndex = 0;
-                return AutoVibratoMinLength.L1;
             }
-            set {
-                int count = -1;
-                foreach ( AutoVibratoMinLength avml in Enum.GetValues( typeof( AutoVibratoMinLength ) ) ) {
-                    count++;
-                    if ( avml == value ) {
-                        comboAutoVibratoMinLength.SelectedIndex = count;
-                        break;
-                    }
+            comboVibratoLength.SelectedIndex = 1;
+            return DefaultVibratoLength.L66;
+        }
+
+        public void setDefaultVibratoLength( DefaultVibratoLength value ) {
+            int count = -1;
+            foreach ( DefaultVibratoLength dvl in Enum.GetValues( typeof( DefaultVibratoLength ) ) ) {
+                count++;
+                if ( dvl == value ) {
+                    comboVibratoLength.SelectedIndex = count;
+                    break;
                 }
             }
         }
 
-        public DefaultVibratoLength DefaultVibratoLength {
-            get {
-                int count = -1;
-                int index = comboVibratoLength.SelectedIndex;
-                foreach ( DefaultVibratoLength vt in Enum.GetValues( typeof( DefaultVibratoLength ) ) ) {
-                    count++;
-                    if ( index == count ) {
-                        return vt;
-                    }
-                }
-                comboVibratoLength.SelectedIndex = 1;
-                return DefaultVibratoLength.L66;
-            }
-            set {
-                int count = -1;
-                foreach ( DefaultVibratoLength dvl in Enum.GetValues( typeof( DefaultVibratoLength ) ) ) {
-                    count++;
-                    if ( dvl == value ) {
-                        comboVibratoLength.SelectedIndex = count;
-                        break;
-                    }
-                }
+        public boolean isCursorFixed() {
+            return chkCursorFix.Checked;
+        }
+
+        public void setCursorFixed( boolean value ) {
+            chkCursorFix.Checked = value;
+        }
+
+        public int getWheelOrder() {
+            return (int)numericUpDownEx1.Value;
+        }
+
+        public void setWheelOrder( int value ) {
+            if ( value < numericUpDownEx1.Minimum ) {
+                numericUpDownEx1.Value = numericUpDownEx1.Minimum;
+            } else if ( numericUpDownEx1.Maximum < value ) {
+                numericUpDownEx1.Value = numericUpDownEx1.Maximum;
+            } else {
+                numericUpDownEx1.Value = value;
             }
         }
 
-        public boolean CursorFixed {
-            get {
-                return chkCursorFix.Checked;
-            }
-            set {
-                chkCursorFix.Checked = value;
-            }
+        public Font getScreenFont() {
+            return m_screen_font;
         }
 
-        public int WheelOrder {
-            get {
-                return (int)numericUpDownEx1.Value;
-            }
-            set {
-                if ( value < numericUpDownEx1.Minimum ) {
-                    numericUpDownEx1.Value = numericUpDownEx1.Minimum;
-                } else if ( numericUpDownEx1.Maximum < value ) {
-                    numericUpDownEx1.Value = numericUpDownEx1.Maximum;
-                } else {
-                    numericUpDownEx1.Value = value;
-                }
-            }
-        }
-
-        public Font ScreenFont {
-            get {
-                return m_screen_font;
-            }
-            set {
-                m_screen_font = value;
-                labelScreenFontName.Text = m_screen_font.Name;
-            }
+        public void setScreenFont( Font value ) {
+            m_screen_font = value;
+            labelScreenFontName.Text = m_screen_font.getName();
         }
 
         public java.awt.Font getBaseFont() {
@@ -815,32 +774,31 @@ namespace Boare.Cadencii {
             UpdateFonts( m_base_font.getName() );
         }
 
-        public String DefaultSingerName {
-            get {
-                if ( comboDefualtSinger.SelectedIndex >= 0 ) {
-                    return m_program_change.get( comboDefualtSinger.SelectedIndex );
-                } else {
-                    return "Miku";
+        public String getDefaultSingerName() {
+            if ( comboDefualtSinger.SelectedIndex >= 0 ) {
+                return m_program_change.get( comboDefualtSinger.SelectedIndex );
+            } else {
+                return "Miku";
+            }
+        }
+
+        public void setDefaultSingerName( String value ) {
+            int index = -1;
+            for ( int i = 0; i < m_program_change.size(); i++ ) {
+                if ( m_program_change.get( i ).Equals( value ) ) {
+                    index = i;
+                    break;
                 }
             }
-            set {
-                int index = -1;
-                for ( int i = 0; i < m_program_change.size(); i++ ) {
-                    if ( m_program_change.get( i ).Equals( value ) ) {
-                        index = i;
-                        break;
-                    }
-                }
-                if ( index >= 0 ) {
-                    comboDefualtSinger.SelectedIndex = index;
-                }
+            if ( index >= 0 ) {
+                comboDefualtSinger.SelectedIndex = index;
             }
         }
 
         private void btnChangeMenuFont_Click( object sender, EventArgs e ) {
             fontDialog.Font = getBaseFont().font;
             if ( fontDialog.ShowDialog() == DialogResult.OK ) {
-                m_base_font.font = (Font)fontDialog.Font.Clone();
+                m_base_font.font = (System.Drawing.Font)fontDialog.Font.Clone();
             }
         }
 
@@ -849,9 +807,9 @@ namespace Boare.Cadencii {
         }
 
         private void btnChangeScreenFont_Click( object sender, EventArgs e ) {
-            fontDialog.Font = ScreenFont;
+            fontDialog.Font = m_screen_font.font;
             if ( fontDialog.ShowDialog() == DialogResult.OK ) {
-                ScreenFont = (Font)fontDialog.Font.Clone();
+                m_screen_font = (Font)fontDialog.Font.Clone();
             }
         }
 
@@ -859,10 +817,8 @@ namespace Boare.Cadencii {
             if ( font_name.Equals( "" ) ) {
                 return;
             }
-            Font font = new Font( font_name, tabSequence.Font.Size, tabSequence.Font.Unit );
-            foreach ( Control ctrl in this.Controls ) {
-                ctrl.Font = font;
-            }
+            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)tabSequence.Font.Size );
+            Util.applyFontRecurse( this, font );
         }
 
         private void comboPlatform_SelectedIndexChanged( object sender, EventArgs e ) {
@@ -877,18 +833,17 @@ namespace Boare.Cadencii {
             }
         }
 
-        public boolean CommandKeyAsControl {
-            get {
-                return chkCommandKeyAsControl.Checked;
-            }
-            set {
-                chkCommandKeyAsControl.Checked = value;
-            }
+        public boolean isCommandKeyAsControl() {
+            return chkCommandKeyAsControl.Checked;
+        }
+
+        public void setCommandKeyAsControl( boolean value ) {
+            chkCommandKeyAsControl.Checked = value;
         }
 
         private void btnResampler_Click( object sender, EventArgs e ) {
-            if ( txtResampler.Text != "" && Directory.Exists( Path.GetDirectoryName( txtResampler.Text ) ) ) {
-                openUtauCore.InitialDirectory = Path.GetDirectoryName( txtResampler.Text );
+            if ( txtResampler.Text != "" && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtResampler.Text ) ) ) {
+                openUtauCore.InitialDirectory = PortUtil.getDirectoryName( txtResampler.Text );
             }
             openUtauCore.FileName = "resampler.exe";
             DialogResult dr = DialogResult.Cancel;
@@ -910,8 +865,8 @@ namespace Boare.Cadencii {
         }
 
         private void btnWavtool_Click( object sender, EventArgs e ) {
-            if ( txtWavtool.Text != "" && Directory.Exists( Path.GetDirectoryName( txtWavtool.Text ) ) ) {
-                openUtauCore.InitialDirectory = Path.GetDirectoryName( txtWavtool.Text );
+            if ( txtWavtool.Text != "" && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.Text ) ) ) {
+                openUtauCore.InitialDirectory = PortUtil.getDirectoryName( txtWavtool.Text );
             }
             openUtauCore.FileName = "wavtool.exe";
             DialogResult dr = DialogResult.Cancel;
@@ -932,35 +887,32 @@ namespace Boare.Cadencii {
             }
         }
 
-        public String PathResampler {
-            get {
-                return txtResampler.Text;
-            }
-            set {
-                txtResampler.Text = value;
-            }
+        public String getPathResampler() {
+            return txtResampler.Text;
         }
 
-        public String PathWavtool {
-            get {
-                return txtWavtool.Text;
-            }
-            set {
-                txtWavtool.Text = value;
-            }
+        public void setPathResampler( String value ) {
+            txtResampler.Text = value;
         }
 
-        public Vector<SingerConfig> UtauSingers {
-            get {
-                return m_utau_singers;
+        public String getPathWavtool() {
+            return txtWavtool.Text;
+        }
+
+        public void setPathWavtool( String value ) {
+            txtWavtool.Text = value;
+        }
+
+        public Vector<SingerConfig> getUtauSingers() {
+            return m_utau_singers;
+        }
+
+        public void setUtauSingers( Vector<SingerConfig> value ) {
+            m_utau_singers.clear();
+            for ( int i = 0; i < value.size(); i++ ) {
+                m_utau_singers.add( (SingerConfig)value.get( i ).clone() );
             }
-            set {
-                m_utau_singers.clear();
-                for ( int i = 0; i < value.size(); i++ ) {
-                    m_utau_singers.add( (SingerConfig)value.get( i ).clone() );
-                }
-                UpdateUtauSingerList();
-            }
+            UpdateUtauSingerList();
         }
 
         private void UpdateUtauSingerList() {
@@ -977,7 +929,7 @@ namespace Boare.Cadencii {
             if ( folderBrowserSingers.ShowDialog() == DialogResult.OK ) {
                 String dir = folderBrowserSingers.SelectedPath;
                 SingerConfig sc = new SingerConfig();
-                String character = Path.Combine( dir, "character.txt" );
+                String character = PortUtil.combinePath( dir, "character.txt" );
                 String name = "";
                 sc.VOICEIDSTR = dir;
                 if ( PortUtil.isFileExists( character ) ) {
@@ -1003,19 +955,17 @@ namespace Boare.Cadencii {
             }
         }
 
-        private int UtauSingersSelectedIndex {
-            get {
-                int count = listSingers.SelectedIndices.Count;
-                if ( count <= 0 ) {
-                    return -1;
-                } else {
-                    return listSingers.SelectedIndices[0];
-                }
+        private int getUtauSingersSelectedIndex() {
+            int count = listSingers.SelectedIndices.Count;
+            if ( count <= 0 ) {
+                return -1;
+            } else {
+                return listSingers.SelectedIndices[0];
             }
         }
 
         private void listSingers_SelectedIndexChanged( object sender, EventArgs e ) {
-            int index = UtauSingersSelectedIndex;
+            int index = getUtauSingersSelectedIndex();
             if ( index < 0 ) {
                 btnRemove.Enabled = false;
                 btnUp.Enabled = false;
@@ -1028,7 +978,7 @@ namespace Boare.Cadencii {
         }
 
         private void btnRemove_Click( object sender, EventArgs e ) {
-            int index = UtauSingersSelectedIndex;
+            int index = getUtauSingersSelectedIndex();
             if ( 0 <= index && index < m_utau_singers.size() ) {
                 m_utau_singers.removeElementAt( index );
             }
@@ -1036,7 +986,7 @@ namespace Boare.Cadencii {
         }
 
         private void btnDown_Click( object sender, EventArgs e ) {
-            int index = UtauSingersSelectedIndex;
+            int index = getUtauSingersSelectedIndex();
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnDown_Click; index=" + index );
 #endif
@@ -1050,7 +1000,7 @@ namespace Boare.Cadencii {
         }
 
         private void btnUp_Click( object sender, EventArgs e ) {
-            int index = UtauSingersSelectedIndex;
+            int index = getUtauSingersSelectedIndex();
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnUp_Click; index=" + index );
 #endif
@@ -1068,4 +1018,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

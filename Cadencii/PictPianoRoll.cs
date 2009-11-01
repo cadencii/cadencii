@@ -13,6 +13,13 @@
  */
 #if JAVA
 package org.kbinani.Cadencii;
+
+import java.awt.*;
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
@@ -27,9 +34,19 @@ namespace Boare.Cadencii {
     using java = bocoree;
 #endif
 
+#if JAVA
+    public class PicturePianoRoll extends BPanel {
+#else
     public class PictPianoRoll : PictureBox {
+#endif
+
+#if JAVA
+        public BEvent<BKeyEventHandler> keyDownEvent;
+        public BEvent<BKeyEventHandler> keyUpEvent;
+#else
         public event KeyEventHandler BKeyDown;
         public event KeyEventHandler BKeyUp;
+#endif
 
         private readonly Color s_brs_192_192_192 = new Color( 192, 192, 192 );
         private readonly Color s_brs_a098_000_000_000 = new Color( 0, 0, 0, 98 );

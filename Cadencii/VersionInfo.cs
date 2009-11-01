@@ -36,7 +36,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if JAVA
-    public class VersionInfo extends BForm
+    public class VersionInfo extends BForm {
 #else
     public class VersionInfo : BForm {
 #endif
@@ -147,9 +147,7 @@ namespace Boare.Cadencii {
 #if JAVA
             GenerateAuthorList();
 #else
-#if DEBUG
             GenerateAuthorList();
-#endif
 #endif
         }
 
