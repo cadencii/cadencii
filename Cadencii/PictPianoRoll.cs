@@ -934,7 +934,7 @@ namespace Boare.Cadencii {
             }
             //SmoothingMode sm = g.SmoothingMode;
             //g.SmoothingMode = SmoothingMode.AntiAlias;
-            const int _UWID = 10;
+            int _UWID = 10;
             int count = vibrato_length / _UWID + 1;
             int[] _BASE_X = new int[] { x0 - _UWID, x0 + 2 - _UWID, x0 + 4 - _UWID, x0 + 7 - _UWID, x0 + 9 - _UWID, x0 + 10 - _UWID };
             int[] _BASE_Y = new int[] { y0 - 4, y0 - 7, y0 - 7, y0 - 1, y0 - 1, y0 - 4 };

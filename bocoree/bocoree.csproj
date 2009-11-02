@@ -71,6 +71,9 @@
     <Compile Include="BCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="BComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BDelegate.cs" />
     <Compile Include="BDialogResult.cs" />
     <Compile Include="BDoWorkEventArgs.cs" />
@@ -78,6 +81,8 @@
     <Compile Include="BEvent.cs" />
     <Compile Include="BEventArgs.cs" />
     <Compile Include="BEventHandler.cs" />
+    <Compile Include="BFileChooser.cs">
+    </Compile>
     <Compile Include="BForm.cs">
       <SubType>Form</SubType>
     </Compile>

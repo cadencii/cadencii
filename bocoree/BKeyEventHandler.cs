@@ -12,9 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani;
+package org.kbinani.windows.forms;
 
 import java.lang.reflect.*;
+import org.kbinani.*;
 
 public class BKeyEventHandler implements IEventHandler{
     private BDelegate m_delegate = null;
