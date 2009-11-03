@@ -1,4 +1,5 @@
-﻿/*
+﻿#if USE_VOCALOID
+/*
  * VSTiProxy.cs
  * Copyright (c) 2008-2009 kbinani
  *
@@ -649,3 +650,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

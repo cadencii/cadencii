@@ -11,6 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if USE_PROPERTY
 using System;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
@@ -232,3 +233,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

@@ -42,7 +42,9 @@ namespace Boare.Cadencii {
 
         public static String CurrentUser = "";
         private static String s_working_renderer = "";
+#if USE_VOCALOID
         private static Vector<VstiRenderer> m_vstidrv = new Vector<VstiRenderer>();
+#endif
 
         private static RenderingRunner s_rendering_context;
 
@@ -55,6 +57,8 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "VSTiProxy..cctor" );
 #endif
             PlaySound.init( SAMPLE_RATE );
+
+#if USE_VOCALOID
 #if !DEBUG
             try {
 #endif
@@ -112,14 +116,17 @@ namespace Boare.Cadencii {
 #endif
                 }
             }
+#endif
         }
 
         public static boolean isRendererAvailable( String renderer ) {
+#if USE_VOCALOID
             for ( int i = 0; i < m_vstidrv.size(); i++ ) {
                 if ( renderer.StartsWith( m_vstidrv.get( i ).name ) && m_vstidrv.get( i ).loaded ) {
                     return true;
                 }
             }
+#endif
             if ( renderer.StartsWith( RENDERER_UTU0 ) ) {
                 if ( AppManager.editorConfig.PathResampler != "" && PortUtil.isFileExists( AppManager.editorConfig.PathResampler ) &&
                      AppManager.editorConfig.PathWavtool != "" && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) ) {
@@ -152,11 +159,13 @@ namespace Boare.Cadencii {
         }
 
         public static void terminate() {
+#if USE_VOCALOID
             for ( int i = 0; i < m_vstidrv.size(); i++ ) {
                 if ( m_vstidrv.get( i ).dllInstance != null ) {
                     m_vstidrv.get( i ).dllInstance.Terminate();
                 }
             }
+#endif
         }
 
         /// <summary>
@@ -272,6 +281,7 @@ namespace Boare.Cadencii {
                                                                    direct_play,
                                                                    reflect_amp_to_wave );
             } else {
+#if USE_VOCALOID
                 VstiRenderer driver = null;
                 for ( int i = 0; i < m_vstidrv.size(); i++ ) {
                     if ( m_vstidrv.get( i ).name.Equals( s_working_renderer ) ) {
@@ -296,6 +306,9 @@ namespace Boare.Cadencii {
                                                                  reader,
                                                                  track,
                                                                  reflect_amp_to_wave );
+#else
+                return;
+#endif
             }
             if ( direct_play ) {
                 Thread thread = new Thread( new ParameterizedThreadStart( renderWithDirectPlay ) );
@@ -307,10 +320,13 @@ namespace Boare.Cadencii {
         }
 
         private static void renderWithDirectPlay( object argument ) {
+#if USE_VOCALOID
             if ( argument is VocaloRenderingRunner ) {
                 VocaloRenderingRunner sra = (VocaloRenderingRunner)argument;
                 sra.run();
-            } else if ( argument is UtauRenderingRunner ) {
+            } else
+#endif
+            if ( argument is UtauRenderingRunner ) {
                 UtauRenderingRunner arg = (UtauRenderingRunner)argument;
                 arg.run();
             } else if ( argument is StraightRenderingRunner ) {

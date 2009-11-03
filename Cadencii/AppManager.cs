@@ -77,8 +77,10 @@ namespace Boare.Cadencii {
         public static int baseFont10OffsetHeight = 0;
         public static int baseFont8OffsetHeight = 0;
         public static int baseFont9OffsetHeight = 0;
+#if USE_PROPERTY
         public static PropertyPanel propertyPanel;
         public static FormNoteProperty propertyWindow;
+#endif
 
         #region Static Readonly Fields
         public static readonly Color[] HILIGHT = new Color[] { 
@@ -130,85 +132,88 @@ namespace Boare.Cadencii {
                                              "using System.Drawing;",
                                              "using System.Text;",
                                              "using System.Xml.Serialization;" };
-        public static readonly Vector<Keys> SHORTCUT_ACCEPTABLE = new Vector<Keys>( new Keys[]{
-            Keys.A,
-            Keys.B,
-            Keys.C,
-            Keys.D,
-            Keys.D0,
-            Keys.D1,
-            Keys.D2,
-            Keys.D3,
-            Keys.D4,
-            Keys.D5,
-            Keys.D6,
-            Keys.D7,
-            Keys.D8,
-            Keys.D9,
-            Keys.Down,
-            Keys.E,
-            Keys.F,
-            Keys.F1,
-            Keys.F2,
-            Keys.F3,
-            Keys.F4,
-            Keys.F5,
-            Keys.F6,
-            Keys.F7,
-            Keys.F8,
-            Keys.F9,
-            Keys.F10,
-            Keys.F11,
-            Keys.F12,
-            Keys.F13,
-            Keys.F14,
-            Keys.F15,
-            Keys.F16,
-            Keys.F17,
-            Keys.F18,
-            Keys.F19,
-            Keys.F20,
-            Keys.F21,
-            Keys.F22,
-            Keys.F23,
-            Keys.F24,
-            Keys.G,
-            Keys.H,
-            Keys.I,
-            Keys.J,
-            Keys.K,
-            Keys.L,
-            Keys.Left,
-            Keys.M,
-            Keys.N,
-            Keys.NumPad0,
-            Keys.NumPad1,
-            Keys.NumPad2,
-            Keys.NumPad3,
-            Keys.NumPad4,
-            Keys.NumPad5,
-            Keys.NumPad6,
-            Keys.NumPad7,
-            Keys.NumPad8,
-            Keys.NumPad9,
-            Keys.O,
-            Keys.P,
-            Keys.PageDown,
-            Keys.PageUp,
-            Keys.Q,
-            Keys.R,
-            Keys.Right,
-            Keys.S,
-            Keys.Space,
-            Keys.T,
-            Keys.U,
-            Keys.Up,
-            Keys.V,
-            Keys.W,
-            Keys.X,
-            Keys.Y,
-            Keys.Z,
-            Keys.Delete } );
+        public static readonly Vector<BKeys> SHORTCUT_ACCEPTABLE = new Vector<BKeys>( new BKeys[]{
+            BKeys.A,
+            BKeys.B,
+            BKeys.C,
+            BKeys.D,
+            BKeys.D0,
+            BKeys.D1,
+            BKeys.D2,
+            BKeys.D3,
+            BKeys.D4,
+            BKeys.D5,
+            BKeys.D6,
+            BKeys.D7,
+            BKeys.D8,
+            BKeys.D9,
+            BKeys.Down,
+            BKeys.E,
+            BKeys.F,
+            BKeys.F1,
+            BKeys.F2,
+            BKeys.F3,
+            BKeys.F4,
+            BKeys.F5,
+            BKeys.F6,
+            BKeys.F7,
+            BKeys.F8,
+            BKeys.F9,
+            BKeys.F10,
+            BKeys.F11,
+            BKeys.F12,
+            BKeys.F13,
+            BKeys.F14,
+            BKeys.F15,
+            BKeys.F16,
+            BKeys.F17,
+            BKeys.F18,
+            BKeys.F19,
+            BKeys.F20,
+            BKeys.F21,
+            BKeys.F22,
+            BKeys.F23,
+            BKeys.F24,
+            BKeys.G,
+            BKeys.H,
+            BKeys.I,
+            BKeys.J,
+            BKeys.K,
+            BKeys.L,
+            BKeys.Left,
+            BKeys.M,
+            BKeys.N,
+            BKeys.NumPad0,
+            BKeys.NumPad1,
+            BKeys.NumPad2,
+            BKeys.NumPad3,
+            BKeys.NumPad4,
+            BKeys.NumPad5,
+            BKeys.NumPad6,
+            BKeys.NumPad7,
+            BKeys.NumPad8,
+            BKeys.NumPad9,
+            BKeys.O,
+            BKeys.P,
+            BKeys.PageDown,
+            BKeys.PageUp,
+            BKeys.Q,
+            BKeys.R,
+            BKeys.Right,
+            BKeys.S,
+            BKeys.Space,
+            BKeys.T,
+            BKeys.U,
+            BKeys.Up,
+            BKeys.V,
+            BKeys.W,
+            BKeys.X,
+            BKeys.Y,
+            BKeys.Z,
+            BKeys.Delete,
+            BKeys.Home,
+            BKeys.End,
+        } );
         public static readonly CurveType[] CURVE_USAGE = new CurveType[]{ CurveType.DYN,
                                                                           CurveType.BRE,
                                                                           CurveType.BRI,
@@ -474,18 +479,22 @@ namespace Boare.Cadencii {
         }
 
         public static BDialogResult showMessageBox( string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon ) {
+#if USE_PROPERTY
             bool property = (propertyWindow != null) ? propertyWindow.TopMost : false;
-            bool mixer = (mixerWindow != null) ? mixerWindow.TopMost : false;
             if ( property ) {
                 propertyWindow.TopMost = false;
             }
+#endif
+            bool mixer = (mixerWindow != null) ? mixerWindow.TopMost : false;
             if ( mixer ) {
                 mixerWindow.TopMost = false;
             }
             DialogResult dr = MessageBox.Show( text, caption, buttons, icon );
+#if USE_PROPERTY
             if ( property ) {
                 propertyWindow.TopMost = true;
             }
+#endif
             if ( mixer ) {
                 mixerWindow.TopMost = true;
             }
@@ -1289,7 +1298,9 @@ namespace Boare.Cadencii {
                 }
             }
             if ( !silent ) {
+#if USE_PROPERTY
                 propertyPanel.UpdateValue( s_selected );
+#endif
             }
         }
 
@@ -1309,7 +1320,9 @@ namespace Boare.Cadencii {
             for ( int i = count - 1; i >= 0; i-- ) {
                 s_selected_events.removeElementAt( i );
             }
+#if USE_PROPERTY
             propertyPanel.UpdateValue( s_selected );
+#endif
             checkSelectedItemExistence();
         }
 
@@ -1342,7 +1355,9 @@ namespace Boare.Cadencii {
                     s_selected_events.add( new SelectedEventEntry( s_selected, index[i], (VsqEvent)index[i].clone() ) );
                 }
             }
+#if USE_PROPERTY
             propertyPanel.UpdateValue( s_selected );
+#endif
             checkSelectedItemExistence();
         }
 
@@ -1384,13 +1399,17 @@ namespace Boare.Cadencii {
                 }
             }
             if ( !silent ) {
+#if USE_PROPERTY
                 propertyPanel.UpdateValue( s_selected );
+#endif
             }
         }
 
         public static void clearSelectedEvent() {
             s_selected_events.clear();
+#if USE_PROPERTY
             propertyPanel.UpdateValue( s_selected );
+#endif
             checkSelectedItemExistence();
         }
 
@@ -1839,10 +1858,13 @@ namespace Boare.Cadencii {
             s_id = Misc.getmd5( DateTime.Now.ToBinary().ToString() ).Replace( "_", "" );
             String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
 #endif
+
+#if USE_PROPERTY
             propertyPanel = new PropertyPanel();
             propertyWindow = new FormNoteProperty();
             propertyWindow.Controls.Add( propertyPanel );
             propertyPanel.Dock = DockStyle.Fill;
+#endif
         }
 
         public static String getShortcutDisplayString( BKeys[] keys ) {

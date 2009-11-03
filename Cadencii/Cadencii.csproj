@@ -5,7 +5,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Boare.Cadencii</RootNamespace>
     <AssemblyName>Cadencii</AssemblyName>
@@ -71,14 +71,14 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>DEBUG;TEST, USE_DOBJ, USE_PROPERTY</DefineConstants>
+    <DefineConstants>DEBUG;TEST, USE_DOBJ</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DefineConstants>USE_DOBJ, TEST, USE_PROPERTY</DefineConstants>
+    <DefineConstants>USE_DOBJ, TEST, USE_PROPERTY, USE_VOCALOID</DefineConstants>
     <Optimize>true</Optimize>
     <DocumentationFile>
     </DocumentationFile>

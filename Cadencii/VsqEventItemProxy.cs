@@ -1,4 +1,5 @@
-﻿/*
+﻿#if USE_PROPERTY
+/*
  * VsqEventItemProxy.cs
  * Copyright (c) 2009 kbinani
  *
@@ -626,3 +627,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

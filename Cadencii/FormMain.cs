@@ -385,7 +385,9 @@ namespace Boare.Cadencii {
         private Preference m_preference_dlg;
         private BToolStripButton m_strip_ddbtn_metronome;
         //private FormUtauVoiceConfig m_utau_voice_dialog = null;
+#if USE_PROPERTY
         private PropertyPanelContainer m_property_panel_container;
+#endif
         private Vector<ToolStripItem> m_palette_tools = new Vector<ToolStripItem>();
 
         private int m_overview_direction = 1;
@@ -482,7 +484,9 @@ namespace Boare.Cadencii {
             m_overview_px_per_clock = getOverviewScaleX( m_overview_scale_count );
 
             menuVisualOverview.setSelected( AppManager.editorConfig.OverviewEnabled );
+#if USE_PROPERTY
             m_property_panel_container = new PropertyPanelContainer();
+#endif
 
             m_strip_ddbtn_metronome = new BToolStripButton();
             m_strip_ddbtn_metronome.setText( "Metronome" );
@@ -593,8 +597,16 @@ namespace Boare.Cadencii {
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
             splitContainerProperty.FixedPanel = FixedPanel.Panel1;
+#if USE_PROPERTY
             splitContainerProperty.Panel1.Controls.Add( m_property_panel_container );
             m_property_panel_container.Dock = DockStyle.Fill;
+#else
+            splitContainerProperty.Panel1MinSize = 0;
+            splitContainerProperty.SplitterDistance = 0;
+            splitContainerProperty.IsSplitterFixed = true;
+            menuVisualProperty.Visible = false;
+#endif
+
             splitContainerProperty.Panel2.Controls.Add( splitContainer1 );
             splitContainerProperty.Dock = DockStyle.Fill;
 
@@ -709,7 +721,6 @@ namespace Boare.Cadencii {
                 HAND = new Cursor( ms );
             }
 #endif
-
             applyShortcut();
         }
 
@@ -2089,7 +2100,11 @@ namespace Boare.Cadencii {
 
         private void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( m_form_activated ) {
+#if USE_PROPERTY
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible && !AppManager.propertyPanel.Editing ) {
+#else
+                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible ) {
+#endif
                     pictPianoRoll.Focus();
                 }
             }
@@ -3254,7 +3269,9 @@ namespace Boare.Cadencii {
             AppManager.CurrentClockChanged += new EventHandler( AppManager_CurrentClockChanged );
             AppManager.SelectedToolChanged += new EventHandler( AppManager_SelectedToolChanged );
             EditorConfig.QuantizeModeChanged += new EventHandler( EditorConfig_QuantizeModeChanged );
+#if USE_PROPERTY
             m_property_panel_container.StateChangeRequired += new StateChangeRequiredEventHandler( m_property_panel_container_StateChangeRequired );
+#endif
 
             updateRecentFileMenu();
 
@@ -3348,6 +3365,8 @@ namespace Boare.Cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain_Load; a=" + a );
 #endif
+
+#if USE_PROPERTY
             AppManager.propertyWindow.setBounds( a.x, a.y, rc.width, rc.height );
             AppManager.propertyWindow.LocationChanged += new EventHandler( m_note_proerty_dlg_LocationOrSizeChanged );
             AppManager.propertyWindow.SizeChanged += new EventHandler( m_note_proerty_dlg_LocationOrSizeChanged );
@@ -3355,6 +3374,7 @@ namespace Boare.Cadencii {
             AppManager.propertyPanel.CommandExecuteRequired += new CommandExecuteRequiredEventHandler( m_note_proerty_dlg_CommandExecuteRequired );
             AppManager.propertyWindow.setFormCloseShortcutKey( AppManager.editorConfig.getShortcutKeyFor( menuVisualProperty ) );
             updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
+#endif
             updateBgmMenuState();
 
             this.SizeChanged += new System.EventHandler( this.FormMain_SizeChanged );
@@ -3505,10 +3525,13 @@ namespace Boare.Cadencii {
 #endif
         }
 
+#if USE_PROPERTY
         private void m_property_panel_container_StateChangeRequired( Object sender, PanelState arg ) {
             updatePropertyPanelState( arg );
         }
+#endif
 
+#if USE_PROPERTY
         private void m_note_proerty_dlg_CommandExecuteRequired( CadenciiCommand command ) {
 #if DEBUG
             AppManager.debugWriteLine( "m_note_property_dlg_CommandExecuteRequired" );
@@ -3518,14 +3541,18 @@ namespace Boare.Cadencii {
             refreshScreen();
             setEdited( true );
         }
+#endif
 
+#if USE_PROPERTY
         private void m_note_proerty_dlg_FormClosing( Object sender, FormClosingEventArgs e ) {
             if ( e.CloseReason == CloseReason.UserClosing ) {
                 e.Cancel = true;
                 updatePropertyPanelState( PanelState.Hidden );
             }
         }
+#endif
 
+#if USE_PROPERTY
         private void m_note_proerty_dlg_LocationOrSizeChanged( Object sender, BEventArgs e ) {
 #if DEBUG
             PortUtil.println( "m_note_proeprty_dlg_LocationOrSizeChanged; WindowState=" + AppManager.propertyWindow.WindowState );
@@ -3543,6 +3570,7 @@ namespace Boare.Cadencii {
                 }
             }
         }
+#endif
 
         private void FormMain_LocationChanged( Object sender, BEventArgs e ) {
             if ( this.WindowState == FormWindowState.Normal ) {
@@ -3553,16 +3581,22 @@ namespace Boare.Cadencii {
         private void FormMain_SizeChanged( Object sender, BEventArgs e ) {
             if ( this.WindowState == FormWindowState.Normal ) {
                 AppManager.editorConfig.WindowRect = this.getBounds();
+#if USE_PROPERTY
                 AppManager.propertyWindow.WindowState = FormWindowState.Normal;
                 AppManager.propertyWindow.Visible = AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window;
+#endif
                 AppManager.mixerWindow.Visible = AppManager.editorConfig.MixerVisible;
                 updateLayout();
             } else if ( this.WindowState == FormWindowState.Minimized ) {
+#if USE_PROPERTY
                 AppManager.propertyWindow.Visible = false;
+#endif
                 AppManager.mixerWindow.Visible = false;
             } else if ( this.WindowState == FormWindowState.Maximized ) {
+#if USE_PROPERTY
                 AppManager.propertyWindow.WindowState = FormWindowState.Normal;
                 AppManager.propertyWindow.Visible = AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window;
+#endif
                 AppManager.mixerWindow.Visible = AppManager.editorConfig.MixerVisible;
             }
         }
@@ -4951,8 +4985,10 @@ namespace Boare.Cadencii {
                     if ( m_versioninfo != null && !m_versioninfo.IsDisposed ) {
                         m_versioninfo.ApplyLanguage();
                     }
+#if USE_PROPERTY
                     AppManager.propertyWindow.ApplyLanguage();
                     AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
+#endif
                 }
 
                 AppManager.editorConfig.ControlCurveResolution = m_preference_dlg.getControlCurveResolution();
@@ -5115,7 +5151,9 @@ namespace Boare.Cadencii {
                         }
                     }
                     applyShortcut();
+#if USE_PROPERTY
                     AppManager.propertyWindow.setFormCloseShortcutKey( AppManager.editorConfig.getShortcutKeyFor( menuVisualProperty ) );
+#endif
                 }
             } catch ( Exception ex ) {
             } finally {
@@ -6725,7 +6763,11 @@ namespace Boare.Cadencii {
 
         private void trackSelector_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( m_form_activated ) {
+#if USE_PROPERTY
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible && !AppManager.propertyPanel.Editing ) {
+#else
+                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible ) {
+#endif
                     trackSelector.Focus();
                 }
             }
@@ -7982,6 +8024,7 @@ namespace Boare.Cadencii {
         }
 
         private void menuVisualProperty_Click( Object sender, BEventArgs e ) {
+#if USE_PROPERTY
             if ( menuVisualProperty.Checked ) {
                 if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
                     updatePropertyPanelState( PanelState.Docked );
@@ -7991,6 +8034,7 @@ namespace Boare.Cadencii {
             } else {
                 updatePropertyPanelState( PanelState.Hidden );
             }
+#endif
         }
 
         private void menuSettingUtauVoiceDB_Click( Object sender, BEventArgs e ) {
@@ -8474,6 +8518,7 @@ namespace Boare.Cadencii {
             updateBgmMenuState();
         }
 
+#if USE_PROPERTY
         private void updatePropertyPanelState( PanelState state ) {
             if ( state == PanelState.Docked ) {
                 m_property_panel_container.Add( AppManager.propertyPanel );
@@ -8496,9 +8541,6 @@ namespace Boare.Cadencii {
                 splitContainerProperty.SplitterDistance = 0;
                 splitContainerProperty.IsSplitterFixed = true;
             } else if ( state == PanelState.Window ) {
-#if DEBUG
-                PortUtil.println( "UpatePropertyPanelState; state=Window; AppManager.PropertyWindow.WindowState=" + AppManager.propertyWindow.WindowState );
-#endif
                 AppManager.propertyWindow.Visible = true;
                 if ( AppManager.propertyWindow.WindowState != FormWindowState.Normal ) {
                     AppManager.propertyWindow.WindowState = FormWindowState.Normal;
@@ -8520,6 +8562,7 @@ namespace Boare.Cadencii {
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Normal;
             }
         }
+#endif
 
         /// <summary>
         /// VsqEvent, VsqBPList, BezierCurvesの全てのクロックを、tempoに格納されているテンポテーブルに
@@ -12375,7 +12418,10 @@ namespace Boare.Cadencii {
 #if USE_DOBJ
             updateDrawObjectList();
 #endif
+
+#if USE_PROPERTY
             AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
+#endif
         }
 
         /// <summary>
@@ -12504,9 +12550,12 @@ namespace Boare.Cadencii {
 #if USE_DOBJ
                 updateDrawObjectList();
 #endif
+
+#if USE_PROPERTY
                 if ( AppManager.propertyPanel != null ) {
                     AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
                 }
+#endif
             }
         }
 
@@ -12528,9 +12577,12 @@ namespace Boare.Cadencii {
 #if USE_DOBJ
                 updateDrawObjectList();
 #endif
+
+#if USE_PROPERTY
                 if ( AppManager.propertyPanel != null ) {
                     AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
                 }
+#endif
             }
         }
 

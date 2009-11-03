@@ -144,9 +144,12 @@ namespace Boare.Cadencii {
             if ( list.SelectedIndices.Count <= 0 ) {
                 return;
             }
+#if DEBUG
+            PortUtil.println( "FormShortcutKeys#list_KeyDown; e.KeyCode=" + e.KeyCode );
+#endif
             int index = list.SelectedIndices[0];
             KeyStroke stroke = KeyStroke.getKeyStroke( 0, 0 );
-            stroke.keys = e.KeyCode;
+            stroke.keys = e.KeyCode | e.Modifiers;
             int code = stroke.getKeyCode();
             int modifier = stroke.getModifiers();
 
@@ -155,12 +158,20 @@ namespace Boare.Cadencii {
             for( Iterator itr = AppManager.SHORTCUT_ACCEPTABLE.iterator(); itr.hasNext() ; ){
                 BKeys k = (BKeys)itr.next();
 #if JAVA
-                if( code == k.getValue() )
+                if( code == k.getValue() ){
 #else
-                if ( code == (int)k )
+                if ( code == (int)k ) {
 #endif
-                {
                     capturelist.add( k );
+                    if ( (modifier & InputEvent.ALT_MASK) == InputEvent.ALT_MASK ) {
+                        capturelist.add( BKeys.Alt );
+                    }
+                    if ( (modifier & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK ) {
+                        capturelist.add( BKeys.Control );
+                    }
+                    if ( (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+                        capturelist.add( BKeys.Shift );
+                    }
                     capture = k;
                     break;
                 }
@@ -173,7 +184,11 @@ namespace Boare.Cadencii {
 #else
                 m_dumy.setAccelerator( KeyStroke.getKeyStroke( (int)capture, modifier ) );
 #endif
-            } catch {
+            } catch( Exception ex ) {
+                if ( ((e.KeyCode & Keys.Up) != Keys.Up) &&
+                     ((e.KeyCode & Keys.Down) != Keys.Down) ) {
+                    e.Handled = true;
+                }
                 return;
             }
             //list.Items[index].Tag = res;
@@ -183,6 +198,7 @@ namespace Boare.Cadencii {
                 m_dict.get( display ).Value = capturelist.toArray( new BKeys[]{} );
             }
             UpdateColor();
+            e.Handled = true;
         }
 
         private void btnRevert_Click( object sender, EventArgs e ) {

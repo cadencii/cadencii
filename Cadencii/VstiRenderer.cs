@@ -1,4 +1,5 @@
-﻿/*
+﻿#if USE_VOCALOID
+/*
  * VstiRenderer.cs
  * Copyright (c) 2009 kbinani
  *
@@ -25,3 +26,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

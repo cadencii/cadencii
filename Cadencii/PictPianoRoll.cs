@@ -35,7 +35,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if JAVA
-    public class PicturePianoRoll extends BPanel {
+    public class PictPianoRoll extends BPanel {
 #else
     public class PictPianoRoll : PictureBox {
 #endif
