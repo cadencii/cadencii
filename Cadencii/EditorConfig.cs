@@ -241,7 +241,6 @@ namespace Boare.Cadencii {
         public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();
         public String PathResampler = "";
         public String PathWavtool = "";
-        public boolean UseCustomFileDialog = false;
         /// <summary>
         /// ベジエ制御点を掴む時の，掴んだと判定する際の誤差．制御点の外輪からPxToleranceBezierピクセルずれていても，掴んだと判定する．
         /// </summary>

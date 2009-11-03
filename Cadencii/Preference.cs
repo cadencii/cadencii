@@ -30,6 +30,7 @@ using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.awt;
+using bocoree.io;
 using bocoree.util;
 using bocoree.windows.forms;
 
@@ -193,14 +194,6 @@ namespace Boare.Cadencii {
 
         public void setSelfDeRomantization( boolean value ) {
             chkTranslateRoman.Checked = value;
-        }
-
-        public boolean isUseCustomFileDialog() {
-            return chkUseCustomFileDialog.Checked;
-        }
-
-        public void setUseCustomFileDialog( boolean value ) {
-            chkUseCustomFileDialog.Checked = value;
         }
 
         public boolean isInvokeWithWine() {
@@ -552,7 +545,6 @@ namespace Boare.Cadencii {
             groupPlatform.Text = _( "Platform" );
             lblPlatform.Text = _( "Current Platform" );
             chkCommandKeyAsControl.Text = _( "Use Command key as Control key" );
-            chkUseCustomFileDialog.Text = _( "Use Custom File Dialog" );
             chkTranslateRoman.Text = _( "Translate Roman letters into Kana" );
 
             groupUtauCores.Text = _( "UTAU Cores" );
@@ -836,7 +828,6 @@ namespace Boare.Cadencii {
                 if ( title.Equals( p + "" ) ) {
                     m_platform = p;
                     chkCommandKeyAsControl.Enabled = p != Platform.Windows;
-                    chkUseCustomFileDialog.Enabled = p != Platform.Windows;
                     break;
                 }
             }
@@ -855,29 +846,7 @@ namespace Boare.Cadencii {
                 openUtauCore.InitialDirectory = PortUtil.getDirectoryName( txtResampler.Text );
             }
             openUtauCore.FileName = "resampler.exe";
-            DialogResult dr = DialogResult.Cancel;
-            if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                FileDialog fd = null;
-                try {
-                    fd = new FileDialog( FileDialog.DialogMode.Open );
-                    fd.InitialDirectory = openUtauCore.InitialDirectory;
-                    fd.Filter = openUtauCore.Filter;
-                    dr = fd.ShowDialog();
-                    if ( dr == DialogResult.OK ) {
-                        openUtauCore.FileName = fd.FileName;
-                    }
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( fd != null ) {
-                        try {
-                            fd.Dispose();
-                        } catch ( Exception ex2 ) {
-                        }
-                    }
-                }
-            } else {
-                dr = openUtauCore.ShowDialog();
-            }
+            DialogResult dr = openUtauCore.ShowDialog();
             if ( dr == DialogResult.OK ) {
                 txtResampler.Text = openUtauCore.FileName;
             }
@@ -888,19 +857,7 @@ namespace Boare.Cadencii {
                 openUtauCore.InitialDirectory = PortUtil.getDirectoryName( txtWavtool.Text );
             }
             openUtauCore.FileName = "wavtool.exe";
-            DialogResult dr = DialogResult.Cancel;
-            if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                using ( FileDialog fd = new FileDialog( FileDialog.DialogMode.Open ) ) {
-                    fd.InitialDirectory = openUtauCore.InitialDirectory;
-                    fd.Filter = openUtauCore.Filter;
-                    dr = fd.ShowDialog();
-                    if ( dr == DialogResult.OK ) {
-                        openUtauCore.FileName = fd.FileName;
-                    }
-                }
-            } else {
-                dr = openUtauCore.ShowDialog();
-            }
+            DialogResult dr = openUtauCore.ShowDialog();
             if ( dr == DialogResult.OK ) {
                 txtWavtool.Text = openUtauCore.FileName;
             }
@@ -952,15 +909,25 @@ namespace Boare.Cadencii {
                 String name = "";
                 sc.VOICEIDSTR = dir;
                 if ( PortUtil.isFileExists( character ) ) {
-                    using ( cp932reader sr = new cp932reader( character ) ) {
-                        while ( sr.Peek() >= 0 ) {
-                            String line = sr.ReadLine();
+                    BufferedReader sr = null;
+                    try {
+                        sr = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
+                        String line = "";
+                        while ( (line = sr.readLine()) != null ) {
                             String[] spl = line.Split( '=' );
                             if ( spl.Length >= 2 ) {
                                 if ( spl[0].ToLower().Equals( "name" ) ) {
                                     name = spl[1];
                                     break;
                                 }
+                            }
+                        }
+                    } catch ( Exception ex ) {
+                    } finally {
+                        if ( sr != null ) {
+                            try {
+                                sr.close();
+                            } catch ( Exception ex ) {
                             }
                         }
                     }
@@ -1136,7 +1103,6 @@ namespace Boare.Cadencii {
 	    private JPanel groupPlatform = null;
 	    private JLabel lblPlatform = null;
 	    private JComboBox comboPlatform = null;
-	    private JCheckBox chkUseCustomFileDialog = null;
 	    private JCheckBox chkCommandKeyAsControl = null;
 	    private JCheckBox chkTranslateRoman = null;
 	    private JPanel groupVsti = null;
@@ -2751,12 +2717,6 @@ namespace Boare.Cadencii {
 			    gridBagConstraints91.anchor = GridBagConstraints.WEST;
 			    gridBagConstraints91.gridwidth = 2;
 			    gridBagConstraints91.gridy = 2;
-			    GridBagConstraints gridBagConstraints90 = new GridBagConstraints();
-			    gridBagConstraints90.gridx = 0;
-			    gridBagConstraints90.anchor = GridBagConstraints.WEST;
-			    gridBagConstraints90.gridwidth = 2;
-			    gridBagConstraints90.insets = new Insets(0, 12, 0, 0);
-			    gridBagConstraints90.gridy = 1;
 			    GridBagConstraints gridBagConstraints89 = new GridBagConstraints();
 			    gridBagConstraints89.fill = GridBagConstraints.NONE;
 			    gridBagConstraints89.gridy = 0;
@@ -2776,7 +2736,6 @@ namespace Boare.Cadencii {
 			    groupPlatform.setBorder(BorderFactory.createTitledBorder(null, "Platform", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			    groupPlatform.add(lblPlatform, gridBagConstraints88);
 			    groupPlatform.add(getComboPlatform(), gridBagConstraints89);
-			    groupPlatform.add(getChkUseCustomFileDialog(), gridBagConstraints90);
 			    groupPlatform.add(getChkCommandKeyAsControl(), gridBagConstraints91);
 			    groupPlatform.add(getChkTranslateRoman(), gridBagConstraints92);
 		    }
@@ -2794,19 +2753,6 @@ namespace Boare.Cadencii {
 			    comboPlatform.setPreferredSize(new Dimension(121, 20));
 		    }
 		    return comboPlatform;
-	    }
-
-	    /**
-	     * This method initializes chkUseCustomFileDialog	
-	     * 	
-	     * @return javax.swing.JCheckBox	
-	     */
-	    private JCheckBox getChkUseCustomFileDialog() {
-		    if (chkUseCustomFileDialog == null) {
-			    chkUseCustomFileDialog = new JCheckBox();
-			    chkUseCustomFileDialog.setText("Use Custom File Dialog");
-		    }
-		    return chkUseCustomFileDialog;
 	    }
 
 	    /**
@@ -3404,143 +3350,142 @@ namespace Boare.Cadencii {
         private void InitializeComponent() {
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
-            this.label5 = new BLabel();
-            this.label4 = new BLabel();
-            this.label2 = new BLabel();
-            this.comboPeriod = new BComboBox();
-            this.comboAmplitude = new BComboBox();
-            this.comboDynamics = new BComboBox();
-            this.lblPeriod = new BLabel();
-            this.lblAmplitude = new BLabel();
-            this.lblDynamics = new BLabel();
-            this.label1 = new BLabel();
-            this.lblResolution = new BLabel();
-            this.label7 = new BLabel();
+            this.label5 = new bocoree.windows.forms.BLabel();
+            this.label4 = new bocoree.windows.forms.BLabel();
+            this.label2 = new bocoree.windows.forms.BLabel();
+            this.comboPeriod = new bocoree.windows.forms.BComboBox();
+            this.comboAmplitude = new bocoree.windows.forms.BComboBox();
+            this.comboDynamics = new bocoree.windows.forms.BComboBox();
+            this.lblPeriod = new bocoree.windows.forms.BLabel();
+            this.lblAmplitude = new bocoree.windows.forms.BLabel();
+            this.lblDynamics = new bocoree.windows.forms.BLabel();
+            this.label1 = new bocoree.windows.forms.BLabel();
+            this.lblResolution = new bocoree.windows.forms.BLabel();
+            this.label7 = new bocoree.windows.forms.BLabel();
             this.groupAutoVibratoConfig = new System.Windows.Forms.GroupBox();
-            this.comboAutoVibratoType2 = new BComboBox();
-            this.lblAutoVibratoType2 = new BLabel();
-            this.label6 = new BLabel();
-            this.comboAutoVibratoType1 = new BComboBox();
-            this.comboAutoVibratoMinLength = new BComboBox();
-            this.lblAutoVibratoType1 = new BLabel();
-            this.lblAutoVibratoMinLength = new BLabel();
-            this.chkEnableAutoVibrato = new BCheckBox();
-            this.label3 = new BLabel();
-            this.comboVibratoLength = new BComboBox();
-            this.lblVibratoLength = new BLabel();
-            this.lblVibratoConfig = new BLabel();
+            this.comboAutoVibratoType2 = new bocoree.windows.forms.BComboBox();
+            this.lblAutoVibratoType2 = new bocoree.windows.forms.BLabel();
+            this.label6 = new bocoree.windows.forms.BLabel();
+            this.comboAutoVibratoType1 = new bocoree.windows.forms.BComboBox();
+            this.comboAutoVibratoMinLength = new bocoree.windows.forms.BComboBox();
+            this.lblAutoVibratoType1 = new bocoree.windows.forms.BLabel();
+            this.lblAutoVibratoMinLength = new bocoree.windows.forms.BLabel();
+            this.chkEnableAutoVibrato = new bocoree.windows.forms.BCheckBox();
+            this.label3 = new bocoree.windows.forms.BLabel();
+            this.comboVibratoLength = new bocoree.windows.forms.BComboBox();
+            this.lblVibratoLength = new bocoree.windows.forms.BLabel();
+            this.lblVibratoConfig = new bocoree.windows.forms.BLabel();
             this.tabAnother = new System.Windows.Forms.TabPage();
-            this.label15 = new BLabel();
-            this.label14 = new BLabel();
-            this.label13 = new BLabel();
-            this.label12 = new BLabel();
-            this.comboDefaultPremeasure = new BComboBox();
-            this.comboDefualtSinger = new BComboBox();
-            this.label11 = new BLabel();
-            this.lblPreSendTimeSample = new BLabel();
-            this.lblTiming = new BLabel();
-            this.chkEnableSampleOutput = new BCheckBox();
-            this.lblSampleOutput = new BLabel();
-            this.chkChasePastEvent = new BCheckBox();
-            this.lblDefaultPremeasure = new BLabel();
-            this.lblWait = new BLabel();
-            this.lblPreSendTime = new BLabel();
-            this.lblDefaultSinger = new BLabel();
+            this.label15 = new bocoree.windows.forms.BLabel();
+            this.label14 = new bocoree.windows.forms.BLabel();
+            this.label13 = new bocoree.windows.forms.BLabel();
+            this.label12 = new bocoree.windows.forms.BLabel();
+            this.comboDefaultPremeasure = new bocoree.windows.forms.BComboBox();
+            this.comboDefualtSinger = new bocoree.windows.forms.BComboBox();
+            this.label11 = new bocoree.windows.forms.BLabel();
+            this.lblPreSendTimeSample = new bocoree.windows.forms.BLabel();
+            this.lblTiming = new bocoree.windows.forms.BLabel();
+            this.chkEnableSampleOutput = new bocoree.windows.forms.BCheckBox();
+            this.lblSampleOutput = new bocoree.windows.forms.BLabel();
+            this.chkChasePastEvent = new bocoree.windows.forms.BCheckBox();
+            this.lblDefaultPremeasure = new bocoree.windows.forms.BLabel();
+            this.lblWait = new bocoree.windows.forms.BLabel();
+            this.lblPreSendTime = new bocoree.windows.forms.BLabel();
+            this.lblDefaultSinger = new bocoree.windows.forms.BLabel();
             this.numPreSendTimeSample = new Boare.Cadencii.NumericUpDownEx();
             this.numTiming = new Boare.Cadencii.NumericUpDownEx();
             this.numWait = new Boare.Cadencii.NumericUpDownEx();
             this.numPreSendTime = new Boare.Cadencii.NumericUpDownEx();
             this.tabAppearance = new System.Windows.Forms.TabPage();
             this.groupFont = new System.Windows.Forms.GroupBox();
-            this.labelMenu = new BLabel();
-            this.labelScreenFontName = new BLabel();
-            this.btnChangeScreenFont = new BButton();
-            this.labelScreen = new BLabel();
-            this.labelMenuFontName = new BLabel();
-            this.btnChangeMenuFont = new BButton();
+            this.labelMenu = new bocoree.windows.forms.BLabel();
+            this.labelScreenFontName = new bocoree.windows.forms.BLabel();
+            this.btnChangeScreenFont = new bocoree.windows.forms.BButton();
+            this.labelScreen = new bocoree.windows.forms.BLabel();
+            this.labelMenuFontName = new bocoree.windows.forms.BLabel();
+            this.btnChangeMenuFont = new bocoree.windows.forms.BButton();
             this.groupVisibleCurve = new System.Windows.Forms.GroupBox();
-            this.chkEnvelope = new BCheckBox();
-            this.chkPbs = new BCheckBox();
-            this.chkReso4 = new BCheckBox();
-            this.chkReso3 = new BCheckBox();
-            this.chkReso2 = new BCheckBox();
-            this.chkReso1 = new BCheckBox();
-            this.chkFx2Depth = new BCheckBox();
-            this.chkHarmonics = new BCheckBox();
-            this.chkPit = new BCheckBox();
-            this.chkPor = new BCheckBox();
-            this.chkGen = new BCheckBox();
-            this.chkOpe = new BCheckBox();
-            this.chkCle = new BCheckBox();
-            this.chkBri = new BCheckBox();
-            this.chkBre = new BCheckBox();
-            this.chkDyn = new BCheckBox();
-            this.chkVel = new BCheckBox();
-            this.chkVibratoDepth = new BCheckBox();
-            this.chkVibratoRate = new BCheckBox();
-            this.chkDecay = new BCheckBox();
-            this.chkAccent = new BCheckBox();
-            this.lblTrackHeight = new BLabel();
-            this.comboLanguage = new BComboBox();
-            this.lblLanguage = new BLabel();
+            this.chkEnvelope = new bocoree.windows.forms.BCheckBox();
+            this.chkPbs = new bocoree.windows.forms.BCheckBox();
+            this.chkReso4 = new bocoree.windows.forms.BCheckBox();
+            this.chkReso3 = new bocoree.windows.forms.BCheckBox();
+            this.chkReso2 = new bocoree.windows.forms.BCheckBox();
+            this.chkReso1 = new bocoree.windows.forms.BCheckBox();
+            this.chkFx2Depth = new bocoree.windows.forms.BCheckBox();
+            this.chkHarmonics = new bocoree.windows.forms.BCheckBox();
+            this.chkPit = new bocoree.windows.forms.BCheckBox();
+            this.chkPor = new bocoree.windows.forms.BCheckBox();
+            this.chkGen = new bocoree.windows.forms.BCheckBox();
+            this.chkOpe = new bocoree.windows.forms.BCheckBox();
+            this.chkCle = new bocoree.windows.forms.BCheckBox();
+            this.chkBri = new bocoree.windows.forms.BCheckBox();
+            this.chkBre = new bocoree.windows.forms.BCheckBox();
+            this.chkDyn = new bocoree.windows.forms.BCheckBox();
+            this.chkVel = new bocoree.windows.forms.BCheckBox();
+            this.chkVibratoDepth = new bocoree.windows.forms.BCheckBox();
+            this.chkVibratoRate = new bocoree.windows.forms.BCheckBox();
+            this.chkDecay = new bocoree.windows.forms.BCheckBox();
+            this.chkAccent = new bocoree.windows.forms.BCheckBox();
+            this.lblTrackHeight = new bocoree.windows.forms.BLabel();
+            this.comboLanguage = new bocoree.windows.forms.BComboBox();
+            this.lblLanguage = new bocoree.windows.forms.BLabel();
             this.numTrackHeight = new Boare.Cadencii.NumericUpDownEx();
             this.tabOperation = new System.Windows.Forms.TabPage();
             this.groupMisc = new System.Windows.Forms.GroupBox();
-            this.lblMaximumFrameRate = new BLabel();
-            this.comboMidiInPortNumber = new BComboBox();
+            this.lblMaximumFrameRate = new bocoree.windows.forms.BLabel();
+            this.comboMidiInPortNumber = new bocoree.windows.forms.BComboBox();
             this.numMaximumFrameRate = new Boare.Cadencii.NumericUpDownEx();
-            this.lblMidiInPort = new BLabel();
-            this.lblMouseHoverTime = new BLabel();
-            this.lblMilliSecond = new BLabel();
+            this.lblMidiInPort = new bocoree.windows.forms.BLabel();
+            this.lblMouseHoverTime = new bocoree.windows.forms.BLabel();
+            this.lblMilliSecond = new bocoree.windows.forms.BLabel();
             this.numMouseHoverTime = new Boare.Cadencii.NumericUpDownEx();
             this.groupPianoroll = new System.Windows.Forms.GroupBox();
-            this.labelWheelOrder = new BLabel();
+            this.chkUseSpaceKeyAsMiddleButtonModifier = new bocoree.windows.forms.BCheckBox();
+            this.labelWheelOrder = new bocoree.windows.forms.BLabel();
             this.numericUpDownEx1 = new Boare.Cadencii.NumericUpDownEx();
-            this.chkCursorFix = new BCheckBox();
-            this.chkCurveSelectingQuantized = new BCheckBox();
-            this.chkScrollHorizontal = new BCheckBox();
-            this.chkPlayPreviewWhenRightClick = new BCheckBox();
-            this.chkKeepLyricInputMode = new BCheckBox();
+            this.chkCursorFix = new bocoree.windows.forms.BCheckBox();
+            this.chkCurveSelectingQuantized = new bocoree.windows.forms.BCheckBox();
+            this.chkScrollHorizontal = new bocoree.windows.forms.BCheckBox();
+            this.chkPlayPreviewWhenRightClick = new bocoree.windows.forms.BCheckBox();
+            this.chkKeepLyricInputMode = new bocoree.windows.forms.BCheckBox();
             this.tabPlatform = new System.Windows.Forms.TabPage();
             this.groupUtauCores = new System.Windows.Forms.GroupBox();
-            this.lblResampler = new BLabel();
-            this.chkInvokeWithWine = new BCheckBox();
-            this.btnWavtool = new BButton();
-            this.txtResampler = new BTextBox();
-            this.lblWavtool = new BLabel();
-            this.btnResampler = new BButton();
-            this.txtWavtool = new BTextBox();
+            this.lblResampler = new bocoree.windows.forms.BLabel();
+            this.chkInvokeWithWine = new bocoree.windows.forms.BCheckBox();
+            this.btnWavtool = new bocoree.windows.forms.BButton();
+            this.txtResampler = new bocoree.windows.forms.BTextBox();
+            this.lblWavtool = new bocoree.windows.forms.BLabel();
+            this.btnResampler = new bocoree.windows.forms.BButton();
+            this.txtWavtool = new bocoree.windows.forms.BTextBox();
             this.groupVsti = new System.Windows.Forms.GroupBox();
-            this.txtVOCALOID2 = new BTextBox();
-            this.txtVOCALOID1 = new BTextBox();
-            this.lblVOCALOID2 = new BLabel();
-            this.lblVOCALOID1 = new BLabel();
+            this.txtVOCALOID2 = new bocoree.windows.forms.BTextBox();
+            this.txtVOCALOID1 = new bocoree.windows.forms.BTextBox();
+            this.lblVOCALOID2 = new bocoree.windows.forms.BLabel();
+            this.lblVOCALOID1 = new bocoree.windows.forms.BLabel();
             this.groupPlatform = new System.Windows.Forms.GroupBox();
-            this.chkTranslateRoman = new BCheckBox();
-            this.chkUseCustomFileDialog = new BCheckBox();
-            this.comboPlatform = new BComboBox();
-            this.lblPlatform = new BLabel();
-            this.chkCommandKeyAsControl = new BCheckBox();
+            this.chkTranslateRoman = new bocoree.windows.forms.BCheckBox();
+            this.comboPlatform = new bocoree.windows.forms.BComboBox();
+            this.lblPlatform = new bocoree.windows.forms.BLabel();
+            this.chkCommandKeyAsControl = new bocoree.windows.forms.BCheckBox();
             this.tabUtauSingers = new System.Windows.Forms.TabPage();
-            this.btnRemove = new BButton();
-            this.btnAdd = new BButton();
-            this.btnUp = new BButton();
-            this.btnDown = new BButton();
+            this.btnRemove = new bocoree.windows.forms.BButton();
+            this.btnAdd = new bocoree.windows.forms.BButton();
+            this.btnUp = new bocoree.windows.forms.BButton();
+            this.btnDown = new bocoree.windows.forms.BButton();
             this.listSingers = new System.Windows.Forms.ListView();
             this.columnHeaderProgramChange = new System.Windows.Forms.ColumnHeader();
             this.columnHeaderName = new System.Windows.Forms.ColumnHeader();
             this.columnHeaderPath = new System.Windows.Forms.ColumnHeader();
             this.tabFile = new System.Windows.Forms.TabPage();
-            this.lblAutoBackupMinutes = new BLabel();
+            this.lblAutoBackupMinutes = new bocoree.windows.forms.BLabel();
             this.numAutoBackupInterval = new Boare.Cadencii.NumericUpDownEx();
-            this.lblAutoBackupInterval = new BLabel();
-            this.chkAutoBackup = new BCheckBox();
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
+            this.lblAutoBackupInterval = new bocoree.windows.forms.BLabel();
+            this.chkAutoBackup = new bocoree.windows.forms.BCheckBox();
+            this.btnCancel = new bocoree.windows.forms.BButton();
+            this.btnOK = new bocoree.windows.forms.BButton();
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.openUtauCore = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserSingers = new System.Windows.Forms.FolderBrowserDialog();
-            this.chkUseSpaceKeyAsMiddleButtonModifier = new BCheckBox();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupAutoVibratoConfig.SuspendLayout();
@@ -4665,6 +4610,16 @@ namespace Boare.Cadencii {
             this.groupPianoroll.TabStop = false;
             this.groupPianoroll.Text = "Piano Roll";
             // 
+            // chkUseSpaceKeyAsMiddleButtonModifier
+            // 
+            this.chkUseSpaceKeyAsMiddleButtonModifier.AutoSize = true;
+            this.chkUseSpaceKeyAsMiddleButtonModifier.Location = new System.Drawing.Point( 16, 181 );
+            this.chkUseSpaceKeyAsMiddleButtonModifier.Name = "chkUseSpaceKeyAsMiddleButtonModifier";
+            this.chkUseSpaceKeyAsMiddleButtonModifier.Size = new System.Drawing.Size( 234, 16 );
+            this.chkUseSpaceKeyAsMiddleButtonModifier.TabIndex = 89;
+            this.chkUseSpaceKeyAsMiddleButtonModifier.Text = "Use space key as Middle button modifier";
+            this.chkUseSpaceKeyAsMiddleButtonModifier.UseVisualStyleBackColor = true;
+            // 
             // labelWheelOrder
             // 
             this.labelWheelOrder.AutoSize = true;
@@ -4768,7 +4723,7 @@ namespace Boare.Cadencii {
             this.groupUtauCores.Controls.Add( this.lblWavtool );
             this.groupUtauCores.Controls.Add( this.btnResampler );
             this.groupUtauCores.Controls.Add( this.txtWavtool );
-            this.groupUtauCores.Location = new System.Drawing.Point( 6, 231 );
+            this.groupUtauCores.Location = new System.Drawing.Point( 6, 207 );
             this.groupUtauCores.Name = "groupUtauCores";
             this.groupUtauCores.Size = new System.Drawing.Size( 442, 114 );
             this.groupUtauCores.TabIndex = 108;
@@ -4843,7 +4798,7 @@ namespace Boare.Cadencii {
             this.groupVsti.Controls.Add( this.txtVOCALOID1 );
             this.groupVsti.Controls.Add( this.lblVOCALOID2 );
             this.groupVsti.Controls.Add( this.lblVOCALOID1 );
-            this.groupVsti.Location = new System.Drawing.Point( 6, 144 );
+            this.groupVsti.Location = new System.Drawing.Point( 6, 120 );
             this.groupVsti.Name = "groupVsti";
             this.groupVsti.Size = new System.Drawing.Size( 442, 81 );
             this.groupVsti.TabIndex = 105;
@@ -4887,13 +4842,12 @@ namespace Boare.Cadencii {
             // groupPlatform
             // 
             this.groupPlatform.Controls.Add( this.chkTranslateRoman );
-            this.groupPlatform.Controls.Add( this.chkUseCustomFileDialog );
             this.groupPlatform.Controls.Add( this.comboPlatform );
             this.groupPlatform.Controls.Add( this.lblPlatform );
             this.groupPlatform.Controls.Add( this.chkCommandKeyAsControl );
             this.groupPlatform.Location = new System.Drawing.Point( 6, 6 );
             this.groupPlatform.Name = "groupPlatform";
-            this.groupPlatform.Size = new System.Drawing.Size( 442, 132 );
+            this.groupPlatform.Size = new System.Drawing.Size( 442, 108 );
             this.groupPlatform.TabIndex = 100;
             this.groupPlatform.TabStop = false;
             this.groupPlatform.Text = "Platform";
@@ -4901,23 +4855,12 @@ namespace Boare.Cadencii {
             // chkTranslateRoman
             // 
             this.chkTranslateRoman.AutoSize = true;
-            this.chkTranslateRoman.Location = new System.Drawing.Point( 18, 103 );
+            this.chkTranslateRoman.Location = new System.Drawing.Point( 18, 76 );
             this.chkTranslateRoman.Name = "chkTranslateRoman";
             this.chkTranslateRoman.Size = new System.Drawing.Size( 200, 16 );
             this.chkTranslateRoman.TabIndex = 104;
             this.chkTranslateRoman.Text = "Translate Roman letters into Kana";
             this.chkTranslateRoman.UseVisualStyleBackColor = true;
-            // 
-            // chkUseCustomFileDialog
-            // 
-            this.chkUseCustomFileDialog.AutoSize = true;
-            this.chkUseCustomFileDialog.Enabled = false;
-            this.chkUseCustomFileDialog.Location = new System.Drawing.Point( 18, 49 );
-            this.chkUseCustomFileDialog.Name = "chkUseCustomFileDialog";
-            this.chkUseCustomFileDialog.Size = new System.Drawing.Size( 146, 16 );
-            this.chkUseCustomFileDialog.TabIndex = 102;
-            this.chkUseCustomFileDialog.Text = "Use Custom File Dialog";
-            this.chkUseCustomFileDialog.UseVisualStyleBackColor = true;
             // 
             // comboPlatform
             // 
@@ -4941,7 +4884,7 @@ namespace Boare.Cadencii {
             // 
             this.chkCommandKeyAsControl.AutoSize = true;
             this.chkCommandKeyAsControl.Enabled = false;
-            this.chkCommandKeyAsControl.Location = new System.Drawing.Point( 18, 76 );
+            this.chkCommandKeyAsControl.Location = new System.Drawing.Point( 18, 49 );
             this.chkCommandKeyAsControl.Name = "chkCommandKeyAsControl";
             this.chkCommandKeyAsControl.Size = new System.Drawing.Size( 199, 16 );
             this.chkCommandKeyAsControl.TabIndex = 103;
@@ -5136,16 +5079,6 @@ namespace Boare.Cadencii {
             // 
             this.folderBrowserSingers.ShowNewFolderButton = false;
             // 
-            // chkUseSpaceKeyAsMiddleButtonModifier
-            // 
-            this.chkUseSpaceKeyAsMiddleButtonModifier.AutoSize = true;
-            this.chkUseSpaceKeyAsMiddleButtonModifier.Location = new System.Drawing.Point( 16, 181 );
-            this.chkUseSpaceKeyAsMiddleButtonModifier.Name = "chkUseSpaceKeyAsMiddleButtonModifier";
-            this.chkUseSpaceKeyAsMiddleButtonModifier.Size = new System.Drawing.Size( 234, 16 );
-            this.chkUseSpaceKeyAsMiddleButtonModifier.TabIndex = 89;
-            this.chkUseSpaceKeyAsMiddleButtonModifier.Text = "Use space key as Middle button modifier";
-            this.chkUseSpaceKeyAsMiddleButtonModifier.UseVisualStyleBackColor = true;
-            // 
             // Preference
             // 
             this.AcceptButton = this.btnOK;
@@ -5329,7 +5262,6 @@ namespace Boare.Cadencii {
         private BButton btnAdd;
         private System.Windows.Forms.GroupBox groupPianoroll;
         private System.Windows.Forms.GroupBox groupMisc;
-        private BCheckBox chkUseCustomFileDialog;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserSingers;
         private BButton btnRemove;
         private System.Windows.Forms.ColumnHeader columnHeaderProgramChange;

@@ -57,6 +57,13 @@ namespace bocoree.windows.forms {
             base.Checked = value;
         }
 #endif
+        public System.Drawing.Image getIcon() {
+            return base.Image;
+        }
+
+        public void setIcon( System.Drawing.Image value ) {
+            base.Image = value;
+        }
         #endregion
 
         #region java.awt.Component

@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import java.awt.Dimension;
@@ -16,7 +15,6 @@ import java.awt.Font;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -121,7 +119,6 @@ public class Preference extends JFrame {
 	private JPanel groupPlatform = null;
 	private JLabel lblPlatform = null;
 	private JComboBox comboPlatform = null;
-	private JCheckBox chkUseCustomFileDialog = null;
 	private JCheckBox chkCommandKeyAsControl = null;
 	private JCheckBox chkTranslateRoman = null;
 	private JPanel groupVsti = null;
@@ -1736,12 +1733,6 @@ public class Preference extends JFrame {
 			gridBagConstraints91.anchor = GridBagConstraints.WEST;
 			gridBagConstraints91.gridwidth = 2;
 			gridBagConstraints91.gridy = 2;
-			GridBagConstraints gridBagConstraints90 = new GridBagConstraints();
-			gridBagConstraints90.gridx = 0;
-			gridBagConstraints90.anchor = GridBagConstraints.WEST;
-			gridBagConstraints90.gridwidth = 2;
-			gridBagConstraints90.insets = new Insets(0, 12, 0, 0);
-			gridBagConstraints90.gridy = 1;
 			GridBagConstraints gridBagConstraints89 = new GridBagConstraints();
 			gridBagConstraints89.fill = GridBagConstraints.NONE;
 			gridBagConstraints89.gridy = 0;
@@ -1761,7 +1752,6 @@ public class Preference extends JFrame {
 			groupPlatform.setBorder(BorderFactory.createTitledBorder(null, "Platform", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupPlatform.add(lblPlatform, gridBagConstraints88);
 			groupPlatform.add(getComboPlatform(), gridBagConstraints89);
-			groupPlatform.add(getChkUseCustomFileDialog(), gridBagConstraints90);
 			groupPlatform.add(getChkCommandKeyAsControl(), gridBagConstraints91);
 			groupPlatform.add(getChkTranslateRoman(), gridBagConstraints92);
 		}
@@ -1779,19 +1769,6 @@ public class Preference extends JFrame {
 			comboPlatform.setPreferredSize(new Dimension(121, 20));
 		}
 		return comboPlatform;
-	}
-
-	/**
-	 * This method initializes chkUseCustomFileDialog	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */
-	private JCheckBox getChkUseCustomFileDialog() {
-		if (chkUseCustomFileDialog == null) {
-			chkUseCustomFileDialog = new JCheckBox();
-			chkUseCustomFileDialog.setText("Use Custom File Dialog");
-		}
-		return chkUseCustomFileDialog;
 	}
 
 	/**

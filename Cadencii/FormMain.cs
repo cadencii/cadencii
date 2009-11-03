@@ -383,7 +383,7 @@ namespace Boare.Cadencii {
         private FormMidiImExport m_midi_imexport_dialog = null;
         private TreeMap<EditTool, Cursor> m_cursor = new TreeMap<EditTool, Cursor>();
         private Preference m_preference_dlg;
-        private ToolStripButton m_strip_ddbtn_metronome;
+        private BToolStripButton m_strip_ddbtn_metronome;
         //private FormUtauVoiceConfig m_utau_voice_dialog = null;
         private PropertyPanelContainer m_property_panel_container;
         private Vector<ToolStripItem> m_palette_tools = new Vector<ToolStripItem>();
@@ -431,6 +431,10 @@ namespace Boare.Cadencii {
         private int m_key_length_init_value = 68;
         private BFileChooser openXmlVsqDialog;
         private BFileChooser saveXmlVsqDialog;
+        private BFileChooser openUstDialog;
+        private BFileChooser openMidiDialog;
+        private BFileChooser saveMidiDialog;
+        private BFileChooser openWaveDialog;
         #endregion
 
         public FormMain() {
@@ -460,10 +464,19 @@ namespace Boare.Cadencii {
             openXmlVsqDialog = new BFileChooser( "" );
             openXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
             openXmlVsqDialog.addFileFilter( "Original Format(*.evsq)|*.evsq" );
+
             saveXmlVsqDialog = new BFileChooser( "" );
             saveXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
             saveXmlVsqDialog.addFileFilter( "Original Format(*.evsq)|*.evsq" );
             saveXmlVsqDialog.addFileFilter( "All files(*.*)|*.*" );
+            
+            openUstDialog = new BFileChooser( "" );
+            openUstDialog.addFileFilter( "UTAU Project File(*.ust)|*.ust" );
+            openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
+            
+            openMidiDialog = new BFileChooser( "" );
+            saveMidiDialog = new BFileChooser( "" );
+            openWaveDialog = new BFileChooser( "" );
 
             m_overview_scale_count = AppManager.editorConfig.OverviewScaleCount;
             m_overview_px_per_clock = getOverviewScaleX( m_overview_scale_count );
@@ -471,7 +484,9 @@ namespace Boare.Cadencii {
             menuVisualOverview.setSelected( AppManager.editorConfig.OverviewEnabled );
             m_property_panel_container = new PropertyPanelContainer();
 
-            m_strip_ddbtn_metronome = new ToolStripButton( "Metronome", Properties.Resources.alarm_clock );
+            m_strip_ddbtn_metronome = new BToolStripButton();
+            m_strip_ddbtn_metronome.setText( "Metronome" );
+            m_strip_ddbtn_metronome.setIcon( Properties.Resources.alarm_clock );
             m_strip_ddbtn_metronome.Name = "m_strip_ddbtn_metronome";
             m_strip_ddbtn_metronome.CheckOnClick = true;
             m_strip_ddbtn_metronome.Checked = AppManager.editorConfig.MetronomeEnabled;
@@ -3199,33 +3214,7 @@ namespace Boare.Cadencii {
                                                                MessageBoxIcon.Question );
                 if ( ret == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
-                        int dr = BFileChooser.CANCEL_OPTION;
-                        if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                            FileDialog fd = null;
-                            try {
-                                fd = new FileDialog( FileDialog.DialogMode.Save );
-                                if ( !saveXmlVsqDialog.getSelectedFile().Equals( "" ) ) {
-                                    fd.FileName = saveXmlVsqDialog.getSelectedFile();
-                                }
-                                //fd.Filter = saveXmlVsqDialog.Filter;
-                                if ( fd.showDialog() == BDialogResult.OK ) {
-                                    saveXmlVsqDialog.setSelectedFile( fd.FileName );
-                                    dr = BFileChooser.APPROVE_OPTION;
-                                }
-                            } catch ( Exception ex ) {
-                            } finally {
-                                if ( fd != null ) {
-                                    try {
-#if !JAVA
-                                        fd.Dispose();
-#endif
-                                    } catch ( Exception ex2 ) {
-                                    }
-                                }
-                            }
-                        } else {
-                            dr = saveXmlVsqDialog.showSaveDialog( this );
-                        }
+                        int dr = saveXmlVsqDialog.showSaveDialog( this );
                         if ( dr == BFileChooser.APPROVE_OPTION ) {
                             AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
                         } else {
@@ -3848,34 +3837,8 @@ namespace Boare.Cadencii {
                     return;
                 }
             }
-            int dr = BFileChooser.CANCEL_OPTION;
-            if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                FileDialog fd = null;
-                try {
-                    fd = new FileDialog( FileDialog.DialogMode.Open );
-                    if ( !saveXmlVsqDialog.getSelectedFile().Equals( "" ) ) {
-                        fd.FileName = saveXmlVsqDialog.getSelectedFile();
-                    }
-                    //fd.Filter = saveXmlVsqDialog.Filter;
-                    if ( fd.showDialog() == BDialogResult.OK ) {
-                        saveXmlVsqDialog.setSelectedFile( fd.FileName );
-                        dr = BFileChooser.APPROVE_OPTION;
-                    }
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( fd != null ) {
-                        try {
-#if !JAVA
-                            fd.Dispose();
-#endif
-                        } catch ( Exception ex2 ) {
-                        }
-                    }
-                }
-            } else {
-                dr = saveXmlVsqDialog.showSaveDialog( this );
-            }
 
+            int dr = saveXmlVsqDialog.showSaveDialog( this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String file = saveXmlVsqDialog.getSelectedFile();
                 AppManager.saveTo( file );
@@ -3899,34 +3862,7 @@ namespace Boare.Cadencii {
             }
             String file = AppManager.getFileName();
             if ( AppManager.getFileName().Equals( "" ) ) {
-                int dr = BFileChooser.CANCEL_OPTION;
-                if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                    FileDialog fd = null;
-                    try {
-                        fd = new FileDialog( FileDialog.DialogMode.Open );
-                        if ( !saveXmlVsqDialog.getSelectedFile().Equals( "" ) ) {
-                            fd.FileName = saveXmlVsqDialog.getSelectedFile();
-                        }
-                        //fd.Filter = saveXmlVsqDialog.Filter;
-                        if ( fd.showDialog() == BDialogResult.OK ) {
-                            saveXmlVsqDialog.setSelectedFile( fd.FileName );
-                            dr = BFileChooser.APPROVE_OPTION;
-                        }
-                    } catch ( Exception ex ) {
-                    } finally {
-                        if ( fd != null ) {
-                            try {
-#if !JAVA
-                                fd.Dispose();
-#endif
-                            } catch ( Exception ex2 ) {
-                            }
-                        }
-                    }
-                } else {
-                    dr = saveXmlVsqDialog.showSaveDialog( this );
-                }
-
+                int dr = saveXmlVsqDialog.showSaveDialog( this );
                 if ( dr == BFileChooser.APPROVE_OPTION ) {
                     file = saveXmlVsqDialog.getSelectedFile();
                 }
@@ -3943,66 +3879,38 @@ namespace Boare.Cadencii {
         }
 
         private void menuFileExportWave_Click( Object sender, BEventArgs e ) {
-            DialogResult dr = DialogResult.Cancel;
+            int dialog_result = BFileChooser.CANCEL_OPTION;
             String filename = "";
-            if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                FileDialog fd = null;
-                try {
-                    fd = new FileDialog( FileDialog.DialogMode.Save );
-                    fd.Title = _( "Wave Export" );
+            BFileChooser sfd = null;
+            try {
+                sfd = new BFileChooser( "" );
+                sfd.setDialogTitle( _( "Wave Export" ) );
+                sfd.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
+                sfd.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                dialog_result = sfd.showSaveDialog( this );
+                filename = sfd.getSelectedFile();
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sfd != null ) {
                     try {
-                        fd.Filter = _( "Wave File(*.wav)|*.wav" ) + "|" + _( "All Files(*.*)|*.*" );
-                    } catch ( Exception ex ) {
-                        fd.Filter = "Wave File(*.wav)|*.wav|All Files(*.*)|*.*";
-                    }
-                    dr = fd.ShowDialog();
-                    filename = fd.FileName;
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( fd != null ) {
-                        try {
 #if !JAVA
-                            fd.Dispose();
+                        sfd.Dispose();
 #endif
-                        } catch ( Exception ex2 ) {
-                        }
-                    }
-                }
-            } else {
-                SaveFileDialog sfd = null;
-                try {
-                    sfd = new SaveFileDialog();
-                    sfd.Title = _( "Wave Export" );
-                    try {
-                        sfd.Filter = _( "Wave File(*.wav)|*.wav" ) + "|" + _( "All Files(*.*)|*.*" );
-                    } catch ( Exception ex ) {
-                        sfd.Filter = "Wave File(*.wav)|*.wav|All Files(*.*)|*.*";
-                    }
-                    dr = sfd.ShowDialog();
-                    filename = sfd.FileName;
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( sfd != null ) {
-                        try {
-#if !JAVA
-                            sfd.Dispose();
-#endif
-                        } catch ( Exception ex2 ) {
-                        }
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
 
-            if ( dr == DialogResult.OK ) {
+            if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                 FormSynthesize fs = null;
                 try {
                     fs = new FormSynthesize(
-                    AppManager.getVsqFile(),
-                    AppManager.editorConfig.PreSendTime,
-                    new int[] { AppManager.getSelected() },
-                    new String[] { filename },
-                    AppManager.getVsqFile().TotalClocks + 240,
-                    true );
+                        AppManager.getVsqFile(),
+                        AppManager.editorConfig.PreSendTime,
+                        new int[] { AppManager.getSelected() },
+                        new String[] { filename },
+                        AppManager.getVsqFile().TotalClocks + 240,
+                        true );
 
                     DateTime started = DateTime.Now;
                     fs.ShowDialog();
@@ -4034,43 +3942,15 @@ namespace Boare.Cadencii {
             m_midi_imexport_dialog.ListTrack.Items.Clear();
             m_midi_imexport_dialog.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
-            DialogResult dr = DialogResult.Cancel;
-            if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                FileDialog fd = null;
-                try {
-                    fd = new FileDialog( FileDialog.DialogMode.Open );
-                    if ( openMidiDialog.FileName != "" ) {
-                        fd.FileName = openMidiDialog.FileName;
-                    }
-                    fd.Filter = openMidiDialog.Filter;
-                    Point p = getFormPreferedLocation( fd );
-                    fd.setLocation( p );
-                    dr = fd.ShowDialog();
-                    if ( dr == DialogResult.OK ) {
-                        openMidiDialog.FileName = fd.FileName;
-                    }
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( fd != null ) {
-                        try {
-#if !JAVA
-                            fd.Dispose();
-#endif
-                        } catch ( Exception ex2 ) {
-                        }
-                    }
-                }
-            } else {
-                dr = openMidiDialog.ShowDialog();
-            }
+            int dialog_result = openMidiDialog.showOpenDialog( this );
 
-            if ( dr != DialogResult.OK ) {
+            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
             m_midi_imexport_dialog.setLocation( getFormPreferedLocation( m_midi_imexport_dialog ) );
             MidiFile mf = null;
             try {
-                mf = new MidiFile( openMidiDialog.FileName );
+                mf = new MidiFile( openMidiDialog.getSelectedFile() );
             } catch ( Exception ex ) {
                 AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                 return;
@@ -4387,39 +4267,12 @@ namespace Boare.Cadencii {
                     return;
                 }
 
-                DialogResult dr = DialogResult.Cancel;
-                if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                    FileDialog fd = null;
-                    try {
-                        fd = new FileDialog( FileDialog.DialogMode.Save );
-                        if ( saveMidiDialog.FileName != "" ) {
-                            fd.FileName = saveMidiDialog.FileName;
-                        }
-                        fd.Filter = saveMidiDialog.Filter;
-                        dr = fd.ShowDialog();
-                        if ( dr == DialogResult.OK ) {
-                            saveMidiDialog.FileName = fd.FileName;
-                        }
-                    } catch ( Exception ex ) {
-                    } finally {
-                        if ( fd != null ) {
-                            try {
-#if !JAVA
-                                fd.Dispose();
-#endif
-                            } catch ( Exception ex2 ) {
-                            }
-                        }
-                    }
-                } else {
-                    dr = saveMidiDialog.ShowDialog();
-                }
+                int dialog_result = saveMidiDialog.showSaveDialog( this );
 
-                if ( dr == DialogResult.OK ) {
-                    //System.Text.Encoding def_enc = System.Text.Encoding.GetEncoding( 0 ); // システムのデフォルトエンコーディング
+                if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                     RandomAccessFile fs = null;
                     try {
-                        fs = new RandomAccessFile( saveMidiDialog.FileName, "rw" );
+                        fs = new RandomAccessFile( saveMidiDialog.getSelectedFile(), "rw" );
                         // ヘッダー
                         fs.write( new byte[] { 0x4d, 0x54, 0x68, 0x64 }, 0, 4 );
                         //データ長
@@ -4629,59 +4482,31 @@ namespace Boare.Cadencii {
                 return;
             }
 
-            DialogResult dr = DialogResult.Cancel;
-            int filterindex = 1;
-            if ( AppManager.editorConfig.LastUsedExtension.Equals( ".vsq" ) ) {
-                filterindex = 2;
+            String[] filters = openMidiDialog.getChoosableFileFilter();
+            String filter = "";
+            foreach ( String f in filters ) {
+                if ( f.EndsWith( AppManager.editorConfig.LastUsedExtension ) ) {
+                    filter = f;
+                    break;
+                }
             }
-            if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                FileDialog fd = null;
-                try {
-                    fd = new FileDialog( FileDialog.DialogMode.Open );
-                    if ( openMidiDialog.FileName != "" ) {
-                        fd.FileName = openMidiDialog.FileName;
-                    }
-                    fd.Filter = openMidiDialog.Filter;
-                    fd.FilterIndex = filterindex;
-                    dr = fd.ShowDialog();
-                    if ( dr == DialogResult.OK ) {
-                        openMidiDialog.FileName = fd.FileName;
-                        if ( fd.FilterIndex == 1 ) {
-                            AppManager.editorConfig.LastUsedExtension = ".mid";
-                        } else if ( fd.FilterIndex == 2 ) {
-                            AppManager.editorConfig.LastUsedExtension = ".vsq";
-                        }
-                    }
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( fd != null ) {
-                        try {
-#if !JAVA
-                            fd.Dispose();
+
+            openMidiDialog.setFileFilter( filter );
+            int dialog_result = openMidiDialog.showOpenDialog( this );
+            if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
+#if DEBUG
+                AppManager.debugWriteLine( "openMidiDialog.FilterIndex=" + openMidiDialog.getFileFilter() );
 #endif
-                        } catch ( Exception ex2 ) {
-                        }
-                    }
+                if ( openMidiDialog.getFileFilter().EndsWith( ".mid" ) ) {
+                    AppManager.editorConfig.LastUsedExtension = ".mid";
+                } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsq" ) ) {
+                    AppManager.editorConfig.LastUsedExtension = ".vsq";
                 }
             } else {
-                openMidiDialog.FilterIndex = filterindex;
-                dr = openMidiDialog.ShowDialog();
-                if ( dr == DialogResult.OK ) {
-#if DEBUG
-                    AppManager.debugWriteLine( "openMidiDialog.FilterIndex=" + openMidiDialog.FilterIndex );
-#endif
-                    if ( openMidiDialog.FilterIndex == 1 ) {
-                        AppManager.editorConfig.LastUsedExtension = ".mid";
-                    } else if ( openMidiDialog.FilterIndex == 2 ) {
-                        AppManager.editorConfig.LastUsedExtension = ".vsq";
-                    }
-                }
-            }
-            if ( dr != DialogResult.OK ) {
                 return;
             }
             try {
-                VsqFileEx vsq = new VsqFileEx( openMidiDialog.FileName, "Shift_JIS" );
+                VsqFileEx vsq = new VsqFileEx( openMidiDialog.getSelectedFile(), "Shift_JIS" );
                 AppManager.setVsqFile( vsq );
             } catch ( Exception ex ) {
 #if DEBUG
@@ -4705,40 +4530,14 @@ namespace Boare.Cadencii {
             if ( !dirtyCheck() ) {
                 return;
             }
-            DialogResult dr = DialogResult.Cancel;
-            if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                FileDialog fd = null;
-                try {
-                    fd = new FileDialog( FileDialog.DialogMode.Open );
-                    if ( openUstDialog.FileName != "" ) {
-                        fd.FileName = openUstDialog.FileName;
-                    }
-                    fd.Filter = openUstDialog.Filter;
-                    dr = fd.ShowDialog();
-                    if ( dr == DialogResult.OK ) {
-                        openUstDialog.FileName = fd.FileName;
-                    }
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( fd != null ) {
-                        try {
-#if !JAVA
-                            fd.Dispose();
-#endif
-                        } catch ( Exception ex2 ) {
-                        }
-                    }
-                }
-            } else {
-                dr = openUstDialog.ShowDialog();
-            }
+            int dialog_result = openUstDialog.showOpenDialog( this );
 
-            if ( dr != DialogResult.OK ) {
+            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
 
             try {
-                UstFile ust = new UstFile( openUstDialog.FileName );
+                UstFile ust = new UstFile( openUstDialog.getSelectedFile() );
                 VsqFileEx vsq = new VsqFileEx( ust );
                 clearExistingData();
                 AppManager.setVsqFile( vsq );
@@ -4754,40 +4553,14 @@ namespace Boare.Cadencii {
         }
 
         private void menuFileImportVsq_Click( Object sender, BEventArgs e ) {
-            DialogResult dr = DialogResult.Cancel;
-            if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                FileDialog fd = null;
-                try {
-                    fd = new FileDialog( FileDialog.DialogMode.Open );
-                    if ( openMidiDialog.FileName != "" ) {
-                        fd.FileName = openMidiDialog.FileName;
-                    }
-                    fd.Filter = openMidiDialog.Filter;
-                    dr = fd.ShowDialog();
-                    if ( dr == DialogResult.OK ) {
-                        openMidiDialog.FileName = fd.FileName;
-                    }
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( fd != null ) {
-                        try {
-#if !JAVA
-                            fd.Dispose();
-#endif
-                        } catch ( Exception ex2 ) {
-                        }
-                    }
-                }
-            } else {
-                dr = openMidiDialog.ShowDialog();
-            }
+            int dialog_result = openMidiDialog.showOpenDialog( this );
 
-            if ( dr != DialogResult.OK ) {
+            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
             VsqFileEx vsq = null;
             try {
-                vsq = new VsqFileEx( openMidiDialog.FileName, "Shift_JIS" );
+                vsq = new VsqFileEx( openMidiDialog.getSelectedFile(), "Shift_JIS" );
             } catch ( Exception ex ) {
                 AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                 return;
@@ -4928,36 +4701,7 @@ namespace Boare.Cadencii {
             if ( !dirtyCheck() ) {
                 return;
             }
-            int dialog_result = BFileChooser.CANCEL_OPTION;
-            if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                FileDialog fd = null;
-                try {
-                    fd = new FileDialog( FileDialog.DialogMode.Open );
-                    if ( !openXmlVsqDialog.getSelectedFile().Equals( "" ) ) {
-                        fd.FileName = openXmlVsqDialog.getSelectedFile();
-                    }
-                    //fd.Filter = openXmlVsqDialog.Filter;
-                    DialogResult dr = fd.ShowDialog();
-                    if ( dr == DialogResult.OK ) {
-                        openXmlVsqDialog.setSelectedFile( fd.FileName );
-                        dialog_result = BFileChooser.APPROVE_OPTION;
-                    }
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( fd != null ) {
-                        try {
-#if !JAVA
-                            fd.Dispose();
-#endif
-                        } catch ( Exception ex2 ) {
-                        }
-                    }
-
-                }
-            } else {
-                //openXmlVsqDialog
-                dialog_result = openXmlVsqDialog.showOpenDialog( this );
-            }
+            int dialog_result = openXmlVsqDialog.showOpenDialog( this );
             if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                 if ( AppManager.isPlaying() ) {
                     AppManager.setPlaying( false );
@@ -5169,7 +4913,6 @@ namespace Boare.Cadencii {
             m_preference_dlg.setPathResampler( AppManager.editorConfig.PathResampler );
             m_preference_dlg.setPathWavtool( AppManager.editorConfig.PathWavtool );
             m_preference_dlg.setUtauSingers( AppManager.editorConfig.UtauSingers );
-            m_preference_dlg.setUseCustomFileDialog( AppManager.editorConfig.UseCustomFileDialog );
             m_preference_dlg.setSelfDeRomantization( AppManager.editorConfig.SelfDeRomanization );
             m_preference_dlg.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
             m_preference_dlg.setUseSpaceKeyAsMiddleButtonModifier( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier );
@@ -5266,7 +5009,6 @@ namespace Boare.Cadencii {
                     SingerConfig sc = (SingerConfig)itr.next();
                     AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
                 }
-                AppManager.editorConfig.UseCustomFileDialog = m_preference_dlg.isUseCustomFileDialog();
                 AppManager.editorConfig.SelfDeRomanization = m_preference_dlg.isSelfDeRomantization();
                 AppManager.editorConfig.AutoBackupIntervalMinutes = m_preference_dlg.getAutoBackupIntervalMinutes();
                 AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier = m_preference_dlg.isUseSpaceKeyAsMiddleButtonModifier();
@@ -8678,11 +8420,11 @@ namespace Boare.Cadencii {
         }
 
         private void handleBgmAdd_Click( Object sender, BEventArgs e ) {
-            if ( openWaveDialog.ShowDialog() != DialogResult.OK ) {
+            if ( openWaveDialog.showOpenDialog( this ) != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
 
-            String file = openWaveDialog.FileName;
+            String file = openWaveDialog.getSelectedFile();
 
             // 既に開かれていたらキャンセル
             int count = AppManager.getBgmCount();
@@ -9485,34 +9227,7 @@ namespace Boare.Cadencii {
                                                               MessageBoxIcon.Question );
                 if ( dr == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
-                        int dr2 = BFileChooser.CANCEL_OPTION;
-                        if ( AppManager.editorConfig.UseCustomFileDialog ) {
-                            FileDialog fd = null;
-                            try {
-                                fd = new FileDialog( FileDialog.DialogMode.Open );
-                                if ( !saveXmlVsqDialog.getSelectedFile().Equals( "" ) ) {
-                                    fd.FileName = saveXmlVsqDialog.getSelectedFile();
-                                }
-                                //fd.Filter = saveXmlVsqDialog.Filter;
-                                if ( fd.showDialog() == BDialogResult.OK ) {
-                                    saveXmlVsqDialog.setSelectedFile( fd.FileName );
-                                    dr2 = BFileChooser.APPROVE_OPTION;
-                                }
-                            } catch ( Exception ex ) {
-                            } finally {
-                                if ( fd != null ) {
-                                    try {
-#if !JAVA
-                                        fd.Dispose();
-#endif
-                                    } catch ( Exception ex2 ) {
-                                    }
-                                }
-                            }
-                        } else {
-                            dr2 = saveXmlVsqDialog.showSaveDialog( this );
-                        }
-
+                        int dr2 = saveXmlVsqDialog.showSaveDialog( this );
                         if ( dr2 == BFileChooser.APPROVE_OPTION ) {
                             AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
                             return true;
@@ -10886,6 +10601,7 @@ namespace Boare.Cadencii {
                 openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
                 openXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
+            
             saveXmlVsqDialog.clearChoosableFileFilter();
             try {
                 saveXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
@@ -10894,25 +10610,45 @@ namespace Boare.Cadencii {
                 saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
                 saveXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
+
+            openUstDialog.clearChoosableFileFilter();
             try {
-                openUstDialog.Filter = _( "UTAU Script Format(*.ust)|*.ust" ) + "|" + _( "All Files(*.*)|*.*" );
+                openUstDialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
+                openUstDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                openUstDialog.Filter = "UTAU Script Format(*.ust)|*.ust|All Files(*.*)|*.*";
+                openUstDialog.addFileFilter( "UTAU Script Format(*.ust)|*.ust" );
+                openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
+
+            openMidiDialog.clearChoosableFileFilter();
             try {
-                openMidiDialog.Filter = _( "MIDI Format(*.mid)|*.mid" ) + "|" + _( "VSQ Format(*.vsq)|*.vsq" ) + "|" + _( "All Files(*.*)|*.*" );
+                openMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
+                openMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
+                openMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                openMidiDialog.Filter = "MIDI Format(*.mid)|*.mid|VSQ Format(*.vsq)|*.vsq|All Files(*.*)|*.*";
+                openMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
+                openMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
+                openMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
+
+            saveMidiDialog.clearChoosableFileFilter();
             try {
-                saveMidiDialog.Filter = _( "MIDI Format(*.mid)|*.mid" ) + "|" + _( "VSQ Format(*.vsq)|*.vsq" ) + "|" + _( "All Files(*.*)|*.*" );
+                saveMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
+                saveMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
+                saveMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                saveMidiDialog.Filter = "MIDI Format(*.mid)|*.mid|VSQ Format(*.vsq)|*.vsq|All Files(*.*)|*.*";
+                saveMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
+                saveMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
+                saveMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
+
+            openWaveDialog.clearChoosableFileFilter();
             try {
-                openWaveDialog.Filter = _( "Wave File(*.wav)|*.wav" ) + "|" + _( "All Files(*.*)|*.*" );
+                openWaveDialog.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
+                openWaveDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                openWaveDialog.Filter = "Wave File(*.wav)|*.wav|All Files(*.*)|*.*";
+                openWaveDialog.addFileFilter( "Wave File(*.wav)|*.wav" );
+                openWaveDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
 
             stripLblGameCtrlMode.ToolTipText = _( "Game Controler" );
@@ -16956,10 +16692,6 @@ namespace Boare.Cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new System.Windows.Forms.ToolStripButton();
             this.stripBtnEndMarker = new System.Windows.Forms.ToolStripButton();
-            this.openUstDialog = new System.Windows.Forms.OpenFileDialog();
-            this.openMidiDialog = new System.Windows.Forms.OpenFileDialog();
-            this.saveMidiDialog = new System.Windows.Forms.SaveFileDialog();
-            this.openWaveDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -19988,10 +19720,6 @@ namespace Boare.Cadencii {
             this.stripBtnEndMarker.Text = "EndMarker";
             this.stripBtnEndMarker.Click += new System.EventHandler( this.handleEndMarker_Click );
             // 
-            // openUstDialog
-            // 
-            this.openUstDialog.Filter = "UTAU Project File(*.ust)|*.ust|All Files(*.*)|*.*";
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
@@ -20321,7 +20049,6 @@ namespace Boare.Cadencii {
         private Boare.Lib.AppUtil.BSplitContainer splitContainer2;
         private System.Windows.Forms.Panel panel2;
         private BMenuItem cMenuTrackSelectorDeleteBezier;
-        private System.Windows.Forms.OpenFileDialog openUstDialog;
         private System.Windows.Forms.ToolStripStatusLabel stripLblMidiIn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private BMenuItem menuJobRealTime;
@@ -20330,8 +20057,6 @@ namespace Boare.Cadencii {
         private BMenuItem cMenuTrackTabRendererVOCALOID2;
         private BMenuItem cMenuTrackTabRendererUtau;
         private BMenuItem menuVisualPitchLine;
-        private System.Windows.Forms.OpenFileDialog openMidiDialog;
-        private System.Windows.Forms.SaveFileDialog saveMidiDialog;
         private BMenuItem menuFileImportMidi;
         private System.Windows.Forms.ToolStrip toolStripFile;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
@@ -20385,7 +20110,6 @@ namespace Boare.Cadencii {
         private Boare.Lib.AppUtil.BSplitContainer splitContainer1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private BMenuItem menuTrackBgm;
-        private System.Windows.Forms.OpenFileDialog openWaveDialog;
         private BMenuItem menuTrackRendererStraight;
         private BMenuItem menuTrackManager;
         private BMenuItem cMenuTrackTabRendererStraight;

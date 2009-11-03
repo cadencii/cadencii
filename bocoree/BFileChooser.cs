@@ -12,8 +12,16 @@ public class BFileChooser{
         // TODO: [not implemented yet at BFileChooser#addFileFilter]
     }
 
+    public String[] getChoosableFileFilter(){
+        return new String[]{}; // TODO: [not implemented yet; BFileChooser#getChoosableFileFilter]
+    }
+
     public String getFileFilter(){
         return ""; // TODO: [fake return at BFileChooser#getFileFilter]
+    }
+
+    public void setFileFilter( String value ){
+        // TODO: [not implemented yet; BFileChooser#setFileFilter]
     }
 
     public void clearChoosableFileFilter() {
@@ -32,6 +40,10 @@ public class BFileChooser{
     public int showSaveDialog( Component parent ){
         return m_dialog.showSaveDialog( parent );
     }
+
+    public void setDialogTitle( String dialogTitle ){
+        m_dialog.setDialogTitle( dialogTitle );
+    }
 }
 #else
 using System;
@@ -41,7 +53,7 @@ using System.Collections.Generic;
 
 namespace bocoree.windows.forms {
 
-    public class BFileChooser {
+    public class BFileChooser : IDisposable {
         public const int APPROVE_OPTION = 0;
         public const int CANCEL_OPTION = 1;
         public const int ERROR_OPTION = -1;
@@ -65,8 +77,16 @@ namespace bocoree.windows.forms {
             return m_current_filter;
         }
 
+        public void setFileFilter( String value ) {
+            m_current_filter = value;
+        }
+
         public void clearChoosableFileFilter() {
             m_filters.Clear();
+        }
+
+        public string[] getChoosableFileFilter() {
+            return m_filters.ToArray();
         }
 
         public String getSelectedFile() {
@@ -140,6 +160,20 @@ namespace bocoree.windows.forms {
                 return CANCEL_OPTION;
             } else {
                 return ERROR_OPTION;
+            }
+        }
+
+        public void setDialogTitle( String value ) {
+            m_open.Title = value;
+            m_save.Title = value;
+        }
+
+        public void Dispose() {
+            if ( m_open == null ) {
+                m_open.Dispose();
+            }
+            if ( m_save == null ) {
+                m_save.Dispose();
             }
         }
     }
