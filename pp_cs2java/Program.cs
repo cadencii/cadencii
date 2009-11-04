@@ -340,7 +340,11 @@ class pp_cs2java {
                         bool draft_comment_mode;
                         int ind = line.IndexOf( "///" );
                         if ( ind >= 0 ) {
-                            draft_comment_mode = true;
+                            if ( line.Trim().StartsWith( "///" ) ) {
+                                draft_comment_mode = true;
+                            } else {
+                                draft_comment_mode = false;
+                            }
                         } else {
                             draft_comment_mode = false;
                         }

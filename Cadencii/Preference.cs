@@ -53,6 +53,34 @@ namespace Boare.Cadencii {
         private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
 
         public Preference() {
+#if JAVA
+            super();
+            initialize();
+            tabPane = new JTabbedPane();
+            tabPane.addTab( "Sequence", getTabSequence() );
+            tabPane.addTab( "Other Settings", getTabAnother() );
+            tabPane.addTab( "Appearance", getTabAppearance() );
+            tabPane.addTab( "Operation", getTabOperation() );
+            tabPane.addTab( "Platform", getTabPlatform() );
+            tabPane.addTab( "UTAU Singers", getTabUtauSingers() );
+            tabPane.addTab( "File", getTabFile() );
+            GridBagLayout layout = new GridBagLayout();
+            getPanelUpper().setLayout( layout );
+            GridBagConstraints gb = new GridBagConstraints();
+            gb.weighty = 1;
+            gb.weightx = 1;
+            gb.insets = new Insets( 12, 12, 0, 12 );
+            gb.fill = GridBagConstraints.BOTH;
+            layout.setConstraints( tabPane, gb );
+            this.getPanelUpper().add( tabPane );
+            try{
+                //UIManager.setLookAndFeel( "com.sun.java.swing.plaf.mac.MacLookAndFeel" );
+                UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
+                SwingUtilities.updateComponentTreeUI( this );
+            }catch( Exception ex ){
+                System.err.println( "Preference#.ctor; ex=" + ex );
+            }
+#else
             InitializeComponent();
             ApplyLanguage();
 
@@ -161,6 +189,7 @@ namespace Boare.Cadencii {
 
             txtVOCALOID1.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
             txtVOCALOID2.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
+#endif
         }
 
         public boolean isUseSpaceKeyAsMiddleButtonModifier() {
@@ -1138,37 +1167,6 @@ namespace Boare.Cadencii {
 	    private JPanel panelUpper = null;
         private JTabbedPane tabPane = null;
 	    private JTextField numAutoBackupInterval = null;
-	    /**
-	     * This is the default constructor
-	     */
-	    public Preference() {
-		    super();
-		    initialize();
-		    tabPane = new JTabbedPane();
-		    tabPane.addTab( "Sequence", getTabSequence() );
-		    tabPane.addTab( "Other Settings", getTabAnother() );
-		    tabPane.addTab( "Appearance", getTabAppearance() );
-		    tabPane.addTab( "Operation", getTabOperation() );
-		    tabPane.addTab( "Platform", getTabPlatform() );
-		    tabPane.addTab( "UTAU Singers", getTabUtauSingers() );
-		    tabPane.addTab( "File", getTabFile() );
-		    GridBagLayout layout = new GridBagLayout();
-		    getPanelUpper().setLayout( layout );
-		    GridBagConstraints gb = new GridBagConstraints();
-		    gb.weighty = 1;
-		    gb.weightx = 1;
-		    gb.insets = new Insets( 12, 12, 0, 12 );
-		    gb.fill = GridBagConstraints.BOTH;
-		    layout.setConstraints( tabPane, gb );
-	        this.getPanelUpper().add( tabPane );
-		    try{
-	            //UIManager.setLookAndFeel( "com.sun.java.swing.plaf.mac.MacLookAndFeel" );
-	            UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
-			    SwingUtilities.updateComponentTreeUI( this );
-		    }catch( Exception ex ){
-                System.err.println( "Preference#.ctor; ex=" + ex );
-		    }
-	    }
 
 	    /**
 	     * This method initializes this

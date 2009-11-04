@@ -137,7 +137,7 @@ namespace Boare.Cadencii {
                 y = PortUtil.parseInt( txtDataPointValue.Text );
                 if ( y < m_min || m_max < y )
                 {
-                    AppManager.showMessageBox( _( "Invalid value" ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    AppManager.showMessageBox( _( "Invalid value" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_ERROR_MESSAGE );
                     return;
                 }
                 if ( chkEnableSmooth.Checked )
@@ -151,7 +151,7 @@ namespace Boare.Cadencii {
             }
             catch ( Exception ex )
             {
-                AppManager.showMessageBox( _( "Integer format error" ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Error );
+                AppManager.showMessageBox( _( "Integer format error" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_ERROR_MESSAGE );
             }
         }
 

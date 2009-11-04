@@ -45,10 +45,15 @@ namespace Boare.Cadencii {
         private VsqFileEx m_vsq;
 
         public FormMidiImExport() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
             ApplyLanguage();
             setMode( FormMidiMode.EXPORT );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+#endif
         }
 
         public void ApplyLanguage() {
@@ -231,13 +236,6 @@ namespace Boare.Cadencii {
 	    private JCheckBox chkExportVocaloidNrpn = null;
 	    private JCheckBox chkPreMeasure = null;
 	    private JLabel jLabel12 = null;
-	    /**
-	     * This is the default constructor
-	     */
-	    public FormMidiImExport() {
-		    super();
-		    initialize();
-	    }
 
 	    /**
 	     * This method initializes this

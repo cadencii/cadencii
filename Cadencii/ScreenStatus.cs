@@ -13,6 +13,8 @@
  */
 #if JAVA
 package org.kbinani.Cadencii;
+
+import java.awt.*;
 #else
 using System;
 using System.Drawing;

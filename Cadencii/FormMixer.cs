@@ -11,17 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
+using bocoree;
 using bocoree.util;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
     public partial class FormMixer : Form {
         private FormMain m_parent;

@@ -11,18 +11,28 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.vsq.*;
+#else
 using System;
-using System.Collections.Generic;
 using Boare.Lib.Vsq;
-using bocoree;
 using bocoree.util;
 
 namespace Boare.Cadencii {
 
-    using Integer = Int32;
+#endif
 
+#if JAVA
+    public class ClipboardEntry implements Serializable {
+#else
     [Serializable]
     public class ClipboardEntry {
+#endif
         public Vector<VsqEvent> events;
         /// <summary>
         /// コピーorカットで複製されたテンポ
@@ -46,4 +56,6 @@ namespace Boare.Cadencii {
         public int copyStartedClock;
     }
 
+#if !JAVA
 }
+#endif

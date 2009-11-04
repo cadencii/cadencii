@@ -257,8 +257,8 @@ namespace Boare.Cadencii {
         private void btnApply_Click( object sender, EventArgs e ) {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME, 
-                                  MessageBoxButtons.YesNo, 
-                                  MessageBoxIcon.Exclamation ) == BDialogResult.YES ) {
+                                  AppManager.MSGBOX_YES_NO_OPTION, 
+                                  AppManager.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
                 m_apply_current_track = true;
                 DialogResult = DialogResult.OK;
             }

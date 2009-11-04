@@ -20,6 +20,7 @@ import org.kbinani.apputil.*;
 import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
+import org.kbinani.componentModel.*;
 #else
 using System;
 using System.ComponentModel;

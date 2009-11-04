@@ -508,7 +508,7 @@ namespace Boare.Cadencii {
 
             m_strip_ddbtn_metronome = new BToolStripButton();
             m_strip_ddbtn_metronome.setText( "Metronome" );
-            m_strip_ddbtn_metronome.setIcon( Properties.Resources.alarm_clock );
+            m_strip_ddbtn_metronome.setIcon( Resource.get_alarm_clock() );
             m_strip_ddbtn_metronome.Name = "m_strip_ddbtn_metronome";
             m_strip_ddbtn_metronome.CheckOnClick = true;
             m_strip_ddbtn_metronome.Checked = AppManager.editorConfig.MetronomeEnabled;
@@ -3272,8 +3272,8 @@ namespace Boare.Cadencii {
                 }
                 BDialogResult ret = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                                _( "Affirmation" ),
-                                                               MessageBoxButtons.YesNoCancel,
-                                                               MessageBoxIcon.Question );
+                                                               AppManager.MSGBOX_YES_NO_CANCEL_OPTION,
+                                                               AppManager.MSGBOX_QUESTION_MESSAGE );
                 if ( ret == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
                         int dr = saveXmlVsqDialog.showSaveDialog( this );
@@ -3915,8 +3915,8 @@ namespace Boare.Cadencii {
                             _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
                         ),
                         _APP_NAME,
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Exclamation );
+                        AppManager.MSGBOX_DEFAULT_OPTION,
+                        AppManager.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
             }
@@ -3938,8 +3938,8 @@ namespace Boare.Cadencii {
                             _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
                         ),
                         _APP_NAME,
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Exclamation );
+                        AppManager.MSGBOX_DEFAULT_OPTION,
+                        AppManager.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
             }
@@ -4035,11 +4035,11 @@ namespace Boare.Cadencii {
             try {
                 mf = new MidiFile( openMidiDialog.getSelectedFile() );
             } catch ( Exception ex ) {
-                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             if ( mf == null ) {
-                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             int count = mf.getTrackCount();
@@ -4595,7 +4595,7 @@ namespace Boare.Cadencii {
 #if DEBUG
                 PortUtil.println( "FormMain#menuFileOpenVsq_Click; ex=" + ex );
 #endif
-                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             AppManager.setSelected( 1 );
@@ -4645,7 +4645,7 @@ namespace Boare.Cadencii {
             try {
                 vsq = new VsqFileEx( openMidiDialog.getSelectedFile(), "Shift_JIS" );
             } catch ( Exception ex ) {
-                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             if ( m_midi_imexport_dialog == null ) {
@@ -8537,8 +8537,8 @@ namespace Boare.Cadencii {
             if ( found ) {
                 AppManager.showMessageBox( string.Format( _( "file '{0}' is already registered as BGM." ), file ),
                                  _( "Error" ),
-                                 MessageBoxButtons.OK,
-                                 MessageBoxIcon.Exclamation );
+                                 AppManager.MSGBOX_DEFAULT_OPTION,
+                                 AppManager.MSGBOX_WARNING_MESSAGE );
                 return;
             }
 
@@ -8563,8 +8563,8 @@ namespace Boare.Cadencii {
             BgmFile bgm = AppManager.getBgm( index );
             if ( AppManager.showMessageBox( string.Format( _( "remove '{0}'?" ), bgm.file ),
                                   "Cadencii",
-                                  MessageBoxButtons.YesNo,
-                                  MessageBoxIcon.Question ) != BDialogResult.YES ) {
+                                  AppManager.MSGBOX_YES_NO_OPTION,
+                                  AppManager.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
                 return;
             }
             AppManager.removeBgm( index );
@@ -9326,8 +9326,8 @@ namespace Boare.Cadencii {
                 }
                 BDialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                               _( "Affirmation" ),
-                                                              MessageBoxButtons.YesNoCancel,
-                                                              MessageBoxIcon.Question );
+                                                              AppManager.MSGBOX_YES_NO_CANCEL_OPTION,
+                                                              AppManager.MSGBOX_QUESTION_MESSAGE );
                 if ( dr == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
                         int dr2 = saveXmlVsqDialog.showSaveDialog( this );
@@ -11966,8 +11966,8 @@ namespace Boare.Cadencii {
             if ( AppManager.showMessageBox(
                     String.Format( _( "Do you wish to remove track? {0} : '{1}'" ), selected, AppManager.getVsqFile().Track.get( selected ).getName() ),
                     _APP_NAME,
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question ) == BDialogResult.YES ) {
+                    AppManager.MSGBOX_YES_NO_OPTION,
+                    AppManager.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
                 //VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().Clone();
                 CadenciiCommand run = VsqFileEx.generateCommandDeleteTrack( AppManager.getSelected() );
                 //temp.executeCommand( run );

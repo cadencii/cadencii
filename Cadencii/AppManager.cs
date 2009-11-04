@@ -17,6 +17,7 @@ package org.kbinani.Cadencii;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
@@ -42,22 +43,39 @@ namespace Boare.Cadencii {
     using Integer = System.Int32;
     using java = bocoree;
     using Long = System.Int64;
+    using BEventArgs = System.EventArgs;
 #endif
 
     public class AppManager {
-        /// <summary>
-        /// 鍵盤の表示幅(pixel)
-        /// </summary>
-        public static int keyWidth = MIN_KEY_WIDTH;
-        public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
         public const int MIN_KEY_WIDTH = 68;
+        public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
         private const String CONFIG_FILE_NAME = "config.xml";
         private const String CONFIG_DIR_NAME = "Cadencii";
         /// <summary>
         /// OSのクリップボードに貼り付ける文字列の接頭辞．これがついていた場合，クリップボードの文字列をCadenciiが使用できると判断する．
         /// </summary>
         private const String CLIP_PREFIX = "CADENCIIOBJ";
+        public const int MSGBOX_DEFAULT_OPTION = -1;
+        public const int MSGBOX_YES_NO_OPTION = 0;
+        public const int MSGBOX_YES_NO_CANCEL_OPTION = 1;
+        public const int MSGBOX_OK_CANCEL_OPTION = 2;
 
+        public const int MSGBOX_ERROR_MESSAGE = 0;
+        public const int MSGBOX_INFORMATION_MESSAGE = 1;
+        public const int MSGBOX_WARNING_MESSAGE = 2;
+        public const int MSGBOX_QUESTION_MESSAGE = 3;
+        public const int MSGBOX_PLAIN_MESSAGE = -1;
+
+        public const int YES_OPTION = 0;
+        public const int NO_OPTION = 1;
+        public const int CANCEL_OPTION = 2;
+        public const int OK_OPTION = 0;
+        public const int CLOSED_OPTION = -1;
+
+        /// <summary>
+        /// 鍵盤の表示幅(pixel)
+        /// </summary>
+        public static int keyWidth = MIN_KEY_WIDTH;
         /// <summary>
         /// エディタの設定
         /// </summary>
@@ -430,7 +448,11 @@ namespace Boare.Cadencii {
 
         private const String TEMPDIR_NAME = "cadencii";
 
+#if JAVA
+        static{
+#else
         static AppManager() {
+#endif
             s_auto_backup_timer = new Timer();
             s_auto_backup_timer.Tick += handleAutoBackupTimerTick;
         }
@@ -479,18 +501,96 @@ namespace Boare.Cadencii {
 
         #region MessageBoxのラッパー
         public static BDialogResult showMessageBox( String text ) {
-            return showMessageBox( text, "", MessageBoxButtons.OK, MessageBoxIcon.None );
+            return showMessageBox( text, "", MSGBOX_DEFAULT_OPTION, MSGBOX_PLAIN_MESSAGE );
         }
 
         public static BDialogResult showMessageBox( String text, String caption ) {
-            return showMessageBox( text, caption, MessageBoxButtons.OK, MessageBoxIcon.None );
+            return showMessageBox( text, caption, MSGBOX_DEFAULT_OPTION, MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static BDialogResult showMessageBox( String text, String caption, MessageBoxButtons buttons ) {
-            return showMessageBox( text, caption, buttons, MessageBoxIcon.None );
+        public static BDialogResult showMessageBox( String text, String caption, int optionType ) {
+            return showMessageBox( text, caption, optionType, MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static BDialogResult showMessageBox( String text, String caption, MessageBoxButtons buttons, MessageBoxIcon icon ) {
+        public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
+#if ENABLE_PROPERTY
+            bool property = (propertyWindow != null) ? propertyWindow.TopMost : false;
+            if ( property ) {
+                propertyWindow.TopMost = false;
+            }
+#endif
+            bool mixer = (mixerWindow != null) ? mixerWindow.TopMost : false;
+            if ( mixer ) {
+                mixerWindow.TopMost = false;
+            }
+
+            BDialogResult ret = BDialogResult.CANCEL;
+#if JAVA
+            int r = JOptionPane.showConfirmDialog( null, text, caption, optionType, messageType );
+            if ( r == JOptionPane.YES_OPTION ){
+                ret = BDialogResult.YES;
+            } else if ( r == JOptionPane.NO_OPTION ){
+                ret = BDialogResult.NO;
+            } else if ( r == JOptionPane.CANCEL_OPTION ){
+                ret = BDialogResult.CANCEL;
+            } else if ( r == JOptionPane.OK_OPTION ){
+                ret = BDialogResult.OK;
+            } else if ( r == JOptionPane.CLOSED_OPTION ){
+                ret = BDialogResult.CANCEL;
+            }
+#else
+            MessageBoxButtons btn = MessageBoxButtons.OK;
+            if ( optionType == MSGBOX_YES_NO_CANCEL_OPTION ) {
+                btn = MessageBoxButtons.YesNoCancel;
+            } else if ( optionType == MSGBOX_YES_NO_OPTION ) {
+                btn = MessageBoxButtons.YesNo;
+            } else if ( optionType == MSGBOX_OK_CANCEL_OPTION ) {
+                btn = MessageBoxButtons.OKCancel;
+            } else {
+                btn = MessageBoxButtons.OK;
+            }
+
+            MessageBoxIcon icon = MessageBoxIcon.None;
+            if ( messageType == MSGBOX_ERROR_MESSAGE ) {
+                icon = MessageBoxIcon.Error;
+            } else if ( messageType == MSGBOX_INFORMATION_MESSAGE ) {
+                icon = MessageBoxIcon.Information;
+            } else if ( messageType == MSGBOX_PLAIN_MESSAGE ) {
+                icon = MessageBoxIcon.None;
+            } else if ( messageType == MSGBOX_QUESTION_MESSAGE ) {
+                icon = MessageBoxIcon.Question;
+            } else if ( messageType == MSGBOX_WARNING_MESSAGE ) {
+                icon = MessageBoxIcon.Warning;
+            }
+
+            DialogResult dr = MessageBox.Show( text, caption, btn, icon );
+            if ( dr == DialogResult.OK ) {
+                ret = BDialogResult.OK;
+            } else if ( dr == DialogResult.Cancel ) {
+                ret = BDialogResult.CANCEL;
+            } else if ( dr == DialogResult.Yes ) {
+                ret = BDialogResult.YES;
+            } else if ( dr == DialogResult.No ) {
+                ret = BDialogResult.NO;
+            }
+#endif
+
+#if ENABLE_PROPERTY
+            if ( property ) {
+                propertyWindow.TopMost = true;
+            }
+#endif
+            if ( mixer ) {
+                mixerWindow.TopMost = true;
+            }
+            if ( mainWindow != null ) {
+                mainWindow.Focus();
+            }
+
+            return ret;
+        }
+
+        /*public static BDialogResult showMessageBox( String text, String caption, MessageBoxButtons buttons, MessageBoxIcon icon ) {
 #if ENABLE_PROPERTY
             bool property = (propertyWindow != null) ? propertyWindow.TopMost : false;
             if ( property ) {
@@ -524,7 +624,7 @@ namespace Boare.Cadencii {
                 return BDialogResult.NO;
             }
             return BDialogResult.CANCEL;
-        }
+        }*/
         #endregion
 
         #region BGM 関連
@@ -654,7 +754,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private static void handleAutoBackupTimerTick( object sender, EventArgs e ) {
+        private static void handleAutoBackupTimerTick( Object sender, BEventArgs e ) {
             if ( !s_file.Equals( "" ) && PortUtil.isFileExists( s_file ) ) {
                 String path = PortUtil.getDirectoryName( s_file );
                 String backup = PortUtil.combinePath( path, "~$" + PortUtil.getFileName( s_file ) );
@@ -885,7 +985,7 @@ namespace Boare.Cadencii {
                         ret = ScriptReturnStatus.ERROR;
                     }
                     if ( ret == ScriptReturnStatus.ERROR ) {
-                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", MessageBoxButtons.OK, MessageBoxIcon.Information );
+                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", MSGBOX_DEFAULT_OPTION, MSGBOX_INFORMATION_MESSAGE );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
 #if DEBUG
                         PortUtil.println( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso1amp\" ).getCount()=" + work.Track[1].getCurve( "reso1amp" ).size() );
@@ -922,13 +1022,13 @@ namespace Boare.Cadencii {
                     }
                     return (ret == ScriptReturnStatus.EDITED);
                 } catch ( Exception ex ) {
-                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Information );
+                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), MSGBOX_DEFAULT_OPTION, MSGBOX_INFORMATION_MESSAGE );
 #if DEBUG
                     AppManager.debugWriteLine( "    " + ex );
 #endif
                 }
             } else {
-                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), MSGBOX_DEFAULT_OPTION, MSGBOX_WARNING_MESSAGE );
             }
             return false;
         }
@@ -962,7 +1062,7 @@ namespace Boare.Cadencii {
             boolean old = s_is_curve_mode;
             s_is_curve_mode = value;
             if ( old != s_is_curve_mode && SelectedToolChanged != null ) {
-                SelectedToolChanged( typeof( AppManager ), new EventArgs() );
+                SelectedToolChanged( typeof( AppManager ), new BEventArgs() );
             }
         }
 
@@ -1090,7 +1190,7 @@ namespace Boare.Cadencii {
             EditTool old = s_selected_tool;
             s_selected_tool = value;
             if ( old != s_selected_tool && SelectedToolChanged != null ) {
-                SelectedToolChanged( typeof( AppManager ), new EventArgs() );
+                SelectedToolChanged( typeof( AppManager ), new BEventArgs() );
             }
         }
 
@@ -1562,7 +1662,7 @@ namespace Boare.Cadencii {
             if ( value != s_grid_visible ) {
                 s_grid_visible = value;
                 if ( GridVisibleChanged != null ) {
-                    GridVisibleChanged( typeof( AppManager ), new EventArgs() );
+                    GridVisibleChanged( typeof( AppManager ), new BEventArgs() );
                 }
             }
         }
@@ -1591,9 +1691,9 @@ namespace Boare.Cadencii {
             if ( previous != s_playing ) {
                 if ( s_playing && PreviewStarted != null ) {
                     int clock = getCurrentClock();
-                    PreviewStarted( typeof( AppManager ), new EventArgs() );
+                    PreviewStarted( typeof( AppManager ), new BEventArgs() );
                 } else if ( !s_playing && PreviewAborted != null ) {
-                    PreviewAborted( typeof( AppManager ), new EventArgs() );
+                    PreviewAborted( typeof( AppManager ), new BEventArgs() );
                 }
             }
         }
@@ -1665,7 +1765,7 @@ namespace Boare.Cadencii {
             s_current_play_position.numerator = timesig.numerator;
             s_current_play_position.tempo = s_vsq.getTempoAt( s_current_clock );
             if ( old != s_current_clock && CurrentClockChanged != null ) {
-                CurrentClockChanged( typeof( AppManager ), new EventArgs() );
+                CurrentClockChanged( typeof( AppManager ), new BEventArgs() );
             }
         }
 
