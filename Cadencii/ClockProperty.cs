@@ -1,4 +1,5 @@
-﻿/*
+﻿#if ENABLE_PROPERTY
+/*
  * ClockProperty.cs
  * Copyright (c) 2009 kbinani
  *
@@ -11,11 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package org.kbinani.Cadencii;
-
-import org.kbinani.vsq.*;
-#else
 using System;
 using System.ComponentModel;
 using Boare.Lib.Vsq;
@@ -24,11 +20,8 @@ using bocoree;
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using Integer = System.Int32;
-#endif
 
-#if !JAVA
     [TypeConverter( typeof( ClockPropertyConverter ) )]
-#endif
     public class ClockProperty {
         private CalculatableString m_clock = new CalculatableString();
 
@@ -38,13 +31,8 @@ namespace Boare.Cadencii {
         private int m_num;
         private int m_den;
 
-#if JAVA
-        public ClockProperty(){
-            this( 0, 0, 0 );
-#else
         public ClockProperty()
             : this( 0, 0, 0 ) {
-#endif
         }
 
         public ClockProperty( int measure, int beat, int gate ) {
@@ -75,11 +63,9 @@ namespace Boare.Cadencii {
             }
         }
 
-#if !JAVA
         public override bool Equals( object obj ) {
             return equals( obj );
         }
-#endif
 
         public CalculatableString getMeasure() {
             return m_measure;
@@ -158,6 +144,5 @@ namespace Boare.Cadencii {
         }
     }
 
-#if !JAVA
 }
 #endif

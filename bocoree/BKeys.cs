@@ -219,6 +219,14 @@ public enum BKeys{
     public int getValue(){
         return m_value;
     }
+
+    public boolean equals( BKeys item ){
+        if( item == null ){
+            return false;
+        }else{
+            return item.getValue() == getValue();
+        }
+    }
 }
 #else
 namespace bocoree.windows.forms {

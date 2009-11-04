@@ -43,7 +43,9 @@ namespace Boare.Cadencii {
                 return;
             }
 
-            using ( Wave wr = new Wave( file ) ) {
+            Wave wr = null;
+            try {
+                wr = new Wave( file );
                 m_wave = new byte[wr.getTotalSamples()];
                 m_sample_rate = (int)wr.getSampleRate();
                 m_length = wr.getTotalSamples() / (float)wr.getSampleRate();
@@ -54,6 +56,16 @@ namespace Boare.Cadencii {
                 for ( int i = 0; i < count; i++ ) {
                     double b = wr.getDouble( (int)i );
                     m_wave[i] = (byte)((b + 1.0) * 0.5 * 127.0);
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( wr != null ) {
+                    try {
+#if !JAVA
+                        wr.Dispose();
+#endif
+                    } catch ( Exception ex2 ) {
+                    }
                 }
             }
             if ( m_wave == null ) {
@@ -80,7 +92,7 @@ namespace Boare.Cadencii {
             GC.Collect();
         }
 
-        public unsafe void draw( Graphics2D g, Color pen, Rectangle rect, float sec_start, float sec_end ) {
+        public void draw( Graphics2D g, Color pen, Rectangle rect, float sec_start, float sec_end ) {
             int start0 = (int)(sec_start * m_sample_rate) - 1;
             int end = (int)(sec_end * m_sample_rate) + 1;
 
@@ -108,19 +120,17 @@ namespace Boare.Cadencii {
             int lasty = oy - (int)(last * order_y);
             bool drawn = false;
             g.setColor( pen );
-            fixed ( byte* pb = &m_wave[0] ) {
-                for ( int i = start + 1; i <= end; i++ ) {
-                    byte v = pb[i];
-                    if ( v != last ) {
-                        drawn = true;
-                        int x = ox + (int)((i - start0) * order_x);
-                        int y = oy - (int)(v * order_y);
-                        g.drawLine( lastx, lasty, x, lasty );
-                        g.drawLine( x, lasty, x, y );
-                        lastx = x;
-                        lasty = y;
-                        last = v;
-                    }
+            for ( int i = start + 1; i <= end; i++ ) {
+                byte v = m_wave[i];
+                if ( v != last ) {
+                    drawn = true;
+                    int x = ox + (int)((i - start0) * order_x);
+                    int y = oy - (int)(v * order_y);
+                    g.drawLine( lastx, lasty, x, lasty );
+                    g.drawLine( x, lasty, x, y );
+                    lastx = x;
+                    lasty = y;
+                    last = v;
                 }
             }
             if ( !drawn ) {

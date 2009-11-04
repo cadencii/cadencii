@@ -108,18 +108,11 @@ namespace Boare.Cadencii {
             // volumeMaster
             // 
             this.volumeMaster.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
-            this.volumeMaster.Feder = 0;
-            this.volumeMaster.IsMuted = false;
-            this.volumeMaster.IsSolo = true;
             this.volumeMaster.Location = new System.Drawing.Point( 87, 0 );
             this.volumeMaster.Margin = new System.Windows.Forms.Padding( 0 );
             this.volumeMaster.Name = "volumeMaster";
-            this.volumeMaster.Number = "Master";
-            this.volumeMaster.Panpot = 0;
             this.volumeMaster.Size = new System.Drawing.Size( 85, 261 );
-            this.volumeMaster.SoloButtonVisible = false;
             this.volumeMaster.TabIndex = 5;
-            this.volumeMaster.Title = "";
             this.volumeMaster.PanpotChanged += new System.EventHandler( this.volumeMaster_PanpotChanged );
             this.volumeMaster.IsMutedChanged += new System.EventHandler( this.volumeMaster_IsMutedChanged );
             this.volumeMaster.FederChanged += new System.EventHandler( this.volumeMaster_FederChanged );

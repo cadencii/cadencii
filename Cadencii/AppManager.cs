@@ -11,10 +11,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.awt.*;
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
+import org.kbinani.xml.*;
+#else
 using System;
-using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Windows.Forms;
+using System.CodeDom.Compiler;
+using Microsoft.CSharp;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
@@ -23,21 +36,13 @@ using bocoree.io;
 using bocoree.util;
 using bocoree.windows.forms;
 using bocoree.xml;
-using Microsoft.CSharp;
-/*
--コントロールカーブのテンプレートの登録＆貼付け機能
--選択したノートを指定したクロック数分一括シフトする機能
--前回レンダリングしたWAVEファイルをリサイクルする（起動ごとにレンダリングするのは面倒？）
--横軸を変更するショートカットキー
--音符の時間位置を秒指定で入力できるモード
--コントロールカーブのリアルタイムかつアナログ的な入力（ジョイスティックorゲームコントローラ）
--コントロールカーブエディタを幾つか積めるような機能
- */
+
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using java = bocoree;
     using Long = System.Int64;
+#endif
 
     public class AppManager {
         /// <summary>
@@ -60,7 +65,11 @@ namespace Boare.Cadencii {
         /// <summary>
         /// AttachedCurve用のシリアライザ
         /// </summary>
+#if JAVA
+        public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer( AttachedCurve.class );
+#else
         public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer( typeof( AttachedCurve ) );
+#endif
         public static Font baseFont8 = new Font( Font.DIALOG, Font.PLAIN, 8 );
         public static Font baseFont9 = new Font( Font.DIALOG, Font.PLAIN, 9 );
         /// <summary>
@@ -77,7 +86,7 @@ namespace Boare.Cadencii {
         public static int baseFont10OffsetHeight = 0;
         public static int baseFont8OffsetHeight = 0;
         public static int baseFont9OffsetHeight = 0;
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
         public static PropertyPanel propertyPanel;
         public static FormNoteProperty propertyWindow;
 #endif
@@ -100,7 +109,7 @@ namespace Boare.Cadencii {
             new Color( 25, 206, 175 ),
             new Color( 23, 160, 134 ),
             new Color( 79, 181, 21 ) };
-        public static readonly new Color[] RENDER = new Color[]{
+        public static readonly Color[] RENDER = new Color[]{
             new Color( 19, 143, 52 ),
             new Color( 158, 154, 18 ),
             new Color( 160, 143, 23 ),
@@ -392,7 +401,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// AppManager.m_draw_objectsを描く際の，最初に検索されるインデクス．
         /// </summary>
-        public static int[] drawStartIndex = new int[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        public static int[] drawStartIndex = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         /// <summary>
         /// マウスが降りていて，かつ範囲選択をしているときに立つフラグ
         /// </summary>
@@ -403,6 +412,8 @@ namespace Boare.Cadencii {
         public static Point mouseDownLocation;
         public static int lastTrackSelectorHeight;
 
+#if JAVA
+#else
         /// <summary>
         /// グリッド線を表示するか否かを表す値が変更された時発生します
         /// </summary>
@@ -415,6 +426,7 @@ namespace Boare.Cadencii {
         /// CurrentClockプロパティの値が変更された時発生します
         /// </summary>
         public static event EventHandler CurrentClockChanged;
+#endif
 
         private const String TEMPDIR_NAME = "cadencii";
 
@@ -466,20 +478,20 @@ namespace Boare.Cadencii {
         #endregion
 
         #region MessageBoxのラッパー
-        public static BDialogResult showMessageBox( string text ) {
+        public static BDialogResult showMessageBox( String text ) {
             return showMessageBox( text, "", MessageBoxButtons.OK, MessageBoxIcon.None );
         }
 
-        public static BDialogResult showMessageBox( string text, string caption ) {
+        public static BDialogResult showMessageBox( String text, String caption ) {
             return showMessageBox( text, caption, MessageBoxButtons.OK, MessageBoxIcon.None );
         }
 
-        public static BDialogResult showMessageBox( string text, string caption, MessageBoxButtons buttons ) {
+        public static BDialogResult showMessageBox( String text, String caption, MessageBoxButtons buttons ) {
             return showMessageBox( text, caption, buttons, MessageBoxIcon.None );
         }
 
-        public static BDialogResult showMessageBox( string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon ) {
-#if USE_PROPERTY
+        public static BDialogResult showMessageBox( String text, String caption, MessageBoxButtons buttons, MessageBoxIcon icon ) {
+#if ENABLE_PROPERTY
             bool property = (propertyWindow != null) ? propertyWindow.TopMost : false;
             if ( property ) {
                 propertyWindow.TopMost = false;
@@ -490,7 +502,7 @@ namespace Boare.Cadencii {
                 mixerWindow.TopMost = false;
             }
             DialogResult dr = MessageBox.Show( text, caption, buttons, icon );
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             if ( property ) {
                 propertyWindow.TopMost = true;
             }
@@ -726,6 +738,7 @@ namespace Boare.Cadencii {
             return Messaging.getMessage( id );
         }
 
+#if ENABLE_SCRIPT
         public static ScriptInvoker loadScript( String file ) {
 #if JAVA
             ScriptInvoker ret = new ScriptInvoker();
@@ -838,7 +851,9 @@ namespace Boare.Cadencii {
             return ret;
 #endif
         }
+#endif
 
+#if ENABLE_SCRIPT
         /// <summary>
         /// スクリプトを実行します
         /// </summary>
@@ -917,6 +932,7 @@ namespace Boare.Cadencii {
             }
             return false;
         }
+#endif
 
         private static String configFileNameFromScriptFileName( String script_file ) {
             String dir = PortUtil.combinePath( AppManager.getApplicationDataPath(), "script" );
@@ -1298,7 +1314,7 @@ namespace Boare.Cadencii {
                 }
             }
             if ( !silent ) {
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                 propertyPanel.UpdateValue( s_selected );
 #endif
             }
@@ -1320,7 +1336,7 @@ namespace Boare.Cadencii {
             for ( int i = count - 1; i >= 0; i-- ) {
                 s_selected_events.removeElementAt( i );
             }
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             propertyPanel.UpdateValue( s_selected );
 #endif
             checkSelectedItemExistence();
@@ -1355,7 +1371,7 @@ namespace Boare.Cadencii {
                     s_selected_events.add( new SelectedEventEntry( s_selected, index[i], (VsqEvent)index[i].clone() ) );
                 }
             }
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             propertyPanel.UpdateValue( s_selected );
 #endif
             checkSelectedItemExistence();
@@ -1399,7 +1415,7 @@ namespace Boare.Cadencii {
                 }
             }
             if ( !silent ) {
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                 propertyPanel.UpdateValue( s_selected );
 #endif
             }
@@ -1407,7 +1423,7 @@ namespace Boare.Cadencii {
 
         public static void clearSelectedEvent() {
             s_selected_events.clear();
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             propertyPanel.UpdateValue( s_selected );
 #endif
             checkSelectedItemExistence();
@@ -1590,7 +1606,7 @@ namespace Boare.Cadencii {
         }
 
         private static void saveToCor( String file ) {
-            const boolean hide = false;
+            boolean hide = false;
             if ( s_vsq != null ) {
                 String path = PortUtil.getDirectoryName( file );
                 String file2 = PortUtil.combinePath( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
@@ -1621,60 +1637,6 @@ namespace Boare.Cadencii {
                     }
                     s_auto_backup_timer.Interval = draft;
                     s_auto_backup_timer.Start();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 位置clockにおけるテンポ、拍子、小節数を取得します
-        /// </summary>
-        /// <param name="clock"></param>
-        /// <param name="numerator"></param>
-        /// <param name="denominator"></param>
-        /// <param name="bar_count"></param>
-        /// <param name="tempo"></param>
-        public static void getTempoAndTimeSignature(
-            int clock,
-            out int numerator,
-            out int denominator,
-            out int bar_count,
-            out int tempo,
-            out int time_sig_index,
-            out int tempo_index,
-            out int last_clock ) {
-            numerator = 4;
-            denominator = 4;
-            bar_count = 0;
-            tempo = 480000;
-            time_sig_index = -1;
-            tempo_index = -1;
-            last_clock = 0;
-            if ( s_vsq != null ) {
-                int index = -1;
-                for ( int i = 0; i < s_vsq.TimesigTable.size(); i++ ) {
-                    if ( s_vsq.TimesigTable.get( i ).Clock > clock ) {
-                        index = i - 1;
-                        break;
-                    }
-                }
-                if ( index >= 0 ) {
-                    denominator = s_vsq.TimesigTable.get( index ).Denominator;
-                    numerator = s_vsq.TimesigTable.get( index ).Numerator;
-                    time_sig_index = index;
-                    last_clock = s_vsq.TimesigTable.get( index ).Clock;
-                }
-                bar_count = s_vsq.getBarCountFromClock( clock );
-
-                index = -1;
-                for ( int i = 0; i < s_vsq.TempoTable.size(); i++ ) {
-                    if ( s_vsq.TempoTable.get( i ).Clock > clock ) {
-                        index = i - 1;
-                        break;
-                    }
-                }
-                if ( index >= 0 ) {
-                    tempo = s_vsq.TempoTable.get( index ).Tempo;
-                    tempo_index = index;
                 }
             }
         }
@@ -1729,12 +1691,14 @@ namespace Boare.Cadencii {
             s_selected = value;
         }
 
+#if !JAVA
         [Obsolete]
         public static int Selected {
             get {
                 return getSelected();
             }
         }
+#endif
 
         /// <summary>
         /// vsqファイルを読込みます
@@ -1782,12 +1746,14 @@ namespace Boare.Cadencii {
             return s_vsq;
         }
 
+#if !JAVA
         [Obsolete]
         public static VsqFileEx VsqFile {
             get {
                 return getVsqFile();
             }
         }
+#endif
 #endif
 
         public static void setVsqFile( VsqFileEx vsq ) {
@@ -1812,7 +1778,7 @@ namespace Boare.Cadencii {
         public static void init() {
             loadConfig();
             VSTiProxy.init();
-            s_locker = new object();
+            s_locker = new Object();
             SymbolTable.loadDictionary();
             VSTiProxy.CurrentUser = "";
 
@@ -1852,14 +1818,16 @@ namespace Boare.Cadencii {
             Messaging.setLanguage( editorConfig.Language );
 
             KeySoundPlayer.Init();
+#if ENABLE_SCRIPT
             PaletteToolServer.Init();
+#endif
 
 #if !TREECOM
             s_id = Misc.getmd5( DateTime.Now.ToBinary().ToString() ).Replace( "_", "" );
             String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
 #endif
 
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             propertyPanel = new PropertyPanel();
             propertyWindow = new FormNoteProperty();
             propertyWindow.Controls.Add( propertyPanel );
@@ -1871,7 +1839,11 @@ namespace Boare.Cadencii {
             String ret = "";
             Vector<BKeys> list = new Vector<BKeys>( keys );
             if ( list.contains( BKeys.Menu ) ) {
+#if JAVA
+                ret = new String( '\u2318' );
+#else
                 ret = new String( '\x2318', 1 );
+#endif
             }
             if ( list.contains( BKeys.Control ) ) {
                 ret += (ret.Equals( "" ) ? "" : "+") + "Ctrl";
@@ -1899,37 +1871,41 @@ namespace Boare.Cadencii {
         }
 
         private static String getKeyDisplayString( BKeys key ) {
-            switch ( key ) {
-                case BKeys.PageDown:
-                    return "PgDn";
-                case BKeys.PageUp:
-                    return "PgUp";
-                case BKeys.D0:
-                    return "0";
-                case BKeys.D1:
-                    return "1";
-                case BKeys.D2:
-                    return "2";
-                case BKeys.D3:
-                    return "3";
-                case BKeys.D4:
-                    return "4";
-                case BKeys.D5:
-                    return "5";
-                case BKeys.D6:
-                    return "6";
-                case BKeys.D7:
-                    return "7";
-                case BKeys.D8:
-                    return "8";
-                case BKeys.D9:
-                    return "9";
-                case BKeys.Menu:
-                    return new String( '\x2318', 1 );
-                default:
-                    return key.ToString();
+            if ( key.Equals( BKeys.PageDown ) ) {
+                return "PgDn";
+            } else if ( key.Equals( BKeys.PageUp ) ) {
+                return "PgUp";
+            } else if ( key.Equals( BKeys.D0 ) ) {
+                return "0";
+            } else if ( key.Equals( BKeys.D1 ) ) {
+                return "1";
+            } else if ( key.Equals( BKeys.D2 ) ) {
+                return "2";
+            } else if ( key.Equals( BKeys.D3 ) ) {
+                return "3";
+            } else if ( key.Equals( BKeys.D4 ) ) {
+                return "4";
+            } else if ( key.Equals( BKeys.D5 ) ) {
+                return "5";
+            } else if ( key.Equals( BKeys.D6 ) ) {
+                return "6";
+            } else if ( key.Equals( BKeys.D7 ) ) {
+                return "7";
+            } else if ( key.Equals( BKeys.D8 ) ) {
+                return "8";
+            } else if ( key.Equals( BKeys.D9 ) ) {
+                return "9";
+            } else if ( key.Equals( BKeys.Menu ) ) {
+#if JAVA
+                    return new String( '\u2318' );
+#else
+                return new String( '\x2318', 1 );
+#endif
+            } else {
+                return key.ToString();
             }
         }
+
 
         #region クリップボードの管理
         /// <summary>
@@ -1953,11 +1929,11 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        private static object getDeserializedObjectFromText( String s ) {
+        private static Object getDeserializedObjectFromText( String s ) {
             if ( s.StartsWith( CLIP_PREFIX ) ) {
                 int index = s.IndexOf( ":" );
                 index = s.IndexOf( ":", index + 1 );
-                object ret = null;
+                Object ret = null;
                 try {
                     ByteArrayInputStream bais = new ByteArrayInputStream( Base64.decode( s.Substring( index + 1 ) ) );
                     ObjectInputStream ois = new ObjectInputStream( bais );
@@ -2064,6 +2040,7 @@ namespace Boare.Cadencii {
         }
         #endregion
 
+#if ENABLE_SCRIPT
         public static CompilerResults compileScript( String code ) {
 #if DEBUG
             PortUtil.println( "AppManager#compileScript" );
@@ -2093,6 +2070,7 @@ namespace Boare.Cadencii {
             }
             return ret;
         }
+#endif
 
         /// <summary>
         /// アプリケーションデータの保存位置を取得します
@@ -2129,15 +2107,17 @@ namespace Boare.Cadencii {
         public static void saveConfig() {
             // ユーザー辞書の情報を取り込む
             editorConfig.UserDictionaries.clear();
-            for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
-                editorConfig.UserDictionaries.add( SymbolTable.getSymbolTable( i ).getName() + "\t" + (SymbolTable.getSymbolTable( i ).isEnabled() ? "T" : "F") );
+            int count = SymbolTable.getCount();
+            for ( int i = 0; i < count; i++ ) {
+                SymbolTable table = SymbolTable.getSymbolTable( i );
+                editorConfig.UserDictionaries.add( table.getName() + "\t" + (table.isEnabled() ? "T" : "F") );
             }
             editorConfig.KeyWidth = keyWidth;
 
             String file = PortUtil.combinePath( getApplicationDataPath(), CONFIG_FILE_NAME );
             try {
                 EditorConfig.serialize( editorConfig, file );
-            } catch {
+            } catch ( Exception ex ) {
             }
         }
 
@@ -2147,7 +2127,7 @@ namespace Boare.Cadencii {
             if ( PortUtil.isFileExists( config_file ) ) {
                 try {
                     ret = EditorConfig.deserialize( editorConfig, config_file );
-                } catch {
+                } catch ( Exception ex ) {
                     ret = null;
                 }
             } else {
@@ -2155,7 +2135,7 @@ namespace Boare.Cadencii {
                 if ( PortUtil.isFileExists( config_file ) ) {
                     try {
                         ret = EditorConfig.deserialize( editorConfig, config_file );
-                    } catch {
+                    } catch ( Exception ex ) {
                         ret = null;
                     }
                 }
@@ -2201,7 +2181,8 @@ namespace Boare.Cadencii {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             int index = -1;
-            for ( int i = 0; i < editorConfig.UtauSingers.size(); i++ ) {
+            int c = editorConfig.UtauSingers.size();
+            for ( int i = 0; i < c; i++ ) {
                 if ( editorConfig.UtauSingers.get( i ).VOICENAME.Equals( name ) ) {
                     index = i;
                     break;
@@ -2215,7 +2196,7 @@ namespace Boare.Cadencii {
                 ret.IconHandle.IDS = sc.VOICENAME;
                 ret.IconHandle.Index = 0;
                 ret.IconHandle.Language = lang;
-                ret.IconHandle.Length = 1;
+                ret.IconHandle.setLength( 1 );
                 ret.IconHandle.Original = sc.Original;
                 ret.IconHandle.Program = sc.Program;
                 ret.IconHandle.Caption = "";
@@ -2275,21 +2256,21 @@ namespace Boare.Cadencii {
             return attr.Configuration;
         }
 
+#if !JAVA
         public static String getAssemblyFileVersion( Type t ) {
             Assembly a = Assembly.GetAssembly( t );
             AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyFileVersionAttribute ) );
             return afva.Version;
         }
+#endif
 
+#if !JAVA
         public static String getAssemblyNameAndFileVersion( Type t ) {
             Assembly a = Assembly.GetAssembly( t );
             AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyFileVersionAttribute ) );
             return a.GetName().Name + " v" + afva.Version;
         }
-
-        /*public static SolidBrush getHilightBrush() {
-            return s_hilight_brush;
-        }*/
+#endif
 
         public static java.awt.Color getHilightColor() {
             return s_hilight_brush;
@@ -2311,4 +2292,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

@@ -1,4 +1,5 @@
-﻿/*
+﻿#if ENABLE_PROPERTY
+/*
  * CalculatableString.cs
  * Copyright (c) 2009 kbinani
  *
@@ -11,31 +12,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package org.kbinani.Cadencii;
-#else
 using System;
 using System.ComponentModel;
 using bocoree;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
-#endif
 
-#if !JAVA
     [TypeConverter( typeof( CalculatableStringConverter ) )]
-#endif
     public class CalculatableString {
         private String m_value = "0";
         private int m_int = 0;
 
-#if JAVA
-        public CalculatableString(){
-            this( 0 );
-#else
         public CalculatableString()
             : this( 0 ) {
-#endif
         }
 
         public CalculatableString( int value ) {
@@ -55,12 +45,10 @@ namespace Boare.Cadencii {
             }
         }
 
-#if !JAVA
         public override bool Equals( object obj )
         {
             return equals( obj );
         }
-#endif
 
         public String getStr() {
             return m_value;
@@ -308,6 +296,6 @@ namespace Boare.Cadencii {
         }
 
     }
-#if !JAVA
+
 }
 #endif

@@ -14,22 +14,20 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+import java.awt.*;
 import java.util.*;
+import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA

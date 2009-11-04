@@ -49,8 +49,15 @@ namespace Boare.Cadencii {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
+    using BKeyPressEventArgs = System.Windows.Forms.KeyPressEventArgs;
+    using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
+    using BFormClosedEventArgs = System.Windows.Forms.FormClosedEventArgs;
+    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
+    using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
+    using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using java = bocoree;
@@ -385,10 +392,12 @@ namespace Boare.Cadencii {
         private Preference m_preference_dlg;
         private BToolStripButton m_strip_ddbtn_metronome;
         //private FormUtauVoiceConfig m_utau_voice_dialog = null;
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
         private PropertyPanelContainer m_property_panel_container;
 #endif
+#if ENABLE_SCRIPT
         private Vector<ToolStripItem> m_palette_tools = new Vector<ToolStripItem>();
+#endif
 
         private int m_overview_direction = 1;
         private Thread m_overview_update_thread = null;
@@ -417,7 +426,11 @@ namespace Boare.Cadencii {
         /// Overview画面で、マウスが下りた位置のx座標
         /// </summary>
         private int m_overview_mouse_downed_locationx;
+#if JAVA
+        private JPanel pictKeyLengthSplitter;
+#else
         private PictureBox pictKeyLengthSplitter;
+#endif
         private int m_overview_scale_count = 5;
         /// <summary>
         /// AppManager.keyWidthを調節するモードに入ったかどうか
@@ -484,8 +497,13 @@ namespace Boare.Cadencii {
             m_overview_px_per_clock = getOverviewScaleX( m_overview_scale_count );
 
             menuVisualOverview.setSelected( AppManager.editorConfig.OverviewEnabled );
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             m_property_panel_container = new PropertyPanelContainer();
+#endif
+
+#if !ENABLE_SCRIPT
+            menuSettingPaletteTool.Visible = false;
+            menuScript.Visible = false;
 #endif
 
             m_strip_ddbtn_metronome = new BToolStripButton();
@@ -526,7 +544,9 @@ namespace Boare.Cadencii {
             applyQuantizeMode();
 
             // Palette Toolの読み込み
+#if ENABLE_SCRIPT
             updatePaletteTool();
+#endif
 
             // toolStipの位置を，前回終了時の位置に戻す
             Vector<ToolStrip> top = new Vector<ToolStrip>();
@@ -597,7 +617,7 @@ namespace Boare.Cadencii {
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
             splitContainerProperty.FixedPanel = FixedPanel.Panel1;
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             splitContainerProperty.Panel1.Controls.Add( m_property_panel_container );
             m_property_panel_container.Dock = DockStyle.Fill;
 #else
@@ -674,8 +694,10 @@ namespace Boare.Cadencii {
             p = AppManager.editorConfig.ToolFileLocation.Location;
             toolStripFile.Location = new System.Drawing.Point( p.x, p.y );
 
+#if !JAVA
             addToolStripInPositionOrder( toolStripContainer.TopToolStripPanel, top );
             addToolStripInPositionOrder( toolStripContainer.BottomToolStripPanel, bottom );
+#endif
 
             toolStripTool.ParentChanged += new System.EventHandler( this.toolStripEdit_ParentChanged );
             toolStripTool.Move += new System.EventHandler( this.toolStripEdit_Move );
@@ -733,6 +755,7 @@ namespace Boare.Cadencii {
 
         private void commonStripPaletteTool_Clicked( Object sender, BEventArgs e ) {
             String id = "";  //選択されたツールのID
+#if ENABLE_SCRIPT
             if ( sender is BToolStripButton ) {
                 BToolStripButton tsb = (BToolStripButton)sender;
                 if ( tsb.getTag() != null && tsb.getTag() is String ) {
@@ -750,6 +773,7 @@ namespace Boare.Cadencii {
                     tsmi.setSelected( true );
                 }
             }
+#endif
 
             int count = toolStripTool.getComponentCount();
             for ( int i = 0; i < count; i++ ) {
@@ -909,7 +933,7 @@ namespace Boare.Cadencii {
             m_last_is_imemode_on = AppManager.inputTextBox.isImeModeOn();
         }
 
-        private void m_input_textbox_KeyPress( Object sender, KeyPressEventArgs e ) {
+        private void m_input_textbox_KeyPress( Object sender, BKeyPressEventArgs e ) {
 #if !JAVA
             //           Enter                                  Tab
             e.Handled = (e.KeyChar == Convert.ToChar( 13 )) || (e.KeyChar == Convert.ToChar( 09 ));
@@ -1319,6 +1343,7 @@ namespace Boare.Cadencii {
                         setEdited( true );
                         AppManager.clearSelectedEvent();
                         return;
+#if ENABLE_SCRIPT
                     } else if ( AppManager.getSelectedTool() == EditTool.PALETTE_TOOL ) {
                         Vector<Integer> internal_ids = new Vector<Integer>();
                         for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
@@ -1338,6 +1363,7 @@ namespace Boare.Cadencii {
                             AppManager.clearSelectedEvent();
                             return;
                         }
+#endif
                     }
                 } else {
                     if ( edit_mode != EditMode.MOVE_ENTRY_WAIT_MOVE &&
@@ -1465,31 +1491,31 @@ namespace Boare.Cadencii {
                     }
                 }
             } else if ( e.Button == BMouseButtons.Middle ) {
+#if ENABLE_SCRIPT
                 if ( AppManager.getSelectedTool() == EditTool.PALETTE_TOOL ) {
                     ByRef<Rectangle> out_id_rect = new ByRef<Rectangle>();
                     VsqEvent item = getItemAtClickedPosition( new Point( e.X, e.Y ), out_id_rect );
                     Rectangle id_rect = out_id_rect.value;
                     if ( item != null ) {
-                        if ( AppManager.getSelectedTool() == EditTool.PALETTE_TOOL ) {
+                        AppManager.clearSelectedEvent();
+                        AppManager.addSelectedEvent( item.InternalID );
+                        Vector<Integer> internal_ids = new Vector<Integer>();
+                        for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                            SelectedEventEntry see = (SelectedEventEntry)itr.next();
+                            internal_ids.add( see.original.InternalID );
+                        }
+                        boolean result = PaletteToolServer.InvokePaletteTool( AppManager.selectedPaletteTool,
+                                                                           AppManager.getSelected(),
+                                                                           internal_ids.toArray( new Integer[] { } ),
+                                                                           e.Button );
+                        if ( result ) {
+                            setEdited( true );
                             AppManager.clearSelectedEvent();
-                            AppManager.addSelectedEvent( item.InternalID );
-                            Vector<Integer> internal_ids = new Vector<Integer>();
-                            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                                SelectedEventEntry see = (SelectedEventEntry)itr.next();
-                                internal_ids.add( see.original.InternalID );
-                            }
-                            boolean result = PaletteToolServer.InvokePaletteTool( AppManager.selectedPaletteTool,
-                                                                               AppManager.getSelected(),
-                                                                               internal_ids.toArray( new Integer[] { } ),
-                                                                               e.Button );
-                            if ( result ) {
-                                setEdited( true );
-                                AppManager.clearSelectedEvent();
-                                return;
-                            }
+                            return;
                         }
                     }
                 }
+#endif
             }
         }
 
@@ -1501,7 +1527,10 @@ namespace Boare.Cadencii {
             VsqEvent item = getItemAtClickedPosition( new Point( e.X, e.Y ), out_rect );
             Rectangle rect = out_rect.value;
             if ( item != null ) {
-                if ( AppManager.getSelectedTool() != EditTool.PALETTE_TOOL ) {
+#if ENABLE_SCRIPT
+                if ( AppManager.getSelectedTool() != EditTool.PALETTE_TOOL ) 
+#endif
+                {
                     AppManager.clearSelectedEvent();
                     AppManager.addSelectedEvent( item.InternalID );
                     m_mouse_hover_thread.Abort();
@@ -1737,7 +1766,12 @@ namespace Boare.Cadencii {
             }
 
             EditTool selected_tool = AppManager.getSelectedTool();
-            if ( selected_tool != EditTool.PALETTE_TOOL && e.Button == BMouseButtons.Middle ) {
+#if ENABLE_SCRIPT
+            if ( selected_tool != EditTool.PALETTE_TOOL && e.Button == BMouseButtons.Middle ) 
+#else
+            if ( e.Button == BMouseButtons.Middle )
+#endif
+            {
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
                 m_middle_button_vscroll = vScroll.Value;
                 m_middle_button_hscroll = hScroll.Value;
@@ -1748,12 +1782,14 @@ namespace Boare.Cadencii {
             VsqEvent item = getItemAtClickedPosition( new Point( e.X, e.Y ), out_rect );
             Rectangle rect = out_rect.value;
 
+#if ENABLE_SCRIPT
             if ( selected_tool == EditTool.PALETTE_TOOL && item == null && e.Button == MouseButtons.Middle ) {
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
                 m_middle_button_vscroll = vScroll.Value;
                 m_middle_button_hscroll = hScroll.Value;
                 return;
             }
+#endif
 
             int selected_track = AppManager.getSelected();
 
@@ -1791,7 +1827,7 @@ namespace Boare.Cadencii {
                     }
                     int clock_at_x = AppManager.clockFromXCoord( x - stdx );
                     AppManager.wholeSelectedInterval = new SelectedRegion( clock_at_x );
-                    AppManager.wholeSelectedInterval.SetEnd( clock_at_x );
+                    AppManager.wholeSelectedInterval.setEnd( clock_at_x );
                     AppManager.isPointerDowned = true;
                 } else {
                     boolean vibrato_found = false;
@@ -1917,7 +1953,11 @@ namespace Boare.Cadencii {
                             } else {
                                 SystemSounds.Asterisk.Play();
                             }
+#if ENABLE_SCRIPT
                         } else if ( (selected_tool == EditTool.ARROW || selected_tool == EditTool.PALETTE_TOOL) && e.Button == BMouseButtons.Left ) {
+#else
+                        } else if ( (selected_tool == EditTool.ARROW) && e.Button == BMouseButtons.Left ) {
+#endif
                             AppManager.setWholeSelectedIntervalEnabled( false );
                             AppManager.clearSelectedEvent();
                             AppManager.mouseDownLocation = new Point( e.X + AppManager.startToDrawX, e.Y + getStartToDrawY() );
@@ -1950,7 +1990,11 @@ namespace Boare.Cadencii {
                     m_mouse_hover_thread.Start( item.ID.Note );
                 }
                 // まず、両端の編集モードに移行可能かどうか調べる
+#if ENABLE_SCRIPT
                 if ( selected_tool != EditTool.ERASER && selected_tool != EditTool.PALETTE_TOOL && e.Button == BMouseButtons.Left ) {
+#else
+                if ( selected_tool != EditTool.ERASER && e.Button == BMouseButtons.Left ) {
+#endif
                     int stdx = AppManager.startToDrawX;
                     int stdy = getStartToDrawY();
 #if USE_DOBJ
@@ -2018,12 +2062,15 @@ namespace Boare.Cadencii {
                     }
                 }
                 if ( e.Button == BMouseButtons.Left || e.Button == BMouseButtons.Middle ) {
+#if ENABLE_SCRIPT
                     if ( selected_tool == EditTool.PALETTE_TOOL ) {
                         AppManager.setWholeSelectedIntervalEnabled( false );
                         AppManager.setEditMode( EditMode.NONE );
                         AppManager.clearSelectedEvent();
                         AppManager.addSelectedEvent( item.InternalID );
-                    } else if ( selected_tool != EditTool.ERASER ) {
+                    } else
+#endif
+                    if ( selected_tool != EditTool.ERASER ) {
                         m_mouse_move_init = new Point( e.X + AppManager.startToDrawX, e.Y + getStartToDrawY() );
                         int head_x = AppManager.xCoordFromClocks( item.Clock );
                         m_mouse_move_offset = e.X - head_x;
@@ -2078,9 +2125,9 @@ namespace Boare.Cadencii {
 
                         // 範囲選択モードで、かつマウス位置の音符がその範囲に入っていた場合にのみ、MOVE_ENTRY_WHOLE_WAIT_MOVEに移行
                         if ( AppManager.isWholeSelectedIntervalEnabled() &&
-                             AppManager.wholeSelectedInterval.Start <= item.Clock && item.Clock <= AppManager.wholeSelectedInterval.End ) {
+                             AppManager.wholeSelectedInterval.getStart() <= item.Clock && item.Clock <= AppManager.wholeSelectedInterval.getEnd() ) {
                             AppManager.setEditMode( EditMode.MOVE_ENTRY_WHOLE_WAIT_MOVE );
-                            AppManager.wholeSelectedIntervalStartForMoving = AppManager.wholeSelectedInterval.Start;
+                            AppManager.wholeSelectedIntervalStartForMoving = AppManager.wholeSelectedInterval.getStart();
                         } else {
                             AppManager.setWholeSelectedIntervalEnabled( false );
                             AppManager.setEditMode( EditMode.MOVE_ENTRY_WAIT_MOVE );
@@ -2100,7 +2147,7 @@ namespace Boare.Cadencii {
 
         private void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( m_form_activated ) {
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible && !AppManager.propertyPanel.Editing ) {
 #else
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible ) {
@@ -2247,7 +2294,7 @@ namespace Boare.Cadencii {
                         x = AppManager.xCoordFromClocks( nclock ) + stdx;
                     }
                     int clock_at_x = AppManager.clockFromXCoord( x - stdx );
-                    AppManager.wholeSelectedInterval.SetEnd( clock_at_x );
+                    AppManager.wholeSelectedInterval.setEnd( clock_at_x );
                 } else {
                     Point mouse = new Point( e.X + AppManager.startToDrawX, e.Y + getStartToDrawY() );
                     int tx, ty, twidth, theight;
@@ -2408,7 +2455,7 @@ namespace Boare.Cadencii {
                         dclock = new_clock - clock_init;
                     }
 
-                    AppManager.wholeSelectedIntervalStartForMoving = AppManager.wholeSelectedInterval.Start + dclock;
+                    AppManager.wholeSelectedIntervalStartForMoving = AppManager.wholeSelectedInterval.getStart() + dclock;
 
                     for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                         SelectedEventEntry item = (SelectedEventEntry)itr.next();
@@ -2862,8 +2909,8 @@ namespace Boare.Cadencii {
                 PortUtil.println( "FormMain#pictPianoRoll_MouseUp; EditMode.MOVE_ENTRY_WHOLE" );
 #endif
                 #region MOVE_ENTRY_WHOLE
-                int src_clock_start = AppManager.wholeSelectedInterval.Start;
-                int src_clock_end = AppManager.wholeSelectedInterval.End;
+                int src_clock_start = AppManager.wholeSelectedInterval.getStart();
+                int src_clock_end = AppManager.wholeSelectedInterval.getEnd();
                 int dst_clock_start = AppManager.wholeSelectedIntervalStartForMoving;
                 int dst_clock_end = dst_clock_start + (src_clock_end - src_clock_start);
                 int dclock = dst_clock_start - src_clock_start;
@@ -2942,7 +2989,7 @@ namespace Boare.Cadencii {
 
                 // 選択範囲を更新
                 AppManager.wholeSelectedInterval = new SelectedRegion( dst_clock_start );
-                AppManager.wholeSelectedInterval.SetEnd( dst_clock_end );
+                AppManager.wholeSelectedInterval.setEnd( dst_clock_end );
                 AppManager.wholeSelectedIntervalStartForMoving = dst_clock_start;
 
                 // 音符の再選択
@@ -2953,8 +3000,8 @@ namespace Boare.Cadencii {
                 setEdited( true );
                 #endregion
             } else if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                int start = AppManager.wholeSelectedInterval.Start;
-                int end = AppManager.wholeSelectedInterval.End;
+                int start = AppManager.wholeSelectedInterval.getStart();
+                int end = AppManager.wholeSelectedInterval.getEnd();
                 AppManager.clearSelectedEvent();
 
                 // 音符の選択状態を更新
@@ -3015,7 +3062,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void pictPianoRoll_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e ) {
+        private void pictPianoRoll_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
 #if DEBUG
             System.Diagnostics.Debug.WriteLine( "pictureBox1_PreviewKeyDown" );
             System.Diagnostics.Debug.WriteLine( "    e.KeyCode=" + e.KeyCode );
@@ -3198,7 +3245,7 @@ namespace Boare.Cadencii {
         #endregion
 
         #region FormMain
-        private void FormMain_FormClosed( Object sender, FormClosedEventArgs e ) {
+        private void FormMain_FormClosed( Object sender, BFormClosedEventArgs e ) {
             clearTempWave();
             String tempdir = AppManager.getTempWaveDir();
             String log = PortUtil.combinePath( tempdir, "run.log" );
@@ -3215,7 +3262,7 @@ namespace Boare.Cadencii {
             MidiPlayer.Stop();
         }
 
-        private void FormMain_FormClosing( Object sender, FormClosingEventArgs e ) {
+        private void FormMain_FormClosing( Object sender, BFormClosingEventArgs e ) {
             if ( isEdited() ) {
                 String file = AppManager.getFileName();
                 if ( file.Equals( "" ) ) {
@@ -3269,7 +3316,7 @@ namespace Boare.Cadencii {
             AppManager.CurrentClockChanged += new EventHandler( AppManager_CurrentClockChanged );
             AppManager.SelectedToolChanged += new EventHandler( AppManager_SelectedToolChanged );
             EditorConfig.QuantizeModeChanged += new EventHandler( EditorConfig_QuantizeModeChanged );
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             m_property_panel_container.StateChangeRequired += new StateChangeRequiredEventHandler( m_property_panel_container_StateChangeRequired );
 #endif
 
@@ -3316,7 +3363,9 @@ namespace Boare.Cadencii {
 
             trackSelector.CommandExecuted += new EventHandler( trackSelector_CommandExecuted );
 
+#if ENABLE_SCRIPT
             updateScriptShortcut();
+#endif
 
             clearTempWave();
             setHScrollRange( AppManager.getVsqFile().TotalClocks );
@@ -3366,7 +3415,7 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "FormMain_Load; a=" + a );
 #endif
 
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             AppManager.propertyWindow.setBounds( a.x, a.y, rc.width, rc.height );
             AppManager.propertyWindow.LocationChanged += new EventHandler( m_note_proerty_dlg_LocationOrSizeChanged );
             AppManager.propertyWindow.SizeChanged += new EventHandler( m_note_proerty_dlg_LocationOrSizeChanged );
@@ -3525,13 +3574,13 @@ namespace Boare.Cadencii {
 #endif
         }
 
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
         private void m_property_panel_container_StateChangeRequired( Object sender, PanelState arg ) {
             updatePropertyPanelState( arg );
         }
 #endif
 
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
         private void m_note_proerty_dlg_CommandExecuteRequired( CadenciiCommand command ) {
 #if DEBUG
             AppManager.debugWriteLine( "m_note_property_dlg_CommandExecuteRequired" );
@@ -3543,8 +3592,8 @@ namespace Boare.Cadencii {
         }
 #endif
 
-#if USE_PROPERTY
-        private void m_note_proerty_dlg_FormClosing( Object sender, FormClosingEventArgs e ) {
+#if ENABLE_PROPERTY
+        private void m_note_proerty_dlg_FormClosing( Object sender, BFormClosingEventArgs e ) {
             if ( e.CloseReason == CloseReason.UserClosing ) {
                 e.Cancel = true;
                 updatePropertyPanelState( PanelState.Hidden );
@@ -3552,7 +3601,7 @@ namespace Boare.Cadencii {
         }
 #endif
 
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
         private void m_note_proerty_dlg_LocationOrSizeChanged( Object sender, BEventArgs e ) {
 #if DEBUG
             PortUtil.println( "m_note_proeprty_dlg_LocationOrSizeChanged; WindowState=" + AppManager.propertyWindow.WindowState );
@@ -3581,19 +3630,19 @@ namespace Boare.Cadencii {
         private void FormMain_SizeChanged( Object sender, BEventArgs e ) {
             if ( this.WindowState == FormWindowState.Normal ) {
                 AppManager.editorConfig.WindowRect = this.getBounds();
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                 AppManager.propertyWindow.WindowState = FormWindowState.Normal;
                 AppManager.propertyWindow.Visible = AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window;
 #endif
                 AppManager.mixerWindow.Visible = AppManager.editorConfig.MixerVisible;
                 updateLayout();
             } else if ( this.WindowState == FormWindowState.Minimized ) {
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                 AppManager.propertyWindow.Visible = false;
 #endif
                 AppManager.mixerWindow.Visible = false;
             } else if ( this.WindowState == FormWindowState.Maximized ) {
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                 AppManager.propertyWindow.WindowState = FormWindowState.Normal;
                 AppManager.propertyWindow.Visible = AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window;
 #endif
@@ -3617,7 +3666,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void FormMain_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e ) {
+        private void FormMain_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
             ProcessSpecialShortcutKey( e );
         }
 
@@ -4985,7 +5034,7 @@ namespace Boare.Cadencii {
                     if ( m_versioninfo != null && !m_versioninfo.IsDisposed ) {
                         m_versioninfo.ApplyLanguage();
                     }
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                     AppManager.propertyWindow.ApplyLanguage();
                     AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
 #endif
@@ -5063,7 +5112,10 @@ namespace Boare.Cadencii {
 
                 AppManager.saveConfig();
                 applyLanguage();
+#if ENABLE_SCRIPT
                 updateScriptShortcut();
+#endif
+
 #if USE_DOBJ
                 updateDrawObjectList();
 #endif
@@ -5151,7 +5203,7 @@ namespace Boare.Cadencii {
                         }
                     }
                     applyShortcut();
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                     AppManager.propertyWindow.setFormCloseShortcutKey( AppManager.editorConfig.getShortcutKeyFor( menuVisualProperty ) );
 #endif
                 }
@@ -5775,8 +5827,10 @@ namespace Boare.Cadencii {
 
         #region menuScript
         private void menuScriptUpdate_Click( Object sender, BEventArgs e ) {
+#if ENABLE_SCRIPT
             updateScriptShortcut();
             applyShortcut();
+#endif
         }
         #endregion
 
@@ -6526,11 +6580,11 @@ namespace Boare.Cadencii {
             m_timesig_dragging = false;
         }
 
-        private void picturePositionIndicator_Paint( Object sender, PaintEventArgs e ) {
+        private void picturePositionIndicator_Paint( Object sender, BPaintEventArgs e ) {
             picturePositionIndicatorDrawTo( new Graphics2D( e.Graphics ) );
         }
 
-        private void picturePositionIndicator_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e ) {
+        private void picturePositionIndicator_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
             ProcessSpecialShortcutKey( e );
         }
         #endregion
@@ -6763,7 +6817,7 @@ namespace Boare.Cadencii {
 
         private void trackSelector_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( m_form_activated ) {
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible && !AppManager.propertyPanel.Editing ) {
 #else
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible ) {
@@ -6874,7 +6928,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void trackSelector_PreferredMinHeightChanged( object sender, EventArgs e ) {
+        private void trackSelector_PreferredMinHeightChanged( Object sender, BEventArgs e ) {
             if ( menuVisualControlTrack.Checked ) {
                 splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
 #if DEBUG
@@ -6883,7 +6937,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void trackSelector_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e ) {
+        private void trackSelector_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
             ProcessSpecialShortcutKey( e );
         }
 
@@ -7083,7 +7137,7 @@ namespace Boare.Cadencii {
             importLyric();
         }
 
-        private void cMenuPiano_Opening( Object sender, CancelEventArgs e ) {
+        private void cMenuPiano_Opening( Object sender, BCancelEventArgs e ) {
             updateCopyAndPasteButtonStatus();
             cMenuPianoImportLyric.Enabled = AppManager.getLastSelectedEvent() != null;
         }
@@ -7351,7 +7405,7 @@ namespace Boare.Cadencii {
             addTrackCore();
         }
 
-        private void cMenuTrackTab_Opening( Object sender, CancelEventArgs e ) {
+        private void cMenuTrackTab_Opening( Object sender, BCancelEventArgs e ) {
             updateTrackMenuStatus();
         }
 
@@ -7418,7 +7472,7 @@ namespace Boare.Cadencii {
         #endregion
 
         #region cMenuTrackSelector
-        private void cMenuTrackSelector_Opening( Object sender, CancelEventArgs e ) {
+        private void cMenuTrackSelector_Opening( Object sender, BCancelEventArgs e ) {
             updateCopyAndPasteButtonStatus();
 
             // 選択ツールの状態に合わせて表示を更新
@@ -7636,7 +7690,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void bgWorkScreen_DoWork( Object sender, DoWorkEventArgs e ) {
+        private void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e ) {
             try {
                 this.Invoke( new EventHandler( this.refreshScreenCore ) );
             } catch ( Exception ex ) {
@@ -8024,7 +8078,7 @@ namespace Boare.Cadencii {
         }
 
         private void menuVisualProperty_Click( Object sender, BEventArgs e ) {
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             if ( menuVisualProperty.Checked ) {
                 if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
                     updatePropertyPanelState( PanelState.Docked );
@@ -8116,7 +8170,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void pictOverview_Paint( Object sender, PaintEventArgs e ) {
+        private void pictOverview_Paint( Object sender, BPaintEventArgs e ) {
             Graphics2D g = new bocoree.awt.Graphics2D( e.Graphics );
             int count = 0;
             int sum = 0;
@@ -8518,7 +8572,7 @@ namespace Boare.Cadencii {
             updateBgmMenuState();
         }
 
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
         private void updatePropertyPanelState( PanelState state ) {
             if ( state == PanelState.Docked ) {
                 m_property_panel_container.Add( AppManager.propertyPanel );
@@ -8690,7 +8744,7 @@ namespace Boare.Cadencii {
         /// フォームのタイトルバーが画面内に入るよう、Locationを正規化します
         /// </summary>
         /// <param name="form"></param>
-        public static void normalizeFormLocation( Form dlg ) {
+        public static void normalizeFormLocation( BForm dlg ) {
             Rectangle rcScreen = PortUtil.getWorkingArea( dlg );
             int top = dlg.Top;
             if ( top + dlg.Height > rcScreen.y + rcScreen.height ) {
@@ -8999,6 +9053,7 @@ namespace Boare.Cadencii {
             return ret;
         }
 
+#if !JAVA
         /// <summary>
         /// listに登録されているToolStripを，座標の若い順にcontainerに追加します
         /// </summary>
@@ -9033,7 +9088,9 @@ namespace Boare.Cadencii {
                 reg[index] = true;
             }
         }
+#endif
 
+#if ENABLE_SCRIPT
         /// <summary>
         /// Palette Toolの表示を更新します
         /// </summary>
@@ -9128,8 +9185,10 @@ namespace Boare.Cadencii {
                 menuSettingPaletteTool.setVisible( false );
             }
         }
+#endif
 
         private void commonSettingPaletteTool( Object sender, BEventArgs e ) {
+#if ENABLE_SCRIPT
             if ( sender is ToolStripMenuItem ) {
                 ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
                 if ( tsmi.Tag != null && tsmi.Tag is String ) {
@@ -9162,6 +9221,7 @@ namespace Boare.Cadencii {
                     }
                 }
             }
+#endif
         }
 
         public void updateCopyAndPasteButtonStatus() {
@@ -9664,6 +9724,7 @@ namespace Boare.Cadencii {
 #endif
         }
 
+#if ENABLE_SCRIPT
         /// <summary>
         /// スクリプトフォルダ中のスクリプトへのショートカットを作成する
         /// </summary>
@@ -9729,7 +9790,9 @@ namespace Boare.Cadencii {
             Util.applyToolStripFontRecurse( menuScript, AppManager.editorConfig.getBaseFont() );
             applyShortcut();
         }
+#endif
 
+#if ENABLE_SCRIPT
         private void dd_run_Click( Object sender, BEventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "dd_run_Click" );
@@ -9783,6 +9846,7 @@ namespace Boare.Cadencii {
 #endif
             }
         }
+#endif
 
         public void ensureVisible( int clock ) {
             // カーソルが画面内にあるかどうか検査
@@ -9815,7 +9879,7 @@ namespace Boare.Cadencii {
             ensureVisible( AppManager.getCurrentClock() );
         }
 
-        private void ProcessSpecialShortcutKey( PreviewKeyDownEventArgs e ) {
+        private void ProcessSpecialShortcutKey( BPreviewKeyDownEventArgs e ) {
             if ( !AppManager.inputTextBox.Enabled ) {
                 if ( e.KeyCode == Keys.Return ) {
                     if ( AppManager.isPlaying() ) {
@@ -10602,7 +10666,7 @@ namespace Boare.Cadencii {
                 if ( dlg.ShowDialog() == DialogResult.OK ) {
                     AppManager.getVsqFile().Track.get( AppManager.getSelected() ).resetEditedArea();
                 }
-                int[] finished = dlg.Finished;
+                int[] finished = dlg.getFinished();
                 for ( int i = 0; i < finished.Length; i++ ) {
                     AppManager.setRenderRequired( finished[i], false );
                 }
@@ -10885,6 +10949,7 @@ namespace Boare.Cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain.ApplyLanguage; Messaging.Language=" + Messaging.getLanguage() );
 #endif
+#if ENABLE_SCRIPT
             foreach ( ToolStripItem tsi in toolStripTool.Items ) {
                 if ( tsi is ToolStripButton ) {
                     ToolStripButton tsb = (ToolStripButton)tsi;
@@ -10945,6 +11010,7 @@ namespace Boare.Cadencii {
                 IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
                 ipt.applyLanguage( Messaging.getLanguage() );
             }
+#endif
 
             updateStripDDBtnSpeed();
         }
@@ -11165,7 +11231,7 @@ namespace Boare.Cadencii {
                 //min = xCoordFromClocks( min ) + stdx;
                 //max = xCoordFromClocks( max ) + stdx;
                 AppManager.wholeSelectedInterval = new SelectedRegion( min );
-                AppManager.wholeSelectedInterval.SetEnd( max );
+                AppManager.wholeSelectedInterval.setEnd( max );
                 AppManager.setWholeSelectedIntervalEnabled( true );
             }
         }
@@ -11206,8 +11272,8 @@ namespace Boare.Cadencii {
                         VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().Clone();
                         work.executeCommand( run );
                         int stdx = AppManager.startToDrawX;
-                        int start_clock = AppManager.wholeSelectedInterval.Start;
-                        int end_clock = AppManager.wholeSelectedInterval.End;
+                        int start_clock = AppManager.wholeSelectedInterval.getStart();
+                        int end_clock = AppManager.wholeSelectedInterval.getEnd();
                         Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
                         Vector<CurveType> types = new Vector<CurveType>();
                         foreach ( CurveType vct in AppManager.CURVE_USAGE ) {
@@ -11558,8 +11624,8 @@ namespace Boare.Cadencii {
                 PortUtil.println( "FormMain#copyEvent; selected with CTRL key" );
 #endif
                 int stdx = AppManager.startToDrawX;
-                int start_clock = AppManager.wholeSelectedInterval.Start;
-                int end_clock = AppManager.wholeSelectedInterval.End;
+                int start_clock = AppManager.wholeSelectedInterval.getStart();
+                int end_clock = AppManager.wholeSelectedInterval.getEnd();
                 ClipboardEntry ce = new ClipboardEntry();
                 ce.copyStartedClock = start_clock;
                 ce.points = new TreeMap<CurveType, VsqBPList>();
@@ -11711,8 +11777,8 @@ namespace Boare.Cadencii {
                 int stdx = AppManager.startToDrawX;
                 int start_clock, end_clock;
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                    start_clock = AppManager.wholeSelectedInterval.Start;
-                    end_clock = AppManager.wholeSelectedInterval.End;
+                    start_clock = AppManager.wholeSelectedInterval.getStart();
+                    end_clock = AppManager.wholeSelectedInterval.getEnd();
                 } else {
                     start_clock = trackSelector.getSelectedRegion().Key;
                     end_clock = trackSelector.getSelectedRegion().Value;
@@ -12088,10 +12154,13 @@ namespace Boare.Cadencii {
                     BToolStripButton tsb = (BToolStripButton)tsi;
                     Object tag = tsb.getTag();
                     if ( tag != null && tag is String ) {
+#if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tag;
                             tsb.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
-                        } else {
+                        } else 
+#endif
+                        {
                             tsb.setSelected( false );
                         }
                     }
@@ -12101,10 +12170,13 @@ namespace Boare.Cadencii {
                 if ( tsi is ToolStripMenuItem ) {
                     ToolStripMenuItem tsmi = (ToolStripMenuItem)tsi;
                     if ( tsmi.Tag != null && tsmi.Tag is String ) {
+#if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tsmi.Tag;
                             tsmi.Checked = (AppManager.selectedPaletteTool.Equals( id ));
-                        } else {
+                        } else 
+#endif
+                        {
                             tsmi.Checked = false;
                         }
                     }
@@ -12115,10 +12187,13 @@ namespace Boare.Cadencii {
                 if ( tsi is ToolStripMenuItem ) {
                     ToolStripMenuItem tsmi = (ToolStripMenuItem)tsi;
                     if ( tsmi.Tag != null && tsmi.Tag is String ) {
+#if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tsmi.Tag;
                             tsmi.Checked = (AppManager.selectedPaletteTool.Equals( id ));
-                        } else {
+                        } else 
+#endif
+                        {
                             tsmi.Checked = false;
                         }
                     }
@@ -12186,6 +12261,7 @@ namespace Boare.Cadencii {
                     stripBtnLine.Checked = true;
                     stripBtnEraser.Checked = false;
                     break;
+#if ENABLE_SCRIPT
                 case EditTool.PALETTE_TOOL:
                     cMenuPianoPointer.CheckState = CheckState.Unchecked;
                     cMenuPianoPencil.CheckState = CheckState.Unchecked;
@@ -12201,6 +12277,7 @@ namespace Boare.Cadencii {
                     stripBtnLine.Checked = false;
                     stripBtnEraser.Checked = false;
                     break;
+#endif
             }
             cMenuPianoCurve.Checked = AppManager.isCurveMode();
             cMenuTrackSelectorCurve.Checked = AppManager.isCurveMode();
@@ -12419,7 +12496,7 @@ namespace Boare.Cadencii {
             updateDrawObjectList();
 #endif
 
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
             AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
 #endif
         }
@@ -12551,7 +12628,7 @@ namespace Boare.Cadencii {
                 updateDrawObjectList();
 #endif
 
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                 if ( AppManager.propertyPanel != null ) {
                     AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
                 }
@@ -12578,7 +12655,7 @@ namespace Boare.Cadencii {
                 updateDrawObjectList();
 #endif
 
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
                 if ( AppManager.propertyPanel != null ) {
                     AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
                 }

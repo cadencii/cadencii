@@ -11,10 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.Drawing;
-
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 namespace Boare.Cadencii {
+#endif
 
     public class SelectedBezierPoint {
         public int chainID = -1;
@@ -35,4 +36,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

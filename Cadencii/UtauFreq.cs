@@ -13,8 +13,12 @@
  */
 #if JAVA
 package org.kbinani.Cadencii;
+
+import java.io.*;
+import org.kbinani.*;
 #else
 using System;
+using bocoree;
 using bocoree.io;
 
 namespace Boare.Cadencii {
@@ -54,17 +58,17 @@ namespace Boare.Cadencii {
                 ret.Header = new String( ch8 );
 
                 fs.read( buf0, 0, 4 );
-                ret.SampleInterval = BitConverter.ToInt32( buf0, 0 );
+                ret.SampleInterval = PortUtil.make_int32_le( buf0 );
 
                 fs.read( buf0, 0, 8 );
                 ret.AverageFrequency = BitConverter.ToDouble( buf0, 0 );
 
                 for ( int i = 0; i < 4; i++ ) {
                     int len2 = fs.Read( buf0, 0, 4 );
-                    int i1 = BitConverter.ToInt32( buf0, 0 );
+                    int i1 = PortUtil.make_int32_le( buf0 );
                 }
                 fs.read( buf0, 0, 4 );
-                ret.NumPoints = BitConverter.ToInt32( buf0, 0 );
+                ret.NumPoints = PortUtil.make_int32_le( buf0 );
                 ret.Frequency = new double[ret.NumPoints];
                 ret.Volume = new double[ret.NumPoints];
                 byte[] buf = new byte[16];
@@ -102,17 +106,17 @@ namespace Boare.Cadencii {
             }
             fs.write( buf0, 0, 8 );
 
-            buf0 = BitConverter.GetBytes( SampleInterval );
+            buf0 = PortUtil.getbytes_uint32_le( SampleInterval );
             fs.write( buf0, 0, 4 );
 
             buf0 = BitConverter.GetBytes( AverageFrequency );
             fs.write( buf0, 0, 8 );
 
             for ( int i = 0; i < 4; i++ ) {
-                buf0 = BitConverter.GetBytes( (int)0 );
+                buf0 = PortUtil.getbytes_int32_le( 0 );
                 fs.write( buf0, 0, 4 );
             }
-            buf0 = BitConverter.GetBytes( NumPoints );
+            buf0 = PortUtil.getbytes_int32_le( NumPoints );
             fs.write( buf0, 0, 4 );
             for ( int i = 0; i < NumPoints; i++ ) {
                 buf0 = BitConverter.GetBytes( Frequency[i] );

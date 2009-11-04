@@ -42,7 +42,7 @@ namespace Boare.Cadencii {
 
         public static String CurrentUser = "";
         private static String s_working_renderer = "";
-#if USE_VOCALOID
+#if ENABLE_VOCALOID
         private static Vector<VstiRenderer> m_vstidrv = new Vector<VstiRenderer>();
 #endif
 
@@ -58,7 +58,7 @@ namespace Boare.Cadencii {
 #endif
             PlaySound.init( SAMPLE_RATE );
 
-#if USE_VOCALOID
+#if ENABLE_VOCALOID
 #if !DEBUG
             try {
 #endif
@@ -120,7 +120,7 @@ namespace Boare.Cadencii {
         }
 
         public static boolean isRendererAvailable( String renderer ) {
-#if USE_VOCALOID
+#if ENABLE_VOCALOID
             for ( int i = 0; i < m_vstidrv.size(); i++ ) {
                 if ( renderer.StartsWith( m_vstidrv.get( i ).name ) && m_vstidrv.get( i ).loaded ) {
                     return true;
@@ -159,7 +159,7 @@ namespace Boare.Cadencii {
         }
 
         public static void terminate() {
-#if USE_VOCALOID
+#if ENABLE_VOCALOID
             for ( int i = 0; i < m_vstidrv.size(); i++ ) {
                 if ( m_vstidrv.get( i ).dllInstance != null ) {
                     m_vstidrv.get( i ).dllInstance.Terminate();
@@ -281,7 +281,7 @@ namespace Boare.Cadencii {
                                                                    direct_play,
                                                                    reflect_amp_to_wave );
             } else {
-#if USE_VOCALOID
+#if ENABLE_VOCALOID
                 VstiRenderer driver = null;
                 for ( int i = 0; i < m_vstidrv.size(); i++ ) {
                     if ( m_vstidrv.get( i ).name.Equals( s_working_renderer ) ) {
@@ -320,7 +320,7 @@ namespace Boare.Cadencii {
         }
 
         private static void renderWithDirectPlay( object argument ) {
-#if USE_VOCALOID
+#if ENABLE_VOCALOID
             if ( argument is VocaloRenderingRunner ) {
                 VocaloRenderingRunner sra = (VocaloRenderingRunner)argument;
                 sra.run();

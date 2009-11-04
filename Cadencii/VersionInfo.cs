@@ -33,6 +33,9 @@ namespace Boare.Cadencii {
     using Graphics = Graphics2D;
     using java = bocoree;
     using javax = bocoreex;
+    using BEventArgs = System.EventArgs;
+    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
+    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
 #endif
 
 #if JAVA
@@ -40,7 +43,7 @@ namespace Boare.Cadencii {
 #else
     public class VersionInfo : BForm {
 #endif
-        DateTime m_scroll_started;
+        double m_scroll_started;
         private AuthorListEntry[] m_credit;
         const float m_speed = 35f;
         String m_version;
@@ -204,7 +207,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        void btnSaveAuthorList_Click( object sender, EventArgs e ) {
+        void btnSaveAuthorList_Click( Object sender, BEventArgs e ) {
 #if DEBUG
             using ( SaveFileDialog dlg = new SaveFileDialog() )
             {
@@ -216,17 +219,17 @@ namespace Boare.Cadencii {
 #endif
         }
 
-        private void btnOK_Click( object sender, EventArgs e ) {
+        private void btnOK_Click( Object sender, BEventArgs e ) {
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
-        private void btnFlip_Click( object sender, EventArgs e ) {
+        private void btnFlip_Click( Object sender, BEventArgs e ) {
             m_credit_mode = !m_credit_mode;
             if ( m_credit_mode ) {
                 btnFlip.Width = m_button_width_about;
                 btnFlip.Text = String.Format( _( "About {0}" ), m_app_name );
-                m_scroll_started = DateTime.Now;
+                m_scroll_started = PortUtil.getCurrentTime();
                 m_last_speed = 0f;
                 m_last_t = 0f;
                 m_shift = 0f;
@@ -245,11 +248,11 @@ namespace Boare.Cadencii {
             this.Invalidate();
         }
 
-        private void timer_Tick( object sender, EventArgs e ) {
+        private void timer_Tick( Object sender, BEventArgs e ) {
             this.Invalidate();
         }
 
-        private void VersionInfoEx_Paint( object sender, System.Windows.Forms.PaintEventArgs e ) {
+        private void VersionInfoEx_Paint( Object sender, BPaintEventArgs e ) {
             try {
                 paint( new Graphics2D( e.Graphics ) );
             } catch ( Exception ex ) {
@@ -265,7 +268,7 @@ namespace Boare.Cadencii {
             g.clipRect( 0, 0, this.Width, m_height );
             g.clearRect( 0, 0, this.Width, this.Height );
             if ( m_credit_mode ) {
-                float times = (float)(((DateTime.Now).Subtract( m_scroll_started )).TotalSeconds) - 3f;
+                float times = (float)(PortUtil.getCurrentTime() - m_scroll_started) - 3f;
                 float speed = (float)((2.0 - bocoree.math.erfcc( times * 0.8 )) / 2.0) * m_speed;
                 float dt = times - m_last_t;
                 m_shift += (speed + m_last_speed) * dt / 2f;
@@ -298,14 +301,14 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void VersionInfoEx_KeyDown( object sender, KeyEventArgs e ) {
+        private void VersionInfoEx_KeyDown( Object sender, BKeyEventArgs e ) {
             if ( (e.KeyCode & Keys.Escape) == Keys.Escape ) {
                 this.DialogResult = DialogResult.Cancel;
                 this.Close();
             }
         }
 
-        private void VersionInfoEx_FontChanged( object sender, EventArgs e ) {
+        private void VersionInfoEx_FontChanged( Object sender, BEventArgs e ) {
             for ( int i = 0; i < this.Controls.Count; i++ ) {
                 Util.applyFontRecurse( this.Controls[i], new java.awt.Font( this.Font ) );
             }

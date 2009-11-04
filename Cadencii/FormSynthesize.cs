@@ -27,12 +27,17 @@ using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
+using bocoree;
 using bocoree.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using Integer = Int32;
+    using BEventArgs = System.EventArgs;
+    using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
+    using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
+    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
 #endif
 
     /// <summary>
@@ -107,17 +112,15 @@ namespace Boare.Cadencii {
         /// <summary>
         /// レンダリングが完了したトラックのリストを取得します
         /// </summary>
-        public int[] Finished {
-            get {
-                Vector<Integer> list = new Vector<Integer>();
-                for ( int i = 0; i <= m_finished; i++ ) {
-                    list.Add( m_tracks[i] );
-                }
-                return list.toArray( new Integer[] { } );
+        public int[] getFinished() {
+            Vector<Integer> list = new Vector<Integer>();
+            for ( int i = 0; i <= m_finished; i++ ) {
+                list.Add( m_tracks[i] );
             }
+            return list.toArray( new Integer[] { } );
         }
 
-        private void FormSynthesize_Load( object sender, EventArgs e ) {
+        private void FormSynthesize_Load( Object sender, BEventArgs e ) {
             lblTime.Text = "";
             Start();
         }
@@ -140,18 +143,20 @@ namespace Boare.Cadencii {
             m_finished = value - 1;
         }
 
-        private void bgWork_DoWork( object sender, DoWorkEventArgs e ) {
+        private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
             double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
             double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.MasterPanpot );
             double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.MasterPanpot );
             if ( m_partial_mode ) {
-                this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (object)1 );
+                this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (Object)1 );
                 double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Feder );
                 double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
                 double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
                 double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
                 double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
-                using ( WaveWriter ww = new WaveWriter( m_files[0] ) ) {
+                WaveWriter ww = null;
+                try {
+                    ww = new WaveWriter( m_files[0] );
                     VSTiProxy.render( m_vsq,
                                       m_tracks[0],
                                       ww,
@@ -164,10 +169,20 @@ namespace Boare.Cadencii {
                                       false,
                                       AppManager.getTempWaveDir(),
                                       m_reflect_amp_to_wave );
+                } catch ( Exception ex ) {
+                } finally {
+                    if ( ww != null ) {
+                        try {
+#if !JAVA
+                            ww.Dispose();
+#endif
+                        } catch ( Exception ex2 ) {
+                        }
+                    }
                 }
             } else {
                 for ( int i = 0; i < m_tracks.Length; i++ ) {
-                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (object)(i + 1) );
+                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (Object)(i + 1) );
                     Vector<VsqNrpn> nrpn = new Vector<VsqNrpn>( VsqFile.generateNRPN( m_vsq, m_tracks[i], m_presend ) );
                     int count = m_vsq.Track.get( m_tracks[i] ).getEventCount();
                     if ( count > 0 ) {
@@ -183,7 +198,9 @@ namespace Boare.Cadencii {
                         double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
                         int total_clocks = m_vsq.TotalClocks;
                         double total_sec = m_vsq.getSecFromClock( total_clocks );
-                        using ( WaveWriter ww = new WaveWriter( m_files[i] ) ) {
+                        WaveWriter ww = null;
+                        try {
+                            ww = new WaveWriter( m_files[i] );
                             VSTiProxy.render( m_vsq,
                                               m_tracks[i],
                                               ww,
@@ -196,13 +213,23 @@ namespace Boare.Cadencii {
                                               false,
                                               AppManager.getTempWaveDir(),
                                               m_reflect_amp_to_wave );
+                        } catch ( Exception ex ) {
+                        } finally {
+                            if ( ww != null ) {
+                                try{
+#if !JAVA
+                                    ww.Dispose();
+#endif
+                                } catch( Exception ex2 ){
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        private void FormSynthesize_FormClosing( object sender, FormClosingEventArgs e ) {
+        private void FormSynthesize_FormClosing( Object sender, BFormClosingEventArgs e ) {
             timer.Enabled = false;
             if ( m_rendering_started ) {
                 VSTiProxy.CurrentUser = "";
@@ -219,17 +246,17 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void bgWork_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e ) {
+        private void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
             timer.Enabled = false;
             DialogResult = DialogResult.OK;
             this.Close();
         }
 
-        private void timer_Tick( object sender, EventArgs e ) {
+        private void timer_Tick( Object sender, BEventArgs e ) {
             double progress = VSTiProxy.getProgress();
-            TimeSpan elapsed = new TimeSpan( 0, 0, (int)VSTiProxy.getElapsedSeconds() );
-            TimeSpan remaining = new TimeSpan( 0, 0, 0, (int)VSTiProxy.computeRemainintSeconds() );
-            if ( progress >= 0.0 && remaining.TotalSeconds >= 0.0 ) {
+            long elapsed = (long)VSTiProxy.getElapsedSeconds();
+            long remaining = (long)VSTiProxy.computeRemainintSeconds();
+            if ( progress >= 0.0 && remaining >= 0.0 ) {
                 lblTime.Text = _( "Remaining" ) + " " + getTimeSpanString( remaining ) + " (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")";
             } else {
                 lblTime.Text = _( "Remaining" ) + " [unknown] (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")";
@@ -237,22 +264,31 @@ namespace Boare.Cadencii {
             progressOne.Value = (int)progress > 100 ? 100 : (int)progress;
         }
 
-        private static String getTimeSpanString( TimeSpan span ) {
+        private static String getTimeSpanString( long span ) {
+            int sec_per_day = 24 * 60 * 60;
+            int sec_per_hour = 60 * 60;
+            int sec_per_min = 60;
             String ret = "";
             boolean added = false;
-            if ( span.Days > 0 ) {
-                ret += span.Days + _( "day" ) + " ";
+            int i = (int)(span / sec_per_day);
+            if ( i > 0 ) {
+                ret += i + _( "day" ) + " ";
                 added = true;
+                span -= i * sec_per_day;
             }
-            if ( added || span.Hours > 0 ) {
-                ret += string.Format( added ? "{0:d2}" : "{0}", span.Hours ) + _( "hour" ) + " ";
+            i = (int)(span / sec_per_hour);
+            if ( added || i > 0 ) {
+                ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "hour" ) + " ";
                 added = true;
+                span -= i * sec_per_hour;
             }
-            if ( added || span.Minutes > 0 ) {
-                ret += string.Format( added ? "{0:d2}" : "{0}", span.Minutes ) + _( "min" ) + " ";
+            i = (int)(span / sec_per_min);
+            if ( added || i > 0 ) {
+                ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "min" ) + " ";
                 added = true;
+                span -= i * sec_per_min;
             }
-            return ret + string.Format( added ? "{0:d2}" : "{0}", span.Seconds ) + _( "sec" );
+            return ret + PortUtil.formatDecimal( added ? "00" : "0", span ) + _( "sec" );
         }
 
 #if JAVA

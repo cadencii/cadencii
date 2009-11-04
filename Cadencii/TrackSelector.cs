@@ -530,8 +530,8 @@ namespace Boare.Cadencii {
         }
 
         public ValuePair<Integer, Integer> getSelectedRegion() {
-            int x0 = AppManager.curveSelectedInterval.Start;
-            int x1 = AppManager.curveSelectedInterval.End;
+            int x0 = AppManager.curveSelectedInterval.getStart();
+            int x1 = AppManager.curveSelectedInterval.getEnd();
             int min = Math.Min( x0, x1 );
             int max = Math.Max( x0, x1 );
             return new ValuePair<Integer, Integer>( min, max );
@@ -759,8 +759,8 @@ namespace Boare.Cadencii {
                             AppManager.keyWidth, size.Height );
 
                 if ( AppManager.isCurveSelectedIntervalEnabled() ) {
-                    int x0 = AppManager.xCoordFromClocks( AppManager.curveSelectedInterval.Start );
-                    int x1 = AppManager.xCoordFromClocks( AppManager.curveSelectedInterval.End );
+                    int x0 = AppManager.xCoordFromClocks( AppManager.curveSelectedInterval.getStart() );
+                    int x1 = AppManager.xCoordFromClocks( AppManager.curveSelectedInterval.getEnd() );
                     g.setColor( s_brs_a072_255_255_255 );
                     g.fillRect( x0, HEADER, x1 - x0, getGraphHeight() );
                 }
@@ -914,8 +914,8 @@ namespace Boare.Cadencii {
 
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                     //int stdx = AppManager.startToDrawX;
-                    int start = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.Start ) + 2;
-                    int end = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.End ) + 2;
+                    int start = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.getStart() ) + 2;
+                    int end = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.getEnd() ) + 2;
                     g.setColor( s_brs_a098_000_000_000 );
                     g.fillRect( start, HEADER, end - start, getGraphHeight() );
                 }
@@ -1909,8 +1909,8 @@ namespace Boare.Cadencii {
             int start_clock = AppManager.clockFromXCoord( start );
             int end = this.Width - vScroll.Width;
             int end_clock = AppManager.clockFromXCoord( end );
-            int hilight_start = AppManager.curveSelectedInterval.Start;
-            int hilight_end = AppManager.curveSelectedInterval.End;
+            int hilight_start = AppManager.curveSelectedInterval.getStart();
+            int hilight_end = AppManager.curveSelectedInterval.getEnd();
             int hilight_start_x = AppManager.xCoordFromClocks( hilight_start );
             int hilight_end_x = AppManager.xCoordFromClocks( hilight_end );
 
@@ -3732,7 +3732,7 @@ namespace Boare.Cadencii {
                                         int start = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
                                         int end = Math.Max( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
                                         AppManager.curveSelectedInterval = new SelectedRegion( start );
-                                        AppManager.curveSelectedInterval.SetEnd( end );
+                                        AppManager.curveSelectedInterval.setEnd( end );
 #if DEBUG
                                         AppManager.debugWriteLine( "TrackSelector#TrackSelector_MouseUp; selected_region is set to TRUE" );
 #endif
@@ -3740,10 +3740,10 @@ namespace Boare.Cadencii {
                                     } else {
                                         int start = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
                                         int end = Math.Max( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                        int old_start = AppManager.curveSelectedInterval.Start;
-                                        int old_end = AppManager.curveSelectedInterval.End;
+                                        int old_start = AppManager.curveSelectedInterval.getStart();
+                                        int old_end = AppManager.curveSelectedInterval.getEnd();
                                         AppManager.curveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
-                                        AppManager.curveSelectedInterval.SetEnd( Math.Max( end, old_end ) );
+                                        AppManager.curveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                     }
 
                                     if ( (m_modifier_on_mouse_down & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
@@ -3842,10 +3842,10 @@ namespace Boare.Cadencii {
                                     #region VEL Accent Delay
                                     int start = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
                                     int end = Math.Max( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                    int old_start = AppManager.curveSelectedInterval.Start;
-                                    int old_end = AppManager.curveSelectedInterval.End;
+                                    int old_start = AppManager.curveSelectedInterval.getStart();
+                                    int old_end = AppManager.curveSelectedInterval.getEnd();
                                     AppManager.curveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
-                                    AppManager.curveSelectedInterval.SetEnd( Math.Max( end, old_end ) );
+                                    AppManager.curveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                     AppManager.clearSelectedEvent();
                                     Vector<Integer> deleting = new Vector<Integer>();
                                     for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {

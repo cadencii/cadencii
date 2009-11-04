@@ -13,11 +13,10 @@
  */
 using System;
 using System.Drawing;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
-using bocoree;
 using bocoree.util;
 
 namespace Boare.Cadencii {
@@ -103,14 +102,14 @@ namespace Boare.Cadencii {
                 VsqMixerEntry vme = (VsqMixerEntry)itr.next();
                 j++;
                 m_tracker[j] = new VolumeTracker();
-                m_tracker[j].Feder = vme.Feder;
-                m_tracker[j].Panpot = vme.Panpot;
-                m_tracker[j].Title = AppManager.getVsqFile().Track.get( j + 1 ).getName();
-                m_tracker[j].Number = (j + 1).ToString();
+                m_tracker[j].setFeder( vme.Feder );
+                m_tracker[j].setPanpot( vme.Panpot );
+                m_tracker[j].setTitle( AppManager.getVsqFile().Track.get( j + 1 ).getName() );
+                m_tracker[j].setNumber( (j + 1) + "" );
                 m_tracker[j].Location = new Point( j * (VolumeTracker.WIDTH + 1), 0 );
-                m_tracker[j].SoloButtonVisible = true;
-                m_tracker[j].IsMuted = (vme.Mute == 1);
-                m_tracker[j].IsSolo = (vme.Solo == 1);
+                m_tracker[j].setSoloButtonVisible( true );
+                m_tracker[j].setMuted( (vme.Mute == 1) );
+                m_tracker[j].setSolo( (vme.Solo == 1) );
                 m_tracker[j].Tag = j + 1;
                 m_tracker[j].IsMutedChanged += new EventHandler( FormMixer_IsMutedChanged );
                 m_tracker[j].IsSoloChanged += new EventHandler( FormMixer_IsSoloChanged );
@@ -123,14 +122,14 @@ namespace Boare.Cadencii {
                 j++;
                 BgmFile item = AppManager.getBgm( i );
                 m_tracker[j] = new VolumeTracker();
-                m_tracker[j].Feder = item.feder;
-                m_tracker[j].Panpot = item.panpot;
-                m_tracker[j].Title = Path.GetFileName( item.file );
-                m_tracker[j].Number = "";
+                m_tracker[j].setFeder( item.feder );
+                m_tracker[j].setPanpot( item.panpot );
+                m_tracker[j].setTitle( Path.GetFileName( item.file ) );
+                m_tracker[j].setNumber( "" );
                 m_tracker[j].Location = new Point( j * (VolumeTracker.WIDTH + 1), 0 );
-                m_tracker[j].SoloButtonVisible = false;
-                m_tracker[j].IsMuted = (item.mute == 1);
-                m_tracker[j].IsSolo = false;
+                m_tracker[j].setSoloButtonVisible( false );
+                m_tracker[j].setMuted( (item.mute == 1) );
+                m_tracker[j].setSolo( false );
                 m_tracker[j].Tag = (int)(-i - 1);
                 m_tracker[j].IsMutedChanged += new EventHandler( FormMixer_IsMutedChanged );
                 //m_tracker[j].IsSoloChanged += new EventHandler( FormMixer_IsSoloChanged );
@@ -138,8 +137,8 @@ namespace Boare.Cadencii {
                 m_tracker[j].PanpotChanged += new EventHandler( FormMixer_PanpotChanged );
                 panel1.Controls.Add( m_tracker[j] );
             }
-            volumeMaster.Feder = AppManager.getVsqFile().Mixer.MasterFeder;
-            volumeMaster.Panpot = AppManager.getVsqFile().Mixer.MasterPanpot;
+            volumeMaster.setFeder( AppManager.getVsqFile().Mixer.MasterFeder );
+            volumeMaster.setPanpot( AppManager.getVsqFile().Mixer.MasterPanpot );
             panel1.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
             volumeMaster.Location = new Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
             chkTopmost.Left = panel1.Width;
@@ -156,7 +155,7 @@ namespace Boare.Cadencii {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (int)parent.Tag;
             if ( PanpotChanged != null ) {
-                PanpotChanged( track, parent.Panpot );
+                PanpotChanged( track, parent.getPanpot() );
             }
         }
 
@@ -164,7 +163,7 @@ namespace Boare.Cadencii {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (int)parent.Tag;
             if ( FederChanged != null ) {
-                FederChanged( track, parent.Feder );
+                FederChanged( track, parent.getFeder() );
             }
         }
 
@@ -172,7 +171,7 @@ namespace Boare.Cadencii {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (int)parent.Tag;
             if ( SoloChanged != null ) {
-                SoloChanged( track, parent.IsSolo );
+                SoloChanged( track, parent.isSolo() );
             }
         }
 
@@ -180,12 +179,19 @@ namespace Boare.Cadencii {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (int)parent.Tag;
             if ( MuteChanged != null ) {
-                MuteChanged( track, parent.IsMuted );
+                MuteChanged( track, parent.isMuted() );
             }
         }
 
         public FormMixer( FormMain parent ) {
             InitializeComponent();
+            volumeMaster.setFeder( 0 );
+            volumeMaster.setMuted( false );
+            volumeMaster.setSolo( true );
+            volumeMaster.setNumber( "Master" );
+            volumeMaster.setPanpot( 0 );
+            volumeMaster.setSoloButtonVisible( false );
+            volumeMaster.setTitle( "" );
             ApplyLanguage();
             m_parent = parent;
             this.Icon = Properties.Resources.Icon1;
@@ -238,19 +244,19 @@ namespace Boare.Cadencii {
 
         private void volumeMaster_FederChanged( object sender, EventArgs e ) {
             if ( FederChanged != null ) {
-                FederChanged( 0, volumeMaster.Feder );
+                FederChanged( 0, volumeMaster.getFeder() );
             }
         }
 
         private void volumeMaster_PanpotChanged( object sender, EventArgs e ) {
             if ( PanpotChanged != null ) {
-                PanpotChanged( 0, volumeMaster.Panpot );
+                PanpotChanged( 0, volumeMaster.getPanpot() );
             }
         }
 
         private void volumeMaster_IsMutedChanged( object sender, EventArgs e ) {
             if ( MuteChanged != null ) {
-                MuteChanged( 0, volumeMaster.IsMuted );
+                MuteChanged( 0, volumeMaster.isMuted() );
             }
         }
 

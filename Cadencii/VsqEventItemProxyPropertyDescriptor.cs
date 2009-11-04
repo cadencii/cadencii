@@ -1,4 +1,4 @@
-﻿#if USE_PROPERTY
+﻿#if ENABLE_PROPERTY
 /*
  * VsqEventItemProxyPropertyDescriptor.cs
  * Copyright (c) 2009 kbinani

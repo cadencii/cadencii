@@ -22,7 +22,9 @@ namespace Boare.Cadencii {
         PENCIL,
         LINE,
         ERASER,
+#if ENABLE_SCRIPT
         PALETTE_TOOL,
+#endif
     }
 
 #if !JAVA

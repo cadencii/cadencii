@@ -11,9 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import org.kbinani.vsq.*;
+#else
 using Boare.Lib.Vsq;
 
 namespace Boare.Cadencii {
+#endif
 
     public class SelectedTempoEntry {
         public TempoTableEntry original;
@@ -25,4 +31,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

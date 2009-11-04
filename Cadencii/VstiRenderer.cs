@@ -1,4 +1,4 @@
-﻿#if USE_VOCALOID
+﻿#if ENABLE_VOCALOID
 /*
  * VstiRenderer.cs
  * Copyright (c) 2009 kbinani

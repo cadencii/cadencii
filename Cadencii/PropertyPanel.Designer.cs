@@ -11,7 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if USE_PROPERTY
+#if ENABLE_PROPERTY
 namespace Boare.Cadencii {
 
     using boolean = System.Boolean;

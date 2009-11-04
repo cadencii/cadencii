@@ -11,12 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 using System.Drawing;
+using bocoree.awt;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
     /// <summary>
     /// 画面描画が行われたときのステータスを表す
@@ -25,15 +29,22 @@ namespace Boare.Cadencii {
         public int StartToDrawX;
         public int StartToDrawY;
         public float ScaleX;
-        public Size Size;
+        public Dimension Size;
 
-        public override boolean Equals( object obj ) {
+#if !JAVA
+        public override bool Equals( object obj ) {
+            return equals( obj );
+        }
+#endif
+
+        public boolean equals( Object obj ) {
             if ( obj is ScreenStatus ) {
                 ScreenStatus ss = (ScreenStatus)obj;
                 if ( ss.StartToDrawX == StartToDrawX &&
                      ss.StartToDrawY == StartToDrawY &&
                      ss.ScaleX == ScaleX &&
-                     ss.Size == Size ) {
+                     ss.Size.width == Size.width &&
+                     ss.Size.height == Size.height) {
                     return true;
                 } else {
                     return false;
@@ -44,4 +55,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

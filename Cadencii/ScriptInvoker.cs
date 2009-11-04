@@ -1,4 +1,5 @@
-﻿/*
+﻿#if ENABLE_SCRIPT
+/*
  * ScriptInvoker.cs
  * Copyright (c) 2009 kbinani
  *
@@ -57,3 +58,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

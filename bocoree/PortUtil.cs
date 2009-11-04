@@ -261,6 +261,14 @@ namespace bocoree {
 #endif
         }
 
+        public static byte[] getbytes_int32_le( int data ) {
+            long v = data;
+            if ( v < 0 ) {
+                v += 4294967296L;
+            }
+            return getbytes_uint32_le( v );
+        }
+
         public static byte[] getbytes_int64_be( long data ) {
 #if JAVA
             byte[] dat = new byte[8];
@@ -368,20 +376,28 @@ namespace bocoree {
             return dat;
         }
 
-        public static long make_long_le( byte[] buf ) {
+        public static long make_int64_le( byte[] buf ) {
             return (long)((long)((long)((long)((long)((long)((long)((long)((long)(((buf[7] << 8) | buf[6]) << 8) | buf[5]) << 8) | buf[4]) << 8) | buf[3]) << 8 | buf[2]) << 8) | buf[1]) << 8 | buf[0];
         }
 
-        public static long make_long_be( byte[] buf ) {
+        public static long make_int64_be( byte[] buf ) {
             return (long)((long)((long)((long)((long)((long)((long)((long)((long)(((buf[0] << 8) | buf[1]) << 8) | buf[2]) << 8) | buf[3]) << 8) | buf[4]) << 8 | buf[5]) << 8) | buf[6]) << 8 | buf[7];
         }
 
-        public static long make_uint_le( byte[] buf ) {
+        public static long make_uint32_le( byte[] buf ) {
             return (long)((long)((long)((long)((buf[3] << 8) | buf[2]) << 8) | buf[1]) << 8) | buf[0];
         }
 
-        public static long make_uint_be( byte[] buf ) {
+        public static long make_uint32_be( byte[] buf ) {
             return (long)((long)((long)((long)((buf[0] << 8) | buf[1]) << 8) | buf[2]) << 8) | buf[3];
+        }
+
+        public static int make_int32_le( byte[] buf ) {
+            long v = make_uint32_le( buf );
+            if ( v >= 2147483647L ) {
+                v -= 4294967296L;
+            }
+            return (int)v;
         }
 
         /// <summary>
@@ -393,7 +409,7 @@ namespace bocoree {
             return (int)((int)(buf[1] << 8) | buf[0]);
         }
 
-        public static int make_ushort_be( byte[] buf ) {
+        public static int make_uint16_be( byte[] buf ) {
             return (int)((int)(buf[0] << 8) | buf[1]);
         }
 

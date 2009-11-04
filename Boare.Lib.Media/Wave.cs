@@ -1225,7 +1225,7 @@ namespace Boare.Lib.Media {
             try {
                 byte[] buf = new byte[4];
                 fs.read( buf, 0, 4 );
-                long chunk_size_form = PortUtil.make_uint_be( buf );
+                long chunk_size_form = PortUtil.make_uint32_be( buf );
                 fs.read( buf, 0, 4 ); // AIFF
                 String tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
                 if ( !tag.Equals( "AIFF" ) ) {
@@ -1243,22 +1243,22 @@ namespace Boare.Lib.Media {
                     return false;
                 }
                 fs.read( buf, 0, 4 ); // COMM chunk size
-                long chunk_size_comm = PortUtil.make_uint_be( buf );
+                long chunk_size_comm = PortUtil.make_uint32_be( buf );
                 long chunk_loc_comm = fs.getFilePointer();
                 fs.read( buf, 0, 2 ); // number of channel
-                int num_channel = PortUtil.make_ushort_be( buf );
+                int num_channel = PortUtil.make_uint16_be( buf );
                 if ( num_channel == 1 ) {
                     m_channel = WaveChannel.Monoral;
                 } else {
                     m_channel = WaveChannel.Stereo;
                 }
                 fs.read( buf, 0, 4 ); // number of samples
-                m_total_samples = PortUtil.make_uint_be( buf );
+                m_total_samples = PortUtil.make_uint32_be( buf );
 #if DEBUG
                 Console.WriteLine( "Wave#parseAiffHeader; m_total_samples=" + m_total_samples );
 #endif
                 fs.read( buf, 0, 2 ); // block size
-                m_bit_per_sample = PortUtil.make_ushort_be( buf );
+                m_bit_per_sample = PortUtil.make_uint16_be( buf );
                 byte[] buf10 = new byte[10];
                 fs.read( buf10, 0, 10 ); // sample rate
                 m_sample_rate = (long)make_double_from_extended( buf10 );
@@ -1276,7 +1276,7 @@ namespace Boare.Lib.Media {
                     return false;
                 }
                 fs.read( buf, 0, 4 ); // SSND chunk size
-                long chunk_size_ssnd = PortUtil.make_uint_be( buf );
+                long chunk_size_ssnd = PortUtil.make_uint32_be( buf );
             } catch ( Exception ex ) {
                 return false;
             }
@@ -1327,7 +1327,7 @@ namespace Boare.Lib.Media {
                 byte[] buf = new byte[4];
                 // detect size of RIFF chunk
                 fs.read( buf, 0, 4 );
-                long riff_chunk_size = PortUtil.make_uint_le( buf );
+                long riff_chunk_size = PortUtil.make_uint32_le( buf );
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine( "riff_chunk_size=" + riff_chunk_size );
 #endif
@@ -1362,7 +1362,7 @@ namespace Boare.Lib.Media {
                 // detect size of fmt chunk
                 long fmt_chunk_bytes;
                 fs.read( buf, 0, 4 );
-                fmt_chunk_bytes = PortUtil.make_uint_le( buf );
+                fmt_chunk_bytes = PortUtil.make_uint32_le( buf );
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine( "fmt_chunk_bytes=" + fmt_chunk_bytes );
 #endif
@@ -1395,7 +1395,7 @@ namespace Boare.Lib.Media {
 
                 // get sampling rate
                 fs.read( buf, 0, 4 );
-                m_sample_rate = PortUtil.make_uint_le( buf );
+                m_sample_rate = PortUtil.make_uint32_le( buf );
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine( "m_sample_rate=" + m_sample_rate );
 #endif
@@ -1423,7 +1423,7 @@ namespace Boare.Lib.Media {
 #endif
                 while ( tag != "data" ) {
                     fs.read( buf, 0, 4 );
-                    long size = PortUtil.make_uint_le( buf );
+                    long size = PortUtil.make_uint32_le( buf );
                     fs.seek( fs.getFilePointer() + size );
                     fs.read( buf, 0, 4 );
                     tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
@@ -1434,7 +1434,7 @@ namespace Boare.Lib.Media {
 
                 // get size of data chunk
                 fs.read( buf, 0, 4 );
-                long data_chunk_bytes = PortUtil.make_uint_le( buf );
+                long data_chunk_bytes = PortUtil.make_uint32_le( buf );
                 m_total_samples = (long)(data_chunk_bytes / (num_channels * m_bit_per_sample / 8));
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine( "m_total_samples=" + m_total_samples );

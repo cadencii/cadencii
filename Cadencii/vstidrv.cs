@@ -1,4 +1,4 @@
-﻿#if USE_VOCALOID
+﻿#if ENABLE_VOCALOID
 /*
  * VSTiProxy.cs
  * Copyright (c) 2008-2009 kbinani

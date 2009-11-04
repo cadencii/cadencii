@@ -13,18 +13,25 @@
  */
 #if JAVA
 package org.kbinani.Cadencii;
+
+import java.awt.*;
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
 #else
 #define COMPONENT_ENABLE_LOCATION
 using System;
-using System.Windows.Forms;
 using bocoree;
-using bocoree.windows.forms;
 using bocoree.awt;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
 #endif
 
+#if JAVA
+    public class NumberTextBox extends BTextBox {
+#else
     public class NumberTextBox : BTextBox {
+#endif
         public enum ValueType {
             Double,
             Float,
@@ -59,6 +66,7 @@ namespace Boare.Cadencii {
             m_value_type = value;
         }
 
+#if !JAVA
         protected override void OnTextChanged( EventArgs e ) {
             base.OnTextChanged( e );
             bool valid = false;
@@ -95,6 +103,7 @@ namespace Boare.Cadencii {
                 this.setBackground( m_backcolor_invalid );
             }
         }
+#endif
     }
 
 #if !JAVA

@@ -11,15 +11,30 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import javax.swing.*;
+import org.kbinani.*;
+#else
 using System;
-using System.Drawing;
+//using System.Drawing;
 using System.Windows.Forms;
 using bocoree;
+using bocoree.awt;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = Boolean;
+    using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
+    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
+#endif
 
-    partial class VolumeTracker : UserControl {
+#if JAVA
+    public class VolumeTracker extends JPanel {
+#else
+    class VolumeTracker : UserControl {
+#endif
         private int m_feder = 0;
         private boolean m_solo_button_visible;
         private boolean m_muted = false;
@@ -119,25 +134,26 @@ namespace Boare.Cadencii {
         };
         #endregion
 
+#if JAVA
+#else
         public event EventHandler FederChanged;
         public event EventHandler PanpotChanged;
         public event EventHandler IsMutedChanged;
         public event EventHandler IsSoloChanged;
-
+#endif
 
         public VolumeTracker() {
             InitializeComponent();
             this.SetStyle( ControlStyles.DoubleBuffer, true );
         }
 
-        public String Title {
-            get {
-                return m_title;
-            }
-            set {
-                m_title = value;
-                UpdateTitle();
-            }
+        public String getTitle() {
+            return m_title;
+        }
+
+        public void setTitle( String value ) {
+            m_title = value;
+            UpdateTitle();
         }
 
         private void UpdateTitle() {
@@ -150,95 +166,70 @@ namespace Boare.Cadencii {
             }
         }
 
-        public String Number {
-            get {
-                return m_number;
-            }
-            set {
-                m_number = value;
-                UpdateTitle();
+        public String getNumber() {
+            return m_number;
+        }
+
+        public void setNumber( String value ) {
+            m_number = value;
+            UpdateTitle();
+        }
+
+        public boolean isMuted() {
+            return m_muted;
+        }
+
+        public void setMuted( boolean value ) {
+            boolean old = m_muted;
+            m_muted = value;
+            if ( old != m_muted && IsMutedChanged != null ) {
+                IsMutedChanged( this, new EventArgs() );
             }
         }
 
-        public boolean IsMuted {
-            get {
-                return m_muted;
-            }
-            set {
-                boolean old = m_muted;
-                m_muted = value;
-                if ( old != m_muted && IsMutedChanged != null ) {
-                    IsMutedChanged( this, new EventArgs() );
-                }
+        public boolean isSolo() {
+            return m_solo;
+        }
+
+        public void setSolo( boolean value ) {
+            boolean old = m_solo;
+            m_solo = value;
+            if ( old != m_solo && IsSoloChanged != null ) {
+                IsSoloChanged( this, new EventArgs() );
             }
         }
 
-        public boolean IsSolo {
-            get {
-                return m_solo;
-            }
-            set {
-                boolean old = m_solo;
-                m_solo = value;
-                if ( old != m_solo && IsSoloChanged != null ) {
-                    IsSoloChanged( this, new EventArgs() );
-                }
-            }
+        public int getPanpot() {
+            return trackPanpot.Value;
         }
 
-        public int Panpot {
-            get {
-                return trackPanpot.Value;
-            }
-            set {
-                trackPanpot.Value = value;
-            }
+        public void setPanpot( int value ) {
+            trackPanpot.Value = value;
         }
 
-        public boolean SoloButtonVisible {
-            get {
-                return m_solo_button_visible;
-            }
-            set {
-                m_solo_button_visible = value;
-            }
+        public boolean isSoloButtonVisible() {
+            return m_solo_button_visible;
         }
 
-        public int Feder {
-            get {
-                return m_feder;
-            }
-            set {
-                int old = m_feder;
-                m_feder = value;
-                if ( old != m_feder && FederChanged != null ) {
-                    FederChanged( this, new EventArgs() );
-                }
-                int v = 177 - YCoordFromFeder( m_feder );
-                trackFeder.Value = v;
-            }
+        public void setSoloButtonVisible( boolean value ) {
+            m_solo_button_visible = value;
         }
 
-        /// <summary>
-        /// pがrcの中にあるかどうかを判定します
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="rc"></param>
-        /// <returns></returns>
-        private static boolean IsInRect( Point p, Rectangle rc ) {
-            if ( rc.X <= p.X ) {
-                if ( p.X <= rc.X + rc.Width ) {
-                    if ( rc.Y <= p.Y ) {
-                        if ( p.Y <= rc.Y + rc.Height ) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
+        public int getFeder() {
+            return m_feder;
         }
 
-        private void VolumeTracker_Resize( object sender, EventArgs e ) {
+        public void setFeder( int value ) {
+            int old = m_feder;
+            m_feder = value;
+            if ( old != m_feder && FederChanged != null ) {
+                FederChanged( this, new EventArgs() );
+            }
+            int v = 177 - YCoordFromFeder( m_feder );
+            trackFeder.Value = v;
+        }
+
+        private void VolumeTracker_Resize( Object sender, BEventArgs e ) {
             this.Width = WIDTH;
             this.Height = _HEIGHT;
         }
@@ -273,7 +264,7 @@ namespace Boare.Cadencii {
             return y;
         }
 
-        private void trackFeder_ValueChanged( object sender, EventArgs e ) {
+        private void trackFeder_ValueChanged( Object sender, BEventArgs e ) {
             m_feder = FederFromYCoord( 151 - (trackFeder.Value - 26) );
             txtFeder.Text = (m_feder / 10.0).ToString();
             if ( FederChanged != null ) {
@@ -281,14 +272,14 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void trackPanpot_ValueChanged( object sender, EventArgs e ) {
+        private void trackPanpot_ValueChanged( Object sender, BEventArgs e ) {
             txtPanpot.Text = trackPanpot.Value.ToString();
             if ( PanpotChanged != null ) {
                 PanpotChanged( this, new EventArgs() );
             }
         }
 
-        private void txtFeder_KeyDown( object sender, KeyEventArgs e ) {
+        private void txtFeder_KeyDown( Object sender, BKeyEventArgs e ) {
             if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
@@ -300,15 +291,15 @@ namespace Boare.Cadencii {
                 if ( feder < -898 ) {
                     feder = -898;
                 }
-                Feder = feder;
-                txtFeder.Text = Feder / 10.0f + "";
+                setFeder( feder );
+                txtFeder.Text = getFeder() / 10.0f + "";
                 txtFeder.Focus();
                 txtFeder.SelectAll();
             } catch ( Exception ex ) {
             }
         }
 
-        private void txtPanpot_KeyDown( object sender, KeyEventArgs e ) {
+        private void txtPanpot_KeyDown( Object sender, BKeyEventArgs e ) {
             if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
@@ -320,13 +311,284 @@ namespace Boare.Cadencii {
                 if ( 64 < panpot ) {
                     panpot = 64;
                 }
-                Panpot = panpot;
-                txtPanpot.Text = Panpot + "";
+                setPanpot( panpot );
+                txtPanpot.Text = getPanpot() + "";
                 txtPanpot.Focus();
                 txtPanpot.SelectAll();
             } catch ( Exception ex ) {
             }
         }
+#if JAVA
+        #region UI Impl for Java
+	    private JTextField txtFeder = null;
+	    private JSlider trackFeder = null;
+	    private JSlider trackPanpot = null;
+	    private JTextField txtPanpot = null;
+	    private JLabel lblTitle = null;
+	    /**
+	     * This is the default constructor
+	     */
+	    public VolumeTracker() {
+		    super();
+		    initialize();
+	    }
+
+	    /**
+	     * This method initializes this
+	     * 
+	     * @return void
+	     */
+	    private void initialize() {
+		    GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+		    gridBagConstraints11.gridx = 0;
+		    gridBagConstraints11.fill = GridBagConstraints.BOTH;
+		    gridBagConstraints11.weightx = 1.0D;
+		    gridBagConstraints11.gridy = 4;
+		    lblTitle = new JLabel();
+		    lblTitle.setText("TITLE");
+		    lblTitle.setPreferredSize(new Dimension(85, 23));
+		    lblTitle.setBackground(Color.white);
+		    lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		    GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+		    gridBagConstraints3.fill = GridBagConstraints.HORIZONTAL;
+		    gridBagConstraints3.gridy = 3;
+		    gridBagConstraints3.weightx = 1.0;
+		    gridBagConstraints3.insets = new Insets(0, 10, 10, 10);
+		    gridBagConstraints3.gridx = 0;
+		    GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+		    gridBagConstraints2.fill = GridBagConstraints.HORIZONTAL;
+		    gridBagConstraints2.gridy = 2;
+		    gridBagConstraints2.weightx = 1.0;
+		    gridBagConstraints2.weighty = 0.0D;
+		    gridBagConstraints2.insets = new Insets(3, 3, 3, 3);
+		    gridBagConstraints2.gridx = 0;
+		    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+		    gridBagConstraints1.fill = GridBagConstraints.VERTICAL;
+		    gridBagConstraints1.gridy = 1;
+		    gridBagConstraints1.weightx = 1.0;
+		    gridBagConstraints1.weighty = 1.0D;
+		    gridBagConstraints1.insets = new Insets(10, 0, 10, 0);
+		    gridBagConstraints1.gridx = 0;
+		    GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		    gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		    gridBagConstraints.gridy = 0;
+		    gridBagConstraints.weightx = 1.0;
+		    gridBagConstraints.weighty = 0.0D;
+		    gridBagConstraints.insets = new Insets(10, 3, 0, 3);
+		    gridBagConstraints.gridx = 0;
+		    this.setSize(85, 261);
+		    this.setLayout(new GridBagLayout());
+		    this.setPreferredSize(new Dimension(85, 261));
+		    this.setBackground(new Color(180, 180, 180));
+		    this.add(getTxtFeder(), gridBagConstraints);
+		    this.add(getTrackFeder(), gridBagConstraints1);
+		    this.add(getTrackPanpot(), gridBagConstraints2);
+		    this.add(getTxtPanpot(), gridBagConstraints3);
+		    this.add(lblTitle, gridBagConstraints11);
+	    }
+
+	    /**
+	     * This method initializes txtFeder	
+	     * 	
+	     * @return javax.swing.JTextField	
+	     */
+	    private JTextField getTxtFeder() {
+		    if (txtFeder == null) {
+			    txtFeder = new JTextField();
+			    txtFeder.setPreferredSize(new Dimension(79, 19));
+			    txtFeder.setHorizontalAlignment(JTextField.CENTER);
+			    txtFeder.setText("0");
+		    }
+		    return txtFeder;
+	    }
+
+	    /**
+	     * This method initializes trackFeder	
+	     * 	
+	     * @return javax.swing.JSlider	
+	     */
+	    private JSlider getTrackFeder() {
+		    if (trackFeder == null) {
+			    trackFeder = new JSlider();
+			    trackFeder.setOrientation(JSlider.VERTICAL);
+			    trackFeder.setMinimum(26);
+			    trackFeder.setPreferredSize(new Dimension(45, 144));
+			    trackFeder.setValue(100);
+			    trackFeder.setBackground(new Color(180, 180, 180));
+			    trackFeder.setMajorTickSpacing(10);
+			    trackFeder.setMaximum(151);
+		    }
+		    return trackFeder;
+	    }
+
+	    /**
+	     * This method initializes trackPanpot	
+	     * 	
+	     * @return javax.swing.JSlider	
+	     */
+	    private JSlider getTrackPanpot() {
+		    if (trackPanpot == null) {
+			    trackPanpot = new JSlider();
+			    trackPanpot.setMaximum(64);
+			    trackPanpot.setValue(0);
+			    trackPanpot.setBackground(new Color(180, 180, 180));
+			    trackPanpot.setMajorTickSpacing(1);
+			    trackPanpot.setMinimum(-64);
+		    }
+		    return trackPanpot;
+	    }
+
+	    /**
+	     * This method initializes txtPanpot	
+	     * 	
+	     * @return javax.swing.JTextField	
+	     */
+	    private JTextField getTxtPanpot() {
+		    if (txtPanpot == null) {
+			    txtPanpot = new JTextField();
+			    txtPanpot.setHorizontalAlignment(JTextField.CENTER);
+			    txtPanpot.setText("0");
+		    }
+		    return txtPanpot;
+	    }
+
+        #endregion
+#else
+        #region UI Impl for C#
+        /// <summary> 
+        /// 必要なデザイナ変数です。
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary> 
+        /// 使用中のリソースをすべてクリーンアップします。
+        /// </summary>
+        /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
+        protected override void Dispose( boolean disposing ) {
+            if ( disposing && (components != null) ) {
+                components.Dispose();
+            }
+            base.Dispose( disposing );
+        }
+
+        #region コンポーネント デザイナで生成されたコード
+
+        /// <summary> 
+        /// デザイナ サポートに必要なメソッドです。このメソッドの内容を 
+        /// コード エディタで変更しないでください。
+        /// </summary>
+        private void InitializeComponent() {
+            this.trackFeder = new BSlider();
+            this.trackPanpot = new BSlider();
+            this.txtPanpot = new BTextBox();
+            this.lblTitle = new BLabel();
+            this.txtFeder = new BTextBox();
+            ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackPanpot)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // trackFeder
+            // 
+            this.trackFeder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackFeder.AutoSize = false;
+            this.trackFeder.Location = new System.Drawing.Point( 21, 35 );
+            this.trackFeder.Maximum = 151;
+            this.trackFeder.Minimum = 26;
+            this.trackFeder.Name = "trackFeder";
+            this.trackFeder.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.trackFeder.Size = new System.Drawing.Size( 45, 144 );
+            this.trackFeder.TabIndex = 0;
+            this.trackFeder.TickFrequency = 10;
+            this.trackFeder.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.trackFeder.Value = 100;
+            this.trackFeder.ValueChanged += new System.EventHandler( this.trackFeder_ValueChanged );
+            // 
+            // trackPanpot
+            // 
+            this.trackPanpot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackPanpot.AutoSize = false;
+            this.trackPanpot.Location = new System.Drawing.Point( 3, 185 );
+            this.trackPanpot.Margin = new System.Windows.Forms.Padding( 3, 3, 3, 0 );
+            this.trackPanpot.Maximum = 64;
+            this.trackPanpot.Minimum = -64;
+            this.trackPanpot.Name = "trackPanpot";
+            this.trackPanpot.Size = new System.Drawing.Size( 79, 21 );
+            this.trackPanpot.TabIndex = 2;
+            this.trackPanpot.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackPanpot.ValueChanged += new System.EventHandler( this.trackPanpot_ValueChanged );
+            // 
+            // lblPanpot
+            // 
+            this.txtPanpot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPanpot.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
+            this.txtPanpot.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPanpot.Location = new System.Drawing.Point( 10, 206 );
+            this.txtPanpot.Margin = new System.Windows.Forms.Padding( 10, 0, 10, 0 );
+            this.txtPanpot.Name = "lblPanpot";
+            this.txtPanpot.Size = new System.Drawing.Size( 65, 19 );
+            this.txtPanpot.TabIndex = 3;
+            this.txtPanpot.Text = "0";
+            this.txtPanpot.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtPanpot.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtPanpot_KeyDown );
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.BackColor = System.Drawing.Color.White;
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblTitle.Location = new System.Drawing.Point( 0, 238 );
+            this.lblTitle.Margin = new System.Windows.Forms.Padding( 0 );
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size( 85, 23 );
+            this.lblTitle.TabIndex = 4;
+            this.lblTitle.Text = "TITLE";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtFeder
+            // 
+            this.txtFeder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFeder.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
+            this.txtFeder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFeder.Location = new System.Drawing.Point( 3, 10 );
+            this.txtFeder.Name = "txtFeder";
+            this.txtFeder.Size = new System.Drawing.Size( 79, 19 );
+            this.txtFeder.TabIndex = 5;
+            this.txtFeder.Text = "0";
+            this.txtFeder.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtFeder.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtFeder_KeyDown );
+            // 
+            // VolumeTracker
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
+            this.Controls.Add( this.txtFeder );
+            this.Controls.Add( this.lblTitle );
+            this.Controls.Add( this.txtPanpot );
+            this.Controls.Add( this.trackPanpot );
+            this.Controls.Add( this.trackFeder );
+            this.DoubleBuffered = true;
+            this.Name = "VolumeTracker";
+            this.Size = new System.Drawing.Size( 85, 261 );
+            this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
+            ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackPanpot)).EndInit();
+            this.ResumeLayout( false );
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private BSlider trackFeder;
+        private BSlider trackPanpot;
+        private BTextBox txtPanpot;
+        private BLabel lblTitle;
+        private BTextBox txtFeder;
+        #endregion
+#endif
     }
 
 }

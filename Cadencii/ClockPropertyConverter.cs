@@ -1,4 +1,4 @@
-﻿#if !JAVA
+﻿#if ENABLE_PROPERTY
 /*
  * ClockPropertyConverter.cs
  * Copyright (c) 2009 kbinani

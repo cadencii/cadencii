@@ -105,27 +105,35 @@ namespace Boare.Cadencii {
         /// </summary>
         private const int _PX_ACCENT_HEADER = 21;
 
+#if !JAVA
         protected override void OnKeyDown( KeyEventArgs e ) {
             if ( BKeyDown != null ) {
                 BKeyDown( this, e );
             }
         }
+#endif
 
+#if !JAVA
         protected override void OnKeyUp( KeyEventArgs e ) {
             if ( BKeyUp != null ) {
                 BKeyUp( this, e );
             }
         }
+#endif
 
+#if !JAVA
         protected override void OnMouseDown( MouseEventArgs e ) {
             base.OnMouseDown( e );
             this.Focus();
         }
+#endif
 
+#if !JAVA
         protected override void OnPaint( PaintEventArgs pe ) {
             base.OnPaint( pe );
             paint( new Graphics2D( pe.Graphics ) );
         }
+#endif
 
         private void paint( Graphics2D g ) {
             Dimension window_size = new Dimension( this.Width, this.Height );
@@ -591,8 +599,8 @@ namespace Boare.Cadencii {
                     }
 
                     if ( edit_mode == EditMode.MOVE_ENTRY_WHOLE ) {
-                        int clock_start = AppManager.wholeSelectedInterval.Start;
-                        int clock_end = AppManager.wholeSelectedInterval.End;
+                        int clock_start = AppManager.wholeSelectedInterval.getStart();
+                        int clock_end = AppManager.wholeSelectedInterval.getEnd();
                         int x_start = AppManager.xCoordFromClocks( AppManager.wholeSelectedIntervalStartForMoving );
                         int x_end = AppManager.xCoordFromClocks( AppManager.wholeSelectedIntervalStartForMoving + (clock_end - clock_start) );
                         g.setColor( s_brs_a098_000_000_000 );
@@ -789,11 +797,11 @@ namespace Boare.Cadencii {
             if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                 //int start = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.Start );
                 //int end = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.End );
-                int start = (int)(AppManager.wholeSelectedInterval.Start * scalex) + xoffset + 2;
+                int start = (int)(AppManager.wholeSelectedInterval.getStart() * scalex) + xoffset + 2;
                 if ( start < AppManager.keyWidth ) {
                     start = AppManager.keyWidth;
                 }
-                int end = (int)(AppManager.wholeSelectedInterval.End * scalex) + xoffset + 2;
+                int end = (int)(AppManager.wholeSelectedInterval.getEnd() * scalex) + xoffset + 2;
                 if ( start < end ) {
                     g.setColor( new Color( 0, 0, 0, 98 ) );
                     g.fillRect( start, 0, end - start, this.Height );

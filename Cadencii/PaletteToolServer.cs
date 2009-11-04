@@ -1,4 +1,5 @@
-﻿/*
+﻿#if ENABLE_SCRIPT
+/*
  * PaletteToolServer.cs
  * Copyright (c) 2009 kbinani
  *
@@ -94,3 +95,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

@@ -17,10 +17,7 @@ package org.kbinani.Cadencii;
 import java.util.*;
 #else
 using System;
-using System.Collections.Generic;
-using bocoree;
 using bocoree.util;
-using bocoree.io;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
@@ -140,7 +137,7 @@ namespace Boare.Cadencii {
 
             // 削除を実行
             for ( Iterator itr = delete_list.iterator(); itr.hasNext(); ){
-                int id = (int)itr.next();
+                int id = (Integer)itr.next();
                 remove( curve, id );
                 //this[curve].Remove( id );
             }
@@ -343,7 +340,7 @@ namespace Boare.Cadencii {
                         edited = true;
                     } else {
                         // 全体を残す
-                        tmp.add( (BezierChain)bc.Clone() );
+                        tmp.add( (BezierChain)bc.clone() );
                     }
                 }
                 this.get( curve ).clear();
