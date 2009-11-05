@@ -31,6 +31,15 @@ namespace Boare.Lib.Vsq {
 #else
     public class UstFile : ICloneable {
 #endif
+        /// <summary>
+        /// [#PREV]が指定されているUstEventのIndex
+        /// </summary>
+        public const int PREV_INDEX = int.MinValue;
+        /// <summary>
+        /// [#NEXT]が指定されているUstEventのIndex
+        /// </summary>
+        public const int NEXT_INDEX = int.MaxValue;
+
         public Object Tag;
         private float m_tempo = 120.00f;
         private String m_project_name = "";
@@ -68,14 +77,17 @@ namespace Boare.Lib.Vsq {
                     if ( line.Equals( "[#TRACKEND]" ) ) {
                         break;
                     } else if ( line.ToUpper().Equals( "[#NEXT]" ) ) {
-                        index = int.MaxValue;
+                        index = NEXT_INDEX;
                     } else if ( line.ToUpper().Equals( "[#PREV]" ) ) {
-                        index = int.MinValue;
+                        index = PREV_INDEX;
                     } else {
-                        String s = line.Replace( "[#", "" ).Replace( "#", "" ).Trim();
+                        String s = line.Replace( "[#", "" ).Replace( "]", "" ).Trim();
                         try {
                             index = PortUtil.parseInt( s );
                         } catch ( Exception ex ) {
+#if DEBUG
+                            PortUtil.println( "UstFile#.ctor; ex=" + ex );
+#endif
                         }
                     }
 #if DEBUG
@@ -227,6 +239,10 @@ namespace Boare.Lib.Vsq {
                     }
                 }
             }
+        }
+
+        public UstFile( VsqFile vsq ) {
+            throw new NotImplementedException();
         }
 
         private UstFile() {

@@ -50,7 +50,7 @@ namespace Boare.Lib.Vsq {
         /// このオブジェクトの簡易コピーを取得します。
         /// </summary>
         /// <returns>このインスタンスの簡易コピー</returns>
-        public Lyric Clone() {
+        public Object clone() {
             Lyric result = new Lyric();
             result.Phrase = this.Phrase;
             result.m_phonetic_symbol = new String[m_phonetic_symbol.Length];
@@ -65,6 +65,12 @@ namespace Boare.Lib.Vsq {
             result.PhoneticSymbolProtected = PhoneticSymbolProtected;
             return result;
         }
+
+#if !JAVA
+        public Object Clone() {
+            return clone();
+        }
+#endif
 
         /// <summary>
         /// 歌詞、発音記号を指定したコンストラクタ

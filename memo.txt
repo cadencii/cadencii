@@ -6,7 +6,7 @@
 -エラー通知
 -曲のタイムライン上にユーザが付けるタグ（付箋）的な物。「次の付箋に進む」「前の付箋に戻る」
 
--v3.0.6todo internal---------------------------------------------------
+-v3.0.6(3.1.0)todo-----------------------------------------------------
 -音源DBのインストール箇所がデフォルトと違う場合にいけてるか再確認
 -Play With SynthとPlay After Synthを切り替えられるようにする。
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
@@ -17,17 +17,21 @@
 -MIDIインポート時に、オフセットクロックを指定できるようにする。
 -曲頭に戻る、のショートカット／編集可能な感じの
 -13時間31分35.77秒を超える曲をレンダリングするとクラッシュする（たぶん）．要確認．PlaySound.cpp, vstidrv.cs, UtauRenderingRunner.cs, StraightRenderingRunner.cs, VocaloRenderingRunner.csに要修正の可能性
--CadenciiからUTAUのプラグインを呼び出す仕組み
+-CadenciiからUTAUのプラグインを呼び出す仕組み->./UtauPluginInvoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -VsqHandleのcastTo**はクローンする必要があるのかどうか検討
+-BFileChooserでクラッシュ。ファイル　開く　何もせずにキャンセル
+-UstFile#.ctor( VsqFile )の実装
+-VsqFileEx#.ctor( UstFile )をVsqFile#.ctor( UstFile )に移動
 
--v3.0.6done------------------------------------------------------------
+-v3.0.6(3.1.0)done-----------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。
 -ショートカットキーにPageDown, PageUp, Home, Endが設定できない。（リストが上下するのみ）
 -USE_SCRIPTコンパイルフラグを立てる。（スクリプトとパレットツールの有効/無効切り替え）
 -BPictureBox->PictureBoxExにしてしまったのを，元に戻す
 -リソースを自前でexeに埋め込む仕組み(for Java port, MAKEで起動するかんじのやつを)->makeRes.cs
 -VolumeTracker.javaをsvn add
+-UTAUのustを読み込むとき、[#0001]の数字部分が正しく読み込めない不具合を修正。
 
 -v3.0.5done------------------------------------------------------------
 -bug0017[1Nov2009_1056JST_228-01]「Cadenciiについて」のクレジットの表示がなくなっている。

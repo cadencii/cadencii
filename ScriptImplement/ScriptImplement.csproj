@@ -89,6 +89,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transpose Plus 1 Degree.cs" />
+    <Compile Include="UTAU Plugin Manager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Boare.Lib.AppUtil\Boare.Lib.AppUtil.csproj">

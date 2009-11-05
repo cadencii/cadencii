@@ -165,6 +165,21 @@ namespace Boare.Lib.Vsq {
                 sw.newLine();
             }
         }
+
+        /*public VsqEvent convertToVsqEvent( int clock, int internal_id ) {
+            VsqEvent ret = new VsqEvent();
+            ret.Clock = clock;
+            ret.InternalID = internal_id;
+            ret.UstEvent = (UstEvent)this.clone();
+            ret.ID.setLength( Length );
+            ByRef<string> phonetic_symbol = new ByRef<string>( "" );
+            SymbolTable.attatch( Lyric, phonetic_symbol );
+            ret.ID.LyricHandle = new LyricHandle( Lyric, phonetic_symbol.value );
+            ret.ID.Note = Note;
+            ret.ID.Dynamics = Intensity;
+            ret.ID.type = VsqIDType.Anote;
+            return ret;
+        }*/
     }
 
 #if !JAVA

@@ -21,9 +21,11 @@ import org.kbinani.*;
 using System;
 using bocoree;
 using bocoree.io;
+using bocoree.util;
 
 namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;
+    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -336,7 +338,7 @@ namespace Boare.Lib.Vsq {
             result += "[h#" + PortUtil.formatDecimal( "0000", Index ) + "]";
             if ( m_type == VsqHandleType.Lyric ) {
                 result += "\n" + "L0=" + L0.toString();
-                int c = Trailig.size();
+                int c = Trailing.size();
                 for( int i = 0; i < c; i++ ){
                     result += "\n" + "L" + (i + 1) + Trailing.get( i ).toString();
                 }

@@ -508,7 +508,6 @@ namespace Boare.Cadencii {
 
             m_strip_ddbtn_metronome = new BToolStripButton();
             m_strip_ddbtn_metronome.setText( "Metronome" );
-            m_strip_ddbtn_metronome.setIcon( Resource.get_alarm_clock() );
             m_strip_ddbtn_metronome.Name = "m_strip_ddbtn_metronome";
             m_strip_ddbtn_metronome.CheckOnClick = true;
             m_strip_ddbtn_metronome.Checked = AppManager.editorConfig.MetronomeEnabled;
@@ -743,7 +742,12 @@ namespace Boare.Cadencii {
                 HAND = new Cursor( ms );
             }
 #endif
+            initResource();
             applyShortcut();
+        }
+
+        private void initResource() {
+            m_strip_ddbtn_metronome.setIcon( Resources.get_alarm_clock() );
         }
 
         private void m_strip_ddbtn_metronome_CheckedChanged( Object sender, BEventArgs e ) {

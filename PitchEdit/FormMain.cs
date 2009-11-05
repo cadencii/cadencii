@@ -42,6 +42,14 @@ namespace Boare.PitchEdit {
             updateScaleX();
             updateScaleY();
             m_temp = temp;
+            Encoding shift_jis = Encoding.GetEncoding( "Shift_JIS" );
+            using ( StreamReader sr = new StreamReader( temp, shift_jis ) )
+            using ( StreamWriter sw = new StreamWriter( "regen.txt" ) ) {
+                string line = "";
+                while ( (line = sr.ReadLine()) != null ) {
+                    sw.WriteLine( line );
+                }
+            }
             try {
                 m_ust = new UstFile( m_temp );
                 m_track = m_ust.getTrack( 0 );
