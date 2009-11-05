@@ -15,6 +15,7 @@
 package org.kbinani.vsq;
 
 import java.io.*;
+import java.util.*;
 #else
 using System;
 
@@ -29,8 +30,29 @@ namespace Boare.Lib.Vsq {
 #endif
         public Lyric L0;
         public int Index;
+        public Vector<Lyric> Trailing = new Vector<Lyric>();
 
         public LyricHandle() {
+        }
+
+        public Lyric getLyricAt( int index ){
+            if( index == 0 ){
+                return L0;
+            }else{
+                return Trailing.get( index - 1 );
+            }
+        }
+
+        public void setLyricAt( int index, Lyric value ){
+            if( index == 0 ){
+                L0 = value;
+            }else{
+                Trailing.set( index - 1, value );
+            }
+        }
+
+        public int getCount(){
+            return Trailing.size() + 1;
         }
 
         /// <summary>
@@ -45,7 +67,12 @@ namespace Boare.Lib.Vsq {
         public Object clone() {
             LyricHandle ret = new LyricHandle();
             ret.Index = Index;
-            ret.L0 = (Lyric)L0.Clone();
+            ret.L0 = (Lyric)L0.clone();
+            int c = Trailing.size();
+            for( int i = 0; i < c; i++ ){
+                Lyric buf = (Lyric)Trailing.get( i ).clone();
+                ret.Trailing.add( buf );
+            }
             return ret;
         }
 
@@ -58,7 +85,8 @@ namespace Boare.Lib.Vsq {
         public VsqHandle castToVsqHandle() {
             VsqHandle ret = new VsqHandle();
             ret.m_type = VsqHandleType.Lyric;
-            ret.L0 = (Lyric)L0.Clone();
+            ret.L0 = (Lyric)L0.clone();
+            ret.Trailing = Trailing;
             ret.Index = Index;
             return ret;
         }

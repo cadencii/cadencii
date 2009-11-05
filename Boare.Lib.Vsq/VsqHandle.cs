@@ -15,6 +15,7 @@
 package org.kbinani.vsq;
 
 import java.io.*;
+import java.util.*;
 import org.kbinani.*;
 #else
 using System;
@@ -39,6 +40,7 @@ namespace Boare.Lib.Vsq {
         public String IconID = "";
         public String IDS = "";
         public Lyric L0;
+        public Vector<Lyric> Trailing = new Vector<Lyric>();
         public int Original;
         public String Caption = "";
         public int Length;
@@ -64,8 +66,9 @@ namespace Boare.Lib.Vsq {
 
         public LyricHandle castToLyricHandle() {
             LyricHandle ret = new LyricHandle();
-            ret.L0 = (Lyric)L0;
+            ret.L0 = L0;
             ret.Index = Index;
+            ret.Trailing = Trailing;
             return ret;
         }
 
@@ -213,14 +216,24 @@ namespace Boare.Lib.Vsq {
                     tmpRateBPX = spl[1];
                 } else if ( search.Equals( "RateBPY" ) ) {
                     tmpRateBPY = spl[1];
-                } else if ( search.Equals( "L0" ) ) {
-                    m_type = VsqHandleType.Lyric;
-                    L0 = new Lyric( spl[1] );
                 } else if ( search.Equals( "Duration" ) ) {
                     m_type = VsqHandleType.NoteHeadHandle;
                     Duration = PortUtil.parseInt( spl[1] );
                 } else if ( search.Equals( "Depth" ) ) {
                     Duration = PortUtil.parseInt( spl[1] );
+                } else if ( search.StartsWith( "L" ) && PortUtil.getStringLength( search ) >= 2 ){
+                    String num = search.Substring( 1 );
+                    ByRef<Integer> vals = new ByRef<Integer>( 0 );
+                    if( PortUtil.tryParseInt( num, vals ) ){
+                        Lyric lyric = new Lyric( spl[1] );
+                        m_type = VsqHandleType.Lyric;
+                        int index = vals.value;
+                        if( index == 0 ){
+                            L0 = lyric;
+                        }else{
+                            Trailing.set( index - 1, lyric );
+                        }
+                    }
                 }
                 if ( sr.peek() < 0 ) {
                     break;
@@ -323,6 +336,10 @@ namespace Boare.Lib.Vsq {
             result += "[h#" + PortUtil.formatDecimal( "0000", Index ) + "]";
             if ( m_type == VsqHandleType.Lyric ) {
                 result += "\n" + "L0=" + L0.toString();
+                int c = Trailig.size();
+                for( int i = 0; i < c; i++ ){
+                    result += "\n" + "L" + (i + 1) + Trailing.get( i ).toString();
+                }
             } else if ( m_type == VsqHandleType.Vibrato ) {
                 result += "\n" + "IconID=" + IconID + "\n";
                 result += "IDS=" + IDS + "\n";

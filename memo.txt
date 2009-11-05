@@ -12,14 +12,14 @@
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
 -ミキサーダイアログのミュートとソロボタン
 -Consonant Adjustmentの編集機能
--LyricHandleのL1以降の取り扱い。
 -Federの値が本家と違う場合がある（？）
 -MIDIインポート時に、ゲートタイム基準でインポートする動作をデフォルトにする。
 -MIDIインポート時に、オフセットクロックを指定できるようにする。
 -曲頭に戻る、のショートカット／編集可能な感じの
 -13時間31分35.77秒を超える曲をレンダリングするとクラッシュする（たぶん）．要確認．PlaySound.cpp, vstidrv.cs, UtauRenderingRunner.cs, StraightRenderingRunner.cs, VocaloRenderingRunner.csに要修正の可能性
 -CadenciiからUTAUのプラグインを呼び出す仕組み
--VolumeTracker.javaをsvn add
+-LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
+-VsqHandleのcastTo**はクローンする必要があるのかどうか検討
 
 -v3.0.6done------------------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。
@@ -27,6 +27,7 @@
 -USE_SCRIPTコンパイルフラグを立てる。（スクリプトとパレットツールの有効/無効切り替え）
 -BPictureBox->PictureBoxExにしてしまったのを，元に戻す
 -リソースを自前でexeに埋め込む仕組み(for Java port, MAKEで起動するかんじのやつを)->makeRes.cs
+-VolumeTracker.javaをsvn add
 
 -v3.0.5done------------------------------------------------------------
 -bug0017[1Nov2009_1056JST_228-01]「Cadenciiについて」のクレジットの表示がなくなっている。
