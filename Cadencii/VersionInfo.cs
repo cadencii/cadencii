@@ -65,6 +65,8 @@ namespace Boare.Cadencii {
             m_version = version;
             m_app_name = app_name;
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
 
             this.SetStyle( ControlStyles.DoubleBuffer, true );
@@ -209,10 +211,8 @@ namespace Boare.Cadencii {
 
         void btnSaveAuthorList_Click( Object sender, BEventArgs e ) {
 #if DEBUG
-            using ( SaveFileDialog dlg = new SaveFileDialog() )
-            {
-                if ( dlg.ShowDialog() == DialogResult.OK )
-                {
+            using ( SaveFileDialog dlg = new SaveFileDialog() ) {
+                if ( dlg.ShowDialog() == DialogResult.OK ) {
                     javax.imageio.ImageIO.write( m_scroll, "png", new java.io.File( dlg.FileName ) );
                 }
             }
@@ -314,6 +314,19 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void registerEventHandlers() {
+            this.btnFlip.Click += new System.EventHandler( this.btnFlip_Click );
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            this.timer.Tick += new System.EventHandler( this.timer_Tick );
+            this.Paint += new System.Windows.Forms.PaintEventHandler( this.VersionInfoEx_Paint );
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfoEx_KeyDown );
+            this.FontChanged += new System.EventHandler( this.VersionInfoEx_FontChanged );
+        }
+
+        private void setResources() {
+            this.pictVstLogo.Image = Resources.get_VSTonWht();
+        }
+
 #if JAVA
         #region UI Impl for Java
         #endregion
@@ -362,7 +375,6 @@ namespace Boare.Cadencii {
             this.btnFlip.TabIndex = 2;
             this.btnFlip.Text = "クレジット";
             this.btnFlip.UseVisualStyleBackColor = true;
-            this.btnFlip.Click += new System.EventHandler( this.btnFlip_Click );
             // 
             // btnOK
             // 
@@ -374,12 +386,10 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // timer
             // 
             this.timer.Interval = 30;
-            this.timer.Tick += new System.EventHandler( this.timer_Tick );
             // 
             // btnSaveAuthorList
             // 
@@ -403,7 +413,6 @@ namespace Boare.Cadencii {
             // pictVstLogo
             // 
             this.pictVstLogo.BackColor = System.Drawing.Color.White;
-            this.pictVstLogo.Image = global::Boare.Cadencii.Properties.Resources.VSTonWht;
             this.pictVstLogo.Location = new System.Drawing.Point( 27, 265 );
             this.pictVstLogo.Name = "pictVstLogo";
             this.pictVstLogo.Size = new System.Drawing.Size( 88, 60 );
@@ -442,9 +451,6 @@ namespace Boare.Cadencii {
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "VersionInfoEx";
-            this.Paint += new System.Windows.Forms.PaintEventHandler( this.VersionInfoEx_Paint );
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfoEx_KeyDown );
-            this.FontChanged += new System.EventHandler( this.VersionInfoEx_FontChanged );
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).EndInit();
             this.ResumeLayout( false );
 

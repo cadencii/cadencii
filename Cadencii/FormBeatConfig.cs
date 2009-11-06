@@ -25,53 +25,43 @@ namespace Boare.Cadencii {
 
     partial class FormBeatConfig : BForm {
         public void ApplyLanguage() {
-            Text = _( "Beat Change" );
+            setTitle( _( "Beat Change" ) );
             groupPosition.Text = _( "Position" );
             groupBeat.Text = _( "Beat" );
-            btnOK.Text = _( "OK" );
-            btnCancel.Text = _( "Cancel" );
-            lblStart.Text = _( "From" ) + "(&F)";
-            chkEnd.Text = _( "To" ) + "(&T)";
-            lblBar1.Text = _( "Measure" );
-            lblBar2.Text = _( "Measure" );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
+            lblStart.setText( _( "From" ) + "(&F)" );
+            chkEnd.setText( _( "To" ) + "(&T)" );
+            lblBar1.setText( _( "Measure" ) );
+            lblBar2.setText( _( "Measure" ) );
         }
 
         public static String _( String id ) {
             return Messaging.getMessage( id );
         }
-        
-        public int Start {
-            get {
-                return (int)numStart.Value;
-            }
-        }
-        
-        public boolean EndSpecified {
-            get {
-                return chkEnd.Checked;
-            }
+
+        public int getStart() {
+            return (int)numStart.Value;
         }
 
-        public int End {
-            get {
-                return (int)numEnd.Value;
-            }
+        public boolean isEndSpecified() {
+            return chkEnd.isSelected();
         }
-        
-        public int Numerator {
-            get {
-                return (int)numNumerator.Value;
-            }
+
+        public int getEnd() {
+            return (int)numEnd.Value;
         }
-        
-        public int Denominator {
-            get {
-                int ret = 1;
-                for ( int i = 0; i < comboDenominator.SelectedIndex; i++ ) {
-                    ret *= 2;
-                }
-                return ret;
+
+        public int getNumerator() {
+            return (int)numNumerator.Value;
+        }
+
+        public int getDenominator() {
+            int ret = 1;
+            for ( int i = 0; i < comboDenominator.SelectedIndex; i++ ) {
+                ret *= 2;
             }
+            return ret;
         }
         
         public FormBeatConfig( int bar_count, int numerator, int denominator, boolean num_enabled, int pre_measure ) {
@@ -85,7 +75,7 @@ namespace Boare.Cadencii {
 
             numStart.Enabled = num_enabled;
             numEnd.Enabled = num_enabled;
-            chkEnd.Enabled = num_enabled;
+            chkEnd.setEnabled( num_enabled );
             numStart.Minimum = -pre_measure + 1;
             numStart.Maximum = decimal.MaxValue;
             numEnd.Minimum = -pre_measure + 1;
@@ -469,19 +459,19 @@ namespace Boare.Cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.groupPosition = new System.Windows.Forms.GroupBox();
-            this.lblBar2 = new System.Windows.Forms.Label();
-            this.lblBar1 = new System.Windows.Forms.Label();
+            this.lblBar2 = new BLabel();
+            this.lblBar1 = new BLabel();
             this.numEnd = new Boare.Cadencii.NumericUpDownEx();
             this.numStart = new Boare.Cadencii.NumericUpDownEx();
-            this.chkEnd = new System.Windows.Forms.CheckBox();
-            this.lblStart = new System.Windows.Forms.Label();
+            this.chkEnd = new BCheckBox();
+            this.lblStart = new BLabel();
             this.groupBeat = new System.Windows.Forms.GroupBox();
-            this.comboDenominator = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.comboDenominator = new BComboBox();
+            this.label2 = new BLabel();
+            this.label1 = new BLabel();
             this.numNumerator = new Boare.Cadencii.NumericUpDownEx();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new BButton();
+            this.btnCancel = new BButton();
             this.groupPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStart)).BeginInit();
@@ -706,18 +696,18 @@ namespace Boare.Cadencii {
 
         private System.Windows.Forms.GroupBox groupPosition;
         private System.Windows.Forms.GroupBox groupBeat;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnCancel;
+        private BButton btnOK;
+        private BButton btnCancel;
         private NumericUpDownEx numStart;
-        private System.Windows.Forms.CheckBox chkEnd;
-        private System.Windows.Forms.Label lblStart;
-        private System.Windows.Forms.Label lblBar2;
-        private System.Windows.Forms.Label lblBar1;
+        private BCheckBox chkEnd;
+        private BLabel lblStart;
+        private BLabel lblBar2;
+        private BLabel lblBar1;
         private NumericUpDownEx numEnd;
-        private System.Windows.Forms.Label label1;
+        private BLabel label1;
         private NumericUpDownEx numNumerator;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboDenominator;
+        private BLabel label2;
+        private BComboBox comboDenominator;
         #endregion
 #endif
 

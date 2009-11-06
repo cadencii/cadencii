@@ -476,6 +476,9 @@ namespace Boare.Cadencii {
 #else
             InitializeComponent();
 #endif
+            registerEventHandlers();
+            setResources();
+
             openXmlVsqDialog = new BFileChooser( "" );
             openXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
             openXmlVsqDialog.addFileFilter( "Original Format(*.evsq)|*.evsq" );
@@ -484,11 +487,11 @@ namespace Boare.Cadencii {
             saveXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
             saveXmlVsqDialog.addFileFilter( "Original Format(*.evsq)|*.evsq" );
             saveXmlVsqDialog.addFileFilter( "All files(*.*)|*.*" );
-            
+
             openUstDialog = new BFileChooser( "" );
             openUstDialog.addFileFilter( "UTAU Project File(*.ust)|*.ust" );
             openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
-            
+
             openMidiDialog = new BFileChooser( "" );
             saveMidiDialog = new BFileChooser( "" );
             openWaveDialog = new BFileChooser( "" );
@@ -1532,9 +1535,9 @@ namespace Boare.Cadencii {
             Rectangle rect = out_rect.value;
             if ( item != null ) {
 #if ENABLE_SCRIPT
-                if ( AppManager.getSelectedTool() != EditTool.PALETTE_TOOL ) 
+                if ( AppManager.getSelectedTool() != EditTool.PALETTE_TOOL )
 #endif
-                {
+ {
                     AppManager.clearSelectedEvent();
                     AppManager.addSelectedEvent( item.InternalID );
                     m_mouse_hover_thread.Abort();
@@ -1736,7 +1739,7 @@ namespace Boare.Cadencii {
             }
 
             BMouseButtons btn0 = e0.Button;
-            if ( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier && m_spacekey_downed && e0.Button == MouseButtons.Left ){
+            if ( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier && m_spacekey_downed && e0.Button == MouseButtons.Left ) {
                 btn0 = MouseButtons.Middle;
             }
             BMouseEventArgs e = new MouseEventArgs( btn0, e0.Clicks, e0.X, e0.Y, e0.Delta );
@@ -1771,11 +1774,11 @@ namespace Boare.Cadencii {
 
             EditTool selected_tool = AppManager.getSelectedTool();
 #if ENABLE_SCRIPT
-            if ( selected_tool != EditTool.PALETTE_TOOL && e.Button == BMouseButtons.Middle ) 
+            if ( selected_tool != EditTool.PALETTE_TOOL && e.Button == BMouseButtons.Middle )
 #else
             if ( e.Button == BMouseButtons.Middle )
 #endif
-            {
+ {
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
                 m_middle_button_vscroll = vScroll.Value;
                 m_middle_button_hscroll = hScroll.Value;
@@ -2074,75 +2077,75 @@ namespace Boare.Cadencii {
                         AppManager.addSelectedEvent( item.InternalID );
                     } else
 #endif
-                    if ( selected_tool != EditTool.ERASER ) {
-                        m_mouse_move_init = new Point( e.X + AppManager.startToDrawX, e.Y + getStartToDrawY() );
-                        int head_x = AppManager.xCoordFromClocks( item.Clock );
-                        m_mouse_move_offset = e.X - head_x;
-                        if ( (modefier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                            // 範囲選択
-                            int last_id = AppManager.getLastSelectedEvent().original.InternalID;
-                            int last_clock = 0;
-                            int this_clock = 0;
-                            boolean this_found = false, last_found = false;
-                            for ( Iterator itr = AppManager.getVsqFile().Track.get( selected_track ).getEventIterator(); itr.hasNext(); ) {
-                                VsqEvent ev = (VsqEvent)itr.next();
-                                if ( ev.InternalID == last_id ) {
-                                    last_clock = ev.Clock;
-                                    last_found = true;
-                                } else if ( ev.InternalID == item.InternalID ) {
-                                    this_clock = ev.Clock;
-                                    this_found = true;
-                                }
-                                if ( last_found && this_found ) {
-                                    break;
-                                }
-                            }
-                            int start = Math.Min( last_clock, this_clock );
-                            int end = Math.Max( last_clock, this_clock );
-                            Vector<Integer> add_required = new Vector<Integer>();
-                            for ( Iterator itr = AppManager.getVsqFile().Track.get( selected_track ).getEventIterator(); itr.hasNext(); ) {
-                                VsqEvent ev = (VsqEvent)itr.next();
-                                if ( start <= ev.Clock && ev.Clock <= end ) {
-                                    if ( !add_required.contains( ev.InternalID ) ) {
-                                        add_required.add( ev.InternalID );
+                        if ( selected_tool != EditTool.ERASER ) {
+                            m_mouse_move_init = new Point( e.X + AppManager.startToDrawX, e.Y + getStartToDrawY() );
+                            int head_x = AppManager.xCoordFromClocks( item.Clock );
+                            m_mouse_move_offset = e.X - head_x;
+                            if ( (modefier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+                                // 範囲選択
+                                int last_id = AppManager.getLastSelectedEvent().original.InternalID;
+                                int last_clock = 0;
+                                int this_clock = 0;
+                                boolean this_found = false, last_found = false;
+                                for ( Iterator itr = AppManager.getVsqFile().Track.get( selected_track ).getEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ev = (VsqEvent)itr.next();
+                                    if ( ev.InternalID == last_id ) {
+                                        last_clock = ev.Clock;
+                                        last_found = true;
+                                    } else if ( ev.InternalID == item.InternalID ) {
+                                        this_clock = ev.Clock;
+                                        this_found = true;
+                                    }
+                                    if ( last_found && this_found ) {
+                                        break;
                                     }
                                 }
-                            }
-                            if ( !add_required.contains( item.InternalID ) ) {
-                                add_required.add( item.InternalID );
-                            }
-                            AppManager.addSelectedEventAll( add_required.toArray( new Integer[] { } ) );
-                        } else if ( (modefier & s_modifier_key) == s_modifier_key ) {
-                            // CTRLキーを押しながら選択／選択解除
-                            if ( AppManager.isSelectedEventContains( selected_track, item.InternalID ) ) {
-                                AppManager.removeSelectedEvent( item.InternalID );
+                                int start = Math.Min( last_clock, this_clock );
+                                int end = Math.Max( last_clock, this_clock );
+                                Vector<Integer> add_required = new Vector<Integer>();
+                                for ( Iterator itr = AppManager.getVsqFile().Track.get( selected_track ).getEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ev = (VsqEvent)itr.next();
+                                    if ( start <= ev.Clock && ev.Clock <= end ) {
+                                        if ( !add_required.contains( ev.InternalID ) ) {
+                                            add_required.add( ev.InternalID );
+                                        }
+                                    }
+                                }
+                                if ( !add_required.contains( item.InternalID ) ) {
+                                    add_required.add( item.InternalID );
+                                }
+                                AppManager.addSelectedEventAll( add_required.toArray( new Integer[] { } ) );
+                            } else if ( (modefier & s_modifier_key) == s_modifier_key ) {
+                                // CTRLキーを押しながら選択／選択解除
+                                if ( AppManager.isSelectedEventContains( selected_track, item.InternalID ) ) {
+                                    AppManager.removeSelectedEvent( item.InternalID );
+                                } else {
+                                    AppManager.addSelectedEvent( item.InternalID );
+                                }
                             } else {
+                                if ( !AppManager.isSelectedEventContains( selected_track, item.InternalID ) ) {
+                                    // MouseDownしたアイテムが、まだ選択されていなかった場合。当該アイテム単独に選択しなおす
+                                    AppManager.clearSelectedEvent();
+                                }
                                 AppManager.addSelectedEvent( item.InternalID );
                             }
-                        } else {
-                            if ( !AppManager.isSelectedEventContains( selected_track, item.InternalID ) ) {
-                                // MouseDownしたアイテムが、まだ選択されていなかった場合。当該アイテム単独に選択しなおす
-                                AppManager.clearSelectedEvent();
+
+                            // 範囲選択モードで、かつマウス位置の音符がその範囲に入っていた場合にのみ、MOVE_ENTRY_WHOLE_WAIT_MOVEに移行
+                            if ( AppManager.isWholeSelectedIntervalEnabled() &&
+                                 AppManager.wholeSelectedInterval.getStart() <= item.Clock && item.Clock <= AppManager.wholeSelectedInterval.getEnd() ) {
+                                AppManager.setEditMode( EditMode.MOVE_ENTRY_WHOLE_WAIT_MOVE );
+                                AppManager.wholeSelectedIntervalStartForMoving = AppManager.wholeSelectedInterval.getStart();
+                            } else {
+                                AppManager.setWholeSelectedIntervalEnabled( false );
+                                AppManager.setEditMode( EditMode.MOVE_ENTRY_WAIT_MOVE );
                             }
-                            AppManager.addSelectedEvent( item.InternalID );
-                        }
 
-                        // 範囲選択モードで、かつマウス位置の音符がその範囲に入っていた場合にのみ、MOVE_ENTRY_WHOLE_WAIT_MOVEに移行
-                        if ( AppManager.isWholeSelectedIntervalEnabled() &&
-                             AppManager.wholeSelectedInterval.getStart() <= item.Clock && item.Clock <= AppManager.wholeSelectedInterval.getEnd() ) {
-                            AppManager.setEditMode( EditMode.MOVE_ENTRY_WHOLE_WAIT_MOVE );
-                            AppManager.wholeSelectedIntervalStartForMoving = AppManager.wholeSelectedInterval.getStart();
-                        } else {
-                            AppManager.setWholeSelectedIntervalEnabled( false );
-                            AppManager.setEditMode( EditMode.MOVE_ENTRY_WAIT_MOVE );
-                        }
-
-                        this.Cursor = Cursors.Hand;
+                            this.Cursor = Cursors.Hand;
 #if DEBUG
-                        AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
-                        AppManager.debugWriteLine( "    m_config.SelectedEvent.Count=" + AppManager.getSelectedEventCount() );
+                            AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
+                            AppManager.debugWriteLine( "    m_config.SelectedEvent.Count=" + AppManager.getSelectedEventCount() );
 #endif
-                    }
+                        }
                 }
                 #endregion
             }
@@ -3765,7 +3768,7 @@ namespace Boare.Cadencii {
                         event_processed = true;
                         m_game_mode = GameControlMode.KEYBOARD;
                         stripLblGameCtrlMode.Text = m_game_mode.ToString();
-                        stripLblGameCtrlMode.Image = Properties.Resources.piano;
+                        stripLblGameCtrlMode.Image = Resources.get_piano();
                     }
                     m_last_select = SELECT;
                 } else if ( m_game_mode == GameControlMode.KEYBOARD ) {
@@ -5992,19 +5995,19 @@ namespace Boare.Cadencii {
                         dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, num_enabled, pre_measure );
                         dlg.setLocation( getFormPreferedLocation( dlg ) );
                         if ( dlg.ShowDialog() == DialogResult.OK ) {
-                            if ( dlg.EndSpecified ) {
+                            if ( dlg.isEndSpecified() ) {
                                 int[] new_barcounts = new int[2];
                                 int[] numerators = new int[2];
                                 int[] denominators = new int[2];
                                 int[] barcounts = new int[2];
-                                new_barcounts[0] = dlg.Start + pre_measure - 1;
-                                new_barcounts[1] = dlg.End + pre_measure - 1;
-                                numerators[0] = dlg.Numerator;
-                                denominators[0] = dlg.Denominator;
+                                new_barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                new_barcounts[1] = dlg.getEnd() + pre_measure - 1;
+                                numerators[0] = dlg.getNumerator();
+                                denominators[0] = dlg.getDenominator();
                                 numerators[1] = timesig.numerator;
                                 denominators[1] = timesig.denominator;
                                 barcounts[0] = bar_count;
-                                barcounts[1] = dlg.End + pre_measure - 1;
+                                barcounts[1] = dlg.getEnd() + pre_measure - 1;
                                 CadenciiCommand run = new CadenciiCommand(
                                     VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
                                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
@@ -6013,10 +6016,10 @@ namespace Boare.Cadencii {
 #if DEBUG
                                 PortUtil.println( "picturePositionIndicator_MouseDoubleClick" );
                                 PortUtil.println( "    bar_count=" + bar_count );
-                                PortUtil.println( "    dlg.Start+pre_measure-1=" + (dlg.Start + pre_measure - 1) );
+                                PortUtil.println( "    dlg.Start+pre_measure-1=" + (dlg.getStart() + pre_measure - 1) );
 #endif
                                 CadenciiCommand run = new CadenciiCommand(
-                                    VsqCommand.generateCommandUpdateTimesig( bar_count, dlg.Start + pre_measure - 1, dlg.Numerator, dlg.Denominator ) );
+                                    VsqCommand.generateCommandUpdateTimesig( bar_count, dlg.getStart() + pre_measure - 1, dlg.getNumerator(), dlg.getDenominator() ) );
                                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                 setEdited( true );
                             }
@@ -6059,13 +6062,13 @@ namespace Boare.Cadencii {
                     #region スタート/エンドマーク
                     if ( AppManager.startMarkerEnabled ) {
                         int startx = AppManager.xCoordFromClocks( AppManager.startMarker ) - AppManager.editorConfig.PxTolerance;
-                        if ( startx <= e.X && e.X <= startx + AppManager.editorConfig.PxTolerance * 2 + Properties.Resources.start_marker.Width ) {
+                        if ( startx <= e.X && e.X <= startx + AppManager.editorConfig.PxTolerance * 2 + Resources.get_start_marker().Width ) {
                             m_startmark_dragging = true;
                         }
                     }
                     if ( AppManager.endMarkerEnabled && !m_startmark_dragging ) {
-                        int endx = AppManager.xCoordFromClocks( AppManager.endMarker ) - Properties.Resources.end_marker.Width - AppManager.editorConfig.PxTolerance;
-                        if ( endx <= e.X && e.X <= endx + AppManager.editorConfig.PxTolerance * 2 + Properties.Resources.end_marker.Width ) {
+                        int endx = AppManager.xCoordFromClocks( AppManager.endMarker ) - Resources.get_end_marker().Width - AppManager.editorConfig.PxTolerance;
+                        if ( endx <= e.X && e.X <= endx + AppManager.editorConfig.PxTolerance * 2 + Resources.get_end_marker().Width ) {
                             m_endmark_dragging = true;
                         }
                     }
@@ -6073,7 +6076,8 @@ namespace Boare.Cadencii {
                 } else if ( 18 < e.Y && e.Y <= 32 ) {
                     #region テンポ
                     int index = -1;
-                    for ( int i = 0; i < AppManager.getVsqFile().TempoTable.size(); i++ ) {
+                    int count = AppManager.getVsqFile().TempoTable.size();
+                    for ( int i = 0; i < count; i++ ) {
                         int clock = AppManager.getVsqFile().TempoTable.get( i ).Clock;
                         int x = AppManager.xCoordFromClocks( clock );
                         if ( x < 0 ) {
@@ -6458,21 +6462,21 @@ namespace Boare.Cadencii {
                                         dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
                                         dlg.setLocation( getFormPreferedLocation( dlg ) );
                                         if ( dlg.ShowDialog() == DialogResult.OK ) {
-                                            if ( dlg.EndSpecified ) {
+                                            if ( dlg.isEndSpecified() ) {
                                                 int[] new_barcounts = new int[2];
                                                 int[] numerators = new int[2];
                                                 int[] denominators = new int[2];
                                                 int[] barcounts = new int[2];
-                                                new_barcounts[0] = dlg.Start + pre_measure - 1;
-                                                new_barcounts[1] = dlg.End + pre_measure - 1 + 1;
-                                                numerators[0] = dlg.Numerator;
+                                                new_barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                                new_barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
+                                                numerators[0] = dlg.getNumerator();
                                                 numerators[1] = timesig.numerator;
 
-                                                denominators[0] = dlg.Denominator;
+                                                denominators[0] = dlg.getDenominator();
                                                 denominators[1] = timesig.denominator;
 
-                                                barcounts[0] = dlg.Start + pre_measure - 1;
-                                                barcounts[1] = dlg.End + pre_measure - 1 + 1;
+                                                barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                                barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
                                                 CadenciiCommand run = new CadenciiCommand(
                                                     VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
                                                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
@@ -6480,9 +6484,9 @@ namespace Boare.Cadencii {
                                             } else {
                                                 CadenciiCommand run = new CadenciiCommand(
                                                     VsqCommand.generateCommandUpdateTimesig( bar_count,
-                                                                                   dlg.Start + pre_measure - 1,
-                                                                                   dlg.Numerator,
-                                                                                   dlg.Denominator ) );
+                                                                                   dlg.getStart() + pre_measure - 1,
+                                                                                   dlg.getNumerator(),
+                                                                                   dlg.getDenominator() ) );
                                                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                                 setEdited( true );
                                             }
@@ -7868,7 +7872,7 @@ namespace Boare.Cadencii {
                 VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
                 Vector<VsqID> singers = new Vector<VsqID>();
                 SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
-                for( int i = 0; i < configs.Length; i++ ){
+                for ( int i = 0; i < configs.Length; i++ ) {
                     SingerConfig sc = configs[i];
                     singers.add( VocaloSysUtil.getSingerID( sc.VOICENAME, SynthesizerType.VOCALOID1 ) );
                 }
@@ -7898,7 +7902,7 @@ namespace Boare.Cadencii {
                 VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
                 Vector<VsqID> singers = new Vector<VsqID>();
                 SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
-                for( int i = 0; i < configs.Length; i++ ){
+                for ( int i = 0; i < configs.Length; i++ ) {
                     SingerConfig sc = configs[i];
                     singers.add( VocaloSysUtil.getSingerID( sc.VOICENAME, SynthesizerType.VOCALOID2 ) );
                 }
@@ -8861,29 +8865,29 @@ namespace Boare.Cadencii {
 
         public void updateRendererMenu() {
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_DSB2 ) ) {
-                cMenuTrackTabRendererVOCALOID1.Image = Boare.Cadencii.Properties.Resources.slash;
-                menuTrackRendererVOCALOID1.Image = Boare.Cadencii.Properties.Resources.slash;
+                cMenuTrackTabRendererVOCALOID1.Image = Resources.get_slash();
+                menuTrackRendererVOCALOID1.Image = Resources.get_slash();
             } else {
                 cMenuTrackTabRendererVOCALOID1.Image = null;
                 menuTrackRendererVOCALOID1.Image = null;
             }
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_DSB3 ) ) {
-                cMenuTrackTabRendererVOCALOID2.Image = Boare.Cadencii.Properties.Resources.slash;
-                menuTrackRendererVOCALOID2.Image = Boare.Cadencii.Properties.Resources.slash;
+                cMenuTrackTabRendererVOCALOID2.Image = Resources.get_slash();
+                menuTrackRendererVOCALOID2.Image = Resources.get_slash();
             } else {
                 cMenuTrackTabRendererVOCALOID2.Image = null;
                 menuTrackRendererVOCALOID2.Image = null;
             }
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_UTU0 ) ) {
-                cMenuTrackTabRendererUtau.Image = Boare.Cadencii.Properties.Resources.slash;
-                menuTrackRendererUtau.Image = Boare.Cadencii.Properties.Resources.slash;
+                cMenuTrackTabRendererUtau.Image = Resources.get_slash();
+                menuTrackRendererUtau.Image = Resources.get_slash();
             } else {
                 cMenuTrackTabRendererUtau.Image = null;
                 menuTrackRendererUtau.Image = null;
             }
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_STR0 ) ) {
-                cMenuTrackTabRendererStraight.Image = Boare.Cadencii.Properties.Resources.slash;
-                menuTrackRendererStraight.Image = Boare.Cadencii.Properties.Resources.slash;
+                cMenuTrackTabRendererStraight.Image = Resources.get_slash();
+                menuTrackRendererStraight.Image = Resources.get_slash();
             } else {
                 cMenuTrackTabRendererStraight.Image = null;
                 menuTrackRendererStraight.Image = null;
@@ -9696,13 +9700,13 @@ namespace Boare.Cadencii {
 #if !JAVA
             if ( m_game_mode == GameControlMode.DISABLED ) {
                 stripLblGameCtrlMode.Text = _( "Disabled" );
-                stripLblGameCtrlMode.Image = (System.Drawing.Bitmap)Properties.Resources.slash.Clone();
+                stripLblGameCtrlMode.Image = (System.Drawing.Bitmap)Resources.get_slash().Clone();
             } else if ( m_game_mode == GameControlMode.CURSOR ) {
                 stripLblGameCtrlMode.Text = _( "Cursor" );
                 stripLblGameCtrlMode.Image = null;
             } else if ( m_game_mode == GameControlMode.KEYBOARD ) {
                 stripLblGameCtrlMode.Text = _( "Keyboard" );
-                stripLblGameCtrlMode.Image = (System.Drawing.Bitmap)Properties.Resources.piano.Clone();
+                stripLblGameCtrlMode.Image = (System.Drawing.Bitmap)Resources.get_piano().Clone();
             } else if ( m_game_mode == GameControlMode.NORMAL ) {
                 stripLblGameCtrlMode.Text = _( "Normal" );
                 stripLblGameCtrlMode.Image = null;
@@ -9716,14 +9720,14 @@ namespace Boare.Cadencii {
             bocoree.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
             if ( midiport < 0 || devices.Length <= 0 ) {
                 stripLblMidiIn.Text = _( "Disabled" );
-                stripLblMidiIn.Image = (System.Drawing.Bitmap)Properties.Resources.slash.Clone();
+                stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_slash().Clone();
             } else {
                 if ( midiport >= devices.Length ) {
                     midiport = 0;
                     AppManager.editorConfig.MidiInPort.PortNumber = midiport;
                 }
                 stripLblMidiIn.Text = devices[midiport].szPname;
-                stripLblMidiIn.Image = (System.Drawing.Bitmap)Properties.Resources.piano.Clone();
+                stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_piano().Clone();
             }
 #endif
         }
@@ -10712,7 +10716,7 @@ namespace Boare.Cadencii {
                 openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
                 openXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
-            
+
             saveXmlVsqDialog.clearChoosableFileFilter();
             try {
                 saveXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
@@ -11634,10 +11638,10 @@ namespace Boare.Cadencii {
                 ce.copyStartedClock = start_clock;
                 ce.points = new TreeMap<CurveType, VsqBPList>();
                 ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
-                for( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ){
+                for ( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ) {
                     CurveType vct = AppManager.CURVE_USAGE[i];
                     VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
-                    if ( list == null ){
+                    if ( list == null ) {
                         continue;
                     }
                     Vector<BezierChain> tmp_bezier = new Vector<BezierChain>();
@@ -12162,9 +12166,9 @@ namespace Boare.Cadencii {
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tag;
                             tsb.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
-                        } else 
+                        } else
 #endif
-                        {
+ {
                             tsb.setSelected( false );
                         }
                     }
@@ -12178,9 +12182,9 @@ namespace Boare.Cadencii {
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tsmi.Tag;
                             tsmi.Checked = (AppManager.selectedPaletteTool.Equals( id ));
-                        } else 
+                        } else
 #endif
-                        {
+ {
                             tsmi.Checked = false;
                         }
                     }
@@ -12195,9 +12199,9 @@ namespace Boare.Cadencii {
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tsmi.Tag;
                             tsmi.Checked = (AppManager.selectedPaletteTool.Equals( id ));
-                        } else 
+                        } else
 #endif
-                        {
+ {
                             tsmi.Checked = false;
                         }
                     }
@@ -12934,12 +12938,12 @@ namespace Boare.Cadencii {
                 if ( AppManager.startMarkerEnabled ) {
                     int x = AppManager.xCoordFromClocks( AppManager.startMarker );
                     g.nativeGraphics.DrawImage(
-                        Properties.Resources.start_marker, x, 3 );
+                        Resources.get_start_marker(), x, 3 );
                 }
                 if ( AppManager.endMarkerEnabled ) {
                     int x = AppManager.xCoordFromClocks( AppManager.endMarker ) - 6;
                     g.nativeGraphics.DrawImage(
-                        Properties.Resources.end_marker, x, 3 );
+                        Resources.get_end_marker(), x, 3 );
                 }
                 #endregion
 
@@ -13027,6 +13031,366 @@ namespace Boare.Cadencii {
                 m_overview_update_thread = null;
             }
         }
+
+        private void registerEventHandlers() {
+            this.menuStripMain.MouseDown += new System.Windows.Forms.MouseEventHandler( this.menuStrip1_MouseDown );
+            this.menuFileNew.MouseEnter += new System.EventHandler( this.menuFileNew_MouseEnter );
+            this.menuFileNew.Click += new System.EventHandler( this.commonFileNew_Click );
+            this.menuFileOpen.MouseEnter += new System.EventHandler( this.menuFileOpen_MouseEnter );
+            this.menuFileOpen.Click += new System.EventHandler( this.commonFileOpen_Click );
+            this.menuFileSave.MouseEnter += new System.EventHandler( this.menuFileSave_MouseEnter );
+            this.menuFileSave.Click += new System.EventHandler( this.commonFileSave_Click );
+            this.menuFileSaveNamed.MouseEnter += new System.EventHandler( this.menuFileSaveNamed_MouseEnter );
+            this.menuFileSaveNamed.Click += new System.EventHandler( this.menuFileSaveNamed_Click );
+            this.menuFileOpenVsq.MouseEnter += new System.EventHandler( this.menuFileOpenVsq_MouseEnter );
+            this.menuFileOpenVsq.Click += new System.EventHandler( this.menuFileOpenVsq_Click );
+            this.menuFileOpenUst.MouseEnter += new System.EventHandler( this.menuFileOpenUst_MouseEnter );
+            this.menuFileOpenUst.Click += new System.EventHandler( this.menuFileOpenUst_Click );
+            this.menuFileImport.MouseEnter += new System.EventHandler( this.menuFileImport_MouseEnter );
+            this.menuFileImportVsq.MouseEnter += new System.EventHandler( this.menuFileImportVsq_MouseEnter );
+            this.menuFileImportVsq.Click += new System.EventHandler( this.menuFileImportVsq_Click );
+            this.menuFileImportMidi.MouseEnter += new System.EventHandler( this.menuFileImportMidi_MouseEnter );
+            this.menuFileImportMidi.Click += new System.EventHandler( this.menuFileImportMidi_Click );
+            this.menuFileExport.DropDownOpening += new System.EventHandler( this.menuFileExport_DropDownOpening );
+            this.menuFileExportWave.MouseEnter += new System.EventHandler( this.menuFileExportWave_MouseEnter );
+            this.menuFileExportWave.Click += new System.EventHandler( this.menuFileExportWave_Click );
+            this.menuFileExportMidi.MouseEnter += new System.EventHandler( this.menuFileExportMidi_MouseEnter );
+            this.menuFileExportMidi.Click += new System.EventHandler( this.menuFileExportMidi_Click );
+            this.menuFileRecent.MouseEnter += new System.EventHandler( this.menuFileRecent_MouseEnter );
+            this.menuFileQuit.MouseEnter += new System.EventHandler( this.menuFileQuit_MouseEnter );
+            this.menuFileQuit.Click += new System.EventHandler( this.menuFileQuit_Click );
+            this.menuEdit.DropDownOpening += new System.EventHandler( this.menuEdit_DropDownOpening );
+            this.menuEditUndo.MouseEnter += new System.EventHandler( this.menuEditUndo_MouseEnter );
+            this.menuEditUndo.Click += new System.EventHandler( this.commonEditUndo_Click );
+            this.menuEditRedo.MouseEnter += new System.EventHandler( this.menuEditRedo_MouseEnter );
+            this.menuEditRedo.Click += new System.EventHandler( this.commonEditRedo_Click );
+            this.menuEditCut.MouseEnter += new System.EventHandler( this.menuEditCut_MouseEnter );
+            this.menuEditCut.Click += new System.EventHandler( this.commonEditCut_Click );
+            this.menuEditCopy.MouseEnter += new System.EventHandler( this.menuEditCopy_MouseEnter );
+            this.menuEditCopy.Click += new System.EventHandler( this.commonEditCopy_Click );
+            this.menuEditPaste.MouseEnter += new System.EventHandler( this.menuEditPaste_MouseEnter );
+            this.menuEditPaste.Click += new System.EventHandler( this.commonEditPaste_Click );
+            this.menuEditDelete.MouseEnter += new System.EventHandler( this.menuEditDelete_MouseEnter );
+            this.menuEditDelete.Click += new System.EventHandler( this.menuEditDelete_Click );
+            this.menuEditAutoNormalizeMode.MouseEnter += new System.EventHandler( this.menuEditAutoNormalizeMode_MouseEnter );
+            this.menuEditAutoNormalizeMode.Click += new System.EventHandler( this.menuEditAutoNormalizeMode_Click );
+            this.menuEditSelectAll.MouseEnter += new System.EventHandler( this.menuEditSelectAll_MouseEnter );
+            this.menuEditSelectAll.Click += new System.EventHandler( this.menuEditSelectAll_Click );
+            this.menuEditSelectAllEvents.MouseEnter += new System.EventHandler( this.menuEditSelectAllEvents_MouseEnter );
+            this.menuEditSelectAllEvents.Click += new System.EventHandler( this.menuEditSelectAllEvents_Click );
+            this.menuVisualControlTrack.CheckedChanged += new System.EventHandler( this.menuVisualControlTrack_CheckedChanged );
+            this.menuVisualControlTrack.MouseEnter += new System.EventHandler( this.menuVisualControlTrack_MouseEnter );
+            this.menuVisualMixer.MouseEnter += new System.EventHandler( this.menuVisualMixer_MouseEnter );
+            this.menuVisualMixer.Click += new System.EventHandler( this.menuVisualMixer_Click );
+            this.menuVisualWaveform.CheckedChanged += new System.EventHandler( this.menuVisualWaveform_CheckedChanged );
+            this.menuVisualWaveform.MouseEnter += new System.EventHandler( this.menuVisualWaveform_MouseEnter );
+            this.menuVisualProperty.MouseEnter += new System.EventHandler( this.menuVisualProperty_MouseEnter );
+            this.menuVisualProperty.Click += new System.EventHandler( this.menuVisualProperty_Click );
+            this.menuVisualGridline.CheckedChanged += new System.EventHandler( this.menuVisualGridline_CheckedChanged );
+            this.menuVisualGridline.MouseEnter += new System.EventHandler( this.menuVisualGridline_MouseEnter );
+            this.menuVisualStartMarker.MouseEnter += new System.EventHandler( this.menuVisualStartMarker_MouseEnter );
+            this.menuVisualStartMarker.Click += new System.EventHandler( this.handleStartMarker_Click );
+            this.menuVisualEndMarker.MouseEnter += new System.EventHandler( this.menuVisualEndMarker_MouseEnter );
+            this.menuVisualEndMarker.Click += new System.EventHandler( this.handleEndMarker_Click );
+            this.menuVisualLyrics.CheckedChanged += new System.EventHandler( this.menuVisualLyrics_CheckedChanged );
+            this.menuVisualLyrics.MouseEnter += new System.EventHandler( this.menuVisualLyrics_MouseEnter );
+            this.menuVisualNoteProperty.CheckedChanged += new System.EventHandler( this.menuVisualNoteProperty_CheckedChanged );
+            this.menuVisualNoteProperty.MouseEnter += new System.EventHandler( this.menuVisualNoteProperty_MouseEnter );
+            this.menuVisualPitchLine.CheckedChanged += new System.EventHandler( this.menuVisualPitchLine_CheckedChanged );
+            this.menuVisualPitchLine.MouseEnter += new System.EventHandler( this.menuVisualPitchLine_MouseEnter );
+            this.menuJob.DropDownOpening += new System.EventHandler( this.menuJob_DropDownOpening );
+            this.menuJobNormalize.MouseEnter += new System.EventHandler( this.menuJobNormalize_MouseEnter );
+            this.menuJobNormalize.Click += new System.EventHandler( this.menuJobNormalize_Click );
+            this.menuJobInsertBar.MouseEnter += new System.EventHandler( this.menuJobInsertBar_MouseEnter );
+            this.menuJobInsertBar.Click += new System.EventHandler( this.menuJobInsertBar_Click );
+            this.menuJobDeleteBar.MouseEnter += new System.EventHandler( this.menuJobDeleteBar_MouseEnter );
+            this.menuJobDeleteBar.Click += new System.EventHandler( this.menuJobDeleteBar_Click );
+            this.menuJobRandomize.MouseEnter += new System.EventHandler( this.menuJobRandomize_MouseEnter );
+            this.menuJobConnect.MouseEnter += new System.EventHandler( this.menuJobConnect_MouseEnter );
+            this.menuJobConnect.Click += new System.EventHandler( this.menuJobConnect_Click );
+            this.menuJobLyric.MouseEnter += new System.EventHandler( this.menuJobLyric_MouseEnter );
+            this.menuJobLyric.Click += new System.EventHandler( this.menuJobLyric_Click );
+            this.menuJobRewire.MouseEnter += new System.EventHandler( this.menuJobRewire_MouseEnter );
+            this.menuJobRealTime.MouseEnter += new System.EventHandler( this.menuJobRealTime_MouseEnter );
+            this.menuJobRealTime.Click += new System.EventHandler( this.menuJobRealTime_Click );
+            this.menuJobReloadVsti.MouseEnter += new System.EventHandler( this.menuJobReloadVsti_MouseEnter );
+            this.menuJobReloadVsti.Click += new System.EventHandler( this.menuJobReloadVsti_Click );
+            this.menuTrack.DropDownOpening += new System.EventHandler( this.menuTrack_DropDownOpening );
+            this.menuTrackOn.MouseEnter += new System.EventHandler( this.menuTrackOn_MouseEnter );
+            this.menuTrackOn.Click += new System.EventHandler( this.menuTrackOn_Click );
+            this.menuTrackAdd.MouseEnter += new System.EventHandler( this.menuTrackAdd_MouseEnter );
+            this.menuTrackAdd.Click += new System.EventHandler( this.menuTrackAdd_Click );
+            this.menuTrackCopy.MouseEnter += new System.EventHandler( this.menuTrackCopy_MouseEnter );
+            this.menuTrackCopy.Click += new System.EventHandler( this.menuTrackCopy_Click );
+            this.menuTrackChangeName.MouseEnter += new System.EventHandler( this.menuTrackChangeName_MouseEnter );
+            this.menuTrackChangeName.Click += new System.EventHandler( this.menuTrackChangeName_Click );
+            this.menuTrackDelete.MouseEnter += new System.EventHandler( this.menuTrackDelete_MouseEnter );
+            this.menuTrackDelete.Click += new System.EventHandler( this.menuTrackDelete_Click );
+            this.menuTrackRenderCurrent.MouseEnter += new System.EventHandler( this.menuTrackRenderCurrent_MouseEnter );
+            this.menuTrackRenderCurrent.Click += new System.EventHandler( this.menuTrackRenderCurrent_Click );
+            this.menuTrackRenderAll.MouseEnter += new System.EventHandler( this.menuTrackRenderAll_MouseEnter );
+            this.menuTrackRenderAll.Click += new System.EventHandler( this.commonTrackRenderAll_Click );
+            this.menuTrackOverlay.MouseEnter += new System.EventHandler( this.menuTrackOverlay_MouseEnter );
+            this.menuTrackOverlay.Click += new System.EventHandler( this.menuTrackOverlay_Click );
+            this.menuTrackRenderer.MouseEnter += new System.EventHandler( this.menuTrackRenderer_MouseEnter );
+            this.menuTrackRenderer.DropDownOpening += new System.EventHandler( this.menuTrackRenderer_DropDownOpening );
+            this.menuTrackRendererVOCALOID1.MouseEnter += new System.EventHandler( this.menuTrackRendererVOCALOID1_MouseEnter );
+            this.menuTrackRendererVOCALOID1.Click += new System.EventHandler( this.commonRendererVOCALOID1_Click );
+            this.menuTrackRendererVOCALOID2.MouseEnter += new System.EventHandler( this.menuTrackRendererVOCALOID2_MouseEnter );
+            this.menuTrackRendererVOCALOID2.Click += new System.EventHandler( this.commonRendererVOCALOID2_Click );
+            this.menuTrackRendererUtau.MouseEnter += new System.EventHandler( this.menuTrackRendererUtau_MouseEnter );
+            this.menuTrackRendererUtau.Click += new System.EventHandler( this.commonRendererUtau_Click );
+            this.menuTrackRendererStraight.Click += new System.EventHandler( this.commonRendererStraight_Click );
+            this.menuTrackManager.Click += new System.EventHandler( this.menuTrackManager_Click );
+            this.menuLyricExpressionProperty.Click += new System.EventHandler( this.menuLyricExpressionProperty_Click );
+            this.menuLyricVibratoProperty.Click += new System.EventHandler( this.menuLyricVibratoProperty_Click );
+            this.menuLyricDictionary.Click += new System.EventHandler( this.menuLyricDictionary_Click );
+            this.menuScriptUpdate.Click += new System.EventHandler( this.menuScriptUpdate_Click );
+            this.menuSetting.DropDownOpening += new System.EventHandler( this.menuSetting_DropDownOpening );
+            this.menuSettingPreference.Click += new System.EventHandler( this.menuSettingPreference_Click );
+            this.menuSettingGameControlerSetting.Click += new System.EventHandler( this.menuSettingGameControlerSetting_Click );
+            this.menuSettingGameControlerLoad.Click += new System.EventHandler( this.menuSettingGameControlerLoad_Click );
+            this.menuSettingGameControlerRemove.Click += new System.EventHandler( this.menuSettingGameControlerRemove_Click );
+            this.menuSettingShortcut.Click += new System.EventHandler( this.menuSettingShortcut_Click );
+            this.menuSettingMidi.Click += new System.EventHandler( this.menuSettingMidi_Click );
+            this.menuSettingUtauVoiceDB.Click += new System.EventHandler( this.menuSettingUtauVoiceDB_Click );
+            this.menuSettingDefaultSingerStyle.Click += new System.EventHandler( this.menuSettingDefaultSingerStyle_Click );
+            this.menuSettingPositionQuantize04.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.menuSettingPositionQuantize08.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.menuSettingPositionQuantize16.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.menuSettingPositionQuantize32.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.menuSettingPositionQuantize64.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.menuSettingPositionQuantize128.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.menuSettingPositionQuantizeOff.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.menuSettingPositionQuantizeTriplet.Click += new System.EventHandler( this.h_positionQuantizeTriplet );
+            this.menuSettingLengthQuantize04.Click += new System.EventHandler( this.h_lengthQuantize04 );
+            this.menuSettingLengthQuantize08.Click += new System.EventHandler( this.h_lengthQuantize08 );
+            this.menuSettingLengthQuantize16.Click += new System.EventHandler( this.h_lengthQuantize16 );
+            this.menuSettingLengthQuantize32.Click += new System.EventHandler( this.h_lengthQuantize32 );
+            this.menuSettingLengthQuantize64.Click += new System.EventHandler( this.h_lengthQuantize64 );
+            this.menuSettingLengthQuantize128.Click += new System.EventHandler( this.h_lengthQuantize128 );
+            this.menuSettingLengthQuantizeOff.Click += new System.EventHandler( this.h_lengthQuantizeOff );
+            this.menuSettingLengthQuantizeTriplet.Click += new System.EventHandler( this.h_lengthQuantizeTriplet );
+            this.menuHelpAbout.Click += new System.EventHandler( this.menuHelpAbout_Click );
+            this.menuHelpDebug.Click += new System.EventHandler( this.menuHelpDebug_Click );
+            this.menuHiddenEditLyric.Click += new System.EventHandler( this.menuHiddenEditLyric_Click );
+            this.menuHiddenEditFlipToolPointerPencil.Click += new System.EventHandler( this.menuHiddenEditFlipToolPointerPencil_Click );
+            this.menuHiddenEditFlipToolPointerEraser.Click += new System.EventHandler( this.menuHiddenEditFlipToolPointerEraser_Click );
+            this.menuHiddenVisualForwardParameter.Click += new System.EventHandler( this.menuHiddenVisualForwardParameter_Click );
+            this.menuHiddenVisualBackwardParameter.Click += new System.EventHandler( this.menuHiddenVisualBackwardParameter_Click );
+            this.menuHiddenTrackNext.Click += new System.EventHandler( this.menuHiddenTrackNext_Click );
+            this.menuHiddenTrackBack.Click += new System.EventHandler( this.menuHiddenTrackBack_Click );
+            this.menuHiddenCopy.Click += new System.EventHandler( this.commonEditCopy_Click );
+            this.menuHiddenPaste.Click += new System.EventHandler( this.commonEditPaste_Click );
+            this.menuHiddenCut.Click += new System.EventHandler( this.commonEditCut_Click );
+            this.cMenuPiano.Opening += new System.ComponentModel.CancelEventHandler( this.cMenuPiano_Opening );
+            this.cMenuPianoPointer.Click += new System.EventHandler( this.cMenuPianoPointer_Click );
+            this.cMenuPianoPencil.Click += new System.EventHandler( this.cMenuPianoPencil_Click );
+            this.cMenuPianoEraser.Click += new System.EventHandler( this.cMenuPianoEraser_Click );
+            this.cMenuPianoCurve.Click += new System.EventHandler( this.cMenuPianoCurve_Click );
+            this.cMenuPianoFixed01.Click += new System.EventHandler( this.cMenuPianoFixed01_Click );
+            this.cMenuPianoFixed02.Click += new System.EventHandler( this.cMenuPianoFixed02_Click );
+            this.cMenuPianoFixed04.Click += new System.EventHandler( this.cMenuPianoFixed04_Click );
+            this.cMenuPianoFixed08.Click += new System.EventHandler( this.cMenuPianoFixed08_Click );
+            this.cMenuPianoFixed16.Click += new System.EventHandler( this.cMenuPianoFixed16_Click );
+            this.cMenuPianoFixed32.Click += new System.EventHandler( this.cMenuPianoFixed32_Click );
+            this.cMenuPianoFixed64.Click += new System.EventHandler( this.cMenuPianoFixed64_Click );
+            this.cMenuPianoFixed128.Click += new System.EventHandler( this.cMenuPianoFixed128_Click );
+            this.cMenuPianoFixedOff.Click += new System.EventHandler( this.cMenuPianoFixedOff_Click );
+            this.cMenuPianoFixedTriplet.Click += new System.EventHandler( this.cMenuPianoFixedTriplet_Click );
+            this.cMenuPianoFixedDotted.Click += new System.EventHandler( this.cMenuPianoFixedDotted_Click );
+            this.cMenuPianoQuantize04.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.cMenuPianoQuantize08.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.cMenuPianoQuantize16.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.cMenuPianoQuantize32.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.cMenuPianoQuantize64.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.cMenuPianoQuantize128.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.cMenuPianoQuantizeOff.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.cMenuPianoQuantizeTriplet.Click += new System.EventHandler( this.h_positionQuantizeTriplet );
+            this.cMenuPianoLength04.Click += new System.EventHandler( this.h_lengthQuantize04 );
+            this.cMenuPianoLength08.Click += new System.EventHandler( this.h_lengthQuantize08 );
+            this.cMenuPianoLength16.Click += new System.EventHandler( this.h_lengthQuantize16 );
+            this.cMenuPianoLength32.Click += new System.EventHandler( this.h_lengthQuantize32 );
+            this.cMenuPianoLength64.Click += new System.EventHandler( this.h_lengthQuantize64 );
+            this.cMenuPianoLength128.Click += new System.EventHandler( this.h_lengthQuantize128 );
+            this.cMenuPianoLengthOff.Click += new System.EventHandler( this.h_lengthQuantizeOff );
+            this.cMenuPianoLengthTriplet.Click += new System.EventHandler( this.h_lengthQuantizeTriplet );
+            this.cMenuPianoGrid.Click += new System.EventHandler( this.cMenuPianoGrid_Click );
+            this.cMenuPianoUndo.Click += new System.EventHandler( this.cMenuPianoUndo_Click );
+            this.cMenuPianoRedo.Click += new System.EventHandler( this.cMenuPianoRedo_Click );
+            this.cMenuPianoCut.Click += new System.EventHandler( this.cMenuPianoCut_Click );
+            this.cMenuPianoCopy.Click += new System.EventHandler( this.cMenuPianoCopy_Click );
+            this.cMenuPianoPaste.Click += new System.EventHandler( this.cMenuPianoPaste_Click );
+            this.cMenuPianoDelete.Click += new System.EventHandler( this.cMenuPianoDelete_Click );
+            this.cMenuPianoSelectAll.Click += new System.EventHandler( this.cMenuPianoSelectAll_Click );
+            this.cMenuPianoSelectAllEvents.Click += new System.EventHandler( this.cMenuPianoSelectAllEvents_Click );
+            this.cMenuPianoImportLyric.Click += new System.EventHandler( this.cMenuPianoImportLyric_Click );
+            this.cMenuPianoExpressionProperty.Click += new System.EventHandler( this.cMenuPianoProperty_Click );
+            this.cMenuPianoVibratoProperty.Click += new System.EventHandler( this.cMenuPianoVibratoProperty_Click );
+            this.cMenuTrackTab.Opening += new System.ComponentModel.CancelEventHandler( this.cMenuTrackTab_Opening );
+            this.cMenuTrackTabTrackOn.Click += new System.EventHandler( this.cMenuTrackTabTrackOn_Click );
+            this.cMenuTrackTabAdd.Click += new System.EventHandler( this.cMenuTrackTabAdd_Click );
+            this.cMenuTrackTabCopy.Click += new System.EventHandler( this.cMenuTrackTabCopy_Click );
+            this.cMenuTrackTabChangeName.Click += new System.EventHandler( this.cMenuTrackTabChangeName_Click );
+            this.cMenuTrackTabDelete.Click += new System.EventHandler( this.cMenuTrackTabDelete_Click );
+            this.cMenuTrackTabRenderCurrent.Click += new System.EventHandler( this.cMenuTrackTabRenderCurrent_Click );
+            this.cMenuTrackTabRenderAll.Click += new System.EventHandler( this.commonTrackRenderAll_Click );
+            this.cMenuTrackTabOverlay.Click += new System.EventHandler( this.cMenuTrackTabOverlay_Click );
+            this.cMenuTrackTabRenderer.DropDownOpening += new System.EventHandler( this.cMenuTrackTabRenderer_DropDownOpening );
+            this.cMenuTrackTabRendererVOCALOID1.Click += new System.EventHandler( this.commonRendererVOCALOID1_Click );
+            this.cMenuTrackTabRendererVOCALOID2.Click += new System.EventHandler( this.commonRendererVOCALOID2_Click );
+            this.cMenuTrackTabRendererUtau.Click += new System.EventHandler( this.commonRendererUtau_Click );
+            this.cMenuTrackTabRendererStraight.Click += new System.EventHandler( this.commonRendererStraight_Click );
+            this.cMenuTrackSelector.Opening += new System.ComponentModel.CancelEventHandler( this.cMenuTrackSelector_Opening );
+            this.cMenuTrackSelectorPointer.Click += new System.EventHandler( this.cMenuTrackSelectorPointer_Click );
+            this.cMenuTrackSelectorPencil.Click += new System.EventHandler( this.cMenuTrackSelectorPencil_Click );
+            this.cMenuTrackSelectorLine.Click += new System.EventHandler( this.cMenuTrackSelectorLine_Click );
+            this.cMenuTrackSelectorEraser.Click += new System.EventHandler( this.cMenuTrackSelectorEraser_Click );
+            this.cMenuTrackSelectorCurve.Click += new System.EventHandler( this.cMenuTrackSelectorCurve_Click );
+            this.cMenuTrackSelectorUndo.Click += new System.EventHandler( this.cMenuTrackSelectorUndo_Click );
+            this.cMenuTrackSelectorRedo.Click += new System.EventHandler( this.cMenuTrackSelectorRedo_Click );
+            this.cMenuTrackSelectorCut.Click += new System.EventHandler( this.cMenuTrackSelectorCut_Click );
+            this.cMenuTrackSelectorCopy.Click += new System.EventHandler( this.cMenuTrackSelectorCopy_Click );
+            this.cMenuTrackSelectorPaste.Click += new System.EventHandler( this.cMenuTrackSelectorPaste_Click );
+            this.cMenuTrackSelectorDelete.Click += new System.EventHandler( this.cMenuTrackSelectorDelete_Click );
+            this.cMenuTrackSelectorDeleteBezier.Click += new System.EventHandler( this.cMenuTrackSelectorDeleteBezier_Click );
+            this.cMenuTrackSelectorSelectAll.Click += new System.EventHandler( this.cMenuTrackSelectorSelectAll_Click );
+            this.trackBar.ValueChanged += new System.EventHandler( this.trackBar_ValueChanged );
+            this.trackBar.MouseDown += new System.Windows.Forms.MouseEventHandler( this.trackBar_MouseDown );
+            this.trackBar.Enter += new System.EventHandler( this.trackBar_Enter );
+            this.bgWorkScreen.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWorkScreen_DoWork );
+            this.timer.Tick += new System.EventHandler( this.timer_Tick );
+            this.pictKeyLengthSplitter.MouseMove += new System.Windows.Forms.MouseEventHandler( this.pictKeyLengthSplitter_MouseMove );
+            this.pictKeyLengthSplitter.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictKeyLengthSplitter_MouseDown );
+            this.pictKeyLengthSplitter.MouseUp += new System.Windows.Forms.MouseEventHandler( this.pictKeyLengthSplitter_MouseUp );
+            this.btnRight1.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseDown );
+            this.btnRight1.MouseUp += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseUp );
+            this.btnRight1.MouseLeave += new EventHandler( this.overviewCommon_MouseLeave );
+            this.btnLeft2.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );
+            this.btnLeft2.MouseUp += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseUp );
+            this.btnLeft2.MouseLeave += new System.EventHandler( this.overviewCommon_MouseLeave );
+            this.btnZoom.Click += new System.EventHandler( this.btnZoom_Click );
+            this.btnMooz.Click += new System.EventHandler( this.btnMooz_Click );
+            this.btnLeft1.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );
+            this.btnLeft1.MouseUp += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseUp );
+            this.btnLeft1.MouseLeave += new System.EventHandler( this.overviewCommon_MouseLeave );
+            this.btnRight2.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseDown );
+            this.btnRight2.MouseUp += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseUp );
+            this.btnRight2.MouseLeave += new System.EventHandler( this.overviewCommon_MouseLeave );
+            this.pictOverview.MouseMove += new System.Windows.Forms.MouseEventHandler( this.pictOverview_MouseMove );
+            this.pictOverview.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.pictOverview_MouseDoubleClick );
+            this.pictOverview.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictOverview_MouseDown );
+            this.pictOverview.Paint += new System.Windows.Forms.PaintEventHandler( this.pictOverview_Paint );
+            this.pictOverview.MouseUp += new System.Windows.Forms.MouseEventHandler( this.pictOverview_MouseUp );
+            this.pictOverview.BKeyUp += new System.Windows.Forms.KeyEventHandler( this.commonCaptureSpaceKeyUp );
+            this.pictOverview.BKeyDown += new System.Windows.Forms.KeyEventHandler( this.commonCaptureSpaceKeyDown );
+            this.vScroll.ValueChanged += new System.EventHandler( this.vScroll_ValueChanged );
+            this.vScroll.Resize += new System.EventHandler( this.vScroll_Resize );
+            this.vScroll.Enter += new System.EventHandler( this.vScroll_Enter );
+            this.hScroll.ValueChanged += new System.EventHandler( this.hScroll_ValueChanged );
+            this.hScroll.Resize += new System.EventHandler( this.hScroll_Resize );
+            this.hScroll.Enter += new System.EventHandler( this.hScroll_Enter );
+            this.picturePositionIndicator.MouseLeave += new System.EventHandler( this.picturePositionIndicator_MouseLeave );
+            this.picturePositionIndicator.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.picturePositionIndicator_PreviewKeyDown );
+            this.picturePositionIndicator.MouseMove += new System.Windows.Forms.MouseEventHandler( this.picturePositionIndicator_MouseMove );
+            this.picturePositionIndicator.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.picturePositionIndicator_MouseDoubleClick );
+            this.picturePositionIndicator.MouseClick += new System.Windows.Forms.MouseEventHandler( this.picturePositionIndicator_MouseClick );
+            this.picturePositionIndicator.MouseDown += new System.Windows.Forms.MouseEventHandler( this.picturePositionIndicator_MouseDown );
+            this.picturePositionIndicator.Paint += new System.Windows.Forms.PaintEventHandler( this.picturePositionIndicator_Paint );
+            this.pictPianoRoll.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.pictPianoRoll_PreviewKeyDown );
+            this.pictPianoRoll.BKeyUp += new System.Windows.Forms.KeyEventHandler( this.commonCaptureSpaceKeyUp );
+            this.pictPianoRoll.MouseMove += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseMove );
+            this.pictPianoRoll.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseDoubleClick );
+            this.pictPianoRoll.MouseClick += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseClick );
+            this.pictPianoRoll.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseDown );
+            this.pictPianoRoll.MouseUp += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseUp );
+            this.pictPianoRoll.BKeyDown += new System.Windows.Forms.KeyEventHandler( this.commonCaptureSpaceKeyDown );
+            this.pictureBox3.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictureBox3_MouseDown );
+            this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictureBox2_MouseDown );
+            this.stripBtnPointer.Click += new System.EventHandler( this.stripBtnArrow_Click );
+            this.stripBtnPencil.Click += new System.EventHandler( this.stripBtnPencil_Click );
+            this.stripBtnLine.Click += new System.EventHandler( this.stripBtnLine_Click );
+            this.stripBtnEraser.Click += new System.EventHandler( this.stripBtnEraser_Click );
+            this.stripBtnGrid.CheckedChanged += new System.EventHandler( this.stripBtnGrid_CheckedChanged );
+            this.stripBtnCurve.Click += new System.EventHandler( this.stripBtnCurve_Click );
+            this.toolStripContainer.TopToolStripPanel.SizeChanged += new System.EventHandler( this.toolStripContainer_TopToolStripPanel_SizeChanged );
+            this.stripDDBtnSpeed.DropDownOpening += new System.EventHandler( this.stripDDBtnSpeed_DropDownOpening );
+            this.stripDDBtnSpeedTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler( this.stripDDBtnSpeedTextbox_KeyDown );
+            this.stripDDBtnSpeed033.Click += new System.EventHandler( this.stripDDBtnSpeed033_Click );
+            this.stripDDBtnSpeed050.Click += new System.EventHandler( this.stripDDBtnSpeed050_Click );
+            this.stripDDBtnSpeed100.Click += new System.EventHandler( this.stripDDBtnSpeed100_Click );
+            this.stripBtnFileNew.Click += new System.EventHandler( this.commonFileNew_Click );
+            this.stripBtnFileOpen.Click += new System.EventHandler( this.commonFileOpen_Click );
+            this.stripBtnFileSave.Click += new System.EventHandler( this.commonFileSave_Click );
+            this.stripBtnCut.Click += new System.EventHandler( this.commonEditCut_Click );
+            this.stripBtnCopy.Click += new System.EventHandler( this.commonEditCopy_Click );
+            this.stripBtnPaste.Click += new System.EventHandler( this.commonEditPaste_Click );
+            this.stripBtnUndo.Click += new System.EventHandler( this.commonEditUndo_Click );
+            this.stripBtnRedo.Click += new System.EventHandler( this.commonEditRedo_Click );
+            this.stripBtnMoveTop.Click += new System.EventHandler( this.stripBtnMoveTop_Click );
+            this.stripBtnRewind.Click += new System.EventHandler( this.stripBtnRewind_Click );
+            this.stripBtnForward.Click += new System.EventHandler( this.stripBtnForward_Click );
+            this.stripBtnMoveEnd.Click += new System.EventHandler( this.stripBtnMoveEnd_Click );
+            this.stripBtnPlay.Click += new System.EventHandler( this.stripBtnPlay_Click );
+            this.stripBtnStop.Click += new System.EventHandler( this.stripBtnStop_Click );
+            this.stripBtnScroll.Click += new System.EventHandler( this.stripBtnScroll_Click );
+            this.stripBtnLoop.Click += new System.EventHandler( this.stripBtnLoop_Click );
+            this.stripDDBtnLength04.Click += new System.EventHandler( this.h_lengthQuantize04 );
+            this.stripDDBtnLength08.Click += new System.EventHandler( this.h_lengthQuantize08 );
+            this.stripDDBtnLength16.Click += new System.EventHandler( this.h_lengthQuantize16 );
+            this.stripDDBtnLength32.Click += new System.EventHandler( this.h_lengthQuantize32 );
+            this.stripDDBtnLength64.Click += new System.EventHandler( this.h_lengthQuantize64 );
+            this.stripDDBtnLength128.Click += new System.EventHandler( this.h_lengthQuantize128 );
+            this.stripDDBtnLengthOff.Click += new System.EventHandler( this.h_lengthQuantizeOff );
+            this.stripDDBtnLengthTriplet.Click += new System.EventHandler( this.h_lengthQuantizeTriplet );
+            this.stripDDBtnQuantize04.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.stripDDBtnQuantize08.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.stripDDBtnQuantize16.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.stripDDBtnQuantize32.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.stripDDBtnQuantize64.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.stripDDBtnQuantize128.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.stripDDBtnQuantizeOff.Click += new System.EventHandler( this.handlePositionQuantize );
+            this.stripDDBtnQuantizeTriplet.Click += new System.EventHandler( this.h_positionQuantizeTriplet );
+            this.stripBtnStartMarker.Click += new System.EventHandler( this.handleStartMarker_Click );
+            this.stripBtnEndMarker.Click += new System.EventHandler( this.handleEndMarker_Click );
+            this.Deactivate += new System.EventHandler( this.FormMain_Deactivate );
+            this.Load += new System.EventHandler( this.FormMain_Load );
+            this.Activated += new System.EventHandler( this.FormMain_Activated );
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler( this.FormMain_FormClosed );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMain_FormClosing );
+            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.FormMain_PreviewKeyDown );
+        }
+
+        private void setResources() {
+            this.stripBtnPointer.Image = Resources.get_arrow_135();
+            this.stripBtnPencil.Image = Resources.get_pencil();
+            this.stripBtnLine.Image = Resources.get_layer_shape_line();
+            this.stripBtnEraser.Image = Resources.get_eraser();
+            this.stripBtnGrid.Image = Resources.get_ruler_crop();
+            this.stripBtnCurve.Image = Resources.get_layer_shape_curve();
+            this.stripLblGameCtrlMode.Image = Resources.get_slash();
+            this.stripLblMidiIn.Image = Resources.get_slash();
+            this.stripBtnFileNew.Image = Resources.get_disk__plus();
+            this.stripBtnFileOpen.Image = Resources.get_folder_horizontal_open();
+            this.stripBtnFileSave.Image = Resources.get_disk();
+            this.stripBtnCut.Image = Resources.get_scissors();
+            this.stripBtnCopy.Image = Resources.get_documents();
+            this.stripBtnPaste.Image = Resources.get_clipboard_paste();
+            this.stripBtnUndo.Image = Resources.get_arrow_skip_180();
+            this.stripBtnRedo.Image = Resources.get_arrow_skip();
+            this.stripBtnMoveTop.Image = Resources.get_control_stop_180();
+            this.stripBtnRewind.Image = Resources.get_control_double_180();
+            this.stripBtnForward.Image = Resources.get_control_double();
+            this.stripBtnMoveEnd.Image = Resources.get_control_stop();
+            this.stripBtnPlay.Image = Resources.get_control();
+            this.stripBtnStop.Image = Resources.get_control_pause();
+            this.stripBtnScroll.Image = Resources.get_arrow_circle_double();
+            this.stripBtnLoop.Image = Resources.get_arrow_return();
+            this.stripBtnStartMarker.Image = Resources.get_pin__arrow();
+            this.stripBtnEndMarker.Image = Resources.get_pin__arrow_inv();
+            this.Icon = Resources.get_icon();
+        }
+
 #if JAVA
         #region UI Impl for Java
         private JMenuBar menuStripMain;
@@ -16869,7 +17233,6 @@ namespace Boare.Cadencii {
             this.menuStripMain.Size = new System.Drawing.Size( 960, 24 );
             this.menuStripMain.TabIndex = 0;
             this.menuStripMain.Text = "menuStrip1";
-            this.menuStripMain.MouseDown += new System.Windows.Forms.MouseEventHandler( this.menuStrip1_MouseDown );
             // 
             // menuFile
             // 
@@ -16897,32 +17260,24 @@ namespace Boare.Cadencii {
             this.menuFileNew.Name = "menuFileNew";
             this.menuFileNew.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileNew.Text = "New(N)";
-            this.menuFileNew.MouseEnter += new System.EventHandler( this.menuFileNew_MouseEnter );
-            this.menuFileNew.Click += new System.EventHandler( this.commonFileNew_Click );
             // 
             // menuFileOpen
             // 
             this.menuFileOpen.Name = "menuFileOpen";
             this.menuFileOpen.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileOpen.Text = "Open(&O)";
-            this.menuFileOpen.MouseEnter += new System.EventHandler( this.menuFileOpen_MouseEnter );
-            this.menuFileOpen.Click += new System.EventHandler( this.commonFileOpen_Click );
             // 
             // menuFileSave
             // 
             this.menuFileSave.Name = "menuFileSave";
             this.menuFileSave.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileSave.Text = "Save(&S)";
-            this.menuFileSave.MouseEnter += new System.EventHandler( this.menuFileSave_MouseEnter );
-            this.menuFileSave.Click += new System.EventHandler( this.commonFileSave_Click );
             // 
             // menuFileSaveNamed
             // 
             this.menuFileSaveNamed.Name = "menuFileSaveNamed";
             this.menuFileSaveNamed.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileSaveNamed.Text = "Save As(&A)";
-            this.menuFileSaveNamed.MouseEnter += new System.EventHandler( this.menuFileSaveNamed_MouseEnter );
-            this.menuFileSaveNamed.Click += new System.EventHandler( this.menuFileSaveNamed_Click );
             // 
             // toolStripMenuItem10
             // 
@@ -16934,16 +17289,12 @@ namespace Boare.Cadencii {
             this.menuFileOpenVsq.Name = "menuFileOpenVsq";
             this.menuFileOpenVsq.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileOpenVsq.Text = "Open VSQ/Vocaloid Midi(&V)";
-            this.menuFileOpenVsq.MouseEnter += new System.EventHandler( this.menuFileOpenVsq_MouseEnter );
-            this.menuFileOpenVsq.Click += new System.EventHandler( this.menuFileOpenVsq_Click );
             // 
             // menuFileOpenUst
             // 
             this.menuFileOpenUst.Name = "menuFileOpenUst";
             this.menuFileOpenUst.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileOpenUst.Text = "Open UTAU Project File(&U)";
-            this.menuFileOpenUst.MouseEnter += new System.EventHandler( this.menuFileOpenUst_MouseEnter );
-            this.menuFileOpenUst.Click += new System.EventHandler( this.menuFileOpenUst_Click );
             // 
             // menuFileImport
             // 
@@ -16953,23 +17304,18 @@ namespace Boare.Cadencii {
             this.menuFileImport.Name = "menuFileImport";
             this.menuFileImport.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileImport.Text = "Import(&I)";
-            this.menuFileImport.MouseEnter += new System.EventHandler( this.menuFileImport_MouseEnter );
             // 
             // menuFileImportVsq
             // 
             this.menuFileImportVsq.Name = "menuFileImportVsq";
             this.menuFileImportVsq.Size = new System.Drawing.Size( 142, 22 );
             this.menuFileImportVsq.Text = "VSQ File";
-            this.menuFileImportVsq.MouseEnter += new System.EventHandler( this.menuFileImportVsq_MouseEnter );
-            this.menuFileImportVsq.Click += new System.EventHandler( this.menuFileImportVsq_Click );
             // 
             // menuFileImportMidi
             // 
             this.menuFileImportMidi.Name = "menuFileImportMidi";
             this.menuFileImportMidi.Size = new System.Drawing.Size( 142, 22 );
             this.menuFileImportMidi.Text = "Standard MIDI";
-            this.menuFileImportMidi.MouseEnter += new System.EventHandler( this.menuFileImportMidi_MouseEnter );
-            this.menuFileImportMidi.Click += new System.EventHandler( this.menuFileImportMidi_Click );
             // 
             // menuFileExport
             // 
@@ -16979,23 +17325,18 @@ namespace Boare.Cadencii {
             this.menuFileExport.Name = "menuFileExport";
             this.menuFileExport.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileExport.Text = "Export(&E)";
-            this.menuFileExport.DropDownOpening += new System.EventHandler( this.menuFileExport_DropDownOpening );
             // 
             // menuFileExportWave
             // 
             this.menuFileExportWave.Name = "menuFileExportWave";
             this.menuFileExportWave.Size = new System.Drawing.Size( 97, 22 );
             this.menuFileExportWave.Text = "Wave";
-            this.menuFileExportWave.MouseEnter += new System.EventHandler( this.menuFileExportWave_MouseEnter );
-            this.menuFileExportWave.Click += new System.EventHandler( this.menuFileExportWave_Click );
             // 
             // menuFileExportMidi
             // 
             this.menuFileExportMidi.Name = "menuFileExportMidi";
             this.menuFileExportMidi.Size = new System.Drawing.Size( 97, 22 );
             this.menuFileExportMidi.Text = "MIDI";
-            this.menuFileExportMidi.MouseEnter += new System.EventHandler( this.menuFileExportMidi_MouseEnter );
-            this.menuFileExportMidi.Click += new System.EventHandler( this.menuFileExportMidi_Click );
             // 
             // toolStripMenuItem11
             // 
@@ -17007,7 +17348,6 @@ namespace Boare.Cadencii {
             this.menuFileRecent.Name = "menuFileRecent";
             this.menuFileRecent.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileRecent.Text = "Recent Files(&R)";
-            this.menuFileRecent.MouseEnter += new System.EventHandler( this.menuFileRecent_MouseEnter );
             // 
             // toolStripMenuItem12
             // 
@@ -17019,8 +17359,6 @@ namespace Boare.Cadencii {
             this.menuFileQuit.Name = "menuFileQuit";
             this.menuFileQuit.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileQuit.Text = "Quit(&Q)";
-            this.menuFileQuit.MouseEnter += new System.EventHandler( this.menuFileQuit_MouseEnter );
-            this.menuFileQuit.Click += new System.EventHandler( this.menuFileQuit_Click );
             // 
             // menuEdit
             // 
@@ -17040,23 +17378,18 @@ namespace Boare.Cadencii {
             this.menuEdit.Name = "menuEdit";
             this.menuEdit.Size = new System.Drawing.Size( 52, 20 );
             this.menuEdit.Text = "Edit(&E)";
-            this.menuEdit.DropDownOpening += new System.EventHandler( this.menuEdit_DropDownOpening );
             // 
             // menuEditUndo
             // 
             this.menuEditUndo.Name = "menuEditUndo";
             this.menuEditUndo.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditUndo.Text = "Undo(&U)";
-            this.menuEditUndo.MouseEnter += new System.EventHandler( this.menuEditUndo_MouseEnter );
-            this.menuEditUndo.Click += new System.EventHandler( this.commonEditUndo_Click );
             // 
             // menuEditRedo
             // 
             this.menuEditRedo.Name = "menuEditRedo";
             this.menuEditRedo.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditRedo.Text = "Redo(&R)";
-            this.menuEditRedo.MouseEnter += new System.EventHandler( this.menuEditRedo_MouseEnter );
-            this.menuEditRedo.Click += new System.EventHandler( this.commonEditRedo_Click );
             // 
             // toolStripMenuItem5
             // 
@@ -17068,16 +17401,12 @@ namespace Boare.Cadencii {
             this.menuEditCut.Name = "menuEditCut";
             this.menuEditCut.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditCut.Text = "Cut(&T)";
-            this.menuEditCut.MouseEnter += new System.EventHandler( this.menuEditCut_MouseEnter );
-            this.menuEditCut.Click += new System.EventHandler( this.commonEditCut_Click );
             // 
             // menuEditCopy
             // 
             this.menuEditCopy.Name = "menuEditCopy";
             this.menuEditCopy.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditCopy.Text = "Copy(&C)";
-            this.menuEditCopy.MouseEnter += new System.EventHandler( this.menuEditCopy_MouseEnter );
-            this.menuEditCopy.Click += new System.EventHandler( this.commonEditCopy_Click );
             // 
             // menuEditPaste
             // 
@@ -17085,16 +17414,12 @@ namespace Boare.Cadencii {
             this.menuEditPaste.ShortcutKeyDisplayString = "";
             this.menuEditPaste.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditPaste.Text = "Paste(&P)";
-            this.menuEditPaste.MouseEnter += new System.EventHandler( this.menuEditPaste_MouseEnter );
-            this.menuEditPaste.Click += new System.EventHandler( this.commonEditPaste_Click );
             // 
             // menuEditDelete
             // 
             this.menuEditDelete.Name = "menuEditDelete";
             this.menuEditDelete.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditDelete.Text = "Delete(&D)";
-            this.menuEditDelete.MouseEnter += new System.EventHandler( this.menuEditDelete_MouseEnter );
-            this.menuEditDelete.Click += new System.EventHandler( this.menuEditDelete_Click );
             // 
             // toolStripMenuItem19
             // 
@@ -17106,8 +17431,6 @@ namespace Boare.Cadencii {
             this.menuEditAutoNormalizeMode.Name = "menuEditAutoNormalizeMode";
             this.menuEditAutoNormalizeMode.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditAutoNormalizeMode.Text = "Auto Normalize Mode(&N)";
-            this.menuEditAutoNormalizeMode.MouseEnter += new System.EventHandler( this.menuEditAutoNormalizeMode_MouseEnter );
-            this.menuEditAutoNormalizeMode.Click += new System.EventHandler( this.menuEditAutoNormalizeMode_Click );
             // 
             // toolStripMenuItem20
             // 
@@ -17119,16 +17442,12 @@ namespace Boare.Cadencii {
             this.menuEditSelectAll.Name = "menuEditSelectAll";
             this.menuEditSelectAll.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditSelectAll.Text = "Select All(&A)";
-            this.menuEditSelectAll.MouseEnter += new System.EventHandler( this.menuEditSelectAll_MouseEnter );
-            this.menuEditSelectAll.Click += new System.EventHandler( this.menuEditSelectAll_Click );
             // 
             // menuEditSelectAllEvents
             // 
             this.menuEditSelectAllEvents.Name = "menuEditSelectAllEvents";
             this.menuEditSelectAllEvents.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditSelectAllEvents.Text = "Select All Events(&E)";
-            this.menuEditSelectAllEvents.MouseEnter += new System.EventHandler( this.menuEditSelectAllEvents_MouseEnter );
-            this.menuEditSelectAllEvents.Click += new System.EventHandler( this.menuEditSelectAllEvents_Click );
             // 
             // menuVisual
             // 
@@ -17161,8 +17480,6 @@ namespace Boare.Cadencii {
             this.menuVisualControlTrack.Name = "menuVisualControlTrack";
             this.menuVisualControlTrack.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualControlTrack.Text = "Control Track(&C)";
-            this.menuVisualControlTrack.CheckedChanged += new System.EventHandler( this.menuVisualControlTrack_CheckedChanged );
-            this.menuVisualControlTrack.MouseEnter += new System.EventHandler( this.menuVisualControlTrack_MouseEnter );
             // 
             // menuVisualMixer
             // 
@@ -17170,8 +17487,6 @@ namespace Boare.Cadencii {
             this.menuVisualMixer.Name = "menuVisualMixer";
             this.menuVisualMixer.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualMixer.Text = "Mixer(&X)";
-            this.menuVisualMixer.MouseEnter += new System.EventHandler( this.menuVisualMixer_MouseEnter );
-            this.menuVisualMixer.Click += new System.EventHandler( this.menuVisualMixer_Click );
             // 
             // menuVisualWaveform
             // 
@@ -17179,8 +17494,6 @@ namespace Boare.Cadencii {
             this.menuVisualWaveform.Name = "menuVisualWaveform";
             this.menuVisualWaveform.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualWaveform.Text = "Waveform(&W)";
-            this.menuVisualWaveform.CheckedChanged += new System.EventHandler( this.menuVisualWaveform_CheckedChanged );
-            this.menuVisualWaveform.MouseEnter += new System.EventHandler( this.menuVisualWaveform_MouseEnter );
             // 
             // menuVisualProperty
             // 
@@ -17188,8 +17501,6 @@ namespace Boare.Cadencii {
             this.menuVisualProperty.Name = "menuVisualProperty";
             this.menuVisualProperty.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualProperty.Text = "Property Window(&C)";
-            this.menuVisualProperty.MouseEnter += new System.EventHandler( this.menuVisualProperty_MouseEnter );
-            this.menuVisualProperty.Click += new System.EventHandler( this.menuVisualProperty_Click );
             // 
             // menuVisualOverview
             // 
@@ -17210,8 +17521,6 @@ namespace Boare.Cadencii {
             this.menuVisualGridline.Name = "menuVisualGridline";
             this.menuVisualGridline.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualGridline.Text = "Grid Line(&G)";
-            this.menuVisualGridline.CheckedChanged += new System.EventHandler( this.menuVisualGridline_CheckedChanged );
-            this.menuVisualGridline.MouseEnter += new System.EventHandler( this.menuVisualGridline_MouseEnter );
             // 
             // toolStripMenuItem2
             // 
@@ -17224,8 +17533,6 @@ namespace Boare.Cadencii {
             this.menuVisualStartMarker.Name = "menuVisualStartMarker";
             this.menuVisualStartMarker.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualStartMarker.Text = "Start Marker(&S)";
-            this.menuVisualStartMarker.MouseEnter += new System.EventHandler( this.menuVisualStartMarker_MouseEnter );
-            this.menuVisualStartMarker.Click += new System.EventHandler( this.handleStartMarker_Click );
             // 
             // menuVisualEndMarker
             // 
@@ -17233,8 +17540,6 @@ namespace Boare.Cadencii {
             this.menuVisualEndMarker.Name = "menuVisualEndMarker";
             this.menuVisualEndMarker.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualEndMarker.Text = "End Marker(&E)";
-            this.menuVisualEndMarker.MouseEnter += new System.EventHandler( this.menuVisualEndMarker_MouseEnter );
-            this.menuVisualEndMarker.Click += new System.EventHandler( this.handleEndMarker_Click );
             // 
             // toolStripMenuItem3
             // 
@@ -17250,8 +17555,6 @@ namespace Boare.Cadencii {
             this.menuVisualLyrics.Name = "menuVisualLyrics";
             this.menuVisualLyrics.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualLyrics.Text = "Lyric/Phoneme(&L)";
-            this.menuVisualLyrics.CheckedChanged += new System.EventHandler( this.menuVisualLyrics_CheckedChanged );
-            this.menuVisualLyrics.MouseEnter += new System.EventHandler( this.menuVisualLyrics_MouseEnter );
             // 
             // menuVisualNoteProperty
             // 
@@ -17262,8 +17565,6 @@ namespace Boare.Cadencii {
             this.menuVisualNoteProperty.Name = "menuVisualNoteProperty";
             this.menuVisualNoteProperty.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualNoteProperty.Text = "Note Expression/Vibrato(&N)";
-            this.menuVisualNoteProperty.CheckedChanged += new System.EventHandler( this.menuVisualNoteProperty_CheckedChanged );
-            this.menuVisualNoteProperty.MouseEnter += new System.EventHandler( this.menuVisualNoteProperty_MouseEnter );
             // 
             // menuVisualPitchLine
             // 
@@ -17271,8 +17572,6 @@ namespace Boare.Cadencii {
             this.menuVisualPitchLine.Name = "menuVisualPitchLine";
             this.menuVisualPitchLine.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualPitchLine.Text = "Pitch Line(&P)";
-            this.menuVisualPitchLine.CheckedChanged += new System.EventHandler( this.menuVisualPitchLine_CheckedChanged );
-            this.menuVisualPitchLine.MouseEnter += new System.EventHandler( this.menuVisualPitchLine_MouseEnter );
             // 
             // menuJob
             // 
@@ -17289,31 +17588,24 @@ namespace Boare.Cadencii {
             this.menuJob.Name = "menuJob";
             this.menuJob.Size = new System.Drawing.Size( 51, 20 );
             this.menuJob.Text = "Job(&J)";
-            this.menuJob.DropDownOpening += new System.EventHandler( this.menuJob_DropDownOpening );
             // 
             // menuJobNormalize
             // 
             this.menuJobNormalize.Name = "menuJobNormalize";
             this.menuJobNormalize.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobNormalize.Text = "Normalize Notes(&N)";
-            this.menuJobNormalize.MouseEnter += new System.EventHandler( this.menuJobNormalize_MouseEnter );
-            this.menuJobNormalize.Click += new System.EventHandler( this.menuJobNormalize_Click );
             // 
             // menuJobInsertBar
             // 
             this.menuJobInsertBar.Name = "menuJobInsertBar";
             this.menuJobInsertBar.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobInsertBar.Text = "Insert Bars(&I)";
-            this.menuJobInsertBar.MouseEnter += new System.EventHandler( this.menuJobInsertBar_MouseEnter );
-            this.menuJobInsertBar.Click += new System.EventHandler( this.menuJobInsertBar_Click );
             // 
             // menuJobDeleteBar
             // 
             this.menuJobDeleteBar.Name = "menuJobDeleteBar";
             this.menuJobDeleteBar.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobDeleteBar.Text = "Delete Bars(&D)";
-            this.menuJobDeleteBar.MouseEnter += new System.EventHandler( this.menuJobDeleteBar_MouseEnter );
-            this.menuJobDeleteBar.Click += new System.EventHandler( this.menuJobDeleteBar_Click );
             // 
             // menuJobRandomize
             // 
@@ -17321,23 +17613,18 @@ namespace Boare.Cadencii {
             this.menuJobRandomize.Name = "menuJobRandomize";
             this.menuJobRandomize.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobRandomize.Text = "Randomize(&R)";
-            this.menuJobRandomize.MouseEnter += new System.EventHandler( this.menuJobRandomize_MouseEnter );
             // 
             // menuJobConnect
             // 
             this.menuJobConnect.Name = "menuJobConnect";
             this.menuJobConnect.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobConnect.Text = "Connect Notes(&C)";
-            this.menuJobConnect.MouseEnter += new System.EventHandler( this.menuJobConnect_MouseEnter );
-            this.menuJobConnect.Click += new System.EventHandler( this.menuJobConnect_Click );
             // 
             // menuJobLyric
             // 
             this.menuJobLyric.Name = "menuJobLyric";
             this.menuJobLyric.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobLyric.Text = "Insert Lyrics(&L)";
-            this.menuJobLyric.MouseEnter += new System.EventHandler( this.menuJobLyric_MouseEnter );
-            this.menuJobLyric.Click += new System.EventHandler( this.menuJobLyric_Click );
             // 
             // menuJobRewire
             // 
@@ -17345,15 +17632,12 @@ namespace Boare.Cadencii {
             this.menuJobRewire.Name = "menuJobRewire";
             this.menuJobRewire.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobRewire.Text = "Import ReWire Host Tempo(&T)";
-            this.menuJobRewire.MouseEnter += new System.EventHandler( this.menuJobRewire_MouseEnter );
             // 
             // menuJobRealTime
             // 
             this.menuJobRealTime.Name = "menuJobRealTime";
             this.menuJobRealTime.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobRealTime.Text = "Start Realtime Input";
-            this.menuJobRealTime.MouseEnter += new System.EventHandler( this.menuJobRealTime_MouseEnter );
-            this.menuJobRealTime.Click += new System.EventHandler( this.menuJobRealTime_Click );
             // 
             // menuJobReloadVsti
             // 
@@ -17361,8 +17645,6 @@ namespace Boare.Cadencii {
             this.menuJobReloadVsti.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobReloadVsti.Text = "Reload VSTi(&R)";
             this.menuJobReloadVsti.Visible = false;
-            this.menuJobReloadVsti.MouseEnter += new System.EventHandler( this.menuJobReloadVsti_MouseEnter );
-            this.menuJobReloadVsti.Click += new System.EventHandler( this.menuJobReloadVsti_Click );
             // 
             // menuTrack
             // 
@@ -17385,15 +17667,12 @@ namespace Boare.Cadencii {
             this.menuTrack.Name = "menuTrack";
             this.menuTrack.Size = new System.Drawing.Size( 61, 20 );
             this.menuTrack.Text = "Track(&T)";
-            this.menuTrack.DropDownOpening += new System.EventHandler( this.menuTrack_DropDownOpening );
             // 
             // menuTrackOn
             // 
             this.menuTrackOn.Name = "menuTrackOn";
             this.menuTrackOn.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackOn.Text = "Track On(&K)";
-            this.menuTrackOn.MouseEnter += new System.EventHandler( this.menuTrackOn_MouseEnter );
-            this.menuTrackOn.Click += new System.EventHandler( this.menuTrackOn_Click );
             // 
             // toolStripMenuItem21
             // 
@@ -17405,32 +17684,24 @@ namespace Boare.Cadencii {
             this.menuTrackAdd.Name = "menuTrackAdd";
             this.menuTrackAdd.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackAdd.Text = "Add Track(&A)";
-            this.menuTrackAdd.MouseEnter += new System.EventHandler( this.menuTrackAdd_MouseEnter );
-            this.menuTrackAdd.Click += new System.EventHandler( this.menuTrackAdd_Click );
             // 
             // menuTrackCopy
             // 
             this.menuTrackCopy.Name = "menuTrackCopy";
             this.menuTrackCopy.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackCopy.Text = "Copy Track(&C)";
-            this.menuTrackCopy.MouseEnter += new System.EventHandler( this.menuTrackCopy_MouseEnter );
-            this.menuTrackCopy.Click += new System.EventHandler( this.menuTrackCopy_Click );
             // 
             // menuTrackChangeName
             // 
             this.menuTrackChangeName.Name = "menuTrackChangeName";
             this.menuTrackChangeName.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackChangeName.Text = "Rename Track(&R)";
-            this.menuTrackChangeName.MouseEnter += new System.EventHandler( this.menuTrackChangeName_MouseEnter );
-            this.menuTrackChangeName.Click += new System.EventHandler( this.menuTrackChangeName_Click );
             // 
             // menuTrackDelete
             // 
             this.menuTrackDelete.Name = "menuTrackDelete";
             this.menuTrackDelete.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackDelete.Text = "Delete Track(&D)";
-            this.menuTrackDelete.MouseEnter += new System.EventHandler( this.menuTrackDelete_MouseEnter );
-            this.menuTrackDelete.Click += new System.EventHandler( this.menuTrackDelete_Click );
             // 
             // toolStripMenuItem22
             // 
@@ -17442,8 +17713,6 @@ namespace Boare.Cadencii {
             this.menuTrackRenderCurrent.Name = "menuTrackRenderCurrent";
             this.menuTrackRenderCurrent.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderCurrent.Text = "Render Current Track(&T)";
-            this.menuTrackRenderCurrent.MouseEnter += new System.EventHandler( this.menuTrackRenderCurrent_MouseEnter );
-            this.menuTrackRenderCurrent.Click += new System.EventHandler( this.menuTrackRenderCurrent_Click );
             // 
             // menuTrackRenderAll
             // 
@@ -17451,8 +17720,6 @@ namespace Boare.Cadencii {
             this.menuTrackRenderAll.Name = "menuTrackRenderAll";
             this.menuTrackRenderAll.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderAll.Text = "Render All Tracks(&S)";
-            this.menuTrackRenderAll.MouseEnter += new System.EventHandler( this.menuTrackRenderAll_MouseEnter );
-            this.menuTrackRenderAll.Click += new System.EventHandler( this.commonTrackRenderAll_Click );
             // 
             // toolStripMenuItem23
             // 
@@ -17464,8 +17731,6 @@ namespace Boare.Cadencii {
             this.menuTrackOverlay.Name = "menuTrackOverlay";
             this.menuTrackOverlay.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackOverlay.Text = "Overlay(&O)";
-            this.menuTrackOverlay.MouseEnter += new System.EventHandler( this.menuTrackOverlay_MouseEnter );
-            this.menuTrackOverlay.Click += new System.EventHandler( this.menuTrackOverlay_Click );
             // 
             // menuTrackRenderer
             // 
@@ -17477,39 +17742,30 @@ namespace Boare.Cadencii {
             this.menuTrackRenderer.Name = "menuTrackRenderer";
             this.menuTrackRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderer.Text = "Renderer";
-            this.menuTrackRenderer.MouseEnter += new System.EventHandler( this.menuTrackRenderer_MouseEnter );
-            this.menuTrackRenderer.DropDownOpening += new System.EventHandler( this.menuTrackRenderer_DropDownOpening );
             // 
             // menuTrackRendererVOCALOID1
             // 
             this.menuTrackRendererVOCALOID1.Name = "menuTrackRendererVOCALOID1";
             this.menuTrackRendererVOCALOID1.Size = new System.Drawing.Size( 156, 22 );
             this.menuTrackRendererVOCALOID1.Text = "VOCALOID1";
-            this.menuTrackRendererVOCALOID1.MouseEnter += new System.EventHandler( this.menuTrackRendererVOCALOID1_MouseEnter );
-            this.menuTrackRendererVOCALOID1.Click += new System.EventHandler( this.commonRendererVOCALOID1_Click );
             // 
             // menuTrackRendererVOCALOID2
             // 
             this.menuTrackRendererVOCALOID2.Name = "menuTrackRendererVOCALOID2";
             this.menuTrackRendererVOCALOID2.Size = new System.Drawing.Size( 156, 22 );
             this.menuTrackRendererVOCALOID2.Text = "VOCALOID2";
-            this.menuTrackRendererVOCALOID2.MouseEnter += new System.EventHandler( this.menuTrackRendererVOCALOID2_MouseEnter );
-            this.menuTrackRendererVOCALOID2.Click += new System.EventHandler( this.commonRendererVOCALOID2_Click );
             // 
             // menuTrackRendererUtau
             // 
             this.menuTrackRendererUtau.Name = "menuTrackRendererUtau";
             this.menuTrackRendererUtau.Size = new System.Drawing.Size( 156, 22 );
             this.menuTrackRendererUtau.Text = "UTAU";
-            this.menuTrackRendererUtau.MouseEnter += new System.EventHandler( this.menuTrackRendererUtau_MouseEnter );
-            this.menuTrackRendererUtau.Click += new System.EventHandler( this.commonRendererUtau_Click );
             // 
             // menuTrackRendererStraight
             // 
             this.menuTrackRendererStraight.Name = "menuTrackRendererStraight";
             this.menuTrackRendererStraight.Size = new System.Drawing.Size( 156, 22 );
             this.menuTrackRendererStraight.Text = "Straight X UTAU";
-            this.menuTrackRendererStraight.Click += new System.EventHandler( this.commonRendererStraight_Click );
             // 
             // toolStripMenuItem4
             // 
@@ -17527,7 +17783,6 @@ namespace Boare.Cadencii {
             this.menuTrackManager.Name = "menuTrackManager";
             this.menuTrackManager.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackManager.Text = "Track Manager(&M)";
-            this.menuTrackManager.Click += new System.EventHandler( this.menuTrackManager_Click );
             // 
             // menuLyric
             // 
@@ -17545,14 +17800,12 @@ namespace Boare.Cadencii {
             this.menuLyricExpressionProperty.Name = "menuLyricExpressionProperty";
             this.menuLyricExpressionProperty.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricExpressionProperty.Text = "Note Expression Property(&E)";
-            this.menuLyricExpressionProperty.Click += new System.EventHandler( this.menuLyricExpressionProperty_Click );
             // 
             // menuLyricVibratoProperty
             // 
             this.menuLyricVibratoProperty.Name = "menuLyricVibratoProperty";
             this.menuLyricVibratoProperty.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricVibratoProperty.Text = "Note Vibrato Property(&V)";
-            this.menuLyricVibratoProperty.Click += new System.EventHandler( this.menuLyricVibratoProperty_Click );
             // 
             // menuLyricSymbol
             // 
@@ -17566,7 +17819,6 @@ namespace Boare.Cadencii {
             this.menuLyricDictionary.Name = "menuLyricDictionary";
             this.menuLyricDictionary.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricDictionary.Text = "User Word Dictionary(&C)";
-            this.menuLyricDictionary.Click += new System.EventHandler( this.menuLyricDictionary_Click );
             // 
             // menuScript
             // 
@@ -17581,7 +17833,6 @@ namespace Boare.Cadencii {
             this.menuScriptUpdate.Name = "menuScriptUpdate";
             this.menuScriptUpdate.Size = new System.Drawing.Size( 179, 22 );
             this.menuScriptUpdate.Text = "Update Script List(&U)";
-            this.menuScriptUpdate.Click += new System.EventHandler( this.menuScriptUpdate_Click );
             // 
             // menuSetting
             // 
@@ -17602,14 +17853,12 @@ namespace Boare.Cadencii {
             this.menuSetting.Name = "menuSetting";
             this.menuSetting.Size = new System.Drawing.Size( 68, 20 );
             this.menuSetting.Text = "Setting(&S)";
-            this.menuSetting.DropDownOpening += new System.EventHandler( this.menuSetting_DropDownOpening );
             // 
             // menuSettingPreference
             // 
             this.menuSettingPreference.Name = "menuSettingPreference";
             this.menuSettingPreference.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingPreference.Text = "Preference(&P)";
-            this.menuSettingPreference.Click += new System.EventHandler( this.menuSettingPreference_Click );
             // 
             // menuSettingGameControler
             // 
@@ -17626,21 +17875,18 @@ namespace Boare.Cadencii {
             this.menuSettingGameControlerSetting.Name = "menuSettingGameControlerSetting";
             this.menuSettingGameControlerSetting.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerSetting.Text = "Setting(&S)";
-            this.menuSettingGameControlerSetting.Click += new System.EventHandler( this.menuSettingGameControlerSetting_Click );
             // 
             // menuSettingGameControlerLoad
             // 
             this.menuSettingGameControlerLoad.Name = "menuSettingGameControlerLoad";
             this.menuSettingGameControlerLoad.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerLoad.Text = "Load(&L)";
-            this.menuSettingGameControlerLoad.Click += new System.EventHandler( this.menuSettingGameControlerLoad_Click );
             // 
             // menuSettingGameControlerRemove
             // 
             this.menuSettingGameControlerRemove.Name = "menuSettingGameControlerRemove";
             this.menuSettingGameControlerRemove.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerRemove.Text = "Remove(&R)";
-            this.menuSettingGameControlerRemove.Click += new System.EventHandler( this.menuSettingGameControlerRemove_Click );
             // 
             // menuSettingPaletteTool
             // 
@@ -17653,21 +17899,18 @@ namespace Boare.Cadencii {
             this.menuSettingShortcut.Name = "menuSettingShortcut";
             this.menuSettingShortcut.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingShortcut.Text = "Shortcut Key(&S)";
-            this.menuSettingShortcut.Click += new System.EventHandler( this.menuSettingShortcut_Click );
             // 
             // menuSettingMidi
             // 
             this.menuSettingMidi.Name = "menuSettingMidi";
             this.menuSettingMidi.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingMidi.Text = "MIDI(&M)";
-            this.menuSettingMidi.Click += new System.EventHandler( this.menuSettingMidi_Click );
             // 
             // menuSettingUtauVoiceDB
             // 
             this.menuSettingUtauVoiceDB.Name = "menuSettingUtauVoiceDB";
             this.menuSettingUtauVoiceDB.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingUtauVoiceDB.Text = "UTAU Voice DB(&U)";
-            this.menuSettingUtauVoiceDB.Click += new System.EventHandler( this.menuSettingUtauVoiceDB_Click );
             // 
             // toolStripMenuItem6
             // 
@@ -17679,7 +17922,6 @@ namespace Boare.Cadencii {
             this.menuSettingDefaultSingerStyle.Name = "menuSettingDefaultSingerStyle";
             this.menuSettingDefaultSingerStyle.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingDefaultSingerStyle.Text = "Singing Style Defaults(&D)";
-            this.menuSettingDefaultSingerStyle.Click += new System.EventHandler( this.menuSettingDefaultSingerStyle_Click );
             // 
             // toolStripMenuItem7
             // 
@@ -17707,49 +17949,42 @@ namespace Boare.Cadencii {
             this.menuSettingPositionQuantize04.Name = "menuSettingPositionQuantize04";
             this.menuSettingPositionQuantize04.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize04.Text = "1/4";
-            this.menuSettingPositionQuantize04.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // menuSettingPositionQuantize08
             // 
             this.menuSettingPositionQuantize08.Name = "menuSettingPositionQuantize08";
             this.menuSettingPositionQuantize08.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize08.Text = "1/8";
-            this.menuSettingPositionQuantize08.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // menuSettingPositionQuantize16
             // 
             this.menuSettingPositionQuantize16.Name = "menuSettingPositionQuantize16";
             this.menuSettingPositionQuantize16.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize16.Text = "1/16";
-            this.menuSettingPositionQuantize16.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // menuSettingPositionQuantize32
             // 
             this.menuSettingPositionQuantize32.Name = "menuSettingPositionQuantize32";
             this.menuSettingPositionQuantize32.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize32.Text = "1/32";
-            this.menuSettingPositionQuantize32.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // menuSettingPositionQuantize64
             // 
             this.menuSettingPositionQuantize64.Name = "menuSettingPositionQuantize64";
             this.menuSettingPositionQuantize64.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize64.Text = "1/64";
-            this.menuSettingPositionQuantize64.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // menuSettingPositionQuantize128
             // 
             this.menuSettingPositionQuantize128.Name = "menuSettingPositionQuantize128";
             this.menuSettingPositionQuantize128.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize128.Text = "1/128";
-            this.menuSettingPositionQuantize128.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // menuSettingPositionQuantizeOff
             // 
             this.menuSettingPositionQuantizeOff.Name = "menuSettingPositionQuantizeOff";
             this.menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantizeOff.Text = "Off";
-            this.menuSettingPositionQuantizeOff.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // toolStripMenuItem9
             // 
@@ -17761,7 +17996,6 @@ namespace Boare.Cadencii {
             this.menuSettingPositionQuantizeTriplet.Name = "menuSettingPositionQuantizeTriplet";
             this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantizeTriplet.Text = "Triplet";
-            this.menuSettingPositionQuantizeTriplet.Click += new System.EventHandler( this.h_positionQuantizeTriplet );
             // 
             // menuSettingLengthQuantize
             // 
@@ -17784,49 +18018,42 @@ namespace Boare.Cadencii {
             this.menuSettingLengthQuantize04.Name = "menuSettingLengthQuantize04";
             this.menuSettingLengthQuantize04.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize04.Text = "1/4";
-            this.menuSettingLengthQuantize04.Click += new System.EventHandler( this.h_lengthQuantize04 );
             // 
             // menuSettingLengthQuantize08
             // 
             this.menuSettingLengthQuantize08.Name = "menuSettingLengthQuantize08";
             this.menuSettingLengthQuantize08.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize08.Text = "1/8";
-            this.menuSettingLengthQuantize08.Click += new System.EventHandler( this.h_lengthQuantize08 );
             // 
             // menuSettingLengthQuantize16
             // 
             this.menuSettingLengthQuantize16.Name = "menuSettingLengthQuantize16";
             this.menuSettingLengthQuantize16.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize16.Text = "1/16";
-            this.menuSettingLengthQuantize16.Click += new System.EventHandler( this.h_lengthQuantize16 );
             // 
             // menuSettingLengthQuantize32
             // 
             this.menuSettingLengthQuantize32.Name = "menuSettingLengthQuantize32";
             this.menuSettingLengthQuantize32.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize32.Text = "1/32";
-            this.menuSettingLengthQuantize32.Click += new System.EventHandler( this.h_lengthQuantize32 );
             // 
             // menuSettingLengthQuantize64
             // 
             this.menuSettingLengthQuantize64.Name = "menuSettingLengthQuantize64";
             this.menuSettingLengthQuantize64.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize64.Text = "1/64";
-            this.menuSettingLengthQuantize64.Click += new System.EventHandler( this.h_lengthQuantize64 );
             // 
             // menuSettingLengthQuantize128
             // 
             this.menuSettingLengthQuantize128.Name = "menuSettingLengthQuantize128";
             this.menuSettingLengthQuantize128.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize128.Text = "1/128";
-            this.menuSettingLengthQuantize128.Click += new System.EventHandler( this.h_lengthQuantize128 );
             // 
             // menuSettingLengthQuantizeOff
             // 
             this.menuSettingLengthQuantizeOff.Name = "menuSettingLengthQuantizeOff";
             this.menuSettingLengthQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantizeOff.Text = "Off";
-            this.menuSettingLengthQuantizeOff.Click += new System.EventHandler( this.h_lengthQuantizeOff );
             // 
             // toolStripSeparator1
             // 
@@ -17838,7 +18065,6 @@ namespace Boare.Cadencii {
             this.menuSettingLengthQuantizeTriplet.Name = "menuSettingLengthQuantizeTriplet";
             this.menuSettingLengthQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantizeTriplet.Text = "Triplet";
-            this.menuSettingLengthQuantizeTriplet.Click += new System.EventHandler( this.h_lengthQuantizeTriplet );
             // 
             // toolStripMenuItem8
             // 
@@ -17866,7 +18092,6 @@ namespace Boare.Cadencii {
             this.menuHelpAbout.Name = "menuHelpAbout";
             this.menuHelpAbout.Size = new System.Drawing.Size( 164, 22 );
             this.menuHelpAbout.Text = "About Cadencii(&A)";
-            this.menuHelpAbout.Click += new System.EventHandler( this.menuHelpAbout_Click );
             // 
             // menuHelpDebug
             // 
@@ -17874,7 +18099,6 @@ namespace Boare.Cadencii {
             this.menuHelpDebug.Size = new System.Drawing.Size( 164, 22 );
             this.menuHelpDebug.Text = "Debug";
             this.menuHelpDebug.Visible = false;
-            this.menuHelpDebug.Click += new System.EventHandler( this.menuHelpDebug_Click );
             // 
             // menuHidden
             // 
@@ -17901,7 +18125,6 @@ namespace Boare.Cadencii {
             this.menuHiddenEditLyric.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenEditLyric.Text = "Start Lyric Input";
             this.menuHiddenEditLyric.Visible = false;
-            this.menuHiddenEditLyric.Click += new System.EventHandler( this.menuHiddenEditLyric_Click );
             // 
             // menuHiddenEditFlipToolPointerPencil
             // 
@@ -17910,7 +18133,6 @@ namespace Boare.Cadencii {
             this.menuHiddenEditFlipToolPointerPencil.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenEditFlipToolPointerPencil.Text = "Change Tool Pointer / Pencil";
             this.menuHiddenEditFlipToolPointerPencil.Visible = false;
-            this.menuHiddenEditFlipToolPointerPencil.Click += new System.EventHandler( this.menuHiddenEditFlipToolPointerPencil_Click );
             // 
             // menuHiddenEditFlipToolPointerEraser
             // 
@@ -17919,7 +18141,6 @@ namespace Boare.Cadencii {
             this.menuHiddenEditFlipToolPointerEraser.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenEditFlipToolPointerEraser.Text = "Change Tool Pointer/ Eraser";
             this.menuHiddenEditFlipToolPointerEraser.Visible = false;
-            this.menuHiddenEditFlipToolPointerEraser.Click += new System.EventHandler( this.menuHiddenEditFlipToolPointerEraser_Click );
             // 
             // menuHiddenVisualForwardParameter
             // 
@@ -17929,7 +18150,6 @@ namespace Boare.Cadencii {
             this.menuHiddenVisualForwardParameter.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenVisualForwardParameter.Text = "Next Control Curve";
             this.menuHiddenVisualForwardParameter.Visible = false;
-            this.menuHiddenVisualForwardParameter.Click += new System.EventHandler( this.menuHiddenVisualForwardParameter_Click );
             // 
             // menuHiddenVisualBackwardParameter
             // 
@@ -17939,7 +18159,6 @@ namespace Boare.Cadencii {
             this.menuHiddenVisualBackwardParameter.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenVisualBackwardParameter.Text = "Previous Control Curve";
             this.menuHiddenVisualBackwardParameter.Visible = false;
-            this.menuHiddenVisualBackwardParameter.Click += new System.EventHandler( this.menuHiddenVisualBackwardParameter_Click );
             // 
             // menuHiddenTrackNext
             // 
@@ -17948,7 +18167,6 @@ namespace Boare.Cadencii {
             this.menuHiddenTrackNext.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenTrackNext.Text = "Next Track";
             this.menuHiddenTrackNext.Visible = false;
-            this.menuHiddenTrackNext.Click += new System.EventHandler( this.menuHiddenTrackNext_Click );
             // 
             // menuHiddenTrackBack
             // 
@@ -17957,28 +18175,24 @@ namespace Boare.Cadencii {
             this.menuHiddenTrackBack.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenTrackBack.Text = "Previous Track";
             this.menuHiddenTrackBack.Visible = false;
-            this.menuHiddenTrackBack.Click += new System.EventHandler( this.menuHiddenTrackBack_Click );
             // 
             // menuHiddenCopy
             // 
             this.menuHiddenCopy.Name = "menuHiddenCopy";
             this.menuHiddenCopy.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenCopy.Text = "Copy";
-            this.menuHiddenCopy.Click += new System.EventHandler( this.commonEditCopy_Click );
             // 
             // menuHiddenPaste
             // 
             this.menuHiddenPaste.Name = "menuHiddenPaste";
             this.menuHiddenPaste.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenPaste.Text = "Paste";
-            this.menuHiddenPaste.Click += new System.EventHandler( this.commonEditPaste_Click );
             // 
             // menuHiddenCut
             // 
             this.menuHiddenCut.Name = "menuHiddenCut";
             this.menuHiddenCut.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenCut.Text = "Cut";
-            this.menuHiddenCut.Click += new System.EventHandler( this.commonEditCut_Click );
             // 
             // cMenuPiano
             // 
@@ -18013,28 +18227,24 @@ namespace Boare.Cadencii {
             this.cMenuPiano.ShowCheckMargin = true;
             this.cMenuPiano.ShowImageMargin = false;
             this.cMenuPiano.Size = new System.Drawing.Size( 217, 480 );
-            this.cMenuPiano.Opening += new System.ComponentModel.CancelEventHandler( this.cMenuPiano_Opening );
             // 
             // cMenuPianoPointer
             // 
             this.cMenuPianoPointer.Name = "cMenuPianoPointer";
             this.cMenuPianoPointer.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPointer.Text = "Arrow(&A)";
-            this.cMenuPianoPointer.Click += new System.EventHandler( this.cMenuPianoPointer_Click );
             // 
             // cMenuPianoPencil
             // 
             this.cMenuPianoPencil.Name = "cMenuPianoPencil";
             this.cMenuPianoPencil.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPencil.Text = "Pencil(&W)";
-            this.cMenuPianoPencil.Click += new System.EventHandler( this.cMenuPianoPencil_Click );
             // 
             // cMenuPianoEraser
             // 
             this.cMenuPianoEraser.Name = "cMenuPianoEraser";
             this.cMenuPianoEraser.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoEraser.Text = "Eraser(&E)";
-            this.cMenuPianoEraser.Click += new System.EventHandler( this.cMenuPianoEraser_Click );
             // 
             // cMenuPianoPaletteTool
             // 
@@ -18052,7 +18262,6 @@ namespace Boare.Cadencii {
             this.cMenuPianoCurve.Name = "cMenuPianoCurve";
             this.cMenuPianoCurve.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoCurve.Text = "Curve(&V)";
-            this.cMenuPianoCurve.Click += new System.EventHandler( this.cMenuPianoCurve_Click );
             // 
             // toolStripMenuItem13
             // 
@@ -18083,63 +18292,54 @@ namespace Boare.Cadencii {
             this.cMenuPianoFixed01.Name = "cMenuPianoFixed01";
             this.cMenuPianoFixed01.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed01.Text = "1/ 1 [1920]";
-            this.cMenuPianoFixed01.Click += new System.EventHandler( this.cMenuPianoFixed01_Click );
             // 
             // cMenuPianoFixed02
             // 
             this.cMenuPianoFixed02.Name = "cMenuPianoFixed02";
             this.cMenuPianoFixed02.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed02.Text = "1/ 2 [960]";
-            this.cMenuPianoFixed02.Click += new System.EventHandler( this.cMenuPianoFixed02_Click );
             // 
             // cMenuPianoFixed04
             // 
             this.cMenuPianoFixed04.Name = "cMenuPianoFixed04";
             this.cMenuPianoFixed04.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed04.Text = "1/ 4 [480]";
-            this.cMenuPianoFixed04.Click += new System.EventHandler( this.cMenuPianoFixed04_Click );
             // 
             // cMenuPianoFixed08
             // 
             this.cMenuPianoFixed08.Name = "cMenuPianoFixed08";
             this.cMenuPianoFixed08.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed08.Text = "1/ 8 [240]";
-            this.cMenuPianoFixed08.Click += new System.EventHandler( this.cMenuPianoFixed08_Click );
             // 
             // cMenuPianoFixed16
             // 
             this.cMenuPianoFixed16.Name = "cMenuPianoFixed16";
             this.cMenuPianoFixed16.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed16.Text = "1/16 [120]";
-            this.cMenuPianoFixed16.Click += new System.EventHandler( this.cMenuPianoFixed16_Click );
             // 
             // cMenuPianoFixed32
             // 
             this.cMenuPianoFixed32.Name = "cMenuPianoFixed32";
             this.cMenuPianoFixed32.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed32.Text = "1/32 [60]";
-            this.cMenuPianoFixed32.Click += new System.EventHandler( this.cMenuPianoFixed32_Click );
             // 
             // cMenuPianoFixed64
             // 
             this.cMenuPianoFixed64.Name = "cMenuPianoFixed64";
             this.cMenuPianoFixed64.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed64.Text = "1/64 [30]";
-            this.cMenuPianoFixed64.Click += new System.EventHandler( this.cMenuPianoFixed64_Click );
             // 
             // cMenuPianoFixed128
             // 
             this.cMenuPianoFixed128.Name = "cMenuPianoFixed128";
             this.cMenuPianoFixed128.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed128.Text = "1/128[15]";
-            this.cMenuPianoFixed128.Click += new System.EventHandler( this.cMenuPianoFixed128_Click );
             // 
             // cMenuPianoFixedOff
             // 
             this.cMenuPianoFixedOff.Name = "cMenuPianoFixedOff";
             this.cMenuPianoFixedOff.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixedOff.Text = "オフ";
-            this.cMenuPianoFixedOff.Click += new System.EventHandler( this.cMenuPianoFixedOff_Click );
             // 
             // toolStripMenuItem18
             // 
@@ -18151,14 +18351,12 @@ namespace Boare.Cadencii {
             this.cMenuPianoFixedTriplet.Name = "cMenuPianoFixedTriplet";
             this.cMenuPianoFixedTriplet.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixedTriplet.Text = "3連符";
-            this.cMenuPianoFixedTriplet.Click += new System.EventHandler( this.cMenuPianoFixedTriplet_Click );
             // 
             // cMenuPianoFixedDotted
             // 
             this.cMenuPianoFixedDotted.Name = "cMenuPianoFixedDotted";
             this.cMenuPianoFixedDotted.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixedDotted.Text = "付点";
-            this.cMenuPianoFixedDotted.Click += new System.EventHandler( this.cMenuPianoFixedDotted_Click );
             // 
             // cMenuPianoQuantize
             // 
@@ -18181,49 +18379,42 @@ namespace Boare.Cadencii {
             this.cMenuPianoQuantize04.Name = "cMenuPianoQuantize04";
             this.cMenuPianoQuantize04.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize04.Text = "1/4";
-            this.cMenuPianoQuantize04.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // cMenuPianoQuantize08
             // 
             this.cMenuPianoQuantize08.Name = "cMenuPianoQuantize08";
             this.cMenuPianoQuantize08.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize08.Text = "1/8";
-            this.cMenuPianoQuantize08.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // cMenuPianoQuantize16
             // 
             this.cMenuPianoQuantize16.Name = "cMenuPianoQuantize16";
             this.cMenuPianoQuantize16.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize16.Text = "1/16";
-            this.cMenuPianoQuantize16.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // cMenuPianoQuantize32
             // 
             this.cMenuPianoQuantize32.Name = "cMenuPianoQuantize32";
             this.cMenuPianoQuantize32.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize32.Text = "1/32";
-            this.cMenuPianoQuantize32.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // cMenuPianoQuantize64
             // 
             this.cMenuPianoQuantize64.Name = "cMenuPianoQuantize64";
             this.cMenuPianoQuantize64.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize64.Text = "1/64";
-            this.cMenuPianoQuantize64.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // cMenuPianoQuantize128
             // 
             this.cMenuPianoQuantize128.Name = "cMenuPianoQuantize128";
             this.cMenuPianoQuantize128.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize128.Text = "1/128";
-            this.cMenuPianoQuantize128.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // cMenuPianoQuantizeOff
             // 
             this.cMenuPianoQuantizeOff.Name = "cMenuPianoQuantizeOff";
             this.cMenuPianoQuantizeOff.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantizeOff.Text = "オフ";
-            this.cMenuPianoQuantizeOff.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // toolStripMenuItem26
             // 
@@ -18235,7 +18426,6 @@ namespace Boare.Cadencii {
             this.cMenuPianoQuantizeTriplet.Name = "cMenuPianoQuantizeTriplet";
             this.cMenuPianoQuantizeTriplet.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantizeTriplet.Text = "3連符";
-            this.cMenuPianoQuantizeTriplet.Click += new System.EventHandler( this.h_positionQuantizeTriplet );
             // 
             // cMenuPianoLength
             // 
@@ -18258,49 +18448,42 @@ namespace Boare.Cadencii {
             this.cMenuPianoLength04.Name = "cMenuPianoLength04";
             this.cMenuPianoLength04.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength04.Text = "1/4";
-            this.cMenuPianoLength04.Click += new System.EventHandler( this.h_lengthQuantize04 );
             // 
             // cMenuPianoLength08
             // 
             this.cMenuPianoLength08.Name = "cMenuPianoLength08";
             this.cMenuPianoLength08.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength08.Text = "1/8";
-            this.cMenuPianoLength08.Click += new System.EventHandler( this.h_lengthQuantize08 );
             // 
             // cMenuPianoLength16
             // 
             this.cMenuPianoLength16.Name = "cMenuPianoLength16";
             this.cMenuPianoLength16.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength16.Text = "1/16";
-            this.cMenuPianoLength16.Click += new System.EventHandler( this.h_lengthQuantize16 );
             // 
             // cMenuPianoLength32
             // 
             this.cMenuPianoLength32.Name = "cMenuPianoLength32";
             this.cMenuPianoLength32.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength32.Text = "1/32";
-            this.cMenuPianoLength32.Click += new System.EventHandler( this.h_lengthQuantize32 );
             // 
             // cMenuPianoLength64
             // 
             this.cMenuPianoLength64.Name = "cMenuPianoLength64";
             this.cMenuPianoLength64.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength64.Text = "1/64";
-            this.cMenuPianoLength64.Click += new System.EventHandler( this.h_lengthQuantize64 );
             // 
             // cMenuPianoLength128
             // 
             this.cMenuPianoLength128.Name = "cMenuPianoLength128";
             this.cMenuPianoLength128.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength128.Text = "1/128";
-            this.cMenuPianoLength128.Click += new System.EventHandler( this.h_lengthQuantize128 );
             // 
             // cMenuPianoLengthOff
             // 
             this.cMenuPianoLengthOff.Name = "cMenuPianoLengthOff";
             this.cMenuPianoLengthOff.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLengthOff.Text = "オフ";
-            this.cMenuPianoLengthOff.Click += new System.EventHandler( this.h_lengthQuantizeOff );
             // 
             // toolStripMenuItem32
             // 
@@ -18312,14 +18495,12 @@ namespace Boare.Cadencii {
             this.cMenuPianoLengthTriplet.Name = "cMenuPianoLengthTriplet";
             this.cMenuPianoLengthTriplet.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLengthTriplet.Text = "3連符";
-            this.cMenuPianoLengthTriplet.Click += new System.EventHandler( this.h_lengthQuantizeTriplet );
             // 
             // cMenuPianoGrid
             // 
             this.cMenuPianoGrid.Name = "cMenuPianoGrid";
             this.cMenuPianoGrid.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoGrid.Text = "Show/Hide Grid Line(&S)";
-            this.cMenuPianoGrid.Click += new System.EventHandler( this.cMenuPianoGrid_Click );
             // 
             // toolStripMenuItem14
             // 
@@ -18331,14 +18512,12 @@ namespace Boare.Cadencii {
             this.cMenuPianoUndo.Name = "cMenuPianoUndo";
             this.cMenuPianoUndo.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoUndo.Text = "Undo(&U)";
-            this.cMenuPianoUndo.Click += new System.EventHandler( this.cMenuPianoUndo_Click );
             // 
             // cMenuPianoRedo
             // 
             this.cMenuPianoRedo.Name = "cMenuPianoRedo";
             this.cMenuPianoRedo.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoRedo.Text = "Redo(&R)";
-            this.cMenuPianoRedo.Click += new System.EventHandler( this.cMenuPianoRedo_Click );
             // 
             // toolStripMenuItem15
             // 
@@ -18350,28 +18529,24 @@ namespace Boare.Cadencii {
             this.cMenuPianoCut.Name = "cMenuPianoCut";
             this.cMenuPianoCut.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoCut.Text = "Cut(&T)";
-            this.cMenuPianoCut.Click += new System.EventHandler( this.cMenuPianoCut_Click );
             // 
             // cMenuPianoCopy
             // 
             this.cMenuPianoCopy.Name = "cMenuPianoCopy";
             this.cMenuPianoCopy.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoCopy.Text = "Copy(&C)";
-            this.cMenuPianoCopy.Click += new System.EventHandler( this.cMenuPianoCopy_Click );
             // 
             // cMenuPianoPaste
             // 
             this.cMenuPianoPaste.Name = "cMenuPianoPaste";
             this.cMenuPianoPaste.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPaste.Text = "Paste(&P)";
-            this.cMenuPianoPaste.Click += new System.EventHandler( this.cMenuPianoPaste_Click );
             // 
             // cMenuPianoDelete
             // 
             this.cMenuPianoDelete.Name = "cMenuPianoDelete";
             this.cMenuPianoDelete.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoDelete.Text = "Delete(&D)";
-            this.cMenuPianoDelete.Click += new System.EventHandler( this.cMenuPianoDelete_Click );
             // 
             // toolStripMenuItem16
             // 
@@ -18383,14 +18558,12 @@ namespace Boare.Cadencii {
             this.cMenuPianoSelectAll.Name = "cMenuPianoSelectAll";
             this.cMenuPianoSelectAll.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoSelectAll.Text = "Select All(&A)";
-            this.cMenuPianoSelectAll.Click += new System.EventHandler( this.cMenuPianoSelectAll_Click );
             // 
             // cMenuPianoSelectAllEvents
             // 
             this.cMenuPianoSelectAllEvents.Name = "cMenuPianoSelectAllEvents";
             this.cMenuPianoSelectAllEvents.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoSelectAllEvents.Text = "Select All Events(&E)";
-            this.cMenuPianoSelectAllEvents.Click += new System.EventHandler( this.cMenuPianoSelectAllEvents_Click );
             // 
             // toolStripMenuItem17
             // 
@@ -18402,21 +18575,18 @@ namespace Boare.Cadencii {
             this.cMenuPianoImportLyric.Name = "cMenuPianoImportLyric";
             this.cMenuPianoImportLyric.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoImportLyric.Text = "Insert Lyrics(&L)";
-            this.cMenuPianoImportLyric.Click += new System.EventHandler( this.cMenuPianoImportLyric_Click );
             // 
             // cMenuPianoExpressionProperty
             // 
             this.cMenuPianoExpressionProperty.Name = "cMenuPianoExpressionProperty";
             this.cMenuPianoExpressionProperty.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoExpressionProperty.Text = "Note Expression Property(&P)";
-            this.cMenuPianoExpressionProperty.Click += new System.EventHandler( this.cMenuPianoProperty_Click );
             // 
             // cMenuPianoVibratoProperty
             // 
             this.cMenuPianoVibratoProperty.Name = "cMenuPianoVibratoProperty";
             this.cMenuPianoVibratoProperty.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoVibratoProperty.Text = "Note Vibrato Property";
-            this.cMenuPianoVibratoProperty.Click += new System.EventHandler( this.cMenuPianoVibratoProperty_Click );
             // 
             // cMenuTrackTab
             // 
@@ -18435,14 +18605,12 @@ namespace Boare.Cadencii {
             this.cMenuTrackTabRenderer} );
             this.cMenuTrackTab.Name = "cMenuTrackTab";
             this.cMenuTrackTab.Size = new System.Drawing.Size( 197, 220 );
-            this.cMenuTrackTab.Opening += new System.ComponentModel.CancelEventHandler( this.cMenuTrackTab_Opening );
             // 
             // cMenuTrackTabTrackOn
             // 
             this.cMenuTrackTabTrackOn.Name = "cMenuTrackTabTrackOn";
             this.cMenuTrackTabTrackOn.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabTrackOn.Text = "Track On(&K)";
-            this.cMenuTrackTabTrackOn.Click += new System.EventHandler( this.cMenuTrackTabTrackOn_Click );
             // 
             // toolStripMenuItem24
             // 
@@ -18454,28 +18622,24 @@ namespace Boare.Cadencii {
             this.cMenuTrackTabAdd.Name = "cMenuTrackTabAdd";
             this.cMenuTrackTabAdd.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabAdd.Text = "Add Track(&A)";
-            this.cMenuTrackTabAdd.Click += new System.EventHandler( this.cMenuTrackTabAdd_Click );
             // 
             // cMenuTrackTabCopy
             // 
             this.cMenuTrackTabCopy.Name = "cMenuTrackTabCopy";
             this.cMenuTrackTabCopy.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabCopy.Text = "Copy Track(&C)";
-            this.cMenuTrackTabCopy.Click += new System.EventHandler( this.cMenuTrackTabCopy_Click );
             // 
             // cMenuTrackTabChangeName
             // 
             this.cMenuTrackTabChangeName.Name = "cMenuTrackTabChangeName";
             this.cMenuTrackTabChangeName.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabChangeName.Text = "Rename Track(&R)";
-            this.cMenuTrackTabChangeName.Click += new System.EventHandler( this.cMenuTrackTabChangeName_Click );
             // 
             // cMenuTrackTabDelete
             // 
             this.cMenuTrackTabDelete.Name = "cMenuTrackTabDelete";
             this.cMenuTrackTabDelete.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabDelete.Text = "Delete Track(&D)";
-            this.cMenuTrackTabDelete.Click += new System.EventHandler( this.cMenuTrackTabDelete_Click );
             // 
             // toolStripMenuItem25
             // 
@@ -18487,14 +18651,12 @@ namespace Boare.Cadencii {
             this.cMenuTrackTabRenderCurrent.Name = "cMenuTrackTabRenderCurrent";
             this.cMenuTrackTabRenderCurrent.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderCurrent.Text = "Render Current Track(&T)";
-            this.cMenuTrackTabRenderCurrent.Click += new System.EventHandler( this.cMenuTrackTabRenderCurrent_Click );
             // 
             // cMenuTrackTabRenderAll
             // 
             this.cMenuTrackTabRenderAll.Name = "cMenuTrackTabRenderAll";
             this.cMenuTrackTabRenderAll.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderAll.Text = "Render All Tracks(&S)";
-            this.cMenuTrackTabRenderAll.Click += new System.EventHandler( this.commonTrackRenderAll_Click );
             // 
             // toolStripMenuItem27
             // 
@@ -18506,7 +18668,6 @@ namespace Boare.Cadencii {
             this.cMenuTrackTabOverlay.Name = "cMenuTrackTabOverlay";
             this.cMenuTrackTabOverlay.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabOverlay.Text = "Overlay(&O)";
-            this.cMenuTrackTabOverlay.Click += new System.EventHandler( this.cMenuTrackTabOverlay_Click );
             // 
             // cMenuTrackTabRenderer
             // 
@@ -18518,35 +18679,30 @@ namespace Boare.Cadencii {
             this.cMenuTrackTabRenderer.Name = "cMenuTrackTabRenderer";
             this.cMenuTrackTabRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderer.Text = "Renderer";
-            this.cMenuTrackTabRenderer.DropDownOpening += new System.EventHandler( this.cMenuTrackTabRenderer_DropDownOpening );
             // 
             // cMenuTrackTabRendererVOCALOID1
             // 
             this.cMenuTrackTabRendererVOCALOID1.Name = "cMenuTrackTabRendererVOCALOID1";
             this.cMenuTrackTabRendererVOCALOID1.Size = new System.Drawing.Size( 160, 22 );
             this.cMenuTrackTabRendererVOCALOID1.Text = "VOCALOID1";
-            this.cMenuTrackTabRendererVOCALOID1.Click += new System.EventHandler( this.commonRendererVOCALOID1_Click );
             // 
             // cMenuTrackTabRendererVOCALOID2
             // 
             this.cMenuTrackTabRendererVOCALOID2.Name = "cMenuTrackTabRendererVOCALOID2";
             this.cMenuTrackTabRendererVOCALOID2.Size = new System.Drawing.Size( 160, 22 );
             this.cMenuTrackTabRendererVOCALOID2.Text = "VOCALOID2";
-            this.cMenuTrackTabRendererVOCALOID2.Click += new System.EventHandler( this.commonRendererVOCALOID2_Click );
             // 
             // cMenuTrackTabRendererUtau
             // 
             this.cMenuTrackTabRendererUtau.Name = "cMenuTrackTabRendererUtau";
             this.cMenuTrackTabRendererUtau.Size = new System.Drawing.Size( 160, 22 );
             this.cMenuTrackTabRendererUtau.Text = "UTAU";
-            this.cMenuTrackTabRendererUtau.Click += new System.EventHandler( this.commonRendererUtau_Click );
             // 
             // cMenuTrackTabRendererStraight
             // 
             this.cMenuTrackTabRendererStraight.Name = "cMenuTrackTabRendererStraight";
             this.cMenuTrackTabRendererStraight.Size = new System.Drawing.Size( 160, 22 );
             this.cMenuTrackTabRendererStraight.Text = "Straight X UTAU ";
-            this.cMenuTrackTabRendererStraight.Click += new System.EventHandler( this.commonRendererStraight_Click );
             // 
             // cMenuTrackSelector
             // 
@@ -18571,35 +18727,30 @@ namespace Boare.Cadencii {
             this.cMenuTrackSelectorSelectAll} );
             this.cMenuTrackSelector.Name = "cMenuTrackSelector";
             this.cMenuTrackSelector.Size = new System.Drawing.Size( 186, 336 );
-            this.cMenuTrackSelector.Opening += new System.ComponentModel.CancelEventHandler( this.cMenuTrackSelector_Opening );
             // 
             // cMenuTrackSelectorPointer
             // 
             this.cMenuTrackSelectorPointer.Name = "cMenuTrackSelectorPointer";
             this.cMenuTrackSelectorPointer.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPointer.Text = "Arrow(&A)";
-            this.cMenuTrackSelectorPointer.Click += new System.EventHandler( this.cMenuTrackSelectorPointer_Click );
             // 
             // cMenuTrackSelectorPencil
             // 
             this.cMenuTrackSelectorPencil.Name = "cMenuTrackSelectorPencil";
             this.cMenuTrackSelectorPencil.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPencil.Text = "Pencil(&W)";
-            this.cMenuTrackSelectorPencil.Click += new System.EventHandler( this.cMenuTrackSelectorPencil_Click );
             // 
             // cMenuTrackSelectorLine
             // 
             this.cMenuTrackSelectorLine.Name = "cMenuTrackSelectorLine";
             this.cMenuTrackSelectorLine.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorLine.Text = "Line(&L)";
-            this.cMenuTrackSelectorLine.Click += new System.EventHandler( this.cMenuTrackSelectorLine_Click );
             // 
             // cMenuTrackSelectorEraser
             // 
             this.cMenuTrackSelectorEraser.Name = "cMenuTrackSelectorEraser";
             this.cMenuTrackSelectorEraser.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorEraser.Text = "Eraser(&E)";
-            this.cMenuTrackSelectorEraser.Click += new System.EventHandler( this.cMenuTrackSelectorEraser_Click );
             // 
             // cMenuTrackSelectorPaletteTool
             // 
@@ -18617,7 +18768,6 @@ namespace Boare.Cadencii {
             this.cMenuTrackSelectorCurve.Name = "cMenuTrackSelectorCurve";
             this.cMenuTrackSelectorCurve.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorCurve.Text = "Curve(&V)";
-            this.cMenuTrackSelectorCurve.Click += new System.EventHandler( this.cMenuTrackSelectorCurve_Click );
             // 
             // toolStripMenuItem28
             // 
@@ -18629,14 +18779,12 @@ namespace Boare.Cadencii {
             this.cMenuTrackSelectorUndo.Name = "cMenuTrackSelectorUndo";
             this.cMenuTrackSelectorUndo.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorUndo.Text = "Undo(&U)";
-            this.cMenuTrackSelectorUndo.Click += new System.EventHandler( this.cMenuTrackSelectorUndo_Click );
             // 
             // cMenuTrackSelectorRedo
             // 
             this.cMenuTrackSelectorRedo.Name = "cMenuTrackSelectorRedo";
             this.cMenuTrackSelectorRedo.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorRedo.Text = "Redo(&R)";
-            this.cMenuTrackSelectorRedo.Click += new System.EventHandler( this.cMenuTrackSelectorRedo_Click );
             // 
             // toolStripMenuItem29
             // 
@@ -18648,35 +18796,30 @@ namespace Boare.Cadencii {
             this.cMenuTrackSelectorCut.Name = "cMenuTrackSelectorCut";
             this.cMenuTrackSelectorCut.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorCut.Text = "Cut(&T)";
-            this.cMenuTrackSelectorCut.Click += new System.EventHandler( this.cMenuTrackSelectorCut_Click );
             // 
             // cMenuTrackSelectorCopy
             // 
             this.cMenuTrackSelectorCopy.Name = "cMenuTrackSelectorCopy";
             this.cMenuTrackSelectorCopy.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorCopy.Text = "Copy(&C)";
-            this.cMenuTrackSelectorCopy.Click += new System.EventHandler( this.cMenuTrackSelectorCopy_Click );
             // 
             // cMenuTrackSelectorPaste
             // 
             this.cMenuTrackSelectorPaste.Name = "cMenuTrackSelectorPaste";
             this.cMenuTrackSelectorPaste.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPaste.Text = "Paste(&P)";
-            this.cMenuTrackSelectorPaste.Click += new System.EventHandler( this.cMenuTrackSelectorPaste_Click );
             // 
             // cMenuTrackSelectorDelete
             // 
             this.cMenuTrackSelectorDelete.Name = "cMenuTrackSelectorDelete";
             this.cMenuTrackSelectorDelete.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorDelete.Text = "Delete(&D)";
-            this.cMenuTrackSelectorDelete.Click += new System.EventHandler( this.cMenuTrackSelectorDelete_Click );
             // 
             // cMenuTrackSelectorDeleteBezier
             // 
             this.cMenuTrackSelectorDeleteBezier.Name = "cMenuTrackSelectorDeleteBezier";
             this.cMenuTrackSelectorDeleteBezier.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorDeleteBezier.Text = "Delete Bezier Point(&B)";
-            this.cMenuTrackSelectorDeleteBezier.Click += new System.EventHandler( this.cMenuTrackSelectorDeleteBezier_Click );
             // 
             // toolStripMenuItem31
             // 
@@ -18688,7 +18831,6 @@ namespace Boare.Cadencii {
             this.cMenuTrackSelectorSelectAll.Name = "cMenuTrackSelectorSelectAll";
             this.cMenuTrackSelectorSelectAll.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorSelectAll.Text = "Select All Events(&E)";
-            this.cMenuTrackSelectorSelectAll.Click += new System.EventHandler( this.cMenuTrackSelectorSelectAll_Click );
             // 
             // trackBar
             // 
@@ -18705,18 +18847,13 @@ namespace Boare.Cadencii {
             this.trackBar.TickFrequency = 100;
             this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar.Value = 17;
-            this.trackBar.ValueChanged += new System.EventHandler( this.trackBar_ValueChanged );
-            this.trackBar.MouseDown += new System.Windows.Forms.MouseEventHandler( this.trackBar_MouseDown );
-            this.trackBar.Enter += new System.EventHandler( this.trackBar_Enter );
             // 
             // bgWorkScreen
             // 
-            this.bgWorkScreen.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWorkScreen_DoWork );
             // 
             // timer
             // 
             this.timer.Interval = 200;
-            this.timer.Tick += new System.EventHandler( this.timer_Tick );
             // 
             // panel1
             // 
@@ -18746,9 +18883,6 @@ namespace Boare.Cadencii {
             this.pictKeyLengthSplitter.Size = new System.Drawing.Size( 16, 16 );
             this.pictKeyLengthSplitter.TabIndex = 20;
             this.pictKeyLengthSplitter.TabStop = false;
-            this.pictKeyLengthSplitter.MouseMove += new System.Windows.Forms.MouseEventHandler( this.pictKeyLengthSplitter_MouseMove );
-            this.pictKeyLengthSplitter.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictKeyLengthSplitter_MouseDown );
-            this.pictKeyLengthSplitter.MouseUp += new System.Windows.Forms.MouseEventHandler( this.pictKeyLengthSplitter_MouseUp );
             // 
             // panel3
             // 
@@ -18777,9 +18911,6 @@ namespace Boare.Cadencii {
             this.btnRight1.TabIndex = 24;
             this.btnRight1.Text = ">";
             this.btnRight1.UseVisualStyleBackColor = true;
-            this.btnRight1.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseDown );
-            this.btnRight1.MouseUp += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseUp );
-            this.btnRight1.MouseLeave += new EventHandler( this.overviewCommon_MouseLeave );
             // 
             // btnLeft2
             // 
@@ -18791,9 +18922,6 @@ namespace Boare.Cadencii {
             this.btnLeft2.TabIndex = 23;
             this.btnLeft2.Text = "<";
             this.btnLeft2.UseVisualStyleBackColor = true;
-            this.btnLeft2.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );
-            this.btnLeft2.MouseUp += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseUp );
-            this.btnLeft2.MouseLeave += new System.EventHandler( this.overviewCommon_MouseLeave );
             // 
             // btnZoom
             // 
@@ -18803,7 +18931,6 @@ namespace Boare.Cadencii {
             this.btnZoom.TabIndex = 22;
             this.btnZoom.Text = "+";
             this.btnZoom.UseVisualStyleBackColor = true;
-            this.btnZoom.Click += new System.EventHandler( this.btnZoom_Click );
             // 
             // btnMooz
             // 
@@ -18813,7 +18940,6 @@ namespace Boare.Cadencii {
             this.btnMooz.TabIndex = 21;
             this.btnMooz.Text = "-";
             this.btnMooz.UseVisualStyleBackColor = true;
-            this.btnMooz.Click += new System.EventHandler( this.btnMooz_Click );
             // 
             // btnLeft1
             // 
@@ -18826,9 +18952,6 @@ namespace Boare.Cadencii {
             this.btnLeft1.TabIndex = 20;
             this.btnLeft1.Text = "<";
             this.btnLeft1.UseVisualStyleBackColor = true;
-            this.btnLeft1.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );
-            this.btnLeft1.MouseUp += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseUp );
-            this.btnLeft1.MouseLeave += new System.EventHandler( this.overviewCommon_MouseLeave );
             // 
             // btnRight2
             // 
@@ -18841,9 +18964,6 @@ namespace Boare.Cadencii {
             this.btnRight2.TabIndex = 19;
             this.btnRight2.Text = ">";
             this.btnRight2.UseVisualStyleBackColor = true;
-            this.btnRight2.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseDown );
-            this.btnRight2.MouseUp += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseUp );
-            this.btnRight2.MouseLeave += new System.EventHandler( this.overviewCommon_MouseLeave );
             // 
             // pictOverview
             // 
@@ -18857,13 +18977,6 @@ namespace Boare.Cadencii {
             this.pictOverview.Size = new System.Drawing.Size( 337, 45 );
             this.pictOverview.TabIndex = 18;
             this.pictOverview.TabStop = false;
-            this.pictOverview.MouseMove += new System.Windows.Forms.MouseEventHandler( this.pictOverview_MouseMove );
-            this.pictOverview.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.pictOverview_MouseDoubleClick );
-            this.pictOverview.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictOverview_MouseDown );
-            this.pictOverview.Paint += new System.Windows.Forms.PaintEventHandler( this.pictOverview_Paint );
-            this.pictOverview.MouseUp += new System.Windows.Forms.MouseEventHandler( this.pictOverview_MouseUp );
-            this.pictOverview.BKeyUp += new System.Windows.Forms.KeyEventHandler( this.commonCaptureSpaceKeyUp );
-            this.pictOverview.BKeyDown += new System.Windows.Forms.KeyEventHandler( this.commonCaptureSpaceKeyDown );
             // 
             // vScroll
             // 
@@ -18879,9 +18992,6 @@ namespace Boare.Cadencii {
             this.vScroll.SmallChange = 1;
             this.vScroll.TabIndex = 17;
             this.vScroll.Value = 0;
-            this.vScroll.ValueChanged += new System.EventHandler( this.vScroll_ValueChanged );
-            this.vScroll.Resize += new System.EventHandler( this.vScroll_Resize );
-            this.vScroll.Enter += new System.EventHandler( this.vScroll_Enter );
             // 
             // hScroll
             // 
@@ -18897,9 +19007,6 @@ namespace Boare.Cadencii {
             this.hScroll.SmallChange = 1;
             this.hScroll.TabIndex = 16;
             this.hScroll.Value = 0;
-            this.hScroll.ValueChanged += new System.EventHandler( this.hScroll_ValueChanged );
-            this.hScroll.Resize += new System.EventHandler( this.hScroll_Resize );
-            this.hScroll.Enter += new System.EventHandler( this.hScroll_Enter );
             // 
             // picturePositionIndicator
             // 
@@ -18912,13 +19019,6 @@ namespace Boare.Cadencii {
             this.picturePositionIndicator.Size = new System.Drawing.Size( 421, 48 );
             this.picturePositionIndicator.TabIndex = 10;
             this.picturePositionIndicator.TabStop = false;
-            this.picturePositionIndicator.MouseLeave += new System.EventHandler( this.picturePositionIndicator_MouseLeave );
-            this.picturePositionIndicator.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.picturePositionIndicator_PreviewKeyDown );
-            this.picturePositionIndicator.MouseMove += new System.Windows.Forms.MouseEventHandler( this.picturePositionIndicator_MouseMove );
-            this.picturePositionIndicator.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.picturePositionIndicator_MouseDoubleClick );
-            this.picturePositionIndicator.MouseClick += new System.Windows.Forms.MouseEventHandler( this.picturePositionIndicator_MouseClick );
-            this.picturePositionIndicator.MouseDown += new System.Windows.Forms.MouseEventHandler( this.picturePositionIndicator_MouseDown );
-            this.picturePositionIndicator.Paint += new System.Windows.Forms.PaintEventHandler( this.picturePositionIndicator_Paint );
             // 
             // pictPianoRoll
             // 
@@ -18933,14 +19033,6 @@ namespace Boare.Cadencii {
             this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
             this.pictPianoRoll.TabIndex = 12;
             this.pictPianoRoll.TabStop = false;
-            this.pictPianoRoll.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.pictPianoRoll_PreviewKeyDown );
-            this.pictPianoRoll.BKeyUp += new System.Windows.Forms.KeyEventHandler( this.commonCaptureSpaceKeyUp );
-            this.pictPianoRoll.MouseMove += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseMove );
-            this.pictPianoRoll.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseDoubleClick );
-            this.pictPianoRoll.MouseClick += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseClick );
-            this.pictPianoRoll.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseDown );
-            this.pictPianoRoll.MouseUp += new System.Windows.Forms.MouseEventHandler( this.pictPianoRoll_MouseUp );
-            this.pictPianoRoll.BKeyDown += new System.Windows.Forms.KeyEventHandler( this.commonCaptureSpaceKeyDown );
             // 
             // pictureBox3
             // 
@@ -18952,7 +19044,6 @@ namespace Boare.Cadencii {
             this.pictureBox3.Size = new System.Drawing.Size( 49, 16 );
             this.pictureBox3.TabIndex = 8;
             this.pictureBox3.TabStop = false;
-            this.pictureBox3.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictureBox3_MouseDown );
             // 
             // pictureBox2
             // 
@@ -18964,7 +19055,6 @@ namespace Boare.Cadencii {
             this.pictureBox2.Size = new System.Drawing.Size( 16, 16 );
             this.pictureBox2.TabIndex = 5;
             this.pictureBox2.TabStop = false;
-            this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler( this.pictureBox2_MouseDown );
             // 
             // toolStripTool
             // 
@@ -18987,41 +19077,33 @@ namespace Boare.Cadencii {
             // 
             this.stripBtnPointer.Checked = true;
             this.stripBtnPointer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.stripBtnPointer.Image = global::Boare.Cadencii.Properties.Resources.arrow_135;
             this.stripBtnPointer.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.stripBtnPointer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnPointer.Name = "stripBtnPointer";
             this.stripBtnPointer.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
             this.stripBtnPointer.Size = new System.Drawing.Size( 61, 22 );
             this.stripBtnPointer.Text = "Pointer";
-            this.stripBtnPointer.Click += new System.EventHandler( this.stripBtnArrow_Click );
             // 
             // stripBtnPencil
             // 
-            this.stripBtnPencil.Image = global::Boare.Cadencii.Properties.Resources.pencil;
             this.stripBtnPencil.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnPencil.Name = "stripBtnPencil";
             this.stripBtnPencil.Size = new System.Drawing.Size( 56, 22 );
             this.stripBtnPencil.Text = "Pencil";
-            this.stripBtnPencil.Click += new System.EventHandler( this.stripBtnPencil_Click );
             // 
             // stripBtnLine
             // 
-            this.stripBtnLine.Image = global::Boare.Cadencii.Properties.Resources.layer_shape_line;
             this.stripBtnLine.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnLine.Name = "stripBtnLine";
             this.stripBtnLine.Size = new System.Drawing.Size( 46, 22 );
             this.stripBtnLine.Text = "Line";
-            this.stripBtnLine.Click += new System.EventHandler( this.stripBtnLine_Click );
             // 
             // stripBtnEraser
             // 
-            this.stripBtnEraser.Image = global::Boare.Cadencii.Properties.Resources.eraser;
             this.stripBtnEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnEraser.Name = "stripBtnEraser";
             this.stripBtnEraser.Size = new System.Drawing.Size( 58, 22 );
             this.stripBtnEraser.Text = "Eraser";
-            this.stripBtnEraser.Click += new System.EventHandler( this.stripBtnEraser_Click );
             // 
             // toolStripSeparator5
             // 
@@ -19031,21 +19113,17 @@ namespace Boare.Cadencii {
             // stripBtnGrid
             // 
             this.stripBtnGrid.CheckOnClick = true;
-            this.stripBtnGrid.Image = global::Boare.Cadencii.Properties.Resources.ruler_crop;
             this.stripBtnGrid.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnGrid.Name = "stripBtnGrid";
             this.stripBtnGrid.Size = new System.Drawing.Size( 46, 22 );
             this.stripBtnGrid.Text = "Grid";
-            this.stripBtnGrid.CheckedChanged += new System.EventHandler( this.stripBtnGrid_CheckedChanged );
             // 
             // stripBtnCurve
             // 
-            this.stripBtnCurve.Image = global::Boare.Cadencii.Properties.Resources.layer_shape_curve;
             this.stripBtnCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnCurve.Name = "stripBtnCurve";
             this.stripBtnCurve.Size = new System.Drawing.Size( 55, 22 );
             this.stripBtnCurve.Text = "Curve";
-            this.stripBtnCurve.Click += new System.EventHandler( this.stripBtnCurve_Click );
             // 
             // toolStripContainer
             // 
@@ -19080,7 +19158,6 @@ namespace Boare.Cadencii {
             this.toolStripContainer.TopToolStripPanel.Controls.Add( this.toolStripMeasure );
             this.toolStripContainer.TopToolStripPanel.Controls.Add( this.toolStripTool );
             this.toolStripContainer.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStripContainer.TopToolStripPanel.SizeChanged += new System.EventHandler( this.toolStripContainer_TopToolStripPanel_SizeChanged );
             // 
             // toolStripBottom
             // 
@@ -19178,7 +19255,6 @@ namespace Boare.Cadencii {
             // 
             // stripLblGameCtrlMode
             // 
-            this.stripLblGameCtrlMode.Image = global::Boare.Cadencii.Properties.Resources.slash;
             this.stripLblGameCtrlMode.Name = "stripLblGameCtrlMode";
             this.stripLblGameCtrlMode.Size = new System.Drawing.Size( 65, 20 );
             this.stripLblGameCtrlMode.Text = "Disabled";
@@ -19197,7 +19273,6 @@ namespace Boare.Cadencii {
             // 
             // stripLblMidiIn
             // 
-            this.stripLblMidiIn.Image = global::Boare.Cadencii.Properties.Resources.slash;
             this.stripLblMidiIn.Name = "stripLblMidiIn";
             this.stripLblMidiIn.Size = new System.Drawing.Size( 65, 20 );
             this.stripLblMidiIn.Text = "Disabled";
@@ -19220,35 +19295,30 @@ namespace Boare.Cadencii {
             this.stripDDBtnSpeed.Name = "stripDDBtnSpeed";
             this.stripDDBtnSpeed.Size = new System.Drawing.Size( 73, 22 );
             this.stripDDBtnSpeed.Text = "Speed 1.0x";
-            this.stripDDBtnSpeed.DropDownOpening += new System.EventHandler( this.stripDDBtnSpeed_DropDownOpening );
             // 
             // stripDDBtnSpeedTextbox
             // 
             this.stripDDBtnSpeedTextbox.Name = "stripDDBtnSpeedTextbox";
             this.stripDDBtnSpeedTextbox.Size = new System.Drawing.Size( 100, 19 );
             this.stripDDBtnSpeedTextbox.Text = "100";
-            this.stripDDBtnSpeedTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler( this.stripDDBtnSpeedTextbox_KeyDown );
             // 
             // stripDDBtnSpeed033
             // 
             this.stripDDBtnSpeed033.Name = "stripDDBtnSpeed033";
             this.stripDDBtnSpeed033.Size = new System.Drawing.Size( 160, 22 );
             this.stripDDBtnSpeed033.Text = "33.3%";
-            this.stripDDBtnSpeed033.Click += new System.EventHandler( this.stripDDBtnSpeed033_Click );
             // 
             // stripDDBtnSpeed050
             // 
             this.stripDDBtnSpeed050.Name = "stripDDBtnSpeed050";
             this.stripDDBtnSpeed050.Size = new System.Drawing.Size( 160, 22 );
             this.stripDDBtnSpeed050.Text = "50%";
-            this.stripDDBtnSpeed050.Click += new System.EventHandler( this.stripDDBtnSpeed050_Click );
             // 
             // stripDDBtnSpeed100
             // 
             this.stripDDBtnSpeed100.Name = "stripDDBtnSpeed100";
             this.stripDDBtnSpeed100.Size = new System.Drawing.Size( 160, 22 );
             this.stripDDBtnSpeed100.Text = "100%";
-            this.stripDDBtnSpeed100.Click += new System.EventHandler( this.stripDDBtnSpeed100_Click );
             // 
             // statusStrip1
             // 
@@ -19426,35 +19496,29 @@ namespace Boare.Cadencii {
             // stripBtnFileNew
             // 
             this.stripBtnFileNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnFileNew.Image = global::Boare.Cadencii.Properties.Resources.disk__plus;
             this.stripBtnFileNew.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnFileNew.Name = "stripBtnFileNew";
             this.stripBtnFileNew.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnFileNew.Text = "toolStripButton6";
             this.stripBtnFileNew.ToolTipText = "New";
-            this.stripBtnFileNew.Click += new System.EventHandler( this.commonFileNew_Click );
             // 
             // stripBtnFileOpen
             // 
             this.stripBtnFileOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnFileOpen.Image = global::Boare.Cadencii.Properties.Resources.folder_horizontal_open;
             this.stripBtnFileOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnFileOpen.Name = "stripBtnFileOpen";
             this.stripBtnFileOpen.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnFileOpen.Text = "toolStripButton3";
             this.stripBtnFileOpen.ToolTipText = "Open";
-            this.stripBtnFileOpen.Click += new System.EventHandler( this.commonFileOpen_Click );
             // 
             // stripBtnFileSave
             // 
             this.stripBtnFileSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnFileSave.Image = global::Boare.Cadencii.Properties.Resources.disk;
             this.stripBtnFileSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnFileSave.Name = "stripBtnFileSave";
             this.stripBtnFileSave.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnFileSave.Text = "toolStripButton2";
             this.stripBtnFileSave.ToolTipText = "Save";
-            this.stripBtnFileSave.Click += new System.EventHandler( this.commonFileSave_Click );
             // 
             // toolStripSeparator12
             // 
@@ -19464,35 +19528,29 @@ namespace Boare.Cadencii {
             // stripBtnCut
             // 
             this.stripBtnCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnCut.Image = global::Boare.Cadencii.Properties.Resources.scissors;
             this.stripBtnCut.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnCut.Name = "stripBtnCut";
             this.stripBtnCut.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnCut.Text = "toolStripButton4";
             this.stripBtnCut.ToolTipText = "Cut";
-            this.stripBtnCut.Click += new System.EventHandler( this.commonEditCut_Click );
             // 
             // stripBtnCopy
             // 
             this.stripBtnCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnCopy.Image = global::Boare.Cadencii.Properties.Resources.documents;
             this.stripBtnCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnCopy.Name = "stripBtnCopy";
             this.stripBtnCopy.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnCopy.Text = "toolStripButton5";
             this.stripBtnCopy.ToolTipText = "Copy";
-            this.stripBtnCopy.Click += new System.EventHandler( this.commonEditCopy_Click );
             // 
             // stripBtnPaste
             // 
             this.stripBtnPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnPaste.Image = global::Boare.Cadencii.Properties.Resources.clipboard_paste;
             this.stripBtnPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnPaste.Name = "stripBtnPaste";
             this.stripBtnPaste.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnPaste.Text = "toolStripLabel1";
             this.stripBtnPaste.ToolTipText = "Paste";
-            this.stripBtnPaste.Click += new System.EventHandler( this.commonEditPaste_Click );
             // 
             // toolStripSeparator13
             // 
@@ -19502,24 +19560,20 @@ namespace Boare.Cadencii {
             // stripBtnUndo
             // 
             this.stripBtnUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnUndo.Image = global::Boare.Cadencii.Properties.Resources.arrow_skip_180;
             this.stripBtnUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnUndo.Name = "stripBtnUndo";
             this.stripBtnUndo.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnUndo.Text = "toolStripButton7";
             this.stripBtnUndo.ToolTipText = "Undo";
-            this.stripBtnUndo.Click += new System.EventHandler( this.commonEditUndo_Click );
             // 
             // stripBtnRedo
             // 
             this.stripBtnRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnRedo.Image = global::Boare.Cadencii.Properties.Resources.arrow_skip;
             this.stripBtnRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnRedo.Name = "stripBtnRedo";
             this.stripBtnRedo.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnRedo.Text = "toolStripButton8";
             this.stripBtnRedo.ToolTipText = "Redo";
-            this.stripBtnRedo.Click += new System.EventHandler( this.commonEditRedo_Click );
             // 
             // toolStripPosition
             // 
@@ -19542,68 +19596,56 @@ namespace Boare.Cadencii {
             // stripBtnMoveTop
             // 
             this.stripBtnMoveTop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnMoveTop.Image = global::Boare.Cadencii.Properties.Resources.control_stop_180;
             this.stripBtnMoveTop.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnMoveTop.Name = "stripBtnMoveTop";
             this.stripBtnMoveTop.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnMoveTop.Text = "  <=|  ";
             this.stripBtnMoveTop.ToolTipText = "MoveTop";
-            this.stripBtnMoveTop.Click += new System.EventHandler( this.stripBtnMoveTop_Click );
             // 
             // stripBtnRewind
             // 
             this.stripBtnRewind.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnRewind.Image = global::Boare.Cadencii.Properties.Resources.control_double_180;
             this.stripBtnRewind.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnRewind.Name = "stripBtnRewind";
             this.stripBtnRewind.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnRewind.Text = "  <<  ";
             this.stripBtnRewind.ToolTipText = "Rewind";
-            this.stripBtnRewind.Click += new System.EventHandler( this.stripBtnRewind_Click );
             // 
             // stripBtnForward
             // 
             this.stripBtnForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnForward.Image = global::Boare.Cadencii.Properties.Resources.control_double;
             this.stripBtnForward.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnForward.Name = "stripBtnForward";
             this.stripBtnForward.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnForward.Text = "  >>  ";
             this.stripBtnForward.ToolTipText = "Forward";
-            this.stripBtnForward.Click += new System.EventHandler( this.stripBtnForward_Click );
             // 
             // stripBtnMoveEnd
             // 
             this.stripBtnMoveEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnMoveEnd.Image = global::Boare.Cadencii.Properties.Resources.control_stop;
             this.stripBtnMoveEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnMoveEnd.Name = "stripBtnMoveEnd";
             this.stripBtnMoveEnd.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnMoveEnd.Text = "  |=>  ";
             this.stripBtnMoveEnd.ToolTipText = "MoveEnd";
-            this.stripBtnMoveEnd.Click += new System.EventHandler( this.stripBtnMoveEnd_Click );
             // 
             // stripBtnPlay
             // 
             this.stripBtnPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnPlay.Image = global::Boare.Cadencii.Properties.Resources.control;
             this.stripBtnPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnPlay.Name = "stripBtnPlay";
             this.stripBtnPlay.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnPlay.Text = "  =>  ";
             this.stripBtnPlay.ToolTipText = "Play";
-            this.stripBtnPlay.Click += new System.EventHandler( this.stripBtnPlay_Click );
             // 
             // stripBtnStop
             // 
             this.stripBtnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnStop.Image = global::Boare.Cadencii.Properties.Resources.control_pause;
             this.stripBtnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnStop.Name = "stripBtnStop";
             this.stripBtnStop.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnStop.Text = "   ||   ";
             this.stripBtnStop.ToolTipText = "Stop";
-            this.stripBtnStop.Click += new System.EventHandler( this.stripBtnStop_Click );
             // 
             // toolStripSeparator7
             // 
@@ -19613,22 +19655,18 @@ namespace Boare.Cadencii {
             // stripBtnScroll
             // 
             this.stripBtnScroll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnScroll.Image = global::Boare.Cadencii.Properties.Resources.arrow_circle_double;
             this.stripBtnScroll.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnScroll.Name = "stripBtnScroll";
             this.stripBtnScroll.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnScroll.Text = "Scroll";
-            this.stripBtnScroll.Click += new System.EventHandler( this.stripBtnScroll_Click );
             // 
             // stripBtnLoop
             // 
             this.stripBtnLoop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnLoop.Image = global::Boare.Cadencii.Properties.Resources.arrow_return;
             this.stripBtnLoop.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnLoop.Name = "stripBtnLoop";
             this.stripBtnLoop.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnLoop.Text = "Loop";
-            this.stripBtnLoop.Click += new System.EventHandler( this.stripBtnLoop_Click );
             // 
             // toolStripMeasure
             // 
@@ -19691,49 +19729,42 @@ namespace Boare.Cadencii {
             this.stripDDBtnLength04.Name = "stripDDBtnLength04";
             this.stripDDBtnLength04.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength04.Text = "1/4";
-            this.stripDDBtnLength04.Click += new System.EventHandler( this.h_lengthQuantize04 );
             // 
             // stripDDBtnLength08
             // 
             this.stripDDBtnLength08.Name = "stripDDBtnLength08";
             this.stripDDBtnLength08.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength08.Text = "1/8";
-            this.stripDDBtnLength08.Click += new System.EventHandler( this.h_lengthQuantize08 );
             // 
             // stripDDBtnLength16
             // 
             this.stripDDBtnLength16.Name = "stripDDBtnLength16";
             this.stripDDBtnLength16.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength16.Text = "1/16";
-            this.stripDDBtnLength16.Click += new System.EventHandler( this.h_lengthQuantize16 );
             // 
             // stripDDBtnLength32
             // 
             this.stripDDBtnLength32.Name = "stripDDBtnLength32";
             this.stripDDBtnLength32.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength32.Text = "1/32";
-            this.stripDDBtnLength32.Click += new System.EventHandler( this.h_lengthQuantize32 );
             // 
             // stripDDBtnLength64
             // 
             this.stripDDBtnLength64.Name = "stripDDBtnLength64";
             this.stripDDBtnLength64.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength64.Text = "1/64";
-            this.stripDDBtnLength64.Click += new System.EventHandler( this.h_lengthQuantize64 );
             // 
             // stripDDBtnLength128
             // 
             this.stripDDBtnLength128.Name = "stripDDBtnLength128";
             this.stripDDBtnLength128.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength128.Text = "1/128";
-            this.stripDDBtnLength128.Click += new System.EventHandler( this.h_lengthQuantize128 );
             // 
             // stripDDBtnLengthOff
             // 
             this.stripDDBtnLengthOff.Name = "stripDDBtnLengthOff";
             this.stripDDBtnLengthOff.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLengthOff.Text = "Off";
-            this.stripDDBtnLengthOff.Click += new System.EventHandler( this.h_lengthQuantizeOff );
             // 
             // toolStripSeparator2
             // 
@@ -19745,7 +19776,6 @@ namespace Boare.Cadencii {
             this.stripDDBtnLengthTriplet.Name = "stripDDBtnLengthTriplet";
             this.stripDDBtnLengthTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLengthTriplet.Text = "Triplet";
-            this.stripDDBtnLengthTriplet.Click += new System.EventHandler( this.h_lengthQuantizeTriplet );
             // 
             // stripDDBtnQuantize
             // 
@@ -19772,49 +19802,42 @@ namespace Boare.Cadencii {
             this.stripDDBtnQuantize04.Name = "stripDDBtnQuantize04";
             this.stripDDBtnQuantize04.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize04.Text = "1/4";
-            this.stripDDBtnQuantize04.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // stripDDBtnQuantize08
             // 
             this.stripDDBtnQuantize08.Name = "stripDDBtnQuantize08";
             this.stripDDBtnQuantize08.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize08.Text = "1/8";
-            this.stripDDBtnQuantize08.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // stripDDBtnQuantize16
             // 
             this.stripDDBtnQuantize16.Name = "stripDDBtnQuantize16";
             this.stripDDBtnQuantize16.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize16.Text = "1/16";
-            this.stripDDBtnQuantize16.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // stripDDBtnQuantize32
             // 
             this.stripDDBtnQuantize32.Name = "stripDDBtnQuantize32";
             this.stripDDBtnQuantize32.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize32.Text = "1/32";
-            this.stripDDBtnQuantize32.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // stripDDBtnQuantize64
             // 
             this.stripDDBtnQuantize64.Name = "stripDDBtnQuantize64";
             this.stripDDBtnQuantize64.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize64.Text = "1/64";
-            this.stripDDBtnQuantize64.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // stripDDBtnQuantize128
             // 
             this.stripDDBtnQuantize128.Name = "stripDDBtnQuantize128";
             this.stripDDBtnQuantize128.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize128.Text = "1/128";
-            this.stripDDBtnQuantize128.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // stripDDBtnQuantizeOff
             // 
             this.stripDDBtnQuantizeOff.Name = "stripDDBtnQuantizeOff";
             this.stripDDBtnQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantizeOff.Text = "Off";
-            this.stripDDBtnQuantizeOff.Click += new System.EventHandler( this.handlePositionQuantize );
             // 
             // toolStripSeparator3
             // 
@@ -19826,7 +19849,6 @@ namespace Boare.Cadencii {
             this.stripDDBtnQuantizeTriplet.Name = "stripDDBtnQuantizeTriplet";
             this.stripDDBtnQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantizeTriplet.Text = "Triplet";
-            this.stripDDBtnQuantizeTriplet.Click += new System.EventHandler( this.h_positionQuantizeTriplet );
             // 
             // toolStripSeparator6
             // 
@@ -19836,22 +19858,18 @@ namespace Boare.Cadencii {
             // stripBtnStartMarker
             // 
             this.stripBtnStartMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnStartMarker.Image = global::Boare.Cadencii.Properties.Resources.pin__arrow;
             this.stripBtnStartMarker.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnStartMarker.Name = "stripBtnStartMarker";
             this.stripBtnStartMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnStartMarker.Text = "StartMarker";
-            this.stripBtnStartMarker.Click += new System.EventHandler( this.handleStartMarker_Click );
             // 
             // stripBtnEndMarker
             // 
             this.stripBtnEndMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnEndMarker.Image = global::Boare.Cadencii.Properties.Resources.pin__arrow_inv;
             this.stripBtnEndMarker.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnEndMarker.Name = "stripBtnEndMarker";
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
-            this.stripBtnEndMarker.Click += new System.EventHandler( this.handleEndMarker_Click );
             // 
             // FormMain
             // 
@@ -19861,17 +19879,10 @@ namespace Boare.Cadencii {
             this.ClientSize = new System.Drawing.Size( 960, 689 );
             this.Controls.Add( this.toolStripContainer );
             this.Controls.Add( this.menuStripMain );
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject( "$this.Icon" )));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStripMain;
             this.Name = "FormMain";
             this.Text = "Cadencii";
-            this.Deactivate += new System.EventHandler( this.FormMain_Deactivate );
-            this.Load += new System.EventHandler( this.FormMain_Load );
-            this.Activated += new System.EventHandler( this.FormMain_Activated );
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler( this.FormMain_FormClosed );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMain_FormClosing );
-            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.FormMain_PreviewKeyDown );
             this.menuStripMain.ResumeLayout( false );
             this.menuStripMain.PerformLayout();
             this.cMenuPiano.ResumeLayout( false );

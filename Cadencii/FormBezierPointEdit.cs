@@ -52,7 +52,7 @@ namespace Boare.Cadencii {
         private int m_point_id = -1;
         private BezierPickedSide m_picked_side = BezierPickedSide.BASE;
 
-        public FormBezierPointEdit( TrackSelector parent, 
+        public FormBezierPointEdit( TrackSelector parent,
                                     CurveType curve_type,
                                     int selected_chain_id,
                                     int selected_point_id ) {
@@ -61,6 +61,8 @@ namespace Boare.Cadencii {
 #else
             InitializeComponent();
 #endif
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             m_parent = parent;
             m_curve_type = curve_type;
@@ -79,7 +81,7 @@ namespace Boare.Cadencii {
                 return;
             }
             boolean smooth = false;
-            for ( Iterator itr = AppManager.getVsqFile().AttachedCurves.get( m_track - 1 ).getBezierChain( m_curve_type, m_chain_id ).points.iterator(); itr.hasNext(); ){
+            for ( Iterator itr = AppManager.getVsqFile().AttachedCurves.get( m_track - 1 ).getBezierChain( m_curve_type, m_chain_id ).points.iterator(); itr.hasNext(); ) {
                 BezierPoint bp = (BezierPoint)itr.next();
                 if ( bp.getID() == m_point_id ) {
                     m_point = bp;
@@ -112,7 +114,7 @@ namespace Boare.Cadencii {
 
         public void ApplyLanguage() {
             Text = _( "Edit Bezier Data Point" );
-            
+
             groupDataPoint.Text = _( "Data Poin" );
             lblDataPointClock.Text = _( "Clock" );
             lblDataPointValue.Text = _( "Value" );
@@ -128,29 +130,23 @@ namespace Boare.Cadencii {
             chkEnableSmooth.Text = _( "Smooth" );
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e )
-        {
-            try
-            {
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            try {
                 int x, y;
                 x = PortUtil.parseInt( txtDataPointClock.Text );
                 y = PortUtil.parseInt( txtDataPointValue.Text );
-                if ( y < m_min || m_max < y )
-                {
+                if ( y < m_min || m_max < y ) {
                     AppManager.showMessageBox( _( "Invalid value" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_ERROR_MESSAGE );
                     return;
                 }
-                if ( chkEnableSmooth.Checked )
-                {
+                if ( chkEnableSmooth.Checked ) {
                     x = PortUtil.parseInt( txtLeftClock.Text );
                     y = PortUtil.parseInt( txtLeftValue.Text );
                     x = PortUtil.parseInt( txtRightClock.Text );
                     y = PortUtil.parseInt( txtRightValue.Text );
                 }
                 setDialogResult( BDialogResult.OK );
-            }
-            catch ( Exception ex )
-            {
+            } catch ( Exception ex ) {
                 AppManager.showMessageBox( _( "Integer format error" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_ERROR_MESSAGE );
             }
         }
@@ -179,11 +175,10 @@ namespace Boare.Cadencii {
             m_parent.Invalidate();
         }
 
-        private void btnDataPoint_MouseDown( Object sender, BMouseEventArgs e )
-        {
+        private void btnDataPoint_MouseDown( Object sender, BMouseEventArgs e ) {
             this.Opacity = m_min_opacity;
             m_last_mouse_global_location = PortUtil.getMousePosition();
-            System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getBase().getX() ), 
+            System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getBase().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getBase().getY() ) );
             System.Drawing.Point loc_on_screen = m_parent.PointToScreen( loc_on_trackselector );
             Cursor.Position = loc_on_screen;
@@ -193,11 +188,10 @@ namespace Boare.Cadencii {
             m_btn_datapoint_downed = true;
         }
 
-        private void btnLeft_MouseDown( Object sender, BMouseEventArgs e )
-        {
+        private void btnLeft_MouseDown( Object sender, BMouseEventArgs e ) {
             this.Opacity = m_min_opacity;
             m_last_mouse_global_location = PortUtil.getMousePosition();
-            System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getControlLeft().getX() ), 
+            System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getControlLeft().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getControlLeft().getY() ) );
             System.Drawing.Point loc_on_screen = m_parent.PointToScreen( loc_on_trackselector );
             Cursor.Position = loc_on_screen;
@@ -207,11 +201,10 @@ namespace Boare.Cadencii {
             m_btn_datapoint_downed = true;
         }
 
-        private void btnRight_MouseDown( Object sender, BMouseEventArgs e )
-        {
+        private void btnRight_MouseDown( Object sender, BMouseEventArgs e ) {
             this.Opacity = m_min_opacity;
             m_last_mouse_global_location = PortUtil.getMousePosition();
-            System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getControlRight().getX() ), 
+            System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getControlRight().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getControlRight().getY() ) );
             System.Drawing.Point loc_on_screen = m_parent.PointToScreen( loc_on_trackselector );
             Cursor.Position = loc_on_screen;
@@ -221,8 +214,7 @@ namespace Boare.Cadencii {
             m_btn_datapoint_downed = true;
         }
 
-        private void common_MouseUp( Object sender, BMouseEventArgs e )
-        {
+        private void common_MouseUp( Object sender, BMouseEventArgs e ) {
             m_btn_datapoint_downed = false;
             this.Opacity = 1.0;
             Point loc_on_screen = PortUtil.getMousePosition();
@@ -233,8 +225,7 @@ namespace Boare.Cadencii {
             m_parent.Invalidate();
         }
 
-        private void common_MouseMove( Object sender, BMouseEventArgs e )
-        {
+        private void common_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( m_btn_datapoint_downed ) {
                 Point loc_on_screen = PortUtil.getMousePosition();
                 System.Drawing.Point loc_on_trackselector = m_parent.PointToClient( new System.Drawing.Point( loc_on_screen.x, loc_on_screen.y ) );
@@ -279,7 +270,7 @@ namespace Boare.Cadencii {
                     break;
                 }
             }
-            if ( 0 <= index && index < target.size()) {
+            if ( 0 <= index && index < target.size() ) {
                 m_point_id = target.points.get( index ).getID();
                 m_point = target.points.get( index );
                 UpdateStatus();
@@ -287,6 +278,29 @@ namespace Boare.Cadencii {
                 m_parent.Invalidate();
             }
         }
+
+        private void registerEventHandlers() {
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            this.chkEnableSmooth.CheckedChanged += new System.EventHandler( this.chkEnableSmooth_CheckedChanged );
+            this.btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
+            this.btnLeft.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );
+            this.btnLeft.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
+            this.btnDataPoint.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
+            this.btnDataPoint.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnDataPoint_MouseDown );
+            this.btnDataPoint.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
+            this.btnRight.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
+            this.btnRight.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseDown );
+            this.btnRight.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
+            this.btnBackward.Click += new System.EventHandler( this.btnBackward_Click );
+            this.btnForward.Click += new System.EventHandler( this.btnForward_Click );
+        }
+
+        private void setResources() {
+            this.btnLeft.Image = Resources.get_target__pencil();
+            this.btnDataPoint.Image = Resources.get_target__pencil();
+            this.btnRight.Image = Resources.get_target__pencil();
+        }
+
 #if JAVA
         #region UI Impl for Java
 	    private JPanel jContentPane = null;
@@ -879,7 +893,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 8;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // chkEnableSmooth
             // 
@@ -890,7 +903,6 @@ namespace Boare.Cadencii {
             this.chkEnableSmooth.TabIndex = 3;
             this.chkEnableSmooth.Text = "Smooth";
             this.chkEnableSmooth.UseVisualStyleBackColor = true;
-            this.chkEnableSmooth.CheckedChanged += new System.EventHandler( this.chkEnableSmooth_CheckedChanged );
             // 
             // lblLeftValue
             // 
@@ -926,16 +938,12 @@ namespace Boare.Cadencii {
             // 
             // btnLeft
             // 
-            this.btnLeft.Image = global::Boare.Cadencii.Properties.Resources.target__pencil;
             this.btnLeft.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnLeft.Location = new System.Drawing.Point( 18, 76 );
             this.btnLeft.Name = "btnLeft";
             this.btnLeft.Size = new System.Drawing.Size( 109, 27 );
             this.btnLeft.TabIndex = 18;
             this.btnLeft.UseVisualStyleBackColor = true;
-            this.btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
-            this.btnLeft.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );
-            this.btnLeft.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
             // 
             // groupDataPoint
             // 
@@ -953,16 +961,12 @@ namespace Boare.Cadencii {
             // 
             // btnDataPoint
             // 
-            this.btnDataPoint.Image = global::Boare.Cadencii.Properties.Resources.target__pencil;
             this.btnDataPoint.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnDataPoint.Location = new System.Drawing.Point( 18, 76 );
             this.btnDataPoint.Name = "btnDataPoint";
             this.btnDataPoint.Size = new System.Drawing.Size( 109, 27 );
             this.btnDataPoint.TabIndex = 17;
             this.btnDataPoint.UseVisualStyleBackColor = true;
-            this.btnDataPoint.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
-            this.btnDataPoint.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnDataPoint_MouseDown );
-            this.btnDataPoint.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
             // 
             // lblDataPointValue
             // 
@@ -998,16 +1002,12 @@ namespace Boare.Cadencii {
             // 
             // btnRight
             // 
-            this.btnRight.Image = global::Boare.Cadencii.Properties.Resources.target__pencil;
             this.btnRight.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnRight.Location = new System.Drawing.Point( 18, 76 );
             this.btnRight.Name = "btnRight";
             this.btnRight.Size = new System.Drawing.Size( 109, 27 );
             this.btnRight.TabIndex = 18;
             this.btnRight.UseVisualStyleBackColor = true;
-            this.btnRight.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
-            this.btnRight.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseDown );
-            this.btnRight.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
             // 
             // lblRightValue
             // 
@@ -1035,7 +1035,6 @@ namespace Boare.Cadencii {
             this.btnBackward.TabIndex = 20;
             this.btnBackward.Text = "<<";
             this.btnBackward.UseVisualStyleBackColor = true;
-            this.btnBackward.Click += new System.EventHandler( this.btnBackward_Click );
             // 
             // btnForward
             // 
@@ -1045,7 +1044,6 @@ namespace Boare.Cadencii {
             this.btnForward.TabIndex = 21;
             this.btnForward.Text = ">>";
             this.btnForward.UseVisualStyleBackColor = true;
-            this.btnForward.Click += new System.EventHandler( this.btnForward_Click );
             // 
             // txtRightClock
             // 

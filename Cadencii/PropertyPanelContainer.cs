@@ -21,6 +21,8 @@ namespace Boare.Cadencii {
 
         public PropertyPanelContainer() {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
         }
 
         public void Add( Control c ) {
@@ -56,6 +58,18 @@ namespace Boare.Cadencii {
             panelMain.Left = 0;
             panelMain.Width = this.Width;
             panelMain.Height = this.Height - _TITLE_HEIGHT;
+        }
+
+        private void registerEventHandlers() {
+            this.panelMain.SizeChanged += new System.EventHandler( this.panelMain_SizeChanged );
+            this.btnClose.Click += new System.EventHandler( this.btnClose_Click );
+            this.btnWindow.Click += new System.EventHandler( this.btnWindow_Click );
+            this.panelTitle.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.panelTitle_MouseDoubleClick );
+        }
+
+        private void setResources() {
+            this.btnClose.Image = Resources.get_cross_small();
+            this.btnWindow.Image = Resources.get_chevron_small_collapse();
         }
     }
 }

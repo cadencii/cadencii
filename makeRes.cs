@@ -55,6 +55,8 @@ class makeRes{
                 sw.WriteLine();
             }
             sw.WriteLine( "import java.awt.*;" );
+            sw.WriteLine( "import javax.imageio.*;" );
+            sw.WriteLine( "import javax.swing.*;" );
             sw.WriteLine( "import org.kbinani.*;" );
             sw.WriteLine( "#" + "else" );
             sw.WriteLine( "using System;" );
@@ -66,7 +68,16 @@ class makeRes{
                 sw.WriteLine( "namespace " + name_space + "{" );
             }
             sw.WriteLine( "#endif" );
+            sw.WriteLine();
             sw.WriteLine( cs_space + "public class Resources{" );
+            sw.WriteLine( cs_space + "    private static String basePath = null;" );
+            sw.WriteLine( cs_space + "    private static String getBasePath(){" );
+            sw.WriteLine( cs_space + "        if( basePath == null ){" );
+            sw.WriteLine( cs_space + "            basePath = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), \"resources\" );" );
+            sw.WriteLine( cs_space + "        }" );
+            sw.WriteLine( cs_space + "        return basePath;" );
+            sw.WriteLine( cs_space + "    }" );
+            sw.WriteLine();
             string line = "";
             while( (line = sr.ReadLine()) != null ){
                 string[] spl = line.Split( '\t' );
@@ -83,42 +94,39 @@ class makeRes{
 
                 if( type == "Image" ){
                     string instance = "s_" + name;
-                    string stored = "s_stored_" + name;
-                    string stored_value = "";
-                    using( FileStream fs = new FileStream( path, FileMode.Open, FileAccess.Read ) ){
-                        int len = (int)fs.Length;
-                        byte[] data = new byte[len];
-                        fs.Read( data, 0, len );
-                        stored_value = Convert.ToBase64String( data );
-                    }
-                    if( stored_value.Length < 128 ){
-                        sw.WriteLine( cs_space + "    private static readonly String " + stored + " = \"" + stored_value + "\";" );
-                    }else{
-                        sw.WriteLine( cs_space + "    private static readonly String " + stored + " = \"" + stored_value.Substring( 0, 128 ) + "\" +" );
-                        stored_value = stored_value.Substring( 128 );
-                        //Console.WriteLine( "remaining=" + stored_value );
-                        while( stored_value.Length >= 128 ){
-                            sw.WriteLine( cs_space + "        \"" + stored_value.Substring( 0, 128 ) + "\" +" );
-                            stored_value = stored_value.Substring( 128 );
-                            //Console.WriteLine( "remaining=" + stored_value );
-                            if( stored_value.Length < 128 ){
-                                break;
-                            }
-                        }
-                        sw.WriteLine( cs_space + "        \"" + stored_value + "\";" );
-                    }
+                    string fname = Path.GetFileName( tpath );
                     sw.WriteLine( cs_space + "    private static Image " + instance + " = null;" );
                     sw.WriteLine( cs_space + "    public static Image get_" + name + "(){" );
                     sw.WriteLine( cs_space + "        if( " + instance + " == null ){" );
-                    sw.WriteLine( cs_space + "            byte[] data = Base64.decode( " + stored + " );" );
+                    sw.WriteLine( cs_space + "            try{" );
+                    sw.WriteLine( cs_space + "                String res_path = PortUtil.combinePath( getBasePath(), \"" + fname + "\" );" );
                     sw.WriteLine( "#if JAVA" );
-                    sw.WriteLine( cs_space + "            Frame frame = new Frame();" );
-                    sw.WriteLine( cs_space + "            " + instance + " = frame.getToolKit().createImage( data );" );
+                    sw.WriteLine( cs_space + "                " + instance + " = ImageIO.read( new File( res_path ) );" );
                     sw.WriteLine( "#else" );
-                    sw.WriteLine( cs_space + "            using( MemoryStream ms = new MemoryStream( data ) ){" );
-                    sw.WriteLine( cs_space + "                " + instance + " = Image.FromStream( ms );" );
-                    sw.WriteLine( cs_space + "            }" );
+                    sw.WriteLine( cs_space + "                " + instance + " = new Bitmap( res_path );" );
                     sw.WriteLine( "#endif" );
+                    sw.WriteLine( cs_space + "            }catch( Exception ex ){" );
+                    sw.WriteLine( cs_space + "            }" );
+                    sw.WriteLine( cs_space + "        }" );
+                    sw.WriteLine( cs_space + "        return " + instance + ";" );
+                    sw.WriteLine( cs_space + "    }" );
+                    sw.WriteLine();
+                }else if( type == "Icon" ){
+                    string instance = "s_" + name;
+                    string fname = Path.GetFileName( tpath );
+                    sw.WriteLine( cs_space + "    private static Icon " + instance + " = null;" );
+                    sw.WriteLine( cs_space + "    public static Icon get_" + name + "(){" );
+                    sw.WriteLine( cs_space + "        if( " + instance + " == null ){" );
+                    sw.WriteLine( cs_space + "            try{" );
+                    sw.WriteLine( cs_space + "                String res_path = PortUtil.combinePath( getBasePath(), \"" + fname + "\" );" );
+                    sw.WriteLine( "#if JAVA" );
+                    sw.WriteLine( cs_space + "                Image img = ImageIO.read( new File( res_path ) );" );
+                    sw.WriteLine( cs_space + "                " + instance + " = new ImageIcon( img );" );
+                    sw.WriteLine( "#else" );
+                    sw.WriteLine( cs_space + "                " + instance + " = new Icon( res_path );" );
+                    sw.WriteLine( "#endif" );
+                    sw.WriteLine( cs_space + "            }catch( Exception ex ){" );
+                    sw.WriteLine( cs_space + "            }" );
                     sw.WriteLine( cs_space + "        }" );
                     sw.WriteLine( cs_space + "        return " + instance + ";" );
                     sw.WriteLine( cs_space + "    }" );

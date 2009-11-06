@@ -54,29 +54,24 @@ namespace Boare.Cadencii {
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size( 159, 283 );
             this.panelMain.TabIndex = 0;
-            this.panelMain.SizeChanged += new System.EventHandler( this.panelMain_SizeChanged );
             // 
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Image = global::Boare.Cadencii.Properties.Resources.cross_small;
             this.btnClose.Location = new System.Drawing.Point( 133, 3 );
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size( 23, 23 );
             this.btnClose.TabIndex = 1;
             this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler( this.btnClose_Click );
             // 
             // btnWindow
             // 
             this.btnWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnWindow.Image = global::Boare.Cadencii.Properties.Resources.chevron_small_collapse;
             this.btnWindow.Location = new System.Drawing.Point( 104, 3 );
             this.btnWindow.Name = "btnWindow";
             this.btnWindow.Size = new System.Drawing.Size( 23, 23 );
             this.btnWindow.TabIndex = 2;
             this.btnWindow.UseVisualStyleBackColor = true;
-            this.btnWindow.Click += new System.EventHandler( this.btnWindow_Click );
             // 
             // panelTitle
             // 
@@ -89,7 +84,6 @@ namespace Boare.Cadencii {
             this.panelTitle.Name = "panelTitle";
             this.panelTitle.Size = new System.Drawing.Size( 159, 29 );
             this.panelTitle.TabIndex = 3;
-            this.panelTitle.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.panelTitle_MouseDoubleClick );
             // 
             // PropertyPanelContainer
             // 

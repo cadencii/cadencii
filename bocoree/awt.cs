@@ -121,17 +121,17 @@ namespace bocoree.awt {
             nativeGraphics.Clip = new System.Drawing.Region( new System.Drawing.Rectangle( x, y, width, height ) );
         }
 
-        public void drawImage( Image img, int x, int y, object obs ) {
+        public void drawImage( bocoree.awt.image.BufferedImage img, int x, int y, object obs ) {
             if ( img is bocoree.awt.image.BufferedImage ) {
                 nativeGraphics.DrawImage( ((bocoree.awt.image.BufferedImage)img).m_image, new System.Drawing.Point( x, y ) );
             }
         }
     }
 
-    public interface Image{
+    /*public interface Image{
         int getHeight( object observer );
         int getWidth( object observer );
-    }
+    }*/
 
     public struct Color {
         /// <summary>

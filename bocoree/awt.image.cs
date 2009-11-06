@@ -14,7 +14,7 @@
 #if !JAVA
 namespace bocoree.awt.image {
 
-    public class BufferedImage : bocoree.awt.Image{
+    public class BufferedImage/* : bocoree.awt.Image*/{
         public static int TYPE_INT_BGR = 0;
         public static int TYPE_INT_RGB = 1;
         public static int TYPE_INT_ARGB = 2;
