@@ -87,67 +87,78 @@ namespace Boare.Cadencii {
 
         public bool edit( VsqTrack track, int[] event_internal_ids, MouseButtons button ) {
             bool edited = false;
-            int divide_threshold = Numerator * 480 * 4 / Denominator;
-            Console.WriteLine( "s_divide_threshold=" + divide_threshold );
-            Keys modifier = Control.ModifierKeys;
-            bool middle_mode = button == MouseButtons.Middle;
-            if ( Modifier.Equals( "Alt" ) ) {
-                if ( (modifier & Keys.Alt) == Keys.Alt ) {
-                    middle_mode = true;
+            try {
+                int divide_threshold = Numerator * 480 * 4 / Denominator;
+                Console.WriteLine( "s_divide_threshold=" + divide_threshold );
+                Keys modifier = Control.ModifierKeys;
+                bool middle_mode = button == MouseButtons.Middle;
+                if ( Modifier == null ) {
+                    Modifier = "Control";
                 }
-            } else if ( Modifier.Equals( "Control" ) ) {
-                if ( (modifier & Keys.Control) == Keys.Control ) {
-                    middle_mode = true;
-                }
-            } else if ( Modifier.Equals( "Shift" ) ) {
-                if ( (modifier & Keys.Shift) == Keys.Shift ) {
-                    middle_mode = true;
-                }
-            }
-            foreach ( int id in event_internal_ids ) {
-                for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = (VsqEvent)itr.next();
-                    if ( ve.InternalID == id ) {
-                        if ( ve.ID.Length >= divide_threshold * 2 ) {
-                            Console.WriteLine( "before; clock=" + ve.Clock + "; length=" + ve.ID.Length );
-                            VsqEvent add = (VsqEvent)ve.clone();
-                            int length = ve.ID.Length;
-                            string[] symbol = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
-                            for ( int i = 0; i < symbol.Length; i++ ) {
-                                Console.WriteLine( "symbol[" + i + "]=" + symbol[i] );
-                            }
-                            ve.ID.Length = divide_threshold;
-                            add.Clock = ve.Clock + divide_threshold;
-                            add.ID.Length = length - divide_threshold;
-                            if ( add.ID.VibratoHandle != null ) {
-                                if ( add.ID.VibratoDelay >= add.ID.Length ) {
-                                    add.ID.VibratoHandle = null;
-                                }
-                            }
-                            if ( ve.ID.VibratoHandle != null ) {
-                                if ( ve.ID.VibratoDelay >= ve.ID.Length ) {
-                                    ve.ID.VibratoHandle = null;
-                                }
-                            }
-                            if ( symbol.Length >= 2 ) {
-                                if ( middle_mode && !VsqPhoneticSymbol.isConsonant( symbol[1] ) ) {
-                                    ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] + " " + symbol[1] );
-                                } else {
-                                    ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] );
-                                }
-                                string symbol2 = "";
-                                for ( int i = 1; i < symbol.Length; i++ ) {
-                                    symbol2 += ((i == 1) ? "" : " ") + symbol[i];
-                                }
-                                Console.WriteLine( "symbol2=" + symbol2 );
-                                add.ID.LyricHandle.L0.setPhoneticSymbol( symbol2 );
-                            }
-                            track.addEvent( add );
-                            edited = true;
-                        }
-                        break;
+                if ( Modifier.Equals( "Alt" ) ) {
+                    if ( (modifier & Keys.Alt) == Keys.Alt ) {
+                        middle_mode = true;
+                    }
+                } else if ( Modifier.Equals( "Control" ) ) {
+                    if ( (modifier & Keys.Control) == Keys.Control ) {
+                        middle_mode = true;
+                    }
+                } else if ( Modifier.Equals( "Shift" ) ) {
+                    if ( (modifier & Keys.Shift) == Keys.Shift ) {
+                        middle_mode = true;
                     }
                 }
+                Console.WriteLine( "DivideNote#edit; (event_internal_ids==null)=" + (event_internal_ids == null) );
+                foreach ( int id in event_internal_ids ) {
+                    Console.WriteLine( "DivideNote#edit; (track==null)=" + (track == null) );
+                    for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                        VsqEvent ve = (VsqEvent)itr.next();
+                        Console.WriteLine( "DivideNote#edit; (ve==null)=" + (ve == null) );
+                        if ( ve.InternalID == id ) {
+                            Console.WriteLine( "DivideNote#edit; (ve.ID==null)=" + (ve.ID == null) );
+                            if ( ve.ID.Length >= divide_threshold * 2 ) {
+                                Console.WriteLine( "before; clock=" + ve.Clock + "; length=" + ve.ID.Length );
+                                VsqEvent add = (VsqEvent)ve.clone();
+                                int length = ve.ID.Length;
+                                string[] symbol = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
+                                for ( int i = 0; i < symbol.Length; i++ ) {
+                                    Console.WriteLine( "symbol[" + i + "]=" + symbol[i] );
+                                }
+                                ve.ID.Length = divide_threshold;
+                                add.Clock = ve.Clock + divide_threshold;
+                                add.ID.Length = length - divide_threshold;
+                                if ( add.ID.VibratoHandle != null ) {
+                                    if ( add.ID.VibratoDelay >= add.ID.Length ) {
+                                        add.ID.VibratoHandle = null;
+                                    }
+                                }
+                                if ( ve.ID.VibratoHandle != null ) {
+                                    if ( ve.ID.VibratoDelay >= ve.ID.Length ) {
+                                        ve.ID.VibratoHandle = null;
+                                    }
+                                }
+                                if ( symbol.Length >= 2 ) {
+                                    if ( middle_mode && !VsqPhoneticSymbol.isConsonant( symbol[1] ) ) {
+                                        ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] + " " + symbol[1] );
+                                    } else {
+                                        ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] );
+                                    }
+                                    string symbol2 = "";
+                                    for ( int i = 1; i < symbol.Length; i++ ) {
+                                        symbol2 += ((i == 1) ? "" : " ") + symbol[i];
+                                    }
+                                    Console.WriteLine( "symbol2=" + symbol2 );
+                                    add.ID.LyricHandle.L0.setPhoneticSymbol( symbol2 );
+                                }
+                                track.addEvent( add );
+                                edited = true;
+                            }
+                            break;
+                        }
+                    }
+                }
+            } catch ( Exception ex ) {
+                Console.WriteLine( "DivideNote#edit; ex=" + ex );
             }
             return edited;
         }

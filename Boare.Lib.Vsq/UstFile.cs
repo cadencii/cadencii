@@ -24,6 +24,8 @@ using bocoree.util;
 using bocoree.io;
 
 namespace Boare.Lib.Vsq {
+    using Float = System.Single;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -241,8 +243,91 @@ namespace Boare.Lib.Vsq {
             }
         }
 
-        public UstFile( VsqFile vsq ) {
-            throw new NotImplementedException();
+        /// <summary>
+        /// vsqの指定したトラックを元に，トラックを1つだけ持つustを構築します
+        /// </summary>
+        /// <param name="vsq"></param>
+        /// <param name="track_index"></param>
+        public UstFile( VsqFile vsq, int track_index ) {
+            VsqTrack track = vsq.Track.get( track_index );
+            
+            // デフォルトのテンポ
+            if( vsq.TempoTable.size() <= 0 ){
+                m_tempo = 120.0f;
+            }else{
+                m_tempo = (float)(60e6 / (double)vsq.TempoTable.get( 0 ).Tempo);
+            }
+            updateTempoInfo();
+
+            // R用音符のテンプレート
+            int PBTYPE = 5;
+            UstEvent template = new UstEvent();
+            template.Lyric = "R";
+            template.Note = 60;
+            template.PreUtterance = 0;
+            template.VoiceOverlap = 0;
+            template.Intensity = 100;
+            template.Moduration = 0;
+
+            // 再生秒時をとりあえず無視して，ゲートタイム基準で音符を追加
+            UstTrack track_add = new UstTrack();
+            int last_clock = 0;
+            int index = 0;
+            for( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ){
+                VsqEvent item = (VsqEvent)itr.next();
+                if( last_clock < item.Clock ){
+                    // ゲートタイム差あり，Rを追加
+                    UstEvent itemust = (UstEvent)template.clone();
+                    itemust.setLength( item.Clock - last_clock );
+                    itemust.Index = index;
+                    index++;
+                    track_add.addEvent( itemust );
+                }
+                UstEvent item_add = new UstEvent();
+                item_add.setLength( item.ID.getLength() );
+                item_add.Lyric = item.ID.LyricHandle.L0.Phrase;
+                item_add.Note = item.ID.Note;
+                item_add.Index = index;
+                item_add.Intensity = item.ID.Dynamics;
+                item_add.Moduration = item.UstEvent.Moduration;
+                item_add.PreUtterance = item.UstEvent.PreUtterance;
+                item_add.VoiceOverlap = item.UstEvent.VoiceOverlap;
+                index++;
+                track_add.addEvent( item_add );
+                last_clock = item.Clock + item.ID.getLength();
+            }
+
+            // 再生秒時を無視して，ピッチベンドを追加
+            //VsqBPList pbs = track.getCurve( "pbs" );
+            //VsqBPList pit = track.getCurve( "pit" );
+            int clock = 0;
+            for ( Iterator itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
+                UstEvent item = (UstEvent)itr.next();
+                int clock_begin = clock;
+                int clock_end = clock + item.Length;
+                Vector<Float> pitch = new Vector<Float>();
+                boolean allzero = true;
+                for ( int cl = clock_begin; cl <= clock_end; cl += PBTYPE ) {
+                    float pit = (float)track.getPitchAt( cl );
+                    if ( pit != 0.0 ) {
+                        allzero = false;
+                    }
+                    pitch.add( pit );
+                }
+                if ( !allzero ) {
+                    item.Pitches = pitch.toArray( new float[] { } );
+                    item.PBType = PBTYPE;
+                } else {
+                    item.PBType = -1;
+                }
+                clock += item.Length;
+            }
+
+            // 再生秒時を考慮して，適時テンポを追加
+            //TODO: このへん
+           // throw new NotImplementedException();
+
+            m_tracks.add( track_add );
         }
 
         private UstFile() {
@@ -313,11 +398,13 @@ namespace Boare.Lib.Vsq {
         /// <param name="clock"></param>
         /// <returns></returns>
         public double getSecFromClock( int clock ) {
-            for ( int i = m_tempo_table.size() - 1; i >= 0; i-- ) {
-                if ( m_tempo_table.get( i ).Clock < clock ) {
-                    double init = m_tempo_table.get( i ).Time;
-                    int dclock = clock - m_tempo_table.get( i ).Clock;
-                    double sec_per_clock1 = m_tempo_table.get( i ).Tempo * 1e-6 / 480.0;
+            int c = m_tempo_table.size();
+            for ( int i = c - 1; i >= 0; i-- ) {
+                TempoTableEntry item = m_tempo_table.get( i );
+                if ( item.Clock < clock ) {
+                    double init = item.Time;
+                    int dclock = clock - item.Clock;
+                    double sec_per_clock1 = item.Tempo * 1e-6 / 480.0;
                     return init + dclock * sec_per_clock1;
                 }
             }

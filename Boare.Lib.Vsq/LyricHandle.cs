@@ -34,6 +34,7 @@ namespace Boare.Lib.Vsq {
         public Vector<Lyric> Trailing = new Vector<Lyric>();
 
         public LyricHandle() {
+            L0 = new Lyric();
         }
 
         public Lyric getLyricAt( int index ){

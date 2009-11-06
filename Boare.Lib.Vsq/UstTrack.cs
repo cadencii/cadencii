@@ -47,7 +47,7 @@ namespace Boare.Lib.Vsq {
             m_events.add( item );
         }
 
-        public void removeEvent( int index ) {
+        public void removeEventAt( int index ) {
             m_events.removeElementAt( index );
         }
 
@@ -65,7 +65,8 @@ namespace Boare.Lib.Vsq {
 
         public Object clone() {
             UstTrack ret = new UstTrack();
-            for ( int i = 0; i < m_events.size(); i++ ) {
+            int c = m_events.size();
+            for ( int i = 0; i < c; i++ ) {
                 ret.m_events.set( i, (UstEvent)m_events.get( i ).clone() );
             }
             return ret;

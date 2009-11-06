@@ -107,7 +107,7 @@ namespace Boare.Lib.Vsq {
                 sw.write( "[#NEXT]" );
                 sw.newLine();
             } else {
-                sw.write( "[#" + PortUtil.formatDecimal( "0000", Index ) );
+                sw.write( "[#" + PortUtil.formatDecimal( "0000", Index ) + "]" );
                 sw.newLine();
             }
             sw.write( "Length=" + Length );
