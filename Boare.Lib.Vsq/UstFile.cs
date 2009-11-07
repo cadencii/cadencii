@@ -62,14 +62,14 @@ namespace Boare.Lib.Vsq {
                 bocoree.debug.push_log( "(sr==null)=" + (sr == null) );
 #endif
                 String line = sr.readLine();
-                if ( line != "[#SETTING]" ) {
+                if ( !line.Equals( "[#SETTING]" ) ) {
                     throw new Exception( "invalid ust file" );
                 }
                 UstTrack track = new UstTrack();
                 int type = 0; //0 => reading "SETTING" section
                 while ( true ) {
 #if DEBUG
-                    bocoree.debug.push_log( "line=" + line );
+                    PortUtil.println( "line=" + line );
 #endif
                     UstEvent ue = null;
                     if ( type == 1 ) {
@@ -210,6 +210,10 @@ namespace Boare.Lib.Vsq {
                                 }
                             } else if ( spl[0].Equals( "Flags" ) ) {
                                 ue.Flags = line.Substring( 6 );
+                            } else {
+#if DEBUG
+                                PortUtil.println( "UstFile#.ctor; info: don't know how to process this line; line=" + line );
+#endif
                             }
                         }
                         if ( !sr.ready() ) {

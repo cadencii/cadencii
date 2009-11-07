@@ -18,16 +18,14 @@ import javax.swing.*;
 import org.kbinani.*;
 #else
 using System;
-//using System.Drawing;
 using System.Windows.Forms;
 using bocoree;
-using bocoree.awt;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA

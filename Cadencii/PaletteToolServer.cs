@@ -22,7 +22,6 @@ using bocoree;
 using bocoree.util;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
 
     public static class PaletteToolServer {
@@ -81,9 +80,16 @@ namespace Boare.Cadencii {
         public static boolean InvokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( LoadedTools.containsKey( id ) ) {
                 VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( track ).clone();
-                boolean edited = ((IPaletteTool)LoadedTools.get( id )).edit( item, vsq_event_intrenal_ids, button );
+                boolean edited = false;
+                try {
+                    edited = ((IPaletteTool)LoadedTools.get( id )).edit( item, vsq_event_intrenal_ids, button );
+                } catch ( Exception ex ) {
+#if DEBUG
+                    PortUtil.println( "PaletteToolServer#InvokePaletteTool; ex=" + ex );
+#endif
+                    edited = false;
+                }
                 if ( edited ) {
-                    //CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( track, item, AppManager.VsqFile.AttachedCurves[track - 1], AppManager.VsqFile.getPitchCurve( track ) );
                     CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( track, item, AppManager.getVsqFile().AttachedCurves.get( track - 1 ) );
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 }

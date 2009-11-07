@@ -40,21 +40,20 @@ using bocoree.windows.forms;
 using bocoree.xml;
 
 namespace Boare.EditOtoIni {
+    using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
+    using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Float = System.Single;
     using Graphics = bocoree.awt.Graphics2D;
     using java = bocoree;
-    using BEventHandler = System.EventHandler;
-    using BEventArgs = System.EventArgs;
-    using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
 #endif
 
 #if JAVA
     public class FormUtauVoiceConfig extends BForm
 #else
-    public class FormUtauVoiceConfig : BForm
+    public class FormUtauVoiceConfig : BForm {
 #endif
- {
         enum MouseMode {
             None,
             MiddleDrag,

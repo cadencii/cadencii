@@ -953,6 +953,20 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
+        public VsqFileEx( UstFile ust ){
+            super( ust );
+#else
+        public VsqFileEx( UstFile ust ) :
+            base( ust ) {
+#endif
+            AttachedCurves = new AttachedCurve();
+            int count = Track.size();
+            for ( int i = 1; i < count; i++ ) {
+                AttachedCurves.add( new BezierCurves() );
+            }
+        }
+
+#if JAVA
         public VsqFileEx( String _fpath, String encoding ){
             super( _fpath, encoding );
 #else
@@ -970,16 +984,12 @@ namespace Boare.Cadencii {
                     tmp = (AttachedCurve)AppManager.xmlSerializerListBezierCurves.deserialize( fs );
                 } catch ( Exception ex ) {
                     bocoree.debug.push_log( "ex=" + ex );
-                    // 1.4.xのxmlとして読み込みを試みる
-                    if ( fs != null ) {
-                        fs.Close();
-                        fs = null;
-                    }
-                    //Rescue14xXml rx = new Rescue14xXml();
-                    //tmp = rx.Rescue( xml, Track.size() - 1 );
                 } finally {
                     if ( fs != null ) {
-                        fs.Close();
+                        try {
+                            fs.close();
+                        } catch ( Exception ex2 ) {
+                        }
                     }
                 }
                 if ( tmp != null ) {
@@ -1018,141 +1028,7 @@ namespace Boare.Cadencii {
             }
         }
 
-#if JAVA
-        public VsqFileEx( UstFile ust )
-        {
-            this( "Miku", 1, 4, 4, ust.getBaseTempo() );
-#else
-        public VsqFileEx( UstFile ust )
-            : this( "Miku", 1, 4, 4, ust.getBaseTempo() ) {
-#endif
-            int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
-            VsqBPList pitch = new VsqBPList( 0, -2400, 2400 );
-            for ( Iterator itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
-                UstEvent ue = (UstEvent)itr.next();
-                if ( ue.Lyric != "R" ) {
-                    VsqID id = new VsqID( 0 );
-                    id.Length = ue.Length;
-                    ByRef<String> psymbol = new ByRef<String>( "a" );
-                    if ( !SymbolTable.attatch( ue.Lyric, psymbol ) ) {
-                        psymbol.value = "a";
-                    }
-                    id.LyricHandle = new LyricHandle( ue.Lyric, psymbol.value );
-                    id.Note = ue.Note;
-                    id.type = VsqIDType.Anote;
-                    VsqEvent ve = new VsqEvent( clock_count, id );
-                    ve.UstEvent = (UstEvent)ue.clone();
-                    Track.get( 1 ).addEvent( ve );
-
-                    if ( ue.Pitches != null ) {
-                        // PBTypeクロックごとにデータポイントがある
-                        int clock = clock_count - ue.PBType;
-                        for ( int i = 0; i < ue.Pitches.Length; i++ ) {
-                            clock += ue.PBType;
-                            pitch.add( clock, (int)ue.Pitches[i] );
-                        }
-                    }
-                }
-                if ( ue.Tempo > 0.0f ) {
-                    TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.Tempo), 0.0 ) );
-                }
-                clock_count += ue.Length;
-            }
-            updateTempoInfo();
-            updateTotalClocks();
-            updateTimesigInfo();
-            reflectPitch( this, 1, pitch );
-        }
-
-        /// <summary>
-        /// master==MasterPitchControl.Pitchの場合、m_pitchからPITとPBSを再構成。
-        /// master==MasterPitchControl.PITandPBSの場合、PITとPBSからm_pitchを再構成
-        /// </summary>
-        public static void reflectPitch( VsqFile vsq, int track, VsqBPList pitch ) {
-            //double offset = AttachedCurves[track - 1].MasterTuningInCent * 100;
-            //Vector<Integer> keyclocks = new Vector<Integer>( pitch.getKeys() );
-            int keyclock_size = pitch.size();
-            VsqBPList pit = new VsqBPList( 0, -8192, 8191 );
-            VsqBPList pbs = new VsqBPList( 2, 0, 24 );
-            int premeasure_clock = vsq.getPreMeasureClocks();
-            int lastpit = pit.getDefault();
-            int lastpbs = pbs.getDefault();
-            int vpbs = 24;
-            int vpit = 0;
-
-            Vector<Integer> parts = new Vector<Integer>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
-            parts.add( premeasure_clock );
-            int lastclock = premeasure_clock;
-            for ( Iterator itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent ve = (VsqEvent)itr.next();
-                if ( ve.Clock <= lastclock ) {
-                    lastclock = Math.Max( lastclock, ve.Clock + ve.ID.Length );
-                } else {
-                    parts.add( ve.Clock );
-                    lastclock = ve.Clock + ve.ID.Length;
-                }
-            }
-
-            int parts_size = parts.size();
-            for ( int i = 0; i < parts_size; i++ ) {
-                int partstart = parts.get( i );
-                int partend = int.MaxValue;
-                if ( i + 1 < parts.size() ) {
-                    partend = parts.get( i + 1 );
-                }
-
-                // まず、区間内の最大ピッチベンド幅を調べる
-                double max = 0;
-                for ( int j = 0; j < keyclock_size; j++ ) {
-                    int clock = pitch.getKeyClock( j );
-                    if ( clock < partstart ) {
-                        continue;
-                    }
-                    if ( partend <= clock ) {
-                        break;
-                    }
-                    max = Math.Max( max, Math.Abs( pitch.getValue( clock ) / 10000.0 ) );
-                }
-
-                // 最大ピッチベンド幅を表現できる最小のPBSを計算
-                vpbs = (int)(Math.Ceiling( max * 8192.0 / 8191.0 ) + 0.1);
-                if ( vpbs <= 0 ) {
-                    vpbs = 1;
-                }
-                double pitch2 = pitch.getValue( partstart ) / 10000.0;
-                if ( lastpbs != vpbs ) {
-                    pbs.add( partstart, vpbs );
-                    lastpbs = vpbs;
-                }
-                vpit = (int)(pitch2 * 8192 / (double)vpbs);
-                if ( lastpit != vpit ) {
-                    pit.add( partstart, vpit );
-                    lastpit = vpit;
-                }
-                for ( int j = 0; j < keyclock_size; j++ ) {
-                    int clock = pit.getKeyClock( j );
-                    if ( clock < partstart ) {
-                        continue;
-                    }
-                    if ( partend <= clock ) {
-                        break;
-                    }
-                    if ( clock != partstart ) {
-                        pitch2 = pitch.getValue( clock ) / 10000.0;
-                        vpit = (int)(pitch2 * 8192 / (double)vpbs);
-                        if ( lastpit != vpit ) {
-                            pit.add( clock, vpit );
-                            lastpit = vpit;
-                        }
-                    }
-                }
-            }
-            vsq.Track.get( track ).setCurve( "pit", pit );
-            vsq.Track.get( track ).setCurve( "pbs", pbs );
-        }
-
         public void writeAsXml( String file ) {
-            //reflectPitch( MasterPitchControl.Pitch );
             FileOutputStream xw = null;
             try {
                 xw = new FileOutputStream( file );
@@ -1223,137 +1099,6 @@ namespace Boare.Cadencii {
         }
     }
 
-    /*public class Rescue14xXml
-    {
-        public class BezierCurves
-        {
-            public BezierChain[] Dynamics;
-            public BezierChain[] Brethiness;
-            public BezierChain[] Brightness;
-            public BezierChain[] Clearness;
-            public BezierChain[] Opening;
-            public BezierChain[] GenderFactor;
-            public BezierChain[] PortamentoTiming;
-            public BezierChain[] PitchBend;
-            public BezierChain[] PitchBendSensitivity;
-            public BezierChain[] VibratoRate;
-            public BezierChain[] VibratoDepth;
-
-            public BezierCurves()
-            {
-                Dynamics = new BezierChain[0];
-                Brethiness = new BezierChain[0];
-                Brightness = new BezierChain[0];
-                Clearness = new BezierChain[0];
-                Opening = new BezierChain[0];
-                GenderFactor = new BezierChain[0];
-                PortamentoTiming = new BezierChain[0];
-                PitchBend = new BezierChain[0];
-                PitchBendSensitivity = new BezierChain[0];
-                VibratoRate = new BezierChain[0];
-                VibratoDepth = new BezierChain[0];
-            }
-        }
-
-        public Boare.Cadencii.AttachedCurve Rescue( String file, int num_track )
-        {
-#if DEBUG
-            AppManager.debugWriteLine( "VsqFileEx.Rescue14xXml.Rescue; file=" + file + "; num_track=" + num_track );
-            bocoree.debug.push_log( "   constructing serializer..." );
-#endif
-            XmlSerializer xs = null;
-            try
-            {
-#if JAVA
-                    Vector<org.kbinani.Cadencii.VsqFileEx.Rescue14xXml.BezierCurves> dum = new Vector<org.kbinani.Cadencii.VsqFileEx.Rescue14xXml.BezierCurves>();
-                    xs = new XmlSerializer( dum.getClass() );
-#else
-                xs = new XmlSerializer( typeof( Vector<Boare.Cadencii.Rescue14xXml.BezierCurves> ) );
-#endif
-            }
-            catch ( Exception ex )
-            {
-                bocoree.debug.push_log( "    ex=" + ex );
-            }
-            if ( xs == null )
-            {
-                return null;
-            }
-#if DEBUG
-            bocoree.debug.push_log( "    ...done" );
-            bocoree.debug.push_log( "    constructing FileStream..." );
-#endif
-            FileInputStream fs = new FileInputStream( file );
-#if DEBUG
-            bocoree.debug.push_log( "    ...done" );
-#endif
-            AttachedCurve ac = null;
-#if !DEBUG
-                try {
-#endif
-#if DEBUG
-            bocoree.debug.push_log( "    serializing..." );
-#endif
-            Vector<Boare.Cadencii.Rescue14xXml.BezierCurves> list = (Vector<Boare.Cadencii.Rescue14xXml.BezierCurves>)xs.deserialize( fs );
-#if DEBUG
-            bocoree.debug.push_log( "    ...done" );
-            bocoree.debug.push_log( "    (list==null)=" + (list == null) );
-            bocoree.debug.push_log( "    list.Count=" + list.size() );
-#endif
-            if ( list.size() >= num_track )
-            {
-                ac = new AttachedCurve();
-                ac.Curves = new Vector<Boare.Cadencii.BezierCurves>();
-                for ( int i = 0; i < num_track; i++ )
-                {
-#if DEBUG
-                    bocoree.debug.push_log( "    i=" + i );
-#endif
-                    Boare.Cadencii.BezierCurves add = new Boare.Cadencii.BezierCurves();
-                    add.Brethiness = new Vector<BezierChain>( list.get( i ).Brethiness );
-                    add.Brightness = new Vector<BezierChain>( list.get( i ).Brightness );
-                    add.Clearness = new Vector<BezierChain>( list.get( i ).Clearness );
-                    add.Dynamics = new Vector<BezierChain>();
-                    for ( int k = 0; k < list.get( i ).Dynamics.Length; k++ )
-                    {
-                        BezierChain bc = list.get( i ).Dynamics[k];
-                        add.Dynamics.add( (BezierChain)bc.Clone() );
-                    }
-                    add.FX2Depth = new Vector<BezierChain>();
-                    add.GenderFactor = new Vector<BezierChain>( list.get( i ).GenderFactor );
-                    add.Harmonics = new Vector<BezierChain>();
-                    add.Opening = new Vector<BezierChain>( list.get( i ).Opening );
-                    add.PortamentoTiming = new Vector<BezierChain>( list.get( i ).PortamentoTiming );
-                    add.Reso1Amp = new Vector<BezierChain>();
-                    add.Reso2Amp = new Vector<BezierChain>();
-                    add.Reso3Amp = new Vector<BezierChain>();
-                    add.Reso4Amp = new Vector<BezierChain>();
-                    add.Reso1BW = new Vector<BezierChain>();
-                    add.Reso2BW = new Vector<BezierChain>();
-                    add.Reso3BW = new Vector<BezierChain>();
-                    add.Reso4BW = new Vector<BezierChain>();
-                    add.Reso1Freq = new Vector<BezierChain>();
-                    add.Reso2Freq = new Vector<BezierChain>();
-                    add.Reso3Freq = new Vector<BezierChain>();
-                    add.Reso4Freq = new Vector<BezierChain>();
-                    add.VibratoDepth = new Vector<BezierChain>( list.get( i ).VibratoDepth );
-                    add.VibratoRate = new Vector<BezierChain>( list.get( i ).VibratoRate );
-                    ac.Curves.add( add );
-                }
-            }
-#if !DEBUG
-                } catch ( Exception ex ) {
-                    bocoree.debug.push_log( "Rescue14xXml; ex=" + ex );
-                    ac = null;
-                } finally {
-                    if ( fs != null ) {
-                        fs.Close();
-                    }
-                }
-#endif
-            return ac;
-        }
-    }*/
 #if !JAVA
 }
 #endif

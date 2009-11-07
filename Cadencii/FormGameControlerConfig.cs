@@ -25,9 +25,9 @@ using bocoree.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
+    using BEventArgs = EventArgs;
     using boolean = System.Boolean;
     using Integer = System.Int32;
-    using BEventArgs = EventArgs;
 #endif
 
 #if JAVA

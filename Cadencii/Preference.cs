@@ -35,15 +35,15 @@ using bocoree.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
+    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using java = bocoree;
-    using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA
     public class Preference extends BForm {
 #else
-    partial class Preference : BForm {
+    class Preference : BForm {
 #endif
         Font m_base_font;
         Font m_screen_font;

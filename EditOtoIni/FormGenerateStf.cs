@@ -29,8 +29,8 @@ using bocoree.util;
 using bocoree.windows.forms;
 
 namespace Boare.EditOtoIni {
-    using boolean = Boolean;
-    using BEventArgs = EventArgs;
+    using BEventArgs = System.EventArgs;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA

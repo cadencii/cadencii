@@ -29,9 +29,9 @@ using bocoree.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = System.Boolean;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using BEventArgs = System.EventArgs;
+    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA

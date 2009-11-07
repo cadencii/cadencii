@@ -125,9 +125,6 @@
     <Compile Include="FormNoteExpressionConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormNoteExpressionConfig.Designer.cs">
-      <DependentUpon>FormNoteExpressionConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="NumberTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -145,9 +142,6 @@
     <Compile Include="NoteNumberPropertyConverter.cs" />
     <Compile Include="PropertyPanelContainer.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PropertyPanelContainer.Designer.cs">
-      <DependentUpon>PropertyPanelContainer.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPanelState.cs" />
     <Compile Include="RenderQueue.cs" />
@@ -171,20 +165,11 @@
     <Compile Include="FormNoteProperty.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormNoteProperty.Designer.cs">
-      <DependentUpon>FormNoteProperty.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormMidiConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMidiConfig.Designer.cs">
-      <DependentUpon>FormMidiConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormShortcutKeys.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormShortcutKeys.Designer.cs">
-      <DependentUpon>FormShortcutKeys.cs</DependentUpon>
     </Compile>
     <Compile Include="KanaDeRomanization.cs" />
     <Compile Include="MidiDeviceImp.cs" />
@@ -195,9 +180,6 @@
     <Compile Include="MidiQueue.cs" />
     <Compile Include="PropertyPanel.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PropertyPanel.Designer.cs">
-      <DependentUpon>PropertyPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="SymmetricMatrix.cs" />
     <Compile Include="PlaySound.cs" />
@@ -237,34 +219,16 @@
     <Compile Include="FormMixer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMixer.Designer.cs">
-      <DependentUpon>FormMixer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormPlayBack.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormPlayBack.Designer.cs">
-      <DependentUpon>FormPlayBack.cs</DependentUpon>
-    </Compile>
     <Compile Include="AppManager.cs">
     </Compile>
     <Compile Include="FormTrackProperty.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormTrackProperty.Designer.cs">
-      <DependentUpon>FormTrackProperty.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormRealtimeConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormRealtimeConfig.Designer.cs">
-      <DependentUpon>FormRealtimeConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormSingerStyleConfig.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSingerStyleConfig.Designer.cs">
-      <DependentUpon>FormSingerStyleConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="FormSynthesize.cs">
       <SubType>Form</SubType>
@@ -272,20 +236,11 @@
     <Compile Include="FormTempoConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormTempoConfig.Designer.cs">
-      <DependentUpon>FormTempoConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormVibratoConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormVibratoConfig.Designer.cs">
-      <DependentUpon>FormVibratoConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormWordDictionary.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormWordDictionary.Designer.cs">
-      <DependentUpon>FormWordDictionary.cs</DependentUpon>
     </Compile>
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandRunnable.cs" />
@@ -322,25 +277,10 @@
       <DependentUpon>FormMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Preference.resx">
-      <DependentUpon>Preference.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PropertyPanel.resx">
-      <DependentUpon>PropertyPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PropertyPanelContainer.resx">
-      <DependentUpon>PropertyPanelContainer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TrackSelector.resx">
-      <DependentUpon>TrackSelector.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VersionInfo.resx">
-      <DependentUpon>VersionInfo.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -432,9 +372,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\arrow_skip_180.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\author_list.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\btn1.png">

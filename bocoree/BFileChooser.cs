@@ -121,7 +121,9 @@ namespace bocoree.windows.forms {
             if ( 0 <= filter_index && filter_index < m_filters.Count ) {
                 m_current_filter = m_filters[filter_index];
             }
-            m_current_directory = Path.GetDirectoryName( m_selected_file );
+            if ( m_selected_file != "" ) {
+                m_current_directory = Path.GetDirectoryName( m_selected_file );
+            }
             if ( dr == DialogResult.OK ) {
                 return APPROVE_OPTION;
             } else if ( dr == DialogResult.Cancel ) {
@@ -153,7 +155,9 @@ namespace bocoree.windows.forms {
             if ( 0 <= filter_index && filter_index < m_filters.Count ) {
                 m_current_filter = m_filters[filter_index];
             }
-            m_current_directory = Path.GetDirectoryName( m_selected_file );
+            if ( m_selected_file != "" ) {
+                m_current_directory = Path.GetDirectoryName( m_selected_file );
+            }
             if ( dr == DialogResult.OK ) {
                 return APPROVE_OPTION;
             } else if ( dr == DialogResult.Cancel ) {

@@ -29,13 +29,13 @@ using bocoree.awt.image;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
+    using BEventArgs = System.EventArgs;
+    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
+    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using Graphics = Graphics2D;
     using java = bocoree;
     using javax = bocoreex;
-    using BEventArgs = System.EventArgs;
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
 #endif
 
 #if JAVA

@@ -12,18 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
 
-    partial class FormBeatConfig : BForm {
+    class FormBeatConfig : BForm {
         public void ApplyLanguage() {
             setTitle( _( "Beat Change" ) );
             groupPosition.Text = _( "Position" );

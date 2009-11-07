@@ -16,7 +16,6 @@ package org.kbinani.Cadencii;
 
 import org.kbinani.windows.forms.*;
 #else
-using System;
 using System.Windows.Forms;
 using bocoree.windows.forms;
 

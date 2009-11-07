@@ -63,6 +63,138 @@ namespace Boare.Lib.Vsq {
         static readonly byte[] _MASTER_TRACK = new byte[] { (byte)0x4D, (byte)0x61, (byte)0x73, (byte)0x74, (byte)0x65, (byte)0x72, (byte)0x20, (byte)0x54, (byte)0x72, (byte)0x61, (byte)0x63, (byte)0x6B, };
         static readonly String[] _CURVES = new String[] { "VEL", "DYN", "BRE", "BRI", "CLE", "OPE", "GEN", "POR", "PIT", "PBS" };
 
+#if JAVA
+        public VsqFile( UstFile ust ){
+            this( "Miku", 1, 4, 4, ust.getBaseTempo() );
+#else
+        public VsqFile( UstFile ust )
+            : this( "Miku", 1, 4, 4, ust.getBaseTempo() ) {
+#endif
+            int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
+            VsqBPList pitch = new VsqBPList( 0, -2400, 2400 ); // ノートナンバー×100
+            for ( Iterator itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
+                UstEvent ue = (UstEvent)itr.next();
+                if ( ue.Lyric != "R" ) {
+                    VsqID id = new VsqID( 0 );
+                    id.Length = ue.Length;
+                    ByRef<String> psymbol = new ByRef<String>( "a" );
+                    if ( !SymbolTable.attatch( ue.Lyric, psymbol ) ) {
+                        psymbol.value = "a";
+                    }
+                    id.LyricHandle = new LyricHandle( ue.Lyric, psymbol.value );
+                    id.Note = ue.Note;
+                    id.type = VsqIDType.Anote;
+                    VsqEvent ve = new VsqEvent( clock_count, id );
+                    ve.UstEvent = (UstEvent)ue.clone();
+                    Track.get( 1 ).addEvent( ve );
+
+                    if ( ue.Pitches != null ) {
+                        // PBTypeクロックごとにデータポイントがある
+                        int clock = clock_count - ue.PBType;
+                        for ( int i = 0; i < ue.Pitches.Length; i++ ) {
+                            clock += ue.PBType;
+                            pitch.add( clock, (int)ue.Pitches[i] );
+                        }
+                    }
+                }
+                if ( ue.Tempo > 0.0f ) {
+                    TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.Tempo), 0.0 ) );
+                }
+                clock_count += ue.Length;
+            }
+            updateTempoInfo();
+            updateTotalClocks();
+            updateTimesigInfo();
+            reflectPitch( this, 1, pitch );
+        }
+
+        /// <summary>
+        /// master==MasterPitchControl.Pitchの場合、m_pitchからPITとPBSを再構成。
+        /// master==MasterPitchControl.PITandPBSの場合、PITとPBSからm_pitchを再構成
+        /// </summary>
+        private static void reflectPitch( VsqFile vsq, int track, VsqBPList pitch ) {
+            //double offset = AttachedCurves[track - 1].MasterTuningInCent * 100;
+            //Vector<Integer> keyclocks = new Vector<Integer>( pitch.getKeys() );
+            int keyclock_size = pitch.size();
+            VsqBPList pit = new VsqBPList( 0, -8192, 8191 );
+            VsqBPList pbs = new VsqBPList( 2, 0, 24 );
+            int premeasure_clock = vsq.getPreMeasureClocks();
+            int lastpit = pit.getDefault();
+            int lastpbs = pbs.getDefault();
+            int vpbs = 24;
+            int vpit = 0;
+
+            Vector<Integer> parts = new Vector<Integer>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
+            parts.add( premeasure_clock );
+            int lastclock = premeasure_clock;
+            for ( Iterator itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent ve = (VsqEvent)itr.next();
+                if ( ve.Clock <= lastclock ) {
+                    lastclock = Math.Max( lastclock, ve.Clock + ve.ID.Length );
+                } else {
+                    parts.add( ve.Clock );
+                    lastclock = ve.Clock + ve.ID.Length;
+                }
+            }
+
+            int parts_size = parts.size();
+            for ( int i = 0; i < parts_size; i++ ) {
+                int partstart = parts.get( i );
+                int partend = int.MaxValue;
+                if ( i + 1 < parts.size() ) {
+                    partend = parts.get( i + 1 );
+                }
+
+                // まず、区間内の最大ピッチベンド幅を調べる
+                double max = 0;
+                for ( int j = 0; j < keyclock_size; j++ ) {
+                    int clock = pitch.getKeyClock( j );
+                    if ( clock < partstart ) {
+                        continue;
+                    }
+                    if ( partend <= clock ) {
+                        break;
+                    }
+                    max = Math.Max( max, Math.Abs( pitch.getValue( clock ) / 100.0 ) );
+                }
+
+                // 最大ピッチベンド幅を表現できる最小のPBSを計算
+                vpbs = (int)(Math.Ceiling( max * 8192.0 / 8191.0 ) + 0.1);
+                if ( vpbs <= 0 ) {
+                    vpbs = 1;
+                }
+                double pitch2 = pitch.getValue( partstart ) / 100.0;
+                if ( lastpbs != vpbs ) {
+                    pbs.add( partstart, vpbs );
+                    lastpbs = vpbs;
+                }
+                vpit = (int)(pitch2 * 8192 / (double)vpbs);
+                if ( lastpit != vpit ) {
+                    pit.add( partstart, vpit );
+                    lastpit = vpit;
+                }
+                for ( int j = 0; j < keyclock_size; j++ ) {
+                    int clock = pitch.getKeyClock( j );
+                    if ( clock < partstart ) {
+                        continue;
+                    }
+                    if ( partend <= clock ) {
+                        break;
+                    }
+                    if ( clock != partstart ) {
+                        pitch2 = pitch.getElement( j ) / 100.0;
+                        vpit = (int)(pitch2 * 8192 / (double)vpbs);
+                        if ( lastpit != vpit ) {
+                            pit.add( clock, vpit );
+                            lastpit = vpit;
+                        }
+                    }
+                }
+            }
+            vsq.Track.get( track ).setCurve( "pit", pit );
+            vsq.Track.get( track ).setCurve( "pbs", pbs );
+        }
+
         /// <summary>
         /// プリセンドタイムの妥当性を判定します
         /// </summary>

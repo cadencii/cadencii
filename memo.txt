@@ -7,7 +7,6 @@
 -曲のタイムライン上にユーザが付けるタグ（付箋）的な物。「次の付箋に進む」「前の付箋に戻る」
 
 -v3.0.6(3.1.0)todo-----------------------------------------------------
--音源DBのインストール箇所がデフォルトと違う場合にいけてるか再確認
 -Play With SynthとPlay After Synthを切り替えられるようにする。
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
 -ミキサーダイアログのミュートとソロボタン
@@ -20,11 +19,7 @@
 -CadenciiからUTAUのプラグインを呼び出す仕組み->./UtauPluginInvoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -VsqHandleのcastTo**はクローンする必要があるのかどうか検討
--BFileChooserでクラッシュ。ファイル　開く　何もせずにキャンセル
 -UstFile#.ctor( VsqFile )の実装
--VsqFileEx#.ctor( UstFile )をVsqFile#.ctor( UstFile )に移動
--Form*.Designer.csのInitializeComponentから，リソースを指定するメソッド（initializeResources）と，イベントを登録するメソッド（registerEventHandlers）を抽出するユーティリティ
--パレットツールが例外を返したときの処理を加える（現状だとCadencii本体もろとも落ちてまう）．
 
 -v3.0.6(3.1.0)done-----------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。
@@ -34,7 +29,12 @@
 -リソースを自前でexeに埋め込む仕組み(for Java port, MAKEで起動するかんじのやつを)->makeRes.cs
 -VolumeTracker.javaをsvn add
 -UTAUのustを読み込むとき、[#0001]の数字部分が正しく読み込めない不具合を修正。
+-BFileChooserでクラッシュ。ファイル　開く　何もせずにキャンセル
 -DivideNote.csで，パレットツールの設定を読み込んだときstatic Modifierがnullなせいでクラッシュする不具合を修正．
+-パレットツールが例外を返したときの処理を加える（現状だとCadencii本体もろとも落ちてまう）．
+-VsqFileEx#.ctor( UstFile )をVsqFile#.ctor( UstFile )に移動
+-Form*.Designer.csのInitializeComponentから，リソースを指定するメソッド（initializeResources）と，イベントを登録するメソッド（registerEventHandlers）を抽出するユーティリティ->extractEventHandlerAndResource.cs
+-音源DBのインストール箇所がデフォルトと違う場合に、音源DBが検出されない不具合を修正。
 
 -v3.0.5done------------------------------------------------------------
 -bug0017[1Nov2009_1056JST_228-01]「Cadenciiについて」のクレジットの表示がなくなっている。

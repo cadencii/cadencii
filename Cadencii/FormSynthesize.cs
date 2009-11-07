@@ -23,7 +23,6 @@ import org.kbinani.windows.forms.*;
 import org.kbinani.componentModel.*;
 #else
 using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
@@ -33,12 +32,12 @@ using bocoree.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = System.Boolean;
-    using Integer = Int32;
-    using BEventArgs = System.EventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
+    using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+    using boolean = System.Boolean;
+    using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
+    using Integer = Int32;
 #endif
 
     /// <summary>

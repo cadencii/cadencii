@@ -105,9 +105,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FormGenerateStf.resx">
-      <DependentUpon>FormGenerateStf.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormUtauVoiceConfig.resx">
       <DependentUpon>FormUtauVoiceConfig.cs</DependentUpon>
     </EmbeddedResource>

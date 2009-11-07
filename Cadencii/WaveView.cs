@@ -14,7 +14,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Boare.Lib.Media;
 
 namespace Boare.Cadencii {
@@ -27,7 +26,6 @@ namespace Boare.Cadencii {
         private int m_last_w = 0;
         private int m_last_h = 0;
         private int m_shiftx = 0;
-        //private AppManager AppManager;
         private int skip = 100;
         private float m_last_scalex;
         private int m_last_stdx;

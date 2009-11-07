@@ -19,7 +19,7 @@ namespace Boare.Cadencii {
     /// <summary>
     /// MouseWheel‚ÅIncrement‚¸‚Â’l‚ğ‘Œ¸‚³‚¹‚é‚±‚Æ‚Ì‚Å‚«‚éNumericUpDown
     /// </summary>
-    partial class NumericUpDownEx : NumericUpDown {
+    class NumericUpDownEx : NumericUpDown {
         public NumericUpDownEx() {
             //InitializeComponent();
             this.GotFocus += new EventHandler( NumericUpDownEx_GotFocus );

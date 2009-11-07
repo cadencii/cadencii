@@ -147,6 +147,12 @@ namespace Boare.Lib.Vsq {
                 exp_config_sys2 = ExpressionConfigSys.getVocaloid2Default();
             }
             s_exp_config_sys.put( SynthesizerType.VOCALOID2, exp_config_sys2 );
+#if DEBUG
+            SingerConfigSys scs2 = s_singer_config_sys.get( SynthesizerType.VOCALOID2 );
+            foreach( SingerConfig sc in scs2.getInstalledSingers() ){
+                PortUtil.println( "VocaloSysUtil#.ctor; sc=" + sc.toString() );
+            }
+#endif
         }
 
         /// <summary>
@@ -211,7 +217,7 @@ namespace Boare.Lib.Vsq {
             }
 
             // path_vicedbを取得
-            Vector<String> voice_ids = new Vector<String>();
+            TreeMap<String, String> install_dirs = new TreeMap<String, String>();
             // 最初はpath_voicedbの取得と、id（BHXXXXXXXXXXXXXXXX）のようなシリアルを取得
             for ( Iterator itr = voice.iterator(); itr.hasNext(); ) {
                 String s = (String)itr.next();
@@ -221,32 +227,31 @@ namespace Boare.Lib.Vsq {
                         path_voicedb.value = spl[1];
                     } else if ( spl.Length >= 3 ) {
                         String[] spl2 = PortUtil.splitString( spl[0], '\\' );
-                        if ( spl2.Length == 1 ) {
-                            if ( !voice_ids.contains( spl2[0] ) ) {
-                                voice_ids.add( spl2[0] );
+                        if ( spl2.Length == 1 ){
+                            if ( !install_dirs.containsKey( spl2[0] ) ) {
+                                string install = "";
+                                if ( spl[1].Equals( "INSTALLDIR" ) ) {
+                                    install = spl[2];
+                                }
+                                install_dirs.put( spl2[0], install );
+                            } else {
+                                if ( spl[1].Equals( "INSTALLDIR" ) ) {
+                                    install_dirs.put( spl2[0], spl[2] );
+                                }
                             }
                         }
                     }
                 }
             }
-            // 取得したシリアルを元に、installed_singersを取得
-            for ( Iterator itr = voice_ids.iterator(); itr.hasNext(); ) {
-                String s = (String)itr.next();
-                String install_dir = "";
-                for ( Iterator itr2 = voice.iterator(); itr2.hasNext(); ) {
-                    String s2 = (String)itr2.next();
-                    if ( s2.StartsWith( header + "\\" + s + "\t" ) ) {
-                        String[] spl = PortUtil.splitString( s2, '\t' );
-                        if ( spl.Length >= 3 && spl[1].Equals( "INSTALLDIR" ) ) {
-                            install_dir = PortUtil.combinePath( spl[2], s );
-                            break;
-                        }
-                    }
+
+            // installed_singersに追加
+            for ( Iterator itr = install_dirs.keySet().iterator(); itr.hasNext(); ) {
+                String id = (String)itr.next();
+                String install = install_dirs.get( id );
+                if ( id.Equals( "" ) ) {
+                    install = path_voicedb.value;
                 }
-                if ( install_dir.Equals( "" ) ) {
-                    install_dir = PortUtil.combinePath( path_voicedb.value, s );
-                }
-                installed_singers.add( install_dir );
+                installed_singers.add( install );
             }
 
             // path_expdbを取得
@@ -272,9 +277,9 @@ namespace Boare.Lib.Vsq {
                 }
             }
 #if DEBUG
-            PortUtil.println( "path_vsti=" + path_vsti );
-            PortUtil.println( "path_voicedb=" + path_voicedb );
-            PortUtil.println( "path_expdb=" + path_expdb );
+            PortUtil.println( "path_vsti=" + path_vsti.value );
+            PortUtil.println( "path_voicedb=" + path_voicedb.value );
+            PortUtil.println( "path_expdb=" + path_expdb.value );
             PortUtil.println( "installed_singers=" );
             for ( Iterator itr = installed_singers.iterator(); itr.hasNext(); ) {
                 String s = (String)itr.next();

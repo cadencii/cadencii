@@ -21,6 +21,7 @@ using bocoree;
 using bocoree.util;
 
 namespace GenerateKeySound {
+
     class Program : Form {
         const int _SAMPLE_RATE = 44100;
         private SingerConfig[] m_singer_config1;

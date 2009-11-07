@@ -4639,6 +4639,9 @@ namespace Boare.Cadencii {
 #endif
                 refreshScreen();
             } catch ( Exception ex ) {
+#if DEBUG
+                PortUtil.println( "FormMain#menuFileOpenUst_Click; ex=" + ex );
+#endif
             }
         }
 

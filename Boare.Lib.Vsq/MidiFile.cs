@@ -43,40 +43,40 @@ namespace Boare.Lib.Vsq {
                 // ヘッダ
                 byte[] byte4 = new byte[4];
                 stream.read( byte4, 0, 4 );
-                if ( makeUInt32( byte4 ) != 0x4d546864 ) {
+                if ( PortUtil.make_uint32_be( byte4 ) != 0x4d546864 ) {
                     throw new Exception( "header error: MThd" );
                 }
 
                 // データ長
                 stream.read( byte4, 0, 4 );
-                long length = makeUInt32( byte4 );
+                long length = PortUtil.make_uint32_be( byte4 );
 
                 // フォーマット
                 stream.read( byte4, 0, 2 );
-                m_format = makeUint16( byte4 );
+                m_format = PortUtil.make_uint16_be( byte4 );
 
                 // トラック数
                 int tracks = 0;
                 stream.read( byte4, 0, 2 );
-                tracks = (int)makeUint16( byte4 );
+                tracks = (int)PortUtil.make_uint16_be( byte4 );
 
                 // 時間分解能
                 stream.read( byte4, 0, 2 );
-                m_time_format = makeUint16( byte4 );
+                m_time_format = PortUtil.make_uint16_be( byte4 );
 
                 // 各トラックを読込み
                 m_events = new Vector<Vector<MidiEvent>>();
                 for ( int track = 0; track < tracks; track++ ) {
+                    Vector<MidiEvent> track_events = new Vector<MidiEvent>();
                     // ヘッダー
                     stream.read( byte4, 0, 4 );
-                    if ( makeUInt32( byte4 ) != 0x4d54726b ) {
+                    if ( PortUtil.make_uint32_be( byte4 ) != 0x4d54726b ) {
                         throw new Exception( "header error; MTrk" );
                     }
-                    m_events.add( new Vector<MidiEvent>() );
 
                     // チャンクサイズ
                     stream.read( byte4, 0, 4 );
-                    long size = (long)makeUInt32( byte4 );
+                    long size = (long)PortUtil.make_uint32_be( byte4 );
                     long startpos = stream.getFilePointer();
 
                     // チャンクの終わりまで読込み
@@ -84,19 +84,20 @@ namespace Boare.Lib.Vsq {
                     ByRef<Byte> last_status_byte = new ByRef<Byte>( (byte)0x00 );
                     while ( stream.getFilePointer() < startpos + size ) {
                         MidiEvent mi = MidiEvent.read( stream, clock, last_status_byte );
-                        m_events.get( track ).add( mi );
+                        track_events.add( mi );
                     }
                     if ( m_time_format != 480 ) {
-                        int count = m_events.get( track ).size();
+                        int count = track_events.size();
                         for ( int i = 0; i < count; i++ ) {
-                            MidiEvent mi = m_events.get( track ).get( i );
+                            MidiEvent mi = track_events.get( i );
                             mi.clock = mi.clock * 480 / m_time_format;
-                            m_events.get( track ).set( i, mi );
+                            track_events.set( i, mi );
                         }
                     }
+                    m_events.add( track_events );
                 }
                 m_time_format = 480;
-#if DEBUG
+#if DEBUG && MIDI_PRINT_TO_FILE
                 String dbg = PortUtil.combinePath( PortUtil.getDirectoryName( path ), PortUtil.getFileNameWithoutExtension( path ) + ".txt" );
                 BufferedWriter sw = null;
                 try {
@@ -194,14 +195,6 @@ namespace Boare.Lib.Vsq {
                 }
                 m_events.clear();
             }
-        }
-
-        private static long makeUInt32( byte[] value ) {
-            return (long)((long)((long)((long)(value[0] << 8) | value[1]) << 8 | value[2]) << 8 | value[3]);
-        }
-
-        private static int makeUint16( byte[] value ) {
-            return (int)((int)(value[0] << 8) | value[1]);
         }
     }
 

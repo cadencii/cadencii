@@ -42,7 +42,7 @@ namespace Boare.Lib.Vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             boolean[] bits = new boolean[64];
             long val = 0x1;
             bits[0] = (number & val) == val;
@@ -79,7 +79,7 @@ namespace Boare.Lib.Vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             long ret = 0;
             while ( true ) {
                 int i = stream.read();
@@ -99,7 +99,7 @@ namespace Boare.Lib.Vsq {
 #if JAVA
             throws IOException, Exception
 #endif
- {
+        {
             long delta_clock = readDeltaClock( stream );
             last_clock.value += delta_clock;
             byte first_byte = (byte)stream.read();
@@ -193,7 +193,7 @@ namespace Boare.Lib.Vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             stream.write( firstByte );
             if ( firstByte == 0xff ) {
                 stream.write( data[0] );
