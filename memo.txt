@@ -20,6 +20,9 @@
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -VsqHandleのcastTo**はクローンする必要があるのかどうか検討
 -UstFile#.ctor( VsqFile )の実装
+-/bocoree/BNumericUpDown.csをsvn add
+-/ScriptImplement/Utau Plugin Invoker.csをsvn add
+-/ScriptImplementのビルドイベントに，Utau Plugin Invoker.csをコピーする部分を追加
 
 -v3.0.6(3.1.0)done-----------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。
