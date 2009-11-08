@@ -59,13 +59,15 @@ namespace Boare.Cadencii {
             }
             return ret;
         }
-        
+
         public FormBeatConfig( int bar_count, int numerator, int denominator, boolean num_enabled, int pre_measure ) {
 #if JAVA
             initialize();
 #else
             InitializeComponent();
 #endif
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             //ClientSize = new Size( 278, 182 );
 
@@ -120,7 +122,7 @@ namespace Boare.Cadencii {
             }
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
-        
+
         private void chkEnd_CheckedChanged( object sender, EventArgs e ) {
             numEnd.Enabled = chkEnd.Checked;
         }
@@ -129,6 +131,13 @@ namespace Boare.Cadencii {
             this.DialogResult = DialogResult.OK;
         }
 
+        private void registerEventHandlers() {
+            this.chkEnd.CheckedChanged += new System.EventHandler( this.chkEnd_CheckedChanged );
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
         #region UI Impl for Java
 	    private JPanel jContentPane = null;
@@ -564,7 +573,6 @@ namespace Boare.Cadencii {
             this.chkEnd.TabIndex = 1;
             this.chkEnd.Text = "To(&T)";
             this.chkEnd.UseVisualStyleBackColor = true;
-            this.chkEnd.CheckedChanged += new System.EventHandler( this.chkEnd_CheckedChanged );
             // 
             // lblStart
             // 
@@ -646,7 +654,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // btnCancel
             // 

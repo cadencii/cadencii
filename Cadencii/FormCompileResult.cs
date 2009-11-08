@@ -36,6 +36,8 @@ namespace Boare.Cadencii {
 #else
             InitializeComponent();
 #endif
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             label1.setText( message );
             textBox1.setText( errors );
@@ -48,6 +50,12 @@ namespace Boare.Cadencii {
 
         private static String _( String id ) {
             return Messaging.getMessage( id );
+        }
+
+        private void setResources() {
+        }
+
+        private void registerEventHandlers() {
         }
 #if JAVA
         #region UI Impl for Java

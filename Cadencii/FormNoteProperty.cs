@@ -22,6 +22,8 @@ namespace Boare.Cadencii {
     public class FormNoteProperty : BForm {
         public FormNoteProperty() {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -46,6 +48,12 @@ namespace Boare.Cadencii {
             this.Close();
         }
 
+        private void registerEventHandlers() {
+            this.menuClose.Click += new System.EventHandler( this.menuClose_Click );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
 #else
         #region UI Impl for C#
@@ -102,7 +110,6 @@ namespace Boare.Cadencii {
             this.menuClose.Name = "menuClose";
             this.menuClose.Size = new System.Drawing.Size( 115, 22 );
             this.menuClose.Text = "Close(&C)";
-            this.menuClose.Click += new System.EventHandler( this.menuClose_Click );
             // 
             // FormNoteProperty
             // 

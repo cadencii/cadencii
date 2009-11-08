@@ -73,6 +73,8 @@ namespace Boare.Cadencii {
             m_tracks = new int[] { track };
             m_files = new String[] { file };
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             lblProgress.Text = "1/" + 1;
             progressWhole.Maximum = 1;
             m_partial_mode = true;
@@ -90,6 +92,8 @@ namespace Boare.Cadencii {
             m_tracks = tracks;
             m_files = files;
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             lblProgress.Text = "1/" + m_tracks.Length;
             progressWhole.Maximum = m_tracks.Length;
             m_partial_mode = false;
@@ -216,11 +220,11 @@ namespace Boare.Cadencii {
                         } catch ( Exception ex ) {
                         } finally {
                             if ( ww != null ) {
-                                try{
+                                try {
 #if !JAVA
                                     ww.Dispose();
 #endif
-                                } catch( Exception ex2 ){
+                                } catch ( Exception ex2 ) {
                                 }
                             }
                         }
@@ -289,6 +293,17 @@ namespace Boare.Cadencii {
                 span -= i * sec_per_min;
             }
             return ret + PortUtil.formatDecimal( added ? "00" : "0", span ) + _( "sec" );
+        }
+
+        private void registerEventHandlers() {
+            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
+            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
+            this.timer.Tick += new System.EventHandler( this.timer_Tick );
+            this.Load += new System.EventHandler( this.FormSynthesize_Load );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormSynthesize_FormClosing );
+        }
+
+        private void setResources() {
         }
 
 #if JAVA
@@ -378,13 +393,10 @@ namespace Boare.Cadencii {
             // 
             this.bgWork.WorkerReportsProgress = true;
             this.bgWork.WorkerSupportsCancellation = true;
-            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
-            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
             // 
             // timer
             // 
             this.timer.Interval = 1000;
-            this.timer.Tick += new System.EventHandler( this.timer_Tick );
             // 
             // lblTime
             // 
@@ -415,8 +427,6 @@ namespace Boare.Cadencii {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Synthesize";
-            this.Load += new System.EventHandler( this.FormSynthesize_Load );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormSynthesize_FormClosing );
             this.ResumeLayout( false );
             this.PerformLayout();
 

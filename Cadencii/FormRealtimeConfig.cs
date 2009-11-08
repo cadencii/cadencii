@@ -23,6 +23,8 @@ namespace Boare.Cadencii {
 
         public FormRealtimeConfig() {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             Boare.Lib.AppUtil.Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -48,7 +50,7 @@ namespace Boare.Cadencii {
                 int len = winmmhelp.JoyGetNumButtons( 0 );
                 byte[] buttons = new byte[len];
                 int pov0;
-                    winmmhelp.JoyGetStatus( 0, out buttons, out pov0 );
+                winmmhelp.JoyGetStatus( 0, out buttons, out pov0 );
                 //int[] pov = state.GetPointOfView();
                 //int pov0 = pov[0];
                 boolean btn_x = (buttons[AppManager.editorConfig.GameControlerCross] > 0x00);
@@ -118,6 +120,14 @@ namespace Boare.Cadencii {
             this.Close();
         }
 
+        private void registerEventHandlers() {
+            this.timer.Tick += new System.EventHandler( this.timer_Tick );
+            this.btnStart.Click += new System.EventHandler( this.btnStart_Click );
+            this.Load += new System.EventHandler( this.FormRealtimeConfig_Load );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
 #else
         #region UI Impl for C#
@@ -157,7 +167,6 @@ namespace Boare.Cadencii {
             // timer
             // 
             this.timer.Interval = 10;
-            this.timer.Tick += new System.EventHandler( this.timer_Tick );
             // 
             // btnStart
             // 
@@ -168,7 +177,6 @@ namespace Boare.Cadencii {
             this.btnStart.TabIndex = 0;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler( this.btnStart_Click );
             // 
             // btnCancel
             // 
@@ -250,7 +258,6 @@ namespace Boare.Cadencii {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FormRealtimeConfig";
-            this.Load += new System.EventHandler( this.FormRealtimeConfig_Load );
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();

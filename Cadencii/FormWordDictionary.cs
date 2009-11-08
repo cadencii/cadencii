@@ -25,6 +25,8 @@ namespace Boare.Cadencii {
     class FormWordDictionary : BForm {
         public FormWordDictionary() {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -93,6 +95,16 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void registerEventHandlers() {
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            this.btnUp.Click += new System.EventHandler( this.btnUp_Click );
+            this.btnDown.Click += new System.EventHandler( this.btnDown_Click );
+            this.Load += new System.EventHandler( this.FormWordDictionary_Load );
+        }
+
+        private void setResources() {
+        }
+
 #if JAVA
 #else
         #region UI Impl for C#
@@ -159,7 +171,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 4;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // btnCancel
             // 
@@ -181,7 +192,6 @@ namespace Boare.Cadencii {
             this.btnUp.TabIndex = 5;
             this.btnUp.Text = "Up";
             this.btnUp.UseVisualStyleBackColor = true;
-            this.btnUp.Click += new System.EventHandler( this.btnUp_Click );
             // 
             // btnDown
             // 
@@ -192,7 +202,6 @@ namespace Boare.Cadencii {
             this.btnDown.TabIndex = 6;
             this.btnDown.Text = "Down";
             this.btnDown.UseVisualStyleBackColor = true;
-            this.btnDown.Click += new System.EventHandler( this.btnDown_Click );
             // 
             // FormWordDictionary
             // 
@@ -215,7 +224,6 @@ namespace Boare.Cadencii {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "User Dictionary Configuration";
-            this.Load += new System.EventHandler( this.FormWordDictionary_Load );
             this.ResumeLayout( false );
             this.PerformLayout();
 

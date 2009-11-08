@@ -44,6 +44,8 @@ namespace Boare.Cadencii {
 #else
             InitializeComponent();
 #endif
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             String notes = (max_notes > 1) ? " [notes]" : " [note]";
             lblNotes.Text = "Max : " + max_notes + notes;
@@ -108,6 +110,13 @@ namespace Boare.Cadencii {
 
         private void btnOK_Click( Object sender, BEventArgs e ) {
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void registerEventHandlers() {
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+        }
+
+        private void setResources() {
         }
 #if JAVA
         #region UI Impl for Java
@@ -284,7 +293,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // lblNotes
             // 

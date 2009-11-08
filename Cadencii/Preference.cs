@@ -190,6 +190,8 @@ namespace Boare.Cadencii {
             txtVOCALOID1.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
             txtVOCALOID2.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
 #endif
+            registerEventHandlers();
+            setResources();
         }
 
         public boolean isUseSpaceKeyAsMiddleButtonModifier() {
@@ -1030,6 +1032,24 @@ namespace Boare.Cadencii {
 
         private void chkAutoBackup_CheckedChanged( Object sender, BEventArgs e ) {
             numAutoBackupInterval.Enabled = chkAutoBackup.Checked;
+        }
+
+        private void registerEventHandlers() {
+            this.btnChangeScreenFont.Click += new System.EventHandler( this.btnChangeScreenFont_Click );
+            this.btnChangeMenuFont.Click += new System.EventHandler( this.btnChangeMenuFont_Click );
+            this.btnWavtool.Click += new System.EventHandler( this.btnWavtool_Click );
+            this.btnResampler.Click += new System.EventHandler( this.btnResampler_Click );
+            this.comboPlatform.SelectedIndexChanged += new System.EventHandler( this.comboPlatform_SelectedIndexChanged );
+            this.btnRemove.Click += new System.EventHandler( this.btnRemove_Click );
+            this.btnAdd.Click += new System.EventHandler( this.btnAdd_Click );
+            this.btnUp.Click += new System.EventHandler( this.btnUp_Click );
+            this.btnDown.Click += new System.EventHandler( this.btnDown_Click );
+            this.listSingers.SelectedIndexChanged += new System.EventHandler( this.listSingers_SelectedIndexChanged );
+            this.chkAutoBackup.CheckedChanged += new System.EventHandler( this.chkAutoBackup_CheckedChanged );
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+        }
+
+        private void setResources() {
         }
 
 #if JAVA
@@ -4162,7 +4182,6 @@ namespace Boare.Cadencii {
             this.btnChangeScreenFont.TabIndex = 42;
             this.btnChangeScreenFont.Text = "Change";
             this.btnChangeScreenFont.UseVisualStyleBackColor = true;
-            this.btnChangeScreenFont.Click += new System.EventHandler( this.btnChangeScreenFont_Click );
             // 
             // labelScreen
             // 
@@ -4190,7 +4209,6 @@ namespace Boare.Cadencii {
             this.btnChangeMenuFont.TabIndex = 41;
             this.btnChangeMenuFont.Text = "Change";
             this.btnChangeMenuFont.UseVisualStyleBackColor = true;
-            this.btnChangeMenuFont.Click += new System.EventHandler( this.btnChangeMenuFont_Click );
             // 
             // groupVisibleCurve
             // 
@@ -4755,7 +4773,6 @@ namespace Boare.Cadencii {
             this.btnWavtool.TabIndex = 112;
             this.btnWavtool.Text = "...";
             this.btnWavtool.UseVisualStyleBackColor = true;
-            this.btnWavtool.Click += new System.EventHandler( this.btnWavtool_Click );
             // 
             // txtResampler
             // 
@@ -4781,7 +4798,6 @@ namespace Boare.Cadencii {
             this.btnResampler.TabIndex = 110;
             this.btnResampler.Text = "...";
             this.btnResampler.UseVisualStyleBackColor = true;
-            this.btnResampler.Click += new System.EventHandler( this.btnResampler_Click );
             // 
             // txtWavtool
             // 
@@ -4867,7 +4883,6 @@ namespace Boare.Cadencii {
             this.comboPlatform.Name = "comboPlatform";
             this.comboPlatform.Size = new System.Drawing.Size( 121, 20 );
             this.comboPlatform.TabIndex = 101;
-            this.comboPlatform.SelectedIndexChanged += new System.EventHandler( this.comboPlatform_SelectedIndexChanged );
             // 
             // lblPlatform
             // 
@@ -4914,7 +4929,6 @@ namespace Boare.Cadencii {
             this.btnRemove.TabIndex = 122;
             this.btnRemove.Text = "Remove";
             this.btnRemove.UseVisualStyleBackColor = true;
-            this.btnRemove.Click += new System.EventHandler( this.btnRemove_Click );
             // 
             // btnAdd
             // 
@@ -4925,7 +4939,6 @@ namespace Boare.Cadencii {
             this.btnAdd.TabIndex = 121;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler( this.btnAdd_Click );
             // 
             // btnUp
             // 
@@ -4936,7 +4949,6 @@ namespace Boare.Cadencii {
             this.btnUp.TabIndex = 123;
             this.btnUp.Text = "Up";
             this.btnUp.UseVisualStyleBackColor = true;
-            this.btnUp.Click += new System.EventHandler( this.btnUp_Click );
             // 
             // btnDown
             // 
@@ -4947,7 +4959,6 @@ namespace Boare.Cadencii {
             this.btnDown.TabIndex = 124;
             this.btnDown.Text = "Down";
             this.btnDown.UseVisualStyleBackColor = true;
-            this.btnDown.Click += new System.EventHandler( this.btnDown_Click );
             // 
             // listSingers
             // 
@@ -4967,7 +4978,6 @@ namespace Boare.Cadencii {
             this.listSingers.TabIndex = 120;
             this.listSingers.UseCompatibleStateImageBehavior = false;
             this.listSingers.View = System.Windows.Forms.View.Details;
-            this.listSingers.SelectedIndexChanged += new System.EventHandler( this.listSingers_SelectedIndexChanged );
             // 
             // columnHeaderProgramChange
             // 
@@ -5042,7 +5052,6 @@ namespace Boare.Cadencii {
             this.chkAutoBackup.TabIndex = 0;
             this.chkAutoBackup.Text = "Automatical Backup";
             this.chkAutoBackup.UseVisualStyleBackColor = true;
-            this.chkAutoBackup.CheckedChanged += new System.EventHandler( this.chkAutoBackup_CheckedChanged );
             // 
             // btnCancel
             // 
@@ -5064,7 +5073,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 200;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // fontDialog
             // 

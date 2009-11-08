@@ -24,6 +24,8 @@ namespace Boare.Cadencii {
 
         public FormTrackProperty( int master_tuning_in_cent ) {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             m_master_tuning = master_tuning_in_cent;
             txtMasterTuning.Text = master_tuning_in_cent.ToString();
@@ -56,6 +58,12 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void registerEventHandlers() {
+            this.txtMasterTuning.TextChanged += new System.EventHandler( this.txtMasterTuning_TextChanged );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
 #else
         #region UI Impl for C#
@@ -125,7 +133,6 @@ namespace Boare.Cadencii {
             this.txtMasterTuning.Name = "txtMasterTuning";
             this.txtMasterTuning.Size = new System.Drawing.Size( 187, 19 );
             this.txtMasterTuning.TabIndex = 29;
-            this.txtMasterTuning.TextChanged += new System.EventHandler( this.txtMasterTuning_TextChanged );
             // 
             // FormTrackProperty
             // 

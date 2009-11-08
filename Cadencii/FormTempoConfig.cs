@@ -18,10 +18,12 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
-    
+
     class FormTempoConfig : BForm {
         public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, decimal tempo, int pre_measure ) {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             numBar.Minimum = -pre_measure + 1;
             numBar.Maximum = decimal.MaxValue;
@@ -74,6 +76,12 @@ namespace Boare.Cadencii {
             this.DialogResult = DialogResult.OK;
         }
 
+        private void registerEventHandlers() {
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
 #else
         #region UI Impl for C#
@@ -235,7 +243,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // btnCancel
             // 

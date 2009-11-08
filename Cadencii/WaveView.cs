@@ -42,10 +42,6 @@ namespace Boare.Cadencii {
             m_pict.Paint += new PaintEventHandler( m_pict_Paint );
         }
 
-        /*public WaveView( AppManager manager ): this(){
-            AppManager = manager;
-        }*/
-
         /// <summary>
         /// 現在の波形画像をリセットします
         /// </summary>
@@ -66,10 +62,6 @@ namespace Boare.Cadencii {
                 e.Graphics.DrawImage( m_bmp, m_shiftx, 0, m_bmp.Width, m_bmp.Height );
             }
         }
-
-        /*public void SetManager( AppManager manager ) {
-            AppManager = manager;
-        }*/
 
         private void WaveView_Resize( object sender, EventArgs e ) {
             if ( this.Width != 0 && this.Height != 0 ) {
@@ -96,15 +88,9 @@ namespace Boare.Cadencii {
         }
 
         public void Draw(){
-#if DEBUG
-            //AppManager.DebugWriteLine( "WaveView+Draw()" );
-#endif
             if ( this.Width <= 0 || this.Height <= 0 ) {
                 return;
             }
-            /*if ( AppManager == null ) {
-                return;
-            }*/
 
             // 前回の描画ステータスと同じなら描画する必要なし
             if ( this.Size == m_last_size && AppManager.startToDrawX == m_last_stdx && AppManager.scaleX == m_last_scalex ) {

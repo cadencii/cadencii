@@ -31,6 +31,8 @@ namespace Boare.Cadencii {
 
         public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict ) {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             m_dict = dict;
             m_dumy = new BMenuItem();
             m_dumy.ShowShortcutKeys = true;
@@ -38,7 +40,7 @@ namespace Boare.Cadencii {
             CopyDict( m_dict, ref m_first_dict );
             ApplyLanguage();
             UpdateList();
-            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() ); 
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public void ApplyLanguage() {
@@ -80,7 +82,7 @@ namespace Boare.Cadencii {
 
         private static void CopyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, ref TreeMap<String, ValuePair<String, BKeys[]>> dest ) {
             dest.clear();
-            for ( Iterator itr = src.keySet().iterator(); itr.hasNext(); ){
+            for ( Iterator itr = src.keySet().iterator(); itr.hasNext(); ) {
                 String name = (String)itr.next();
                 String key = src.get( name ).Key;
                 BKeys[] values = src.get( name ).Value;
@@ -88,24 +90,24 @@ namespace Boare.Cadencii {
                 foreach ( BKeys k in values ) {
                     cp.add( k );
                 }
-                dest.put( name, new ValuePair<String, BKeys[]>( key, cp.toArray( new BKeys[]{} ) ) );
+                dest.put( name, new ValuePair<String, BKeys[]>( key, cp.toArray( new BKeys[] { } ) ) );
             }
         }
 
         private void UpdateList() {
             list.Items.Clear();
-            for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ){
+            for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
                 String display = (String)itr.next();
                 Vector<BKeys> a = new Vector<BKeys>();
-                foreach( BKeys key in m_dict.get( display ).Value ){
+                foreach ( BKeys key in m_dict.get( display ).Value ) {
                     a.add( key );
                 }
                 try {
-                    m_dumy.setAccelerator( PortUtil.getKeyStrokeFromBKeys( a.toArray( new BKeys[]{} ) ) );
+                    m_dumy.setAccelerator( PortUtil.getKeyStrokeFromBKeys( a.toArray( new BKeys[] { } ) ) );
                 } catch {
                     a.clear();
                 }
-                ListViewItem item = new ListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new BKeys[]{} ) ) } );
+                ListViewItem item = new ListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
                 String name = m_dict.get( display ).Key;
                 item.Name = name;
                 //item.Tag = a;
@@ -113,17 +115,17 @@ namespace Boare.Cadencii {
                     item.Group = list.Groups["listGroupFile"];
                 } else if ( name.StartsWith( "menuEdit" ) ) {
                     item.Group = list.Groups["listGroupEdit"];
-                } else if ( name.StartsWith( "menuVisual" ) ){
+                } else if ( name.StartsWith( "menuVisual" ) ) {
                     item.Group = list.Groups["listGroupVisual"];
                 } else if ( name.StartsWith( "menuJob" ) ) {
                     item.Group = list.Groups["listGroupJob"];
-                } else if ( name.StartsWith( "menuLyric" ) ){
+                } else if ( name.StartsWith( "menuLyric" ) ) {
                     item.Group = list.Groups["listGroupLyric"];
-                } else if ( name.StartsWith( "menuTrack" ) ){
+                } else if ( name.StartsWith( "menuTrack" ) ) {
                     item.Group = list.Groups["listGroupTrack"];
-                } else if ( name.StartsWith( "menuScript" ) ){
+                } else if ( name.StartsWith( "menuScript" ) ) {
                     item.Group = list.Groups["listGroupScript"];
-                } else if ( name.StartsWith( "menuSetting" ) ){
+                } else if ( name.StartsWith( "menuSetting" ) ) {
                     item.Group = list.Groups["listGroupSetting"];
                 } else if ( name.StartsWith( "menuHelp" ) ) {
                     item.Group = list.Groups["listGroupHelp"];
@@ -153,7 +155,7 @@ namespace Boare.Cadencii {
 
             Vector<BKeys> capturelist = new Vector<BKeys>();
             BKeys capture = BKeys.None;
-            for( Iterator itr = AppManager.SHORTCUT_ACCEPTABLE.iterator(); itr.hasNext() ; ){
+            for ( Iterator itr = AppManager.SHORTCUT_ACCEPTABLE.iterator(); itr.hasNext(); ) {
                 BKeys k = (BKeys)itr.next();
 #if JAVA
                 if( code == k.getValue() ){
@@ -182,7 +184,7 @@ namespace Boare.Cadencii {
 #else
                 m_dumy.setAccelerator( KeyStroke.getKeyStroke( (int)capture, modifier ) );
 #endif
-            } catch( Exception ex ) {
+            } catch ( Exception ex ) {
                 if ( ((e.KeyCode & Keys.Up) != Keys.Up) &&
                      ((e.KeyCode & Keys.Down) != Keys.Down) ) {
                     e.Handled = true;
@@ -190,10 +192,10 @@ namespace Boare.Cadencii {
                 return;
             }
             //list.Items[index].Tag = res;
-            list.Items[index].SubItems[1].Text = AppManager.getShortcutDisplayString( capturelist.toArray( new BKeys[]{} ) );
+            list.Items[index].SubItems[1].Text = AppManager.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) );
             String display = list.Items[index].SubItems[0].Text;
             if ( m_dict.containsKey( display ) ) {
-                m_dict.get( display ).Value = capturelist.toArray( new BKeys[]{} );
+                m_dict.get( display ).Value = capturelist.toArray( new BKeys[] { } );
             }
             UpdateColor();
             e.Handled = true;
@@ -208,7 +210,7 @@ namespace Boare.Cadencii {
             for ( int i = 0; i < EditorConfig.DEFAULT_SHORTCUT_KEYS.size(); i++ ) {
                 String name = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Key;
                 BKeys[] keys = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Value;
-                for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ){
+                for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
                     String display = (String)itr.next();
                     if ( name.Equals( m_dict.get( display ).Key ) ) {
                         m_dict.get( display ).Value = keys;
@@ -244,6 +246,15 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void registerEventHandlers() {
+            this.list.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.list_PreviewKeyDown );
+            this.list.KeyDown += new System.Windows.Forms.KeyEventHandler( this.list_KeyDown );
+            this.btnLoadDefault.Click += new System.EventHandler( this.btnLoadDefault_Click );
+            this.btnRevert.Click += new System.EventHandler( this.btnRevert_Click );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
 #else
         #region UI Impl for C#
@@ -360,8 +371,6 @@ namespace Boare.Cadencii {
             this.list.TabIndex = 9;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
-            this.list.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.list_PreviewKeyDown );
-            this.list.KeyDown += new System.Windows.Forms.KeyEventHandler( this.list_KeyDown );
             // 
             // columnCommand
             // 
@@ -382,7 +391,6 @@ namespace Boare.Cadencii {
             this.btnLoadDefault.TabIndex = 11;
             this.btnLoadDefault.Text = "Load Default";
             this.btnLoadDefault.UseVisualStyleBackColor = true;
-            this.btnLoadDefault.Click += new System.EventHandler( this.btnLoadDefault_Click );
             // 
             // btnRevert
             // 
@@ -393,7 +401,6 @@ namespace Boare.Cadencii {
             this.btnRevert.TabIndex = 10;
             this.btnRevert.Text = "Revert";
             this.btnRevert.UseVisualStyleBackColor = true;
-            this.btnRevert.Click += new System.EventHandler( this.btnRevert_Click );
             // 
             // FormShortcutKeys
             // 

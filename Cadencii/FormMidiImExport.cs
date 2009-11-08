@@ -54,6 +54,8 @@ namespace Boare.Cadencii {
             setMode( FormMidiMode.EXPORT );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
 #endif
+            registerEventHandlers();
+            setResources();
         }
 
         public void ApplyLanguage() {
@@ -80,7 +82,7 @@ namespace Boare.Cadencii {
         }
 
         public FormMidiMode getMode() {
-                return m_mode;
+            return m_mode;
         }
 
         public void setMode( FormMidiMode value ) {
@@ -126,12 +128,9 @@ namespace Boare.Cadencii {
         }
 
         public boolean isVocaloidMetatext() {
-            if ( chkNote.isSelected() )
-            {
+            if ( chkNote.isSelected() ) {
                 return false;
-            }
-            else
-            {
+            } else {
                 return chkMetaText.isSelected();
             }
         }
@@ -210,6 +209,17 @@ namespace Boare.Cadencii {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.Checked;
             }
+        }
+
+        private void registerEventHandlers() {
+            this.btnCheckAll.Click += new System.EventHandler( this.btnCheckAll_Click );
+            this.btnUnckeckAll.Click += new System.EventHandler( this.btnUnckeckAll_Click );
+            this.chkNote.CheckedChanged += new System.EventHandler( this.chkNote_CheckedChanged );
+            this.chkMetaText.Click += new System.EventHandler( this.chkMetaText_Click );
+            this.chkExportVocaloidNrpn.CheckedChanged += new System.EventHandler( this.chkExportVocaloidNrpn_CheckedChanged );
+        }
+
+        private void setResources() {
         }
 #if JAVA
         #region UI Impl for Java
@@ -739,7 +749,6 @@ namespace Boare.Cadencii {
             this.btnCheckAll.TabIndex = 7;
             this.btnCheckAll.Text = "Check All";
             this.btnCheckAll.UseVisualStyleBackColor = true;
-            this.btnCheckAll.Click += new System.EventHandler( this.btnCheckAll_Click );
             // 
             // btnUnckeckAll
             // 
@@ -750,7 +759,6 @@ namespace Boare.Cadencii {
             this.btnUnckeckAll.TabIndex = 8;
             this.btnUnckeckAll.Text = "Uncheck All";
             this.btnUnckeckAll.UseVisualStyleBackColor = true;
-            this.btnUnckeckAll.Click += new System.EventHandler( this.btnUnckeckAll_Click );
             // 
             // chkBeat
             // 
@@ -790,7 +798,6 @@ namespace Boare.Cadencii {
             this.chkNote.TabIndex = 11;
             this.chkNote.Text = "Note";
             this.chkNote.UseVisualStyleBackColor = true;
-            this.chkNote.CheckedChanged += new System.EventHandler( this.chkNote_CheckedChanged );
             // 
             // chkLyric
             // 
@@ -835,7 +842,6 @@ namespace Boare.Cadencii {
             this.chkMetaText.TabIndex = 16;
             this.chkMetaText.Text = "vocaloid meta-text";
             this.chkMetaText.UseVisualStyleBackColor = true;
-            this.chkMetaText.Click += new System.EventHandler( this.chkMetaText_Click );
             // 
             // chkPreMeasure
             // 
@@ -862,7 +868,6 @@ namespace Boare.Cadencii {
             this.chkExportVocaloidNrpn.TabIndex = 14;
             this.chkExportVocaloidNrpn.Text = "vocaloid NRPN";
             this.chkExportVocaloidNrpn.UseVisualStyleBackColor = true;
-            this.chkExportVocaloidNrpn.CheckedChanged += new System.EventHandler( this.chkExportVocaloidNrpn_CheckedChanged );
             // 
             // FormMidiImExport
             // 

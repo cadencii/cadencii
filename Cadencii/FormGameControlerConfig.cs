@@ -41,6 +41,8 @@ namespace Boare.Cadencii {
 
         public FormGameControlerConfig() {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             for ( int i = 0; i < 10; i++ ) {
                 m_list.add( -1 );
             }
@@ -250,6 +252,14 @@ namespace Boare.Cadencii {
             m_povs.set( 3, 9000 ); // right
         }
 
+        private void registerEventHandlers() {
+            this.timer.Tick += new System.EventHandler( this.timer_Tick );
+            this.btnSkip.Click += new System.EventHandler( this.btnSkip_Click );
+            this.btnReset.Click += new System.EventHandler( this.btnReset_Click );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
         #region UI Impl for Java
         #endregion
@@ -301,7 +311,6 @@ namespace Boare.Cadencii {
             // 
             // timer
             // 
-            this.timer.Tick += new System.EventHandler( this.timer_Tick );
             // 
             // pictButton
             // 
@@ -328,7 +337,6 @@ namespace Boare.Cadencii {
             this.btnSkip.TabIndex = 3;
             this.btnSkip.Text = "Skip";
             this.btnSkip.UseVisualStyleBackColor = true;
-            this.btnSkip.Click += new System.EventHandler( this.btnSkip_Click );
             // 
             // btnOK
             // 
@@ -363,7 +371,6 @@ namespace Boare.Cadencii {
             this.btnReset.TabIndex = 10;
             this.btnReset.Text = "Reset And Exit";
             this.btnReset.UseVisualStyleBackColor = true;
-            this.btnReset.Click += new System.EventHandler( this.btnReset_Click );
             // 
             // FormGameControlerConfig
             // 

@@ -36,6 +36,8 @@ namespace Boare.Cadencii {
 
         public FormMidiConfig() {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
 
@@ -174,6 +176,21 @@ namespace Boare.Cadencii {
             AppManager.editorConfig.MetronomeEnabled = m_metronome_enabled_init_stat;
         }
 
+        private void registerEventHandlers() {
+            this.chkRingBell.CheckedChanged += new System.EventHandler( this.chkRingBell_CheckedChanged );
+            this.chkPreview.CheckedChanged += new System.EventHandler( this.chkPreview_CheckedChanged );
+            this.comboDeviceMetronome.SelectedIndexChanged += new System.EventHandler( this.comboDeviceMetronome_SelectedIndexChanged );
+            this.comboDeviceGeneral.SelectedIndexChanged += new System.EventHandler( this.comboDeviceGeneral_SelectedIndexChanged );
+            this.numPreUtterance.ValueChanged += new System.EventHandler( this.numPreUtterance_ValueChanged );
+            this.numNoteBell.ValueChanged += new System.EventHandler( this.numNoteBell_ValueChanged );
+            this.numNoteNormal.ValueChanged += new System.EventHandler( this.numNoteNormal_ValueChanged );
+            this.numProgramBell.ValueChanged += new System.EventHandler( this.numProgramBell_ValueChanged );
+            this.numProgramNormal.ValueChanged += new System.EventHandler( this.numProgramNormal_ValueChanged );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMidiConfig_FormClosing );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
 #else
         #region UI Impl for C#
@@ -282,7 +299,6 @@ namespace Boare.Cadencii {
             this.chkRingBell.TabIndex = 7;
             this.chkRingBell.Text = "Ring Bell";
             this.chkRingBell.UseVisualStyleBackColor = true;
-            this.chkRingBell.CheckedChanged += new System.EventHandler( this.chkRingBell_CheckedChanged );
             // 
             // lblPreUtterance
             // 
@@ -335,7 +351,6 @@ namespace Boare.Cadencii {
             this.chkPreview.Text = "Preview";
             this.chkPreview.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkPreview.UseVisualStyleBackColor = true;
-            this.chkPreview.CheckedChanged += new System.EventHandler( this.chkPreview_CheckedChanged );
             // 
             // comboDeviceMetronome
             // 
@@ -344,7 +359,6 @@ namespace Boare.Cadencii {
             this.comboDeviceMetronome.Name = "comboDeviceMetronome";
             this.comboDeviceMetronome.Size = new System.Drawing.Size( 188, 20 );
             this.comboDeviceMetronome.TabIndex = 1;
-            this.comboDeviceMetronome.SelectedIndexChanged += new System.EventHandler( this.comboDeviceMetronome_SelectedIndexChanged );
             // 
             // groupMetronome
             // 
@@ -389,7 +403,6 @@ namespace Boare.Cadencii {
             this.comboDeviceGeneral.Name = "comboDeviceGeneral";
             this.comboDeviceGeneral.Size = new System.Drawing.Size( 188, 20 );
             this.comboDeviceGeneral.TabIndex = 0;
-            this.comboDeviceGeneral.SelectedIndexChanged += new System.EventHandler( this.comboDeviceGeneral_SelectedIndexChanged );
             // 
             // numPreUtterance
             // 
@@ -407,7 +420,6 @@ namespace Boare.Cadencii {
             this.numPreUtterance.Name = "numPreUtterance";
             this.numPreUtterance.Size = new System.Drawing.Size( 120, 19 );
             this.numPreUtterance.TabIndex = 6;
-            this.numPreUtterance.ValueChanged += new System.EventHandler( this.numPreUtterance_ValueChanged );
             // 
             // numNoteBell
             // 
@@ -420,7 +432,6 @@ namespace Boare.Cadencii {
             this.numNoteBell.Name = "numNoteBell";
             this.numNoteBell.Size = new System.Drawing.Size( 100, 19 );
             this.numNoteBell.TabIndex = 5;
-            this.numNoteBell.ValueChanged += new System.EventHandler( this.numNoteBell_ValueChanged );
             // 
             // numNoteNormal
             // 
@@ -433,7 +444,6 @@ namespace Boare.Cadencii {
             this.numNoteNormal.Name = "numNoteNormal";
             this.numNoteNormal.Size = new System.Drawing.Size( 100, 19 );
             this.numNoteNormal.TabIndex = 4;
-            this.numNoteNormal.ValueChanged += new System.EventHandler( this.numNoteNormal_ValueChanged );
             // 
             // numProgramBell
             // 
@@ -446,7 +456,6 @@ namespace Boare.Cadencii {
             this.numProgramBell.Name = "numProgramBell";
             this.numProgramBell.Size = new System.Drawing.Size( 100, 19 );
             this.numProgramBell.TabIndex = 3;
-            this.numProgramBell.ValueChanged += new System.EventHandler( this.numProgramBell_ValueChanged );
             // 
             // numProgramNormal
             // 
@@ -459,7 +468,6 @@ namespace Boare.Cadencii {
             this.numProgramNormal.Name = "numProgramNormal";
             this.numProgramNormal.Size = new System.Drawing.Size( 100, 19 );
             this.numProgramNormal.TabIndex = 2;
-            this.numProgramNormal.ValueChanged += new System.EventHandler( this.numProgramNormal_ValueChanged );
             // 
             // FormMidiConfig
             // 
@@ -481,7 +489,6 @@ namespace Boare.Cadencii {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Metronome Config";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMidiConfig_FormClosing );
             this.groupMetronome.ResumeLayout( false );
             this.groupMetronome.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPreUtterance)).EndInit();

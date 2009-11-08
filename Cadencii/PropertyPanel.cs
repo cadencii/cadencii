@@ -32,6 +32,8 @@ namespace Boare.Cadencii {
 
         public PropertyPanel() {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             m_items = new Vector<VsqEventItemProxy>();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -57,13 +59,13 @@ namespace Boare.Cadencii {
         private void popGridItemExpandStatusCore( GridItem item ) {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
-                for ( Iterator itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ){
+                for ( Iterator itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
                     ValuePair<String, boolean> v = (ValuePair<String, boolean>)itr.next();
                     String key = v.Key;
                     if ( key == null ) {
                         key = "";
                     }
-                    if ( key.Equals( s ) ){
+                    if ( key.Equals( s ) ) {
                         item.Expanded = v.Value;
                         break;
                     }
@@ -80,7 +82,7 @@ namespace Boare.Cadencii {
             }
 
             GridItem root = findRootGridItem( propertyGrid.SelectedGridItem );
-            if( root == null ){
+            if ( root == null ) {
                 return;
             }
 
@@ -91,7 +93,7 @@ namespace Boare.Cadencii {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
                 boolean found = false;
-                for ( Iterator itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ){
+                for ( Iterator itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
                     ValuePair<String, boolean> v = (ValuePair<String, boolean>)itr.next();
                     if ( v.Key.Equals( s ) ) {
                         found = true;
@@ -102,7 +104,7 @@ namespace Boare.Cadencii {
                     AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.add( new ValuePair<String, boolean>( s, item.Expanded ) );
                 }
             }
-            foreach( GridItem child in item.GridItems ){
+            foreach ( GridItem child in item.GridItems ) {
                 pushGridItemExpandStatusCore( child );
             }
         }
@@ -116,7 +118,7 @@ namespace Boare.Cadencii {
 
             // InternalIDを列挙
             Vector<Integer> items = new Vector<Integer>();
-            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ){
+            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                 SelectedEventEntry item = (SelectedEventEntry)itr.next();
                 if ( item.track == track ) {
                     items.add( item.original.InternalID );
@@ -230,6 +232,16 @@ namespace Boare.Cadencii {
             Editing = false;
         }
 
+        private void registerEventHandlers() {
+            this.propertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler( this.propertyGrid_SelectedGridItemChanged );
+            this.propertyGrid.Leave += new System.EventHandler( this.propertyGrid_Leave );
+            this.propertyGrid.Enter += new System.EventHandler( this.propertyGrid_Enter );
+            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler( this.propertyGrid_PropertyValueChanged );
+        }
+
+        private void setResources() {
+        }
+
 #if JAVA
 #else
         #region UI Impl for C#
@@ -269,10 +281,6 @@ namespace Boare.Cadencii {
             this.propertyGrid.Size = new System.Drawing.Size( 191, 298 );
             this.propertyGrid.TabIndex = 0;
             this.propertyGrid.ToolbarVisible = false;
-            this.propertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler( this.propertyGrid_SelectedGridItemChanged );
-            this.propertyGrid.Leave += new System.EventHandler( this.propertyGrid_Leave );
-            this.propertyGrid.Enter += new System.EventHandler( this.propertyGrid_Enter );
-            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler( this.propertyGrid_PropertyValueChanged );
             // 
             // PropertyPanel
             // 

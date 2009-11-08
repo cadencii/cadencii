@@ -44,10 +44,12 @@ class ExtractEventHandlerAndResource{
         StreamWriter event_out = null;
         if( event_out_file != "" ){
             event_out = new StreamWriter( event_out_file );
+            event_out.WriteLine( "private void registerEventHandlers(){" );
         }
         StreamWriter res_out = null;
         if( res_out_file != "" ){
             res_out = new StreamWriter( res_out_file );
+            res_out.WriteLine( "private void setResources(){" );
         }
         StreamWriter edited_out = null;
         if( edited_out_file != "" ){
@@ -71,7 +73,7 @@ class ExtractEventHandlerAndResource{
                         edited_out.WriteLine( line );
                     }
                 }else if( mode == Mode.READ_METHOD ){
-                    Console.WriteLine( "mode=" + mode + "; bra_count=" + bra_count );
+                    //Console.WriteLine( "mode=" + mode + "; bra_count=" + bra_count );
                     int i = countChar( line, '{' );
                     if( !first_bra_found && i > 0 ){
                         first_bra_found = true;
@@ -99,9 +101,11 @@ class ExtractEventHandlerAndResource{
         }
         
         if( event_out != null ){
+            event_out.WriteLine( "}" );
             event_out.Close();
         }
         if( res_out != null ){
+            res_out.WriteLine( "}" );
             res_out.Close();
         }
         if( edited_out != null ){

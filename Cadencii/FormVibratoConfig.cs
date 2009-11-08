@@ -43,6 +43,8 @@ namespace Boare.Cadencii {
             }
 
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
 
             comboVibratoType.Items.Clear();
@@ -170,6 +172,13 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void registerEventHandlers() {
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+        }
+
+        private void setResources() {
+        }
+
 #if JAVA
 #else
         #region UI Impl for C#
@@ -269,7 +278,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 6;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // FormVibratoConfig
             // 

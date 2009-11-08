@@ -142,6 +142,8 @@ namespace Boare.Cadencii {
 
         public VolumeTracker() {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             this.SetStyle( ControlStyles.DoubleBuffer, true );
         }
 
@@ -316,6 +318,18 @@ namespace Boare.Cadencii {
             } catch ( Exception ex ) {
             }
         }
+
+        private void registerEventHandlers() {
+            this.trackFeder.ValueChanged += new System.EventHandler( this.trackFeder_ValueChanged );
+            this.trackPanpot.ValueChanged += new System.EventHandler( this.trackPanpot_ValueChanged );
+            this.txtPanpot.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtPanpot_KeyDown );
+            this.txtFeder.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtFeder_KeyDown );
+            this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
+        }
+
+        private void setResources() {
+        }
+
 #if JAVA
         #region UI Impl for Java
 	    private JTextField txtFeder = null;
@@ -500,7 +514,6 @@ namespace Boare.Cadencii {
             this.trackFeder.TickFrequency = 10;
             this.trackFeder.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.trackFeder.Value = 100;
-            this.trackFeder.ValueChanged += new System.EventHandler( this.trackFeder_ValueChanged );
             // 
             // trackPanpot
             // 
@@ -515,7 +528,6 @@ namespace Boare.Cadencii {
             this.trackPanpot.Size = new System.Drawing.Size( 79, 21 );
             this.trackPanpot.TabIndex = 2;
             this.trackPanpot.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackPanpot.ValueChanged += new System.EventHandler( this.trackPanpot_ValueChanged );
             // 
             // lblPanpot
             // 
@@ -530,7 +542,6 @@ namespace Boare.Cadencii {
             this.txtPanpot.TabIndex = 3;
             this.txtPanpot.Text = "0";
             this.txtPanpot.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtPanpot.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtPanpot_KeyDown );
             // 
             // lblTitle
             // 
@@ -556,7 +567,6 @@ namespace Boare.Cadencii {
             this.txtFeder.TabIndex = 5;
             this.txtFeder.Text = "0";
             this.txtFeder.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtFeder.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtFeder_KeyDown );
             // 
             // VolumeTracker
             // 
@@ -570,7 +580,6 @@ namespace Boare.Cadencii {
             this.DoubleBuffered = true;
             this.Name = "VolumeTracker";
             this.Size = new System.Drawing.Size( 85, 261 );
-            this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
             ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackPanpot)).EndInit();
             this.ResumeLayout( false );

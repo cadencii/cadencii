@@ -100,7 +100,7 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "    hScroll.Maximum=" + hScroll.Maximum );
             AppManager.debugWriteLine( "    hScroll.LargeChange=" + hScroll.LargeChange );
 #endif
-            
+
             int j = -1;
             for ( Iterator itr = AppManager.getVsqFile().Mixer.Slave.iterator(); itr.hasNext(); ) {
                 VsqMixerEntry vme = (VsqMixerEntry)itr.next();
@@ -189,6 +189,8 @@ namespace Boare.Cadencii {
 
         public FormMixer( FormMain parent ) {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             volumeMaster.setFeder( 0 );
             volumeMaster.setMuted( false );
             volumeMaster.setSolo( true );
@@ -216,7 +218,7 @@ namespace Boare.Cadencii {
             for ( int i = 0; i < m_tracker.Length; i++ ) {
                 m_tracker[i].Location = new Point( (i - val) * (VolumeTracker.WIDTH + 1), 0 );
             }
-            using ( Pen pen_062_061_062 = new Pen( Color.FromArgb( 62, 61, 62 ) ) ){
+            using ( Pen pen_062_061_062 = new Pen( Color.FromArgb( 62, 61, 62 ) ) ) {
                 int x2 = (m_tracker.Length - 1) * (VolumeTracker.WIDTH + 1);
                 e.Graphics.DrawLine( pen_062_061_062,
                                      new Point( x2, 0 ),
@@ -280,6 +282,21 @@ namespace Boare.Cadencii {
                 chkTopmost.Checked = value;
             }
         }
+
+        private void registerEventHandlers() {
+            this.menuVisualReturn.Click += new System.EventHandler( this.menuVisualReturn_Click );
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
+            this.hScroll.ValueChanged += new System.EventHandler( this.veScrollBar_ValueChanged );
+            this.volumeMaster.PanpotChanged += new System.EventHandler( this.volumeMaster_PanpotChanged );
+            this.volumeMaster.IsMutedChanged += new System.EventHandler( this.volumeMaster_IsMutedChanged );
+            this.volumeMaster.FederChanged += new System.EventHandler( this.volumeMaster_FederChanged );
+            this.chkTopmost.CheckedChanged += new System.EventHandler( this.chkTopmost_CheckedChanged );
+            this.Paint += new System.Windows.Forms.PaintEventHandler( this.FormMixer_Paint );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMixer_FormClosing );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
 #else
         #region UI Impl for C#
@@ -342,7 +359,6 @@ namespace Boare.Cadencii {
             this.menuVisualReturn.ShortcutKeys = System.Windows.Forms.Keys.F3;
             this.menuVisualReturn.Size = new System.Drawing.Size( 177, 22 );
             this.menuVisualReturn.Text = "エディタ画面へ戻る";
-            this.menuVisualReturn.Click += new System.EventHandler( this.menuVisualReturn_Click );
             // 
             // panel1
             // 
@@ -352,7 +368,6 @@ namespace Boare.Cadencii {
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size( 85, 279 );
             this.panel1.TabIndex = 6;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
             // 
             // hScroll
             // 
@@ -368,7 +383,6 @@ namespace Boare.Cadencii {
             this.hScroll.SmallChange = 1;
             this.hScroll.TabIndex = 0;
             this.hScroll.Value = 0;
-            this.hScroll.ValueChanged += new System.EventHandler( this.veScrollBar_ValueChanged );
             // 
             // volumeMaster
             // 
@@ -378,9 +392,6 @@ namespace Boare.Cadencii {
             this.volumeMaster.Name = "volumeMaster";
             this.volumeMaster.Size = new System.Drawing.Size( 85, 261 );
             this.volumeMaster.TabIndex = 5;
-            this.volumeMaster.PanpotChanged += new System.EventHandler( this.volumeMaster_PanpotChanged );
-            this.volumeMaster.IsMutedChanged += new System.EventHandler( this.volumeMaster_IsMutedChanged );
-            this.volumeMaster.FederChanged += new System.EventHandler( this.volumeMaster_FederChanged );
             // 
             // chkTopmost
             // 
@@ -394,7 +405,6 @@ namespace Boare.Cadencii {
             this.chkTopmost.TabIndex = 7;
             this.chkTopmost.Text = "Top Most";
             this.chkTopmost.UseVisualStyleBackColor = true;
-            this.chkTopmost.CheckedChanged += new System.EventHandler( this.chkTopmost_CheckedChanged );
             // 
             // FormMixer
             // 
@@ -412,8 +422,6 @@ namespace Boare.Cadencii {
             this.Name = "FormMixer";
             this.ShowInTaskbar = false;
             this.Text = "Mixer";
-            this.Paint += new System.Windows.Forms.PaintEventHandler( this.FormMixer_Paint );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMixer_FormClosing );
             this.menuMain.ResumeLayout( false );
             this.menuMain.PerformLayout();
             this.panel1.ResumeLayout( false );

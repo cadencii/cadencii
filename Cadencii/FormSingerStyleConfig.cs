@@ -101,7 +101,7 @@ namespace Boare.Cadencii {
                 txtDecay.Text = value + "";
             }
         }
-        
+
         public int DEMaccent {
             get {
                 return trackAccent.Value;
@@ -114,6 +114,8 @@ namespace Boare.Cadencii {
 
         public FormSingerStyleConfig() {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             ApplyLanguage();
             Size current_size = this.ClientSize;
@@ -253,8 +255,8 @@ namespace Boare.Cadencii {
 
         private void btnApply_Click( object sender, EventArgs e ) {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
-                                  FormMain._APP_NAME, 
-                                  AppManager.MSGBOX_YES_NO_OPTION, 
+                                  FormMain._APP_NAME,
+                                  AppManager.MSGBOX_YES_NO_OPTION,
                                   AppManager.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
                 m_apply_current_track = true;
                 DialogResult = DialogResult.OK;
@@ -267,6 +269,22 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void registerEventHandlers() {
+            this.txtBendLength.TextChanged += new System.EventHandler( this.txtBendLength_TextChanged );
+            this.txtBendDepth.TextChanged += new System.EventHandler( this.txtBendDepth_TextChanged );
+            this.trackBendLength.Scroll += new System.EventHandler( this.trackBendLength_Scroll );
+            this.trackBendDepth.Scroll += new System.EventHandler( this.trackBendDepth_Scroll );
+            this.txtAccent.TextChanged += new System.EventHandler( this.txtAccent_TextChanged );
+            this.txtDecay.TextChanged += new System.EventHandler( this.txtDecay_TextChanged );
+            this.trackAccent.Scroll += new System.EventHandler( this.trackAccent_Scroll );
+            this.trackDecay.Scroll += new System.EventHandler( this.trackDecay_Scroll );
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            this.btnApply.Click += new System.EventHandler( this.btnApply_Click );
+            this.comboTemplate.SelectedIndexChanged += new System.EventHandler( this.comboBox1_SelectedIndexChanged );
+        }
+
+        private void setResources() {
+        }
 #if JAVA
 #else
         #region UI Impl for C#
@@ -374,7 +392,6 @@ namespace Boare.Cadencii {
             this.txtBendLength.Text = "0";
             this.txtBendLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtBendLength.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
-            this.txtBendLength.TextChanged += new System.EventHandler( this.txtBendLength_TextChanged );
             // 
             // txtBendDepth
             // 
@@ -387,7 +404,6 @@ namespace Boare.Cadencii {
             this.txtBendDepth.Text = "8";
             this.txtBendDepth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtBendDepth.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
-            this.txtBendDepth.TextChanged += new System.EventHandler( this.txtBendDepth_TextChanged );
             // 
             // trackBendLength
             // 
@@ -398,7 +414,6 @@ namespace Boare.Cadencii {
             this.trackBendLength.Size = new System.Drawing.Size( 156, 18 );
             this.trackBendLength.TabIndex = 4;
             this.trackBendLength.TickFrequency = 10;
-            this.trackBendLength.Scroll += new System.EventHandler( this.trackBendLength_Scroll );
             // 
             // trackBendDepth
             // 
@@ -410,7 +425,6 @@ namespace Boare.Cadencii {
             this.trackBendDepth.TabIndex = 1;
             this.trackBendDepth.TickFrequency = 10;
             this.trackBendDepth.Value = 8;
-            this.trackBendDepth.Scroll += new System.EventHandler( this.trackBendDepth_Scroll );
             // 
             // chkDownPortamento
             // 
@@ -496,7 +510,6 @@ namespace Boare.Cadencii {
             this.txtAccent.Text = "50";
             this.txtAccent.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtAccent.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
-            this.txtAccent.TextChanged += new System.EventHandler( this.txtAccent_TextChanged );
             // 
             // txtDecay
             // 
@@ -509,7 +522,6 @@ namespace Boare.Cadencii {
             this.txtDecay.Text = "50";
             this.txtDecay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtDecay.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
-            this.txtDecay.TextChanged += new System.EventHandler( this.txtDecay_TextChanged );
             // 
             // trackAccent
             // 
@@ -521,7 +533,6 @@ namespace Boare.Cadencii {
             this.trackAccent.TabIndex = 12;
             this.trackAccent.TickFrequency = 10;
             this.trackAccent.Value = 50;
-            this.trackAccent.Scroll += new System.EventHandler( this.trackAccent_Scroll );
             // 
             // trackDecay
             // 
@@ -533,7 +544,6 @@ namespace Boare.Cadencii {
             this.trackDecay.TabIndex = 9;
             this.trackDecay.TickFrequency = 10;
             this.trackDecay.Value = 50;
-            this.trackDecay.Scroll += new System.EventHandler( this.trackDecay_Scroll );
             // 
             // lblAccent
             // 
@@ -582,7 +592,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 15;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // btnApply
             // 
@@ -592,7 +601,6 @@ namespace Boare.Cadencii {
             this.btnApply.TabIndex = 14;
             this.btnApply.Text = "Apply to current track(&C)";
             this.btnApply.UseVisualStyleBackColor = true;
-            this.btnApply.Click += new System.EventHandler( this.btnApply_Click );
             // 
             // comboTemplate
             // 
@@ -609,7 +617,6 @@ namespace Boare.Cadencii {
             this.comboTemplate.Size = new System.Drawing.Size( 121, 20 );
             this.comboTemplate.TabIndex = 0;
             this.comboTemplate.Text = "[Select a template]";
-            this.comboTemplate.SelectedIndexChanged += new System.EventHandler( this.comboBox1_SelectedIndexChanged );
             // 
             // FormSingerStyleConfig
             // 

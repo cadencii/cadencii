@@ -45,6 +45,8 @@ namespace Boare.Cadencii {
 
         public FormCurvePointEdit( long editing_id, CurveType curve ) {
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             applyLanguage();
             m_editing_id = editing_id;
             m_curve = curve;
@@ -224,6 +226,24 @@ namespace Boare.Cadencii {
             btnRedo.Enabled = AppManager.isRedoAvailable();
         }
 
+        private void setResources() {
+        }
+
+        private void registerEventHandlers() {
+            this.btnForward.Click += new System.EventHandler( this.commonButton_Click );
+            this.btnBackward.Click += new System.EventHandler( this.commonButton_Click );
+            this.btnBackward2.Click += new System.EventHandler( this.commonButton_Click );
+            this.btnForward2.Click += new System.EventHandler( this.commonButton_Click );
+            this.btnApply.Click += new System.EventHandler( this.btnApply_Click );
+            this.txtDataPointClock.TextChanged += new System.EventHandler( this.commonTextBox_TextChanged );
+            this.txtDataPointClock.KeyUp += new System.Windows.Forms.KeyEventHandler( this.commonTextBox_KeyUp );
+            this.txtDataPointValue.TextChanged += new System.EventHandler( this.commonTextBox_TextChanged );
+            this.txtDataPointValue.KeyUp += new System.Windows.Forms.KeyEventHandler( this.commonTextBox_KeyUp );
+            this.btnBackward3.Click += new System.EventHandler( this.commonButton_Click );
+            this.btnForward3.Click += new System.EventHandler( this.commonButton_Click );
+            this.btnUndo.Click += new System.EventHandler( this.handleUndoRedo_Click );
+            this.btnRedo.Click += new System.EventHandler( this.handleUndoRedo_Click );
+        }
 #if JAVA
         #region UI Impl for Java
         #endregion
@@ -276,7 +296,6 @@ namespace Boare.Cadencii {
             this.btnForward.TabIndex = 6;
             this.btnForward.Text = ">";
             this.btnForward.UseVisualStyleBackColor = true;
-            this.btnForward.Click += new System.EventHandler( this.commonButton_Click );
             // 
             // btnBackward
             // 
@@ -286,7 +305,6 @@ namespace Boare.Cadencii {
             this.btnBackward.TabIndex = 5;
             this.btnBackward.Text = "<";
             this.btnBackward.UseVisualStyleBackColor = true;
-            this.btnBackward.Click += new System.EventHandler( this.commonButton_Click );
             // 
             // lblDataPointValue
             // 
@@ -325,7 +343,6 @@ namespace Boare.Cadencii {
             this.btnBackward2.TabIndex = 4;
             this.btnBackward2.Text = "<5";
             this.btnBackward2.UseVisualStyleBackColor = true;
-            this.btnBackward2.Click += new System.EventHandler( this.commonButton_Click );
             // 
             // btnForward2
             // 
@@ -335,7 +352,6 @@ namespace Boare.Cadencii {
             this.btnForward2.TabIndex = 7;
             this.btnForward2.Text = "5>";
             this.btnForward2.UseVisualStyleBackColor = true;
-            this.btnForward2.Click += new System.EventHandler( this.commonButton_Click );
             // 
             // btnApply
             // 
@@ -346,7 +362,6 @@ namespace Boare.Cadencii {
             this.btnApply.TabIndex = 17;
             this.btnApply.Text = "Apply";
             this.btnApply.UseVisualStyleBackColor = true;
-            this.btnApply.Click += new System.EventHandler( this.btnApply_Click );
             // 
             // txtDataPointClock
             // 
@@ -355,8 +370,6 @@ namespace Boare.Cadencii {
             this.txtDataPointClock.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointClock.TabIndex = 2;
             this.txtDataPointClock.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
-            this.txtDataPointClock.TextChanged += new System.EventHandler( this.commonTextBox_TextChanged );
-            this.txtDataPointClock.KeyUp += new System.Windows.Forms.KeyEventHandler( this.commonTextBox_KeyUp );
             // 
             // txtDataPointValue
             // 
@@ -365,8 +378,6 @@ namespace Boare.Cadencii {
             this.txtDataPointValue.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointValue.TabIndex = 1;
             this.txtDataPointValue.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
-            this.txtDataPointValue.TextChanged += new System.EventHandler( this.commonTextBox_TextChanged );
-            this.txtDataPointValue.KeyUp += new System.Windows.Forms.KeyEventHandler( this.commonTextBox_KeyUp );
             // 
             // btnBackward3
             // 
@@ -376,7 +387,6 @@ namespace Boare.Cadencii {
             this.btnBackward3.TabIndex = 18;
             this.btnBackward3.Text = "<10";
             this.btnBackward3.UseVisualStyleBackColor = true;
-            this.btnBackward3.Click += new System.EventHandler( this.commonButton_Click );
             // 
             // btnForward3
             // 
@@ -386,7 +396,6 @@ namespace Boare.Cadencii {
             this.btnForward3.TabIndex = 19;
             this.btnForward3.Text = "10>";
             this.btnForward3.UseVisualStyleBackColor = true;
-            this.btnForward3.Click += new System.EventHandler( this.commonButton_Click );
             // 
             // btnUndo
             // 
@@ -396,7 +405,6 @@ namespace Boare.Cadencii {
             this.btnUndo.TabIndex = 20;
             this.btnUndo.Text = "undo";
             this.btnUndo.UseVisualStyleBackColor = true;
-            this.btnUndo.Click += new System.EventHandler( this.handleUndoRedo_Click );
             // 
             // btnRedo
             // 
@@ -406,7 +414,6 @@ namespace Boare.Cadencii {
             this.btnRedo.TabIndex = 21;
             this.btnRedo.Text = "redo";
             this.btnRedo.UseVisualStyleBackColor = true;
-            this.btnRedo.Click += new System.EventHandler( this.handleUndoRedo_Click );
             // 
             // FormCurvePointEdit
             // 

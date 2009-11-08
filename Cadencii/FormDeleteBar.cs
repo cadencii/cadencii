@@ -37,6 +37,8 @@ namespace Boare.Cadencii {
 #else
             InitializeComponent();
 #endif
+            registerEventHandlers();
+            setResources();
             ApplyLanguage();
             numStart.Maximum = max_barcount;
             numEnd.Maximum = max_barcount;
@@ -73,6 +75,13 @@ namespace Boare.Cadencii {
 
         private void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
+        }
+
+        private void registerEventHandlers() {
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+        }
+
+        private void setResources() {
         }
 #if JAVA
         #region UI Impl for Java
@@ -283,7 +292,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 15;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // btnCancel
             // 

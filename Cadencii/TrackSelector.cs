@@ -358,6 +358,8 @@ namespace Boare.Cadencii {
             this.SetStyle( ControlStyles.DoubleBuffer, true );
             this.SetStyle( ControlStyles.UserPaint, true );
             InitializeComponent();
+            registerEventHandlers();
+            setResources();
             m_modifier_key = (AppManager.editorConfig.Platform == Platform.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
             cmenuCurveVelocity.Tag = CurveType.VEL;
             cmenuCurveAccent.Tag = CurveType.Accent;
@@ -5269,6 +5271,53 @@ namespace Boare.Cadencii {
                 }
             }*/
         }
+
+        private void registerEventHandlers() {
+            this.toolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler( this.toolTip_Draw );
+            this.cmenuCurveVelocity.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveAccent.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveDecay.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveDynamics.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveVibratoRate.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveVibratoDepth.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso1Freq.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso1BW.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso1Amp.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso2Freq.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso2BW.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso2Amp.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso3Freq.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso3BW.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso3Amp.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso4Freq.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso4BW.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveReso4Amp.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveHarmonics.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveBreathiness.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveBrightness.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveClearness.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveOpening.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveGenderFactor.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurvePortamentoTiming.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurvePitchBend.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurvePitchBendSensitivity.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.cmenuCurveEffect2Depth.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.panelZoomButton.Paint += new System.Windows.Forms.PaintEventHandler( this.panelZoomButton_Paint );
+            this.panelZoomButton.MouseDown += new System.Windows.Forms.MouseEventHandler( this.panelZoomButton_MouseDown );
+            this.cmenuCurveEnvelope.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
+            this.Load += new System.EventHandler( this.TrackSelector_Load );
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseMove );
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseDoubleClick );
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler( this.TrackSelector_KeyUp );
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseClick );
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseDown );
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseUp );
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.TrackSelector_KeyDown );
+        }
+
+        private void setResources() {
+        }
+
 #if JAVA
         #region UI Impl for Java
         #endregion
@@ -5355,7 +5404,6 @@ namespace Boare.Cadencii {
             this.toolTip.InitialDelay = 500;
             this.toolTip.OwnerDraw = true;
             this.toolTip.ReshowDelay = 0;
-            this.toolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler( this.toolTip_Draw );
             // 
             // cmenuCurve
             // 
@@ -5394,21 +5442,18 @@ namespace Boare.Cadencii {
             this.cmenuCurveVelocity.Name = "cmenuCurveVelocity";
             this.cmenuCurveVelocity.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveVelocity.Text = "Velocity(&V)";
-            this.cmenuCurveVelocity.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveAccent
             // 
             this.cmenuCurveAccent.Name = "cmenuCurveAccent";
             this.cmenuCurveAccent.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveAccent.Text = "Accent";
-            this.cmenuCurveAccent.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveDecay
             // 
             this.cmenuCurveDecay.Name = "cmenuCurveDecay";
             this.cmenuCurveDecay.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveDecay.Text = "Decay";
-            this.cmenuCurveDecay.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveSeparator1
             // 
@@ -5420,21 +5465,18 @@ namespace Boare.Cadencii {
             this.cmenuCurveDynamics.Name = "cmenuCurveDynamics";
             this.cmenuCurveDynamics.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveDynamics.Text = "Dynamics";
-            this.cmenuCurveDynamics.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveVibratoRate
             // 
             this.cmenuCurveVibratoRate.Name = "cmenuCurveVibratoRate";
             this.cmenuCurveVibratoRate.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveVibratoRate.Text = "Vibrato Rate";
-            this.cmenuCurveVibratoRate.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveVibratoDepth
             // 
             this.cmenuCurveVibratoDepth.Name = "cmenuCurveVibratoDepth";
             this.cmenuCurveVibratoDepth.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveVibratoDepth.Text = "Vibrato Depth";
-            this.cmenuCurveVibratoDepth.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveSeparator2
             // 
@@ -5456,21 +5498,18 @@ namespace Boare.Cadencii {
             this.cmenuCurveReso1Freq.Name = "cmenuCurveReso1Freq";
             this.cmenuCurveReso1Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso1Freq.Text = "Frequency";
-            this.cmenuCurveReso1Freq.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso1BW
             // 
             this.cmenuCurveReso1BW.Name = "cmenuCurveReso1BW";
             this.cmenuCurveReso1BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso1BW.Text = "Band Width";
-            this.cmenuCurveReso1BW.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso1Amp
             // 
             this.cmenuCurveReso1Amp.Name = "cmenuCurveReso1Amp";
             this.cmenuCurveReso1Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso1Amp.Text = "Amplitude";
-            this.cmenuCurveReso1Amp.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso2
             // 
@@ -5487,21 +5526,18 @@ namespace Boare.Cadencii {
             this.cmenuCurveReso2Freq.Name = "cmenuCurveReso2Freq";
             this.cmenuCurveReso2Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso2Freq.Text = "Frequency";
-            this.cmenuCurveReso2Freq.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso2BW
             // 
             this.cmenuCurveReso2BW.Name = "cmenuCurveReso2BW";
             this.cmenuCurveReso2BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso2BW.Text = "Band Width";
-            this.cmenuCurveReso2BW.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso2Amp
             // 
             this.cmenuCurveReso2Amp.Name = "cmenuCurveReso2Amp";
             this.cmenuCurveReso2Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso2Amp.Text = "Amplitude";
-            this.cmenuCurveReso2Amp.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso3
             // 
@@ -5518,21 +5554,18 @@ namespace Boare.Cadencii {
             this.cmenuCurveReso3Freq.Name = "cmenuCurveReso3Freq";
             this.cmenuCurveReso3Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso3Freq.Text = "Frequency";
-            this.cmenuCurveReso3Freq.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso3BW
             // 
             this.cmenuCurveReso3BW.Name = "cmenuCurveReso3BW";
             this.cmenuCurveReso3BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso3BW.Text = "Band Width";
-            this.cmenuCurveReso3BW.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso3Amp
             // 
             this.cmenuCurveReso3Amp.Name = "cmenuCurveReso3Amp";
             this.cmenuCurveReso3Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso3Amp.Text = "Amplitude";
-            this.cmenuCurveReso3Amp.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso4
             // 
@@ -5549,21 +5582,18 @@ namespace Boare.Cadencii {
             this.cmenuCurveReso4Freq.Name = "cmenuCurveReso4Freq";
             this.cmenuCurveReso4Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso4Freq.Text = "Frequency";
-            this.cmenuCurveReso4Freq.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso4BW
             // 
             this.cmenuCurveReso4BW.Name = "cmenuCurveReso4BW";
             this.cmenuCurveReso4BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso4BW.Text = "Band Width";
-            this.cmenuCurveReso4BW.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveReso4Amp
             // 
             this.cmenuCurveReso4Amp.Name = "cmenuCurveReso4Amp";
             this.cmenuCurveReso4Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso4Amp.Text = "Amplitude";
-            this.cmenuCurveReso4Amp.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveSeparator3
             // 
@@ -5575,42 +5605,36 @@ namespace Boare.Cadencii {
             this.cmenuCurveHarmonics.Name = "cmenuCurveHarmonics";
             this.cmenuCurveHarmonics.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveHarmonics.Text = "Harmonics";
-            this.cmenuCurveHarmonics.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveBreathiness
             // 
             this.cmenuCurveBreathiness.Name = "cmenuCurveBreathiness";
             this.cmenuCurveBreathiness.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveBreathiness.Text = "Noise";
-            this.cmenuCurveBreathiness.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveBrightness
             // 
             this.cmenuCurveBrightness.Name = "cmenuCurveBrightness";
             this.cmenuCurveBrightness.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveBrightness.Text = "Brightness";
-            this.cmenuCurveBrightness.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveClearness
             // 
             this.cmenuCurveClearness.Name = "cmenuCurveClearness";
             this.cmenuCurveClearness.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveClearness.Text = "Clearness";
-            this.cmenuCurveClearness.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveOpening
             // 
             this.cmenuCurveOpening.Name = "cmenuCurveOpening";
             this.cmenuCurveOpening.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveOpening.Text = "Opening";
-            this.cmenuCurveOpening.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveGenderFactor
             // 
             this.cmenuCurveGenderFactor.Name = "cmenuCurveGenderFactor";
             this.cmenuCurveGenderFactor.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveGenderFactor.Text = "Gender Factor";
-            this.cmenuCurveGenderFactor.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveSeparator4
             // 
@@ -5622,21 +5646,18 @@ namespace Boare.Cadencii {
             this.cmenuCurvePortamentoTiming.Name = "cmenuCurvePortamentoTiming";
             this.cmenuCurvePortamentoTiming.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurvePortamentoTiming.Text = "Portamento Timing";
-            this.cmenuCurvePortamentoTiming.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurvePitchBend
             // 
             this.cmenuCurvePitchBend.Name = "cmenuCurvePitchBend";
             this.cmenuCurvePitchBend.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurvePitchBend.Text = "Pitch Bend";
-            this.cmenuCurvePitchBend.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurvePitchBendSensitivity
             // 
             this.cmenuCurvePitchBendSensitivity.Name = "cmenuCurvePitchBendSensitivity";
             this.cmenuCurvePitchBendSensitivity.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurvePitchBendSensitivity.Text = "Pitch Bend Sensitivity";
-            this.cmenuCurvePitchBendSensitivity.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // cmenuCurveSeparator5
             // 
@@ -5648,7 +5669,6 @@ namespace Boare.Cadencii {
             this.cmenuCurveEffect2Depth.Name = "cmenuCurveEffect2Depth";
             this.cmenuCurveEffect2Depth.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveEffect2Depth.Text = "Effect2 Depth";
-            this.cmenuCurveEffect2Depth.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // vScroll
             // 
@@ -5669,15 +5689,12 @@ namespace Boare.Cadencii {
             this.panelZoomButton.Name = "panelZoomButton";
             this.panelZoomButton.Size = new System.Drawing.Size( 16, 33 );
             this.panelZoomButton.TabIndex = 3;
-            this.panelZoomButton.Paint += new System.Windows.Forms.PaintEventHandler( this.panelZoomButton_Paint );
-            this.panelZoomButton.MouseDown += new System.Windows.Forms.MouseEventHandler( this.panelZoomButton_MouseDown );
             // 
             // cmenuCurveEnvelope
             // 
             this.cmenuCurveEnvelope.Name = "cmenuCurveEnvelope";
             this.cmenuCurveEnvelope.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveEnvelope.Text = "Envelope";
-            this.cmenuCurveEnvelope.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             // 
             // TrackSelector
             // 
@@ -5689,14 +5706,6 @@ namespace Boare.Cadencii {
             this.DoubleBuffered = true;
             this.Name = "TrackSelector";
             this.Size = new System.Drawing.Size( 430, 228 );
-            this.Load += new System.EventHandler( this.TrackSelector_Load );
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseMove );
-            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseDoubleClick );
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler( this.TrackSelector_KeyUp );
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseClick );
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseDown );
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseUp );
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.TrackSelector_KeyDown );
             this.cmenuCurve.ResumeLayout( false );
             this.ResumeLayout( false );
 
