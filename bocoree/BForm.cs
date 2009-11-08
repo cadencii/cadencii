@@ -325,6 +325,14 @@ namespace bocoree.windows.forms {
         public const int W_RESIZE_CURSOR = 10;
         public const int WAIT_CURSOR = 3;
 
+        public void setIconImage( System.Drawing.Icon icon ) {
+            base.Icon = icon;
+        }
+
+        public System.Drawing.Icon getIconImage() {
+            return base.Icon;
+        }
+
         public int getState() {
             if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
                 return ICONIFIED;

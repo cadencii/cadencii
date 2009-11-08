@@ -229,7 +229,7 @@ namespace Boare.Lib.Vsq {
                         String[] spl2 = PortUtil.splitString( spl[0], '\\' );
                         if ( spl2.Length == 1 ){
                             if ( !install_dirs.containsKey( spl2[0] ) ) {
-                                string install = "";
+                                String install = "";
                                 if ( spl[1].Equals( "INSTALLDIR" ) ) {
                                     install = spl[2];
                                 }

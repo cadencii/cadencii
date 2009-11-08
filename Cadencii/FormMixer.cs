@@ -13,6 +13,14 @@
  */
 #if JAVA
 package org.kbinani.Cadencii;
+
+import java.awt.*;
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Drawing;
@@ -22,29 +30,38 @@ using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.util;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
 #endif
 
-    public class FormMixer : Form {
+#if JAVA
+    public class FormMixer extends BForm {
+#else
+    public class FormMixer : BForm {
+#endif
         private FormMain m_parent;
         private VolumeTracker[] m_tracker;
 
-        public delegate void FederChangedEventHandler( int track, int feder );
-        public delegate void PanpotChangedEventHandler( int track, int panpot );
-        public delegate void SoloChangedEventHandler( int track, boolean solo );
-        public delegate void MuteChangedEventHandler( int track, boolean mute );
-
+#if JAVA
+        public BEvent<FederChangedEventHandler> federChangedEvent = new BEvent<FederChangedEventHandler>();
+        public BEvent<PanpotChangedEventHandler> panpotChangedEvent = new BEvent<PanpotChangedEventHandler>();
+        public BEvent<SoloChangedEventHandler> soloChanged = new BEvent<SoloChangedEventHandler>();
+        public BEvent<MuteChangedEventHandler> muteChanged = new BEvent<MuteChangedEventHandler>();
+        public BEvent<TopMostChangedEventHandler> topMostChanged = new BEvent<TopMostChangedEventHandler>();
+#else
         public event FederChangedEventHandler FederChanged;
         public event PanpotChangedEventHandler PanpotChanged;
         public event SoloChangedEventHandler SoloChanged;
         public event MuteChangedEventHandler MuteChanged;
         public event TopMostChangedEventHandler TopMostChanged;
+#endif
 
         public void ApplyLanguage() {
-            Text = _( "Mixer" );
-            chkTopmost.Text = _( "Top Most" );
+            setTitle( _( "Mixer" ) );
+            chkTopmost.setText( _( "Top Most" ) );
         }
 
         private static String _( String id ) {
@@ -58,7 +75,9 @@ namespace Boare.Cadencii {
 #endif
             if ( m_tracker != null ) {
                 for ( int i = 0; i < m_tracker.Length; i++ ) {
+#if !JAVA
                     m_tracker[i].Dispose();
+#endif
                     m_tracker[i] = null;
                 }
                 m_tracker = null;
@@ -81,16 +100,16 @@ namespace Boare.Cadencii {
 
             if ( panel_capacity >= num_vtracker_on_panel ) {
                 // volumeMaster以外の全てのVolumeTrackerを，画面上に同時表示可能
-                hScroll.Minimum = 0;
-                hScroll.Value = 0;
-                hScroll.Maximum = 0;
-                hScroll.LargeChange = 1;
+                hScroll.setMinimum( 0 );
+                hScroll.setValue( 0 );
+                hScroll.setMaximum( 0 );
+                hScroll.setVisibleAmount( 1 );
             } else {
                 // num_vtracker_on_panel個のVolumeTrackerのうち，panel_capacity個しか，画面上に同時表示できない
-                hScroll.Minimum = 0;
-                hScroll.Value = 0;
-                hScroll.Maximum = num_vtracker_on_panel - 1;
-                hScroll.LargeChange = panel_capacity;
+                hScroll.setMinimum( 0 );
+                hScroll.setValue( 0 );
+                hScroll.setMaximum( num_vtracker_on_panel - 1 );
+                hScroll.setVisibleAmount( panel_capacity );
             }
 
 #if DEBUG
@@ -110,16 +129,29 @@ namespace Boare.Cadencii {
                 m_tracker[j].setPanpot( vme.Panpot );
                 m_tracker[j].setTitle( AppManager.getVsqFile().Track.get( j + 1 ).getName() );
                 m_tracker[j].setNumber( (j + 1) + "" );
+#if !JAVA
                 m_tracker[j].Location = new Point( j * (VolumeTracker.WIDTH + 1), 0 );
+#endif
                 m_tracker[j].setSoloButtonVisible( true );
                 m_tracker[j].setMuted( (vme.Mute == 1) );
                 m_tracker[j].setSolo( (vme.Solo == 1) );
-                m_tracker[j].Tag = j + 1;
+                m_tracker[j].setTag( j + 1 );
+#if JAVA
+                m_tracker[j].isMutedChangedEvent.add( new BEventHandler( this, "FormMixer_IsMutedChanged" ) );
+                m_tracker[j].isSoloChangedEvent.add( new BEventHandler( this, "FormMixer_IsSoloChanged" ) );
+                m_tracker[j].federChangedEvent.add( new BEventHandler( this, "FormMixer_FederChanged" ) );
+                m_tracker[j].panpotChangedEvent.add( new BEventHandler( this, "FormMixer_PanpotChanged" ) );
+#else
                 m_tracker[j].IsMutedChanged += new EventHandler( FormMixer_IsMutedChanged );
                 m_tracker[j].IsSoloChanged += new EventHandler( FormMixer_IsSoloChanged );
                 m_tracker[j].FederChanged += new EventHandler( FormMixer_FederChanged );
                 m_tracker[j].PanpotChanged += new EventHandler( FormMixer_PanpotChanged );
+#endif
+
+#if JAVA
+#else
                 panel1.Controls.Add( m_tracker[j] );
+#endif
             }
             int count = AppManager.getBgmCount();
             for ( int i = 0; i < count; i++ ) {
@@ -130,16 +162,29 @@ namespace Boare.Cadencii {
                 m_tracker[j].setPanpot( item.panpot );
                 m_tracker[j].setTitle( Path.GetFileName( item.file ) );
                 m_tracker[j].setNumber( "" );
+#if !JAVA
                 m_tracker[j].Location = new Point( j * (VolumeTracker.WIDTH + 1), 0 );
+#endif
                 m_tracker[j].setSoloButtonVisible( false );
                 m_tracker[j].setMuted( (item.mute == 1) );
                 m_tracker[j].setSolo( false );
-                m_tracker[j].Tag = (int)(-i - 1);
+                m_tracker[j].setTag( (int)(-i - 1) );
+#if JAVA
+                m_tracker[j].isMutedChangedEvent.add( new BEventHandler( this, "FormMixer_IsMutedChanged" ) );
+                //m_tracker[j].isSoloChangedEvent.add( new BEventHandler( this, "FormMixer_IsSoloChanged" ) );
+                m_tracker[j].federChangedEvent.add( new BEventHandler( this, "FormMixer_FederChanged" ) );
+                m_tracker[j].panpotChangedEvent.add( new BEventHandler( this, "FormMixer_PanpotChanged" ) );
+#else
                 m_tracker[j].IsMutedChanged += new EventHandler( FormMixer_IsMutedChanged );
                 //m_tracker[j].IsSoloChanged += new EventHandler( FormMixer_IsSoloChanged );
                 m_tracker[j].FederChanged += new EventHandler( FormMixer_FederChanged );
                 m_tracker[j].PanpotChanged += new EventHandler( FormMixer_PanpotChanged );
+#endif
+
+#if JAVA
+#else
                 panel1.Controls.Add( m_tracker[j] );
+#endif
             }
             volumeMaster.setFeder( AppManager.getVsqFile().Mixer.MasterFeder );
             volumeMaster.setPanpot( AppManager.getVsqFile().Mixer.MasterPanpot );
@@ -155,33 +200,33 @@ namespace Boare.Cadencii {
             m_parent.Focus();
         }
 
-        private void FormMixer_PanpotChanged( object sender, EventArgs e ) {
+        private void FormMixer_PanpotChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (int)parent.Tag;
+            int track = (int)parent.getTag();
             if ( PanpotChanged != null ) {
                 PanpotChanged( track, parent.getPanpot() );
             }
         }
 
-        private void FormMixer_FederChanged( object sender, EventArgs e ) {
+        private void FormMixer_FederChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (int)parent.Tag;
+            int track = (int)parent.getTag();
             if ( FederChanged != null ) {
                 FederChanged( track, parent.getFeder() );
             }
         }
 
-        private void FormMixer_IsSoloChanged( object sender, EventArgs e ) {
+        private void FormMixer_IsSoloChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (int)parent.Tag;
+            int track = (int)parent.getTag();
             if ( SoloChanged != null ) {
                 SoloChanged( track, parent.isSolo() );
             }
         }
 
-        private void FormMixer_IsMutedChanged( object sender, EventArgs e ) {
+        private void FormMixer_IsMutedChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (int)parent.Tag;
+            int track = (int)parent.getTag();
             if ( MuteChanged != null ) {
                 MuteChanged( track, parent.isMuted() );
             }
@@ -200,39 +245,20 @@ namespace Boare.Cadencii {
             volumeMaster.setTitle( "" );
             ApplyLanguage();
             m_parent = parent;
-            this.Icon = Properties.Resources.Icon1;
             this.SetStyle( ControlStyles.DoubleBuffer, true );
         }
 
-        private void menuVisualReturn_Click( object sender, EventArgs e ) {
+        private void menuVisualReturn_Click( Object sender, BEventArgs e ) {
             m_parent.flipMixerDialogVisible( false );
         }
 
-        private void FormMixer_FormClosing( object sender, FormClosingEventArgs e ) {
+        private void FormMixer_FormClosing( Object sender, FormClosingEventArgs e ) {
             m_parent.flipMixerDialogVisible( false );
             e.Cancel = true;
         }
 
-        private void FormMixer_Paint( object sender, PaintEventArgs e ) {
-            int val = (int)hScroll.Value;
-            for ( int i = 0; i < m_tracker.Length; i++ ) {
-                m_tracker[i].Location = new Point( (i - val) * (VolumeTracker.WIDTH + 1), 0 );
-            }
-            using ( Pen pen_062_061_062 = new Pen( Color.FromArgb( 62, 61, 62 ) ) ) {
-                int x2 = (m_tracker.Length - 1) * (VolumeTracker.WIDTH + 1);
-                e.Graphics.DrawLine( pen_062_061_062,
-                                     new Point( x2, 0 ),
-                                     new Point( x2, this.ClientSize.Height ) );
-                e.Graphics.DrawLine( pen_062_061_062,
-                                     new Point( x2 + 1, 0 ),
-                                     new Point( x2 + 1, this.ClientSize.Height ) );
-                e.Graphics.DrawLine( pen_062_061_062,
-                                     new Point( x2 + 2, 0 ),
-                                     new Point( x2 + 2, this.ClientSize.Height ) );
-            }
-        }
-
-        private void panel1_Paint( object sender, PaintEventArgs e ) {
+#if !JAVA
+        private void panel1_Paint( Object sender, PaintEventArgs e ) {
             using ( Pen pen_102_102_102 = new Pen( Color.FromArgb( 102, 102, 102 ) ) ) {
                 for ( int i = 0; i < m_tracker.Length; i++ ) {
                     int x = (i + 1) * (VolumeTracker.WIDTH + 1);
@@ -243,47 +269,64 @@ namespace Boare.Cadencii {
                 }
             }
         }
+#endif
 
-        private void veScrollBar_ValueChanged( object sender, EventArgs e ) {
+        private void veScrollBar_ValueChanged( Object sender, BEventArgs e ) {
             this.Invalidate();
         }
 
-        private void volumeMaster_FederChanged( object sender, EventArgs e ) {
+        private void volumeMaster_FederChanged( Object sender, BEventArgs e ) {
             if ( FederChanged != null ) {
                 FederChanged( 0, volumeMaster.getFeder() );
             }
         }
 
-        private void volumeMaster_PanpotChanged( object sender, EventArgs e ) {
+        private void volumeMaster_PanpotChanged( Object sender, BEventArgs e ) {
             if ( PanpotChanged != null ) {
                 PanpotChanged( 0, volumeMaster.getPanpot() );
             }
         }
 
-        private void volumeMaster_IsMutedChanged( object sender, EventArgs e ) {
+        private void volumeMaster_IsMutedChanged( Object sender, BEventArgs e ) {
             if ( MuteChanged != null ) {
                 MuteChanged( 0, volumeMaster.isMuted() );
             }
         }
 
-        private void chkTopmost_CheckedChanged( object sender, EventArgs e ) {
+        private void chkTopmost_CheckedChanged( Object sender, BEventArgs e ) {
             if ( TopMostChanged != null ) {
                 TopMostChanged( this, chkTopmost.Checked );
             }
             this.TopMost = chkTopmost.Checked; // ここはthis.ShowTopMostにしてはいけない
         }
 
-        public boolean ShowTopMost {
-            get {
-                return this.TopMost;
-            }
-            set {
-                this.TopMost = value;
-                chkTopmost.Checked = value;
-            }
+        public boolean isShowTopMost() {
+#if JAVA
+            return false;
+#else
+            return this.TopMost;
+#endif
+        }
+
+        public void setShowTopMost( boolean value ) {
+#if JAVA
+#else
+            this.TopMost = value;
+            chkTopmost.setSelected( value );
+#endif
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            menuVisualReturn.clickEvent.add( new BEventHandler( this, "menuVisualReturn_Click" ) );
+//            panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
+            hScroll.ValueChanged += new System.EventHandler( this.veScrollBar_ValueChanged );
+            volumeMaster.panpotChangedEvent.add( new BEventHandler( this, "volumeMaster_PanpotChanged" ) );
+            volumeMaster.isMutedChangedEvent.add( new BEventHandler( this, "volumeMaster_IsMutedChanged" ) );
+            volumeMaster.federChangedEvent.add( new BEventHandler( this, "volumeMaster_FederChanged" ) );
+            chkTopmost.checkedChangedEvent.add( new BEventHandler( this, "chkTopmost_CheckedChanged" ) );
+            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMixer_FormClosing" ) );
+#else
             this.menuVisualReturn.Click += new System.EventHandler( this.menuVisualReturn_Click );
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
             this.hScroll.ValueChanged += new System.EventHandler( this.veScrollBar_ValueChanged );
@@ -291,11 +334,12 @@ namespace Boare.Cadencii {
             this.volumeMaster.IsMutedChanged += new System.EventHandler( this.volumeMaster_IsMutedChanged );
             this.volumeMaster.FederChanged += new System.EventHandler( this.volumeMaster_FederChanged );
             this.chkTopmost.CheckedChanged += new System.EventHandler( this.chkTopmost_CheckedChanged );
-            this.Paint += new System.Windows.Forms.PaintEventHandler( this.FormMixer_Paint );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMixer_FormClosing );
+#endif
         }
 
         private void setResources() {
+            setIconImage( Resources.get_icon() );
         }
 #if JAVA
 #else
@@ -323,13 +367,13 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.menuMain = new System.Windows.Forms.MenuStrip();
-            this.menuVisual = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuVisualReturn = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuMain = new BMenuBar();
+            this.menuVisual = new BMenuItem();
+            this.menuVisualReturn = new BMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.hScroll = new System.Windows.Forms.HScrollBar();
+            this.hScroll = new bocoree.windows.forms.BHScrollBar();
             this.volumeMaster = new Boare.Cadencii.VolumeTracker();
-            this.chkTopmost = new System.Windows.Forms.CheckBox();
+            this.chkTopmost = new BCheckBox();
             this.menuMain.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -373,20 +417,17 @@ namespace Boare.Cadencii {
             // 
             this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.LargeChange = 10;
+            this.hScroll.LargeChange = 2;
             this.hScroll.Location = new System.Drawing.Point( 0, 260 );
-            this.hScroll.Margin = new System.Windows.Forms.Padding( 0 );
             this.hScroll.Maximum = 1;
-            this.hScroll.Minimum = 0;
             this.hScroll.Name = "hScroll";
             this.hScroll.Size = new System.Drawing.Size( 85, 19 );
-            this.hScroll.SmallChange = 1;
             this.hScroll.TabIndex = 0;
-            this.hScroll.Value = 0;
             // 
             // volumeMaster
             // 
             this.volumeMaster.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
+            this.volumeMaster.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.volumeMaster.Location = new System.Drawing.Point( 87, 0 );
             this.volumeMaster.Margin = new System.Windows.Forms.Padding( 0 );
             this.volumeMaster.Name = "volumeMaster";
@@ -432,13 +473,13 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuMain;
-        private System.Windows.Forms.ToolStripMenuItem menuVisual;
-        private System.Windows.Forms.ToolStripMenuItem menuVisualReturn;
+        private BMenuBar menuMain;
+        private BMenuItem menuVisual;
+        private BMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.HScrollBar hScroll;
-        private System.Windows.Forms.CheckBox chkTopmost;
+        private bocoree.windows.forms.BHScrollBar hScroll;
+        private BCheckBox chkTopmost;
         #endregion
 #endif
     }

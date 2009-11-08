@@ -76,7 +76,7 @@ namespace Boare.Lib.Vsq {
                 UstEvent ue = (UstEvent)itr.next();
                 if ( ue.Lyric != "R" ) {
                     VsqID id = new VsqID( 0 );
-                    id.Length = ue.Length;
+                    id.setLength( ue.getLength() );
                     ByRef<String> psymbol = new ByRef<String>( "a" );
                     if ( !SymbolTable.attatch( ue.Lyric, psymbol ) ) {
                         psymbol.value = "a";
@@ -100,7 +100,7 @@ namespace Boare.Lib.Vsq {
                 if ( ue.Tempo > 0.0f ) {
                     TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.Tempo), 0.0 ) );
                 }
-                clock_count += ue.Length;
+                clock_count += ue.getLength();
             }
             updateTempoInfo();
             updateTotalClocks();
@@ -130,10 +130,10 @@ namespace Boare.Lib.Vsq {
             for ( Iterator itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent ve = (VsqEvent)itr.next();
                 if ( ve.Clock <= lastclock ) {
-                    lastclock = Math.Max( lastclock, ve.Clock + ve.ID.Length );
+                    lastclock = Math.Max( lastclock, ve.Clock + ve.ID.getLength() );
                 } else {
                     parts.add( ve.Clock );
-                    lastclock = ve.Clock + ve.ID.Length;
+                    lastclock = ve.Clock + ve.ID.getLength();
                 }
             }
 

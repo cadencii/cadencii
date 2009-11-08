@@ -3357,11 +3357,19 @@ namespace Boare.Cadencii {
 
             updateMenuFonts();
 
-            AppManager.mixerWindow.FederChanged += new FormMixer.FederChangedEventHandler( m_mixer_dlg_FederChanged );
-            AppManager.mixerWindow.PanpotChanged += new FormMixer.PanpotChangedEventHandler( m_mixer_dlg_PanpotChanged );
-            AppManager.mixerWindow.MuteChanged += new FormMixer.MuteChangedEventHandler( m_mixer_dlg_MuteChanged );
-            AppManager.mixerWindow.SoloChanged += new FormMixer.SoloChangedEventHandler( m_mixer_dlg_SoloChanged );
+#if JAVA
+            AppManager.mixerWindow.federChangedEvent.add( new FederChangedEventHandler( this, "m_mixer_dlg_FederChanged" ) );
+            AppManager.mixerWindow.panpotChangedEvent.add( new PanpotChangedEventHandler( this, "m_mixer_dlg_PanpotChanged" ) );
+            AppManager.mixerWindow.muteChangedEvent.add( new MuteChangedEventHandler( this, "m_mixer_dlg_MuteChanged" ) );
+            AppManager.mixerWindow.soloChangedEvent( new SoloChangedEventHandler( this, "m_mixer_dlg_SoloChanged" ) );
+            AppManager.mixerWindow.topMostChangedEvent( new TopMostChangedEventHandler( this, "m_mixer_dlg_TopMostChanged" ) );
+#else
+            AppManager.mixerWindow.FederChanged += new FederChangedEventHandler( m_mixer_dlg_FederChanged );
+            AppManager.mixerWindow.PanpotChanged += new PanpotChangedEventHandler( m_mixer_dlg_PanpotChanged );
+            AppManager.mixerWindow.MuteChanged += new MuteChangedEventHandler( m_mixer_dlg_MuteChanged );
+            AppManager.mixerWindow.SoloChanged += new SoloChangedEventHandler( m_mixer_dlg_SoloChanged );
             AppManager.mixerWindow.TopMostChanged += new TopMostChangedEventHandler( m_mixer_dlg_TopMostChanged );
+#endif
             AppManager.mixerWindow.ShowTopMost = AppManager.editorConfig.MixerTopMost;
             AppManager.mixerWindow.updateStatus();
             if ( AppManager.editorConfig.MixerVisible ) {
@@ -13391,7 +13399,7 @@ namespace Boare.Cadencii {
             this.stripBtnLoop.Image = Resources.get_arrow_return();
             this.stripBtnStartMarker.Image = Resources.get_pin__arrow();
             this.stripBtnEndMarker.Image = Resources.get_pin__arrow_inv();
-            this.Icon = Resources.get_icon();
+            setIconImage( Resources.get_icon() );
         }
 
 #if JAVA

@@ -308,7 +308,7 @@ namespace Boare.Lib.Vsq {
             for ( Iterator itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent item = (UstEvent)itr.next();
                 int clock_begin = clock;
-                int clock_end = clock + item.Length;
+                int clock_end = clock + item.getLength();
                 Vector<Float> pitch = new Vector<Float>();
                 boolean allzero = true;
                 for ( int cl = clock_begin; cl <= clock_end; cl += PBTYPE ) {
@@ -319,12 +319,12 @@ namespace Boare.Lib.Vsq {
                     pitch.add( pit );
                 }
                 if ( !allzero ) {
-                    item.Pitches = pitch.toArray( new float[] { } );
+                    item.Pitches = PortUtil.convertFloatArray( pitch.toArray( new Float[] { } ) );
                     item.PBType = PBTYPE;
                 } else {
                     item.PBType = -1;
                 }
-                clock += item.Length;
+                clock += item.getLength();
             }
 
             // 再生秒時を考慮して，適時テンポを追加

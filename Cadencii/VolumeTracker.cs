@@ -39,11 +39,16 @@ namespace Boare.Cadencii {
         private boolean m_solo = false;
         private String m_number = "0";
         private String m_title = "";
+        private Object m_tag = null;
 
         #region Constants
         public const int WIDTH = 85;
         const int _HEIGHT = 261;
+#if JAVA
+        private static final int[][] _KEY = {
+#else
         private static readonly int[,] _KEY = {
+#endif
             {55, 26}, 
             {51, 27},
             {47, 28},
@@ -133,6 +138,10 @@ namespace Boare.Cadencii {
         #endregion
 
 #if JAVA
+        public BEvent<BEventHandler> federChangedEvent = new BEvent<BEventHandler>();
+        public BEvent<BEventHandler> panpotChangedEvent = new BEvent<BEventHandler>();
+        public BEvent<BEventHandler> isMutedChangedEvent = new BEvent<BEventHandler>();
+        public BEvent<BEventHandler> isSoloChangedEvent = new BEvent<BEventHandler>();
 #else
         public event EventHandler FederChanged;
         public event EventHandler PanpotChanged;
@@ -141,10 +150,25 @@ namespace Boare.Cadencii {
 #endif
 
         public VolumeTracker() {
+#if JAVA
+		    super();
+		    initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
+#if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );
+#endif
+        }
+
+        public void setTag( Object value ) {
+            m_tag = value;
+        }
+
+        public Object getTag() {
+            return m_tag;
         }
 
         public String getTitle() {
@@ -158,11 +182,11 @@ namespace Boare.Cadencii {
 
         private void UpdateTitle() {
             if ( m_number.Equals( "" ) ) {
-                lblTitle.Text = m_title;
+                lblTitle.setText( m_title );
             } else if ( m_title.Equals( "" ) ) {
-                lblTitle.Text = m_number;
+                lblTitle.setText( m_number );
             } else {
-                lblTitle.Text = m_number + " " + m_title;
+                lblTitle.setText( m_number + " " + m_title );
             }
         }
 
@@ -182,8 +206,14 @@ namespace Boare.Cadencii {
         public void setMuted( boolean value ) {
             boolean old = m_muted;
             m_muted = value;
-            if ( old != m_muted && IsMutedChanged != null ) {
-                IsMutedChanged( this, new EventArgs() );
+            if ( old != m_muted ){
+#if JAVA
+                isMuteChangedEvent.raise( this, new BEventArgs() );
+#else
+                if( IsMutedChanged != null ) {
+                    IsMutedChanged( this, new EventArgs() );
+                }
+#endif
             }
         }
 
@@ -194,17 +224,23 @@ namespace Boare.Cadencii {
         public void setSolo( boolean value ) {
             boolean old = m_solo;
             m_solo = value;
-            if ( old != m_solo && IsSoloChanged != null ) {
-                IsSoloChanged( this, new EventArgs() );
+            if ( old != m_solo ){
+#if JAVA
+                isSoloChangedEvent.raise( this, new BEventArgs() );
+#else
+                if ( IsSoloChanged != null ) {
+                    IsSoloChanged( this, new EventArgs() );
+                }
+#endif
             }
         }
 
         public int getPanpot() {
-            return trackPanpot.Value;
+            return trackPanpot.getValue();
         }
 
         public void setPanpot( int value ) {
-            trackPanpot.Value = value;
+            trackPanpot.setValue( value );
         }
 
         public boolean isSoloButtonVisible() {
@@ -222,64 +258,117 @@ namespace Boare.Cadencii {
         public void setFeder( int value ) {
             int old = m_feder;
             m_feder = value;
-            if ( old != m_feder && FederChanged != null ) {
-                FederChanged( this, new EventArgs() );
+            if ( old != m_feder ){
+#if JAVA
+                federChangedEvent.raise( this, new BEventArgs() );
+#else
+                if ( FederChanged != null ) {
+                    FederChanged( this, new EventArgs() );
+                }
+#endif
             }
             int v = 177 - YCoordFromFeder( m_feder );
-            trackFeder.Value = v;
+            trackFeder.setValue( v );
         }
 
         private void VolumeTracker_Resize( Object sender, BEventArgs e ) {
+#if !JAVA
             this.Width = WIDTH;
             this.Height = _HEIGHT;
+#endif
         }
 
         private static int FederFromYCoord( int y ) {
+#if JAVA
+            int feder = _KEY[0][0];
+            int min_diff = Math.abs( _KEY[0][1] - y );
+#else
             int feder = _KEY[0, 0];
             int min_diff = Math.Abs( _KEY[0, 1] - y );
+#endif
             int index = 0;
-            for ( int i = 1; i < _KEY.GetUpperBound( 0 ) + 1; i++ ) {
+#if JAVA
+            int len = _KEY.length;
+#else
+            int len = _KEY.GetUpperBound( 0 ) + 1;
+#endif
+            for ( int i = 1; i < len; i++ ) {
+#if JAVA
+                int diff = Math.abs( _KEY[i][1] - y );
+#else
                 int diff = Math.Abs( _KEY[i, 1] - y );
+#endif
                 if ( diff < min_diff ) {
                     index = i;
                     min_diff = diff;
+#if JAVA
+                    feder = _KEY[i][0];
+#else
                     feder = _KEY[i, 0];
+#endif
                 }
             }
             return feder;
         }
 
         private static int YCoordFromFeder( int feder ) {
+#if JAVA
+            int y = _KEY[0][1];
+            int min_diff = Math.Abs( _KEY[0][0] - feder );
+#else
             int y = _KEY[0, 1];
             int min_diff = Math.Abs( _KEY[0, 0] - feder );
+#endif
             int index = 0;
-            for ( int i = 1; i <= _KEY.GetUpperBound( 0 ); i++ ) {
+#if JAVA
+            int len = _KEY.length;
+#else
+            int len = _KEY.GetUpperBound( 0 ) + 1;
+#endif
+            for ( int i = 1; i <= len; i++ ) {
+#if JAVA
+                int diff = Math.Abs( _KEY[i][0] - feder );
+#else
                 int diff = Math.Abs( _KEY[i, 0] - feder );
+#endif
                 if ( diff < min_diff ) {
                     index = i;
                     min_diff = diff;
+#if JAVA
+                    y = _KEY[i][1];
+#else
                     y = _KEY[i, 1];
+#endif
                 }
             }
             return y;
         }
 
         private void trackFeder_ValueChanged( Object sender, BEventArgs e ) {
-            m_feder = FederFromYCoord( 151 - (trackFeder.Value - 26) );
-            txtFeder.Text = (m_feder / 10.0).ToString();
+            m_feder = FederFromYCoord( 151 - (trackFeder.getValue() - 26) );
+            txtFeder.setText( (m_feder / 10.0).ToString() );
+#if JAVA
+            federChangedEvent.raise( this, new BEventArgs() );
+#else
             if ( FederChanged != null ) {
                 FederChanged( this, new EventArgs() );
             }
+#endif
         }
 
         private void trackPanpot_ValueChanged( Object sender, BEventArgs e ) {
-            txtPanpot.Text = trackPanpot.Value.ToString();
+            txtPanpot.setText( trackPanpot.getValue().ToString() );
+#if JAVA
+            panpotChangedEvent.raise( this, new BEventArgs() );
+#else
             if ( PanpotChanged != null ) {
                 PanpotChanged( this, new EventArgs() );
             }
+#endif
         }
 
         private void txtFeder_KeyDown( Object sender, BKeyEventArgs e ) {
+#if !JAVA
             if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
@@ -297,9 +386,11 @@ namespace Boare.Cadencii {
                 txtFeder.SelectAll();
             } catch ( Exception ex ) {
             }
+#endif
         }
 
         private void txtPanpot_KeyDown( Object sender, BKeyEventArgs e ) {
+#if !JAVA
             if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
@@ -317,14 +408,23 @@ namespace Boare.Cadencii {
                 txtPanpot.SelectAll();
             } catch ( Exception ex ) {
             }
+#endif
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            trackFeder.valueChangedEvent.add( new BEventHandler( this, "trackFeder_ValueChanged" ) );
+            trackPanpot.valueChangedEvent.add( new BEventHandler( this, "trackPanpot_ValueChanged" ) );
+            //this.txtPanpot.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtPanpot_KeyDown );
+            //this.txtFeder.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtFeder_KeyDown );
+            //this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
+#else
             this.trackFeder.ValueChanged += new System.EventHandler( this.trackFeder_ValueChanged );
             this.trackPanpot.ValueChanged += new System.EventHandler( this.trackPanpot_ValueChanged );
             this.txtPanpot.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtPanpot_KeyDown );
             this.txtFeder.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtFeder_KeyDown );
             this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
+#endif
         }
 
         private void setResources() {
@@ -337,15 +437,8 @@ namespace Boare.Cadencii {
 	    private JSlider trackPanpot = null;
 	    private JTextField txtPanpot = null;
 	    private JLabel lblTitle = null;
-	    /**
-	     * This is the default constructor
-	     */
-	    public VolumeTracker() {
-		    super();
-		    initialize();
-	    }
 
-	    /**
+        /**
 	     * This method initializes this
 	     * 
 	     * @return void
@@ -490,11 +583,11 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.trackFeder = new BSlider();
-            this.trackPanpot = new BSlider();
-            this.txtPanpot = new BTextBox();
-            this.lblTitle = new BLabel();
-            this.txtFeder = new BTextBox();
+            this.trackFeder = new bocoree.windows.forms.BSlider();
+            this.trackPanpot = new bocoree.windows.forms.BSlider();
+            this.txtPanpot = new bocoree.windows.forms.BTextBox();
+            this.lblTitle = new bocoree.windows.forms.BLabel();
+            this.txtFeder = new bocoree.windows.forms.BTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackPanpot)).BeginInit();
             this.SuspendLayout();
@@ -529,7 +622,7 @@ namespace Boare.Cadencii {
             this.trackPanpot.TabIndex = 2;
             this.trackPanpot.TickStyle = System.Windows.Forms.TickStyle.None;
             // 
-            // lblPanpot
+            // txtPanpot
             // 
             this.txtPanpot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
@@ -537,7 +630,7 @@ namespace Boare.Cadencii {
             this.txtPanpot.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtPanpot.Location = new System.Drawing.Point( 10, 206 );
             this.txtPanpot.Margin = new System.Windows.Forms.Padding( 10, 0, 10, 0 );
-            this.txtPanpot.Name = "lblPanpot";
+            this.txtPanpot.Name = "txtPanpot";
             this.txtPanpot.Size = new System.Drawing.Size( 65, 19 );
             this.txtPanpot.TabIndex = 3;
             this.txtPanpot.Text = "0";

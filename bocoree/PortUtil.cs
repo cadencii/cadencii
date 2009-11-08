@@ -1327,6 +1327,18 @@ namespace bocoree {
 #endif
         }
 
+        public static Float[] convertFloatArray( float[] arr ) {
+#if JAVA
+            Float[] ret = new Float[arr.length];
+            for( int i = 0; i < arr.length; i++ ){
+                ret[i] = arr[i];
+            }
+            return ret;
+#else
+            return arr;
+#endif
+        }
+
 #if JAVA
         public static int[] convertIntArray( Integer[] arr ){
             int[] ret = new int[arr.length];
@@ -1346,6 +1358,14 @@ namespace bocoree {
 
         public static byte[] convertByteArray( Byte[] arr ){
             byte[] ret = new byte[arr.length];
+            for( int i = 0; i < arr.length; i++ ){
+                ret[i] = arr[i];
+            }
+            return ret;
+        }
+
+        public static float[] convertFloatArray( Float[] arr ){
+            float[] ret = new float[arr.length];
             for( int i = 0; i < arr.length; i++ ){
                 ret[i] = arr[i];
             }

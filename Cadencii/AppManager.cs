@@ -25,10 +25,9 @@ import org.kbinani.windows.forms.*;
 import org.kbinani.xml.*;
 #else
 using System;
+using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Windows.Forms;
-using System.CodeDom.Compiler;
-using Microsoft.CSharp;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
@@ -37,13 +36,14 @@ using bocoree.io;
 using bocoree.util;
 using bocoree.windows.forms;
 using bocoree.xml;
+using Microsoft.CSharp;
 
 namespace Boare.Cadencii {
+    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using java = bocoree;
     using Long = System.Int64;
-    using BEventArgs = System.EventArgs;
 #endif
 
     public class AppManager {
@@ -272,7 +272,7 @@ namespace Boare.Cadencii {
         private static int s_base_tempo = 480000;
         private static Color s_hilight_brush = PortUtil.CornflowerBlue;
         private static Object s_locker;
-        private static Timer s_auto_backup_timer;
+        private static BTimer s_auto_backup_timer;
         #endregion
 
         /// <summary>
@@ -431,6 +431,15 @@ namespace Boare.Cadencii {
         public static int lastTrackSelectorHeight;
 
 #if JAVA
+        public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
+        public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
+        public static BEvent<BEventHandler> previewAbortedEvent = new BEvent<BEventHandler>();
+        public static BEvent<SelectedEventChangedEventHandler> electedEventChangedEvent = new BEvent<SelectedEventChangedEventHandler>();
+        public static BEvent<BEventHandler> selectedToolChangedEvent = new BEvent<BEventHandler>();
+        /// <summary>
+        /// CurrentClockプロパティの値が変更された時発生します
+        /// </summary>
+        public static BEvent<BEventHandler> currentClockChangedEvent= new BEvent<BEventHandler>();
 #else
         /// <summary>
         /// グリッド線を表示するか否かを表す値が変更された時発生します
@@ -453,8 +462,12 @@ namespace Boare.Cadencii {
 #else
         static AppManager() {
 #endif
-            s_auto_backup_timer = new Timer();
+            s_auto_backup_timer = new BTimer();
+#if JAVA
+            s_auto_backup_timer.tickEvent.add( new BEventHandler( this, "handleAutoBackupTimerTick" ) );
+#else
             s_auto_backup_timer.Tick += handleAutoBackupTimerTick;
+#endif
         }
 
         /// <summary>
