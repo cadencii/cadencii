@@ -3370,7 +3370,7 @@ namespace Boare.Cadencii {
             AppManager.mixerWindow.SoloChanged += new SoloChangedEventHandler( m_mixer_dlg_SoloChanged );
             AppManager.mixerWindow.TopMostChanged += new TopMostChangedEventHandler( m_mixer_dlg_TopMostChanged );
 #endif
-            AppManager.mixerWindow.ShowTopMost = AppManager.editorConfig.MixerTopMost;
+            AppManager.mixerWindow.setShowTopMost( AppManager.editorConfig.MixerTopMost );
             AppManager.mixerWindow.updateStatus();
             if ( AppManager.editorConfig.MixerVisible ) {
                 AppManager.mixerWindow.Show();
@@ -5048,7 +5048,7 @@ namespace Boare.Cadencii {
                     Messaging.setLanguage( AppManager.editorConfig.Language );
                     applyLanguage();
                     m_preference_dlg.ApplyLanguage();
-                    AppManager.mixerWindow.ApplyLanguage();
+                    AppManager.mixerWindow.applyLanguage();
                     if ( m_versioninfo != null && !m_versioninfo.IsDisposed ) {
                         m_versioninfo.ApplyLanguage();
                     }

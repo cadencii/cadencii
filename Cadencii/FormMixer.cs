@@ -59,7 +59,7 @@ namespace Boare.Cadencii {
         public event TopMostChangedEventHandler TopMostChanged;
 #endif
 
-        public void ApplyLanguage() {
+        public void applyLanguage() {
             setTitle( _( "Mixer" ) );
             chkTopmost.setText( _( "Top Most" ) );
         }
@@ -188,9 +188,11 @@ namespace Boare.Cadencii {
             }
             volumeMaster.setFeder( AppManager.getVsqFile().Mixer.MasterFeder );
             volumeMaster.setPanpot( AppManager.getVsqFile().Mixer.MasterPanpot );
+#if !JAVA
             panel1.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
             volumeMaster.Location = new Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
             chkTopmost.Left = panel1.Width;
+#endif
             this.MaximumSize = Size.Empty;
             this.MinimumSize = Size.Empty;
             this.ClientSize = new Size( screen_num * (VolumeTracker.WIDTH + 1) + 3, 279 );
@@ -203,37 +205,74 @@ namespace Boare.Cadencii {
         private void FormMixer_PanpotChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (int)parent.getTag();
+#if JAVA
+            try{
+                panpotChangedEvent.raise( track, parent.getPanpot() );
+            }catch( Exception ex ){
+                System.err.println( "FormMixer#FormMixer_PanpotChanged; ex=" + ex );
+            }
+#else
             if ( PanpotChanged != null ) {
                 PanpotChanged( track, parent.getPanpot() );
             }
+#endif
         }
 
         private void FormMixer_FederChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (int)parent.getTag();
+#if JAVA
+            try{
+                federChangedEvent.raise( track, parent.getFeder() );
+            }catch( Exception ex ){
+                System.err.println( "FormMixer#FormMixer_FederChanged; ex=" + ex );
+            }
+#else
             if ( FederChanged != null ) {
                 FederChanged( track, parent.getFeder() );
             }
+#endif
         }
 
         private void FormMixer_IsSoloChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (int)parent.getTag();
+#if JAVA
+            try{
+                soloChangedEvent.raise( track, parent.iSolo() );
+            }catch( Exception ex ){
+                System.err.println( "FormMixer#FormMixer_IsSoloChanged; ex=" + ex );
+            }
+#else
             if ( SoloChanged != null ) {
                 SoloChanged( track, parent.isSolo() );
             }
+#endif
         }
 
         private void FormMixer_IsMutedChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (int)parent.getTag();
+#if JAVA
+            try{
+                muteChangedEvent.raise( track, parent.isMuted() );
+            }catch( Exception ex ){
+                System.err.println( "FormMixer#FormMixer_IsMutedChanged; ex=" + ex );
+            }
+#else
             if ( MuteChanged != null ) {
                 MuteChanged( track, parent.isMuted() );
             }
+#endif
         }
 
         public FormMixer( FormMain parent ) {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             volumeMaster.setFeder( 0 );
@@ -243,9 +282,11 @@ namespace Boare.Cadencii {
             volumeMaster.setPanpot( 0 );
             volumeMaster.setSoloButtonVisible( false );
             volumeMaster.setTitle( "" );
-            ApplyLanguage();
+            applyLanguage();
             m_parent = parent;
+#if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );
+#endif
         }
 
         private void menuVisualReturn_Click( Object sender, BEventArgs e ) {
@@ -276,28 +317,60 @@ namespace Boare.Cadencii {
         }
 
         private void volumeMaster_FederChanged( Object sender, BEventArgs e ) {
+#if JAVA
+            try{
+                federChangedEvent.raise( 0, volumeMaster.getFeder() );
+            }catch( Exception ex ){
+                System.err.println( "FormMixer#volumeMaster_FederChanged; ex=" + ex );
+            }
+#else
             if ( FederChanged != null ) {
                 FederChanged( 0, volumeMaster.getFeder() );
             }
+#endif
         }
 
         private void volumeMaster_PanpotChanged( Object sender, BEventArgs e ) {
+#if JAVA
+            try{
+                panpotChangedEvent.raise( 0, volumeMaster.getPanpot() );
+            }catch( Exception ex ){
+                System.err.println( "FormMixer#volumeMaster_PanpotChanged; ex=" + ex );
+            }
+#else
             if ( PanpotChanged != null ) {
                 PanpotChanged( 0, volumeMaster.getPanpot() );
             }
+#endif
         }
 
         private void volumeMaster_IsMutedChanged( Object sender, BEventArgs e ) {
+#if JAVA
+            try{
+                muteChangedEvent.raise( 0, volumeMaster.isMuted() );
+            }catch( Exception ex ){
+                System.err.println( "FormMixer#volumeMaster_IsMutedChanged; ex=" + ex );
+            }
+#else
             if ( MuteChanged != null ) {
                 MuteChanged( 0, volumeMaster.isMuted() );
             }
+#endif
         }
 
         private void chkTopmost_CheckedChanged( Object sender, BEventArgs e ) {
+#if JAVA
+            try{
+                topMostChangedEvent.raise( this, chkTopMost.isSelected() );
+            }catch( Exception ex ){
+                System.err.println( "FormMixer#chkTopmost_CheckedChanged; ex=" + ex );
+            }
+#else
             if ( TopMostChanged != null ) {
                 TopMostChanged( this, chkTopmost.Checked );
             }
-            this.TopMost = chkTopmost.Checked; // ここはthis.ShowTopMostにしてはいけない
+#endif
+            this.TopMost = chkTopmost.isSelected(); // ここはthis.ShowTopMostにしてはいけない
         }
 
         public boolean isShowTopMost() {
@@ -342,6 +415,123 @@ namespace Boare.Cadencii {
             setIconImage( Resources.get_icon() );
         }
 #if JAVA
+	    private JPanel jContentPane = null;
+	    private JPanel panel1 = null;
+	    private JScrollBar hScroll = null;
+	    private VolumeTracker volumeMaster = null;
+	    private JCheckBox chkTopmost = null;
+
+	    /**
+	     * This method initializes this
+	     * 
+	     * @return void
+	     */
+	    private void initialize() {
+		    this.setSize(377, 653);
+		    this.setContentPane(getJContentPane());
+		    this.setTitle("JFrame");
+	    }
+
+	    /**
+	     * This method initializes jContentPane
+	     * 
+	     * @return javax.swing.JPanel
+	     */
+	    private JPanel getJContentPane() {
+		    if (jContentPane == null) {
+			    GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+			    gridBagConstraints5.gridx = 1;
+			    gridBagConstraints5.weightx = 0.0D;
+			    gridBagConstraints5.anchor = GridBagConstraints.SOUTH;
+			    gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
+			    gridBagConstraints5.gridy = 1;
+			    GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+			    gridBagConstraints4.gridx = 1;
+			    gridBagConstraints4.weightx = 0.0D;
+			    gridBagConstraints4.weighty = 1.0D;
+			    gridBagConstraints4.fill = GridBagConstraints.BOTH;
+			    gridBagConstraints4.anchor = GridBagConstraints.NORTH;
+			    gridBagConstraints4.gridy = 0;
+			    GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			    gridBagConstraints3.gridx = 0;
+			    gridBagConstraints3.fill = GridBagConstraints.BOTH;
+			    gridBagConstraints3.weightx = 1.0D;
+			    gridBagConstraints3.weighty = 1.0D;
+			    gridBagConstraints3.gridy = 0;
+			    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			    gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
+			    gridBagConstraints1.gridy = 1;
+			    gridBagConstraints1.weighty = 0.0D;
+			    gridBagConstraints1.anchor = GridBagConstraints.SOUTH;
+			    gridBagConstraints1.weightx = 1.0D;
+			    gridBagConstraints1.gridx = 0;
+			    GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			    gridBagConstraints.gridx = 0;
+			    gridBagConstraints.weighty = 1.0D;
+			    gridBagConstraints.fill = GridBagConstraints.VERTICAL;
+			    gridBagConstraints.anchor = GridBagConstraints.NORTH;
+			    gridBagConstraints.gridy = 0;
+			    jContentPane = new JPanel();
+			    jContentPane.setLayout(new GridBagLayout());
+			    jContentPane.add(getHScroll(), gridBagConstraints1);
+			    jContentPane.add(getPanel1(), gridBagConstraints3);
+			    jContentPane.add(getVolumeMaster(), gridBagConstraints4);
+			    jContentPane.add(getChkTopmost(), gridBagConstraints5);
+		    }
+		    return jContentPane;
+	    }
+
+	    /**
+	     * This method initializes panel1	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getPanel1() {
+		    if (panel1 == null) {
+			    panel1 = new JPanel();
+			    panel1.setLayout(new GridBagLayout());
+		    }
+		    return panel1;
+	    }
+
+	    /**
+	     * This method initializes hScroll	
+	     * 	
+	     * @return javax.swing.JScrollBar	
+	     */
+	    private JScrollBar getHScroll() {
+		    if (hScroll == null) {
+			    hScroll = new JScrollBar();
+			    hScroll.setOrientation(JScrollBar.HORIZONTAL);
+		    }
+		    return hScroll;
+	    }
+
+	    /**
+	     * This method initializes volumeMaster	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getVolumeMaster() {
+		    if (volumeMaster == null) {
+			    volumeMaster = new VolumeTracker();
+		    }
+		    return volumeMaster;
+	    }
+
+	    /**
+	     * This method initializes chkTopmost	
+	     * 	
+	     * @return javax.swing.JCheckBox	
+	     */
+	    private JCheckBox getChkTopmost() {
+		    if (chkTopmost == null) {
+			    chkTopmost = new JCheckBox();
+			    chkTopmost.setText("Top most");
+			    chkTopmost.setText("Top most");
+		    }
+		    return chkTopmost;
+	    }
 #else
         #region UI Impl for C#
         /// <summary>

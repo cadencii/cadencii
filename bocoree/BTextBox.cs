@@ -16,16 +16,53 @@ package org.kbinani.windows.forms;
 
 import javax.swing.*;
 
-public class BTextBox extends JTextField{
-    public boolean isImeModeOn()
-    {
+public class BTextBox extends JTextField implements KeyListener{
+    public BTextBox(){
+        super();
+        addKeyListener( this );
+    }
+
+    public boolean isImeModeOn(){
         return getInputContext().isCompositionEnabled();
     }
 
-    public void setImeModeOn( boolean value )
-    {
+    public void setImeModeOn( boolean value ){
         getInputContext().setCompositionEnabled( value );
     }
+
+    /* REGION java.awt.Component */
+    /* root implementation of java.awt.Component is in BForm.cs(java) */
+    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+    public BEvent<BKeyEventHandler> keyPressedEvent = new BEvent<BKeyEventHandler>();
+
+    public void keyPressed( KeyEvent e0 ){
+        try{
+            BKeyEventArgs e = new BKeyEventArgs( e0 );
+            keyDownEvent.raise( this, e );
+        }catch( Exception ex ){
+            System.err.println( "BForm#keyPressed; ex=" + ex );
+        }
+    }
+
+    public void keyReleased( KeyEvent e0 ){
+        try{
+            BKeyEventArgs e = new BKeyEventArgs( e0 );
+            keyUpEvent.raise( this, e );
+        }catch( Exception ex ){
+            System.err.println( "BForm#keyReleased; ex=" + ex );
+        }
+    }
+
+    public void keyTyped( KeyEvent e0 ){
+        try{
+            BKeyEventArgs e = new BKeyEventArgs( e0 );
+            keyPressedEvent.raise( this, e );
+        }catch( Exception ex ){
+            System.err.println( "BForm#keyTyped; ex=" + ex );
+        }
+    }
+    /* END REGION java.awt.Component */
 }
 #else
 #define COMPONENT_ENABLE_LOCATION
@@ -163,14 +200,23 @@ namespace bocoree.windows.forms
         }
         #endregion
 
-        public bool isImeModeOn()
-        {
+        #region javax.swing.JComponent
+        // root implementation of javax.swing.JComponent is in BForm.cs
+        public bool requestFocusInWindow() {
+            return base.Focus();
+        }
+        #endregion
+
+        public bool isImeModeOn() {
             return base.ImeMode == System.Windows.Forms.ImeMode.Hiragana;
         }
 
-        public void setImeModeOn( bool value )
-        {
+        public void setImeModeOn( bool value ){
             base.ImeMode = value ? System.Windows.Forms.ImeMode.Hiragana : System.Windows.Forms.ImeMode.Off;
+        }
+
+        public void selectAll() {
+            base.SelectAll();
         }
     }
 }

@@ -177,10 +177,10 @@ namespace Boare.Cadencii {
 
         public void setTitle( String value ) {
             m_title = value;
-            UpdateTitle();
+            updateTitle();
         }
 
-        private void UpdateTitle() {
+        private void updateTitle() {
             if ( m_number.Equals( "" ) ) {
                 lblTitle.setText( m_title );
             } else if ( m_title.Equals( "" ) ) {
@@ -196,7 +196,7 @@ namespace Boare.Cadencii {
 
         public void setNumber( String value ) {
             m_number = value;
-            UpdateTitle();
+            updateTitle();
         }
 
         public boolean isMuted() {
@@ -208,7 +208,11 @@ namespace Boare.Cadencii {
             m_muted = value;
             if ( old != m_muted ){
 #if JAVA
-                isMuteChangedEvent.raise( this, new BEventArgs() );
+                try{
+                    isMuteChangedEvent.raise( this, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "VolumeTracker#setMuted; ex=" + ex );
+                }
 #else
                 if( IsMutedChanged != null ) {
                     IsMutedChanged( this, new EventArgs() );
@@ -226,7 +230,11 @@ namespace Boare.Cadencii {
             m_solo = value;
             if ( old != m_solo ){
 #if JAVA
-                isSoloChangedEvent.raise( this, new BEventArgs() );
+                try{
+                    isSoloChangedEvent.raise( this, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "VolumeTracker#setSolo; ex=" + ex );
+                }
 #else
                 if ( IsSoloChanged != null ) {
                     IsSoloChanged( this, new EventArgs() );
@@ -260,14 +268,18 @@ namespace Boare.Cadencii {
             m_feder = value;
             if ( old != m_feder ){
 #if JAVA
-                federChangedEvent.raise( this, new BEventArgs() );
+                try{
+                    federChangedEvent.raise( this, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "VolumeTracker#setFeder; ex=" + ex );
+                }
 #else
                 if ( FederChanged != null ) {
                     FederChanged( this, new EventArgs() );
                 }
 #endif
             }
-            int v = 177 - YCoordFromFeder( m_feder );
+            int v = 177 - getYCoordFromFeder( m_feder );
             trackFeder.setValue( v );
         }
 
@@ -278,7 +290,7 @@ namespace Boare.Cadencii {
 #endif
         }
 
-        private static int FederFromYCoord( int y ) {
+        private static int getFederFromYCoord( int y ) {
 #if JAVA
             int feder = _KEY[0][0];
             int min_diff = Math.abs( _KEY[0][1] - y );
@@ -311,7 +323,7 @@ namespace Boare.Cadencii {
             return feder;
         }
 
-        private static int YCoordFromFeder( int feder ) {
+        private static int getYCoordFromFeder( int feder ) {
 #if JAVA
             int y = _KEY[0][1];
             int min_diff = Math.Abs( _KEY[0][0] - feder );
@@ -345,10 +357,14 @@ namespace Boare.Cadencii {
         }
 
         private void trackFeder_ValueChanged( Object sender, BEventArgs e ) {
-            m_feder = FederFromYCoord( 151 - (trackFeder.getValue() - 26) );
+            m_feder = getFederFromYCoord( 151 - (trackFeder.getValue() - 26) );
             txtFeder.setText( (m_feder / 10.0).ToString() );
 #if JAVA
-            federChangedEvent.raise( this, new BEventArgs() );
+            try{
+                federChangedEvent.raise( this, new BEventArgs() );
+            }catch( Exception ex ){
+                System.err.println( "VolumeTracker#trackFeder_ValueChanged; ex=" + ex );
+            }
 #else
             if ( FederChanged != null ) {
                 FederChanged( this, new EventArgs() );
@@ -359,7 +375,11 @@ namespace Boare.Cadencii {
         private void trackPanpot_ValueChanged( Object sender, BEventArgs e ) {
             txtPanpot.setText( trackPanpot.getValue().ToString() );
 #if JAVA
-            panpotChangedEvent.raise( this, new BEventArgs() );
+            try{
+                panpotChangedEvent.raise( this, new BEventArgs() );
+            }catch( Exception ex ){
+                System.err.println( "VolumeTracker#trackPanpot_ValueChanged; ex=" + ex );
+            }
 #else
             if ( PanpotChanged != null ) {
                 PanpotChanged( this, new EventArgs() );
@@ -368,12 +388,17 @@ namespace Boare.Cadencii {
         }
 
         private void txtFeder_KeyDown( Object sender, BKeyEventArgs e ) {
-#if !JAVA
+#if JAVA
+            if( (e.getKeyCode() & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ){
+                return;
+            }
+#else
             if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
+#endif
             try {
-                int feder = (int)(PortUtil.parseFloat( txtFeder.Text ) * 10.0f);
+                int feder = (int)(PortUtil.parseFloat( txtFeder.getText() ) * 10.0f);
                 if ( 55 < feder ) {
                     feder = 55;
                 }
@@ -381,19 +406,23 @@ namespace Boare.Cadencii {
                     feder = -898;
                 }
                 setFeder( feder );
-                txtFeder.Text = getFeder() / 10.0f + "";
-                txtFeder.Focus();
-                txtFeder.SelectAll();
+                txtFeder.setText( getFeder() / 10.0f + "" );
+                txtFeder.requestFocusInWindow();
+                txtFeder.selectAll();
             } catch ( Exception ex ) {
             }
-#endif
         }
 
         private void txtPanpot_KeyDown( Object sender, BKeyEventArgs e ) {
-#if !JAVA
+#if JAVA
+            if( (e.getKeyCode() & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ){
+                return;
+            }
+#else
             if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
+#endif
             try {
                 int panpot = PortUtil.parseInt( txtPanpot.Text );
                 if ( panpot < -64 ) {
@@ -403,20 +432,19 @@ namespace Boare.Cadencii {
                     panpot = 64;
                 }
                 setPanpot( panpot );
-                txtPanpot.Text = getPanpot() + "";
-                txtPanpot.Focus();
-                txtPanpot.SelectAll();
+                txtPanpot.setText( getPanpot() + "" );
+                txtPanpot.requestFocusInWindow();
+                txtPanpot.selectAll();
             } catch ( Exception ex ) {
             }
-#endif
         }
 
         private void registerEventHandlers() {
 #if JAVA
             trackFeder.valueChangedEvent.add( new BEventHandler( this, "trackFeder_ValueChanged" ) );
             trackPanpot.valueChangedEvent.add( new BEventHandler( this, "trackPanpot_ValueChanged" ) );
-            //this.txtPanpot.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtPanpot_KeyDown );
-            //this.txtFeder.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtFeder_KeyDown );
+            txtPanpot.keyDownEvent.add( new BKeyEventHandler( this, "txtPanpot_KeyDown" ) );
+            txtFeder.keyDownEvent.add( new BKeyEventHandler( this, "txtFeder_KeyDown" ) );
             //this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
 #else
             this.trackFeder.ValueChanged += new System.EventHandler( this.trackFeder_ValueChanged );

@@ -19,7 +19,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.lang.reflect.*;
 
-public class BForm extends JFrame implements WindowListener{
+public class BForm extends JFrame implements WindowListener, KeyListener{
     public BEvent<BEventHandler> formClosingEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
@@ -35,6 +35,7 @@ public class BForm extends JFrame implements WindowListener{
     public BForm( String title ){
         super( title );
         addWindowListener( this );
+        addKeyListener( this );
     }
 
     public void windowActivated( WindowEvent e ){
@@ -99,29 +100,59 @@ public class BForm extends JFrame implements WindowListener{
     }
 
     public BDialogResult showDialog(){
-        try
-        {
+        try{
             Thread t = new Thread( new ShowDialogRunner() );
             t.start();
             t.join();
-        }
-        catch( Exception ex )
-        {
+        }catch( Exception ex ){
             System.out.println( "BForm#showDialog; ex=" + ex );
         }
         return m_result;
     }
 
-    public BDialogResult getDialogResult()
-    {
+    public BDialogResult getDialogResult(){
         return m_result;
     }
 
-    public void setDialogResult( BDialogResult value )
-    {
+    public void setDialogResult( BDialogResult value ){
         m_closed = true;
         m_result = value;
     }
+
+    /* root implementation of java.awt.Component */
+    /* REGION java.awt.Component */
+    /* root implementation of java.awt.Component is in BForm.cs(java) */
+    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+    public BEvent<BKeyEventHandler> keyPressedEvent = new BEvent<BKeyEventHandler>();
+
+    public void keyPressed( KeyEvent e0 ){
+        try{
+            BKeyEventArgs e = new BKeyEventArgs( e0 );
+            keyDownEvent.raise( this, e );
+        }catch( Exception ex ){
+            System.err.println( "BForm#keyPressed; ex=" + ex );
+        }
+    }
+
+    public void keyReleased( KeyEvent e0 ){
+        try{
+            BKeyEventArgs e = new BKeyEventArgs( e0 );
+            keyUpEvent.raise( this, e );
+        }catch( Exception ex ){
+            System.err.println( "BForm#keyReleased; ex=" + ex );
+        }
+    }
+
+    public void keyTyped( KeyEvent e0 ){
+        try{
+            BKeyEventArgs e = new BKeyEventArgs( e0 );
+            keyPressedEvent.raise( this, e );
+        }catch( Exception ex ){
+            System.err.println( "BForm#keyTyped; ex=" + ex );
+        }
+    }
+    /* END REGION java.awt.Component */
 }
 #else
 #define COMPONENT_ENABLE_LOCATION
@@ -169,6 +200,7 @@ namespace bocoree.windows.forms {
 
         // root implementation of java.awt.Component
         #region java.awt.Component
+        // root implementation of java.awt.Component is in BForm.cs
         public bool isVisible() {
             return base.Visible;
         }
@@ -290,6 +322,7 @@ namespace bocoree.windows.forms {
 
         // root implementation of java.awt.Window
         #region java.awt.Window
+        // root implementation of java.awt.Window is in BForm.cs
         public void setBounds( int x, int y, int width, int height ) {
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
@@ -305,6 +338,7 @@ namespace bocoree.windows.forms {
 
         // root implementation of java.awt.Frame
         #region java.awt.Frame
+        // root implementation of java.awt.Frame is in BForm.cs
         public const int CROSSHAIR_CURSOR = 1;
         public const int DEFAULT_CURSOR = 0;
         public const int E_RESIZE_CURSOR = 11;
@@ -379,6 +413,14 @@ namespace bocoree.windows.forms {
 
         public void setTitle( string value ) {
             base.Text = value;
+        }
+        #endregion
+
+        // root implementation of javax.swing.JComponent
+        #region javax.swing.JComponent
+        // root implementation of javax.swing.JComponent is in BForm.cs
+        public bool requestFocusInWindow() {
+            return base.Focus();
         }
         #endregion
     }

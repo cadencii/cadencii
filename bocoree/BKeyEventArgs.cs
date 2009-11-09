@@ -14,10 +14,26 @@
 #if JAVA
 package org.kbinani.windows.forms;
 
+import java.awt.event.*;
 import org.kbinani.*;
 
-public class BKeyEventArgs extends BEventArgs
-{
+public class BKeyEventArgs extends BEventArgs{
+    private KeyEvent m_original = null;
 
+    public BKeyEventArgs( KeyEvent e ){
+        m_original = e;
+    }
+
+    public char getKeyChar(){
+        reutrn e.getKeyChar();
+    }
+
+    public int getKeyCode(){
+        return e.getKeyCode();
+    }
+
+    public int getModifiers(){
+        return e.getModifiers():
+    }
 }
 #endif

@@ -68,7 +68,7 @@ public class VolumeTracker extends JPanel {
 		gridBagConstraints.weighty = 0.0D;
 		gridBagConstraints.insets = new Insets(10, 3, 0, 3);
 		gridBagConstraints.gridx = 0;
-		this.setSize(85, 261);
+		this.setSize(86, 275);
 		this.setLayout(new GridBagLayout());
 		this.setPreferredSize(new Dimension(85, 261));
 		this.setBackground(new Color(180, 180, 180));
@@ -144,4 +144,4 @@ public class VolumeTracker extends JPanel {
 		return txtPanpot;
 	}
 
-}
+}  //  @jve:decl-index=0:visual-constraint="10,10"
