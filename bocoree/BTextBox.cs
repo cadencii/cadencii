@@ -14,7 +14,9 @@
 #if JAVA
 package org.kbinani.windows.forms;
 
+import java.awt.event.*;
 import javax.swing.*;
+import org.kbinani.*;
 
 public class BTextBox extends JTextField implements KeyListener{
     public BTextBox(){
@@ -66,8 +68,8 @@ public class BTextBox extends JTextField implements KeyListener{
 }
 #else
 #define COMPONENT_ENABLE_LOCATION
-namespace bocoree.windows.forms
-{
+namespace bocoree.windows.forms{
+
     public class BTextBox : System.Windows.Forms.TextBox {
         #region java.awt.Component
 #if COMPONENT_PARENT_AS_OWNERITEM

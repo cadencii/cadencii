@@ -61,8 +61,12 @@ namespace bocoree.io {
             m_stream.Write( b, off, len );
         }
 
-        public void write( byte b ) {
-            m_stream.WriteByte( b );
+        public void write( int b ) {
+            m_stream.WriteByte( (byte)b );
+        }
+
+        public void writeByte( int b ) {
+            write( b );
         }
 
         public long getFilePointer() {

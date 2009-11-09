@@ -14,14 +14,15 @@
 #if JAVA
 package org.kbinani;
 
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.event.*;
+import java.awt.geom.*;
 import java.util.*;
 import java.nio.*;
 import java.nio.charset.*;
 import java.io.*;
 import java.text.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
 import java.security.*;
 import java.nio.channels.*;
 import javax.swing.*;
@@ -192,6 +193,62 @@ namespace bocoree {
             return DateTime.Now.Ticks * 100.0 / 1e9;
 #endif
         }
+
+        #region Clipboard
+        public static void setClipboardText( String value ) {
+#if JAVA
+            Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+		    clip.setContents( new StringSelection( value ), null );
+#else
+            System.Windows.Forms.Clipboard.SetText( value );
+#endif
+        }
+
+        public static void clearClipboard() {
+#if JAVA
+            Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+		    clip.setContents( new StringSelection( null ), null );
+#else
+            System.Windows.Forms.Clipboard.Clear();
+#endif
+        }
+
+        public static boolean isClipboardContainsText() {
+#if JAVA
+            Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable data = clip.getContents( null );
+
+            if( data == null || !data.isDataFlavorSupported( DataFlavor.stringFlavor ) ){
+                return true;
+            }else{
+                return false;
+            }
+#else
+            return System.Windows.Forms.Clipboard.ContainsText();
+#endif
+        }
+
+        public static String getClipboardText() {
+#if JAVA
+            Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable data = clip.getContents( null );
+
+            String str = null;
+            if( data == null || !data.isDataFlavorSupported( DataFlavor.stringFlavor ) ){
+                str = null;
+            }else{
+                try {
+                    str = (String)data.getTransferData( DataFlavor.stringFlavor );
+                }catch( Exception e ){
+                    str = null;
+                }
+            }
+            return str;
+#else
+            return System.Windows.Forms.Clipboard.GetText();
+#endif
+        }
+        #endregion
 
         #region BitConverter
 
@@ -1225,6 +1282,27 @@ namespace bocoree {
         public static Rectangle getWorkingArea( System.Windows.Forms.Form w ) {
             System.Drawing.Rectangle r = System.Windows.Forms.Screen.GetWorkingArea( w );
             return new Rectangle( r.X, r.Y, r.Width, r.Height );
+#endif
+        }
+
+        public static String getMD5FromString( String str ) {
+#if JAVA
+            MessageDigest digest = null;
+            try {
+                digest = MessageDigest.getInstance("MD5");
+                byte[] buff = getEncodedByte( "UTF-8", str );
+                digest.update( buff, 0, buff.length );
+            } catch( NoSuchAlgorithmException ex2 ){
+                System.err.println( "PortUtil#getMD5FromString; ex2=" + ex2 );
+            }
+            byte[] dat = digest.digest();
+            String ret = "";
+            for( int i = 0; i < dat.length; i++ ){
+                ret += String.format( "%02x", dat[i] );
+            }
+            return ret;
+#else
+            return Misc.getmd5( str );
 #endif
         }
 

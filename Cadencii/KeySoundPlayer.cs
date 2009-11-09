@@ -11,36 +11,41 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.IO;
-using System.Media;
-using System.Windows.Forms;
+#if JAVA
+package org.kbinani.Cadencii;
 
-using bocoree;
+import org.kbinani.*;
+import org.kbinani.media.*;
+#else
+using System;
 using Boare.Lib.Media;
+using bocoree;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
-    class KeySoundPlayer {
+    public class KeySoundPlayer {
         /// <summary>
         /// 鍵盤を押した時に音を鳴らすためのプレイヤー
         /// </summary>
-        private static SoundPlayer[] m_sound_previewer = new SoundPlayer[48];
-        private static SoundPlayer m_temp_player = null;
+        private static BSoundPlayer[] m_sound_previewer = new BSoundPlayer[48];
+        private static BSoundPlayer m_temp_player = null;
         private static boolean[] m_prepared = new boolean[127];
         
         public static void Init() {
-            String cache_path = Path.Combine( Application.StartupPath, "cache" );
+            String cache_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "cache" );
             for ( int i = 0; i <= 126; i++ ) {
-                String path = Path.Combine( cache_path, i + ".wav" );
+                String path = PortUtil.combinePath( cache_path, i + ".wav" );
                 if ( PortUtil.isFileExists( path ) ) {
                     m_prepared[i] = true;
                     if ( 36 <= i && i <= 83 ) {
                         try {
-                            m_sound_previewer[i - 36] = new SoundPlayer( path );
-                        } catch {
+                            m_sound_previewer[i - 36] = new BSoundPlayer( path );
+                        } catch( Exception ex ) {
+#if JAVA
+                            System.err.println( "KeySoundPlayer#.ctor; ex=" + ex );
+#endif
                         }
                     }
                 } else {
@@ -64,21 +69,26 @@ namespace Boare.Cadencii {
             if ( 36 <= note && note <= 83 ) {
                 if ( m_sound_previewer[note - 36] != null ) {
                     try {
-                        m_sound_previewer[note - 36].Play();
-                    } catch {
+                        m_sound_previewer[note - 36].play();
+                    } catch( Exception ex ) {
+#if JAVA
+                        System.err.println( "KeySoundPlayer#Play; ex=" + ex );
+#endif
                     }
                 }
             } else {
                 if ( m_temp_player == null ) {
-                    m_temp_player = new SoundPlayer();
+                    m_temp_player = new BSoundPlayer();
                 }
-                String path = Path.Combine( Path.Combine( Application.StartupPath, "cache" ), note + ".wav" );
+                String path = PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "cache" ), note + ".wav" );
                 if ( PortUtil.isFileExists( path ) ) {
-                    m_temp_player.SoundLocation = path;
-                    m_temp_player.Play();
+                    m_temp_player.setSoundLocation( path );
+                    m_temp_player.play();
                 }
             }
         }
     }
 
+#if !JAVA
 }
+#endif

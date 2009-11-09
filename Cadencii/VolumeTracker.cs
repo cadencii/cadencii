@@ -16,6 +16,7 @@ package org.kbinani.Cadencii;
 
 import javax.swing.*;
 import org.kbinani.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
@@ -719,4 +720,6 @@ namespace Boare.Cadencii {
 #endif
     }
 
+#if !JAVA
 }
+#endif

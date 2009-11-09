@@ -16,6 +16,7 @@ package org.kbinani.Cadencii;
 
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.*;
 import java.util.*;
 import javax.swing.*;
 import org.kbinani.*;
@@ -527,14 +528,14 @@ namespace Boare.Cadencii {
 
         public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
 #if ENABLE_PROPERTY
-            bool property = (propertyWindow != null) ? propertyWindow.TopMost : false;
+            boolean property = (propertyWindow != null) ? propertyWindow.isAlwaysOnTop() : false;
             if ( property ) {
-                propertyWindow.TopMost = false;
+                propertyWindow.setAlwaysOnTop( false );
             }
 #endif
-            bool mixer = (mixerWindow != null) ? mixerWindow.TopMost : false;
+            boolean mixer = (mixerWindow != null) ? mixerWindow.isAlwaysOnTop() : false;
             if ( mixer ) {
-                mixerWindow.TopMost = false;
+                mixerWindow.setAlwaysOnTop( false );
             }
 
             BDialogResult ret = BDialogResult.CANCEL;
@@ -590,54 +591,18 @@ namespace Boare.Cadencii {
 
 #if ENABLE_PROPERTY
             if ( property ) {
-                propertyWindow.TopMost = true;
+                propertyWindow.setAlwaysOnTop( true );
             }
 #endif
             if ( mixer ) {
-                mixerWindow.TopMost = true;
+                mixerWindow.setAlwaysOnTop( true );
             }
             if ( mainWindow != null ) {
-                mainWindow.Focus();
+                mainWindow.requestFocus();
             }
 
             return ret;
         }
-
-        /*public static BDialogResult showMessageBox( String text, String caption, MessageBoxButtons buttons, MessageBoxIcon icon ) {
-#if ENABLE_PROPERTY
-            bool property = (propertyWindow != null) ? propertyWindow.TopMost : false;
-            if ( property ) {
-                propertyWindow.TopMost = false;
-            }
-#endif
-            bool mixer = (mixerWindow != null) ? mixerWindow.TopMost : false;
-            if ( mixer ) {
-                mixerWindow.TopMost = false;
-            }
-            DialogResult dr = MessageBox.Show( text, caption, buttons, icon );
-#if ENABLE_PROPERTY
-            if ( property ) {
-                propertyWindow.TopMost = true;
-            }
-#endif
-            if ( mixer ) {
-                mixerWindow.TopMost = true;
-            }
-
-            if ( mainWindow != null ) {
-                mainWindow.Focus();
-            }
-            if ( dr == DialogResult.OK ) {
-                return BDialogResult.OK;
-            } else if ( dr == DialogResult.Cancel ) {
-                return BDialogResult.CANCEL;
-            } else if ( dr == DialogResult.Yes ) {
-                return BDialogResult.YES;
-            } else if ( dr == DialogResult.No ) {
-                return BDialogResult.NO;
-            }
-            return BDialogResult.CANCEL;
-        }*/
         #endregion
 
         #region BGM 関連
@@ -760,10 +725,10 @@ namespace Boare.Cadencii {
                 if ( millisec > int.MaxValue ) {
                     draft = int.MaxValue;
                 }
-                s_auto_backup_timer.Interval = draft;
-                s_auto_backup_timer.Start();
+                s_auto_backup_timer.setDelay( draft );
+                s_auto_backup_timer.start();
             } else {
-                s_auto_backup_timer.Stop();
+                s_auto_backup_timer.stop();
             }
         }
 
@@ -818,7 +783,7 @@ namespace Boare.Cadencii {
         /// <returns></returns>
         public static String trimString( String item, Font font, int width ) {
             String edited = item;
-            int delete_count = item.Length;
+            int delete_count = PortUtil.getStringLength( item );
             while ( true ) {
                 Dimension measured = Util.measureString( edited, font );
                 if ( measured.width <= width ) {
@@ -1074,8 +1039,18 @@ namespace Boare.Cadencii {
         public static void setCurveMode( boolean value ) {
             boolean old = s_is_curve_mode;
             s_is_curve_mode = value;
-            if ( old != s_is_curve_mode && SelectedToolChanged != null ) {
-                SelectedToolChanged( typeof( AppManager ), new BEventArgs() );
+            if ( old != s_is_curve_mode ){
+#if JAVA
+                try{
+                    selectedToolChangedEvent.raise( AppManager.class, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "AppManager#setCurveMode; ex=" + ex );
+                }
+#else
+                if ( SelectedToolChanged != null ) {
+                    SelectedToolChanged( typeof( AppManager ), new BEventArgs() );
+                }
+#endif
             }
         }
 
@@ -1103,7 +1078,7 @@ namespace Boare.Cadencii {
 #endif
                 if ( run.vsqCommand != null ) {
                     if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
-                        int track = (int)run.vsqCommand.Args[0];
+                        int track = (Integer)run.vsqCommand.Args[0];
                         if ( track == getSelected() && track >= 2 ) {
                             setSelected( track - 1 );
                         }
@@ -1132,7 +1107,7 @@ namespace Boare.Cadencii {
                 CadenciiCommand run = (CadenciiCommand)run_src;
                 if ( run.vsqCommand != null ) {
                     if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
-                        int track = (int)run.args[0];
+                        int track = (Integer)run.args[0];
                         if ( track == getSelected() && track >= 2 ) {
                             setSelected( track - 1 );
                         }
@@ -1202,8 +1177,18 @@ namespace Boare.Cadencii {
         public static void setSelectedTool( EditTool value ) {
             EditTool old = s_selected_tool;
             s_selected_tool = value;
-            if ( old != s_selected_tool && SelectedToolChanged != null ) {
-                SelectedToolChanged( typeof( AppManager ), new BEventArgs() );
+            if ( old != s_selected_tool ){
+#if JAVA
+                try{
+                    selectedToolChangedEvent.raise( AppManager.class, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "AppManager#setSelectedTool; ex=" + ex );
+                }
+#else
+                if ( SelectedToolChanged != null ) {
+                    SelectedToolChanged( typeof( AppManager ), new BEventArgs() );
+                }
+#endif
             }
         }
 
@@ -1300,7 +1285,7 @@ namespace Boare.Cadencii {
         }
 
         public static Iterator getSelectedTimesigIterator() {
-            Vector<ValuePair<Integer, SelectedTimesigEntry>> list = new Vector<ValuePair<int, SelectedTimesigEntry>>();
+            Vector<ValuePair<Integer, SelectedTimesigEntry>> list = new Vector<ValuePair<Integer, SelectedTimesigEntry>>();
             for ( Iterator itr = s_selected_timesig.keySet().iterator(); itr.hasNext(); ) {
                 int clock = (Integer)itr.next();
                 list.add( new ValuePair<Integer, SelectedTimesigEntry>( clock, s_selected_timesig.get( clock ) ) );
@@ -1368,7 +1353,7 @@ namespace Boare.Cadencii {
         }
 
         public static Iterator getSelectedTempoIterator() {
-            Vector<ValuePair<Integer, SelectedTempoEntry>> list = new Vector<ValuePair<int, SelectedTempoEntry>>();
+            Vector<ValuePair<Integer, SelectedTempoEntry>> list = new Vector<ValuePair<Integer, SelectedTempoEntry>>();
             for ( Iterator itr = s_selected_tempo.keySet().iterator(); itr.hasNext(); ) {
                 int clock = (Integer)itr.next();
                 list.add( new ValuePair<Integer, SelectedTempoEntry>( clock, s_selected_tempo.get( clock ) ) );
@@ -1458,7 +1443,7 @@ namespace Boare.Cadencii {
         public static void addSelectedEventAll( int[] ids ) {
             clearSelectedTempo();
             clearSelectedTimesig();
-            Vector<Integer> list = new Vector<Integer>( ids );
+            Vector<Integer> list = new Vector<Integer>( Arrays.asList( ids ) );
             VsqEvent[] index = new VsqEvent[ids.Length];
             int count = 0;
             int c = list.size();
@@ -1509,8 +1494,18 @@ namespace Boare.Cadencii {
                     if ( !isSelectedEventContains( s_selected, id ) ) {
                         // まだ選択されていなかった場合
                         s_selected_events.add( new SelectedEventEntry( s_selected, ev, (VsqEvent)ev.clone() ) );
-                        if ( !silent && SelectedEventChanged != null ) {
-                            SelectedEventChanged( typeof( AppManager ), false );
+                        if ( !silent ){
+#if JAVA
+                            try{
+                                selectedEventChangedEvent.raise( AppManager.class, false );
+                            }catch( Exception ex ){
+                                System.err.println( "AppManager#addSelectedEventCor; ex=" + ex );
+                            }
+#else
+                            if ( SelectedEventChanged != null ) {
+                                SelectedEventChanged( typeof( AppManager ), false );
+                            }
+#endif
                         }
                     } else {
                         // すでに選択されているアイテムの再選択
@@ -1604,7 +1599,7 @@ namespace Boare.Cadencii {
         }
 
         public static Iterator getSelectedPointIDIterator() {
-            return new ListIterator<Long>( selectedPointIDs );
+            return selectedPointIDs.iterator();
         }
 
         public static int getSelectedPointIDCount() {
@@ -1621,13 +1616,24 @@ namespace Boare.Cadencii {
         /// 現在選択されたアイテムが存在するかどうかを調べ，必要であればSelectedEventChangedイベントを発生させます
         /// </summary>
         private static void checkSelectedItemExistence() {
-            if ( SelectedEventChanged != null ) {
+#if !JAVA
+            if ( SelectedEventChanged != null )
+#endif
+            {
                 boolean ret = s_selected_bezier.size() == 0 &&
                               s_selected_events.size() == 0 &&
                               s_selected_tempo.size() == 0 &&
                               s_selected_timesig.size() == 0 &&
                               selectedPointIDs.size() == 0;
+#if JAVA
+                try{
+                    selectedEventChangedEvent.raise( AppManager.class, ret );
+                }catch( Exception ex ){
+                    System.err.println( "AppManager#checkSelectedItemExistence; ex=" + ex );
+                }
+#else
                 SelectedEventChanged( typeof( AppManager ), ret );
+#endif
             }
         }
 
@@ -1674,9 +1680,17 @@ namespace Boare.Cadencii {
         public static void setGridVisible( boolean value ) {
             if ( value != s_grid_visible ) {
                 s_grid_visible = value;
+#if JAVA
+                try{
+                    gridVisibleChangedEvent.raise( AppManager.class, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "AppManager#setGridVisible; ex=" + ex );
+                }
+#else
                 if ( GridVisibleChanged != null ) {
                     GridVisibleChanged( typeof( AppManager ), new BEventArgs() );
                 }
+#endif
             }
         }
 
@@ -1702,11 +1716,30 @@ namespace Boare.Cadencii {
             boolean previous = s_playing;
             s_playing = value;
             if ( previous != s_playing ) {
-                if ( s_playing && PreviewStarted != null ) {
-                    int clock = getCurrentClock();
-                    PreviewStarted( typeof( AppManager ), new BEventArgs() );
-                } else if ( !s_playing && PreviewAborted != null ) {
-                    PreviewAborted( typeof( AppManager ), new BEventArgs() );
+                if ( s_playing ) {
+#if JAVA
+                    try{
+                        previewStartedEvent.raise( AppManager.class, new BEventArgs() );
+                    }catch( Exception ex ){
+                        System.err.println( "AppManager#setPlaying; ex=" + ex );
+                    }
+#else
+                    if ( PreviewStarted != null ) {
+                        PreviewStarted( typeof( AppManager ), new BEventArgs() );
+                    }
+#endif
+                } else if ( !s_playing ){
+#if JAVA
+                    try{
+                        previewAbortedEvent.raise( AppManager.class, new BEventArgs() );
+                    }catch( Exception ex ){
+                        System.err.println( "AppManager#setPlaying; ex=" + ex );
+                    }
+#else
+                    if ( PreviewAborted != null ) {
+                        PreviewAborted( typeof( AppManager ), new BEventArgs() );
+                    }
+#endif
                 }
             }
         }
@@ -1748,8 +1781,8 @@ namespace Boare.Cadencii {
                     if ( millisec > int.MaxValue ) {
                         draft = int.MaxValue;
                     }
-                    s_auto_backup_timer.Interval = draft;
-                    s_auto_backup_timer.Start();
+                    s_auto_backup_timer.setDelay( draft );
+                    s_auto_backup_timer.start();
                 }
             }
         }
@@ -1777,8 +1810,18 @@ namespace Boare.Cadencii {
             s_current_play_position.denominator = timesig.denominator;
             s_current_play_position.numerator = timesig.numerator;
             s_current_play_position.tempo = s_vsq.getTempoAt( s_current_clock );
-            if ( old != s_current_clock && CurrentClockChanged != null ) {
-                CurrentClockChanged( typeof( AppManager ), new BEventArgs() );
+            if ( old != s_current_clock ){
+#if JAVA
+                try{
+                    currentClockChangedEvent.raise( AppManager.class, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "AppManager#setCurrentClock; ex=" + ex );
+                }
+#else
+                if ( CurrentClockChanged != null ) {
+                    CurrentClockChanged( typeof( AppManager ), new BEventArgs() );
+                }
+#endif
             }
         }
 
@@ -1882,7 +1925,7 @@ namespace Boare.Cadencii {
             startMarker = s_vsq.getPreMeasureClocks();
             int bar = s_vsq.getPreMeasure() + 1;
             endMarker = s_vsq.getClockFromBarCount( bar );
-            s_auto_backup_timer.Stop();
+            s_auto_backup_timer.stop();
             if ( mainWindow != null ) {
                 mainWindow.updateBgmMenuState();
             }
@@ -1896,15 +1939,15 @@ namespace Boare.Cadencii {
             VSTiProxy.CurrentUser = "";
 
             #region Apply User Dictionary Configuration
-            Vector<ValuePair<String, boolean>> current = new Vector<ValuePair<String, boolean>>();
+            Vector<ValuePair<String, Boolean>> current = new Vector<ValuePair<String, Boolean>>();
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                 current.add( new ValuePair<String, boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
             }
-            Vector<ValuePair<String, boolean>> config_data = new Vector<ValuePair<String, boolean>>();
+            Vector<ValuePair<String, Boolean>> config_data = new Vector<ValuePair<String, Boolean>>();
             int count = editorConfig.UserDictionaries.size();
             for ( int i = 0; i < count; i++ ) {
                 String[] spl = PortUtil.splitString( editorConfig.UserDictionaries.get( i ), new char[] { '\t' }, 2 );
-                config_data.add( new ValuePair<String, boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
+                config_data.add( new ValuePair<String, Boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
 #if DEBUG
                 AppManager.debugWriteLine( "    " + spl[0] + "," + spl[1] );
 #endif
@@ -1936,7 +1979,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if !TREECOM
-            s_id = Misc.getmd5( DateTime.Now.ToBinary().ToString() ).Replace( "_", "" );
+            s_id = PortUtil.getMD5FromString( (long)PortUtil.getCurrentTime() + "" ).Replace( "_", "" );
             String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
 #endif
 
@@ -1950,10 +1993,10 @@ namespace Boare.Cadencii {
 
         public static String getShortcutDisplayString( BKeys[] keys ) {
             String ret = "";
-            Vector<BKeys> list = new Vector<BKeys>( keys );
+            Vector<BKeys> list = new Vector<BKeys>( Arrays.asList( keys ) );
             if ( list.contains( BKeys.Menu ) ) {
 #if JAVA
-                ret = new String( '\u2318' );
+                ret = new String( new char[]{ '\u2318' } );
 #else
                 ret = new String( '\x2318', 1 );
 #endif
@@ -2010,7 +2053,7 @@ namespace Boare.Cadencii {
                 return "9";
             } else if ( key.Equals( BKeys.Menu ) ) {
 #if JAVA
-                    return new String( '\u2318' );
+                return new String( new char[]{ '\u2318' } );
 #else
                 return new String( '\x2318', 1 );
 #endif
@@ -2033,7 +2076,11 @@ namespace Boare.Cadencii {
             objectOutputStream.writeObject( obj );
 
             byte[] arr = outputStream.toByteArray();
+#if JAVA
+            str = CLIP_PREFIX + ":" + obj.getClass().getName() + ":" + Base64.encode( arr );
+#else
             str = CLIP_PREFIX + ":" + obj.GetType().FullName + ":" + Base64.encode( arr );
+#endif
             return str;
         }
 
@@ -2061,28 +2108,33 @@ namespace Boare.Cadencii {
         }
 
         public static void clearClipBoard() {
-            if ( Clipboard.ContainsText() ) {
-                if ( Clipboard.GetText().StartsWith( CLIP_PREFIX ) ) {
-                    Clipboard.Clear();
+            if ( PortUtil.isClipboardContainsText() ) {
+                String clip = PortUtil.getClipboardText();
+                if ( clip != null && clip.StartsWith( CLIP_PREFIX ) ) {
+                    PortUtil.clearClipboard();
                 }
             }
         }
 
         public static void setClipboard( ClipboardEntry item ) {
             String clip = getSerializedText( item );
-            Clipboard.Clear();
-            Clipboard.SetText( clip );
+            PortUtil.clearClipboard();
+            PortUtil.setClipboardText( clip );
         }
 
         public static ClipboardEntry getCopiedItems() {
             ClipboardEntry ce = null;
-            if ( Clipboard.ContainsText() ) {
-                String clip = Clipboard.GetText();
+            if ( PortUtil.isClipboardContainsText() ) {
+                String clip = PortUtil.getClipboardText();
                 if ( clip.StartsWith( CLIP_PREFIX ) ) {
                     int index1 = clip.IndexOf( ":" );
                     int index2 = clip.IndexOf( ":", index1 + 1 );
                     String typename = clip.Substring( index1 + 1, index2 - index1 - 1 );
+#if JAVA
+                    if ( typename.Equals( ClipboardEntry.class.getName() ) ) {
+#else
                     if ( typename.Equals( typeof( ClipboardEntry ).FullName ) ) {
+#endif
                         try {
                             ce = (ClipboardEntry)getDeserializedObjectFromText( clip );
                         } catch ( Exception ex ) {
@@ -2116,40 +2168,40 @@ namespace Boare.Cadencii {
             ce.events = item;
             ce.copyStartedClock = copy_started_clock;
             String clip = getSerializedText( ce );
-            Clipboard.Clear();
-            Clipboard.SetText( clip );
+            PortUtil.clearClipboard();
+            PortUtil.setClipboardText( clip );
         }
 
         public static void setCopiedTempo( Vector<TempoTableEntry> item, int copy_started_clock ) {
             ClipboardEntry ce = new ClipboardEntry();
             ce.tempo = item;
             String clip = getSerializedText( ce );
-            Clipboard.Clear();
-            Clipboard.SetText( clip );
+            PortUtil.clearClipboard();
+            PortUtil.setClipboardText( clip );
         }
 
         public static void setCopiedTimesig( Vector<TimeSigTableEntry> item, int copy_started_clock ) {
             ClipboardEntry ce = new ClipboardEntry();
             ce.timesig = item;
             String clip = getSerializedText( ce );
-            Clipboard.Clear();
-            Clipboard.SetText( clip );
+            PortUtil.clearClipboard();
+            PortUtil.setClipboardText( clip );
         }
 
         public static void setCopiedCurve( TreeMap<CurveType, VsqBPList> item, int copy_started_clock ) {
             ClipboardEntry ce = new ClipboardEntry();
             ce.points = item;
             String clip = getSerializedText( ce );
-            Clipboard.Clear();
-            Clipboard.SetText( clip );
+            PortUtil.clearClipboard();
+            PortUtil.setClipboardText( clip );
         }
 
         public static void setCopiedBezier( TreeMap<CurveType, Vector<BezierChain>> item, int copy_started_clock ) {
             ClipboardEntry ce = new ClipboardEntry();
             ce.beziers = item;
             String clip = getSerializedText( ce );
-            Clipboard.Clear();
-            Clipboard.SetText( clip );
+            PortUtil.clearClipboard();
+            PortUtil.setClipboardText( clip );
         }
         #endregion
 
@@ -2190,7 +2242,11 @@ namespace Boare.Cadencii {
         /// Gets the path for application data
         /// </summary>
         public static String getApplicationDataPath() {
+#if JAVA
+            String dir = PortUtil.combinePath( System.getenv( "APPDATA" ), "Boare" );
+#else
             String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+#endif
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
@@ -2206,7 +2262,7 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <returns></returns>
         public static int getPositionQuantizeClock() {
-            return QuantizeModeUtil.getQuantizeClock( editorConfig.PositionQuantize, editorConfig.PositionQuantizeTriplet );
+            return QuantizeModeUtil.getQuantizeClock( editorConfig.getPositionQuantize(), editorConfig.getPositionQuantizeTriplet() );
         }
 
         /// <summary>
@@ -2214,7 +2270,7 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <returns></returns>
         public static int getLengthQuantizeClock() {
-            return QuantizeModeUtil.getQuantizeClock( editorConfig.LengthQuantize, editorConfig.LengthQuantizeTriplet );
+            return QuantizeModeUtil.getQuantizeClock( editorConfig.getLengthQuantize(), editorConfig.getLengthQuantizeTriplet() );
         }
 
         public static void saveConfig() {

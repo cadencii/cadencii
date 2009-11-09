@@ -17,6 +17,7 @@ package org.kbinani.Cadencii;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
@@ -35,6 +36,7 @@ using bocoree.windows.forms;
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
 #endif
 
 #if JAVA
@@ -188,18 +190,20 @@ namespace Boare.Cadencii {
             }
             volumeMaster.setFeder( AppManager.getVsqFile().Mixer.MasterFeder );
             volumeMaster.setPanpot( AppManager.getVsqFile().Mixer.MasterPanpot );
-#if !JAVA
+
+#if JAVA
+#else
             panel1.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
             volumeMaster.Location = new Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
             chkTopmost.Left = panel1.Width;
-#endif
             this.MaximumSize = Size.Empty;
             this.MinimumSize = Size.Empty;
             this.ClientSize = new Size( screen_num * (VolumeTracker.WIDTH + 1) + 3, 279 );
             this.MinimumSize = this.Size;
             this.MaximumSize = this.Size;
             this.Invalidate();
-            m_parent.Focus();
+            m_parent.requestFocusInWindow();
+#endif
         }
 
         private void FormMixer_PanpotChanged( Object sender, BEventArgs e ) {
@@ -293,7 +297,7 @@ namespace Boare.Cadencii {
             m_parent.flipMixerDialogVisible( false );
         }
 
-        private void FormMixer_FormClosing( Object sender, FormClosingEventArgs e ) {
+        private void FormMixer_FormClosing( Object sender, BFormClosingEventArgs e ) {
             m_parent.flipMixerDialogVisible( false );
             e.Cancel = true;
         }
@@ -674,4 +678,6 @@ namespace Boare.Cadencii {
 #endif
     }
 
+#if !JAVA
 }
+#endif

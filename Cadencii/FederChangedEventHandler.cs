@@ -2,6 +2,7 @@
 package org.kbinani.Cadencii;
 
 import java.lang.reflect.*;
+import org.kbinani.*;
 
 public class FederChangedEventHandler implements IEventHandler{
     private BDelegate m_delegate = null;

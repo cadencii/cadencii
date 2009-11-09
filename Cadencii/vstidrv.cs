@@ -23,6 +23,8 @@ namespace Boare.Cadencii {
     using VstInt32 = Int32;
     using VstIntPtr = Int32;
 
+    public delegate void WaveIncomingEventHandler( double[] L, double[] R );
+
     public struct TempoInfo {
         /// <summary>
         /// テンポが変更される時刻を表すクロック数

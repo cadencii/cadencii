@@ -2,6 +2,7 @@
 package org.kbinani.Cadencii;
 
 import java.lang.reflect.*;
+import org.kbinani.*;
 
 public class PanpotChangedEventHandler implements IEventHandler{
     private BDelegate m_delegate = null;

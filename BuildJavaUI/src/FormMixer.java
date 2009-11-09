@@ -4,6 +4,9 @@ import javax.swing.JFrame;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+
 import javax.swing.JScrollBar;
 import javax.swing.JCheckBox;
 

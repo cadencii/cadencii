@@ -318,6 +318,10 @@ namespace bocoree.windows.forms {
         public void setEnabled( bool value ) {
             base.Enabled = value;
         }
+
+        public void requestFocus() {
+            base.Focus();
+        }
         #endregion
 
         // root implementation of java.awt.Window
@@ -333,6 +337,14 @@ namespace bocoree.windows.forms {
 
         public void setMinimumSize( bocoree.awt.Dimension size ) {
             base.MinimumSize = new System.Drawing.Size( size.width, size.height );
+        }
+
+        public void setAlwaysOnTop( bool alwaysOnTop ) {
+            base.TopMost = alwaysOnTop;
+        }
+
+        public bool isAlwaysOnTop() {
+            return base.TopMost;
         }
         #endregion
 

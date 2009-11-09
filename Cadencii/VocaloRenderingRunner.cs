@@ -203,7 +203,7 @@ namespace Boare.Cadencii {
                     for ( int i = 0; i < -m_trim_remain; i++ ) {
                         d[i] = 0.0;
                     }
-                    wave_writer.Append( d, d );
+                    wave_writer.append( d, d );
                     m_trim_remain = 0;
                 }
             }
@@ -247,13 +247,13 @@ namespace Boare.Cadencii {
                                 dR[i] = R[i + m_trim_remain] * amplify.right;
                             }
                             if ( wave_writer != null ) {
-                                wave_writer.Append( dL, dR );
+                                wave_writer.append( dL, dR );
                             }
                         } else {
                             Array.Copy( L, m_trim_remain, dL, 0, actual_append );
                             Array.Copy( R, m_trim_remain, dR, 0, actual_append );
                             if ( wave_writer != null ) {
-                                wave_writer.Append( dL, dR );
+                                wave_writer.append( dL, dR );
                             }
                             for ( int i = 0; i < actual_append; i++ ) {
                                 dL[i] = dL[i] * amplify.left;
@@ -300,11 +300,11 @@ namespace Boare.Cadencii {
                                 R[i] = R[i] * amplify.right;
                             }
                             if ( wave_writer != null ) {
-                                wave_writer.Append( L, R );
+                                wave_writer.append( L, R );
                             }
                         } else {
                             if ( wave_writer != null ) {
-                                wave_writer.Append( L, R );
+                                wave_writer.append( L, R );
                             }
                             for ( int i = 0; i < length; i++ ) {
                                 L[i] = L[i] * amplify.left;

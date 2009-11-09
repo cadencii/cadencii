@@ -11,34 +11,39 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.media.*;
+import org.kbinani.vsq.*;
+#else
 //#define TEST
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
 using System.Threading;
-using System.ComponentModel;
-using System.Security;
 using System.Windows.Forms;
-using Boare.Lib.Vsq;
 using Boare.Lib.Media;
+using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.util;
-using bocoree.io;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+#endif
 
-    public delegate void WaveIncomingEventHandler( double[] L, double[] R );
-    //public delegate void RenderingFinishedEventHandler();
-
-    public static class VSTiProxy {
+    public class VSTiProxy {
         public const String RENDERER_DSB2 = "DSB2";
         public const String RENDERER_DSB3 = "DSB3";
         public const String RENDERER_UTU0 = "UTU0";
         public const String RENDERER_STR0 = "STR0";
         public const int SAMPLE_RATE = 44100;
         public const int BLOCK_SIZE = 4410;
+        const float a0 = -17317.563f;
+        const float a1 = 86.7312112f;
+        const float a2 = -0.237323499f;
 
         public static String CurrentUser = "";
         private static String s_working_renderer = "";
@@ -150,12 +155,6 @@ namespace Boare.Cadencii {
                 }
             }
             return false;
-        }
-
-        public static int SampleRate {
-            get {
-                return SAMPLE_RATE;
-            }
         }
 
         public static void terminate() {
@@ -366,9 +365,6 @@ namespace Boare.Cadencii {
         }
 
         public static int getErrorSamples( float tempo ) {
-            const float a0 = -17317.563f;
-            const float a1 = 86.7312112f;
-            const float a2 = -0.237323499f;
             if ( tempo <= 240 ) {
                 return 4666;
             } else {
@@ -383,4 +379,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

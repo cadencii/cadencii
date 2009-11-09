@@ -865,11 +865,11 @@ namespace Boare.Cadencii {
                         R[i] = R[i] * amplify.right;
                     }
                     if ( m_wave_writer != null ) {
-                        m_wave_writer.Append( L, R );
+                        m_wave_writer.append( L, R );
                     }
                 } else {
                     if ( m_wave_writer != null ) {
-                        m_wave_writer.Append( L, R );
+                        m_wave_writer.append( L, R );
                     }
                     for ( int i = 0; i < length; i++ ) {
                         if ( i % 100 == 0 ) {

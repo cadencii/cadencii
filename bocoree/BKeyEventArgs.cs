@@ -25,15 +25,27 @@ public class BKeyEventArgs extends BEventArgs{
     }
 
     public char getKeyChar(){
-        reutrn e.getKeyChar();
+        if( m_original == null ){
+            return '\0';
+        }else{
+            return m_original.getKeyChar();
+        }
     }
 
     public int getKeyCode(){
-        return e.getKeyCode();
+        if( m_original == null ){
+            return 0;
+        }else{
+            return m_original.getKeyCode();
+        }
     }
 
     public int getModifiers(){
-        return e.getModifiers():
+        if( m_original == null ){
+            return 0;
+        }else{
+            return m_original.getModifiers();
+        }
     }
 }
 #endif

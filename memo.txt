@@ -16,11 +16,13 @@
 -MIDIインポート時に、オフセットクロックを指定できるようにする。
 -曲頭に戻る、のショートカット／編集可能な感じの
 -13時間31分35.77秒を超える曲をレンダリングするとクラッシュする（たぶん）．要確認．PlaySound.cpp, vstidrv.cs, UtauRenderingRunner.cs, StraightRenderingRunner.cs, VocaloRenderingRunner.csに要修正の可能性
--CadenciiからUTAUのプラグインを呼び出す仕組み->./UtauPluginInvoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
+-CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -VsqHandleのcastTo**はクローンする必要があるのかどうか検討
 -UstFile#.ctor( VsqFile )の実装
 -最新のバージョンがあるかどうかを問い合わせる機能
+-port_java_OBSOLUTE/com/media/WaveReader.javaの内容をBoare.Lib.Media/WaveReader.csに入れる
+-makeRes.csの、Cursorのときの処理を追加する
 
 -v3.0.6(3.1.0)done-----------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。
