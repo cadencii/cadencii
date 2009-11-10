@@ -1,5 +1,5 @@
 ﻿/*
- * Platform.cs
+ * AutoVibratoMinLength.cs
  * Copyright (c) 2008-2009 kbinani
  *
  * This file is part of Boare.Cadencii.
@@ -17,14 +17,11 @@ package org.kbinani.Cadencii;
 namespace Boare.Cadencii {
 #endif
 
-    /// <summary>
-    /// プラットフォームを表す列挙型．
-    /// （互換性のため，Javaの命名規則に基づくリファクタリングは未実施．）
-    /// </summary>
-    public enum PlatformEnum {
-        Windows,
-        Macintosh,
-        Linux,
+    public enum AutoVibratoMinLengthEnum {
+        L1,
+        L2,
+        L3,
+        L4,
     }
 
 #if !JAVA

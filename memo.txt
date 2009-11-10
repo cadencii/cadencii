@@ -21,8 +21,8 @@
 -VsqHandleのcastTo**はクローンする必要があるのかどうか検討
 -UstFile#.ctor( VsqFile )の実装
 -最新のバージョンがあるかどうかを問い合わせる機能
--port_java_OBSOLUTE/com/media/WaveReader.javaの内容をBoare.Lib.Media/WaveReader.csに入れる
 -makeRes.csの、Cursorのときの処理を追加する
+-*Enumの新設によりいらなくなったファイルを消す
 
 -v3.0.6(3.1.0)done-----------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。

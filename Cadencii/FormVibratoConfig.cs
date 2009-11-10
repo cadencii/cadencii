@@ -31,7 +31,7 @@ namespace Boare.Cadencii {
         /// コンストラクタ．引数vibrato_handleには，Cloneしたものを渡さなくてよい．
         /// </summary>
         /// <param name="vibrato_handle"></param>
-        public FormVibratoConfig( VibratoHandle vibrato_handle, int note_length, DefaultVibratoLength default_vibrato_length, SynthesizerType type ) {
+        public FormVibratoConfig( VibratoHandle vibrato_handle, int note_length, DefaultVibratoLengthEnum default_vibrato_length, SynthesizerType type ) {
 #if DEBUG
             AppManager.debugWriteLine( "FormVibratoConfig.ctor(Vsqhandle,int,DefaultVibratoLength)" );
             AppManager.debugWriteLine( "    (vibrato_handle==null)=" + (vibrato_handle == null) );
@@ -70,16 +70,16 @@ namespace Boare.Cadencii {
                 txtVibratoLength.Text = (int)((float)vibrato_handle.Length / (float)note_length * 100.0f) + "";
             } else {
                 switch ( default_vibrato_length ) {
-                    case DefaultVibratoLength.L100:
+                    case DefaultVibratoLengthEnum.L100:
                         txtVibratoLength.Text = "100";
                         break;
-                    case DefaultVibratoLength.L50:
+                    case DefaultVibratoLengthEnum.L50:
                         txtVibratoLength.Text = "50";
                         break;
-                    case DefaultVibratoLength.L66:
+                    case DefaultVibratoLengthEnum.L66:
                         txtVibratoLength.Text = "66";
                         break;
-                    case DefaultVibratoLength.L75:
+                    case DefaultVibratoLengthEnum.L75:
                         txtVibratoLength.Text = "75";
                         break;
                 }

@@ -558,7 +558,7 @@ namespace Boare.Lib.Vsq {
             return s_table.size();
         }
 
-        public static void changeOrder( ValuePair<String, Boolean>[] list ) {
+        public static void changeOrder( Vector<ValuePair<String, Boolean>> list ) {
 #if DEBUG
             PortUtil.println( "SymbolTable.Sort()" );
 #endif
@@ -568,15 +568,17 @@ namespace Boare.Lib.Vsq {
                 buff.put( key, (SymbolTable)s_table.get( key ).clone() );
             }
             s_table.clear();
-            for ( int i = 0; i < list.Length; i++ ) {
+            int count = list.size();
+            for ( int i = 0; i < count; i++ ) {
+                ValuePair<String, Boolean> itemi = list.get( i );
 #if DEBUG
-                PortUtil.println( "    list[i]=" + list[i].getKey() + "," + list[i].getValue() );
+                PortUtil.println( "    list[i]=" + itemi.getKey() + "," + itemi.getValue() );
 #endif
                 for ( Iterator itr = buff.keySet().iterator(); itr.hasNext(); ) {
                     int key = (Integer)itr.next();
                     SymbolTable table = buff.get( key );
-                    if ( table.getName().Equals( list[i].getKey() ) ) {
-                        table.setEnabled( list[i].getValue() );
+                    if ( table.getName().Equals( itemi.getKey() ) ) {
+                        table.setEnabled( itemi.getValue() );
                         s_table.put( i, table );
                         break;
                     }

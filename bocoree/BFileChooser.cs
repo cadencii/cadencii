@@ -6,7 +6,11 @@ import java.io.*;
 import javax.swing.*;
 
 public class BFileChooser{
-    private JFileChooser m_dialog;
+    private JFileChooser m_dialog = null;
+
+    public BFileChooser( String currentDirectoryPath ){
+        m_dialog = new JFileChooser( currentDirectoryPath );
+    }
 
     public void addFileFilter( String filter ){
         // TODO: [not implemented yet at BFileChooser#addFileFilter]

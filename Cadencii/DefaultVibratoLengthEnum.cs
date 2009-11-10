@@ -1,5 +1,5 @@
 ﻿/*
- * Platform.cs
+ * DefaultVibratoLength.cs
  * Copyright (c) 2008-2009 kbinani
  *
  * This file is part of Boare.Cadencii.
@@ -14,17 +14,16 @@
 #if JAVA
 package org.kbinani.Cadencii;
 #else
+using System;
+
 namespace Boare.Cadencii {
 #endif
 
-    /// <summary>
-    /// プラットフォームを表す列挙型．
-    /// （互換性のため，Javaの命名規則に基づくリファクタリングは未実施．）
-    /// </summary>
-    public enum PlatformEnum {
-        Windows,
-        Macintosh,
-        Linux,
+    public enum DefaultVibratoLengthEnum {
+        L50,
+        L66,
+        L75,
+        L100,
     }
 
 #if !JAVA

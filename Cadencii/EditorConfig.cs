@@ -61,8 +61,8 @@ namespace Boare.Cadencii {
         public int DefaultDEMaccent = 50;
         public boolean ShowLyric = true;
         public boolean ShowExpLine = true;
-        public DefaultVibratoLength DefaultVibratoLength = DefaultVibratoLength.L66;
-        public AutoVibratoMinLength AutoVibratoMinimumLength = AutoVibratoMinLength.L1;
+        public DefaultVibratoLengthEnum DefaultVibratoLength = DefaultVibratoLengthEnum.L66;
+        public AutoVibratoMinLengthEnum AutoVibratoMinimumLength = AutoVibratoMinLengthEnum.L1;
         public String AutoVibratoType1 = "$04040001";
         public String AutoVibratoType2 = "$04040001";
         public boolean EnableAutoVibrato = true;
@@ -92,7 +92,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// 実行環境
         /// </summary>
-        public Platform Platform = Platform.Windows;
+        public PlatformEnum Platform = PlatformEnum.Windows;
         /// <summary>
         /// toolStripToolの表示位置
         /// </summary>
@@ -292,7 +292,7 @@ namespace Boare.Cadencii {
         public boolean UseSpaceKeyAsMiddleButtonModifier = false;
 
         #region Static Fields
-        public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>(
+        public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
             new ValuePairOfStringArrayOfKeys[]{
             new ValuePairOfStringArrayOfKeys( "menuFileNew", new BKeys[]{ BKeys.Control, BKeys.N } ),
             new ValuePairOfStringArrayOfKeys( "menuFileOpen", new BKeys[]{ BKeys.Control, BKeys.O } ),
@@ -360,8 +360,12 @@ namespace Boare.Cadencii {
             new ValuePairOfStringArrayOfKeys( "menuSettingPaletteTool", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingShortcut", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingSingerProperty", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuHelpAbout", new BKeys[]{} ) } );
+            new ValuePairOfStringArrayOfKeys( "menuHelpAbout", new BKeys[]{} ) } ) );
+#if JAVA
+        private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class ) );
+#else
         private static XmlSerializer s_serializer = new XmlSerializer( typeof( EditorConfig ) );
+#endif
         #endregion
 
         /// <summary>
@@ -520,7 +524,7 @@ namespace Boare.Cadencii {
             if ( m_position_quantize != value ) {
                 m_position_quantize = value;
 #if JAVA
-                quantizeModeChanged.raise( new BEventArgs() );
+                quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
 #else
                 if ( QuantizeModeChanged != null ) {
                     QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );
@@ -549,7 +553,7 @@ namespace Boare.Cadencii {
             if ( m_position_quantize_triplet != value ) {
                 m_position_quantize_triplet = value;
 #if JAVA
-                quantizeModeChangedEvent.raise( new BEventArgs() );
+                quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
 #else
                 if ( QuantizeModeChanged != null ) {
                     QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );

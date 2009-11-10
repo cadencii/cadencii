@@ -21,12 +21,12 @@ namespace Boare.Cadencii {
 #endif
 
     public class DefaultVibratoLengthUtil {
-        public static String toString( DefaultVibratoLength value ) {
-            if ( value == DefaultVibratoLength.L50 ) {
+        public static String toString( DefaultVibratoLengthEnum value ) {
+            if ( value == DefaultVibratoLengthEnum.L50 ) {
                 return "50";
-            } else if ( value == DefaultVibratoLength.L66 ) {
+            } else if ( value == DefaultVibratoLengthEnum.L66 ) {
                 return "66";
-            } else if ( value == DefaultVibratoLength.L75 ) {
+            } else if ( value == DefaultVibratoLengthEnum.L75 ) {
                 return "75";
             } else {
                 return "100";

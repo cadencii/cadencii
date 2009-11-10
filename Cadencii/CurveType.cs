@@ -162,7 +162,11 @@ namespace Boare.Cadencii {
         public int compareTo( CurveType item ) {
             if ( m_index == -1 ) {
                 if ( item.m_index == -1 ) {
+#if JAVA
+                    return m_type.compareTo( item.m_type );
+#else
                     return m_type.CompareTo( item.m_type );
+#endif
                 } else {
                     return 1;
                 }

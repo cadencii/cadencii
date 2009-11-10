@@ -76,10 +76,10 @@ namespace Boare.Cadencii {
 
         public void LoadWave( String file ){
             using ( WaveReader reader = new WaveReader( file ) ) {
-                m_wave = new float[reader.TotalSamples / skip];
-                for ( int i = 0; i < reader.TotalSamples / skip; i++ ) {
+                m_wave = new float[reader.getTotalSamples() / skip];
+                for ( int i = 0; i < reader.getTotalSamples() / skip; i++ ) {
                     float[] left, right;
-                    reader.Read( i * skip, 1, out left, out right );
+                    reader.read( i * skip, 1, out left, out right );
                     m_wave[i] = 0.5f * (left[0] + right[0]);
                 }
             }

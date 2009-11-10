@@ -49,7 +49,7 @@ namespace Boare.Cadencii {
         Font m_screen_font;
         Font m_counter_font;
         Vector<String> m_program_change = null;
-        private Platform m_platform = Platform.Windows;
+        private PlatformEnum m_platform = PlatformEnum.Windows;
         private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
 
         public Preference() {
@@ -82,16 +82,17 @@ namespace Boare.Cadencii {
             }
 #else
             InitializeComponent();
+#endif
             ApplyLanguage();
 
             comboVibratoLength.Items.Clear();
-            foreach ( DefaultVibratoLength dvl in Enum.GetValues( typeof( DefaultVibratoLength ) ) ) {
+            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 comboVibratoLength.Items.Add( DefaultVibratoLengthUtil.toString( dvl ) );
             }
             comboVibratoLength.SelectedIndex = 1;
 
             comboAutoVibratoMinLength.Items.Clear();
-            foreach ( AutoVibratoMinLength avml in Enum.GetValues( typeof( AutoVibratoMinLength ) ) ) {
+            foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) ) {
                 comboAutoVibratoMinLength.Items.Add( AutoVibratoMinLengthUtil.toString( avml ) );
             }
             comboAutoVibratoMinLength.SelectedIndex = 0;
@@ -169,7 +170,7 @@ namespace Boare.Cadencii {
                 chkCommandKeyAsControl.Enabled = false;
             } else {
 #endif
-            foreach ( Platform p in Enum.GetValues( typeof( Platform ) ) ) {
+            foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) ) {
                 comboPlatform.Items.Add( p + "" );
             }
 #if !DEBUG
@@ -177,6 +178,7 @@ namespace Boare.Cadencii {
 #endif
 
             comboMidiInPortNumber.Items.Clear();
+#if ENABLE_MIDI
             bocoree.MIDIINCAPS[] midiins = MidiInDevice.GetMidiInDevices();
             for ( int i = 0; i < midiins.Length; i++ ) {
                 comboMidiInPortNumber.Items.Add( midiins[i] );
@@ -186,10 +188,13 @@ namespace Boare.Cadencii {
             } else {
                 comboMidiInPortNumber.Enabled = true;
             }
-
-            txtVOCALOID1.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
-            txtVOCALOID2.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
+#else
+            comboMidiInPortNumber.Enabled = false;
 #endif
+
+            txtVOCALOID1.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 ) );
+            txtVOCALOID2.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
+
             registerEventHandlers();
             setResources();
         }
@@ -235,6 +240,7 @@ namespace Boare.Cadencii {
             chkInvokeWithWine.Checked = value;
         }
 
+#if ENABLE_MIDI
         public int getMidiInPort() {
             if ( comboMidiInPortNumber.Enabled ) {
                 if ( comboMidiInPortNumber.SelectedIndex >= 0 ) {
@@ -246,7 +252,9 @@ namespace Boare.Cadencii {
                 return -1;
             }
         }
+#endif
 
+#if ENABLE_MIDI
         public void setMidiInPort( int value ) {
             if ( comboMidiInPortNumber.Enabled ) {
                 if ( 0 <= value && value < comboMidiInPortNumber.Items.Count ) {
@@ -256,6 +264,7 @@ namespace Boare.Cadencii {
                 }
             }
         }
+#endif
 
         public boolean isCurveVisibleVel() {
             return chkVel.Checked;
@@ -465,11 +474,11 @@ namespace Boare.Cadencii {
             chkKeepLyricInputMode.Checked = value;
         }
 
-        public Platform getPlatform() {
+        public PlatformEnum getPlatform() {
             return m_platform;
         }
 
-        public void setPlatform( Platform value ) {
+        public void setPlatform( PlatformEnum value ) {
             m_platform = value;
             for ( int i = 0; i < comboPlatform.Items.Count; i++ ) {
                 String title = (String)comboPlatform.Items[i];
@@ -717,22 +726,22 @@ namespace Boare.Cadencii {
             }
         }
 
-        public AutoVibratoMinLength getAutoVibratoMinimumLength() {
+        public AutoVibratoMinLengthEnum getAutoVibratoMinimumLength() {
             int count = -1;
             int index = comboAutoVibratoMinLength.SelectedIndex;
-            foreach ( AutoVibratoMinLength avml in Enum.GetValues( typeof( AutoVibratoMinLength ) ) ) {
+            foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) ) {
                 count++;
                 if ( count == index ) {
                     return avml;
                 }
             }
             comboAutoVibratoMinLength.SelectedIndex = 0;
-            return AutoVibratoMinLength.L1;
+            return AutoVibratoMinLengthEnum.L1;
         }
 
-        public void setAutoVibratoMinimumLength( AutoVibratoMinLength value ) {
+        public void setAutoVibratoMinimumLength( AutoVibratoMinLengthEnum value ) {
             int count = -1;
-            foreach ( AutoVibratoMinLength avml in Enum.GetValues( typeof( AutoVibratoMinLength ) ) ) {
+            foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) ) {
                 count++;
                 if ( avml == value ) {
                     comboAutoVibratoMinLength.SelectedIndex = count;
@@ -741,22 +750,22 @@ namespace Boare.Cadencii {
             }
         }
 
-        public DefaultVibratoLength getDefaultVibratoLength() {
+        public DefaultVibratoLengthEnum getDefaultVibratoLength() {
             int count = -1;
             int index = comboVibratoLength.SelectedIndex;
-            foreach ( DefaultVibratoLength vt in Enum.GetValues( typeof( DefaultVibratoLength ) ) ) {
+            foreach ( DefaultVibratoLengthEnum vt in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 count++;
                 if ( index == count ) {
                     return vt;
                 }
             }
             comboVibratoLength.SelectedIndex = 1;
-            return DefaultVibratoLength.L66;
+            return DefaultVibratoLengthEnum.L66;
         }
 
-        public void setDefaultVibratoLength( DefaultVibratoLength value ) {
+        public void setDefaultVibratoLength( DefaultVibratoLengthEnum value ) {
             int count = -1;
-            foreach ( DefaultVibratoLength dvl in Enum.GetValues( typeof( DefaultVibratoLength ) ) ) {
+            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 count++;
                 if ( dvl == value ) {
                     comboVibratoLength.SelectedIndex = count;
@@ -855,10 +864,10 @@ namespace Boare.Cadencii {
 
         private void comboPlatform_SelectedIndexChanged( Object sender, BEventArgs e ) {
             String title = (String)comboPlatform.SelectedItem;
-            foreach ( Platform p in Enum.GetValues( typeof( Platform ) ) ) {
+            foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) ) {
                 if ( title.Equals( p + "" ) ) {
                     m_platform = p;
-                    chkCommandKeyAsControl.Enabled = p != Platform.Windows;
+                    chkCommandKeyAsControl.Enabled = p != PlatformEnum.Windows;
                     break;
                 }
             }

@@ -116,7 +116,7 @@ namespace Boare.Cadencii {
             m_rendering = false;
             if ( m_reader != null && m_reader.size() > 0 ) {
                 for ( int i = 0; i < m_reader.size(); i++ ) {
-                    m_reader.get( i ).Close();
+                    m_reader.get( i ).close();
                     m_reader.set( i, null );
                 }
                 m_reader.clear();
@@ -268,8 +268,8 @@ namespace Boare.Cadencii {
                             WaveReader wr = m_reader.get( i );
                             amplify.left = 1.0;
                             amplify.right = 1.0;
-                            if ( wr.Tag != null && wr.Tag is int ) {
-                                int track = (int)wr.Tag;
+                            if ( wr.getTag() != null && wr.getTag() is int ) {
+                                int track = (int)wr.getTag();
 #if DEBUG
                                 PortUtil.println( "VocaloRenderingRunner#vstidrv_WaveIncoming; track=" + track );
 #endif
@@ -279,7 +279,7 @@ namespace Boare.Cadencii {
                                     amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
                                 }
                             }
-                            wr.Read( start, actual_append, reader_l, reader_r );
+                            wr.read( start, actual_append, reader_l, reader_r );
                             for ( int j = 0; j < actual_append; j++ ) {
                                 dL[j] += reader_l[j] * amplify.left;
                                 dR[j] += reader_r[j] * amplify.right;
@@ -320,8 +320,8 @@ namespace Boare.Cadencii {
                             WaveReader wr = m_reader.get( i );
                             amplify.left = 1.0;
                             amplify.right = 1.0;
-                            if ( wr.Tag != null && wr.Tag is int ) {
-                                int track = (int)wr.Tag;
+                            if ( wr.getTag() != null && wr.getTag() is int ) {
+                                int track = (int)wr.getTag();
 #if DEBUG
                                 PortUtil.println( "VocaloRenderingRunner#vstidrv_WaveIncoming; track=" + track );
 #endif
@@ -331,7 +331,7 @@ namespace Boare.Cadencii {
                                     amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
                                 }
                             }
-                            wr.Read( start, length, reader_l, reader_r );
+                            wr.read( start, length, reader_l, reader_r );
                             for ( int j = 0; j < length; j++ ) {
                                 L[j] += reader_l[j] * amplify.left;
                                 R[j] += reader_r[j] * amplify.right;

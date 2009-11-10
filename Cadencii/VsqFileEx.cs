@@ -84,16 +84,16 @@ namespace Boare.Cadencii {
                     }
                     int clock = item.Clock;
                     double sec_start = this.getSecFromClock( clock ) - premeasure_sec_target + premeasure_sec_tempo;
-                    double sec_end = this.getSecFromClock( clock + item.ID.Length ) - premeasure_sec_target + premeasure_sec_tempo;
+                    double sec_end = this.getSecFromClock( clock + item.ID.getLength() ) - premeasure_sec_target + premeasure_sec_tempo;
                     int clock_start = (int)tempo.getClockFromSec( sec_start );
                     int clock_end = (int)tempo.getClockFromSec( sec_end );
                     item.Clock = clock_start;
-                    item.ID.Length = clock_end - clock_start;
+                    item.ID.setLength( clock_end - clock_start );
                     if ( item.ID.VibratoHandle != null ) {
                         double sec_vib_start = this.getSecFromClock( clock + item.ID.VibratoDelay ) - premeasure_sec_target + premeasure_sec_tempo;
                         int clock_vib_start = (int)tempo.getClockFromSec( sec_vib_start );
                         item.ID.VibratoDelay = clock_vib_start - clock_start;
-                        item.ID.VibratoHandle.Length = clock_end - clock_vib_start;
+                        item.ID.VibratoHandle.setLength( clock_end - clock_vib_start );
                     }
                 }
 
@@ -206,7 +206,7 @@ namespace Boare.Cadencii {
                     int clock = (int)vsq.getClockFromSec( t );
                     if ( item.ID.type == VsqIDType.Anote ) {
                         // 音符の長さ
-                        double t_end = vsq.getSecFromClock( item.Clock + item.ID.Length ) + sec;
+                        double t_end = vsq.getSecFromClock( item.Clock + item.ID.getLength() ) + sec;
                         int clock_end = (int)vsq.getClockFromSec( t_end );
                         int length = clock_end - clock;
 
@@ -217,15 +217,15 @@ namespace Boare.Cadencii {
                                 length = clock_end - pre_measure_clocks;
                                 // ビブラート
                                 if ( item.ID.VibratoHandle != null ) {
-                                    double vibrato_percent = item.ID.VibratoHandle.Length / (double)item.ID.Length * 100.0;
+                                    double vibrato_percent = item.ID.VibratoHandle.getLength() / (double)item.ID.getLength() * 100.0;
                                     double t_clock = vsq.getSecFromClock( clock ); // 音符の開始時刻
                                     double t_vibrato = t_end - (t_end - t_clock) * vibrato_percent / 100.0; // ビブラートの開始時刻
                                     int clock_vibrato_start = (int)vsq.getClockFromSec( t_vibrato );
-                                    item.ID.VibratoHandle.Length = clock_end - clock_vibrato_start;
+                                    item.ID.VibratoHandle.setLength( clock_end - clock_vibrato_start );
                                     item.ID.VibratoDelay = clock_vibrato_start - clock;
                                 }
                                 item.Clock = clock;
-                                item.ID.Length = length;
+                                item.ID.setLength( length );
                             } else {
                                 // 範囲外なので削除
                                 remove_required_event.add( k );
@@ -233,13 +233,13 @@ namespace Boare.Cadencii {
                         } else {
                             // ビブラート
                             if ( item.ID.VibratoHandle != null ) {
-                                double t_vibrato_start = vsq.getSecFromClock( item.Clock + item.ID.Length - item.ID.VibratoHandle.Length ) + sec;
+                                double t_vibrato_start = vsq.getSecFromClock( item.Clock + item.ID.getLength() - item.ID.VibratoHandle.getLength() ) + sec;
                                 int clock_vibrato_start = (int)vsq.getClockFromSec( t_vibrato_start );
-                                item.ID.VibratoHandle.Length = clock_vibrato_start - clock;
+                                item.ID.VibratoHandle.setLength( clock_vibrato_start - clock );
                                 item.ID.VibratoDelay = clock_vibrato_start - clock;
                             }
                             item.Clock = clock;
-                            item.ID.Length = length;
+                            item.ID.setLength( length );
                         }
                     } else if ( item.ID.type == VsqIDType.Singer ) {
                         if ( item.Clock <= 0 ) {
@@ -389,7 +389,7 @@ namespace Boare.Cadencii {
             ret.Master = (VsqMaster)Master.clone();
             ret.Mixer = (VsqMixer)Mixer.clone();
             //ret.m_premeasure_clocks = m_premeasure_clocks;
-            ret.AttachedCurves = (AttachedCurve)AttachedCurves.Clone();
+            ret.AttachedCurves = (AttachedCurve)AttachedCurves.clone();
             /*ret.m_pitch.Clear();
             for ( int i = 0; i < m_pitch.Count; i++ ) {
                 ret.m_pitch.Add( (VsqBPList)m_pitch[i].Clone() );
@@ -428,7 +428,7 @@ namespace Boare.Cadencii {
         public static CadenciiCommand generateCommandDeleteTrack( int track ) {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.TRACK_DELETE;
-            command.args = new object[1];
+            command.args = new Object[1];
             command.args[0] = track;
             return command;
         }
@@ -437,10 +437,10 @@ namespace Boare.Cadencii {
             //public static CadenciiCommand generateCommandTrackReplace( int track, VsqTrack item, BezierCurves attached_curve, VsqBPList pitch ) {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.TRACK_REPLACE;
-            command.args = new object[3];
+            command.args = new Object[3];
             command.args[0] = track;
             command.args[1] = item.clone();
-            command.args[2] = attached_curve.Clone();
+            command.args[2] = attached_curve.clone();
             //command.Args[3] = pitch.Clone();
             return command;
         }
@@ -453,11 +453,11 @@ namespace Boare.Cadencii {
         public static CadenciiCommand generateCommandAddTrack( VsqTrack track, VsqMixerEntry mixer, int position, BezierCurves attached_curve ) {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.TRACK_ADD;
-            command.args = new object[4];
+            command.args = new Object[4];
             command.args[0] = track.clone();
             command.args[1] = mixer;
             command.args[2] = position;
-            command.args[3] = attached_curve.Clone();
+            command.args[3] = attached_curve.clone();
             //command.Args[4] = pitch.Clone();
             return command;
         }
@@ -465,10 +465,10 @@ namespace Boare.Cadencii {
         public static CadenciiCommand generateCommandAddBezierChain( int track, CurveType curve_type, int chain_id, int clock_resolution, BezierChain chain ) {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.BEZIER_CHAIN_ADD;
-            ret.args = new object[5];
+            ret.args = new Object[5];
             ret.args[0] = track;
             ret.args[1] = curve_type;
-            ret.args[2] = (BezierChain)chain.Clone();
+            ret.args[2] = (BezierChain)chain.clone();
             ret.args[3] = clock_resolution;
             ret.args[4] = chain_id;
             return ret;
@@ -477,7 +477,7 @@ namespace Boare.Cadencii {
         public static CadenciiCommand generateCommandDeleteBezierChain( int track, CurveType curve_type, int chain_id, int clock_resolution ) {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.BEZIER_CHAIN_DELETE;
-            ret.args = new object[4];
+            ret.args = new Object[4];
             ret.args[0] = track;
             ret.args[1] = curve_type;
             ret.args[2] = chain_id;
@@ -488,7 +488,7 @@ namespace Boare.Cadencii {
         public static CadenciiCommand generateCommandReplaceBezierChain( int track, CurveType curve_type, int chain_id, BezierChain chain, int clock_resolution ) {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.BEZIER_CHAIN_REPLACE;
-            ret.args = new object[5];
+            ret.args = new Object[5];
             ret.args[0] = track;
             ret.args[1] = curve_type;
             ret.args[2] = chain_id;
@@ -500,15 +500,15 @@ namespace Boare.Cadencii {
         public static CadenciiCommand generateCommandReplace( VsqFileEx vsq ) {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.REPLACE;
-            ret.args = new object[1];
-            ret.args[0] = (VsqFileEx)vsq.Clone();
+            ret.args = new Object[1];
+            ret.args[0] = (VsqFileEx)vsq.clone();
             return ret;
         }
 
         public static CadenciiCommand generateCommandReplaceAttachedCurveRange( int track, TreeMap<CurveType, Vector<BezierChain>> attached_curves ) {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.ATTACHED_CURVE_REPLACE_RANGE;
-            ret.args = new object[2];
+            ret.args = new Object[2];
             ret.args[0] = track;
             TreeMap<CurveType, Vector<BezierChain>> copy = new TreeMap<CurveType, Vector<BezierChain>>();
             for ( Iterator itr = attached_curves.keySet().iterator(); itr.hasNext(); ) {
@@ -594,7 +594,7 @@ namespace Boare.Cadencii {
 #if DEBUG
                     AppManager.debugWriteLine( "    AddBezierChain" );
 #endif
-                    int track = (int)command.args[0];
+                    int track = (Integer)command.args[0];
                     CurveType curve_type = (CurveType)command.args[1];
                     BezierChain chain = (BezierChain)command.args[2];
                     int clock_resolution = (Integer)command.args[3];
@@ -662,11 +662,11 @@ namespace Boare.Cadencii {
                     #endregion
                 } else if ( command.type == CadenciiCommandType.BEZIER_CHAIN_DELETE ) {
                     #region DeleteBezierChain
-                    int track = (int)command.args[0];
+                    int track = (Integer)command.args[0];
                     CurveType curve_type = (CurveType)command.args[1];
-                    int chain_id = (int)command.args[2];
-                    int clock_resolution = (int)command.args[3];
-                    BezierChain chain = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).Clone();
+                    int chain_id = (Integer)command.args[2];
+                    int clock_resolution = (Integer)command.args[3];
+                    BezierChain chain = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).clone();
                     AttachedCurves.get( track - 1 ).remove( curve_type, chain_id );
                     ret = generateCommandAddBezierChain( track, curve_type, chain_id, clock_resolution, chain );
                     int points_size = chain.points.size();
@@ -698,7 +698,7 @@ namespace Boare.Cadencii {
                     int chain_id = (Integer)command.args[2];
                     BezierChain chain = (BezierChain)command.args[3];
                     int clock_resolution = (int)command.args[4];
-                    BezierChain target = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).Clone();
+                    BezierChain target = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).clone();
                     AttachedCurves.get( track - 1 ).setBezierChain( curve_type, chain_id, chain );
                     VsqBPList list = Track.get( track ).getCurve( curve_type.getName() );
                     ret = generateCommandReplaceBezierChain( track, curve_type, chain_id, target, clock_resolution );
@@ -802,7 +802,7 @@ namespace Boare.Cadencii {
                 } else if ( command.type == CadenciiCommandType.REPLACE ) {
                     #region Replace
                     VsqFileEx vsq = (VsqFileEx)command.args[0];
-                    VsqFileEx inv = (VsqFileEx)this.Clone();
+                    VsqFileEx inv = (VsqFileEx)this.clone();
                     Track.clear();
                     int c = vsq.Track.size();
                     for ( int i = 0; i < c; i++ ) {
@@ -823,7 +823,7 @@ namespace Boare.Cadencii {
                     m_base_tempo = vsq.m_base_tempo;
                     Master = (VsqMaster)vsq.Master.clone();
                     Mixer = (VsqMixer)vsq.Mixer.clone();
-                    AttachedCurves = (AttachedCurve)vsq.AttachedCurves.Clone();
+                    AttachedCurves = (AttachedCurve)vsq.AttachedCurves.clone();
                     updateTotalClocks();
                     ret = generateCommandReplace( inv );
 
@@ -837,7 +837,7 @@ namespace Boare.Cadencii {
                     #endregion
                 } else if ( command.type == CadenciiCommandType.ATTACHED_CURVE_REPLACE_RANGE ) {
                     #region ReplaceAttachedCurveRange
-                    int track = (int)command.args[0];
+                    int track = (Integer)command.args[0];
                     TreeMap<CurveType, Vector<BezierChain>> curves = (TreeMap<CurveType, Vector<BezierChain>>)command.args[1];
                     TreeMap<CurveType, Vector<BezierChain>> inv = new TreeMap<CurveType, Vector<BezierChain>>();
                     for ( Iterator itr = curves.keySet().iterator(); itr.hasNext(); ) {
@@ -845,7 +845,7 @@ namespace Boare.Cadencii {
                         Vector<BezierChain> chains = new Vector<BezierChain>();
                         Vector<BezierChain> src = this.AttachedCurves.get( track - 1 ).get( ct );
                         for ( int i = 0; i < src.size(); i++ ) {
-                            chains.add( (BezierChain)src.get( i ).Clone() );
+                            chains.add( (BezierChain)src.get( i ).clone() );
                         }
                         inv.put( ct, chains );
 
@@ -879,7 +879,7 @@ namespace Boare.Cadencii {
                     #endregion
                 } else if ( command.type == CadenciiCommandType.TRACK_DELETE ) {
                     #region DeleteTrack
-                    int track = (int)command.args[0];
+                    int track = (Integer)command.args[0];
                     ret = VsqFileEx.generateCommandAddTrack( Track.get( track ), Mixer.Slave.get( track - 1 ), track, AttachedCurves.get( track - 1 ) );
                     Track.removeElementAt( track );
                     AttachedCurves.removeElementAt( track - 1 );
@@ -893,7 +893,7 @@ namespace Boare.Cadencii {
                     #endregion
                 } else if ( command.type == CadenciiCommandType.TRACK_REPLACE ) {
                     #region TrackReplace
-                    int track = (int)command.args[0];
+                    int track = (Integer)command.args[0];
                     VsqTrack item = (VsqTrack)command.args[1];
                     BezierCurves bezier_curves = (BezierCurves)command.args[2];
                     ret = VsqFileEx.generateCommandTrackReplace( track, Track.get( track ), AttachedCurves.get( track - 1 ) );
@@ -993,7 +993,7 @@ namespace Boare.Cadencii {
                     }
                 }
                 if ( tmp != null ) {
-                    for ( Iterator itr = tmp.Curves.iterator(); itr.hasNext(); ) {
+                    for ( Iterator itr = tmp.getCurves().iterator(); itr.hasNext(); ) {
                         BezierCurves bc = (BezierCurves)itr.next();
                         for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
                             CurveType ct = AppManager.CURVE_USAGE[k];
@@ -1065,7 +1065,7 @@ namespace Boare.Cadencii {
             }
             // ベジエ曲線のIDを播番
             if ( ret.AttachedCurves != null ) {
-                for ( Iterator itr = ret.AttachedCurves.Curves.iterator(); itr.hasNext(); ) {
+                for ( Iterator itr = ret.AttachedCurves.getCurves().iterator(); itr.hasNext(); ) {
                     BezierCurves bc = (BezierCurves)itr.next();
                     for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
                         CurveType ct = AppManager.CURVE_USAGE[k];

@@ -160,7 +160,7 @@ namespace Boare.Cadencii {
                                              "using System.Drawing;",
                                              "using System.Text;",
                                              "using System.Xml.Serialization;" };
-        public static readonly Vector<BKeys> SHORTCUT_ACCEPTABLE = new Vector<BKeys>( new BKeys[]{
+        public static readonly Vector<BKeys> SHORTCUT_ACCEPTABLE = new Vector<BKeys>( Arrays.asList( new BKeys[]{
             BKeys.A,
             BKeys.B,
             BKeys.C,
@@ -241,7 +241,7 @@ namespace Boare.Cadencii {
             BKeys.Delete,
             BKeys.Home,
             BKeys.End,
-        } );
+        } ) );
         public static readonly CurveType[] CURVE_USAGE = new CurveType[]{ CurveType.DYN,
                                                                           CurveType.BRE,
                                                                           CurveType.BRI,
@@ -435,7 +435,7 @@ namespace Boare.Cadencii {
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewAbortedEvent = new BEvent<BEventHandler>();
-        public static BEvent<SelectedEventChangedEventHandler> electedEventChangedEvent = new BEvent<SelectedEventChangedEventHandler>();
+        public static BEvent<SelectedEventChangedEventHandler> selectedEventChangedEvent = new BEvent<SelectedEventChangedEventHandler>();
         public static BEvent<BEventHandler> selectedToolChangedEvent = new BEvent<BEventHandler>();
         /// <summary>
         /// CurrentClockプロパティの値が変更された時発生します
@@ -465,7 +465,7 @@ namespace Boare.Cadencii {
 #endif
             s_auto_backup_timer = new BTimer();
 #if JAVA
-            s_auto_backup_timer.tickEvent.add( new BEventHandler( this, "handleAutoBackupTimerTick" ) );
+            s_auto_backup_timer.tickEvent.add( new BEventHandler( AppManager.class, "handleAutoBackupTimerTick" ) );
 #else
             s_auto_backup_timer.Tick += handleAutoBackupTimerTick;
 #endif
@@ -1419,7 +1419,7 @@ namespace Boare.Cadencii {
         }
 
         public static void removeSelectedEventRange( int[] ids ) {
-            Vector<Integer> v_ids = new Vector<Integer>( ids );
+            Vector<Integer> v_ids = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( ids ) ) );
             Vector<Integer> index = new Vector<Integer>();
             int count = s_selected_events.size();
             for ( int i = 0; i < count; i++ ) {
@@ -1443,7 +1443,7 @@ namespace Boare.Cadencii {
         public static void addSelectedEventAll( int[] ids ) {
             clearSelectedTempo();
             clearSelectedTimesig();
-            Vector<Integer> list = new Vector<Integer>( Arrays.asList( ids ) );
+            Vector<Integer> list = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( ids ) ) );
             VsqEvent[] index = new VsqEvent[ids.Length];
             int count = 0;
             int c = list.size();
@@ -1775,7 +1775,7 @@ namespace Boare.Cadencii {
             if ( s_vsq != null ) {
                 s_file = file;
                 editorConfig.pushRecentFiles( s_file );
-                if ( !s_auto_backup_timer.Enabled && editorConfig.AutoBackupIntervalMinutes > 0 ) {
+                if ( !s_auto_backup_timer.isRunning() && editorConfig.AutoBackupIntervalMinutes > 0 ) {
                     double millisec = editorConfig.AutoBackupIntervalMinutes * 60.0 * 1000.0;
                     int draft = (int)millisec;
                     if ( millisec > int.MaxValue ) {
@@ -1941,7 +1941,7 @@ namespace Boare.Cadencii {
             #region Apply User Dictionary Configuration
             Vector<ValuePair<String, Boolean>> current = new Vector<ValuePair<String, Boolean>>();
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
-                current.add( new ValuePair<String, boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
+                current.add( new ValuePair<String, Boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
             }
             Vector<ValuePair<String, Boolean>> config_data = new Vector<ValuePair<String, Boolean>>();
             int count = editorConfig.UserDictionaries.size();
@@ -1955,19 +1955,19 @@ namespace Boare.Cadencii {
             Vector<ValuePair<String, Boolean>> common = new Vector<ValuePair<String, Boolean>>();
             for ( int i = 0; i < config_data.size(); i++ ) {
                 for ( int j = 0; j < current.size(); j++ ) {
-                    if ( config_data.get( i ).Key.Equals( current.get( j ).Key ) ) {
-                        current.get( j ).Value = true; //こっちのbooleanは、AppManager.EditorConfigのUserDictionariesにもKeyが含まれているかどうかを表すので注意
-                        common.add( new ValuePair<String, Boolean>( config_data.get( i ).Key, config_data.get( i ).Value ) );
+                    if ( config_data.get( i ).getKey().Equals( current.get( j ).getKey() ) ) {
+                        current.get( j ).setValue( true ); //こっちのbooleanは、AppManager.EditorConfigのUserDictionariesにもKeyが含まれているかどうかを表すので注意
+                        common.add( new ValuePair<String, Boolean>( config_data.get( i ).getKey(), config_data.get( i ).getValue() ) );
                         break;
                     }
                 }
             }
             for ( int i = 0; i < current.size(); i++ ) {
-                if ( !current.get( i ).Value ) {
-                    common.add( new ValuePair<String, Boolean>( current.get( i ).Key, false ) );
+                if ( !current.get( i ).getValue() ) {
+                    common.add( new ValuePair<String, Boolean>( current.get( i ).getKey(), false ) );
                 }
             }
-            SymbolTable.changeOrder( common.toArray( new ValuePair<String, Boolean>[] { } ) );
+            SymbolTable.changeOrder( common );
             #endregion
 
             Messaging.loadMessages();
@@ -2069,7 +2069,11 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private static String getSerializedText( Object obj ) {
+        private static String getSerializedText( Object obj ) 
+#if JAVA
+            throws IOException
+#endif
+        {
             String str = "";
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream( outputStream );
@@ -2300,7 +2304,7 @@ namespace Boare.Cadencii {
                     ret = null;
                 }
             } else {
-                config_file = PortUtil.combinePath( Application.StartupPath, CONFIG_FILE_NAME );
+                config_file = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), CONFIG_FILE_NAME );
                 if ( PortUtil.isFileExists( config_file ) ) {
                     try {
                         ret = EditorConfig.deserialize( editorConfig, config_file );
@@ -2328,6 +2332,7 @@ namespace Boare.Cadencii {
                     editorConfig.UserDictionaries.add( st.getName() + "\tT" );
                 }
             }
+#if ENABLE_MIDI
             MidiPlayer.DeviceGeneral = (uint)editorConfig.MidiDeviceGeneral.PortNumber;
             MidiPlayer.DeviceMetronome = (uint)editorConfig.MidiDeviceMetronome.PortNumber;
             MidiPlayer.NoteBell = editorConfig.MidiNoteBell;
@@ -2336,6 +2341,7 @@ namespace Boare.Cadencii {
             MidiPlayer.ProgramBell = editorConfig.MidiProgramBell;
             MidiPlayer.ProgramNormal = editorConfig.MidiProgramNormal;
             MidiPlayer.RingBell = editorConfig.MidiRingBell;
+#endif
 
             int draft_key_width = editorConfig.KeyWidth;
             if ( draft_key_width < MIN_KEY_WIDTH ) {
@@ -2361,7 +2367,7 @@ namespace Boare.Cadencii {
                 SingerConfig sc = editorConfig.UtauSingers.get( index );
                 int lang = 0;//utauは今のところ全部日本語
                 ret.IconHandle = new IconHandle();
-                ret.IconHandle.IconID = "$0701" + string.Format( "{0:x4}", index );
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( index, 4 );
                 ret.IconHandle.IDS = sc.VOICENAME;
                 ret.IconHandle.Index = 0;
                 ret.IconHandle.Language = lang;
@@ -2374,7 +2380,7 @@ namespace Boare.Cadencii {
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.Program = 0;
                 ret.IconHandle.Language = 0;
-                ret.IconHandle.IconID = "$0701" + string.Format( "{0:x4}", (int)0 );
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( 0, 4 );
                 ret.IconHandle.IDS = "Unknown";
                 ret.type = VsqIDType.Singer;
                 return ret;
@@ -2393,7 +2399,7 @@ namespace Boare.Cadencii {
             String prefix = "";
             String rev = "";
             // $Id: AppManager.cs 474 2009-09-23 11:31:07Z kbinani $
-            String id = getAssemblyConfigurationAttribute();
+            String id = BAssemblyInfo.id;
             String[] spl0 = PortUtil.splitString( id, new String[] { " " }, true );
             if ( spl0.Length >= 3 ) {
                 String s = spl0[2];
@@ -2413,9 +2419,11 @@ namespace Boare.Cadencii {
 #else
             prefix = "\n(rev: " + rev + "; build: release)";
 #endif
-            return getAssemblyFileVersion( typeof( AppManager ) ) + " " + prefix;
+
+            return BAssemblyInfo.fileVersion + " " + prefix;
         }
 
+#if !JAVA
         public static String getAssemblyConfigurationAttribute() {
             Assembly a = Assembly.GetAssembly( typeof( AppManager ) );
             AssemblyConfigurationAttribute attr = (AssemblyConfigurationAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyConfigurationAttribute ) );
@@ -2424,6 +2432,7 @@ namespace Boare.Cadencii {
 #endif
             return attr.Configuration;
         }
+#endif
 
 #if !JAVA
         public static String getAssemblyFileVersion( Type t ) {

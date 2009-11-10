@@ -1,4 +1,5 @@
-﻿/*
+﻿#if ENABLE_MIDI
+/*
  * Metronome.cs
  * Copyright (c)2009 kbinani
  *
@@ -11,13 +12,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
 using System.Threading;
-using System.Collections.Generic;
 using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.util;
-using bocoree.io;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
@@ -427,3 +425,4 @@ namespace Boare.Cadencii {
     }
 
 }
+#endif

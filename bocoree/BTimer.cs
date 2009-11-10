@@ -43,6 +43,10 @@ namespace bocoree.windows.forms {
         public void setDelay( int value ) {
             base.Interval = value;
         }
+
+        public bool isRunning() {
+            return base.Enabled;
+        }
     }
 
 }

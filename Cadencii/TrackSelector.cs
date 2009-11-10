@@ -360,7 +360,7 @@ namespace Boare.Cadencii {
             InitializeComponent();
             registerEventHandlers();
             setResources();
-            m_modifier_key = (AppManager.editorConfig.Platform == Platform.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
+            m_modifier_key = (AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
             cmenuCurveVelocity.Tag = CurveType.VEL;
             cmenuCurveAccent.Tag = CurveType.Accent;
             cmenuCurveDecay.Tag = CurveType.Decay;
@@ -5070,7 +5070,7 @@ namespace Boare.Cadencii {
                     tag.ToolTipPxWidth = 0;
                     tsmi.Tag = tag;
                     tsmi.Click += new EventHandler( tsmi_Click );
-                    if ( AppManager.editorConfig.Platform == Platform.Windows ) {
+                    if ( AppManager.editorConfig.Platform == PlatformEnum.Windows ) {
                         // TODO: cmenuSinger.ItemsのToolTip。monoで実行するとMouseHoverで落ちる
                         tsmi.MouseHover += new EventHandler( tsmi_MouseHover );
                     }

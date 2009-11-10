@@ -295,7 +295,7 @@ namespace Boare.Lib.Media {
         void mix( int processed_count, float amp_left, float amp_right ) {
             int current_buffer = (processed_count - 1) % _NUM_BUF;
             for ( int k = 0; k < s_num_wave_reader; k++ ) {
-                s_wave_reader[k].Read( s_block_size * (processed_count - 1) + (int)s_wave_read_offset_samples,
+                s_wave_reader[k].read( s_block_size * (processed_count - 1) + (int)s_wave_read_offset_samples,
                                        s_block_size,
                                        ref s_ptr_another_wave_l[k],
                                        ref s_ptr_another_wave_r[k] );
@@ -465,7 +465,7 @@ namespace Boare.Lib.Media {
                 }
             }
             for ( int i = 0; i < s_num_wave_reader; i++ ) {
-                s_wave_reader[i].Close();
+                s_wave_reader[i].close();
             }
         }
 
@@ -500,7 +500,7 @@ namespace Boare.Lib.Media {
 
             if ( s_wave_reader != null ) {
                 for ( int i = 0; i < s_num_wave_reader; i++ ) {
-                    s_wave_reader[i].Close();
+                    s_wave_reader[i].close();
                 }
                 //delete [] s_wave_reader;
             }
@@ -530,8 +530,8 @@ namespace Boare.Lib.Media {
                     name[k] = buf[k];
                 }
                 name[len] = '\0';*/
-                s_wave_reader[i].Open( files[i] );
-                int samples = s_wave_reader[i].TotalSamples;
+                s_wave_reader[i].open( files[i] );
+                int samples = s_wave_reader[i].getTotalSamples();
                 if ( samples > max_samples ) {
                     max_samples = samples;
                 }

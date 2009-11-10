@@ -15,6 +15,7 @@
 package org.kbinani.media;
 
 import java.io.*;
+import org.kbinani.*;
 #else
 using System;
 using bocoree;
@@ -60,9 +61,11 @@ namespace Boare.Lib.Media {
             writeHeader();
         }
 
+#if !JAVA
         public void Dispose() {
             close();
         }
+#endif
 
         /// <summary>
         /// Writes header of WAVE file

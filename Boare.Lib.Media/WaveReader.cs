@@ -11,17 +11,30 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.media;
+
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+#else
 using System;
-using System.IO;
-using System.Runtime.InteropServices;
+using bocoree;
+using bocoree.io;
 
 namespace Boare.Lib.Media {
+    using boolean = System.Boolean;
+#endif
 
-    public class WaveReader : IDisposable{
+#if JAVA
+    public class WaveReader {
+#else
+    public class WaveReader : IDisposable {
+#endif
         private int m_channel;
         private int m_byte_per_sample;
-        private bool m_opened;
-        private FileStream m_stream;
+        private boolean m_opened;
+        private RandomAccessFile m_stream;
         private int m_total_samples;
         private double m_amplify_left = 1.0;
         private double m_amplify_right = 1.0;
@@ -29,7 +42,7 @@ namespace Boare.Lib.Media {
         ///  ファイル先頭から，dataチャンクまでのオフセット
         /// </summary>
         private int m_header_offset = 0x2e;
-        private object m_tag = null;
+        private Object m_tag = null;
         private double m_offset_seconds = 0.0;
         private int m_sample_per_sec;
 
@@ -37,64 +50,70 @@ namespace Boare.Lib.Media {
             m_opened = false;
         }
 
-        public WaveReader( string file ) {
-            bool ret = Open( file );
+        public WaveReader( String file ) 
+#if JAVA
+            throws IOException, FileNotFoundException
+#endif
+ {
+            boolean ret = open( file );
 #if DEBUG
             Console.WriteLine( "WaveReader#.ctor; file=" + file + "; ret=" + ret );
 #endif
         }
 
-        public double OffsetSeconds {
-            get {
-                return m_offset_seconds;
-            }
-            set {
-                m_offset_seconds = value;
-            }
+        public double getOffsetSeconds() {
+            return m_offset_seconds;
         }
 
-        public object Tag {
-            get {
-                return m_tag;
-            }
-            set {
-                m_tag = value;
-            }
+        public void setOffsetSeconds( double value ) {
+            m_offset_seconds = value;
         }
 
-        public double AmplifyLeft {
-            get {
-                return m_amplify_left;
-            }
-            set {
-                m_amplify_left = value;
-            }
+        public Object getTag() {
+            return m_tag;
         }
 
-        public double AmplifyRight {
-            get {
-                return m_amplify_right;
-            }
-            set {
-                m_amplify_right = value;
-            }
+        public void setTag( Object value ) {
+            m_tag = value;
         }
 
+        public double getAmplifyLeft() {
+            return m_amplify_left;
+        }
+
+        public void setAmplifyLeft( double value ) {
+            m_amplify_left = value;
+        }
+
+        public double getAmplifyRight() {
+            return m_amplify_right;
+        }
+
+        public void setAmplifyRight( double value ) {
+            m_amplify_right = value;
+        }
+
+#if !JAVA
         public void Dispose() {
-            Close();
+            close();
         }
+#endif
 
-        public bool Open( string file ) {
+        public boolean open( String file )
+#if JAVA
+            throws IOException, FileNotFoundException
+#endif
+        {
             if ( m_opened ) {
-                m_stream.Close();
+                m_stream.close();
             }
-            m_stream = new FileStream( file, FileMode.Open, FileAccess.Read );
+            m_stream = new RandomAccessFile( file, "r" );
 
             // RIFF
             byte[] buf = new byte[4];
-            m_stream.Read( buf, 0, 4 );
+            m_stream.read( buf, 0, 4 );
             if ( buf[0] != 'R' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != 'F' ) {
-                m_stream.Close();
+                m_stream.close();
 #if DEBUG
                 Console.WriteLine( "WaveReader#Open; header error(RIFF)" );
 #endif
@@ -102,12 +121,12 @@ namespace Boare.Lib.Media {
             }
 
             // ファイルサイズ - 8最後に記入
-            m_stream.Read( buf, 0, 4 );
+            m_stream.read( buf, 0, 4 );
 
             // WAVE
-            m_stream.Read( buf, 0, 4 );
+            m_stream.read( buf, 0, 4 );
             if ( buf[0] != 'W' || buf[1] != 'A' || buf[2] != 'V' || buf[3] != 'E' ) {
-                m_stream.Close();
+                m_stream.close();
 #if DEBUG
                 Console.WriteLine( "WaveReader#Open; header error(WAVE)" );
 #endif
@@ -115,9 +134,9 @@ namespace Boare.Lib.Media {
             }
 
             // fmt 
-            m_stream.Read( buf, 0, 4 );
+            m_stream.read( buf, 0, 4 );
             if ( buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ' ) {
-                m_stream.Close();
+                m_stream.close();
 #if DEBUG
                 Console.WriteLine( "WaveReader#Open; header error(fmt )" );
 #endif
@@ -125,40 +144,40 @@ namespace Boare.Lib.Media {
             }
 
             // fmt チャンクのサイズ
-            m_stream.Read( buf, 0, 4 );
-            int chunksize = BitConverter.ToInt32( buf, 0 );
-            long fmt_chunk_end_location = m_stream.Position + chunksize;
+            m_stream.read( buf, 0, 4 );
+            int chunksize = (int)PortUtil.make_uint32_le( buf );
+            long fmt_chunk_end_location = m_stream.getFilePointer() + chunksize;
 
             // format ID
-            m_stream.Read( buf, 0, 2 );
+            m_stream.read( buf, 0, 2 );
 
             // チャンネル数
-            m_stream.Read( buf, 0, 2 );
+            m_stream.read( buf, 0, 2 );
             m_channel = buf[1] << 8 | buf[0];
 
             // サンプリングレート
-            m_stream.Read( buf, 0, 4 );
-            m_sample_per_sec = BitConverter.ToInt32( buf, 0 );
+            m_stream.read( buf, 0, 4 );
+            m_sample_per_sec = (int)PortUtil.make_uint32_le( buf );
 
             // データ速度
-            m_stream.Read( buf, 0, 4 );
+            m_stream.read( buf, 0, 4 );
 
             // ブロックサイズ
-            m_stream.Read( buf, 0, 2 );
+            m_stream.read( buf, 0, 2 );
 
             // サンプルあたりのビット数
-            m_stream.Read( buf, 0, 2 );
+            m_stream.read( buf, 0, 2 );
             int bit_per_sample = buf[1] << 8 | buf[0];
             m_byte_per_sample = bit_per_sample / 8;
 
             // 拡張部分
-            m_stream.Seek( fmt_chunk_end_location, SeekOrigin.Begin );
+            m_stream.seek( fmt_chunk_end_location );
             //m_stream.Read( buf, 0, 2 );
 
             // data
-            m_stream.Read( buf, 0, 4 );
+            m_stream.read( buf, 0, 4 );
             if ( buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a' ) {
-                m_stream.Close();
+                m_stream.close();
 #if DEBUG
                 Console.WriteLine( "WaveReader#Open; header error (data)" );
 #endif
@@ -166,22 +185,24 @@ namespace Boare.Lib.Media {
             }
 
             // size of data chunk
-            m_stream.Read( buf, 0, 4 );
-            int size = BitConverter.ToInt32( buf, 0 );
+            m_stream.read( buf, 0, 4 );
+            int size = (int)PortUtil.make_uint32_le( buf );
             m_total_samples = size / (m_channel * m_byte_per_sample);
 
             m_opened = true;
-            m_header_offset = (int)m_stream.Position;
+            m_header_offset = (int)m_stream.getFilePointer();
             return true;
         }
 
-        public int TotalSamples {
-            get {
-                return m_total_samples;
-            }
+        public int getTotalSamples() {
+            return m_total_samples;
         }
 
-        public void Read( long start, int length, double[] left, double[] right ) {
+        public void read( long start, int length, double[] left, double[] right ) 
+#if JAVA
+            throws IOException
+#endif
+        {
             //left = new double[length];
             //right = new double[length];
             if ( !m_opened ) {
@@ -208,10 +229,10 @@ namespace Boare.Lib.Media {
                         right[i] = 0.0;
                     }
                 }
-                m_stream.Seek( m_header_offset, SeekOrigin.Begin );
+                m_stream.seek( m_header_offset );
             } else {
                 long loc = m_header_offset + m_byte_per_sample * m_channel * required_sample_start;
-                m_stream.Seek( loc, SeekOrigin.Begin );
+                m_stream.seek( loc );
             }
             if ( m_total_samples < required_sample_end ) {
                 i_end = length - 1 - (int)required_sample_end + m_total_samples;
@@ -237,7 +258,7 @@ namespace Boare.Lib.Media {
                     double coeff_left = m_amplify_left / 32768.0;
                     double coeff_right = m_amplify_right / 32768.0;
                     for ( int i = i_start; i <= i_end; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 4 );
+                        int ret = m_stream.read( buf, 0, 4 );
                         if ( ret < 4 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -254,7 +275,7 @@ namespace Boare.Lib.Media {
                     byte[] buf = new byte[2];
                     double coeff_left = m_amplify_left / 32768.0;
                     for ( int i = i_start; i <= i_end; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 2 );
+                        int ret = m_stream.read( buf, 0, 2 );
                         if ( ret < 2 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -273,7 +294,7 @@ namespace Boare.Lib.Media {
                     double coeff_left = m_amplify_left / 64.0;
                     double coeff_right = m_amplify_right / 64.0;
                     for ( int i = i_start; i <= i_end; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 2 );
+                        int ret = m_stream.read( buf, 0, 2 );
                         if ( ret < 2 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -288,7 +309,7 @@ namespace Boare.Lib.Media {
                     byte[] buf = new byte[1];
                     double coeff_left = m_amplify_left / 64.0;
                     for ( int i = i_start; i <= i_end; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 1 );
+                        int ret = m_stream.read( buf, 0, 1 );
                         if ( ret < 1 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -303,7 +324,8 @@ namespace Boare.Lib.Media {
             }
         }
 
-        public void Read( long start, int length, out float[] left, out float[] right ) {
+#if !JAVA
+        public void read( long start, int length, out float[] left, out float[] right ) {
             left = new float[length];
             right = new float[length];
             if ( !m_opened ) {
@@ -321,10 +343,10 @@ namespace Boare.Lib.Media {
                     left[i] = 0.0f;
                     right[i] = 0.0f;
                 }
-                m_stream.Seek( m_header_offset, SeekOrigin.Begin );
+                m_stream.seek( m_header_offset );
             } else {
                 long loc = m_header_offset + m_byte_per_sample * m_channel * required_sample_start;
-                m_stream.Seek( loc, SeekOrigin.Begin );
+                m_stream.seek( loc );
             }
             if ( m_total_samples < required_sample_end ) {
                 i_end = length - 1 - (int)required_sample_end + m_total_samples;
@@ -341,7 +363,7 @@ namespace Boare.Lib.Media {
                     float coeff_left = (float)(m_amplify_left / 32768.0f);
                     float coeff_right = (float)(m_amplify_right / 32768.0f);
                     for ( int i = 0; i < length; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 4 );
+                        int ret = m_stream.read( buf, 0, 4 );
                         if ( ret < 4 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -358,7 +380,7 @@ namespace Boare.Lib.Media {
                     byte[] buf = new byte[2];
                     float coeff_left = (float)(m_amplify_left / 32768.0f);
                     for ( int i = 0; i < length; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 2 );
+                        int ret = m_stream.read( buf, 0, 2 );
                         if ( ret < 2 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -377,7 +399,7 @@ namespace Boare.Lib.Media {
                     float coeff_left = (float)(m_amplify_left / 64.0f);
                     float coeff_right = (float)(m_amplify_right / 64.0f);
                     for ( int i = 0; i < length; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 2 );
+                        int ret = m_stream.read( buf, 0, 2 );
                         if ( ret < 2 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -392,7 +414,7 @@ namespace Boare.Lib.Media {
                     byte[] buf = new byte[1];
                     float coeff_left = (float)(m_amplify_left / 64.0f);
                     for ( int i = 0; i < length; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 1 );
+                        int ret = m_stream.read( buf, 0, 1 );
                         if ( ret < 1 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -406,8 +428,10 @@ namespace Boare.Lib.Media {
                 }
             }
         }
+#endif
 
-        public unsafe void Read( long start, int length, ref IntPtr ptr_left, ref IntPtr ptr_right ) {
+#if !JAVA
+        public unsafe void read( long start, int length, ref IntPtr ptr_left, ref IntPtr ptr_right ) {
             float* left = (float*)ptr_left.ToPointer();
             float* right = (float*)ptr_right.ToPointer();
             if ( !m_opened ) {
@@ -425,10 +449,10 @@ namespace Boare.Lib.Media {
                     left[i] = 0.0f;
                     right[i] = 0.0f;
                 }
-                m_stream.Seek( m_header_offset, SeekOrigin.Begin );
+                m_stream.seek( m_header_offset );
             } else {
                 long loc = m_header_offset + m_byte_per_sample * m_channel * required_sample_start;
-                m_stream.Seek( loc, SeekOrigin.Begin );
+                m_stream.seek( loc );
             }
             if ( m_total_samples < required_sample_end ) {
                 i_end = length - 1 - (int)required_sample_end + m_total_samples;
@@ -445,7 +469,7 @@ namespace Boare.Lib.Media {
                     float coeff_left = (float)(m_amplify_left / 32768.0f);
                     float coeff_right = (float)(m_amplify_right / 32768.0f);
                     for ( int i = 0; i < length; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 4 );
+                        int ret = m_stream.read( buf, 0, 4 );
                         if ( ret < 4 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -462,7 +486,7 @@ namespace Boare.Lib.Media {
                     byte[] buf = new byte[2];
                     float coeff_left = (float)(m_amplify_left / 32768.0f);
                     for ( int i = 0; i < length; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 2 );
+                        int ret = m_stream.read( buf, 0, 2 );
                         if ( ret < 2 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -481,7 +505,7 @@ namespace Boare.Lib.Media {
                     float coeff_left = (float)(m_amplify_left / 64.0f);
                     float coeff_right = (float)(m_amplify_right / 64.0f);
                     for ( int i = 0; i < length; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 2 );
+                        int ret = m_stream.read( buf, 0, 2 );
                         if ( ret < 2 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -496,7 +520,7 @@ namespace Boare.Lib.Media {
                     byte[] buf = new byte[1];
                     float coeff_left = (float)(m_amplify_left / 64.0f);
                     for ( int i = 0; i < length; i++ ) {
-                        int ret = m_stream.Read( buf, 0, 1 );
+                        int ret = m_stream.read( buf, 0, 1 );
                         if ( ret < 1 ) {
                             for ( int j = i; j < length; j++ ) {
                                 left[j] = 0.0f;
@@ -510,18 +534,27 @@ namespace Boare.Lib.Media {
                 }
             }
         }
+#endif
 
-        public void Close() {
+        public void close()
+#if JAVA
+            throws IOException
+#endif
+        {
             m_opened = false;
             if ( m_stream != null ) {
-                m_stream.Close();
+                m_stream.close();
                 m_stream = null;
             }
         }
 
+#if !JAVA
         ~WaveReader() {
-            Close();
+            close();
         }
+#endif
     }
 
+#if !JAVA
 }
+#endif

@@ -318,7 +318,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private static void renderWithDirectPlay( object argument ) {
+        private static void renderWithDirectPlay( Object argument ) {
 #if ENABLE_VOCALOID
             if ( argument is VocaloRenderingRunner ) {
                 VocaloRenderingRunner sra = (VocaloRenderingRunner)argument;

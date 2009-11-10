@@ -258,7 +258,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// CTRLキー。MacOSXの場合はMenu
         /// </summary>
-        private int s_modifier_key = java.awt.event_.InputEvent.CTRL_MASK;
+        private int s_modifier_key = InputEvent.CTRL_MASK;
         #endregion
 
         #region Fields
@@ -390,7 +390,9 @@ namespace Boare.Cadencii {
         private FormMidiImExport m_midi_imexport_dialog = null;
         private TreeMap<EditTool, Cursor> m_cursor = new TreeMap<EditTool, Cursor>();
         private Preference m_preference_dlg;
+#if ENABLE_MIDI
         private BToolStripButton m_strip_ddbtn_metronome;
+#endif
         //private FormUtauVoiceConfig m_utau_voice_dialog = null;
 #if ENABLE_PROPERTY
         private PropertyPanelContainer m_property_panel_container;
@@ -464,7 +466,7 @@ namespace Boare.Cadencii {
             AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 10 );
             AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 );
 
-            s_modifier_key = ((AppManager.editorConfig.Platform == Platform.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
+            s_modifier_key = ((AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
 
             AppManager.setVsqFile( new VsqFileEx( AppManager.editorConfig.DefaultSingerName,
                                                   AppManager.editorConfig.DefaultPreMeasure,
@@ -509,6 +511,7 @@ namespace Boare.Cadencii {
             menuScript.Visible = false;
 #endif
 
+#if ENABLE_MIDI
             m_strip_ddbtn_metronome = new BToolStripButton();
             m_strip_ddbtn_metronome.setText( "Metronome" );
             m_strip_ddbtn_metronome.Name = "m_strip_ddbtn_metronome";
@@ -516,6 +519,7 @@ namespace Boare.Cadencii {
             m_strip_ddbtn_metronome.Checked = AppManager.editorConfig.MetronomeEnabled;
             m_strip_ddbtn_metronome.CheckedChanged += new EventHandler( m_strip_ddbtn_metronome_CheckedChanged );
             toolStripBottom.Items.Add( m_strip_ddbtn_metronome );
+#endif
 
             trackSelector = new TrackSelector();
             updateTrackSelectorVisibleCurve();
@@ -745,20 +749,28 @@ namespace Boare.Cadencii {
                 HAND = new Cursor( ms );
             }
 #endif
+
+#if !ENABLE_MIDI
+            menuSettingMidi.Visible = false;
+#endif
             initResource();
             applyShortcut();
         }
 
         private void initResource() {
+#if ENABLE_MIDI
             m_strip_ddbtn_metronome.setIcon( Resources.get_alarm_clock() );
+#endif
         }
 
+#if ENABLE_MIDI
         private void m_strip_ddbtn_metronome_CheckedChanged( Object sender, BEventArgs e ) {
             AppManager.editorConfig.MetronomeEnabled = m_strip_ddbtn_metronome.Checked;
             if ( AppManager.editorConfig.MetronomeEnabled && AppManager.getEditMode() == EditMode.REALTIME ) {
                 MidiPlayer.RestartMetronome();
             }
         }
+#endif
 
         private void commonStripPaletteTool_Clicked( Object sender, BEventArgs e ) {
             String id = "";  //選択されたツールのID
@@ -1025,7 +1037,9 @@ namespace Boare.Cadencii {
             for ( int i = 0; i < AppManager.drawStartIndex.Length; i++ ) {
                 AppManager.drawStartIndex[i] = 0;
             }
+#if ENABLE_MIDI
             MidiPlayer.Stop();
+#endif
             timer.Stop();
         }
 
@@ -1196,7 +1210,7 @@ namespace Boare.Cadencii {
                     }
 
                     WaveReader wr = new WaveReader( file );
-                    wr.Tag = track;
+                    wr.setTag( track );
                     sounds.add( wr );
                 }
 
@@ -1218,12 +1232,12 @@ namespace Boare.Cadencii {
                 for ( int i = 0; i < bgm_count; i++ ) {
                     BgmFile bgm = AppManager.getBgm( i );
                     WaveReader wr = new WaveReader( bgm.file );
-                    wr.Tag = (int)(-i - 1);
+                    wr.setTag( (int)(-i - 1) );
                     double offset = bgm.readOffsetSeconds;
                     if ( bgm.startAfterPremeasure ) {
                         offset -= pre_measure_sec;
                     }
-                    wr.OffsetSeconds = offset;
+                    wr.setOffsetSeconds( offset );
                     sounds.add( wr );
                 }
 
@@ -1276,8 +1290,10 @@ namespace Boare.Cadencii {
                     m_midi_in.Start();
                 }
                 AppManager.rendererAvailable = false;
+#if ENABLE_MIDI
                 MidiPlayer.SetSpeed( AppManager.editorConfig.RealtimeInputSpeed, m_last_ignitted );
                 MidiPlayer.Start( AppManager.getVsqFile(), clock, m_last_ignitted );
+#endif
             } else {
                 AppManager.rendererAvailable = VSTiProxy.isRendererAvailable( renderer );
             }
@@ -2669,16 +2685,16 @@ namespace Boare.Cadencii {
                             if ( note_length >= threshold ) {
                                 int vibrato_clocks = 0;
                                 switch ( AppManager.editorConfig.DefaultVibratoLength ) {
-                                    case DefaultVibratoLength.L100:
+                                    case DefaultVibratoLengthEnum.L100:
                                         vibrato_clocks = note_length;
                                         break;
-                                    case DefaultVibratoLength.L50:
+                                    case DefaultVibratoLengthEnum.L50:
                                         vibrato_clocks = note_length / 2;
                                         break;
-                                    case DefaultVibratoLength.L66:
+                                    case DefaultVibratoLengthEnum.L66:
                                         vibrato_clocks = note_length * 2 / 3;
                                         break;
-                                    case DefaultVibratoLength.L75:
+                                    case DefaultVibratoLengthEnum.L75:
                                         vibrato_clocks = note_length * 3 / 4;
                                         break;
                                 }
@@ -3266,7 +3282,9 @@ namespace Boare.Cadencii {
             }
             VSTiProxy.abortRendering();
             VSTiProxy.terminate();
+#if ENABLE_MIDI
             MidiPlayer.Stop();
+#endif
         }
 
         private void FormMain_FormClosing( Object sender, BFormClosingEventArgs e ) {
@@ -3388,7 +3406,9 @@ namespace Boare.Cadencii {
             m_pencil_mode.setMode( PencilModeEnum.Off );
             updateCMenuPianoFixed();
             loadGameControler();
+#if ENABLE_MIDI
             reloadMidiIn();
+#endif
             menuVisualWaveform.Checked = AppManager.editorConfig.ViewWaveform;
             updateSplitContainer2Size();
 
@@ -3891,7 +3911,9 @@ namespace Boare.Cadencii {
                             AppManager.addingEvent.ID.Note = note;
                         }
                         if ( AppManager.getEditMode() == EditMode.REALTIME ) {
+#if ENABLE_MIDI
                             MidiPlayer.PlayImmediate( (byte)note );
+#endif
                         } else {
                             KeySoundPlayer.Play( note );
                         }
@@ -4285,14 +4307,14 @@ namespace Boare.Cadencii {
                                     int threshold = 480 * 4 / timesig.denominator * autovib;
                                     if ( note_length >= threshold ) {
                                         int vibrato_clocks = 0;
-                                        DefaultVibratoLength vib_length = AppManager.editorConfig.DefaultVibratoLength;
-                                        if ( vib_length == DefaultVibratoLength.L100 ) {
+                                        DefaultVibratoLengthEnum vib_length = AppManager.editorConfig.DefaultVibratoLength;
+                                        if ( vib_length == DefaultVibratoLengthEnum.L100 ) {
                                             vibrato_clocks = note_length;
-                                        } else if ( vib_length == DefaultVibratoLength.L50 ) {
+                                        } else if ( vib_length == DefaultVibratoLengthEnum.L50 ) {
                                             vibrato_clocks = note_length / 2;
-                                        } else if ( vib_length == DefaultVibratoLength.L66 ) {
+                                        } else if ( vib_length == DefaultVibratoLengthEnum.L66 ) {
                                             vibrato_clocks = note_length * 2 / 3;
-                                        } else if ( vib_length == DefaultVibratoLength.L75 ) {
+                                        } else if ( vib_length == DefaultVibratoLengthEnum.L75 ) {
                                             vibrato_clocks = note_length * 3 / 4;
                                         }
                                         // とりあえずVOCALOID2のデフォルトビブラートの設定を使用
@@ -4944,6 +4966,7 @@ namespace Boare.Cadencii {
             }
         }
 
+#if ENABLE_MIDI
         private void menuSettingMidi_Click( Object sender, BEventArgs e ) {
             FormMidiConfig form = null;
             try {
@@ -4962,6 +4985,7 @@ namespace Boare.Cadencii {
                 }
             }
         }
+#endif
 
         private void menuSettingPreference_Click( Object sender, BEventArgs e ) {
             if ( m_preference_dlg == null ) {
@@ -5009,7 +5033,9 @@ namespace Boare.Cadencii {
             m_preference_dlg.setCurveVisibleReso3( AppManager.editorConfig.CurveVisibleReso3 );
             m_preference_dlg.setCurveVisibleReso4( AppManager.editorConfig.CurveVisibleReso4 );
             m_preference_dlg.setCurveVisibleEnvelope( AppManager.editorConfig.CurveVisibleEnvelope );
+#if ENABLE_MIDI
             m_preference_dlg.setMidiInPort( AppManager.editorConfig.MidiInPort.PortNumber );
+#endif
             m_preference_dlg.setInvokeWithWine( AppManager.editorConfig.InvokeUtauCoreWithWine );
             m_preference_dlg.setPathResampler( AppManager.editorConfig.PathResampler );
             m_preference_dlg.setPathWavtool( AppManager.editorConfig.PathWavtool );
@@ -5065,7 +5091,7 @@ namespace Boare.Cadencii {
                 int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
                 timer.Interval = (fps <= 0) ? 1 : fps;
                 AppManager.editorConfig.Platform = m_preference_dlg.getPlatform();
-                s_modifier_key = ((AppManager.editorConfig.Platform == Platform.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
+                s_modifier_key = ((AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
                 applyShortcut();
                 AppManager.editorConfig.KeepLyricInputMode = m_preference_dlg.isKeepLyricInputMode();
                 if ( AppManager.editorConfig.PxTrackHeight != m_preference_dlg.getPxTrackHeight() ) {
@@ -5100,9 +5126,11 @@ namespace Boare.Cadencii {
                 AppManager.editorConfig.CurveVisibleReso4 = m_preference_dlg.isCurveVisibleReso4();
                 AppManager.editorConfig.CurveVisibleEnvelope = m_preference_dlg.isCurveVisibleEnvelope();
 
+#if ENABLE_MIDI
                 AppManager.editorConfig.MidiInPort.PortNumber = m_preference_dlg.getMidiInPort();
                 updateMidiInStatus();
                 reloadMidiIn();
+#endif
 
                 AppManager.editorConfig.InvokeUtauCoreWithWine = m_preference_dlg.isInvokeWithWine();
                 AppManager.editorConfig.PathResampler = m_preference_dlg.getPathResampler();
@@ -5382,7 +5410,7 @@ namespace Boare.Cadencii {
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 if ( dlg.ShowDialog() == DialogResult.OK ) {
                     Vector<ValuePair<String, Boolean>> result = dlg.Result;
-                    SymbolTable.changeOrder( result.toArray( new ValuePair<String, Boolean>[] { } ) );
+                    SymbolTable.changeOrder( result );
                 }
             } catch ( Exception ex ) {
             } finally {
@@ -8082,7 +8110,9 @@ namespace Boare.Cadencii {
             int sec = (int)(Math.Floor( play_time ) + 0.1);
             int millisec = (int)((play_time - sec) * 1000);
             AppManager.previewStartedTime = now - (sec + millisec / 1000.0);
+#if ENABLE_MIDI
             MidiPlayer.SetSpeed( newv, AppManager.previewStartedTime );
+#endif
         }
 
         /// <summary>
@@ -9615,8 +9645,8 @@ namespace Boare.Cadencii {
 #endif
         }
 
+#if ENABLE_MIDI
         private void reloadMidiIn() {
-#if !JAVA
 #if DEBUG
             AppManager.debugWriteLine( "FormMain.ReloadMidiIn" );
 #endif
@@ -9633,9 +9663,10 @@ namespace Boare.Cadencii {
 #endif
             }
             updateMidiInStatus();
-#endif
         }
+#endif
 
+#if ENABLE_MIDI
         private void m_midi_in_MidiReceived( double time, byte[] data ) {
 #if !JAVA
             if ( data.Length <= 2 ) {
@@ -9703,6 +9734,7 @@ namespace Boare.Cadencii {
             }
 #endif
         }
+#endif
 
         /// <summary>
         /// 現在のゲームコントローラのモードに応じてstripLblGameCtrlModeの表示状態を更新します。
@@ -9725,8 +9757,8 @@ namespace Boare.Cadencii {
 #endif
         }
 
+#if ENABLE_MIDI
         private void updateMidiInStatus() {
-#if !JAVA
             int midiport = AppManager.editorConfig.MidiInPort.PortNumber;
             bocoree.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
             if ( midiport < 0 || devices.Length <= 0 ) {
@@ -9740,8 +9772,8 @@ namespace Boare.Cadencii {
                 stripLblMidiIn.Text = devices[midiport].szPname;
                 stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_piano().Clone();
             }
-#endif
         }
+#endif
 
 #if ENABLE_SCRIPT
         /// <summary>
@@ -10325,7 +10357,7 @@ namespace Boare.Cadencii {
         /// メニューのショートカットキーを、AppManager.EditorConfig.ShorcutKeysの内容に応じて変更します
         /// </summary>
         private void applyShortcut() {
-            if ( AppManager.editorConfig.Platform == Platform.Macintosh ) {
+            if ( AppManager.editorConfig.Platform == PlatformEnum.Macintosh ) {
                 #region Platform.Macintosh
                 String _CO = "";
                 //if ( AppManager.EditorConfig.CommandKeyAsControl ) {
@@ -13163,7 +13195,9 @@ namespace Boare.Cadencii {
             this.menuSettingGameControlerLoad.Click += new System.EventHandler( this.menuSettingGameControlerLoad_Click );
             this.menuSettingGameControlerRemove.Click += new System.EventHandler( this.menuSettingGameControlerRemove_Click );
             this.menuSettingShortcut.Click += new System.EventHandler( this.menuSettingShortcut_Click );
+#if ENABLE_MIDI
             this.menuSettingMidi.Click += new System.EventHandler( this.menuSettingMidi_Click );
+#endif
             this.menuSettingUtauVoiceDB.Click += new System.EventHandler( this.menuSettingUtauVoiceDB_Click );
             this.menuSettingDefaultSingerStyle.Click += new System.EventHandler( this.menuSettingDefaultSingerStyle_Click );
             this.menuSettingPositionQuantize04.Click += new System.EventHandler( this.handlePositionQuantize );

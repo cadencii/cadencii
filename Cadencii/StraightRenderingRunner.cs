@@ -529,7 +529,7 @@ namespace Boare.Cadencii {
                     wr = null;
                 }
                 int wave_samples = 0;
-                if ( wr != null ) wave_samples = wr.TotalSamples;
+                if ( wr != null ) wave_samples = wr.getTotalSamples();
                 int overlapped = 0;
 #if DEBUG
                 log.write( queue.startFrame + "\t" + (queue.startFrame + wave_samples) + "\t" + next_wave_start + "\t" + (cached_data_l == null ? 0 : cached_data_l.Length) );
@@ -567,7 +567,7 @@ namespace Boare.Cadencii {
                             }
                         }
                         if ( wr != null ) {
-                            wr.Read( pos, len, left, right );
+                            wr.read( pos, len, left, right );
                         }
                         WaveIncoming( left, right );
                         pos += len;
@@ -577,7 +577,7 @@ namespace Boare.Cadencii {
                     right = null;
 
                     int rendererd_length = 0;
-                    if ( wr != null ) rendererd_length = wr.TotalSamples;
+                    if ( wr != null ) rendererd_length = wr.getTotalSamples();
                     if ( wave_samples < rendererd_length ) {
                         // 次のキューのためにデータを残す
                         if ( wr != null ) {
@@ -593,7 +593,7 @@ namespace Boare.Cadencii {
                                 cached_data_r = null;
                                 cached_data_r = new double[overlapped];
                             }
-                            wr.Read( pos, overlapped, cached_data_l, cached_data_r );
+                            wr.read( pos, overlapped, cached_data_l, cached_data_r );
                         }
                     } else if ( i + 1 < count ) {
                         // 次のキューのためにデータを残す必要がない場合で、かつ、最後のキューでない場合。
@@ -608,7 +608,7 @@ namespace Boare.Cadencii {
 #endif
                     // キャッシュが残っている場合
                     int rendered_length = 0;
-                    if ( wr != null ) rendered_length = wr.TotalSamples;
+                    if ( wr != null ) rendered_length = wr.getTotalSamples();
                     if ( rendered_length < cached_data_l.Length ) {
                         if ( next_wave_start < queue.startFrame + rendered_length ) {
 #if DEBUG
@@ -636,7 +636,7 @@ namespace Boare.Cadencii {
                             try {
                                 double[] left = new double[rendered_length];
                                 double[] right = new double[rendered_length];
-                                wr.Read( 0, rendered_length, left, right );
+                                wr.read( 0, rendered_length, left, right );
                                 for ( int j = 0; j < left.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
@@ -680,7 +680,7 @@ namespace Boare.Cadencii {
                             try {
                                 double[] left = new double[rendered_length];
                                 double[] right = new double[rendered_length];
-                                wr.Read( 0, rendered_length, left, right );
+                                wr.read( 0, rendered_length, left, right );
                                 for ( int j = 0; j < left.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
@@ -713,7 +713,7 @@ namespace Boare.Cadencii {
                             try {
                                 double[] left = new double[cached_data_l.Length];
                                 double[] right = new double[cached_data_l.Length];
-                                wr.Read( 0, cached_data_l.Length, left, right );
+                                wr.read( 0, cached_data_l.Length, left, right );
                                 for ( int j = 0; j < cached_data_l.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
@@ -745,7 +745,7 @@ namespace Boare.Cadencii {
                                 int tlen = rendered_length - old_cache_len;
                                 buf_l = new double[tlen];
                                 buf_r = new double[tlen];
-                                wr.Read( old_cache_len, rendered_length - old_cache_len, buf_l, buf_r );
+                                wr.read( old_cache_len, rendered_length - old_cache_len, buf_l, buf_r );
                                 for ( int j = 0; j < buf_l.Length; j++ ) {
                                     cached_data_l[j + (old_cache_len - append_len)] = buf_l[j];
                                     cached_data_r[j + (old_cache_len - append_len)] = buf_r[j];
@@ -769,7 +769,7 @@ namespace Boare.Cadencii {
                             try {
                                 double[] left = new double[cached_data_l.Length];
                                 double[] right = new double[cached_data_l.Length];
-                                wr.Read( 0, cached_data_l.Length, left, right );
+                                wr.read( 0, cached_data_l.Length, left, right );
                                 for ( int j = 0; j < cached_data_l.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
@@ -780,7 +780,7 @@ namespace Boare.Cadencii {
                                 right = null;
                                 left = new double[append_len];
                                 right = new double[append_len];
-                                wr.Read( cached_data_l.Length, append_len, left, right );
+                                wr.read( cached_data_l.Length, append_len, left, right );
                                 WaveIncoming( left, right );
                                 int new_cache_len = (int)(queue.startFrame + rendered_length - next_wave_start);
                                 int old_cache_len = cached_data_l.Length;
@@ -788,7 +788,7 @@ namespace Boare.Cadencii {
                                 cached_data_r = null;
                                 cached_data_l = new double[new_cache_len];
                                 cached_data_r = new double[new_cache_len];
-                                wr.Read( old_cache_len + append_len, new_cache_len, cached_data_l, cached_data_r );
+                                wr.read( old_cache_len + append_len, new_cache_len, cached_data_l, cached_data_r );
                             } catch ( Exception ex ) {
                                 AppManager.debugWriteLine( "StraightRenderingRunner#run; (E); ex=" + ex );
                             }
@@ -809,7 +809,7 @@ namespace Boare.Cadencii {
                             try {
                                 double[] left = new double[cached_data_l.Length];
                                 double[] right = new double[cached_data_l.Length];
-                                wr.Read( 0, cached_data_l.Length, left, right );
+                                wr.read( 0, cached_data_l.Length, left, right );
                                 for ( int j = 0; j < cached_data_l.Length; j++ ) {
                                     cached_data_l[j] += left[j];
                                     cached_data_r[j] += right[j];
@@ -820,7 +820,7 @@ namespace Boare.Cadencii {
                                 int tlen = rendered_length - cached_data_l.Length;
                                 left = new double[tlen];
                                 right = new double[tlen];
-                                wr.Read( cached_data_l.Length, rendered_length - cached_data_l.Length, left, right );
+                                wr.read( cached_data_l.Length, rendered_length - cached_data_l.Length, left, right );
                                 WaveIncoming( left, right );
                                 cached_data_l = null;
                                 cached_data_r = null;
@@ -836,7 +836,7 @@ namespace Boare.Cadencii {
                 }
 
                 if ( wr != null ) {
-                    wr.Close();
+                    wr.close();
                     wr = null;
                 }
 
@@ -919,7 +919,7 @@ namespace Boare.Cadencii {
             m_abort_required = false;
             int count = m_reader.size();
             for ( int i = 0; i < count; i++ ) {
-                m_reader.get( i ).Close();
+                m_reader.get( i ).close();
                 m_reader.set( i, null );
             }
             m_reader.clear();
@@ -1003,15 +1003,15 @@ namespace Boare.Cadencii {
                     WaveReader wr = m_reader.get( i );
                     amplify.left = 1.0;
                     amplify.right = 1.0;
-                    if ( wr.Tag != null && wr.Tag is int ) {
-                        int track = (int)wr.Tag;
+                    if ( wr.getTag() != null && wr.getTag() is int ) {
+                        int track = (int)wr.getTag();
                         if ( 0 < track ) {
                             amplify = AppManager.getAmplifyCoeffNormalTrack( track );
                         } else if ( 0 > track ) {
                             amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
                         }
                     }
-                    wr.Read( start, length, reader_l, reader_r );
+                    wr.read( start, length, reader_l, reader_r );
                     for ( int j = 0; j < length; j++ ) {
                         L[j] += reader_l[j] * amplify.left;
                         R[j] += reader_r[j] * amplify.right;

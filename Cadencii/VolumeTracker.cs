@@ -338,7 +338,7 @@ namespace Boare.Cadencii {
 #else
             int len = _KEY.GetUpperBound( 0 ) + 1;
 #endif
-            for ( int i = 1; i <= len; i++ ) {
+            for ( int i = 1; i < len; i++ ) {
 #if JAVA
                 int diff = Math.Abs( _KEY[i][0] - feder );
 #else
