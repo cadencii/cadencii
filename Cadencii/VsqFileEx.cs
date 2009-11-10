@@ -153,7 +153,7 @@ namespace Boare.Cadencii {
         /// <param name="sec">ずらす秒数．正の場合アイテムは後ろにずれる</param>
         /// <param name="first_tempo">ずらす秒数が正の場合に，最初のテンポをいくらにするか</param>
         public static void shift( VsqFileEx vsq, double sec, int first_tempo ) {
-            bool first = true; // 負になった最初のアイテムかどうか
+            boolean first = true; // 負になった最初のアイテムかどうか
 
             // 最初にテンポをずらす．
             // 古いのから情報をコピー
@@ -697,7 +697,7 @@ namespace Boare.Cadencii {
                     CurveType curve_type = (CurveType)command.args[1];
                     int chain_id = (Integer)command.args[2];
                     BezierChain chain = (BezierChain)command.args[3];
-                    int clock_resolution = (int)command.args[4];
+                    int clock_resolution = (Integer)command.args[4];
                     BezierChain target = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).clone();
                     AttachedCurves.get( track - 1 ).setBezierChain( curve_type, chain_id, chain );
                     VsqBPList list = Track.get( track ).getCurve( curve_type.getName() );
@@ -863,7 +863,7 @@ namespace Boare.Cadencii {
                     #region AddTrack
                     VsqTrack track = (VsqTrack)command.args[0];
                     VsqMixerEntry mixer = (VsqMixerEntry)command.args[1];
-                    int position = (int)command.args[2];
+                    int position = (Integer)command.args[2];
                     BezierCurves attached_curve = (BezierCurves)command.args[3];
                     ret = VsqFileEx.generateCommandDeleteTrack( position );
                     if ( Track.size() <= 17 ) {

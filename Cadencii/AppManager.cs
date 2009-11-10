@@ -2121,7 +2121,19 @@ namespace Boare.Cadencii {
         }
 
         public static void setClipboard( ClipboardEntry item ) {
-            String clip = getSerializedText( item );
+            String clip = "";
+            try {
+                clip = getSerializedText( item );
+            } catch ( Exception ex ) {
+#if JAVA
+                System.err.println( "AppManager#setClipboard; ex=" + ex );
+#else
+#if DEBUG
+                PortUtil.println( "AppManager#setClipboard; ex=" + ex );
+#endif
+#endif
+                return;
+            }
             PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
         }
@@ -2171,7 +2183,19 @@ namespace Boare.Cadencii {
             ClipboardEntry ce = new ClipboardEntry();
             ce.events = item;
             ce.copyStartedClock = copy_started_clock;
-            String clip = getSerializedText( ce );
+            String clip = "";
+            try {
+                clip = getSerializedText( ce );
+            } catch ( Exception ex ) {
+#if JAVA
+                System.err.println( "AppManager#setCopiedEvent; ex=" + ex );
+#else
+#if DEBUG
+                PortUtil.println( "AppManager#setCopiedEvent; ex=" + ex );
+#endif
+#endif
+                return;
+            }
             PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
         }
@@ -2179,7 +2203,19 @@ namespace Boare.Cadencii {
         public static void setCopiedTempo( Vector<TempoTableEntry> item, int copy_started_clock ) {
             ClipboardEntry ce = new ClipboardEntry();
             ce.tempo = item;
-            String clip = getSerializedText( ce );
+            String clip = "";
+            try {
+                getSerializedText( ce );
+            } catch ( Exception ex ) {
+#if JAVA
+                System.err.println( "AppManager#setCopiedTempo; ex=" + ex );
+#else
+#if DEBUG
+                PortUtil.println( "AppManager#setCopiedTempo; ex=" + ex );
+#endif
+#endif
+                return;
+            }
             PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
         }
@@ -2187,7 +2223,19 @@ namespace Boare.Cadencii {
         public static void setCopiedTimesig( Vector<TimeSigTableEntry> item, int copy_started_clock ) {
             ClipboardEntry ce = new ClipboardEntry();
             ce.timesig = item;
-            String clip = getSerializedText( ce );
+            String clip = "";
+            try {
+                getSerializedText( ce );
+            } catch ( Exception ex ) {
+#if JAVA
+                System.err.println( "AppManager#setCopiedTimesig; ex=" + ex );
+#else
+#if DEBUG
+                PortUtil.println( "AppManager#setCopiedTimesig; ex=" + ex );
+#endif
+#endif
+                return;
+            }
             PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
         }
@@ -2195,7 +2243,19 @@ namespace Boare.Cadencii {
         public static void setCopiedCurve( TreeMap<CurveType, VsqBPList> item, int copy_started_clock ) {
             ClipboardEntry ce = new ClipboardEntry();
             ce.points = item;
-            String clip = getSerializedText( ce );
+            String clip = "";
+            try {
+                getSerializedText( ce );
+            } catch ( Exception ex ) {
+#if JAVA
+                System.err.println( "AppManager#setCopiedCurve; ex=" + ex );
+#else
+#if DEBUG
+                PortUtil.println( "AppManager#setCopiedCurve; ex=" + ex );
+#endif
+#endif
+                return;
+            }
             PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
         }
@@ -2203,7 +2263,19 @@ namespace Boare.Cadencii {
         public static void setCopiedBezier( TreeMap<CurveType, Vector<BezierChain>> item, int copy_started_clock ) {
             ClipboardEntry ce = new ClipboardEntry();
             ce.beziers = item;
-            String clip = getSerializedText( ce );
+            String clip = "";
+            try {
+                getSerializedText( ce );
+            }catch( Exception ex ){
+#if JAVA
+                System.err.println( "AppManager#setCopiedBezier; ex=" + ex );
+#else
+#if DEBUG
+                PortUtil.println( "AppManager#setCopiedBezier; ex=" + ex );
+#endif
+#endif
+                return;
+            }
             PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
         }

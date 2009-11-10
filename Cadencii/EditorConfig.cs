@@ -362,7 +362,7 @@ namespace Boare.Cadencii {
             new ValuePairOfStringArrayOfKeys( "menuSettingSingerProperty", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuHelpAbout", new BKeys[]{} ) } ) );
 #if JAVA
-        private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class ) );
+        private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class );
 #else
         private static XmlSerializer s_serializer = new XmlSerializer( typeof( EditorConfig ) );
 #endif

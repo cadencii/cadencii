@@ -455,6 +455,10 @@ namespace Boare.Cadencii {
         #endregion
 
         public FormMain() {
+#if JAVA
+		    super();
+#endif
+
 #if DEBUG
             bocoree.debug.push_log( "FormMain..ctor()" );
             bocoree.debug.push_log( "    " + Environment.OSVersion.ToString() );
@@ -474,7 +478,7 @@ namespace Boare.Cadencii {
                                                   4,
                                                   500000 ) );
 #if JAVA
-            initialize();
+		    initialize();
 #else
             InitializeComponent();
 #endif
@@ -507,8 +511,8 @@ namespace Boare.Cadencii {
 #endif
 
 #if !ENABLE_SCRIPT
-            menuSettingPaletteTool.Visible = false;
-            menuScript.Visible = false;
+            menuSettingPaletteTool.setVisible( false );
+            menuScript.setVisible( false );
 #endif
 
 #if ENABLE_MIDI
@@ -525,6 +529,20 @@ namespace Boare.Cadencii {
             updateTrackSelectorVisibleCurve();
             trackSelector.setBackground( new Color( 108, 108, 108 ) );
             trackSelector.setCurveVisible( true );
+#if JAVA
+            // TODO: FormMain#.ctor; trackSelectorの初期化
+            /*trackSelector.MouseClick += new MouseEventHandler( this.trackSelector_MouseClick );
+            trackSelector.SelectedTrackChanged += new SelectedTrackChangedEventHandler( this.trackSelector_SelectedTrackChanged );
+            trackSelector.MouseUp += new MouseEventHandler( this.trackSelector_MouseUp );
+            trackSelector.MouseDown += new MouseEventHandler( trackSelector_MouseDown );
+            trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( this.trackSelector_SelectedCurveChanged );
+            trackSelector.MouseMove += new MouseEventHandler( this.trackSelector_MouseMove );
+            trackSelector.RenderRequired += new RenderRequiredEventHandler( this.trackSelector_RenderRequired );
+            trackSelector.PreviewKeyDown += new PreviewKeyDownEventHandler( this.trackSelector_PreviewKeyDown );
+            trackSelector.KeyDown += new KeyEventHandler( commonCaptureSpaceKeyDown );
+            trackSelector.KeyUp += new KeyEventHandler( commonCaptureSpaceKeyUp );
+            trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );*/
+#else
             trackSelector.setLocation( new Point( 0, 242 ) );
             trackSelector.Margin = new Padding( 0 );
             trackSelector.Name = "trackSelector";
@@ -542,6 +560,7 @@ namespace Boare.Cadencii {
             trackSelector.KeyDown += new KeyEventHandler( commonCaptureSpaceKeyDown );
             trackSelector.KeyUp += new KeyEventHandler( commonCaptureSpaceKeyUp );
             trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );
+#endif
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
             this.setMinimumSize( getWindowMinimumSize() );
 
@@ -593,19 +612,6 @@ namespace Boare.Cadencii {
                     bottom.add( toolStripFile );
                 }
             }
-            /*if ( toolStripPaletteTools.Parent != null ) {
-                if ( toolStripPaletteTools.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
-                    toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripPaletteTools );
-                    if ( toolStripPaletteTools.Visible ) {
-                        top.Add( toolStripPaletteTools );
-                    }
-                } else if ( toolStripPaletteTools.Parent.Equals( toolStripContainer.BottomToolStripPanel ) ) {
-                    toolStripContainer.BottomToolStripPanel.Controls.Remove( toolStripPaletteTools );
-                    if ( toolStripPaletteTools.Visible ) {
-                        bottom.Add( toolStripPaletteTools );
-                    }
-                }
-            }*/
 
             splitContainer1.Panel1.BorderStyle = BorderStyle.None;
             splitContainer1.Panel2.BorderStyle = BorderStyle.None;
@@ -755,6 +761,13 @@ namespace Boare.Cadencii {
 #endif
             initResource();
             applyShortcut();
+        }
+
+        private TrackSelector getTrackSelector() {
+            if ( trackSelector == null ) {
+                trackSelector = new TrackSelector();
+            }
+            return trackSelector;
         }
 
         private void initResource() {
@@ -13437,3450 +13450,2366 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
-        #region UI Impl for Java
-        private JMenuBar menuStripMain;
-        private JMenu menuFile;
-        private JMenu menuEdit;
-        private JMenu menuVisual;
-        private JMenu menuJob;
-        private JMenu menuTrack;
-        private JMenu menuLyric;
-        private JMenu menuSetting;
-        private JMenu menuHelp;
-        private JCheckBoxMenuItem menuVisualControlTrack;
-        private JCheckBoxMenuItem menuVisualMixer;
-        private JCheckBoxMenuItem menuVisualGridline;
-        private JCheckBoxMenuItem menuVisualStartMarker;
-        private JCheckBoxMenuItem menuVisualEndMarker;
-        private JCheckBoxMenuItem menuVisualLyrics;
-        private JCheckBoxMenuItem menuVisualNoteProperty;
-        private BMenuItem menuSettingPreference;
-        private BMenuItem menuSettingDefaultSingerStyle;
-        private JMenu menuSettingPositionQuantize;
-        private JCheckBoxMenuItem menuSettingPositionQuantize04;
-        private JCheckBoxMenuItem menuSettingPositionQuantize08;
-        private JCheckBoxMenuItem menuSettingPositionQuantize16;
-        private JCheckBoxMenuItem menuSettingPositionQuantize32;
-        private JCheckBoxMenuItem menuSettingPositionQuantize64;
-        private JCheckBoxMenuItem menuSettingPositionQuantizeOff;
-        private BMenuItem menuSettingSingerProperty;
-        private JCheckBoxMenuItem menuSettingPositionQuantizeTriplet;
-        private JMenu menuSettingLengthQuantize;
-        private JCheckBoxMenuItem menuSettingLengthQuantize04;
-        private JCheckBoxMenuItem menuSettingLengthQuantize08;
-        private JCheckBoxMenuItem menuSettingLengthQuantize16;
-        private JCheckBoxMenuItem menuSettingLengthQuantize32;
-        private JCheckBoxMenuItem menuSettingLengthQuantize64;
-        private JCheckBoxMenuItem menuSettingLengthQuantizeOff;
-        private JCheckBoxMenuItem menuSettingLengthQuantizeTriplet;
-        private BMenuItem menuFileNew;
-        private BMenuItem menuFileOpen;
-        private BMenuItem menuFileSave;
-        private BMenuItem menuFileSaveNamed;
-        private JMenu menuFileImport;
-        private JMenu menuFileExport;
-        private BMenuItem menuFileQuit;
-        private BMenuItem menuEditUndo;
-        private BMenuItem menuEditRedo;
-        private JPanel pictureBox2;
-        private JPanel pictureBox3;
-        private JPanel picturePositionIndicator;
-        /*private System.Windows.Forms.SaveFileDialog saveXmlVsqDialog;
-        private System.Windows.Forms.ContextMenuStrip cMenuPiano;
-        private JMenu cMenuPianoPointer;
-        private JMenu cMenuPianoPencil;
-        private JMenu cMenuPianoEraser;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem13;
-        private JMenu cMenuPianoFixed;
-        private JMenu cMenuPianoQuantize;
-        private JMenu cMenuPianoLength;
-        private JMenu cMenuPianoGrid;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem14;
-        private JMenu cMenuPianoUndo;
-        private JMenu cMenuPianoRedo;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem15;
-        private JMenu cMenuPianoCut;
-        private JMenu cMenuPianoFixed01;
-        private JMenu cMenuPianoFixed02;
-        private JMenu cMenuPianoFixed04;
-        private JMenu cMenuPianoFixed08;
-        private JMenu cMenuPianoFixed16;
-        private JMenu cMenuPianoFixed32;
-        private JMenu cMenuPianoFixed64;
-        private JMenu cMenuPianoFixedOff;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem18;
-        private JMenu cMenuPianoFixedTriplet;
-        private JMenu cMenuPianoFixedDotted;
-        private JMenu cMenuPianoCopy;
-        private JMenu cMenuPianoPaste;
-        private JMenu cMenuPianoDelete;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem16;
-        private JMenu cMenuPianoSelectAll;
-        private JMenu cMenuPianoSelectAllEvents;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem17;
-        private JMenu cMenuPianoImportLyric;
-        private JMenu cMenuPianoExpressionProperty;
-        private JMenu cMenuPianoQuantize04;
-        private JMenu cMenuPianoQuantize08;
-        private JMenu cMenuPianoQuantize16;
-        private JMenu cMenuPianoQuantize32;
-        private JMenu cMenuPianoQuantize64;
-        private JMenu cMenuPianoQuantizeOff;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem26;
-        private JMenu cMenuPianoQuantizeTriplet;
-        private JMenu cMenuPianoLength04;
-        private JMenu cMenuPianoLength08;
-        private JMenu cMenuPianoLength16;
-        private JMenu cMenuPianoLength32;
-        private JMenu cMenuPianoLength64;
-        private JMenu cMenuPianoLengthOff;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem32;
-        private JMenu cMenuPianoLengthTriplet;*/
-        private JMenu menuFileRecent;
-        //private System.Windows.Forms.ToolTip toolTip;
-        //private System.Windows.Forms.OpenFileDialog openXmlVsqDialog;
-        private BMenuItem menuEditCut;
-        private BMenuItem menuEditCopy;
-        private BMenuItem menuEditPaste;
-        private BMenuItem menuEditDelete;
-        private BMenuItem menuEditAutoNormalizeMode;
-        private BMenuItem menuEditSelectAll;
-        private BMenuItem menuEditSelectAllEvents;
-        public PictPianoRoll pictPianoRoll;
-        private JCheckBoxMenuItem menuTrackOn;
-        private BMenuItem menuTrackAdd;
-        private BMenuItem menuTrackCopy;
-        private BMenuItem menuTrackChangeName;
-        private BMenuItem menuTrackDelete;
-        private BMenuItem menuTrackRenderCurrent;
-        private BMenuItem menuTrackRenderAll;
-        private JCheckBoxMenuItem menuTrackOverlay;
-        /*private JMenu cMenuTrackTabTrackOn;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem24;
-        private JMenu cMenuTrackTabAdd;
-        private JMenu cMenuTrackTabCopy;
-        private JMenu cMenuTrackTabChangeName;
-        private JMenu cMenuTrackTabDelete;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem25;
-        private JMenu cMenuTrackTabRenderCurrent;
-        private JMenu cMenuTrackTabRenderAll;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem27;
-        private JMenu cMenuTrackTabOverlay;
-        private System.Windows.Forms.ContextMenuStrip cMenuTrackSelector;
-        private JMenu cMenuTrackSelectorPointer;
-        private JMenu cMenuTrackSelectorPencil;
-        private JMenu cMenuTrackSelectorLine;
-        private JMenu cMenuTrackSelectorEraser;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem28;
-        private JMenu cMenuTrackSelectorUndo;
-        private JMenu cMenuTrackSelectorRedo;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem29;
-        private JMenu cMenuTrackSelectorCut;
-        private JMenu cMenuTrackSelectorCopy;
-        private JMenu cMenuTrackSelectorPaste;
-        private JMenu cMenuTrackSelectorDelete;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem31;
-        private JMenu cMenuTrackSelectorSelectAll;*/
-        private BMenuItem menuJobNormalize;
-        private BMenuItem menuJobInsertBar;
-        private BMenuItem menuJobDeleteBar;
-        private BMenuItem menuJobRandomize;
-        private BMenuItem menuJobConnect;
-        private BMenuItem menuJobLyric;
-        private BMenuItem menuJobRewire;
-        private BMenuItem menuLyricExpressionProperty;
-        private BMenuItem menuLyricSymbol;
-        private BMenuItem menuLyricDictionary;
-        private BMenuItem menuHelpAbout;
-        private BMenuItem menuHelpDebug;
-        private BMenuItem menuFileExportWave;
-        private BMenuItem menuFileExportMidi;
-        private JMenu menuScript;
-        private JMenu menuHidden;
-        /*private JMenu menuHiddenEditLyric;
-        private JMenu menuHiddenEditFlipToolPointerPencil;
-        private JMenu menuHiddenEditFlipToolPointerEraser;
-        private JMenu menuHiddenVisualForwardParameter;
-        private JMenu menuHiddenVisualBackwardParameter;
-        private JMenu menuHiddenTrackNext;
-        private JMenu menuHiddenTrackBack;*/
-        private BMenuItem menuJobReloadVsti;
-        //private JMenu cMenuPianoCurve;
-        //private JMenu cMenuTrackSelectorCurve;
-        private JSplitPane splitContainer1;
-        private JSlider trackBar;
-        //private System.ComponentModel.BackgroundWorker bgWorkScreen;
-        private JPanel panel1;
-        private JToolBar toolStripTool;
-        private JToggleButton stripBtnPointer;
-        private BorderLayout toolStripContainer;
-        private JToggleButton stripBtnLine;
-        private JToggleButton stripBtnPencil;
-        private JToggleButton stripBtnEraser;
-        private JToggleButton stripBtnGrid;
-        private JToggleButton stripBtnCurve;
-        private JToolBar toolStripPosition;
-        private JButton stripBtnMoveTop;
-        private JButton stripBtnRewind;
-        private JButton stripBtnForward;
-        private JButton stripBtnMoveEnd;
-        private JButton stripBtnPlay;
-        private JButton stripBtnStop;
-        private JToggleButton stripBtnScroll;
-        private JToggleButton stripBtnLoop;
-        /*private System.Windows.Forms.ToolStrip toolStripMeasure;
-        private System.Windows.Forms.ToolStripLabel stripLblMeasure;
-        private System.Windows.Forms.ToolStripSeparator toolStripButton1;
-        private System.Windows.Forms.ToolStripDropDownButton stripDDBtnLength;
-        private JMenu stripDDBtnLength04;
-        private JMenu stripDDBtnLength08;
-        private JMenu stripDDBtnLength16;
-        private JMenu stripDDBtnLength32;
-        private JMenu stripDDBtnLength64;
-        private JMenu stripDDBtnLengthOff;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private JMenu stripDDBtnLengthTriplet;
-        private System.Windows.Forms.ToolStripDropDownButton stripDDBtnQuantize;
-        private JMenu stripDDBtnQuantize04;
-        private JMenu stripDDBtnQuantize08;
-        private JMenu stripDDBtnQuantize16;
-        private JMenu stripDDBtnQuantize32;
-        private JMenu stripDDBtnQuantize64;
-        private JMenu stripDDBtnQuantizeOff;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private JMenu stripDDBtnQuantizeTriplet;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel5;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripButton stripBtnStartMarker;
-        private System.Windows.Forms.ToolStripButton stripBtnEndMarker;*/
-        private JScrollBar hScroll;
-        private JScrollBar vScroll;
-        private BMenuItem menuLyricVibratoProperty;
-        //private JMenu cMenuPianoVibratoProperty;
-        /*private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel6;
-        private System.Windows.Forms.ToolStripLabel stripLblCursor;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel8;
-        private System.Windows.Forms.ToolStripLabel stripLblTempo;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel10;
-        private System.Windows.Forms.ToolStripLabel stripLblBeat;*/
-        private BMenuItem menuScriptUpdate;
-        private JMenu menuSettingGameControler;
-        /*private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripStatusLabel stripLblGameCtrlMode;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
-        private System.Windows.Forms.ToolStripDropDownButton stripDDBtnSpeed;*/
-        private BMenuItem menuSettingGameControlerSetting;
-        private BMenuItem menuSettingGameControlerLoad;
-        //private JMenu stripDDBtnLength128;
-        //private JMenu stripDDBtnQuantize128;
-        private JCheckBoxMenuItem menuSettingPositionQuantize128;
-        private JCheckBoxMenuItem menuSettingLengthQuantize128;
-        //private JMenu cMenuPianoQuantize128;
-        //private JMenu cMenuPianoLength128;
-        //private JMenu cMenuPianoFixed128;
-        /*private System.Windows.Forms.Timer timer;
-        private WaveView waveView;*/
-        private JCheckBoxMenuItem menuVisualWaveform;
-        private JSplitPane splitContainer2;
-       /* private System.Windows.Forms.Panel panel2;
-        private JMenu cMenuTrackSelectorDeleteBezier;
-        private System.Windows.Forms.OpenFileDialog openUstDialog;
-        private System.Windows.Forms.ToolStripStatusLabel stripLblMidiIn;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;*/
-        private BMenuItem menuJobRealTime;
-        /*private JMenu cMenuTrackTabRenderer;
-        private JMenu cMenuTrackTabRendererVOCALOID1;
-        private JMenu cMenuTrackTabRendererVOCALOID2;
-        private JMenu cMenuTrackTabRendererUtau;*/
-        private JCheckBoxMenuItem menuVisualPitchLine;
-        /*private System.Windows.Forms.OpenFileDialog openMidiDialog;
-        private System.Windows.Forms.SaveFileDialog saveMidiDialog;*/
-        private BMenuItem menuFileImportMidi;
-        /*private System.Windows.Forms.ToolStrip toolStripFile;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
-        private System.Windows.Forms.ToolStripButton stripBtnFileSave;
-        private System.Windows.Forms.ToolStripButton stripBtnFileOpen;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
-        private System.Windows.Forms.ToolStripButton stripBtnCut;
-        private System.Windows.Forms.ToolStripButton stripBtnCopy;
-        private System.Windows.Forms.ToolStripButton stripBtnPaste;
-        private System.Windows.Forms.ToolStripButton stripBtnFileNew;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
-        private System.Windows.Forms.ToolStripButton stripBtnUndo;
-        private System.Windows.Forms.ToolStripButton stripBtnRedo;
-        private System.Windows.Forms.ToolStrip toolStripPaletteTools;
-        private JMenu cMenuTrackSelectorPaletteTool;
-        private JMenu cMenuPianoPaletteTool;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;*/
-        private BMenuItem menuSettingPaletteTool;
-        private BMenuItem menuTrackMasterTuning;
-        //private JMenu cMenuTrackTabMasterTuning;
-        private JMenu menuTrackRenderer;
-        private JCheckBoxMenuItem menuTrackRendererVOCALOID1;
-        private JCheckBoxMenuItem menuTrackRendererVOCALOID2;
-        private JCheckBoxMenuItem menuTrackRendererUtau;
-        private BMenuItem menuFileImportVsq;
-        private BMenuItem menuSettingShortcut;
-        /*private System.Windows.Forms.ToolStripTextBox stripDDBtnSpeedTextbox;
-        private JMenu stripDDBtnSpeed033;
-        private JMenu stripDDBtnSpeed050;
-        private JMenu stripDDBtnSpeed100;*/
-        private BMenuItem menuSettingMidi;
-        private JCheckBoxMenuItem menuVisualProperty;
-        private BMenuItem menuFileOpenVsq;
-        private BMenuItem menuFileOpenUst;
-        private BMenuItem menuSettingGameControlerRemove;
-        /*private JMenu menuHiddenCopy;
-        private JMenu menuHiddenPaste;
-        private JMenu menuHiddenCut;*/
-        private BMenuItem menuSettingUtauVoiceDB;
-        //private System.Windows.Forms.ToolStrip toolStripBottom;
-        private JLabel statusLabel;
+	    private JPanel jContentPane = null;
+	    private JMenuBar jJMenuBar = null;
+	    private JMenu menuFile = null;
+	    private JMenuItem menuFileNew = null;
+	    private JMenuItem menuFileOpen = null;
+	    private JMenuItem menuFileSave = null;
+	    private JMenuItem menuFileSaveNamed = null;
+	    private JSeparator toolStripMenuItem10 = null;
+	    private JMenuItem menuFileOpenVsq = null;
+	    private JMenuItem menuFileOpenUst = null;
+	    private JMenu menuFileImport = null;
+	    private JMenu menuFileExport = null;
+	    private JSeparator toolStripMenuItem101 = null;
+	    private JMenuItem menuFileRecent = null;
+	    private JSeparator toolStripMenuItem102 = null;
+	    private JMenuItem menuFileQuit = null;
+	    private JMenuItem menuFileImportVsq = null;
+	    private JMenuItem menuFileImportMidi = null;
+	    private JMenuItem menuFileExportWav = null;
+	    private JMenuItem menuFileExportMidi = null;
+	    private JMenu menuEdit = null;
+	    private JMenuItem menuEditUndo = null;
+	    private JMenuItem menuEditRedo = null;
+	    private JSeparator toolStripMenuItem103 = null;
+	    private JMenuItem menuEditCut = null;
+	    private JMenuItem menuEditCopy = null;
+	    private JMenuItem menuEditPaste = null;
+	    private JMenuItem menuEditDelete = null;
+	    private JSeparator toolStripMenuItem104 = null;
+	    private JMenuItem menuEditAutoNormalizeMode = null;
+	    private JSeparator toolStripMenuItem1041 = null;
+	    private JMenuItem menuEditSelectAll = null;
+	    private JMenuItem menuEditSelectAllEvents = null;
+	    private JMenu menuVisual = null;
+	    private JMenuItem menuVisualControlTrack = null;
+	    private JMenuItem menuVisualMixer = null;
+	    private JMenuItem menuVisualWaveform = null;
+	    private JMenuItem menuVisualProperty = null;
+	    private JMenuItem menuVisualOverview = null;
+	    private JSeparator toolStripMenuItem1031 = null;
+	    private JMenuItem menuVisualGridline = null;
+	    private JSeparator toolStripMenuItem1032 = null;
+	    private JMenuItem menuVisualStartMarker = null;
+	    private JMenuItem menuVisualEndMarker = null;
+	    private JSeparator toolStripMenuItem1033 = null;
+	    private JMenuItem menuVisualNoteProperty = null;
+	    private JMenuItem menuVisualLyrics = null;
+	    private JMenuItem menuVisualPitchLine = null;
+	    private JMenu menuJob = null;
+	    private JMenuItem menuJobNormalize = null;
+	    private JMenuItem menuJobInsertBar = null;
+	    private JMenuItem menuJobDeleteBar = null;
+	    private JMenuItem menuJobRandomize = null;
+	    private JMenuItem menuJobConnect = null;
+	    private JMenuItem menuJobLyric = null;
+	    private JMenuItem menuJobRewire = null;
+	    private JMenuItem menuJobRealTime = null;
+	    private JMenuItem menuJobReloadVsti = null;
+	    private JMenu menuTrack = null;
+	    private JMenuItem menuTrackOn = null;
+	    private JSeparator toolStripMenuItem10321 = null;
+	    private JMenuItem menuTrackAdd = null;
+	    private JMenuItem menuTrackCopy = null;
+	    private JMenuItem menuTrackChangeName = null;
+	    private JMenuItem menuTrackDelete = null;
+	    private JSeparator toolStripMenuItem10322 = null;
+	    private JMenuItem menuTrackRenderCurrent = null;
+	    private JMenuItem menuTrackRenderAll = null;
+	    private JSeparator toolStripMenuItem10323 = null;
+	    private JMenuItem menuTrackOverlay = null;
+	    private JMenu menuTrackRenderer = null;
+	    private JSeparator toolStripMenuItem10324 = null;
+	    private JMenu menuTrackBgm = null;
+	    private JMenuItem menuTrackManager = null;
+	    private JMenu menuLyric = null;
+	    private JMenuItem menuLyricExpressionProperty = null;
+	    private JMenuItem menuLyricVibratoProperty = null;
+	    private JMenuItem menuLyricSymbol = null;
+	    private JMenuItem menuLyricDictionary = null;
+	    private JMenu menuScript = null;
+	    private JMenuItem menuScriptUpdate = null;
+	    private JMenu menuSetting = null;
+	    private JMenuItem menuSettingPreference = null;
+	    private JMenu menuSettingGameControler = null;
+	    private JMenuItem menuSettingShortcut = null;
+	    private JMenuItem menuSettingMidi = null;
+	    private JMenuItem menuSettingUtauVoiceDB = null;
+	    private JSeparator toolStripMenuItem103211 = null;
+	    private JMenuItem menuSettingDefaultSingerStyle = null;
+	    private JSeparator toolStripMenuItem103212 = null;
+	    private JMenu menuSettingPositionQuantize = null;
+	    private JMenuItem menuSettingSingerProperty = null;
+	    private JMenu menuSettingPaletteTool = null;
+	    private JMenuItem menuSettingPositionQuantize04 = null;
+	    private JMenuItem menuSettingPositionQuantize08 = null;
+	    private JMenuItem menuSettingPositionQuantize16 = null;
+	    private JMenuItem menuSettingPositionQuantize32 = null;
+	    private JMenuItem menuSettingPositionQuantize64 = null;
+	    private JMenuItem menuSettingPositionQuantize128 = null;
+	    private JMenuItem menuSettingPositionQuantizeOff = null;
+	    private JSeparator toolStripMenuItem1032121 = null;
+	    private JMenuItem menuSettingPositionQuantizeTriplet = null;
+	    private JMenu menuSettingLengthQuantize = null;
+	    private JMenuItem menuSettingLengthQuantize04 = null;
+	    private JMenuItem menuSettingLengthQuantize08 = null;
+	    private JMenuItem menuSettingLengthQuantize16 = null;
+	    private JMenuItem menuSettingLengthQuantize32 = null;
+	    private JMenuItem menuSettingLengthQuantize64 = null;
+	    private JMenuItem menuSettingLengthQuantize128 = null;
+	    private JMenuItem menuSettingLengthQuantizeOff = null;
+	    private JSeparator toolStripMenuItem10321211 = null;
+	    private JMenuItem menuSettingLengthQuantizeTriplet = null;
+	    private JMenu menuHelp = null;
+	    private JMenuItem menuHelpAbout = null;
+	    private JSplitPane splitContainer2 = null;
+	    private JPanel panel1 = null;
+	    private JPanel panel2 = null;
+	    private JSplitPane splitContainer1 = null;
+	    private JSplitPane splitContainerProperty = null;
+	    private JPanel m_property_panel_container = null;
+	    private JToolBar toolStripFile = null;
+	    private JToolBar toolStripBottom = null;
+	    private JButton stripBtnFileNew = null;
+	    private JButton stripBtnFileOpen = null;
+	    private JButton stripBtnFileSave = null;
+	    private JButton stripBtnCut = null;
+	    private JButton stripBtnCopy = null;
+	    private JButton stripBtnPaste = null;
+	    private JButton stripBtnUndo = null;
+	    private JButton stripBtnRedo = null;
+	    private JToolBar toolStripPosition = null;
+	    private JButton stripBtnMoveTop = null;
+	    private JPanel jPanel = null;
+	    private JButton stripBtnRewind = null;
+	    private JButton stripBtnForward = null;
+	    private JButton stripBtnMoveEnd = null;
+	    private JButton stripBtnPlay = null;
+	    private JButton stripBtnStop = null;
+	    private JToggleButton stripBtnScroll = null;
+	    private JToggleButton stripBtnLoop = null;
+	    private JToolBar toolStripMeasure = null;
+	    private JLabel toolStripLabel5 = null;
+	    private JLabel stripLblMeasure = null;
+	    private JComboBox stripDDBtnLength = null;
+	    private JLabel jLabel = null;
+	    private JLabel jLabel1 = null;
+	    private JComboBox stripDDBtnQuantize = null;
+	    private JToggleButton stripBtnStartMarker = null;
+	    private JToggleButton stripBtnEndMarker = null;
+	    private JToolBar toolStripTool = null;
+	    private JToggleButton stripBtnPointer = null;
+	    private JToggleButton stripBtnPencil = null;
+	    private JToggleButton stripBtnLine = null;
+	    private JToggleButton stripBtnEraser = null;
+	    private JToggleButton stripBtnGrid = null;
+	    private JToggleButton stripBtnCurve = null;
+	    private JLabel toolStripLabel6 = null;
+	    private JLabel stripLblCursor = null;
+	    private JLabel toolStripLabel8 = null;
+	    private JLabel stripLblTempo = null;
+	    private JLabel jLabel2 = null;
+	    private JLabel stripLblBeat = null;
+	    private JLabel jLabel3 = null;
+	    private JLabel stripLblGameCtrlMode = null;
+	    private JLabel jLabel4 = null;
+	    private JLabel stripLblMidiIn = null;
+	    private JLabel jLabel5 = null;
+	    private JComboBox stripDDBtnSpeed = null;
 
-        private void initialize() {
-            menuStripMain = new JMenuBar();
-            menuFile = new JMenu();
-            menuFileNew = new BMenuItem();
-            menuFileOpen = new BMenuItem();
-            menuFileSave = new BMenuItem();
-            menuFileSaveNamed = new BMenuItem();
-            menuFileOpenVsq = new BMenuItem();
-            menuFileOpenUst = new BMenuItem();
-            menuFileImport = new JMenu();
-            menuFileImportVsq = new BMenuItem();
-            menuFileImportMidi = new BMenuItem();
-            menuFileExport = new JMenu();
-            menuFileExportWave = new BMenuItem();
-            menuFileExportMidi = new BMenuItem();
-            menuFileRecent = new JMenu();
-            menuFileQuit = new BMenuItem();
-            menuEdit = new JMenu();
-            menuEditUndo = new BMenuItem();
-            menuEditRedo = new BMenuItem();
-            menuEditCut = new BMenuItem();
-            menuEditCopy = new BMenuItem();
-            menuEditPaste = new BMenuItem();
-            menuEditDelete = new BMenuItem();
-            menuEditAutoNormalizeMode = new BMenuItem();
-            menuEditSelectAll = new BMenuItem();
-            menuEditSelectAllEvents = new BMenuItem();
-            menuVisual = new JMenu();
-            menuVisualControlTrack = new JCheckBoxMenuItem();
-            menuVisualMixer = new JCheckBoxMenuItem();
-            menuVisualWaveform = new JCheckBoxMenuItem();
-            menuVisualProperty = new JCheckBoxMenuItem();
-            menuVisualGridline = new JCheckBoxMenuItem();
-            menuVisualStartMarker = new JCheckBoxMenuItem();
-            menuVisualEndMarker = new JCheckBoxMenuItem();
-            menuVisualLyrics = new JCheckBoxMenuItem();
-            menuVisualNoteProperty = new JCheckBoxMenuItem();
-            menuVisualPitchLine = new JCheckBoxMenuItem();
-            menuJob = new JMenu();
-            menuJobNormalize = new BMenuItem();
-            menuJobInsertBar = new BMenuItem();
-            menuJobDeleteBar = new BMenuItem();
-            menuJobRandomize = new BMenuItem();
-            menuJobConnect = new BMenuItem();
-            menuJobLyric = new BMenuItem();
-            menuJobRewire = new BMenuItem();
-            menuJobRealTime = new BMenuItem();
-            menuJobReloadVsti = new BMenuItem();
-            menuTrack = new JMenu();
-            menuTrackOn = new JCheckBoxMenuItem();
-            menuTrackAdd = new BMenuItem();
-            menuTrackCopy = new BMenuItem();
-            menuTrackChangeName = new BMenuItem();
-            menuTrackDelete = new BMenuItem();
-            menuTrackRenderCurrent = new BMenuItem();
-            menuTrackRenderAll = new BMenuItem();
-            menuTrackOverlay = new JCheckBoxMenuItem();
-            menuTrackRenderer = new JMenu();
-            menuTrackRendererVOCALOID1 = new JCheckBoxMenuItem();
-            menuTrackRendererVOCALOID2 = new JCheckBoxMenuItem();
-            menuTrackRendererUtau = new JCheckBoxMenuItem();
-            menuTrackMasterTuning = new BMenuItem();
-            menuLyric = new JMenu();
-            menuLyricExpressionProperty = new BMenuItem();
-            menuLyricVibratoProperty = new BMenuItem();
-            menuLyricSymbol = new BMenuItem();
-            menuLyricDictionary = new BMenuItem();
-            menuScript = new JMenu();
-            menuScriptUpdate = new BMenuItem();
-            menuSetting = new JMenu();
-            menuSettingPreference = new BMenuItem();
-            menuSettingGameControler = new JMenu();
-            menuSettingGameControlerSetting = new BMenuItem();
-            menuSettingGameControlerLoad = new BMenuItem();
-            menuSettingGameControlerRemove = new BMenuItem();
-            menuSettingPaletteTool = new BMenuItem();
-            menuSettingShortcut = new BMenuItem();
-            menuSettingMidi = new BMenuItem();
-            menuSettingUtauVoiceDB = new BMenuItem();
-            menuSettingDefaultSingerStyle = new BMenuItem();
-            menuSettingPositionQuantize = new JMenu();
-            menuSettingPositionQuantize04 = new JCheckBoxMenuItem();
-            menuSettingPositionQuantize08 = new JCheckBoxMenuItem();
-            menuSettingPositionQuantize16 = new JCheckBoxMenuItem();
-            menuSettingPositionQuantize32 = new JCheckBoxMenuItem();
-            menuSettingPositionQuantize64 = new JCheckBoxMenuItem();
-            menuSettingPositionQuantize128 = new JCheckBoxMenuItem();
-            menuSettingPositionQuantizeOff = new JCheckBoxMenuItem();
-            menuSettingPositionQuantizeTriplet = new JCheckBoxMenuItem();
-            menuSettingLengthQuantize = new JMenu();
-            menuSettingLengthQuantize04 = new JCheckBoxMenuItem();
-            menuSettingLengthQuantize08 = new JCheckBoxMenuItem();
-            menuSettingLengthQuantize16 = new JCheckBoxMenuItem();
-            menuSettingLengthQuantize32 = new JCheckBoxMenuItem();
-            menuSettingLengthQuantize64 = new JCheckBoxMenuItem();
-            menuSettingLengthQuantize128 = new JCheckBoxMenuItem();
-            menuSettingLengthQuantizeOff = new JCheckBoxMenuItem();
-            menuSettingLengthQuantizeTriplet = new JCheckBoxMenuItem();
-            menuSettingSingerProperty = new BMenuItem();
-            menuHelp = new JMenu();
-            menuHelpAbout = new BMenuItem();
-            menuHelpDebug = new BMenuItem();
-            menuHidden = new JMenu();
-            /*menuHiddenEditLyric = new JMenu();
-            menuHiddenEditFlipToolPointerPencil = new JMenu();
-            menuHiddenEditFlipToolPointerEraser = new JMenu();
-            menuHiddenVisualForwardParameter = new JMenu();
-            menuHiddenVisualBackwardParameter = new JMenu();
-            menuHiddenTrackNext = new JMenu();
-            menuHiddenTrackBack = new JMenu();
-            menuHiddenCopy = new JMenu();
-            menuHiddenPaste = new JMenu();
-            menuHiddenCut = new JMenu();
-            saveXmlVsqDialog = new System.Windows.Forms.SaveFileDialog();
-            cMenuPiano = new System.Windows.Forms.ContextMenuStrip( components );
-            cMenuPianoPointer = new JMenu();
-            cMenuPianoPencil = new JMenu();
-            cMenuPianoEraser = new JMenu();
-            cMenuPianoPaletteTool = new JMenu();
-            toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuPianoCurve = new JMenu();
-            toolStripMenuItem13 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuPianoFixed = new JMenu();
-            cMenuPianoFixed01 = new JMenu();
-            cMenuPianoFixed02 = new JMenu();
-            cMenuPianoFixed04 = new JMenu();
-            cMenuPianoFixed08 = new JMenu();
-            cMenuPianoFixed16 = new JMenu();
-            cMenuPianoFixed32 = new JMenu();
-            cMenuPianoFixed64 = new JMenu();
-            cMenuPianoFixed128 = new JMenu();
-            cMenuPianoFixedOff = new JMenu();
-            toolStripMenuItem18 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuPianoFixedTriplet = new JMenu();
-            cMenuPianoFixedDotted = new JMenu();
-            cMenuPianoQuantize = new JMenu();
-            cMenuPianoQuantize04 = new JMenu();
-            cMenuPianoQuantize08 = new JMenu();
-            cMenuPianoQuantize16 = new JMenu();
-            cMenuPianoQuantize32 = new JMenu();
-            cMenuPianoQuantize64 = new JMenu();
-            cMenuPianoQuantize128 = new JMenu();
-            cMenuPianoQuantizeOff = new JMenu();
-            toolStripMenuItem26 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuPianoQuantizeTriplet = new JMenu();
-            cMenuPianoLength = new JMenu();
-            cMenuPianoLength04 = new JMenu();
-            cMenuPianoLength08 = new JMenu();
-            cMenuPianoLength16 = new JMenu();
-            cMenuPianoLength32 = new JMenu();
-            cMenuPianoLength64 = new JMenu();
-            cMenuPianoLength128 = new JMenu();
-            cMenuPianoLengthOff = new JMenu();
-            toolStripMenuItem32 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuPianoLengthTriplet = new JMenu();
-            cMenuPianoGrid = new JMenu();
-            toolStripMenuItem14 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuPianoUndo = new JMenu();
-            cMenuPianoRedo = new JMenu();
-            toolStripMenuItem15 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuPianoCut = new JMenu();
-            cMenuPianoCopy = new JMenu();
-            cMenuPianoPaste = new JMenu();
-            cMenuPianoDelete = new JMenu();
-            toolStripMenuItem16 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuPianoSelectAll = new JMenu();
-            cMenuPianoSelectAllEvents = new JMenu();
-            toolStripMenuItem17 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuPianoImportLyric = new JMenu();
-            cMenuPianoExpressionProperty = new JMenu();
-            cMenuPianoVibratoProperty = new JMenu();
-            toolTip = new System.Windows.Forms.ToolTip( components );
-            openXmlVsqDialog = new System.Windows.Forms.OpenFileDialog();
-            cMenuTrackTab = new System.Windows.Forms.ContextMenuStrip( components );
-            cMenuTrackTabTrackOn = new JMenu();
-            toolStripMenuItem24 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuTrackTabAdd = new JMenu();
-            cMenuTrackTabCopy = new JMenu();
-            cMenuTrackTabChangeName = new JMenu();
-            cMenuTrackTabDelete = new JMenu();
-            toolStripMenuItem25 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuTrackTabRenderCurrent = new JMenu();
-            cMenuTrackTabRenderAll = new JMenu();
-            toolStripMenuItem27 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuTrackTabOverlay = new JMenu();
-            cMenuTrackTabRenderer = new JMenu();
-            cMenuTrackTabRendererVOCALOID1 = new JMenu();
-            cMenuTrackTabRendererVOCALOID2 = new JMenu();
-            cMenuTrackTabRendererUtau = new JMenu();
-            cMenuTrackTabMasterTuning = new JMenu();
-            cMenuTrackSelector = new System.Windows.Forms.ContextMenuStrip( components );
-            cMenuTrackSelectorPointer = new JMenu();
-            cMenuTrackSelectorPencil = new JMenu();
-            cMenuTrackSelectorLine = new JMenu();
-            cMenuTrackSelectorEraser = new JMenu();
-            cMenuTrackSelectorPaletteTool = new JMenu();
-            toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuTrackSelectorCurve = new JMenu();
-            toolStripMenuItem28 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuTrackSelectorUndo = new JMenu();
-            cMenuTrackSelectorRedo = new JMenu();
-            toolStripMenuItem29 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuTrackSelectorCut = new JMenu();
-            cMenuTrackSelectorCopy = new JMenu();
-            cMenuTrackSelectorPaste = new JMenu();
-            cMenuTrackSelectorDelete = new JMenu();
-            cMenuTrackSelectorDeleteBezier = new JMenu();
-            toolStripMenuItem31 = new System.Windows.Forms.ToolStripSeparator();
-            cMenuTrackSelectorSelectAll = new JMenu();*/
-            trackBar = new JSlider();
-            /*bgWorkScreen = new System.ComponentModel.BackgroundWorker();
-            timer = new System.Windows.Forms.Timer( components );*/
-            panel1 = new JPanel();
-            vScroll = new JScrollBar();
-            hScroll = new JScrollBar();
-            picturePositionIndicator = new JPanel();
-            pictPianoRoll = new PictPianoRoll();
-            pictureBox3 = new JPanel();
-            pictureBox2 = new JPanel();
-            toolStripTool = new JToolBar();
-            stripBtnPointer = new JToggleButton();
-            stripBtnPencil = new JToggleButton();
-            stripBtnLine = new JToggleButton();
-            stripBtnEraser = new JToggleButton();
-            stripBtnGrid = new JToggleButton();
-            stripBtnCurve = new JToggleButton();
-            toolStripContainer = new BorderLayout();
-            /*toolStripBottom = new System.Windows.Forms.ToolStrip();
-            toolStripLabel6 = new System.Windows.Forms.ToolStripLabel();
-            stripLblCursor = new System.Windows.Forms.ToolStripLabel();
-            toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            toolStripLabel8 = new System.Windows.Forms.ToolStripLabel();
-            stripLblTempo = new System.Windows.Forms.ToolStripLabel();
-            toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            toolStripLabel10 = new System.Windows.Forms.ToolStripLabel();
-            stripLblBeat = new System.Windows.Forms.ToolStripLabel();
-            toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            stripLblGameCtrlMode = new System.Windows.Forms.ToolStripStatusLabel();
-            toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            stripLblMidiIn = new System.Windows.Forms.ToolStripStatusLabel();
-            toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            stripDDBtnSpeed = new System.Windows.Forms.ToolStripDropDownButton();
-            stripDDBtnSpeedTextbox = new System.Windows.Forms.ToolStripTextBox();
-            stripDDBtnSpeed033 = new JMenu();
-            stripDDBtnSpeed050 = new JMenu();
-            stripDDBtnSpeed100 = new JMenu();
-            statusStrip1 = new System.Windows.Forms.StatusStrip();*/
-            statusLabel = new JLabel();
-            //panel2 = new System.Windows.Forms.Panel();
-            //waveView = new Boare.Cadencii.WaveView();
-            splitContainer2 = new JSplitPane( JSplitPane.VERTICAL_SPLIT );
-            splitContainer1 = new JSplitPane( JSplitPane.VERTICAL_SPLIT );
-            toolStripPosition = new JToolBar();
-            stripBtnMoveTop = new JButton();
-            stripBtnRewind = new JButton();
-            stripBtnForward = new JButton();
-            stripBtnMoveEnd = new JButton();
-            stripBtnPlay = new JButton();
-            stripBtnStop = new JButton();
-            //toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            stripBtnScroll = new JToggleButton();
-            stripBtnLoop = new JToggleButton();
-            /*toolStripMeasure = new System.Windows.Forms.ToolStrip();
-            toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
-            stripLblMeasure = new System.Windows.Forms.ToolStripLabel();
-            toolStripButton1 = new System.Windows.Forms.ToolStripSeparator();
-            stripDDBtnLength = new System.Windows.Forms.ToolStripDropDownButton();
-            stripDDBtnLength04 = new JMenu();
-            stripDDBtnLength08 = new JMenu();
-            stripDDBtnLength16 = new JMenu();
-            stripDDBtnLength32 = new JMenu();
-            stripDDBtnLength64 = new JMenu();
-            stripDDBtnLength128 = new JMenu();
-            stripDDBtnLengthOff = new JMenu();
-            toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            stripDDBtnLengthTriplet = new JMenu();
-            stripDDBtnQuantize = new System.Windows.Forms.ToolStripDropDownButton();
-            stripDDBtnQuantize04 = new JMenu();
-            stripDDBtnQuantize08 = new JMenu();
-            stripDDBtnQuantize16 = new JMenu();
-            stripDDBtnQuantize32 = new JMenu();
-            stripDDBtnQuantize64 = new JMenu();
-            stripDDBtnQuantize128 = new JMenu();
-            stripDDBtnQuantizeOff = new JMenu();
-            toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            stripDDBtnQuantizeTriplet = new JMenu();
-            toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            stripBtnStartMarker = new System.Windows.Forms.ToolStripButton();
-            stripBtnEndMarker = new System.Windows.Forms.ToolStripButton();
-            toolStripFile = new System.Windows.Forms.ToolStrip();
-            stripBtnFileNew = new System.Windows.Forms.ToolStripButton();
-            stripBtnFileOpen = new System.Windows.Forms.ToolStripButton();
-            stripBtnFileSave = new System.Windows.Forms.ToolStripButton();
-            toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-            stripBtnCut = new System.Windows.Forms.ToolStripButton();
-            stripBtnCopy = new System.Windows.Forms.ToolStripButton();
-            stripBtnPaste = new System.Windows.Forms.ToolStripButton();
-            toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
-            stripBtnUndo = new System.Windows.Forms.ToolStripButton();
-            stripBtnRedo = new System.Windows.Forms.ToolStripButton();
-            toolStripPaletteTools = new System.Windows.Forms.ToolStrip();
-            openUstDialog = new System.Windows.Forms.OpenFileDialog();
-            openMidiDialog = new System.Windows.Forms.OpenFileDialog();
-            saveMidiDialog = new System.Windows.Forms.SaveFileDialog();
-            menuStripMain.SuspendLayout();
-            cMenuPiano.SuspendLayout();
-            cMenuTrackTab.SuspendLayout();
-            cMenuTrackSelector.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(trackBar)).BeginInit();
-            panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(picturePositionIndicator)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(pictPianoRoll)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(pictureBox2)).BeginInit();
-            toolStripTool.SuspendLayout();
-            toolStripContainer.BottomToolStripPanel.SuspendLayout();
-            toolStripContainer.ContentPanel.SuspendLayout();
-            toolStripContainer.TopToolStripPanel.SuspendLayout();
-            toolStripContainer.SuspendLayout();
-            toolStripBottom.SuspendLayout();
-            statusStrip1.SuspendLayout();
-            panel2.SuspendLayout();
-            toolStripPosition.SuspendLayout();
-            toolStripMeasure.SuspendLayout();
-            toolStripFile.SuspendLayout();
-            SuspendLayout();*/
-            // 
-            // menuStripMain
-            // 
-            menuStripMain.add( menuFile );
-            menuStripMain.add( menuEdit );
-            menuStripMain.add( menuVisual );
-            menuStripMain.add( menuJob );
-            menuStripMain.add( menuTrack );
-            menuStripMain.add( menuLyric );
-            menuStripMain.add( menuScript );
-            menuStripMain.add( menuSetting );
-            menuStripMain.add( menuHelp );
-            menuStripMain.add( menuHidden );
-            //menuStripMain.Location = new System.Drawing.Point( 0, 0 );
-            menuStripMain.setName( "menuStripMain" );
-            //menuStripMain.setSize( 962, 26 );
-            //menuStripMain.TabIndex = 0;
-            //menuStripMain.MouseDown += new System.Windows.Forms.MouseEventHandler( menuStrip1_MouseDown );*/
-            // 
-            // menuFile
-            // 
-            menuFile.add( menuFileNew );
-            menuFile.add( menuFileOpen );
-            menuFile.add( menuFileSave );
-            menuFile.add( menuFileSaveNamed );
-            menuFile.addSeparator();
-            menuFile.add( menuFileOpenVsq );
-            menuFile.add( menuFileOpenUst );
-            menuFile.add( menuFileImport );
-            menuFile.add( menuFileExport );
-            menuFile.addSeparator();
-            menuFile.add( menuFileRecent );
-            menuFile.addSeparator();
-            menuFile.add( menuFileQuit );
-            menuFile.setName( "menuFile" );
-            menuFile.setText( "File(F)" );
-            // 
-            // menuFileNew
-            // 
-            menuFileNew.setName( "menuFileNew" );
-            menuFileNew.setText( "New(N)" );
-            menuFileNew.setActionCommand( "commonFileNew_Click" );
-            menuFileNew.addMouseListener( new MenuDescriptionActivator( statusLabel, "Create new project." ) );
-            menuFileNew.addActionListener( this );
-            // 
-            // menuFileOpen
-            // 
-            menuFileOpen.setName( "menuFileOpen" );
-            menuFileOpen.setText( "Open(O)" );
-            menuFileOpen.addMouseListener( new MenuDescriptionActivator( statusLabel, "Open Cadencii project." ) );
-            menuFileOpen.clickEvent.add( new BEventHandler( this, "commonFileOpen_Click" ) );
-          //menuFileOpen.Click += new EventHandler( this.commonFileOpen_Click );
-            // 
-            // menuFileSave
-            // 
-            menuFileSave.setName( "menuFileSave" );
-            menuFileSave.setText( "Save(S)" );
-            menuFileSave.addMouseListener( new MenuDescriptionActivator( statusLabel, "Save current project." ) );
-            menuFileSave.setActionCommand( "commonFileSave_Click" );
-            menuFileSave.addActionListener( this );
-            // 
-            // menuFileSaveNamed
-            // 
-            menuFileSaveNamed.setName( "menuFileSaveNamed" );
-            menuFileSaveNamed.setText( "Save As(A)" );
-            menuFileSaveNamed.addMouseListener( new MenuDescriptionActivator( statusLabel, "Save current project with new name." ) );
-            menuFileSaveNamed.setActionCommand( "menuFileSaveNamed_Click" );
-            menuFileSaveNamed.addActionListener( this );
-            // 
-            // menuFileOpenVsq
-            // 
-            menuFileOpenVsq.setName( "menuFileOpenVsq" );
-            menuFileOpenVsq.setText( "Open VSQ/Vocaloid Midi(V)" );
-            menuFileOpenVsq.addMouseListener( new MenuDescriptionActivator( statusLabel, "Open VSQ / VOCALOID MIDI and create new project." ) );
-            menuFileOpenVsq.setActionCommand( "menuFileOpenVsq_Click" );
-            menuFileOpenVsq.addActionListener( this );
-            // 
-            // menuFileOpenUst
-            // 
-            menuFileOpenUst.setName( "menuFileOpenUst" );
-            menuFileOpenUst.setText( "Open UTAU Project File(U)" );
-            menuFileOpenUst.addMouseListener( new MenuDescriptionActivator( statusLabel, "Open UTAU project and create new project." ) );
-            menuFileOpenUst.setActionCommand( "menuFileOpenUst_Click" );
-            menuFileOpenUst.addActionListener( this );
-            // 
-            // menuFileImportVsq
-            // 
-            menuFileImportVsq.setName( "menuFileImportVsq" );
-            menuFileImportVsq.setText( "VSQ File" );
-            menuFileImportVsq.addMouseListener( new MenuDescriptionActivator( statusLabel, "Import VSQ / VOCALOID MIDI." ) );
-            menuFileImportVsq.setActionCommand( "menuFileImportVsq_Click" );
-            menuFileImportVsq.addActionListener( this );
-            // 
-            // menuFileImportMidi
-            // 
-            menuFileImportMidi.setName( "menuFileImportMidi" );
-            menuFileImportMidi.setText( "Standard MIDI" );
-            menuFileImportMidi.addMouseListener( new MenuDescriptionActivator( statusLabel, "Import Standard MIDI." ) );
-            menuFileImportMidi.setActionCommand( "menuFileImportMidi_Click" );
-            menuFileImportMidi.addActionListener( this );
-            // 
-            // menuFileImport
-            // 
-            menuFileImport.add( menuFileImportVsq );
-            menuFileImport.add( menuFileImportMidi );
-            menuFileImport.setName( "menuFileImport" );
-            menuFileImport.setText( "Import(I)" );
-            menuFileImport.addMouseListener( new MenuDescriptionActivator( statusLabel, "Import." ) );
-            // 
-            // menuFileExportWave
-            // 
-            menuFileExportWave.setName( "menuFileExportWave" );
-            menuFileExportWave.setText( "Wave" );
-            menuFileExportWave.addMouseListener( new MenuDescriptionActivator( statusLabel, "Export to WAVE file." ) );
-            menuFileExportWave.setActionCommand( "menuFileExportWave_Click" );
-            menuFileExportWave.addActionListener( this );
-            // 
-            // menuFileExportMidi
-            // 
-            menuFileExportMidi.setName( "menuFileExportMidi" );
-            menuFileExportMidi.setText( "MIDI" );
-            menuFileExportMidi.addMouseListener( new MenuDescriptionActivator( statusLabel, "Export to Standard MIDI." ) );
-            menuFileExportMidi.setActionCommand( "menuFileExportMidi_Click" );
-            menuFileExportMidi.addActionListener( this );
-            // 
-            // menuFileExport
-            // 
-            menuFileExport.add( menuFileExportWave );
-            menuFileExport.add( menuFileExportMidi );
-            menuFileExport.setName( "menuFileExport" );
-            menuFileExport.setText( "Export(E)" );
-            menuFileExport.addMouseListener( new MenuDescriptionActivator( statusLabel, "Export." ) );
-            // 
-            // menuFileRecent
-            // 
-            menuFileRecent.setName( "menuFileRecent" );
-            menuFileRecent.setText( "Recent Files(R)" );
-            menuFileRecent.addMouseListener( new MenuDescriptionActivator( statusLabel, "Recent projects." ) );
-            // 
-            // menuFileQuit
-            // 
-            menuFileQuit.setName( "menuFileQuit" );
-            menuFileQuit.setText( "Quit(Q)" );
-            menuFileQuit.addMouseListener( new MenuDescriptionActivator( statusLabel, "Close this window." ) );
-            menuFileQuit.setActionCommand( "menuFileQuit_Click" );
-            menuFileQuit.addActionListener( this );
-            // 
-            // menuEdit
-            // 
-            menuEdit.add( menuEditUndo );
-            menuEdit.add( menuEditRedo );
-            menuEdit.addSeparator();
-            menuEdit.add( menuEditCut );
-            menuEdit.add( menuEditCopy );
-            menuEdit.add( menuEditPaste );
-            menuEdit.add( menuEditDelete );
-            menuEdit.addSeparator();
-            menuEdit.add( menuEditAutoNormalizeMode );
-            menuEdit.addSeparator();
-            menuEdit.add( menuEditSelectAll );
-            menuEdit.add( menuEditSelectAllEvents );
-            menuEdit.setName( "menuEdit" );
-            menuEdit.setText( "Edit(E)" );
-            //menuEdit.DropDownOpening += new System.EventHandler( menuEdit_DropDownOpening );
-            // 
-            // menuEditUndo
-            // 
-            menuEditUndo.setName( "menuEditUndo" );
-            //menuEditUndo.setSize( 220, 22 );
-            menuEditUndo.setText( "Undo(U)" );
-            //menuEditUndo.Click += new System.EventHandler( commonEditUndo_Click );
-            // 
-            // menuEditRedo
-            // 
-            menuEditRedo.setName( "menuEditRedo" );
-            //menuEditRedo.setSize( 220, 22 );
-            menuEditRedo.setText( "Redo(R)" );
-            //menuEditRedo.Click += new System.EventHandler( commonEditRedo_Click );
-            // 
-            // menuEditCut
-            // 
-            menuEditCut.setName( "menuEditCut" );
-            //menuEditCut.setSize( 220, 22 );
-            menuEditCut.setText( "Cut(T)" );
-            //menuEditCut.Click += new System.EventHandler( commonEditCut_Click );
-            // 
-            // menuEditCopy
-            // 
-            menuEditCopy.setName( "menuEditCopy" );
-            //menuEditCopy.setSize( 220, 22 );
-            menuEditCopy.setText( "Copy(C)" );
-            //menuEditCopy.Click += new System.EventHandler( commonEditCopy_Click );
-            // 
-            // menuEditPaste
-            // 
-            menuEditPaste.setName( "menuEditPaste" );
-            //menuEditPaste.ShortcutKeyDisplayString = "";
-            //menuEditPaste.setSize( 220, 22 );
-            menuEditPaste.setText( "Paste(P)" );
-            //menuEditPaste.Click += new System.EventHandler( commonEditPaste_Click );
-            // 
-            // menuEditDelete
-            // 
-            menuEditDelete.setName( "menuEditDelete" );
-            //menuEditDelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            //menuEditDelete.ShowShortcutKeys = false;
-            //menuEditDelete.setSize( 220, 22 );
-            menuEditDelete.setText( "Delete(D)" );
-            //menuEditDelete.Click += new System.EventHandler( menuEditDelete_Click );
-            // 
-            // menuEditAutoNormalizeMode
-            // 
-            menuEditAutoNormalizeMode.setName( "menuEditAutoNormalizeMode" );
-            //menuEditAutoNormalizeMode.setSize( 220, 22 );
-            menuEditAutoNormalizeMode.setText( "Auto Normalize Mode(N)" );
-            //menuEditAutoNormalizeMode.Click += new System.EventHandler( menuEditAutoNormalizeMode_Click );
-            // 
-            // menuEditSelectAll
-            // 
-            menuEditSelectAll.setName( "menuEditSelectAll" );
-            //menuEditSelectAll.setSize( 220, 22 );
-            menuEditSelectAll.setText( "Select All(A)" );
-            //menuEditSelectAll.Click += new System.EventHandler( menuEditSelectAll_Click );
-            // 
-            // menuEditSelectAllEvents
-            // 
-            menuEditSelectAllEvents.setName( "menuEditSelectAllEvents" );
-            //menuEditSelectAllEvents.setSize( 220, 22 );
-            menuEditSelectAllEvents.setText( "Select All Events(E)" );
-            //menuEditSelectAllEvents.Click += new System.EventHandler( menuEditSelectAllEvents_Click );*/
-            // 
-            // menuVisual
-            // 
-            //menuVisual.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            menuVisual.add( menuVisualControlTrack );
-            menuVisual.add( menuVisualMixer );
-            menuVisual.add( menuVisualWaveform );
-            menuVisual.add( menuVisualProperty );
-            menuVisual.addSeparator();
-            menuVisual.add( menuVisualGridline );
-            menuVisual.addSeparator();
-            menuVisual.add( menuVisualStartMarker );
-            menuVisual.add( menuVisualEndMarker );
-            menuVisual.addSeparator();
-            menuVisual.add( menuVisualLyrics );
-            menuVisual.add( menuVisualNoteProperty );
-            menuVisual.add( menuVisualPitchLine );
-            menuVisual.setName( "menuVisual" );
-            //menuVisual.setSize( 66, 22 );
-            menuVisual.setText( "View(V)" );
-            // 
-            // menuVisualControlTrack
-            // 
-            menuVisualControlTrack.setState( true );
-            //menuVisualControlTrack.CheckOnClick = true;
-            //menuVisualControlTrack.CheckState = System.Windows.Forms.CheckState.Checked;
-            //menuVisualControlTrack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            menuVisualControlTrack.setName( "menuVisualControlTrack" );
-            //menuVisualControlTrack.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualControlTrack.setText( "Control Track(C)" );
-            //menuVisualControlTrack.CheckedChanged += new System.EventHandler( menuVisualControlTrack_CheckedChanged );
-            // 
-            // menuVisualMixer
-            // 
-            //menuVisualMixer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            menuVisualMixer.setName( "menuVisualMixer" );
-            //menuVisualMixer.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualMixer.setText( "Mixer(X)" );
-            //menuVisualMixer.Click += new System.EventHandler( menuVisualMixer_Click );
-            // 
-            // menuVisualWaveform
-            // 
-            //menuVisualWaveform.CheckOnClick = true;
-            menuVisualWaveform.setState( false );
-            menuVisualWaveform.setName( "menuVisualWaveform" );
-            //menuVisualWaveform.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualWaveform.setText( "Waveform(W)" );
-            //menuVisualWaveform.CheckedChanged += new System.EventHandler( menuVisualWaveform_CheckedChanged );
-            // 
-            // menuVisualProperty
-            // 
-            //menuVisualProperty.CheckOnClick = true;
-            menuVisualProperty.setState( false );
-            menuVisualProperty.setName( "menuVisualProperty" );
-            //menuVisualProperty.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualProperty.setText( "Property Window(C)" );
-            //menuVisualProperty.CheckedChanged += new System.EventHandler( menuVisualProperty_CheckedChanged );
-            // 
-            // menuVisualGridline
-            // 
-            menuVisualGridline.setState( false );
-            //menuVisualGridline.CheckOnClick = true;
-            //menuVisualGridline.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            menuVisualGridline.setName( "menuVisualGridline" );
-            //menuVisualGridline.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualGridline.setText( "Grid Line(G)" );
-            //menuVisualGridline.CheckedChanged += new System.EventHandler( menuVisualGridline_CheckedChanged );
-            // 
-            // menuVisualStartMarker
-            // 
-            menuVisualStartMarker.setState( false );
-            //menuVisualStartMarker.CheckOnClick = true;
-            //menuVisualStartMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            menuVisualStartMarker.setEnabled( false );
-            menuVisualStartMarker.setName( "menuVisualStartMarker" );
-            //menuVisualStartMarker.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualStartMarker.setText( "Start Marker(S)" );
-            // 
-            // menuVisualEndMarker
-            // 
-            menuVisualEndMarker.setState( false );
-            //menuVisualEndMarker.CheckOnClick = true;
-            //menuVisualEndMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            menuVisualEndMarker.setEnabled( false );
-            menuVisualEndMarker.setName( "menuVisualEndMarker" );
-            //menuVisualEndMarker.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualEndMarker.setText( "End Marker(E)" );
-            // 
-            // menuVisualLyrics
-            // 
-            menuVisualLyrics.setState( true );
-            //menuVisualLyrics.CheckOnClick = true;
-            //menuVisualLyrics.CheckState = System.Windows.Forms.CheckState.Checked;
-            //menuVisualLyrics.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            menuVisualLyrics.setName( "menuVisualLyrics" );
-            //menuVisualLyrics.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualLyrics.setText( "Lyric/Phoneme(L)" );
-            //menuVisualLyrics.CheckedChanged += new System.EventHandler( menuVisualLyrics_CheckedChanged );
-            // 
-            // menuVisualNoteProperty
-            // 
-            menuVisualNoteProperty.setState( true );
-            //menuVisualNoteProperty.CheckOnClick = true;
-            //menuVisualNoteProperty.CheckState = System.Windows.Forms.CheckState.Checked;
-            //menuVisualNoteProperty.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            menuVisualNoteProperty.setName( "menuVisualNoteProperty" );
-            //menuVisualNoteProperty.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualNoteProperty.setText( "Note Expression/Vibrato(N)" );
-            //menuVisualNoteProperty.CheckedChanged += new System.EventHandler( menuVisualNoteProperty_CheckedChanged );
-            // 
-            // menuVisualPitchLine
-            // 
-            menuVisualPitchLine.setState( false );
-            //menuVisualPitchLine.CheckOnClick = true;
-            menuVisualPitchLine.setName( "menuVisualPitchLine" );
-            //menuVisualPitchLine.Size = new System.Drawing.Size( 237, 22 );
-            menuVisualPitchLine.setText( "Pitch Line(P)" );
-            //menuVisualPitchLine.CheckedChanged += new System.EventHandler( menuVisualPitchLine_CheckedChanged );*/
-            // 
-            // menuJob
-            // 
-            menuJob.add( menuJobNormalize );
-            menuJob.add( menuJobInsertBar );
-            menuJob.add( menuJobDeleteBar );
-            menuJob.add( menuJobRandomize );
-            menuJob.add( menuJobConnect );
-            menuJob.add( menuJobLyric );
-            menuJob.add( menuJobRewire );
-            menuJob.add( menuJobRealTime );
-            menuJob.add( menuJobReloadVsti );
-            menuJob.setName( "menuJob" );
-            //menuJob.setSize( 54, 22 );
-            menuJob.setText( "Job(J)" );
-            //menuJob.DropDownOpening += new System.EventHandler( menuJob_DropDownOpening );
-            // 
-            // menuJobNormalize
-            // 
-            menuJobNormalize.setName( "menuJobNormalize" );
-            //menuJobNormalize.Size = new System.Drawing.Size( 256, 22 );
-            menuJobNormalize.setText( "Normalize Notes(N)" );
-            //menuJobNormalize.Click += new System.EventHandler( menuJobNormalize_Click );
-            // 
-            // menuJobInsertBar
-            // 
-            menuJobInsertBar.setName( "menuJobInsertBar" );
-            //menuJobInsertBar.Size = new System.Drawing.Size( 256, 22 );
-            menuJobInsertBar.setText( "Insert Bars(I)" );
-            //menuJobInsertBar.Click += new System.EventHandler( menuJobInsertBar_Click );
-            // 
-            // menuJobDeleteBar
-            // 
-            menuJobDeleteBar.setName( "menuJobDeleteBar" );
-            //menuJobDeleteBar.Size = new System.Drawing.Size( 256, 22 );
-            menuJobDeleteBar.setText( "Delete Bars(D)" );
-            //menuJobDeleteBar.Click += new System.EventHandler( menuJobDeleteBar_Click );
-            // 
-            // menuJobRandomize
-            // 
-            menuJobRandomize.setEnabled( false );
-            menuJobRandomize.setName( "menuJobRandomize" );
-            //menuJobRandomize.Size = new System.Drawing.Size( 256, 22 );
-            menuJobRandomize.setText( "Randomize(R)" );
-            // 
-            // menuJobConnect
-            // 
-            menuJobConnect.setName( "menuJobConnect" );
-            //menuJobConnect.Size = new System.Drawing.Size( 256, 22 );
-            menuJobConnect.setText( "Connect Notes(C)" );
-            //menuJobConnect.Click += new System.EventHandler( menuJobConnect_Click );
-            // 
-            // menuJobLyric
-            // 
-            menuJobLyric.setName( "menuJobLyric" );
-            //menuJobLyric.Size = new System.Drawing.Size( 256, 22 );
-            menuJobLyric.setText( "Insert Lyrics(L)" );
-            //menuJobLyric.Click += new System.EventHandler( menuJobLyric_Click );
-            // 
-            // menuJobRewire
-            // 
-            menuJobRewire.setEnabled( false );
-            menuJobRewire.setName( "menuJobRewire" );
-            //menuJobRewire.Size = new System.Drawing.Size( 256, 22 );
-            menuJobRewire.setText( "Import ReWire Host Tempo(T)" );
-            // 
-            // menuJobRealTime
-            // 
-            menuJobRealTime.setName( "menuJobRealTime" );
-            //menuJobRealTime.Size = new System.Drawing.Size( 256, 22 );
-            menuJobRealTime.setText( "Start Realtime Input" );
-            //menuJobRealTime.Click += new System.EventHandler( menuJobRealTime_Click );
-            // 
-            // menuJobReloadVsti
-            // 
-            menuJobReloadVsti.setName( "menuJobReloadVsti" );
-            //menuJobReloadVsti.Size = new System.Drawing.Size( 256, 22 );
-            menuJobReloadVsti.setText( "Reload VSTi(R)" );
-            menuJobReloadVsti.setVisible( false );
-            //menuJobReloadVsti.Click += new System.EventHandler( menuJobReloadVsti_Click );*/
-            // 
-            // menuTrack
-            // 
-            menuTrack.add( menuTrackOn );
-            menuTrack.addSeparator();
-            menuTrack.add( menuTrackAdd );
-            menuTrack.add( menuTrackCopy );
-            menuTrack.add( menuTrackChangeName );
-            menuTrack.add( menuTrackDelete );
-            menuTrack.addSeparator();
-            menuTrack.add( menuTrackRenderCurrent );
-            menuTrack.add( menuTrackRenderAll );
-            menuTrack.addSeparator();
-            menuTrack.add( menuTrackOverlay );
-            menuTrack.add( menuTrackRenderer );
-            menuTrack.add( menuTrackMasterTuning );
-            menuTrack.setName( "menuTrack" );
-            //menuTrack.setSize( 70, 22 );
-            menuTrack.setText( "Track(T)" );
-            //menuTrack.DropDownOpening += new System.EventHandler( menuTrack_DropDownOpening );
-            // 
-            // menuTrackOn
-            // 
-            menuTrackOn.setName( "menuTrackOn" );
-            //menuTrackOn.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackOn.setText( "Track On(K)" );
-            //menuTrackOn.Click += new System.EventHandler( menuTrackOn_Click );
-            // 
-            // menuTrackAdd
-            // 
-            menuTrackAdd.setName( "menuTrackAdd" );
-            //menuTrackAdd.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackAdd.setText( "Add Track(A)" );
-            //menuTrackAdd.Click += new System.EventHandler( menuTrackAdd_Click );
-            // 
-            // menuTrackCopy
-            // 
-            menuTrackCopy.setName( "menuTrackCopy" );
-            //menuTrackCopy.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackCopy.setText( "Copy Track(C)" );
-            //menuTrackCopy.Click += new System.EventHandler( menuTrackCopy_Click );
-            // 
-            // menuTrackChangeName
-            // 
-            menuTrackChangeName.setName( "menuTrackChangeName" );
-            //menuTrackChangeName.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackChangeName.setText( "Rename Track(R)" );
-            //menuTrackChangeName.Click += new System.EventHandler( menuTrackChangeName_Click );
-            // 
-            // menuTrackDelete
-            // 
-            menuTrackDelete.setName( "menuTrackDelete" );
-            //menuTrackDelete.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackDelete.setText( "Delete Track(D)" );
-            //menuTrackDelete.Click += new System.EventHandler( menuTrackDelete_Click );
-            // 
-            // menuTrackRenderCurrent
-            // 
-            menuTrackRenderCurrent.setName( "menuTrackRenderCurrent" );
-            //menuTrackRenderCurrent.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackRenderCurrent.setText( "Render Current Track(T)" );
-            //menuTrackRenderCurrent.Click += new System.EventHandler( menuTrackRenderCurrent_Click );
-            // 
-            // menuTrackRenderAll
-            // 
-            menuTrackRenderAll.setEnabled( false );
-            menuTrackRenderAll.setName( "menuTrackRenderAll" );
-            //menuTrackRenderAll.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackRenderAll.setText( "Render All Tracks(S)" );
-            // 
-            // menuTrackOverlay
-            // 
-            menuTrackOverlay.setName( "menuTrackOverlay" );
-            //menuTrackOverlay.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackOverlay.setText( "Overlay(O)" );
-            //menuTrackOverlay.Click += new System.EventHandler( menuTrackOverlay_Click );
-            // 
-            // menuTrackRenderer
-            // 
-            menuTrackRenderer.add( menuTrackRendererVOCALOID1 );
-            menuTrackRenderer.add( menuTrackRendererVOCALOID2 );
-            menuTrackRenderer.add( menuTrackRendererUtau );
-            menuTrackRenderer.setName( "menuTrackRenderer" );
-            //menuTrackRenderer.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackRenderer.setText( "Renderer" );
-            //menuTrackRenderer.DropDownOpening += new System.EventHandler( menuTrackRenderer_DropDownOpening );
-            // 
-            // menuTrackRendererVOCALOID1
-            // 
-            menuTrackRendererVOCALOID1.setName( "menuTrackRendererVOCALOID1" );
-            //menuTrackRendererVOCALOID1.Size = new System.Drawing.Size( 146, 22 );
-            menuTrackRendererVOCALOID1.setText( "VOCALOID1" );
-            //menuTrackRendererVOCALOID1.Click += new System.EventHandler( commonRendererVOCALOID1_Click );
-            // 
-            // menuTrackRendererVOCALOID2
-            // 
-            menuTrackRendererVOCALOID2.setName( "menuTrackRendererVOCALOID2" );
-            //menuTrackRendererVOCALOID2.Size = new System.Drawing.Size( 146, 22 );
-            menuTrackRendererVOCALOID2.setText( "VOCALOID2" );
-            //menuTrackRendererVOCALOID2.Click += new System.EventHandler( commonRendererVOCALOID2_Click );
-            // 
-            // menuTrackRendererUtau
-            // 
-            menuTrackRendererUtau.setName( "menuTrackRendererUtau" );
-            //menuTrackRendererUtau.Size = new System.Drawing.Size( 146, 22 );
-            menuTrackRendererUtau.setText( "UTAU" );
-            //menuTrackRendererUtau.Click += new System.EventHandler( commonRendererUtau_Click );
-            // 
-            // menuTrackMasterTuning
-            // 
-            menuTrackMasterTuning.setName( "menuTrackMasterTuning" );
-            //menuTrackMasterTuning.Size = new System.Drawing.Size( 219, 22 );
-            menuTrackMasterTuning.setText( "Master Tuning(M)" );
-            //menuTrackMasterTuning.Click += new System.EventHandler( commonMasterTuning_Click );*/
-            // 
-            // menuLyric
-            // 
-            menuLyric.add( menuLyricExpressionProperty );
-            menuLyric.add( menuLyricVibratoProperty );
-            menuLyric.add( menuLyricSymbol );
-            menuLyric.add( menuLyricDictionary );
-            menuLyric.setName( "menuLyric" );
-            //menuLyric.setSize( 70, 22 );
-            menuLyric.setText( "Lyrics(L)" );
-            //menuLyric.DropDownOpening += new System.EventHandler( menuLyric_DropDownOpening );
-            // 
-            // menuLyricExpressionProperty
-            // 
-            menuLyricExpressionProperty.setName( "menuLyricExpressionProperty" );
-            //menuLyricExpressionProperty.Size = new System.Drawing.Size( 241, 22 );
-            menuLyricExpressionProperty.setText( "Note Expression Property(E)" );
-            //menuLyricExpressionProperty.Click += new System.EventHandler( menuLyricExpressionProperty_Click );
-            // 
-            // menuLyricVibratoProperty
-            // 
-            menuLyricVibratoProperty.setName( "menuLyricVibratoProperty" );
-            //menuLyricVibratoProperty.Size = new System.Drawing.Size( 241, 22 );
-            menuLyricVibratoProperty.setText( "Note Vibrato Property(V)" );
-            //menuLyricVibratoProperty.Click += new System.EventHandler( menuLyricVibratoProperty_Click );
-            // 
-            // menuLyricSymbol
-            // 
-            menuLyricSymbol.setEnabled( false );
-            menuLyricSymbol.setName( "menuLyricSymbol" );
-            //menuLyricSymbol.Size = new System.Drawing.Size( 241, 22 );
-            menuLyricSymbol.setText( "Phoneme Transformation(T)" );
-            // 
-            // menuLyricDictionary
-            // 
-            menuLyricDictionary.setName( "menuLyricDictionary" );
-            //menuLyricDictionary.Size = new System.Drawing.Size( 241, 22 );
-            menuLyricDictionary.setText( "User Word Dictionary(C)" );
-            //menuLyricDictionary.Click += new System.EventHandler( menuLyricDictionary_Click );
-            // 
-            // menuScript
-            // 
-            menuScript.add( menuScriptUpdate );
-            menuScript.setName( "menuScript" );
-            //menuScript.setSize( 72, 22 );
-            menuScript.setText( "Script(C)" );
-            // 
-            // menuScriptUpdate
-            // 
-            menuScriptUpdate.setName( "menuScriptUpdate" );
-            //menuScriptUpdate.Size = new System.Drawing.Size( 200, 22 );
-            menuScriptUpdate.setText( "Update Script List(U)" );
-            //menuScriptUpdate.Click += new System.EventHandler( menuScriptUpdate_Click );
-            // 
-            // menuSetting
-            // 
-            menuSetting.add( menuSettingPreference );
-            menuSetting.add( menuSettingGameControler );
-            menuSetting.add( menuSettingPaletteTool );
-            menuSetting.add( menuSettingShortcut );
-            menuSetting.add( menuSettingMidi );
-            menuSetting.add( menuSettingUtauVoiceDB );
-            menuSetting.addSeparator();
-            menuSetting.add( menuSettingDefaultSingerStyle );
-            menuSetting.addSeparator();
-            menuSetting.add( menuSettingPositionQuantize );
-            menuSetting.add( menuSettingLengthQuantize );
-            menuSetting.addSeparator();
-            menuSetting.add( menuSettingSingerProperty );
-            menuSetting.setName( "menuSetting" );
-            //menuSetting.setSize( 80, 22 );
-            menuSetting.setText( "Setting(S)" );
-            //menuSetting.DropDownOpening += new System.EventHandler( menuSetting_DropDownOpening );
-            // 
-            // menuSettingPreference
-            // 
-            menuSettingPreference.setName( "menuSettingPreference" );
-            //menuSettingPreference.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingPreference.setText( "Preference(P)" );
-            //menuSettingPreference.Click += new System.EventHandler( menuSettingPreference_Click );
-            // 
-            // menuSettingGameControler
-            // 
-            menuSettingGameControler.add( menuSettingGameControlerSetting );
-            menuSettingGameControler.add( menuSettingGameControlerLoad );
-            menuSettingGameControler.add( menuSettingGameControlerRemove );
-            menuSettingGameControler.setName( "menuSettingGameControler" );
-            //menuSettingGameControler.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingGameControler.setText( "Game Controler(G)" );
-            // 
-            // menuSettingGameControlerSetting
-            // 
-            menuSettingGameControlerSetting.setName( "menuSettingGameControlerSetting" );
-            //menuSettingGameControlerSetting.Size = new System.Drawing.Size( 142, 22 );
-            menuSettingGameControlerSetting.setText( "Setting(S)" );
-            //menuSettingGameControlerSetting.Click += new System.EventHandler( menuSettingGameControlerSetting_Click );
-            // 
-            // menuSettingGameControlerLoad
-            // 
-            menuSettingGameControlerLoad.setName( "menuSettingGameControlerLoad" );
-            //menuSettingGameControlerLoad.Size = new System.Drawing.Size( 142, 22 );
-            menuSettingGameControlerLoad.setText( "Load(L)" );
-            //menuSettingGameControlerLoad.Click += new System.EventHandler( menuSettingGameControlerLoad_Click );
-            // 
-            // menuSettingGameControlerRemove
-            // 
-            menuSettingGameControlerRemove.setName( "menuSettingGameControlerRemove" );
-            //menuSettingGameControlerRemove.Size = new System.Drawing.Size( 142, 22 );
-            menuSettingGameControlerRemove.setText( "Remove(R)" );
-            //menuSettingGameControlerRemove.Click += new System.EventHandler( menuSettingGameControlerRemove_Click );
-            // 
-            // menuSettingPaletteTool
-            // 
-            menuSettingPaletteTool.setName( "menuSettingPaletteTool" );
-            //menuSettingPaletteTool.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingPaletteTool.setText( "Palette Tool(T)" );
-            // 
-            // menuSettingShortcut
-            // 
-            menuSettingShortcut.setName( "menuSettingShortcut" );
-            //menuSettingShortcut.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingShortcut.setText( "Shortcut Key(S)" );
-            //menuSettingShortcut.Click += new System.EventHandler( menuSettingShortcut_Click );
-            // 
-            // menuSettingMidi
-            // 
-            menuSettingMidi.setName( "menuSettingMidi" );
-            //menuSettingMidi.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingMidi.setText( "MIDI(M)" );
-            //menuSettingMidi.Click += new System.EventHandler( menuSettingMidi_Click );
-            // 
-            // menuSettingUtauVoiceDB
-            // 
-            menuSettingUtauVoiceDB.setName( "menuSettingUtauVoiceDB" );
-            //menuSettingUtauVoiceDB.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingUtauVoiceDB.setText( "UTAU Voice DB(U)" );
-            //menuSettingUtauVoiceDB.Click += new System.EventHandler( menuSettingUtauVoiceDB_Click );
-            // 
-            // menuSettingDefaultSingerStyle
-            // 
-            menuSettingDefaultSingerStyle.setName( "menuSettingDefaultSingerStyle" );
-            //menuSettingDefaultSingerStyle.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingDefaultSingerStyle.setText( "Singing Style Defaults(D)" );
-            //menuSettingDefaultSingerStyle.Click += new System.EventHandler( menuSettingDefaultSingerStyle_Click );
-            // 
-            // menuSettingPositionQuantize
-            // 
-            menuSettingPositionQuantize.add( menuSettingPositionQuantize04 );
-            menuSettingPositionQuantize.add( menuSettingPositionQuantize08 );
-            menuSettingPositionQuantize.add( menuSettingPositionQuantize16 );
-            menuSettingPositionQuantize.add( menuSettingPositionQuantize32 );
-            menuSettingPositionQuantize.add( menuSettingPositionQuantize64 );
-            menuSettingPositionQuantize.add( menuSettingPositionQuantize128 );
-            menuSettingPositionQuantize.add( menuSettingPositionQuantizeOff );
-            menuSettingPositionQuantize.addSeparator();
-            menuSettingPositionQuantize.add( menuSettingPositionQuantizeTriplet );
-            menuSettingPositionQuantize.setName( "menuSettingPositionQuantize" );
-            //menuSettingPositionQuantize.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingPositionQuantize.setText( "Quantize(Q)" );
-            // 
-            // menuSettingPositionQuantize04
-            // 
-            menuSettingPositionQuantize04.setName( "menuSettingPositionQuantize04" );
-            //menuSettingPositionQuantize04.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingPositionQuantize04.setText( "1/4" );
-            //menuSettingPositionQuantize04.Click += new System.EventHandler( h_positionQuantize04 );
-            // 
-            // menuSettingPositionQuantize08
-            // 
-            menuSettingPositionQuantize08.setName( "menuSettingPositionQuantize08" );
-            //menuSettingPositionQuantize08.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingPositionQuantize08.setText( "1/8" );
-            //menuSettingPositionQuantize08.Click += new System.EventHandler( h_positionQuantize08 );
-            // 
-            // menuSettingPositionQuantize16
-            // 
-            menuSettingPositionQuantize16.setName( "menuSettingPositionQuantize16" );
-            //menuSettingPositionQuantize16.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingPositionQuantize16.setText( "1/16" );
-            //menuSettingPositionQuantize16.Click += new System.EventHandler( h_positionQuantize16 );
-            // 
-            // menuSettingPositionQuantize32
-            // 
-            menuSettingPositionQuantize32.setName( "menuSettingPositionQuantize32" );
-            //menuSettingPositionQuantize32.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingPositionQuantize32.setText( "1/32" );
-            //menuSettingPositionQuantize32.Click += new System.EventHandler( h_positionQuantize32 );
-            // 
-            // menuSettingPositionQuantize64
-            // 
-            menuSettingPositionQuantize64.setName( "menuSettingPositionQuantize64" );
-            //menuSettingPositionQuantize64.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingPositionQuantize64.setText( "1/64" );
-            //menuSettingPositionQuantize64.Click += new System.EventHandler( h_positionQuantize64 );
-            // 
-            // menuSettingPositionQuantize128
-            // 
-            menuSettingPositionQuantize128.setName( "menuSettingPositionQuantize128" );
-            //menuSettingPositionQuantize128.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingPositionQuantize128.setText( "1/128" );
-            //menuSettingPositionQuantize128.Click += new System.EventHandler( h_positionQuantize128 );
-            // 
-            // menuSettingPositionQuantizeOff
-            // 
-            menuSettingPositionQuantizeOff.setName( "menuSettingPositionQuantizeOff" );
-            //menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingPositionQuantizeOff.setText( "Off" );
-            //menuSettingPositionQuantizeOff.Click += new System.EventHandler( h_positionQuantizeOff );
-            // 
-            // menuSettingPositionQuantizeTriplet
-            // 
-            menuSettingPositionQuantizeTriplet.setName( "menuSettingPositionQuantizeTriplet" );
-            //menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingPositionQuantizeTriplet.setText( "Triplet" );
-            //menuSettingPositionQuantizeTriplet.Click += new System.EventHandler( h_positionQuantizeTriplet );
-            // 
-            // menuSettingLengthQuantize
-            // 
-            menuSettingLengthQuantize.add( menuSettingLengthQuantize04 );
-            menuSettingLengthQuantize.add( menuSettingLengthQuantize08 );
-            menuSettingLengthQuantize.add( menuSettingLengthQuantize16 );
-            menuSettingLengthQuantize.add( menuSettingLengthQuantize32 );
-            menuSettingLengthQuantize.add( menuSettingLengthQuantize64 );
-            menuSettingLengthQuantize.add( menuSettingLengthQuantize128 );
-            menuSettingLengthQuantize.add( menuSettingLengthQuantizeOff );
-            menuSettingLengthQuantize.addSeparator();
-            menuSettingLengthQuantize.add( menuSettingLengthQuantizeTriplet );
-            menuSettingLengthQuantize.setName( "menuSettingLengthQuantize" );
-            //menuSettingLengthQuantize.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingLengthQuantize.setText( "Length(L)" );
-            // 
-            // menuSettingLengthQuantize04
-            // 
-            menuSettingLengthQuantize04.setName( "menuSettingLengthQuantize04" );
-            //menuSettingLengthQuantize04.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingLengthQuantize04.setText( "1/4" );
-            //menuSettingLengthQuantize04.Click += new System.EventHandler( h_lengthQuantize04 );
-            // 
-            // menuSettingLengthQuantize08
-            // 
-            menuSettingLengthQuantize08.setName( "menuSettingLengthQuantize08" );
-            //menuSettingLengthQuantize08.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingLengthQuantize08.setText( "1/8" );
-            //menuSettingLengthQuantize08.Click += new System.EventHandler( h_lengthQuantize08 );
-            // 
-            // menuSettingLengthQuantize16
-            // 
-            menuSettingLengthQuantize16.setName( "menuSettingLengthQuantize16" );
-            //menuSettingLengthQuantize16.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingLengthQuantize16.setText( "1/16" );
-            //menuSettingLengthQuantize16.Click += new System.EventHandler( h_lengthQuantize16 );
-            // 
-            // menuSettingLengthQuantize32
-            // 
-            menuSettingLengthQuantize32.setName( "menuSettingLengthQuantize32" );
-            //menuSettingLengthQuantize32.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingLengthQuantize32.setText( "1/32" );
-            //menuSettingLengthQuantize32.Click += new System.EventHandler( h_lengthQuantize32 );
-            // 
-            // menuSettingLengthQuantize64
-            // 
-            menuSettingLengthQuantize64.setName( "menuSettingLengthQuantize64" );
-            //menuSettingLengthQuantize64.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingLengthQuantize64.setText( "1/64" );
-            //menuSettingLengthQuantize64.Click += new System.EventHandler( h_lengthQuantize64 );
-            // 
-            // menuSettingLengthQuantize128
-            // 
-            menuSettingLengthQuantize128.setName( "menuSettingLengthQuantize128" );
-            //menuSettingLengthQuantize128.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingLengthQuantize128.setText( "1/128" );
-            //menuSettingLengthQuantize128.Click += new System.EventHandler( h_lengthQuantize128 );
-            // 
-            // menuSettingLengthQuantizeOff
-            // 
-            menuSettingLengthQuantizeOff.setName( "menuSettingLengthQuantizeOff" );
-            //menuSettingLengthQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingLengthQuantizeOff.setText( "Off" );
-            //menuSettingLengthQuantizeOff.Click += new System.EventHandler( h_lengthQuantizeOff );
-            // 
-            // menuSettingLengthQuantizeTriplet
-            // 
-            menuSettingLengthQuantizeTriplet.setName( "menuSettingLengthQuantizeTriplet" );
-            //menuSettingLengthQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
-            menuSettingLengthQuantizeTriplet.setText( "Triplet" );
-            //menuSettingLengthQuantizeTriplet.Click += new System.EventHandler( h_lengthQuantizeTriplet );
-            // 
-            // menuSettingSingerProperty
-            // 
-            menuSettingSingerProperty.setEnabled( false );
-            menuSettingSingerProperty.setName( "menuSettingSingerProperty" );
-            //menuSettingSingerProperty.Size = new System.Drawing.Size( 223, 22 );
-            menuSettingSingerProperty.setText( "Singer Properties(S)" );
-            // 
-            // menuHelp
-            // 
-            menuHelp.add( menuHelpAbout );
-            menuHelp.add( menuHelpDebug );
-            menuHelp.setName( "menuHelp" );
-            //menuHelp.setSize( 65, 22 );
-            menuHelp.setText( "Help(H)" );
-            // 
-            // menuHelpAbout
-            // 
-            menuHelpAbout.setName( "menuHelpAbout" );
-            //menuHelpAbout.Size = new System.Drawing.Size( 180, 22 );
-            menuHelpAbout.setText( "About Cadencii(A)" );
-            //menuHelpAbout.Click += new System.EventHandler( menuHelpAbout_Click );
-            // 
-            // menuHelpDebug
-            // 
-            menuHelpDebug.setName( "menuHelpDebug" );
-            //menuHelpDebug.Size = new System.Drawing.Size( 180, 22 );
-            menuHelpDebug.setText( "Debug" );
-            menuHelpDebug.setVisible( false );
-            //menuHelpDebug.Click += new System.EventHandler( menuHelpDebug_Click );
-            // 
-            // menuHidden
-            // 
-            /*menuHidden.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            menuHiddenEditLyric,
-            menuHiddenEditFlipToolPointerPencil,
-            menuHiddenEditFlipToolPointerEraser,
-            menuHiddenVisualForwardParameter,
-            menuHiddenVisualBackwardParameter,
-            menuHiddenTrackNext,
-            menuHiddenTrackBack,
-            menuHiddenCopy,
-            menuHiddenPaste,
-            menuHiddenCut} );*/
-            menuHidden.setName( "menuHidden" );
-            //menuHidden.setSize( 91, 22 );
-            menuHidden.setText( "MenuHidden" );
-            menuHidden.setVisible( false );
-            /*// 
-            // menuHiddenEditLyric
-            // 
-            menuHiddenEditLyric.setName( "menuHiddenEditLyric";
-            menuHiddenEditLyric.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            menuHiddenEditLyric.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenEditLyric.setText( "Start Lyric Input";
-            menuHiddenEditLyric.Visible = false;
-            menuHiddenEditLyric.Click += new System.EventHandler( menuHiddenEditLyric_Click );
-            // 
-            // menuHiddenEditFlipToolPointerPencil
-            // 
-            menuHiddenEditFlipToolPointerPencil.setName( "menuHiddenEditFlipToolPointerPencil";
-            menuHiddenEditFlipToolPointerPencil.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            menuHiddenEditFlipToolPointerPencil.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenEditFlipToolPointerPencil.setText( "Change Tool Pointer / Pencil";
-            menuHiddenEditFlipToolPointerPencil.Visible = false;
-            menuHiddenEditFlipToolPointerPencil.Click += new System.EventHandler( menuHiddenEditFlipToolPointerPencil_Click );
-            // 
-            // menuHiddenEditFlipToolPointerEraser
-            // 
-            menuHiddenEditFlipToolPointerEraser.setName( "menuHiddenEditFlipToolPointerEraser";
-            menuHiddenEditFlipToolPointerEraser.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            menuHiddenEditFlipToolPointerEraser.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenEditFlipToolPointerEraser.setText( "Change Tool Pointer/ Eraser";
-            menuHiddenEditFlipToolPointerEraser.Visible = false;
-            menuHiddenEditFlipToolPointerEraser.Click += new System.EventHandler( menuHiddenEditFlipToolPointerEraser_Click );
-            // 
-            // menuHiddenVisualForwardParameter
-            // 
-            menuHiddenVisualForwardParameter.setName( "menuHiddenVisualForwardParameter";
-            menuHiddenVisualForwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt)
-                        | System.Windows.Forms.Keys.Next)));
-            menuHiddenVisualForwardParameter.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenVisualForwardParameter.setText( "Next Control Curve";
-            menuHiddenVisualForwardParameter.Visible = false;
-            menuHiddenVisualForwardParameter.Click += new System.EventHandler( menuHiddenVisualForwardParameter_Click );
-            // 
-            // menuHiddenVisualBackwardParameter
-            // 
-            menuHiddenVisualBackwardParameter.setName( "menuHiddenVisualBackwardParameter";
-            menuHiddenVisualBackwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt)
-                        | System.Windows.Forms.Keys.PageUp)));
-            menuHiddenVisualBackwardParameter.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenVisualBackwardParameter.setText( "Previous Control Curve";
-            menuHiddenVisualBackwardParameter.Visible = false;
-            menuHiddenVisualBackwardParameter.Click += new System.EventHandler( menuHiddenVisualBackwardParameter_Click );
-            // 
-            // menuHiddenTrackNext
-            // 
-            menuHiddenTrackNext.setName( "menuHiddenTrackNext";
-            menuHiddenTrackNext.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Next)));
-            menuHiddenTrackNext.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenTrackNext.setText( "Next Track";
-            menuHiddenTrackNext.Visible = false;
-            menuHiddenTrackNext.Click += new System.EventHandler( menuHiddenTrackNext_Click );
-            // 
-            // menuHiddenTrackBack
-            // 
-            menuHiddenTrackBack.setName( "menuHiddenTrackBack";
-            menuHiddenTrackBack.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.PageUp)));
-            menuHiddenTrackBack.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenTrackBack.setText( "Previous Track";
-            menuHiddenTrackBack.Visible = false;
-            menuHiddenTrackBack.Click += new System.EventHandler( menuHiddenTrackBack_Click );
-            // 
-            // menuHiddenCopy
-            // 
-            menuHiddenCopy.setName( "menuHiddenCopy";
-            menuHiddenCopy.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenCopy.setText( "Copy";
-            menuHiddenCopy.Click += new System.EventHandler( commonEditCopy_Click );
-            // 
-            // menuHiddenPaste
-            // 
-            menuHiddenPaste.setName( "menuHiddenPaste";
-            menuHiddenPaste.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenPaste.setText( "Paste";
-            menuHiddenPaste.Click += new System.EventHandler( commonEditPaste_Click );
-            // 
-            // menuHiddenCut
-            // 
-            menuHiddenCut.setName( "menuHiddenCut";
-            menuHiddenCut.Size = new System.Drawing.Size( 304, 22 );
-            menuHiddenCut.setText( "Cut";
-            menuHiddenCut.Click += new System.EventHandler( commonEditCut_Click );
-            // 
-            // saveXmlVsqDialog
-            // 
-            saveXmlVsqDialog.Filter = "VSQ Format(*.vsq)|*.vsq|Original Format(*.evsq)|*.evsq|All files(*.*)|*.*";
-            // 
-            // cMenuPiano
-            // 
-            cMenuPiano.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            cMenuPianoPointer,
-            cMenuPianoPencil,
-            cMenuPianoEraser,
-            cMenuPianoPaletteTool,
-            toolStripSeparator15,
-            cMenuPianoCurve,
-            toolStripMenuItem13,
-            cMenuPianoFixed,
-            cMenuPianoQuantize,
-            cMenuPianoLength,
-            cMenuPianoGrid,
-            toolStripMenuItem14,
-            cMenuPianoUndo,
-            cMenuPianoRedo,
-            toolStripMenuItem15,
-            cMenuPianoCut,
-            cMenuPianoCopy,
-            cMenuPianoPaste,
-            cMenuPianoDelete,
-            toolStripMenuItem16,
-            cMenuPianoSelectAll,
-            cMenuPianoSelectAllEvents,
-            toolStripMenuItem17,
-            cMenuPianoImportLyric,
-            cMenuPianoExpressionProperty,
-            cMenuPianoVibratoProperty} );
-            cMenuPiano.setName( "cMenuPiano";
-            cMenuPiano.ShowCheckMargin = true;
-            cMenuPiano.ShowImageMargin = false;
-            cMenuPiano.Size = new System.Drawing.Size( 242, 480 );
-            cMenuPiano.Opening += new System.ComponentModel.CancelEventHandler( cMenuPiano_Opening );
-            // 
-            // cMenuPianoPointer
-            // 
-            cMenuPianoPointer.setName( "cMenuPianoPointer";
-            cMenuPianoPointer.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoPointer.setText( "Arrow(&A)";
-            cMenuPianoPointer.Click += new System.EventHandler( cMenuPianoPointer_Click );
-            // 
-            // cMenuPianoPencil
-            // 
-            cMenuPianoPencil.setName( "cMenuPianoPencil";
-            cMenuPianoPencil.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoPencil.setText( "Pencil(&W)";
-            cMenuPianoPencil.Click += new System.EventHandler( cMenuPianoPencil_Click );
-            // 
-            // cMenuPianoEraser
-            // 
-            cMenuPianoEraser.setName( "cMenuPianoEraser";
-            cMenuPianoEraser.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoEraser.setText( "Eraser(&E)";
-            cMenuPianoEraser.Click += new System.EventHandler( cMenuPianoEraser_Click );
-            // 
-            // cMenuPianoPaletteTool
-            // 
-            cMenuPianoPaletteTool.setName( "cMenuPianoPaletteTool";
-            cMenuPianoPaletteTool.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoPaletteTool.setText( "Palette Tool";
-            // 
-            // toolStripSeparator15
-            // 
-            toolStripSeparator15.setName( "toolStripSeparator15";
-            toolStripSeparator15.Size = new System.Drawing.Size( 238, 6 );
-            // 
-            // cMenuPianoCurve
-            // 
-            cMenuPianoCurve.setName( "cMenuPianoCurve";
-            cMenuPianoCurve.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoCurve.setText( "Curve(&V)";
-            cMenuPianoCurve.Click += new System.EventHandler( cMenuPianoCurve_Click );
-            // 
-            // toolStripMenuItem13
-            // 
-            toolStripMenuItem13.setName( "toolStripMenuItem13";
-            toolStripMenuItem13.Size = new System.Drawing.Size( 238, 6 );
-            // 
-            // cMenuPianoFixed
-            // 
-            cMenuPianoFixed.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            cMenuPianoFixed01,
-            cMenuPianoFixed02,
-            cMenuPianoFixed04,
-            cMenuPianoFixed08,
-            cMenuPianoFixed16,
-            cMenuPianoFixed32,
-            cMenuPianoFixed64,
-            cMenuPianoFixed128,
-            cMenuPianoFixedOff,
-            toolStripMenuItem18,
-            cMenuPianoFixedTriplet,
-            cMenuPianoFixedDotted} );
-            cMenuPianoFixed.setName( "cMenuPianoFixed";
-            cMenuPianoFixed.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoFixed.setText( "Note Fixed Length(&N)";
-            // 
-            // cMenuPianoFixed01
-            // 
-            cMenuPianoFixed01.setName( "cMenuPianoFixed01";
-            cMenuPianoFixed01.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixed01.setText( "1/ 1 [1920]";
-            cMenuPianoFixed01.Click += new System.EventHandler( cMenuPianoFixed01_Click );
-            // 
-            // cMenuPianoFixed02
-            // 
-            cMenuPianoFixed02.setName( "cMenuPianoFixed02";
-            cMenuPianoFixed02.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixed02.setText( "1/ 2 [960]";
-            cMenuPianoFixed02.Click += new System.EventHandler( cMenuPianoFixed02_Click );
-            // 
-            // cMenuPianoFixed04
-            // 
-            cMenuPianoFixed04.setName( "cMenuPianoFixed04";
-            cMenuPianoFixed04.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixed04.setText( "1/ 4 [480]";
-            cMenuPianoFixed04.Click += new System.EventHandler( cMenuPianoFixed04_Click );
-            // 
-            // cMenuPianoFixed08
-            // 
-            cMenuPianoFixed08.setName( "cMenuPianoFixed08";
-            cMenuPianoFixed08.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixed08.setText( "1/ 8 [240]";
-            cMenuPianoFixed08.Click += new System.EventHandler( cMenuPianoFixed08_Click );
-            // 
-            // cMenuPianoFixed16
-            // 
-            cMenuPianoFixed16.setName( "cMenuPianoFixed16";
-            cMenuPianoFixed16.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixed16.setText( "1/16 [120]";
-            cMenuPianoFixed16.Click += new System.EventHandler( cMenuPianoFixed16_Click );
-            // 
-            // cMenuPianoFixed32
-            // 
-            cMenuPianoFixed32.setName( "cMenuPianoFixed32";
-            cMenuPianoFixed32.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixed32.setText( "1/32 [60]";
-            cMenuPianoFixed32.Click += new System.EventHandler( cMenuPianoFixed32_Click );
-            // 
-            // cMenuPianoFixed64
-            // 
-            cMenuPianoFixed64.setName( "cMenuPianoFixed64";
-            cMenuPianoFixed64.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixed64.setText( "1/64 [30]";
-            cMenuPianoFixed64.Click += new System.EventHandler( cMenuPianoFixed64_Click );
-            // 
-            // cMenuPianoFixed128
-            // 
-            cMenuPianoFixed128.setName( "cMenuPianoFixed128";
-            cMenuPianoFixed128.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixed128.setText( "1/128[15]";
-            cMenuPianoFixed128.Click += new System.EventHandler( cMenuPianoFixed128_Click );
-            // 
-            // cMenuPianoFixedOff
-            // 
-            cMenuPianoFixedOff.setName( "cMenuPianoFixedOff";
-            cMenuPianoFixedOff.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixedOff.setText( "オフ";
-            cMenuPianoFixedOff.Click += new System.EventHandler( cMenuPianoFixedOff_Click );
-            // 
-            // toolStripMenuItem18
-            // 
-            toolStripMenuItem18.setName( "toolStripMenuItem18";
-            toolStripMenuItem18.Size = new System.Drawing.Size( 138, 6 );
-            // 
-            // cMenuPianoFixedTriplet
-            // 
-            cMenuPianoFixedTriplet.setName( "cMenuPianoFixedTriplet";
-            cMenuPianoFixedTriplet.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixedTriplet.setText( "3連符";
-            cMenuPianoFixedTriplet.Click += new System.EventHandler( cMenuPianoFixedTriplet_Click );
-            // 
-            // cMenuPianoFixedDotted
-            // 
-            cMenuPianoFixedDotted.setName( "cMenuPianoFixedDotted";
-            cMenuPianoFixedDotted.Size = new System.Drawing.Size( 141, 22 );
-            cMenuPianoFixedDotted.setText( "付点";
-            cMenuPianoFixedDotted.Click += new System.EventHandler( cMenuPianoFixedDotted_Click );
-            // 
-            // cMenuPianoQuantize
-            // 
-            cMenuPianoQuantize.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            cMenuPianoQuantize04,
-            cMenuPianoQuantize08,
-            cMenuPianoQuantize16,
-            cMenuPianoQuantize32,
-            cMenuPianoQuantize64,
-            cMenuPianoQuantize128,
-            cMenuPianoQuantizeOff,
-            toolStripMenuItem26,
-            cMenuPianoQuantizeTriplet} );
-            cMenuPianoQuantize.setName( "cMenuPianoQuantize";
-            cMenuPianoQuantize.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoQuantize.setText( "Quantize(&Q)";
-            // 
-            // cMenuPianoQuantize04
-            // 
-            cMenuPianoQuantize04.setName( "cMenuPianoQuantize04";
-            cMenuPianoQuantize04.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoQuantize04.setText( "1/4";
-            cMenuPianoQuantize04.Click += new System.EventHandler( h_positionQuantize04 );
-            // 
-            // cMenuPianoQuantize08
-            // 
-            cMenuPianoQuantize08.setName( "cMenuPianoQuantize08";
-            cMenuPianoQuantize08.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoQuantize08.setText( "1/8";
-            cMenuPianoQuantize08.Click += new System.EventHandler( h_positionQuantize08 );
-            // 
-            // cMenuPianoQuantize16
-            // 
-            cMenuPianoQuantize16.setName( "cMenuPianoQuantize16";
-            cMenuPianoQuantize16.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoQuantize16.setText( "1/16";
-            cMenuPianoQuantize16.Click += new System.EventHandler( h_positionQuantize16 );
-            // 
-            // cMenuPianoQuantize32
-            // 
-            cMenuPianoQuantize32.setName( "cMenuPianoQuantize32";
-            cMenuPianoQuantize32.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoQuantize32.setText( "1/32";
-            cMenuPianoQuantize32.Click += new System.EventHandler( h_positionQuantize32 );
-            // 
-            // cMenuPianoQuantize64
-            // 
-            cMenuPianoQuantize64.setName( "cMenuPianoQuantize64";
-            cMenuPianoQuantize64.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoQuantize64.setText( "1/64";
-            cMenuPianoQuantize64.Click += new System.EventHandler( h_positionQuantize64 );
-            // 
-            // cMenuPianoQuantize128
-            // 
-            cMenuPianoQuantize128.setName( "cMenuPianoQuantize128";
-            cMenuPianoQuantize128.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoQuantize128.setText( "1/128";
-            cMenuPianoQuantize128.Click += new System.EventHandler( h_positionQuantize128 );
-            // 
-            // cMenuPianoQuantizeOff
-            // 
-            cMenuPianoQuantizeOff.setName( "cMenuPianoQuantizeOff";
-            cMenuPianoQuantizeOff.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoQuantizeOff.setText( "オフ";
-            cMenuPianoQuantizeOff.Click += new System.EventHandler( h_positionQuantizeOff );
-            // 
-            // toolStripMenuItem26
-            // 
-            toolStripMenuItem26.setName( "toolStripMenuItem26";
-            toolStripMenuItem26.Size = new System.Drawing.Size( 106, 6 );
-            // 
-            // cMenuPianoQuantizeTriplet
-            // 
-            cMenuPianoQuantizeTriplet.setName( "cMenuPianoQuantizeTriplet";
-            cMenuPianoQuantizeTriplet.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoQuantizeTriplet.setText( "3連符";
-            cMenuPianoQuantizeTriplet.Click += new System.EventHandler( h_positionQuantizeTriplet );
-            // 
-            // cMenuPianoLength
-            // 
-            cMenuPianoLength.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            cMenuPianoLength04,
-            cMenuPianoLength08,
-            cMenuPianoLength16,
-            cMenuPianoLength32,
-            cMenuPianoLength64,
-            cMenuPianoLength128,
-            cMenuPianoLengthOff,
-            toolStripMenuItem32,
-            cMenuPianoLengthTriplet} );
-            cMenuPianoLength.setName( "cMenuPianoLength";
-            cMenuPianoLength.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoLength.setText( "Length(&L)";
-            // 
-            // cMenuPianoLength04
-            // 
-            cMenuPianoLength04.setName( "cMenuPianoLength04";
-            cMenuPianoLength04.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoLength04.setText( "1/4";
-            cMenuPianoLength04.Click += new System.EventHandler( h_lengthQuantize04 );
-            // 
-            // cMenuPianoLength08
-            // 
-            cMenuPianoLength08.setName( "cMenuPianoLength08";
-            cMenuPianoLength08.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoLength08.setText( "1/8";
-            cMenuPianoLength08.Click += new System.EventHandler( h_lengthQuantize08 );
-            // 
-            // cMenuPianoLength16
-            // 
-            cMenuPianoLength16.setName( "cMenuPianoLength16";
-            cMenuPianoLength16.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoLength16.setText( "1/16";
-            cMenuPianoLength16.Click += new System.EventHandler( h_lengthQuantize16 );
-            // 
-            // cMenuPianoLength32
-            // 
-            cMenuPianoLength32.setName( "cMenuPianoLength32";
-            cMenuPianoLength32.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoLength32.setText( "1/32";
-            cMenuPianoLength32.Click += new System.EventHandler( h_lengthQuantize32 );
-            // 
-            // cMenuPianoLength64
-            // 
-            cMenuPianoLength64.setName( "cMenuPianoLength64";
-            cMenuPianoLength64.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoLength64.setText( "1/64";
-            cMenuPianoLength64.Click += new System.EventHandler( h_lengthQuantize64 );
-            // 
-            // cMenuPianoLength128
-            // 
-            cMenuPianoLength128.setName( "cMenuPianoLength128";
-            cMenuPianoLength128.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoLength128.setText( "1/128";
-            cMenuPianoLength128.Click += new System.EventHandler( h_lengthQuantize128 );
-            // 
-            // cMenuPianoLengthOff
-            // 
-            cMenuPianoLengthOff.setName( "cMenuPianoLengthOff";
-            cMenuPianoLengthOff.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoLengthOff.setText( "オフ";
-            cMenuPianoLengthOff.Click += new System.EventHandler( h_lengthQuantizeOff );
-            // 
-            // toolStripMenuItem32
-            // 
-            toolStripMenuItem32.setName( "toolStripMenuItem32";
-            toolStripMenuItem32.Size = new System.Drawing.Size( 106, 6 );
-            // 
-            // cMenuPianoLengthTriplet
-            // 
-            cMenuPianoLengthTriplet.setName( "cMenuPianoLengthTriplet";
-            cMenuPianoLengthTriplet.Size = new System.Drawing.Size( 109, 22 );
-            cMenuPianoLengthTriplet.setText( "3連符";
-            cMenuPianoLengthTriplet.Click += new System.EventHandler( h_lengthQuantizeTriplet );
-            // 
-            // cMenuPianoGrid
-            // 
-            cMenuPianoGrid.setName( "cMenuPianoGrid";
-            cMenuPianoGrid.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoGrid.setText( "Show/Hide Grid Line(&S)";
-            cMenuPianoGrid.Click += new System.EventHandler( cMenuPianoGrid_Click );
-            // 
-            // toolStripMenuItem14
-            // 
-            toolStripMenuItem14.setName( "toolStripMenuItem14";
-            toolStripMenuItem14.Size = new System.Drawing.Size( 238, 6 );
-            // 
-            // cMenuPianoUndo
-            // 
-            cMenuPianoUndo.setName( "cMenuPianoUndo";
-            cMenuPianoUndo.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoUndo.setText( "Undo(&U)";
-            cMenuPianoUndo.Click += new System.EventHandler( cMenuPianoUndo_Click );
-            // 
-            // cMenuPianoRedo
-            // 
-            cMenuPianoRedo.setName( "cMenuPianoRedo";
-            cMenuPianoRedo.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoRedo.setText( "Redo(&R)";
-            cMenuPianoRedo.Click += new System.EventHandler( cMenuPianoRedo_Click );
-            // 
-            // toolStripMenuItem15
-            // 
-            toolStripMenuItem15.setName( "toolStripMenuItem15";
-            toolStripMenuItem15.Size = new System.Drawing.Size( 238, 6 );
-            // 
-            // cMenuPianoCut
-            // 
-            cMenuPianoCut.setName( "cMenuPianoCut";
-            cMenuPianoCut.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoCut.setText( "Cut(&T)";
-            cMenuPianoCut.Click += new System.EventHandler( cMenuPianoCut_Click );
-            // 
-            // cMenuPianoCopy
-            // 
-            cMenuPianoCopy.setName( "cMenuPianoCopy";
-            cMenuPianoCopy.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoCopy.setText( "Copy(&C)";
-            cMenuPianoCopy.Click += new System.EventHandler( cMenuPianoCopy_Click );
-            // 
-            // cMenuPianoPaste
-            // 
-            cMenuPianoPaste.setName( "cMenuPianoPaste";
-            cMenuPianoPaste.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoPaste.setText( "Paste(&P)";
-            cMenuPianoPaste.Click += new System.EventHandler( cMenuPianoPaste_Click );
-            // 
-            // cMenuPianoDelete
-            // 
-            cMenuPianoDelete.setName( "cMenuPianoDelete";
-            cMenuPianoDelete.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoDelete.setText( "Delete(&D)";
-            cMenuPianoDelete.Click += new System.EventHandler( cMenuPianoDelete_Click );
-            // 
-            // toolStripMenuItem16
-            // 
-            toolStripMenuItem16.setName( "toolStripMenuItem16";
-            toolStripMenuItem16.Size = new System.Drawing.Size( 238, 6 );
-            // 
-            // cMenuPianoSelectAll
-            // 
-            cMenuPianoSelectAll.setName( "cMenuPianoSelectAll";
-            cMenuPianoSelectAll.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoSelectAll.setText( "Select All(&A)";
-            cMenuPianoSelectAll.Click += new System.EventHandler( cMenuPianoSelectAll_Click );
-            // 
-            // cMenuPianoSelectAllEvents
-            // 
-            cMenuPianoSelectAllEvents.setName( "cMenuPianoSelectAllEvents";
-            cMenuPianoSelectAllEvents.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoSelectAllEvents.setText( "Select All Events(&E)";
-            cMenuPianoSelectAllEvents.Click += new System.EventHandler( cMenuPianoSelectAllEvents_Click );
-            // 
-            // toolStripMenuItem17
-            // 
-            toolStripMenuItem17.setName( "toolStripMenuItem17";
-            toolStripMenuItem17.Size = new System.Drawing.Size( 238, 6 );
-            // 
-            // cMenuPianoImportLyric
-            // 
-            cMenuPianoImportLyric.setName( "cMenuPianoImportLyric";
-            cMenuPianoImportLyric.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoImportLyric.setText( "Insert Lyrics(&L)";
-            cMenuPianoImportLyric.Click += new System.EventHandler( cMenuPianoImportLyric_Click );
-            // 
-            // cMenuPianoExpressionProperty
-            // 
-            cMenuPianoExpressionProperty.setName( "cMenuPianoExpressionProperty";
-            cMenuPianoExpressionProperty.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoExpressionProperty.setText( "Note Expression Property(&P)";
-            cMenuPianoExpressionProperty.Click += new System.EventHandler( cMenuPianoProperty_Click );
-            // 
-            // cMenuPianoVibratoProperty
-            // 
-            cMenuPianoVibratoProperty.setName( "cMenuPianoVibratoProperty";
-            cMenuPianoVibratoProperty.Size = new System.Drawing.Size( 241, 22 );
-            cMenuPianoVibratoProperty.setText( "Note Vibrato Property";
-            cMenuPianoVibratoProperty.Click += new System.EventHandler( cMenuPianoVibratoProperty_Click );
-            // 
-            // openXmlVsqDialog
-            // 
-            openXmlVsqDialog.Filter = "VSQ Format(*.vsq)|*.vsq|Original Format(*.evsq)|*.evsq";
-            // 
-            // cMenuTrackTab
-            // 
-            cMenuTrackTab.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            cMenuTrackTabTrackOn,
-            toolStripMenuItem24,
-            cMenuTrackTabAdd,
-            cMenuTrackTabCopy,
-            cMenuTrackTabChangeName,
-            cMenuTrackTabDelete,
-            toolStripMenuItem25,
-            cMenuTrackTabRenderCurrent,
-            cMenuTrackTabRenderAll,
-            toolStripMenuItem27,
-            cMenuTrackTabOverlay,
-            cMenuTrackTabRenderer,
-            cMenuTrackTabMasterTuning} );
-            cMenuTrackTab.setName( "cMenuTrackTab";
-            cMenuTrackTab.Size = new System.Drawing.Size( 220, 242 );
-            cMenuTrackTab.Opening += new System.ComponentModel.CancelEventHandler( cMenuTrackTab_Opening );
-            // 
-            // cMenuTrackTabTrackOn
-            // 
-            cMenuTrackTabTrackOn.setName( "cMenuTrackTabTrackOn";
-            cMenuTrackTabTrackOn.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabTrackOn.setText( "Track On(&K)";
-            cMenuTrackTabTrackOn.Click += new System.EventHandler( cMenuTrackTabTrackOn_Click );
-            // 
-            // toolStripMenuItem24
-            // 
-            toolStripMenuItem24.setName( "toolStripMenuItem24";
-            toolStripMenuItem24.Size = new System.Drawing.Size( 216, 6 );
-            // 
-            // cMenuTrackTabAdd
-            // 
-            cMenuTrackTabAdd.setName( "cMenuTrackTabAdd";
-            cMenuTrackTabAdd.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabAdd.setText( "Add Track(&A)";
-            cMenuTrackTabAdd.Click += new System.EventHandler( cMenuTrackTabAdd_Click );
-            // 
-            // cMenuTrackTabCopy
-            // 
-            cMenuTrackTabCopy.setName( "cMenuTrackTabCopy";
-            cMenuTrackTabCopy.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabCopy.setText( "Copy Track(&C)";
-            cMenuTrackTabCopy.Click += new System.EventHandler( cMenuTrackTabCopy_Click );
-            // 
-            // cMenuTrackTabChangeName
-            // 
-            cMenuTrackTabChangeName.setName( "cMenuTrackTabChangeName";
-            cMenuTrackTabChangeName.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabChangeName.setText( "Rename Track(&R)";
-            cMenuTrackTabChangeName.Click += new System.EventHandler( cMenuTrackTabChangeName_Click );
-            // 
-            // cMenuTrackTabDelete
-            // 
-            cMenuTrackTabDelete.setName( "cMenuTrackTabDelete";
-            cMenuTrackTabDelete.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabDelete.setText( "Delete Track(&D)";
-            cMenuTrackTabDelete.Click += new System.EventHandler( cMenuTrackTabDelete_Click );
-            // 
-            // toolStripMenuItem25
-            // 
-            toolStripMenuItem25.setName( "toolStripMenuItem25";
-            toolStripMenuItem25.Size = new System.Drawing.Size( 216, 6 );
-            // 
-            // cMenuTrackTabRenderCurrent
-            // 
-            cMenuTrackTabRenderCurrent.setName( "cMenuTrackTabRenderCurrent";
-            cMenuTrackTabRenderCurrent.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabRenderCurrent.setText( "Render Current Track(&T)";
-            cMenuTrackTabRenderCurrent.Click += new System.EventHandler( cMenuTrackTabRenderCurrent_Click );
-            // 
-            // cMenuTrackTabRenderAll
-            // 
-            cMenuTrackTabRenderAll.setName( "cMenuTrackTabRenderAll";
-            cMenuTrackTabRenderAll.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabRenderAll.setText( "Render All Tracks(&S)";
-            // 
-            // toolStripMenuItem27
-            // 
-            toolStripMenuItem27.setName( "toolStripMenuItem27";
-            toolStripMenuItem27.Size = new System.Drawing.Size( 216, 6 );
-            // 
-            // cMenuTrackTabOverlay
-            // 
-            cMenuTrackTabOverlay.setName( "cMenuTrackTabOverlay";
-            cMenuTrackTabOverlay.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabOverlay.setText( "Overlay(&O)";
-            cMenuTrackTabOverlay.Click += new System.EventHandler( cMenuTrackTabOverlay_Click );
-            // 
-            // cMenuTrackTabRenderer
-            // 
-            cMenuTrackTabRenderer.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            cMenuTrackTabRendererVOCALOID1,
-            cMenuTrackTabRendererVOCALOID2,
-            cMenuTrackTabRendererUtau} );
-            cMenuTrackTabRenderer.setName( "cMenuTrackTabRenderer";
-            cMenuTrackTabRenderer.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabRenderer.setText( "Renderer";
-            cMenuTrackTabRenderer.DropDownOpening += new System.EventHandler( cMenuTrackTabRenderer_DropDownOpening );
-            // 
-            // cMenuTrackTabRendererVOCALOID1
-            // 
-            cMenuTrackTabRendererVOCALOID1.setName( "cMenuTrackTabRendererVOCALOID1";
-            cMenuTrackTabRendererVOCALOID1.Size = new System.Drawing.Size( 146, 22 );
-            cMenuTrackTabRendererVOCALOID1.setText( "VOCALOID1";
-            cMenuTrackTabRendererVOCALOID1.Click += new System.EventHandler( commonRendererVOCALOID1_Click );
-            // 
-            // cMenuTrackTabRendererVOCALOID2
-            // 
-            cMenuTrackTabRendererVOCALOID2.setName( "cMenuTrackTabRendererVOCALOID2";
-            cMenuTrackTabRendererVOCALOID2.Size = new System.Drawing.Size( 146, 22 );
-            cMenuTrackTabRendererVOCALOID2.setText( "VOCALOID2";
-            cMenuTrackTabRendererVOCALOID2.Click += new System.EventHandler( commonRendererVOCALOID2_Click );
-            // 
-            // cMenuTrackTabRendererUtau
-            // 
-            cMenuTrackTabRendererUtau.setName( "cMenuTrackTabRendererUtau";
-            cMenuTrackTabRendererUtau.Size = new System.Drawing.Size( 146, 22 );
-            cMenuTrackTabRendererUtau.setText( "UTAU";
-            cMenuTrackTabRendererUtau.Click += new System.EventHandler( commonRendererUtau_Click );
-            // 
-            // cMenuTrackTabMasterTuning
-            // 
-            cMenuTrackTabMasterTuning.setName( "cMenuTrackTabMasterTuning";
-            cMenuTrackTabMasterTuning.Size = new System.Drawing.Size( 219, 22 );
-            cMenuTrackTabMasterTuning.setText( "Master Tuning(&M)";
-            cMenuTrackTabMasterTuning.Click += new System.EventHandler( commonMasterTuning_Click );
-            // 
-            // cMenuTrackSelector
-            // 
-            cMenuTrackSelector.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            cMenuTrackSelectorPointer,
-            cMenuTrackSelectorPencil,
-            cMenuTrackSelectorLine,
-            cMenuTrackSelectorEraser,
-            cMenuTrackSelectorPaletteTool,
-            toolStripSeparator14,
-            cMenuTrackSelectorCurve,
-            toolStripMenuItem28,
-            cMenuTrackSelectorUndo,
-            cMenuTrackSelectorRedo,
-            toolStripMenuItem29,
-            cMenuTrackSelectorCut,
-            cMenuTrackSelectorCopy,
-            cMenuTrackSelectorPaste,
-            cMenuTrackSelectorDelete,
-            cMenuTrackSelectorDeleteBezier,
-            toolStripMenuItem31,
-            cMenuTrackSelectorSelectAll} );
-            cMenuTrackSelector.setName( "cMenuTrackSelector";
-            cMenuTrackSelector.Size = new System.Drawing.Size( 206, 336 );
-            cMenuTrackSelector.Opening += new System.ComponentModel.CancelEventHandler( cMenuTrackSelector_Opening );
-            // 
-            // cMenuTrackSelectorPointer
-            // 
-            cMenuTrackSelectorPointer.setName( "cMenuTrackSelectorPointer";
-            cMenuTrackSelectorPointer.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorPointer.setText( "Arrow(&A)";
-            cMenuTrackSelectorPointer.Click += new System.EventHandler( cMenuTrackSelectorPointer_Click );
-            // 
-            // cMenuTrackSelectorPencil
-            // 
-            cMenuTrackSelectorPencil.setName( "cMenuTrackSelectorPencil";
-            cMenuTrackSelectorPencil.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorPencil.setText( "Pencil(&W)";
-            cMenuTrackSelectorPencil.Click += new System.EventHandler( cMenuTrackSelectorPencil_Click );
-            // 
-            // cMenuTrackSelectorLine
-            // 
-            cMenuTrackSelectorLine.setName( "cMenuTrackSelectorLine";
-            cMenuTrackSelectorLine.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorLine.setText( "Line(&L)";
-            cMenuTrackSelectorLine.Click += new System.EventHandler( cMenuTrackSelectorLine_Click );
-            // 
-            // cMenuTrackSelectorEraser
-            // 
-            cMenuTrackSelectorEraser.setName( "cMenuTrackSelectorEraser";
-            cMenuTrackSelectorEraser.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorEraser.setText( "Eraser(&E)";
-            cMenuTrackSelectorEraser.Click += new System.EventHandler( cMenuTrackSelectorEraser_Click );
-            // 
-            // cMenuTrackSelectorPaletteTool
-            // 
-            cMenuTrackSelectorPaletteTool.setName( "cMenuTrackSelectorPaletteTool";
-            cMenuTrackSelectorPaletteTool.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorPaletteTool.setText( "Palette Tool";
-            // 
-            // toolStripSeparator14
-            // 
-            toolStripSeparator14.setName( "toolStripSeparator14";
-            toolStripSeparator14.Size = new System.Drawing.Size( 202, 6 );
-            // 
-            // cMenuTrackSelectorCurve
-            // 
-            cMenuTrackSelectorCurve.setName( "cMenuTrackSelectorCurve";
-            cMenuTrackSelectorCurve.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorCurve.setText( "Curve(&V)";
-            cMenuTrackSelectorCurve.Click += new System.EventHandler( cMenuTrackSelectorCurve_Click );
-            // 
-            // toolStripMenuItem28
-            // 
-            toolStripMenuItem28.setName( "toolStripMenuItem28";
-            toolStripMenuItem28.Size = new System.Drawing.Size( 202, 6 );
-            // 
-            // cMenuTrackSelectorUndo
-            // 
-            cMenuTrackSelectorUndo.setName( "cMenuTrackSelectorUndo";
-            cMenuTrackSelectorUndo.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorUndo.setText( "Undo(&U)";
-            cMenuTrackSelectorUndo.Click += new System.EventHandler( cMenuTrackSelectorUndo_Click );
-            // 
-            // cMenuTrackSelectorRedo
-            // 
-            cMenuTrackSelectorRedo.setName( "cMenuTrackSelectorRedo";
-            cMenuTrackSelectorRedo.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorRedo.setText( "Redo(&R)";
-            cMenuTrackSelectorRedo.Click += new System.EventHandler( cMenuTrackSelectorRedo_Click );
-            // 
-            // toolStripMenuItem29
-            // 
-            toolStripMenuItem29.setName( "toolStripMenuItem29";
-            toolStripMenuItem29.Size = new System.Drawing.Size( 202, 6 );
-            // 
-            // cMenuTrackSelectorCut
-            // 
-            cMenuTrackSelectorCut.setName( "cMenuTrackSelectorCut";
-            cMenuTrackSelectorCut.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorCut.setText( "Cut(&T)";
-            cMenuTrackSelectorCut.Click += new System.EventHandler( cMenuTrackSelectorCut_Click );
-            // 
-            // cMenuTrackSelectorCopy
-            // 
-            cMenuTrackSelectorCopy.setName( "cMenuTrackSelectorCopy";
-            cMenuTrackSelectorCopy.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorCopy.setText( "Copy(&C)";
-            cMenuTrackSelectorCopy.Click += new System.EventHandler( cMenuTrackSelectorCopy_Click );
-            // 
-            // cMenuTrackSelectorPaste
-            // 
-            cMenuTrackSelectorPaste.setName( "cMenuTrackSelectorPaste";
-            cMenuTrackSelectorPaste.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorPaste.setText( "Paste(&P)";
-            cMenuTrackSelectorPaste.Click += new System.EventHandler( cMenuTrackSelectorPaste_Click );
-            // 
-            // cMenuTrackSelectorDelete
-            // 
-            cMenuTrackSelectorDelete.setName( "cMenuTrackSelectorDelete";
-            cMenuTrackSelectorDelete.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorDelete.setText( "Delete(&D)";
-            cMenuTrackSelectorDelete.Click += new System.EventHandler( cMenuTrackSelectorDelete_Click );
-            // 
-            // cMenuTrackSelectorDeleteBezier
-            // 
-            cMenuTrackSelectorDeleteBezier.setName( "cMenuTrackSelectorDeleteBezier";
-            cMenuTrackSelectorDeleteBezier.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorDeleteBezier.setText( "Delete Bezier Point(&B)";
-            cMenuTrackSelectorDeleteBezier.Click += new System.EventHandler( cMenuTrackSelectorDeleteBezier_Click );
-            // 
-            // toolStripMenuItem31
-            // 
-            toolStripMenuItem31.setName( "toolStripMenuItem31";
-            toolStripMenuItem31.Size = new System.Drawing.Size( 202, 6 );
-            // 
-            // cMenuTrackSelectorSelectAll
-            // 
-            cMenuTrackSelectorSelectAll.setName( "cMenuTrackSelectorSelectAll";
-            cMenuTrackSelectorSelectAll.Size = new System.Drawing.Size( 205, 22 );
-            cMenuTrackSelectorSelectAll.setText( "Select All Events(&E)";
-            cMenuTrackSelectorSelectAll.Click += new System.EventHandler( cMenuTrackSelectorSelectAll_Click );*/
-            // 
-            // trackBar
-            // 
-            //trackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            //trackBar.AutoSize = false;
-            //trackBar.Location = new System.Drawing.Point( 322, 266 );
-            //trackBar.Margin = new System.Windows.Forms.Padding( 0 );
-            trackBar.setMaximum( 609 );
-            trackBar.setMinimum( 17 );
-            trackBar.setName( "trackBar" );
-            trackBar.setPreferredSize( new Dimension( 83, 16 ) );
-            //trackBar.TabIndex = 15;
-            //trackBar.TabStop = false;
-            //trackBar.TickFrequency = 100;
-            //trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-            trackBar.setValue( 17 );
-            //trackBar.ValueChanged += new System.EventHandler( trackBar_ValueChanged );
-            //trackBar.MouseDown += new System.Windows.Forms.MouseEventHandler( trackBar_MouseDown );
-            //trackBar.Enter += new System.EventHandler( trackBar_Enter );
-            /*// 
-            // bgWorkScreen
-            // 
-            bgWorkScreen.DoWork += new System.ComponentModel.DoWorkEventHandler( bgWorkScreen_DoWork );
-            // 
-            // timer
-            // 
-            timer.Interval = 200;
-            timer.Tick += new System.EventHandler( timer_Tick );*/
-            // 
-            // panel1
-            // 
-            GridBagLayout gbl = new GridBagLayout();
-            panel1.setLayout( gbl );
-            GridBagConstraints gbc = new GridBagConstraints();
-            // pitcutrePositionIndicatorをpanel1に追加
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.gridwidth = 4;
-            gbc.gridheight = 1;
-            gbc.weightx = 0.0d;
-            gbc.weighty = 0.0d;
-            gbl.setConstraints( picturePositionIndicator, gbc );
-            // vScrollをpanel1に追加
-            gbc.fill = GridBagConstraints.VERTICAL;
-            gbc.gridx = 3;
-            gbc.gridy = 1;
-            gbc.gridwidth = 1;
-            gbc.gridheight = 1;
-            gbc.weightx = 0.0d;
-            gbc.weighty = 1.0d;
-            gbl.setConstraints( vScroll, gbc );
-            // hScrollをpanel1に追加
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.gridx = 1;
-            gbc.gridy = 2;
-            gbc.gridwidth = 1;
-            gbc.gridheight = 1;
-            gbc.weightx = 1.0d;
-            gbc.weighty = 0.0d;
-            gbl.setConstraints( hScroll, gbc );
-            // pictPianoRollをpanel1に追加
-            gbc.fill = GridBagConstraints.BOTH;
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            gbc.gridwidth = 3;
-            gbc.gridheight = 1;
-            gbc.weightx = 1.0d;
-            gbc.weighty = 1.0d;
-            gbl.setConstraints( pictPianoRoll, gbc );
-            // pictureBox3をpanel1に追加
-            gbc.gridx = 0;
-            gbc.gridy = 2;
-            gbc.gridwidth = 1;
-            gbc.gridheight = 1;
-            gbc.weightx = 0.0d;
-            gbc.weighty = 0.0d;
-            gbl.setConstraints( pictureBox3, gbc );
-            // trackBarをpanel1に追加
-            gbc.gridx = 2;
-            gbc.gridy = 2;
-            gbc.gridwidth = 1;
-            gbc.gridheight = 1;
-            gbc.weightx = 0.0d;
-            gbc.weighty = 0.0d;
-            gbl.setConstraints( trackBar, gbc );
-            // pictureBox2をpanel1に追加
-            gbc.gridx = 3;
-            gbc.gridy = 2;
-            gbc.gridwidth = 1;
-            gbc.gridheight = 1;
-            gbc.weightx = 0.0d;
-            gbc.weighty = 0.0d;
-            gbl.setConstraints( pictureBox2, gbc );
-            panel1.add( picturePositionIndicator );
-            panel1.add( vScroll );
-            panel1.add( hScroll );
-            panel1.add( pictPianoRoll );
-            panel1.add( pictureBox3 );
-            panel1.add( trackBar );
-            panel1.add( pictureBox2 );
-            panel1.setName( "panel1" );
-            // 
-            // vScroll
-            // 
-            //vScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            //            | System.Windows.Forms.AnchorStyles.Right)));
-            //vScroll.LargeChange = 10;
-            vScroll.setLocation( 405, 48 );
-            //vScroll.Margin = new System.Windows.Forms.Padding( 0 );
-            vScroll.setMaximum( 100 );
-            vScroll.setMinimum( 0 );
-            vScroll.setName( "vScroll" );
-            //vScroll.setSize( 16, 218 );
-            //vScroll.SmallChange = 1;
-            //vScroll.TabIndex = 17;
-            vScroll.setValue( 0 );
-            vScroll.setOrientation( JScrollBar.VERTICAL );
-            //vScroll.ValueChanged += new System.EventHandler( vScroll_ValueChanged );
-            //vScroll.Resize += new System.EventHandler( vScroll_Resize );
-            //vScroll.Enter += new System.EventHandler( vScroll_Enter );
-            // 
-            // hScroll
-            // 
-            //hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-            //            | System.Windows.Forms.AnchorStyles.Right)));
-            //hScroll.LargeChange = 10;
-            //hScroll.setLocation( 66, 266 );
-            //hScroll.Margin = new System.Windows.Forms.Padding( 0 );
-            hScroll.setMaximum( 100 );
-            hScroll.setMinimum( 0 );
-            hScroll.setName( "hScroll" );
-            //hScroll.SmallChange = 1;
-            //hScroll.TabIndex = 16;
-            hScroll.setValue( 0 );
-            hScroll.setOrientation( JScrollBar.HORIZONTAL );
-            //hScroll.ValueChanged += new System.EventHandler( hScroll_ValueChanged );
-            //hScroll.Resize += new System.EventHandler( hScroll_Resize );
-            //hScroll.Enter += new System.EventHandler( hScroll_Enter );
-            // 
-            // picturePositionIndicator
-            // 
-            //picturePositionIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            //            | System.Windows.Forms.AnchorStyles.Right)));
-            //picturePositionIndicator.BackColor = System.Drawing.Color.DarkGray;
-            //picturePositionIndicator.Location = new System.Drawing.Point( 0, 0 );
-            //picturePositionIndicator.Margin = new System.Windows.Forms.Padding( 0 );
-            picturePositionIndicator.setName( "picturePositionIndicator" );
-            picturePositionIndicator.setPreferredSize( new Dimension( 421, 48 ) );
-            //picturePositionIndicator.TabIndex = 10;
-            //picturePositionIndicator.TabStop = false;
-            //picturePositionIndicator.MouseLeave += new System.EventHandler( picturePositionIndicator_MouseLeave );
-            //picturePositionIndicator.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
-            //picturePositionIndicator.MouseMove += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseMove );
-            //picturePositionIndicator.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseDoubleClick );
-            //picturePositionIndicator.MouseClick += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseClick );
-            //picturePositionIndicator.MouseDown += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseDown );
-            //picturePositionIndicator.Paint += new System.Windows.Forms.PaintEventHandler( picturePositionIndicator_Paint );
-            // 
-            // pictPianoRoll
-            // 
-            //pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            //            | System.Windows.Forms.AnchorStyles.Left)
-            //            | System.Windows.Forms.AnchorStyles.Right)));
-            //pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            //pictPianoRoll.Location = new System.Drawing.Point( 0, 48 );
-            //pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            //pictPianoRoll.MinimumSize = new System.Drawing.Size( 0, 100 );
-            pictPianoRoll.setName( "pictPianoRoll" );
-            //pictPianoRoll.Size = new System.Drawing.Size( 405, 218 );
-            //pictPianoRoll.TabIndex = 12;
-            //pictPianoRoll.TabStop = false;
-            //pictPianoRoll.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown );
-            //pictPianoRoll.BKeyUp += new System.Windows.Forms.KeyEventHandler( commonCaptureSpaceKeyUp );
-            //pictPianoRoll.MouseMove += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseMove );
-            //pictPianoRoll.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseDoubleClick );
-            //pictPianoRoll.MouseClick += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseClick );
-            //pictPianoRoll.MouseDown += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseDown );
-            //pictPianoRoll.Paint += new System.Windows.Forms.PaintEventHandler( pictPianoRoll_Paint );
-            //pictPianoRoll.MouseUp += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseUp );
-            //pictPianoRoll.BKeyDown += new System.Windows.Forms.KeyEventHandler( commonCaptureSpaceKeyDown );
-            // 
-            // pictureBox3
-            // 
-            //pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            //pictureBox3.BackColor = System.Drawing.SystemColors.Control;
-            //pictureBox3.Location = new System.Drawing.Point( 0, 266 );
-            //pictureBox3.Margin = new System.Windows.Forms.Padding( 0 );
-            pictureBox3.setName( "pictureBox3" );
-            pictureBox3.setPreferredSize( new Dimension( 66, 16 ) );
-            //pictureBox3.TabIndex = 8;
-            //pictureBox3.TabStop = false;
-            //pictureBox3.MouseDown += new System.Windows.Forms.MouseEventHandler( pictureBox3_MouseDown );
-            // 
-            // pictureBox2
-            // 
-            //pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            //pictureBox2.BackColor = System.Drawing.SystemColors.Control;
-            //pictureBox2.Location = new System.Drawing.Point( 405, 266 );
-            //pictureBox2.Margin = new System.Windows.Forms.Padding( 0 );
-            pictureBox2.setName( "pictureBox2" );
-            pictureBox2.setPreferredSize( new Dimension( 16, 16 ) );
-            //pictureBox2.TabIndex = 5;
-            //pictureBox2.TabStop = false;
-            //pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler( pictureBox2_MouseDown );
-            // 
-            // toolStripTool
-            // 
-            //toolStripTool.Dock = System.Windows.Forms.DockStyle.None;
-            toolStripTool.add( stripBtnPointer );
-            toolStripTool.add( stripBtnPencil );
-            toolStripTool.add( stripBtnLine );
-            toolStripTool.add( stripBtnEraser );
-            toolStripTool.addSeparator();
-            toolStripTool.add( stripBtnGrid );
-            toolStripTool.add( stripBtnCurve );
-            //toolStripTool.Location = new System.Drawing.Point( 3, 50 );
-            toolStripTool.setName( "toolStripTool" );
-            //toolStripTool.Size = new System.Drawing.Size( 379, 25 );
-            //toolStripTool.TabIndex = 17;
-            //toolStripTool.setText( "toolStrip1" );
-            toolStripTool.setFloatable( true );
-            // 
-            // stripBtnPointer
-            // 
-            //stripBtnPointer.Checked = true;
-            //stripBtnPointer.CheckState = System.Windows.Forms.CheckState.Checked;
-            //stripBtnPointer.Image = global::Boare.Cadencii.Properties.Resources.arrow_135;
-            //stripBtnPointer.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            //stripBtnPointer.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnPointer.setName( "stripBtnPointer" );
-            //stripBtnPointer.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            //stripBtnPointer.Size = new System.Drawing.Size( 69, 22 );
-            stripBtnPointer.setText( "Pointer" );
-            //stripBtnPointer.Click += new System.EventHandler( stripBtnArrow_Click );
-            // 
-            // stripBtnPencil
-            // 
-            //stripBtnPencil.Image = global::Boare.Cadencii.Properties.Resources.pencil;
-            //stripBtnPencil.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnPencil.setName( "stripBtnPencil" );
-            //stripBtnPencil.Size = new System.Drawing.Size( 61, 22 );
-            stripBtnPencil.setText( "Pencil" );
-            //stripBtnPencil.Click += new System.EventHandler( stripBtnPencil_Click );
-            // 
-            // stripBtnLine
-            // 
-            //stripBtnLine.Image = global::Boare.Cadencii.Properties.Resources.layer_shape_line;
-            //stripBtnLine.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnLine.setName( "stripBtnLine" );
-            //stripBtnLine.Size = new System.Drawing.Size( 52, 22 );
-            stripBtnLine.setText( "Line" );
-            //stripBtnLine.Click += new System.EventHandler( stripBtnLine_Click );
-            // 
-            // stripBtnEraser
-            // 
-            //stripBtnEraser.Image = global::Boare.Cadencii.Properties.Resources.eraser;
-            //stripBtnEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnEraser.setName( "stripBtnEraser" );
-            //stripBtnEraser.Size = new System.Drawing.Size( 65, 22 );
-            stripBtnEraser.setText( "Eraser" );
-            //stripBtnEraser.Click += new System.EventHandler( stripBtnEraser_Click );
-            // 
-            // stripBtnGrid
-            // 
-            //stripBtnGrid.CheckOnClick = true;
-            //stripBtnGrid.Image = global::Boare.Cadencii.Properties.Resources.ruler_crop;
-            //stripBtnGrid.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnGrid.setName( "stripBtnGrid" );
-            //stripBtnGrid.Size = new System.Drawing.Size( 52, 22 );
-            stripBtnGrid.setText( "Grid" );
-            //stripBtnGrid.CheckedChanged += new System.EventHandler( stripBtnGrid_CheckedChanged );
-            // 
-            // stripBtnCurve
-            // 
-            //stripBtnCurve.CheckOnClick = true;
-            //stripBtnCurve.Image = global::Boare.Cadencii.Properties.Resources.layer_shape_curve;
-            //stripBtnCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnCurve.setName( "stripBtnCurve" );
-            //stripBtnCurve.Size = new System.Drawing.Size( 62, 22 );
-            stripBtnCurve.setText( "Curve" );
-            //stripBtnCurve.CheckedChanged += new System.EventHandler( stripBtnCurve_CheckedChanged );
-            /*// 
-            // toolStripContainer
-            // 
-            // 
-            // toolStripContainer.BottomToolStripPanel
-            // 
-            toolStripContainer.BottomToolStripPanel.Controls.Add( toolStripBottom );
-            toolStripContainer.BottomToolStripPanel.Controls.Add( statusStrip1 );*/
-            // 
-            // toolStripContainer.ContentPanel
-            // 
-            //toolStripContainer.ContentPanel.AutoScroll = true;
-            //toolStripContainer.ContentPanel.Controls.Add( panel2 );
-            getContentPane().add( splitContainer1, BorderLayout.CENTER );
-            splitContainer2.setTopComponent( new JButton( "button1" ) );
-            splitContainer2.setBottomComponent( new JButton( "button2" ) );
-            splitContainer1.setTopComponent( panel1 );
-            splitContainer1.setBottomComponent( splitContainer2 );
-            //toolStripContainer.ContentPanel.Controls.Add( splitContainer2 );
-            //toolStripContainer.ContentPanel.Controls.Add( splitContainer1 );
-            /*toolStripContainer.ContentPanel.Size = new System.Drawing.Size( 962, 562 );
-            toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            toolStripContainer.LeftToolStripPanelVisible = false;
-            toolStripContainer.Location = new System.Drawing.Point( 0, 26 );
-            toolStripContainer.setName( "toolStripContainer";
-            toolStripContainer.RightToolStripPanelVisible = false;
-            toolStripContainer.Size = new System.Drawing.Size( 962, 734 );
-            toolStripContainer.TabIndex = 18;
-            toolStripContainer.setText( "toolStripContainer1";*/
-            // 
-            // toolStripContainer.TopToolStripPanel
-            // 
-            JPanel p = new JPanel();
-            p.setLayout( new FlowLayout( FlowLayout.LEFT ) );
-            p.add( toolStripPosition );
-            p.add( toolStripTool );
-            getContentPane().add( p, BorderLayout.NORTH );
-            //getContentPane().add( toolStripPosition, BorderLayout.NORTH );
-            //toolStripContainer.TopToolStripPanel.Controls.Add( toolStripMeasure );
-            //getContentPane().add( toolStripTool, BorderLayout.NORTH );
-            //toolStripContainer.TopToolStripPanel.Controls.Add( toolStripFile );
-            //toolStripContainer.TopToolStripPanel.Controls.Add( toolStripPaletteTools );
-            /*toolStripContainer.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            toolStripContainer.TopToolStripPanel.SizeChanged += new System.EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
-            // 
-            // toolStripBottom
-            // 
-            toolStripBottom.Dock = System.Windows.Forms.DockStyle.None;
-            toolStripBottom.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            toolStripLabel6,
-            stripLblCursor,
-            toolStripSeparator8,
-            toolStripLabel8,
-            stripLblTempo,
-            toolStripSeparator9,
-            toolStripLabel10,
-            stripLblBeat,
-            toolStripSeparator4,
-            toolStripStatusLabel1,
-            stripLblGameCtrlMode,
-            toolStripSeparator10,
-            toolStripStatusLabel2,
-            stripLblMidiIn,
-            toolStripSeparator11,
-            stripDDBtnSpeed} );
-            toolStripBottom.Location = new System.Drawing.Point( 5, 0 );
-            toolStripBottom.setName( "toolStripBottom";
-            toolStripBottom.Size = new System.Drawing.Size( 768, 25 );
-            toolStripBottom.TabIndex = 22;
-            // 
-            // toolStripLabel6
-            // 
-            toolStripLabel6.setName( "toolStripLabel6";
-            toolStripLabel6.Size = new System.Drawing.Size( 58, 22 );
-            toolStripLabel6.setText( "CURSOR";
-            // 
-            // stripLblCursor
-            // 
-            stripLblCursor.AutoSize = false;
-            stripLblCursor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            stripLblCursor.Font = new System.Drawing.Font( "MS UI Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)) );
-            stripLblCursor.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripLblCursor.setName( "stripLblCursor";
-            stripLblCursor.Size = new System.Drawing.Size( 90, 22 );
-            stripLblCursor.setText( "0 : 0 : 000";
-            // 
-            // toolStripSeparator8
-            // 
-            toolStripSeparator8.setName( "toolStripSeparator8";
-            toolStripSeparator8.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // toolStripLabel8
-            // 
-            toolStripLabel8.setName( "toolStripLabel8";
-            toolStripLabel8.Size = new System.Drawing.Size( 49, 22 );
-            toolStripLabel8.setText( "TEMPO";
-            // 
-            // stripLblTempo
-            // 
-            stripLblTempo.AutoSize = false;
-            stripLblTempo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            stripLblTempo.Font = new System.Drawing.Font( "MS UI Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)) );
-            stripLblTempo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripLblTempo.setName( "stripLblTempo";
-            stripLblTempo.Size = new System.Drawing.Size( 60, 22 );
-            stripLblTempo.setText( "120.00";
-            // 
-            // toolStripSeparator9
-            // 
-            toolStripSeparator9.setName( "toolStripSeparator9";
-            toolStripSeparator9.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // toolStripLabel10
-            // 
-            toolStripLabel10.setName( "toolStripLabel10";
-            toolStripLabel10.Size = new System.Drawing.Size( 38, 22 );
-            toolStripLabel10.setText( "BEAT";
-            // 
-            // stripLblBeat
-            // 
-            stripLblBeat.AutoSize = false;
-            stripLblBeat.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            stripLblBeat.Font = new System.Drawing.Font( "MS UI Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)) );
-            stripLblBeat.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripLblBeat.setName( "stripLblBeat";
-            stripLblBeat.Size = new System.Drawing.Size( 45, 22 );
-            stripLblBeat.setText( "4/4";
-            // 
-            // toolStripSeparator4
-            // 
-            toolStripSeparator4.setName( "toolStripSeparator4";
-            toolStripSeparator4.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // toolStripStatusLabel1
-            // 
-            toolStripStatusLabel1.setName( "toolStripStatusLabel1";
-            toolStripStatusLabel1.Size = new System.Drawing.Size( 101, 20 );
-            toolStripStatusLabel1.setText( "Game Controler";
-            // 
-            // stripLblGameCtrlMode
-            // 
-            stripLblGameCtrlMode.Image = global::Boare.Cadencii.Properties.Resources.slash;
-            stripLblGameCtrlMode.setName( "stripLblGameCtrlMode";
-            stripLblGameCtrlMode.Size = new System.Drawing.Size( 73, 20 );
-            stripLblGameCtrlMode.setText( "Disabled";
-            stripLblGameCtrlMode.ToolTipText = "Game Controler";
-            // 
-            // toolStripSeparator10
-            // 
-            toolStripSeparator10.setName( "toolStripSeparator10";
-            toolStripSeparator10.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // toolStripStatusLabel2
-            // 
-            toolStripStatusLabel2.setName( "toolStripStatusLabel2";
-            toolStripStatusLabel2.Size = new System.Drawing.Size( 53, 20 );
-            toolStripStatusLabel2.setText( "MIDI In";
-            // 
-            // stripLblMidiIn
-            // 
-            stripLblMidiIn.Image = global::Boare.Cadencii.Properties.Resources.slash;
-            stripLblMidiIn.setName( "stripLblMidiIn";
-            stripLblMidiIn.Size = new System.Drawing.Size( 73, 20 );
-            stripLblMidiIn.setText( "Disabled";
-            stripLblMidiIn.ToolTipText = "Midi In Device";
-            // 
-            // toolStripSeparator11
-            // 
-            toolStripSeparator11.setName( "toolStripSeparator11";
-            toolStripSeparator11.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // stripDDBtnSpeed
-            // 
-            stripDDBtnSpeed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            stripDDBtnSpeed.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            stripDDBtnSpeedTextbox,
-            stripDDBtnSpeed033,
-            stripDDBtnSpeed050,
-            stripDDBtnSpeed100} );
-            stripDDBtnSpeed.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripDDBtnSpeed.setName( "stripDDBtnSpeed";
-            stripDDBtnSpeed.Size = new System.Drawing.Size( 86, 22 );
-            stripDDBtnSpeed.setText( "Speed 1.0x";
-            stripDDBtnSpeed.DropDownOpening += new System.EventHandler( stripDDBtnSpeed_DropDownOpening );
-            // 
-            // stripDDBtnSpeedTextbox
-            // 
-            stripDDBtnSpeedTextbox.setName( "stripDDBtnSpeedTextbox";
-            stripDDBtnSpeedTextbox.Size = new System.Drawing.Size( 100, 25 );
-            stripDDBtnSpeedTextbox.setText( "100";
-            stripDDBtnSpeedTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler( stripDDBtnSpeedTextbox_KeyDown );
-            // 
-            // stripDDBtnSpeed033
-            // 
-            stripDDBtnSpeed033.setName( "stripDDBtnSpeed033";
-            stripDDBtnSpeed033.Size = new System.Drawing.Size( 160, 22 );
-            stripDDBtnSpeed033.setText( "33.3%";
-            stripDDBtnSpeed033.Click += new System.EventHandler( stripDDBtnSpeed033_Click );
-            // 
-            // stripDDBtnSpeed050
-            // 
-            stripDDBtnSpeed050.setName( "stripDDBtnSpeed050";
-            stripDDBtnSpeed050.Size = new System.Drawing.Size( 160, 22 );
-            stripDDBtnSpeed050.setText( "50%";
-            stripDDBtnSpeed050.Click += new System.EventHandler( stripDDBtnSpeed050_Click );
-            // 
-            // stripDDBtnSpeed100
-            // 
-            stripDDBtnSpeed100.setName( "stripDDBtnSpeed100";
-            stripDDBtnSpeed100.Size = new System.Drawing.Size( 160, 22 );
-            stripDDBtnSpeed100.setText( "100%";
-            stripDDBtnSpeed100.Click += new System.EventHandler( stripDDBtnSpeed100_Click );
-            // 
-            // statusStrip1
-            // 
-            statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            statusStrip1.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            statusLabel} );
-            statusStrip1.Location = new System.Drawing.Point( 0, 25 );
-            statusStrip1.setName( "statusStrip1";
-            statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
-            statusStrip1.Size = new System.Drawing.Size( 962, 22 );
-            statusStrip1.TabIndex = 17;
-            statusStrip1.setText( "statusStrip1";*/
-            // 
-            // statusLabel
-            // 
-            statusLabel.setName( "statusLabel" );
-            statusLabel.setText( " " );
-            Panel panelForStatusLabel = new Panel();
-            panelForStatusLabel.setLayout( new BoxLayout( panelForStatusLabel, BoxLayout.X_AXIS ) );
-            panelForStatusLabel.add( statusLabel );
-            getContentPane().add( panelForStatusLabel, BorderLayout.SOUTH );
-            /* // 
-            // panel2
-            // 
-            panel2.BackColor = System.Drawing.Color.DarkGray;
-            panel2.Controls.Add( waveView );
-            panel2.Location = new System.Drawing.Point( 3, 291 );
-            panel2.setName( "panel2";
-            panel2.Size = new System.Drawing.Size( 421, 59 );
-            panel2.TabIndex = 19;
-            // 
-            // waveView
-            // 
-            waveView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            waveView.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))) );
-            waveView.Location = new System.Drawing.Point( 66, 0 );
-            waveView.Margin = new System.Windows.Forms.Padding( 0 );
-            waveView.setName( "waveView";
-            waveView.Size = new System.Drawing.Size( 355, 59 );
-            waveView.TabIndex = 17;
-            // 
-            // splitContainer2
-            // 
-            splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            splitContainer2.IsSplitterFixed = false;
-            splitContainer2.Location = new System.Drawing.Point( 606, 17 );
-            splitContainer2.setName( "splitContainer2";
-            splitContainer2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            // 
-            // 
-            // 
-            splitContainer2.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            splitContainer2.Panel1.BorderColor = System.Drawing.Color.Black;
-            splitContainer2.Panel1.Location = new System.Drawing.Point( 0, 0 );
-            splitContainer2.Panel1.Margin = new System.Windows.Forms.Padding( 0, 0, 0, 4 );
-            splitContainer2.Panel1.setName( "m_panel1";
-            splitContainer2.Panel1.Size = new System.Drawing.Size( 115, 53 );
-            splitContainer2.Panel1.TabIndex = 0;
-            splitContainer2.Panel1MinSize = 25;
-            // 
-            // 
-            // 
-            splitContainer2.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            splitContainer2.Panel2.BorderColor = System.Drawing.Color.Black;
-            splitContainer2.Panel2.Location = new System.Drawing.Point( 0, 57 );
-            splitContainer2.Panel2.Margin = new System.Windows.Forms.Padding( 0 );
-            splitContainer2.Panel2.setName( "m_panel2";
-            splitContainer2.Panel2.Size = new System.Drawing.Size( 115, 185 );
-            splitContainer2.Panel2.TabIndex = 1;
-            splitContainer2.Panel2MinSize = 25;
-            splitContainer2.Size = new System.Drawing.Size( 115, 242 );
-            splitContainer2.SplitterDistance = 53;
-            splitContainer2.SplitterWidth = 4;
-            splitContainer2.TabIndex = 18;
-            splitContainer2.setText( "bSplitContainer1";
-            // 
-            // splitContainer1
-            // 
-            splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            splitContainer1.IsSplitterFixed = false;
-            splitContainer1.Location = new System.Drawing.Point( 440, 17 );
-            splitContainer1.MinimumSize = new System.Drawing.Size( 0, 54 );
-            splitContainer1.setName( "splitContainer1";
-            splitContainer1.Orientation = System.Windows.Forms.Orientation.Vertical;
-            // 
-            // 
-            // 
-            splitContainer1.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            splitContainer1.Panel1.BorderColor = System.Drawing.Color.Black;
-            splitContainer1.Panel1.Location = new System.Drawing.Point( 0, 0 );
-            splitContainer1.Panel1.Margin = new System.Windows.Forms.Padding( 0, 0, 0, 4 );
-            splitContainer1.Panel1.setName( "m_panel1";
-            splitContainer1.Panel1.Size = new System.Drawing.Size( 138, 27 );
-            splitContainer1.Panel1.TabIndex = 0;
-            splitContainer1.Panel1MinSize = 25;
-            // 
-            // 
-            // 
-            splitContainer1.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            splitContainer1.Panel2.BorderColor = System.Drawing.Color.Black;
-            splitContainer1.Panel2.Location = new System.Drawing.Point( 0, 31 );
-            splitContainer1.Panel2.Margin = new System.Windows.Forms.Padding( 0 );
-            splitContainer1.Panel2.setName( "m_panel2";
-            splitContainer1.Panel2.Size = new System.Drawing.Size( 138, 211 );
-            splitContainer1.Panel2.TabIndex = 1;
-            splitContainer1.Panel2MinSize = 25;
-            splitContainer1.Size = new System.Drawing.Size( 138, 242 );
-            splitContainer1.SplitterDistance = 27;
-            splitContainer1.SplitterWidth = 4;
-            splitContainer1.TabIndex = 4;
-            splitContainer1.setText( "splitContainerEx1";*/
-            // 
-            // toolStripPosition
-            // 
-            toolStripPosition.add( stripBtnMoveTop );
-            toolStripPosition.add( stripBtnRewind );
-            toolStripPosition.add( stripBtnForward );
-            toolStripPosition.add( stripBtnMoveEnd );
-            toolStripPosition.add( stripBtnPlay );
-            toolStripPosition.add( stripBtnStop );
-            toolStripPosition.addSeparator();
-            toolStripPosition.add( stripBtnScroll );
-            toolStripPosition.add( stripBtnLoop );
-            //toolStripPosition.Location = new System.Drawing.Point( 3, 0 );
-            toolStripPosition.setName( "toolStripPosition" );
-            //toolStripPosition.Size = new System.Drawing.Size( 202, 25 );
-            //toolStripPosition.TabIndex = 18;
-            // 
-            // stripBtnMoveTop
-            // 
-            //stripBtnMoveTop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            //stripBtnMoveTop.Image = global::Boare.Cadencii.Properties.Resources.control_stop_180;
-            //stripBtnMoveTop.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnMoveTop.setName( "stripBtnMoveTop" );
-            //stripBtnMoveTop.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnMoveTop.setText( "  <=|  " );
-            //stripBtnMoveTop.ToolTipText = "MoveTop";
-            //stripBtnMoveTop.Click += new System.EventHandler( stripBtnMoveTop_Click );
-            // 
-            // stripBtnRewind
-            // 
-            //stripBtnRewind.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            //stripBtnRewind.Image = global::Boare.Cadencii.Properties.Resources.control_double_180;
-            //stripBtnRewind.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnRewind.setName( "stripBtnRewind" );
-            //stripBtnRewind.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnRewind.setText( "  <<  " );
-            //stripBtnRewind.ToolTipText = "Rewind";
-            //stripBtnRewind.Click += new System.EventHandler( stripBtnRewind_Click );
-            // 
-            // stripBtnForward
-            // 
-            //stripBtnForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            //stripBtnForward.Image = global::Boare.Cadencii.Properties.Resources.control_double;
-            //stripBtnForward.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnForward.setName( "stripBtnForward" );
-            //stripBtnForward.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnForward.setText( "  >>  " );
-            //stripBtnForward.ToolTipText = "Forward";
-            //stripBtnForward.Click += new System.EventHandler( stripBtnForward_Click );
-            // 
-            // stripBtnMoveEnd
-            // 
-            //stripBtnMoveEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            //stripBtnMoveEnd.Image = global::Boare.Cadencii.Properties.Resources.control_stop;
-            //stripBtnMoveEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnMoveEnd.setName( "stripBtnMoveEnd" );
-            //stripBtnMoveEnd.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnMoveEnd.setText( "  |=>  " );
-            //stripBtnMoveEnd.ToolTipText = "MoveEnd";
-            //stripBtnMoveEnd.Click += new System.EventHandler( stripBtnMoveEnd_Click );
-            // 
-            // stripBtnPlay
-            // 
-            //stripBtnPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            //stripBtnPlay.Image = global::Boare.Cadencii.Properties.Resources.control;
-            //stripBtnPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnPlay.setName( "stripBtnPlay" );
-            //stripBtnPlay.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnPlay.setText( "  =>  " );
-            //stripBtnPlay.ToolTipText = "Play";
-            //stripBtnPlay.Click += new System.EventHandler( stripBtnPlay_Click );
-            // 
-            // stripBtnStop
-            // 
-            //stripBtnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            //stripBtnStop.Image = global::Boare.Cadencii.Properties.Resources.control_pause;
-            //stripBtnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnStop.setName( "stripBtnStop" );
-            //stripBtnStop.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnStop.setText( "   ||   " );
-            //stripBtnStop.ToolTipText = "Stop";
-            //stripBtnStop.Click += new System.EventHandler( stripBtnStop_Click );
-            // 
-            // stripBtnScroll
-            // 
-            //stripBtnScroll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            //stripBtnScroll.Image = global::Boare.Cadencii.Properties.Resources.arrow_circle_double;
-            //stripBtnScroll.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnScroll.setName( "stripBtnScroll" );
-            //stripBtnScroll.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnScroll.setText( "Scroll" );
-            //stripBtnScroll.Click += new System.EventHandler( stripBtnScroll_Click );
-            // 
-            // stripBtnLoop
-            // 
-            //stripBtnLoop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            //stripBtnLoop.Image = global::Boare.Cadencii.Properties.Resources.arrow_return;
-            //stripBtnLoop.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnLoop.setName( "stripBtnLoop" );
-            //stripBtnLoop.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnLoop.setText( "Loop" );
-            //stripBtnLoop.Click += new System.EventHandler( stripBtnLoop_Click );
-            /* // 
-            // toolStripMeasure
-            // 
-            toolStripMeasure.Dock = System.Windows.Forms.DockStyle.None;
-            toolStripMeasure.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            toolStripLabel5,
-            stripLblMeasure,
-            toolStripButton1,
-            stripDDBtnLength,
-            stripDDBtnQuantize,
-            toolStripSeparator6,
-            stripBtnStartMarker,
-            stripBtnEndMarker} );
-            toolStripMeasure.Location = new System.Drawing.Point( 3, 25 );
-            toolStripMeasure.setName( "toolStripMeasure";
-            toolStripMeasure.Size = new System.Drawing.Size( 430, 25 );
-            toolStripMeasure.TabIndex = 19;
-            // 
-            // toolStripLabel5
-            // 
-            toolStripLabel5.setName( "toolStripLabel5";
-            toolStripLabel5.Size = new System.Drawing.Size( 65, 22 );
-            toolStripLabel5.setText( "MEASURE";
-            // 
-            // stripLblMeasure
-            // 
-            stripLblMeasure.AutoSize = false;
-            stripLblMeasure.Font = new System.Drawing.Font( "MS UI Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)) );
-            stripLblMeasure.setName( "stripLblMeasure";
-            stripLblMeasure.Size = new System.Drawing.Size( 90, 22 );
-            stripLblMeasure.setText( "0 : 0 : 000";
-            stripLblMeasure.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // toolStripButton1
-            // 
-            toolStripButton1.setName( "toolStripButton1";
-            toolStripButton1.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // stripDDBtnLength
-            // 
-            stripDDBtnLength.AutoSize = false;
-            stripDDBtnLength.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            stripDDBtnLength.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            stripDDBtnLength04,
-            stripDDBtnLength08,
-            stripDDBtnLength16,
-            stripDDBtnLength32,
-            stripDDBtnLength64,
-            stripDDBtnLength128,
-            stripDDBtnLengthOff,
-            toolStripSeparator2,
-            stripDDBtnLengthTriplet} );
-            stripDDBtnLength.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripDDBtnLength.setName( "stripDDBtnLength";
-            stripDDBtnLength.Size = new System.Drawing.Size( 95, 22 );
-            stripDDBtnLength.setText( "LENGTH  1/64";
-            stripDDBtnLength.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // stripDDBtnLength04
-            // 
-            stripDDBtnLength04.setName( "stripDDBtnLength04";
-            stripDDBtnLength04.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnLength04.setText( "1/4";
-            stripDDBtnLength04.Click += new System.EventHandler( h_lengthQuantize04 );
-            // 
-            // stripDDBtnLength08
-            // 
-            stripDDBtnLength08.setName( "stripDDBtnLength08";
-            stripDDBtnLength08.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnLength08.setText( "1/8";
-            stripDDBtnLength08.Click += new System.EventHandler( h_lengthQuantize08 );
-            // 
-            // stripDDBtnLength16
-            // 
-            stripDDBtnLength16.setName( "stripDDBtnLength16";
-            stripDDBtnLength16.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnLength16.setText( "1/16";
-            stripDDBtnLength16.Click += new System.EventHandler( h_lengthQuantize16 );
-            // 
-            // stripDDBtnLength32
-            // 
-            stripDDBtnLength32.setName( "stripDDBtnLength32";
-            stripDDBtnLength32.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnLength32.setText( "1/32";
-            stripDDBtnLength32.Click += new System.EventHandler( h_lengthQuantize32 );
-            // 
-            // stripDDBtnLength64
-            // 
-            stripDDBtnLength64.setName( "stripDDBtnLength64";
-            stripDDBtnLength64.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnLength64.setText( "1/64";
-            stripDDBtnLength64.Click += new System.EventHandler( h_lengthQuantize64 );
-            // 
-            // stripDDBtnLength128
-            // 
-            stripDDBtnLength128.setName( "stripDDBtnLength128";
-            stripDDBtnLength128.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnLength128.setText( "1/128";
-            stripDDBtnLength128.Click += new System.EventHandler( h_lengthQuantize128 );
-            // 
-            // stripDDBtnLengthOff
-            // 
-            stripDDBtnLengthOff.setName( "stripDDBtnLengthOff";
-            stripDDBtnLengthOff.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnLengthOff.setText( "Off";
-            stripDDBtnLengthOff.Click += new System.EventHandler( h_lengthQuantizeOff );
-            // 
-            // toolStripSeparator2
-            // 
-            toolStripSeparator2.setName( "toolStripSeparator2";
-            toolStripSeparator2.Size = new System.Drawing.Size( 110, 6 );
-            // 
-            // stripDDBtnLengthTriplet
-            // 
-            stripDDBtnLengthTriplet.setName( "stripDDBtnLengthTriplet";
-            stripDDBtnLengthTriplet.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnLengthTriplet.setText( "Triplet";
-            stripDDBtnLengthTriplet.Click += new System.EventHandler( h_lengthQuantizeTriplet );
-            // 
-            // stripDDBtnQuantize
-            // 
-            stripDDBtnQuantize.AutoSize = false;
-            stripDDBtnQuantize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            stripDDBtnQuantize.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            stripDDBtnQuantize04,
-            stripDDBtnQuantize08,
-            stripDDBtnQuantize16,
-            stripDDBtnQuantize32,
-            stripDDBtnQuantize64,
-            stripDDBtnQuantize128,
-            stripDDBtnQuantizeOff,
-            toolStripSeparator3,
-            stripDDBtnQuantizeTriplet} );
-            stripDDBtnQuantize.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripDDBtnQuantize.setName( "stripDDBtnQuantize";
-            stripDDBtnQuantize.Size = new System.Drawing.Size( 110, 22 );
-            stripDDBtnQuantize.setText( "QUANTIZE  1/64";
-            stripDDBtnQuantize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // stripDDBtnQuantize04
-            // 
-            stripDDBtnQuantize04.setName( "stripDDBtnQuantize04";
-            stripDDBtnQuantize04.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnQuantize04.setText( "1/4";
-            stripDDBtnQuantize04.Click += new System.EventHandler( h_positionQuantize04 );
-            // 
-            // stripDDBtnQuantize08
-            // 
-            stripDDBtnQuantize08.setName( "stripDDBtnQuantize08";
-            stripDDBtnQuantize08.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnQuantize08.setText( "1/8";
-            stripDDBtnQuantize08.Click += new System.EventHandler( h_positionQuantize08 );
-            // 
-            // stripDDBtnQuantize16
-            // 
-            stripDDBtnQuantize16.setName( "stripDDBtnQuantize16";
-            stripDDBtnQuantize16.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnQuantize16.setText( "1/16";
-            stripDDBtnQuantize16.Click += new System.EventHandler( h_positionQuantize16 );
-            // 
-            // stripDDBtnQuantize32
-            // 
-            stripDDBtnQuantize32.setName( "stripDDBtnQuantize32";
-            stripDDBtnQuantize32.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnQuantize32.setText( "1/32";
-            stripDDBtnQuantize32.Click += new System.EventHandler( h_positionQuantize32 );
-            // 
-            // stripDDBtnQuantize64
-            // 
-            stripDDBtnQuantize64.setName( "stripDDBtnQuantize64";
-            stripDDBtnQuantize64.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnQuantize64.setText( "1/64";
-            stripDDBtnQuantize64.Click += new System.EventHandler( h_positionQuantize64 );
-            // 
-            // stripDDBtnQuantize128
-            // 
-            stripDDBtnQuantize128.setName( "stripDDBtnQuantize128";
-            stripDDBtnQuantize128.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnQuantize128.setText( "1/128";
-            stripDDBtnQuantize128.Click += new System.EventHandler( h_positionQuantize128 );
-            // 
-            // stripDDBtnQuantizeOff
-            // 
-            stripDDBtnQuantizeOff.setName( "stripDDBtnQuantizeOff";
-            stripDDBtnQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnQuantizeOff.setText( "Off";
-            stripDDBtnQuantizeOff.Click += new System.EventHandler( h_positionQuantizeOff );
-            // 
-            // toolStripSeparator3
-            // 
-            toolStripSeparator3.setName( "toolStripSeparator3";
-            toolStripSeparator3.Size = new System.Drawing.Size( 110, 6 );
-            // 
-            // stripDDBtnQuantizeTriplet
-            // 
-            stripDDBtnQuantizeTriplet.setName( "stripDDBtnQuantizeTriplet";
-            stripDDBtnQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
-            stripDDBtnQuantizeTriplet.setText( "Triplet";
-            stripDDBtnQuantizeTriplet.Click += new System.EventHandler( h_positionQuantizeTriplet );
-            // 
-            // toolStripSeparator6
-            // 
-            toolStripSeparator6.setName( "toolStripSeparator6";
-            toolStripSeparator6.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // stripBtnStartMarker
-            // 
-            stripBtnStartMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnStartMarker.Image = global::Boare.Cadencii.Properties.Resources.pin__arrow;
-            stripBtnStartMarker.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnStartMarker.setName( "stripBtnStartMarker";
-            stripBtnStartMarker.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnStartMarker.setText( "StartMarker";
-            stripBtnStartMarker.Click += new System.EventHandler( stripBtnStartMarker_Click );
-            // 
-            // stripBtnEndMarker
-            // 
-            stripBtnEndMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnEndMarker.Image = global::Boare.Cadencii.Properties.Resources.pin__arrow_inv;
-            stripBtnEndMarker.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnEndMarker.setName( "stripBtnEndMarker";
-            stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnEndMarker.setText( "EndMarker";
-            stripBtnEndMarker.Click += new System.EventHandler( stripBtnEndMarker_Click );
-            // 
-            // toolStripFile
-            // 
-            toolStripFile.Dock = System.Windows.Forms.DockStyle.None;
-            toolStripFile.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            stripBtnFileNew,
-            stripBtnFileOpen,
-            stripBtnFileSave,
-            toolStripSeparator12,
-            stripBtnCut,
-            stripBtnCopy,
-            stripBtnPaste,
-            toolStripSeparator13,
-            stripBtnUndo,
-            stripBtnRedo} );
-            toolStripFile.Location = new System.Drawing.Point( 3, 75 );
-            toolStripFile.setName( "toolStripFile";
-            toolStripFile.Size = new System.Drawing.Size( 208, 25 );
-            toolStripFile.TabIndex = 20;
-            // 
-            // stripBtnFileNew
-            // 
-            stripBtnFileNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnFileNew.Image = global::Boare.Cadencii.Properties.Resources.disk__plus;
-            stripBtnFileNew.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnFileNew.setName( "stripBtnFileNew";
-            stripBtnFileNew.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnFileNew.setText( "toolStripButton6";
-            stripBtnFileNew.ToolTipText = "New";
-            stripBtnFileNew.Click += new System.EventHandler( commonFileNew_Click );
-            // 
-            // stripBtnFileOpen
-            // 
-            stripBtnFileOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnFileOpen.Image = global::Boare.Cadencii.Properties.Resources.folder_horizontal_open;
-            stripBtnFileOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnFileOpen.setName( "stripBtnFileOpen";
-            stripBtnFileOpen.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnFileOpen.setText( "toolStripButton3";
-            stripBtnFileOpen.ToolTipText = "Open";
-            stripBtnFileOpen.Click += new System.EventHandler( commonFileOpen_Click );
-            // 
-            // stripBtnFileSave
-            // 
-            stripBtnFileSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnFileSave.Image = global::Boare.Cadencii.Properties.Resources.disk;
-            stripBtnFileSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnFileSave.setName( "stripBtnFileSave";
-            stripBtnFileSave.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnFileSave.setText( "toolStripButton2";
-            stripBtnFileSave.ToolTipText = "Save";
-            stripBtnFileSave.Click += new System.EventHandler( commonFileSave_Click );
-            // 
-            // toolStripSeparator12
-            // 
-            toolStripSeparator12.setName( "toolStripSeparator12";
-            toolStripSeparator12.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // stripBtnCut
-            // 
-            stripBtnCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnCut.Image = global::Boare.Cadencii.Properties.Resources.scissors;
-            stripBtnCut.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnCut.setName( "stripBtnCut";
-            stripBtnCut.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnCut.setText( "toolStripButton4";
-            stripBtnCut.ToolTipText = "Cut";
-            stripBtnCut.Click += new System.EventHandler( commonEditCut_Click );
-            // 
-            // stripBtnCopy
-            // 
-            stripBtnCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnCopy.Image = global::Boare.Cadencii.Properties.Resources.documents;
-            stripBtnCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnCopy.setName( "stripBtnCopy";
-            stripBtnCopy.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnCopy.setText( "toolStripButton5";
-            stripBtnCopy.ToolTipText = "Copy";
-            stripBtnCopy.Click += new System.EventHandler( commonEditCopy_Click );
-            // 
-            // stripBtnPaste
-            // 
-            stripBtnPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnPaste.Image = global::Boare.Cadencii.Properties.Resources.clipboard_paste;
-            stripBtnPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnPaste.setName( "stripBtnPaste";
-            stripBtnPaste.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnPaste.setText( "toolStripLabel1";
-            stripBtnPaste.ToolTipText = "Paste";
-            stripBtnPaste.Click += new System.EventHandler( commonEditPaste_Click );
-            // 
-            // toolStripSeparator13
-            // 
-            toolStripSeparator13.setName( "toolStripSeparator13";
-            toolStripSeparator13.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // stripBtnUndo
-            // 
-            stripBtnUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnUndo.Image = global::Boare.Cadencii.Properties.Resources.arrow_skip_180;
-            stripBtnUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnUndo.setName( "stripBtnUndo";
-            stripBtnUndo.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnUndo.setText( "toolStripButton7";
-            stripBtnUndo.ToolTipText = "Undo";
-            stripBtnUndo.Click += new System.EventHandler( commonEditUndo_Click );
-            // 
-            // stripBtnRedo
-            // 
-            stripBtnRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            stripBtnRedo.Image = global::Boare.Cadencii.Properties.Resources.arrow_skip;
-            stripBtnRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            stripBtnRedo.setName( "stripBtnRedo";
-            stripBtnRedo.Size = new System.Drawing.Size( 23, 22 );
-            stripBtnRedo.setText( "toolStripButton8";
-            stripBtnRedo.ToolTipText = "Redo";
-            stripBtnRedo.Click += new System.EventHandler( commonEditRedo_Click );
-            // 
-            // toolStripPaletteTools
-            // 
-            toolStripPaletteTools.Dock = System.Windows.Forms.DockStyle.None;
-            toolStripPaletteTools.Location = new System.Drawing.Point( 3, 100 );
-            toolStripPaletteTools.setName( "toolStripPaletteTools";
-            toolStripPaletteTools.Size = new System.Drawing.Size( 111, 25 );
-            toolStripPaletteTools.TabIndex = 21;
-            // 
-            // openUstDialog
-            // 
-            openUstDialog.Filter = "UTAU Project File(*.ust)|*.ust|All Files(*.*)|*.*";
-            // 
-            // FormMain
-            // 
-            AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            BackColor = System.Drawing.SystemColors.Control;
-            ClientSize = new System.Drawing.Size( 962, 760 );
-            Controls.Add( toolStripContainer );*/
-            setJMenuBar( menuStripMain );
-            /*Icon = ((System.Drawing.Icon)(resources.GetObject( "$Icon" )));
-            KeyPreview = true;
-            MainMenuStrip = menuStripMain;
-            setName( "FormMain";
-            setText( "Cadencii";
-            Deactivate += new System.EventHandler( FormMain_Deactivate );
-            Load += new System.EventHandler( FormMain_Load );
-            Activated += new System.EventHandler( FormMain_Activated );
-            FormClosed += new System.Windows.Forms.FormClosedEventHandler( FormMain_FormClosed );
-            FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMain_FormClosing );
-            PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
-            menuStripMain.ResumeLayout( false );
-            menuStripMain.PerformLayout();
-            cMenuPiano.ResumeLayout( false );
-            cMenuTrackTab.ResumeLayout( false );
-            cMenuTrackSelector.ResumeLayout( false );
-            ((System.ComponentModel.ISupportInitialize)(trackBar)).EndInit();
-            panel1.ResumeLayout( false );
-            ((System.ComponentModel.ISupportInitialize)(picturePositionIndicator)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(pictPianoRoll)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(pictureBox2)).EndInit();
-            toolStripTool.ResumeLayout( false );
-            toolStripTool.PerformLayout();
-            toolStripContainer.BottomToolStripPanel.ResumeLayout( false );
-            toolStripContainer.BottomToolStripPanel.PerformLayout();
-            toolStripContainer.ContentPanel.ResumeLayout( false );
-            toolStripContainer.TopToolStripPanel.ResumeLayout( false );
-            toolStripContainer.TopToolStripPanel.PerformLayout();
-            toolStripContainer.ResumeLayout( false );
-            toolStripContainer.PerformLayout();
-            toolStripBottom.ResumeLayout( false );
-            toolStripBottom.PerformLayout();
-            statusStrip1.ResumeLayout( false );
-            statusStrip1.PerformLayout();
-            panel2.ResumeLayout( false );
-            toolStripPosition.ResumeLayout( false );
-            toolStripPosition.PerformLayout();
-            toolStripMeasure.ResumeLayout( false );
-            toolStripMeasure.PerformLayout();
-            toolStripFile.ResumeLayout( false );
-            toolStripFile.PerformLayout();
-            ResumeLayout( false );
-            PerformLayout();*/
+	    /**
+	     * This method initializes this
+	     * 
+	     * @return void
+	     */
+	    private void initialize() {
+		    this.setSize(720, 489);
+		    this.setJMenuBar(getJJMenuBar());
+		    this.setContentPane(getJContentPane());
+		    this.setTitle("JFrame");
+	    }
 
-            try{
-                //UIManager.setLookAndFeel( "com.sun.java.swing.plaf.mac.MacLookAndFeel" );
-                //UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
-    		    //SwingUtilities.updateComponentTreeUI( this );
-            }catch( Exception ex ){
-            }
-        }
-        #endregion
+	    /**
+	     * This method initializes jContentPane
+	     * 
+	     * @return javax.swing.JPanel
+	     */
+	    private JPanel getJContentPane() {
+		    if (jContentPane == null) {
+			    jContentPane = new JPanel();
+			    jContentPane.setLayout(new BorderLayout());
+			    jContentPane.add(getJPanel(), BorderLayout.NORTH);
+			    jContentPane.add(getToolStripBottom(), BorderLayout.SOUTH);
+			    jContentPane.add(getSplitContainerProperty(), BorderLayout.CENTER);
+		    }
+		    return jContentPane;
+	    }
+
+	    /**
+	     * This method initializes jJMenuBar	
+	     * 	
+	     * @return javax.swing.JMenuBar	
+	     */
+	    private JMenuBar getJJMenuBar() {
+		    if (jJMenuBar == null) {
+			    jJMenuBar = new JMenuBar();
+			    jJMenuBar.add(getMenuFile());
+			    jJMenuBar.add(getMenuEdit());
+			    jJMenuBar.add(getMenuVisual());
+			    jJMenuBar.add(getMenuJob());
+			    jJMenuBar.add(getMenuTrack());
+			    jJMenuBar.add(getMenuLyric());
+			    jJMenuBar.add(getMenuScript());
+			    jJMenuBar.add(getMenuSetting());
+			    jJMenuBar.add(getMenuHelp());
+		    }
+		    return jJMenuBar;
+	    }
+
+	    /**
+	     * This method initializes menuFile	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuFile() {
+		    if (menuFile == null) {
+			    menuFile = new JMenu();
+			    menuFile.setText("File");
+			    menuFile.add(getMenuFileNew());
+			    menuFile.add(getMenuFileOpen());
+			    menuFile.add(getMenuFileSave());
+			    menuFile.add(getMenuFileSaveNamed());
+			    menuFile.add(getJMenuItem());
+			    menuFile.add(getJMenuItem2());
+			    menuFile.add(getJMenuItem3());
+			    menuFile.add(getMenuFileImport());
+			    menuFile.add(getMenuFileExport());
+			    menuFile.add(getToolStripMenuItem101());
+			    menuFile.add(getJMenuItem4());
+			    menuFile.add(getToolStripMenuItem102());
+			    menuFile.add(getJMenuItem5());
+		    }
+		    return menuFile;
+	    }
+
+	    /**
+	     * This method initializes menuFileNew	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuFileNew() {
+		    if (menuFileNew == null) {
+			    menuFileNew = new JMenuItem();
+			    menuFileNew.setText("New");
+		    }
+		    return menuFileNew;
+	    }
+
+	    /**
+	     * This method initializes menuFileOpen	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuFileOpen() {
+		    if (menuFileOpen == null) {
+			    menuFileOpen = new JMenuItem();
+			    menuFileOpen.setText("Open");
+		    }
+		    return menuFileOpen;
+	    }
+
+	    /**
+	     * This method initializes menuFileSave	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuFileSave() {
+		    if (menuFileSave == null) {
+			    menuFileSave = new JMenuItem();
+			    menuFileSave.setText("Save");
+		    }
+		    return menuFileSave;
+	    }
+
+	    /**
+	     * This method initializes menuFileSaveNamed	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuFileSaveNamed() {
+		    if (menuFileSaveNamed == null) {
+			    menuFileSaveNamed = new JMenuItem();
+			    menuFileSaveNamed.setText("Save As");
+		    }
+		    return menuFileSaveNamed;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem10	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getJMenuItem() {
+		    if (toolStripMenuItem10 == null) {
+			    toolStripMenuItem10 = new JSeparator();
+		    }
+		    return toolStripMenuItem10;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem2() {
+		    if (menuFileOpenVsq == null) {
+			    menuFileOpenVsq = new JMenuItem();
+			    menuFileOpenVsq.setText("Open VSQ/Vocaloid Midi");
+		    }
+		    return menuFileOpenVsq;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem3() {
+		    if (menuFileOpenUst == null) {
+			    menuFileOpenUst = new JMenuItem();
+			    menuFileOpenUst.setText("Open UTAU Project File");
+		    }
+		    return menuFileOpenUst;
+	    }
+
+	    /**
+	     * This method initializes menuFileImport	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuFileImport() {
+		    if (menuFileImport == null) {
+			    menuFileImport = new JMenu();
+			    menuFileImport.setText("Import");
+			    menuFileImport.add(getJMenuItem6());
+			    menuFileImport.add(getJMenuItem7());
+		    }
+		    return menuFileImport;
+	    }
+
+	    /**
+	     * This method initializes menuFileExport	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuFileExport() {
+		    if (menuFileExport == null) {
+			    menuFileExport = new JMenu();
+			    menuFileExport.setText("Export");
+			    menuFileExport.add(getJMenuItem8());
+			    menuFileExport.add(getJMenuItem9());
+		    }
+		    return menuFileExport;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem101	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem101() {
+		    if (toolStripMenuItem101 == null) {
+			    toolStripMenuItem101 = new JSeparator();
+		    }
+		    return toolStripMenuItem101;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem4() {
+		    if (menuFileRecent == null) {
+			    menuFileRecent = new JMenuItem();
+			    menuFileRecent.setText("Recent Files");
+		    }
+		    return menuFileRecent;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem102	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem102() {
+		    if (toolStripMenuItem102 == null) {
+			    toolStripMenuItem102 = new JSeparator();
+		    }
+		    return toolStripMenuItem102;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem5() {
+		    if (menuFileQuit == null) {
+			    menuFileQuit = new JMenuItem();
+			    menuFileQuit.setText("Quit");
+		    }
+		    return menuFileQuit;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem6() {
+		    if (menuFileImportVsq == null) {
+			    menuFileImportVsq = new JMenuItem();
+			    menuFileImportVsq.setText("VSQ / Vocaloid MIDI");
+		    }
+		    return menuFileImportVsq;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem7() {
+		    if (menuFileImportMidi == null) {
+			    menuFileImportMidi = new JMenuItem();
+			    menuFileImportMidi.setText("Standard MIDI");
+		    }
+		    return menuFileImportMidi;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem8() {
+		    if (menuFileExportWav == null) {
+			    menuFileExportWav = new JMenuItem();
+			    menuFileExportWav.setText("Wave");
+		    }
+		    return menuFileExportWav;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem9() {
+		    if (menuFileExportMidi == null) {
+			    menuFileExportMidi = new JMenuItem();
+			    menuFileExportMidi.setText("MIDI");
+		    }
+		    return menuFileExportMidi;
+	    }
+
+	    /**
+	     * This method initializes menuEdit	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuEdit() {
+		    if (menuEdit == null) {
+			    menuEdit = new JMenu();
+			    menuEdit.setText("Edit");
+			    menuEdit.add(getJMenuItem10());
+			    menuEdit.add(getJMenuItem11());
+			    menuEdit.add(getToolStripMenuItem103());
+			    menuEdit.add(getJMenuItem12());
+			    menuEdit.add(getMenuEditCopy());
+			    menuEdit.add(getJMenuItem22());
+			    menuEdit.add(getJMenuItem13());
+			    menuEdit.add(getToolStripMenuItem104());
+			    menuEdit.add(getJMenuItem14());
+			    menuEdit.add(getToolStripMenuItem1041());
+			    menuEdit.add(getJMenuItem15());
+			    menuEdit.add(getMenuEditSelectAllEvents());
+		    }
+		    return menuEdit;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem10() {
+		    if (menuEditUndo == null) {
+			    menuEditUndo = new JMenuItem();
+			    menuEditUndo.setText("Undo");
+		    }
+		    return menuEditUndo;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem11() {
+		    if (menuEditRedo == null) {
+			    menuEditRedo = new JMenuItem();
+			    menuEditRedo.setText("Redo");
+		    }
+		    return menuEditRedo;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem103	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem103() {
+		    if (toolStripMenuItem103 == null) {
+			    toolStripMenuItem103 = new JSeparator();
+		    }
+		    return toolStripMenuItem103;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem12() {
+		    if (menuEditCut == null) {
+			    menuEditCut = new JMenuItem();
+			    menuEditCut.setText("Cut");
+		    }
+		    return menuEditCut;
+	    }
+
+	    /**
+	     * This method initializes menuEditCopy	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuEditCopy() {
+		    if (menuEditCopy == null) {
+			    menuEditCopy = new JMenuItem();
+			    menuEditCopy.setText("Copy");
+		    }
+		    return menuEditCopy;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem2	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem22() {
+		    if (menuEditPaste == null) {
+			    menuEditPaste = new JMenuItem();
+			    menuEditPaste.setText("Paste");
+		    }
+		    return menuEditPaste;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem13() {
+		    if (menuEditDelete == null) {
+			    menuEditDelete = new JMenuItem();
+			    menuEditDelete.setText("Delete");
+		    }
+		    return menuEditDelete;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem104	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem104() {
+		    if (toolStripMenuItem104 == null) {
+			    toolStripMenuItem104 = new JSeparator();
+		    }
+		    return toolStripMenuItem104;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem14() {
+		    if (menuEditAutoNormalizeMode == null) {
+			    menuEditAutoNormalizeMode = new JMenuItem();
+			    menuEditAutoNormalizeMode.setText("Auto Normalize Mode");
+		    }
+		    return menuEditAutoNormalizeMode;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem1041	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem1041() {
+		    if (toolStripMenuItem1041 == null) {
+			    toolStripMenuItem1041 = new JSeparator();
+		    }
+		    return toolStripMenuItem1041;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem15() {
+		    if (menuEditSelectAll == null) {
+			    menuEditSelectAll = new JMenuItem();
+			    menuEditSelectAll.setText("Select All");
+		    }
+		    return menuEditSelectAll;
+	    }
+
+	    /**
+	     * This method initializes menuEditSelectAllEvents	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuEditSelectAllEvents() {
+		    if (menuEditSelectAllEvents == null) {
+			    menuEditSelectAllEvents = new JMenuItem();
+			    menuEditSelectAllEvents.setText("Select All Events");
+		    }
+		    return menuEditSelectAllEvents;
+	    }
+
+	    /**
+	     * This method initializes menuVisual	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuVisual() {
+		    if (menuVisual == null) {
+			    menuVisual = new JMenu();
+			    menuVisual.setText("Visual");
+			    menuVisual.add(getJMenuItem16());
+			    menuVisual.add(getJMenuItem17());
+			    menuVisual.add(getMenuVisualWaveform());
+			    menuVisual.add(getJMenuItem23());
+			    menuVisual.add(getJMenuItem32());
+			    menuVisual.add(getToolStripMenuItem1031());
+			    menuVisual.add(getJMenuItem18());
+			    menuVisual.add(getToolStripMenuItem1032());
+			    menuVisual.add(getJMenuItem19());
+			    menuVisual.add(getMenuVisualEndMarker());
+			    menuVisual.add(getToolStripMenuItem1033());
+			    menuVisual.add(getMenuVisualLyrics());
+			    menuVisual.add(getJMenuItem20());
+			    menuVisual.add(getJMenuItem24());
+		    }
+		    return menuVisual;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem16() {
+		    if (menuVisualControlTrack == null) {
+			    menuVisualControlTrack = new JMenuItem();
+			    menuVisualControlTrack.setText("Control Track");
+		    }
+		    return menuVisualControlTrack;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem17() {
+		    if (menuVisualMixer == null) {
+			    menuVisualMixer = new JMenuItem();
+			    menuVisualMixer.setText("Mixer");
+		    }
+		    return menuVisualMixer;
+	    }
+
+	    /**
+	     * This method initializes menuVisualWaveform	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuVisualWaveform() {
+		    if (menuVisualWaveform == null) {
+			    menuVisualWaveform = new JMenuItem();
+			    menuVisualWaveform.setText("Waveform");
+		    }
+		    return menuVisualWaveform;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem2	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem23() {
+		    if (menuVisualProperty == null) {
+			    menuVisualProperty = new JMenuItem();
+			    menuVisualProperty.setText("Property Window");
+		    }
+		    return menuVisualProperty;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem3	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem32() {
+		    if (menuVisualOverview == null) {
+			    menuVisualOverview = new JMenuItem();
+			    menuVisualOverview.setText("Navigation");
+		    }
+		    return menuVisualOverview;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem1031	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem1031() {
+		    if (toolStripMenuItem1031 == null) {
+			    toolStripMenuItem1031 = new JSeparator();
+		    }
+		    return toolStripMenuItem1031;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem18() {
+		    if (menuVisualGridline == null) {
+			    menuVisualGridline = new JMenuItem();
+			    menuVisualGridline.setText("Grid Line");
+		    }
+		    return menuVisualGridline;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem1032	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem1032() {
+		    if (toolStripMenuItem1032 == null) {
+			    toolStripMenuItem1032 = new JSeparator();
+		    }
+		    return toolStripMenuItem1032;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem19() {
+		    if (menuVisualStartMarker == null) {
+			    menuVisualStartMarker = new JMenuItem();
+			    menuVisualStartMarker.setText("Start Marker");
+		    }
+		    return menuVisualStartMarker;
+	    }
+
+	    /**
+	     * This method initializes menuVisualEndMarker	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuVisualEndMarker() {
+		    if (menuVisualEndMarker == null) {
+			    menuVisualEndMarker = new JMenuItem();
+			    menuVisualEndMarker.setText("End Marker");
+		    }
+		    return menuVisualEndMarker;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem1033	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem1033() {
+		    if (toolStripMenuItem1033 == null) {
+			    toolStripMenuItem1033 = new JSeparator();
+		    }
+		    return toolStripMenuItem1033;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem20() {
+		    if (menuVisualNoteProperty == null) {
+			    menuVisualNoteProperty = new JMenuItem();
+			    menuVisualNoteProperty.setText("Note Expression/Vibrato");
+		    }
+		    return menuVisualNoteProperty;
+	    }
+
+	    /**
+	     * This method initializes menuVisualLyrics	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuVisualLyrics() {
+		    if (menuVisualLyrics == null) {
+			    menuVisualLyrics = new JMenuItem();
+			    menuVisualLyrics.setText("Lyrics/Phoneme");
+		    }
+		    return menuVisualLyrics;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem2	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem24() {
+		    if (menuVisualPitchLine == null) {
+			    menuVisualPitchLine = new JMenuItem();
+			    menuVisualPitchLine.setText("Pitch Line");
+		    }
+		    return menuVisualPitchLine;
+	    }
+
+	    /**
+	     * This method initializes menuJob	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuJob() {
+		    if (menuJob == null) {
+			    menuJob = new JMenu();
+			    menuJob.setText("Job");
+			    menuJob.add(getJMenuItem21());
+			    menuJob.add(getMenuJobInsertBar());
+			    menuJob.add(getJMenuItem25());
+			    menuJob.add(getJMenuItem33());
+			    menuJob.add(getJMenuItem42());
+			    menuJob.add(getJMenuItem52());
+			    menuJob.add(getJMenuItem62());
+			    menuJob.add(getJMenuItem72());
+			    menuJob.add(getJMenuItem26());
+		    }
+		    return menuJob;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem21() {
+		    if (menuJobNormalize == null) {
+			    menuJobNormalize = new JMenuItem();
+			    menuJobNormalize.setText("Normalize Notes");
+		    }
+		    return menuJobNormalize;
+	    }
+
+	    /**
+	     * This method initializes menuJobInsertBar	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuJobInsertBar() {
+		    if (menuJobInsertBar == null) {
+			    menuJobInsertBar = new JMenuItem();
+			    menuJobInsertBar.setText("Insert Bars");
+		    }
+		    return menuJobInsertBar;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem2	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem25() {
+		    if (menuJobDeleteBar == null) {
+			    menuJobDeleteBar = new JMenuItem();
+			    menuJobDeleteBar.setText("Delete Bars");
+		    }
+		    return menuJobDeleteBar;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem3	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem33() {
+		    if (menuJobRandomize == null) {
+			    menuJobRandomize = new JMenuItem();
+			    menuJobRandomize.setText("Randomize");
+		    }
+		    return menuJobRandomize;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem4	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem42() {
+		    if (menuJobConnect == null) {
+			    menuJobConnect = new JMenuItem();
+			    menuJobConnect.setText("Connect Notes");
+		    }
+		    return menuJobConnect;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem5	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem52() {
+		    if (menuJobLyric == null) {
+			    menuJobLyric = new JMenuItem();
+			    menuJobLyric.setText("Insert Lyrics");
+		    }
+		    return menuJobLyric;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem6	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem62() {
+		    if (menuJobRewire == null) {
+			    menuJobRewire = new JMenuItem();
+			    menuJobRewire.setText("Import ReWire Host Tempo");
+		    }
+		    return menuJobRewire;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem7	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem72() {
+		    if (menuJobRealTime == null) {
+			    menuJobRealTime = new JMenuItem();
+			    menuJobRealTime.setText("Start Realtime Input");
+		    }
+		    return menuJobRealTime;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem26() {
+		    if (menuJobReloadVsti == null) {
+			    menuJobReloadVsti = new JMenuItem();
+			    menuJobReloadVsti.setText("Reload VSTi");
+		    }
+		    return menuJobReloadVsti;
+	    }
+
+	    /**
+	     * This method initializes menuTrack	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuTrack() {
+		    if (menuTrack == null) {
+			    menuTrack = new JMenu();
+			    menuTrack.setText("Track");
+			    menuTrack.add(getJMenuItem27());
+			    menuTrack.add(getToolStripMenuItem10321());
+			    menuTrack.add(getMenuTrackAdd());
+			    menuTrack.add(getJMenuItem28());
+			    menuTrack.add(getJMenuItem34());
+			    menuTrack.add(getJMenuItem43());
+			    menuTrack.add(getToolStripMenuItem10322());
+			    menuTrack.add(getJMenuItem53());
+			    menuTrack.add(getJMenuItem63());
+			    menuTrack.add(getToolStripMenuItem10323());
+			    menuTrack.add(getJMenuItem73());
+			    menuTrack.add(getMenuTrackRenderer());
+			    menuTrack.add(getToolStripMenuItem10324());
+			    menuTrack.add(getMenuTrackBgm());
+			    menuTrack.add(getJMenuItem82());
+		    }
+		    return menuTrack;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem27() {
+		    if (menuTrackOn == null) {
+			    menuTrackOn = new JMenuItem();
+			    menuTrackOn.setText("Track On");
+		    }
+		    return menuTrackOn;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem10321	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem10321() {
+		    if (toolStripMenuItem10321 == null) {
+			    toolStripMenuItem10321 = new JSeparator();
+		    }
+		    return toolStripMenuItem10321;
+	    }
+
+	    /**
+	     * This method initializes menuTrackAdd	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuTrackAdd() {
+		    if (menuTrackAdd == null) {
+			    menuTrackAdd = new JMenuItem();
+			    menuTrackAdd.setText("Add Track");
+		    }
+		    return menuTrackAdd;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem2	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem28() {
+		    if (menuTrackCopy == null) {
+			    menuTrackCopy = new JMenuItem();
+			    menuTrackCopy.setText("Copy Track");
+		    }
+		    return menuTrackCopy;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem3	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem34() {
+		    if (menuTrackChangeName == null) {
+			    menuTrackChangeName = new JMenuItem();
+			    menuTrackChangeName.setText("Rename Track");
+		    }
+		    return menuTrackChangeName;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem4	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem43() {
+		    if (menuTrackDelete == null) {
+			    menuTrackDelete = new JMenuItem();
+			    menuTrackDelete.setText("Delete Track");
+		    }
+		    return menuTrackDelete;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem10322	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem10322() {
+		    if (toolStripMenuItem10322 == null) {
+			    toolStripMenuItem10322 = new JSeparator();
+		    }
+		    return toolStripMenuItem10322;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem5	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem53() {
+		    if (menuTrackRenderCurrent == null) {
+			    menuTrackRenderCurrent = new JMenuItem();
+			    menuTrackRenderCurrent.setText("Render Current Track");
+		    }
+		    return menuTrackRenderCurrent;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem6	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem63() {
+		    if (menuTrackRenderAll == null) {
+			    menuTrackRenderAll = new JMenuItem();
+			    menuTrackRenderAll.setText("Render All Tracks");
+		    }
+		    return menuTrackRenderAll;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem10323	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem10323() {
+		    if (toolStripMenuItem10323 == null) {
+			    toolStripMenuItem10323 = new JSeparator();
+		    }
+		    return toolStripMenuItem10323;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem7	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem73() {
+		    if (menuTrackOverlay == null) {
+			    menuTrackOverlay = new JMenuItem();
+			    menuTrackOverlay.setText("Overlay");
+		    }
+		    return menuTrackOverlay;
+	    }
+
+	    /**
+	     * This method initializes menuTrackRenderer	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuTrackRenderer() {
+		    if (menuTrackRenderer == null) {
+			    menuTrackRenderer = new JMenu();
+			    menuTrackRenderer.setText("Renderer");
+		    }
+		    return menuTrackRenderer;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem10324	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem10324() {
+		    if (toolStripMenuItem10324 == null) {
+			    toolStripMenuItem10324 = new JSeparator();
+		    }
+		    return toolStripMenuItem10324;
+	    }
+
+	    /**
+	     * This method initializes menuTrackBgm	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuTrackBgm() {
+		    if (menuTrackBgm == null) {
+			    menuTrackBgm = new JMenu();
+			    menuTrackBgm.setText("BGM");
+		    }
+		    return menuTrackBgm;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem8	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem82() {
+		    if (menuTrackManager == null) {
+			    menuTrackManager = new JMenuItem();
+		    }
+		    return menuTrackManager;
+	    }
+
+	    /**
+	     * This method initializes menuLyric	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuLyric() {
+		    if (menuLyric == null) {
+			    menuLyric = new JMenu();
+			    menuLyric.setText("Lyrics");
+			    menuLyric.add(getJMenuItem29());
+			    menuLyric.add(getMenuLyricVibratoProperty());
+			    menuLyric.add(getJMenuItem210());
+			    menuLyric.add(getJMenuItem35());
+		    }
+		    return menuLyric;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem29() {
+		    if (menuLyricExpressionProperty == null) {
+			    menuLyricExpressionProperty = new JMenuItem();
+			    menuLyricExpressionProperty.setText("Note Expression Propertry");
+		    }
+		    return menuLyricExpressionProperty;
+	    }
+
+	    /**
+	     * This method initializes menuLyricVibratoProperty	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuLyricVibratoProperty() {
+		    if (menuLyricVibratoProperty == null) {
+			    menuLyricVibratoProperty = new JMenuItem();
+			    menuLyricVibratoProperty.setText("Note Vibrato Property");
+		    }
+		    return menuLyricVibratoProperty;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem2	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem210() {
+		    if (menuLyricSymbol == null) {
+			    menuLyricSymbol = new JMenuItem();
+			    menuLyricSymbol.setText("Phoneme Transformation");
+		    }
+		    return menuLyricSymbol;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem3	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem35() {
+		    if (menuLyricDictionary == null) {
+			    menuLyricDictionary = new JMenuItem();
+			    menuLyricDictionary.setText("User Word Dictionary");
+		    }
+		    return menuLyricDictionary;
+	    }
+
+	    /**
+	     * This method initializes menuScript	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuScript() {
+		    if (menuScript == null) {
+			    menuScript = new JMenu();
+			    menuScript.setText("Script");
+			    menuScript.add(getJMenuItem30());
+		    }
+		    return menuScript;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem30() {
+		    if (menuScriptUpdate == null) {
+			    menuScriptUpdate = new JMenuItem();
+			    menuScriptUpdate.setText("Update Script List");
+		    }
+		    return menuScriptUpdate;
+	    }
+
+	    /**
+	     * This method initializes menuSetting	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuSetting() {
+		    if (menuSetting == null) {
+			    menuSetting = new JMenu();
+			    menuSetting.setText("Setting");
+			    menuSetting.add(getJMenuItem31());
+			    menuSetting.add(getMenuSettingGameControler());
+			    menuSetting.add(getMenuSettingPaletteTool());
+			    menuSetting.add(getJMenuItem211());
+			    menuSetting.add(getJMenuItem36());
+			    menuSetting.add(getJMenuItem44());
+			    menuSetting.add(getToolStripMenuItem103211());
+			    menuSetting.add(getJMenuItem54());
+			    menuSetting.add(getToolStripMenuItem103212());
+			    menuSetting.add(getMenuSettingPositionQuantize());
+			    menuSetting.add(getMenuSettingLengthQuantize());
+			    menuSetting.add(getJMenuItem64());
+		    }
+		    return menuSetting;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem31() {
+		    if (menuSettingPreference == null) {
+			    menuSettingPreference = new JMenuItem();
+			    menuSettingPreference.setText("Preference");
+		    }
+		    return menuSettingPreference;
+	    }
+
+	    /**
+	     * This method initializes menuSettingGameControler	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuSettingGameControler() {
+		    if (menuSettingGameControler == null) {
+			    menuSettingGameControler = new JMenu();
+			    menuSettingGameControler.setText("Game Controler");
+		    }
+		    return menuSettingGameControler;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem2	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem211() {
+		    if (menuSettingShortcut == null) {
+			    menuSettingShortcut = new JMenuItem();
+			    menuSettingShortcut.setText("Shortcut Key");
+		    }
+		    return menuSettingShortcut;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem3	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem36() {
+		    if (menuSettingMidi == null) {
+			    menuSettingMidi = new JMenuItem();
+		    }
+		    return menuSettingMidi;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem4	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem44() {
+		    if (menuSettingUtauVoiceDB == null) {
+			    menuSettingUtauVoiceDB = new JMenuItem();
+			    menuSettingUtauVoiceDB.setText("UTAU Voice DB");
+		    }
+		    return menuSettingUtauVoiceDB;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem103211	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem103211() {
+		    if (toolStripMenuItem103211 == null) {
+			    toolStripMenuItem103211 = new JSeparator();
+		    }
+		    return toolStripMenuItem103211;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem5	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem54() {
+		    if (menuSettingDefaultSingerStyle == null) {
+			    menuSettingDefaultSingerStyle = new JMenuItem();
+			    menuSettingDefaultSingerStyle.setText("Singing Style Defaults");
+		    }
+		    return menuSettingDefaultSingerStyle;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem103212	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem103212() {
+		    if (toolStripMenuItem103212 == null) {
+			    toolStripMenuItem103212 = new JSeparator();
+		    }
+		    return toolStripMenuItem103212;
+	    }
+
+	    /**
+	     * This method initializes menuSettingPositionQuantize	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuSettingPositionQuantize() {
+		    if (menuSettingPositionQuantize == null) {
+			    menuSettingPositionQuantize = new JMenu();
+			    menuSettingPositionQuantize.setText("Quantize");
+			    menuSettingPositionQuantize.add(getJMenuItem37());
+			    menuSettingPositionQuantize.add(getMenuSettingPositionQuantize08());
+			    menuSettingPositionQuantize.add(getJMenuItem212());
+			    menuSettingPositionQuantize.add(getJMenuItem38());
+			    menuSettingPositionQuantize.add(getJMenuItem45());
+			    menuSettingPositionQuantize.add(getJMenuItem55());
+			    menuSettingPositionQuantize.add(getJMenuItem65());
+			    menuSettingPositionQuantize.add(getToolStripMenuItem1032121());
+			    menuSettingPositionQuantize.add(getJMenuItem74());
+		    }
+		    return menuSettingPositionQuantize;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem6	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem64() {
+		    if (menuSettingSingerProperty == null) {
+			    menuSettingSingerProperty = new JMenuItem();
+		    }
+		    return menuSettingSingerProperty;
+	    }
+
+	    /**
+	     * This method initializes menuSettingPaletteTool	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuSettingPaletteTool() {
+		    if (menuSettingPaletteTool == null) {
+			    menuSettingPaletteTool = new JMenu();
+			    menuSettingPaletteTool.setText("Palette Tool");
+		    }
+		    return menuSettingPaletteTool;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem37() {
+		    if (menuSettingPositionQuantize04 == null) {
+			    menuSettingPositionQuantize04 = new JMenuItem();
+			    menuSettingPositionQuantize04.setText("1/4");
+		    }
+		    return menuSettingPositionQuantize04;
+	    }
+
+	    /**
+	     * This method initializes menuSettingPositionQuantize08	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuSettingPositionQuantize08() {
+		    if (menuSettingPositionQuantize08 == null) {
+			    menuSettingPositionQuantize08 = new JMenuItem();
+			    menuSettingPositionQuantize08.setText("1/8");
+		    }
+		    return menuSettingPositionQuantize08;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem2	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem212() {
+		    if (menuSettingPositionQuantize16 == null) {
+			    menuSettingPositionQuantize16 = new JMenuItem();
+			    menuSettingPositionQuantize16.setText("1/16");
+		    }
+		    return menuSettingPositionQuantize16;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem3	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem38() {
+		    if (menuSettingPositionQuantize32 == null) {
+			    menuSettingPositionQuantize32 = new JMenuItem();
+			    menuSettingPositionQuantize32.setText("1/32");
+		    }
+		    return menuSettingPositionQuantize32;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem4	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem45() {
+		    if (menuSettingPositionQuantize64 == null) {
+			    menuSettingPositionQuantize64 = new JMenuItem();
+			    menuSettingPositionQuantize64.setText("1/64");
+		    }
+		    return menuSettingPositionQuantize64;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem5	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem55() {
+		    if (menuSettingPositionQuantize128 == null) {
+			    menuSettingPositionQuantize128 = new JMenuItem();
+			    menuSettingPositionQuantize128.setText("1/128");
+		    }
+		    return menuSettingPositionQuantize128;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem6	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem65() {
+		    if (menuSettingPositionQuantizeOff == null) {
+			    menuSettingPositionQuantizeOff = new JMenuItem();
+			    menuSettingPositionQuantizeOff.setText("Off");
+		    }
+		    return menuSettingPositionQuantizeOff;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem1032121	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem1032121() {
+		    if (toolStripMenuItem1032121 == null) {
+			    toolStripMenuItem1032121 = new JSeparator();
+		    }
+		    return toolStripMenuItem1032121;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem7	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem74() {
+		    if (menuSettingPositionQuantizeTriplet == null) {
+			    menuSettingPositionQuantizeTriplet = new JMenuItem();
+			    menuSettingPositionQuantizeTriplet.setText("Triplet");
+		    }
+		    return menuSettingPositionQuantizeTriplet;
+	    }
+
+	    /**
+	     * This method initializes menuSettingLengthQuantize	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuSettingLengthQuantize() {
+		    if (menuSettingLengthQuantize == null) {
+			    menuSettingLengthQuantize = new JMenu();
+			    menuSettingLengthQuantize.setText("Length");
+			    menuSettingLengthQuantize.add(getMenuSettingLengthQuantize04());
+			    menuSettingLengthQuantize.add(getMenuSettingLengthQuantize08());
+			    menuSettingLengthQuantize.add(getMenuSettingLengthQuantize16());
+			    menuSettingLengthQuantize.add(getMenuSettingLengthQuantize32());
+			    menuSettingLengthQuantize.add(getMenuSettingLengthQuantize64());
+			    menuSettingLengthQuantize.add(getMenuSettingLengthQuantize128());
+			    menuSettingLengthQuantize.add(getMenuSettingLengthQuantizeOff());
+			    menuSettingLengthQuantize.add(getToolStripMenuItem10321211());
+			    menuSettingLengthQuantize.add(getMenuSettingLengthQuantizeTriplet());
+		    }
+		    return menuSettingLengthQuantize;
+	    }
+
+	    /**
+	     * This method initializes menuSettingLengthQuantize04	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuSettingLengthQuantize04() {
+		    if (menuSettingLengthQuantize04 == null) {
+			    menuSettingLengthQuantize04 = new JMenuItem();
+			    menuSettingLengthQuantize04.setText("1/4");
+		    }
+		    return menuSettingLengthQuantize04;
+	    }
+
+	    /**
+	     * This method initializes menuSettingLengthQuantize08	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuSettingLengthQuantize08() {
+		    if (menuSettingLengthQuantize08 == null) {
+			    menuSettingLengthQuantize08 = new JMenuItem();
+			    menuSettingLengthQuantize08.setText("1/8");
+		    }
+		    return menuSettingLengthQuantize08;
+	    }
+
+	    /**
+	     * This method initializes menuSettingLengthQuantize16	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuSettingLengthQuantize16() {
+		    if (menuSettingLengthQuantize16 == null) {
+			    menuSettingLengthQuantize16 = new JMenuItem();
+			    menuSettingLengthQuantize16.setText("1/16");
+		    }
+		    return menuSettingLengthQuantize16;
+	    }
+
+	    /**
+	     * This method initializes menuSettingLengthQuantize32	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuSettingLengthQuantize32() {
+		    if (menuSettingLengthQuantize32 == null) {
+			    menuSettingLengthQuantize32 = new JMenuItem();
+			    menuSettingLengthQuantize32.setText("1/32");
+		    }
+		    return menuSettingLengthQuantize32;
+	    }
+
+	    /**
+	     * This method initializes menuSettingLengthQuantize64	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuSettingLengthQuantize64() {
+		    if (menuSettingLengthQuantize64 == null) {
+			    menuSettingLengthQuantize64 = new JMenuItem();
+			    menuSettingLengthQuantize64.setText("1/64");
+		    }
+		    return menuSettingLengthQuantize64;
+	    }
+
+	    /**
+	     * This method initializes menuSettingLengthQuantize128	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuSettingLengthQuantize128() {
+		    if (menuSettingLengthQuantize128 == null) {
+			    menuSettingLengthQuantize128 = new JMenuItem();
+			    menuSettingLengthQuantize128.setText("1/128");
+		    }
+		    return menuSettingLengthQuantize128;
+	    }
+
+	    /**
+	     * This method initializes menuSettingLengthQuantizeOff	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuSettingLengthQuantizeOff() {
+		    if (menuSettingLengthQuantizeOff == null) {
+			    menuSettingLengthQuantizeOff = new JMenuItem();
+			    menuSettingLengthQuantizeOff.setText("Off");
+		    }
+		    return menuSettingLengthQuantizeOff;
+	    }
+
+	    /**
+	     * This method initializes toolStripMenuItem10321211	
+	     * 	
+	     * @return javax.swing.JSeparator	
+	     */
+	    private JSeparator getToolStripMenuItem10321211() {
+		    if (toolStripMenuItem10321211 == null) {
+			    toolStripMenuItem10321211 = new JSeparator();
+		    }
+		    return toolStripMenuItem10321211;
+	    }
+
+	    /**
+	     * This method initializes menuSettingLengthQuantizeTriplet	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getMenuSettingLengthQuantizeTriplet() {
+		    if (menuSettingLengthQuantizeTriplet == null) {
+			    menuSettingLengthQuantizeTriplet = new JMenuItem();
+			    menuSettingLengthQuantizeTriplet.setText("Triplet");
+		    }
+		    return menuSettingLengthQuantizeTriplet;
+	    }
+
+	    /**
+	     * This method initializes menuHelp	
+	     * 	
+	     * @return javax.swing.JMenu	
+	     */
+	    private JMenu getMenuHelp() {
+		    if (menuHelp == null) {
+			    menuHelp = new JMenu();
+			    menuHelp.setText("Help");
+			    menuHelp.add(getJMenuItem39());
+		    }
+		    return menuHelp;
+	    }
+
+	    /**
+	     * This method initializes jMenuItem	
+	     * 	
+	     * @return javax.swing.JMenuItem	
+	     */
+	    private JMenuItem getJMenuItem39() {
+		    if (menuHelpAbout == null) {
+			    menuHelpAbout = new JMenuItem();
+			    menuHelpAbout.setText("About Cadencii");
+		    }
+		    return menuHelpAbout;
+	    }
+
+	    /**
+	     * This method initializes splitContainer2	
+	     * 	
+	     * @return javax.swing.JSplitPane	
+	     */
+	    private JSplitPane getSplitContainer2() {
+		    if (splitContainer2 == null) {
+			    splitContainer2 = new JSplitPane();
+			    splitContainer2.setDividerSize(10);
+			    splitContainer2.setDividerLocation(70);
+			    splitContainer2.setTopComponent(getPanel1());
+			    splitContainer2.setBottomComponent(getPanel2());
+			    splitContainer2.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		    }
+		    return splitContainer2;
+	    }
+
+	    /**
+	     * This method initializes panel1	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getPanel1() {
+		    if (panel1 == null) {
+			    panel1 = new JPanel();
+			    panel1.setLayout(new GridBagLayout());
+		    }
+		    return panel1;
+	    }
+
+	    /**
+	     * This method initializes panel2	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getPanel2() {
+		    if (panel2 == null) {
+			    panel2 = new JPanel();
+			    panel2.setLayout(new GridBagLayout());
+		    }
+		    return panel2;
+	    }
+
+	    /**
+	     * This method initializes splitContainer1	
+	     * 	
+	     * @return javax.swing.JSplitPane	
+	     */
+	    private JSplitPane getSplitContainer1() {
+		    if (splitContainer1 == null) {
+			    splitContainer1 = new JSplitPane();
+			    splitContainer1.setDividerLocation(200);
+			    splitContainer1.setTopComponent(getSplitContainer2());
+			    splitContainer1.setBottomComponent(getTrackSelector());
+			    splitContainer1.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		    }
+		    return splitContainer1;
+	    }
+
+	    /**
+	     * This method initializes splitContainerProperty	
+	     * 	
+	     * @return javax.swing.JSplitPane	
+	     */
+	    private JSplitPane getSplitContainerProperty() {
+		    if (splitContainerProperty == null) {
+			    splitContainerProperty = new JSplitPane();
+			    splitContainerProperty.setDividerLocation(100);
+			    splitContainerProperty.setRightComponent(getSplitContainer1());
+			    splitContainerProperty.setLeftComponent(getM_property_panel_container());
+		    }
+		    return splitContainerProperty;
+	    }
+
+	    /**
+	     * This method initializes m_property_panel_container	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getM_property_panel_container() {
+		    if (m_property_panel_container == null) {
+			    m_property_panel_container = new JPanel();
+			    m_property_panel_container.setLayout(new GridBagLayout());
+		    }
+		    return m_property_panel_container;
+	    }
+
+	    /**
+	     * This method initializes toolStripFile	
+	     * 	
+	     * @return javax.swing.JToolBar	
+	     */
+	    private JToolBar getToolStripFile() {
+		    if (toolStripFile == null) {
+			    toolStripFile = new JToolBar();
+			    toolStripFile.setName("toolStripFile");
+			    toolStripFile.add(getStripBtnFileNew());
+			    toolStripFile.add(getStripBtnFileOpen());
+			    toolStripFile.add(getStripBtnFileSave());
+			    toolStripFile.addSeparator();
+			    toolStripFile.add(getStripBtnCut());
+			    toolStripFile.add(getStripBtnCopy());
+			    toolStripFile.add(getStripBtnPaste());
+			    toolStripFile.add(getStripBtnUndo());
+			    toolStripFile.add(getStripBtnRedo());
+		    }
+		    return toolStripFile;
+	    }
+
+	    /**
+	     * This method initializes toolStripBottom	
+	     * 	
+	     * @return javax.swing.JToolBar	
+	     */
+	    private JToolBar getToolStripBottom() {
+		    if (toolStripBottom == null) {
+			    jLabel5 = new JLabel();
+			    jLabel5.setText("Speed 1.0x");
+			    stripLblMidiIn = new JLabel();
+			    stripLblMidiIn.setText("Disabled");
+			    jLabel4 = new JLabel();
+			    jLabel4.setText("MIDI In");
+			    stripLblGameCtrlMode = new JLabel();
+			    stripLblGameCtrlMode.setText("Disabled");
+			    jLabel3 = new JLabel();
+			    jLabel3.setText("Game Controler");
+			    stripLblBeat = new JLabel();
+			    stripLblBeat.setText("4/4");
+			    jLabel2 = new JLabel();
+			    jLabel2.setText("BEAT");
+			    stripLblTempo = new JLabel();
+			    stripLblTempo.setText("120.00");
+			    toolStripLabel8 = new JLabel();
+			    toolStripLabel8.setText("TEMPO");
+			    stripLblCursor = new JLabel();
+			    stripLblCursor.setText("0 : 0 : 000");
+			    toolStripLabel6 = new JLabel();
+			    toolStripLabel6.setText("CURSOR");
+			    toolStripBottom = new JToolBar();
+			    toolStripBottom.add(toolStripLabel6);
+			    toolStripBottom.add(stripLblCursor);
+			    toolStripBottom.addSeparator();
+			    toolStripBottom.add(toolStripLabel8);
+			    toolStripBottom.add(stripLblTempo);
+			    toolStripBottom.addSeparator();
+			    toolStripBottom.add(jLabel2);
+			    toolStripBottom.add(stripLblBeat);
+			    toolStripBottom.addSeparator();
+			    toolStripBottom.add(jLabel3);
+			    toolStripBottom.add(stripLblGameCtrlMode);
+			    toolStripBottom.addSeparator();
+			    toolStripBottom.add(jLabel4);
+			    toolStripBottom.add(stripLblMidiIn);
+			    toolStripBottom.add(jLabel5);
+			    toolStripBottom.add(getStripDDBtnSpeed());
+			    toolStripBottom.addSeparator();
+    			
+		    }
+		    return toolStripBottom;
+	    }
+
+	    /**
+	     * This method initializes stripBtnFileNew	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnFileNew() {
+		    if (stripBtnFileNew == null) {
+			    stripBtnFileNew = new JButton();
+			    stripBtnFileNew.setText("New");
+		    }
+		    return stripBtnFileNew;
+	    }
+
+	    /**
+	     * This method initializes stripBtnFileOpen	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnFileOpen() {
+		    if (stripBtnFileOpen == null) {
+			    stripBtnFileOpen = new JButton();
+			    stripBtnFileOpen.setText("Open");
+		    }
+		    return stripBtnFileOpen;
+	    }
+
+	    /**
+	     * This method initializes stripBtnFileSave	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnFileSave() {
+		    if (stripBtnFileSave == null) {
+			    stripBtnFileSave = new JButton();
+			    stripBtnFileSave.setText("Save");
+		    }
+		    return stripBtnFileSave;
+	    }
+
+	    /**
+	     * This method initializes stripBtnCut	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnCut() {
+		    if (stripBtnCut == null) {
+			    stripBtnCut = new JButton();
+			    stripBtnCut.setText("Cut");
+		    }
+		    return stripBtnCut;
+	    }
+
+	    /**
+	     * This method initializes stripBtnCopy	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnCopy() {
+		    if (stripBtnCopy == null) {
+			    stripBtnCopy = new JButton();
+			    stripBtnCopy.setText("Copy");
+		    }
+		    return stripBtnCopy;
+	    }
+
+	    /**
+	     * This method initializes stripBtnPaste	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnPaste() {
+		    if (stripBtnPaste == null) {
+			    stripBtnPaste = new JButton();
+			    stripBtnPaste.setText("Paste");
+		    }
+		    return stripBtnPaste;
+	    }
+
+	    /**
+	     * This method initializes stripBtnUndo	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnUndo() {
+		    if (stripBtnUndo == null) {
+			    stripBtnUndo = new JButton();
+			    stripBtnUndo.setText("Undo");
+		    }
+		    return stripBtnUndo;
+	    }
+
+	    /**
+	     * This method initializes stripBtnRedo	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnRedo() {
+		    if (stripBtnRedo == null) {
+			    stripBtnRedo = new JButton();
+			    stripBtnRedo.setText("Redo");
+		    }
+		    return stripBtnRedo;
+	    }
+
+	    /**
+	     * This method initializes toolStripPosition	
+	     * 	
+	     * @return javax.swing.JToolBar	
+	     */
+	    private JToolBar getToolStripPosition() {
+		    if (toolStripPosition == null) {
+			    toolStripPosition = new JToolBar();
+			    toolStripPosition.setName("toolStripPosition");
+			    toolStripPosition.add(getStripBtnMoveTop());
+			    toolStripPosition.add(getStripBtnRewind());
+			    toolStripPosition.add(getStripBtnForward());
+			    toolStripPosition.add(getStripBtnMoveEnd());
+			    toolStripPosition.add(getStripBtnPlay());
+			    toolStripPosition.add(getStripBtnStop());
+			    toolStripPosition.add(getStripBtnScroll());
+			    toolStripPosition.add(getStripBtnLoop());
+			    toolStripPosition.addSeparator();
+		    }
+		    return toolStripPosition;
+	    }
+
+	    /**
+	     * This method initializes stripBtnMoveTop	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnMoveTop() {
+		    if (stripBtnMoveTop == null) {
+			    stripBtnMoveTop = new JButton();
+			    stripBtnMoveTop.setText("|<");
+		    }
+		    return stripBtnMoveTop;
+	    }
+
+	    /**
+	     * This method initializes jPanel	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getJPanel() {
+		    if (jPanel == null) {
+			    GridLayout gridLayout4 = new GridLayout();
+			    gridLayout4.setRows(2);
+			    GridLayout gridLayout3 = new GridLayout();
+			    gridLayout3.setRows(2);
+			    GridLayout gridLayout2 = new GridLayout();
+			    gridLayout2.setRows(2);
+			    GridLayout gridLayout = new GridLayout();
+			    gridLayout.setRows(2);
+			    jPanel = new JPanel();
+			    jPanel.setLayout(new BoxLayout(getJPanel(), BoxLayout.X_AXIS));
+			    jPanel.add(getToolStripFile(), null);
+			    jPanel.add(getToolStripPosition(), null);
+			    jPanel.add(getToolStripTool(), null);
+			    jPanel.add(getToolStripMeasure(), null);
+		    }
+		    return jPanel;
+	    }
+
+	    /**
+	     * This method initializes stripBtnRewind	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnRewind() {
+		    if (stripBtnRewind == null) {
+			    stripBtnRewind = new JButton();
+			    stripBtnRewind.setText("<<");
+		    }
+		    return stripBtnRewind;
+	    }
+
+	    /**
+	     * This method initializes stripBtnForward	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnForward() {
+		    if (stripBtnForward == null) {
+			    stripBtnForward = new JButton();
+			    stripBtnForward.setText(">>");
+		    }
+		    return stripBtnForward;
+	    }
+
+	    /**
+	     * This method initializes stripBtnMoveEnd	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnMoveEnd() {
+		    if (stripBtnMoveEnd == null) {
+			    stripBtnMoveEnd = new JButton();
+			    stripBtnMoveEnd.setText(">|");
+		    }
+		    return stripBtnMoveEnd;
+	    }
+
+	    /**
+	     * This method initializes stripBtnPlay	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnPlay() {
+		    if (stripBtnPlay == null) {
+			    stripBtnPlay = new JButton();
+			    stripBtnPlay.setText(">");
+		    }
+		    return stripBtnPlay;
+	    }
+
+	    /**
+	     * This method initializes stripBtnStop	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getStripBtnStop() {
+		    if (stripBtnStop == null) {
+			    stripBtnStop = new JButton();
+			    stripBtnStop.setText("[  ]");
+		    }
+		    return stripBtnStop;
+	    }
+
+	    /**
+	     * This method initializes stripBtnScroll	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnScroll() {
+		    if (stripBtnScroll == null) {
+			    stripBtnScroll = new JToggleButton();
+			    stripBtnScroll.setText("Scroll");
+		    }
+		    return stripBtnScroll;
+	    }
+
+	    /**
+	     * This method initializes stripBtnLoop	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnLoop() {
+		    if (stripBtnLoop == null) {
+			    stripBtnLoop = new JToggleButton();
+			    stripBtnLoop.setText("Loop");
+		    }
+		    return stripBtnLoop;
+	    }
+
+	    /**
+	     * This method initializes toolStripMeasure	
+	     * 	
+	     * @return javax.swing.JToolBar	
+	     */
+	    private JToolBar getToolStripMeasure() {
+		    if (toolStripMeasure == null) {
+			    jLabel1 = new JLabel();
+			    jLabel1.setText("QUANTIZE");
+			    jLabel = new JLabel();
+			    jLabel.setText("LENGTH");
+			    stripLblMeasure = new JLabel();
+			    stripLblMeasure.setText("0 : 0 : 000");
+			    toolStripLabel5 = new JLabel();
+			    toolStripLabel5.setText("MEASURE");
+			    toolStripMeasure = new JToolBar();
+			    toolStripMeasure.setName("toolStripMeasure");
+			    toolStripMeasure.add(toolStripLabel5);
+			    toolStripMeasure.add(stripLblMeasure);
+			    toolStripMeasure.add(jLabel);
+			    toolStripMeasure.add(getStripDDBtnLength());
+			    toolStripMeasure.add(jLabel1);
+			    toolStripMeasure.add(getStripDDBtnQuantize());
+			    toolStripMeasure.add(getStripBtnStartMarker());
+			    toolStripMeasure.add(getStripBtnEndMarker());
+			    toolStripMeasure.addSeparator();
+		    }
+		    return toolStripMeasure;
+	    }
+
+	    /**
+	     * This method initializes stripDDBtnLength	
+	     * 	
+	     * @return javax.swing.JComboBox	
+	     */
+	    private JComboBox getStripDDBtnLength() {
+		    if (stripDDBtnLength == null) {
+			    stripDDBtnLength = new JComboBox();
+		    }
+		    return stripDDBtnLength;
+	    }
+
+	    /**
+	     * This method initializes stripDDBtnQuantize	
+	     * 	
+	     * @return javax.swing.JComboBox	
+	     */
+	    private JComboBox getStripDDBtnQuantize() {
+		    if (stripDDBtnQuantize == null) {
+			    stripDDBtnQuantize = new JComboBox();
+		    }
+		    return stripDDBtnQuantize;
+	    }
+
+	    /**
+	     * This method initializes stripBtnStartMarker	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnStartMarker() {
+		    if (stripBtnStartMarker == null) {
+			    stripBtnStartMarker = new JToggleButton();
+		    }
+		    return stripBtnStartMarker;
+	    }
+
+	    /**
+	     * This method initializes stripBtnEndMarker	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnEndMarker() {
+		    if (stripBtnEndMarker == null) {
+			    stripBtnEndMarker = new JToggleButton();
+		    }
+		    return stripBtnEndMarker;
+	    }
+
+	    /**
+	     * This method initializes toolStripTool	
+	     * 	
+	     * @return javax.swing.JToolBar	
+	     */
+	    private JToolBar getToolStripTool() {
+		    if (toolStripTool == null) {
+			    toolStripTool = new JToolBar();
+			    toolStripTool.add(getStripBtnPointer());
+			    toolStripTool.add(getStripBtnPencil());
+			    toolStripTool.add(getStripBtnLine());
+			    toolStripTool.add(getStripBtnEraser());
+			    toolStripTool.add(getStripBtnGrid());
+			    toolStripTool.add(getStripBtnCurve());
+			    toolStripTool.addSeparator();
+		    }
+		    return toolStripTool;
+	    }
+
+	    /**
+	     * This method initializes stripBtnPointer	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnPointer() {
+		    if (stripBtnPointer == null) {
+			    stripBtnPointer = new JToggleButton();
+			    stripBtnPointer.setText("Pointer");
+		    }
+		    return stripBtnPointer;
+	    }
+
+	    /**
+	     * This method initializes stripBtnPencil	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnPencil() {
+		    if (stripBtnPencil == null) {
+			    stripBtnPencil = new JToggleButton();
+			    stripBtnPencil.setText("Pencil");
+		    }
+		    return stripBtnPencil;
+	    }
+
+	    /**
+	     * This method initializes stripBtnLine	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnLine() {
+		    if (stripBtnLine == null) {
+			    stripBtnLine = new JToggleButton();
+			    stripBtnLine.setText("Line");
+		    }
+		    return stripBtnLine;
+	    }
+
+	    /**
+	     * This method initializes stripBtnEraser	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnEraser() {
+		    if (stripBtnEraser == null) {
+			    stripBtnEraser = new JToggleButton();
+			    stripBtnEraser.setToolTipText("");
+			    stripBtnEraser.setText("Eraser");
+		    }
+		    return stripBtnEraser;
+	    }
+
+	    /**
+	     * This method initializes stripBtnGrid	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnGrid() {
+		    if (stripBtnGrid == null) {
+			    stripBtnGrid = new JToggleButton();
+			    stripBtnGrid.setText("Grid");
+		    }
+		    return stripBtnGrid;
+	    }
+
+	    /**
+	     * This method initializes stripBtnCurve	
+	     * 	
+	     * @return javax.swing.JToggleButton	
+	     */
+	    private JToggleButton getStripBtnCurve() {
+		    if (stripBtnCurve == null) {
+			    stripBtnCurve = new JToggleButton();
+			    stripBtnCurve.setText("Curve");
+		    }
+		    return stripBtnCurve;
+	    }
+
+	    /**
+	     * This method initializes stripDDBtnSpeed	
+	     * 	
+	     * @return javax.swing.JComboBox	
+	     */
+	    private JComboBox getStripDDBtnSpeed() {
+		    if (stripDDBtnSpeed == null) {
+			    stripDDBtnSpeed = new JComboBox();
+		    }
+		    return stripDDBtnSpeed;
+	    }
 #else
         #region UI Impl for C#
         /// <summary>
@@ -17187,26 +16116,26 @@ namespace Boare.Cadencii {
             this.splitContainer2 = new Boare.Lib.AppUtil.BSplitContainer();
             this.splitContainer1 = new Boare.Lib.AppUtil.BSplitContainer();
             this.toolStripFile = new System.Windows.Forms.ToolStrip();
-            this.stripBtnFileNew = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnFileOpen = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnFileSave = new System.Windows.Forms.ToolStripButton();
+            this.stripBtnFileNew = new BToolStripButton();
+            this.stripBtnFileOpen = new BToolStripButton();
+            this.stripBtnFileSave = new BToolStripButton();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripBtnCut = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnCopy = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnPaste = new System.Windows.Forms.ToolStripButton();
+            this.stripBtnCut = new BToolStripButton();
+            this.stripBtnCopy = new BToolStripButton();
+            this.stripBtnPaste = new BToolStripButton();
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripBtnUndo = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnRedo = new System.Windows.Forms.ToolStripButton();
+            this.stripBtnUndo = new BToolStripButton();
+            this.stripBtnRedo = new BToolStripButton();
             this.toolStripPosition = new System.Windows.Forms.ToolStrip();
-            this.stripBtnMoveTop = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnRewind = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnForward = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnMoveEnd = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnPlay = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnStop = new System.Windows.Forms.ToolStripButton();
+            this.stripBtnMoveTop = new BToolStripButton();
+            this.stripBtnRewind = new BToolStripButton();
+            this.stripBtnForward = new BToolStripButton();
+            this.stripBtnMoveEnd = new BToolStripButton();
+            this.stripBtnPlay = new BToolStripButton();
+            this.stripBtnStop = new BToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripBtnScroll = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnLoop = new System.Windows.Forms.ToolStripButton();
+            this.stripBtnScroll = new BToolStripButton();
+            this.stripBtnLoop = new BToolStripButton();
             this.toolStripMeasure = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
             this.stripLblMeasure = new System.Windows.Forms.ToolStripLabel();
@@ -17232,8 +16161,8 @@ namespace Boare.Cadencii {
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.stripDDBtnQuantizeTriplet = new bocoree.windows.forms.BMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripBtnStartMarker = new System.Windows.Forms.ToolStripButton();
-            this.stripBtnEndMarker = new System.Windows.Forms.ToolStripButton();
+            this.stripBtnStartMarker = new BToolStripButton();
+            this.stripBtnEndMarker = new BToolStripButton();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -20168,14 +19097,14 @@ namespace Boare.Cadencii {
         private BToolStripButton stripBtnEraser;
         private BToolStripButton stripBtnGrid;
         private System.Windows.Forms.ToolStrip toolStripPosition;
-        private System.Windows.Forms.ToolStripButton stripBtnMoveTop;
-        private System.Windows.Forms.ToolStripButton stripBtnRewind;
-        private System.Windows.Forms.ToolStripButton stripBtnForward;
-        private System.Windows.Forms.ToolStripButton stripBtnMoveEnd;
-        private System.Windows.Forms.ToolStripButton stripBtnPlay;
-        private System.Windows.Forms.ToolStripButton stripBtnStop;
-        private System.Windows.Forms.ToolStripButton stripBtnScroll;
-        private System.Windows.Forms.ToolStripButton stripBtnLoop;
+        private BToolStripButton stripBtnMoveTop;
+        private BToolStripButton stripBtnRewind;
+        private BToolStripButton stripBtnForward;
+        private BToolStripButton stripBtnMoveEnd;
+        private BToolStripButton stripBtnPlay;
+        private BToolStripButton stripBtnStop;
+        private BToolStripButton stripBtnScroll;
+        private BToolStripButton stripBtnLoop;
         private BToolStripButton stripBtnCurve;
         private System.Windows.Forms.ToolStrip toolStripMeasure;
         private System.Windows.Forms.ToolStripLabel stripLblMeasure;
@@ -20201,8 +19130,8 @@ namespace Boare.Cadencii {
         private System.Windows.Forms.ToolStripLabel toolStripLabel5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripButton stripBtnStartMarker;
-        private System.Windows.Forms.ToolStripButton stripBtnEndMarker;
+        private BToolStripButton stripBtnStartMarker;
+        private BToolStripButton stripBtnEndMarker;
         private Boare.Lib.AppUtil.BHScrollBar hScroll;
         private Boare.Lib.AppUtil.BVScrollBar vScroll;
         private BMenuItem menuLyricVibratoProperty;
@@ -20250,16 +19179,16 @@ namespace Boare.Cadencii {
         private System.Windows.Forms.ToolStrip toolStripFile;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
-        private System.Windows.Forms.ToolStripButton stripBtnFileSave;
-        private System.Windows.Forms.ToolStripButton stripBtnFileOpen;
+        private BToolStripButton stripBtnFileSave;
+        private BToolStripButton stripBtnFileOpen;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
-        private System.Windows.Forms.ToolStripButton stripBtnCut;
-        private System.Windows.Forms.ToolStripButton stripBtnCopy;
-        private System.Windows.Forms.ToolStripButton stripBtnPaste;
-        private System.Windows.Forms.ToolStripButton stripBtnFileNew;
+        private BToolStripButton stripBtnCut;
+        private BToolStripButton stripBtnCopy;
+        private BToolStripButton stripBtnPaste;
+        private BToolStripButton stripBtnFileNew;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
-        private System.Windows.Forms.ToolStripButton stripBtnUndo;
-        private System.Windows.Forms.ToolStripButton stripBtnRedo;
+        private BToolStripButton stripBtnUndo;
+        private BToolStripButton stripBtnRedo;
         private BMenuItem cMenuTrackSelectorPaletteTool;
         private BMenuItem cMenuPianoPaletteTool;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;

@@ -1,11 +1,20 @@
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import java.awt.Dimension;
-import javax.swing.JMenuBar;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import java.awt.GridLayout;
+import javax.swing.BoxLayout;
 
 public class FormMain extends JFrame {
 
@@ -124,6 +133,61 @@ public class FormMain extends JFrame {
 	private JMenuItem menuSettingLengthQuantizeTriplet = null;
 	private JMenu menuHelp = null;
 	private JMenuItem menuHelpAbout = null;
+	private JSplitPane splitContainer2 = null;
+	private JPanel panel1 = null;
+	private JPanel panel2 = null;
+	private JSplitPane splitContainer1 = null;
+	private JPanel trackSelector = null;
+	private JSplitPane splitContainerProperty = null;
+	private JPanel m_property_panel_container = null;
+	private JToolBar toolStripFile = null;
+	private JToolBar toolStripBottom = null;
+	private JButton stripBtnFileNew = null;
+	private JButton stripBtnFileOpen = null;
+	private JButton stripBtnFileSave = null;
+	private JButton stripBtnCut = null;
+	private JButton stripBtnCopy = null;
+	private JButton stripBtnPaste = null;
+	private JButton stripBtnUndo = null;
+	private JButton stripBtnRedo = null;
+	private JToolBar toolStripPosition = null;
+	private JButton stripBtnMoveTop = null;
+	private JPanel jPanel = null;
+	private JButton stripBtnRewind = null;
+	private JButton stripBtnForward = null;
+	private JButton stripBtnMoveEnd = null;
+	private JButton stripBtnPlay = null;
+	private JButton stripBtnStop = null;
+	private JToggleButton stripBtnScroll = null;
+	private JToggleButton stripBtnLoop = null;
+	private JToolBar toolStripMeasure = null;
+	private JLabel toolStripLabel5 = null;
+	private JLabel stripLblMeasure = null;
+	private JComboBox stripDDBtnLength = null;
+	private JLabel jLabel = null;
+	private JLabel jLabel1 = null;
+	private JComboBox stripDDBtnQuantize = null;
+	private JToggleButton stripBtnStartMarker = null;
+	private JToggleButton stripBtnEndMarker = null;
+	private JToolBar toolStripTool = null;
+	private JToggleButton stripBtnPointer = null;
+	private JToggleButton stripBtnPencil = null;
+	private JToggleButton stripBtnLine = null;
+	private JToggleButton stripBtnEraser = null;
+	private JToggleButton stripBtnGrid = null;
+	private JToggleButton stripBtnCurve = null;
+	private JLabel toolStripLabel6 = null;
+	private JLabel stripLblCursor = null;
+	private JLabel toolStripLabel8 = null;
+	private JLabel stripLblTempo = null;
+	private JLabel jLabel2 = null;
+	private JLabel stripLblBeat = null;
+	private JLabel jLabel3 = null;
+	private JLabel stripLblGameCtrlMode = null;
+	private JLabel jLabel4 = null;
+	private JLabel stripLblMidiIn = null;
+	private JLabel jLabel5 = null;
+	private JComboBox stripDDBtnSpeed = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -138,7 +202,7 @@ public class FormMain extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(379, 269);
+		this.setSize(720, 489);
 		this.setJMenuBar(getJJMenuBar());
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
@@ -153,6 +217,9 @@ public class FormMain extends JFrame {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new BorderLayout());
+			jContentPane.add(getJPanel(), BorderLayout.NORTH);
+			jContentPane.add(getToolStripBottom(), BorderLayout.SOUTH);
+			jContentPane.add(getSplitContainerProperty(), BorderLayout.CENTER);
 		}
 		return jContentPane;
 	}
@@ -212,6 +279,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuFileNew() {
 		if (menuFileNew == null) {
 			menuFileNew = new JMenuItem();
+			menuFileNew.setText("New");
 		}
 		return menuFileNew;
 	}
@@ -224,6 +292,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuFileOpen() {
 		if (menuFileOpen == null) {
 			menuFileOpen = new JMenuItem();
+			menuFileOpen.setText("Open");
 		}
 		return menuFileOpen;
 	}
@@ -236,6 +305,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuFileSave() {
 		if (menuFileSave == null) {
 			menuFileSave = new JMenuItem();
+			menuFileSave.setText("Save");
 		}
 		return menuFileSave;
 	}
@@ -248,6 +318,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuFileSaveNamed() {
 		if (menuFileSaveNamed == null) {
 			menuFileSaveNamed = new JMenuItem();
+			menuFileSaveNamed.setText("Save As");
 		}
 		return menuFileSaveNamed;
 	}
@@ -298,6 +369,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuFileImport() {
 		if (menuFileImport == null) {
 			menuFileImport = new JMenu();
+			menuFileImport.setText("Import");
 			menuFileImport.add(getJMenuItem6());
 			menuFileImport.add(getJMenuItem7());
 		}
@@ -312,6 +384,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuFileExport() {
 		if (menuFileExport == null) {
 			menuFileExport = new JMenu();
+			menuFileExport.setText("Export");
 			menuFileExport.add(getJMenuItem8());
 			menuFileExport.add(getJMenuItem9());
 		}
@@ -338,6 +411,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem4() {
 		if (menuFileRecent == null) {
 			menuFileRecent = new JMenuItem();
+			menuFileRecent.setText("Recent Files");
 		}
 		return menuFileRecent;
 	}
@@ -362,6 +436,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem5() {
 		if (menuFileQuit == null) {
 			menuFileQuit = new JMenuItem();
+			menuFileQuit.setText("Quit");
 		}
 		return menuFileQuit;
 	}
@@ -374,6 +449,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem6() {
 		if (menuFileImportVsq == null) {
 			menuFileImportVsq = new JMenuItem();
+			menuFileImportVsq.setText("VSQ / Vocaloid MIDI");
 		}
 		return menuFileImportVsq;
 	}
@@ -386,6 +462,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem7() {
 		if (menuFileImportMidi == null) {
 			menuFileImportMidi = new JMenuItem();
+			menuFileImportMidi.setText("Standard MIDI");
 		}
 		return menuFileImportMidi;
 	}
@@ -398,6 +475,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem8() {
 		if (menuFileExportWav == null) {
 			menuFileExportWav = new JMenuItem();
+			menuFileExportWav.setText("Wave");
 		}
 		return menuFileExportWav;
 	}
@@ -410,6 +488,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem9() {
 		if (menuFileExportMidi == null) {
 			menuFileExportMidi = new JMenuItem();
+			menuFileExportMidi.setText("MIDI");
 		}
 		return menuFileExportMidi;
 	}
@@ -447,6 +526,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem10() {
 		if (menuEditUndo == null) {
 			menuEditUndo = new JMenuItem();
+			menuEditUndo.setText("Undo");
 		}
 		return menuEditUndo;
 	}
@@ -459,6 +539,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem11() {
 		if (menuEditRedo == null) {
 			menuEditRedo = new JMenuItem();
+			menuEditRedo.setText("Redo");
 		}
 		return menuEditRedo;
 	}
@@ -483,6 +564,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem12() {
 		if (menuEditCut == null) {
 			menuEditCut = new JMenuItem();
+			menuEditCut.setText("Cut");
 		}
 		return menuEditCut;
 	}
@@ -495,6 +577,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuEditCopy() {
 		if (menuEditCopy == null) {
 			menuEditCopy = new JMenuItem();
+			menuEditCopy.setText("Copy");
 		}
 		return menuEditCopy;
 	}
@@ -507,6 +590,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem22() {
 		if (menuEditPaste == null) {
 			menuEditPaste = new JMenuItem();
+			menuEditPaste.setText("Paste");
 		}
 		return menuEditPaste;
 	}
@@ -519,6 +603,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem13() {
 		if (menuEditDelete == null) {
 			menuEditDelete = new JMenuItem();
+			menuEditDelete.setText("Delete");
 		}
 		return menuEditDelete;
 	}
@@ -543,6 +628,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem14() {
 		if (menuEditAutoNormalizeMode == null) {
 			menuEditAutoNormalizeMode = new JMenuItem();
+			menuEditAutoNormalizeMode.setText("Auto Normalize Mode");
 		}
 		return menuEditAutoNormalizeMode;
 	}
@@ -567,6 +653,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem15() {
 		if (menuEditSelectAll == null) {
 			menuEditSelectAll = new JMenuItem();
+			menuEditSelectAll.setText("Select All");
 		}
 		return menuEditSelectAll;
 	}
@@ -579,6 +666,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuEditSelectAllEvents() {
 		if (menuEditSelectAllEvents == null) {
 			menuEditSelectAllEvents = new JMenuItem();
+			menuEditSelectAllEvents.setText("Select All Events");
 		}
 		return menuEditSelectAllEvents;
 	}
@@ -618,6 +706,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem16() {
 		if (menuVisualControlTrack == null) {
 			menuVisualControlTrack = new JMenuItem();
+			menuVisualControlTrack.setText("Control Track");
 		}
 		return menuVisualControlTrack;
 	}
@@ -630,6 +719,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem17() {
 		if (menuVisualMixer == null) {
 			menuVisualMixer = new JMenuItem();
+			menuVisualMixer.setText("Mixer");
 		}
 		return menuVisualMixer;
 	}
@@ -642,6 +732,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuVisualWaveform() {
 		if (menuVisualWaveform == null) {
 			menuVisualWaveform = new JMenuItem();
+			menuVisualWaveform.setText("Waveform");
 		}
 		return menuVisualWaveform;
 	}
@@ -654,6 +745,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem23() {
 		if (menuVisualProperty == null) {
 			menuVisualProperty = new JMenuItem();
+			menuVisualProperty.setText("Property Window");
 		}
 		return menuVisualProperty;
 	}
@@ -666,6 +758,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem32() {
 		if (menuVisualOverview == null) {
 			menuVisualOverview = new JMenuItem();
+			menuVisualOverview.setText("Navigation");
 		}
 		return menuVisualOverview;
 	}
@@ -690,6 +783,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem18() {
 		if (menuVisualGridline == null) {
 			menuVisualGridline = new JMenuItem();
+			menuVisualGridline.setText("Grid Line");
 		}
 		return menuVisualGridline;
 	}
@@ -714,6 +808,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem19() {
 		if (menuVisualStartMarker == null) {
 			menuVisualStartMarker = new JMenuItem();
+			menuVisualStartMarker.setText("Start Marker");
 		}
 		return menuVisualStartMarker;
 	}
@@ -726,6 +821,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuVisualEndMarker() {
 		if (menuVisualEndMarker == null) {
 			menuVisualEndMarker = new JMenuItem();
+			menuVisualEndMarker.setText("End Marker");
 		}
 		return menuVisualEndMarker;
 	}
@@ -750,6 +846,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem20() {
 		if (menuVisualNoteProperty == null) {
 			menuVisualNoteProperty = new JMenuItem();
+			menuVisualNoteProperty.setText("Note Expression/Vibrato");
 		}
 		return menuVisualNoteProperty;
 	}
@@ -762,6 +859,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuVisualLyrics() {
 		if (menuVisualLyrics == null) {
 			menuVisualLyrics = new JMenuItem();
+			menuVisualLyrics.setText("Lyrics/Phoneme");
 		}
 		return menuVisualLyrics;
 	}
@@ -774,6 +872,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem24() {
 		if (menuVisualPitchLine == null) {
 			menuVisualPitchLine = new JMenuItem();
+			menuVisualPitchLine.setText("Pitch Line");
 		}
 		return menuVisualPitchLine;
 	}
@@ -786,6 +885,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuJob() {
 		if (menuJob == null) {
 			menuJob = new JMenu();
+			menuJob.setText("Job");
 			menuJob.add(getJMenuItem21());
 			menuJob.add(getMenuJobInsertBar());
 			menuJob.add(getJMenuItem25());
@@ -807,6 +907,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem21() {
 		if (menuJobNormalize == null) {
 			menuJobNormalize = new JMenuItem();
+			menuJobNormalize.setText("Normalize Notes");
 		}
 		return menuJobNormalize;
 	}
@@ -819,6 +920,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuJobInsertBar() {
 		if (menuJobInsertBar == null) {
 			menuJobInsertBar = new JMenuItem();
+			menuJobInsertBar.setText("Insert Bars");
 		}
 		return menuJobInsertBar;
 	}
@@ -831,6 +933,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem25() {
 		if (menuJobDeleteBar == null) {
 			menuJobDeleteBar = new JMenuItem();
+			menuJobDeleteBar.setText("Delete Bars");
 		}
 		return menuJobDeleteBar;
 	}
@@ -843,6 +946,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem33() {
 		if (menuJobRandomize == null) {
 			menuJobRandomize = new JMenuItem();
+			menuJobRandomize.setText("Randomize");
 		}
 		return menuJobRandomize;
 	}
@@ -855,6 +959,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem42() {
 		if (menuJobConnect == null) {
 			menuJobConnect = new JMenuItem();
+			menuJobConnect.setText("Connect Notes");
 		}
 		return menuJobConnect;
 	}
@@ -867,6 +972,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem52() {
 		if (menuJobLyric == null) {
 			menuJobLyric = new JMenuItem();
+			menuJobLyric.setText("Insert Lyrics");
 		}
 		return menuJobLyric;
 	}
@@ -879,6 +985,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem62() {
 		if (menuJobRewire == null) {
 			menuJobRewire = new JMenuItem();
+			menuJobRewire.setText("Import ReWire Host Tempo");
 		}
 		return menuJobRewire;
 	}
@@ -891,6 +998,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem72() {
 		if (menuJobRealTime == null) {
 			menuJobRealTime = new JMenuItem();
+			menuJobRealTime.setText("Start Realtime Input");
 		}
 		return menuJobRealTime;
 	}
@@ -903,6 +1011,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem26() {
 		if (menuJobReloadVsti == null) {
 			menuJobReloadVsti = new JMenuItem();
+			menuJobReloadVsti.setText("Reload VSTi");
 		}
 		return menuJobReloadVsti;
 	}
@@ -915,6 +1024,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuTrack() {
 		if (menuTrack == null) {
 			menuTrack = new JMenu();
+			menuTrack.setText("Track");
 			menuTrack.add(getJMenuItem27());
 			menuTrack.add(getToolStripMenuItem10321());
 			menuTrack.add(getMenuTrackAdd());
@@ -942,6 +1052,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem27() {
 		if (menuTrackOn == null) {
 			menuTrackOn = new JMenuItem();
+			menuTrackOn.setText("Track On");
 		}
 		return menuTrackOn;
 	}
@@ -966,6 +1077,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuTrackAdd() {
 		if (menuTrackAdd == null) {
 			menuTrackAdd = new JMenuItem();
+			menuTrackAdd.setText("Add Track");
 		}
 		return menuTrackAdd;
 	}
@@ -978,6 +1090,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem28() {
 		if (menuTrackCopy == null) {
 			menuTrackCopy = new JMenuItem();
+			menuTrackCopy.setText("Copy Track");
 		}
 		return menuTrackCopy;
 	}
@@ -990,6 +1103,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem34() {
 		if (menuTrackChangeName == null) {
 			menuTrackChangeName = new JMenuItem();
+			menuTrackChangeName.setText("Rename Track");
 		}
 		return menuTrackChangeName;
 	}
@@ -1002,6 +1116,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem43() {
 		if (menuTrackDelete == null) {
 			menuTrackDelete = new JMenuItem();
+			menuTrackDelete.setText("Delete Track");
 		}
 		return menuTrackDelete;
 	}
@@ -1026,6 +1141,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem53() {
 		if (menuTrackRenderCurrent == null) {
 			menuTrackRenderCurrent = new JMenuItem();
+			menuTrackRenderCurrent.setText("Render Current Track");
 		}
 		return menuTrackRenderCurrent;
 	}
@@ -1038,6 +1154,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem63() {
 		if (menuTrackRenderAll == null) {
 			menuTrackRenderAll = new JMenuItem();
+			menuTrackRenderAll.setText("Render All Tracks");
 		}
 		return menuTrackRenderAll;
 	}
@@ -1062,6 +1179,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem73() {
 		if (menuTrackOverlay == null) {
 			menuTrackOverlay = new JMenuItem();
+			menuTrackOverlay.setText("Overlay");
 		}
 		return menuTrackOverlay;
 	}
@@ -1074,6 +1192,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuTrackRenderer() {
 		if (menuTrackRenderer == null) {
 			menuTrackRenderer = new JMenu();
+			menuTrackRenderer.setText("Renderer");
 		}
 		return menuTrackRenderer;
 	}
@@ -1098,6 +1217,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuTrackBgm() {
 		if (menuTrackBgm == null) {
 			menuTrackBgm = new JMenu();
+			menuTrackBgm.setText("BGM");
 		}
 		return menuTrackBgm;
 	}
@@ -1122,6 +1242,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuLyric() {
 		if (menuLyric == null) {
 			menuLyric = new JMenu();
+			menuLyric.setText("Lyrics");
 			menuLyric.add(getJMenuItem29());
 			menuLyric.add(getMenuLyricVibratoProperty());
 			menuLyric.add(getJMenuItem210());
@@ -1138,6 +1259,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem29() {
 		if (menuLyricExpressionProperty == null) {
 			menuLyricExpressionProperty = new JMenuItem();
+			menuLyricExpressionProperty.setText("Note Expression Propertry");
 		}
 		return menuLyricExpressionProperty;
 	}
@@ -1150,6 +1272,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuLyricVibratoProperty() {
 		if (menuLyricVibratoProperty == null) {
 			menuLyricVibratoProperty = new JMenuItem();
+			menuLyricVibratoProperty.setText("Note Vibrato Property");
 		}
 		return menuLyricVibratoProperty;
 	}
@@ -1162,6 +1285,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem210() {
 		if (menuLyricSymbol == null) {
 			menuLyricSymbol = new JMenuItem();
+			menuLyricSymbol.setText("Phoneme Transformation");
 		}
 		return menuLyricSymbol;
 	}
@@ -1174,6 +1298,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem35() {
 		if (menuLyricDictionary == null) {
 			menuLyricDictionary = new JMenuItem();
+			menuLyricDictionary.setText("User Word Dictionary");
 		}
 		return menuLyricDictionary;
 	}
@@ -1186,6 +1311,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuScript() {
 		if (menuScript == null) {
 			menuScript = new JMenu();
+			menuScript.setText("Script");
 			menuScript.add(getJMenuItem30());
 		}
 		return menuScript;
@@ -1199,6 +1325,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem30() {
 		if (menuScriptUpdate == null) {
 			menuScriptUpdate = new JMenuItem();
+			menuScriptUpdate.setText("Update Script List");
 		}
 		return menuScriptUpdate;
 	}
@@ -1211,6 +1338,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuSetting() {
 		if (menuSetting == null) {
 			menuSetting = new JMenu();
+			menuSetting.setText("Setting");
 			menuSetting.add(getJMenuItem31());
 			menuSetting.add(getMenuSettingGameControler());
 			menuSetting.add(getMenuSettingPaletteTool());
@@ -1235,6 +1363,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem31() {
 		if (menuSettingPreference == null) {
 			menuSettingPreference = new JMenuItem();
+			menuSettingPreference.setText("Preference");
 		}
 		return menuSettingPreference;
 	}
@@ -1247,6 +1376,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuSettingGameControler() {
 		if (menuSettingGameControler == null) {
 			menuSettingGameControler = new JMenu();
+			menuSettingGameControler.setText("Game Controler");
 		}
 		return menuSettingGameControler;
 	}
@@ -1259,6 +1389,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem211() {
 		if (menuSettingShortcut == null) {
 			menuSettingShortcut = new JMenuItem();
+			menuSettingShortcut.setText("Shortcut Key");
 		}
 		return menuSettingShortcut;
 	}
@@ -1283,6 +1414,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem44() {
 		if (menuSettingUtauVoiceDB == null) {
 			menuSettingUtauVoiceDB = new JMenuItem();
+			menuSettingUtauVoiceDB.setText("UTAU Voice DB");
 		}
 		return menuSettingUtauVoiceDB;
 	}
@@ -1307,6 +1439,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem54() {
 		if (menuSettingDefaultSingerStyle == null) {
 			menuSettingDefaultSingerStyle = new JMenuItem();
+			menuSettingDefaultSingerStyle.setText("Singing Style Defaults");
 		}
 		return menuSettingDefaultSingerStyle;
 	}
@@ -1331,6 +1464,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuSettingPositionQuantize() {
 		if (menuSettingPositionQuantize == null) {
 			menuSettingPositionQuantize = new JMenu();
+			menuSettingPositionQuantize.setText("Quantize");
 			menuSettingPositionQuantize.add(getJMenuItem37());
 			menuSettingPositionQuantize.add(getMenuSettingPositionQuantize08());
 			menuSettingPositionQuantize.add(getJMenuItem212());
@@ -1364,6 +1498,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuSettingPaletteTool() {
 		if (menuSettingPaletteTool == null) {
 			menuSettingPaletteTool = new JMenu();
+			menuSettingPaletteTool.setText("Palette Tool");
 		}
 		return menuSettingPaletteTool;
 	}
@@ -1376,6 +1511,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem37() {
 		if (menuSettingPositionQuantize04 == null) {
 			menuSettingPositionQuantize04 = new JMenuItem();
+			menuSettingPositionQuantize04.setText("1/4");
 		}
 		return menuSettingPositionQuantize04;
 	}
@@ -1388,6 +1524,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuSettingPositionQuantize08() {
 		if (menuSettingPositionQuantize08 == null) {
 			menuSettingPositionQuantize08 = new JMenuItem();
+			menuSettingPositionQuantize08.setText("1/8");
 		}
 		return menuSettingPositionQuantize08;
 	}
@@ -1400,6 +1537,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem212() {
 		if (menuSettingPositionQuantize16 == null) {
 			menuSettingPositionQuantize16 = new JMenuItem();
+			menuSettingPositionQuantize16.setText("1/16");
 		}
 		return menuSettingPositionQuantize16;
 	}
@@ -1412,6 +1550,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem38() {
 		if (menuSettingPositionQuantize32 == null) {
 			menuSettingPositionQuantize32 = new JMenuItem();
+			menuSettingPositionQuantize32.setText("1/32");
 		}
 		return menuSettingPositionQuantize32;
 	}
@@ -1424,6 +1563,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem45() {
 		if (menuSettingPositionQuantize64 == null) {
 			menuSettingPositionQuantize64 = new JMenuItem();
+			menuSettingPositionQuantize64.setText("1/64");
 		}
 		return menuSettingPositionQuantize64;
 	}
@@ -1436,6 +1576,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem55() {
 		if (menuSettingPositionQuantize128 == null) {
 			menuSettingPositionQuantize128 = new JMenuItem();
+			menuSettingPositionQuantize128.setText("1/128");
 		}
 		return menuSettingPositionQuantize128;
 	}
@@ -1448,6 +1589,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem65() {
 		if (menuSettingPositionQuantizeOff == null) {
 			menuSettingPositionQuantizeOff = new JMenuItem();
+			menuSettingPositionQuantizeOff.setText("Off");
 		}
 		return menuSettingPositionQuantizeOff;
 	}
@@ -1472,6 +1614,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem74() {
 		if (menuSettingPositionQuantizeTriplet == null) {
 			menuSettingPositionQuantizeTriplet = new JMenuItem();
+			menuSettingPositionQuantizeTriplet.setText("Triplet");
 		}
 		return menuSettingPositionQuantizeTriplet;
 	}
@@ -1484,6 +1627,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuSettingLengthQuantize() {
 		if (menuSettingLengthQuantize == null) {
 			menuSettingLengthQuantize = new JMenu();
+			menuSettingLengthQuantize.setText("Length");
 			menuSettingLengthQuantize.add(getMenuSettingLengthQuantize04());
 			menuSettingLengthQuantize.add(getMenuSettingLengthQuantize08());
 			menuSettingLengthQuantize.add(getMenuSettingLengthQuantize16());
@@ -1505,6 +1649,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuSettingLengthQuantize04() {
 		if (menuSettingLengthQuantize04 == null) {
 			menuSettingLengthQuantize04 = new JMenuItem();
+			menuSettingLengthQuantize04.setText("1/4");
 		}
 		return menuSettingLengthQuantize04;
 	}
@@ -1517,6 +1662,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuSettingLengthQuantize08() {
 		if (menuSettingLengthQuantize08 == null) {
 			menuSettingLengthQuantize08 = new JMenuItem();
+			menuSettingLengthQuantize08.setText("1/8");
 		}
 		return menuSettingLengthQuantize08;
 	}
@@ -1529,6 +1675,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuSettingLengthQuantize16() {
 		if (menuSettingLengthQuantize16 == null) {
 			menuSettingLengthQuantize16 = new JMenuItem();
+			menuSettingLengthQuantize16.setText("1/16");
 		}
 		return menuSettingLengthQuantize16;
 	}
@@ -1541,6 +1688,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuSettingLengthQuantize32() {
 		if (menuSettingLengthQuantize32 == null) {
 			menuSettingLengthQuantize32 = new JMenuItem();
+			menuSettingLengthQuantize32.setText("1/32");
 		}
 		return menuSettingLengthQuantize32;
 	}
@@ -1553,6 +1701,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuSettingLengthQuantize64() {
 		if (menuSettingLengthQuantize64 == null) {
 			menuSettingLengthQuantize64 = new JMenuItem();
+			menuSettingLengthQuantize64.setText("1/64");
 		}
 		return menuSettingLengthQuantize64;
 	}
@@ -1565,6 +1714,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuSettingLengthQuantize128() {
 		if (menuSettingLengthQuantize128 == null) {
 			menuSettingLengthQuantize128 = new JMenuItem();
+			menuSettingLengthQuantize128.setText("1/128");
 		}
 		return menuSettingLengthQuantize128;
 	}
@@ -1577,6 +1727,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuSettingLengthQuantizeOff() {
 		if (menuSettingLengthQuantizeOff == null) {
 			menuSettingLengthQuantizeOff = new JMenuItem();
+			menuSettingLengthQuantizeOff.setText("Off");
 		}
 		return menuSettingLengthQuantizeOff;
 	}
@@ -1601,6 +1752,7 @@ public class FormMain extends JFrame {
 	private JMenuItem getMenuSettingLengthQuantizeTriplet() {
 		if (menuSettingLengthQuantizeTriplet == null) {
 			menuSettingLengthQuantizeTriplet = new JMenuItem();
+			menuSettingLengthQuantizeTriplet.setText("Triplet");
 		}
 		return menuSettingLengthQuantizeTriplet;
 	}
@@ -1613,6 +1765,7 @@ public class FormMain extends JFrame {
 	private JMenu getMenuHelp() {
 		if (menuHelp == null) {
 			menuHelp = new JMenu();
+			menuHelp.setText("Help");
 			menuHelp.add(getJMenuItem39());
 		}
 		return menuHelp;
@@ -1626,8 +1779,626 @@ public class FormMain extends JFrame {
 	private JMenuItem getJMenuItem39() {
 		if (menuHelpAbout == null) {
 			menuHelpAbout = new JMenuItem();
+			menuHelpAbout.setText("About Cadencii");
 		}
 		return menuHelpAbout;
+	}
+
+	/**
+	 * This method initializes splitContainer2	
+	 * 	
+	 * @return javax.swing.JSplitPane	
+	 */
+	private JSplitPane getSplitContainer2() {
+		if (splitContainer2 == null) {
+			splitContainer2 = new JSplitPane();
+			splitContainer2.setDividerSize(10);
+			splitContainer2.setDividerLocation(70);
+			splitContainer2.setTopComponent(getPanel1());
+			splitContainer2.setBottomComponent(getPanel2());
+			splitContainer2.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		}
+		return splitContainer2;
+	}
+
+	/**
+	 * This method initializes panel1	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getPanel1() {
+		if (panel1 == null) {
+			panel1 = new JPanel();
+			panel1.setLayout(new GridBagLayout());
+		}
+		return panel1;
+	}
+
+	/**
+	 * This method initializes panel2	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getPanel2() {
+		if (panel2 == null) {
+			panel2 = new JPanel();
+			panel2.setLayout(new GridBagLayout());
+		}
+		return panel2;
+	}
+
+	/**
+	 * This method initializes splitContainer1	
+	 * 	
+	 * @return javax.swing.JSplitPane	
+	 */
+	private JSplitPane getSplitContainer1() {
+		if (splitContainer1 == null) {
+			splitContainer1 = new JSplitPane();
+			splitContainer1.setDividerLocation(200);
+			splitContainer1.setTopComponent(getSplitContainer2());
+			splitContainer1.setBottomComponent(getTrackSelector());
+			splitContainer1.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		}
+		return splitContainer1;
+	}
+
+	/**
+	 * This method initializes trackSelector	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getTrackSelector() {
+		if (trackSelector == null) {
+			trackSelector = new JPanel();
+			trackSelector.setLayout(new GridBagLayout());
+		}
+		return trackSelector;
+	}
+
+	/**
+	 * This method initializes splitContainerProperty	
+	 * 	
+	 * @return javax.swing.JSplitPane	
+	 */
+	private JSplitPane getSplitContainerProperty() {
+		if (splitContainerProperty == null) {
+			splitContainerProperty = new JSplitPane();
+			splitContainerProperty.setDividerLocation(100);
+			splitContainerProperty.setRightComponent(getSplitContainer1());
+			splitContainerProperty.setLeftComponent(getM_property_panel_container());
+		}
+		return splitContainerProperty;
+	}
+
+	/**
+	 * This method initializes m_property_panel_container	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getM_property_panel_container() {
+		if (m_property_panel_container == null) {
+			m_property_panel_container = new JPanel();
+			m_property_panel_container.setLayout(new GridBagLayout());
+		}
+		return m_property_panel_container;
+	}
+
+	/**
+	 * This method initializes toolStripFile	
+	 * 	
+	 * @return javax.swing.JToolBar	
+	 */
+	private JToolBar getToolStripFile() {
+		if (toolStripFile == null) {
+			toolStripFile = new JToolBar();
+			toolStripFile.setName("toolStripFile");
+			toolStripFile.add(getStripBtnFileNew());
+			toolStripFile.add(getStripBtnFileOpen());
+			toolStripFile.add(getStripBtnFileSave());
+			toolStripFile.addSeparator();
+			toolStripFile.add(getStripBtnCut());
+			toolStripFile.add(getStripBtnCopy());
+			toolStripFile.add(getStripBtnPaste());
+			toolStripFile.add(getStripBtnUndo());
+			toolStripFile.add(getStripBtnRedo());
+		}
+		return toolStripFile;
+	}
+
+	/**
+	 * This method initializes toolStripBottom	
+	 * 	
+	 * @return javax.swing.JToolBar	
+	 */
+	private JToolBar getToolStripBottom() {
+		if (toolStripBottom == null) {
+			jLabel5 = new JLabel();
+			jLabel5.setText("Speed 1.0x");
+			stripLblMidiIn = new JLabel();
+			stripLblMidiIn.setText("Disabled");
+			jLabel4 = new JLabel();
+			jLabel4.setText("MIDI In");
+			stripLblGameCtrlMode = new JLabel();
+			stripLblGameCtrlMode.setText("Disabled");
+			jLabel3 = new JLabel();
+			jLabel3.setText("Game Controler");
+			stripLblBeat = new JLabel();
+			stripLblBeat.setText("4/4");
+			jLabel2 = new JLabel();
+			jLabel2.setText("BEAT");
+			stripLblTempo = new JLabel();
+			stripLblTempo.setText("120.00");
+			toolStripLabel8 = new JLabel();
+			toolStripLabel8.setText("TEMPO");
+			stripLblCursor = new JLabel();
+			stripLblCursor.setText("0 : 0 : 000");
+			toolStripLabel6 = new JLabel();
+			toolStripLabel6.setText("CURSOR");
+			toolStripBottom = new JToolBar();
+			toolStripBottom.add(toolStripLabel6);
+			toolStripBottom.add(stripLblCursor);
+			toolStripBottom.addSeparator();
+			toolStripBottom.add(toolStripLabel8);
+			toolStripBottom.add(stripLblTempo);
+			toolStripBottom.addSeparator();
+			toolStripBottom.add(jLabel2);
+			toolStripBottom.add(stripLblBeat);
+			toolStripBottom.addSeparator();
+			toolStripBottom.add(jLabel3);
+			toolStripBottom.add(stripLblGameCtrlMode);
+			toolStripBottom.addSeparator();
+			toolStripBottom.add(jLabel4);
+			toolStripBottom.add(stripLblMidiIn);
+			toolStripBottom.add(jLabel5);
+			toolStripBottom.add(getStripDDBtnSpeed());
+			toolStripBottom.addSeparator();
+			
+		}
+		return toolStripBottom;
+	}
+
+	/**
+	 * This method initializes stripBtnFileNew	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnFileNew() {
+		if (stripBtnFileNew == null) {
+			stripBtnFileNew = new JButton();
+			stripBtnFileNew.setText("New");
+		}
+		return stripBtnFileNew;
+	}
+
+	/**
+	 * This method initializes stripBtnFileOpen	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnFileOpen() {
+		if (stripBtnFileOpen == null) {
+			stripBtnFileOpen = new JButton();
+			stripBtnFileOpen.setText("Open");
+		}
+		return stripBtnFileOpen;
+	}
+
+	/**
+	 * This method initializes stripBtnFileSave	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnFileSave() {
+		if (stripBtnFileSave == null) {
+			stripBtnFileSave = new JButton();
+			stripBtnFileSave.setText("Save");
+		}
+		return stripBtnFileSave;
+	}
+
+	/**
+	 * This method initializes stripBtnCut	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnCut() {
+		if (stripBtnCut == null) {
+			stripBtnCut = new JButton();
+			stripBtnCut.setText("Cut");
+		}
+		return stripBtnCut;
+	}
+
+	/**
+	 * This method initializes stripBtnCopy	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnCopy() {
+		if (stripBtnCopy == null) {
+			stripBtnCopy = new JButton();
+			stripBtnCopy.setText("Copy");
+		}
+		return stripBtnCopy;
+	}
+
+	/**
+	 * This method initializes stripBtnPaste	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnPaste() {
+		if (stripBtnPaste == null) {
+			stripBtnPaste = new JButton();
+			stripBtnPaste.setText("Paste");
+		}
+		return stripBtnPaste;
+	}
+
+	/**
+	 * This method initializes stripBtnUndo	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnUndo() {
+		if (stripBtnUndo == null) {
+			stripBtnUndo = new JButton();
+			stripBtnUndo.setText("Undo");
+		}
+		return stripBtnUndo;
+	}
+
+	/**
+	 * This method initializes stripBtnRedo	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnRedo() {
+		if (stripBtnRedo == null) {
+			stripBtnRedo = new JButton();
+			stripBtnRedo.setText("Redo");
+		}
+		return stripBtnRedo;
+	}
+
+	/**
+	 * This method initializes toolStripPosition	
+	 * 	
+	 * @return javax.swing.JToolBar	
+	 */
+	private JToolBar getToolStripPosition() {
+		if (toolStripPosition == null) {
+			toolStripPosition = new JToolBar();
+			toolStripPosition.setName("toolStripPosition");
+			toolStripPosition.add(getStripBtnMoveTop());
+			toolStripPosition.add(getStripBtnRewind());
+			toolStripPosition.add(getStripBtnForward());
+			toolStripPosition.add(getStripBtnMoveEnd());
+			toolStripPosition.add(getStripBtnPlay());
+			toolStripPosition.add(getStripBtnStop());
+			toolStripPosition.add(getStripBtnScroll());
+			toolStripPosition.add(getStripBtnLoop());
+			toolStripPosition.addSeparator();
+		}
+		return toolStripPosition;
+	}
+
+	/**
+	 * This method initializes stripBtnMoveTop	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnMoveTop() {
+		if (stripBtnMoveTop == null) {
+			stripBtnMoveTop = new JButton();
+			stripBtnMoveTop.setText("|<");
+		}
+		return stripBtnMoveTop;
+	}
+
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			GridLayout gridLayout4 = new GridLayout();
+			gridLayout4.setRows(2);
+			GridLayout gridLayout3 = new GridLayout();
+			gridLayout3.setRows(2);
+			GridLayout gridLayout2 = new GridLayout();
+			gridLayout2.setRows(2);
+			GridLayout gridLayout = new GridLayout();
+			gridLayout.setRows(2);
+			jPanel = new JPanel();
+			jPanel.setLayout(new BoxLayout(getJPanel(), BoxLayout.X_AXIS));
+			jPanel.add(getToolStripFile(), null);
+			jPanel.add(getToolStripPosition(), null);
+			jPanel.add(getToolStripTool(), null);
+			jPanel.add(getToolStripMeasure(), null);
+		}
+		return jPanel;
+	}
+
+	/**
+	 * This method initializes stripBtnRewind	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnRewind() {
+		if (stripBtnRewind == null) {
+			stripBtnRewind = new JButton();
+			stripBtnRewind.setText("<<");
+		}
+		return stripBtnRewind;
+	}
+
+	/**
+	 * This method initializes stripBtnForward	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnForward() {
+		if (stripBtnForward == null) {
+			stripBtnForward = new JButton();
+			stripBtnForward.setText(">>");
+		}
+		return stripBtnForward;
+	}
+
+	/**
+	 * This method initializes stripBtnMoveEnd	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnMoveEnd() {
+		if (stripBtnMoveEnd == null) {
+			stripBtnMoveEnd = new JButton();
+			stripBtnMoveEnd.setText(">|");
+		}
+		return stripBtnMoveEnd;
+	}
+
+	/**
+	 * This method initializes stripBtnPlay	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnPlay() {
+		if (stripBtnPlay == null) {
+			stripBtnPlay = new JButton();
+			stripBtnPlay.setText(">");
+		}
+		return stripBtnPlay;
+	}
+
+	/**
+	 * This method initializes stripBtnStop	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getStripBtnStop() {
+		if (stripBtnStop == null) {
+			stripBtnStop = new JButton();
+			stripBtnStop.setText("[  ]");
+		}
+		return stripBtnStop;
+	}
+
+	/**
+	 * This method initializes stripBtnScroll	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnScroll() {
+		if (stripBtnScroll == null) {
+			stripBtnScroll = new JToggleButton();
+			stripBtnScroll.setText("Scroll");
+		}
+		return stripBtnScroll;
+	}
+
+	/**
+	 * This method initializes stripBtnLoop	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnLoop() {
+		if (stripBtnLoop == null) {
+			stripBtnLoop = new JToggleButton();
+			stripBtnLoop.setText("Loop");
+		}
+		return stripBtnLoop;
+	}
+
+	/**
+	 * This method initializes toolStripMeasure	
+	 * 	
+	 * @return javax.swing.JToolBar	
+	 */
+	private JToolBar getToolStripMeasure() {
+		if (toolStripMeasure == null) {
+			jLabel1 = new JLabel();
+			jLabel1.setText("QUANTIZE");
+			jLabel = new JLabel();
+			jLabel.setText("LENGTH");
+			stripLblMeasure = new JLabel();
+			stripLblMeasure.setText("0 : 0 : 000");
+			toolStripLabel5 = new JLabel();
+			toolStripLabel5.setText("MEASURE");
+			toolStripMeasure = new JToolBar();
+			toolStripMeasure.setName("toolStripMeasure");
+			toolStripMeasure.add(toolStripLabel5);
+			toolStripMeasure.add(stripLblMeasure);
+			toolStripMeasure.add(jLabel);
+			toolStripMeasure.add(getStripDDBtnLength());
+			toolStripMeasure.add(jLabel1);
+			toolStripMeasure.add(getStripDDBtnQuantize());
+			toolStripMeasure.add(getStripBtnStartMarker());
+			toolStripMeasure.add(getStripBtnEndMarker());
+			toolStripMeasure.addSeparator();
+		}
+		return toolStripMeasure;
+	}
+
+	/**
+	 * This method initializes stripDDBtnLength	
+	 * 	
+	 * @return javax.swing.JComboBox	
+	 */
+	private JComboBox getStripDDBtnLength() {
+		if (stripDDBtnLength == null) {
+			stripDDBtnLength = new JComboBox();
+		}
+		return stripDDBtnLength;
+	}
+
+	/**
+	 * This method initializes stripDDBtnQuantize	
+	 * 	
+	 * @return javax.swing.JComboBox	
+	 */
+	private JComboBox getStripDDBtnQuantize() {
+		if (stripDDBtnQuantize == null) {
+			stripDDBtnQuantize = new JComboBox();
+		}
+		return stripDDBtnQuantize;
+	}
+
+	/**
+	 * This method initializes stripBtnStartMarker	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnStartMarker() {
+		if (stripBtnStartMarker == null) {
+			stripBtnStartMarker = new JToggleButton();
+		}
+		return stripBtnStartMarker;
+	}
+
+	/**
+	 * This method initializes stripBtnEndMarker	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnEndMarker() {
+		if (stripBtnEndMarker == null) {
+			stripBtnEndMarker = new JToggleButton();
+		}
+		return stripBtnEndMarker;
+	}
+
+	/**
+	 * This method initializes toolStripTool	
+	 * 	
+	 * @return javax.swing.JToolBar	
+	 */
+	private JToolBar getToolStripTool() {
+		if (toolStripTool == null) {
+			toolStripTool = new JToolBar();
+			toolStripTool.add(getStripBtnPointer());
+			toolStripTool.add(getStripBtnPencil());
+			toolStripTool.add(getStripBtnLine());
+			toolStripTool.add(getStripBtnEraser());
+			toolStripTool.add(getStripBtnGrid());
+			toolStripTool.add(getStripBtnCurve());
+			toolStripTool.addSeparator();
+		}
+		return toolStripTool;
+	}
+
+	/**
+	 * This method initializes stripBtnPointer	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnPointer() {
+		if (stripBtnPointer == null) {
+			stripBtnPointer = new JToggleButton();
+			stripBtnPointer.setText("Pointer");
+		}
+		return stripBtnPointer;
+	}
+
+	/**
+	 * This method initializes stripBtnPencil	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnPencil() {
+		if (stripBtnPencil == null) {
+			stripBtnPencil = new JToggleButton();
+			stripBtnPencil.setText("Pencil");
+		}
+		return stripBtnPencil;
+	}
+
+	/**
+	 * This method initializes stripBtnLine	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnLine() {
+		if (stripBtnLine == null) {
+			stripBtnLine = new JToggleButton();
+			stripBtnLine.setText("Line");
+		}
+		return stripBtnLine;
+	}
+
+	/**
+	 * This method initializes stripBtnEraser	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnEraser() {
+		if (stripBtnEraser == null) {
+			stripBtnEraser = new JToggleButton();
+			stripBtnEraser.setToolTipText("");
+			stripBtnEraser.setText("Eraser");
+		}
+		return stripBtnEraser;
+	}
+
+	/**
+	 * This method initializes stripBtnGrid	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnGrid() {
+		if (stripBtnGrid == null) {
+			stripBtnGrid = new JToggleButton();
+			stripBtnGrid.setText("Grid");
+		}
+		return stripBtnGrid;
+	}
+
+	/**
+	 * This method initializes stripBtnCurve	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getStripBtnCurve() {
+		if (stripBtnCurve == null) {
+			stripBtnCurve = new JToggleButton();
+			stripBtnCurve.setText("Curve");
+		}
+		return stripBtnCurve;
+	}
+
+	/**
+	 * This method initializes stripDDBtnSpeed	
+	 * 	
+	 * @return javax.swing.JComboBox	
+	 */
+	private JComboBox getStripDDBtnSpeed() {
+		if (stripDDBtnSpeed == null) {
+			stripDDBtnSpeed = new JComboBox();
+		}
+		return stripDDBtnSpeed;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"
