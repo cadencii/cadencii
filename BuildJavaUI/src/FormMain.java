@@ -15,6 +15,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import java.awt.GridLayout;
 import javax.swing.BoxLayout;
+import javax.swing.JPopupMenu;
 
 public class FormMain extends JFrame {
 
@@ -188,6 +189,83 @@ public class FormMain extends JFrame {
 	private JLabel stripLblMidiIn = null;
 	private JLabel jLabel5 = null;
 	private JComboBox stripDDBtnSpeed = null;
+	private JPopupMenu cMenuTrackSelector = null;  //  @jve:decl-index=0:visual-constraint="749,73"
+	private JPopupMenu cMenuPiano = null;  //  @jve:decl-index=0:visual-constraint="764,258"
+	private JPopupMenu cMenuTrackTab = null;  //  @jve:decl-index=0:visual-constraint="752,356"
+	private JMenuItem cMenuTrackSelectorPointer = null;
+	private JMenuItem cMenuTrackSelectorPencil = null;
+	private JMenuItem cMenuTrackSelectorLine = null;
+	private JMenuItem cMenuTrackSelectorEraser = null;
+	private JMenuItem cMenuTrackSelectorPaletteTool = null;
+	private JMenuItem cMenuTrackSelectorCurve = null;
+	private JMenuItem cMenuTrackSelectorUndo = null;
+	private JMenuItem cMenuTrackSelectorRedo = null;
+	private JMenuItem cMenuTrackSelectorCut = null;
+	private JMenuItem cMenuTrackSelectorCopy = null;
+	private JMenuItem cMenuTrackSelectorPaste = null;
+	private JMenuItem cMenuTrackSelectorDelete = null;
+	private JMenuItem cMenuTrackSelectorDeleteBezier = null;
+	private JMenuItem cMenuTrackSelectorSelectAll = null;
+	private JMenuItem cMenuPianoPointer = null;
+	private JMenuItem cMenuPianoPencil = null;
+	private JMenuItem cMenuPianoEraser = null;
+	private JMenuItem cMenuPianoPaletteTool = null;
+	private JMenuItem cMenuPianoCurve = null;
+	private JMenu cMenuPianoFixed = null;
+	private JMenu cMenuPianoQuantize = null;
+	private JMenuItem cMenuPianoGrid = null;
+	private JMenuItem cMenuPianoUndo = null;
+	private JMenuItem cMenuPianoRedo = null;
+	private JMenuItem cMenuPianoCut = null;
+	private JMenuItem cMenuPianoCopy = null;
+	private JMenuItem cMenuPianoPaste = null;
+	private JMenuItem cMenuPianoDelete = null;
+	private JMenuItem cMenuPianoSelectAll = null;
+	private JMenuItem cMenuPianoSelectAllEvents = null;
+	private JMenuItem cMenuPianoImportLyric = null;
+	private JMenuItem cMenuPianoExpressionProperty = null;
+	private JMenuItem cMenuPianoVibratoProperty = null;
+	private JMenuItem cMenuPianoFixed02 = null;
+	private JMenuItem cMenuPianoFixed04 = null;
+	private JMenuItem cMenuPianoFixed08 = null;
+	private JMenuItem cMenuPianoFixed01 = null;
+	private JMenuItem cMenuPianoFixed16 = null;
+	private JMenuItem cMenuPianoFixed32 = null;
+	private JMenuItem cMenuPianoFixed64 = null;
+	private JMenuItem cMenuPianoFixed128 = null;
+	private JMenuItem cMenuPianoFixedOff = null;
+	private JMenuItem cMenuPianoFixedTriplet = null;
+	private JMenuItem cMenuPianoFixedDotted = null;
+	private JMenuItem cMenuPianoQuantize04 = null;
+	private JMenuItem cMenuPianoQuantize08 = null;
+	private JMenuItem cMenuPianoQuantize16 = null;
+	private JMenuItem cMenuPianoQuantize32 = null;
+	private JMenuItem cMenuPianoQuantize64 = null;
+	private JMenuItem cMenuPianoQuantize128 = null;
+	private JMenuItem cMenuPianoQuantizeTriplet = null;
+	private JMenu cMenuPianoLength = null;
+	private JMenuItem cMenuPianoLength04 = null;
+	private JMenuItem cMenuPianoLength08 = null;
+	private JMenuItem cMenuPianoLength16 = null;
+	private JMenuItem cMenuPianoLength32 = null;
+	private JMenuItem cMenuPianoLength64 = null;
+	private JMenuItem cMenuPianoLength128 = null;
+	private JMenuItem cMenuPianoLengthTriplet = null;
+	private JMenuItem cMenuTrackTabTrackOn = null;
+	private JMenuItem cMenuTrackTabAdd = null;
+	private JMenuItem cMenuTrackTabCopy = null;
+	private JMenuItem cMenuTrackTabChangeName = null;
+	private JMenuItem cMenuTrackTabDelete = null;
+	private JMenuItem cMenuTrackTabRenderCurrent = null;
+	private JMenuItem cMenuTrackTabRenderAll = null;
+	private JMenuItem cMenuTrackTabOverlay = null;
+	private JMenu cMenuTrackTabRenderer = null;
+	private JMenuItem cMenuTrackTabRendererVOCALOID2 = null;
+	private JMenuItem cMenuTrackTabRendererVOCALOID1 = null;
+	private JMenuItem cMenuTrackTabRendererUtau = null;
+	private JMenuItem cMenuTrackTabRendererStraight = null;
+	private JMenuItem cMenuPianoQuantizeOff = null;
+	private JMenuItem cMenuPianoLengthOff = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -1792,8 +1870,10 @@ public class FormMain extends JFrame {
 	private JSplitPane getSplitContainer2() {
 		if (splitContainer2 == null) {
 			splitContainer2 = new JSplitPane();
-			splitContainer2.setDividerSize(10);
+			splitContainer2.setDividerSize(0);
 			splitContainer2.setDividerLocation(70);
+			splitContainer2.setEnabled(false);
+			splitContainer2.setResizeWeight(1.0D);
 			splitContainer2.setTopComponent(getPanel1());
 			splitContainer2.setBottomComponent(getPanel2());
 			splitContainer2.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -1836,6 +1916,7 @@ public class FormMain extends JFrame {
 		if (splitContainer1 == null) {
 			splitContainer1 = new JSplitPane();
 			splitContainer1.setDividerLocation(200);
+			splitContainer1.setResizeWeight(1.0D);
 			splitContainer1.setTopComponent(getSplitContainer2());
 			splitContainer1.setBottomComponent(getTrackSelector());
 			splitContainer1.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -1864,7 +1945,9 @@ public class FormMain extends JFrame {
 	private JSplitPane getSplitContainerProperty() {
 		if (splitContainerProperty == null) {
 			splitContainerProperty = new JSplitPane();
-			splitContainerProperty.setDividerLocation(100);
+			splitContainerProperty.setDividerLocation(0);
+			splitContainerProperty.setEnabled(false);
+			splitContainerProperty.setDividerSize(0);
 			splitContainerProperty.setRightComponent(getSplitContainer1());
 			splitContainerProperty.setLeftComponent(getM_property_panel_container());
 		}
@@ -2399,6 +2482,1020 @@ public class FormMain extends JFrame {
 			stripDDBtnSpeed = new JComboBox();
 		}
 		return stripDDBtnSpeed;
+	}
+
+	/**
+	 * This method initializes cMenuTrackSelector	
+	 * 	
+	 * @return javax.swing.JPopupMenu	
+	 */
+	private JPopupMenu getCMenuTrackSelector() {
+		if (cMenuTrackSelector == null) {
+			cMenuTrackSelector = new JPopupMenu();
+			cMenuTrackSelector.add(getCMenuTrackSelectorPointer());
+			cMenuTrackSelector.add(getCMenuTrackSelectorPencil());
+			cMenuTrackSelector.add(getCMenuTrackSelectorLine());
+			cMenuTrackSelector.add(getCMenuTrackSelectorEraser());
+			cMenuTrackSelector.add(getCMenuTrackSelectorPaletteTool());
+			cMenuTrackSelector.addSeparator();
+			cMenuTrackSelector.add(getCMenuTrackSelectorCurve());
+			cMenuTrackSelector.addSeparator();
+			cMenuTrackSelector.add(getCMenuTrackSelectorUndo());
+			cMenuTrackSelector.add(getCMenuTrackSelectorRedo());
+			cMenuTrackSelector.addSeparator();
+			cMenuTrackSelector.add(getCMenuTrackSelectorCut());
+			cMenuTrackSelector.add(getCMenuTrackSelectorCopy());
+			cMenuTrackSelector.add(getCMenuTrackSelectorPaste());
+			cMenuTrackSelector.add(getCMenuTrackSelectorDelete());
+			cMenuTrackSelector.add(getCMenuTrackSelectorDeleteBezier());
+			cMenuTrackSelector.addSeparator();
+			cMenuTrackSelector.add(getCMenuTrackSelectorSelectAll());
+		}
+		return cMenuTrackSelector;
+	}
+
+	/**
+	 * This method initializes cMenuPiano	
+	 * 	
+	 * @return javax.swing.JPopupMenu	
+	 */
+	private JPopupMenu getCMenuPiano() {
+		if (cMenuPiano == null) {
+			cMenuPiano = new JPopupMenu();
+			cMenuPiano.add(getCMenuPianoPointer());
+			cMenuPiano.add(getCMenuPianoPencil());
+			cMenuPiano.add(getCMenuPianoEraser());
+			cMenuPiano.add(getCMenuPianoPaletteTool());
+			cMenuPiano.addSeparator();
+			cMenuPiano.add(getCMenuPianoCurve());
+			cMenuPiano.addSeparator();
+			cMenuPiano.add(getCMenuPianoFixed());
+			cMenuPiano.add(getCMenuPianoQuantize());
+			cMenuPiano.add(getCMenuPianoLength());
+			cMenuPiano.add(getCMenuPianoGrid());
+			cMenuPiano.addSeparator();
+			cMenuPiano.add(getCMenuPianoUndo());
+			cMenuPiano.add(getCMenuPianoRedo());
+			cMenuPiano.addSeparator();
+			cMenuPiano.add(getCMenuPianoCut());
+			cMenuPiano.add(getCMenuPianoCopy());
+			cMenuPiano.add(getCMenuPianoPaste());
+			cMenuPiano.add(getCMenuPianoDelete());
+			cMenuPiano.addSeparator();
+			cMenuPiano.add(getCMenuPianoSelectAll());
+			cMenuPiano.add(getCMenuPianoSelectAllEvents());
+			cMenuPiano.addSeparator();
+			cMenuPiano.add(getCMenuPianoImportLyric());
+			cMenuPiano.add(getCMenuPianoExpressionProperty());
+			cMenuPiano.add(getCMenuPianoVibratoProperty());
+		}
+		return cMenuPiano;
+	}
+
+	/**
+	 * This method initializes cMenuTrackTab	
+	 * 	
+	 * @return javax.swing.JPopupMenu	
+	 */
+	private JPopupMenu getCMenuTrackTab() {
+		if (cMenuTrackTab == null) {
+			cMenuTrackTab = new JPopupMenu();
+			cMenuTrackTab.add(getCMenuTrackTabTrackOn());
+			cMenuTrackTab.addSeparator();
+			cMenuTrackTab.add(getCMenuTrackTabAdd());
+			cMenuTrackTab.add(getCMenuTrackTabCopy());
+			cMenuTrackTab.add(getCMenuTrackTabChangeName());
+			cMenuTrackTab.add(getCMenuTrackTabDelete());
+			cMenuTrackTab.addSeparator();
+			cMenuTrackTab.add(getCMenuTrackTabRenderCurrent());
+			cMenuTrackTab.add(getCMenuTrackTabRenderAll());
+			cMenuTrackTab.addSeparator();
+			cMenuTrackTab.add(getCMenuTrackTabOverlay());
+			cMenuTrackTab.add(getCMenuTrackTabRenderer());
+		}
+		return cMenuTrackTab;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorPointer() {
+		if (cMenuTrackSelectorPointer == null) {
+			cMenuTrackSelectorPointer = new JMenuItem();
+		}
+		return cMenuTrackSelectorPointer;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorPencil() {
+		if (cMenuTrackSelectorPencil == null) {
+			cMenuTrackSelectorPencil = new JMenuItem();
+		}
+		return cMenuTrackSelectorPencil;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorLine() {
+		if (cMenuTrackSelectorLine == null) {
+			cMenuTrackSelectorLine = new JMenuItem();
+		}
+		return cMenuTrackSelectorLine;
+	}
+
+	/**
+	 * This method initializes cMenuTrackSelectorEraser	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorEraser() {
+		if (cMenuTrackSelectorEraser == null) {
+			cMenuTrackSelectorEraser = new JMenuItem();
+		}
+		return cMenuTrackSelectorEraser;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorPaletteTool() {
+		if (cMenuTrackSelectorPaletteTool == null) {
+			cMenuTrackSelectorPaletteTool = new JMenuItem();
+		}
+		return cMenuTrackSelectorPaletteTool;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorCurve() {
+		if (cMenuTrackSelectorCurve == null) {
+			cMenuTrackSelectorCurve = new JMenuItem();
+		}
+		return cMenuTrackSelectorCurve;
+	}
+
+	/**
+	 * This method initializes cMenuTrackSelectorUndo	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorUndo() {
+		if (cMenuTrackSelectorUndo == null) {
+			cMenuTrackSelectorUndo = new JMenuItem();
+		}
+		return cMenuTrackSelectorUndo;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorRedo() {
+		if (cMenuTrackSelectorRedo == null) {
+			cMenuTrackSelectorRedo = new JMenuItem();
+		}
+		return cMenuTrackSelectorRedo;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorCut() {
+		if (cMenuTrackSelectorCut == null) {
+			cMenuTrackSelectorCut = new JMenuItem();
+		}
+		return cMenuTrackSelectorCut;
+	}
+
+	/**
+	 * This method initializes cMenuTrackSelectorCopy	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorCopy() {
+		if (cMenuTrackSelectorCopy == null) {
+			cMenuTrackSelectorCopy = new JMenuItem();
+		}
+		return cMenuTrackSelectorCopy;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorPaste() {
+		if (cMenuTrackSelectorPaste == null) {
+			cMenuTrackSelectorPaste = new JMenuItem();
+		}
+		return cMenuTrackSelectorPaste;
+	}
+
+	/**
+	 * This method initializes jMenuItem3	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorDelete() {
+		if (cMenuTrackSelectorDelete == null) {
+			cMenuTrackSelectorDelete = new JMenuItem();
+		}
+		return cMenuTrackSelectorDelete;
+	}
+
+	/**
+	 * This method initializes jMenuItem4	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorDeleteBezier() {
+		if (cMenuTrackSelectorDeleteBezier == null) {
+			cMenuTrackSelectorDeleteBezier = new JMenuItem();
+		}
+		return cMenuTrackSelectorDeleteBezier;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackSelectorSelectAll() {
+		if (cMenuTrackSelectorSelectAll == null) {
+			cMenuTrackSelectorSelectAll = new JMenuItem();
+		}
+		return cMenuTrackSelectorSelectAll;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoPointer() {
+		if (cMenuPianoPointer == null) {
+			cMenuPianoPointer = new JMenuItem();
+		}
+		return cMenuPianoPointer;
+	}
+
+	/**
+	 * This method initializes cMenuPianoPencil	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoPencil() {
+		if (cMenuPianoPencil == null) {
+			cMenuPianoPencil = new JMenuItem();
+		}
+		return cMenuPianoPencil;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoEraser() {
+		if (cMenuPianoEraser == null) {
+			cMenuPianoEraser = new JMenuItem();
+		}
+		return cMenuPianoEraser;
+	}
+
+	/**
+	 * This method initializes jMenuItem3	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoPaletteTool() {
+		if (cMenuPianoPaletteTool == null) {
+			cMenuPianoPaletteTool = new JMenuItem();
+		}
+		return cMenuPianoPaletteTool;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoCurve() {
+		if (cMenuPianoCurve == null) {
+			cMenuPianoCurve = new JMenuItem();
+		}
+		return cMenuPianoCurve;
+	}
+
+	/**
+	 * This method initializes cMenuPianoFixed	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getCMenuPianoFixed() {
+		if (cMenuPianoFixed == null) {
+			cMenuPianoFixed = new JMenu();
+			cMenuPianoFixed.add(getCMenuPianoFixed01());
+			cMenuPianoFixed.add(getCMenuPianoFixed02());
+			cMenuPianoFixed.add(getCMenuPianoFixed04());
+			cMenuPianoFixed.add(getCMenuPianoFixed08());
+			cMenuPianoFixed.add(getCMenuPianoFixed16());
+			cMenuPianoFixed.add(getCMenuPianoFixed32());
+			cMenuPianoFixed.add(getCMenuPianoFixed64());
+			cMenuPianoFixed.add(getCMenuPianoFixed128());
+			cMenuPianoFixed.add(getCMenuPianoFixedOff());
+			cMenuPianoFixed.addSeparator();
+			cMenuPianoFixed.add(getCMenuPianoFixedTriplet());
+			cMenuPianoFixed.add(getCMenuPianoFixedDotted());
+		}
+		return cMenuPianoFixed;
+	}
+
+	/**
+	 * This method initializes cMenuPianoQuantize	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getCMenuPianoQuantize() {
+		if (cMenuPianoQuantize == null) {
+			cMenuPianoQuantize = new JMenu();
+			cMenuPianoQuantize.add(getCMenuPianoQuantize04());
+			cMenuPianoQuantize.add(getCMenuPianoQuantize08());
+			cMenuPianoQuantize.add(getCMenuPianoQuantize16());
+			cMenuPianoQuantize.add(getCMenuPianoQuantize32());
+			cMenuPianoQuantize.add(getCMenuPianoQuantize64());
+			cMenuPianoQuantize.add(getCMenuPianoQuantize128());
+			cMenuPianoQuantize.add(getCMenuPianoQuantizeOff());
+			cMenuPianoQuantize.addSeparator();
+			cMenuPianoQuantize.add(getCMenuPianoQuantizeTriplet());
+		}
+		return cMenuPianoQuantize;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoGrid() {
+		if (cMenuPianoGrid == null) {
+			cMenuPianoGrid = new JMenuItem();
+		}
+		return cMenuPianoGrid;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoUndo() {
+		if (cMenuPianoUndo == null) {
+			cMenuPianoUndo = new JMenuItem();
+		}
+		return cMenuPianoUndo;
+	}
+
+	/**
+	 * This method initializes cMenuPianoRedo	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoRedo() {
+		if (cMenuPianoRedo == null) {
+			cMenuPianoRedo = new JMenuItem();
+		}
+		return cMenuPianoRedo;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoCut() {
+		if (cMenuPianoCut == null) {
+			cMenuPianoCut = new JMenuItem();
+		}
+		return cMenuPianoCut;
+	}
+
+	/**
+	 * This method initializes cMenuPianoCopy	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoCopy() {
+		if (cMenuPianoCopy == null) {
+			cMenuPianoCopy = new JMenuItem();
+		}
+		return cMenuPianoCopy;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoPaste() {
+		if (cMenuPianoPaste == null) {
+			cMenuPianoPaste = new JMenuItem();
+		}
+		return cMenuPianoPaste;
+	}
+
+	/**
+	 * This method initializes jMenuItem3	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoDelete() {
+		if (cMenuPianoDelete == null) {
+			cMenuPianoDelete = new JMenuItem();
+		}
+		return cMenuPianoDelete;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoSelectAll() {
+		if (cMenuPianoSelectAll == null) {
+			cMenuPianoSelectAll = new JMenuItem();
+		}
+		return cMenuPianoSelectAll;
+	}
+
+	/**
+	 * This method initializes cMenuPianoSelectAllEvents	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoSelectAllEvents() {
+		if (cMenuPianoSelectAllEvents == null) {
+			cMenuPianoSelectAllEvents = new JMenuItem();
+		}
+		return cMenuPianoSelectAllEvents;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoImportLyric() {
+		if (cMenuPianoImportLyric == null) {
+			cMenuPianoImportLyric = new JMenuItem();
+		}
+		return cMenuPianoImportLyric;
+	}
+
+	/**
+	 * This method initializes cMenuPianoExpressionProperty	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoExpressionProperty() {
+		if (cMenuPianoExpressionProperty == null) {
+			cMenuPianoExpressionProperty = new JMenuItem();
+		}
+		return cMenuPianoExpressionProperty;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoVibratoProperty() {
+		if (cMenuPianoVibratoProperty == null) {
+			cMenuPianoVibratoProperty = new JMenuItem();
+		}
+		return cMenuPianoVibratoProperty;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixed02() {
+		if (cMenuPianoFixed02 == null) {
+			cMenuPianoFixed02 = new JMenuItem();
+		}
+		return cMenuPianoFixed02;
+	}
+
+	/**
+	 * This method initializes cMenuPianoFixed04	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixed04() {
+		if (cMenuPianoFixed04 == null) {
+			cMenuPianoFixed04 = new JMenuItem();
+		}
+		return cMenuPianoFixed04;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixed08() {
+		if (cMenuPianoFixed08 == null) {
+			cMenuPianoFixed08 = new JMenuItem();
+		}
+		return cMenuPianoFixed08;
+	}
+
+	/**
+	 * This method initializes jMenuItem3	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixed01() {
+		if (cMenuPianoFixed01 == null) {
+			cMenuPianoFixed01 = new JMenuItem();
+		}
+		return cMenuPianoFixed01;
+	}
+
+	/**
+	 * This method initializes jMenuItem4	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixed16() {
+		if (cMenuPianoFixed16 == null) {
+			cMenuPianoFixed16 = new JMenuItem();
+		}
+		return cMenuPianoFixed16;
+	}
+
+	/**
+	 * This method initializes jMenuItem5	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixed32() {
+		if (cMenuPianoFixed32 == null) {
+			cMenuPianoFixed32 = new JMenuItem();
+		}
+		return cMenuPianoFixed32;
+	}
+
+	/**
+	 * This method initializes jMenuItem6	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixed64() {
+		if (cMenuPianoFixed64 == null) {
+			cMenuPianoFixed64 = new JMenuItem();
+		}
+		return cMenuPianoFixed64;
+	}
+
+	/**
+	 * This method initializes jMenuItem7	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixed128() {
+		if (cMenuPianoFixed128 == null) {
+			cMenuPianoFixed128 = new JMenuItem();
+		}
+		return cMenuPianoFixed128;
+	}
+
+	/**
+	 * This method initializes jMenuItem8	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixedOff() {
+		if (cMenuPianoFixedOff == null) {
+			cMenuPianoFixedOff = new JMenuItem();
+		}
+		return cMenuPianoFixedOff;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixedTriplet() {
+		if (cMenuPianoFixedTriplet == null) {
+			cMenuPianoFixedTriplet = new JMenuItem();
+		}
+		return cMenuPianoFixedTriplet;
+	}
+
+	/**
+	 * This method initializes cMenuPianoFixedDotted	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoFixedDotted() {
+		if (cMenuPianoFixedDotted == null) {
+			cMenuPianoFixedDotted = new JMenuItem();
+		}
+		return cMenuPianoFixedDotted;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoQuantize04() {
+		if (cMenuPianoQuantize04 == null) {
+			cMenuPianoQuantize04 = new JMenuItem();
+		}
+		return cMenuPianoQuantize04;
+	}
+
+	/**
+	 * This method initializes cMenuPianoQuantize08	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoQuantize08() {
+		if (cMenuPianoQuantize08 == null) {
+			cMenuPianoQuantize08 = new JMenuItem();
+		}
+		return cMenuPianoQuantize08;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoQuantize16() {
+		if (cMenuPianoQuantize16 == null) {
+			cMenuPianoQuantize16 = new JMenuItem();
+		}
+		return cMenuPianoQuantize16;
+	}
+
+	/**
+	 * This method initializes jMenuItem3	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoQuantize32() {
+		if (cMenuPianoQuantize32 == null) {
+			cMenuPianoQuantize32 = new JMenuItem();
+		}
+		return cMenuPianoQuantize32;
+	}
+
+	/**
+	 * This method initializes jMenuItem4	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoQuantize64() {
+		if (cMenuPianoQuantize64 == null) {
+			cMenuPianoQuantize64 = new JMenuItem();
+		}
+		return cMenuPianoQuantize64;
+	}
+
+	/**
+	 * This method initializes jMenuItem5	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoQuantize128() {
+		if (cMenuPianoQuantize128 == null) {
+			cMenuPianoQuantize128 = new JMenuItem();
+		}
+		return cMenuPianoQuantize128;
+	}
+
+	/**
+	 * This method initializes jMenuItem6	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoQuantizeTriplet() {
+		if (cMenuPianoQuantizeTriplet == null) {
+			cMenuPianoQuantizeTriplet = new JMenuItem();
+		}
+		return cMenuPianoQuantizeTriplet;
+	}
+
+	/**
+	 * This method initializes cMenuPianoLength	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getCMenuPianoLength() {
+		if (cMenuPianoLength == null) {
+			cMenuPianoLength = new JMenu();
+			cMenuPianoLength.add(getCMenuPianoLength04());
+			cMenuPianoLength.add(getCMenuPianoLength08());
+			cMenuPianoLength.add(getCMenuPianoLength16());
+			cMenuPianoLength.add(getCMenuPianoLength32());
+			cMenuPianoLength.add(getCMenuPianoLength64());
+			cMenuPianoLength.add(getCMenuPianoLength128());
+			cMenuPianoLength.add(getCMenuPianoLengthOff());
+			cMenuPianoLength.addSeparator();
+			cMenuPianoLength.add(getCMenuPianoLengthTriplet());
+		}
+		return cMenuPianoLength;
+	}
+
+	/**
+	 * This method initializes cMenuPianoLength04	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoLength04() {
+		if (cMenuPianoLength04 == null) {
+			cMenuPianoLength04 = new JMenuItem();
+		}
+		return cMenuPianoLength04;
+	}
+
+	/**
+	 * This method initializes cMenuPianoLength08	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoLength08() {
+		if (cMenuPianoLength08 == null) {
+			cMenuPianoLength08 = new JMenuItem();
+		}
+		return cMenuPianoLength08;
+	}
+
+	/**
+	 * This method initializes cMenuPianoLength16	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoLength16() {
+		if (cMenuPianoLength16 == null) {
+			cMenuPianoLength16 = new JMenuItem();
+		}
+		return cMenuPianoLength16;
+	}
+
+	/**
+	 * This method initializes cMenuPianoLength32	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoLength32() {
+		if (cMenuPianoLength32 == null) {
+			cMenuPianoLength32 = new JMenuItem();
+		}
+		return cMenuPianoLength32;
+	}
+
+	/**
+	 * This method initializes cMenuPianoLength64	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoLength64() {
+		if (cMenuPianoLength64 == null) {
+			cMenuPianoLength64 = new JMenuItem();
+		}
+		return cMenuPianoLength64;
+	}
+
+	/**
+	 * This method initializes cMenuPianoLength128	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoLength128() {
+		if (cMenuPianoLength128 == null) {
+			cMenuPianoLength128 = new JMenuItem();
+		}
+		return cMenuPianoLength128;
+	}
+
+	/**
+	 * This method initializes cMenuPianoLengthTriplet	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoLengthTriplet() {
+		if (cMenuPianoLengthTriplet == null) {
+			cMenuPianoLengthTriplet = new JMenuItem();
+		}
+		return cMenuPianoLengthTriplet;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabTrackOn() {
+		if (cMenuTrackTabTrackOn == null) {
+			cMenuTrackTabTrackOn = new JMenuItem();
+		}
+		return cMenuTrackTabTrackOn;
+	}
+
+	/**
+	 * This method initializes cMenuTrackTabAdd	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabAdd() {
+		if (cMenuTrackTabAdd == null) {
+			cMenuTrackTabAdd = new JMenuItem();
+		}
+		return cMenuTrackTabAdd;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabCopy() {
+		if (cMenuTrackTabCopy == null) {
+			cMenuTrackTabCopy = new JMenuItem();
+		}
+		return cMenuTrackTabCopy;
+	}
+
+	/**
+	 * This method initializes jMenuItem3	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabChangeName() {
+		if (cMenuTrackTabChangeName == null) {
+			cMenuTrackTabChangeName = new JMenuItem();
+		}
+		return cMenuTrackTabChangeName;
+	}
+
+	/**
+	 * This method initializes jMenuItem4	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabDelete() {
+		if (cMenuTrackTabDelete == null) {
+			cMenuTrackTabDelete = new JMenuItem();
+		}
+		return cMenuTrackTabDelete;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabRenderCurrent() {
+		if (cMenuTrackTabRenderCurrent == null) {
+			cMenuTrackTabRenderCurrent = new JMenuItem();
+		}
+		return cMenuTrackTabRenderCurrent;
+	}
+
+	/**
+	 * This method initializes cMenuTrackTabRenderAll	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabRenderAll() {
+		if (cMenuTrackTabRenderAll == null) {
+			cMenuTrackTabRenderAll = new JMenuItem();
+		}
+		return cMenuTrackTabRenderAll;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabOverlay() {
+		if (cMenuTrackTabOverlay == null) {
+			cMenuTrackTabOverlay = new JMenuItem();
+		}
+		return cMenuTrackTabOverlay;
+	}
+
+	/**
+	 * This method initializes cMenuTrackTabRenderer	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getCMenuTrackTabRenderer() {
+		if (cMenuTrackTabRenderer == null) {
+			cMenuTrackTabRenderer = new JMenu();
+			cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID1());
+			cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID2());
+			cMenuTrackTabRenderer.add(getCMenuTrackTabRendererUtau());
+			cMenuTrackTabRenderer.add(getCMenuTrackTabRendererStraight());
+		}
+		return cMenuTrackTabRenderer;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabRendererVOCALOID2() {
+		if (cMenuTrackTabRendererVOCALOID2 == null) {
+			cMenuTrackTabRendererVOCALOID2 = new JMenuItem();
+		}
+		return cMenuTrackTabRendererVOCALOID2;
+	}
+
+	/**
+	 * This method initializes cMenuTrackTabRendererVOCALOID1	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabRendererVOCALOID1() {
+		if (cMenuTrackTabRendererVOCALOID1 == null) {
+			cMenuTrackTabRendererVOCALOID1 = new JMenuItem();
+		}
+		return cMenuTrackTabRendererVOCALOID1;
+	}
+
+	/**
+	 * This method initializes jMenuItem2	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabRendererUtau() {
+		if (cMenuTrackTabRendererUtau == null) {
+			cMenuTrackTabRendererUtau = new JMenuItem();
+		}
+		return cMenuTrackTabRendererUtau;
+	}
+
+	/**
+	 * This method initializes jMenuItem3	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuTrackTabRendererStraight() {
+		if (cMenuTrackTabRendererStraight == null) {
+			cMenuTrackTabRendererStraight = new JMenuItem();
+		}
+		return cMenuTrackTabRendererStraight;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoQuantizeOff() {
+		if (cMenuPianoQuantizeOff == null) {
+			cMenuPianoQuantizeOff = new JMenuItem();
+		}
+		return cMenuPianoQuantizeOff;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCMenuPianoLengthOff() {
+		if (cMenuPianoLengthOff == null) {
+			cMenuPianoLengthOff = new JMenuItem();
+		}
+		return cMenuPianoLengthOff;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

@@ -967,7 +967,7 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
-        public VsqFileEx( String _fpath, String encoding ){
+        public VsqFileEx( String _fpath, String encoding ) throws FileNotFoundException{
             super( _fpath, encoding );
 #else
         public VsqFileEx( String _fpath, String encoding ) :
@@ -983,7 +983,11 @@ namespace Boare.Cadencii {
                     fs = new FileInputStream( xml );
                     tmp = (AttachedCurve)AppManager.xmlSerializerListBezierCurves.deserialize( fs );
                 } catch ( Exception ex ) {
+#if JAVA
+                    System.err.println( "VsqFileEx#.ctor; ex=" + ex );
+#else
                     bocoree.debug.push_log( "ex=" + ex );
+#endif
                 } finally {
                     if ( fs != null ) {
                         try {

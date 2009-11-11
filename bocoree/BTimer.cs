@@ -32,6 +32,14 @@ namespace bocoree.windows.forms {
             base.Start();
         }
 
+        public BTimer()
+            : base() {
+        }
+
+        public BTimer( System.ComponentModel.IContainer container )
+            : base( container ) {
+        }
+
         public void stop() {
             base.Stop();
         }

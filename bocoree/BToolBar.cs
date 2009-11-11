@@ -20,22 +20,17 @@ public class BToolBar extends JToolBar
 {
 }
 #else
-namespace bocoree.windows.forms
-{
-    public class a
-    {
+namespace bocoree.windows.forms {
+    public class a {
         System.Windows.Forms.ContainerControl f;
     }
 
-    public class BToolBar : System.Windows.Forms.ToolStrip
-    {
-        public int getComponentCount()
-        {
+    public class BToolBar : System.Windows.Forms.ToolStrip {
+        public int getComponentCount() {
             return base.Items.Count;
         }
 
-        public System.Windows.Forms.ToolStripItem getComponentAt( int index )
-        {
+        public System.Windows.Forms.ToolStripItem getComponentAtIndex( int index ) {
             return base.Items[index];
         }
     }

@@ -524,7 +524,11 @@ namespace Boare.Cadencii {
             if ( m_position_quantize != value ) {
                 m_position_quantize = value;
 #if JAVA
-                quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
+                try{
+                    quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "EditorConfig#setPositionQuantize; ex=" + ex );
+                }
 #else
                 if ( QuantizeModeChanged != null ) {
                     QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );
@@ -553,7 +557,11 @@ namespace Boare.Cadencii {
             if ( m_position_quantize_triplet != value ) {
                 m_position_quantize_triplet = value;
 #if JAVA
-                quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
+                try{
+                    quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
+                }
 #else
                 if ( QuantizeModeChanged != null ) {
                     QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );
@@ -582,7 +590,11 @@ namespace Boare.Cadencii {
             if ( m_length_quantize != value ) {
                 m_length_quantize = value;
 #if JAVA
-                quantizeModeChangedEvent.raise( new BEventArgs() );
+                try{
+                    quantizeModeChangedEvent.raise( new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "EditorConfig#setLengthQuantize; ex=" + ex );
+                }
 #else
                 if ( QuantizeModeChanged != null ) {
                     QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );
@@ -610,7 +622,11 @@ namespace Boare.Cadencii {
             if ( m_length_quantize_triplet != value ) {
                 m_length_quantize_triplet = value;
 #if JAVA
-                quantizeModeChangedEvent.raise( new BEventArgs() );
+                try{
+                    quantizeModeChangedEvent.raise( new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
+                }
 #else
                 if ( QuantizeModeChanged != null ) {
                     QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );
