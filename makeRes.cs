@@ -131,6 +131,38 @@ class makeRes{
                     sw.WriteLine( cs_space + "        return " + instance + ";" );
                     sw.WriteLine( cs_space + "    }" );
                     sw.WriteLine();
+                }else if( type == "Cursor" ){
+                    string instance = "s_" + name;
+                    string fname = Path.GetFileName( tpath );
+                    sw.WriteLine( cs_space + "    private static Cursor " + instance + " = null;" );
+                    sw.WriteLine( cs_space + "    public static Cursor get_" + name + "(){" );
+                    sw.WriteLine( cs_space + "        if( " + instance + " == null ){" );
+                    sw.WriteLine( cs_space + "            try{" );
+                    sw.WriteLine( cs_space + "                String res_path = PortUtil.combinePath( getBasePath(), \"" + fname + "\" );" );
+                    sw.WriteLine( "#if JAVA" );
+                    sw.WriteLine( cs_space + "                Image img = ImageIO.read( new File( res_path ) );" );
+                    sw.WriteLine( cs_space + "                " + instance + " = Toolkit.getDefaultToolkit().createCustomCursor( img, new Point( 0, 0 ), \"" + name + "\" );" );
+                    sw.WriteLine( "#else" );
+                    sw.WriteLine( cs_space + "                FileStream fs = null;" );
+                    sw.WriteLine( cs_space + "                try{" );
+                    sw.WriteLine( cs_space + "                    fs = new FileStream( res_path, FileMode.Open, FileAccess.Read );" );
+                    sw.WriteLine( cs_space + "                    " + instance + " = new Cursor( fs );" );
+                    sw.WriteLine( cs_space + "                }catch( Exception ex0 ){" );
+                    sw.WriteLine( cs_space + "                }finally{" );
+                    sw.WriteLine( cs_space + "                    if( fs != null ){" );
+                    sw.WriteLine( cs_space + "                        try{" );
+                    sw.WriteLine( cs_space + "                            fs.Close();" );
+                    sw.WriteLine( cs_space + "                        }catch( Exception ex2 ){" );
+                    sw.WriteLine( cs_space + "                        }" );
+                    sw.WriteLine( cs_space + "                    }" );
+                    sw.WriteLine( cs_space + "                }" );
+                    sw.WriteLine( "#endif" );
+                    sw.WriteLine( cs_space + "            }catch( Exception ex ){" );
+                    sw.WriteLine( cs_space + "            }" );
+                    sw.WriteLine( cs_space + "        }" );
+                    sw.WriteLine( cs_space + "        return " + instance + ";" );
+                    sw.WriteLine( cs_space + "    }" );
+                    sw.WriteLine();
                 }
             }
             sw.WriteLine( cs_space + "}" );
