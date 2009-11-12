@@ -11,11 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
     class TagLyricTextBox {
         private String m_buf_text;
@@ -26,23 +30,23 @@ namespace Boare.Cadencii {
             m_phonetic_symbol_edit_mode = phonetic_symbol_edit_mode;
         }
 
-        public boolean PhoneticSymbolEditMode {
-            get {
-                return m_phonetic_symbol_edit_mode;
-            }
-            set {
-                m_phonetic_symbol_edit_mode = value;
-            }
+        public boolean isPhoneticSymbolEditMode() {
+            return m_phonetic_symbol_edit_mode;
         }
 
-        public String BufferText {
-            get {
-                return m_buf_text;
-            }
-            set {
-                m_buf_text = value;
-            }
+        public void setPhoneticSymbolEditMode( boolean value ) {
+            m_phonetic_symbol_edit_mode = value;
+        }
+
+        public String getBufferText() {
+            return m_buf_text;
+        }
+
+        public void setBufferText( String value ) {
+            m_buf_text = value;
         }
     }
 
+#if !JAVA
 }
+#endif

@@ -477,10 +477,11 @@ namespace Boare.Cadencii {
                                                   500000 ) );
 #if JAVA
 		    initialize();
+            timer = new BTimer();
 #else
             InitializeComponent();
-#endif
             this.timer = new BTimer( this.components );
+#endif
             registerEventHandlers();
             setResources();
 
@@ -745,7 +746,7 @@ namespace Boare.Cadencii {
             AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
             AppManager.inputTextBox.setEnabled( false );
 #if JAVA
-            AppManager.inputTextBox.keyPressEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyPress" ) );
+            AppManager.inputTextBox.keyPressedEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyPress" ) );
 #else
             AppManager.inputTextBox.KeyPress += m_input_textbox_KeyPress;
             AppManager.inputTextBox.Parent = pictPianoRoll;
@@ -836,7 +837,7 @@ namespace Boare.Cadencii {
                 if ( item is BToolStripButton ) {
                     BToolStripButton button = (BToolStripButton)item;
                     if ( button.getTag() != null && button.getTag() is String ) {
-                        if ( ((String)button.Tag).Equals( id ) ) {
+                        if ( ((String)button.getTag()).Equals( id ) ) {
                             button.setSelected( true );
                         } else {
                             button.setSelected( false );
@@ -882,13 +883,25 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "m_input_textbox_KeyDown" );
             AppManager.debugWriteLine( "    e.KeyCode=" + e.KeyCode );
 #endif
-            if ( e.KeyCode == Keys.Tab || e.KeyCode == Keys.Return ) {
+#if JAVA
+            int keycode = e.getKeyCode();
+            int modifiers = e.getModifiers();
+            if ( keycode == KeyEvent.VK_TAB || keycode == KeyEvent.VK_ENTER )
+#else
+            if ( e.KeyCode == Keys.Tab || e.KeyCode == Keys.Return )
+#endif
+            {
                 executeLyricChangeCommand();
                 int selected = AppManager.getSelected();
                 int index = -1;
                 VsqTrack track = AppManager.getVsqFile().Track.get( selected );
                 track.sortEvent();
-                if ( e.KeyCode == Keys.Tab ) {
+#if JAVA
+                if( keycode == KeyEvent.VK_TAB )
+#else
+                if ( e.KeyCode == Keys.Tab ) 
+#endif
+                {
                     int clock = 0;
                     for ( int i = 0; i < track.getEventCount(); i++ ) {
                         VsqEvent item = track.getEvent( i );
@@ -898,7 +911,12 @@ namespace Boare.Cadencii {
                             break;
                         }
                     }
-                    if ( (e.Modifiers & Keys.Shift) == Keys.Shift ) {
+#if JAVA
+                    if( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK )
+#else
+                    if ( (e.Modifiers & Keys.Shift) == Keys.Shift )
+#endif
+                    {
                         // 1個前の音符イベントを検索
                         int tindex = -1;
                         for ( int i = track.getEventCount() - 1; i >= 0; i-- ) {
@@ -928,7 +946,7 @@ namespace Boare.Cadencii {
                     AppManager.addSelectedEvent( item.InternalID );
                     int x = AppManager.xCoordFromClocks( item.Clock );
                     int y = yCoordFromNote( item.ID.Note );
-                    boolean phonetic_symbol_edit_mode = ((TagLyricTextBox)AppManager.inputTextBox.Tag).PhoneticSymbolEditMode;
+                    boolean phonetic_symbol_edit_mode = ((TagLyricTextBox)AppManager.inputTextBox.getTag()).isPhoneticSymbolEditMode();
                     showInputTextBox( item.ID.LyricHandle.L0.Phrase,
                                             item.ID.LyricHandle.L0.getPhoneticSymbol(),
                                             new Point( x, y ),
@@ -7455,7 +7473,7 @@ namespace Boare.Cadencii {
                                   pos, m_last_symbol_edit_mode );
             } else if ( AppManager.inputTextBox.Enabled ) {
                 TagLyricTextBox tltb = (TagLyricTextBox)AppManager.inputTextBox.Tag;
-                if ( tltb.PhoneticSymbolEditMode ) {
+                if ( tltb.isPhoneticSymbolEditMode() ) {
                     flipInputTextBoxMode();
                 }
             }
@@ -9576,7 +9594,7 @@ namespace Boare.Cadencii {
             String original_phrase = last_selected_event.original.ID.LyricHandle.L0.Phrase;
             String original_symbol = last_selected_event.original.ID.LyricHandle.L0.getPhoneticSymbol();
             boolean symbol_protected = last_selected_event.original.ID.LyricHandle.L0.PhoneticSymbolProtected;
-            boolean phonetic_symbol_edit_mode = ((TagLyricTextBox)AppManager.inputTextBox.Tag).PhoneticSymbolEditMode;
+            boolean phonetic_symbol_edit_mode = ((TagLyricTextBox)AppManager.inputTextBox.getTag()).isPhoneticSymbolEditMode();
 #if DEBUG
             AppManager.debugWriteLine( "    original_phase,symbol=" + original_phrase + "," + original_symbol );
             AppManager.debugWriteLine( "    phonetic_symbol_edit_mode=" + phonetic_symbol_edit_mode );
@@ -9592,10 +9610,10 @@ namespace Boare.Cadencii {
             }
             if ( (phonetic_symbol_edit_mode && AppManager.inputTextBox.Text != original_symbol) ||
                  (!phonetic_symbol_edit_mode && phrase != original_phrase) ) {
-                TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.Tag;
+                TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
                 if ( phonetic_symbol_edit_mode ) {
-                    phrase = kvp.BufferText;
-                    phonetic_symbol.value = AppManager.inputTextBox.Text;
+                    phrase = kvp.getBufferText();
+                    phonetic_symbol.value = AppManager.inputTextBox.getText();
                     String[] spl = PortUtil.splitString( phonetic_symbol.value, new char[] { ' ' }, true );
                     Vector<String> list = new Vector<String>();
                     for ( int i = 0; i < spl.Length; i++ ) {
@@ -12559,23 +12577,23 @@ namespace Boare.Cadencii {
                 file += " *";
             }
             String title = file + " - " + _APP_NAME;
-            if ( this.Text != title ) {
-                this.Text = title;
+            if ( !getTitle().Equals( title ) ) {
+                setTitle( title );
             }
             boolean redo = AppManager.isRedoAvailable();
             boolean undo = AppManager.isUndoAvailable();
-            menuEditRedo.Enabled = redo;
-            menuEditUndo.Enabled = undo;
-            cMenuPianoRedo.Enabled = redo;
-            cMenuPianoUndo.Enabled = undo;
-            cMenuTrackSelectorRedo.Enabled = redo;
-            cMenuTrackSelectorUndo.Enabled = undo;
-            stripBtnUndo.Enabled = undo;
-            stripBtnRedo.Enabled = redo;
+            menuEditRedo.setEnabled( redo );
+            menuEditUndo.setEnabled( undo );
+            cMenuPianoRedo.setEnabled( redo );
+            cMenuPianoUndo.setEnabled( undo );
+            cMenuTrackSelectorRedo.setEnabled( redo );
+            cMenuTrackSelectorUndo.setEnabled( undo );
+            stripBtnUndo.setEnabled( undo );
+            stripBtnRedo.setEnabled( redo );
             //AppManager.setRenderRequired( AppManager.getSelected(), true );
             if ( AppManager.getVsqFile() != null ) {
                 int draft = AppManager.getVsqFile().TotalClocks;
-                if ( draft > hScroll.Maximum ) {
+                if ( draft > hScroll.getMaximum() ) {
                     setHScrollRange( draft );
                 }
             }
@@ -12596,40 +12614,55 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "InitializeInputTextBox" );
 #endif
             hideInputTextBox();
+#if JAVA
+            // TODO: FormMain#showInputTextBox
+#else
             AppManager.inputTextBox.KeyUp += m_input_textbox_KeyUp;
             AppManager.inputTextBox.KeyDown += m_input_textbox_KeyDown;
             AppManager.inputTextBox.ImeModeChanged += m_input_textbox_ImeModeChanged;
+#endif
             AppManager.inputTextBox.setImeModeOn( m_last_is_imemode_on );
             if ( phonetic_symbol_edit_mode ) {
-                AppManager.inputTextBox.Tag = new TagLyricTextBox( phrase, true );
-                AppManager.inputTextBox.Text = phonetic_symbol;
+                AppManager.inputTextBox.setTag( new TagLyricTextBox( phrase, true ) );
+                AppManager.inputTextBox.setText( phonetic_symbol );
                 AppManager.inputTextBox.setBackground( s_txtbox_backcolor );
             } else {
-                AppManager.inputTextBox.Tag = new TagLyricTextBox( phonetic_symbol, false );
-                AppManager.inputTextBox.Text = phrase;
+                AppManager.inputTextBox.setTag( new TagLyricTextBox( phonetic_symbol, false ) );
+                AppManager.inputTextBox.setText( phrase );
                 AppManager.inputTextBox.setBackground( Color.white );
             }
             AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
             AppManager.inputTextBox.setLocation( position.x + 4, position.y + 2 );
+#if !JAVA
             AppManager.inputTextBox.Parent = pictPianoRoll;
-            AppManager.inputTextBox.Enabled = true;
-            AppManager.inputTextBox.Visible = true;
-            AppManager.inputTextBox.Focus();
-            AppManager.inputTextBox.SelectAll();
+#endif
+            AppManager.inputTextBox.setEnabled( true );
+            AppManager.inputTextBox.setVisible( true );
+            AppManager.inputTextBox.requestFocusInWindow();
+            AppManager.inputTextBox.selectAll();
 
         }
 
         private void hideInputTextBox() {
+#if JAVA
+            // TODO: FormMain#hideInputTextBox
+            /*AppManager.inputTextBox.KeyUp -= m_input_textbox_KeyUp;
+            AppManager.inputTextBox.KeyDown -= m_input_textbox_KeyDown;
+            AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;*/
+#else
             AppManager.inputTextBox.KeyUp -= m_input_textbox_KeyUp;
             AppManager.inputTextBox.KeyDown -= m_input_textbox_KeyDown;
             AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;
-            if ( AppManager.inputTextBox.Tag != null && AppManager.inputTextBox.Tag is TagLyricTextBox ) {
-                TagLyricTextBox tltb = (TagLyricTextBox)AppManager.inputTextBox.Tag;
-                m_last_symbol_edit_mode = tltb.PhoneticSymbolEditMode;
+#endif
+            if ( AppManager.inputTextBox.getTag() != null && AppManager.inputTextBox.getTag() is TagLyricTextBox ) {
+                TagLyricTextBox tltb = (TagLyricTextBox)AppManager.inputTextBox.getTag();
+                m_last_symbol_edit_mode = tltb.isPhoneticSymbolEditMode();
             }
-            AppManager.inputTextBox.Visible = false;
+            AppManager.inputTextBox.setVisible( false );
+#if !JAVA
             AppManager.inputTextBox.Parent = null;
-            AppManager.inputTextBox.Enabled = false;
+#endif
+            AppManager.inputTextBox.setEnabled( false );
             pictPianoRoll.Focus();
         }
 
@@ -12637,15 +12670,15 @@ namespace Boare.Cadencii {
         /// 歌詞入力用テキストボックスのモード（歌詞/発音記号）を切り替えます
         /// </summary>
         private void flipInputTextBoxMode() {
-            TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.Tag;
-            String new_value = AppManager.inputTextBox.Text;
-            if ( !kvp.PhoneticSymbolEditMode ) {
+            TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
+            String new_value = AppManager.inputTextBox.getText();
+            if ( !kvp.isPhoneticSymbolEditMode() ) {
                 AppManager.inputTextBox.setBackground( s_txtbox_backcolor );
             } else {
                 AppManager.inputTextBox.setBackground( Color.white );
             }
-            AppManager.inputTextBox.Text = kvp.BufferText;
-            AppManager.inputTextBox.Tag = new TagLyricTextBox( new_value, !kvp.PhoneticSymbolEditMode );
+            AppManager.inputTextBox.setText( kvp.getBufferText() );
+            AppManager.inputTextBox.setTag( new TagLyricTextBox( new_value, !kvp.isPhoneticSymbolEditMode() ) );
         }
 
         /// <summary>
@@ -17189,8 +17222,8 @@ namespace Boare.Cadencii {
             this.btnLeft1 = new System.Windows.Forms.Button();
             this.btnRight2 = new System.Windows.Forms.Button();
             this.pictOverview = new Boare.Cadencii.BPictureBox();
-            this.vScroll = new Boare.Lib.AppUtil.BVScrollBar();
-            this.hScroll = new Boare.Lib.AppUtil.BHScrollBar();
+            this.vScroll = new BVScrollBar();
+            this.hScroll = new BHScrollBar();
             this.picturePositionIndicator = new System.Windows.Forms.PictureBox();
             this.pictPianoRoll = new Boare.Cadencii.PictPianoRoll();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -20242,8 +20275,8 @@ namespace Boare.Cadencii {
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private BToolStripButton stripBtnStartMarker;
         private BToolStripButton stripBtnEndMarker;
-        private Boare.Lib.AppUtil.BHScrollBar hScroll;
-        private Boare.Lib.AppUtil.BVScrollBar vScroll;
+        private BHScrollBar hScroll;
+        private BVScrollBar vScroll;
         private BMenuItem menuLyricVibratoProperty;
         private BMenuItem cMenuPianoVibratoProperty;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;

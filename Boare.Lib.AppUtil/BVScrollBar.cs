@@ -20,13 +20,13 @@ namespace Boare.Lib.AppUtil {
     /// <summary>
     /// Valueの値が正しくMinimumからMaximumの間を動くスクロールバー
     /// </summary>
-    public partial class BVScrollBar : UserControl {
+    public partial class OBSOLUTE_BVScrollBar : UserControl {
         int m_max = 100;
         int m_min = 0;
 
         public event EventHandler ValueChanged;
 
-        public BVScrollBar() {
+        public OBSOLUTE_BVScrollBar() {
             InitializeComponent();
         }
 

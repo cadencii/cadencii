@@ -361,32 +361,31 @@ namespace Boare.Cadencii {
 
             g.clipRect( AppManager.keyWidth, 0, width - AppManager.keyWidth, height );
             #region 小節ごとの線
-            int dashed_line_step = AppManager.getPositionQuantizeClock();
-            //using ( Pen pen_bar = new Pen( bar ) )
-            //using ( Pen pen_beat = new Pen( beat ) ) {
-            for ( Iterator itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( width ) ); itr.hasNext(); ) {
-                VsqBarLineType blt = (VsqBarLineType)itr.next();
-                int local_clock_step = 1920 / blt.getLocalDenominator();
-                int x = (int)(blt.clock() * scalex + xoffset);
-                if ( blt.isSeparator() ) {
-                    //ピアノロール上
-                    g.setColor( bar );
-                    g.drawLine( x, 0, x, height );
-                } else {
-                    //ピアノロール上
-                    g.setColor( beat );
-                    g.drawLine( x, 0, x, height );
-                }
-                if ( dashed_line_step > 1 && AppManager.isGridVisible() ) {
-                    int numDashedLine = local_clock_step / dashed_line_step;
-                    g.setColor( beat );
-                    for ( int i = 1; i < numDashedLine; i++ ) {
-                        int x2 = (int)((blt.clock() + i * dashed_line_step) * scalex + xoffset);
-                        g.drawLine( x2, 0, x2, height );
+            if ( vsq != null ) {
+                int dashed_line_step = AppManager.getPositionQuantizeClock();
+                for ( Iterator itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( width ) ); itr.hasNext(); ) {
+                    VsqBarLineType blt = (VsqBarLineType)itr.next();
+                    int local_clock_step = 1920 / blt.getLocalDenominator();
+                    int x = (int)(blt.clock() * scalex + xoffset);
+                    if ( blt.isSeparator() ) {
+                        //ピアノロール上
+                        g.setColor( bar );
+                        g.drawLine( x, 0, x, height );
+                    } else {
+                        //ピアノロール上
+                        g.setColor( beat );
+                        g.drawLine( x, 0, x, height );
+                    }
+                    if ( dashed_line_step > 1 && AppManager.isGridVisible() ) {
+                        int numDashedLine = local_clock_step / dashed_line_step;
+                        g.setColor( beat );
+                        for ( int i = 1; i < numDashedLine; i++ ) {
+                            int x2 = (int)((blt.clock() + i * dashed_line_step) * scalex + xoffset);
+                            g.drawLine( x2, 0, x2, height );
+                        }
                     }
                 }
             }
-            //}
             #endregion
 
             #region トラックのエントリを描画

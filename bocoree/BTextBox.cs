@@ -32,6 +32,19 @@ public class BTextBox extends JTextField implements KeyListener{
         getInputContext().setCompositionEnabled( value );
     }
 
+    /* REGION bocoree.windows.forms.[component] */
+    /* root implementation of bocoree.windows.forms.[component] is in BTextBox.cs */
+    private Object m_tag = null;
+
+    public Object getTag(){
+        return m_tag;
+    }
+
+    public void setTag( Object value ){
+        m_tag = value;
+    }
+    /* END REGION */
+
     /* REGION java.awt.Component */
     /* root implementation of java.awt.Component is in BForm.cs(java) */
     public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
@@ -223,6 +236,14 @@ namespace bocoree.windows.forms{
 
         public void selectAll() {
             base.SelectAll();
+        }
+
+        public void setTag( object value ) {
+            base.Tag = value;
+        }
+
+        public object getTag() {
+            return base.Tag;
         }
     }
 

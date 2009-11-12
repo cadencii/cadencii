@@ -16,6 +16,8 @@ import javax.swing.JToolBar;
 import java.awt.GridLayout;
 import javax.swing.BoxLayout;
 import javax.swing.JPopupMenu;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 
 public class FormMain extends JFrame {
 
@@ -266,6 +268,14 @@ public class FormMain extends JFrame {
 	private JMenuItem cMenuTrackTabRendererStraight = null;
 	private JMenuItem cMenuPianoQuantizeOff = null;
 	private JMenuItem cMenuPianoLengthOff = null;
+	private JPanel jPanel1 = null;  //  @jve:decl-index=0:visual-constraint="595,440"
+	private JPanel jPanel2 = null;
+	private JButton jButton = null;
+	private JButton jButton1 = null;
+	private JButton jButton2 = null;
+	private JButton jButton3 = null;
+	private JButton jButton4 = null;
+	private JButton jButton5 = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -280,7 +290,7 @@ public class FormMain extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(720, 489);
+		this.setSize(524, 459);
 		this.setJMenuBar(getJJMenuBar());
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
@@ -3498,4 +3508,147 @@ public class FormMain extends JFrame {
 		return cMenuPianoLengthOff;
 	}
 
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+	/**
+	 * This method initializes jPanel1	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanel1() {
+		if (jPanel1 == null) {
+			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+			gridBagConstraints6.gridx = 3;
+			gridBagConstraints6.weightx = 1.0D;
+			gridBagConstraints6.gridheight = 2;
+			gridBagConstraints6.weighty = 1.0D;
+			gridBagConstraints6.fill = GridBagConstraints.BOTH;
+			gridBagConstraints6.gridy = 0;
+			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+			gridBagConstraints5.gridx = 4;
+			gridBagConstraints5.gridy = 1;
+			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+			gridBagConstraints4.gridx = 4;
+			gridBagConstraints4.gridy = 0;
+			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			gridBagConstraints3.gridx = 1;
+			gridBagConstraints3.gridheight = 2;
+			gridBagConstraints3.gridy = 0;
+			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			gridBagConstraints2.gridx = 2;
+			gridBagConstraints2.weighty = 1.0D;
+			gridBagConstraints2.gridy = 1;
+			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			gridBagConstraints1.gridx = 2;
+			gridBagConstraints1.weighty = 1.0D;
+			gridBagConstraints1.gridy = 0;
+			GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			gridBagConstraints.gridx = 0;
+			gridBagConstraints.gridheight = 2;
+			gridBagConstraints.weighty = 1.0D;
+			gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints.gridy = 0;
+			jPanel1 = new JPanel();
+			jPanel1.setLayout(new GridBagLayout());
+			jPanel1.setSize(new Dimension(368, 76));
+			jPanel1.add(getJButton(), gridBagConstraints);
+			jPanel1.add(getJButton1(), gridBagConstraints1);
+			jPanel1.add(getJButton2(), gridBagConstraints2);
+			jPanel1.add(getJButton3(), gridBagConstraints3);
+			jPanel1.add(getJButton4(), gridBagConstraints4);
+			jPanel1.add(getJButton5(), gridBagConstraints5);
+			jPanel1.add(getJPanel2(), gridBagConstraints6);
+		}
+		return jPanel1;
+	}
+
+	/**
+	 * This method initializes jPanel2	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanel2() {
+		if (jPanel2 == null) {
+			jPanel2 = new JPanel();
+			jPanel2.setLayout(new GridBagLayout());
+		}
+		return jPanel2;
+	}
+
+	/**
+	 * This method initializes jButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton() {
+		if (jButton == null) {
+			jButton = new JButton();
+			jButton.setText("-");
+		}
+		return jButton;
+	}
+
+	/**
+	 * This method initializes jButton1	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton1() {
+		if (jButton1 == null) {
+			jButton1 = new JButton();
+			jButton1.setText("<");
+		}
+		return jButton1;
+	}
+
+	/**
+	 * This method initializes jButton2	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton2() {
+		if (jButton2 == null) {
+			jButton2 = new JButton();
+			jButton2.setText(">");
+		}
+		return jButton2;
+	}
+
+	/**
+	 * This method initializes jButton3	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton3() {
+		if (jButton3 == null) {
+			jButton3 = new JButton();
+			jButton3.setText("+");
+		}
+		return jButton3;
+	}
+
+	/**
+	 * This method initializes jButton4	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton4() {
+		if (jButton4 == null) {
+			jButton4 = new JButton();
+			jButton4.setText("<");
+		}
+		return jButton4;
+	}
+
+	/**
+	 * This method initializes jButton5	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton5() {
+		if (jButton5 == null) {
+			jButton5 = new JButton();
+			jButton5.setText(">");
+		}
+		return jButton5;
+	}
+
+}  //  @jve:decl-index=0:visual-constraint="18,34"

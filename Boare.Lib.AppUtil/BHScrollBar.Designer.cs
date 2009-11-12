@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 namespace Boare.Lib.AppUtil {
-    partial class BHScrollBar {
+    partial class OBSOLUTE_BHScrollBar {
         /// <summary> 
         /// 必要なデザイナ変数です。
         /// </summary>
