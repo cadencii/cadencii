@@ -158,7 +158,11 @@ public class BForm extends JFrame implements WindowListener, KeyListener{
 #define COMPONENT_ENABLE_LOCATION
 #define COMPONENT_ENABLE_Y
 #define COMPONENT_ENABLE_X
+
+using System;
+
 namespace bocoree.windows.forms {
+    using boolean = System.Boolean;
 
     public class BForm : System.Windows.Forms.Form {
         protected BDialogResult m_result = BDialogResult.CANCEL;
@@ -201,11 +205,11 @@ namespace bocoree.windows.forms {
         // root implementation of java.awt.Component
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
-        public bool isVisible() {
+        public boolean isVisible() {
             return base.Visible;
         }
 
-        public void setVisible( bool value ) {
+        public void setVisible( boolean value ) {
             base.Visible = value;
         }
 
@@ -215,23 +219,23 @@ namespace bocoree.windows.forms {
             base.ToolTipText = value;
         }
 
-        public string getToolTipText()
+        public String getToolTipText()
         {
             return base.ToolTipText;
         }
 #endif
 
 #if COMPONENT_PARENT_AS_OWNERITEM
-        public object getParent() {
+        public Object getParent() {
             return base.OwnerItem;
         }
 #else
-        public object getParent() {
+        public Object getParent() {
             return base.Parent;
         }
 #endif
 
-        public string getName() {
+        public String getName() {
             return base.Name;
         }
 
@@ -311,11 +315,11 @@ namespace bocoree.windows.forms {
             base.Font = font.font;
         }
 
-        public bool getEnabled() {
+        public boolean getEnabled() {
             return base.Enabled;
         }
 
-        public void setEnabled( bool value ) {
+        public void setEnabled( boolean value ) {
             base.Enabled = value;
         }
 
@@ -339,11 +343,11 @@ namespace bocoree.windows.forms {
             base.MinimumSize = new System.Drawing.Size( size.width, size.height );
         }
 
-        public void setAlwaysOnTop( bool alwaysOnTop ) {
+        public void setAlwaysOnTop( boolean alwaysOnTop ) {
             base.TopMost = alwaysOnTop;
         }
 
-        public bool isAlwaysOnTop() {
+        public boolean isAlwaysOnTop() {
             return base.TopMost;
         }
         #endregion
@@ -431,7 +435,7 @@ namespace bocoree.windows.forms {
         // root implementation of javax.swing.JComponent
         #region javax.swing.JComponent
         // root implementation of javax.swing.JComponent is in BForm.cs
-        public bool requestFocusInWindow() {
+        public boolean requestFocusInWindow() {
             return base.Focus();
         }
         #endregion

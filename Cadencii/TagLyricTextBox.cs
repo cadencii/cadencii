@@ -21,7 +21,7 @@ namespace Boare.Cadencii {
     using boolean = System.Boolean;
 #endif
 
-    class TagLyricTextBox {
+    public class TagLyricTextBox {
         private String m_buf_text;
         private boolean m_phonetic_symbol_edit_mode;
 

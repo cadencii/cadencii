@@ -32,6 +32,7 @@ public class BTextBox extends JTextField implements KeyListener{
         getInputContext().setCompositionEnabled( value );
     }
 
+    /* root implementation of bocoree.windows.forms.[component] */
     /* REGION bocoree.windows.forms.[component] */
     /* root implementation of bocoree.windows.forms.[component] is in BTextBox.cs */
     private Object m_tag = null;

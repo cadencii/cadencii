@@ -18,11 +18,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JPopupMenu;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import javax.swing.JScrollBar;
+import javax.swing.JSlider;
 
 public class FormMain extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel jContentPane = null;
+	private JPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="10,55"
 	private JMenuBar jJMenuBar = null;
 	private JMenu menuFile = null;
 	private JMenuItem menuFileNew = null;
@@ -140,7 +142,7 @@ public class FormMain extends JFrame {
 	private JPanel panel1 = null;
 	private JPanel panel2 = null;
 	private JSplitPane splitContainer1 = null;
-	private JPanel trackSelector = null;
+	private TrackSelector trackSelector = null;
 	private JSplitPane splitContainerProperty = null;
 	private JPanel m_property_panel_container = null;
 	private JToolBar toolStripFile = null;
@@ -268,7 +270,7 @@ public class FormMain extends JFrame {
 	private JMenuItem cMenuTrackTabRendererStraight = null;
 	private JMenuItem cMenuPianoQuantizeOff = null;
 	private JMenuItem cMenuPianoLengthOff = null;
-	private JPanel jPanel1 = null;  //  @jve:decl-index=0:visual-constraint="595,440"
+	private JPanel panel3 = null;
 	private JPanel jPanel2 = null;
 	private JButton jButton = null;
 	private JButton jButton1 = null;
@@ -276,6 +278,16 @@ public class FormMain extends JFrame {
 	private JButton jButton3 = null;
 	private JButton jButton4 = null;
 	private JButton jButton5 = null;
+	private PictPianoRoll pictPianoRoll = null;
+	private JScrollBar vScroll = null;
+	private JScrollBar hScroll = null;
+	private JPanel pictureBox3 = null;
+	private JSlider trackBar = null;
+	private JButton jButton6 = null;
+	private JPanel picturePositionIndicator = null;
+	private JPanel jPanel1 = null;
+	private JPanel jPanel3 = null;
+	private JLabel statusLabel = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -290,9 +302,9 @@ public class FormMain extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(524, 459);
+		this.setSize(711, 591);
 		this.setJMenuBar(getJJMenuBar());
-		this.setContentPane(getJContentPane());
+		this.setContentPane( this.getJContentPane());
 		this.setTitle("JFrame");
 	}
 
@@ -305,9 +317,10 @@ public class FormMain extends JFrame {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new BorderLayout());
+			jContentPane.setSize(new Dimension(582, 431));
 			jContentPane.add(getJPanel(), BorderLayout.NORTH);
-			jContentPane.add(getToolStripBottom(), BorderLayout.SOUTH);
 			jContentPane.add(getSplitContainerProperty(), BorderLayout.CENTER);
+			jContentPane.add(getJPanel3(), BorderLayout.SOUTH);
 		}
 		return jContentPane;
 	}
@@ -1884,8 +1897,8 @@ public class FormMain extends JFrame {
 			splitContainer2.setDividerLocation(70);
 			splitContainer2.setEnabled(false);
 			splitContainer2.setResizeWeight(1.0D);
-			splitContainer2.setTopComponent(getPanel1());
 			splitContainer2.setBottomComponent(getPanel2());
+			splitContainer2.setTopComponent(getJPanel1());
 			splitContainer2.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		}
 		return splitContainer2;
@@ -1898,8 +1911,41 @@ public class FormMain extends JFrame {
 	 */
 	private JPanel getPanel1() {
 		if (panel1 == null) {
+			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+			gridBagConstraints11.fill = GridBagConstraints.NONE;
+			gridBagConstraints11.gridy = 1;
+			gridBagConstraints11.weightx = 0.0D;
+			gridBagConstraints11.anchor = GridBagConstraints.EAST;
+			gridBagConstraints11.gridx = 2;
+			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+			gridBagConstraints10.gridx = 0;
+			gridBagConstraints10.fill = GridBagConstraints.BOTH;
+			gridBagConstraints10.gridy = 1;
+			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+			gridBagConstraints9.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints9.gridy = 1;
+			gridBagConstraints9.weighty = 0.0D;
+			gridBagConstraints9.weightx = 1.0D;
+			gridBagConstraints9.gridx = 1;
+			GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
+			gridBagConstraints8.fill = GridBagConstraints.VERTICAL;
+			gridBagConstraints8.gridy = 0;
+			gridBagConstraints8.weighty = 1.0D;
+			gridBagConstraints8.gridx = 3;
+			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
+			gridBagConstraints7.gridx = 0;
+			gridBagConstraints7.fill = GridBagConstraints.BOTH;
+			gridBagConstraints7.weightx = 1.0D;
+			gridBagConstraints7.weighty = 1.0D;
+			gridBagConstraints7.gridwidth = 3;
+			gridBagConstraints7.gridy = 0;
 			panel1 = new JPanel();
 			panel1.setLayout(new GridBagLayout());
+			panel1.add(getPictPianoRoll(), gridBagConstraints7);
+			panel1.add(getVScroll(), gridBagConstraints8);
+			panel1.add(getHScroll(), gridBagConstraints9);
+			panel1.add(getPictureBox3(), gridBagConstraints10);
+			panel1.add(getTrackBar(), gridBagConstraints11);
 		}
 		return panel1;
 	}
@@ -1939,9 +1985,9 @@ public class FormMain extends JFrame {
 	 * 	
 	 * @return javax.swing.JPanel	
 	 */
-	private JPanel getTrackSelector() {
+	private TrackSelector getTrackSelector() {
 		if (trackSelector == null) {
-			trackSelector = new JPanel();
+			trackSelector = new TrackSelector();
 			trackSelector.setLayout(new GridBagLayout());
 		}
 		return trackSelector;
@@ -3509,12 +3555,12 @@ public class FormMain extends JFrame {
 	}
 
 	/**
-	 * This method initializes jPanel1	
+	 * This method initializes panel3	
 	 * 	
 	 * @return javax.swing.JPanel	
 	 */
-	private JPanel getJPanel1() {
-		if (jPanel1 == null) {
+	private JPanel getPanel3() {
+		if (panel3 == null) {
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.gridx = 3;
 			gridBagConstraints6.weightx = 1.0D;
@@ -3546,18 +3592,17 @@ public class FormMain extends JFrame {
 			gridBagConstraints.weighty = 1.0D;
 			gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints.gridy = 0;
-			jPanel1 = new JPanel();
-			jPanel1.setLayout(new GridBagLayout());
-			jPanel1.setSize(new Dimension(368, 76));
-			jPanel1.add(getJButton(), gridBagConstraints);
-			jPanel1.add(getJButton1(), gridBagConstraints1);
-			jPanel1.add(getJButton2(), gridBagConstraints2);
-			jPanel1.add(getJButton3(), gridBagConstraints3);
-			jPanel1.add(getJButton4(), gridBagConstraints4);
-			jPanel1.add(getJButton5(), gridBagConstraints5);
-			jPanel1.add(getJPanel2(), gridBagConstraints6);
+			panel3 = new JPanel();
+			panel3.setLayout(new GridBagLayout());
+			panel3.add(getJButton(), gridBagConstraints);
+			panel3.add(getJButton1(), gridBagConstraints1);
+			panel3.add(getJButton2(), gridBagConstraints2);
+			panel3.add(getJButton3(), gridBagConstraints3);
+			panel3.add(getJButton4(), gridBagConstraints4);
+			panel3.add(getJButton5(), gridBagConstraints5);
+			panel3.add(getJPanel2(), gridBagConstraints6);
 		}
-		return jPanel1;
+		return panel3;
 	}
 
 	/**
@@ -3649,6 +3694,153 @@ public class FormMain extends JFrame {
 			jButton5.setText(">");
 		}
 		return jButton5;
+	}
+
+	/**
+	 * This method initializes pictPianoRoll	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private PictPianoRoll getPictPianoRoll() {
+		if (pictPianoRoll == null) {
+			pictPianoRoll = new PictPianoRoll();
+			pictPianoRoll.setLayout(new GridBagLayout());
+		}
+		return pictPianoRoll;
+	}
+
+	/**
+	 * This method initializes vScroll	
+	 * 	
+	 * @return javax.swing.JScrollBar	
+	 */
+	private JScrollBar getVScroll() {
+		if (vScroll == null) {
+			vScroll = new JScrollBar();
+		}
+		return vScroll;
+	}
+
+	/**
+	 * This method initializes hScroll	
+	 * 	
+	 * @return javax.swing.JScrollBar	
+	 */
+	private JScrollBar getHScroll() {
+		if (hScroll == null) {
+			hScroll = new JScrollBar();
+			hScroll.setOrientation(JScrollBar.HORIZONTAL);
+		}
+		return hScroll;
+	}
+
+	/**
+	 * This method initializes pictureBox3	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getPictureBox3() {
+		if (pictureBox3 == null) {
+			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+			gridBagConstraints12.anchor = GridBagConstraints.EAST;
+			pictureBox3 = new JPanel();
+			pictureBox3.setLayout(new GridBagLayout());
+			pictureBox3.setPreferredSize(new Dimension(68, 0));
+			pictureBox3.add(getJButton6(), gridBagConstraints12);
+		}
+		return pictureBox3;
+	}
+
+	/**
+	 * This method initializes trackBar	
+	 * 	
+	 * @return javax.swing.JSlider	
+	 */
+	private JSlider getTrackBar() {
+		if (trackBar == null) {
+			trackBar = new JSlider();
+			trackBar.setPreferredSize(new Dimension(83, 16));
+		}
+		return trackBar;
+	}
+
+	/**
+	 * This method initializes jButton6	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getJButton6() {
+		if (jButton6 == null) {
+			jButton6 = new JButton();
+		}
+		return jButton6;
+	}
+
+	/**
+	 * This method initializes picturePositionIndicator	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getPicturePositionIndicator() {
+		if (picturePositionIndicator == null) {
+			picturePositionIndicator = new JPanel();
+			picturePositionIndicator.setLayout(new GridBagLayout());
+			picturePositionIndicator.setPreferredSize(new Dimension(421, 48));
+		}
+		return picturePositionIndicator;
+	}
+
+	/**
+	 * This method initializes jPanel1	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanel1() {
+		if (jPanel1 == null) {
+			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
+			gridBagConstraints15.gridx = 0;
+			gridBagConstraints15.fill = GridBagConstraints.BOTH;
+			gridBagConstraints15.weightx = 1.0D;
+			gridBagConstraints15.weighty = 1.0D;
+			gridBagConstraints15.gridy = 2;
+			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+			gridBagConstraints14.gridx = 0;
+			gridBagConstraints14.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints14.weightx = 1.0D;
+			gridBagConstraints14.gridy = 1;
+			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+			gridBagConstraints13.gridx = 0;
+			gridBagConstraints13.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints13.anchor = GridBagConstraints.NORTH;
+			gridBagConstraints13.weightx = 1.0D;
+			gridBagConstraints13.gridy = 0;
+			jPanel1 = new JPanel();
+			jPanel1.setLayout(new GridBagLayout());
+			jPanel1.add(getPanel3(), gridBagConstraints13);
+			jPanel1.add(getPicturePositionIndicator(), gridBagConstraints14);
+			jPanel1.add(getPanel1(), gridBagConstraints15);
+		}
+		return jPanel1;
+	}
+
+	/**
+	 * This method initializes jPanel3	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanel3() {
+		if (jPanel3 == null) {
+			GridLayout gridLayout1 = new GridLayout();
+			gridLayout1.setRows(2);
+			gridLayout1.setColumns(1);
+			statusLabel = new JLabel();
+			statusLabel.setText("");
+			jPanel3 = new JPanel();
+			jPanel3.setLayout(gridLayout1);
+			jPanel3.add(getToolStripBottom(), null);
+			jPanel3.add(statusLabel, null);
+		}
+		return jPanel3;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="18,34"

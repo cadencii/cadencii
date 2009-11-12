@@ -351,7 +351,6 @@ namespace Boare.Cadencii {
         /// ビブラート範囲を編集中の音符のInternalID
         /// </summary>
         private int m_vibrato_editing_id = -1;
-        private TrackSelector trackSelector;
         /// <summary>
         /// このフォームがアクティブ化されているかどうか
         /// </summary>
@@ -384,7 +383,9 @@ namespace Boare.Cadencii {
         /// </summary>
         private int m_last_splitcontainer2_split_distance = -1;
         private boolean m_spacekey_downed = false;
+#if ENABLE_MIDI
         private MidiInDevice m_midi_in = null;
+#endif
         private FormMidiImExport m_midi_imexport_dialog = null;
         private TreeMap<EditTool, Cursor> m_cursor = new TreeMap<EditTool, Cursor>();
         private Preference m_preference_dlg;
@@ -735,24 +736,26 @@ namespace Boare.Cadencii {
             toolStripFile.Move += new EventHandler( toolStripFile_Move );
 #endif
 
-            AppManager.inputTextBox = new TextBoxEx();
+            // inputTextBoxの初期化
+#if JAVA
+            AppManager.inputTextBox = new TextBoxEx( this );
             AppManager.inputTextBox.setVisible( false );
-#if !JAVA
-            AppManager.inputTextBox.BorderStyle = BorderStyle.None;
-            AppManager.inputTextBox.Width = 80;
-            AppManager.inputTextBox.AcceptsReturn = true;
-#endif
+            AppManager.inputTextBox.setSize( 80, 22 );
             AppManager.inputTextBox.setBackground( Color.white );
             AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
             AppManager.inputTextBox.setEnabled( false );
-#if JAVA
             AppManager.inputTextBox.keyPressedEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyPress" ) );
 #else
+            AppManager.inputTextBox = new TextBoxEx();
+            AppManager.inputTextBox.setVisible( false );
+            AppManager.inputTextBox.BorderStyle = BorderStyle.None;
+            AppManager.inputTextBox.Width = 80;
+            AppManager.inputTextBox.AcceptsReturn = true;
+            AppManager.inputTextBox.setBackground( Color.white );
+            AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
+            AppManager.inputTextBox.setEnabled( false );
             AppManager.inputTextBox.KeyPress += m_input_textbox_KeyPress;
             AppManager.inputTextBox.Parent = pictPianoRoll;
-#endif
-
-#if !JAVA
             panel1.Controls.Add( AppManager.inputTextBox );
 #endif
 
@@ -785,13 +788,6 @@ namespace Boare.Cadencii {
 #endif
             initResource();
             applyShortcut();
-        }
-
-        private TrackSelector getTrackSelector() {
-            if ( trackSelector == null ) {
-                trackSelector = new TrackSelector();
-            }
-            return trackSelector;
         }
 
         private void initResource() {
@@ -951,32 +947,32 @@ namespace Boare.Cadencii {
                                             item.ID.LyricHandle.L0.getPhoneticSymbol(),
                                             new Point( x, y ),
                                             phonetic_symbol_edit_mode );
-                    int clWidth = (int)(AppManager.inputTextBox.Width / AppManager.scaleX);
+                    int clWidth = (int)(AppManager.inputTextBox.getWidth() / AppManager.scaleX);
 #if DEBUG
                     System.Diagnostics.Debug.WriteLine( "    clWidth=" + clWidth );
 #endif
                     // 画面上にAppManager.inputTextBoxが見えるように，移動
                     int SPACE = 20;
-                    if ( x < AppManager.keyWidth || pictPianoRoll.Width < x + AppManager.inputTextBox.Width ) {
+                    if ( x < AppManager.keyWidth || pictPianoRoll.getWidth() < x + AppManager.inputTextBox.getWidth() ) {
                         int clock, clock_x;
                         if ( x < AppManager.keyWidth ) {
                             clock = item.Clock;
                             clock_x = AppManager.keyWidth + SPACE;
                         } else {
                             clock = item.Clock + clWidth;
-                            clock_x = pictPianoRoll.Width - SPACE;
+                            clock_x = pictPianoRoll.getWidth() - SPACE;
                         }
                         double draft_d = (73 - clock_x) / AppManager.scaleX + clock;
                         if ( draft_d < 0.0 ) {
                             draft_d = 0.0;
                         }
                         int draft = (int)draft_d;
-                        if ( draft < hScroll.Minimum ) {
-                            draft = hScroll.Minimum;
-                        } else if ( hScroll.Maximum < draft ) {
-                            draft = hScroll.Maximum;
+                        if ( draft < hScroll.getMinimum() ) {
+                            draft = hScroll.getMinimum();
+                        } else if ( hScroll.getMaximum() < draft ) {
+                            draft = hScroll.getMaximum();
                         }
-                        hScroll.Value = draft;
+                        hScroll.setValue( draft );
                     } else {
                         refreshScreen();
                     }
@@ -990,11 +986,19 @@ namespace Boare.Cadencii {
         }
 
         private void m_input_textbox_KeyUp( Object sender, BKeyEventArgs e ) {
-            if ( (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) && (Control.ModifierKeys == Keys.Alt) ) {
-                if ( AppManager.inputTextBox.Enabled ) {
+#if JAVA
+            boolean flip = (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) && ((e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK);
+            boolean hide = (e.getKeyCode() == KeyEvent.VK_ESCAPE);
+#else
+            bool flip = (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) && (Control.ModifierKeys == Keys.Alt);
+            bool hide = e.KeyCode == Keys.Escape;
+#endif
+
+            if ( flip ) {
+                if ( AppManager.inputTextBox.isVisible() ) {
                     flipInputTextBoxMode();
                 }
-            } else if ( e.KeyCode == Keys.Escape ) {
+            } else if ( hide ) {
                 hideInputTextBox();
             }
         }
@@ -1036,35 +1040,45 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void itm_Click( Object sender, BEventArgs e ) {
-            if ( sender is ToolStripItem ) {
-                ToolStripItem item = (ToolStripItem)sender;
-                if ( item.Tag is String ) {
-                    String filename = (String)item.Tag;
+        private void handleRecentFileMenuItem_Click( Object sender, BEventArgs e ) {
+            if ( sender is BMenuItem ) {
+                BMenuItem item = (BMenuItem)sender;
+                if ( item.getTag() is String ) {
+                    String filename = (String)item.getTag();
                     openVsqCor( filename );
                     refreshScreen();
                 }
             }
         }
 
-        private void itm_MouseEnter( Object sender, BEventArgs e ) {
-            if ( sender is ToolStripItem ) {
-                ToolStripItem item = (ToolStripItem)sender;
+        private void handleRecentFileMenuItem_MouseEnter( Object sender, BEventArgs e ) {
+            if ( sender is BMenuItem ) {
+                BMenuItem item = (BMenuItem)sender;
+#if JAVA
+                statusLabel.setText( item.getToolTipText() );
+#else
                 statusLabel.Text = item.ToolTipText;
+#endif
             }
         }
 
         #region AppManager
         private void AppManager_CurrentClockChanged( Object sender, BEventArgs e ) {
+#if JAVA
+            stripLblBeat.setText( AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator );
+            stripLblTempo.setText( PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo ) );
+            stripLblCursor.setText( AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock ) );
+#else
             stripLblBeat.Text = AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator;
-            stripLblTempo.Text = (60e6 / (float)AppManager.getPlayPosition().tempo).ToString( "#.00" );
-            stripLblCursor.Text = AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + AppManager.getPlayPosition().clock.ToString( "000" );
+            stripLblTempo.Text = PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo );
+            stripLblCursor.Text = AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock );
+#endif
         }
 
         private void AppManager_GridVisibleChanged( Object sender, BEventArgs e ) {
-            menuVisualGridline.Checked = AppManager.isGridVisible();
-            stripBtnGrid.Checked = AppManager.isGridVisible();
-            cMenuPianoGrid.Checked = AppManager.isGridVisible();
+            menuVisualGridline.setSelected( AppManager.isGridVisible() );
+            stripBtnGrid.setSelected( AppManager.isGridVisible() );
+            cMenuPianoGrid.setSelected( AppManager.isGridVisible() );
         }
 
         private void AppManager_PreviewAborted( Object sender, BEventArgs e ) {
@@ -1083,9 +1097,11 @@ namespace Boare.Cadencii {
             PortUtil.println( "  done" );
 #endif
             AppManager.firstBufferWritten = false;
+#if ENABLE_MIDI
             if ( m_midi_in != null ) {
                 m_midi_in.Stop();
             }
+#endif
 
             PlaySound.reset();
             for ( int i = 0; i < AppManager.drawStartIndex.Length; i++ ) {
@@ -1094,7 +1110,7 @@ namespace Boare.Cadencii {
 #if ENABLE_MIDI
             MidiPlayer.Stop();
 #endif
-            timer.Stop();
+            timer.stop();
         }
 
         private void AppManager_PreviewStarted( Object sender, BEventArgs e ) {
@@ -1127,7 +1143,7 @@ namespace Boare.Cadencii {
                     }
                 }
                 if ( render_all.size() > 0 ) {
-                    render( render_all.toArray( new Integer[] { } ) );
+                    render( PortUtil.convertIntArray( render_all.toArray( new Integer[] { } ) ) );
                 }
 
                 Vector<WaveReader> sounds = new Vector<WaveReader>();
@@ -1150,7 +1166,7 @@ namespace Boare.Cadencii {
                     int event_count = vsq_track.getEventCount();
                     for ( int i = 0; i < event_count; i++ ) {
                         VsqEvent item = vsq_track.getEvent( i );
-                        if ( item.Clock <= t_start && t_start <= item.Clock + item.ID.Length ) {
+                        if ( item.Clock <= t_start && t_start <= item.Clock + item.ID.getLength() ) {
                             start = item.Clock;
                             index_start = i;
                             break;
@@ -1159,8 +1175,8 @@ namespace Boare.Cadencii {
                     int index_end = -1;
                     for ( int i = event_count - 1; i >= 0; i-- ) {
                         VsqEvent item = vsq_track.getEvent( i );
-                        if ( item.Clock <= t_end && t_end <= item.Clock + item.ID.Length ) {
-                            end = item.Clock + item.ID.Length;
+                        if ( item.Clock <= t_end && t_end <= item.Clock + item.ID.getLength() ) {
+                            end = item.Clock + item.ID.getLength();
                             index_end = i;
                             break;
                         }
@@ -1171,7 +1187,7 @@ namespace Boare.Cadencii {
                         for ( int i = index_start - 1; i >= 0; i-- ) {
                             VsqEvent ve = vsq_track.getEvent( i );
                             if ( ve.ID.type == VsqIDType.Anote ) {
-                                int endpoint = ve.Clock + ve.ID.Length;
+                                int endpoint = ve.Clock + ve.ID.getLength();
                                 if ( endpoint == start ) {
                                     start = ve.Clock;
                                     index_start = i;
@@ -1187,7 +1203,7 @@ namespace Boare.Cadencii {
                             if ( ve.ID.type == VsqIDType.Anote ) {
                                 int startpoint = ve.Clock;
                                 if ( end == ve.Clock ) {
-                                    end = ve.Clock + ve.ID.Length;
+                                    end = ve.Clock + ve.ID.getLength();
                                     index_end = i;
                                 } else if ( end < startpoint ) {
                                     break;
@@ -1340,11 +1356,11 @@ namespace Boare.Cadencii {
             m_last_ignitted = PortUtil.getCurrentTime();
             if ( AppManager.getEditMode() == EditMode.REALTIME ) {
                 menuJobRealTime.setText( _( "Stop Realtime Input" ) );
+                AppManager.rendererAvailable = false;
+#if ENABLE_MIDI
                 if ( m_midi_in != null ) {
                     m_midi_in.Start();
                 }
-                AppManager.rendererAvailable = false;
-#if ENABLE_MIDI
                 MidiPlayer.SetSpeed( AppManager.editorConfig.RealtimeInputSpeed, m_last_ignitted );
                 MidiPlayer.Start( AppManager.getVsqFile(), clock, m_last_ignitted );
 #endif
@@ -1357,7 +1373,7 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "    m_config.VsqFile.TotalClocks=" + AppManager.getVsqFile().TotalClocks );
             AppManager.debugWriteLine( "    total seconds=" + AppManager.getVsqFile().getSecFromClock( (int)AppManager.getVsqFile().TotalClocks ) );
 #endif
-            timer.Enabled = true;
+            timer.start();
         }
 
         private void AppManager_SelectedToolChanged( Object sender, BEventArgs e ) {
@@ -1365,17 +1381,17 @@ namespace Boare.Cadencii {
         }
 
         private void AppManager_SelectedEventChanged( Object sender, boolean selected_event_is_null ) {
-            menuEditCut.Enabled = !selected_event_is_null;
-            menuEditPaste.Enabled = !selected_event_is_null;
-            menuEditDelete.Enabled = !selected_event_is_null;
-            cMenuPianoCut.Enabled = !selected_event_is_null;
-            cMenuPianoCopy.Enabled = !selected_event_is_null;
-            cMenuPianoDelete.Enabled = !selected_event_is_null;
-            cMenuPianoExpressionProperty.Enabled = !selected_event_is_null;
-            menuLyricVibratoProperty.Enabled = !selected_event_is_null;
-            menuLyricExpressionProperty.Enabled = !selected_event_is_null;
-            stripBtnCut.Enabled = !selected_event_is_null;
-            stripBtnCopy.Enabled = !selected_event_is_null;
+            menuEditCut.setEnabled( !selected_event_is_null );
+            menuEditPaste.setEnabled( !selected_event_is_null );
+            menuEditDelete.setEnabled( !selected_event_is_null );
+            cMenuPianoCut.setEnabled( !selected_event_is_null );
+            cMenuPianoCopy.setEnabled( !selected_event_is_null );
+            cMenuPianoDelete.setEnabled( !selected_event_is_null );
+            cMenuPianoExpressionProperty.setEnabled( !selected_event_is_null );
+            menuLyricVibratoProperty.setEnabled( !selected_event_is_null );
+            menuLyricExpressionProperty.setEnabled( !selected_event_is_null );
+            stripBtnCut.setEnabled( !selected_event_is_null );
+            stripBtnCopy.setEnabled( !selected_event_is_null );
         }
         #endregion
 
@@ -1386,6 +1402,11 @@ namespace Boare.Cadencii {
 #endif
             int modefier = PortUtil.getModifierFromKeys( Control.ModifierKeys );
             EditMode edit_mode = AppManager.getEditMode();
+#if JAVA
+            boolean is_button_left = e.button == BMouseButtons.Left;
+#else
+            boolean is_button_left = e.Button == MouseButtons.Left;
+#endif
 
             if ( e.Button == BMouseButtons.Left ) {
                 if ( m_mouse_hover_thread != null ) {
@@ -1749,14 +1770,14 @@ namespace Boare.Cadencii {
                                 }
                                 FormVibratoConfig dlg = null;
                                 try {
-                                    dlg = new FormVibratoConfig( selected.ID.VibratoHandle, selected.ID.Length, AppManager.editorConfig.DefaultVibratoLength, type );
+                                    dlg = new FormVibratoConfig( selected.ID.VibratoHandle, selected.ID.getLength(), AppManager.editorConfig.DefaultVibratoLength, type );
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
                                     if ( dlg.ShowDialog() == DialogResult.OK ) {
                                         VsqID t = (VsqID)selected.ID.clone();
                                         t.VibratoHandle = dlg.VibratoHandle;
                                         if ( t.VibratoHandle != null ) {
-                                            int vibrato_length = t.VibratoHandle.Length;
-                                            int note_length = selected.ID.Length;
+                                            int vibrato_length = t.VibratoHandle.getLength();
+                                            int note_length = selected.ID.getLength();
                                             t.VibratoDelay = note_length - vibrato_length;
                                         }
                                         CadenciiCommand run = new CadenciiCommand(
@@ -1981,7 +2002,7 @@ namespace Boare.Cadencii {
                             AppManager.addingEvent = new VsqEvent( clock, new VsqID( 0 ) );
                             AppManager.addingEvent.ID.type = VsqIDType.Anote;
                             AppManager.addingEvent.ID.Note = note;
-                            AppManager.addingEvent.ID.Length = (int)(px_vibrato_length / AppManager.scaleX);
+                            AppManager.addingEvent.ID.setLength( (int)(px_vibrato_length / AppManager.scaleX) );
                             AppManager.addingEventLength = length;
                             AppManager.addingEvent.ID.VibratoDelay = length - (int)(px_vibrato_length / AppManager.scaleX);
                             AppManager.setEditMode( EditMode.EDIT_VIBRATO_DELAY );
@@ -2015,7 +2036,7 @@ namespace Boare.Cadencii {
                                 if ( m_pencil_mode.getMode() == PencilModeEnum.Off ) {
                                     AppManager.setEditMode( EditMode.ADD_ENTRY );
                                     m_button_initial = new Point( e.X, e.Y );
-                                    AppManager.addingEvent.ID.Length = 0;
+                                    AppManager.addingEvent.ID.setLength( 0 );
                                     AppManager.addingEvent.ID.Note = note;
                                     Cursor = Cursors.Arrow;
 #if DEBUG
@@ -2023,7 +2044,7 @@ namespace Boare.Cadencii {
 #endif
                                 } else {
                                     AppManager.setEditMode( EditMode.ADD_FIXED_LENGTH_ENTRY );
-                                    AppManager.addingEvent.ID.Length = m_pencil_mode.getUnitLength();
+                                    AppManager.addingEvent.ID.setLength( m_pencil_mode.getUnitLength() );
                                     AppManager.addingEvent.ID.Note = note;
                                     Cursor = Cursors.Arrow;
                                 }
@@ -2506,7 +2527,7 @@ namespace Boare.Cadencii {
                 if ( new_length <= 0 ) {
                     new_length = 0;
                 }
-                AppManager.addingEvent.ID.Length = new_length;
+                AppManager.addingEvent.ID.setLength( new_length );
                 #endregion
             } else if ( edit_mode == EditMode.MOVE_ENTRY || edit_mode == EditMode.MOVE_ENTRY_WHOLE ) {
                 #region MOVE_ENTRY, MOVE_ENTRY_WHOLE
@@ -2551,7 +2572,7 @@ namespace Boare.Cadencii {
                 int dclock = clock - clock_init;
                 for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = (SelectedEventEntry)itr.next();
-                    int end_clock = item.original.Clock + item.original.ID.Length;
+                    int end_clock = item.original.Clock + item.original.ID.getLength();
                     int new_clock = item.original.Clock + dclock;
                     int length = end_clock - new_clock;
                     int odd = length % unit;
@@ -2563,7 +2584,7 @@ namespace Boare.Cadencii {
                         new_length = unit;
                     }
                     item.editing.Clock = end_clock - new_length;
-                    item.editing.ID.Length = new_length;
+                    item.editing.ID.setLength( new_length );
                 }
                 #endregion
             } else if ( edit_mode == EditMode.EDIT_RIGHT_EDGE ) {
@@ -2571,10 +2592,10 @@ namespace Boare.Cadencii {
                 int unit = AppManager.getLengthQuantizeClock();
 
                 VsqEvent original = AppManager.getLastSelectedEvent().original;
-                int dlength = clock - (original.Clock + original.ID.Length);
+                int dlength = clock - (original.Clock + original.ID.getLength());
                 for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = (SelectedEventEntry)itr.next();
-                    int length = item.original.ID.Length + dlength;
+                    int length = item.original.ID.getLength() + dlength;
                     int odd = length % unit;
                     int new_length = length - odd;
                     if ( odd > unit / 2 ) {
@@ -2583,7 +2604,7 @@ namespace Boare.Cadencii {
                     if ( new_length <= 0 ) {
                         new_length = unit;
                     }
-                    item.editing.ID.Length = new_length;
+                    item.editing.ID.setLength( new_length );
                 }
                 #endregion
             } else if ( edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
@@ -2602,7 +2623,7 @@ namespace Boare.Cadencii {
             } else if ( edit_mode == EditMode.EDIT_VIBRATO_DELAY ) {
                 #region EditVibratoDelay
                 int new_vibrato_start = clock;
-                int old_vibrato_end = AppManager.addingEvent.Clock + AppManager.addingEvent.ID.Length;
+                int old_vibrato_end = AppManager.addingEvent.Clock + AppManager.addingEvent.ID.getLength();
                 int new_vibrato_length = old_vibrato_end - new_vibrato_start;
                 int max_length = (int)(AppManager.addingEventLength - _PX_ACCENT_HEADER / AppManager.scaleX);
                 if ( max_length < 0 ) {
@@ -2617,7 +2638,7 @@ namespace Boare.Cadencii {
                     new_vibrato_length = 0;
                 }
                 AppManager.addingEvent.Clock = new_vibrato_start;
-                AppManager.addingEvent.ID.Length = new_vibrato_length;
+                AppManager.addingEvent.ID.setLength( new_vibrato_length );
                 updatePositionViewFromMousePosition( clock );
                 if ( !timer.Enabled ) {
                     refreshScreen();
@@ -2723,12 +2744,12 @@ namespace Boare.Cadencii {
                 #region AddEntry || AddFixedLengthEntry
                 if ( AppManager.getSelected() >= 0 ) {
                     if ( (AppManager.getEditMode() == EditMode.ADD_FIXED_LENGTH_ENTRY) ||
-                         (AppManager.getEditMode() == EditMode.ADD_ENTRY && (m_button_initial.x != e.X || m_button_initial.y != e.Y) && AppManager.addingEvent.ID.Length > 0) ) {
+                         (AppManager.getEditMode() == EditMode.ADD_ENTRY && (m_button_initial.x != e.X || m_button_initial.y != e.Y) && AppManager.addingEvent.ID.getLength() > 0) ) {
                         LyricHandle lyric = new LyricHandle( "a", "a" );
                         VibratoHandle vibrato = null;
                         int vibrato_delay = 0;
                         if ( AppManager.editorConfig.EnableAutoVibrato ) {
-                            int note_length = AppManager.addingEvent.ID.Length;
+                            int note_length = AppManager.addingEvent.ID.getLength();
                             // 音符位置での拍子を調べる
                             //int denom, numer;
                             Timesig timesig = AppManager.getVsqFile().getTimesigAt( AppManager.addingEvent.Clock );
@@ -2777,16 +2798,16 @@ namespace Boare.Cadencii {
                                 changed = false;
                                 for ( int i = 0; i < work.getEventCount(); i++ ) {
                                     int start_clock = work.getEvent( i ).Clock;
-                                    int end_clock = work.getEvent( i ).ID.Length + start_clock;
+                                    int end_clock = work.getEvent( i ).ID.getLength() + start_clock;
                                     if ( start_clock < AppManager.addingEvent.Clock && AppManager.addingEvent.Clock < end_clock ) {
-                                        work.getEvent( i ).ID.Length = AppManager.addingEvent.Clock - start_clock;
+                                        work.getEvent( i ).ID.setLength( AppManager.addingEvent.Clock - start_clock );
                                         changed = true;
                                     } else if ( start_clock == AppManager.addingEvent.Clock ) {
                                         work.removeEvent( i );
                                         changed = true;
                                         break;
-                                    } else if ( AppManager.addingEvent.Clock < start_clock && start_clock < AppManager.addingEvent.Clock + AppManager.addingEvent.ID.Length ) {
-                                        AppManager.addingEvent.ID.Length = start_clock - AppManager.addingEvent.Clock;
+                                    } else if ( AppManager.addingEvent.Clock < start_clock && start_clock < AppManager.addingEvent.Clock + AppManager.addingEvent.ID.getLength() ) {
+                                        AppManager.addingEvent.ID.setLength( start_clock - AppManager.addingEvent.Clock );
                                         changed = true;
                                     }
                                 }
@@ -2872,7 +2893,7 @@ namespace Boare.Cadencii {
                 #region EditLeftEdge
                 VsqEvent original = AppManager.getLastSelectedEvent().original;
                 if ( original.Clock != AppManager.getLastSelectedEvent().editing.Clock ||
-                    original.ID.Length != original.ID.Length ) {
+                    original.ID.getLength() != original.ID.getLength() ) {
                     int count = AppManager.getSelectedEventCount();
                     int[] ids = new int[count];
                     int[] clocks = new int[count];
@@ -2886,14 +2907,14 @@ namespace Boare.Cadencii {
                             clocks[i] = ev.editing.Clock;
                             values[i] = ev.editing.ID;
                         } else {
-                            int draft_vibrato_length = ev.editing.ID.Length - ev.editing.ID.VibratoDelay;
+                            int draft_vibrato_length = ev.editing.ID.getLength() - ev.editing.ID.VibratoDelay;
                             if ( draft_vibrato_length <= 0 ) {
                                 // ビブラートを削除
                                 ev.editing.ID.VibratoHandle = null;
                                 ev.editing.ID.VibratoDelay = 0;
                             } else {
                                 // ビブラートは温存
-                                ev.editing.ID.VibratoHandle.Length = draft_vibrato_length;
+                                ev.editing.ID.VibratoHandle.setLength( draft_vibrato_length );
                             }
                             ids[i] = ev.original.InternalID;
                             clocks[i] = ev.editing.Clock;
@@ -2912,7 +2933,7 @@ namespace Boare.Cadencii {
             } else if ( edit_mode == EditMode.EDIT_RIGHT_EDGE ) {
                 #region EditRightEdge
                 VsqEvent original = AppManager.getLastSelectedEvent().original;
-                if ( original.ID.Length != AppManager.getLastSelectedEvent().editing.ID.Length ) {
+                if ( original.ID.getLength() != AppManager.getLastSelectedEvent().editing.ID.getLength() ) {
                     int count = AppManager.getSelectedEventCount();
                     int[] ids = new int[count];
                     int[] clocks = new int[count];
@@ -2926,14 +2947,14 @@ namespace Boare.Cadencii {
                             clocks[i] = ev.editing.Clock;
                             values[i] = ev.editing.ID;
                         } else {
-                            int draft_vibrato_length = ev.editing.ID.Length - ev.editing.ID.VibratoDelay;
+                            int draft_vibrato_length = ev.editing.ID.getLength() - ev.editing.ID.VibratoDelay;
                             if ( draft_vibrato_length <= 0 ) {
                                 // ビブラートを削除
                                 ev.editing.ID.VibratoHandle = null;
                                 ev.editing.ID.VibratoDelay = 0;
                             } else {
                                 // ビブラートは温存
-                                ev.editing.ID.VibratoHandle.Length = draft_vibrato_length;
+                                ev.editing.ID.VibratoHandle.setLength( draft_vibrato_length );
                             }
                             ids[i] = ev.original.InternalID;
                             clocks[i] = ev.editing.Clock;
@@ -2953,7 +2974,7 @@ namespace Boare.Cadencii {
                 #region EditVibratoDelay
                 if ( m_mouse_moved ) {
                     double max_length = AppManager.addingEventLength - _PX_ACCENT_HEADER / AppManager.scaleX;
-                    double rate = AppManager.addingEvent.ID.Length / max_length;
+                    double rate = AppManager.addingEvent.ID.getLength() / max_length;
                     if ( rate > 0.99 ) {
                         rate = 1.0;
                     }
@@ -2969,10 +2990,10 @@ namespace Boare.Cadencii {
                     if ( item != null ) {
                         if ( vibrato_length <= 0 ) {
                             item.ID.VibratoHandle = null;
-                            item.ID.VibratoDelay = item.ID.Length;
+                            item.ID.VibratoDelay = item.ID.getLength();
                         } else {
-                            item.ID.VibratoHandle.Length = vibrato_length;
-                            item.ID.VibratoDelay = item.ID.Length - vibrato_length;
+                            item.ID.VibratoHandle.setLength( vibrato_length );
+                            item.ID.VibratoDelay = item.ID.getLength() - vibrato_length;
                         }
                         CadenciiCommand run = new CadenciiCommand(
                             VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(), m_vibrato_editing_id, item.ID ) );
@@ -3085,7 +3106,7 @@ namespace Boare.Cadencii {
                 Vector<Integer> add_required_event = new Vector<Integer>();
                 for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
-                    if ( start <= ve.Clock && ve.Clock + ve.ID.Length <= end ) {
+                    if ( start <= ve.Clock && ve.Clock + ve.ID.getLength() <= end ) {
                         add_required_event.add( ve.InternalID );
                     }
                 }
@@ -3375,9 +3396,11 @@ namespace Boare.Cadencii {
             AppManager.saveConfig();
             UtauRenderingRunner.clearCache();
             StraightRenderingRunner.clearCache();
+#if ENABLE_MIDI
             if ( m_midi_in != null ) {
                 m_midi_in.Dispose();
             }
+#endif
             bgWorkScreen.Dispose();
             e.Cancel = false;
         }
@@ -3946,7 +3969,7 @@ namespace Boare.Cadencii {
                         if ( AppManager.isPlaying() ) {
                             int clock = AppManager.getCurrentClock();
                             if ( AppManager.addingEvent != null ) {
-                                AppManager.addingEvent.ID.Length = clock - AppManager.addingEvent.Clock;
+                                AppManager.addingEvent.ID.setLength( clock - AppManager.addingEvent.Clock );
                                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( AppManager.getSelected(),
                                                                                                         AppManager.addingEvent ) );
                                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
@@ -3973,7 +3996,7 @@ namespace Boare.Cadencii {
                         }
                     } else {
                         if ( AppManager.isPlaying() && AppManager.addingEvent != null ) {
-                            AppManager.addingEvent.ID.Length = AppManager.getCurrentClock() - AppManager.addingEvent.Clock;
+                            AppManager.addingEvent.ID.setLength( AppManager.getCurrentClock() - AppManager.addingEvent.Clock );
                         }
                     }
                 }
@@ -4328,9 +4351,9 @@ namespace Boare.Cadencii {
                                 int add_clock_off = (int)work.getClockFromSec( time_clock_off );
                                 VsqID vid = new VsqID( 0 );
                                 vid.type = VsqIDType.Anote;
-                                vid.Length = add_clock_off - add_clock_on;
+                                vid.setLength( add_clock_off - add_clock_on );
 #if DEBUG
-                                Console.WriteLine( "FormMain#menuFileImportMidi_Click; vid.Length=" + vid.Length );
+                                Console.WriteLine( "FormMain#menuFileImportMidi_Click; vid.Length=" + vid.getLength() );
 #endif
                                 String phrase = "a";
                                 if ( m_midi_imexport_dialog.isLyric() ) {
@@ -4352,7 +4375,7 @@ namespace Boare.Cadencii {
 
                                 // ビブラート
                                 if ( AppManager.editorConfig.EnableAutoVibrato ) {
-                                    int note_length = vid.Length;
+                                    int note_length = vid.getLength();
                                     // 音符位置での拍子を調べる
                                     Timesig timesig = work.getTimesigAt( add_clock_on );
 
@@ -4505,7 +4528,7 @@ namespace Boare.Cadencii {
                                 for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ve = (VsqEvent)itr.next();
                                     int clock_on = ve.Clock;
-                                    int clock_off = ve.Clock + ve.ID.Length;
+                                    int clock_off = ve.Clock + ve.ID.getLength();
                                     if ( !print_tempo ) {
                                         // テンポを出力しない場合、テンポを500000（120）と見なしてクロックを再計算
                                         double time_on = vsq.getSecFromClock( clock_on );
@@ -4808,16 +4831,16 @@ namespace Boare.Cadencii {
                         }
                         int clock = item.Clock;
                         double sec_start = vsq.getSecFromClock( clock ) - premeasure_sec_vsq + premeasure_sec_replace;
-                        double sec_end = vsq.getSecFromClock( clock + item.ID.Length ) - premeasure_sec_vsq + premeasure_sec_replace;
+                        double sec_end = vsq.getSecFromClock( clock + item.ID.getLength() ) - premeasure_sec_vsq + premeasure_sec_replace;
                         int clock_start = (int)replace.getClockFromSec( sec_start );
                         int clock_end = (int)replace.getClockFromSec( sec_end );
                         item.Clock = clock_start;
-                        item.ID.Length = clock_end - clock_start;
+                        item.ID.setLength( clock_end - clock_start );
                         if ( item.ID.VibratoHandle != null ) {
                             double sec_vib_start = vsq.getSecFromClock( clock + item.ID.VibratoDelay ) - premeasure_sec_vsq + premeasure_sec_replace;
                             int clock_vib_start = (int)replace.getClockFromSec( sec_vib_start );
                             item.ID.VibratoDelay = clock_vib_start - clock_start;
-                            item.ID.VibratoHandle.Length = clock_end - clock_vib_start;
+                            item.ID.VibratoHandle.setLength( clock_end - clock_vib_start );
                         }
                     }
 
@@ -5868,11 +5891,11 @@ namespace Boare.Cadencii {
                 changed = false;
                 for ( int i = 0; i < work.Track.get( track ).getEventCount() - 1; i++ ) {
                     int start_clock = work.Track.get( track ).getEvent( i ).Clock;
-                    int end_clock = work.Track.get( track ).getEvent( i ).ID.Length + start_clock;
+                    int end_clock = work.Track.get( track ).getEvent( i ).ID.getLength() + start_clock;
                     for ( int j = i + 1; j < work.Track.get( track ).getEventCount(); j++ ) {
                         int this_start_clock = work.Track.get( track ).getEvent( j ).Clock;
                         if ( this_start_clock < end_clock ) {
-                            work.Track.get( track ).getEvent( i ).ID.Length = this_start_clock - start_clock;
+                            work.Track.get( track ).getEvent( i ).ID.setLength( this_start_clock - start_clock );
                             changed = true;
                             total_changed = true;
                         }
@@ -8294,7 +8317,7 @@ namespace Boare.Cadencii {
                 count++;
                 sum += item.ID.Note;
                 int y = height - (height / 2 + (int)((item.ID.Note - m_overview_average_note) * _OVERVIEW_DOT_DIAM));
-                int length = (int)(item.ID.Length * m_overview_px_per_clock);
+                int length = (int)(item.ID.getLength() * m_overview_px_per_clock);
                 if ( length < _OVERVIEW_DOT_DIAM ) {
                     length = _OVERVIEW_DOT_DIAM;
                 }
@@ -8739,16 +8762,16 @@ namespace Boare.Cadencii {
                     }
                     int clock = item.Clock;
                     double sec_start = target.getSecFromClock( clock ) + shift_seconds;
-                    double sec_end = target.getSecFromClock( clock + item.ID.Length ) + shift_seconds;
+                    double sec_end = target.getSecFromClock( clock + item.ID.getLength() ) + shift_seconds;
                     int clock_start = (int)tempo.getClockFromSec( sec_start );
                     int clock_end = (int)tempo.getClockFromSec( sec_end );
                     item.Clock = clock_start;
-                    item.ID.Length = clock_end - clock_start;
+                    item.ID.setLength( clock_end - clock_start );
                     if ( item.ID.VibratoHandle != null ) {
                         double sec_vib_start = target.getSecFromClock( clock + item.ID.VibratoDelay ) + shift_seconds;
                         int clock_vib_start = (int)tempo.getClockFromSec( sec_vib_start );
                         item.ID.VibratoDelay = clock_vib_start - clock_start;
-                        item.ID.VibratoHandle.Length = clock_end - clock_vib_start;
+                        item.ID.VibratoHandle.setLength( clock_end - clock_vib_start );
                     }
                 }
 
@@ -11196,13 +11219,13 @@ namespace Boare.Cadencii {
             }
             FormVibratoConfig dlg = null;
             try {
-                dlg = new FormVibratoConfig( ev.ID.VibratoHandle, ev.ID.Length, AppManager.editorConfig.DefaultVibratoLength, type );
+                dlg = new FormVibratoConfig( ev.ID.VibratoHandle, ev.ID.getLength(), AppManager.editorConfig.DefaultVibratoLength, type );
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 if ( dlg.ShowDialog() == DialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     if ( dlg.VibratoHandle != null ) {
                         edited.ID.VibratoHandle = (VibratoHandle)dlg.VibratoHandle.clone();
-                        edited.ID.VibratoDelay = ev.ID.Length - dlg.VibratoHandle.Length;
+                        edited.ID.VibratoDelay = ev.ID.getLength() - dlg.VibratoHandle.getLength();
                     } else {
                         edited.ID.VibratoHandle = null;
                     }
@@ -11303,7 +11326,7 @@ namespace Boare.Cadencii {
                 if ( premeasure <= ve.Clock ) {
                     add_required.add( ve.InternalID );
                     min = Math.Min( min, ve.Clock );
-                    max = Math.Max( max, ve.Clock + ve.ID.Length );
+                    max = Math.Max( max, ve.Clock + ve.ID.getLength() );
                 }
             }
             if ( add_required.size() > 0 ) {
@@ -12443,7 +12466,7 @@ namespace Boare.Cadencii {
                             VsqEvent ev = (VsqEvent)itr.next();
                             int timesig = ev.Clock;
                             if ( ev.ID.LyricHandle != null ) {
-                                int length = ev.ID.Length;
+                                int length = ev.ID.getLength();
                                 int note = ev.ID.Note;
                                 int x = (int)(timesig * scalex + xoffset);
                                 int y = -note * AppManager.editorConfig.PxTrackHeight + yoffset;
@@ -12482,7 +12505,7 @@ namespace Boare.Cadencii {
                                                          depth_start,
                                                          ev.ID.Note,
                                                          ev.UstEvent.Envelope,
-                                                         ev.ID.Length ) );
+                                                         ev.ID.getLength() ) );
                             }
                         }
 
@@ -12535,16 +12558,23 @@ namespace Boare.Cadencii {
                     if ( item != "" ) {
                         String short_name = PortUtil.getFileName( item );
                         boolean available = PortUtil.isFileExists( item );
-                        ToolStripItem itm = (ToolStripItem)(new ToolStripMenuItem( short_name ));
+                        BMenuItem itm = new BMenuItem();
+                        itm.setText( short_name );
                         if ( !available ) {
-                            itm.ToolTipText = _( "[file not found]" ) + " ";
+                            itm.setToolTipText( _( "[file not found]" ) + " " );
                         }
-                        itm.ToolTipText += item;
-                        itm.Tag = item;
-                        itm.Enabled = available;
-                        itm.Click += new EventHandler( itm_Click );
-                        itm.MouseEnter += new EventHandler( itm_MouseEnter );
+                        itm.setToolTipText( itm.getToolTipText() + item );
+                        itm.setTag( item );
+                        itm.setEnabled( available );
+#if JAVA
+                        itm.clickEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_Click" ) );
+                        itm.mouseEnterEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_MouseEnter" ) );
+                        menuFileRecent.add( itm );
+#else
+                        itm.Click += new EventHandler( handleRecentFileMenuItem_Click );
+                        itm.MouseEnter += new EventHandler( handleRecentFileMenuItem_MouseEnter );
                         menuFileRecent.DropDownItems.Add( itm );
+#endif
                         added++;
                     }
                 }
@@ -12552,9 +12582,9 @@ namespace Boare.Cadencii {
                 AppManager.editorConfig.pushRecentFiles( "" );
             }
             if ( added == 0 ) {
-                menuFileRecent.Enabled = false;
+                menuFileRecent.setEnabled( false );
             } else {
-                menuFileRecent.Enabled = true;
+                menuFileRecent.setEnabled( true );
             }
         }
 
@@ -12826,7 +12856,7 @@ namespace Boare.Cadencii {
                             if ( AppManager.getVsqFile().Track.get( selected ).getEvent( j ).ID.type == VsqIDType.Anote &&
                                 AppManager.getVsqFile().Track.get( selected ).getEvent( j ).ID.LyricHandle != null ) {
                                 // 発音長を取得
-                                int length = AppManager.getVsqFile().Track.get( selected ).getEvent( j ).ID.Length;
+                                int length = AppManager.getVsqFile().Track.get( selected ).getEvent( j ).ID.getLength();
                                 int note = AppManager.getVsqFile().Track.get( selected ).getEvent( j ).ID.Note;
                                 int x = AppManager.xCoordFromClocks( timesig );
                                 int y = yCoordFromNote( note );
@@ -13506,7 +13536,7 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
-	    private JPanel jContentPane = null;
+	    private JPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="10,55"
 	    private JMenuBar jJMenuBar = null;
 	    private JMenu menuFile = null;
 	    private JMenuItem menuFileNew = null;
@@ -13624,6 +13654,7 @@ namespace Boare.Cadencii {
 	    private JPanel panel1 = null;
 	    private JPanel panel2 = null;
 	    private JSplitPane splitContainer1 = null;
+	    private TrackSelector trackSelector = null;
 	    private JSplitPane splitContainerProperty = null;
 	    private JPanel m_property_panel_container = null;
 	    private JToolBar toolStripFile = null;
@@ -13751,6 +13782,24 @@ namespace Boare.Cadencii {
 	    private JMenuItem cMenuTrackTabRendererStraight = null;
 	    private JMenuItem cMenuPianoQuantizeOff = null;
 	    private JMenuItem cMenuPianoLengthOff = null;
+	    private JPanel panel3 = null;
+	    private JPanel jPanel2 = null;
+	    private JButton jButton = null;
+	    private JButton jButton1 = null;
+	    private JButton jButton2 = null;
+	    private JButton jButton3 = null;
+	    private JButton jButton4 = null;
+	    private JButton jButton5 = null;
+	    private PictPianoRoll pictPianoRoll = null;
+	    private JScrollBar vScroll = null;
+	    private JScrollBar hScroll = null;
+	    private JPanel pictureBox3 = null;
+	    private JSlider trackBar = null;
+	    private JButton jButton6 = null;
+	    private JPanel picturePositionIndicator = null;
+	    private JPanel jPanel1 = null;
+	    private JPanel jPanel3 = null;
+	    private JLabel statusLabel = null;
 
 	    /**
 	     * This method initializes this
@@ -13758,9 +13807,9 @@ namespace Boare.Cadencii {
 	     * @return void
 	     */
 	    private void initialize() {
-		    this.setSize(720, 489);
+		    this.setSize(711, 591);
 		    this.setJMenuBar(getJJMenuBar());
-		    this.setContentPane(getJContentPane());
+		    this.setContentPane( this.getJContentPane());
 		    this.setTitle("JFrame");
 	    }
 
@@ -13773,9 +13822,10 @@ namespace Boare.Cadencii {
 		    if (jContentPane == null) {
 			    jContentPane = new JPanel();
 			    jContentPane.setLayout(new BorderLayout());
+			    jContentPane.setSize(new Dimension(582, 431));
 			    jContentPane.add(getJPanel(), BorderLayout.NORTH);
-			    jContentPane.add(getToolStripBottom(), BorderLayout.SOUTH);
 			    jContentPane.add(getSplitContainerProperty(), BorderLayout.CENTER);
+			    jContentPane.add(getJPanel3(), BorderLayout.SOUTH);
 		    }
 		    return jContentPane;
 	    }
@@ -15352,8 +15402,8 @@ namespace Boare.Cadencii {
 			    splitContainer2.setDividerLocation(70);
 			    splitContainer2.setEnabled(false);
 			    splitContainer2.setResizeWeight(1.0D);
-			    splitContainer2.setTopComponent(getPanel1());
 			    splitContainer2.setBottomComponent(getPanel2());
+			    splitContainer2.setTopComponent(getJPanel1());
 			    splitContainer2.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		    }
 		    return splitContainer2;
@@ -15366,8 +15416,41 @@ namespace Boare.Cadencii {
 	     */
 	    private JPanel getPanel1() {
 		    if (panel1 == null) {
+			    GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+			    gridBagConstraints11.fill = GridBagConstraints.NONE;
+			    gridBagConstraints11.gridy = 1;
+			    gridBagConstraints11.weightx = 0.0D;
+			    gridBagConstraints11.anchor = GridBagConstraints.EAST;
+			    gridBagConstraints11.gridx = 2;
+			    GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+			    gridBagConstraints10.gridx = 0;
+			    gridBagConstraints10.fill = GridBagConstraints.BOTH;
+			    gridBagConstraints10.gridy = 1;
+			    GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+			    gridBagConstraints9.fill = GridBagConstraints.HORIZONTAL;
+			    gridBagConstraints9.gridy = 1;
+			    gridBagConstraints9.weighty = 0.0D;
+			    gridBagConstraints9.weightx = 1.0D;
+			    gridBagConstraints9.gridx = 1;
+			    GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
+			    gridBagConstraints8.fill = GridBagConstraints.VERTICAL;
+			    gridBagConstraints8.gridy = 0;
+			    gridBagConstraints8.weighty = 1.0D;
+			    gridBagConstraints8.gridx = 3;
+			    GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
+			    gridBagConstraints7.gridx = 0;
+			    gridBagConstraints7.fill = GridBagConstraints.BOTH;
+			    gridBagConstraints7.weightx = 1.0D;
+			    gridBagConstraints7.weighty = 1.0D;
+			    gridBagConstraints7.gridwidth = 3;
+			    gridBagConstraints7.gridy = 0;
 			    panel1 = new JPanel();
 			    panel1.setLayout(new GridBagLayout());
+			    panel1.add(getPictPianoRoll(), gridBagConstraints7);
+			    panel1.add(getVScroll(), gridBagConstraints8);
+			    panel1.add(getHScroll(), gridBagConstraints9);
+			    panel1.add(getPictureBox3(), gridBagConstraints10);
+			    panel1.add(getTrackBar(), gridBagConstraints11);
 		    }
 		    return panel1;
 	    }
@@ -15400,6 +15483,19 @@ namespace Boare.Cadencii {
 			    splitContainer1.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		    }
 		    return splitContainer1;
+	    }
+
+	    /**
+	     * This method initializes trackSelector	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private TrackSelector getTrackSelector() {
+		    if (trackSelector == null) {
+			    trackSelector = new TrackSelector();
+			    trackSelector.setLayout(new GridBagLayout());
+		    }
+		    return trackSelector;
 	    }
 
 	    /**
@@ -16961,6 +17057,295 @@ namespace Boare.Cadencii {
 			    cMenuPianoLengthOff = new JMenuItem();
 		    }
 		    return cMenuPianoLengthOff;
+	    }
+
+	    /**
+	     * This method initializes panel3	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getPanel3() {
+		    if (panel3 == null) {
+			    GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+			    gridBagConstraints6.gridx = 3;
+			    gridBagConstraints6.weightx = 1.0D;
+			    gridBagConstraints6.gridheight = 2;
+			    gridBagConstraints6.weighty = 1.0D;
+			    gridBagConstraints6.fill = GridBagConstraints.BOTH;
+			    gridBagConstraints6.gridy = 0;
+			    GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+			    gridBagConstraints5.gridx = 4;
+			    gridBagConstraints5.gridy = 1;
+			    GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+			    gridBagConstraints4.gridx = 4;
+			    gridBagConstraints4.gridy = 0;
+			    GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			    gridBagConstraints3.gridx = 1;
+			    gridBagConstraints3.gridheight = 2;
+			    gridBagConstraints3.gridy = 0;
+			    GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			    gridBagConstraints2.gridx = 2;
+			    gridBagConstraints2.weighty = 1.0D;
+			    gridBagConstraints2.gridy = 1;
+			    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			    gridBagConstraints1.gridx = 2;
+			    gridBagConstraints1.weighty = 1.0D;
+			    gridBagConstraints1.gridy = 0;
+			    GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			    gridBagConstraints.gridx = 0;
+			    gridBagConstraints.gridheight = 2;
+			    gridBagConstraints.weighty = 1.0D;
+			    gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+			    gridBagConstraints.gridy = 0;
+			    panel3 = new JPanel();
+			    panel3.setLayout(new GridBagLayout());
+			    panel3.add(getJButton(), gridBagConstraints);
+			    panel3.add(getJButton1(), gridBagConstraints1);
+			    panel3.add(getJButton2(), gridBagConstraints2);
+			    panel3.add(getJButton3(), gridBagConstraints3);
+			    panel3.add(getJButton4(), gridBagConstraints4);
+			    panel3.add(getJButton5(), gridBagConstraints5);
+			    panel3.add(getJPanel2(), gridBagConstraints6);
+		    }
+		    return panel3;
+	    }
+
+	    /**
+	     * This method initializes jPanel2	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getJPanel2() {
+		    if (jPanel2 == null) {
+			    jPanel2 = new JPanel();
+			    jPanel2.setLayout(new GridBagLayout());
+		    }
+		    return jPanel2;
+	    }
+
+	    /**
+	     * This method initializes jButton	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getJButton() {
+		    if (jButton == null) {
+			    jButton = new JButton();
+			    jButton.setText("-");
+		    }
+		    return jButton;
+	    }
+
+	    /**
+	     * This method initializes jButton1	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getJButton1() {
+		    if (jButton1 == null) {
+			    jButton1 = new JButton();
+			    jButton1.setText("<");
+		    }
+		    return jButton1;
+	    }
+
+	    /**
+	     * This method initializes jButton2	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getJButton2() {
+		    if (jButton2 == null) {
+			    jButton2 = new JButton();
+			    jButton2.setText(">");
+		    }
+		    return jButton2;
+	    }
+
+	    /**
+	     * This method initializes jButton3	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getJButton3() {
+		    if (jButton3 == null) {
+			    jButton3 = new JButton();
+			    jButton3.setText("+");
+		    }
+		    return jButton3;
+	    }
+
+	    /**
+	     * This method initializes jButton4	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getJButton4() {
+		    if (jButton4 == null) {
+			    jButton4 = new JButton();
+			    jButton4.setText("<");
+		    }
+		    return jButton4;
+	    }
+
+	    /**
+	     * This method initializes jButton5	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getJButton5() {
+		    if (jButton5 == null) {
+			    jButton5 = new JButton();
+			    jButton5.setText(">");
+		    }
+		    return jButton5;
+	    }
+
+	    /**
+	     * This method initializes pictPianoRoll	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private PictPianoRoll getPictPianoRoll() {
+		    if (pictPianoRoll == null) {
+			    pictPianoRoll = new PictPianoRoll();
+			    pictPianoRoll.setLayout(new GridBagLayout());
+		    }
+		    return pictPianoRoll;
+	    }
+
+	    /**
+	     * This method initializes vScroll	
+	     * 	
+	     * @return javax.swing.JScrollBar	
+	     */
+	    private JScrollBar getVScroll() {
+		    if (vScroll == null) {
+			    vScroll = new JScrollBar();
+		    }
+		    return vScroll;
+	    }
+
+	    /**
+	     * This method initializes hScroll	
+	     * 	
+	     * @return javax.swing.JScrollBar	
+	     */
+	    private JScrollBar getHScroll() {
+		    if (hScroll == null) {
+			    hScroll = new JScrollBar();
+			    hScroll.setOrientation(JScrollBar.HORIZONTAL);
+		    }
+		    return hScroll;
+	    }
+
+	    /**
+	     * This method initializes pictureBox3	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getPictureBox3() {
+		    if (pictureBox3 == null) {
+			    GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+			    gridBagConstraints12.anchor = GridBagConstraints.EAST;
+			    pictureBox3 = new JPanel();
+			    pictureBox3.setLayout(new GridBagLayout());
+			    pictureBox3.setPreferredSize(new Dimension(68, 0));
+			    pictureBox3.add(getJButton6(), gridBagConstraints12);
+		    }
+		    return pictureBox3;
+	    }
+
+	    /**
+	     * This method initializes trackBar	
+	     * 	
+	     * @return javax.swing.JSlider	
+	     */
+	    private JSlider getTrackBar() {
+		    if (trackBar == null) {
+			    trackBar = new JSlider();
+			    trackBar.setPreferredSize(new Dimension(83, 16));
+		    }
+		    return trackBar;
+	    }
+
+	    /**
+	     * This method initializes jButton6	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getJButton6() {
+		    if (jButton6 == null) {
+			    jButton6 = new JButton();
+		    }
+		    return jButton6;
+	    }
+
+	    /**
+	     * This method initializes picturePositionIndicator	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getPicturePositionIndicator() {
+		    if (picturePositionIndicator == null) {
+			    picturePositionIndicator = new JPanel();
+			    picturePositionIndicator.setLayout(new GridBagLayout());
+			    picturePositionIndicator.setPreferredSize(new Dimension(421, 48));
+		    }
+		    return picturePositionIndicator;
+	    }
+
+	    /**
+	     * This method initializes jPanel1	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getJPanel1() {
+		    if (jPanel1 == null) {
+			    GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
+			    gridBagConstraints15.gridx = 0;
+			    gridBagConstraints15.fill = GridBagConstraints.BOTH;
+			    gridBagConstraints15.weightx = 1.0D;
+			    gridBagConstraints15.weighty = 1.0D;
+			    gridBagConstraints15.gridy = 2;
+			    GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+			    gridBagConstraints14.gridx = 0;
+			    gridBagConstraints14.fill = GridBagConstraints.HORIZONTAL;
+			    gridBagConstraints14.weightx = 1.0D;
+			    gridBagConstraints14.gridy = 1;
+			    GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+			    gridBagConstraints13.gridx = 0;
+			    gridBagConstraints13.fill = GridBagConstraints.HORIZONTAL;
+			    gridBagConstraints13.anchor = GridBagConstraints.NORTH;
+			    gridBagConstraints13.weightx = 1.0D;
+			    gridBagConstraints13.gridy = 0;
+			    jPanel1 = new JPanel();
+			    jPanel1.setLayout(new GridBagLayout());
+			    jPanel1.add(getPanel3(), gridBagConstraints13);
+			    jPanel1.add(getPicturePositionIndicator(), gridBagConstraints14);
+			    jPanel1.add(getPanel1(), gridBagConstraints15);
+		    }
+		    return jPanel1;
+	    }
+
+	    /**
+	     * This method initializes jPanel3	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getJPanel3() {
+		    if (jPanel3 == null) {
+			    GridLayout gridLayout1 = new GridLayout();
+			    gridLayout1.setRows(2);
+			    gridLayout1.setColumns(1);
+			    statusLabel = new JLabel();
+			    statusLabel.setText("");
+			    jPanel3 = new JPanel();
+			    jPanel3.setLayout(gridLayout1);
+			    jPanel3.add(getToolStripBottom(), null);
+			    jPanel3.add(statusLabel, null);
+		    }
+		    return jPanel3;
 	    }
 #else
         #region UI Impl for C#
@@ -20164,7 +20549,6 @@ namespace Boare.Cadencii {
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem20;
         private BMenuItem menuEditSelectAll;
         private BMenuItem menuEditSelectAllEvents;
-        public PictPianoRoll pictPianoRoll;
         private BMenuItem menuTrackOn;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem21;
         private BMenuItem menuTrackAdd;
@@ -20373,6 +20757,8 @@ namespace Boare.Cadencii {
         private BMenuItem menuTrackRendererStraight;
         private BMenuItem menuTrackManager;
         private BMenuItem cMenuTrackTabRendererStraight;
+        public PictPianoRoll pictPianoRoll;
+        private TrackSelector trackSelector;
         #endregion
 #endif
 
