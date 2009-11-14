@@ -44,7 +44,20 @@ namespace bocoree {
     using Long = System.Int64;
     using Float = System.Single;
 #endif
+
+#if JAVA
+    public class PortUtil implememts AWTEventListener
+#else
     public class PortUtil {
+#endif
+
+#if JAVA
+        private static boolean s_ctrl = false;
+        private static boolean s_shift = false;
+        private static boolean s_alt = false;
+        private static PortUtil s_instance = null;
+#endif
+
         public static Color AliceBlue = new Color( 240, 248, 255 );
         public static Color AntiqueWhite = new Color( 250, 235, 215 );
         public static Color Aqua = new Color( 0, 255, 255 );
@@ -186,6 +199,19 @@ namespace bocoree {
         public static Color Yellow = new Color( 255, 255, 0 );
         public static Color YellowGreen = new Color( 154, 205, 50 );
 
+#if JAVA
+        static{
+            s_instance = new Util();
+            Toolkit.getDefaultToolkit().addAWTEventListener( s_instance, AWTEvent.KEY_EVENT_MASK );
+        }
+#else
+        static PortUtil() {
+        }
+#endif
+
+        private PortUtil() {
+        }
+
         public static double getCurrentTime() {
 #if JAVA
             return new Date().getTime();
@@ -193,6 +219,62 @@ namespace bocoree {
             return DateTime.Now.Ticks * 100.0 / 1e9;
 #endif
         }
+
+#if JAVA
+        public void eventDispatched( AWTEvent e ){
+            if( e instanceof KeyEvent ){
+                KeyEvent ke = (KeyEvent)e;
+                int code = ke.getKeyCode();
+                int id = ke.getID();
+                if( id == KeyEvent.KEY_PRESSED ){
+                    if( code == KeyEvent.VK_ALT ){
+                        s_alt = true;
+                    }else if( code == KeyEvent.VK_CONTROL ){
+                        s_ctrl = true;
+                    }else if( code == KeyEvent.VK_SHIFT ){
+                        s_shift = true;
+                    }
+                }else if( id == KeyEvent.KEY_RELEASED ){
+                    if( code == KeyEvent.VK_ALT ){
+                        s_alt = false;
+                    }else if( code == KeyEvent.VK_CONTROL ){
+                        s_ctrl = false;
+                    }else if( code == KeyEvent.VK_SHIFT ){
+                        s_shift = false;
+                    }
+                }
+            }
+        }
+
+        public static int getCurrentModifierKey() {
+            int ret = 0;
+            if( s_ctrl ){
+                ret += InputEvent.CTRL_MASK;
+            }
+            if( s_alt ){
+                ret += InputEvent.ALT_MASK;
+            }
+            if( s_shift ){
+                ret += InputEvent.SHIFT_MASK;
+            }
+            return ret;
+        }
+#else
+        public static int getCurrentModifierKey() {
+            int ret = 0;
+            System.Windows.Forms.Keys k = System.Windows.Forms.Control.ModifierKeys;
+            if ( (k & System.Windows.Forms.Keys.Control) == System.Windows.Forms.Keys.Control ) {
+                ret += InputEvent.CTRL_MASK;
+            }
+            if ( (k & System.Windows.Forms.Keys.Alt) == System.Windows.Forms.Keys.Alt ) {
+                ret += InputEvent.ALT_MASK;
+            }
+            if ( (k & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift ) {
+                ret += InputEvent.SHIFT_MASK;
+            }
+            return ret;
+        }
+#endif
 
         #region Clipboard
         public static void setClipboardText( String value ) {

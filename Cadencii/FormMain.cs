@@ -990,7 +990,7 @@ namespace Boare.Cadencii {
             boolean flip = (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) && ((e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK);
             boolean hide = (e.getKeyCode() == KeyEvent.VK_ESCAPE);
 #else
-            bool flip = (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) && (Control.ModifierKeys == Keys.Alt);
+            bool flip = (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) && (PortUtil.getCurrentModifierKey() == InputEvent.ALT_MASK);
             bool hide = e.KeyCode == Keys.Escape;
 #endif
 
@@ -1400,13 +1400,10 @@ namespace Boare.Cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseClick" );
 #endif
-            int modefier = PortUtil.getModifierFromKeys( Control.ModifierKeys );
+            int modefiers = PortUtil.getCurrentModifierKey();
             EditMode edit_mode = AppManager.getEditMode();
-#if JAVA
-            boolean is_button_left = e.button == BMouseButtons.Left;
-#else
-            boolean is_button_left = e.Button == MouseButtons.Left;
-#endif
+
+            boolean is_button_left = e.Button == BMouseButtons.Left;
 
             if ( e.Button == BMouseButtons.Left ) {
                 if ( m_mouse_hover_thread != null ) {
@@ -1428,7 +1425,7 @@ namespace Boare.Cadencii {
                      edit_mode != EditMode.EDIT_LEFT_EDGE &&
                      edit_mode != EditMode.EDIT_RIGHT_EDGE &&
                      edit_mode != EditMode.MIDDLE_DRAG ) {
-                    if ( (modefier & InputEvent.SHIFT_MASK) != InputEvent.SHIFT_MASK && (modefier & s_modifier_key) != s_modifier_key ) {
+                    if ( (modefiers & InputEvent.SHIFT_MASK) != InputEvent.SHIFT_MASK && (modefiers & s_modifier_key) != s_modifier_key ) {
                         AppManager.clearSelectedEvent();
                     }
                     AppManager.addSelectedEvent( item.InternalID );
@@ -1484,7 +1481,7 @@ namespace Boare.Cadencii {
                             DrawObject dobj = AppManager.drawObjects.get( AppManager.getSelected() - 1 ).get( i );
                             if ( dobj.pxRectangle.x + AppManager.startToDrawX + dobj.pxRectangle.width - stdx < 0 ) {
                                 continue;
-                            } else if ( pictPianoRoll.Width < dobj.pxRectangle.x + AppManager.keyWidth - stdx ) {
+                            } else if ( pictPianoRoll.getWidth() < dobj.pxRectangle.x + AppManager.keyWidth - stdx ) {
                                 break;
                             }
                             Rectangle rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxVibratoDelay - stdx,
@@ -1564,14 +1561,14 @@ namespace Boare.Cadencii {
                         AppManager.addSelectedEvent( item.InternalID );
                     }
                     boolean item_is_null = (item == null);
-                    cMenuPianoCopy.Enabled = !item_is_null;
-                    cMenuPianoCut.Enabled = !item_is_null;
-                    cMenuPianoDelete.Enabled = !item_is_null;
-                    cMenuPianoImportLyric.Enabled = !item_is_null;
-                    cMenuPianoExpressionProperty.Enabled = !item_is_null;
+                    cMenuPianoCopy.setEnabled( !item_is_null );
+                    cMenuPianoCut.setEnabled( !item_is_null );
+                    cMenuPianoDelete.setEnabled( !item_is_null );
+                    cMenuPianoImportLyric.setEnabled( !item_is_null );
+                    cMenuPianoExpressionProperty.setEnabled( !item_is_null );
 
                     int clock = AppManager.clockFromXCoord( e.X );
-                    cMenuPianoPaste.Enabled = ((AppManager.getCopiedItems().events.size() != 0) && (clock >= AppManager.getVsqFile().getPreMeasureClocks()));
+                    cMenuPianoPaste.setEnabled( ((AppManager.getCopiedItems().events.size() != 0) && (clock >= AppManager.getVsqFile().getPreMeasureClocks())) );
                     refreshScreen();
 
                     m_cMenuOpenedPosition = new Point( e.X, e.Y );
@@ -1693,19 +1690,19 @@ namespace Boare.Cadencii {
                                 FormNoteExpressionConfig dlg = null;
                                 try {
                                     dlg = new FormNoteExpressionConfig( type, selected.ID.NoteHeadHandle );
-                                    dlg.PMBendDepth = selected.ID.PMBendDepth;
-                                    dlg.PMBendLength = selected.ID.PMBendLength;
-                                    dlg.PMbPortamentoUse = selected.ID.PMbPortamentoUse;
-                                    dlg.DEMdecGainRate = selected.ID.DEMdecGainRate;
-                                    dlg.DEMaccent = selected.ID.DEMaccent;
+                                    dlg.setPMBendDepth( selected.ID.PMBendDepth );
+                                    dlg.setPMBendLength( selected.ID.PMBendLength );
+                                    dlg.setPMbPortamentoUse( selected.ID.PMbPortamentoUse );
+                                    dlg.setDEMdecGainRate( selected.ID.DEMdecGainRate );
+                                    dlg.setDEMaccent( selected.ID.DEMaccent );
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
                                     if ( dlg.ShowDialog() == DialogResult.OK ) {
                                         VsqID id = (VsqID)selected.ID.clone();
-                                        id.PMBendDepth = dlg.PMBendDepth;
-                                        id.PMBendLength = dlg.PMBendLength;
-                                        id.PMbPortamentoUse = dlg.PMbPortamentoUse;
-                                        id.DEMdecGainRate = dlg.DEMdecGainRate;
-                                        id.DEMaccent = dlg.DEMaccent;
+                                        id.PMBendDepth = dlg.getPMBendDepth();
+                                        id.PMBendLength = dlg.getPMBendLength();
+                                        id.PMbPortamentoUse = dlg.getPMbPortamentoUse();
+                                        id.DEMdecGainRate = dlg.getDEMdecGainRate();
+                                        id.DEMaccent = dlg.getDEMaccent();
                                         id.NoteHeadHandle = dlg.getEditedNoteHeadHandle();
                                         CadenciiCommand run = new CadenciiCommand(
                                             VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(), selected.InternalID, id ) );
@@ -1855,7 +1852,7 @@ namespace Boare.Cadencii {
 
             m_mouse_downed = true;
             m_button_initial = new Point( e.X, e.Y );
-            int modefier = PortUtil.getModifierFromKeys( Control.ModifierKeys );
+            int modefier = PortUtil.getCurrentModifierKey();
             if ( m_txtbox_track_name != null ) {
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
@@ -2731,7 +2728,7 @@ namespace Boare.Cadencii {
             AppManager.isPointerDowned = false;
             m_mouse_downed = false;
 
-            Keys modefier = Control.ModifierKeys;
+            int modefiers = PortUtil.getCurrentModifierKey();
 
             EditMode edit_mode = AppManager.getEditMode();
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -3141,7 +3138,7 @@ namespace Boare.Cadencii {
         }
 
         private void pictPianoRoll_MouseWheel( Object sender, BMouseEventArgs e ) {
-            boolean horizontal = (Control.ModifierKeys & Keys.Shift) == Keys.Shift;
+            boolean horizontal = (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
             if ( AppManager.editorConfig.ScrollHorizontalOnWheel ) {
                 horizontal = !horizontal;
             }
@@ -3763,7 +3760,7 @@ namespace Boare.Cadencii {
         }
 
         private void FormMain_MouseWheel( Object sender, BMouseEventArgs e ) {
-            if ( (Control.ModifierKeys & Keys.Shift) == Keys.Shift ) {
+            if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
             } else {
                 double new_val = (double)vScroll.Value - e.Delta;
@@ -6172,7 +6169,7 @@ namespace Boare.Cadencii {
 
             m_startmark_dragging = false;
             m_endmark_dragging = false;
-            int modifier = PortUtil.getModifierFromKeys( Control.ModifierKeys );
+            int modifiers = PortUtil.getCurrentModifierKey();
             if ( e.Button == BMouseButtons.Left ) {
                 if ( 0 <= e.Y && e.Y <= 18 ) {
                     #region スタート/エンドマーク
@@ -6216,7 +6213,7 @@ namespace Boare.Cadencii {
                             m_tempo_dragging_deltaclock = mouse_clock - clock;
                             m_tempo_dragging = true;
                         }
-                        if ( (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+                        if ( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                             if ( AppManager.getSelectedTempoCount() > 0 ) {
                                 int last_clock = AppManager.getLastSelectedTempoClock();
                                 int start = Math.Min( last_clock, clock );
@@ -6235,7 +6232,7 @@ namespace Boare.Cadencii {
                             } else {
                                 AppManager.addSelectedTempo( clock );
                             }
-                        } else if ( (modifier & s_modifier_key) == s_modifier_key ) {
+                        } else if ( (modifiers & s_modifier_key) == s_modifier_key ) {
                             if ( AppManager.isSelectedTempoContains( clock ) ) {
                                 AppManager.removeSelectedTempo( clock );
                             } else {
@@ -6275,7 +6272,7 @@ namespace Boare.Cadencii {
                             m_timesig_dragging_deltaclock = mouse_clock - barcount_clock;
                             m_timesig_dragging = true;
                         }
-                        if ( (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+                        if ( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                             if ( AppManager.getSelectedTimesigCount() > 0 ) {
                                 int last_barcount = AppManager.getLastSelectedTimesigBarcount();
                                 int start = Math.Min( last_barcount, barcount );
@@ -6294,7 +6291,7 @@ namespace Boare.Cadencii {
                             } else {
                                 AppManager.addSelectedTimesig( barcount );
                             }
-                        } else if ( (modifier & s_modifier_key) == s_modifier_key ) {
+                        } else if ( (modifiers & s_modifier_key) == s_modifier_key ) {
                             if ( AppManager.isSelectedTimesigContains( barcount ) ) {
                                 AppManager.removeSelectedTimesig( barcount );
                             } else {
@@ -6322,7 +6319,7 @@ namespace Boare.Cadencii {
                 return;
             }
 
-            Keys modifier = Control.ModifierKeys;
+            int modifiers = PortUtil.getCurrentModifierKey();
 #if DEBUG
             AppManager.debugWriteLine( "picturePositionIndicator_MouseClick" );
 #endif
@@ -7037,7 +7034,7 @@ namespace Boare.Cadencii {
         }
 
         private void trackSelector_MouseWheel( Object sender, BMouseEventArgs e ) {
-            if ( (Control.ModifierKeys & Keys.Shift) == Keys.Shift ) {
+            if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 double new_val = (double)vScroll.Value - e.Delta;
                 if ( new_val > vScroll.Maximum ) {
                     vScroll.Value = vScroll.Maximum;
@@ -7134,18 +7131,18 @@ namespace Boare.Cadencii {
                 try {
                     dlg = new FormNoteExpressionConfig( type, original.ID.NoteHeadHandle );
                     int id = AppManager.getLastSelectedEvent().original.InternalID;
-                    dlg.PMBendDepth = original.ID.PMBendDepth;
-                    dlg.PMBendLength = original.ID.PMBendLength;
-                    dlg.PMbPortamentoUse = original.ID.PMbPortamentoUse;
-                    dlg.DEMdecGainRate = original.ID.DEMdecGainRate;
-                    dlg.DEMaccent = original.ID.DEMaccent;
+                    dlg.setPMBendDepth( original.ID.PMBendDepth );
+                    dlg.setPMBendLength( original.ID.PMBendLength );
+                    dlg.setPMbPortamentoUse( original.ID.PMbPortamentoUse );
+                    dlg.setDEMdecGainRate( original.ID.DEMdecGainRate );
+                    dlg.setDEMaccent( original.ID.DEMaccent );
                     if ( dlg.ShowDialog() == DialogResult.OK ) {
                         VsqID copy = (VsqID)original.ID.clone();
-                        copy.PMBendDepth = dlg.PMBendDepth;
-                        copy.PMBendLength = dlg.PMBendLength;
-                        copy.PMbPortamentoUse = dlg.PMbPortamentoUse;
-                        copy.DEMdecGainRate = dlg.DEMdecGainRate;
-                        copy.DEMaccent = dlg.DEMaccent;
+                        copy.PMBendDepth = dlg.getPMBendDepth();
+                        copy.PMBendLength = dlg.getPMBendLength();
+                        copy.PMbPortamentoUse = dlg.getPMbPortamentoUse();
+                        copy.DEMdecGainRate = dlg.getDEMdecGainRate();
+                        copy.DEMaccent = dlg.getDEMaccent();
                         copy.NoteHeadHandle = dlg.getEditedNoteHeadHandle();
                         CadenciiCommand run = new CadenciiCommand(
                             VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(), id, copy ) );
@@ -11262,21 +11259,21 @@ namespace Boare.Cadencii {
             FormNoteExpressionConfig dlg = null;
             try {
                 dlg = new FormNoteExpressionConfig( type, ev.ID.NoteHeadHandle );
-                dlg.PMBendDepth = ev.ID.PMBendDepth;
-                dlg.PMBendLength = ev.ID.PMBendLength;
-                dlg.PMbPortamentoUse = ev.ID.PMbPortamentoUse;
-                dlg.DEMdecGainRate = ev.ID.DEMdecGainRate;
-                dlg.DEMaccent = ev.ID.DEMaccent;
+                dlg.setPMBendDepth( ev.ID.PMBendDepth );
+                dlg.setPMBendLength( ev.ID.PMBendLength );
+                dlg.setPMbPortamentoUse( ev.ID.PMbPortamentoUse );
+                dlg.setDEMdecGainRate( ev.ID.DEMdecGainRate );
+                dlg.setDEMaccent( ev.ID.DEMaccent );
 
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
 
                 if ( dlg.ShowDialog() == DialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
-                    edited.ID.PMBendDepth = dlg.PMBendDepth;
-                    edited.ID.PMBendLength = dlg.PMBendLength;
-                    edited.ID.PMbPortamentoUse = dlg.PMbPortamentoUse;
-                    edited.ID.DEMdecGainRate = dlg.DEMdecGainRate;
-                    edited.ID.DEMaccent = dlg.DEMaccent;
+                    edited.ID.PMBendDepth = dlg.getPMBendDepth();
+                    edited.ID.PMBendLength = dlg.getPMBendLength();
+                    edited.ID.PMbPortamentoUse = dlg.getPMbPortamentoUse();
+                    edited.ID.DEMdecGainRate = dlg.getDEMdecGainRate();
+                    edited.ID.DEMaccent = dlg.getDEMaccent();
                     edited.ID.NoteHeadHandle = dlg.getEditedNoteHeadHandle();
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(), ev.InternalID, (VsqID)edited.ID.clone() ) );
