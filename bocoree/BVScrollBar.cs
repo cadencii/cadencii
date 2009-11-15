@@ -1,14 +1,5 @@
 ﻿#if JAVA
-package org.kbinani.windows.forms;
-
-import javax.swing.*;
-
-public class BVScrollBar extends JScrollBar {
-    public BVScrollBar(){
-        super();
-        setOrientation( JScrollBar.VERTICAL );
-    }
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BVScrollBar.java
 #else
 namespace bocoree.windows.forms {
 

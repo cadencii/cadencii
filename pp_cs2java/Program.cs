@@ -231,8 +231,34 @@ class pp_cs2java {
         } else {
             enc = Encoding.GetEncoding( s_encoding );
         }
-        using ( StreamWriter sw = new StreamWriter( tmp, false, enc ) )
+
+        string tmp2 = Path.GetTempFileName();
+        using ( StreamWriter sw = new StreamWriter( tmp2, false, Encoding.GetEncoding( s_encoding ) ) )
         using ( StreamReader sr = new StreamReader( path, Encoding.GetEncoding( s_encoding ) ) ) {
+            string line = "";
+            while ( (line = sr.ReadLine()) != null ) {
+                if ( line.StartsWith( "//INCLUDE " ) ) {
+                    string p = line.Substring( 10 );
+                    string include_path = Path.Combine( Path.GetDirectoryName( path ), p );
+#if DEBUG
+                    Console.WriteLine( "include_path=" + include_path );
+#endif
+                    if ( File.Exists( include_path ) ) {
+                        using ( StreamReader sr_include = new StreamReader( include_path ) ) {
+                            string line2 = "";
+                            while ( (line2 = sr_include.ReadLine()) != null ) {
+                                sw.WriteLine( line2 );
+                            }
+                        }
+                    }
+                } else {
+                    sw.WriteLine( line );
+                }
+            }
+        }
+
+        using ( StreamWriter sw = new StreamWriter( tmp, false, enc ) )
+        using ( StreamReader sr = new StreamReader( tmp2, Encoding.GetEncoding( s_encoding ) ) ) {
 #if DEBUG
             Console.WriteLine( "path=" + path );
 #endif

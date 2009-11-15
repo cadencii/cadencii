@@ -14,12 +14,20 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+import java.util.*;
+import javax.swing.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
+
 #else
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
+using bocoree;
 using bocoree.util;
 using bocoree.windows.forms;
 
@@ -29,9 +37,9 @@ namespace Boare.Cadencii {
 #endif
 
 #if JAVA
-    class FormNoteExpressionConfig extends BForm {
+    public class FormNoteExpressionConfig extends BForm {
 #else
-    class FormNoteExpressionConfig : BForm {
+    public class FormNoteExpressionConfig : BForm {
 #endif
         boolean m_apply_current_track = false;
         NoteHeadHandle m_note_head_handle = null;
@@ -42,14 +50,14 @@ namespace Boare.Cadencii {
 
         public void ApplyLanguage() {
             lblTemplate.setText( _( "Template" ) + "(&T)" );
-            groupPitchControl.setText( _( "Pitch Control" ) );
+            groupPitchControl.setTitle( _( "Pitch Control" ) );
             lblBendDepth.setText( _( "Bend Depth" ) + "(&B)" );
             lblBendLength.setText( _( "Bend Length" ) + "(&L)" );
             chkUpPortamento.setText( _( "Add portamento in rising movement" ) + "(&R)" );
             chkDownPortamento.setText( _( "Add portamento in falling movement" ) + "(&F)" );
 
-            groupAttack.setText( _( "Attack Control (VOCALOID1)" ) );
-            groupDynamicsControl.setText( _( "Dynamics Control (VOCALOID2)" ) );
+            groupAttack.setTitle( _( "Attack Control (VOCALOID1)" ) );
+            groupDynamicsControl.setTitle( _( "Dynamics Control (VOCALOID2)" ) );
             lblDecay.setText( _( "Decay" ) + "(&D)" );
             lblAccent.setText( _( "Accent" ) + "(&A)" );
 
@@ -197,116 +205,116 @@ namespace Boare.Cadencii {
             }
             if ( index == 0 ) {
                 m_note_head_handle = null;
-                txtDuration.Enabled = false;
-                trackDuration.Enabled = false;
-                txtDepth.Enabled = false;
-                trackDepth.Enabled = false;
+                txtDuration.setEnabled( false );
+                trackDuration.setEnabled( false );
+                txtDepth.setEnabled( false );
+                trackDepth.setEnabled( false );
                 return;
             }
-            txtDuration.Enabled = true;
-            trackDuration.Enabled = true;
-            txtDepth.Enabled = true;
-            trackDepth.Enabled = true;
+            txtDuration.setEnabled( true );
+            trackDuration.setEnabled( true );
+            txtDepth.setEnabled( true );
+            trackDepth.setEnabled( true );
             AttackConfig aconfig = (AttackConfig)comboAttackTemplate.SelectedItem;
             if ( m_note_head_handle == null ) {
-                txtDuration.Text = aconfig.contents.Duration + "";
-                txtDepth.Text = aconfig.contents.Depth + "";
+                txtDuration.setText( aconfig.contents.Duration + "" );
+                txtDepth.setText( aconfig.contents.Depth + "" );
             }
             m_note_head_handle = (NoteHeadHandle)aconfig.contents.clone();
-            m_note_head_handle.Duration = trackDuration.Value;
-            m_note_head_handle.Depth = trackDepth.Value;
+            m_note_head_handle.Duration = trackDuration.getValue();
+            m_note_head_handle.Depth = trackDepth.getValue();
         }
 
         private void trackBendDepth_Scroll( Object sender, BEventArgs e ) {
-            txtBendDepth.Text = trackBendDepth.Value + "";
+            txtBendDepth.setText( trackBendDepth.getValue() + "" );
         }
 
         private void txtBendDepth_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtBendDepth.Text );
-                if ( draft != trackBendDepth.Value ) {
-                    if ( draft < trackBendDepth.Minimum ) {
-                        draft = trackBendDepth.Minimum;
-                        txtBendDepth.Text = draft + "";
-                    } else if ( trackBendDepth.Maximum < draft ) {
-                        draft = trackBendDepth.Maximum;
-                        txtBendDepth.Text = draft + "";
+                int draft = PortUtil.parseInt( txtBendDepth.getText() );
+                if ( draft != trackBendDepth.getValue() ) {
+                    if ( draft < trackBendDepth.getMinimum() ) {
+                        draft = trackBendDepth.getMinimum();
+                        txtBendDepth.setText( draft + "" );
+                    } else if ( trackBendDepth.getMaximum() < draft ) {
+                        draft = trackBendDepth.getMaximum();
+                        txtBendDepth.setText( draft + "" );
                     }
-                    trackBendDepth.Value = draft;
+                    trackBendDepth.setValue( draft );
                 }
-            } catch {
+            } catch ( Exception ex ) {
                 //txtBendDepth.Text = trackBendDepth.Value + "";
             }
         }
 
         private void trackBendLength_Scroll( Object sender, BEventArgs e ) {
-            txtBendLength.Text = trackBendLength.Value + "";
+            txtBendLength.setText( trackBendLength.getValue() + "" );
         }
 
         private void txtBendLength_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtBendLength.Text );
-                if ( draft != trackBendLength.Value ) {
-                    if ( draft < trackBendLength.Minimum ) {
-                        draft = trackBendLength.Minimum;
-                        txtBendLength.Text = draft + "";
-                    } else if ( trackBendLength.Maximum < draft ) {
-                        draft = trackBendLength.Maximum;
-                        txtBendLength.Text = draft + "";
+                int draft = PortUtil.parseInt( txtBendLength.getText() );
+                if ( draft != trackBendLength.getValue() ) {
+                    if ( draft < trackBendLength.getMinimum() ) {
+                        draft = trackBendLength.getMinimum();
+                        txtBendLength.setText( draft + "" );
+                    } else if ( trackBendLength.getMaximum() < draft ) {
+                        draft = trackBendLength.getMaximum();
+                        txtBendLength.setText( draft + "" );
                     }
-                    trackBendLength.Value = draft;
+                    trackBendLength.setValue( draft );
                 }
-            } catch {
+            } catch ( Exception ex ) {
                 //txtBendLength.Text = trackBendLength.Value + "";
             }
         }
 
         private void trackDecay_Scroll( Object sender, BEventArgs e ) {
-            txtDecay.Text = trackDecay.Value + "";
+            txtDecay.setText( trackDecay.getValue() + "" );
         }
 
         private void txtDecay_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtDecay.Text );
-                if ( draft != trackDecay.Value ) {
-                    if ( draft < trackDecay.Minimum ) {
-                        draft = trackDecay.Minimum;
-                        txtDecay.Text = draft + "";
-                    } else if ( trackDecay.Maximum < draft ) {
-                        draft = trackDecay.Maximum;
-                        txtDecay.Text = draft + "";
+                int draft = PortUtil.parseInt( txtDecay.getText() );
+                if ( draft != trackDecay.getValue() ) {
+                    if ( draft < trackDecay.getMinimum() ) {
+                        draft = trackDecay.getMinimum();
+                        txtDecay.setText( draft + "" );
+                    } else if ( trackDecay.getMaximum() < draft ) {
+                        draft = trackDecay.getMaximum();
+                        txtDecay.setText( draft + "" );
                     }
-                    trackDecay.Value = draft;
+                    trackDecay.setValue( draft );
                 }
-            } catch {
+            } catch ( Exception ex ) {
                 //txtDecay.Text = trackDecay.Value + "";
             }
         }
 
         private void trackAccent_Scroll( Object sender, BEventArgs e ) {
-            txtAccent.Text = trackAccent.Value + "";
+            txtAccent.setText( trackAccent.getValue() + "" );
         }
 
         private void txtAccent_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtAccent.Text );
-                if ( draft != trackAccent.Value ) {
-                    if ( draft < trackAccent.Minimum ) {
-                        draft = trackAccent.Minimum;
-                        txtAccent.Text = draft + "";
-                    } else if ( trackAccent.Maximum < draft ) {
-                        draft = trackAccent.Maximum;
-                        txtAccent.Text = draft + "";
+                int draft = PortUtil.parseInt( txtAccent.getText() );
+                if ( draft != trackAccent.getValue() ) {
+                    if ( draft < trackAccent.getMinimum() ) {
+                        draft = trackAccent.getMinimum();
+                        txtAccent.setText( draft + "" );
+                    } else if ( trackAccent.getMaximum() < draft ) {
+                        draft = trackAccent.getMaximum();
+                        txtAccent.setText( draft + "" );
                     }
-                    trackAccent.Value = draft;
+                    trackAccent.setValue( draft );
                 }
-            } catch {
+            } catch ( Exception ex ) {
                 //txtAccent.Text = trackAccent.Value + "";
             }
         }
 
         private void btnOK_Click( Object sender, BEventArgs e ) {
-            this.DialogResult = DialogResult.OK;
+            setDialogResult( BDialogResult.OK );
         }
 
         private void comboBox1_SelectedIndexChanged( Object sender, BEventArgs e ) {
@@ -355,73 +363,69 @@ namespace Boare.Cadencii {
                                   AppManager.MSGBOX_YES_NO_OPTION,
                                   AppManager.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
                 m_apply_current_track = true;
-                DialogResult = DialogResult.OK;
+                setDialogResult( BDialogResult.OK );
             }
         }
 
-        public boolean ApplyCurrentTrack {
-            get {
-                return m_apply_current_track;
-            }
-        }
-
-        private void FormSingerStyleConfig_Load( Object sender, BEventArgs e ) {
-
+        public boolean getApplyCurrentTrack() {
+            return m_apply_current_track;
         }
 
         private void trackDuration_Scroll( Object sender, BEventArgs e ) {
-            txtDuration.Text = trackDuration.Value + "";
+            txtDuration.setText( trackDuration.getValue() + "" );
             if ( m_note_head_handle != null ) {
-                m_note_head_handle.Duration = trackDuration.Value;
+                m_note_head_handle.Duration = trackDuration.getValue();
             }
         }
 
         private void trackDepth_Scroll( Object sender, BEventArgs e ) {
-            txtDepth.Text = trackDepth.Value + "";
+            txtDepth.setText( trackDepth.getValue() + "" );
             if ( m_note_head_handle != null ) {
-                m_note_head_handle.Depth = trackDepth.Value;
+                m_note_head_handle.Depth = trackDepth.getValue();
             }
         }
 
         private void txtDuration_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtDuration.Text );
-                if ( draft != trackDuration.Value ) {
-                    if ( draft < trackDuration.Minimum ) {
-                        draft = trackDuration.Minimum;
-                    } else if ( trackDuration.Maximum < draft ) {
-                        draft = trackDuration.Maximum;
+                int draft = PortUtil.parseInt( txtDuration.getText() );
+                if ( draft != trackDuration.getValue() ) {
+                    if ( draft < trackDuration.getMinimum() ) {
+                        draft = trackDuration.getMinimum();
+                    } else if ( trackDuration.getMaximum() < draft ) {
+                        draft = trackDuration.getMaximum();
                     }
-                    txtDuration.Text = draft + "";
-                    trackDuration.Value = draft;
+                    txtDuration.setText( draft + "" );
+                    trackDuration.setValue( draft );
                     if ( m_note_head_handle != null ) {
                         m_note_head_handle.Duration = draft;
                     }
                 }
-            } catch {
+            } catch ( Exception ex ) {
             }
         }
 
         private void txtDepth_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtDepth.Text );
-                if ( draft != trackDepth.Value ) {
-                    if ( draft < trackDepth.Minimum ) {
-                        draft = trackDepth.Minimum;
-                    } else if ( trackDepth.Maximum < draft ) {
-                        draft = trackDepth.Maximum;
+                int draft = PortUtil.parseInt( txtDepth.getText() );
+                if ( draft != trackDepth.getValue() ) {
+                    if ( draft < trackDepth.getMinimum() ) {
+                        draft = trackDepth.getMinimum();
+                    } else if ( trackDepth.getMaximum() < draft ) {
+                        draft = trackDepth.getMaximum();
                     }
-                    txtDepth.Text = draft + "";
-                    trackDepth.Value = draft;
+                    txtDepth.setText( draft + "" );
+                    trackDepth.setValue( draft );
                     if ( m_note_head_handle != null ) {
-                        m_note_head_handle.Depth = trackDepth.Value;
+                        m_note_head_handle.Depth = trackDepth.getValue();
                     }
                 }
-            } catch {
+            } catch ( Exception ex ) {
             }
         }
 
         private void registerEventHandlers() {
+#if JAVA
+#else
             this.txtBendLength.TextChanged += new System.EventHandler( this.txtBendLength_TextChanged );
             this.txtBendDepth.TextChanged += new System.EventHandler( this.txtBendDepth_TextChanged );
             this.trackBendLength.Scroll += new System.EventHandler( this.trackBendLength_Scroll );
@@ -436,18 +440,19 @@ namespace Boare.Cadencii {
             this.txtDuration.TextChanged += new System.EventHandler( this.txtDuration_TextChanged );
             this.trackDepth.Scroll += new System.EventHandler( this.trackDepth_Scroll );
             this.trackDuration.Scroll += new System.EventHandler( this.trackDuration_Scroll );
-            this.Load += new System.EventHandler( this.FormSingerStyleConfig_Load );
+#endif
         }
 
         private void setResources() {
         }
+
 #if JAVA
 	    private JPanel jContentPane = null;
-	    private JPanel jPanel = null;
+	    private JPanel panelVocaloid2Template = null;
 	    private JLabel lblTemplate = null;
 	    private JComboBox comboTemplate = null;
 	    private JLabel jLabel1 = null;
-	    private JPanel groupPitchControl = null;
+	    private BGroupBox groupPitchControl = null;
 	    private JLabel lblBendDepth = null;
 	    private JSlider trackBendDepth = null;
 	    private JTextField txtBendDepth = null;
@@ -459,7 +464,7 @@ namespace Boare.Cadencii {
 	    private JCheckBox chkUpPortamento = null;
 	    private JCheckBox chkDownPortamento = null;
 	    private JLabel jLabel6 = null;
-	    private JPanel groupDynamicsControl = null;
+	    private BGroupBox groupDynamicsControl = null;
 	    private JLabel lblDecay = null;
 	    private JSlider trackDecay = null;
 	    private JTextField txtDecay = null;
@@ -469,7 +474,7 @@ namespace Boare.Cadencii {
 	    private JTextField txtAccent = null;
 	    private JLabel jLabel51 = null;
 	    private JLabel jLabel61 = null;
-	    private JPanel groupAttack = null;
+	    private BGroupBox groupAttack = null;
 	    private JLabel lblDuration = null;
 	    private JSlider trackDuration = null;
 	    private JTextField txtDuration = null;
@@ -536,7 +541,7 @@ namespace Boare.Cadencii {
 			    gridBagConstraints3.gridy = 0;
 			    jContentPane = new JPanel();
 			    jContentPane.setLayout(new GridBagLayout());
-			    jContentPane.add(getJPanel(), gridBagConstraints3);
+			    jContentPane.add(getPanelVocaloid2Template(), gridBagConstraints3);
 			    jContentPane.add(getGroupPitchControl(), gridBagConstraints15);
 			    jContentPane.add(getGroupDynamicsControl(), gridBagConstraints16);
 			    jContentPane.add(getGroupAttack(), gridBagConstraints19);
@@ -546,12 +551,12 @@ namespace Boare.Cadencii {
 	    }
 
 	    /**
-	     * This method initializes jPanel	
+	     * This method initializes panelVocaloid2Template	
 	     * 	
 	     * @return javax.swing.JPanel	
 	     */
-	    private JPanel getJPanel() {
-		    if (jPanel == null) {
+	    private JPanel getPanelVocaloid2Template() {
+		    if (panelVocaloid2Template == null) {
 			    GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			    gridBagConstraints2.gridx = 0;
 			    gridBagConstraints2.fill = GridBagConstraints.HORIZONTAL;
@@ -572,13 +577,13 @@ namespace Boare.Cadencii {
 			    gridBagConstraints.gridy = 0;
 			    lblTemplate = new JLabel();
 			    lblTemplate.setText("Template");
-			    jPanel = new JPanel();
-			    jPanel.setLayout(new GridBagLayout());
-			    jPanel.add(lblTemplate, gridBagConstraints);
-			    jPanel.add(getComboTemplate(), gridBagConstraints1);
-			    jPanel.add(jLabel1, gridBagConstraints2);
+			    panelVocaloid2Template = new JPanel();
+			    panelVocaloid2Template.setLayout(new GridBagLayout());
+			    panelVocaloid2Template.add(lblTemplate, gridBagConstraints);
+			    panelVocaloid2Template.add(getComboTemplate(), gridBagConstraints1);
+			    panelVocaloid2Template.add(jLabel1, gridBagConstraints2);
 		    }
-		    return jPanel;
+		    return panelVocaloid2Template;
 	    }
 
 	    /**
@@ -680,9 +685,9 @@ namespace Boare.Cadencii {
 			    gridBagConstraints4.gridy = 0;
 			    lblBendDepth = new JLabel();
 			    lblBendDepth.setText("Bend Depth");
-			    groupPitchControl = new JPanel();
+			    groupPitchControl = new BGroupBox();
 			    groupPitchControl.setLayout(new GridBagLayout());
-			    groupPitchControl.setBorder(BorderFactory.createTitledBorder(null, "Pitch Control (VOCALOID2)", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			    groupPitchControl.setTitle("Pitch Control (VOCALOID2)");
 			    groupPitchControl.add(lblBendDepth, gridBagConstraints4);
 			    groupPitchControl.add(getTrackBendDepth(), gridBagConstraints5);
 			    groupPitchControl.add(getTxtBendDepth(), gridBagConstraints6);
@@ -854,9 +859,9 @@ namespace Boare.Cadencii {
 			    gridBagConstraints41.insets = new Insets(0, 12, 0, 0);
 			    lblDecay = new JLabel();
 			    lblDecay.setText("Decay");
-			    groupDynamicsControl = new JPanel();
+			    groupDynamicsControl = new BGroupBox();
 			    groupDynamicsControl.setLayout(new GridBagLayout());
-			    groupDynamicsControl.setBorder(BorderFactory.createTitledBorder(null, "Dynamics Control (VOCALOID2)", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			    groupDynamicsControl.setTitle("Dynamics Control (VOCALOID2)");
 			    groupDynamicsControl.add(lblDecay, gridBagConstraints41);
 			    groupDynamicsControl.add(getTrackDecay(), gridBagConstraints51);
 			    groupDynamicsControl.add(getTxtDecay(), gridBagConstraints61);
@@ -1012,9 +1017,9 @@ namespace Boare.Cadencii {
 			    gridBagConstraints411.insets = new Insets(0, 12, 0, 0);
 			    lblDuration = new JLabel();
 			    lblDuration.setText("Duration");
-			    groupAttack = new JPanel();
+			    groupAttack = new BGroupBox();
 			    groupAttack.setLayout(new GridBagLayout());
-			    groupAttack.setBorder(BorderFactory.createTitledBorder(null, "Attack (VOCALOID1)", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			    groupAttack.setTitle("Attack (VOCALOID1)");
 			    groupAttack.add(lblDuration, gridBagConstraints411);
 			    groupAttack.add(getTrackDuration(), gridBagConstraints511);
 			    groupAttack.add(getTxtDuration(), gridBagConstraints611);
@@ -1178,7 +1183,7 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.groupPitchControl = new System.Windows.Forms.GroupBox();
+            this.groupPitchControl = new BGroupBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtBendLength = new Boare.Cadencii.NumberTextBox();
@@ -1189,7 +1194,7 @@ namespace Boare.Cadencii {
             this.chkUpPortamento = new BCheckBox();
             this.lblBendLength = new BLabel();
             this.lblBendDepth = new BLabel();
-            this.groupDynamicsControl = new System.Windows.Forms.GroupBox();
+            this.groupDynamicsControl = new BGroupBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.txtAccent = new Boare.Cadencii.NumberTextBox();
@@ -1202,7 +1207,7 @@ namespace Boare.Cadencii {
             this.btnCancel = new BButton();
             this.btnOK = new BButton();
             this.comboTemplate = new BComboBox();
-            this.groupAttack = new System.Windows.Forms.GroupBox();
+            this.groupAttack = new BGroupBox();
             this.lblAttackTemplate = new BLabel();
             this.comboAttackTemplate = new BComboBox();
             this.txtDepth = new Boare.Cadencii.NumberTextBox();
@@ -1665,8 +1670,8 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupPitchControl;
-        private System.Windows.Forms.GroupBox groupDynamicsControl;
+        private BGroupBox groupPitchControl;
+        private BGroupBox groupDynamicsControl;
         private BLabel lblBendDepth;
         private BLabel lblTemplate;
         private BLabel lblBendLength;
@@ -1689,7 +1694,7 @@ namespace Boare.Cadencii {
         private BButton btnCancel;
         private BButton btnOK;
         private BComboBox comboTemplate;
-        private System.Windows.Forms.GroupBox groupAttack;
+        private BGroupBox groupAttack;
         private NumberTextBox txtDepth;
         private NumberTextBox txtDuration;
         private BSlider trackDepth;

@@ -11,6 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.util.*;
+import javax.swing.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
+#else
 using System;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
@@ -21,8 +30,14 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
+#endif
 
-    class FormVibratoConfig : BForm {
+#if JAVA
+    public class FormVibratoConfig extends BForm{
+#else
+    public class FormVibratoConfig : BForm {
+#endif
         private VibratoHandle m_vibrato;
         private int m_note_length;
         private SynthesizerType m_synthesizer_type;
@@ -32,6 +47,13 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <param name="vibrato_handle"></param>
         public FormVibratoConfig( VibratoHandle vibrato_handle, int note_length, DefaultVibratoLengthEnum default_vibrato_length, SynthesizerType type ) {
+#if JAVA
+            super();
+            initialize();
+#else
+            InitializeComponent();
+#endif
+
 #if DEBUG
             AppManager.debugWriteLine( "FormVibratoConfig.ctor(Vsqhandle,int,DefaultVibratoLength)" );
             AppManager.debugWriteLine( "    (vibrato_handle==null)=" + (vibrato_handle == null) );
@@ -42,62 +64,63 @@ namespace Boare.Cadencii {
                 m_vibrato = (VibratoHandle)vibrato_handle.clone();
             }
 
-            InitializeComponent();
             registerEventHandlers();
             setResources();
             ApplyLanguage();
 
-            comboVibratoType.Items.Clear();
+            comboVibratoType.removeAllItems();
             VibratoConfig empty = new VibratoConfig();
             empty.contents.Caption = "[Non Vibrato]";
             empty.contents.IconID = "$04040000";
-            comboVibratoType.Items.Add( empty );
-            comboVibratoType.SelectedIndex = 0;
+            comboVibratoType.addItem( empty );
+            comboVibratoType.setSelectedItem( empty );
             int count = 0;
             for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
                 VibratoConfig vconfig = (VibratoConfig)itr.next();
-                comboVibratoType.Items.Add( vconfig );
+                comboVibratoType.addItem( vconfig );
                 count++;
                 if ( vibrato_handle != null ) {
                     if ( vibrato_handle.IconID.Equals( vconfig.contents.IconID ) ) {
-                        comboVibratoType.SelectedIndex = count;
+                        comboVibratoType.setSelectedItem( vconfig );
                     }
                 }
             }
 
-            txtVibratoLength.Enabled = vibrato_handle != null;
+            txtVibratoLength.setEnabled( vibrato_handle != null );
             if ( vibrato_handle != null ) {
-                txtVibratoLength.Text = (int)((float)vibrato_handle.Length / (float)note_length * 100.0f) + "";
+                txtVibratoLength.setText( (int)((float)vibrato_handle.getLength() / (float)note_length * 100.0f) + "" );
             } else {
-                switch ( default_vibrato_length ) {
-                    case DefaultVibratoLengthEnum.L100:
-                        txtVibratoLength.Text = "100";
-                        break;
-                    case DefaultVibratoLengthEnum.L50:
-                        txtVibratoLength.Text = "50";
-                        break;
-                    case DefaultVibratoLengthEnum.L66:
-                        txtVibratoLength.Text = "66";
-                        break;
-                    case DefaultVibratoLengthEnum.L75:
-                        txtVibratoLength.Text = "75";
-                        break;
+                String s = "";
+                if ( default_vibrato_length == DefaultVibratoLengthEnum.L100 ) {
+                    s = "100";
+                } else if ( default_vibrato_length == DefaultVibratoLengthEnum.L50 ) {
+                    s = "50";
+                } else if ( default_vibrato_length == DefaultVibratoLengthEnum.L66 ) {
+                    s = "66";
+                } else if ( default_vibrato_length == DefaultVibratoLengthEnum.L75 ) {
+                    s = "75";
                 }
+                txtVibratoLength.setText( s );
             }
 
-            this.comboVibratoType.SelectedIndexChanged += new System.EventHandler( this.comboVibratoType_SelectedIndexChanged );
-            this.txtVibratoLength.TextChanged += new System.EventHandler( txtVibratoLength_TextChanged );
+#if JAVA
+            comboVibratoType.selectedIndexChangedEvent.add( new BEventHandler( this, "comboVibratoType_SelectedIndexChanged" ) );
+            txtVibratoLength.textChangedEvent.add( new BEventHandler( this, "txtVibratoLength_TextChanged" ) );
+#else
+            comboVibratoType.SelectedIndexChanged += new System.EventHandler( this.comboVibratoType_SelectedIndexChanged );
+            txtVibratoLength.TextChanged += new System.EventHandler( txtVibratoLength_TextChanged );
+#endif
 
             m_note_length = note_length;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public void ApplyLanguage() {
-            Text = _( "Vibrato property" );
-            lblVibratoLength.Text = _( "Vibrato length" ) + "(&L)";
-            lblVibratoType.Text = _( "Vibrato Type" ) + "(&T)";
-            btnOK.Text = _( "OK" );
-            btnCancel.Text = _( "Cancel" );
+            setTitle( _( "Vibrato property" ) );
+            lblVibratoLength.setText( _( "Vibrato length" ) + "(&L)" );
+            lblVibratoType.setText( _( "Vibrato Type" ) + "(&T)" );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
         }
 
         public static String _( String id ) {
@@ -107,37 +130,35 @@ namespace Boare.Cadencii {
         /// <summary>
         /// 編集済みのビブラート設定．既にCloneされているので，改めてCloneしなくて良い
         /// </summary>
-        public VibratoHandle VibratoHandle {
-            get {
-                return m_vibrato;
-            }
+        public VibratoHandle getVibratoHandle() {
+            return m_vibrato;
         }
 
-        private void btnOK_Click( object sender, EventArgs e ) {
-            this.DialogResult = DialogResult.OK;
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
         }
 
-        private void comboVibratoType_SelectedIndexChanged( object sender, EventArgs e ) {
-            int index = comboVibratoType.SelectedIndex;
+        private void comboVibratoType_SelectedIndexChanged( Object sender, BEventArgs e ) {
+            int index = comboVibratoType.getSelectedIndex();
             if ( index >= 0 ) {
-                String s = ((VibratoConfig)comboVibratoType.Items[index]).contents.IconID;
+                String s = ((VibratoConfig)comboVibratoType.getItemAt( index )).contents.IconID;
                 if ( s.Equals( "$04040000" ) ) {
                     m_vibrato = null;
-                    txtVibratoLength.Enabled = false;
+                    txtVibratoLength.setEnabled( false );
                     return;
                 } else {
-                    txtVibratoLength.Enabled = true;
+                    txtVibratoLength.setEnabled( true );
                     for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
                         VibratoConfig vconfig = (VibratoConfig)itr.next();
                         if ( s.Equals( vconfig.contents.IconID ) ) {
                             int percent;
                             try {
-                                percent = int.Parse( txtVibratoLength.Text );
+                                percent = PortUtil.parseInt( txtVibratoLength.getText() );
                             } catch {
                                 return;
                             }
                             m_vibrato = (VibratoHandle)vconfig.contents.clone();
-                            m_vibrato.Length = (int)(m_note_length * percent / 100.0f);
+                            m_vibrato.setLength( (int)(m_note_length * percent / 100.0f) );
                             return;
                         }
                     }
@@ -145,14 +166,14 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void txtVibratoLength_TextChanged( object sender, System.EventArgs e ) {
+        private void txtVibratoLength_TextChanged( Object sender, BEventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "txtVibratoLength_TextChanged" );
             AppManager.debugWriteLine( "    (m_vibrato==null)=" + (m_vibrato == null) );
 #endif
             int percent = 0;
             try {
-                percent = int.Parse( txtVibratoLength.Text );
+                percent = PortUtil.parseInt( txtVibratoLength.getText() );
                 if ( percent < 0 ) {
                     percent = 0;
                 } else if ( 100 < percent ) {
@@ -163,23 +184,186 @@ namespace Boare.Cadencii {
             }
             if ( percent == 0 ) {
                 m_vibrato = null;
-                txtVibratoLength.Enabled = false;
+                txtVibratoLength.setEnabled( false );
             } else {
                 if ( m_vibrato != null ) {
                     int new_length = (int)(m_note_length * percent / 100.0f);
-                    m_vibrato.Length = new_length;
+                    m_vibrato.setLength( new_length );
                 }
             }
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+#else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+#endif
         }
 
         private void setResources() {
         }
 
 #if JAVA
+	    private JPanel jContentPane = null;
+	    private JPanel jPanel2 = null;
+	    private JButton btnOK = null;
+	    private JButton btnCancel = null;
+	    private JLabel lblVibratoLength = null;
+	    private JTextField txtVibratoLength = null;
+	    private JLabel jLabel1 = null;
+	    private JLabel lblVibratoType = null;
+	    private JComboBox comboVibratoType = null;
+
+	    /**
+	     * This method initializes this
+	     * 
+	     * @return void
+	     */
+	    private void initialize() {
+		    this.setSize(339, 157);
+		    this.setContentPane(getJContentPane());
+		    this.setTitle("JFrame");
+	    }
+
+	    /**
+	     * This method initializes jContentPane
+	     * 
+	     * @return javax.swing.JPanel
+	     */
+	    private JPanel getJContentPane() {
+		    if (jContentPane == null) {
+			    GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+			    gridBagConstraints5.gridx = 0;
+			    gridBagConstraints5.gridwidth = 3;
+			    gridBagConstraints5.weighty = 1.0D;
+			    gridBagConstraints5.anchor = GridBagConstraints.EAST;
+			    gridBagConstraints5.gridy = 2;
+			    GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+			    gridBagConstraints4.fill = GridBagConstraints.NONE;
+			    gridBagConstraints4.gridy = 1;
+			    gridBagConstraints4.weightx = 0.0D;
+			    gridBagConstraints4.anchor = GridBagConstraints.WEST;
+			    gridBagConstraints4.gridwidth = 2;
+			    gridBagConstraints4.insets = new Insets(3, 12, 3, 0);
+			    gridBagConstraints4.gridx = 1;
+			    GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			    gridBagConstraints3.gridx = 0;
+			    gridBagConstraints3.anchor = GridBagConstraints.SOUTHWEST;
+			    gridBagConstraints3.insets = new Insets(3, 12, 3, 0);
+			    gridBagConstraints3.gridy = 1;
+			    lblVibratoType = new JLabel();
+			    lblVibratoType.setText("Vibrato Type");
+			    GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			    gridBagConstraints2.gridx = 2;
+			    gridBagConstraints2.insets = new Insets(12, 3, 0, 0);
+			    gridBagConstraints2.anchor = GridBagConstraints.WEST;
+			    gridBagConstraints2.weightx = 1.0D;
+			    gridBagConstraints2.gridy = 0;
+			    jLabel1 = new JLabel();
+			    jLabel1.setText("% (0-100)");
+			    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			    gridBagConstraints1.fill = GridBagConstraints.NONE;
+			    gridBagConstraints1.gridy = 0;
+			    gridBagConstraints1.weightx = 0.0D;
+			    gridBagConstraints1.anchor = GridBagConstraints.WEST;
+			    gridBagConstraints1.insets = new Insets(12, 12, 3, 0);
+			    gridBagConstraints1.gridx = 1;
+			    GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			    gridBagConstraints.gridx = 0;
+			    gridBagConstraints.anchor = GridBagConstraints.WEST;
+			    gridBagConstraints.insets = new Insets(12, 12, 3, 0);
+			    gridBagConstraints.gridy = 0;
+			    lblVibratoLength = new JLabel();
+			    lblVibratoLength.setText("Vibrato Length");
+			    jContentPane = new JPanel();
+			    jContentPane.setLayout(new GridBagLayout());
+			    jContentPane.add(lblVibratoLength, gridBagConstraints);
+			    jContentPane.add(getTxtVibratoLength(), gridBagConstraints1);
+			    jContentPane.add(jLabel1, gridBagConstraints2);
+			    jContentPane.add(lblVibratoType, gridBagConstraints3);
+			    jContentPane.add(getComboVibratoType(), gridBagConstraints4);
+			    jContentPane.add(getJPanel2(), gridBagConstraints5);
+		    }
+		    return jContentPane;
+	    }
+
+	    /**
+	     * This method initializes jPanel2	
+	     * 	
+	     * @return javax.swing.JPanel	
+	     */
+	    private JPanel getJPanel2() {
+		    if (jPanel2 == null) {
+			    GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
+			    gridBagConstraints52.anchor = GridBagConstraints.SOUTHWEST;
+			    gridBagConstraints52.gridx = 1;
+			    gridBagConstraints52.gridy = 0;
+			    gridBagConstraints52.insets = new Insets(0, 0, 0, 16);
+			    GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
+			    gridBagConstraints42.anchor = GridBagConstraints.WEST;
+			    gridBagConstraints42.gridx = 0;
+			    gridBagConstraints42.gridy = 0;
+			    gridBagConstraints42.insets = new Insets(0, 0, 0, 16);
+			    jPanel2 = new JPanel();
+			    jPanel2.setLayout(new GridBagLayout());
+			    jPanel2.add(getBtnOK(), gridBagConstraints42);
+			    jPanel2.add(getBtnCancel(), gridBagConstraints52);
+		    }
+		    return jPanel2;
+	    }
+
+	    /**
+	     * This method initializes btnOK	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getBtnOK() {
+		    if (btnOK == null) {
+			    btnOK = new JButton();
+			    btnOK.setText("OK");
+		    }
+		    return btnOK;
+	    }
+
+	    /**
+	     * This method initializes btnCancel	
+	     * 	
+	     * @return javax.swing.JButton	
+	     */
+	    private JButton getBtnCancel() {
+		    if (btnCancel == null) {
+			    btnCancel = new JButton();
+			    btnCancel.setText("Cancel");
+		    }
+		    return btnCancel;
+	    }
+
+	    /**
+	     * This method initializes txtVibratoLength	
+	     * 	
+	     * @return javax.swing.JTextField	
+	     */
+	    private JTextField getTxtVibratoLength() {
+		    if (txtVibratoLength == null) {
+			    txtVibratoLength = new JTextField();
+			    txtVibratoLength.setPreferredSize(new Dimension(61, 19));
+		    }
+		    return txtVibratoLength;
+	    }
+
+	    /**
+	     * This method initializes comboVibratoType	
+	     * 	
+	     * @return javax.swing.JComboBox	
+	     */
+	    private JComboBox getComboVibratoType() {
+		    if (comboVibratoType == null) {
+			    comboVibratoType = new JComboBox();
+			    comboVibratoType.setPreferredSize(new Dimension(167, 20));
+		    }
+		    return comboVibratoType;
+	    }
 #else
         #region UI Impl for C#
         /// <summary>
@@ -205,13 +389,13 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.lblVibratoLength = new System.Windows.Forms.Label();
-            this.lblVibratoType = new System.Windows.Forms.Label();
+            this.lblVibratoLength = new BLabel();
+            this.lblVibratoType = new BLabel();
             this.txtVibratoLength = new Boare.Cadencii.NumberTextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.comboVibratoType = new System.Windows.Forms.ComboBox();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
+            this.label3 = new BLabel();
+            this.comboVibratoType = new BComboBox();
+            this.btnCancel = new BButton();
+            this.btnOK = new BButton();
             this.SuspendLayout();
             // 
             // lblVibratoLength
@@ -307,15 +491,17 @@ namespace Boare.Cadencii {
         }
         #endregion
 
-        private System.Windows.Forms.Label lblVibratoLength;
-        private System.Windows.Forms.Label lblVibratoType;
+        private BLabel lblVibratoLength;
+        private BLabel lblVibratoType;
         private NumberTextBox txtVibratoLength;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboVibratoType;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
+        private BLabel label3;
+        private BComboBox comboVibratoType;
+        private BButton btnCancel;
+        private BButton btnOK;
         #endregion
 #endif
     }
 
+#if !JAVA
 }
+#endif

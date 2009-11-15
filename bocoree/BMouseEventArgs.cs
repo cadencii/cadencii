@@ -12,26 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import java.awt.*;
-import org.kbinani.*;
-
-public class BMouseEventArgs extends BEventArgs
-{
-    public BMouseButtons Button;
-    public int Clicks;
-    public int X;
-    public int Y;
-    public int Delta;
-
-    public BMouseEventArgs( BMouseButtons button, int clicks, int x, int y, int delta )
-    {
-        Button = button;
-        Clicks = clicks;
-        X = x;
-        Y = y;
-        Delta = delta;
-    }
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BMouseEventArgs.java
 #endif

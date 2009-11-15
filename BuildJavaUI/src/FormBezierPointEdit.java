@@ -1,9 +1,6 @@
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -11,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
 
 public class FormBezierPointEdit extends JFrame {
 
@@ -20,19 +16,19 @@ public class FormBezierPointEdit extends JFrame {
 	private JButton btnBackward = null;
 	private JCheckBox chkEnableSmooth = null;
 	private JButton btnForward = null;
-	private JPanel groupLeft = null;
+	private BGroupBox groupLeft = null;
 	private JLabel lblLeftClock = null;
 	private JTextField jTextField = null;
 	private JLabel lblLeftValue = null;
 	private JTextField jTextField1 = null;
 	private JButton btnLeft = null;
-	private JPanel groupDataPoint = null;
+	private BGroupBox groupDataPoint = null;
 	private JLabel lblDataPointClock = null;
 	private JTextField jTextField2 = null;
 	private JLabel lblDataPointValue = null;
 	private JTextField jTextField11 = null;
 	private JButton btnDataPoint = null;
-	private JPanel groupRight = null;
+	private BGroupBox groupRight = null;
 	private JLabel lblRightClock = null;
 	private JTextField jTextField3 = null;
 	private JLabel lblRightValue = null;
@@ -43,12 +39,6 @@ public class FormBezierPointEdit extends JFrame {
 	private JLabel jLabel4 = null;
 	private JLabel jLabel5 = null;
 	private JPanel jPanel3 = null;
-	private JLabel jLabel8 = null;
-	private JLabel jLabel10 = null;
-	private JLabel jLabel9 = null;
-	private JLabel jLabel13 = null;
-	private JLabel jLabel14 = null;
-	private JLabel jLabel15 = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -65,7 +55,7 @@ public class FormBezierPointEdit extends JFrame {
 	private void initialize() {
 		this.setSize(469, 266);
 		this.setContentPane(getJContentPane());
-		this.setTitle("JFrame");
+		this.setTitle("Edit Bezier Data Point");
 	}
 
 	/**
@@ -188,33 +178,24 @@ public class FormBezierPointEdit extends JFrame {
 	 */
 	private JPanel getGroupLeft() {
 		if (groupLeft == null) {
-			GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
-			gridBagConstraints18.gridx = 4;
-			gridBagConstraints18.gridy = 0;
-			jLabel10 = new JLabel();
-			jLabel10.setText("     ");
-			GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
-			gridBagConstraints16.gridx = 0;
-			gridBagConstraints16.gridy = 0;
-			jLabel8 = new JLabel();
-			jLabel8.setText("     ");
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-			gridBagConstraints7.gridx = 1;
-			gridBagConstraints7.gridwidth = 3;
+			gridBagConstraints7.gridx = 0;
+			gridBagConstraints7.gridwidth = 2;
 			gridBagConstraints7.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints7.weightx = 1.0D;
 			gridBagConstraints7.ipadx = 0;
 			gridBagConstraints7.ipady = 0;
-			gridBagConstraints7.insets = new Insets(5, 5, 5, 5);
+			gridBagConstraints7.insets = new Insets(5, 20, 5, 20);
 			gridBagConstraints7.gridy = 3;
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints6.gridy = 1;
 			gridBagConstraints6.weightx = 1.0;
-			gridBagConstraints6.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints6.gridx = 3;
+			gridBagConstraints6.insets = new Insets(5, 5, 5, 15);
+			gridBagConstraints6.gridx = 1;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.gridx = 1;
+			gridBagConstraints5.gridx = 0;
+			gridBagConstraints5.insets = new Insets(0, 15, 0, 0);
 			gridBagConstraints5.gridy = 1;
 			lblLeftValue = new JLabel();
 			lblLeftValue.setText("Value");
@@ -222,23 +203,22 @@ public class FormBezierPointEdit extends JFrame {
 			gridBagConstraints4.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints4.gridy = 0;
 			gridBagConstraints4.weightx = 1.0D;
-			gridBagConstraints4.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints4.gridx = 3;
+			gridBagConstraints4.insets = new Insets(5, 5, 5, 15);
+			gridBagConstraints4.gridx = 1;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			gridBagConstraints3.gridx = 1;
+			gridBagConstraints3.gridx = 0;
+			gridBagConstraints3.insets = new Insets(0, 15, 0, 0);
 			gridBagConstraints3.gridy = 0;
 			lblLeftClock = new JLabel();
 			lblLeftClock.setText("Clock");
-			groupLeft = new JPanel();
+			groupLeft = new BGroupBox();
 			groupLeft.setLayout(new GridBagLayout());
-			groupLeft.setBorder(BorderFactory.createTitledBorder(null, "Left Control Point", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			groupLeft.setTitle("Left Control Point");
 			groupLeft.add(lblLeftClock, gridBagConstraints3);
 			groupLeft.add(getJTextField(), gridBagConstraints4);
 			groupLeft.add(lblLeftValue, gridBagConstraints5);
 			groupLeft.add(getJTextField1(), gridBagConstraints6);
 			groupLeft.add(getBtnLeft(), gridBagConstraints7);
-			groupLeft.add(jLabel8, gridBagConstraints16);
-			groupLeft.add(jLabel10, gridBagConstraints18);
 		}
 		return groupLeft;
 	}
@@ -288,31 +268,23 @@ public class FormBezierPointEdit extends JFrame {
 	 */
 	private JPanel getGroupDataPoint() {
 		if (groupDataPoint == null) {
-			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
-			gridBagConstraints19.gridx = 4;
-			gridBagConstraints19.gridy = 0;
-			jLabel13 = new JLabel();
-			jLabel13.setText("     ");
-			GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
-			gridBagConstraints17.gridx = 0;
-			gridBagConstraints17.gridy = 0;
-			jLabel9 = new JLabel();
-			jLabel9.setText("     ");
 			GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
 			gridBagConstraints71.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints71.gridx = 1;
+			gridBagConstraints71.gridx = 0;
 			gridBagConstraints71.gridy = 2;
 			gridBagConstraints71.weightx = 1.0D;
-			gridBagConstraints71.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints71.gridwidth = 3;
+			gridBagConstraints71.insets = new Insets(5, 20, 5, 20);
+			gridBagConstraints71.gridwidth = 2;
 			GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
 			gridBagConstraints61.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints61.gridy = 1;
 			gridBagConstraints61.weightx = 1.0;
-			gridBagConstraints61.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints61.gridx = 3;
+			gridBagConstraints61.insets = new Insets(5, 5, 5, 15);
+			gridBagConstraints61.gridx = 1;
 			GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
-			gridBagConstraints51.gridx = 1;
+			gridBagConstraints51.gridx = 0;
+			gridBagConstraints51.anchor = GridBagConstraints.WEST;
+			gridBagConstraints51.insets = new Insets(0, 15, 0, 0);
 			gridBagConstraints51.gridy = 1;
 			lblDataPointValue = new JLabel();
 			lblDataPointValue.setText("Value");
@@ -320,23 +292,23 @@ public class FormBezierPointEdit extends JFrame {
 			gridBagConstraints41.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints41.gridy = 0;
 			gridBagConstraints41.weightx = 1.0D;
-			gridBagConstraints41.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints41.gridx = 3;
+			gridBagConstraints41.insets = new Insets(5, 5, 5, 15);
+			gridBagConstraints41.gridx = 1;
 			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-			gridBagConstraints31.gridx = 1;
+			gridBagConstraints31.gridx = 0;
+			gridBagConstraints31.insets = new Insets(0, 15, 0, 0);
+			gridBagConstraints31.anchor = GridBagConstraints.WEST;
 			gridBagConstraints31.gridy = 0;
 			lblDataPointClock = new JLabel();
 			lblDataPointClock.setText("Clock");
-			groupDataPoint = new JPanel();
+			groupDataPoint = new BGroupBox();
 			groupDataPoint.setLayout(new GridBagLayout());
-			groupDataPoint.setBorder(BorderFactory.createTitledBorder(null, "Data Point", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			groupDataPoint.setTitle("Data Point");
 			groupDataPoint.add(lblDataPointClock, gridBagConstraints31);
 			groupDataPoint.add(getJTextField2(), gridBagConstraints41);
 			groupDataPoint.add(lblDataPointValue, gridBagConstraints51);
 			groupDataPoint.add(getJTextField11(), gridBagConstraints61);
 			groupDataPoint.add(getBtnDataPoint(), gridBagConstraints71);
-			groupDataPoint.add(jLabel9, gridBagConstraints17);
-			groupDataPoint.add(jLabel13, gridBagConstraints19);
 		}
 		return groupDataPoint;
 	}
@@ -386,33 +358,22 @@ public class FormBezierPointEdit extends JFrame {
 	 */
 	private JPanel getGroupRight() {
 		if (groupRight == null) {
-			TitledBorder titledBorder = BorderFactory.createTitledBorder(null, "Left Control Point", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51));
-			titledBorder.setTitle("Right Control Point");
-			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			gridBagConstraints21.gridx = 4;
-			gridBagConstraints21.gridy = 0;
-			jLabel15 = new JLabel();
-			jLabel15.setText("     ");
-			GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
-			gridBagConstraints20.gridx = 0;
-			gridBagConstraints20.gridy = 0;
-			jLabel14 = new JLabel();
-			jLabel14.setText("     ");
 			GridBagConstraints gridBagConstraints72 = new GridBagConstraints();
 			gridBagConstraints72.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints72.gridx = 1;
+			gridBagConstraints72.gridx = 0;
 			gridBagConstraints72.gridy = 2;
 			gridBagConstraints72.weightx = 1.0D;
-			gridBagConstraints72.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints72.gridwidth = 3;
+			gridBagConstraints72.insets = new Insets(5, 20, 5, 20);
+			gridBagConstraints72.gridwidth = 2;
 			GridBagConstraints gridBagConstraints62 = new GridBagConstraints();
 			gridBagConstraints62.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints62.gridy = 1;
 			gridBagConstraints62.weightx = 1.0;
-			gridBagConstraints62.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints62.gridx = 3;
+			gridBagConstraints62.insets = new Insets(5, 5, 5, 15);
+			gridBagConstraints62.gridx = 1;
 			GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
-			gridBagConstraints52.gridx = 1;
+			gridBagConstraints52.gridx = 0;
+			gridBagConstraints52.insets = new Insets(0, 15, 0, 0);
 			gridBagConstraints52.gridy = 1;
 			lblRightValue = new JLabel();
 			lblRightValue.setText("Value");
@@ -420,23 +381,22 @@ public class FormBezierPointEdit extends JFrame {
 			gridBagConstraints42.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints42.gridy = 0;
 			gridBagConstraints42.weightx = 1.0D;
-			gridBagConstraints42.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints42.gridx = 3;
+			gridBagConstraints42.insets = new Insets(5, 5, 5, 15);
+			gridBagConstraints42.gridx = 1;
 			GridBagConstraints gridBagConstraints32 = new GridBagConstraints();
-			gridBagConstraints32.gridx = 1;
+			gridBagConstraints32.gridx = 0;
+			gridBagConstraints32.insets = new Insets(0, 15, 0, 0);
 			gridBagConstraints32.gridy = 0;
 			lblRightClock = new JLabel();
 			lblRightClock.setText("Clock");
-			groupRight = new JPanel();
+			groupRight = new BGroupBox();
 			groupRight.setLayout(new GridBagLayout());
-			groupRight.setBorder(titledBorder);
+			groupRight.setTitle("Right Control Point");
 			groupRight.add(lblRightClock, gridBagConstraints32);
 			groupRight.add(getJTextField3(), gridBagConstraints42);
 			groupRight.add(lblRightValue, gridBagConstraints52);
 			groupRight.add(getJTextField12(), gridBagConstraints62);
 			groupRight.add(getBtnRight(), gridBagConstraints72);
-			groupRight.add(jLabel14, gridBagConstraints20);
-			groupRight.add(jLabel15, gridBagConstraints21);
 		}
 		return groupRight;
 	}

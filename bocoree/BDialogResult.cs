@@ -12,10 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BDialogResult.java
 #else
 namespace bocoree.windows.forms {
-#endif
 
     public enum BDialogResult {
         OK,
@@ -24,6 +23,5 @@ namespace bocoree.windows.forms {
         NO,
     }
 
-#if !JAVA
 }
 #endif

@@ -12,16 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-public enum BMouseButtons
-{
-    None,
-    Left,
-    Right,
-    Middle,
-    XButton1,
-    XButton2,
-}
-
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BMouseButtons.java
 #endif

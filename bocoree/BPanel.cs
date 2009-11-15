@@ -12,13 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import javax.swing.*;
-
-public class BPanel extends JPanel
-{
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BPanel.java
 #else
 namespace bocoree.windows.forms {
     public class BPanel : System.Windows.Forms.UserControl {

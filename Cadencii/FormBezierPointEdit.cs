@@ -94,16 +94,16 @@ namespace Boare.Cadencii {
         }
 
         private void UpdateStatus() {
-            txtDataPointClock.Text = m_point.getBase().getX().ToString();
-            txtDataPointValue.Text = m_point.getBase().getY().ToString();
-            txtLeftClock.Text = ((int)(m_point.getBase().getX() + m_point.controlLeft.getX())).ToString();
-            txtLeftValue.Text = ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())).ToString();
-            txtRightClock.Text = ((int)(m_point.getBase().getX() + m_point.controlRight.getX())).ToString();
-            txtRightValue.Text = ((int)(m_point.getBase().getY() + m_point.controlRight.getY())).ToString();
+            txtDataPointClock.setText( m_point.getBase().getX().ToString() );
+            txtDataPointValue.setText( m_point.getBase().getY().ToString() );
+            txtLeftClock.setText( ((int)(m_point.getBase().getX() + m_point.controlLeft.getX())).ToString() );
+            txtLeftValue.setText( ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())).ToString() );
+            txtRightClock.setText( ((int)(m_point.getBase().getX() + m_point.controlRight.getX())).ToString() );
+            txtRightValue.setText( ((int)(m_point.getBase().getY() + m_point.controlRight.getY())).ToString() );
             boolean smooth = m_point.getControlLeftType() != BezierControlType.None || m_point.getControlRightType() != BezierControlType.None;
-            chkEnableSmooth.Checked = smooth;
-            btnLeft.Enabled = smooth;
-            btnRight.Enabled = smooth;
+            chkEnableSmooth.setSelected( smooth );
+            btnLeft.setEnabled( smooth );
+            btnRight.setEnabled( smooth );
             m_min = m_curve_type.getMinimum();
             m_max = m_curve_type.getMaximum();
         }
@@ -113,37 +113,37 @@ namespace Boare.Cadencii {
         }
 
         public void ApplyLanguage() {
-            Text = _( "Edit Bezier Data Point" );
+            setTitle( _( "Edit Bezier Data Point" ) );
 
-            groupDataPoint.Text = _( "Data Poin" );
-            lblDataPointClock.Text = _( "Clock" );
-            lblDataPointValue.Text = _( "Value" );
+            groupDataPoint.setText( _( "Data Poin" ) );
+            lblDataPointClock.setText( _( "Clock" ) );
+            lblDataPointValue.setText( _( "Value" ) );
 
-            groupLeft.Text = _( "Left Control Point" );
-            lblLeftClock.Text = _( "Clock" );
-            lblLeftValue.Text = _( "Value" );
+            groupLeft.setText( _( "Left Control Point" ) );
+            lblLeftClock.setText( _( "Clock" ) );
+            lblLeftValue.setText( _( "Value" ) );
 
-            groupRight.Text = _( "Right Control Point" );
-            lblRightClock.Text = _( "Clock" );
-            lblRightValue.Text = _( "Value" );
+            groupRight.setText( _( "Right Control Point" ) );
+            lblRightClock.setText( _( "Clock" ) );
+            lblRightValue.setText( _( "Value" ) );
 
-            chkEnableSmooth.Text = _( "Smooth" );
+            chkEnableSmooth.setText( _( "Smooth" ) );
         }
 
         private void btnOK_Click( Object sender, BEventArgs e ) {
             try {
                 int x, y;
-                x = PortUtil.parseInt( txtDataPointClock.Text );
-                y = PortUtil.parseInt( txtDataPointValue.Text );
+                x = PortUtil.parseInt( txtDataPointClock.getText() );
+                y = PortUtil.parseInt( txtDataPointValue.getText() );
                 if ( y < m_min || m_max < y ) {
                     AppManager.showMessageBox( _( "Invalid value" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_ERROR_MESSAGE );
                     return;
                 }
                 if ( chkEnableSmooth.Checked ) {
-                    x = PortUtil.parseInt( txtLeftClock.Text );
-                    y = PortUtil.parseInt( txtLeftValue.Text );
-                    x = PortUtil.parseInt( txtRightClock.Text );
-                    y = PortUtil.parseInt( txtRightValue.Text );
+                    x = PortUtil.parseInt( txtLeftClock.getText() );
+                    y = PortUtil.parseInt( txtLeftValue.getText() );
+                    x = PortUtil.parseInt( txtRightClock.getText() );
+                    y = PortUtil.parseInt( txtRightValue.getText() );
                 }
                 setDialogResult( BDialogResult.OK );
             } catch ( Exception ex ) {
@@ -152,13 +152,13 @@ namespace Boare.Cadencii {
         }
 
         private void chkEnableSmooth_CheckedChanged( Object sender, BEventArgs e ) {
-            boolean value = chkEnableSmooth.Checked;
-            txtLeftClock.Enabled = value;
-            txtLeftValue.Enabled = value;
-            btnLeft.Enabled = value;
-            txtRightClock.Enabled = value;
-            txtRightValue.Enabled = value;
-            btnRight.Enabled = value;
+            boolean value = chkEnableSmooth.isSelected();
+            txtLeftClock.setEnabled( value );
+            txtLeftValue.setEnabled( value );
+            btnLeft.setEnabled( value );
+            txtRightClock.setEnabled( value );
+            txtRightValue.setEnabled( value );
+            btnRight.setEnabled( value );
 
             boolean old = m_point.getControlLeftType() != BezierControlType.None || m_point.getControlRightType() != BezierControlType.None;
             if ( value ) {
@@ -168,10 +168,10 @@ namespace Boare.Cadencii {
                 m_point.setControlLeftType( BezierControlType.None );
                 m_point.setControlRightType( BezierControlType.None );
             }
-            txtLeftClock.Text = ((int)(m_point.getBase().getX() + m_point.controlLeft.getX())).ToString();
-            txtLeftValue.Text = ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())).ToString();
-            txtRightClock.Text = ((int)(m_point.getBase().getX() + m_point.controlRight.getX())).ToString();
-            txtRightValue.Text = ((int)(m_point.getBase().getY() + m_point.controlRight.getY())).ToString();
+            txtLeftClock.setText( ((int)(m_point.getBase().getX() + m_point.controlLeft.getX())).ToString() );
+            txtLeftValue.setText( ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())).ToString() );
+            txtRightClock.setText( ((int)(m_point.getBase().getX() + m_point.controlRight.getX())).ToString() );
+            txtRightValue.setText( ((int)(m_point.getBase().getY() + m_point.controlRight.getY())).ToString() );
             m_parent.Invalidate();
         }
 
@@ -181,7 +181,7 @@ namespace Boare.Cadencii {
             System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getBase().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getBase().getY() ) );
             System.Drawing.Point loc_on_screen = m_parent.PointToScreen( loc_on_trackselector );
-            Cursor.Position = loc_on_screen;
+            PortUtil.setMousePosition( loc_on_screen );
             BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = BezierPickedSide.BASE;
@@ -194,7 +194,7 @@ namespace Boare.Cadencii {
             System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getControlLeft().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getControlLeft().getY() ) );
             System.Drawing.Point loc_on_screen = m_parent.PointToScreen( loc_on_trackselector );
-            Cursor.Position = loc_on_screen;
+            PortUtil.setMousePosition( loc_on_screen );
             BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = BezierPickedSide.LEFT;
@@ -207,7 +207,7 @@ namespace Boare.Cadencii {
             System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getControlRight().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getControlRight().getY() ) );
             System.Drawing.Point loc_on_screen = m_parent.PointToScreen( loc_on_trackselector );
-            Cursor.Position = loc_on_screen;
+            PortUtil.setMousePosition( loc_on_screen );
             BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = BezierPickedSide.RIGHT;
@@ -221,7 +221,7 @@ namespace Boare.Cadencii {
             System.Drawing.Point loc_on_trackselector = m_parent.PointToClient( new System.Drawing.Point( loc_on_screen.x, loc_on_screen.y ) );
             BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
             m_parent.TrackSelector_MouseUp( this, event_arg );
-            Cursor.Position = new System.Drawing.Point( m_last_mouse_global_location.x, m_last_mouse_global_location.y );
+            PortUtil.setMousePosition( m_last_mouse_global_location );
             m_parent.Invalidate();
         }
 
@@ -232,12 +232,12 @@ namespace Boare.Cadencii {
                 BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
                 BezierPoint ret = m_parent.HandleMouseMoveForBezierMove( event_arg, m_picked_side );
 
-                txtDataPointClock.Text = ((int)ret.getBase().getX()).ToString();
-                txtDataPointValue.Text = ((int)ret.getBase().getY()).ToString();
-                txtLeftClock.Text = ((int)ret.getControlLeft().getX()).ToString();
-                txtLeftValue.Text = ((int)ret.getControlLeft().getY()).ToString();
-                txtRightClock.Text = ((int)ret.getControlRight().getX()).ToString();
-                txtRightValue.Text = ((int)ret.getControlRight().getY()).ToString();
+                txtDataPointClock.setText( ((int)ret.getBase().getX()).ToString() );
+                txtDataPointValue.setText( ((int)ret.getBase().getY()).ToString() );
+                txtLeftClock.setText( ((int)ret.getControlLeft().getX()).ToString() );
+                txtLeftValue.setText( ((int)ret.getControlLeft().getY()).ToString() );
+                txtRightClock.setText( ((int)ret.getControlRight().getX()).ToString() );
+                txtRightValue.setText( ((int)ret.getControlRight().getY()).ToString() );
 
                 m_parent.Invalidate();
             }
@@ -280,6 +280,21 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            this.chkEnableSmooth.checkedChangedEvent.add( new BEventHandler( this, "chkEnableSmooth_CheckedChanged" ) );
+            this.btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
+            this.btnLeft.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );
+            this.btnLeft.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
+            this.btnDataPoint.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
+            this.btnDataPoint.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnDataPoint_MouseDown );
+            this.btnDataPoint.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
+            this.btnRight.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
+            this.btnRight.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseDown );
+            this.btnRight.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
+            this.btnBackward.Click += new System.EventHandler( this.btnBackward_Click );
+            this.btnForward.Click += new System.EventHandler( this.btnForward_Click );
+#else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             this.chkEnableSmooth.CheckedChanged += new System.EventHandler( this.chkEnableSmooth_CheckedChanged );
             this.btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
@@ -293,6 +308,7 @@ namespace Boare.Cadencii {
             this.btnRight.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
             this.btnBackward.Click += new System.EventHandler( this.btnBackward_Click );
             this.btnForward.Click += new System.EventHandler( this.btnForward_Click );
+#endif
         }
 
         private void setResources() {
@@ -307,19 +323,19 @@ namespace Boare.Cadencii {
 	    private JButton btnBackward = null;
 	    private JCheckBox chkEnableSmooth = null;
 	    private JButton btnForward = null;
-	    private JPanel groupLeft = null;
+	    private BGroupBox groupLeft = null;
 	    private JLabel lblLeftClock = null;
 	    private JTextField jTextField = null;
 	    private JLabel lblLeftValue = null;
 	    private JTextField jTextField1 = null;
 	    private JButton btnLeft = null;
-	    private JPanel groupDataPoint = null;
+	    private BGroupBox groupDataPoint = null;
 	    private JLabel lblDataPointClock = null;
 	    private JTextField jTextField2 = null;
 	    private JLabel lblDataPointValue = null;
 	    private JTextField jTextField11 = null;
 	    private JButton btnDataPoint = null;
-	    private JPanel groupRight = null;
+	    private BGroupBox groupRight = null;
 	    private JLabel lblRightClock = null;
 	    private JTextField jTextField3 = null;
 	    private JLabel lblRightValue = null;
@@ -330,14 +346,13 @@ namespace Boare.Cadencii {
 	    private JLabel jLabel4 = null;
 	    private JLabel jLabel5 = null;
 	    private JPanel jPanel3 = null;
-	    private JLabel jLabel6 = null;
-	    private JLabel jLabel7 = null;
-	    private JLabel jLabel8 = null;
-	    private JLabel jLabel10 = null;
-	    private JLabel jLabel9 = null;
-	    private JLabel jLabel13 = null;
-	    private JLabel jLabel14 = null;
-	    private JLabel jLabel15 = null;
+	    /**
+	     * This is the default constructor
+	     */
+	    public FormBezierPointEdit() {
+		    super();
+		    initialize();
+	    }
 
 	    /**
 	     * This method initializes this
@@ -347,7 +362,7 @@ namespace Boare.Cadencii {
 	    private void initialize() {
 		    this.setSize(469, 266);
 		    this.setContentPane(getJContentPane());
-		    this.setTitle("JFrame");
+		    this.setTitle("Edit Bezier Data Point");
 	    }
 
 	    /**
@@ -470,33 +485,24 @@ namespace Boare.Cadencii {
 	     */
 	    private JPanel getGroupLeft() {
 		    if (groupLeft == null) {
-			    GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
-			    gridBagConstraints18.gridx = 4;
-			    gridBagConstraints18.gridy = 0;
-			    jLabel10 = new JLabel();
-			    jLabel10.setText("     ");
-			    GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
-			    gridBagConstraints16.gridx = 0;
-			    gridBagConstraints16.gridy = 0;
-			    jLabel8 = new JLabel();
-			    jLabel8.setText("     ");
 			    GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-			    gridBagConstraints7.gridx = 1;
-			    gridBagConstraints7.gridwidth = 3;
+			    gridBagConstraints7.gridx = 0;
+			    gridBagConstraints7.gridwidth = 2;
 			    gridBagConstraints7.fill = GridBagConstraints.HORIZONTAL;
 			    gridBagConstraints7.weightx = 1.0D;
 			    gridBagConstraints7.ipadx = 0;
 			    gridBagConstraints7.ipady = 0;
-			    gridBagConstraints7.insets = new Insets(5, 5, 5, 5);
+			    gridBagConstraints7.insets = new Insets(5, 20, 5, 20);
 			    gridBagConstraints7.gridy = 3;
 			    GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			    gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
 			    gridBagConstraints6.gridy = 1;
 			    gridBagConstraints6.weightx = 1.0;
-			    gridBagConstraints6.insets = new Insets(5, 5, 5, 5);
-			    gridBagConstraints6.gridx = 3;
+			    gridBagConstraints6.insets = new Insets(5, 5, 5, 15);
+			    gridBagConstraints6.gridx = 1;
 			    GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			    gridBagConstraints5.gridx = 1;
+			    gridBagConstraints5.gridx = 0;
+			    gridBagConstraints5.insets = new Insets(0, 15, 0, 0);
 			    gridBagConstraints5.gridy = 1;
 			    lblLeftValue = new JLabel();
 			    lblLeftValue.setText("Value");
@@ -504,23 +510,22 @@ namespace Boare.Cadencii {
 			    gridBagConstraints4.fill = GridBagConstraints.HORIZONTAL;
 			    gridBagConstraints4.gridy = 0;
 			    gridBagConstraints4.weightx = 1.0D;
-			    gridBagConstraints4.insets = new Insets(5, 5, 5, 5);
-			    gridBagConstraints4.gridx = 3;
+			    gridBagConstraints4.insets = new Insets(5, 5, 5, 15);
+			    gridBagConstraints4.gridx = 1;
 			    GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			    gridBagConstraints3.gridx = 1;
+			    gridBagConstraints3.gridx = 0;
+			    gridBagConstraints3.insets = new Insets(0, 15, 0, 0);
 			    gridBagConstraints3.gridy = 0;
 			    lblLeftClock = new JLabel();
 			    lblLeftClock.setText("Clock");
-			    groupLeft = new JPanel();
+			    groupLeft = new BGroupBox();
 			    groupLeft.setLayout(new GridBagLayout());
-			    groupLeft.setBorder(BorderFactory.createTitledBorder(null, "Left Control Point", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			    groupLeft.setTitle("Left Control Point");
 			    groupLeft.add(lblLeftClock, gridBagConstraints3);
 			    groupLeft.add(getJTextField(), gridBagConstraints4);
 			    groupLeft.add(lblLeftValue, gridBagConstraints5);
 			    groupLeft.add(getJTextField1(), gridBagConstraints6);
 			    groupLeft.add(getBtnLeft(), gridBagConstraints7);
-			    groupLeft.add(jLabel8, gridBagConstraints16);
-			    groupLeft.add(jLabel10, gridBagConstraints18);
 		    }
 		    return groupLeft;
 	    }
@@ -570,31 +575,23 @@ namespace Boare.Cadencii {
 	     */
 	    private JPanel getGroupDataPoint() {
 		    if (groupDataPoint == null) {
-			    GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
-			    gridBagConstraints19.gridx = 4;
-			    gridBagConstraints19.gridy = 0;
-			    jLabel13 = new JLabel();
-			    jLabel13.setText("     ");
-			    GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
-			    gridBagConstraints17.gridx = 0;
-			    gridBagConstraints17.gridy = 0;
-			    jLabel9 = new JLabel();
-			    jLabel9.setText("     ");
 			    GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
 			    gridBagConstraints71.fill = GridBagConstraints.HORIZONTAL;
-			    gridBagConstraints71.gridx = 1;
+			    gridBagConstraints71.gridx = 0;
 			    gridBagConstraints71.gridy = 2;
 			    gridBagConstraints71.weightx = 1.0D;
-			    gridBagConstraints71.insets = new Insets(5, 5, 5, 5);
-			    gridBagConstraints71.gridwidth = 3;
+			    gridBagConstraints71.insets = new Insets(5, 20, 5, 20);
+			    gridBagConstraints71.gridwidth = 2;
 			    GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
 			    gridBagConstraints61.fill = GridBagConstraints.HORIZONTAL;
 			    gridBagConstraints61.gridy = 1;
 			    gridBagConstraints61.weightx = 1.0;
-			    gridBagConstraints61.insets = new Insets(5, 5, 5, 5);
-			    gridBagConstraints61.gridx = 3;
+			    gridBagConstraints61.insets = new Insets(5, 5, 5, 15);
+			    gridBagConstraints61.gridx = 1;
 			    GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
-			    gridBagConstraints51.gridx = 1;
+			    gridBagConstraints51.gridx = 0;
+			    gridBagConstraints51.anchor = GridBagConstraints.WEST;
+			    gridBagConstraints51.insets = new Insets(0, 15, 0, 0);
 			    gridBagConstraints51.gridy = 1;
 			    lblDataPointValue = new JLabel();
 			    lblDataPointValue.setText("Value");
@@ -602,23 +599,23 @@ namespace Boare.Cadencii {
 			    gridBagConstraints41.fill = GridBagConstraints.HORIZONTAL;
 			    gridBagConstraints41.gridy = 0;
 			    gridBagConstraints41.weightx = 1.0D;
-			    gridBagConstraints41.insets = new Insets(5, 5, 5, 5);
-			    gridBagConstraints41.gridx = 3;
+			    gridBagConstraints41.insets = new Insets(5, 5, 5, 15);
+			    gridBagConstraints41.gridx = 1;
 			    GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-			    gridBagConstraints31.gridx = 1;
+			    gridBagConstraints31.gridx = 0;
+			    gridBagConstraints31.insets = new Insets(0, 15, 0, 0);
+			    gridBagConstraints31.anchor = GridBagConstraints.WEST;
 			    gridBagConstraints31.gridy = 0;
 			    lblDataPointClock = new JLabel();
 			    lblDataPointClock.setText("Clock");
-			    groupDataPoint = new JPanel();
+			    groupDataPoint = new BGroupBox();
 			    groupDataPoint.setLayout(new GridBagLayout());
-			    groupDataPoint.setBorder(BorderFactory.createTitledBorder(null, "Data Point", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			    groupDataPoint.setTitle("Data Point");
 			    groupDataPoint.add(lblDataPointClock, gridBagConstraints31);
 			    groupDataPoint.add(getJTextField2(), gridBagConstraints41);
 			    groupDataPoint.add(lblDataPointValue, gridBagConstraints51);
 			    groupDataPoint.add(getJTextField11(), gridBagConstraints61);
 			    groupDataPoint.add(getBtnDataPoint(), gridBagConstraints71);
-			    groupDataPoint.add(jLabel9, gridBagConstraints17);
-			    groupDataPoint.add(jLabel13, gridBagConstraints19);
 		    }
 		    return groupDataPoint;
 	    }
@@ -668,33 +665,22 @@ namespace Boare.Cadencii {
 	     */
 	    private JPanel getGroupRight() {
 		    if (groupRight == null) {
-			    TitledBorder titledBorder = BorderFactory.createTitledBorder(null, "Left Control Point", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51));
-			    titledBorder.setTitle("Right Control Point");
-			    GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			    gridBagConstraints21.gridx = 4;
-			    gridBagConstraints21.gridy = 0;
-			    jLabel15 = new JLabel();
-			    jLabel15.setText("     ");
-			    GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
-			    gridBagConstraints20.gridx = 0;
-			    gridBagConstraints20.gridy = 0;
-			    jLabel14 = new JLabel();
-			    jLabel14.setText("     ");
 			    GridBagConstraints gridBagConstraints72 = new GridBagConstraints();
 			    gridBagConstraints72.fill = GridBagConstraints.HORIZONTAL;
-			    gridBagConstraints72.gridx = 1;
+			    gridBagConstraints72.gridx = 0;
 			    gridBagConstraints72.gridy = 2;
 			    gridBagConstraints72.weightx = 1.0D;
-			    gridBagConstraints72.insets = new Insets(5, 5, 5, 5);
-			    gridBagConstraints72.gridwidth = 3;
+			    gridBagConstraints72.insets = new Insets(5, 20, 5, 20);
+			    gridBagConstraints72.gridwidth = 2;
 			    GridBagConstraints gridBagConstraints62 = new GridBagConstraints();
 			    gridBagConstraints62.fill = GridBagConstraints.HORIZONTAL;
 			    gridBagConstraints62.gridy = 1;
 			    gridBagConstraints62.weightx = 1.0;
-			    gridBagConstraints62.insets = new Insets(5, 5, 5, 5);
-			    gridBagConstraints62.gridx = 3;
+			    gridBagConstraints62.insets = new Insets(5, 5, 5, 15);
+			    gridBagConstraints62.gridx = 1;
 			    GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
-			    gridBagConstraints52.gridx = 1;
+			    gridBagConstraints52.gridx = 0;
+			    gridBagConstraints52.insets = new Insets(0, 15, 0, 0);
 			    gridBagConstraints52.gridy = 1;
 			    lblRightValue = new JLabel();
 			    lblRightValue.setText("Value");
@@ -702,23 +688,22 @@ namespace Boare.Cadencii {
 			    gridBagConstraints42.fill = GridBagConstraints.HORIZONTAL;
 			    gridBagConstraints42.gridy = 0;
 			    gridBagConstraints42.weightx = 1.0D;
-			    gridBagConstraints42.insets = new Insets(5, 5, 5, 5);
-			    gridBagConstraints42.gridx = 3;
+			    gridBagConstraints42.insets = new Insets(5, 5, 5, 15);
+			    gridBagConstraints42.gridx = 1;
 			    GridBagConstraints gridBagConstraints32 = new GridBagConstraints();
-			    gridBagConstraints32.gridx = 1;
+			    gridBagConstraints32.gridx = 0;
+			    gridBagConstraints32.insets = new Insets(0, 15, 0, 0);
 			    gridBagConstraints32.gridy = 0;
 			    lblRightClock = new JLabel();
 			    lblRightClock.setText("Clock");
-			    groupRight = new JPanel();
+			    groupRight = new BGroupBox();
 			    groupRight.setLayout(new GridBagLayout());
-			    groupRight.setBorder(titledBorder);
+			    groupRight.setTitle("Right Control Point");
 			    groupRight.add(lblRightClock, gridBagConstraints32);
 			    groupRight.add(getJTextField3(), gridBagConstraints42);
 			    groupRight.add(lblRightValue, gridBagConstraints52);
 			    groupRight.add(getJTextField12(), gridBagConstraints62);
 			    groupRight.add(getBtnRight(), gridBagConstraints72);
-			    groupRight.add(jLabel14, gridBagConstraints20);
-			    groupRight.add(jLabel15, gridBagConstraints21);
 		    }
 		    return groupRight;
 	    }
@@ -794,28 +779,18 @@ namespace Boare.Cadencii {
 	     */
 	    private JPanel getJPanel3() {
 		    if (jPanel3 == null) {
-			    GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
-			    gridBagConstraints15.gridx = 1;
-			    gridBagConstraints15.gridy = 0;
-			    jLabel7 = new JLabel();
-			    jLabel7.setText("     ");
-			    GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-			    gridBagConstraints14.gridx = 3;
-			    gridBagConstraints14.gridy = 0;
-			    jLabel6 = new JLabel();
-			    jLabel6.setText("     ");
 			    GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			    gridBagConstraints11.gridx = 0;
+			    gridBagConstraints11.insets = new Insets(0, 0, 0, 16);
 			    gridBagConstraints11.gridy = 0;
 			    GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			    gridBagConstraints12.gridx = 2;
+			    gridBagConstraints12.insets = new Insets(0, 0, 0, 16);
 			    gridBagConstraints12.gridy = 0;
 			    jPanel3 = new JPanel();
 			    jPanel3.setLayout(new GridBagLayout());
 			    jPanel3.add(getBtnCancel(), gridBagConstraints12);
 			    jPanel3.add(getBtnOk(), gridBagConstraints11);
-			    jPanel3.add(jLabel6, gridBagConstraints14);
-			    jPanel3.add(jLabel7, gridBagConstraints15);
 		    }
 		    return jPanel3;
 	    }
@@ -1138,29 +1113,29 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.CheckBox chkEnableSmooth;
-        private System.Windows.Forms.Label lblLeftValue;
-        private System.Windows.Forms.Label lblLeftClock;
+        private BButton btnCancel;
+        private BButton btnOK;
+        private BCheckBox chkEnableSmooth;
+        private BLabel lblLeftValue;
+        private BLabel lblLeftClock;
         private NumberTextBox txtLeftValue;
         private NumberTextBox txtLeftClock;
-        private System.Windows.Forms.GroupBox groupLeft;
-        private System.Windows.Forms.GroupBox groupDataPoint;
-        private System.Windows.Forms.Label lblDataPointValue;
+        private BGroupBox groupLeft;
+        private BGroupBox groupDataPoint;
+        private BLabel lblDataPointValue;
         private NumberTextBox txtDataPointClock;
-        private System.Windows.Forms.Label lblDataPointClock;
+        private BLabel lblDataPointClock;
         private NumberTextBox txtDataPointValue;
-        private System.Windows.Forms.GroupBox groupRight;
-        private System.Windows.Forms.Label lblRightValue;
+        private BGroupBox groupRight;
+        private BLabel lblRightValue;
         private NumberTextBox txtRightClock;
-        private System.Windows.Forms.Label lblRightClock;
+        private BLabel lblRightClock;
         private NumberTextBox txtRightValue;
-        private System.Windows.Forms.Button btnDataPoint;
-        private System.Windows.Forms.Button btnLeft;
-        private System.Windows.Forms.Button btnRight;
-        private System.Windows.Forms.Button btnBackward;
-        private System.Windows.Forms.Button btnForward;
+        private BButton btnDataPoint;
+        private BButton btnLeft;
+        private BButton btnRight;
+        private BButton btnBackward;
+        private BButton btnForward;
         #endregion
 #endif
     }

@@ -33,7 +33,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Media;
 using System.Threading;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
@@ -335,9 +334,11 @@ namespace Boare.Cadencii {
         private boolean m_mouse_downed_trackselector = false;
         private ExtDragXMode m_ext_dragx_trackselector = ExtDragXMode.NONE;
         private boolean m_mouse_moved = false;
+#if ENABLE_MOUSEHOVER
         /// <summary>
         /// マウスホバーを発生させるスレッド
         /// </summary>
+#endif
         private Thread m_mouse_hover_thread = null;
         private boolean m_last_is_imemode_on = true;
         private boolean m_last_symbol_edit_mode = false;
@@ -396,7 +397,7 @@ namespace Boare.Cadencii {
         private PropertyPanelContainer m_property_panel_container;
 #endif
 #if ENABLE_SCRIPT
-        private Vector<ToolStripItem> m_palette_tools = new Vector<ToolStripItem>();
+        private Vector<BMenuItem> m_palette_tools = new Vector<BMenuItem>();
 #endif
 
         private int m_overview_direction = 1;
@@ -429,7 +430,7 @@ namespace Boare.Cadencii {
 #if JAVA
         private JPanel pictKeyLengthSplitter;
 #else
-        private PictureBox pictKeyLengthSplitter;
+        private BPictureBox pictKeyLengthSplitter;
 #endif
         private int m_overview_scale_count = 5;
         /// <summary>
@@ -545,21 +546,21 @@ namespace Boare.Cadencii {
             trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );*/
 #else
             trackSelector.setLocation( new Point( 0, 242 ) );
-            trackSelector.Margin = new Padding( 0 );
+            trackSelector.Margin = new System.Windows.Forms.Padding( 0 );
             trackSelector.Name = "trackSelector";
             trackSelector.setSelectedCurve( CurveType.VEL );
             trackSelector.setSize( 446, 250 );
             trackSelector.TabIndex = 0;
-            trackSelector.MouseClick += new MouseEventHandler( this.trackSelector_MouseClick );
+            trackSelector.MouseClick += new System.Windows.Forms.MouseEventHandler( this.trackSelector_MouseClick );
             trackSelector.SelectedTrackChanged += new SelectedTrackChangedEventHandler( this.trackSelector_SelectedTrackChanged );
-            trackSelector.MouseUp += new MouseEventHandler( this.trackSelector_MouseUp );
-            trackSelector.MouseDown += new MouseEventHandler( trackSelector_MouseDown );
+            trackSelector.MouseUp += new System.Windows.Forms.MouseEventHandler( this.trackSelector_MouseUp );
+            trackSelector.MouseDown += new System.Windows.Forms.MouseEventHandler( trackSelector_MouseDown );
             trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( this.trackSelector_SelectedCurveChanged );
-            trackSelector.MouseMove += new MouseEventHandler( this.trackSelector_MouseMove );
+            trackSelector.MouseMove += new System.Windows.Forms.MouseEventHandler( this.trackSelector_MouseMove );
             trackSelector.RenderRequired += new RenderRequiredEventHandler( this.trackSelector_RenderRequired );
-            trackSelector.PreviewKeyDown += new PreviewKeyDownEventHandler( this.trackSelector_PreviewKeyDown );
-            trackSelector.KeyDown += new KeyEventHandler( commonCaptureSpaceKeyDown );
-            trackSelector.KeyUp += new KeyEventHandler( commonCaptureSpaceKeyUp );
+            trackSelector.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.trackSelector_PreviewKeyDown );
+            trackSelector.KeyDown += new System.Windows.Forms.KeyEventHandler( commonCaptureSpaceKeyDown );
+            trackSelector.KeyUp += new System.Windows.Forms.KeyEventHandler( commonCaptureSpaceKeyUp );
             trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );
 #endif
 
@@ -580,8 +581,8 @@ namespace Boare.Cadencii {
 
 #if !JAVA
             // toolStipの位置を，前回終了時の位置に戻す
-            Vector<ToolStrip> top = new Vector<ToolStrip>();
-            Vector<ToolStrip> bottom = new Vector<ToolStrip>();
+            Vector<System.Windows.Forms.ToolStrip> top = new Vector<System.Windows.Forms.ToolStrip>();
+            Vector<System.Windows.Forms.ToolStrip> bottom = new Vector<System.Windows.Forms.ToolStrip>();
             if ( toolStripTool.Parent != null ) {
                 if ( toolStripTool.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripTool );
@@ -1771,7 +1772,7 @@ namespace Boare.Cadencii {
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
                                     if ( dlg.ShowDialog() == DialogResult.OK ) {
                                         VsqID t = (VsqID)selected.ID.clone();
-                                        t.VibratoHandle = dlg.VibratoHandle;
+                                        t.VibratoHandle = dlg.getVibratoHandle();
                                         if ( t.VibratoHandle != null ) {
                                             int vibrato_length = t.VibratoHandle.getLength();
                                             int note_length = selected.ID.getLength();
@@ -2066,10 +2067,12 @@ namespace Boare.Cadencii {
                 if ( e.Button == BMouseButtons.Right && !AppManager.editorConfig.PlayPreviewWhenRightClick ) {
                     start_mouse_hover_generator = false;
                 }
+#if ENABLE_MOUSEHOVER
                 if ( start_mouse_hover_generator ) {
                     m_mouse_hover_thread = new Thread( new ParameterizedThreadStart( MouseHoverEventGenerator ) );
                     m_mouse_hover_thread.Start( noteFromYCoord( e.Y ) );
                 }
+#endif
                 #endregion
             } else {
                 #region 音符があった時
@@ -2081,8 +2084,10 @@ namespace Boare.Cadencii {
                 }
                 hideInputTextBox();
                 if ( selected_tool != EditTool.ERASER ) {
+#if ENABLE_MOUSEHOVER
                     m_mouse_hover_thread = new Thread( new ParameterizedThreadStart( MouseHoverEventGenerator ) );
                     m_mouse_hover_thread.Start( item.ID.Note );
+#endif
                 }
                 // まず、両端の編集モードに移行可能かどうか調べる
 #if ENABLE_SCRIPT
@@ -2708,11 +2713,11 @@ namespace Boare.Cadencii {
                 }
 
                 if ( split_cursor ) {
-                    this.Cursor = Cursors.VSplit;
+                    setCursor( new Cursor( java.awt.Cursor.E_RESIZE_CURSOR ) );
                 } else if ( hand_cursor ) {
-                    this.Cursor = Cursors.Hand;
+                    setCursor( new Cursor( java.awt.Cursor.HAND_CURSOR ) );
                 } else {
-                    this.Cursor = Cursors.Default;
+                    setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                 }
             }
             if ( !timer.Enabled ) {
@@ -4996,7 +5001,7 @@ namespace Boare.Cadencii {
                 dlg.DEMaccent = AppManager.editorConfig.DefaultDEMaccent;
 
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
-                if ( dlg.ShowDialog() == DialogResult.OK ) {
+                if ( dlg.showDialog() == BDialogResult.OK ) {
                     if ( dlg.ApplyCurrentTrack ) {
                         VsqTrack copy = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
                         boolean changed = false;
@@ -9182,7 +9187,7 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <param name="panel"></param>
         /// <param name="list"></param>
-        private void addToolStripInPositionOrder( ToolStripPanel panel, Vector<ToolStrip> list ) {
+        private void addToolStripInPositionOrder( System.Windows.Forms.ToolStripPanel panel, Vector<System.Windows.Forms.ToolStrip> list ) {
             boolean[] reg = new boolean[list.size()];
             for ( int i = 0; i < reg.Length; i++ ) {
                 reg[i] = false;
@@ -10812,6 +10817,7 @@ namespace Boare.Cadencii {
             KeySoundPlayer.Play( note );
         }
 
+#if ENABLE_MOUSEHOVER
         private void MouseHoverEventGenerator( Object arg ) {
             int note = (int)arg;
             if ( AppManager.editorConfig.MouseHoverTime > 0 ) {
@@ -10819,6 +10825,7 @@ namespace Boare.Cadencii {
             }
             KeySoundPlayer.Play( note );
         }
+#endif
 
         public static String _( String id ) {
             return Messaging.getMessage( id );
@@ -11218,11 +11225,11 @@ namespace Boare.Cadencii {
             try {
                 dlg = new FormVibratoConfig( ev.ID.VibratoHandle, ev.ID.getLength(), AppManager.editorConfig.DefaultVibratoLength, type );
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
-                if ( dlg.ShowDialog() == DialogResult.OK ) {
+                if ( dlg.showDialog() == BDialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
-                    if ( dlg.VibratoHandle != null ) {
-                        edited.ID.VibratoHandle = (VibratoHandle)dlg.VibratoHandle.clone();
-                        edited.ID.VibratoDelay = ev.ID.getLength() - dlg.VibratoHandle.getLength();
+                    if ( dlg.getVibratoHandle() != null ) {
+                        edited.ID.VibratoHandle = (VibratoHandle)dlg.getVibratoHandle().clone();
+                        edited.ID.VibratoDelay = ev.ID.getLength() - dlg.getVibratoHandle().getLength();
                     } else {
                         edited.ID.VibratoHandle = null;
                     }
@@ -11267,7 +11274,7 @@ namespace Boare.Cadencii {
 
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
 
-                if ( dlg.ShowDialog() == DialogResult.OK ) {
+                if ( dlg.showDialog() == BDialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     edited.ID.PMBendDepth = dlg.getPMBendDepth();
                     edited.ID.PMBendLength = dlg.getPMBendLength();
@@ -12136,137 +12143,121 @@ namespace Boare.Cadencii {
         /// length, positionの各Quantizeモードに応じて、表示状態を更新します
         /// </summary>
         private void applyQuantizeMode() {
-            cMenuPianoQuantize04.CheckState = CheckState.Unchecked;
-            cMenuPianoQuantize08.CheckState = CheckState.Unchecked;
-            cMenuPianoQuantize16.CheckState = CheckState.Unchecked;
-            cMenuPianoQuantize32.CheckState = CheckState.Unchecked;
-            cMenuPianoQuantize64.CheckState = CheckState.Unchecked;
-            cMenuPianoQuantize128.CheckState = CheckState.Unchecked;
-            cMenuPianoQuantizeOff.CheckState = CheckState.Unchecked;
+            cMenuPianoQuantize04.setSelected( false );
+            cMenuPianoQuantize08.setSelected( false );
+            cMenuPianoQuantize16.setSelected( false );
+            cMenuPianoQuantize32.setSelected( false );
+            cMenuPianoQuantize64.setSelected( false );
+            cMenuPianoQuantize128.setSelected( false );
+            cMenuPianoQuantizeOff.setSelected( false );
 
-            stripDDBtnQuantize04.CheckState = CheckState.Unchecked;
-            stripDDBtnQuantize08.CheckState = CheckState.Unchecked;
-            stripDDBtnQuantize16.CheckState = CheckState.Unchecked;
-            stripDDBtnQuantize32.CheckState = CheckState.Unchecked;
-            stripDDBtnQuantize64.CheckState = CheckState.Unchecked;
-            stripDDBtnQuantize128.CheckState = CheckState.Unchecked;
-            stripDDBtnQuantizeOff.CheckState = CheckState.Unchecked;
+            stripDDBtnQuantize04.setSelected( false );
+            stripDDBtnQuantize08.setSelected( false );
+            stripDDBtnQuantize16.setSelected( false );
+            stripDDBtnQuantize32.setSelected( false );
+            stripDDBtnQuantize64.setSelected( false );
+            stripDDBtnQuantize128.setSelected( false );
+            stripDDBtnQuantizeOff.setSelected( false );
 
-            menuSettingPositionQuantize04.CheckState = CheckState.Unchecked;
-            menuSettingPositionQuantize08.CheckState = CheckState.Unchecked;
-            menuSettingPositionQuantize16.CheckState = CheckState.Unchecked;
-            menuSettingPositionQuantize32.CheckState = CheckState.Unchecked;
-            menuSettingPositionQuantize64.CheckState = CheckState.Unchecked;
-            menuSettingPositionQuantize128.CheckState = CheckState.Unchecked;
-            menuSettingPositionQuantizeOff.CheckState = CheckState.Unchecked;
+            menuSettingPositionQuantize04.setSelected( false );
+            menuSettingPositionQuantize08.setSelected( false );
+            menuSettingPositionQuantize16.setSelected( false );
+            menuSettingPositionQuantize32.setSelected( false );
+            menuSettingPositionQuantize64.setSelected( false );
+            menuSettingPositionQuantize128.setSelected( false );
+            menuSettingPositionQuantizeOff.setSelected( false );
 
-            stripDDBtnQuantize.Text = "QUANTIZE " + QuantizeModeUtil.getString( AppManager.editorConfig.PositionQuantize );
-            switch ( AppManager.editorConfig.PositionQuantize ) {
-                case QuantizeMode.p4:
-                    cMenuPianoQuantize04.CheckState = CheckState.Checked;
-                    stripDDBtnQuantize04.CheckState = CheckState.Checked;
-                    menuSettingPositionQuantize04.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p8:
-                    cMenuPianoQuantize08.CheckState = CheckState.Checked;
-                    stripDDBtnQuantize08.CheckState = CheckState.Checked;
-                    menuSettingPositionQuantize08.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p16:
-                    cMenuPianoQuantize16.CheckState = CheckState.Checked;
-                    stripDDBtnQuantize16.CheckState = CheckState.Checked;
-                    menuSettingPositionQuantize16.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p32:
-                    cMenuPianoQuantize32.CheckState = CheckState.Checked;
-                    stripDDBtnQuantize32.CheckState = CheckState.Checked;
-                    menuSettingPositionQuantize32.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p64:
-                    cMenuPianoQuantize64.CheckState = CheckState.Checked;
-                    stripDDBtnQuantize64.CheckState = CheckState.Checked;
-                    menuSettingPositionQuantize64.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p128:
-                    cMenuPianoQuantize128.CheckState = CheckState.Checked;
-                    stripDDBtnQuantize128.CheckState = CheckState.Checked;
-                    menuSettingPositionQuantize128.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.off:
-                    cMenuPianoQuantizeOff.CheckState = CheckState.Checked;
-                    stripDDBtnQuantizeOff.CheckState = CheckState.Checked;
-                    menuSettingPositionQuantizeOff.CheckState = CheckState.Checked;
-                    break;
+            stripDDBtnQuantize.setText( "QUANTIZE " + QuantizeModeUtil.getString( AppManager.editorConfig.PositionQuantize ) );
+            if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p4 ) {
+                cMenuPianoQuantize04.setSelected( true );
+                stripDDBtnQuantize04.setSelected( true );
+                menuSettingPositionQuantize04.setSelected( true );
+            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p8 ) {
+                cMenuPianoQuantize08.setSelected( true );
+                stripDDBtnQuantize08.setSelected( true );
+                menuSettingPositionQuantize08.setSelected( true );
+            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p16 ) {
+                cMenuPianoQuantize16.setSelected( true );
+                stripDDBtnQuantize16.setSelected( true );
+                menuSettingPositionQuantize16.setSelected( true );
+            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p32 ) {
+                cMenuPianoQuantize32.setSelected( true );
+                stripDDBtnQuantize32.setSelected( true );
+                menuSettingPositionQuantize32.setSelected( true );
+            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p64 ) {
+                cMenuPianoQuantize64.setSelected( true );
+                stripDDBtnQuantize64.setSelected( true );
+                menuSettingPositionQuantize64.setSelected( true );
+            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p128 ) {
+                cMenuPianoQuantize128.setSelected( true );
+                stripDDBtnQuantize128.setSelected( true );
+                menuSettingPositionQuantize128.setSelected( true );
+            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.off ) {
+                cMenuPianoQuantizeOff.setSelected( true );
+                stripDDBtnQuantizeOff.setSelected( true );
+                menuSettingPositionQuantizeOff.setSelected( true );
             }
-            cMenuPianoQuantizeTriplet.Checked = AppManager.editorConfig.PositionQuantizeTriplet;
-            stripDDBtnQuantizeTriplet.Checked = AppManager.editorConfig.PositionQuantizeTriplet;
-            menuSettingPositionQuantizeTriplet.Checked = AppManager.editorConfig.PositionQuantizeTriplet;
+            cMenuPianoQuantizeTriplet.setSelected( AppManager.editorConfig.PositionQuantizeTriplet );
+            stripDDBtnQuantizeTriplet.setSelected( AppManager.editorConfig.PositionQuantizeTriplet );
+            menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.PositionQuantizeTriplet );
 
-            cMenuPianoLength04.CheckState = CheckState.Unchecked;
-            cMenuPianoLength08.CheckState = CheckState.Unchecked;
-            cMenuPianoLength16.CheckState = CheckState.Unchecked;
-            cMenuPianoLength32.CheckState = CheckState.Unchecked;
-            cMenuPianoLength64.CheckState = CheckState.Unchecked;
-            cMenuPianoLength128.CheckState = CheckState.Unchecked;
-            cMenuPianoLengthOff.CheckState = CheckState.Unchecked;
+            cMenuPianoLength04.setSelected( false );
+            cMenuPianoLength08.setSelected( false );
+            cMenuPianoLength16.setSelected( false );
+            cMenuPianoLength32.setSelected( false );
+            cMenuPianoLength64.setSelected( false );
+            cMenuPianoLength128.setSelected( false );
+            cMenuPianoLengthOff.setSelected( false );
 
-            stripDDBtnLength04.CheckState = CheckState.Unchecked;
-            stripDDBtnLength08.CheckState = CheckState.Unchecked;
-            stripDDBtnLength16.CheckState = CheckState.Unchecked;
-            stripDDBtnLength32.CheckState = CheckState.Unchecked;
-            stripDDBtnLength64.CheckState = CheckState.Unchecked;
-            stripDDBtnLength128.CheckState = CheckState.Unchecked;
-            stripDDBtnLengthOff.CheckState = CheckState.Unchecked;
+            stripDDBtnLength04.setSelected( false );
+            stripDDBtnLength08.setSelected( false );
+            stripDDBtnLength16.setSelected( false );
+            stripDDBtnLength32.setSelected( false );
+            stripDDBtnLength64.setSelected( false );
+            stripDDBtnLength128.setSelected( false );
+            stripDDBtnLengthOff.setSelected( false );
 
-            menuSettingLengthQuantize04.CheckState = CheckState.Unchecked;
-            menuSettingLengthQuantize08.CheckState = CheckState.Unchecked;
-            menuSettingLengthQuantize16.CheckState = CheckState.Unchecked;
-            menuSettingLengthQuantize32.CheckState = CheckState.Unchecked;
-            menuSettingLengthQuantize64.CheckState = CheckState.Unchecked;
-            menuSettingLengthQuantize128.CheckState = CheckState.Unchecked;
-            menuSettingLengthQuantizeOff.CheckState = CheckState.Unchecked;
+            menuSettingLengthQuantize04.setSelected( false );
+            menuSettingLengthQuantize08.setSelected( false );
+            menuSettingLengthQuantize16.setSelected( false );
+            menuSettingLengthQuantize32.setSelected( false );
+            menuSettingLengthQuantize64.setSelected( false );
+            menuSettingLengthQuantize128.setSelected( false );
+            menuSettingLengthQuantizeOff.setSelected( false );
 
-            stripDDBtnLength.Text = "LENGTH " + QuantizeModeUtil.getString( AppManager.editorConfig.LengthQuantize );
-            switch ( AppManager.editorConfig.LengthQuantize ) {
-                case QuantizeMode.p4:
-                    cMenuPianoLength04.CheckState = CheckState.Checked;
-                    stripDDBtnLength04.CheckState = CheckState.Checked;
-                    menuSettingLengthQuantize04.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p8:
-                    cMenuPianoLength08.CheckState = CheckState.Checked;
-                    stripDDBtnLength08.CheckState = CheckState.Checked;
-                    menuSettingLengthQuantize08.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p16:
-                    cMenuPianoLength16.CheckState = CheckState.Checked;
-                    stripDDBtnLength16.CheckState = CheckState.Checked;
-                    menuSettingLengthQuantize16.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p32:
-                    cMenuPianoLength32.CheckState = CheckState.Checked;
-                    stripDDBtnLength32.CheckState = CheckState.Checked;
-                    menuSettingLengthQuantize32.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p64:
-                    cMenuPianoLength64.CheckState = CheckState.Checked;
-                    stripDDBtnLength64.CheckState = CheckState.Checked;
-                    menuSettingLengthQuantize64.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.p128:
-                    cMenuPianoLength128.CheckState = CheckState.Checked;
-                    stripDDBtnLength128.CheckState = CheckState.Checked;
-                    menuSettingLengthQuantize128.CheckState = CheckState.Checked;
-                    break;
-                case QuantizeMode.off:
-                    cMenuPianoLengthOff.CheckState = CheckState.Checked;
-                    stripDDBtnLengthOff.CheckState = CheckState.Checked;
-                    menuSettingLengthQuantizeOff.CheckState = CheckState.Checked;
-                    break;
+            stripDDBtnLength.setText( "LENGTH " + QuantizeModeUtil.getString( AppManager.editorConfig.LengthQuantize ) );
+            if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p4 ) {
+                cMenuPianoLength04.setSelected( true );
+                stripDDBtnLength04.setSelected( true );
+                menuSettingLengthQuantize04.setSelected( true );
+            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p8 ) {
+                cMenuPianoLength08.setSelected( true );
+                stripDDBtnLength08.setSelected( true );
+                menuSettingLengthQuantize08.setSelected( true );
+            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p16 ) {
+                cMenuPianoLength16.setSelected( true );
+                stripDDBtnLength16.setSelected( true );
+                menuSettingLengthQuantize16.setSelected( true );
+            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p32 ) {
+                cMenuPianoLength32.setSelected( true );
+                stripDDBtnLength32.setSelected( true );
+                menuSettingLengthQuantize32.setSelected( true );
+            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p64 ) {
+                cMenuPianoLength64.setSelected( true );
+                stripDDBtnLength64.setSelected( true );
+                menuSettingLengthQuantize64.setSelected( true );
+            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p128 ) {
+                cMenuPianoLength128.setSelected( true );
+                stripDDBtnLength128.setSelected( true );
+                menuSettingLengthQuantize128.setSelected( true );
+            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.off ) {
+                cMenuPianoLengthOff.setSelected( true );
+                stripDDBtnLengthOff.setSelected( true );
+                menuSettingLengthQuantizeOff.setSelected( true );
             }
-            cMenuPianoLengthTriplet.Checked = AppManager.editorConfig.LengthQuantizeTriplet;
-            stripDDBtnLengthTriplet.Checked = AppManager.editorConfig.LengthQuantizeTriplet;
-            menuSettingLengthQuantizeTriplet.Checked = AppManager.editorConfig.LengthQuantizeTriplet;
+            cMenuPianoLengthTriplet.setSelected( AppManager.editorConfig.LengthQuantizeTriplet );
+            stripDDBtnLengthTriplet.setSelected( AppManager.editorConfig.LengthQuantizeTriplet );
+            menuSettingLengthQuantizeTriplet.setSelected( AppManager.editorConfig.LengthQuantizeTriplet );
         }
 
         /// <summary>
@@ -12274,7 +12265,10 @@ namespace Boare.Cadencii {
         /// </summary>
         private void applySelectedTool() {
             EditTool tool = AppManager.getSelectedTool();
-            foreach ( ToolStripItem tsi in toolStripTool.Items ) {
+
+            int count = toolStripTool.getComponentCount();
+            for ( int i = 0; i < count; i++ ) {
+                Object tsi = toolStripTool.getComponentAtIndex( i );
                 if ( tsi is BToolStripButton ) {
                     BToolStripButton tsb = (BToolStripButton)tsi;
                     Object tag = tsb.getTag();
@@ -12291,122 +12285,121 @@ namespace Boare.Cadencii {
                     }
                 }
             }
-            foreach ( ToolStripItem tsi in cMenuTrackSelectorPaletteTool.DropDownItems ) {
-                if ( tsi is ToolStripMenuItem ) {
-                    ToolStripMenuItem tsmi = (ToolStripMenuItem)tsi;
-                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
+            MenuElement[] items = cMenuTrackSelectorPaletteTool.getSubElements();
+            foreach ( MenuElement tsi in items ) {
+                if ( tsi is BMenuItem ) {
+                    BMenuItem tsmi = (BMenuItem)tsi;
+                    Object tag = tsmi.getTag();
+                    if ( tag != null && tag is String ) {
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
-                            String id = (String)tsmi.Tag;
-                            tsmi.Checked = (AppManager.selectedPaletteTool.Equals( id ));
+                            String id = (String)tsmi.getTag();
+                            tsmi.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
                         } else
 #endif
  {
-                            tsmi.Checked = false;
+                            tsmi.setSelected( false );
                         }
                     }
                 }
             }
 
-            foreach ( ToolStripItem tsi in cMenuPianoPaletteTool.DropDownItems ) {
-                if ( tsi is ToolStripMenuItem ) {
-                    ToolStripMenuItem tsmi = (ToolStripMenuItem)tsi;
-                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
+            items = cMenuPianoPaletteTool.getSubElements();
+            foreach ( MenuElement tsi in items ) {
+                if ( tsi is BMenuItem ) {
+                    BMenuItem tsmi = (BMenuItem)tsi;
+                    Object tag = tsmi.getTag();
+                    if ( tag != null && tag is String ) {
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
-                            String id = (String)tsmi.Tag;
-                            tsmi.Checked = (AppManager.selectedPaletteTool.Equals( id ));
+                            String id = (String)tsmi.getTag();
+                            tsmi.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
                         } else
 #endif
  {
-                            tsmi.Checked = false;
+                            tsmi.setSelected( false );
                         }
                     }
                 }
             }
 
-            switch ( AppManager.getSelectedTool() ) {
-                case EditTool.ARROW:
-                    cMenuPianoPointer.CheckState = CheckState.Checked;
-                    cMenuPianoPencil.CheckState = CheckState.Unchecked;
-                    cMenuPianoEraser.CheckState = CheckState.Unchecked;
+            EditTool selected_tool = AppManager.getSelectedTool();
+            if ( selected_tool == EditTool.ARROW ) {
+                cMenuPianoPointer.setSelected( true );
+                cMenuPianoPencil.setSelected( false );
+                cMenuPianoEraser.setSelected( false );
 
-                    cMenuTrackSelectorPointer.CheckState = CheckState.Checked;
-                    cMenuTrackSelectorPencil.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorLine.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorEraser.CheckState = CheckState.Unchecked;
+                cMenuTrackSelectorPointer.setSelected( true );
+                cMenuTrackSelectorPencil.setSelected( false );
+                cMenuTrackSelectorLine.setSelected( false );
+                cMenuTrackSelectorEraser.setSelected( false );
 
-                    stripBtnPointer.Checked = true;
-                    stripBtnPencil.Checked = false;
-                    stripBtnLine.Checked = false;
-                    stripBtnEraser.Checked = false;
-                    break;
-                case EditTool.PENCIL:
-                    cMenuPianoPointer.CheckState = CheckState.Unchecked;
-                    cMenuPianoPencil.CheckState = CheckState.Checked;
-                    cMenuPianoEraser.CheckState = CheckState.Unchecked;
+                stripBtnPointer.setSelected( true );
+                stripBtnPencil.setSelected( false );
+                stripBtnLine.setSelected( false );
+                stripBtnEraser.setSelected( false );
+            } else if ( selected_tool == EditTool.PENCIL ) {
+                cMenuPianoPointer.setSelected( false );
+                cMenuPianoPencil.setSelected( true );
+                cMenuPianoEraser.setSelected( false );
 
-                    cMenuTrackSelectorPointer.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorPencil.CheckState = CheckState.Checked;
-                    cMenuTrackSelectorLine.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorEraser.CheckState = CheckState.Unchecked;
+                cMenuTrackSelectorPointer.setSelected( false );
+                cMenuTrackSelectorPencil.setSelected( true );
+                cMenuTrackSelectorLine.setSelected( false );
+                cMenuTrackSelectorEraser.setSelected( false );
 
-                    stripBtnPointer.Checked = false;
-                    stripBtnPencil.Checked = true;
-                    stripBtnLine.Checked = false;
-                    stripBtnEraser.Checked = false;
-                    break;
-                case EditTool.ERASER:
-                    cMenuPianoPointer.CheckState = CheckState.Unchecked;
-                    cMenuPianoPencil.CheckState = CheckState.Unchecked;
-                    cMenuPianoEraser.CheckState = CheckState.Checked;
+                stripBtnPointer.setSelected( false );
+                stripBtnPencil.setSelected( true );
+                stripBtnLine.setSelected( false );
+                stripBtnEraser.setSelected( false );
+            } else if ( selected_tool == EditTool.ERASER ) {
+                cMenuPianoPointer.setSelected( false );
+                cMenuPianoPencil.setSelected( false );
+                cMenuPianoEraser.setSelected( true );
 
-                    cMenuTrackSelectorPointer.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorPencil.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorLine.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorEraser.CheckState = CheckState.Checked;
+                cMenuTrackSelectorPointer.setSelected( false );
+                cMenuTrackSelectorPencil.setSelected( false );
+                cMenuTrackSelectorLine.setSelected( false );
+                cMenuTrackSelectorEraser.setSelected( true );
 
-                    stripBtnPointer.Checked = false;
-                    stripBtnPencil.Checked = false;
-                    stripBtnLine.Checked = false;
-                    stripBtnEraser.Checked = true;
-                    break;
-                case EditTool.LINE:
-                    cMenuPianoPointer.CheckState = CheckState.Unchecked;
-                    cMenuPianoPencil.CheckState = CheckState.Unchecked;
-                    cMenuPianoEraser.CheckState = CheckState.Unchecked;
+                stripBtnPointer.setSelected( false );
+                stripBtnPencil.setSelected( false );
+                stripBtnLine.setSelected( false );
+                stripBtnEraser.setSelected( true );
+            } else if ( selected_tool == EditTool.LINE ) {
+                cMenuPianoPointer.setSelected( false );
+                cMenuPianoPencil.setSelected( false );
+                cMenuPianoEraser.setSelected( false );
 
-                    cMenuTrackSelectorPointer.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorPencil.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorLine.CheckState = CheckState.Checked;
-                    cMenuTrackSelectorEraser.CheckState = CheckState.Unchecked;
+                cMenuTrackSelectorPointer.setSelected( false );
+                cMenuTrackSelectorPencil.setSelected( false );
+                cMenuTrackSelectorLine.setSelected( true );
+                cMenuTrackSelectorEraser.setSelected( false );
 
-                    stripBtnPointer.Checked = false;
-                    stripBtnPencil.Checked = false;
-                    stripBtnLine.Checked = true;
-                    stripBtnEraser.Checked = false;
-                    break;
+                stripBtnPointer.setSelected( false );
+                stripBtnPencil.setSelected( false );
+                stripBtnLine.setSelected( true );
+                stripBtnEraser.setSelected( false );
 #if ENABLE_SCRIPT
-                case EditTool.PALETTE_TOOL:
-                    cMenuPianoPointer.CheckState = CheckState.Unchecked;
-                    cMenuPianoPencil.CheckState = CheckState.Unchecked;
-                    cMenuPianoEraser.CheckState = CheckState.Unchecked;
+            } else if ( selected_tool == EditTool.PALETTE_TOOL ) {
+                cMenuPianoPointer.setSelected( false );
+                cMenuPianoPencil.setSelected( false );
+                cMenuPianoEraser.setSelected( false );
 
-                    cMenuTrackSelectorPointer.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorPencil.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorLine.CheckState = CheckState.Unchecked;
-                    cMenuTrackSelectorEraser.CheckState = CheckState.Unchecked;
+                cMenuTrackSelectorPointer.setSelected( false );
+                cMenuTrackSelectorPencil.setSelected( false );
+                cMenuTrackSelectorLine.setSelected( false );
+                cMenuTrackSelectorEraser.setSelected( false );
 
-                    stripBtnPointer.Checked = false;
-                    stripBtnPencil.Checked = false;
-                    stripBtnLine.Checked = false;
-                    stripBtnEraser.Checked = false;
-                    break;
+                stripBtnPointer.setSelected( false );
+                stripBtnPencil.setSelected( false );
+                stripBtnLine.setSelected( false );
+                stripBtnEraser.setSelected( false );
 #endif
             }
-            cMenuPianoCurve.Checked = AppManager.isCurveMode();
-            cMenuTrackSelectorCurve.Checked = AppManager.isCurveMode();
-            stripBtnCurve.Checked = AppManager.isCurveMode();
+            cMenuPianoCurve.setSelected( AppManager.isCurveMode() );
+            cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
+            stripBtnCurve.setSelected( AppManager.isCurveMode() );
         }
 
         /// <summary>
@@ -12545,7 +12538,7 @@ namespace Boare.Cadencii {
         /// </summary>
         private void updateRecentFileMenu() {
             int added = 0;
-            menuFileRecent.DropDownItems.Clear();
+            menuFileRecent.removeAll();
             if ( AppManager.editorConfig.RecentFiles != null ) {
                 for ( int i = 0; i < AppManager.editorConfig.RecentFiles.size(); i++ ) {
                     String item = AppManager.editorConfig.RecentFiles.get( i );
@@ -12566,12 +12559,11 @@ namespace Boare.Cadencii {
 #if JAVA
                         itm.clickEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_Click" ) );
                         itm.mouseEnterEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_MouseEnter" ) );
-                        menuFileRecent.add( itm );
 #else
                         itm.Click += new EventHandler( handleRecentFileMenuItem_Click );
                         itm.MouseEnter += new EventHandler( handleRecentFileMenuItem_MouseEnter );
-                        menuFileRecent.DropDownItems.Add( itm );
 #endif
+                        menuFileRecent.add( itm );
                         added++;
                     }
                 }

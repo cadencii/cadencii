@@ -12,11 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import javax.swing.*;
-public class BMenuBar extends JMenuBar{
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BMenuBar.java
 #else
 using System;
 using System.Collections.Generic;

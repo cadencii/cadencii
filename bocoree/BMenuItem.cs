@@ -12,23 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import javax.swing.*;
-
-public class BMenuItem extends JMenuItem{
-    private Object tag;
-    
-    public Object getTag()
-    {
-        return tag;
-    }
-    
-    public void setTag( Object value )
-    {
-        tag = value;
-    }
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BMenuItem.java
 #else
 #define ABSTRACT_BUTTON_ENABLE_IS_SELECTED
 #define COMPONENT_PARENT_AS_OWNERITEM

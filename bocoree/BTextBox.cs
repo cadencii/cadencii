@@ -12,74 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import java.awt.event.*;
-import javax.swing.*;
-import org.kbinani.*;
-
-public class BTextBox extends JTextField implements KeyListener{
-    public BTextBox(){
-        super();
-        addKeyListener( this );
-    }
-
-    public boolean isImeModeOn(){
-        return getInputContext().isCompositionEnabled();
-    }
-
-    public void setImeModeOn( boolean value ){
-        getInputContext().setCompositionEnabled( value );
-    }
-
-    /* root implementation of bocoree.windows.forms.[component] */
-    /* REGION bocoree.windows.forms.[component] */
-    /* root implementation of bocoree.windows.forms.[component] is in BTextBox.cs */
-    private Object m_tag = null;
-
-    public Object getTag(){
-        return m_tag;
-    }
-
-    public void setTag( Object value ){
-        m_tag = value;
-    }
-    /* END REGION */
-
-    /* REGION java.awt.Component */
-    /* root implementation of java.awt.Component is in BForm.cs(java) */
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyPressedEvent = new BEvent<BKeyEventHandler>();
-
-    public void keyPressed( KeyEvent e0 ){
-        try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyDownEvent.raise( this, e );
-        }catch( Exception ex ){
-            System.err.println( "BForm#keyPressed; ex=" + ex );
-        }
-    }
-
-    public void keyReleased( KeyEvent e0 ){
-        try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyUpEvent.raise( this, e );
-        }catch( Exception ex ){
-            System.err.println( "BForm#keyReleased; ex=" + ex );
-        }
-    }
-
-    public void keyTyped( KeyEvent e0 ){
-        try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyPressedEvent.raise( this, e );
-        }catch( Exception ex ){
-            System.err.println( "BForm#keyTyped; ex=" + ex );
-        }
-    }
-    /* END REGION java.awt.Component */
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BTextBox.java
 #else
 #define COMPONENT_ENABLE_LOCATION
 namespace bocoree.windows.forms{

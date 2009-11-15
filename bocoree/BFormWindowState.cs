@@ -12,11 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BFormWindowState.java
 #else
-namespace bocoree.windows.forms
-{
-#endif
+namespace bocoree.windows.forms{
 
     public enum BFormWindowState
     {
@@ -25,6 +23,5 @@ namespace bocoree.windows.forms
         Maximized,
     }
 
-#if !JAVA
 }
 #endif

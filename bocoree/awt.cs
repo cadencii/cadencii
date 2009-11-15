@@ -14,6 +14,60 @@
 #if !JAVA
 namespace bocoree.awt {
 
+    public class Cursor {
+        public const int CROSSHAIR_CURSOR = 1;
+        public const int CUSTOM_CURSOR = -1;
+        public const int DEFAULT_CURSOR = 0;
+        public const int E_RESIZE_CURSOR = 11;
+        public const int HAND_CURSOR = 12;
+        public const int MOVE_CURSOR = 13;
+        public const int N_RESIZE_CURSOR = 8;
+        public const int NE_RESIZE_CURSOR = 7;
+        public const int NW_RESIZE_CURSOR = 6;
+        public const int S_RESIZE_CURSOR = 9;
+        public const int SE_RESIZE_CURSOR = 5;
+        public const int SW_RESIZE_CURSOR = 4;
+        public const int TEXT_CURSOR = 2;
+        public const int W_RESIZE_CURSOR = 10;
+        public const int WAIT_CURSOR = 3;
+
+        private int m_type = DEFAULT_CURSOR;
+        public System.Windows.Forms.Cursor cursor = System.Windows.Forms.Cursors.Default;
+
+        public Cursor( int type ) {
+            m_type = type;
+            if ( m_type == CROSSHAIR_CURSOR ) {
+                cursor = System.Windows.Forms.Cursors.Cross;
+            } else if ( m_type == HAND_CURSOR ) {
+                cursor = System.Windows.Forms.Cursors.Hand;
+            } else if ( m_type == TEXT_CURSOR ) {
+                cursor = System.Windows.Forms.Cursors.IBeam;
+            } else if ( m_type == E_RESIZE_CURSOR ){
+                cursor = System.Windows.Forms.Cursors.PanEast;
+            } else if ( m_type == NE_RESIZE_CURSOR ){
+                cursor = System.Windows.Forms.Cursors.PanNE;
+            } else if ( m_type == N_RESIZE_CURSOR ){
+                cursor = System.Windows.Forms.Cursors.PanNorth;
+            } else if ( m_type == NW_RESIZE_CURSOR ) {
+                cursor = System.Windows.Forms.Cursors.PanNW;
+            } else if ( m_type == SE_RESIZE_CURSOR ){
+                cursor = System.Windows.Forms.Cursors.PanSE;
+            } else if ( m_type == S_RESIZE_CURSOR ){
+                cursor = System.Windows.Forms.Cursors.PanSouth;
+            } else if ( m_type == SW_RESIZE_CURSOR ){
+                cursor = System.Windows.Forms.Cursors.PanSW;
+            } else if( m_type == W_RESIZE_CURSOR ){
+                cursor = System.Windows.Forms.Cursors.PanWest;
+            } else if ( m_type == MOVE_CURSOR ){
+                cursor = System.Windows.Forms.Cursors.SizeAll;
+            }
+        }
+
+        public int getType() {
+            return m_type;
+        }
+    }
+
     public class Graphics2D {
         public System.Drawing.Graphics nativeGraphics;
         public Color color = Color.black;

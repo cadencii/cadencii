@@ -12,62 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import org.kbinani.*;
-
-public class BToolStripButton extends JToggleButton implements ActionListener
-{
-    public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
-    private Object tag;
-    private boolean checkOnClick = true;
-
-    public BToolStripButton()
-    {
-        super();
-        addActionListener( this );
-    }
-
-    public boolean isCheckOnClick()
-    {
-        return checkOnClick;
-    }
-
-    public void setCheckOnClick( boolean value )
-    {
-        checkOnClick = value;
-    }
-
-    public void actionPerformed( ActionEvent e )
-    {
-        if( checkOnClick )
-        {
-            this.setSelected( !this.isSelected() );
-        }
-        try
-        {
-            clickEvent.raise( this, new BEventArgs() );
-        }
-        catch( Exception ex )
-        {
-            System.out.println( "BToolStripButton#actionPerformed; ex=" + ex );
-        }
-    }
-
-    public Object getTag()
-    {
-        return tag;
-    }
-
-    public void setTag( Object value )
-    {
-        tag = value;
-    }
-}
-
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BToolStripButton.java
 #else
 #define COMPONENT_PARENT_AS_OWNERITEM
 #define COMPONENT_ENABLE_TOOL_TIP_TEXT

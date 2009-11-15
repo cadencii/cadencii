@@ -90,6 +90,9 @@
     <Compile Include="BFormClosedEventArgs.cs" />
     <Compile Include="BFormClosingEventArgs.cs" />
     <Compile Include="BFormWindowState.cs" />
+    <Compile Include="BGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BKeyEventArgs.cs" />
     <Compile Include="BKeyEventHandler.cs" />
     <Compile Include="BKeyPressEventArgs.cs" />

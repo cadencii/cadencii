@@ -12,148 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import org.kbinani.*;
-import javax.swing.*;
-import java.awt.event.*;
-import java.lang.reflect.*;
-
-public class BForm extends JFrame implements WindowListener, KeyListener{
-    public BEvent<BEventHandler> formClosingEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
-    private BDialogResult m_result = BDialogResult.CANCEL;
-    private boolean m_closed = false;
-
-    public BForm(){
-        this( "" );
-    }
-
-    public BForm( String title ){
-        super( title );
-        addWindowListener( this );
-        addKeyListener( this );
-    }
-
-    public void windowActivated( WindowEvent e ){
-        try{
-            activatedEvent.raise( this, new BEventArgs() );
-        }catch( Exception ex ){
-            System.out.println( "BForm#windowActivated; ex=" + ex );
-        }
-    }
-
-    public void windowClosed( WindowEvent e ){
-        m_closed = true;
-        try{
-            formClosedEvent.raise( this, new BEventArgs() );
-        }catch( Exception ex ){
-            System.out.println( "BForm#windowClosed; ex=" + ex );
-        }
-    }
-
-    public void windowClosing( WindowEvent e ){
-        try{
-            formClosingEvent.raise( this, new BEventArgs() );
-        }catch( Exception ex ){
-            System.out.println( "BForm#windowClosing; ex=" + ex );
-        }
-    }
-
-    public void windowDeactivated( WindowEvent e ){
-        try{
-            deactivateEvent.raise( this, new BEventArgs() );
-        }catch( Exception ex ){
-            System.out.println( "BForm#windowDeactivated; ex=" + ex );
-        }
-    }
-
-    public void windowDeiconified( WindowEvent e ){
-    }
-
-    public void windowIconified( WindowEvent e ){
-    }
-
-    public void windowOpened( WindowEvent e ){
-        try{
-            loadEvent.raise( this, new BEventArgs() );
-        }catch( Exception ex ){
-            System.out.println( "BForm#windowOpened; ex=" + ex );
-        }
-    }
-
-    public class ShowDialogRunner implements Runnable{
-        public void run(){
-            show();
-            while( !m_closed ){
-                try{
-                    Thread.sleep( 100 );
-                }catch( Exception ex ){
-                    break;
-                }
-            }
-            hide();
-        }
-    }
-
-    public BDialogResult showDialog(){
-        try{
-            Thread t = new Thread( new ShowDialogRunner() );
-            t.start();
-            t.join();
-        }catch( Exception ex ){
-            System.out.println( "BForm#showDialog; ex=" + ex );
-        }
-        return m_result;
-    }
-
-    public BDialogResult getDialogResult(){
-        return m_result;
-    }
-
-    public void setDialogResult( BDialogResult value ){
-        m_closed = true;
-        m_result = value;
-    }
-
-    /* root implementation of java.awt.Component */
-    /* REGION java.awt.Component */
-    /* root implementation of java.awt.Component is in BForm.cs(java) */
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyPressedEvent = new BEvent<BKeyEventHandler>();
-
-    public void keyPressed( KeyEvent e0 ){
-        try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyDownEvent.raise( this, e );
-        }catch( Exception ex ){
-            System.err.println( "BForm#keyPressed; ex=" + ex );
-        }
-    }
-
-    public void keyReleased( KeyEvent e0 ){
-        try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyUpEvent.raise( this, e );
-        }catch( Exception ex ){
-            System.err.println( "BForm#keyReleased; ex=" + ex );
-        }
-    }
-
-    public void keyTyped( KeyEvent e0 ){
-        try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyPressedEvent.raise( this, e );
-        }catch( Exception ex ){
-            System.err.println( "BForm#keyTyped; ex=" + ex );
-        }
-    }
-    /* END REGION java.awt.Component */
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BForm.java
 #else
 #define COMPONENT_ENABLE_LOCATION
 #define COMPONENT_ENABLE_Y
@@ -205,11 +64,53 @@ namespace bocoree.windows.forms {
         // root implementation of java.awt.Component
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
-        public boolean isVisible() {
+        public bocoree.awt.Cursor getCursor() {
+            System.Windows.Forms.Cursor c = base.Cursor;
+            bocoree.awt.Cursor ret = null;
+            if( c.Equals( System.Windows.Forms.Cursors.Arrow ) ){
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.DEFAULT_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ){
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.CROSSHAIR_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ){
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.DEFAULT_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ){
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.HAND_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.TEXT_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanEast ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.E_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanNE ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.NE_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanNorth ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.N_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanNW ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.NW_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanSE ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.SE_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanSouth ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.S_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanSW ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.SW_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanWest ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.W_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.SizeAll ) ) {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.MOVE_CURSOR );
+            } else {
+                ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.CUSTOM_CURSOR );
+            }
+            ret.cursor = c;
+            return ret;
+        }
+
+        public void setCursor( bocoree.awt.Cursor value ) {
+            base.Cursor = value.cursor;
+        }
+
+        public bool isVisible() {
             return base.Visible;
         }
 
-        public void setVisible( boolean value ) {
+        public void setVisible( bool value ) {
             base.Visible = value;
         }
 
@@ -230,12 +131,12 @@ namespace bocoree.windows.forms {
             return base.OwnerItem;
         }
 #else
-        public Object getParent() {
+        public object getParent() {
             return base.Parent;
         }
 #endif
 
-        public String getName() {
+        public string getName() {
             return base.Name;
         }
 
@@ -244,6 +145,11 @@ namespace bocoree.windows.forms {
         }
 
 #if COMPONENT_ENABLE_LOCATION
+        public bocoree.awt.Point getLocationOnScreen() {
+            System.Drawing.Point p = base.PointToScreen( base.Location );
+            return new bocoree.awt.Point( p.X, p.Y );
+        }
+
         public bocoree.awt.Point getLocation() {
             System.Drawing.Point loc = this.Location;
             return new bocoree.awt.Point( loc.X, loc.Y );
@@ -315,11 +221,11 @@ namespace bocoree.windows.forms {
             base.Font = font.font;
         }
 
-        public boolean getEnabled() {
+        public bool isEnabled() {
             return base.Enabled;
         }
 
-        public void setEnabled( boolean value ) {
+        public void setEnabled( bool value ) {
             base.Enabled = value;
         }
 
@@ -435,7 +341,7 @@ namespace bocoree.windows.forms {
         // root implementation of javax.swing.JComponent
         #region javax.swing.JComponent
         // root implementation of javax.swing.JComponent is in BForm.cs
-        public boolean requestFocusInWindow() {
+        public bool requestFocusInWindow() {
             return base.Focus();
         }
         #endregion

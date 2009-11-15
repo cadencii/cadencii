@@ -29,24 +29,23 @@ import javax.swing.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using bocoree.awt;
-using bocoreex.swing;
-using bocoree.windows.forms;
 using bocoree.awt.event_;
 using bocoree.util;
+using bocoree.windows.forms;
+using bocoreex.swing;
 
 namespace bocoree {
     using boolean = System.Boolean;
+    using Float = System.Single;
     using Integer = System.Int32;
     using Long = System.Int64;
-    using Float = System.Single;
 #endif
 
 #if JAVA
-    public class PortUtil implememts AWTEventListener
+    public class PortUtil implements AWTEventListener{
 #else
     public class PortUtil {
 #endif
@@ -201,7 +200,7 @@ namespace bocoree {
 
 #if JAVA
         static{
-            s_instance = new Util();
+            s_instance = new PortUtil();
             Toolkit.getDefaultToolkit().addAWTEventListener( s_instance, AWTEvent.KEY_EVENT_MASK );
         }
 #else
@@ -1347,6 +1346,14 @@ namespace bocoree {
         }
 
         #endregion
+
+        public static void setMousePosition( Point p ) {
+#if JAVA
+            // TODO: PortUtil#setMousePosition
+#else
+            System.Windows.Forms.Cursor.Position = new System.Drawing.Point( p.x, p.y );
+#endif
+        }
 
         public static Point getMousePosition() {
 #if JAVA

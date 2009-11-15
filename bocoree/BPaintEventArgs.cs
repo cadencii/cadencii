@@ -12,11 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import org.kbinani.*;
-
-public class BPaintEventArgs extends BEventArgs{
-
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BPaintEventArgs.java
 #endif

@@ -12,28 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import org.kbinani.*;
-
-public class BButton extends JButton implements ActionListener{
-    public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
-
-    public BButton(){
-        addActionListener( this );
-    }
-
-    public void actionPerformed( ActionEvent e ){
-        try{
-            clickEvent.raise( new BEventArgs() );
-        }catch( Exception ex ){
-            System.out.println( "BButton#actionPerformed; ex=" + ex );
-        }
-    }
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BButton.java
 #else
 namespace bocoree.windows.forms {
     public class BButton : System.Windows.Forms.Button {

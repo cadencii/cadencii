@@ -24,7 +24,7 @@ public class FormNoteExpressionConfig extends JFrame {
 	private JLabel lblTemplate = null;
 	private JComboBox comboTemplate = null;
 	private JLabel jLabel1 = null;
-	private JPanel groupPitchControl = null;
+	private BGroupBox groupPitchControl = null;
 	private JLabel lblBendDepth = null;
 	private JSlider trackBendDepth = null;
 	private JTextField txtBendDepth = null;
@@ -36,7 +36,7 @@ public class FormNoteExpressionConfig extends JFrame {
 	private JCheckBox chkUpPortamento = null;
 	private JCheckBox chkDownPortamento = null;
 	private JLabel jLabel6 = null;
-	private JPanel groupDynamicsControl = null;
+	private BGroupBox groupDynamicsControl = null;
 	private JLabel lblDecay = null;
 	private JSlider trackDecay = null;
 	private JTextField txtDecay = null;
@@ -46,7 +46,7 @@ public class FormNoteExpressionConfig extends JFrame {
 	private JTextField txtAccent = null;
 	private JLabel jLabel51 = null;
 	private JLabel jLabel61 = null;
-	private JPanel groupAttack = null;
+	private BGroupBox groupAttack = null;
 	private JLabel lblDuration = null;
 	private JSlider trackDuration = null;
 	private JTextField txtDuration = null;
@@ -265,9 +265,9 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints4.gridy = 0;
 			lblBendDepth = new JLabel();
 			lblBendDepth.setText("Bend Depth");
-			groupPitchControl = new JPanel();
+			groupPitchControl = new BGroupBox();
 			groupPitchControl.setLayout(new GridBagLayout());
-			groupPitchControl.setBorder(BorderFactory.createTitledBorder(null, "Pitch Control (VOCALOID2)", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			groupPitchControl.setTitle("Pitch Control (VOCALOID2)");
 			groupPitchControl.add(lblBendDepth, gridBagConstraints4);
 			groupPitchControl.add(getTrackBendDepth(), gridBagConstraints5);
 			groupPitchControl.add(getTxtBendDepth(), gridBagConstraints6);
@@ -439,9 +439,9 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints41.insets = new Insets(0, 12, 0, 0);
 			lblDecay = new JLabel();
 			lblDecay.setText("Decay");
-			groupDynamicsControl = new JPanel();
+			groupDynamicsControl = new BGroupBox();
 			groupDynamicsControl.setLayout(new GridBagLayout());
-			groupDynamicsControl.setBorder(BorderFactory.createTitledBorder(null, "Dynamics Control (VOCALOID2)", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			groupDynamicsControl.setTitle("Dynamics Control (VOCALOID2)");
 			groupDynamicsControl.add(lblDecay, gridBagConstraints41);
 			groupDynamicsControl.add(getTrackDecay(), gridBagConstraints51);
 			groupDynamicsControl.add(getTxtDecay(), gridBagConstraints61);
@@ -597,9 +597,9 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints411.insets = new Insets(0, 12, 0, 0);
 			lblDuration = new JLabel();
 			lblDuration.setText("Duration");
-			groupAttack = new JPanel();
+			groupAttack = new BGroupBox();
 			groupAttack.setLayout(new GridBagLayout());
-			groupAttack.setBorder(BorderFactory.createTitledBorder(null, "Attack (VOCALOID1)", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			groupAttack.setTitle("Attack (VOCALOID1)");
 			groupAttack.add(lblDuration, gridBagConstraints411);
 			groupAttack.add(getTrackDuration(), gridBagConstraints511);
 			groupAttack.add(getTxtDuration(), gridBagConstraints611);

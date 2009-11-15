@@ -12,12 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import org.kbinani.*;
-
-public class BFormClosedEventArgs extends BEventArgs
-{
-
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BFormClosedEventArgs.java
 #endif

@@ -1,27 +1,5 @@
 ﻿#if JAVA
-package org.kbinani.windows.forms;
-
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import org.kbinani.*;
-
-public class BTimer extends Timer implements ActionListener {
-    public BEvent<BEventHandler> tickEvent = new BEvent<BEventHandler>();
-
-    public BTimer(){
-        super( 100, null );
-        addActionListener( this );
-    }
-    
-    public void actionPerformed( ActionEvent e ){
-        try{
-            tickEvent.raise( new BEventArgs() );
-        }catch( Exception ex ){
-            System.out.println( "BTimer#actionPerformed; ex=" + ex );
-        }
-    }
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BTimer.java
 #else
 using System;
 
