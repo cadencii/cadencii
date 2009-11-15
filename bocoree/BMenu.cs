@@ -1,5 +1,5 @@
 ﻿/*
- * BPopupMenu.cs
+ * BMenuItem.cs
  * Copyright (c) 2009 kbinani
  *
  * This file is part of bocoree.
@@ -12,54 +12,71 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BPopupMenu.java
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BMenu.java
 #else
-using System;
+#define ABSTRACT_BUTTON_ENABLE_IS_SELECTED
+#define COMPONENT_PARENT_AS_OWNERITEM
+#define COMPONENT_ENABLE_TOOL_TIP_TEXT
 using System.Collections.Generic;
 using System.Windows.Forms;
 using bocoreex.swing;
 
 namespace bocoree.windows.forms {
-
-    public class BPopupMenu : System.Windows.Forms.ContextMenuStrip, MenuElement {
-        public BPopupMenu( System.ComponentModel.IContainer container )
-            : base( container ) {
-        }
-
+    // このクラスの中身はBMenuItem.csのコピー
+    public class BMenu : System.Windows.Forms.ToolStripMenuItem, MenuElement {
+        // root implementation of javax.swing.AbstractButton
+        #region javax.swing.AbstractButton
         public string getText() {
             return base.Text;
         }
 
-        public KeyStroke getAccelerator() {
-            return KeyStroke.getKeyStroke( 0, 0 );
+        public void setText( string value ) {
+            base.Text = value;
+        }
+#if ABSTRACT_BUTTON_ENABLE_IS_SELECTED
+        public bool isSelected() {
+            return base.Checked;
         }
 
-        public void setAccelerator( KeyStroke stroke ) {
+        public void setSelected( bool value ) {
+            base.Checked = value;
+        }
+#endif
+        public System.Drawing.Image getIcon() {
+            return base.Image;
         }
 
-        public void show( Control c, int x, int y ) {
-            base.Show( c, x, y );
-        }
-
-        #region javax.swing.MenuElement
-        public MenuElement[] getSubElements() {
-            List<MenuElement> list = new List<MenuElement>();
-            foreach ( ToolStripItem item in base.Items ) {
-                if ( item is MenuElement ) {
-                    list.Add( (MenuElement)item );
-                }
-            }
-            return list.ToArray();
+        public void setIcon( System.Drawing.Image value ) {
+            base.Image = value;
         }
         #endregion
 
         #region java.awt.Component
+        public bool isVisible() {
+            return base.Visible;
+        }
+
+        public void setVisible( bool value ) {
+            base.Visible = value;
+        }
+
+#if COMPONENT_ENABLE_TOOL_TIP_TEXT
+        public void setToolTipText( string value ) {
+            base.ToolTipText = value;
+        }
+
+        public string getToolTipText() {
+            return base.ToolTipText;
+        }
+#endif
+
 #if COMPONENT_PARENT_AS_OWNERITEM
         public object getParent() {
             return base.OwnerItem;
         }
 #else
-        public object getParent() {
+        public object getParent()
+        {
             return base.Parent;
         }
 #endif
@@ -157,7 +174,56 @@ namespace bocoree.windows.forms {
             base.Enabled = value;
         }
         #endregion
-    }
 
+        #region javax.swing.MenuElement
+        public MenuElement[] getSubElements() {
+            List<MenuElement> list = new List<MenuElement>();
+            foreach ( ToolStripItem item in base.DropDownItems ) {
+                if ( item is MenuElement ) {
+                    list.Add( (MenuElement)item );
+                }
+            }
+            return list.ToArray();
+        }
+        #endregion
+
+        public bool isCheckOnClick() {
+            return base.CheckOnClick;
+        }
+
+        public void setCheckOnClick( bool value ) {
+            base.CheckOnClick = value;
+        }
+
+        public KeyStroke getAccelerator() {
+            KeyStroke ret = KeyStroke.getKeyStroke( 0, 0 );
+            ret.keys = base.ShortcutKeys;
+            return ret;
+        }
+
+        public void setAccelerator( KeyStroke stroke ) {
+            base.ShortcutKeys = stroke.keys;
+        }
+
+        public void add( ToolStripItem item ) {
+            base.DropDownItems.Add( item );
+        }
+
+        public void addSeparator() {
+            base.DropDownItems.Add( new ToolStripSeparator() );
+        }
+
+        public void removeAll() {
+            base.DropDownItems.Clear();
+        }
+
+        public void setTag( object value ) {
+            base.Tag = value;
+        }
+
+        public object getTag() {
+            return base.Tag;
+        }
+    }
 }
 #endif

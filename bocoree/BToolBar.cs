@@ -15,10 +15,6 @@
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BToolBar.java
 #else
 namespace bocoree.windows.forms {
-    public class a {
-        System.Windows.Forms.ContainerControl f;
-    }
-
     public class BToolBar : System.Windows.Forms.ToolStrip {
         public int getComponentCount() {
             return base.Items.Count;
@@ -26,6 +22,14 @@ namespace bocoree.windows.forms {
 
         public System.Windows.Forms.ToolStripItem getComponentAtIndex( int index ) {
             return base.Items[index];
+        }
+
+        public void add( System.Windows.Forms.ToolStripItem value ) {
+            base.Items.Add( value );
+        }
+
+        public void addSeparator() {
+            base.Items.Add( new System.Windows.Forms.ToolStripSeparator() );
         }
     }
 }

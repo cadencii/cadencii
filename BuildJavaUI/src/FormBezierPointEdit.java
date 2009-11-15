@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.kbinani.windows.forms.BGroupBox;
 
 public class FormBezierPointEdit extends JFrame {
 

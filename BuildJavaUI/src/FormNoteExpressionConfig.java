@@ -1,66 +1,62 @@
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import java.awt.GridBagLayout;
 import java.awt.Dimension;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
-import javax.swing.JComboBox;
-import javax.swing.BorderFactory;
-import javax.swing.border.TitledBorder;
-import java.awt.Font;
-import java.awt.Color;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JCheckBox;
-import javax.swing.JButton;
+import javax.swing.JPanel;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BCheckBox;
+import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BGroupBox;
+import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BSlider;
+import org.kbinani.windows.forms.BTextBox;
 
-public class FormNoteExpressionConfig extends JFrame {
+public class FormNoteExpressionConfig extends BForm {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private JPanel panelVocaloid2Template = null;
-	private JLabel lblTemplate = null;
-	private JComboBox comboTemplate = null;
-	private JLabel jLabel1 = null;
+	private BLabel lblTemplate = null;
+	private BComboBox comboTemplate = null;
+	private BLabel jLabel1 = null;
 	private BGroupBox groupPitchControl = null;
-	private JLabel lblBendDepth = null;
-	private JSlider trackBendDepth = null;
-	private JTextField txtBendDepth = null;
-	private JLabel jLabel3 = null;
-	private JLabel lblBendLength = null;
-	private JSlider trackBendLength = null;
-	private JTextField txtBendLength = null;
-	private JLabel jLabel5 = null;
-	private JCheckBox chkUpPortamento = null;
-	private JCheckBox chkDownPortamento = null;
-	private JLabel jLabel6 = null;
+	private BLabel lblBendDepth = null;
+	private BSlider trackBendDepth = null;
+	private BTextBox txtBendDepth = null;
+	private BLabel jLabel3 = null;
+	private BLabel lblBendLength = null;
+	private BSlider trackBendLength = null;
+	private BTextBox txtBendLength = null;
+	private BLabel jLabel5 = null;
+	private BCheckBox chkUpPortamento = null;
+	private BCheckBox chkDownPortamento = null;
+	private BLabel jLabel6 = null;
 	private BGroupBox groupDynamicsControl = null;
-	private JLabel lblDecay = null;
-	private JSlider trackDecay = null;
-	private JTextField txtDecay = null;
-	private JLabel jLabel31 = null;
-	private JLabel lblAccent = null;
-	private JSlider trackAccent = null;
-	private JTextField txtAccent = null;
-	private JLabel jLabel51 = null;
-	private JLabel jLabel61 = null;
+	private BLabel lblDecay = null;
+	private BSlider trackDecay = null;
+	private BTextBox txtDecay = null;
+	private BLabel jLabel31 = null;
+	private BLabel lblAccent = null;
+	private BSlider trackAccent = null;
+	private BTextBox txtAccent = null;
+	private BLabel jLabel51 = null;
+	private BLabel jLabel61 = null;
 	private BGroupBox groupAttack = null;
-	private JLabel lblDuration = null;
-	private JSlider trackDuration = null;
-	private JTextField txtDuration = null;
-	private JLabel jLabel311 = null;
-	private JLabel lblDepth = null;
-	private JSlider trackDepth = null;
-	private JTextField txtDepth = null;
-	private JLabel jLabel511 = null;
-	private JLabel jLabel611 = null;
-	private JLabel lblAttackTemplate = null;
-	private JComboBox comboAttackTemplate = null;
+	private BLabel lblDuration = null;
+	private BSlider trackDuration = null;
+	private BTextBox txtDuration = null;
+	private BLabel jLabel311 = null;
+	private BLabel lblDepth = null;
+	private BSlider trackDepth = null;
+	private BTextBox txtDepth = null;
+	private BLabel jLabel511 = null;
+	private BLabel jLabel611 = null;
+	private BLabel lblAttackTemplate = null;
+	private BComboBox comboAttackTemplate = null;
 	private JPanel jPanel2 = null;
-	private JButton btnOK = null;
-	private JButton btnCancel = null;
+	private BButton btnOK = null;
+	private BButton btnCancel = null;
 
 	/**
 	 * This is the default constructor
@@ -142,7 +138,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints2.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints2.weightx = 1.0D;
 			gridBagConstraints2.gridy = 0;
-			jLabel1 = new JLabel();
+			jLabel1 = new BLabel();
 			jLabel1.setText("");
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.fill = GridBagConstraints.NONE;
@@ -155,7 +151,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints.gridx = 1;
 			gridBagConstraints.anchor = GridBagConstraints.EAST;
 			gridBagConstraints.gridy = 0;
-			lblTemplate = new JLabel();
+			lblTemplate = new BLabel();
 			lblTemplate.setText("Template");
 			panelVocaloid2Template = new JPanel();
 			panelVocaloid2Template.setLayout(new GridBagLayout());
@@ -169,11 +165,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes comboTemplate	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboTemplate() {
+	private BComboBox getComboTemplate() {
 		if (comboTemplate == null) {
-			comboTemplate = new JComboBox();
+			comboTemplate = new BComboBox();
 			comboTemplate.setPreferredSize(new Dimension(121, 22));
 		}
 		return comboTemplate;
@@ -193,7 +189,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints14.weightx = 1.0D;
 			gridBagConstraints14.gridwidth = 4;
 			gridBagConstraints14.gridy = 4;
-			jLabel6 = new JLabel();
+			jLabel6 = new BLabel();
 			jLabel6.setText("");
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			gridBagConstraints13.gridx = 0;
@@ -213,7 +209,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints11.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints11.anchor = GridBagConstraints.WEST;
 			gridBagConstraints11.gridy = 1;
-			jLabel5 = new JLabel();
+			jLabel5 = new BLabel();
 			jLabel5.setText("%");
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
 			gridBagConstraints10.fill = GridBagConstraints.NONE;
@@ -234,7 +230,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints8.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints8.anchor = GridBagConstraints.WEST;
 			gridBagConstraints8.gridy = 1;
-			lblBendLength = new JLabel();
+			lblBendLength = new BLabel();
 			lblBendLength.setText("Bend Length");
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 			gridBagConstraints7.gridx = 3;
@@ -242,7 +238,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints7.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints7.weightx = 1.0D;
 			gridBagConstraints7.gridy = 0;
-			jLabel3 = new JLabel();
+			jLabel3 = new BLabel();
 			jLabel3.setText("%");
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.fill = GridBagConstraints.NONE;
@@ -263,7 +259,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints4.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints4.anchor = GridBagConstraints.WEST;
 			gridBagConstraints4.gridy = 0;
-			lblBendDepth = new JLabel();
+			lblBendDepth = new BLabel();
 			lblBendDepth.setText("Bend Depth");
 			groupPitchControl = new BGroupBox();
 			groupPitchControl.setLayout(new GridBagLayout());
@@ -286,11 +282,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes trackBendDepth	
 	 * 	
-	 * @return javax.swing.JSlider	
+	 * @return javax.swing.BSlider	
 	 */
-	private JSlider getTrackBendDepth() {
+	private BSlider getTrackBendDepth() {
 		if (trackBendDepth == null) {
-			trackBendDepth = new JSlider();
+			trackBendDepth = new BSlider();
 			trackBendDepth.setPreferredSize(new Dimension(156, 18));
 			trackBendDepth.setValue(8);
 		}
@@ -300,13 +296,13 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes txtBendDepth	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtBendDepth() {
+	private BTextBox getTxtBendDepth() {
 		if (txtBendDepth == null) {
-			txtBendDepth = new JTextField();
+			txtBendDepth = new BTextBox();
 			txtBendDepth.setText("8");
-			txtBendDepth.setHorizontalAlignment(JTextField.RIGHT);
+			txtBendDepth.setHorizontalAlignment(BTextBox.RIGHT);
 			txtBendDepth.setPreferredSize(new Dimension(39, 19));
 		}
 		return txtBendDepth;
@@ -315,11 +311,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes trackBendLength	
 	 * 	
-	 * @return javax.swing.JSlider	
+	 * @return javax.swing.BSlider	
 	 */
-	private JSlider getTrackBendLength() {
+	private BSlider getTrackBendLength() {
 		if (trackBendLength == null) {
-			trackBendLength = new JSlider();
+			trackBendLength = new BSlider();
 			trackBendLength.setPreferredSize(new Dimension(156, 18));
 			trackBendLength.setValue(0);
 		}
@@ -329,14 +325,14 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes txtBendLength	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtBendLength() {
+	private BTextBox getTxtBendLength() {
 		if (txtBendLength == null) {
-			txtBendLength = new JTextField();
+			txtBendLength = new BTextBox();
 			txtBendLength.setText("0");
 			txtBendLength.setPreferredSize(new Dimension(39, 19));
-			txtBendLength.setHorizontalAlignment(JTextField.RIGHT);
+			txtBendLength.setHorizontalAlignment(BTextBox.RIGHT);
 		}
 		return txtBendLength;
 	}
@@ -344,11 +340,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes chkUpPortamento	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkUpPortamento() {
+	private BCheckBox getChkUpPortamento() {
 		if (chkUpPortamento == null) {
-			chkUpPortamento = new JCheckBox();
+			chkUpPortamento = new BCheckBox();
 			chkUpPortamento.setText("Add portamento in rising movement");
 		}
 		return chkUpPortamento;
@@ -357,11 +353,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes chkDownPortamento	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkDownPortamento() {
+	private BCheckBox getChkDownPortamento() {
 		if (chkDownPortamento == null) {
-			chkDownPortamento = new JCheckBox();
+			chkDownPortamento = new BCheckBox();
 			chkDownPortamento.setText("Add portamento in falling movement");
 		}
 		return chkDownPortamento;
@@ -381,7 +377,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints141.weightx = 1.0D;
 			gridBagConstraints141.weighty = 1.0D;
 			gridBagConstraints141.gridwidth = 4;
-			jLabel61 = new JLabel();
+			jLabel61 = new BLabel();
 			jLabel61.setText("");
 			GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
 			gridBagConstraints111.gridx = 3;
@@ -389,7 +385,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints111.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints111.weightx = 1.0D;
 			gridBagConstraints111.gridy = 1;
-			jLabel51 = new JLabel();
+			jLabel51 = new BLabel();
 			jLabel51.setText("%");
 			GridBagConstraints gridBagConstraints101 = new GridBagConstraints();
 			gridBagConstraints101.fill = GridBagConstraints.NONE;
@@ -409,7 +405,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints81.gridx = 0;
 			gridBagConstraints81.gridy = 1;
 			gridBagConstraints81.insets = new Insets(0, 12, 0, 0);
-			lblAccent = new JLabel();
+			lblAccent = new BLabel();
 			lblAccent.setText("Accent");
 			GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
 			gridBagConstraints71.gridx = 3;
@@ -417,7 +413,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints71.anchor = GridBagConstraints.WEST;
 			gridBagConstraints71.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints71.gridy = 0;
-			jLabel31 = new JLabel();
+			jLabel31 = new BLabel();
 			jLabel31.setText("%");
 			GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
 			gridBagConstraints61.fill = GridBagConstraints.NONE;
@@ -437,7 +433,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints41.gridx = 0;
 			gridBagConstraints41.gridy = 0;
 			gridBagConstraints41.insets = new Insets(0, 12, 0, 0);
-			lblDecay = new JLabel();
+			lblDecay = new BLabel();
 			lblDecay.setText("Decay");
 			groupDynamicsControl = new BGroupBox();
 			groupDynamicsControl.setLayout(new GridBagLayout());
@@ -458,11 +454,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes trackDecay	
 	 * 	
-	 * @return javax.swing.JSlider	
+	 * @return javax.swing.BSlider	
 	 */
-	private JSlider getTrackDecay() {
+	private BSlider getTrackDecay() {
 		if (trackDecay == null) {
-			trackDecay = new JSlider();
+			trackDecay = new BSlider();
 			trackDecay.setPreferredSize(new Dimension(156, 18));
 		}
 		return trackDecay;
@@ -471,13 +467,13 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes txtDecay	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtDecay() {
+	private BTextBox getTxtDecay() {
 		if (txtDecay == null) {
-			txtDecay = new JTextField();
+			txtDecay = new BTextBox();
 			txtDecay.setPreferredSize(new Dimension(39, 19));
-			txtDecay.setHorizontalAlignment(JTextField.RIGHT);
+			txtDecay.setHorizontalAlignment(BTextBox.RIGHT);
 			txtDecay.setText("50");
 		}
 		return txtDecay;
@@ -486,11 +482,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes trackAccent	
 	 * 	
-	 * @return javax.swing.JSlider	
+	 * @return javax.swing.BSlider	
 	 */
-	private JSlider getTrackAccent() {
+	private BSlider getTrackAccent() {
 		if (trackAccent == null) {
-			trackAccent = new JSlider();
+			trackAccent = new BSlider();
 			trackAccent.setPreferredSize(new Dimension(156, 18));
 		}
 		return trackAccent;
@@ -499,13 +495,13 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes txtAccent	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtAccent() {
+	private BTextBox getTxtAccent() {
 		if (txtAccent == null) {
-			txtAccent = new JTextField();
+			txtAccent = new BTextBox();
 			txtAccent.setPreferredSize(new Dimension(39, 19));
-			txtAccent.setHorizontalAlignment(JTextField.RIGHT);
+			txtAccent.setHorizontalAlignment(BTextBox.RIGHT);
 			txtAccent.setText("50");
 		}
 		return txtAccent;
@@ -530,7 +526,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints17.gridx = 0;
 			gridBagConstraints17.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints17.gridy = 0;
-			lblAttackTemplate = new JLabel();
+			lblAttackTemplate = new BLabel();
 			lblAttackTemplate.setText("Attack Variation");
 			GridBagConstraints gridBagConstraints1411 = new GridBagConstraints();
 			gridBagConstraints1411.fill = GridBagConstraints.BOTH;
@@ -539,7 +535,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints1411.weightx = 1.0D;
 			gridBagConstraints1411.weighty = 1.0D;
 			gridBagConstraints1411.gridwidth = 4;
-			jLabel611 = new JLabel();
+			jLabel611 = new BLabel();
 			jLabel611.setText("");
 			GridBagConstraints gridBagConstraints1111 = new GridBagConstraints();
 			gridBagConstraints1111.gridx = 3;
@@ -547,7 +543,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints1111.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints1111.weightx = 1.0D;
 			gridBagConstraints1111.gridy = 2;
-			jLabel511 = new JLabel();
+			jLabel511 = new BLabel();
 			jLabel511.setText("%");
 			GridBagConstraints gridBagConstraints1011 = new GridBagConstraints();
 			gridBagConstraints1011.fill = GridBagConstraints.NONE;
@@ -567,7 +563,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints811.gridx = 0;
 			gridBagConstraints811.gridy = 2;
 			gridBagConstraints811.insets = new Insets(0, 12, 0, 0);
-			lblDepth = new JLabel();
+			lblDepth = new BLabel();
 			lblDepth.setText("Depth");
 			GridBagConstraints gridBagConstraints711 = new GridBagConstraints();
 			gridBagConstraints711.gridx = 3;
@@ -575,7 +571,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints711.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints711.anchor = GridBagConstraints.WEST;
 			gridBagConstraints711.gridy = 1;
-			jLabel311 = new JLabel();
+			jLabel311 = new BLabel();
 			jLabel311.setText("%");
 			GridBagConstraints gridBagConstraints611 = new GridBagConstraints();
 			gridBagConstraints611.fill = GridBagConstraints.NONE;
@@ -595,7 +591,7 @@ public class FormNoteExpressionConfig extends JFrame {
 			gridBagConstraints411.gridx = 0;
 			gridBagConstraints411.gridy = 1;
 			gridBagConstraints411.insets = new Insets(0, 12, 0, 0);
-			lblDuration = new JLabel();
+			lblDuration = new BLabel();
 			lblDuration.setText("Duration");
 			groupAttack = new BGroupBox();
 			groupAttack.setLayout(new GridBagLayout());
@@ -618,11 +614,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes trackDuration	
 	 * 	
-	 * @return javax.swing.JSlider	
+	 * @return javax.swing.BSlider	
 	 */
-	private JSlider getTrackDuration() {
+	private BSlider getTrackDuration() {
 		if (trackDuration == null) {
-			trackDuration = new JSlider();
+			trackDuration = new BSlider();
 			trackDuration.setPreferredSize(new Dimension(156, 18));
 			trackDuration.setValue(64);
 			trackDuration.setMaximum(127);
@@ -633,13 +629,13 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes txtDuration	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtDuration() {
+	private BTextBox getTxtDuration() {
 		if (txtDuration == null) {
-			txtDuration = new JTextField();
+			txtDuration = new BTextBox();
 			txtDuration.setPreferredSize(new Dimension(39, 19));
-			txtDuration.setHorizontalAlignment(JTextField.RIGHT);
+			txtDuration.setHorizontalAlignment(BTextBox.RIGHT);
 			txtDuration.setText("64");
 		}
 		return txtDuration;
@@ -648,11 +644,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes trackDepth	
 	 * 	
-	 * @return javax.swing.JSlider	
+	 * @return javax.swing.BSlider	
 	 */
-	private JSlider getTrackDepth() {
+	private BSlider getTrackDepth() {
 		if (trackDepth == null) {
-			trackDepth = new JSlider();
+			trackDepth = new BSlider();
 			trackDepth.setPreferredSize(new Dimension(156, 18));
 			trackDepth.setMaximum(127);
 			trackDepth.setValue(64);
@@ -663,13 +659,13 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes txtDepth	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtDepth() {
+	private BTextBox getTxtDepth() {
 		if (txtDepth == null) {
-			txtDepth = new JTextField();
+			txtDepth = new BTextBox();
 			txtDepth.setPreferredSize(new Dimension(39, 19));
-			txtDepth.setHorizontalAlignment(JTextField.RIGHT);
+			txtDepth.setHorizontalAlignment(BTextBox.RIGHT);
 			txtDepth.setText("64");
 		}
 		return txtDepth;
@@ -678,11 +674,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes comboAttackTemplate	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboAttackTemplate() {
+	private BComboBox getComboAttackTemplate() {
 		if (comboAttackTemplate == null) {
-			comboAttackTemplate = new JComboBox();
+			comboAttackTemplate = new BComboBox();
 			comboAttackTemplate.setPreferredSize(new Dimension(143, 20));
 		}
 		return comboAttackTemplate;
@@ -716,11 +712,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes btnOK	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnOK() {
+	private BButton getBtnOK() {
 		if (btnOK == null) {
-			btnOK = new JButton();
+			btnOK = new BButton();
 			btnOK.setText("OK");
 		}
 		return btnOK;
@@ -729,11 +725,11 @@ public class FormNoteExpressionConfig extends JFrame {
 	/**
 	 * This method initializes btnCancel	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnCancel() {
+	private BButton getBtnCancel() {
 		if (btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
 		}
 		return btnCancel;

@@ -10,6 +10,8 @@ import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
 
 public class BTextBox extends JTextField implements KeyListener, DocumentListener{
+    private static final long serialVersionUID = 7503633539526888136L;
+
     public BTextBox(){
         super();
         addKeyListener( this );

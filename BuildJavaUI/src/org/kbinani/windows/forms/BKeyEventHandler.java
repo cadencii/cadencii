@@ -16,7 +16,7 @@ public class BKeyEventHandler implements IEventHandler{
         }
     }
     
-    public BKeyEventHandler( Class invoker, String method_name ){
+    public BKeyEventHandler( Class<?> invoker, String method_name ){
         try{
             m_delegate = new BDelegate( invoker, method_name, Void.TYPE, Object.class, BKeyEventArgs.class );
         }catch( Exception ex ){

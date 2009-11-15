@@ -275,6 +275,17 @@ namespace bocoree {
         }
 #endif
 
+#if JAVA
+        public static Rectangle getScreenBounds( Component w ){
+            return w.getGraphicsConfiguration().getBounds();
+        }
+#else
+        public static Rectangle getScreenBounds( System.Windows.Forms.Control w ) {
+            System.Drawing.Rectangle rc = System.Windows.Forms.Screen.GetWorkingArea( w );
+            return new Rectangle( rc.X, rc.Y, rc.Width, rc.Height );
+        }
+#endif
+
         #region Clipboard
         public static void setClipboardText( String value ) {
 #if JAVA

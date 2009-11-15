@@ -12,11 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani;
-
-public interface IEventHandler
-{
-    void invoke( Object... args );
-}
-
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\IEventHandler.java
 #endif

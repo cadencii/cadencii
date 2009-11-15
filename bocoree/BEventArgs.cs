@@ -12,9 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani;
-
-public class BEventArgs
-{
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\BEventArgs.java
 #endif

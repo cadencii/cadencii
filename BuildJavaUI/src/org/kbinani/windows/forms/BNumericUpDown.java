@@ -7,7 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class BNumericUpDown extends JPanel{
-	private JTextField txtValue = null;
+    private static final long serialVersionUID = -8499996379673462967L;
+    private JTextField txtValue = null;
 	private JButton btnUp = null;
 	private JButton btnDown = null;
 

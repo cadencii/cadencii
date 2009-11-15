@@ -1194,11 +1194,7 @@ namespace Boare.Cadencii {
 
         #region SelectedBezier
         public static Iterator getSelectedBezierEnumerator() {
-#if JAVA
             return s_selected_bezier.iterator();
-#else
-            return new ListIterator<SelectedBezierPoint>( s_selected_bezier );
-#endif
         }
 
         /// <summary>

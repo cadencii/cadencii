@@ -115,15 +115,15 @@ namespace Boare.Cadencii {
         public void ApplyLanguage() {
             setTitle( _( "Edit Bezier Data Point" ) );
 
-            groupDataPoint.setText( _( "Data Poin" ) );
+            groupDataPoint.setTitle( _( "Data Poin" ) );
             lblDataPointClock.setText( _( "Clock" ) );
             lblDataPointValue.setText( _( "Value" ) );
 
-            groupLeft.setText( _( "Left Control Point" ) );
+            groupLeft.setTitle( _( "Left Control Point" ) );
             lblLeftClock.setText( _( "Clock" ) );
             lblLeftValue.setText( _( "Value" ) );
 
-            groupRight.setText( _( "Right Control Point" ) );
+            groupRight.setTitle( _( "Right Control Point" ) );
             lblRightClock.setText( _( "Clock" ) );
             lblRightValue.setText( _( "Value" ) );
 
@@ -178,11 +178,12 @@ namespace Boare.Cadencii {
         private void btnDataPoint_MouseDown( Object sender, BMouseEventArgs e ) {
             this.Opacity = m_min_opacity;
             m_last_mouse_global_location = PortUtil.getMousePosition();
-            System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getBase().getX() ),
+            Point loc_on_trackselector = new Point( AppManager.xCoordFromClocks( (int)m_point.getBase().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getBase().getY() ) );
-            System.Drawing.Point loc_on_screen = m_parent.PointToScreen( loc_on_trackselector );
+            Point loc_topleft = m_parent.getLocationOnScreen();
+            Point loc_on_screen = new Point( loc_topleft.x + loc_on_trackselector.x, loc_topleft.y + loc_on_trackselector.y );
             PortUtil.setMousePosition( loc_on_screen );
-            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
+            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = BezierPickedSide.BASE;
             m_btn_datapoint_downed = true;
@@ -191,11 +192,12 @@ namespace Boare.Cadencii {
         private void btnLeft_MouseDown( Object sender, BMouseEventArgs e ) {
             this.Opacity = m_min_opacity;
             m_last_mouse_global_location = PortUtil.getMousePosition();
-            System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getControlLeft().getX() ),
+            Point loc_on_trackselector = new Point( AppManager.xCoordFromClocks( (int)m_point.getControlLeft().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getControlLeft().getY() ) );
-            System.Drawing.Point loc_on_screen = m_parent.PointToScreen( loc_on_trackselector );
+            Point loc_topleft = m_parent.getLocationOnScreen();
+            Point loc_on_screen = new Point( loc_on_trackselector.x + loc_topleft.x, loc_on_trackselector.y + loc_topleft.y );
             PortUtil.setMousePosition( loc_on_screen );
-            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
+            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = BezierPickedSide.LEFT;
             m_btn_datapoint_downed = true;
@@ -204,11 +206,12 @@ namespace Boare.Cadencii {
         private void btnRight_MouseDown( Object sender, BMouseEventArgs e ) {
             this.Opacity = m_min_opacity;
             m_last_mouse_global_location = PortUtil.getMousePosition();
-            System.Drawing.Point loc_on_trackselector = new System.Drawing.Point( AppManager.xCoordFromClocks( (int)m_point.getControlRight().getX() ),
+            Point loc_on_trackselector = new Point( AppManager.xCoordFromClocks( (int)m_point.getControlRight().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getControlRight().getY() ) );
-            System.Drawing.Point loc_on_screen = m_parent.PointToScreen( loc_on_trackselector );
+            Point loc_topleft = m_parent.getLocationOnScreen();
+            Point loc_on_screen = new Point( loc_on_trackselector.x + loc_topleft.x, loc_on_trackselector.y + loc_topleft.y );
             PortUtil.setMousePosition( loc_on_screen );
-            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
+            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = BezierPickedSide.RIGHT;
             m_btn_datapoint_downed = true;
@@ -820,23 +823,23 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.chkEnableSmooth = new System.Windows.Forms.CheckBox();
-            this.lblLeftValue = new System.Windows.Forms.Label();
-            this.lblLeftClock = new System.Windows.Forms.Label();
-            this.groupLeft = new System.Windows.Forms.GroupBox();
-            this.btnLeft = new System.Windows.Forms.Button();
-            this.groupDataPoint = new System.Windows.Forms.GroupBox();
-            this.btnDataPoint = new System.Windows.Forms.Button();
-            this.lblDataPointValue = new System.Windows.Forms.Label();
-            this.lblDataPointClock = new System.Windows.Forms.Label();
-            this.groupRight = new System.Windows.Forms.GroupBox();
-            this.btnRight = new System.Windows.Forms.Button();
-            this.lblRightValue = new System.Windows.Forms.Label();
-            this.lblRightClock = new System.Windows.Forms.Label();
-            this.btnBackward = new System.Windows.Forms.Button();
-            this.btnForward = new System.Windows.Forms.Button();
+            this.btnCancel = new BButton();
+            this.btnOK = new BButton();
+            this.chkEnableSmooth = new BCheckBox();
+            this.lblLeftValue = new BLabel();
+            this.lblLeftClock = new BLabel();
+            this.groupLeft = new BGroupBox();
+            this.btnLeft = new BButton();
+            this.groupDataPoint = new BGroupBox();
+            this.btnDataPoint = new BButton();
+            this.lblDataPointValue = new BLabel();
+            this.lblDataPointClock = new BLabel();
+            this.groupRight = new BGroupBox();
+            this.btnRight = new BButton();
+            this.lblRightValue = new BLabel();
+            this.lblRightClock = new BLabel();
+            this.btnBackward = new BButton();
+            this.btnForward = new BButton();
             this.txtRightClock = new Boare.Cadencii.NumberTextBox();
             this.txtRightValue = new Boare.Cadencii.NumberTextBox();
             this.txtDataPointClock = new Boare.Cadencii.NumberTextBox();

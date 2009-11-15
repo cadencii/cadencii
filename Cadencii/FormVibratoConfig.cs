@@ -16,6 +16,7 @@ package org.kbinani.Cadencii;
 
 import java.util.*;
 import javax.swing.*;
+import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
@@ -154,7 +155,7 @@ namespace Boare.Cadencii {
                             int percent;
                             try {
                                 percent = PortUtil.parseInt( txtVibratoLength.getText() );
-                            } catch {
+                            } catch ( Exception ex ) {
                                 return;
                             }
                             m_vibrato = (VibratoHandle)vconfig.contents.clone();
@@ -179,7 +180,7 @@ namespace Boare.Cadencii {
                 } else if ( 100 < percent ) {
                     percent = 100;
                 }
-            } catch {
+            } catch ( Exception ex ) {
                 return;
             }
             if ( percent == 0 ) {

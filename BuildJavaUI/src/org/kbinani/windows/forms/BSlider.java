@@ -8,6 +8,7 @@ import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
 
 public class BSlider extends JSlider implements ChangeListener{
+    private static final long serialVersionUID = -2771998534716750091L;
     public BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
     
     public void stateChanged( ChangeEvent e ){

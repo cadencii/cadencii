@@ -1,14 +1,9 @@
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-
-import javax.swing.JScrollBar;
+import java.awt.GridBagLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 
 public class FormMixer extends JFrame {
 

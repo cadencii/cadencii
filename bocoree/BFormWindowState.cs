@@ -16,8 +16,7 @@
 #else
 namespace bocoree.windows.forms{
 
-    public enum BFormWindowState
-    {
+    public enum BFormWindowState {
         Normal,
         Minimized,
         Maximized,

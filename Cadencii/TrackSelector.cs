@@ -397,6 +397,17 @@ namespace Boare.Cadencii {
             cmenuCurveEnvelope.Tag = CurveType.Env;
         }
 
+#if !JAVA
+        public Point getLocation(){
+            return new Point( this.Location.X, this.Location.Y );
+        }
+
+        public Point getLocationOnScreen() {
+            System.Drawing.Point p = PointToScreen( this.Location );
+            return new Point( p.X, p.Y );
+        }
+#endif
+
         protected override void OnResize( BEventArgs e ) {
             base.OnResize( e );
             vScroll.Width = VSCROLL_WIDTH;

@@ -13,11 +13,12 @@
  */
 using System;
 using System.Windows.Forms;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
 
-    public class FormRealtimeConfig : Form {
+    public class FormRealtimeConfig : BForm {
         private boolean m_game_ctrl_enabled = false;
         private DateTime m_last_event_processed;
 

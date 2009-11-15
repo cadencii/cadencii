@@ -16,7 +16,7 @@ public class BMouseEventHandler implements IEventHandler{
         }
     }
     
-    public BMouseEventHandler( Class sender, String method_name ){
+    public BMouseEventHandler( Class<?> sender, String method_name ){
         try{
             m_delegate = new BDelegate( sender, method_name, Void.TYPE, Object.class, BMouseEventArgs.class );
         }catch( Exception ex ){
