@@ -1,19 +1,18 @@
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BTextArea;
 
-public class FormCompileResult extends JFrame {
-
+public class FormCompileResult extends BForm {
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
-	private JLabel label1 = null;
-	private JTextArea textBox1 = null;
-	private JButton btnOK = null;
+	private BLabel label1 = null;
+	private BTextArea textBox1 = null;
+	private BButton btnOK = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -57,8 +56,8 @@ public class FormCompileResult extends JFrame {
 			gridBagConstraints.anchor = GridBagConstraints.WEST;
 			gridBagConstraints.insets = new Insets(23, 16, 0, 0);
 			gridBagConstraints.gridy = 0;
-			label1 = new JLabel();
-			label1.setText("JLabel");
+			label1 = new BLabel();
+			label1.setText("BLabel");
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
 			jContentPane.add(label1, gridBagConstraints);
@@ -71,11 +70,11 @@ public class FormCompileResult extends JFrame {
 	/**
 	 * This method initializes textBox1	
 	 * 	
-	 * @return javax.swing.JTextArea	
+	 * @return javax.swing.BTextArea	
 	 */
-	private JTextArea getTextBox1() {
+	private BTextArea getTextBox1() {
 		if (textBox1 == null) {
-			textBox1 = new JTextArea();
+			textBox1 = new BTextArea();
 			textBox1.setLineWrap(true);
 		}
 		return textBox1;
@@ -84,11 +83,11 @@ public class FormCompileResult extends JFrame {
 	/**
 	 * This method initializes btnOK	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnOK() {
+	private BButton getBtnOK() {
 		if (btnOK == null) {
-			btnOK = new JButton();
+			btnOK = new BButton();
 			btnOK.setText("OK");
 		}
 		return btnOK;

@@ -1,43 +1,42 @@
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.BorderFactory;
-import javax.swing.border.TitledBorder;
-import java.awt.Font;
 import java.awt.Color;
-import javax.swing.JCheckBox;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BCheckBox;
+import org.kbinani.windows.forms.BForm;
 
-public class FormMidiImExport extends JFrame {
-
+public class FormMidiImExport extends BForm {
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private JPanel jPanel = null;
-	private JButton btnCheckAll = null;
-	private JButton btnUncheckAll = null;
+	private BButton btnCheckAll = null;
+	private BButton btnUncheckAll = null;
 	private JLabel jLabel = null;
 	private JTable jTable = null;
 	private JPanel jPanel1 = null;
-	private JCheckBox chkTempo = null;
+	private BCheckBox chkTempo = null;
 	private JPanel jPanel2 = null;
-	private JButton btnOK = null;
-	private JButton btnCancel = null;
+	private BButton btnOK = null;
+	private BButton btnCancel = null;
 	private JPanel jPanel3 = null;
-	private JCheckBox chkBeat = null;
-	private JCheckBox chkLyric = null;
+	private BCheckBox chkBeat = null;
+	private BCheckBox chkLyric = null;
 	private JLabel jLabel1 = null;
 	private JPanel chkMetaText = null;
-	private JCheckBox chkNote = null;
-	private JCheckBox jCheckBox11 = null;
+	private BCheckBox chkNote = null;
+	private BCheckBox jCheckBox11 = null;
 	private JLabel jLabel11 = null;
 	private JPanel jPanel32 = null;
-	private JCheckBox chkExportVocaloidNrpn = null;
-	private JCheckBox chkPreMeasure = null;
+	private BCheckBox chkExportVocaloidNrpn = null;
+	private BCheckBox chkPreMeasure = null;
 	private JLabel jLabel12 = null;
 	/**
 	 * This is the default constructor
@@ -135,11 +134,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes btnCheckAll	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnCheckAll() {
+	private BButton getBtnCheckAll() {
 		if (btnCheckAll == null) {
-			btnCheckAll = new JButton();
+			btnCheckAll = new BButton();
 			btnCheckAll.setText("Check All");
 			btnCheckAll.setName("btnCheckAll");
 			btnCheckAll.setPreferredSize(new Dimension(87, 23));
@@ -150,11 +149,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes btnUncheckAll	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnUncheckAll() {
+	private BButton getBtnUncheckAll() {
 		if (btnUncheckAll == null) {
-			btnUncheckAll = new JButton();
+			btnUncheckAll = new BButton();
 			btnUncheckAll.setText("Uncheck All");
 			btnUncheckAll.setName("btnUncheckAll");
 			btnUncheckAll.setPreferredSize(new Dimension(101, 23));
@@ -211,11 +210,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes chkTempo	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkTempo() {
+	private BCheckBox getChkTempo() {
 		if (chkTempo == null) {
-			chkTempo = new JCheckBox();
+			chkTempo = new BCheckBox();
 			chkTempo.setText("Tempo");
 			chkTempo.setName("chkTempo");
 		}
@@ -248,11 +247,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes btnOK	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnOK() {
+	private BButton getBtnOK() {
 		if (btnOK == null) {
-			btnOK = new JButton();
+			btnOK = new BButton();
 			btnOK.setText("OK");
 		}
 		return btnOK;
@@ -261,11 +260,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes btnCancel	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnCancel() {
+	private BButton getBtnCancel() {
 		if (btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
 		}
 		return btnCancel;
@@ -307,11 +306,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes chkBeat	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkBeat() {
+	private BCheckBox getChkBeat() {
 		if (chkBeat == null) {
-			chkBeat = new JCheckBox();
+			chkBeat = new BCheckBox();
 			chkBeat.setText("Beat");
 		}
 		return chkBeat;
@@ -320,11 +319,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes chkLyric	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkLyric() {
+	private BCheckBox getChkLyric() {
 		if (chkLyric == null) {
-			chkLyric = new JCheckBox();
+			chkLyric = new BCheckBox();
 			chkLyric.setText("Lyrics");
 		}
 		return chkLyric;
@@ -362,11 +361,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes chkNote	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkNote() {
+	private BCheckBox getChkNote() {
 		if (chkNote == null) {
-			chkNote = new JCheckBox();
+			chkNote = new BCheckBox();
 			chkNote.setText("Note");
 		}
 		return chkNote;
@@ -375,11 +374,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes jCheckBox11	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getJCheckBox11() {
+	private BCheckBox getJCheckBox11() {
 		if (jCheckBox11 == null) {
-			jCheckBox11 = new JCheckBox();
+			jCheckBox11 = new BCheckBox();
 			jCheckBox11.setText("vocaloid meta-text");
 		}
 		return jCheckBox11;
@@ -417,11 +416,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes chkExportVocaloidNrpn	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkExportVocaloidNrpn() {
+	private BCheckBox getChkExportVocaloidNrpn() {
 		if (chkExportVocaloidNrpn == null) {
-			chkExportVocaloidNrpn = new JCheckBox();
+			chkExportVocaloidNrpn = new BCheckBox();
 			chkExportVocaloidNrpn.setText("vocaloid NRPN");
 		}
 		return chkExportVocaloidNrpn;
@@ -430,11 +429,11 @@ public class FormMidiImExport extends JFrame {
 	/**
 	 * This method initializes chkPreMeasure	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkPreMeasure() {
+	private BCheckBox getChkPreMeasure() {
 		if (chkPreMeasure == null) {
-			chkPreMeasure = new JCheckBox();
+			chkPreMeasure = new BCheckBox();
 			chkPreMeasure.setText("Export pre-measure part");
 		}
 		return chkPreMeasure;

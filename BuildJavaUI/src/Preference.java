@@ -1,159 +1,159 @@
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import java.awt.Dimension;
-import javax.swing.JTabbedPane;
-import java.awt.GridBagLayout;
-import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import javax.swing.JLabel;
-import java.awt.Insets;
 import java.awt.Color;
-import javax.swing.JComboBox;
-import javax.swing.BorderFactory;
-import javax.swing.border.TitledBorder;
+import java.awt.Dimension;
 import java.awt.Font;
-import javax.swing.JCheckBox;
-import javax.swing.JTextField;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BCheckBox;
+import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BPanel;
+import org.kbinani.windows.forms.BTextBox;
 
 public class Preference extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel tabSequence = null;
-	private JLabel lblResolution = null;
-	private JPanel jPanel = null;
-	private JLabel lblDynamics = null;
-	private JComboBox comboDynamics = null;
-	private JLabel lblAmplitude = null;
-	private JComboBox comboAmplitude = null;
-	private JLabel lblPeriod = null;
-	private JComboBox comboPeriod = null;
-	private JLabel jLabel1 = null;
-	private JLabel jLabel11 = null;
-	private JLabel jLabel12 = null;
-	private JLabel lblVibratoConfig = null;
-	private JPanel jPanel1 = null;
-	private JLabel lblVibratoLength = null;
-	private JComboBox comboVibratoLength = null;
-	private JLabel jLabel13 = null;
-	private JPanel groupAutoVibratoConfig = null;
-	private JPanel jPanel3 = null;
-	private JCheckBox chkEnableAutoVibrato = null;
-	private JLabel lblAutoVibratoMinLength = null;
-	private JComboBox comboAutoVibratoMinLength = null;
-	private JLabel jLabel4 = null;
-	private JPanel jPanel4 = null;
-	private JLabel lblAutoVibratoType1 = null;
-	private JComboBox comboAutoVibratoType1 = null;
-	private JLabel lblAutoVibratoType2 = null;
-	private JComboBox comboAutoVibratoType2 = null;
-	private JPanel tabAnother = null;
-	private JLabel lblDefaultSinger = null;
-	private JComboBox comboDefualtSinger = null;
-	private JLabel lblPreSendTime = null;
-	private JComboBox numPreSendTime = null;
-	private JLabel jLabel8 = null;
-	private JLabel lblWait = null;
-	private JComboBox numWait = null;
-	private JLabel jLabel81 = null;
-	private JLabel lblDefaultPremeasure = null;
-	private JComboBox comboDefaultPremeasure = null;
-	private JLabel jLabel9 = null;
-	private JPanel tabAppearance = null;
-	private JPanel groupFont = null;
-	private JLabel labelMenu = null;
-	private JLabel labelMenuFontName = null;
-	private JButton btnChangeMenuFont = null;
-	private JLabel labelScreen = null;
-	private JLabel labelScreenFontName = null;
-	private JButton btnChangeScreenFont = null;
-	private JPanel jPanel7 = null;
-	private JLabel lblLanguage = null;
-	private JComboBox comboLanguage = null;
-	private JPanel jPanel71 = null;
-	private JLabel lblTrackHeight = null;
-	private JComboBox numTrackHeight = null;
-	private JPanel groupVisibleCurve = null;
-	private JCheckBox chkAccent = null;
-	private JCheckBox chkDecay = null;
-	private JCheckBox chkVibratoRate = null;
-	private JCheckBox chkVibratoDepth = null;
-	private JCheckBox chkVel = null;
-	private JCheckBox chkDyn = null;
-	private JCheckBox chkBre = null;
-	private JCheckBox chkBri = null;
-	private JCheckBox chkCle = null;
-	private JCheckBox chkOpe = null;
-	private JCheckBox chkGen = null;
-	private JCheckBox chkPor = null;
-	private JCheckBox chkPit = null;
-	private JCheckBox chkPbs = null;
-	private JCheckBox chkHarmonics = null;
-	private JCheckBox chkFx2Depth = null;
-	private JCheckBox chkReso1 = null;
-	private JCheckBox chkReso2 = null;
-	private JCheckBox chkReso3 = null;
-	private JCheckBox chkReso4 = null;
-	private JCheckBox chkEnvelope = null;
-	private JPanel tabOperation = null;
-	private JPanel groupPianoroll = null;
-	private JLabel labelWheelOrder = null;
-	private JComboBox numericUpDownEx1 = null;
-	private JCheckBox chkCursorFix = null;
-	private JCheckBox chkScrollHorizontal = null;
-	private JCheckBox chkKeepLyricInputMode = null;
-	private JCheckBox chkPlayPreviewWhenRightClick = null;
-	private JCheckBox chkCurveSelectingQuantized = null;
-	private JCheckBox chkUseSpaceKeyAsMiddleButtonModifier = null;
-	private JPanel groupMisc = null;
-	private JLabel lblMaximumFrameRate = null;
-	private JComboBox numMaximumFrameRate = null;
-	private JLabel lblMilliSecond = null;
-	private JLabel lblMouseHoverTime = null;
-	private JComboBox numMouseHoverTime = null;
-	private JLabel lblMidiInPort = null;
-	private JComboBox comboMidiInPortNumber = null;
-	private JPanel tabPlatform = null;
-	private JPanel groupPlatform = null;
-	private JLabel lblPlatform = null;
-	private JComboBox comboPlatform = null;
-	private JCheckBox chkCommandKeyAsControl = null;
-	private JCheckBox chkTranslateRoman = null;
-	private JPanel groupVsti = null;
-	private JLabel lblVOCALOID1 = null;
-	private JTextField txtVOCALOID1 = null;
-	private JLabel lblVOCALOID2 = null;
-	private JTextField txtVOCALOID2 = null;
-	private JPanel groupUtauCores = null;
-	private JLabel lblResampler = null;
-	private JTextField txtResampler = null;
-	private JButton btnResampler = null;
-	private JLabel lblWavtool = null;
-	private JTextField txtWavtool = null;
-	private JButton btnWavtool = null;
-	private JCheckBox chkInvokeWithWine = null;
-	private JPanel tabUtauSingers = null;
+	private BPanel tabSequence = null;
+	private BLabel lblResolution = null;
+	private BPanel BPanel = null;
+	private BLabel lblDynamics = null;
+	private BComboBox comboDynamics = null;
+	private BLabel lblAmplitude = null;
+	private BComboBox comboAmplitude = null;
+	private BLabel lblPeriod = null;
+	private BComboBox comboPeriod = null;
+	private BLabel jLabel1 = null;
+	private BLabel jLabel11 = null;
+	private BLabel jLabel12 = null;
+	private BLabel lblVibratoConfig = null;
+	private BPanel jPanel1 = null;
+	private BLabel lblVibratoLength = null;
+	private BComboBox comboVibratoLength = null;
+	private BLabel jLabel13 = null;
+	private BPanel groupAutoVibratoConfig = null;
+	private BPanel jPanel3 = null;
+	private BCheckBox chkEnableAutoVibrato = null;
+	private BLabel lblAutoVibratoMinLength = null;
+	private BComboBox comboAutoVibratoMinLength = null;
+	private BLabel jLabel4 = null;
+	private BPanel jPanel4 = null;
+	private BLabel lblAutoVibratoType1 = null;
+	private BComboBox comboAutoVibratoType1 = null;
+	private BLabel lblAutoVibratoType2 = null;
+	private BComboBox comboAutoVibratoType2 = null;
+	private BPanel tabAnother = null;
+	private BLabel lblDefaultSinger = null;
+	private BComboBox comboDefualtSinger = null;
+	private BLabel lblPreSendTime = null;
+	private BComboBox numPreSendTime = null;
+	private BLabel jLabel8 = null;
+	private BLabel lblWait = null;
+	private BComboBox numWait = null;
+	private BLabel jLabel81 = null;
+	private BLabel lblDefaultPremeasure = null;
+	private BComboBox comboDefaultPremeasure = null;
+	private BLabel jLabel9 = null;
+	private BPanel tabAppearance = null;
+	private BPanel groupFont = null;
+	private BLabel labelMenu = null;
+	private BLabel labelMenuFontName = null;
+	private BButton btnChangeMenuFont = null;
+	private BLabel labelScreen = null;
+	private BLabel labelScreenFontName = null;
+	private BButton btnChangeScreenFont = null;
+	private BPanel jPanel7 = null;
+	private BLabel lblLanguage = null;
+	private BComboBox comboLanguage = null;
+	private BPanel jPanel71 = null;
+	private BLabel lblTrackHeight = null;
+	private BComboBox numTrackHeight = null;
+	private BPanel groupVisibleCurve = null;
+	private BCheckBox chkAccent = null;
+	private BCheckBox chkDecay = null;
+	private BCheckBox chkVibratoRate = null;
+	private BCheckBox chkVibratoDepth = null;
+	private BCheckBox chkVel = null;
+	private BCheckBox chkDyn = null;
+	private BCheckBox chkBre = null;
+	private BCheckBox chkBri = null;
+	private BCheckBox chkCle = null;
+	private BCheckBox chkOpe = null;
+	private BCheckBox chkGen = null;
+	private BCheckBox chkPor = null;
+	private BCheckBox chkPit = null;
+	private BCheckBox chkPbs = null;
+	private BCheckBox chkHarmonics = null;
+	private BCheckBox chkFx2Depth = null;
+	private BCheckBox chkReso1 = null;
+	private BCheckBox chkReso2 = null;
+	private BCheckBox chkReso3 = null;
+	private BCheckBox chkReso4 = null;
+	private BCheckBox chkEnvelope = null;
+	private BPanel tabOperation = null;
+	private BPanel groupPianoroll = null;
+	private BLabel labelWheelOrder = null;
+	private BComboBox numericUpDownEx1 = null;
+	private BCheckBox chkCursorFix = null;
+	private BCheckBox chkScrollHorizontal = null;
+	private BCheckBox chkKeepLyricInputMode = null;
+	private BCheckBox chkPlayPreviewWhenRightClick = null;
+	private BCheckBox chkCurveSelectingQuantized = null;
+	private BCheckBox chkUseSpaceKeyAsMiddleButtonModifier = null;
+	private BPanel groupMisc = null;
+	private BLabel lblMaximumFrameRate = null;
+	private BComboBox numMaximumFrameRate = null;
+	private BLabel lblMilliSecond = null;
+	private BLabel lblMouseHoverTime = null;
+	private BComboBox numMouseHoverTime = null;
+	private BLabel lblMidiInPort = null;
+	private BComboBox comboMidiInPortNumber = null;
+	private BPanel tabPlatform = null;
+	private BPanel groupPlatform = null;
+	private BLabel lblPlatform = null;
+	private BComboBox comboPlatform = null;
+	private BCheckBox chkCommandKeyAsControl = null;
+	private BCheckBox chkTranslateRoman = null;
+	private BPanel groupVsti = null;
+	private BLabel lblVOCALOID1 = null;
+	private BTextBox txtVOCALOID1 = null;
+	private BLabel lblVOCALOID2 = null;
+	private BTextBox txtVOCALOID2 = null;
+	private BPanel groupUtauCores = null;
+	private BLabel lblResampler = null;
+	private BTextBox txtResampler = null;
+	private BButton btnResampler = null;
+	private BLabel lblWavtool = null;
+	private BTextBox txtWavtool = null;
+	private BButton btnWavtool = null;
+	private BCheckBox chkInvokeWithWine = null;
+	private BPanel tabUtauSingers = null;
 	private JTable listSingers = null;
-	private JButton btnAdd = null;
-	private JButton btnRemove = null;
-	private JButton btnUp = null;
-	private JButton btnDown = null;
-	private JPanel jPanel17 = null;
-	private JPanel jPanel18 = null;
-	private JPanel tabFile = null;
-	private JCheckBox chkAutoBackup = null;
-	private JLabel lblAutoBackupInterval = null;
-	private JLabel lblAutoBackupMinutes = null;
-	private JPanel jPanel20 = null;
-	private JPanel panelLower = null;
-	private JButton btnOK = null;
-	private JButton btnCancel = null;
-	private JPanel jPanel5 = null;
-	private JPanel panelUpper = null;
+	private BButton btnAdd = null;
+	private BButton btnRemove = null;
+	private BButton btnUp = null;
+	private BButton btnDown = null;
+	private BPanel jPanel17 = null;
+	private BPanel jPanel18 = null;
+	private BPanel tabFile = null;
+	private BCheckBox chkAutoBackup = null;
+	private BLabel lblAutoBackupInterval = null;
+	private BLabel lblAutoBackupMinutes = null;
+	private BPanel jPanel20 = null;
+	private BPanel panelLower = null;
+	private BButton btnOK = null;
+	private BButton btnCancel = null;
+	private BPanel jPanel5 = null;
+	private BPanel panelUpper = null;
     private JTabbedPane tabPane = null;
-	private JTextField numAutoBackupInterval = null;
+	private BTextBox numAutoBackupInterval = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -200,9 +200,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes tabSequence
 	 * 
-	 * @return javax.swing.JPanel
+	 * @return javax.swing.BPanel
 	 */
-	private JPanel getTabSequence() {
+	private BPanel getTabSequence() {
 		if (tabSequence == null) {
 			GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
 			gridBagConstraints20.gridx = 0;
@@ -217,7 +217,7 @@ public class Preference extends JFrame {
 			gridBagConstraints31.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints31.weightx = 1.0D;
 			gridBagConstraints31.gridy = 2;
-			lblVibratoConfig = new JLabel();
+			lblVibratoConfig = new BLabel();
 			lblVibratoConfig.setText("Vibrato Setting");
 			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
 			gridBagConstraints21.anchor = GridBagConstraints.WEST;
@@ -230,9 +230,9 @@ public class Preference extends JFrame {
 			gridBagConstraints1.gridy = 0;
 			gridBagConstraints1.weightx = 1.0D;
 			gridBagConstraints1.insets = new Insets(12, 12, 3, 0);
-			lblResolution = new JLabel();
+			lblResolution = new BLabel();
 			lblResolution.setText("Resolution(VSTi)");
-			tabSequence = new JPanel();
+			tabSequence = new BPanel();
 			tabSequence.setLayout(new GridBagLayout());
 			tabSequence.add(lblResolution, gridBagConstraints1);
 			tabSequence.add(getJPanel(), gridBagConstraints21);
@@ -243,19 +243,19 @@ public class Preference extends JFrame {
 	}
 
 	/**
-	 * This method initializes jPanel	
+	 * This method initializes BPanel	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel() {
-		if (jPanel == null) {
+	private BPanel getJPanel() {
+		if (BPanel == null) {
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
 			gridBagConstraints10.gridx = 4;
 			gridBagConstraints10.anchor = GridBagConstraints.WEST;
 			gridBagConstraints10.weightx = 1.0D;
 			gridBagConstraints10.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints10.gridy = 3;
-			jLabel12 = new JLabel();
+			jLabel12 = new BLabel();
 			jLabel12.setText("clocks");
 			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
 			gridBagConstraints9.gridx = 4;
@@ -263,7 +263,7 @@ public class Preference extends JFrame {
 			gridBagConstraints9.weightx = 1.0D;
 			gridBagConstraints9.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints9.gridy = 1;
-			jLabel11 = new JLabel();
+			jLabel11 = new BLabel();
 			jLabel11.setText("clocks");
 			GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
 			gridBagConstraints8.gridx = 4;
@@ -271,7 +271,7 @@ public class Preference extends JFrame {
 			gridBagConstraints8.anchor = GridBagConstraints.WEST;
 			gridBagConstraints8.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints8.gridy = 0;
-			jLabel1 = new JLabel();
+			jLabel1 = new BLabel();
 			jLabel1.setText("clocks");
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 			gridBagConstraints7.fill = GridBagConstraints.NONE;
@@ -285,7 +285,7 @@ public class Preference extends JFrame {
 			gridBagConstraints6.anchor = GridBagConstraints.WEST;
 			gridBagConstraints6.insets = new Insets(0, 24, 0, 0);
 			gridBagConstraints6.gridy = 3;
-			lblPeriod = new JLabel();
+			lblPeriod = new BLabel();
 			lblPeriod.setText("Vibrato Rate");
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.fill = GridBagConstraints.NONE;
@@ -299,7 +299,7 @@ public class Preference extends JFrame {
 			gridBagConstraints4.anchor = GridBagConstraints.WEST;
 			gridBagConstraints4.insets = new Insets(0, 24, 0, 0);
 			gridBagConstraints4.gridy = 1;
-			lblAmplitude = new JLabel();
+			lblAmplitude = new BLabel();
 			lblAmplitude.setText("Vibrato Depth");
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.fill = GridBagConstraints.NONE;
@@ -313,31 +313,31 @@ public class Preference extends JFrame {
 			gridBagConstraints2.anchor = GridBagConstraints.WEST;
 			gridBagConstraints2.insets = new Insets(0, 24, 0, 0);
 			gridBagConstraints2.gridy = 0;
-			lblDynamics = new JLabel();
+			lblDynamics = new BLabel();
 			lblDynamics.setText("Dynamics");
-			jPanel = new JPanel();
-			jPanel.setLayout(new GridBagLayout());
-			jPanel.add(lblDynamics, gridBagConstraints2);
-			jPanel.add(getComboDynamics(), gridBagConstraints3);
-			jPanel.add(lblAmplitude, gridBagConstraints4);
-			jPanel.add(getComboAmplitude(), gridBagConstraints5);
-			jPanel.add(lblPeriod, gridBagConstraints6);
-			jPanel.add(getComboPeriod(), gridBagConstraints7);
-			jPanel.add(jLabel1, gridBagConstraints8);
-			jPanel.add(jLabel11, gridBagConstraints9);
-			jPanel.add(jLabel12, gridBagConstraints10);
+			BPanel = new BPanel();
+			BPanel.setLayout(new GridBagLayout());
+			BPanel.add(lblDynamics, gridBagConstraints2);
+			BPanel.add(getComboDynamics(), gridBagConstraints3);
+			BPanel.add(lblAmplitude, gridBagConstraints4);
+			BPanel.add(getComboAmplitude(), gridBagConstraints5);
+			BPanel.add(lblPeriod, gridBagConstraints6);
+			BPanel.add(getComboPeriod(), gridBagConstraints7);
+			BPanel.add(jLabel1, gridBagConstraints8);
+			BPanel.add(jLabel11, gridBagConstraints9);
+			BPanel.add(jLabel12, gridBagConstraints10);
 		}
-		return jPanel;
+		return BPanel;
 	}
 
 	/**
 	 * This method initializes comboDynamics	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboDynamics() {
+	private BComboBox getComboDynamics() {
 		if (comboDynamics == null) {
-			comboDynamics = new JComboBox();
+			comboDynamics = new BComboBox();
 			comboDynamics.setPreferredSize(new Dimension(101, 20));
 		}
 		return comboDynamics;
@@ -346,11 +346,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboAmplitude	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboAmplitude() {
+	private BComboBox getComboAmplitude() {
 		if (comboAmplitude == null) {
-			comboAmplitude = new JComboBox();
+			comboAmplitude = new BComboBox();
 			comboAmplitude.setPreferredSize(new Dimension(101, 20));
 		}
 		return comboAmplitude;
@@ -359,11 +359,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboPeriod	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboPeriod() {
+	private BComboBox getComboPeriod() {
 		if (comboPeriod == null) {
-			comboPeriod = new JComboBox();
+			comboPeriod = new BComboBox();
 			comboPeriod.setPreferredSize(new Dimension(101, 20));
 		}
 		return comboPeriod;
@@ -372,9 +372,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes jPanel1	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel1() {
+	private BPanel getJPanel1() {
 		if (jPanel1 == null) {
 			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
 			gridBagConstraints19.gridx = 0;
@@ -389,7 +389,7 @@ public class Preference extends JFrame {
 			gridBagConstraints81.gridy = 0;
 			gridBagConstraints81.weightx = 1.0D;
 			gridBagConstraints81.insets = new Insets(0, 12, 0, 0);
-			jLabel13 = new JLabel();
+			jLabel13 = new BLabel();
 			jLabel13.setText("%");
 			GridBagConstraints gridBagConstraints32 = new GridBagConstraints();
 			gridBagConstraints32.anchor = GridBagConstraints.WEST;
@@ -403,9 +403,9 @@ public class Preference extends JFrame {
 			gridBagConstraints22.gridx = 0;
 			gridBagConstraints22.gridy = 0;
 			gridBagConstraints22.insets = new Insets(0, 24, 0, 0);
-			lblVibratoLength = new JLabel();
+			lblVibratoLength = new BLabel();
 			lblVibratoLength.setText("Default Vibrato Length");
-			jPanel1 = new JPanel();
+			jPanel1 = new BPanel();
 			jPanel1.setLayout(new GridBagLayout());
 			jPanel1.add(lblVibratoLength, gridBagConstraints22);
 			jPanel1.add(getComboVibratoLength(), gridBagConstraints32);
@@ -418,11 +418,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboVibratoLength	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboVibratoLength() {
+	private BComboBox getComboVibratoLength() {
 		if (comboVibratoLength == null) {
-			comboVibratoLength = new JComboBox();
+			comboVibratoLength = new BComboBox();
 			comboVibratoLength.setPreferredSize(new Dimension(101, 20));
 		}
 		return comboVibratoLength;
@@ -431,9 +431,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes groupAutoVibratoConfig	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getGroupAutoVibratoConfig() {
+	private BPanel getGroupAutoVibratoConfig() {
 		if (groupAutoVibratoConfig == null) {
 			GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
 			gridBagConstraints51.gridx = 0;
@@ -451,7 +451,7 @@ public class Preference extends JFrame {
 			gridBagConstraints.weightx = 1.0D;
 			gridBagConstraints.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints.gridy = 0;
-			groupAutoVibratoConfig = new JPanel();
+			groupAutoVibratoConfig = new BPanel();
 			groupAutoVibratoConfig.setLayout(new GridBagLayout());
 			groupAutoVibratoConfig.setBorder(BorderFactory.createTitledBorder(null, "Auto Vibrato Settings", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupAutoVibratoConfig.add(getChkEnableAutoVibrato(), gridBagConstraints);
@@ -464,16 +464,16 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes jPanel3	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel3() {
+	private BPanel getJPanel3() {
 		if (jPanel3 == null) {
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			gridBagConstraints13.gridx = 2;
 			gridBagConstraints13.weightx = 1.0D;
 			gridBagConstraints13.anchor = GridBagConstraints.WEST;
 			gridBagConstraints13.gridy = 0;
-			jLabel4 = new JLabel();
+			jLabel4 = new BLabel();
 			jLabel4.setText("beat");
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.NONE;
@@ -484,9 +484,9 @@ public class Preference extends JFrame {
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			gridBagConstraints11.gridx = 0;
 			gridBagConstraints11.gridy = 0;
-			lblAutoVibratoMinLength = new JLabel();
+			lblAutoVibratoMinLength = new BLabel();
 			lblAutoVibratoMinLength.setText("Minimum note length for Automatic Vibrato");
-			jPanel3 = new JPanel();
+			jPanel3 = new BPanel();
 			jPanel3.setLayout(new GridBagLayout());
 			jPanel3.add(lblAutoVibratoMinLength, gridBagConstraints11);
 			jPanel3.add(getComboAutoVibratoMinLength(), gridBagConstraints12);
@@ -498,11 +498,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkEnableAutoVibrato	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkEnableAutoVibrato() {
+	private BCheckBox getChkEnableAutoVibrato() {
 		if (chkEnableAutoVibrato == null) {
-			chkEnableAutoVibrato = new JCheckBox();
+			chkEnableAutoVibrato = new BCheckBox();
 			chkEnableAutoVibrato.setText("Enable Automatic Vibrato");
 		}
 		return chkEnableAutoVibrato;
@@ -511,11 +511,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboAutoVibratoMinLength	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboAutoVibratoMinLength() {
+	private BComboBox getComboAutoVibratoMinLength() {
 		if (comboAutoVibratoMinLength == null) {
-			comboAutoVibratoMinLength = new JComboBox();
+			comboAutoVibratoMinLength = new BComboBox();
 			comboAutoVibratoMinLength.setPreferredSize(new Dimension(66, 20));
 		}
 		return comboAutoVibratoMinLength;
@@ -524,9 +524,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes jPanel4	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel4() {
+	private BPanel getJPanel4() {
 		if (jPanel4 == null) {
 			GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
 			gridBagConstraints18.fill = GridBagConstraints.NONE;
@@ -538,7 +538,7 @@ public class Preference extends JFrame {
 			GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
 			gridBagConstraints17.gridx = 0;
 			gridBagConstraints17.gridy = 1;
-			lblAutoVibratoType2 = new JLabel();
+			lblAutoVibratoType2 = new BLabel();
 			lblAutoVibratoType2.setText("Vibrato Type VOCALOID2");
 			GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
 			gridBagConstraints16.fill = GridBagConstraints.NONE;
@@ -550,9 +550,9 @@ public class Preference extends JFrame {
 			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
 			gridBagConstraints15.gridx = 0;
 			gridBagConstraints15.gridy = 0;
-			lblAutoVibratoType1 = new JLabel();
+			lblAutoVibratoType1 = new BLabel();
 			lblAutoVibratoType1.setText("Vibrato Type VOCALOID1");
-			jPanel4 = new JPanel();
+			jPanel4 = new BPanel();
 			jPanel4.setLayout(new GridBagLayout());
 			jPanel4.add(lblAutoVibratoType1, gridBagConstraints15);
 			jPanel4.add(getComboAutoVibratoType1(), gridBagConstraints16);
@@ -565,11 +565,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboAutoVibratoType1	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboAutoVibratoType1() {
+	private BComboBox getComboAutoVibratoType1() {
 		if (comboAutoVibratoType1 == null) {
-			comboAutoVibratoType1 = new JComboBox();
+			comboAutoVibratoType1 = new BComboBox();
 			comboAutoVibratoType1.setPreferredSize(new Dimension(101, 20));
 		}
 		return comboAutoVibratoType1;
@@ -578,11 +578,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboAutoVibratoType2	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboAutoVibratoType2() {
+	private BComboBox getComboAutoVibratoType2() {
 		if (comboAutoVibratoType2 == null) {
-			comboAutoVibratoType2 = new JComboBox();
+			comboAutoVibratoType2 = new BComboBox();
 			comboAutoVibratoType2.setPreferredSize(new Dimension(101, 20));
 		}
 		return comboAutoVibratoType2;
@@ -591,15 +591,15 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes tabAnother	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getTabAnother() {
+	private BPanel getTabAnother() {
 		if (tabAnother == null) {
 			GridBagConstraints gridBagConstraints35 = new GridBagConstraints();
 			gridBagConstraints35.gridx = 0;
 			gridBagConstraints35.weighty = 1.0D;
 			gridBagConstraints35.gridy = 4;
-			jLabel9 = new JLabel();
+			jLabel9 = new BLabel();
 			jLabel9.setText("   ");
 			GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
 			gridBagConstraints34.fill = GridBagConstraints.NONE;
@@ -614,7 +614,7 @@ public class Preference extends JFrame {
 			gridBagConstraints33.anchor = GridBagConstraints.WEST;
 			gridBagConstraints33.insets = new Insets(3, 24, 3, 0);
 			gridBagConstraints33.gridy = 3;
-			lblDefaultPremeasure = new JLabel();
+			lblDefaultPremeasure = new BLabel();
 			lblDefaultPremeasure.setText("Default Pre-measure");
 			GridBagConstraints gridBagConstraints30 = new GridBagConstraints();
 			gridBagConstraints30.gridx = 2;
@@ -622,7 +622,7 @@ public class Preference extends JFrame {
 			gridBagConstraints30.weightx = 1.0D;
 			gridBagConstraints30.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints30.gridy = 2;
-			jLabel81 = new JLabel();
+			jLabel81 = new BLabel();
 			jLabel81.setText("msec(200-2000)");
 			GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
 			gridBagConstraints29.fill = GridBagConstraints.NONE;
@@ -636,7 +636,7 @@ public class Preference extends JFrame {
 			gridBagConstraints28.anchor = GridBagConstraints.WEST;
 			gridBagConstraints28.insets = new Insets(0, 24, 0, 0);
 			gridBagConstraints28.gridy = 2;
-			lblWait = new JLabel();
+			lblWait = new BLabel();
 			lblWait.setText("Waiting Time");
 			GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
 			gridBagConstraints27.gridx = 2;
@@ -644,7 +644,7 @@ public class Preference extends JFrame {
 			gridBagConstraints27.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints27.weightx = 1.0D;
 			gridBagConstraints27.gridy = 1;
-			jLabel8 = new JLabel();
+			jLabel8 = new BLabel();
 			jLabel8.setText("msec(500-5000)");
 			GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
 			gridBagConstraints26.fill = GridBagConstraints.NONE;
@@ -658,7 +658,7 @@ public class Preference extends JFrame {
 			gridBagConstraints25.anchor = GridBagConstraints.WEST;
 			gridBagConstraints25.insets = new Insets(0, 24, 0, 0);
 			gridBagConstraints25.gridy = 1;
-			lblPreSendTime = new JLabel();
+			lblPreSendTime = new BLabel();
 			lblPreSendTime.setText("Pre-Send time");
 			GridBagConstraints gridBagConstraints24 = new GridBagConstraints();
 			gridBagConstraints24.fill = GridBagConstraints.NONE;
@@ -673,9 +673,9 @@ public class Preference extends JFrame {
 			gridBagConstraints23.anchor = GridBagConstraints.WEST;
 			gridBagConstraints23.insets = new Insets(12, 24, 0, 0);
 			gridBagConstraints23.gridy = 0;
-			lblDefaultSinger = new JLabel();
+			lblDefaultSinger = new BLabel();
 			lblDefaultSinger.setText("Default Singer");
-			tabAnother = new JPanel();
+			tabAnother = new BPanel();
 			tabAnother.setLayout(new GridBagLayout());
 			tabAnother.add(lblDefaultSinger, gridBagConstraints23);
 			tabAnother.add(getComboDefualtSinger(), gridBagConstraints24);
@@ -695,11 +695,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboDefualtSinger	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboDefualtSinger() {
+	private BComboBox getComboDefualtSinger() {
 		if (comboDefualtSinger == null) {
-			comboDefualtSinger = new JComboBox();
+			comboDefualtSinger = new BComboBox();
 			comboDefualtSinger.setPreferredSize(new Dimension(222, 20));
 		}
 		return comboDefualtSinger;
@@ -708,11 +708,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes numPreSendTime	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getNumPreSendTime() {
+	private BComboBox getNumPreSendTime() {
 		if (numPreSendTime == null) {
-			numPreSendTime = new JComboBox();
+			numPreSendTime = new BComboBox();
 			numPreSendTime.setPreferredSize(new Dimension(68, 20));
 		}
 		return numPreSendTime;
@@ -721,11 +721,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes numWait	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getNumWait() {
+	private BComboBox getNumWait() {
 		if (numWait == null) {
-			numWait = new JComboBox();
+			numWait = new BComboBox();
 			numWait.setPreferredSize(new Dimension(68, 20));
 		}
 		return numWait;
@@ -734,11 +734,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboDefaultPremeasure	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboDefaultPremeasure() {
+	private BComboBox getComboDefaultPremeasure() {
 		if (comboDefaultPremeasure == null) {
-			comboDefaultPremeasure = new JComboBox();
+			comboDefaultPremeasure = new BComboBox();
 			comboDefaultPremeasure.setPreferredSize(new Dimension(68, 20));
 		}
 		return comboDefaultPremeasure;
@@ -747,9 +747,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes tabAppearance	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getTabAppearance() {
+	private BPanel getTabAppearance() {
 		if (tabAppearance == null) {
 			GridBagConstraints gridBagConstraints69 = new GridBagConstraints();
 			gridBagConstraints69.gridx = 0;
@@ -774,7 +774,7 @@ public class Preference extends JFrame {
 			gridBagConstraints42.weightx = 1.0D;
 			gridBagConstraints42.insets = new Insets(12, 12, 3, 12);
 			gridBagConstraints42.gridy = 0;
-			tabAppearance = new JPanel();
+			tabAppearance = new BPanel();
 			tabAppearance.setLayout(new GridBagLayout());
 			tabAppearance.add(getGroupFont(), gridBagConstraints42);
 			tabAppearance.add(getJPanel7(), gridBagConstraints45);
@@ -787,9 +787,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes groupFont	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getGroupFont() {
+	private BPanel getGroupFont() {
 		if (groupFont == null) {
 			GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
 			gridBagConstraints41.gridx = 2;
@@ -802,14 +802,14 @@ public class Preference extends JFrame {
 			gridBagConstraints40.insets = new Insets(3, 12, 3, 12);
 			gridBagConstraints40.anchor = GridBagConstraints.WEST;
 			gridBagConstraints40.gridy = 1;
-			labelScreenFontName = new JLabel();
+			labelScreenFontName = new BLabel();
 			labelScreenFontName.setText("MS UI Gothic");
 			GridBagConstraints gridBagConstraints39 = new GridBagConstraints();
 			gridBagConstraints39.gridx = 0;
 			gridBagConstraints39.anchor = GridBagConstraints.WEST;
 			gridBagConstraints39.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints39.gridy = 1;
-			labelScreen = new JLabel();
+			labelScreen = new BLabel();
 			labelScreen.setText("Screen");
 			GridBagConstraints gridBagConstraints38 = new GridBagConstraints();
 			gridBagConstraints38.gridx = 2;
@@ -822,16 +822,16 @@ public class Preference extends JFrame {
 			gridBagConstraints37.anchor = GridBagConstraints.WEST;
 			gridBagConstraints37.insets = new Insets(3, 12, 3, 12);
 			gridBagConstraints37.gridy = 0;
-			labelMenuFontName = new JLabel();
+			labelMenuFontName = new BLabel();
 			labelMenuFontName.setText("MS UI Gothic");
 			GridBagConstraints gridBagConstraints36 = new GridBagConstraints();
 			gridBagConstraints36.gridx = 0;
 			gridBagConstraints36.anchor = GridBagConstraints.WEST;
 			gridBagConstraints36.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints36.gridy = 0;
-			labelMenu = new JLabel();
+			labelMenu = new BLabel();
 			labelMenu.setText("Menu/Lyrics");
-			groupFont = new JPanel();
+			groupFont = new BPanel();
 			groupFont.setLayout(new GridBagLayout());
 			groupFont.setBorder(BorderFactory.createTitledBorder(null, "Font", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupFont.add(labelMenu, gridBagConstraints36);
@@ -847,11 +847,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnChangeMenuFont	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnChangeMenuFont() {
+	private BButton getBtnChangeMenuFont() {
 		if (btnChangeMenuFont == null) {
-			btnChangeMenuFont = new JButton();
+			btnChangeMenuFont = new BButton();
 			btnChangeMenuFont.setText("Change");
 			btnChangeMenuFont.setPreferredSize(new Dimension(85, 23));
 		}
@@ -861,11 +861,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnChangeScreenFont	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnChangeScreenFont() {
+	private BButton getBtnChangeScreenFont() {
 		if (btnChangeScreenFont == null) {
-			btnChangeScreenFont = new JButton();
+			btnChangeScreenFont = new BButton();
 			btnChangeScreenFont.setPreferredSize(new Dimension(85, 23));
 			btnChangeScreenFont.setText("Change");
 		}
@@ -875,9 +875,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes jPanel7	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel7() {
+	private BPanel getJPanel7() {
 		if (jPanel7 == null) {
 			GridBagConstraints gridBagConstraints44 = new GridBagConstraints();
 			gridBagConstraints44.fill = GridBagConstraints.NONE;
@@ -891,9 +891,9 @@ public class Preference extends JFrame {
 			gridBagConstraints43.anchor = GridBagConstraints.WEST;
 			gridBagConstraints43.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints43.gridy = 0;
-			lblLanguage = new JLabel();
+			lblLanguage = new BLabel();
 			lblLanguage.setText("UI Language");
-			jPanel7 = new JPanel();
+			jPanel7 = new BPanel();
 			jPanel7.setLayout(new GridBagLayout());
 			jPanel7.add(lblLanguage, gridBagConstraints43);
 			jPanel7.add(getComboLanguage(), gridBagConstraints44);
@@ -904,11 +904,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboLanguage	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboLanguage() {
+	private BComboBox getComboLanguage() {
 		if (comboLanguage == null) {
-			comboLanguage = new JComboBox();
+			comboLanguage = new BComboBox();
 			comboLanguage.setPreferredSize(new Dimension(121, 20));
 		}
 		return comboLanguage;
@@ -917,9 +917,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes jPanel71	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel71() {
+	private BPanel getJPanel71() {
 		if (jPanel71 == null) {
 			GridBagConstraints gridBagConstraints441 = new GridBagConstraints();
 			gridBagConstraints441.anchor = GridBagConstraints.WEST;
@@ -933,9 +933,9 @@ public class Preference extends JFrame {
 			gridBagConstraints431.gridx = 0;
 			gridBagConstraints431.gridy = 0;
 			gridBagConstraints431.insets = new Insets(3, 12, 3, 0);
-			lblTrackHeight = new JLabel();
+			lblTrackHeight = new BLabel();
 			lblTrackHeight.setText("Track Height(pixel)");
-			jPanel71 = new JPanel();
+			jPanel71 = new BPanel();
 			jPanel71.setLayout(new GridBagLayout());
 			jPanel71.add(lblTrackHeight, gridBagConstraints431);
 			jPanel71.add(getNumTrackHeight(), gridBagConstraints441);
@@ -946,11 +946,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes numTrackHeight	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getNumTrackHeight() {
+	private BComboBox getNumTrackHeight() {
 		if (numTrackHeight == null) {
-			numTrackHeight = new JComboBox();
+			numTrackHeight = new BComboBox();
 			numTrackHeight.setPreferredSize(new Dimension(121, 20));
 		}
 		return numTrackHeight;
@@ -959,9 +959,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes groupVisibleCurve	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getGroupVisibleCurve() {
+	private BPanel getGroupVisibleCurve() {
 		if (groupVisibleCurve == null) {
 			GridBagConstraints gridBagConstraints68 = new GridBagConstraints();
 			gridBagConstraints68.gridx = 0;
@@ -1072,7 +1072,7 @@ public class Preference extends JFrame {
 			gridBagConstraints47.weightx = 0.25D;
 			gridBagConstraints47.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints47.gridy = 0;
-			groupVisibleCurve = new JPanel();
+			groupVisibleCurve = new BPanel();
 			groupVisibleCurve.setLayout(new GridBagLayout());
 			groupVisibleCurve.setBorder(BorderFactory.createTitledBorder(null, "Visible Control Curve", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupVisibleCurve.add(getChkAccent(), gridBagConstraints47);
@@ -1103,11 +1103,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkAccent	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkAccent() {
+	private BCheckBox getChkAccent() {
 		if (chkAccent == null) {
-			chkAccent = new JCheckBox();
+			chkAccent = new BCheckBox();
 			chkAccent.setText("Accent");
 		}
 		return chkAccent;
@@ -1116,11 +1116,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkDecay	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkDecay() {
+	private BCheckBox getChkDecay() {
 		if (chkDecay == null) {
-			chkDecay = new JCheckBox();
+			chkDecay = new BCheckBox();
 			chkDecay.setText("Decay");
 		}
 		return chkDecay;
@@ -1129,11 +1129,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkVibratoRate	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkVibratoRate() {
+	private BCheckBox getChkVibratoRate() {
 		if (chkVibratoRate == null) {
-			chkVibratoRate = new JCheckBox();
+			chkVibratoRate = new BCheckBox();
 			chkVibratoRate.setText("VibratoRate");
 		}
 		return chkVibratoRate;
@@ -1142,11 +1142,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkVibratoDepth	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkVibratoDepth() {
+	private BCheckBox getChkVibratoDepth() {
 		if (chkVibratoDepth == null) {
-			chkVibratoDepth = new JCheckBox();
+			chkVibratoDepth = new BCheckBox();
 			chkVibratoDepth.setText("VibratoDepth");
 		}
 		return chkVibratoDepth;
@@ -1155,11 +1155,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkVel	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkVel() {
+	private BCheckBox getChkVel() {
 		if (chkVel == null) {
-			chkVel = new JCheckBox();
+			chkVel = new BCheckBox();
 			chkVel.setText("VEL");
 		}
 		return chkVel;
@@ -1168,11 +1168,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkDyn	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkDyn() {
+	private BCheckBox getChkDyn() {
 		if (chkDyn == null) {
-			chkDyn = new JCheckBox();
+			chkDyn = new BCheckBox();
 			chkDyn.setText("DYN");
 		}
 		return chkDyn;
@@ -1181,11 +1181,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkBre	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkBre() {
+	private BCheckBox getChkBre() {
 		if (chkBre == null) {
-			chkBre = new JCheckBox();
+			chkBre = new BCheckBox();
 			chkBre.setText("BRE");
 		}
 		return chkBre;
@@ -1194,11 +1194,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkBri	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkBri() {
+	private BCheckBox getChkBri() {
 		if (chkBri == null) {
-			chkBri = new JCheckBox();
+			chkBri = new BCheckBox();
 			chkBri.setText("BRI");
 		}
 		return chkBri;
@@ -1207,11 +1207,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkCle	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkCle() {
+	private BCheckBox getChkCle() {
 		if (chkCle == null) {
-			chkCle = new JCheckBox();
+			chkCle = new BCheckBox();
 			chkCle.setText("CLE");
 		}
 		return chkCle;
@@ -1220,11 +1220,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkOpe	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkOpe() {
+	private BCheckBox getChkOpe() {
 		if (chkOpe == null) {
-			chkOpe = new JCheckBox();
+			chkOpe = new BCheckBox();
 			chkOpe.setText("OPE");
 		}
 		return chkOpe;
@@ -1233,11 +1233,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkGen	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkGen() {
+	private BCheckBox getChkGen() {
 		if (chkGen == null) {
-			chkGen = new JCheckBox();
+			chkGen = new BCheckBox();
 			chkGen.setText("GEN");
 		}
 		return chkGen;
@@ -1246,11 +1246,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkPor	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkPor() {
+	private BCheckBox getChkPor() {
 		if (chkPor == null) {
-			chkPor = new JCheckBox();
+			chkPor = new BCheckBox();
 			chkPor.setText("POR");
 		}
 		return chkPor;
@@ -1259,11 +1259,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkPit	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkPit() {
+	private BCheckBox getChkPit() {
 		if (chkPit == null) {
-			chkPit = new JCheckBox();
+			chkPit = new BCheckBox();
 			chkPit.setText("PIT");
 		}
 		return chkPit;
@@ -1272,11 +1272,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkPbs	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkPbs() {
+	private BCheckBox getChkPbs() {
 		if (chkPbs == null) {
-			chkPbs = new JCheckBox();
+			chkPbs = new BCheckBox();
 			chkPbs.setText("PBS");
 		}
 		return chkPbs;
@@ -1285,11 +1285,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkHarmonics	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkHarmonics() {
+	private BCheckBox getChkHarmonics() {
 		if (chkHarmonics == null) {
-			chkHarmonics = new JCheckBox();
+			chkHarmonics = new BCheckBox();
 			chkHarmonics.setText("Harmonics");
 		}
 		return chkHarmonics;
@@ -1298,11 +1298,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkFx2Depth	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkFx2Depth() {
+	private BCheckBox getChkFx2Depth() {
 		if (chkFx2Depth == null) {
-			chkFx2Depth = new JCheckBox();
+			chkFx2Depth = new BCheckBox();
 			chkFx2Depth.setText("FX2Depth");
 		}
 		return chkFx2Depth;
@@ -1311,11 +1311,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkReso1	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkReso1() {
+	private BCheckBox getChkReso1() {
 		if (chkReso1 == null) {
-			chkReso1 = new JCheckBox();
+			chkReso1 = new BCheckBox();
 			chkReso1.setText("Reso1");
 		}
 		return chkReso1;
@@ -1324,11 +1324,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkReso2	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkReso2() {
+	private BCheckBox getChkReso2() {
 		if (chkReso2 == null) {
-			chkReso2 = new JCheckBox();
+			chkReso2 = new BCheckBox();
 			chkReso2.setText("Reso2");
 		}
 		return chkReso2;
@@ -1337,11 +1337,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkReso3	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkReso3() {
+	private BCheckBox getChkReso3() {
 		if (chkReso3 == null) {
-			chkReso3 = new JCheckBox();
+			chkReso3 = new BCheckBox();
 			chkReso3.setText("Reso3");
 		}
 		return chkReso3;
@@ -1350,11 +1350,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkReso4	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkReso4() {
+	private BCheckBox getChkReso4() {
 		if (chkReso4 == null) {
-			chkReso4 = new JCheckBox();
+			chkReso4 = new BCheckBox();
 			chkReso4.setText("Reso4");
 		}
 		return chkReso4;
@@ -1363,11 +1363,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkEnvelope	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkEnvelope() {
+	private BCheckBox getChkEnvelope() {
 		if (chkEnvelope == null) {
-			chkEnvelope = new JCheckBox();
+			chkEnvelope = new BCheckBox();
 			chkEnvelope.setText("Envelope");
 		}
 		return chkEnvelope;
@@ -1376,9 +1376,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes tabOperation	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getTabOperation() {
+	private BPanel getTabOperation() {
 		if (tabOperation == null) {
 			GridBagConstraints gridBagConstraints87 = new GridBagConstraints();
 			gridBagConstraints87.gridx = 0;
@@ -1395,7 +1395,7 @@ public class Preference extends JFrame {
 			gridBagConstraints78.weightx = 1.0D;
 			gridBagConstraints78.insets = new Insets(12, 12, 3, 12);
 			gridBagConstraints78.gridy = 0;
-			tabOperation = new JPanel();
+			tabOperation = new BPanel();
 			tabOperation.setLayout(new GridBagLayout());
 			tabOperation.add(getGroupPianoroll(), gridBagConstraints78);
 			tabOperation.add(getGroupMisc(), gridBagConstraints87);
@@ -1406,9 +1406,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes groupPianoroll	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getGroupPianoroll() {
+	private BPanel getGroupPianoroll() {
 		if (groupPianoroll == null) {
 			GridBagConstraints gridBagConstraints77 = new GridBagConstraints();
 			gridBagConstraints77.gridx = 0;
@@ -1459,9 +1459,9 @@ public class Preference extends JFrame {
 			gridBagConstraints70.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints70.anchor = GridBagConstraints.WEST;
 			gridBagConstraints70.gridy = 0;
-			labelWheelOrder = new JLabel();
+			labelWheelOrder = new BLabel();
 			labelWheelOrder.setText("Mouse wheel Rate");
-			groupPianoroll = new JPanel();
+			groupPianoroll = new BPanel();
 			groupPianoroll.setLayout(new GridBagLayout());
 			groupPianoroll.setBorder(BorderFactory.createTitledBorder(null, "Piano Roll", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupPianoroll.add(labelWheelOrder, gridBagConstraints70);
@@ -1479,11 +1479,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes numericUpDownEx1	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getNumericUpDownEx1() {
+	private BComboBox getNumericUpDownEx1() {
 		if (numericUpDownEx1 == null) {
-			numericUpDownEx1 = new JComboBox();
+			numericUpDownEx1 = new BComboBox();
 			numericUpDownEx1.setPreferredSize(new Dimension(120, 20));
 		}
 		return numericUpDownEx1;
@@ -1492,11 +1492,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkCursorFix	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkCursorFix() {
+	private BCheckBox getChkCursorFix() {
 		if (chkCursorFix == null) {
-			chkCursorFix = new JCheckBox();
+			chkCursorFix = new BCheckBox();
 			chkCursorFix.setText("Fix Play Cursor to Center");
 		}
 		return chkCursorFix;
@@ -1505,11 +1505,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkScrollHorizontal	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkScrollHorizontal() {
+	private BCheckBox getChkScrollHorizontal() {
 		if (chkScrollHorizontal == null) {
-			chkScrollHorizontal = new JCheckBox();
+			chkScrollHorizontal = new BCheckBox();
 			chkScrollHorizontal.setText("Horizontal Scroll when Mouse wheel");
 		}
 		return chkScrollHorizontal;
@@ -1518,11 +1518,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkKeepLyricInputMode	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkKeepLyricInputMode() {
+	private BCheckBox getChkKeepLyricInputMode() {
 		if (chkKeepLyricInputMode == null) {
-			chkKeepLyricInputMode = new JCheckBox();
+			chkKeepLyricInputMode = new BCheckBox();
 			chkKeepLyricInputMode.setText("Keep Lyric Input Mode");
 		}
 		return chkKeepLyricInputMode;
@@ -1531,11 +1531,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkPlayPreviewWhenRightClick	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkPlayPreviewWhenRightClick() {
+	private BCheckBox getChkPlayPreviewWhenRightClick() {
 		if (chkPlayPreviewWhenRightClick == null) {
-			chkPlayPreviewWhenRightClick = new JCheckBox();
+			chkPlayPreviewWhenRightClick = new BCheckBox();
 			chkPlayPreviewWhenRightClick.setText("Play Preview On Right Click");
 		}
 		return chkPlayPreviewWhenRightClick;
@@ -1544,11 +1544,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkCurveSelectingQuantized	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkCurveSelectingQuantized() {
+	private BCheckBox getChkCurveSelectingQuantized() {
 		if (chkCurveSelectingQuantized == null) {
-			chkCurveSelectingQuantized = new JCheckBox();
+			chkCurveSelectingQuantized = new BCheckBox();
 			chkCurveSelectingQuantized.setText("Enable Quantize for Curve Selecting");
 		}
 		return chkCurveSelectingQuantized;
@@ -1557,11 +1557,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkUseSpaceKeyAsMiddleButtonModifier	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkUseSpaceKeyAsMiddleButtonModifier() {
+	private BCheckBox getChkUseSpaceKeyAsMiddleButtonModifier() {
 		if (chkUseSpaceKeyAsMiddleButtonModifier == null) {
-			chkUseSpaceKeyAsMiddleButtonModifier = new JCheckBox();
+			chkUseSpaceKeyAsMiddleButtonModifier = new BCheckBox();
 			chkUseSpaceKeyAsMiddleButtonModifier.setText("Use space key as Middle button modifier");
 		}
 		return chkUseSpaceKeyAsMiddleButtonModifier;
@@ -1570,9 +1570,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes groupMisc	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getGroupMisc() {
+	private BPanel getGroupMisc() {
 		if (groupMisc == null) {
 			GridBagConstraints gridBagConstraints86 = new GridBagConstraints();
 			gridBagConstraints86.fill = GridBagConstraints.NONE;
@@ -1587,7 +1587,7 @@ public class Preference extends JFrame {
 			gridBagConstraints85.anchor = GridBagConstraints.WEST;
 			gridBagConstraints85.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints85.gridy = 2;
-			lblMidiInPort = new JLabel();
+			lblMidiInPort = new BLabel();
 			lblMidiInPort.setText("MIDI In Port Number");
 			GridBagConstraints gridBagConstraints84 = new GridBagConstraints();
 			gridBagConstraints84.fill = GridBagConstraints.NONE;
@@ -1601,7 +1601,7 @@ public class Preference extends JFrame {
 			gridBagConstraints83.gridx = 0;
 			gridBagConstraints83.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints83.gridy = 1;
-			lblMouseHoverTime = new JLabel();
+			lblMouseHoverTime = new BLabel();
 			lblMouseHoverTime.setText("Waiting Time for Preview");
 			GridBagConstraints gridBagConstraints82 = new GridBagConstraints();
 			gridBagConstraints82.gridx = 2;
@@ -1609,7 +1609,7 @@ public class Preference extends JFrame {
 			gridBagConstraints82.insets = new Insets(3, 3, 3, 0);
 			gridBagConstraints82.weightx = 1.0D;
 			gridBagConstraints82.gridy = 0;
-			lblMilliSecond = new JLabel();
+			lblMilliSecond = new BLabel();
 			lblMilliSecond.setText("milli second");
 			GridBagConstraints gridBagConstraints80 = new GridBagConstraints();
 			gridBagConstraints80.fill = GridBagConstraints.NONE;
@@ -1623,9 +1623,9 @@ public class Preference extends JFrame {
 			gridBagConstraints79.anchor = GridBagConstraints.WEST;
 			gridBagConstraints79.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints79.gridy = 0;
-			lblMaximumFrameRate = new JLabel();
+			lblMaximumFrameRate = new BLabel();
 			lblMaximumFrameRate.setText("Maximum Frame Rate");
-			groupMisc = new JPanel();
+			groupMisc = new BPanel();
 			groupMisc.setLayout(new GridBagLayout());
 			groupMisc.setBorder(BorderFactory.createTitledBorder(null, "Misc", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupMisc.add(lblMaximumFrameRate, gridBagConstraints79);
@@ -1642,11 +1642,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes numMaximumFrameRate	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getNumMaximumFrameRate() {
+	private BComboBox getNumMaximumFrameRate() {
 		if (numMaximumFrameRate == null) {
-			numMaximumFrameRate = new JComboBox();
+			numMaximumFrameRate = new BComboBox();
 			numMaximumFrameRate.setPreferredSize(new Dimension(120, 20));
 		}
 		return numMaximumFrameRate;
@@ -1655,11 +1655,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes numMouseHoverTime	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getNumMouseHoverTime() {
+	private BComboBox getNumMouseHoverTime() {
 		if (numMouseHoverTime == null) {
-			numMouseHoverTime = new JComboBox();
+			numMouseHoverTime = new BComboBox();
 			numMouseHoverTime.setPreferredSize(new Dimension(120, 20));
 		}
 		return numMouseHoverTime;
@@ -1668,11 +1668,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboMidiInPortNumber	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboMidiInPortNumber() {
+	private BComboBox getComboMidiInPortNumber() {
 		if (comboMidiInPortNumber == null) {
-			comboMidiInPortNumber = new JComboBox();
+			comboMidiInPortNumber = new BComboBox();
 			comboMidiInPortNumber.setPreferredSize(new Dimension(239, 20));
 		}
 		return comboMidiInPortNumber;
@@ -1681,9 +1681,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes tabPlatform	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getTabPlatform() {
+	private BPanel getTabPlatform() {
 		if (tabPlatform == null) {
 			GridBagConstraints gridBagConstraints106 = new GridBagConstraints();
 			gridBagConstraints106.gridx = 0;
@@ -1705,7 +1705,7 @@ public class Preference extends JFrame {
 			gridBagConstraints93.weightx = 1.0D;
 			gridBagConstraints93.insets = new Insets(12, 12, 3, 12);
 			gridBagConstraints93.gridy = 0;
-			tabPlatform = new JPanel();
+			tabPlatform = new BPanel();
 			tabPlatform.setLayout(new GridBagLayout());
 			tabPlatform.add(getGroupPlatform(), gridBagConstraints93);
 			tabPlatform.add(getGroupVsti(), gridBagConstraints98);
@@ -1717,9 +1717,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes groupPlatform	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getGroupPlatform() {
+	private BPanel getGroupPlatform() {
 		if (groupPlatform == null) {
 			GridBagConstraints gridBagConstraints92 = new GridBagConstraints();
 			gridBagConstraints92.gridx = 0;
@@ -1745,9 +1745,9 @@ public class Preference extends JFrame {
 			gridBagConstraints88.anchor = GridBagConstraints.WEST;
 			gridBagConstraints88.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints88.gridy = 0;
-			lblPlatform = new JLabel();
+			lblPlatform = new BLabel();
 			lblPlatform.setText("Current Platform");
-			groupPlatform = new JPanel();
+			groupPlatform = new BPanel();
 			groupPlatform.setLayout(new GridBagLayout());
 			groupPlatform.setBorder(BorderFactory.createTitledBorder(null, "Platform", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupPlatform.add(lblPlatform, gridBagConstraints88);
@@ -1761,11 +1761,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes comboPlatform	
 	 * 	
-	 * @return javax.swing.JComboBox	
+	 * @return javax.swing.BComboBox	
 	 */
-	private JComboBox getComboPlatform() {
+	private BComboBox getComboPlatform() {
 		if (comboPlatform == null) {
-			comboPlatform = new JComboBox();
+			comboPlatform = new BComboBox();
 			comboPlatform.setPreferredSize(new Dimension(121, 20));
 		}
 		return comboPlatform;
@@ -1774,11 +1774,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkCommandKeyAsControl	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkCommandKeyAsControl() {
+	private BCheckBox getChkCommandKeyAsControl() {
 		if (chkCommandKeyAsControl == null) {
-			chkCommandKeyAsControl = new JCheckBox();
+			chkCommandKeyAsControl = new BCheckBox();
 			chkCommandKeyAsControl.setText("Use Command key as Control key");
 		}
 		return chkCommandKeyAsControl;
@@ -1787,11 +1787,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkTranslateRoman	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkTranslateRoman() {
+	private BCheckBox getChkTranslateRoman() {
 		if (chkTranslateRoman == null) {
-			chkTranslateRoman = new JCheckBox();
+			chkTranslateRoman = new BCheckBox();
 			chkTranslateRoman.setText("Translate Roman letters into Kana");
 		}
 		return chkTranslateRoman;
@@ -1800,9 +1800,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes groupVsti	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getGroupVsti() {
+	private BPanel getGroupVsti() {
 		if (groupVsti == null) {
 			GridBagConstraints gridBagConstraints97 = new GridBagConstraints();
 			gridBagConstraints97.fill = GridBagConstraints.HORIZONTAL;
@@ -1816,7 +1816,7 @@ public class Preference extends JFrame {
 			gridBagConstraints96.anchor = GridBagConstraints.WEST;
 			gridBagConstraints96.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints96.gridy = 1;
-			lblVOCALOID2 = new JLabel();
+			lblVOCALOID2 = new BLabel();
 			lblVOCALOID2.setText("VOCALOID2");
 			GridBagConstraints gridBagConstraints95 = new GridBagConstraints();
 			gridBagConstraints95.fill = GridBagConstraints.HORIZONTAL;
@@ -1830,9 +1830,9 @@ public class Preference extends JFrame {
 			gridBagConstraints94.anchor = GridBagConstraints.WEST;
 			gridBagConstraints94.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints94.gridy = 0;
-			lblVOCALOID1 = new JLabel();
+			lblVOCALOID1 = new BLabel();
 			lblVOCALOID1.setText("VOCALOID1");
-			groupVsti = new JPanel();
+			groupVsti = new BPanel();
 			groupVsti.setLayout(new GridBagLayout());
 			groupVsti.setBorder(BorderFactory.createTitledBorder(null, "VST Instruments", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupVsti.add(lblVOCALOID1, gridBagConstraints94);
@@ -1846,11 +1846,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes txtVOCALOID1	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtVOCALOID1() {
+	private BTextBox getTxtVOCALOID1() {
 		if (txtVOCALOID1 == null) {
-			txtVOCALOID1 = new JTextField();
+			txtVOCALOID1 = new BTextBox();
 		}
 		return txtVOCALOID1;
 	}
@@ -1858,11 +1858,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes txtVOCALOID2	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtVOCALOID2() {
+	private BTextBox getTxtVOCALOID2() {
 		if (txtVOCALOID2 == null) {
-			txtVOCALOID2 = new JTextField();
+			txtVOCALOID2 = new BTextBox();
 		}
 		return txtVOCALOID2;
 	}
@@ -1870,9 +1870,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes groupUtauCores	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getGroupUtauCores() {
+	private BPanel getGroupUtauCores() {
 		if (groupUtauCores == null) {
 			GridBagConstraints gridBagConstraints105 = new GridBagConstraints();
 			gridBagConstraints105.gridx = 0;
@@ -1893,7 +1893,7 @@ public class Preference extends JFrame {
 			GridBagConstraints gridBagConstraints102 = new GridBagConstraints();
 			gridBagConstraints102.gridx = 0;
 			gridBagConstraints102.gridy = 1;
-			lblWavtool = new JLabel();
+			lblWavtool = new BLabel();
 			lblWavtool.setText("wavtool");
 			GridBagConstraints gridBagConstraints101 = new GridBagConstraints();
 			gridBagConstraints101.gridx = 2;
@@ -1911,9 +1911,9 @@ public class Preference extends JFrame {
 			gridBagConstraints99.anchor = GridBagConstraints.WEST;
 			gridBagConstraints99.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints99.gridy = 0;
-			lblResampler = new JLabel();
+			lblResampler = new BLabel();
 			lblResampler.setText("resampler");
-			groupUtauCores = new JPanel();
+			groupUtauCores = new BPanel();
 			groupUtauCores.setLayout(new GridBagLayout());
 			groupUtauCores.setBorder(BorderFactory.createTitledBorder(null, "UTAU Cores", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupUtauCores.add(lblResampler, gridBagConstraints99);
@@ -1930,11 +1930,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes txtResampler	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtResampler() {
+	private BTextBox getTxtResampler() {
 		if (txtResampler == null) {
-			txtResampler = new JTextField();
+			txtResampler = new BTextBox();
 		}
 		return txtResampler;
 	}
@@ -1942,11 +1942,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnResampler	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnResampler() {
+	private BButton getBtnResampler() {
 		if (btnResampler == null) {
-			btnResampler = new JButton();
+			btnResampler = new BButton();
 			btnResampler.setText("...");
 			btnResampler.setPreferredSize(new Dimension(41, 23));
 		}
@@ -1956,11 +1956,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes txtWavtool	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getTxtWavtool() {
+	private BTextBox getTxtWavtool() {
 		if (txtWavtool == null) {
-			txtWavtool = new JTextField();
+			txtWavtool = new BTextBox();
 		}
 		return txtWavtool;
 	}
@@ -1968,11 +1968,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnWavtool	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnWavtool() {
+	private BButton getBtnWavtool() {
 		if (btnWavtool == null) {
-			btnWavtool = new JButton();
+			btnWavtool = new BButton();
 			btnWavtool.setPreferredSize(new Dimension(41, 23));
 			btnWavtool.setText("...");
 		}
@@ -1982,11 +1982,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkInvokeWithWine	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkInvokeWithWine() {
+	private BCheckBox getChkInvokeWithWine() {
 		if (chkInvokeWithWine == null) {
-			chkInvokeWithWine = new JCheckBox();
+			chkInvokeWithWine = new BCheckBox();
 			chkInvokeWithWine.setText("Invoke UTAU cores with Wine");
 		}
 		return chkInvokeWithWine;
@@ -1995,9 +1995,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes tabUtauSingers	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getTabUtauSingers() {
+	private BPanel getTabUtauSingers() {
 		if (tabUtauSingers == null) {
 			GridBagConstraints gridBagConstraints113 = new GridBagConstraints();
 			gridBagConstraints113.gridx = 1;
@@ -2018,7 +2018,7 @@ public class Preference extends JFrame {
 			gridBagConstraints107.insets = new Insets(12, 12, 12, 12);
 			gridBagConstraints107.gridwidth = 2;
 			gridBagConstraints107.gridx = 0;
-			tabUtauSingers = new JPanel();
+			tabUtauSingers = new BPanel();
 			tabUtauSingers.setLayout(new GridBagLayout());
 			tabUtauSingers.add(getListSingers(), gridBagConstraints107);
 			tabUtauSingers.add(getJPanel17(), gridBagConstraints112);
@@ -2042,11 +2042,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnAdd	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnAdd() {
+	private BButton getBtnAdd() {
 		if (btnAdd == null) {
-			btnAdd = new JButton();
+			btnAdd = new BButton();
 			btnAdd.setText("Add");
 			btnAdd.setPreferredSize(new Dimension(85, 23));
 		}
@@ -2056,11 +2056,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnRemove	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnRemove() {
+	private BButton getBtnRemove() {
 		if (btnRemove == null) {
-			btnRemove = new JButton();
+			btnRemove = new BButton();
 			btnRemove.setText("Remove");
 			btnRemove.setPreferredSize(new Dimension(85, 23));
 		}
@@ -2070,11 +2070,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnUp	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnUp() {
+	private BButton getBtnUp() {
 		if (btnUp == null) {
-			btnUp = new JButton();
+			btnUp = new BButton();
 			btnUp.setText("Up");
 			btnUp.setPreferredSize(new Dimension(75, 23));
 		}
@@ -2084,11 +2084,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnDown	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnDown() {
+	private BButton getBtnDown() {
 		if (btnDown == null) {
-			btnDown = new JButton();
+			btnDown = new BButton();
 			btnDown.setText("Down");
 			btnDown.setPreferredSize(new Dimension(75, 23));
 		}
@@ -2098,9 +2098,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes jPanel17	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel17() {
+	private BPanel getJPanel17() {
 		if (jPanel17 == null) {
 			GridBagConstraints gridBagConstraints109 = new GridBagConstraints();
 			gridBagConstraints109.anchor = GridBagConstraints.WEST;
@@ -2111,7 +2111,7 @@ public class Preference extends JFrame {
 			gridBagConstraints108.anchor = GridBagConstraints.WEST;
 			gridBagConstraints108.gridy = 0;
 			gridBagConstraints108.gridx = 0;
-			jPanel17 = new JPanel();
+			jPanel17 = new BPanel();
 			jPanel17.setLayout(new GridBagLayout());
 			jPanel17.add(getBtnAdd(), gridBagConstraints108);
 			jPanel17.add(getBtnRemove(), gridBagConstraints109);
@@ -2122,9 +2122,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes jPanel18	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel18() {
+	private BPanel getJPanel18() {
 		if (jPanel18 == null) {
 			GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
 			gridBagConstraints111.anchor = GridBagConstraints.EAST;
@@ -2135,7 +2135,7 @@ public class Preference extends JFrame {
 			gridBagConstraints110.gridy = 0;
 			gridBagConstraints110.insets = new Insets(0, 0, 0, 12);
 			gridBagConstraints110.gridx = 0;
-			jPanel18 = new JPanel();
+			jPanel18 = new BPanel();
 			jPanel18.setLayout(new GridBagLayout());
 			jPanel18.add(getBtnUp(), gridBagConstraints110);
 			jPanel18.add(getBtnDown(), gridBagConstraints111);
@@ -2146,9 +2146,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes tabFile	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getTabFile() {
+	private BPanel getTabFile() {
 		if (tabFile == null) {
 			GridBagConstraints gridBagConstraints118 = new GridBagConstraints();
 			gridBagConstraints118.gridx = 0;
@@ -2157,9 +2157,9 @@ public class Preference extends JFrame {
 			gridBagConstraints118.weighty = 1.0D;
 			gridBagConstraints118.weightx = 1.0D;
 			gridBagConstraints118.gridy = 0;
-			lblAutoBackupInterval = new JLabel();
+			lblAutoBackupInterval = new BLabel();
 			lblAutoBackupInterval.setText("interval");
-			tabFile = new JPanel();
+			tabFile = new BPanel();
 			tabFile.setLayout(new GridBagLayout());
 			tabFile.add(getJPanel20(), gridBagConstraints118);
 		}
@@ -2169,11 +2169,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes chkAutoBackup	
 	 * 	
-	 * @return javax.swing.JCheckBox	
+	 * @return javax.swing.BCheckBox	
 	 */
-	private JCheckBox getChkAutoBackup() {
+	private BCheckBox getChkAutoBackup() {
 		if (chkAutoBackup == null) {
-			chkAutoBackup = new JCheckBox();
+			chkAutoBackup = new BCheckBox();
 			chkAutoBackup.setText("Automatical Backup");
 		}
 		return chkAutoBackup;
@@ -2182,11 +2182,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes lblAutoBackupMinutes	
 	 * 	
-	 * @return javax.swing.JLabel	
+	 * @return javax.swing.BLabel	
 	 */
-	private JLabel getLblAutoBackupMinutes() {
+	private BLabel getLblAutoBackupMinutes() {
 		if (lblAutoBackupMinutes == null) {
-			lblAutoBackupMinutes = new JLabel();
+			lblAutoBackupMinutes = new BLabel();
 			lblAutoBackupMinutes.setText("minutes");
 		}
 		return lblAutoBackupMinutes;
@@ -2195,9 +2195,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes jPanel20	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel20() {
+	private BPanel getJPanel20() {
 		if (jPanel20 == null) {
 			GridBagConstraints gridBagConstraints121 = new GridBagConstraints();
 			gridBagConstraints121.fill = GridBagConstraints.NONE;
@@ -2228,7 +2228,7 @@ public class Preference extends JFrame {
 			gridBagConstraints114.gridx = 0;
 			gridBagConstraints114.gridy = 0;
 			gridBagConstraints114.insets = new Insets(3, 12, 3, 0);
-			jPanel20 = new JPanel();
+			jPanel20 = new BPanel();
 			jPanel20.setLayout(new GridBagLayout());
 			jPanel20.add(getChkAutoBackup(), gridBagConstraints114);
 			jPanel20.add(lblAutoBackupInterval, gridBagConstraints115);
@@ -2241,9 +2241,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes panelLower	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getPanelLower() {
+	private BPanel getPanelLower() {
 		if (panelLower == null) {
 			GridBagConstraints gridBagConstraints311 = new GridBagConstraints();
 			gridBagConstraints311.insets = new Insets(0, 0, 0, 12);
@@ -2253,7 +2253,7 @@ public class Preference extends JFrame {
 			gridBagConstraints211.insets = new Insets(0, 0, 0, 16);
 			gridBagConstraints211.gridy = 1;
 			gridBagConstraints211.gridx = 0;
-			panelLower = new JPanel();
+			panelLower = new BPanel();
 			panelLower.setLayout(new GridBagLayout());
 			panelLower.add(getBtnOK(), gridBagConstraints211);
 			panelLower.add(getBtnCancel(), gridBagConstraints311);
@@ -2264,11 +2264,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnOK	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnOK() {
+	private BButton getBtnOK() {
 		if (btnOK == null) {
-			btnOK = new JButton();
+			btnOK = new BButton();
 			btnOK.setText("OK");
 		}
 		return btnOK;
@@ -2277,11 +2277,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes btnCancel	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnCancel() {
+	private BButton getBtnCancel() {
 		if (btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
 		}
 		return btnCancel;
@@ -2290,9 +2290,9 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes jPanel5	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getJPanel5() {
+	private BPanel getJPanel5() {
 		if (jPanel5 == null) {
 			GridBagConstraints gridBagConstraints120 = new GridBagConstraints();
 			gridBagConstraints120.gridx = 0;
@@ -2305,7 +2305,7 @@ public class Preference extends JFrame {
 			gridBagConstraints119.anchor = GridBagConstraints.EAST;
 			gridBagConstraints119.insets = new Insets(12, 0, 12, 0);
 			gridBagConstraints119.gridy = 1;
-			jPanel5 = new JPanel();
+			jPanel5 = new BPanel();
 			jPanel5.setLayout(new GridBagLayout());
 			jPanel5.add(getPanelUpper(), gridBagConstraints120);
 			jPanel5.add(getPanelLower(), gridBagConstraints119);
@@ -2316,11 +2316,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes panelUpper	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.BPanel	
 	 */
-	private JPanel getPanelUpper() {
+	private BPanel getPanelUpper() {
 		if (panelUpper == null) {
-			panelUpper = new JPanel();
+			panelUpper = new BPanel();
 			panelUpper.setLayout(new GridBagLayout());
 		}
 		return panelUpper;
@@ -2329,11 +2329,11 @@ public class Preference extends JFrame {
 	/**
 	 * This method initializes numAutoBackupInterval	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getNumAutoBackupInterval() {
+	private BTextBox getNumAutoBackupInterval() {
 		if (numAutoBackupInterval == null) {
-			numAutoBackupInterval = new JTextField();
+			numAutoBackupInterval = new BTextBox();
 			numAutoBackupInterval.setPreferredSize(new Dimension(69, 20));
 		}
 		return numAutoBackupInterval;

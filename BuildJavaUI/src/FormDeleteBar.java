@@ -1,25 +1,25 @@
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
-import javax.swing.JButton;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.JPanel;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BTextBox;
 
-public class FormDeleteBar extends JFrame {
+public class FormDeleteBar extends BForm {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
-	private JLabel lblStart = null;
-	private JTextField numStart = null;
-	private JLabel label3 = null;
-	private JLabel lblEnd = null;
-	private JTextField numEnd = null;
-	private JLabel label4 = null;
+	private BLabel lblStart = null;
+	private BTextBox numStart = null;
+	private BLabel label3 = null;
+	private BLabel lblEnd = null;
+	private BTextBox numEnd = null;
+	private BLabel label4 = null;
 	private JPanel jPanel = null;
-	private JButton btnOK = null;
-	private JButton btnCancel = null;
+	private BButton btnOK = null;
+	private BButton btnCancel = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -57,7 +57,7 @@ public class FormDeleteBar extends JFrame {
 			gridBagConstraints13.gridx = 2;
 			gridBagConstraints13.insets = new Insets(4, 8, 0, 16);
 			gridBagConstraints13.gridy = 1;
-			label4 = new JLabel();
+			label4 = new BLabel();
 			label4.setText(":0:000");
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.HORIZONTAL;
@@ -70,13 +70,13 @@ public class FormDeleteBar extends JFrame {
 			gridBagConstraints3.anchor = GridBagConstraints.EAST;
 			gridBagConstraints3.insets = new Insets(4, 16, 0, 8);
 			gridBagConstraints3.gridy = 1;
-			lblEnd = new JLabel();
+			lblEnd = new BLabel();
 			lblEnd.setText("End");
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			gridBagConstraints2.gridx = 2;
 			gridBagConstraints2.insets = new Insets(8, 8, 0, 16);
 			gridBagConstraints2.gridy = 0;
-			label3 = new JLabel();
+			label3 = new BLabel();
 			label3.setText(":0:000");
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
@@ -89,7 +89,7 @@ public class FormDeleteBar extends JFrame {
 			gridBagConstraints.anchor = GridBagConstraints.EAST;
 			gridBagConstraints.insets = new Insets(8, 16, 0, 8);
 			gridBagConstraints.gridy = 0;
-			lblStart = new JLabel();
+			lblStart = new BLabel();
 			lblStart.setText("Start");
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
@@ -107,11 +107,11 @@ public class FormDeleteBar extends JFrame {
 	/**
 	 * This method initializes numStart	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getNumStart() {
+	private BTextBox getNumStart() {
 		if (numStart == null) {
-			numStart = new JTextField();
+			numStart = new BTextBox();
 		}
 		return numStart;
 	}
@@ -119,11 +119,11 @@ public class FormDeleteBar extends JFrame {
 	/**
 	 * This method initializes numEnd	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return javax.swing.BTextBox	
 	 */
-	private JTextField getNumEnd() {
+	private BTextBox getNumEnd() {
 		if (numEnd == null) {
-			numEnd = new JTextField();
+			numEnd = new BTextBox();
 		}
 		return numEnd;
 	}
@@ -156,11 +156,11 @@ public class FormDeleteBar extends JFrame {
 	/**
 	 * This method initializes btnOK	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnOK() {
+	private BButton getBtnOK() {
 		if (btnOK == null) {
-			btnOK = new JButton();
+			btnOK = new BButton();
 			btnOK.setText("OK");
 		}
 		return btnOK;
@@ -169,11 +169,11 @@ public class FormDeleteBar extends JFrame {
 	/**
 	 * This method initializes btnCancel	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnCancel() {
+	private BButton getBtnCancel() {
 		if (btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
 		}
 		return btnCancel;

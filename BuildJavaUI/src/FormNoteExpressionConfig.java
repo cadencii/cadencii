@@ -9,6 +9,7 @@ import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BSlider;
 import org.kbinani.windows.forms.BTextBox;
 
@@ -16,7 +17,7 @@ public class FormNoteExpressionConfig extends BForm {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
-	private JPanel panelVocaloid2Template = null;
+	private BPanel panelVocaloid2Template = null;
 	private BLabel lblTemplate = null;
 	private BComboBox comboTemplate = null;
 	private BLabel jLabel1 = null;
@@ -54,7 +55,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BLabel jLabel611 = null;
 	private BLabel lblAttackTemplate = null;
 	private BComboBox comboAttackTemplate = null;
-	private JPanel jPanel2 = null;
+	private BPanel jPanel2 = null;
 	private BButton btnOK = null;
 	private BButton btnCancel = null;
 
@@ -129,9 +130,9 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes panelVocaloid2Template	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getPanelVocaloid2Template() {
+	private BPanel getPanelVocaloid2Template() {
 		if (panelVocaloid2Template == null) {
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			gridBagConstraints2.gridx = 0;
@@ -153,7 +154,7 @@ public class FormNoteExpressionConfig extends BForm {
 			gridBagConstraints.gridy = 0;
 			lblTemplate = new BLabel();
 			lblTemplate.setText("Template");
-			panelVocaloid2Template = new JPanel();
+			panelVocaloid2Template = new BPanel();
 			panelVocaloid2Template.setLayout(new GridBagLayout());
 			panelVocaloid2Template.add(lblTemplate, gridBagConstraints);
 			panelVocaloid2Template.add(getComboTemplate(), gridBagConstraints1);
@@ -165,7 +166,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes comboTemplate	
 	 * 	
-	 * @return javax.swing.BComboBox	
+	 * @return org.kbinani.windows.forms.BComboBox	
 	 */
 	private BComboBox getComboTemplate() {
 		if (comboTemplate == null) {
@@ -178,9 +179,9 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes groupPitchControl	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getGroupPitchControl() {
+	private BGroupBox getGroupPitchControl() {
 		if (groupPitchControl == null) {
 			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
 			gridBagConstraints14.gridx = 0;
@@ -282,7 +283,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes trackBendDepth	
 	 * 	
-	 * @return javax.swing.BSlider	
+	 * @return org.kbinani.windows.forms.BSlider	
 	 */
 	private BSlider getTrackBendDepth() {
 		if (trackBendDepth == null) {
@@ -296,7 +297,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes txtBendDepth	
 	 * 	
-	 * @return javax.swing.BTextBox	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
 	private BTextBox getTxtBendDepth() {
 		if (txtBendDepth == null) {
@@ -311,7 +312,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes trackBendLength	
 	 * 	
-	 * @return javax.swing.BSlider	
+	 * @return org.kbinani.windows.forms.BSlider	
 	 */
 	private BSlider getTrackBendLength() {
 		if (trackBendLength == null) {
@@ -325,7 +326,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes txtBendLength	
 	 * 	
-	 * @return javax.swing.BTextBox	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
 	private BTextBox getTxtBendLength() {
 		if (txtBendLength == null) {
@@ -340,7 +341,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes chkUpPortamento	
 	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * @return org.kbinani.windows.forms.BCheckBox	
 	 */
 	private BCheckBox getChkUpPortamento() {
 		if (chkUpPortamento == null) {
@@ -353,7 +354,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes chkDownPortamento	
 	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * @return org.kbinani.windows.forms.BCheckBox	
 	 */
 	private BCheckBox getChkDownPortamento() {
 		if (chkDownPortamento == null) {
@@ -366,9 +367,9 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes groupDynamicsControl	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getGroupDynamicsControl() {
+	private BGroupBox getGroupDynamicsControl() {
 		if (groupDynamicsControl == null) {
 			GridBagConstraints gridBagConstraints141 = new GridBagConstraints();
 			gridBagConstraints141.fill = GridBagConstraints.BOTH;
@@ -454,7 +455,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes trackDecay	
 	 * 	
-	 * @return javax.swing.BSlider	
+	 * @return org.kbinani.windows.forms.BSlider	
 	 */
 	private BSlider getTrackDecay() {
 		if (trackDecay == null) {
@@ -467,7 +468,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes txtDecay	
 	 * 	
-	 * @return javax.swing.BTextBox	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
 	private BTextBox getTxtDecay() {
 		if (txtDecay == null) {
@@ -482,7 +483,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes trackAccent	
 	 * 	
-	 * @return javax.swing.BSlider	
+	 * @return org.kbinani.windows.forms.BSlider	
 	 */
 	private BSlider getTrackAccent() {
 		if (trackAccent == null) {
@@ -495,7 +496,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes txtAccent	
 	 * 	
-	 * @return javax.swing.BTextBox	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
 	private BTextBox getTxtAccent() {
 		if (txtAccent == null) {
@@ -510,9 +511,9 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes groupAttack	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getGroupAttack() {
+	private BGroupBox getGroupAttack() {
 		if (groupAttack == null) {
 			GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
 			gridBagConstraints18.fill = GridBagConstraints.NONE;
@@ -614,7 +615,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes trackDuration	
 	 * 	
-	 * @return javax.swing.BSlider	
+	 * @return org.kbinani.windows.forms.BSlider	
 	 */
 	private BSlider getTrackDuration() {
 		if (trackDuration == null) {
@@ -629,7 +630,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes txtDuration	
 	 * 	
-	 * @return javax.swing.BTextBox	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
 	private BTextBox getTxtDuration() {
 		if (txtDuration == null) {
@@ -644,7 +645,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes trackDepth	
 	 * 	
-	 * @return javax.swing.BSlider	
+	 * @return org.kbinani.windows.forms.BSlider	
 	 */
 	private BSlider getTrackDepth() {
 		if (trackDepth == null) {
@@ -659,7 +660,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes txtDepth	
 	 * 	
-	 * @return javax.swing.BTextBox	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
 	private BTextBox getTxtDepth() {
 		if (txtDepth == null) {
@@ -674,7 +675,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes comboAttackTemplate	
 	 * 	
-	 * @return javax.swing.BComboBox	
+	 * @return org.kbinani.windows.forms.BComboBox	
 	 */
 	private BComboBox getComboAttackTemplate() {
 		if (comboAttackTemplate == null) {
@@ -687,9 +688,9 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes jPanel2	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getJPanel2() {
+	private BPanel getJPanel2() {
 		if (jPanel2 == null) {
 			GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
 			gridBagConstraints52.anchor = GridBagConstraints.SOUTHWEST;
@@ -701,7 +702,7 @@ public class FormNoteExpressionConfig extends BForm {
 			gridBagConstraints42.gridx = 0;
 			gridBagConstraints42.gridy = 0;
 			gridBagConstraints42.insets = new Insets(0, 0, 0, 16);
-			jPanel2 = new JPanel();
+			jPanel2 = new BPanel();
 			jPanel2.setLayout(new GridBagLayout());
 			jPanel2.add(getBtnOK(), gridBagConstraints42);
 			jPanel2.add(getBtnCancel(), gridBagConstraints52);
@@ -712,7 +713,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes btnOK	
 	 * 	
-	 * @return javax.swing.BButton	
+	 * @return org.kbinani.windows.forms.BButton	
 	 */
 	private BButton getBtnOK() {
 		if (btnOK == null) {
@@ -725,7 +726,7 @@ public class FormNoteExpressionConfig extends BForm {
 	/**
 	 * This method initializes btnCancel	
 	 * 	
-	 * @return javax.swing.BButton	
+	 * @return org.kbinani.windows.forms.BButton	
 	 */
 	private BButton getBtnCancel() {
 		if (btnCancel == null) {

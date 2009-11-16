@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C8AAE632-9C6C-4372-8175-811528A66742}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -123,6 +123,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BPreviewKeyDownEventArgs.cs" />
+    <Compile Include="BProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BProgressChangedEventArgs.cs" />
     <Compile Include="BProgressChangedEventHandler.cs" />
     <Compile Include="BRunWorkerCompletedEventHandler.cs" />
@@ -133,10 +136,19 @@
     <Compile Include="BSlider.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="BSplitPane.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BTextArea.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BTimer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BToolBar.cs">

@@ -1,18 +1,19 @@
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
+import org.kbinani.windows.forms.BCheckBox;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BHScrollBar;
+import org.kbinani.windows.forms.BPanel;
 
-public class FormMixer extends JFrame {
+public class FormMixer extends BForm {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
-	private JPanel panel1 = null;
-	private JScrollBar hScroll = null;
+	private BPanel panel1 = null;
+	private BHScrollBar hScroll = null;
 	private VolumeTracker volumeMaster = null;
-	private JCheckBox chkTopmost = null;
+	private BCheckBox chkTopmost = null;
 
 	/**
 	 * This is the default constructor
@@ -87,9 +88,9 @@ public class FormMixer extends JFrame {
 	 * 	
 	 * @return javax.swing.JPanel	
 	 */
-	private JPanel getPanel1() {
+	private BPanel getPanel1() {
 		if (panel1 == null) {
-			panel1 = new JPanel();
+			panel1 = new BPanel();
 			panel1.setLayout(new GridBagLayout());
 		}
 		return panel1;
@@ -100,10 +101,9 @@ public class FormMixer extends JFrame {
 	 * 	
 	 * @return javax.swing.JScrollBar	
 	 */
-	private JScrollBar getHScroll() {
+	private BHScrollBar getHScroll() {
 		if (hScroll == null) {
-			hScroll = new JScrollBar();
-			hScroll.setOrientation(JScrollBar.HORIZONTAL);
+			hScroll = new BHScrollBar();
 		}
 		return hScroll;
 	}
@@ -125,9 +125,9 @@ public class FormMixer extends JFrame {
 	 * 	
 	 * @return javax.swing.JCheckBox	
 	 */
-	private JCheckBox getChkTopmost() {
+	private BCheckBox getChkTopmost() {
 		if (chkTopmost == null) {
-			chkTopmost = new JCheckBox();
+			chkTopmost = new BCheckBox();
 			chkTopmost.setText("Top most");
 			chkTopmost.setText("Top most");
 		}

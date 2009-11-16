@@ -4,25 +4,25 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
 import javax.swing.JSeparator;
-import javax.swing.JSlider;
-import javax.swing.JSplitPane;
-import javax.swing.JToggleButton;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuBar;
 import org.kbinani.windows.forms.BMenuItem;
+import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BPopupMenu;
+import org.kbinani.windows.forms.BSlider;
+import org.kbinani.windows.forms.BSplitPane;
+import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
+import org.kbinani.windows.forms.BVScrollBar;
 
-public class FormMain extends JFrame {
-
+public class FormMain extends BForm {
 	private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="10,55"
     private BMenuBar jBMenuBar = null;
@@ -138,13 +138,13 @@ public class FormMain extends JFrame {
     private BMenuItem menuSettingLengthQuantizeTriplet = null;
     private BMenu menuHelp = null;
     private BMenuItem menuHelpAbout = null;
-    private JSplitPane splitContainer2 = null;
-    private JPanel panel1 = null;
-    private JPanel panel2 = null;
-    private JSplitPane splitContainer1 = null;
+    private BSplitPane splitContainer2 = null;
+    private BPanel panel1 = null;
+    private BPanel panel2 = null;
+    private BSplitPane splitContainer1 = null;
     private TrackSelector trackSelector = null;
-    private JSplitPane splitContainerProperty = null;
-    private JPanel m_property_panel_container = null;
+    private BSplitPane splitContainerProperty = null;
+    private BPanel m_property_panel_container = null;
     private BToolBar toolStripFile = null;
     private BToolBar toolStripBottom = null;
     private BButton stripBtnFileNew = null;
@@ -157,14 +157,14 @@ public class FormMain extends JFrame {
     private BButton stripBtnRedo = null;
     private BToolBar toolStripPosition = null;
     private BButton stripBtnMoveTop = null;
-    private JPanel jPanel = null;
+    private BPanel BPanel = null;
     private BButton stripBtnRewind = null;
     private BButton stripBtnForward = null;
     private BButton stripBtnMoveEnd = null;
     private BButton stripBtnPlay = null;
     private BButton stripBtnStop = null;
-    private JToggleButton stripBtnScroll = null;
-    private JToggleButton stripBtnLoop = null;
+    private BToggleButton stripBtnScroll = null;
+    private BToggleButton stripBtnLoop = null;
     private BToolBar toolStripMeasure = null;
     private BLabel toolStripLabel5 = null;
     private BLabel stripLblMeasure = null;
@@ -172,15 +172,15 @@ public class FormMain extends JFrame {
     private BLabel BLabel = null;
     private BLabel jLabel1 = null;
     private BComboBox stripDDBtnQuantize = null;
-    private JToggleButton stripBtnStartMarker = null;
-    private JToggleButton stripBtnEndMarker = null;
+    private BToggleButton stripBtnStartMarker = null;
+    private BToggleButton stripBtnEndMarker = null;
     private BToolBar toolStripTool = null;
-    private JToggleButton stripBtnPointer = null;
-    private JToggleButton stripBtnPencil = null;
-    private JToggleButton stripBtnLine = null;
-    private JToggleButton stripBtnEraser = null;
-    private JToggleButton stripBtnGrid = null;
-    private JToggleButton stripBtnCurve = null;
+    private BToggleButton stripBtnPointer = null;
+    private BToggleButton stripBtnPencil = null;
+    private BToggleButton stripBtnLine = null;
+    private BToggleButton stripBtnEraser = null;
+    private BToggleButton stripBtnGrid = null;
+    private BToggleButton stripBtnCurve = null;
     private BLabel toolStripLabel6 = null;
     private BLabel stripLblCursor = null;
     private BLabel toolStripLabel8 = null;
@@ -270,8 +270,8 @@ public class FormMain extends JFrame {
     private BMenuItem cMenuTrackTabRendererStraight = null;
     private BMenuItem cMenuPianoQuantizeOff = null;
     private BMenuItem cMenuPianoLengthOff = null;
-    private JPanel panel3 = null;
-    private JPanel jPanel2 = null;
+    private BPanel panel3 = null;
+    private BPanel jPanel2 = null;
     private BButton BButton = null;
     private BButton jButton1 = null;
     private BButton jButton2 = null;
@@ -279,14 +279,14 @@ public class FormMain extends JFrame {
     private BButton jButton4 = null;
     private BButton jButton5 = null;
     private PictPianoRoll pictPianoRoll = null;
-    private JScrollBar vScroll = null;
-    private JScrollBar hScroll = null;
-    private JPanel pictureBox3 = null;
-    private JSlider trackBar = null;
+    private BVScrollBar vScroll = null;
+    private BHScrollBar hScroll = null;
+    private BPanel pictureBox3 = null;
+    private BSlider trackBar = null;
     private BButton jButton6 = null;
-    private JPanel picturePositionIndicator = null;
-    private JPanel jPanel1 = null;
-    private JPanel jPanel3 = null;
+    private BPanel picturePositionIndicator = null;
+    private BPanel jPanel1 = null;
+    private BPanel jPanel3 = null;
     private BLabel statusLabel = null;
     /**
      * This is the default constructor
@@ -311,7 +311,7 @@ public class FormMain extends JFrame {
     /**
      * This method initializes jContentPane
      * 
-     * @return javax.swing.JPanel
+     * @return javax.swing.BPanel
      */
     private JPanel getJContentPane() {
         if (jContentPane == null) {
@@ -1888,18 +1888,18 @@ public class FormMain extends JFrame {
     /**
      * This method initializes splitContainer2  
      *  
-     * @return javax.swing.JSplitPane   
+     * @return javax.swing.BSplitPane   
      */
-    private JSplitPane getSplitContainer2() {
+    private BSplitPane getSplitContainer2() {
         if (splitContainer2 == null) {
-            splitContainer2 = new JSplitPane();
+            splitContainer2 = new BSplitPane();
             splitContainer2.setDividerSize(0);
             splitContainer2.setDividerLocation(70);
             splitContainer2.setEnabled(false);
             splitContainer2.setResizeWeight(1.0D);
             splitContainer2.setBottomComponent(getPanel2());
             splitContainer2.setTopComponent(getJPanel1());
-            splitContainer2.setOrientation(JSplitPane.VERTICAL_SPLIT);
+            splitContainer2.setOrientation(BSplitPane.VERTICAL_SPLIT);
         }
         return splitContainer2;
     }
@@ -1907,9 +1907,9 @@ public class FormMain extends JFrame {
     /**
      * This method initializes panel1   
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getPanel1() {
+    private BPanel getPanel1() {
         if (panel1 == null) {
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
             gridBagConstraints11.fill = GridBagConstraints.NONE;
@@ -1939,7 +1939,7 @@ public class FormMain extends JFrame {
             gridBagConstraints7.weighty = 1.0D;
             gridBagConstraints7.gridwidth = 3;
             gridBagConstraints7.gridy = 0;
-            panel1 = new JPanel();
+            panel1 = new BPanel();
             panel1.setLayout(new GridBagLayout());
             panel1.add(getPictPianoRoll(), gridBagConstraints7);
             panel1.add(getVScroll(), gridBagConstraints8);
@@ -1953,11 +1953,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes panel2   
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getPanel2() {
+    private BPanel getPanel2() {
         if (panel2 == null) {
-            panel2 = new JPanel();
+            panel2 = new BPanel();
             panel2.setLayout(new GridBagLayout());
         }
         return panel2;
@@ -1966,16 +1966,16 @@ public class FormMain extends JFrame {
     /**
      * This method initializes splitContainer1  
      *  
-     * @return javax.swing.JSplitPane   
+     * @return javax.swing.BSplitPane   
      */
-    private JSplitPane getSplitContainer1() {
+    private BSplitPane getSplitContainer1() {
         if (splitContainer1 == null) {
-            splitContainer1 = new JSplitPane();
+            splitContainer1 = new BSplitPane();
             splitContainer1.setDividerLocation(200);
             splitContainer1.setResizeWeight(1.0D);
             splitContainer1.setTopComponent(getSplitContainer2());
             splitContainer1.setBottomComponent(getTrackSelector());
-            splitContainer1.setOrientation(JSplitPane.VERTICAL_SPLIT);
+            splitContainer1.setOrientation(BSplitPane.VERTICAL_SPLIT);
         }
         return splitContainer1;
     }
@@ -1983,7 +1983,7 @@ public class FormMain extends JFrame {
     /**
      * This method initializes trackSelector    
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
     private TrackSelector getTrackSelector() {
         if (trackSelector == null) {
@@ -1996,11 +1996,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes splitContainerProperty   
      *  
-     * @return javax.swing.JSplitPane   
+     * @return javax.swing.BSplitPane   
      */
-    private JSplitPane getSplitContainerProperty() {
+    private BSplitPane getSplitContainerProperty() {
         if (splitContainerProperty == null) {
-            splitContainerProperty = new JSplitPane();
+            splitContainerProperty = new BSplitPane();
             splitContainerProperty.setDividerLocation(0);
             splitContainerProperty.setEnabled(false);
             splitContainerProperty.setDividerSize(0);
@@ -2013,11 +2013,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes m_property_panel_container   
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getM_property_panel_container() {
+    private BPanel getM_property_panel_container() {
         if (m_property_panel_container == null) {
-            m_property_panel_container = new JPanel();
+            m_property_panel_container = new BPanel();
             m_property_panel_container.setLayout(new GridBagLayout());
         }
         return m_property_panel_container;
@@ -2237,12 +2237,12 @@ public class FormMain extends JFrame {
     }
 
     /**
-     * This method initializes jPanel   
+     * This method initializes BPanel   
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getJPanel() {
-        if (jPanel == null) {
+    private BPanel getJPanel() {
+        if (BPanel == null) {
             GridLayout gridLayout4 = new GridLayout();
             gridLayout4.setRows(2);
             GridLayout gridLayout3 = new GridLayout();
@@ -2251,14 +2251,14 @@ public class FormMain extends JFrame {
             gridLayout2.setRows(2);
             GridLayout gridLayout = new GridLayout();
             gridLayout.setRows(2);
-            jPanel = new JPanel();
-            jPanel.setLayout(new BoxLayout(getJPanel(), BoxLayout.X_AXIS));
-            jPanel.add(getToolStripFile(), null);
-            jPanel.add(getToolStripPosition(), null);
-            jPanel.add(getToolStripTool(), null);
-            jPanel.add(getToolStripMeasure(), null);
+            BPanel = new BPanel();
+            BPanel.setLayout(new BoxLayout(getJPanel(), BoxLayout.X_AXIS));
+            BPanel.add(getToolStripFile(), null);
+            BPanel.add(getToolStripPosition(), null);
+            BPanel.add(getToolStripTool(), null);
+            BPanel.add(getToolStripMeasure(), null);
         }
-        return jPanel;
+        return BPanel;
     }
 
     /**
@@ -2329,11 +2329,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnScroll   
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnScroll() {
+    private BToggleButton getStripBtnScroll() {
         if (stripBtnScroll == null) {
-            stripBtnScroll = new JToggleButton();
+            stripBtnScroll = new BToggleButton();
             stripBtnScroll.setText("Scroll");
         }
         return stripBtnScroll;
@@ -2342,11 +2342,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnLoop 
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnLoop() {
+    private BToggleButton getStripBtnLoop() {
         if (stripBtnLoop == null) {
-            stripBtnLoop = new JToggleButton();
+            stripBtnLoop = new BToggleButton();
             stripBtnLoop.setText("Loop");
         }
         return stripBtnLoop;
@@ -2409,11 +2409,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnStartMarker  
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnStartMarker() {
+    private BToggleButton getStripBtnStartMarker() {
         if (stripBtnStartMarker == null) {
-            stripBtnStartMarker = new JToggleButton();
+            stripBtnStartMarker = new BToggleButton();
         }
         return stripBtnStartMarker;
     }
@@ -2421,11 +2421,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnEndMarker    
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnEndMarker() {
+    private BToggleButton getStripBtnEndMarker() {
         if (stripBtnEndMarker == null) {
-            stripBtnEndMarker = new JToggleButton();
+            stripBtnEndMarker = new BToggleButton();
         }
         return stripBtnEndMarker;
     }
@@ -2452,11 +2452,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnPointer  
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnPointer() {
+    private BToggleButton getStripBtnPointer() {
         if (stripBtnPointer == null) {
-            stripBtnPointer = new JToggleButton();
+            stripBtnPointer = new BToggleButton();
             stripBtnPointer.setText("Pointer");
         }
         return stripBtnPointer;
@@ -2465,11 +2465,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnPencil   
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnPencil() {
+    private BToggleButton getStripBtnPencil() {
         if (stripBtnPencil == null) {
-            stripBtnPencil = new JToggleButton();
+            stripBtnPencil = new BToggleButton();
             stripBtnPencil.setText("Pencil");
         }
         return stripBtnPencil;
@@ -2478,11 +2478,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnLine 
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnLine() {
+    private BToggleButton getStripBtnLine() {
         if (stripBtnLine == null) {
-            stripBtnLine = new JToggleButton();
+            stripBtnLine = new BToggleButton();
             stripBtnLine.setText("Line");
         }
         return stripBtnLine;
@@ -2491,11 +2491,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnEraser   
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnEraser() {
+    private BToggleButton getStripBtnEraser() {
         if (stripBtnEraser == null) {
-            stripBtnEraser = new JToggleButton();
+            stripBtnEraser = new BToggleButton();
             stripBtnEraser.setToolTipText("");
             stripBtnEraser.setText("Eraser");
         }
@@ -2505,11 +2505,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnGrid 
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnGrid() {
+    private BToggleButton getStripBtnGrid() {
         if (stripBtnGrid == null) {
-            stripBtnGrid = new JToggleButton();
+            stripBtnGrid = new BToggleButton();
             stripBtnGrid.setText("Grid");
         }
         return stripBtnGrid;
@@ -2518,11 +2518,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes stripBtnCurve    
      *  
-     * @return javax.swing.JToggleButton    
+     * @return javax.swing.BToggleButton    
      */
-    private JToggleButton getStripBtnCurve() {
+    private BToggleButton getStripBtnCurve() {
         if (stripBtnCurve == null) {
-            stripBtnCurve = new JToggleButton();
+            stripBtnCurve = new BToggleButton();
             stripBtnCurve.setText("Curve");
         }
         return stripBtnCurve;
@@ -3557,9 +3557,9 @@ public class FormMain extends JFrame {
     /**
      * This method initializes panel3   
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getPanel3() {
+    private BPanel getPanel3() {
         if (panel3 == null) {
             GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
             gridBagConstraints6.gridx = 3;
@@ -3592,7 +3592,7 @@ public class FormMain extends JFrame {
             gridBagConstraints.weighty = 1.0D;
             gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints.gridy = 0;
-            panel3 = new JPanel();
+            panel3 = new BPanel();
             panel3.setLayout(new GridBagLayout());
             panel3.add(getJButton(), gridBagConstraints);
             panel3.add(getJButton1(), gridBagConstraints1);
@@ -3608,11 +3608,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes jPanel2  
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getJPanel2() {
+    private BPanel getJPanel2() {
         if (jPanel2 == null) {
-            jPanel2 = new JPanel();
+            jPanel2 = new BPanel();
             jPanel2.setLayout(new GridBagLayout());
         }
         return jPanel2;
@@ -3699,7 +3699,7 @@ public class FormMain extends JFrame {
     /**
      * This method initializes pictPianoRoll    
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
     private PictPianoRoll getPictPianoRoll() {
         if (pictPianoRoll == null) {
@@ -3714,9 +3714,9 @@ public class FormMain extends JFrame {
      *  
      * @return javax.swing.JScrollBar   
      */
-    private JScrollBar getVScroll() {
+    private BVScrollBar getVScroll() {
         if (vScroll == null) {
-            vScroll = new JScrollBar();
+            vScroll = new BVScrollBar();
         }
         return vScroll;
     }
@@ -3726,10 +3726,9 @@ public class FormMain extends JFrame {
      *  
      * @return javax.swing.JScrollBar   
      */
-    private JScrollBar getHScroll() {
+    private BHScrollBar getHScroll() {
         if (hScroll == null) {
-            hScroll = new JScrollBar();
-            hScroll.setOrientation(JScrollBar.HORIZONTAL);
+            hScroll = new BHScrollBar();
         }
         return hScroll;
     }
@@ -3737,13 +3736,13 @@ public class FormMain extends JFrame {
     /**
      * This method initializes pictureBox3  
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getPictureBox3() {
+    private BPanel getPictureBox3() {
         if (pictureBox3 == null) {
             GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
             gridBagConstraints12.anchor = GridBagConstraints.EAST;
-            pictureBox3 = new JPanel();
+            pictureBox3 = new BPanel();
             pictureBox3.setLayout(new GridBagLayout());
             pictureBox3.setPreferredSize(new Dimension(68, 0));
             pictureBox3.add(getJButton6(), gridBagConstraints12);
@@ -3756,9 +3755,9 @@ public class FormMain extends JFrame {
      *  
      * @return javax.swing.JSlider  
      */
-    private JSlider getTrackBar() {
+    private BSlider getTrackBar() {
         if (trackBar == null) {
-            trackBar = new JSlider();
+            trackBar = new BSlider();
             trackBar.setPreferredSize(new Dimension(83, 16));
         }
         return trackBar;
@@ -3779,11 +3778,11 @@ public class FormMain extends JFrame {
     /**
      * This method initializes picturePositionIndicator 
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getPicturePositionIndicator() {
+    private BPanel getPicturePositionIndicator() {
         if (picturePositionIndicator == null) {
-            picturePositionIndicator = new JPanel();
+            picturePositionIndicator = new BPanel();
             picturePositionIndicator.setLayout(new GridBagLayout());
             picturePositionIndicator.setPreferredSize(new Dimension(421, 48));
         }
@@ -3793,9 +3792,9 @@ public class FormMain extends JFrame {
     /**
      * This method initializes jPanel1  
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getJPanel1() {
+    private BPanel getJPanel1() {
         if (jPanel1 == null) {
             GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
             gridBagConstraints15.gridx = 0;
@@ -3814,7 +3813,7 @@ public class FormMain extends JFrame {
             gridBagConstraints13.anchor = GridBagConstraints.NORTH;
             gridBagConstraints13.weightx = 1.0D;
             gridBagConstraints13.gridy = 0;
-            jPanel1 = new JPanel();
+            jPanel1 = new BPanel();
             jPanel1.setLayout(new GridBagLayout());
             jPanel1.add(getPanel3(), gridBagConstraints13);
             jPanel1.add(getPicturePositionIndicator(), gridBagConstraints14);
@@ -3826,16 +3825,16 @@ public class FormMain extends JFrame {
     /**
      * This method initializes jPanel3  
      *  
-     * @return javax.swing.JPanel   
+     * @return javax.swing.BPanel   
      */
-    private JPanel getJPanel3() {
+    private BPanel getJPanel3() {
         if (jPanel3 == null) {
             GridLayout gridLayout1 = new GridLayout();
             gridLayout1.setRows(2);
             gridLayout1.setColumns(1);
             statusLabel = new BLabel();
             statusLabel.setText("");
-            jPanel3 = new JPanel();
+            jPanel3 = new BPanel();
             jPanel3.setLayout(gridLayout1);
             jPanel3.add(getToolStripBottom(), null);
             jPanel3.add(statusLabel, null);

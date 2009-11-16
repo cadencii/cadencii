@@ -1,21 +1,20 @@
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
-import javax.swing.JProgressBar;
-import javax.swing.JButton;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.JPanel;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BProgressBar;
 
-public class FormGenerateStf extends JFrame {
-
+public class FormGenerateStf extends BForm {
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
-	private JLabel lblPercent = null;
-	private JLabel lblTime = null;
-	private JProgressBar progressBar = null;
-	private JButton btnCancel = null;
-	private JLabel jLabel2 = null;
+	private BLabel lblPercent = null;
+	private BLabel lblTime = null;
+	private BProgressBar progressBar = null;
+	private BButton btnCancel = null;
+	private BLabel jLabel2 = null;
 
 	/**
 	 * This is the default constructor
@@ -47,7 +46,7 @@ public class FormGenerateStf extends JFrame {
 			gridBagConstraints4.gridx = 0;
 			gridBagConstraints4.weighty = 1.0D;
 			gridBagConstraints4.gridy = 4;
-			jLabel2 = new JLabel();
+			jLabel2 = new BLabel();
 			jLabel2.setText("");
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridx = 0;
@@ -65,14 +64,14 @@ public class FormGenerateStf extends JFrame {
 			gridBagConstraints1.anchor = GridBagConstraints.WEST;
 			gridBagConstraints1.insets = new Insets(2, 16, 2, 0);
 			gridBagConstraints1.gridy = 1;
-			lblTime = new JLabel();
+			lblTime = new BLabel();
 			lblTime.setText("remaining 0s (elapsed 0s)");
 			GridBagConstraints gridBagConstraints = new GridBagConstraints();
 			gridBagConstraints.gridx = 0;
 			gridBagConstraints.insets = new Insets(16, 16, 2, 0);
 			gridBagConstraints.anchor = GridBagConstraints.WEST;
 			gridBagConstraints.gridy = 0;
-			lblPercent = new JLabel();
+			lblPercent = new BLabel();
 			lblPercent.setText("0 %");
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
@@ -88,11 +87,11 @@ public class FormGenerateStf extends JFrame {
 	/**
 	 * This method initializes progressBar	
 	 * 	
-	 * @return javax.swing.JProgressBar	
+	 * @return javax.swing.BProgressBar	
 	 */
-	private JProgressBar getProgressBar() {
+	private BProgressBar getProgressBar() {
 		if (progressBar == null) {
-			progressBar = new JProgressBar();
+			progressBar = new BProgressBar();
 		}
 		return progressBar;
 	}
@@ -100,11 +99,11 @@ public class FormGenerateStf extends JFrame {
 	/**
 	 * This method initializes btnCancel	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return javax.swing.BButton	
 	 */
-	private JButton getBtnCancel() {
+	private BButton getBtnCancel() {
 		if (btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
 		}
 		return btnCancel;

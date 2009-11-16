@@ -4,23 +4,27 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BPanel;
+import org.kbinani.windows.forms.BTextBox;
 
-public class FormVibratoConfig extends JFrame {
+public class FormVibratoConfig extends BForm {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel jContentPane = null;
-	private JPanel jPanel2 = null;
-	private JButton btnOK = null;
-	private JButton btnCancel = null;
-	private JLabel lblVibratoLength = null;
-	private JTextField txtVibratoLength = null;
-	private JLabel jLabel1 = null;
-	private JLabel lblVibratoType = null;
-	private JComboBox comboVibratoType = null;
+	private BPanel jContentPane = null;
+	private BPanel jPanel2 = null;
+	private BButton btnOK = null;
+	private BButton btnCancel = null;
+	private BLabel lblVibratoLength = null;
+	private BTextBox txtVibratoLength = null;
+	private BLabel jLabel1 = null;
+	private BLabel lblVibratoType = null;
+	private BComboBox comboVibratoType = null;
 
 	/**
 	 * This is the default constructor
@@ -67,7 +71,7 @@ public class FormVibratoConfig extends JFrame {
 			gridBagConstraints3.anchor = GridBagConstraints.SOUTHWEST;
 			gridBagConstraints3.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints3.gridy = 1;
-			lblVibratoType = new JLabel();
+			lblVibratoType = new BLabel();
 			lblVibratoType.setText("Vibrato Type");
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			gridBagConstraints2.gridx = 2;
@@ -75,7 +79,7 @@ public class FormVibratoConfig extends JFrame {
 			gridBagConstraints2.anchor = GridBagConstraints.WEST;
 			gridBagConstraints2.weightx = 1.0D;
 			gridBagConstraints2.gridy = 0;
-			jLabel1 = new JLabel();
+			jLabel1 = new BLabel();
 			jLabel1.setText("% (0-100)");
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.fill = GridBagConstraints.NONE;
@@ -89,9 +93,9 @@ public class FormVibratoConfig extends JFrame {
 			gridBagConstraints.anchor = GridBagConstraints.WEST;
 			gridBagConstraints.insets = new Insets(12, 12, 3, 0);
 			gridBagConstraints.gridy = 0;
-			lblVibratoLength = new JLabel();
+			lblVibratoLength = new BLabel();
 			lblVibratoLength.setText("Vibrato Length");
-			jContentPane = new JPanel();
+			jContentPane = new BPanel();
 			jContentPane.setLayout(new GridBagLayout());
 			jContentPane.add(lblVibratoLength, gridBagConstraints);
 			jContentPane.add(getTxtVibratoLength(), gridBagConstraints1);
@@ -120,7 +124,7 @@ public class FormVibratoConfig extends JFrame {
 			gridBagConstraints42.gridx = 0;
 			gridBagConstraints42.gridy = 0;
 			gridBagConstraints42.insets = new Insets(0, 0, 0, 16);
-			jPanel2 = new JPanel();
+			jPanel2 = new BPanel();
 			jPanel2.setLayout(new GridBagLayout());
 			jPanel2.add(getBtnOK(), gridBagConstraints42);
 			jPanel2.add(getBtnCancel(), gridBagConstraints52);
@@ -135,7 +139,7 @@ public class FormVibratoConfig extends JFrame {
 	 */
 	private JButton getBtnOK() {
 		if (btnOK == null) {
-			btnOK = new JButton();
+			btnOK = new BButton();
 			btnOK.setText("OK");
 		}
 		return btnOK;
@@ -148,7 +152,7 @@ public class FormVibratoConfig extends JFrame {
 	 */
 	private JButton getBtnCancel() {
 		if (btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
 		}
 		return btnCancel;
@@ -161,7 +165,7 @@ public class FormVibratoConfig extends JFrame {
 	 */
 	private JTextField getTxtVibratoLength() {
 		if (txtVibratoLength == null) {
-			txtVibratoLength = new JTextField();
+			txtVibratoLength = new BTextBox();
 			txtVibratoLength.setPreferredSize(new Dimension(61, 19));
 		}
 		return txtVibratoLength;
@@ -174,7 +178,7 @@ public class FormVibratoConfig extends JFrame {
 	 */
 	private JComboBox getComboVibratoType() {
 		if (comboVibratoType == null) {
-			comboVibratoType = new JComboBox();
+			comboVibratoType = new BComboBox();
 			comboVibratoType.setPreferredSize(new Dimension(167, 20));
 		}
 		return comboVibratoType;

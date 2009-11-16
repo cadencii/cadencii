@@ -1,22 +1,22 @@
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
-import java.awt.Dimension;
 import java.awt.Color;
-import javax.swing.JTextField;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import javax.swing.JSlider;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BSlider;
+import org.kbinani.windows.forms.BTextBox;
 
 public class VolumeTracker extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JTextField txtFeder = null;
-	private JSlider trackFeder = null;
-	private JSlider trackPanpot = null;
-	private JTextField txtPanpot = null;
-	private JLabel lblTitle = null;
+	private BTextBox txtFeder = null;
+	private BSlider trackFeder = null;
+	private BSlider trackPanpot = null;
+	private BTextBox txtPanpot = null;
+	private BLabel lblTitle = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -36,7 +36,7 @@ public class VolumeTracker extends JPanel {
 		gridBagConstraints11.fill = GridBagConstraints.BOTH;
 		gridBagConstraints11.weightx = 1.0D;
 		gridBagConstraints11.gridy = 4;
-		lblTitle = new JLabel();
+		lblTitle = new BLabel();
 		lblTitle.setText("TITLE");
 		lblTitle.setPreferredSize(new Dimension(85, 23));
 		lblTitle.setBackground(Color.white);
@@ -84,11 +84,11 @@ public class VolumeTracker extends JPanel {
 	 * 	
 	 * @return javax.swing.JTextField	
 	 */
-	private JTextField getTxtFeder() {
+	private BTextBox getTxtFeder() {
 		if (txtFeder == null) {
-			txtFeder = new JTextField();
+			txtFeder = new BTextBox();
 			txtFeder.setPreferredSize(new Dimension(79, 19));
-			txtFeder.setHorizontalAlignment(JTextField.CENTER);
+			txtFeder.setHorizontalAlignment(BTextBox.CENTER);
 			txtFeder.setText("0");
 		}
 		return txtFeder;
@@ -99,10 +99,10 @@ public class VolumeTracker extends JPanel {
 	 * 	
 	 * @return javax.swing.JSlider	
 	 */
-	private JSlider getTrackFeder() {
+	private BSlider getTrackFeder() {
 		if (trackFeder == null) {
-			trackFeder = new JSlider();
-			trackFeder.setOrientation(JSlider.VERTICAL);
+			trackFeder = new BSlider();
+			trackFeder.setOrientation(BSlider.VERTICAL);
 			trackFeder.setMinimum(26);
 			trackFeder.setPreferredSize(new Dimension(45, 144));
 			trackFeder.setValue(100);
@@ -118,9 +118,9 @@ public class VolumeTracker extends JPanel {
 	 * 	
 	 * @return javax.swing.JSlider	
 	 */
-	private JSlider getTrackPanpot() {
+	private BSlider getTrackPanpot() {
 		if (trackPanpot == null) {
-			trackPanpot = new JSlider();
+			trackPanpot = new BSlider();
 			trackPanpot.setMaximum(64);
 			trackPanpot.setValue(0);
 			trackPanpot.setBackground(new Color(180, 180, 180));
@@ -135,10 +135,10 @@ public class VolumeTracker extends JPanel {
 	 * 	
 	 * @return javax.swing.JTextField	
 	 */
-	private JTextField getTxtPanpot() {
+	private BTextBox getTxtPanpot() {
 		if (txtPanpot == null) {
-			txtPanpot = new JTextField();
-			txtPanpot.setHorizontalAlignment(JTextField.CENTER);
+			txtPanpot = new BTextBox();
+			txtPanpot.setHorizontalAlignment(BTextBox.CENTER);
 			txtPanpot.setText("0");
 		}
 		return txtPanpot;

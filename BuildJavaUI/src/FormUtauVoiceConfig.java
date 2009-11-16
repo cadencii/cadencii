@@ -3,93 +3,93 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
+import java.awt.event.KeyEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.KeyEvent;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BHScrollBar;
+import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BMenu;
+import org.kbinani.windows.forms.BMenuBar;
+import org.kbinani.windows.forms.BMenuItem;
+import org.kbinani.windows.forms.BPanel;
+import org.kbinani.windows.forms.BSplitPane;
+import org.kbinani.windows.forms.BTextBox;
 
-public class FormUtauVoiceConfig extends JFrame {
+public class FormUtauVoiceConfig extends BForm {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel splitContainerOut = null;
-	private JMenuBar jJMenuBar = null;
-	private JMenu menuFile = null;
-	private JMenuItem menuFileOpen = null;
-	private JMenuItem menuFileSave = null;
-	private JMenuItem menuFileSaveAs = null;
+	private BPanel splitContainerOut = null;
+	private BMenuBar jJMenuBar = null;
+	private BMenu menuFile = null;
+	private BMenuItem menuFileOpen = null;
+	private BMenuItem menuFileSave = null;
+	private BMenuItem menuFileSaveAs = null;
 	private JSeparator jMenuItem3 = null;
-	private JMenuItem menuFileQuit = null;
-	private JSplitPane jSplitPane = null;
-	private JSplitPane splitContainerIn = null;
-	private JPanel panelLeft = null;
+	private BMenuItem menuFileQuit = null;
+	private BSplitPane bSplitPane = null;
+	private BSplitPane splitContainerIn = null;
+	private BPanel panelLeft = null;
 	private JScrollPane jScrollPane = null;
 	private JTable jTable = null;
-	private JPanel panelLeftBottom = null;
-	private JButton buttonNext = null;
-	private JLabel lblSearch = null;
-	private JTextField txtSearch = null;
-	private JButton buttonPrevious = null;
-	private JLabel jLabel1 = null;
-	private JPanel panelRight = null;
-	private JLabel lblFileName = null;
-	private JTextField txtFileName = null;
-	private JLabel lblAlias = null;
-	private JTextField txtAlias = null;
-	private JLabel lblOffset = null;
-	private JLabel lblConsonant = null;
-	private JLabel lblBlank = null;
-	private JLabel lblPreUtterance = null;
-	private JLabel lblOverlap = null;
-	private JButton btnRefreshFrq = null;
-	private JButton btnRefreshStf = null;
-	private JLabel jLabel3 = null;
-	private JLabel jLabel4 = null;
-	private JPanel panelBottom = null;
-	private JPanel pictWave = null;
-	private JPanel jPanel5 = null;
-	private JScrollBar hScroll = null;
-	private JButton btnMinus = null;
-	private JButton btnPlus = null;
-	private JMenu menuEdit = null;
-	private JMenuItem menuEditGenerateFrq = null;
-	private JMenuItem menuEditGenerateStf = null;
-	private JMenu menuView = null;
-	private JMenuItem menuViewSearchNext = null;
-	private JMenuItem menuViewSearchPrevious = null;
+	private BPanel panelLeftBottom = null;
+	private BButton buttonNext = null;
+	private BLabel lblSearch = null;
+	private BTextBox txtSearch = null;
+	private BButton buttonPrevious = null;
+	private BLabel jLabel1 = null;
+	private BPanel panelRight = null;
+	private BLabel lblFileName = null;
+	private BTextBox txtFileName = null;
+	private BLabel lblAlias = null;
+	private BTextBox txtAlias = null;
+	private BLabel lblOffset = null;
+	private BLabel lblConsonant = null;
+	private BLabel lblBlank = null;
+	private BLabel lblPreUtterance = null;
+	private BLabel lblOverlap = null;
+	private BButton btnRefreshFrq = null;
+	private BButton btnRefreshStf = null;
+	private BLabel jLabel3 = null;
+	private BLabel jLabel4 = null;
+	private BPanel panelBottom = null;
+	private BPanel pictWave = null;
+	private BPanel jPanel5 = null;
+	private BHScrollBar hScroll = null;
+	private BButton btnMinus = null;
+	private BButton btnPlus = null;
+	private BMenu menuEdit = null;
+	private BMenuItem menuEditGenerateFrq = null;
+	private BMenuItem menuEditGenerateStf = null;
+	private BMenu menuView = null;
+	private BMenuItem menuViewSearchNext = null;
+	private BMenuItem menuViewSearchPrevious = null;
 	private DefaultTableModel listFiles = null;
 	private String[] columnHeaders = new String[]{ "FIle Name", "Alias", "offste", "Consonant", "Blank", "pre Utrerance", "Overlap" };
-	private JPanel jPanel = null;
-	private JTextField txtOffset = null;
-	private JLabel jLabel2 = null;
-	private JLabel jLabel5 = null;
-	private JPanel jPanel1 = null;
-	private JTextField txtConsonant = null;
-	private JLabel jLabel21 = null;
-	private JLabel jLabel51 = null;
-	private JPanel jPanel2 = null;
-	private JTextField txtBlank = null;
-	private JLabel jLabel22 = null;
-	private JLabel jLabel52 = null;
-	private JPanel jPanel3 = null;
-	private JTextField txtPreUtterance = null;
-	private JLabel jLabel23 = null;
-	private JLabel jLabel53 = null;
-	private JPanel jPanel4 = null;
-	private JTextField txtOverlap = null;
-	private JLabel jLabel24 = null;
-	private JLabel jLabel54 = null;
+	private BPanel BPanel = null;
+	private BTextBox txtOffset = null;
+	private BLabel jLabel2 = null;
+	private BLabel jLabel5 = null;
+	private BPanel jPanel1 = null;
+	private BTextBox txtConsonant = null;
+	private BLabel jLabel21 = null;
+	private BLabel jLabel51 = null;
+	private BPanel jPanel2 = null;
+	private BTextBox txtBlank = null;
+	private BLabel jLabel22 = null;
+	private BLabel jLabel52 = null;
+	private BPanel jPanel3 = null;
+	private BTextBox txtPreUtterance = null;
+	private BLabel jLabel23 = null;
+	private BLabel jLabel53 = null;
+	private BPanel jPanel4 = null;
+	private BTextBox txtOverlap = null;
+	private BLabel jLabel24 = null;
+	private BLabel jLabel54 = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -113,11 +113,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes splitContainerOut	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getSplitContainerOut() {
+	private BPanel getSplitContainerOut() {
 		if (splitContainerOut == null) {
-			splitContainerOut = new JPanel();
+			splitContainerOut = new BPanel();
 			splitContainerOut.setLayout(new BorderLayout());
 			splitContainerOut.add(getJSplitPane(), BorderLayout.CENTER);
 		}
@@ -127,11 +127,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes jJMenuBar	
 	 * 	
-	 * @return javax.swing.JMenuBar	
+	 * @return org.kbinani.windows.forms.BMenuBar	
 	 */
-	private JMenuBar getJJMenuBar() {
+	private BMenuBar getJJMenuBar() {
 		if (jJMenuBar == null) {
-			jJMenuBar = new JMenuBar();
+			jJMenuBar = new BMenuBar();
 			jJMenuBar.add(getMenuFile());
 			jJMenuBar.add(getMenuEdit());
 			jJMenuBar.add(getMenuView());
@@ -142,11 +142,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuFile	
 	 * 	
-	 * @return javax.swing.JMenu	
+	 * @return org.kbinani.windows.forms.BMenu	
 	 */
-	private JMenu getMenuFile() {
+	private BMenu getMenuFile() {
 		if (menuFile == null) {
-			menuFile = new JMenu();
+			menuFile = new BMenu();
 			menuFile.setText("File");
 			menuFile.setMnemonic(KeyEvent.VK_F);
 			menuFile.add(getMenuFileOpen());
@@ -161,11 +161,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuFileOpen	
 	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private JMenuItem getMenuFileOpen() {
+	private BMenuItem getMenuFileOpen() {
 		if (menuFileOpen == null) {
-			menuFileOpen = new JMenuItem();
+			menuFileOpen = new BMenuItem();
 			menuFileOpen.setText("Open");
 		}
 		return menuFileOpen;
@@ -174,11 +174,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuFileSave	
 	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private JMenuItem getMenuFileSave() {
+	private BMenuItem getMenuFileSave() {
 		if (menuFileSave == null) {
-			menuFileSave = new JMenuItem();
+			menuFileSave = new BMenuItem();
 			menuFileSave.setText("Save");
 		}
 		return menuFileSave;
@@ -187,11 +187,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuFileSaveAs	
 	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private JMenuItem getMenuFileSaveAs() {
+	private BMenuItem getMenuFileSaveAs() {
 		if (menuFileSaveAs == null) {
-			menuFileSaveAs = new JMenuItem();
+			menuFileSaveAs = new BMenuItem();
 			menuFileSaveAs.setText("Save As(&A)");
 		}
 		return menuFileSaveAs;
@@ -200,7 +200,7 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes jMenuItem3	
 	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
 	private JSeparator getJMenuItem3() {
 		if (jMenuItem3 == null) {
@@ -213,40 +213,40 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuFileQuit	
 	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private JMenuItem getMenuFileQuit() {
+	private BMenuItem getMenuFileQuit() {
 		if (menuFileQuit == null) {
-			menuFileQuit = new JMenuItem();
+			menuFileQuit = new BMenuItem();
 			menuFileQuit.setText("Close");
 		}
 		return menuFileQuit;
 	}
 
 	/**
-	 * This method initializes jSplitPane	
+	 * This method initializes BSplitPane	
 	 * 	
-	 * @return javax.swing.JSplitPane	
+	 * @return org.kbinani.windows.forms.BSplitPane	
 	 */
-	private JSplitPane getJSplitPane() {
-		if (jSplitPane == null) {
-			jSplitPane = new JSplitPane();
-			jSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-			jSplitPane.setTopComponent(getSplitContainerIn());
-			jSplitPane.setBottomComponent(getPanelBottom());
-			jSplitPane.setDividerLocation(260);
+	private BSplitPane getJSplitPane() {
+		if (bSplitPane == null) {
+			bSplitPane = new BSplitPane();
+			bSplitPane.setOrientation(BSplitPane.VERTICAL_SPLIT);
+			bSplitPane.setTopComponent(getSplitContainerIn());
+			bSplitPane.setBottomComponent(getPanelBottom());
+			bSplitPane.setDividerLocation(260);
 		}
-		return jSplitPane;
+		return bSplitPane;
 	}
 
 	/**
 	 * This method initializes splitContainerIn	
 	 * 	
-	 * @return javax.swing.JSplitPane	
+	 * @return org.kbinani.windows.forms.BSplitPane	
 	 */
-	private JSplitPane getSplitContainerIn() {
+	private BSplitPane getSplitContainerIn() {
 		if (splitContainerIn == null) {
-			splitContainerIn = new JSplitPane();
+			splitContainerIn = new BSplitPane();
 			splitContainerIn.setDividerLocation(450);
 			splitContainerIn.setRightComponent(getPanelRight());
 			splitContainerIn.setLeftComponent(getPanelLeft());
@@ -257,9 +257,9 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes panelLeft	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getPanelLeft() {
+	private BPanel getPanelLeft() {
 		if (panelLeft == null) {
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.gridx = 0;
@@ -272,7 +272,7 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints.weighty = 1.0D;
 			gridBagConstraints.gridheight = 1;
 			gridBagConstraints.gridx = 0;
-			panelLeft = new JPanel();
+			panelLeft = new BPanel();
 			panelLeft.setLayout(new GridBagLayout());
 			panelLeft.add(getJScrollPane(), gridBagConstraints);
 			panelLeft.add(getPanelLeftBottom(), gridBagConstraints1);
@@ -316,15 +316,15 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes panelLeftBottom	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getPanelLeftBottom() {
+	private BPanel getPanelLeftBottom() {
 		if (panelLeftBottom == null) {
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.gridx = 4;
 			gridBagConstraints6.weightx = 1.0D;
 			gridBagConstraints6.gridy = 0;
-			jLabel1 = new JLabel();
+			jLabel1 = new BLabel();
 			jLabel1.setText("");
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.gridx = 3;
@@ -343,10 +343,10 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints2.gridx = 0;
 			gridBagConstraints2.insets = new Insets(2, 16, 2, 0);
 			gridBagConstraints2.gridy = 0;
-			lblSearch = new JLabel();
+			lblSearch = new BLabel();
 			lblSearch.setText("Search:");
 			lblSearch.setHorizontalAlignment(SwingConstants.LEFT);
-			panelLeftBottom = new JPanel();
+			panelLeftBottom = new BPanel();
 			panelLeftBottom.setLayout(new GridBagLayout());
 			panelLeftBottom.add(getButtonNext(), gridBagConstraints3);
 			panelLeftBottom.add(lblSearch, gridBagConstraints2);
@@ -360,11 +360,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes buttonNext	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return org.kbinani.windows.forms.BButton	
 	 */
-	private JButton getButtonNext() {
+	private BButton getButtonNext() {
 		if (buttonNext == null) {
-			buttonNext = new JButton();
+			buttonNext = new BButton();
 			buttonNext.setText("Next");
 			buttonNext.setHorizontalAlignment(SwingConstants.LEFT);
 		}
@@ -374,13 +374,13 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes txtSearch	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
-	private JTextField getTxtSearch() {
+	private BTextBox getTxtSearch() {
 		if (txtSearch == null) {
-			txtSearch = new JTextField();
+			txtSearch = new BTextBox();
 			txtSearch.setPreferredSize(new Dimension(100, 20));
-			txtSearch.setHorizontalAlignment(JTextField.LEFT);
+			txtSearch.setHorizontalAlignment(BTextBox.LEFT);
 		}
 		return txtSearch;
 	}
@@ -388,11 +388,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes buttonPrevious	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return org.kbinani.windows.forms.BButton	
 	 */
-	private JButton getButtonPrevious() {
+	private BButton getButtonPrevious() {
 		if (buttonPrevious == null) {
-			buttonPrevious = new JButton();
+			buttonPrevious = new BButton();
 			buttonPrevious.setText("Previous");
 			buttonPrevious.setHorizontalAlignment(SwingConstants.LEFT);
 		}
@@ -402,9 +402,9 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes panelRight	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getPanelRight() {
+	private BPanel getPanelRight() {
 		if (panelRight == null) {
 			GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
 			gridBagConstraints20.gridx = 1;
@@ -435,13 +435,13 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints24.gridx = 0;
 			gridBagConstraints24.insets = new Insets(16, 0, 0, 0);
 			gridBagConstraints24.gridy = 0;
-			jLabel4 = new JLabel();
+			jLabel4 = new BLabel();
 			jLabel4.setText("");
 			GridBagConstraints gridBagConstraints23 = new GridBagConstraints();
 			gridBagConstraints23.gridx = 0;
 			gridBagConstraints23.weighty = 1.0D;
 			gridBagConstraints23.gridy = 10;
-			jLabel3 = new JLabel();
+			jLabel3 = new BLabel();
 			jLabel3.setText("");
 			GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
 			gridBagConstraints22.gridx = 1;
@@ -460,35 +460,35 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints17.anchor = GridBagConstraints.WEST;
 			gridBagConstraints17.insets = new Insets(0, 16, 0, 0);
 			gridBagConstraints17.gridy = 7;
-			lblOverlap = new JLabel();
+			lblOverlap = new BLabel();
 			lblOverlap.setText("Overlap");
 			GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
 			gridBagConstraints16.gridx = 0;
 			gridBagConstraints16.anchor = GridBagConstraints.WEST;
 			gridBagConstraints16.insets = new Insets(0, 16, 0, 0);
 			gridBagConstraints16.gridy = 6;
-			lblPreUtterance = new JLabel();
+			lblPreUtterance = new BLabel();
 			lblPreUtterance.setText("Pre Utterance");
 			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
 			gridBagConstraints15.gridx = 0;
 			gridBagConstraints15.anchor = GridBagConstraints.WEST;
 			gridBagConstraints15.insets = new Insets(0, 16, 0, 0);
 			gridBagConstraints15.gridy = 5;
-			lblBlank = new JLabel();
+			lblBlank = new BLabel();
 			lblBlank.setText("Blank");
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			gridBagConstraints13.gridx = 0;
 			gridBagConstraints13.anchor = GridBagConstraints.WEST;
 			gridBagConstraints13.insets = new Insets(0, 16, 0, 0);
 			gridBagConstraints13.gridy = 4;
-			lblConsonant = new JLabel();
+			lblConsonant = new BLabel();
 			lblConsonant.setText("Consonant");
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			gridBagConstraints11.gridx = 0;
 			gridBagConstraints11.anchor = GridBagConstraints.WEST;
 			gridBagConstraints11.insets = new Insets(0, 16, 0, 0);
 			gridBagConstraints11.gridy = 3;
-			lblOffset = new JLabel();
+			lblOffset = new BLabel();
 			lblOffset.setText("Offset");
 			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
 			gridBagConstraints10.fill = GridBagConstraints.HORIZONTAL;
@@ -503,7 +503,7 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints9.insets = new Insets(0, 16, 0, 0);
 			gridBagConstraints9.anchor = GridBagConstraints.WEST;
 			gridBagConstraints9.gridy = 2;
-			lblAlias = new JLabel();
+			lblAlias = new BLabel();
 			lblAlias.setText("Alias");
 			GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
 			gridBagConstraints8.fill = GridBagConstraints.HORIZONTAL;
@@ -518,9 +518,9 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints7.insets = new Insets(0, 16, 0, 0);
 			gridBagConstraints7.anchor = GridBagConstraints.WEST;
 			gridBagConstraints7.gridy = 1;
-			lblFileName = new JLabel();
+			lblFileName = new BLabel();
 			lblFileName.setText("File Name");
-			panelRight = new JPanel();
+			panelRight = new BPanel();
 			panelRight.setLayout(new GridBagLayout());
 			panelRight.add(lblFileName, gridBagConstraints7);
 			panelRight.add(getTxtFileName(), gridBagConstraints8);
@@ -547,11 +547,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes txtFileName	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
-	private JTextField getTxtFileName() {
+	private BTextBox getTxtFileName() {
 		if (txtFileName == null) {
-			txtFileName = new JTextField();
+			txtFileName = new BTextBox();
 			txtFileName.setPreferredSize(new Dimension(100, 20));
 		}
 		return txtFileName;
@@ -560,11 +560,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes txtAlias	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
-	private JTextField getTxtAlias() {
+	private BTextBox getTxtAlias() {
 		if (txtAlias == null) {
-			txtAlias = new JTextField();
+			txtAlias = new BTextBox();
 			txtAlias.setPreferredSize(new Dimension(100, 20));
 		}
 		return txtAlias;
@@ -573,11 +573,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes btnRefreshFrq	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return org.kbinani.windows.forms.BButton	
 	 */
-	private JButton getBtnRefreshFrq() {
+	private BButton getBtnRefreshFrq() {
 		if (btnRefreshFrq == null) {
-			btnRefreshFrq = new JButton();
+			btnRefreshFrq = new BButton();
 			btnRefreshFrq.setText("Refresh FRQ");
 		}
 		return btnRefreshFrq;
@@ -586,11 +586,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes btnRefreshStf	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return org.kbinani.windows.forms.BButton	
 	 */
-	private JButton getBtnRefreshStf() {
+	private BButton getBtnRefreshStf() {
 		if (btnRefreshStf == null) {
-			btnRefreshStf = new JButton();
+			btnRefreshStf = new BButton();
 			btnRefreshStf.setText("Refresh STF");
 		}
 		return btnRefreshStf;
@@ -599,9 +599,9 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes panelBottom	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getPanelBottom() {
+	private BPanel getPanelBottom() {
 		if (panelBottom == null) {
 			GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
 			gridBagConstraints27.gridx = 0;
@@ -616,7 +616,7 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints25.fill = GridBagConstraints.BOTH;
 			gridBagConstraints25.anchor = GridBagConstraints.NORTH;
 			gridBagConstraints25.gridy = 0;
-			panelBottom = new JPanel();
+			panelBottom = new BPanel();
 			panelBottom.setLayout(new GridBagLayout());
 			panelBottom.add(getPictWave(), gridBagConstraints25);
 			panelBottom.add(getJPanel5(), gridBagConstraints27);
@@ -627,11 +627,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes pictWave	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getPictWave() {
+	private BPanel getPictWave() {
 		if (pictWave == null) {
-			pictWave = new JPanel();
+			pictWave = new BPanel();
 			pictWave.setLayout(new GridBagLayout());
 		}
 		return pictWave;
@@ -640,9 +640,9 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes jPanel5	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getJPanel5() {
+	private BPanel getJPanel5() {
 		if (jPanel5 == null) {
 			GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
 			gridBagConstraints26.fill = GridBagConstraints.HORIZONTAL;
@@ -650,7 +650,7 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints26.gridy = 0;
 			gridBagConstraints26.weightx = 1.0D;
 			gridBagConstraints26.weighty = 1.0;
-			jPanel5 = new JPanel();
+			jPanel5 = new BPanel();
 			jPanel5.setLayout(new GridBagLayout());
 			jPanel5.add(getHScroll(), gridBagConstraints26);
 			jPanel5.add(getBtnMinus(), new GridBagConstraints());
@@ -664,10 +664,9 @@ public class FormUtauVoiceConfig extends JFrame {
 	 * 	
 	 * @return javax.swing.JScrollBar	
 	 */
-	private JScrollBar getHScroll() {
+	private BHScrollBar getHScroll() {
 		if (hScroll == null) {
-			hScroll = new JScrollBar();
-			hScroll.setOrientation(JScrollBar.HORIZONTAL);
+			hScroll = new BHScrollBar();
 		}
 		return hScroll;
 	}
@@ -675,11 +674,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes btnMinus	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return org.kbinani.windows.forms.BButton	
 	 */
-	private JButton getBtnMinus() {
+	private BButton getBtnMinus() {
 		if (btnMinus == null) {
-			btnMinus = new JButton();
+			btnMinus = new BButton();
 			btnMinus.setText("-");
 			btnMinus.setPreferredSize(new Dimension(38, 16));
 		}
@@ -689,11 +688,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes btnPlus	
 	 * 	
-	 * @return javax.swing.JButton	
+	 * @return org.kbinani.windows.forms.BButton	
 	 */
-	private JButton getBtnPlus() {
+	private BButton getBtnPlus() {
 		if (btnPlus == null) {
-			btnPlus = new JButton();
+			btnPlus = new BButton();
 			btnPlus.setText("+");
 			btnPlus.setPreferredSize(new Dimension(41, 16));
 		}
@@ -703,11 +702,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuEdit	
 	 * 	
-	 * @return javax.swing.JMenu	
+	 * @return org.kbinani.windows.forms.BMenu	
 	 */
-	private JMenu getMenuEdit() {
+	private BMenu getMenuEdit() {
 		if (menuEdit == null) {
-			menuEdit = new JMenu();
+			menuEdit = new BMenu();
 			menuEdit.setText("Edit");
 			menuEdit.setMnemonic(KeyEvent.VK_E);
 			menuEdit.add(getMenuEditGenerateFrq());
@@ -719,11 +718,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuEditGenerateFrq	
 	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private JMenuItem getMenuEditGenerateFrq() {
+	private BMenuItem getMenuEditGenerateFrq() {
 		if (menuEditGenerateFrq == null) {
-			menuEditGenerateFrq = new JMenuItem();
+			menuEditGenerateFrq = new BMenuItem();
 			menuEditGenerateFrq.setText("Generate FRQ files");
 		}
 		return menuEditGenerateFrq;
@@ -732,11 +731,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuEditGenerateStf	
 	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private JMenuItem getMenuEditGenerateStf() {
+	private BMenuItem getMenuEditGenerateStf() {
 		if (menuEditGenerateStf == null) {
-			menuEditGenerateStf = new JMenuItem();
+			menuEditGenerateStf = new BMenuItem();
 			menuEditGenerateStf.setText("Generate STF files");
 		}
 		return menuEditGenerateStf;
@@ -745,11 +744,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuView	
 	 * 	
-	 * @return javax.swing.JMenu	
+	 * @return org.kbinani.windows.forms.BMenu	
 	 */
-	private JMenu getMenuView() {
+	private BMenu getMenuView() {
 		if (menuView == null) {
-			menuView = new JMenu();
+			menuView = new BMenu();
 			menuView.setText("View");
 			menuView.setMnemonic(KeyEvent.VK_V);
 			menuView.add(getMenuViewSearchNext());
@@ -761,11 +760,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuViewSearchNext	
 	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private JMenuItem getMenuViewSearchNext() {
+	private BMenuItem getMenuViewSearchNext() {
 		if (menuViewSearchNext == null) {
-			menuViewSearchNext = new JMenuItem();
+			menuViewSearchNext = new BMenuItem();
 			menuViewSearchNext.setText("Search Next");
 		}
 		return menuViewSearchNext;
@@ -774,34 +773,34 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes menuViewSearchPrevious	
 	 * 	
-	 * @return javax.swing.JMenuItem	
+	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private JMenuItem getMenuViewSearchPrevious() {
+	private BMenuItem getMenuViewSearchPrevious() {
 		if (menuViewSearchPrevious == null) {
-			menuViewSearchPrevious = new JMenuItem();
+			menuViewSearchPrevious = new BMenuItem();
 			menuViewSearchPrevious.setText("Search Previous");
 		}
 		return menuViewSearchPrevious;
 	}
 
 	/**
-	 * This method initializes jPanel	
+	 * This method initializes BPanel	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getJPanel() {
-		if (jPanel == null) {
+	private BPanel getJPanel() {
+		if (BPanel == null) {
 			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
 			gridBagConstraints31.gridx = 2;
 			gridBagConstraints31.weightx = 1.0D;
 			gridBagConstraints31.fill = GridBagConstraints.BOTH;
 			gridBagConstraints31.gridy = 0;
-			jLabel5 = new JLabel();
+			jLabel5 = new BLabel();
 			jLabel5.setText("");
 			GridBagConstraints gridBagConstraints30 = new GridBagConstraints();
 			gridBagConstraints30.gridx = 1;
 			gridBagConstraints30.gridy = 0;
-			jLabel2 = new JLabel();
+			jLabel2 = new BLabel();
 			jLabel2.setText("ms");
 			GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
 			gridBagConstraints29.fill = GridBagConstraints.NONE;
@@ -809,23 +808,23 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints29.weightx = 1.0;
 			gridBagConstraints29.anchor = GridBagConstraints.WEST;
 			gridBagConstraints29.gridx = 0;
-			jPanel = new JPanel();
-			jPanel.setLayout(new GridBagLayout());
-			jPanel.add(getTxtOffset(), gridBagConstraints29);
-			jPanel.add(jLabel2, gridBagConstraints30);
-			jPanel.add(jLabel5, gridBagConstraints31);
+			BPanel = new BPanel();
+			BPanel.setLayout(new GridBagLayout());
+			BPanel.add(getTxtOffset(), gridBagConstraints29);
+			BPanel.add(jLabel2, gridBagConstraints30);
+			BPanel.add(jLabel5, gridBagConstraints31);
 		}
-		return jPanel;
+		return BPanel;
 	}
 
 	/**
 	 * This method initializes txtOffset	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
-	private JTextField getTxtOffset() {
+	private BTextBox getTxtOffset() {
 		if (txtOffset == null) {
-			txtOffset = new JTextField();
+			txtOffset = new BTextBox();
 			txtOffset.setPreferredSize(new Dimension(59, 20));
 		}
 		return txtOffset;
@@ -834,21 +833,21 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes jPanel1	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getJPanel1() {
+	private BPanel getJPanel1() {
 		if (jPanel1 == null) {
 			GridBagConstraints gridBagConstraints311 = new GridBagConstraints();
 			gridBagConstraints311.fill = GridBagConstraints.BOTH;
 			gridBagConstraints311.gridy = 0;
 			gridBagConstraints311.weightx = 1.0D;
 			gridBagConstraints311.gridx = 2;
-			jLabel51 = new JLabel();
+			jLabel51 = new BLabel();
 			jLabel51.setText("");
 			GridBagConstraints gridBagConstraints301 = new GridBagConstraints();
 			gridBagConstraints301.gridx = 1;
 			gridBagConstraints301.gridy = 0;
-			jLabel21 = new JLabel();
+			jLabel21 = new BLabel();
 			jLabel21.setText("ms");
 			GridBagConstraints gridBagConstraints291 = new GridBagConstraints();
 			gridBagConstraints291.anchor = GridBagConstraints.WEST;
@@ -856,7 +855,7 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints291.gridy = 0;
 			gridBagConstraints291.weightx = 1.0;
 			gridBagConstraints291.fill = GridBagConstraints.NONE;
-			jPanel1 = new JPanel();
+			jPanel1 = new BPanel();
 			jPanel1.setLayout(new GridBagLayout());
 			jPanel1.add(getTxtConsonant(), gridBagConstraints291);
 			jPanel1.add(jLabel21, gridBagConstraints301);
@@ -868,11 +867,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes txtConsonant	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
-	private JTextField getTxtConsonant() {
+	private BTextBox getTxtConsonant() {
 		if (txtConsonant == null) {
-			txtConsonant = new JTextField();
+			txtConsonant = new BTextBox();
 			txtConsonant.setPreferredSize(new Dimension(59, 20));
 		}
 		return txtConsonant;
@@ -881,21 +880,21 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes jPanel2	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getJPanel2() {
+	private BPanel getJPanel2() {
 		if (jPanel2 == null) {
 			GridBagConstraints gridBagConstraints312 = new GridBagConstraints();
 			gridBagConstraints312.fill = GridBagConstraints.BOTH;
 			gridBagConstraints312.gridy = 0;
 			gridBagConstraints312.weightx = 1.0D;
 			gridBagConstraints312.gridx = 2;
-			jLabel52 = new JLabel();
+			jLabel52 = new BLabel();
 			jLabel52.setText("");
 			GridBagConstraints gridBagConstraints302 = new GridBagConstraints();
 			gridBagConstraints302.gridx = 1;
 			gridBagConstraints302.gridy = 0;
-			jLabel22 = new JLabel();
+			jLabel22 = new BLabel();
 			jLabel22.setText("ms");
 			GridBagConstraints gridBagConstraints292 = new GridBagConstraints();
 			gridBagConstraints292.anchor = GridBagConstraints.WEST;
@@ -903,7 +902,7 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints292.gridy = 0;
 			gridBagConstraints292.weightx = 1.0;
 			gridBagConstraints292.fill = GridBagConstraints.NONE;
-			jPanel2 = new JPanel();
+			jPanel2 = new BPanel();
 			jPanel2.setLayout(new GridBagLayout());
 			jPanel2.add(getTxtBlank(), gridBagConstraints292);
 			jPanel2.add(jLabel22, gridBagConstraints302);
@@ -915,11 +914,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes txtBlank	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
-	private JTextField getTxtBlank() {
+	private BTextBox getTxtBlank() {
 		if (txtBlank == null) {
-			txtBlank = new JTextField();
+			txtBlank = new BTextBox();
 			txtBlank.setPreferredSize(new Dimension(59, 20));
 		}
 		return txtBlank;
@@ -928,21 +927,21 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes jPanel3	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getJPanel3() {
+	private BPanel getJPanel3() {
 		if (jPanel3 == null) {
 			GridBagConstraints gridBagConstraints313 = new GridBagConstraints();
 			gridBagConstraints313.fill = GridBagConstraints.BOTH;
 			gridBagConstraints313.gridy = 0;
 			gridBagConstraints313.weightx = 1.0D;
 			gridBagConstraints313.gridx = 2;
-			jLabel53 = new JLabel();
+			jLabel53 = new BLabel();
 			jLabel53.setText("");
 			GridBagConstraints gridBagConstraints303 = new GridBagConstraints();
 			gridBagConstraints303.gridx = 1;
 			gridBagConstraints303.gridy = 0;
-			jLabel23 = new JLabel();
+			jLabel23 = new BLabel();
 			jLabel23.setText("ms");
 			GridBagConstraints gridBagConstraints293 = new GridBagConstraints();
 			gridBagConstraints293.anchor = GridBagConstraints.WEST;
@@ -950,7 +949,7 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints293.gridy = 0;
 			gridBagConstraints293.weightx = 1.0;
 			gridBagConstraints293.fill = GridBagConstraints.NONE;
-			jPanel3 = new JPanel();
+			jPanel3 = new BPanel();
 			jPanel3.setLayout(new GridBagLayout());
 			jPanel3.add(getTxtPreUtterance(), gridBagConstraints293);
 			jPanel3.add(jLabel23, gridBagConstraints303);
@@ -962,11 +961,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes txtPreUtterance	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
-	private JTextField getTxtPreUtterance() {
+	private BTextBox getTxtPreUtterance() {
 		if (txtPreUtterance == null) {
-			txtPreUtterance = new JTextField();
+			txtPreUtterance = new BTextBox();
 			txtPreUtterance.setPreferredSize(new Dimension(59, 20));
 		}
 		return txtPreUtterance;
@@ -975,21 +974,21 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes jPanel4	
 	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private JPanel getJPanel4() {
+	private BPanel getJPanel4() {
 		if (jPanel4 == null) {
 			GridBagConstraints gridBagConstraints314 = new GridBagConstraints();
 			gridBagConstraints314.fill = GridBagConstraints.BOTH;
 			gridBagConstraints314.gridy = 0;
 			gridBagConstraints314.weightx = 1.0D;
 			gridBagConstraints314.gridx = 2;
-			jLabel54 = new JLabel();
+			jLabel54 = new BLabel();
 			jLabel54.setText("");
 			GridBagConstraints gridBagConstraints304 = new GridBagConstraints();
 			gridBagConstraints304.gridx = 1;
 			gridBagConstraints304.gridy = 0;
-			jLabel24 = new JLabel();
+			jLabel24 = new BLabel();
 			jLabel24.setText("ms");
 			GridBagConstraints gridBagConstraints294 = new GridBagConstraints();
 			gridBagConstraints294.anchor = GridBagConstraints.WEST;
@@ -997,7 +996,7 @@ public class FormUtauVoiceConfig extends JFrame {
 			gridBagConstraints294.gridy = 0;
 			gridBagConstraints294.weightx = 1.0;
 			gridBagConstraints294.fill = GridBagConstraints.NONE;
-			jPanel4 = new JPanel();
+			jPanel4 = new BPanel();
 			jPanel4.setLayout(new GridBagLayout());
 			jPanel4.add(getTxtOverlap(), gridBagConstraints294);
 			jPanel4.add(jLabel24, gridBagConstraints304);
@@ -1009,11 +1008,11 @@ public class FormUtauVoiceConfig extends JFrame {
 	/**
 	 * This method initializes txtOverlap	
 	 * 	
-	 * @return javax.swing.JTextField	
+	 * @return org.kbinani.windows.forms.BTextBox	
 	 */
-	private JTextField getTxtOverlap() {
+	private BTextBox getTxtOverlap() {
 		if (txtOverlap == null) {
-			txtOverlap = new JTextField();
+			txtOverlap = new BTextBox();
 			txtOverlap.setPreferredSize(new Dimension(59, 20));
 		}
 		return txtOverlap;

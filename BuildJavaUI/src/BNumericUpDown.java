@@ -1,15 +1,14 @@
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import java.awt.GridBagConstraints;
-import javax.swing.JButton;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BTextBox;
 
 public class BNumericUpDown extends JPanel {
-
 	private static final long serialVersionUID = 1L;
-	private JTextField txtValue = null;
-	private JButton btnUp = null;
-	private JButton btnDown = null;
+	private BTextBox txtValue = null;
+	private BButton btnUp = null;
+	private BButton btnDown = null;
 
 	/**
 	 * This is the default constructor
@@ -54,11 +53,11 @@ public class BNumericUpDown extends JPanel {
 	 * 	
 	 * @return javax.swing.JTextField	
 	 */
-	private JTextField getTxtValue() {
+	private BTextBox getTxtValue() {
 		if (txtValue == null) {
-			txtValue = new JTextField();
+			txtValue = new BTextBox();
 			txtValue.setText("0");
-			txtValue.setHorizontalAlignment(JTextField.RIGHT);
+			txtValue.setHorizontalAlignment(BTextBox.RIGHT);
 		}
 		return txtValue;
 	}
@@ -68,9 +67,9 @@ public class BNumericUpDown extends JPanel {
 	 * 	
 	 * @return javax.swing.JButton	
 	 */
-	private JButton getBtnUp() {
+	private BButton getBtnUp() {
 		if (btnUp == null) {
-			btnUp = new JButton();
+			btnUp = new BButton();
 			btnUp.setText("");
 		}
 		return btnUp;
@@ -81,9 +80,9 @@ public class BNumericUpDown extends JPanel {
 	 * 	
 	 * @return javax.swing.JButton	
 	 */
-	private JButton getBtnDown() {
+	private BButton getBtnDown() {
 		if (btnDown == null) {
-			btnDown = new JButton();
+			btnDown = new BButton();
 			btnDown.setText("");
 		}
 		return btnDown;
