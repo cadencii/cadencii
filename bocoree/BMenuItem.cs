@@ -41,12 +41,14 @@ namespace bocoree.windows.forms {
             base.Checked = value;
         }
 #endif
-        public System.Drawing.Image getIcon() {
-            return base.Image;
+        public bocoree.awt.Icon getIcon() {
+            bocoree.awt.Icon ret = new bocoree.awt.Icon();
+            ret.image = base.Image;
+            return ret;
         }
 
-        public void setIcon( System.Drawing.Image value ) {
-            base.Image = value;
+        public void setIcon( bocoree.awt.Icon value ) {
+            base.Image = value.image;
         }
         #endregion
 

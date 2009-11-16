@@ -14,6 +14,20 @@
 #if !JAVA
 namespace bocoree.awt {
 
+    public class Icon {
+        public System.Drawing.Image image;
+    }
+
+    public class ImageIcon : Icon {
+        public ImageIcon( System.Drawing.Image image ) {
+            this.image = image;
+        }
+    }
+
+    public class Image{
+        public System.Drawing.Image image;
+    }
+
     public class Cursor {
         public const int CROSSHAIR_CURSOR = 1;
         public const int CUSTOM_CURSOR = -1;

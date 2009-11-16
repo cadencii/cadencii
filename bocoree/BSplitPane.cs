@@ -17,6 +17,21 @@
 namespace bocoree.windows.forms {
 
     public class BSplitPane : System.Windows.Forms.SplitContainer {
+        public int getDividerLocation() {
+            return base.SplitterDistance;
+        }
+
+        public int getDividerSize() {
+            return base.SplitterWidth;
+        }
+
+        public void setDividerLocation( int value ) {
+            base.SplitterDistance = value;
+        }
+
+        public void setDividerSize( int value ) {
+            base.SplitterWidth = value;
+        }
     }
 
 }

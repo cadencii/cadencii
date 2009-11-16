@@ -29,6 +29,7 @@ namespace Boare.Cadencii {
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
         private Vector<VsqEventItemProxy> m_items;
         private int m_track;
+        private boolean m_editing;
 
         public PropertyPanel() {
             InitializeComponent();
@@ -38,9 +39,12 @@ namespace Boare.Cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public boolean Editing {
-            get;
-            set;
+        public boolean isEditing() {
+            return m_editing;
+        }
+
+        public void setEditing( boolean value ) {
+            m_editing = value;
         }
 
         private void popGridItemExpandStatus() {
@@ -61,12 +65,12 @@ namespace Boare.Cadencii {
                 String s = getGridItemIdentifier( item );
                 for ( Iterator itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
                     ValuePair<String, boolean> v = (ValuePair<String, boolean>)itr.next();
-                    String key = v.Key;
+                    String key = v.getKey();
                     if ( key == null ) {
                         key = "";
                     }
                     if ( key.Equals( s ) ) {
-                        item.Expanded = v.Value;
+                        item.Expanded = v.getValue();
                         break;
                     }
                 }
@@ -95,9 +99,9 @@ namespace Boare.Cadencii {
                 boolean found = false;
                 for ( Iterator itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
                     ValuePair<String, boolean> v = (ValuePair<String, boolean>)itr.next();
-                    if ( v.Key.Equals( s ) ) {
+                    if ( v.getKey().Equals( s ) ) {
                         found = true;
-                        v.Value = item.Expanded;
+                        v.setValue( item.Expanded );
                     }
                 }
                 if ( !found ) {
@@ -144,7 +148,7 @@ namespace Boare.Cadencii {
             }
             propertyGrid.SelectedObjects = objs;
             popGridItemExpandStatus();
-            Editing = false;
+            setEditing( false );
         }
 
         private void propertyGrid_PropertyValueChanged( object s, PropertyValueChangedEventArgs e ) {
@@ -183,7 +187,7 @@ namespace Boare.Cadencii {
                 CommandExecuteRequired( run );
             }
             propertyGrid.Refresh();
-            Editing = false;
+            setEditing( false );
         }
 
         /// <summary>
@@ -221,15 +225,15 @@ namespace Boare.Cadencii {
         }
 
         private void propertyGrid_SelectedGridItemChanged( object sender, SelectedGridItemChangedEventArgs e ) {
-            Editing = true;
+            setEditing( true );
         }
 
         private void propertyGrid_Enter( object sender, EventArgs e ) {
-            Editing = true;
+            setEditing( true );
         }
 
         private void propertyGrid_Leave( object sender, EventArgs e ) {
-            Editing = false;
+            setEditing( false );
         }
 
         private void registerEventHandlers() {

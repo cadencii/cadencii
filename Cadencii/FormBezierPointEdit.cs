@@ -37,7 +37,7 @@ namespace Boare.Cadencii {
 #if JAVA
     public class FormBezierPointEdit extends BForm {
 #else
-    class FormBezierPointEdit : BForm {
+    public class FormBezierPointEdit : BForm {
 #endif
         private BezierPoint m_point;
         private int m_min;
@@ -139,7 +139,7 @@ namespace Boare.Cadencii {
                     AppManager.showMessageBox( _( "Invalid value" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_ERROR_MESSAGE );
                     return;
                 }
-                if ( chkEnableSmooth.Checked ) {
+                if ( chkEnableSmooth.isSelected() ) {
                     x = PortUtil.parseInt( txtLeftClock.getText() );
                     y = PortUtil.parseInt( txtLeftValue.getText() );
                     x = PortUtil.parseInt( txtRightClock.getText() );

@@ -6,23 +6,25 @@
 -エラー通知
 -曲のタイムライン上にユーザが付けるタグ（付箋）的な物。「次の付箋に進む」「前の付箋に戻る」
 
--v3.0.6(3.1.0)todo-----------------------------------------------------
+-v3.0.6todo------------------------------------------------------------
 -Play With SynthとPlay After Synthを切り替えられるようにする。
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
+-13時間31分35.77秒を超える曲をレンダリングするとクラッシュする（たぶん）．要確認．PlaySound.cpp, vstidrv.cs, UtauRenderingRunner.cs, StraightRenderingRunner.cs, VocaloRenderingRunner.csに要修正の可能性
+-VsqHandleのcastTo**はクローンする必要があるのかどうか検討
+-最新のバージョンがあるかどうかを問い合わせる機能
+-英語音源のとき、歌詞/発音記号の入力はどうなってる？
+
+-v3.1.0todo------------------------------------------------------------
 -ミキサーダイアログのミュートとソロボタン
 -Consonant Adjustmentの編集機能
 -Federの値が本家と違う場合がある（？）
 -MIDIインポート時に、ゲートタイム基準でインポートする動作をデフォルトにする。
 -MIDIインポート時に、オフセットクロックを指定できるようにする。
 -曲頭に戻る、のショートカット／編集可能な感じの
--13時間31分35.77秒を超える曲をレンダリングするとクラッシュする（たぶん）．要確認．PlaySound.cpp, vstidrv.cs, UtauRenderingRunner.cs, StraightRenderingRunner.cs, VocaloRenderingRunner.csに要修正の可能性
--CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
--LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
--VsqHandleのcastTo**はクローンする必要があるのかどうか検討
--UstFile#.ctor( VsqFile )の実装
--最新のバージョンがあるかどうかを問い合わせる機能
--makeRes.csの、Cursorのときの処理を追加する
 -[Java]java.lang.reflect.Methodからの#invokeと，直接メソッドを呼び出す方法とでどれだけ速度差が出るのか？
+-makeRes.csの、Cursorのときの処理を追加する
+-LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
+-CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 
 -v3.0.6(3.1.0)done-----------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。

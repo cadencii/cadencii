@@ -11,19 +11,31 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
+import org.kbinani.apputil.*;
+#else
 using System;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
+#endif
 
-    class FormBeatConfig : BForm {
+#if JAVA
+    public class FormBeatConfig extends BForm{
+#else
+    public class FormBeatConfig : BForm {
+#endif
         public void ApplyLanguage() {
             setTitle( _( "Beat Change" ) );
-            groupPosition.Text = _( "Position" );
-            groupBeat.Text = _( "Beat" );
+            groupPosition.setTitle( _( "Position" ) );
+            groupBeat.setTitle( _( "Beat" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
             lblStart.setText( _( "From" ) + "(&F)" );
@@ -37,7 +49,7 @@ namespace Boare.Cadencii {
         }
 
         public int getStart() {
-            return (int)numStart.Value;
+            return numStart.getValue();
         }
 
         public boolean isEndSpecified() {
@@ -45,16 +57,16 @@ namespace Boare.Cadencii {
         }
 
         public int getEnd() {
-            return (int)numEnd.Value;
+            return numEnd.getValue();
         }
 
         public int getNumerator() {
-            return (int)numNumerator.Value;
+            return numNumerator.getValue();
         }
 
         public int getDenominator() {
             int ret = 1;
-            for ( int i = 0; i < comboDenominator.SelectedIndex; i++ ) {
+            for ( int i = 0; i < comboDenominator.getSelectedIndex(); i++ ) {
                 ret *= 2;
             }
             return ret;
@@ -71,372 +83,418 @@ namespace Boare.Cadencii {
             ApplyLanguage();
             //ClientSize = new Size( 278, 182 );
 
-            numStart.Enabled = num_enabled;
-            numEnd.Enabled = num_enabled;
+            numStart.setEnabled( num_enabled );
+            numEnd.setEnabled( num_enabled );
             chkEnd.setEnabled( num_enabled );
-            numStart.Minimum = -pre_measure + 1;
-            numStart.Maximum = decimal.MaxValue;
-            numEnd.Minimum = -pre_measure + 1;
-            numEnd.Maximum = decimal.MaxValue;
+            numStart.setMinimum( -pre_measure + 1 );
+            numStart.setMaximum( int.MaxValue );
+            numEnd.setMinimum( -pre_measure + 1 );
+            numEnd.setMaximum( int.MaxValue );
 
             // 拍子の分母
-            comboDenominator.Items.Clear();
-            comboDenominator.Items.Add( 1 );
+            comboDenominator.removeAllItems();
+            comboDenominator.addItem( "1" );
             int count = 1;
             for ( int i = 1; i <= 5; i++ ) {
                 count *= 2;
-                comboDenominator.Items.Add( count + "" );
+                comboDenominator.addItem( count + "" );
             }
             count = 0;
             while ( denominator > 1 ) {
                 count++;
                 denominator /= 2;
             }
-            comboDenominator.SelectedIndex = count;
+            comboDenominator.setSelectedItem( comboDenominator.getItemAt( count ) );
 
             // 拍子の分子
-            if ( numerator < numNumerator.Minimum ) {
-                numNumerator.Value = numNumerator.Minimum;
-            } else if ( numNumerator.Maximum < numerator ) {
-                numNumerator.Value = numNumerator.Maximum;
+            if ( numerator < numNumerator.getMinimum() ) {
+                numNumerator.setValue( numNumerator.getMinimum() );
+            } else if ( numNumerator.getMaximum() < numerator ) {
+                numNumerator.setValue( numNumerator.getMaximum() );
             } else {
-                numNumerator.Value = numerator;
+                numNumerator.setValue( numerator );
             }
 
             // 始点
-            if ( bar_count < numStart.Minimum ) {
-                numStart.Value = numStart.Minimum;
-            } else if ( numStart.Maximum < bar_count ) {
-                numStart.Value = numStart.Maximum;
+            if ( bar_count < numStart.getMinimum() ) {
+                numStart.setValue( numStart.getMinimum() );
+            } else if ( numStart.getMaximum() < bar_count ) {
+                numStart.setValue( numStart.getMaximum() );
             } else {
-                numStart.Value = bar_count;
+                numStart.setValue( bar_count );
             }
 
             // 終点
-            if ( bar_count < numEnd.Minimum ) {
-                numEnd.Value = numEnd.Minimum;
-            } else if ( numEnd.Maximum < bar_count ) {
-                numEnd.Value = numEnd.Maximum;
+            if ( bar_count < numEnd.getMinimum() ) {
+                numEnd.setValue( numEnd.getMinimum() );
+            } else if ( numEnd.getMaximum() < bar_count ) {
+                numEnd.setValue( numEnd.getMaximum() );
             } else {
-                numEnd.Value = bar_count;
+                numEnd.setValue( bar_count );
             }
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        private void chkEnd_CheckedChanged( object sender, EventArgs e ) {
-            numEnd.Enabled = chkEnd.Checked;
+        private void chkEnd_CheckedChanged( Object sender, BEventArgs e ) {
+            numEnd.setEnabled( chkEnd.isSelected() );
         }
 
-        private void btnOK_Click( object sender, EventArgs e ) {
-            this.DialogResult = DialogResult.OK;
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            chkEnd.checkedChangedEvent.add( new BEventHandler( this, "chkEnd_CheckedChanged" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+#else
             this.chkEnd.CheckedChanged += new System.EventHandler( this.chkEnd_CheckedChanged );
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+#endif
         }
 
         private void setResources() {
         }
 #if JAVA
         #region UI Impl for Java
-	    private JPanel jContentPane = null;
-	    private JPanel groupPosition = null;
-	    private JLabel lblStart = null;
-	    private JComboBox numStart = null;
-	    private JLabel lblBar1 = null;
-	    private JCheckBox chkEnd = null;
-	    private JComboBox numEnd = null;
-	    private JLabel lblBar2 = null;
-	    private JPanel groupBeat = null;
-	    private JComboBox numNumerator = null;
-	    private JLabel jLabel = null;
-	    private JLabel jLabel1 = null;
-	    private JComboBox numDenominator = null;
-	    private JPanel jPanel1 = null;
-	    private JLabel jLabel2 = null;
-	    private JLabel jLabel3 = null;
-	    private JButton btnOk = null;
-	    private JButton btnCancel = null;
-	    private JLabel jLabel4 = null;
-	    private JLabel jLabel5 = null;
-	    private JLabel jLabel6 = null;
-	    private JLabel jLabel7 = null;
-	    private JLabel jLabel8 = null;
+    private static final long serialVersionUID = 4414859292940722020L;
+    private BPanel jContentPane = null;
+    private BGroupBox groupPosition = null;
+    private BLabel lblStart = null;
+    private BComboBox numStart = null;
+    private BLabel lblBar1 = null;
+    private BCheckBox chkEnd = null;
+    private BComboBox numEnd = null;
+    private BLabel lblBar2 = null;
+    private BGroupBox groupBeat = null;
+    private BComboBox numNumerator = null;
+    private BLabel jLabel = null;
+    private BLabel jLabel1 = null;
+    private BComboBox numDenominator = null;
+    private BPanel jPanel1 = null;
+    private BLabel jLabel2 = null;
+    private BLabel jLabel3 = null;
+    private BButton btnOk = null;
+    private BButton btnCancel = null;
+    private BLabel jLabel4 = null;
+    private BLabel jLabel5 = null;
+    private BLabel jLabel6 = null;
+    private BLabel jLabel7 = null;
+    private BLabel jLabel8 = null;
+    
+    /**
+     * This method initializes this
+     * 
+     * @return void
+     */
+    private void initialize() {
+        this.setTitle("Beat Change");
+        this.setSize(310, 338);
+        this.setContentPane(getJContentPane());
+        this.setTitle("JFrame");
+    }
 
-	    /**
-	     * This method initializes this
-	     * 
-	     * @return void
-	     */
-	    private void initialize() {
-		    this.setSize(284, 214);
-		    this.setContentPane(getJContentPane());
-		    this.setTitle("JFrame");
-	    }
+    /**
+     * This method initializes jContentPane
+     * 
+     * @return javax.swing.BPanel
+     */
+    private BPanel getJContentPane() {
+        if (jContentPane == null) {
+            GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
+            gridBagConstraints18.insets = new Insets(0, 0, 1, 12);
+            gridBagConstraints18.gridy = 2;
+            gridBagConstraints18.ipadx = 180;
+            gridBagConstraints18.ipady = 42;
+            gridBagConstraints18.weightx = 1.0D;
+            gridBagConstraints18.weighty = 1.0D;
+            gridBagConstraints18.anchor = GridBagConstraints.NORTH;
+            gridBagConstraints18.fill = GridBagConstraints.BOTH;
+            gridBagConstraints18.gridx = 0;
+            GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
+            gridBagConstraints8.gridx = 0;
+            gridBagConstraints8.ipadx = 141;
+            gridBagConstraints8.ipady = 42;
+            gridBagConstraints8.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints8.insets = new Insets(0, 12, 0, 12);
+            gridBagConstraints8.weightx = 1.0D;
+            gridBagConstraints8.anchor = GridBagConstraints.NORTH;
+            gridBagConstraints8.gridy = 1;
+            GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+            gridBagConstraints6.gridx = 0;
+            gridBagConstraints6.ipadx = 147;
+            gridBagConstraints6.ipady = 41;
+            gridBagConstraints6.insets = new Insets(12, 12, 12, 12);
+            gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints6.weightx = 1.0D;
+            gridBagConstraints6.anchor = GridBagConstraints.NORTH;
+            gridBagConstraints6.gridy = 0;
+            jContentPane = new BPanel();
+            jContentPane.setLayout(new GridBagLayout());
+            jContentPane.add(getGroupPosition(), gridBagConstraints6);
+            jContentPane.add(getGroupBeat(), gridBagConstraints8);
+            jContentPane.add(getBPanel1(), gridBagConstraints18);
+        }
+        return jContentPane;
+    }
 
-	    /**
-	     * This method initializes jContentPane
-	     * 
-	     * @return javax.swing.JPanel
-	     */
-	    private JPanel getJContentPane() {
-		    if (jContentPane == null) {
-			    jContentPane = new JPanel();
-			    jContentPane.setLayout(new BoxLayout(getJContentPane(), BoxLayout.Y_AXIS));
-			    jContentPane.add(getGroupPosition(), null);
-			    jContentPane.add(getGroupBeat(), null);
-			    jContentPane.add(getJPanel1(), null);
-		    }
-		    return jContentPane;
-	    }
+    /**
+     * This method initializes groupPosition    
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BGroupBox getGroupPosition() {
+        if (groupPosition == null) {
+            GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
+            gridBagConstraints61.gridx = 5;
+            gridBagConstraints61.gridy = 2;
+            jLabel8 = new BLabel();
+            jLabel8.setText("     ");
+            GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
+            gridBagConstraints51.gridx = 5;
+            gridBagConstraints51.gridy = 0;
+            jLabel7 = new BLabel();
+            jLabel7.setText("     ");
+            GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
+            gridBagConstraints41.gridx = 0;
+            gridBagConstraints41.gridy = 2;
+            jLabel6 = new BLabel();
+            jLabel6.setText("     ");
+            GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
+            gridBagConstraints31.gridx = 0;
+            gridBagConstraints31.anchor = GridBagConstraints.WEST;
+            gridBagConstraints31.gridy = 0;
+            jLabel5 = new BLabel();
+            jLabel5.setText("     ");
+            GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+            gridBagConstraints9.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints9.gridy = -1;
+            gridBagConstraints9.weightx = 1.0;
+            gridBagConstraints9.gridx = -1;
+            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+            gridBagConstraints5.gridx = 4;
+            gridBagConstraints5.anchor = GridBagConstraints.WEST;
+            gridBagConstraints5.insets = new Insets(0, 9, 0, 0);
+            gridBagConstraints5.gridy = 2;
+            lblBar2 = new BLabel();
+            lblBar2.setText("Beat");
+            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+            gridBagConstraints4.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints4.gridy = 2;
+            gridBagConstraints4.weightx = 1.0;
+            gridBagConstraints4.insets = new Insets(3, 0, 3, 0);
+            gridBagConstraints4.gridx = 3;
+            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+            gridBagConstraints3.gridx = 1;
+            gridBagConstraints3.gridy = 2;
+            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+            gridBagConstraints2.gridx = 4;
+            gridBagConstraints2.anchor = GridBagConstraints.WEST;
+            gridBagConstraints2.insets = new Insets(0, 9, 0, 0);
+            gridBagConstraints2.gridy = 0;
+            lblBar1 = new BLabel();
+            lblBar1.setText("Measure");
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints1.gridy = 0;
+            gridBagConstraints1.weightx = 0.0D;
+            gridBagConstraints1.insets = new Insets(3, 0, 3, 0);
+            gridBagConstraints1.gridx = 3;
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.gridx = 1;
+            gridBagConstraints.gridy = 0;
+            lblStart = new BLabel();
+            lblStart.setText("From");
+            groupPosition = new BGroupBox();
+            groupPosition.setLayout(new GridBagLayout());
+            groupPosition.setTitle("Position");
+            groupPosition.add(lblStart, gridBagConstraints);
+            groupPosition.add(getNumStart(), gridBagConstraints1);
+            groupPosition.add(lblBar1, gridBagConstraints2);
+            groupPosition.add(getChkEnd(), gridBagConstraints3);
+            groupPosition.add(getNumEnd(), gridBagConstraints4);
+            groupPosition.add(lblBar2, gridBagConstraints5);
+            groupPosition.add(jLabel5, gridBagConstraints31);
+            groupPosition.add(jLabel6, gridBagConstraints41);
+            groupPosition.add(jLabel7, gridBagConstraints51);
+            groupPosition.add(jLabel8, gridBagConstraints61);
+        }
+        return groupPosition;
+    }
 
-	    /**
-	     * This method initializes groupPosition	
-	     * 	
-	     * @return javax.swing.JPanel	
-	     */
-	    private JPanel getGroupPosition() {
-		    if (groupPosition == null) {
-			    GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
-			    gridBagConstraints61.gridx = 5;
-			    gridBagConstraints61.gridy = 2;
-			    jLabel8 = new JLabel();
-			    jLabel8.setText("     ");
-			    GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
-			    gridBagConstraints51.gridx = 5;
-			    gridBagConstraints51.gridy = 0;
-			    jLabel7 = new JLabel();
-			    jLabel7.setText("     ");
-			    GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
-			    gridBagConstraints41.gridx = 0;
-			    gridBagConstraints41.gridy = 2;
-			    jLabel6 = new JLabel();
-			    jLabel6.setText("     ");
-			    GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-			    gridBagConstraints31.gridx = 0;
-			    gridBagConstraints31.gridy = 0;
-			    jLabel5 = new JLabel();
-			    jLabel5.setText("     ");
-			    GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
-			    gridBagConstraints9.fill = GridBagConstraints.VERTICAL;
-			    gridBagConstraints9.gridy = -1;
-			    gridBagConstraints9.weightx = 1.0;
-			    gridBagConstraints9.gridx = -1;
-			    GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			    gridBagConstraints5.gridx = 4;
-			    gridBagConstraints5.anchor = GridBagConstraints.WEST;
-			    gridBagConstraints5.gridy = 2;
-			    lblBar2 = new JLabel();
-			    lblBar2.setText("Beat");
-			    GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			    gridBagConstraints4.fill = GridBagConstraints.HORIZONTAL;
-			    gridBagConstraints4.gridy = 2;
-			    gridBagConstraints4.weightx = 1.0;
-			    gridBagConstraints4.gridx = 3;
-			    GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			    gridBagConstraints3.gridx = 1;
-			    gridBagConstraints3.gridy = 2;
-			    GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-			    gridBagConstraints2.gridx = 4;
-			    gridBagConstraints2.anchor = GridBagConstraints.NORTHWEST;
-			    gridBagConstraints2.gridy = 0;
-			    lblBar1 = new JLabel();
-			    lblBar1.setText("Measure");
-			    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			    gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
-			    gridBagConstraints1.gridy = 0;
-			    gridBagConstraints1.weightx = 0.0D;
-			    gridBagConstraints1.gridx = 3;
-			    GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			    gridBagConstraints.gridx = 1;
-			    gridBagConstraints.gridy = 0;
-			    lblStart = new JLabel();
-			    lblStart.setText("From");
-			    groupPosition = new JPanel();
-			    groupPosition.setLayout(new GridBagLayout());
-			    groupPosition.setBorder(BorderFactory.createTitledBorder(null, "Position", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			    groupPosition.add(lblStart, gridBagConstraints);
-			    groupPosition.add(getNumStart(), gridBagConstraints1);
-			    groupPosition.add(lblBar1, gridBagConstraints2);
-			    groupPosition.add(getChkEnd(), gridBagConstraints3);
-			    groupPosition.add(getNumEnd(), gridBagConstraints4);
-			    groupPosition.add(lblBar2, gridBagConstraints5);
-			    groupPosition.add(jLabel5, gridBagConstraints31);
-			    groupPosition.add(jLabel6, gridBagConstraints41);
-			    groupPosition.add(jLabel7, gridBagConstraints51);
-			    groupPosition.add(jLabel8, gridBagConstraints61);
-		    }
-		    return groupPosition;
-	    }
+    /**
+     * This method initializes numStart 
+     *  
+     * @return javax.swing.BComboBox    
+     */
+    private BComboBox getNumStart() {
+        if (numStart == null) {
+            numStart = new BComboBox();
+            numStart.setPreferredSize(new Dimension(31, 20));
+        }
+        return numStart;
+    }
 
-	    /**
-	     * This method initializes numStart	
-	     * 	
-	     * @return javax.swing.JComboBox	
-	     */
-	    private JComboBox getNumStart() {
-		    if (numStart == null) {
-			    numStart = new JComboBox();
-		    }
-		    return numStart;
-	    }
+    /**
+     * This method initializes chkEnd   
+     *  
+     * @return javax.swing.BCheckBox    
+     */
+    private BCheckBox getChkEnd() {
+        if (chkEnd == null) {
+            chkEnd = new BCheckBox();
+            chkEnd.setText("To");
+        }
+        return chkEnd;
+    }
 
-	    /**
-	     * This method initializes chkEnd	
-	     * 	
-	     * @return javax.swing.JCheckBox	
-	     */
-	    private JCheckBox getChkEnd() {
-		    if (chkEnd == null) {
-			    chkEnd = new JCheckBox();
-			    chkEnd.setText("To");
-		    }
-		    return chkEnd;
-	    }
+    /**
+     * This method initializes numEnd   
+     *  
+     * @return javax.swing.BComboBox    
+     */
+    private BComboBox getNumEnd() {
+        if (numEnd == null) {
+            numEnd = new BComboBox();
+            numEnd.setPreferredSize(new Dimension(31, 20));
+        }
+        return numEnd;
+    }
 
-	    /**
-	     * This method initializes numEnd	
-	     * 	
-	     * @return javax.swing.JComboBox	
-	     */
-	    private JComboBox getNumEnd() {
-		    if (numEnd == null) {
-			    numEnd = new JComboBox();
-		    }
-		    return numEnd;
-	    }
+    /**
+     * This method initializes groupBeat    
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BGroupBox getGroupBeat() {
+        if (groupBeat == null) {
+            GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+            gridBagConstraints14.gridx = 0;
+            gridBagConstraints14.gridy = 0;
+            jLabel3 = new BLabel();
+            jLabel3.setText("     ");
+            GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+            gridBagConstraints13.gridx = 5;
+            gridBagConstraints13.gridy = 0;
+            jLabel2 = new BLabel();
+            jLabel2.setText("     ");
+            GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+            gridBagConstraints12.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints12.gridy = 0;
+            gridBagConstraints12.weightx = 0.5D;
+            gridBagConstraints12.insets = new Insets(3, 0, 3, 0);
+            gridBagConstraints12.gridx = 4;
+            GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+            gridBagConstraints11.gridx = 3;
+            gridBagConstraints11.gridy = 0;
+            jLabel1 = new BLabel();
+            jLabel1.setText(" /    ");
+            GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+            gridBagConstraints10.gridx = 2;
+            gridBagConstraints10.gridy = 0;
+            jLabel = new BLabel();
+            jLabel.setText(" (1-255) ");
+            GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
+            gridBagConstraints7.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints7.gridy = 0;
+            gridBagConstraints7.weightx = 0.5D;
+            gridBagConstraints7.insets = new Insets(3, 0, 3, 0);
+            gridBagConstraints7.gridx = 1;
+            groupBeat = new BGroupBox();
+            groupBeat.setLayout(new GridBagLayout());
+            groupBeat.setTitle("Position");
+            groupBeat.add(getNumNumerator(), gridBagConstraints7);
+            groupBeat.add(jLabel, gridBagConstraints10);
+            groupBeat.add(jLabel1, gridBagConstraints11);
+            groupBeat.add(getNumDenominator(), gridBagConstraints12);
+            groupBeat.add(jLabel2, gridBagConstraints13);
+            groupBeat.add(jLabel3, gridBagConstraints14);
+        }
+        return groupBeat;
+    }
 
-	    /**
-	     * This method initializes groupBeat	
-	     * 	
-	     * @return javax.swing.JPanel	
-	     */
-	    private JPanel getGroupBeat() {
-		    if (groupBeat == null) {
-			    GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-			    gridBagConstraints14.gridx = 0;
-			    gridBagConstraints14.gridy = 0;
-			    jLabel3 = new JLabel();
-			    jLabel3.setText("     ");
-			    GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-			    gridBagConstraints13.gridx = 5;
-			    gridBagConstraints13.gridy = 0;
-			    jLabel2 = new JLabel();
-			    jLabel2.setText("     ");
-			    GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-			    gridBagConstraints12.fill = GridBagConstraints.HORIZONTAL;
-			    gridBagConstraints12.gridy = 0;
-			    gridBagConstraints12.weightx = 0.5D;
-			    gridBagConstraints12.gridx = 4;
-			    GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			    gridBagConstraints11.gridx = 3;
-			    gridBagConstraints11.gridy = 0;
-			    jLabel1 = new JLabel();
-			    jLabel1.setText(" /    ");
-			    GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
-			    gridBagConstraints10.gridx = 2;
-			    gridBagConstraints10.gridy = 0;
-			    jLabel = new JLabel();
-			    jLabel.setText(" (1-255) ");
-			    GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-			    gridBagConstraints7.fill = GridBagConstraints.HORIZONTAL;
-			    gridBagConstraints7.gridy = 0;
-			    gridBagConstraints7.weightx = 0.5D;
-			    gridBagConstraints7.gridx = 1;
-			    groupBeat = new JPanel();
-			    groupBeat.setLayout(new GridBagLayout());
-			    groupBeat.setBorder(BorderFactory.createTitledBorder(null, "Beat", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			    groupBeat.add(getNumNumerator(), gridBagConstraints7);
-			    groupBeat.add(jLabel, gridBagConstraints10);
-			    groupBeat.add(jLabel1, gridBagConstraints11);
-			    groupBeat.add(getNumDenominator(), gridBagConstraints12);
-			    groupBeat.add(jLabel2, gridBagConstraints13);
-			    groupBeat.add(jLabel3, gridBagConstraints14);
-		    }
-		    return groupBeat;
-	    }
+    /**
+     * This method initializes numNumerator 
+     *  
+     * @return javax.swing.BComboBox    
+     */
+    private BComboBox getNumNumerator() {
+        if (numNumerator == null) {
+            numNumerator = new BComboBox();
+            numNumerator.setPreferredSize(new Dimension(31, 20));
+        }
+        return numNumerator;
+    }
 
-	    /**
-	     * This method initializes numNumerator	
-	     * 	
-	     * @return javax.swing.JComboBox	
-	     */
-	    private JComboBox getNumNumerator() {
-		    if (numNumerator == null) {
-			    numNumerator = new JComboBox();
-		    }
-		    return numNumerator;
-	    }
+    /**
+     * This method initializes numDenominator   
+     *  
+     * @return javax.swing.BComboBox    
+     */
+    private BComboBox getNumDenominator() {
+        if (numDenominator == null) {
+            numDenominator = new BComboBox();
+            numDenominator.setPreferredSize(new Dimension(31, 20));
+        }
+        return numDenominator;
+    }
 
-	    /**
-	     * This method initializes numDenominator	
-	     * 	
-	     * @return javax.swing.JComboBox	
-	     */
-	    private JComboBox getNumDenominator() {
-		    if (numDenominator == null) {
-			    numDenominator = new JComboBox();
-		    }
-		    return numDenominator;
-	    }
+    /**
+     * This method initializes jPanel1  
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getBPanel1() {
+        if (jPanel1 == null) {
+            GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
+            gridBagConstraints17.gridx = 0;
+            gridBagConstraints17.fill = GridBagConstraints.BOTH;
+            gridBagConstraints17.weightx = 1.0D;
+            gridBagConstraints17.gridy = 0;
+            jLabel4 = new BLabel();
+            jLabel4.setText(" ");
+            GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+            gridBagConstraints16.gridx = 2;
+            gridBagConstraints16.anchor = GridBagConstraints.EAST;
+            gridBagConstraints16.gridy = 0;
+            GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
+            gridBagConstraints15.gridx = 1;
+            gridBagConstraints15.anchor = GridBagConstraints.EAST;
+            gridBagConstraints15.gridy = 0;
+            jPanel1 = new BPanel();
+            jPanel1.setLayout(new GridBagLayout());
+            jPanel1.add(getBtnOk(), gridBagConstraints15);
+            jPanel1.add(getBtnCancel(), gridBagConstraints16);
+            jPanel1.add(jLabel4, gridBagConstraints17);
+        }
+        return jPanel1;
+    }
 
-	    /**
-	     * This method initializes jPanel1	
-	     * 	
-	     * @return javax.swing.JPanel	
-	     */
-	    private JPanel getJPanel1() {
-		    if (jPanel1 == null) {
-			    GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
-			    gridBagConstraints17.gridx = 0;
-			    gridBagConstraints17.fill = GridBagConstraints.BOTH;
-			    gridBagConstraints17.weightx = 1.0D;
-			    gridBagConstraints17.gridy = 0;
-			    jLabel4 = new JLabel();
-			    jLabel4.setText(" ");
-			    GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
-			    gridBagConstraints16.gridx = 2;
-			    gridBagConstraints16.anchor = GridBagConstraints.EAST;
-			    gridBagConstraints16.gridy = 0;
-			    GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
-			    gridBagConstraints15.gridx = 1;
-			    gridBagConstraints15.anchor = GridBagConstraints.EAST;
-			    gridBagConstraints15.gridy = 0;
-			    jPanel1 = new JPanel();
-			    jPanel1.setLayout(new GridBagLayout());
-			    jPanel1.add(getBtnOk(), gridBagConstraints15);
-			    jPanel1.add(getBtnCancel(), gridBagConstraints16);
-			    jPanel1.add(jLabel4, gridBagConstraints17);
-		    }
-		    return jPanel1;
-	    }
+    /**
+     * This method initializes btnOk    
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getBtnOk() {
+        if (btnOk == null) {
+            btnOk = new BButton();
+            btnOk.setText("OK");
+        }
+        return btnOk;
+    }
 
-	    /**
-	     * This method initializes btnOk	
-	     * 	
-	     * @return javax.swing.JButton	
-	     */
-	    private JButton getBtnOk() {
-		    if (btnOk == null) {
-			    btnOk = new JButton();
-			    btnOk.setText("OK");
-		    }
-		    return btnOk;
-	    }
-
-	    /**
-	     * This method initializes btnCancel	
-	     * 	
-	     * @return javax.swing.JButton	
-	     */
-	    private JButton getBtnCancel() {
-		    if (btnCancel == null) {
-			    btnCancel = new JButton();
-			    btnCancel.setText("Cancel");
-		    }
-		    return btnCancel;
-	    }
+    /**
+     * This method initializes btnCancel    
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getBtnCancel() {
+        if (btnCancel == null) {
+            btnCancel = new BButton();
+            btnCancel.setText("Cancel");
+        }
+        return btnCancel;
+    }
         #endregion
 #else
         #region UI Impl for C#
@@ -463,14 +521,14 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.groupPosition = new System.Windows.Forms.GroupBox();
+            this.groupPosition = new BGroupBox();
             this.lblBar2 = new BLabel();
             this.lblBar1 = new BLabel();
             this.numEnd = new Boare.Cadencii.NumericUpDownEx();
             this.numStart = new Boare.Cadencii.NumericUpDownEx();
             this.chkEnd = new BCheckBox();
             this.lblStart = new BLabel();
-            this.groupBeat = new System.Windows.Forms.GroupBox();
+            this.groupBeat = new BGroupBox();
             this.comboDenominator = new BComboBox();
             this.label2 = new BLabel();
             this.label1 = new BLabel();
@@ -697,8 +755,8 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupPosition;
-        private System.Windows.Forms.GroupBox groupBeat;
+        private BGroupBox groupPosition;
+        private BGroupBox groupBeat;
         private BButton btnOK;
         private BButton btnCancel;
         private NumericUpDownEx numStart;
@@ -716,4 +774,6 @@ namespace Boare.Cadencii {
 
     }
 
+#if !JAVA
 }
+#endif

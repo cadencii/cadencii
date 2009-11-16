@@ -2890,7 +2890,7 @@ namespace Boare.Cadencii {
                                     }
                                 }
                                 AppManager.clearSelectedEvent();
-                                AppManager.addSelectedEventAll( old.toArray( new Integer[] { } ) );
+                                AppManager.addSelectedEventAll( old );
                             } else {
                                 AppManager.addSelectedEvent( ve.InternalID );
                             }
@@ -2907,7 +2907,7 @@ namespace Boare.Cadencii {
                                 }
                             }
                             add_required.add( ve.InternalID );
-                            AppManager.addSelectedEventAll( add_required.toArray( new Integer[] { } ) );
+                            AppManager.addSelectedEventAll( add_required );
                         } else {
                             if ( !AppManager.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
                                 AppManager.clearSelectedEvent();
@@ -3130,7 +3130,7 @@ namespace Boare.Cadencii {
                                             }
                                         }
                                         AppManager.clearSelectedEvent();
-                                        AppManager.addSelectedEventAll( list.toArray( new Integer[] { } ) );
+                                        AppManager.addSelectedEventAll( list );
                                     } else if ( (Control.ModifierKeys & Keys.Shift) == Keys.Shift ) {
                                         // clicked with Shift key
                                         SelectedEventEntry last_selected = AppManager.getLastSelectedEvent();
@@ -3145,7 +3145,7 @@ namespace Boare.Cadencii {
                                                     add_required.add( item.InternalID );
                                                 }
                                             }
-                                            AppManager.addSelectedEventAll( add_required.toArray( new Integer[] { } ) );
+                                            AppManager.addSelectedEventAll( add_required );
                                         }
                                     } else {
                                         // no modefier key
@@ -4170,8 +4170,8 @@ namespace Boare.Cadencii {
                                                 float[] bpx = new float[edit.size()];
                                                 int[] bpy = new int[edit.size()];
                                                 for ( int i = 0; i < edit.size(); i++ ) {
-                                                    bpx[i] = edit.get( i ).Key;
-                                                    bpy[i] = edit.get( i ).Value;
+                                                    bpx[i] = edit.get( i ).getKey();
+                                                    bpy[i] = edit.get( i ).getValue();
                                                 }
                                                 if ( m_selected_curve.equals( CurveType.VibratoDepth ) ) {
                                                     id.VibratoHandle.DepthBP = new VibratoBPList( bpx, bpy );
@@ -4405,8 +4405,8 @@ namespace Boare.Cadencii {
                                             float[] bpx = new float[edit.size()];
                                             int[] bpy = new int[edit.size()];
                                             for ( int i = 0; i < edit.size(); i++ ) {
-                                                bpx[i] = edit.get( i ).Key;
-                                                bpy[i] = edit.get( i ).Value;
+                                                bpx[i] = edit.get( i ).getKey();
+                                                bpy[i] = edit.get( i ).getValue();
                                             }
                                             if ( m_selected_curve.equals( CurveType.VibratoDepth ) ) {
                                                 id.VibratoHandle.DepthBP = new VibratoBPList( bpx, bpy );

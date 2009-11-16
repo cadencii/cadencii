@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C8AAE632-9C6C-4372-8175-811528A66742}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -139,6 +139,9 @@
     <Compile Include="BSplitPane.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="BStatusLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BTextArea.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -155,6 +158,15 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BToolStripButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolStripDropDownButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolStripLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolStripTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BufferedReader.cs" />

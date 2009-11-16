@@ -549,7 +549,7 @@ namespace Boare.Cadencii {
         }
 #endif
 
-        public boolean getPositionQuantizeTriplet() {
+        public boolean isPositionQuantizeTriplet() {
             return m_position_quantize_triplet;
         }
 
@@ -574,7 +574,7 @@ namespace Boare.Cadencii {
         // XMLシリアライズ用
         public boolean PositionQuantizeTriplet {
             get {
-                return getPositionQuantizeTriplet();
+                return isPositionQuantizeTriplet();
             }
             set {
                 setPositionQuantizeTriplet( value );
@@ -614,7 +614,7 @@ namespace Boare.Cadencii {
         }
 #endif
 
-        public boolean getLengthQuantizeTriplet() {
+        public boolean isLengthQuantizeTriplet() {
             return m_length_quantize_triplet;
         }
 
@@ -639,7 +639,7 @@ namespace Boare.Cadencii {
         // XMLシリアライズ用
         public boolean LengthQuantizeTriplet {
             get {
-                return getLengthQuantizeTriplet();
+                return isLengthQuantizeTriplet();
             }
             set {
                 setLengthQuantizeTriplet( value );

@@ -1436,11 +1436,10 @@ namespace Boare.Cadencii {
             checkSelectedItemExistence();
         }
 
-        public static void addSelectedEventAll( int[] ids ) {
+        public static void addSelectedEventAll( Vector<Integer> list ) {
             clearSelectedTempo();
             clearSelectedTimesig();
-            Vector<Integer> list = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( ids ) ) );
-            VsqEvent[] index = new VsqEvent[ids.Length];
+            VsqEvent[] index = new VsqEvent[list.size()];
             int count = 0;
             int c = list.size();
             for ( Iterator itr = s_vsq.Track.get( s_selected ).getEventIterator(); itr.hasNext(); ) {
@@ -1456,7 +1455,7 @@ namespace Boare.Cadencii {
                     index[find] = ev;
                     count++;
                 }
-                if ( count == ids.Length ) {
+                if ( count == list.size() ) {
                     break;
                 }
             }
@@ -2334,7 +2333,7 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <returns></returns>
         public static int getPositionQuantizeClock() {
-            return QuantizeModeUtil.getQuantizeClock( editorConfig.getPositionQuantize(), editorConfig.getPositionQuantizeTriplet() );
+            return QuantizeModeUtil.getQuantizeClock( editorConfig.getPositionQuantize(), editorConfig.isPositionQuantizeTriplet() );
         }
 
         /// <summary>
@@ -2342,7 +2341,7 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <returns></returns>
         public static int getLengthQuantizeClock() {
-            return QuantizeModeUtil.getQuantizeClock( editorConfig.getLengthQuantize(), editorConfig.getLengthQuantizeTriplet() );
+            return QuantizeModeUtil.getQuantizeClock( editorConfig.getLengthQuantize(), editorConfig.isLengthQuantizeTriplet() );
         }
 
         public static void saveConfig() {

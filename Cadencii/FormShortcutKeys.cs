@@ -84,8 +84,8 @@ namespace Boare.Cadencii {
             dest.clear();
             for ( Iterator itr = src.keySet().iterator(); itr.hasNext(); ) {
                 String name = (String)itr.next();
-                String key = src.get( name ).Key;
-                BKeys[] values = src.get( name ).Value;
+                String key = src.get( name ).getKey();
+                BKeys[] values = src.get( name ).getValue();
                 Vector<BKeys> cp = new Vector<BKeys>();
                 foreach ( BKeys k in values ) {
                     cp.add( k );
@@ -99,7 +99,7 @@ namespace Boare.Cadencii {
             for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
                 String display = (String)itr.next();
                 Vector<BKeys> a = new Vector<BKeys>();
-                foreach ( BKeys key in m_dict.get( display ).Value ) {
+                foreach ( BKeys key in m_dict.get( display ).getValue() ) {
                     a.add( key );
                 }
                 try {
@@ -108,7 +108,7 @@ namespace Boare.Cadencii {
                     a.clear();
                 }
                 ListViewItem item = new ListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
-                String name = m_dict.get( display ).Key;
+                String name = m_dict.get( display ).getKey();
                 item.Name = name;
                 //item.Tag = a;
                 if ( name.StartsWith( "menuFile" ) ) {
@@ -195,7 +195,7 @@ namespace Boare.Cadencii {
             list.Items[index].SubItems[1].Text = AppManager.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) );
             String display = list.Items[index].SubItems[0].Text;
             if ( m_dict.containsKey( display ) ) {
-                m_dict.get( display ).Value = capturelist.toArray( new BKeys[] { } );
+                m_dict.get( display ).setValue( capturelist.toArray( new BKeys[] { } ) );
             }
             UpdateColor();
             e.Handled = true;
@@ -212,8 +212,8 @@ namespace Boare.Cadencii {
                 BKeys[] keys = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Value;
                 for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
                     String display = (String)itr.next();
-                    if ( name.Equals( m_dict.get( display ).Key ) ) {
-                        m_dict.get( display ).Value = keys;
+                    if ( name.Equals( m_dict.get( display ).getKey() ) ) {
+                        m_dict.get( display ).setValue( keys );
                         break;
                     }
                 }

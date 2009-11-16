@@ -106,7 +106,7 @@ namespace Boare.Cadencii {
             for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
                 String key = (String)itr.next();
                 ValuePair<String, DateTime> value = s_cache.get( key );
-                String file = value.Key;
+                String file = value.getKey();
                 try {
                     PortUtil.deleteFile( file );
                 } catch {
@@ -365,9 +365,9 @@ namespace Boare.Cadencii {
                             for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
                                 String key = (String)itr.next();
                                 ValuePair<String, DateTime> value = s_cache.get( key );
-                                if ( old.CompareTo( value.Value ) < 0 ) {
-                                    old = value.Value;
-                                    delfile = value.Key;
+                                if ( old.CompareTo( value.getValue() ) < 0 ) {
+                                    old = value.getValue();
+                                    delfile = value.getKey();
                                     delkey = key;
                                 }
                             }
@@ -382,7 +382,7 @@ namespace Boare.Cadencii {
                         }
                         s_cache.put( search_key, new ValuePair<String, DateTime>( filename, DateTime.Now ) );
                     } else {
-                        filename = s_cache.get( search_key ).Key;
+                        filename = s_cache.get( search_key ).getKey();
                     }
 
                     rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" 0 " + item.ID.Length + "@" + String.Format( "{0:f2}", t_temp );
@@ -411,7 +411,7 @@ namespace Boare.Cadencii {
                     String key = (String)itr.next();
                     ValuePair<String, DateTime> value = s_cache.get( key );
                     bocoree.debug.push_log( "    arg=" + key );
-                    bocoree.debug.push_log( "    file=" + value.Key );
+                    bocoree.debug.push_log( "    file=" + value.getKey() );
                 }
 #endif
 

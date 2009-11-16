@@ -278,6 +278,14 @@ namespace Boare.Lib.AppUtil {
             }
         }
 
+        public int getDividerSize() {
+            return this.SplitterWidth;
+        }
+
+        public void setDividerSize( int value ) {
+            this.SplitterWidth = value;
+        }
+
         private bool UpdateLayout( int splitter_distance, int splitter_width, int panel1_min, int panel2_min, bool check_only ) {
             Point mouse = this.PointToClient( Control.MousePosition );
             int pad1 = (m_panel1.BorderStyle == BorderStyle.FixedSingle) ? 1 : 0;
@@ -395,6 +403,14 @@ namespace Boare.Lib.AppUtil {
                     m_panel2_distance = this.Height - m_splitter_distance;
                 }
             }
+        }
+
+        public int getDividerLocation() {
+            return this.SplitterDistance;
+        }
+
+        public void setDividerLocation( int value ) {
+            this.SplitterDistance = value;
         }
 
         public Orientation Orientation {

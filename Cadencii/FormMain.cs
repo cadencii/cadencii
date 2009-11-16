@@ -526,8 +526,8 @@ namespace Boare.Cadencii {
             m_strip_ddbtn_metronome.setText( "Metronome" );
             m_strip_ddbtn_metronome.Name = "m_strip_ddbtn_metronome";
             m_strip_ddbtn_metronome.CheckOnClick = true;
-            m_strip_ddbtn_metronome.Checked = AppManager.editorConfig.MetronomeEnabled;
-            m_strip_ddbtn_metronome.CheckedChanged += new EventHandler( m_strip_ddbtn_metronome_CheckedChanged );
+            m_strip_ddbtn_metronome.isSelected() = AppManager.editorConfig.MetronomeEnabled;
+            m_strip_ddbtn_metronome.isSelected()Changed += new EventHandler( m_strip_ddbtn_metronome_CheckedChanged );
             toolStripBottom.Items.Add( m_strip_ddbtn_metronome );
 #endif
 
@@ -673,9 +673,9 @@ namespace Boare.Cadencii {
             pictPianoRoll.Width = panel1.Width - vScroll.Width;
             pictPianoRoll.Height = panel1.Height - picturePositionIndicator.Height - hScroll.Height;
             // vScroll
-            vScroll.Left = pictPianoRoll.Width;
+            vScroll.Left = pictPianoRoll.getWidth();
             vScroll.Top = picturePositionIndicator.Height;
-            vScroll.Height = pictPianoRoll.Height;
+            vScroll.Height = pictPianoRoll.getHeight();
             // pictureBox3
             pictureBox3.Left = 0;
             pictureBox3.Top = panel1.Height - hScroll.Height;
@@ -706,14 +706,14 @@ namespace Boare.Cadencii {
             menuVisualOverview.CheckedChanged += new EventHandler( menuVisualOverview_CheckedChanged );
 #endif
 
-#if !JAVA
-            hScroll.Maximum = AppManager.getVsqFile().TotalClocks + 240;
-            hScroll.SmallChange = 240;
-            hScroll.LargeChange = 240 * 4;
+            hScroll.setMaximum( AppManager.getVsqFile().TotalClocks + 240 );
+            hScroll.setVisibleAmount( 240 * 4 );
 
-            vScroll.Maximum = AppManager.editorConfig.PxTrackHeight * 128;
+            vScroll.setMaximum( AppManager.editorConfig.PxTrackHeight * 128 );
+            vScroll.setVisibleAmount( 24 * 4 );
+#if !JAVA
+            hScroll.SmallChange = 240;
             vScroll.SmallChange = 24;
-            vScroll.LargeChange = 24 * 4;
 #endif
 
             trackSelector.setCurveVisible( true );
@@ -768,7 +768,7 @@ namespace Boare.Cadencii {
             timer.setDelay( (fps <= 0) ? 1 : fps );
             menuTrackManager.setVisible( false );
 #if DEBUG
-            menuHelpDebug.Visible = true;
+            menuHelpDebug.setVisible( true );
 #endif
 
 #if !JAVA
@@ -803,7 +803,7 @@ namespace Boare.Cadencii {
 
 #if ENABLE_MIDI
         private void m_strip_ddbtn_metronome_CheckedChanged( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.MetronomeEnabled = m_strip_ddbtn_metronome.Checked;
+            AppManager.editorConfig.MetronomeEnabled = m_strip_ddbtn_metronome.isSelected();
             if ( AppManager.editorConfig.MetronomeEnabled && AppManager.getEditMode() == EditMode.REALTIME ) {
                 MidiPlayer.RestartMetronome();
             }
@@ -1062,7 +1062,7 @@ namespace Boare.Cadencii {
 #if JAVA
                 statusLabel.setText( item.getToolTipText() );
 #else
-                statusLabel.Text = item.ToolTipText;
+                statusLabel.setText( item.ToolTipText );
 #endif
             }
         }
@@ -1074,9 +1074,9 @@ namespace Boare.Cadencii {
             stripLblTempo.setText( PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo ) );
             stripLblCursor.setText( AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock ) );
 #else
-            stripLblBeat.Text = AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator;
-            stripLblTempo.Text = PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo );
-            stripLblCursor.Text = AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock );
+            stripLblBeat.setText( AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator );
+            stripLblTempo.setText( PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo ) );
+            stripLblCursor.setText( AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock ) );
 #endif
         }
 
@@ -1674,7 +1674,7 @@ namespace Boare.Cadencii {
                             continue;
                         }
                         int event_sx = XCoordFromClocks( evnt.Clock );
-                        if ( pictPianoRoll.Width < event_sx ) {
+                        if ( pictPianoRoll.getWidth() < event_sx ) {
                             break;
                         }
                         int vib_sx = XCoordFromClocks( evnt.Clock + evnt.ID.VibratoDelay);
@@ -1873,9 +1873,13 @@ namespace Boare.Cadencii {
             m_button_initial = new Point( e.X, e.Y );
             int modefier = PortUtil.getCurrentModifierKey();
             if ( m_txtbox_track_name != null ) {
+#if JAVA
+                m_txtbox_track_name.setVisible( false );
+#else
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
 
@@ -1885,10 +1889,10 @@ namespace Boare.Cadencii {
 #else
             if ( e.Button == BMouseButtons.Middle )
 #endif
- {
+            {
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
-                m_middle_button_vscroll = vScroll.Value;
-                m_middle_button_hscroll = hScroll.Value;
+                m_middle_button_vscroll = vScroll.getValue();
+                m_middle_button_hscroll = hScroll.getValue();
                 return;
             }
 
@@ -1899,8 +1903,8 @@ namespace Boare.Cadencii {
 #if ENABLE_SCRIPT
             if ( selected_tool == EditTool.PALETTE_TOOL && item == null && e.Button == BMouseButtons.Middle ) {
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
-                m_middle_button_vscroll = vScroll.Value;
-                m_middle_button_hscroll = hScroll.Value;
+                m_middle_button_vscroll = vScroll.getValue();
+                m_middle_button_hscroll = hScroll.getValue();
                 return;
             }
 #endif
@@ -1962,7 +1966,7 @@ namespace Boare.Cadencii {
                             }
                             if ( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx < 0 ) {
                                 continue;
-                            } else if ( pictPianoRoll.Width < dobj.pxRectangle.x + AppManager.keyWidth - stdx ) {
+                            } else if ( pictPianoRoll.getWidth() < dobj.pxRectangle.x + AppManager.keyWidth - stdx ) {
                                 break;
                             }
                             Rectangle rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxVibratoDelay - stdx - _EDIT_HANDLE_WIDTH / 2,
@@ -1983,7 +1987,7 @@ namespace Boare.Cadencii {
                                 continue;
                             }
                             int event_sx = XCoordFromClocks( evnt.Clock );
-                            if ( pictPianoRoll.Width < event_sx ) {
+                            if ( pictPianoRoll.getWidth() < event_sx ) {
                                 break;
                             }
                             int vib_sx = XCoordFromClocks( evnt.Clock + evnt.ID.VibratoDelay );
@@ -2065,7 +2069,9 @@ namespace Boare.Cadencii {
                                     setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                                 }
                             } else {
+#if !JAVA
                                 SystemSounds.Asterisk.Play();
+#endif
                             }
 #if ENABLE_SCRIPT
                         } else if ( (selected_tool == EditTool.ARROW || selected_tool == EditTool.PALETTE_TOOL) && e.Button == BMouseButtons.Left ) {
@@ -2127,7 +2133,7 @@ namespace Boare.Cadencii {
                             continue;
                         }
                         int event_sx = XCoordFromClocks( evnt.Clock );
-                        if ( pictPianoRoll.Width < event_sx ) {
+                        if ( pictPianoRoll.getWidth() < event_sx ) {
                             break;
                         }
                         int event_sy = YCoordFromNote( evnt.ID.Note, stdy );
@@ -2233,7 +2239,7 @@ namespace Boare.Cadencii {
                                 if ( !add_required.contains( item.InternalID ) ) {
                                     add_required.add( item.InternalID );
                                 }
-                                AppManager.addSelectedEventAll( add_required.toArray( new Integer[] { } ) );
+                                AppManager.addSelectedEventAll( add_required );
                             } else if ( (modefier & s_modifier_key) == s_modifier_key ) {
                                 // CTRLキーを押しながら選択／選択解除
                                 if ( AppManager.isSelectedEventContains( selected_track, item.InternalID ) ) {
@@ -2274,11 +2280,19 @@ namespace Boare.Cadencii {
         private void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( m_form_activated ) {
 #if ENABLE_PROPERTY
-                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible && !AppManager.propertyPanel.Editing ) {
+#if JAVA
+                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
 #else
-                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible ) {
+                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
 #endif
-                    pictPianoRoll.Focus();
+#else
+#if JAVA
+                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.isVisible() ) {
+#else
+                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.isVisible() ) {
+#endif
+#endif
+                    pictPianoRoll.requestFocus();
                 }
             }
             EditMode edit_mode = AppManager.getEditMode();
@@ -2290,7 +2304,7 @@ namespace Boare.Cadencii {
 #endif
             }
 
-            if ( e.Location.X != m_button_initial.x || e.Location.Y != m_button_initial.y ) {
+            if ( e.X != m_button_initial.x || e.Y != m_button_initial.y ) {
                 m_mouse_moved = true;
             }
             if ( !(edit_mode == EditMode.MIDDLE_DRAG) && AppManager.isPlaying() ) {
@@ -2323,11 +2337,11 @@ namespace Boare.Cadencii {
                 if ( m_ext_dragx == ExtDragXMode.NONE ) {
                     if ( AppManager.keyWidth > e.X ) {
                         m_ext_dragx = ExtDragXMode.LEFT;
-                    } else if ( pictPianoRoll.Width < e.X ) {
+                    } else if ( pictPianoRoll.getWidth() < e.X ) {
                         m_ext_dragx = ExtDragXMode.RIGHT;
                     }
                 } else {
-                    if ( AppManager.keyWidth <= e.X && e.X <= pictPianoRoll.Width ) {
+                    if ( AppManager.keyWidth <= e.X && e.X <= pictPianoRoll.getWidth() ) {
                         m_ext_dragx = ExtDragXMode.NONE;
                     }
                 }
@@ -2335,11 +2349,11 @@ namespace Boare.Cadencii {
                 if ( m_ext_dragy == ExtDragYMode.NONE ) {
                     if ( 0 > e.Y ) {
                         m_ext_dragy = ExtDragYMode.UP;
-                    } else if ( pictPianoRoll.Height < e.Y ) {
+                    } else if ( pictPianoRoll.getHeight() < e.Y ) {
                         m_ext_dragy = ExtDragYMode.DOWN;
                     }
                 } else {
-                    if ( 0 <= e.Y && e.Y <= pictPianoRoll.Height ) {
+                    if ( 0 <= e.Y && e.Y <= pictPianoRoll.getHeight() ) {
                         m_ext_dragy = ExtDragYMode.NONE;
                     }
                 }
@@ -2358,9 +2372,9 @@ namespace Boare.Cadencii {
                 }
                 double d_draft;
                 if ( m_ext_dragx == ExtDragXMode.RIGHT ) {
-                    int right_clock = AppManager.clockFromXCoord( pictPianoRoll.Width );
+                    int right_clock = AppManager.clockFromXCoord( pictPianoRoll.getWidth() );
                     int dclock = (int)(px_move / AppManager.scaleX);
-                    d_draft = (73 - pictPianoRoll.Width) / AppManager.scaleX + right_clock + dclock;
+                    d_draft = (73 - pictPianoRoll.getWidth()) / AppManager.scaleX + right_clock + dclock;
                 } else {
                     px_move *= -1;
                     int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
@@ -2371,17 +2385,17 @@ namespace Boare.Cadencii {
                     d_draft = 0.0;
                 }
                 int draft = (int)d_draft;
-                if ( hScroll.Maximum < draft ) {
+                if ( hScroll.getMaximum() < draft ) {
                     if ( edit_mode == EditMode.ADD_ENTRY || edit_mode == EditMode.MOVE_ENTRY || edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
-                        hScroll.Maximum = draft;
+                        hScroll.setMaximum( draft );
                     } else {
-                        draft = hScroll.Maximum;
+                        draft = hScroll.getMaximum();
                     }
                 }
-                if ( draft < hScroll.Minimum ) {
-                    draft = hScroll.Minimum;
+                if ( draft < hScroll.getMinimum() ) {
+                    draft = hScroll.getMinimum();
                 }
-                hScroll.Value = draft;
+                hScroll.setValue( draft );
             }
             if ( m_ext_dragy == ExtDragYMode.UP || m_ext_dragy == ExtDragYMode.DOWN ) {
                 double now = PortUtil.getCurrentTime();
@@ -2395,17 +2409,17 @@ namespace Boare.Cadencii {
                     px_move *= -1;
                 }
                 int draft_stdy = getStartToDrawY() + px_move;
-                int draft = (int)((draft_stdy * (double)vScroll.Maximum) / (128.0 * AppManager.editorConfig.PxTrackHeight - vScroll.Height));
+                int draft = (int)((draft_stdy * (double)vScroll.getMaximum()) / (128.0 * AppManager.editorConfig.PxTrackHeight - vScroll.getHeight()));
                 if ( draft < 0 ) {
                     draft = 0;
                 }
                 int df = (int)draft;
-                if ( df < vScroll.Minimum ) {
-                    df = vScroll.Minimum;
-                } else if ( vScroll.Maximum < df ) {
-                    df = vScroll.Maximum;
+                if ( df < vScroll.getMinimum() ) {
+                    df = vScroll.getMinimum();
+                } else if ( vScroll.getMaximum() < df ) {
+                    df = vScroll.getMaximum();
                 }
-                vScroll.Value = df;
+                vScroll.setValue( df );
             }
 
             // 選択範囲にあるイベントを選択．
@@ -2505,15 +2519,15 @@ namespace Boare.Cadencii {
                         }
                     }
                     if ( remove_required.size() > 0 ) {
-                        AppManager.removeSelectedEventRange( remove_required.toArray( new Integer[] { } ) );
+                        AppManager.removeSelectedEventRange( PortUtil.convertIntArray( remove_required.toArray( new Integer[] { } ) ) );
                     }
-                    for ( Iterator itr = new ListIterator<int>( add_required ); itr.hasNext(); ) {
-                        int id = (int)itr.next();
+                    for ( Iterator itr = add_required.iterator(); itr.hasNext(); ) {
+                        int id = (Integer)itr.next();
                         if ( AppManager.isSelectedEventContains( AppManager.getSelected(), id ) ) {
                             itr.remove();
                         }
                     }
-                    AppManager.addSelectedEventAll( add_required.toArray( new Integer[] { } ) );
+                    AppManager.addSelectedEventAll( add_required );
                 }
             }
 
@@ -2521,21 +2535,21 @@ namespace Boare.Cadencii {
                 #region MiddleDrag
                 int dx = e.X - m_button_initial.x;
                 int dy = e.Y - m_button_initial.y;
-                double new_vscroll_value = (double)m_middle_button_vscroll - dy * (double)vScroll.Maximum / (128.0 * AppManager.editorConfig.PxTrackHeight - (double)vScroll.Height);
+                double new_vscroll_value = (double)m_middle_button_vscroll - dy * (double)vScroll.getMaximum() / (128.0 * AppManager.editorConfig.PxTrackHeight - (double)vScroll.getHeight());
                 double new_hscroll_value = (double)m_middle_button_hscroll - (double)dx / AppManager.scaleX;
-                if ( new_vscroll_value < vScroll.Minimum ) {
-                    vScroll.Value = vScroll.Minimum;
-                } else if ( vScroll.Maximum < new_vscroll_value ) {
-                    vScroll.Value = vScroll.Maximum;
+                if ( new_vscroll_value < vScroll.getMinimum() ) {
+                    vScroll.setValue( vScroll.getMinimum() );
+                } else if ( vScroll.getMaximum() < new_vscroll_value ) {
+                    vScroll.setValue( vScroll.getMaximum() );
                 } else {
-                    vScroll.Value = (int)new_vscroll_value;
+                    vScroll.setValue( (int)new_vscroll_value );
                 }
-                if ( new_hscroll_value < hScroll.Minimum ) {
-                    hScroll.Value = hScroll.Minimum;
-                } else if ( hScroll.Maximum < new_hscroll_value ) {
-                    hScroll.Value = hScroll.Maximum;
+                if ( new_hscroll_value < hScroll.getMinimum() ) {
+                    hScroll.setValue( hScroll.getMinimum() );
+                } else if ( hScroll.getMaximum() < new_hscroll_value ) {
+                    hScroll.setValue( hScroll.getMaximum() );
                 } else {
-                    hScroll.Value = (int)new_hscroll_value;
+                    hScroll.setValue( (int)new_hscroll_value );
                 }
                 if ( AppManager.isPlaying() ) {
                     return;
@@ -2576,7 +2590,7 @@ namespace Boare.Cadencii {
 
                     int dclock = tclock - clock_init;
 
-                    if ( AppManager.editorConfig.PositionQuantize != QuantizeMode.off ) {
+                    if ( AppManager.editorConfig.getPositionQuantize() != QuantizeMode.off ) {
                         int unit = AppManager.getPositionQuantizeClock();
                         int new_clock = original.Clock + dclock;
                         int odd = new_clock % unit;
@@ -2674,7 +2688,7 @@ namespace Boare.Cadencii {
                 AppManager.addingEvent.Clock = new_vibrato_start;
                 AppManager.addingEvent.ID.setLength( new_vibrato_length );
                 updatePositionViewFromMousePosition( clock );
-                if ( !timer.Enabled ) {
+                if ( !timer.isRunning() ) {
                     refreshScreen();
                 }
                 #endregion
@@ -2752,7 +2766,7 @@ namespace Boare.Cadencii {
                     setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                 }
             }
-            if ( !timer.Enabled ) {
+            if ( !timer.isRunning() ) {
                 refreshScreen();
             }
         }
@@ -2793,19 +2807,14 @@ namespace Boare.Cadencii {
                             int threshold = 480 * 4 / timesig.denominator * autovib;
                             if ( note_length >= threshold ) {
                                 int vibrato_clocks = 0;
-                                switch ( AppManager.editorConfig.DefaultVibratoLength ) {
-                                    case DefaultVibratoLengthEnum.L100:
-                                        vibrato_clocks = note_length;
-                                        break;
-                                    case DefaultVibratoLengthEnum.L50:
-                                        vibrato_clocks = note_length / 2;
-                                        break;
-                                    case DefaultVibratoLengthEnum.L66:
-                                        vibrato_clocks = note_length * 2 / 3;
-                                        break;
-                                    case DefaultVibratoLengthEnum.L75:
-                                        vibrato_clocks = note_length * 3 / 4;
-                                        break;
+                                if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L100 ) {
+                                    vibrato_clocks = note_length;
+                                } else if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L50 ) {
+                                    vibrato_clocks = note_length / 2;
+                                } else if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L66 ) {
+                                    vibrato_clocks = note_length * 2 / 3;
+                                } else if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L75 ) {
+                                    vibrato_clocks = note_length * 3 / 4;
                                 }
                                 SynthesizerType type = SynthesizerType.VOCALOID2;
                                 String default_icon_id = AppManager.editorConfig.AutoVibratoType2;
@@ -2907,7 +2916,9 @@ namespace Boare.Cadencii {
                             AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                             setEdited( true );
                         } else {
+#if !JAVA
                             SystemSounds.Asterisk.Play();
+#endif
                         }
                     } else {
                         /*if ( (modefier & Keys.Shift) == Keys.Shift || (modefier & Keys.Control) == Keys.Control ) {
@@ -3126,7 +3137,7 @@ namespace Boare.Cadencii {
 
                 // 音符の再選択
                 AppManager.clearSelectedEvent();
-                AppManager.addSelectedEventAll( selected_ids );
+                AppManager.addSelectedEventAll( Arrays.asList( selected_ids ) );
                 AppManager.addSelectedEvent( last_selected_id );
 
                 setEdited( true );
@@ -3144,7 +3155,7 @@ namespace Boare.Cadencii {
                         add_required_event.add( ve.InternalID );
                     }
                 }
-                AppManager.addSelectedEventAll( add_required_event.toArray( new Integer[] { } ) );
+                AppManager.addSelectedEventAll( add_required_event );
 
                 // コントロールカーブ点の選択状態を更新
                 Vector<Long> add_required_point = new Vector<Long>();
@@ -3180,15 +3191,15 @@ namespace Boare.Cadencii {
                 horizontal = !horizontal;
             }
             if ( horizontal ) {
-                hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
+                hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
             } else {
-                double new_val = (double)vScroll.Value - e.Delta;
-                if ( new_val > vScroll.Maximum ) {
-                    vScroll.Value = vScroll.Maximum;
-                } else if ( new_val < vScroll.Minimum ) {
-                    vScroll.Value = vScroll.Minimum;
+                double new_val = (double)vScroll.getValue() - e.Delta;
+                if ( new_val > vScroll.getMaximum() ) {
+                    vScroll.setValue( vScroll.getMaximum() );
+                } else if ( new_val < vScroll.getMinimum() ) {
+                    vScroll.setValue( vScroll.getMinimum() );
                 } else {
-                    vScroll.Value = (int)new_val;
+                    vScroll.setValue( (int)new_val );
                 }
             }
             refreshScreen();
@@ -3201,7 +3212,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if JAVA
-            if ( e.KeyCode.getValue() == BKeys.Tab.getValue() && AppManager.getSelectedEventCount() > 0 ) {
+            if ( e.KeyValue == KeyEvent.VK_TAB && AppManager.getSelectedEventCount() > 0 ) {
 #else
             if ( e.KeyCode == System.Windows.Forms.Keys.Tab && AppManager.getSelectedEventCount() > 0 ) {
 #endif
@@ -3218,7 +3229,9 @@ namespace Boare.Cadencii {
                                   original.ID.LyricHandle.L0.getPhoneticSymbol(),
                                   new Point( x, y ),
                                   m_last_symbol_edit_mode );
+#if !JAVA
                 e.IsInputKey = true;
+#endif
                 refreshScreen();
             }
             ProcessSpecialShortcutKey( e );
@@ -3227,41 +3240,41 @@ namespace Boare.Cadencii {
 
         #region menuVisual*
         private void menuVisualMixer_Click( Object sender, BEventArgs e ) {
-            menuVisualMixer.Checked = !menuVisualMixer.Checked;
-            AppManager.editorConfig.MixerVisible = menuVisualMixer.Checked;
-            AppManager.mixerWindow.Visible = AppManager.editorConfig.MixerVisible;
+            menuVisualMixer.setSelected( !menuVisualMixer.isSelected() );
+            AppManager.editorConfig.MixerVisible = menuVisualMixer.isSelected();
+            AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
             this.Focus();
         }
 
         private void menuVisualGridline_CheckedChanged( Object sender, BEventArgs e ) {
-            AppManager.setGridVisible( menuVisualGridline.Checked );
+            AppManager.setGridVisible( menuVisualGridline.isSelected() );
             refreshScreen();
         }
 
         private void menuVisualLyrics_CheckedChanged( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.ShowLyric = menuVisualLyrics.Checked;
+            AppManager.editorConfig.ShowLyric = menuVisualLyrics.isSelected();
         }
 
         private void menuVisualNoteProperty_CheckedChanged( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.ShowExpLine = menuVisualNoteProperty.Checked;
+            AppManager.editorConfig.ShowExpLine = menuVisualNoteProperty.isSelected();
             refreshScreen();
         }
 
         private void menuVisualPitchLine_CheckedChanged( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.ViewAtcualPitch = menuVisualPitchLine.Checked;
+            AppManager.editorConfig.ViewAtcualPitch = menuVisualPitchLine.isSelected();
         }
 
         private void menuVisualControlTrack_CheckedChanged( Object sender, BEventArgs e ) {
             trackSelector.setCurveVisible( menuVisualControlTrack.isSelected() );
             if ( menuVisualControlTrack.isSelected() ) {
                 splitContainer1.IsSplitterFixed = false;
-                splitContainer1.SplitterDistance = splitContainer1.Height - AppManager.lastTrackSelectorHeight - splitContainer1.SplitterWidth;
+                splitContainer1.setDividerLocation( splitContainer1.Height - AppManager.lastTrackSelectorHeight - splitContainer1.getDividerSize() );
                 splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
             } else {
-                AppManager.lastTrackSelectorHeight = splitContainer1.Height - splitContainer1.SplitterDistance - splitContainer1.SplitterWidth;
+                AppManager.lastTrackSelectorHeight = splitContainer1.Height - splitContainer1.getDividerLocation() - splitContainer1.getDividerSize();
                 splitContainer1.IsSplitterFixed = true;
                 splitContainer1.Panel2MinSize = _SPL1_PANEL2_MIN_HEIGHT;
-                splitContainer1.SplitterDistance = splitContainer1.Height - _SPL1_PANEL2_MIN_HEIGHT - splitContainer1.SplitterWidth;
+                splitContainer1.setDividerLocation( splitContainer1.Height - _SPL1_PANEL2_MIN_HEIGHT - splitContainer1.getDividerSize() );
             }
             refreshScreen();
         }
@@ -3275,48 +3288,48 @@ namespace Boare.Cadencii {
         }
 
         private void menuVisualWaveform_CheckedChanged( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.ViewWaveform = menuVisualWaveform.Checked;
+            AppManager.editorConfig.ViewWaveform = menuVisualWaveform.isSelected();
             updateSplitContainer2Size();
         }
 
         private void menuVisualControlTrack_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Show/Hide control curves." );
+            statusLabel.setText( _( "Show/Hide control curves." ) );
         }
 
         private void menuVisualMixer_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Show/Hide mixer window." );
+            statusLabel.setText( _( "Show/Hide mixer window." ) );
         }
 
         private void menuVisualWaveform_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Show/Hide waveform." );
+            statusLabel.setText( _( "Show/Hide waveform." ) );
         }
 
         private void menuVisualProperty_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Show/Hide property window." );
+            statusLabel.setText( _( "Show/Hide property window." ) );
         }
 
         private void menuVisualGridline_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Show/Hide grid line." );
+            statusLabel.setText( _( "Show/Hide grid line." ) );
         }
 
         private void menuVisualStartMarker_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Enable/Disable start marker." );
+            statusLabel.setText( _( "Enable/Disable start marker." ) );
         }
 
         private void menuVisualEndMarker_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Enable/Disable end marker." );
+            statusLabel.setText( _( "Enable/Disable end marker." ) );
         }
 
         private void menuVisualLyrics_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Show/Hide lyrics." );
+            statusLabel.setText( _( "Show/Hide lyrics." ) );
         }
 
         private void menuVisualNoteProperty_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Show/Hide expression lines." );
+            statusLabel.setText( _( "Show/Hide expression lines." ) );
         }
 
         private void menuVisualPitchLine_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Show/Hide pitch bend lines." );
+            statusLabel.setText( _( "Show/Hide pitch bend lines." ) );
         }
         #endregion
 
@@ -3464,10 +3477,10 @@ namespace Boare.Cadencii {
             updateRecentFileMenu();
 
             // C3が画面中央に来るように調整
-            int draft_start_to_draw_y = 68 * AppManager.editorConfig.PxTrackHeight - pictPianoRoll.Height / 2;
-            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.Maximum) / (128 * AppManager.editorConfig.PxTrackHeight - vScroll.Height));
+            int draft_start_to_draw_y = 68 * AppManager.editorConfig.PxTrackHeight - pictPianoRoll.getHeight() / 2;
+            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.getMaximum()) / (128 * AppManager.editorConfig.PxTrackHeight - vScroll.getHeight()));
             try {
-                vScroll.Value = draft_vscroll_value;
+                vScroll.setValue( draft_vscroll_value );
             } catch ( Exception ex ) {
             }
 
@@ -3475,17 +3488,17 @@ namespace Boare.Cadencii {
             int cp = AppManager.getVsqFile().getPreMeasureClocks();
             int draft_hscroll_value = (int)(cp - 24.0 / AppManager.scaleX);
             try {
-                hScroll.Value = draft_hscroll_value;
+                hScroll.setValue( draft_hscroll_value );
             } catch ( Exception ex ) {
             }
 
             //s_pen_dashed_171_171_171.DashPattern = new float[] { 3, 3 };
             //s_pen_dashed_209_204_172.DashPattern = new float[] { 3, 3 };
 
-            menuVisualNoteProperty.Checked = AppManager.editorConfig.ShowExpLine;
-            menuVisualLyrics.Checked = AppManager.editorConfig.ShowLyric;
-            menuVisualMixer.Checked = AppManager.editorConfig.MixerVisible;
-            menuVisualPitchLine.Checked = AppManager.editorConfig.ViewAtcualPitch;
+            menuVisualNoteProperty.setSelected( AppManager.editorConfig.ShowExpLine );
+            menuVisualLyrics.setSelected( AppManager.editorConfig.ShowLyric );
+            menuVisualMixer.setSelected( AppManager.editorConfig.MixerVisible );
+            menuVisualPitchLine.setSelected( AppManager.editorConfig.ViewAtcualPitch );
 
             AppManager.mixerWindow = new FormMixer( this );
 
@@ -3518,14 +3531,14 @@ namespace Boare.Cadencii {
 
             clearTempWave();
             setHScrollRange( AppManager.getVsqFile().TotalClocks );
-            setVScrollRange( vScroll.Maximum );
+            setVScrollRange( vScroll.getMaximum() );
             m_pencil_mode.setMode( PencilModeEnum.Off );
             updateCMenuPianoFixed();
             loadGameControler();
 #if ENABLE_MIDI
             reloadMidiIn();
 #endif
-            menuVisualWaveform.Checked = AppManager.editorConfig.ViewWaveform;
+            menuVisualWaveform.setSelected( AppManager.editorConfig.ViewWaveform );
             updateSplitContainer2Size();
 
             updateRendererMenu();
@@ -3618,7 +3631,7 @@ namespace Boare.Cadencii {
                 uf.Write( new FileStream( @"C:\regenerated.frq", FileMode.Create, FileAccess.Write ) );
             } catch {
             }*/
-            menuHidden.Visible = true;
+            menuHidden.setVisible( true );
             /*using ( StreamWriter sw = new StreamWriter( PortUtil.combinePath( Application.StartupPath, "Keys.txt" ) ) ) {
                 foreach ( Keys key in Enum.GetValues( typeof( Keys ) ) ) {
                     sw.WriteLine( (int)key + "\t" + key.ToString() );
@@ -3783,35 +3796,35 @@ namespace Boare.Cadencii {
                 AppManager.editorConfig.WindowRect = this.getBounds();
 #if ENABLE_PROPERTY
                 AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
-                AppManager.propertyWindow.Visible = AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window;
+                AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
 #endif
-                AppManager.mixerWindow.Visible = AppManager.editorConfig.MixerVisible;
+                AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
                 updateLayout();
             } else if ( getExtendedState() == BForm.ICONIFIED ) {
 #if ENABLE_PROPERTY
-                AppManager.propertyWindow.Visible = false;
+                AppManager.propertyWindow.setVisible( false );
 #endif
-                AppManager.mixerWindow.Visible = false;
+                AppManager.mixerWindow.setVisible( false );
             } else if ( getExtendedState() == BForm.MAXIMIZED_BOTH ) {
 #if ENABLE_PROPERTY
                 AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
-                AppManager.propertyWindow.Visible = AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window;
+                AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
 #endif
-                AppManager.mixerWindow.Visible = AppManager.editorConfig.MixerVisible;
+                AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
             }
         }
 
         private void FormMain_MouseWheel( Object sender, BMouseEventArgs e ) {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
+                hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
             } else {
-                double new_val = (double)vScroll.Value - e.Delta;
-                if ( new_val > vScroll.Maximum ) {
-                    vScroll.Value = vScroll.Maximum;
-                } else if ( new_val < vScroll.Minimum ) {
-                    vScroll.Value = vScroll.Minimum;
+                double new_val = (double)vScroll.getValue() - e.Delta;
+                if ( new_val > vScroll.getMaximum() ) {
+                    vScroll.setValue( vScroll.getMaximum() );
+                } else if ( new_val < vScroll.getMinimum() ) {
+                    vScroll.setValue( vScroll.getMinimum() );
                 } else {
-                    vScroll.Value = (int)new_val;
+                    vScroll.setValue( (int)new_val );
                 }
             }
             refreshScreen();
@@ -3887,22 +3900,22 @@ namespace Boare.Cadencii {
                     m_last_pov_l = pov_l;
 
                     if ( !event_processed && pov_u && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.Value - AppManager.editorConfig.PxTrackHeight * 3;
-                        if ( draft_vscroll < vScroll.Minimum ) {
-                            draft_vscroll = vScroll.Minimum;
+                        int draft_vscroll = vScroll.getValue() - AppManager.editorConfig.PxTrackHeight * 3;
+                        if ( draft_vscroll < vScroll.getMinimum() ) {
+                            draft_vscroll = vScroll.getMinimum();
                         }
-                        vScroll.Value = draft_vscroll;
+                        vScroll.setValue( draft_vscroll );
                         refreshScreen();
                         m_last_event_processed = now;
                         event_processed = true;
                     }
 
                     if ( !event_processed && pov_d && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.Value + AppManager.editorConfig.PxTrackHeight * 3;
-                        if ( draft_vscroll > vScroll.Maximum ) {
-                            draft_vscroll = vScroll.Maximum;
+                        int draft_vscroll = vScroll.getValue() + AppManager.editorConfig.PxTrackHeight * 3;
+                        if ( draft_vscroll > vScroll.getMaximum() ) {
+                            draft_vscroll = vScroll.getMaximum();
                         }
-                        vScroll.Value = draft_vscroll;
+                        vScroll.setValue( draft_vscroll );
                         refreshScreen();
                         m_last_event_processed = now;
                         event_processed = true;
@@ -3911,7 +3924,7 @@ namespace Boare.Cadencii {
                     if ( !event_processed && !SELECT && m_last_select ) {
                         event_processed = true;
                         m_game_mode = GameControlMode.KEYBOARD;
-                        stripLblGameCtrlMode.Text = m_game_mode.ToString();
+                        stripLblGameCtrlMode.setText( m_game_mode.ToString() );
                         stripLblGameCtrlMode.Image = Resources.get_piano();
                     }
                     m_last_select = SELECT;
@@ -3930,7 +3943,7 @@ namespace Boare.Cadencii {
                             AppManager.setPlaying( false );
                             timer.Stop();
                         } else {
-                            m_timer.Enabled = false;
+                            m_timer.stop();
                             FormRealtimeConfig frc = null;
                             try {
                                 frc = new FormRealtimeConfig();
@@ -3949,7 +3962,7 @@ namespace Boare.Cadencii {
                                 } catch ( Exception ex2 ) {
                                 }
                             }
-                            m_timer.Enabled = true;
+                            m_timer.start();
                         }
                         m_last_btn_o = btn_o;
                         m_last_btn_x = btn_x;
@@ -4168,7 +4181,7 @@ namespace Boare.Cadencii {
         }
 
         private void menuFileExport_DropDownOpening( Object sender, BEventArgs e ) {
-            menuFileExportWave.Enabled = (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) && VSTiProxy.CurrentUser.Equals( "" );
+            menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) && VSTiProxy.CurrentUser.Equals( "" ) );
         }
 
         private void menuFileImportMidi_Click( Object sender, BEventArgs e ) {
@@ -4974,55 +4987,55 @@ namespace Boare.Cadencii {
         }
 
         private void menuFileNew_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Create new project." );
+            statusLabel.setText( _( "Create new project." ) );
         }
 
         private void menuFileOpen_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Open Cadencii project." );
+            statusLabel.setText( _( "Open Cadencii project." ) );
         }
 
         private void menuFileSave_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Save current project." );
+            statusLabel.setText( _( "Save current project." ) );
         }
 
         private void menuFileSaveNamed_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Save current project with new name." );
+            statusLabel.setText( _( "Save current project with new name." ) );
         }
 
         private void menuFileOpenVsq_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Open VSQ / VOCALOID MIDI and create new project." );
+            statusLabel.setText( _( "Open VSQ / VOCALOID MIDI and create new project." ) );
         }
 
         private void menuFileOpenUst_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Open UTAU project and create new project." );
+            statusLabel.setText( _( "Open UTAU project and create new project." ) );
         }
 
         private void menuFileImport_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Import." );
+            statusLabel.setText( _( "Import." ) );
         }
 
         private void menuFileImportVsq_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Import VSQ / VOCALOID MIDI." );
+            statusLabel.setText( _( "Import VSQ / VOCALOID MIDI." ) );
         }
 
         private void menuFileImportMidi_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Import Standard MIDI." );
+            statusLabel.setText( _( "Import Standard MIDI." ) );
         }
 
         private void menuFileExportWave_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Export to WAVE file." );
+            statusLabel.setText( _( "Export to WAVE file." ) );
         }
 
         private void menuFileExportMidi_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Export to Standard MIDI." );
+            statusLabel.setText( _( "Export to Standard MIDI." ) );
         }
 
         private void menuFileRecent_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Recent projects." );
+            statusLabel.setText( _( "Recent projects." ) );
         }
 
         private void menuFileQuit_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Close this window." );
+            statusLabel.setText( _( "Close this window." ) );
         }
         #endregion
 
@@ -5331,7 +5344,7 @@ namespace Boare.Cadencii {
                         s1 = s1.Substring( 0, i1 );
                     }
                     if ( script_shortcut.contains( name ) ) {
-                        String s2 = menuScript.Text;
+                        String s2 = menuScript.getText();
                         int i2 = s2.IndexOf( "(&" );
                         if ( i2 > 0 ) {
                             s2 = s2.Substring( 0, i2 );
@@ -5350,8 +5363,8 @@ namespace Boare.Cadencii {
                     TreeMap<String, ValuePair<String, BKeys[]>> res = form.Result;
                     for ( Iterator itr = res.keySet().iterator(); itr.hasNext(); ) {
                         String display = (String)itr.next();
-                        String name = res.get( display ).Key;
-                        BKeys[] keys = res.get( display ).Value;
+                        String name = res.get( display ).getKey();
+                        BKeys[] keys = res.get( display ).getValue();
                         boolean found = false;
                         for ( int i = 0; i < AppManager.editorConfig.ShortcutKeys.size(); i++ ) {
                             if ( AppManager.editorConfig.ShortcutKeys.get( i ).Key.Equals( name ) ) {
@@ -5474,43 +5487,43 @@ namespace Boare.Cadencii {
 
         private void menuEditAutoNormalizeMode_Click( Object sender, BEventArgs e ) {
             AppManager.autoNormalize = !AppManager.autoNormalize;
-            menuEditAutoNormalizeMode.Checked = AppManager.autoNormalize;
+            menuEditAutoNormalizeMode.setSelected( AppManager.autoNormalize );
         }
 
         private void menuEditUndo_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Undo." );
+            statusLabel.setText( _( "Undo." ) );
         }
 
         private void menuEditRedo_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Redo." );
+            statusLabel.setText( _( "Redo." ) );
         }
 
         private void menuEditCut_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Cut selected items." );
+            statusLabel.setText( _( "Cut selected items." ) );
         }
 
         private void menuEditCopy_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Copy selected items." );
+            statusLabel.setText( _( "Copy selected items." ) );
         }
 
         private void menuEditPaste_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Paste copied items to current song position." );
+            statusLabel.setText( _( "Paste copied items to current song position." ) );
         }
 
         private void menuEditDelete_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Delete selected items." );
+            statusLabel.setText( _( "Delete selected items." ) );
         }
 
         private void menuEditAutoNormalizeMode_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Avoid automaticaly polyphonic editing." );
+            statusLabel.setText( _( "Avoid automaticaly polyphonic editing." ) );
         }
 
         private void menuEditSelectAll_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Select all items and control curves of current track." );
+            statusLabel.setText( _( "Select all items and control curves of current track." ) );
         }
 
         private void menuEditSelectAllEvents_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Select all items of current track." );
+            statusLabel.setText( _( "Select all items of current track." ) );
         }
         #endregion
 
@@ -5552,12 +5565,12 @@ namespace Boare.Cadencii {
                 AppManager.addingEvent = null;
                 AppManager.setEditMode( EditMode.REALTIME );
                 AppManager.setPlaying( true );
-                //menuJobRealTime.Text = _( "Stop Realtime Input" );
+                //menuJobRealTime.setText( _( "Stop Realtime Input" );
             } else {
                 timer.Stop();
                 AppManager.setPlaying( false );
                 AppManager.setEditMode( EditMode.NONE );
-                //menuJobRealTime.Text = _( "Start Realtime Input" );
+                //menuJobRealTime.setText( _( "Start Realtime Input" );
             }
         }
 
@@ -5606,10 +5619,10 @@ namespace Boare.Cadencii {
                         break;
                     }
                 }
-                menuJobConnect.Enabled = continued;
+                menuJobConnect.setEnabled( continued );
             }
 
-            menuJobLyric.Enabled = AppManager.getLastSelectedEvent() != null;
+            menuJobLyric.setEnabled( AppManager.getLastSelectedEvent() != null );
         }
 
         private void menuJobLyric_Click( Object sender, BEventArgs e ) {
@@ -5951,39 +5964,39 @@ namespace Boare.Cadencii {
         }
 
         private void menuJobNormalize_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Correct overlapped item." );
+            statusLabel.setText( _( "Correct overlapped item." ) );
         }
 
         private void menuJobInsertBar_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Insert bar." );
+            statusLabel.setText( _( "Insert bar." ) );
         }
 
         private void menuJobDeleteBar_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Delete bar." );
+            statusLabel.setText( _( "Delete bar." ) );
         }
 
         private void menuJobRandomize_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Randomize items." ) + _( "(not implemented)" );
+            statusLabel.setText( _( "Randomize items." ) + _( "(not implemented)" ) );
         }
 
         private void menuJobConnect_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Lengthen note end to neighboring note." );
+            statusLabel.setText( _( "Lengthen note end to neighboring note." ) );
         }
 
         private void menuJobLyric_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Import lyric." );
+            statusLabel.setText( _( "Import lyric." ) );
         }
 
         private void menuJobRewire_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Import tempo from ReWire host." ) + _( "(not implemented)" );
+            statusLabel.setText( _( "Import tempo from ReWire host." ) + _( "(not implemented)" ) );
         }
 
         private void menuJobRealTime_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Start realtime input." );
+            statusLabel.setText( _( "Start realtime input." ) );
         }
 
         private void menuJobReloadVsti_MouseEnter( Object sender, BEventArgs e ) {
-            statusLabel.Text = _( "Reload VSTi dll." ) + _( "(not implemented)" );
+            statusLabel.setText( _( "Reload VSTi dll." ) + _( "(not implemented)" ) );
         }
         #endregion
 
@@ -6002,7 +6015,7 @@ namespace Boare.Cadencii {
         }
 
         private void vScroll_Resize( Object sender, BEventArgs e ) {
-            setVScrollRange( vScroll.Maximum );
+            setVScrollRange( vScroll.getMaximum() );
         }
 
         private void vScroll_ValueChanged( Object sender, BEventArgs e ) {
@@ -6033,10 +6046,10 @@ namespace Boare.Cadencii {
         private void hScroll_ValueChanged( Object sender, BEventArgs e ) {
 #if DEBUG
             //PortUtil.println( "hScroll_ValueChanged" );
-            //PortUtil.println( "    Value/Maximum=" + hScroll.Value + "/" + hScroll.Maximum );
+            //PortUtil.println( "    Value/Maximum=" + hScroll.getValue() + "/" + hScroll.getMaximum() );
             //PortUtil.println( "    LargeChange=" + hScroll.LargeChange );
 #endif
-            AppManager.startToDrawX = (int)(hScroll.Value * AppManager.scaleX);
+            AppManager.startToDrawX = (int)(hScroll.getValue() * AppManager.scaleX);
             if ( m_txtbox_track_name != null ) {
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
@@ -6049,7 +6062,7 @@ namespace Boare.Cadencii {
 
         #region picturePositionIndicator
         private void picturePositionIndicator_MouseWheel( Object sender, BMouseEventArgs e ) {
-            hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
+            hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
         }
 
         private void picturePositionIndicator_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
@@ -6371,7 +6384,7 @@ namespace Boare.Cadencii {
                     if ( !m_startmark_dragging && !m_endmark_dragging ) {
 
                         int clock = AppManager.clockFromXCoord( e.X );
-                        if ( AppManager.editorConfig.PositionQuantize != QuantizeMode.off ) {
+                        if ( AppManager.editorConfig.getPositionQuantize() != QuantizeMode.off ) {
                             int unit = AppManager.getPositionQuantizeClock();
                             int odd = clock % unit;
                             clock -= odd;
@@ -6396,7 +6409,7 @@ namespace Boare.Cadencii {
                         boolean contains_first_tempo = false;
                         for ( Iterator itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
                             ValuePair<Integer, SelectedTempoEntry> item = (ValuePair<Integer, SelectedTempoEntry>)itr.next();
-                            int clock = item.Key;
+                            int clock = item.getKey();
                             i++;
                             clocks[i] = clock;
                             if ( clock == 0 ) {
@@ -6408,7 +6421,9 @@ namespace Boare.Cadencii {
                             tempos[i] = editing.Tempo;
                         }
                         if ( contains_first_tempo ) {
-                            System.Media.SystemSounds.Asterisk.Play();
+#if !JAVA
+                            SystemSounds.Asterisk.Play();
+#endif
                         } else {
                             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, new_clocks, tempos ) );
                             AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
@@ -6435,8 +6450,10 @@ namespace Boare.Cadencii {
                             if ( index >= 0 && AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( AppManager.getVsqFile().TempoTable.get( index ).Clock == 0 ) {
-                                    statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                    statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
                                     SystemSounds.Asterisk.Play();
+#endif
                                     return;
                                 }
                                 CadenciiCommand run = new CadenciiCommand(
@@ -6541,7 +6558,7 @@ namespace Boare.Cadencii {
                         boolean contains_first_bar = false;
                         for ( Iterator itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
                             ValuePair<Integer, SelectedTimesigEntry> item = (ValuePair<Integer, SelectedTimesigEntry>)itr.next();
-                            int bar = item.Key;
+                            int bar = item.getKey();
                             i++;
                             barcounts[i] = bar;
                             if ( bar == 0 ) {
@@ -6554,7 +6571,9 @@ namespace Boare.Cadencii {
                             denominators[i] = editing.Denominator;
                         }
                         if ( contains_first_bar ) {
-                            System.Media.SystemSounds.Asterisk.Play();
+#if !JAVA
+                            SystemSounds.Asterisk.Play();
+#endif
                         } else {
                             CadenciiCommand run = new CadenciiCommand(
                                 VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
@@ -6579,8 +6598,10 @@ namespace Boare.Cadencii {
                             if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( AppManager.getVsqFile().TimesigTable.get( index ).Clock == 0 ) {
-                                    statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                    statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
                                     SystemSounds.Asterisk.Play();
+#endif
                                     return;
                                 }
                                 int barcount = AppManager.getVsqFile().TimesigTable.get( index ).BarCount;
@@ -6684,7 +6705,7 @@ namespace Boare.Cadencii {
                 int dclock = clock - last_clock;
                 for ( Iterator itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTempoEntry> item = (ValuePair<Integer, SelectedTempoEntry>)itr.next();
-                    int key = item.Key;
+                    int key = item.getKey();
                     AppManager.getSelectedTempo( key ).editing.Clock = AppManager.getSelectedTempo( key ).original.Clock + dclock;
                 }
                 picturePositionIndicator.Refresh();
@@ -6695,7 +6716,7 @@ namespace Boare.Cadencii {
                 int dbarcount = barcount - last_barcount;
                 for ( Iterator itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTimesigEntry> item = (ValuePair<Integer, SelectedTimesigEntry>)itr.next();
-                    int bar = item.Key;
+                    int bar = item.getKey();
                     AppManager.getSelectedTimesig( bar ).editing.BarCount = AppManager.getSelectedTimesig( bar ).original.BarCount + dbarcount;
                 }
                 picturePositionIndicator.Refresh();
@@ -6768,7 +6789,7 @@ namespace Boare.Cadencii {
 
         private void trackBar_ValueChanged( Object sender, BEventArgs e ) {
             AppManager.scaleX = trackBar.Value / 480f;
-            AppManager.startToDrawX = (int)(hScroll.Value * AppManager.scaleX);
+            AppManager.startToDrawX = (int)(hScroll.getValue() * AppManager.scaleX);
 #if USE_DOBJ
             updateDrawObjectList();
 #endif
@@ -6972,7 +6993,7 @@ namespace Boare.Cadencii {
                 if ( btn == BMouseButtons.Middle ) {
                     m_edit_curve_mode = CurveEditMode.MIDDLE_DRAG;
                     m_button_initial = new Point( e.X, e.Y );
-                    m_middle_button_hscroll = hScroll.Value;
+                    m_middle_button_hscroll = hScroll.getValue();
                     this.Cursor = HAND;
                 }
             }
@@ -6981,9 +7002,9 @@ namespace Boare.Cadencii {
         private void trackSelector_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( m_form_activated ) {
 #if ENABLE_PROPERTY
-                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible && !AppManager.propertyPanel.Editing ) {
+                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
 #else
-                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.Visible ) {
+                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.isVisible() ) {
 #endif
                     trackSelector.Focus();
                 }
@@ -7010,8 +7031,8 @@ namespace Boare.Cadencii {
                 if ( AppManager.isPlaying() ) {
                     return;
                 }
-                if ( hScroll.Value != draft ) {
-                    hScroll.Value = draft;
+                if ( hScroll.getValue() != draft ) {
+                    hScroll.setValue( draft );
                 }
             } else {
                 if ( m_mouse_downed_trackselector ) {
@@ -7059,7 +7080,7 @@ namespace Boare.Cadencii {
                     if ( draft < hScroll.getMinimum() ) {
                         draft = hScroll.getMinimum();
                     }
-                    hScroll.Value = draft;
+                    hScroll.setValue( draft );
                 }
             }
             int clock = AppManager.clockFromXCoord( e.X );
@@ -7077,22 +7098,22 @@ namespace Boare.Cadencii {
 
         private void trackSelector_MouseWheel( Object sender, BMouseEventArgs e ) {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                double new_val = (double)vScroll.Value - e.Delta;
+                double new_val = (double)vScroll.getValue() - e.Delta;
                 if ( new_val > vScroll.getMaximum() ) {
-                    vScroll.Value = vScroll.getMaximum();
+                    vScroll.setValue( vScroll.getMaximum() );
                 } else if ( new_val < vScroll.getMinimum() ) {
-                    vScroll.Value = vScroll.getMinimum();
+                    vScroll.setValue( vScroll.getMinimum() );
                 } else {
-                    vScroll.Value = (int)new_val;
+                    vScroll.setValue( (int)new_val );
                 }
             } else {
-                hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
+                hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
             }
             refreshScreen();
         }
 
         private void trackSelector_PreferredMinHeightChanged( Object sender, BEventArgs e ) {
-            if ( menuVisualControlTrack.Checked ) {
+            if ( menuVisualControlTrack.isSelected() ) {
                 splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
 #if DEBUG
                 PortUtil.println( "FormMain#trackSelector_PreferredMinHeightChanged; splitContainer1.Panel2MinSize changed" );
@@ -7122,7 +7143,7 @@ namespace Boare.Cadencii {
         }
 
         private void trackSelector_SelectedTrackChanged( Object sender, int selected ) {
-            if ( menuVisualWaveform.Checked ) {
+            if ( menuVisualWaveform.isSelected() ) {
                 waveView.Clear();
                 String file = PortUtil.combinePath( AppManager.getTempWaveDir(), selected + ".wav" );
                 if ( PortUtil.isFileExists( file ) ) {
@@ -7218,7 +7239,7 @@ namespace Boare.Cadencii {
         }
 
         private void handlePositionQuantize( Object sender, BEventArgs e ) {
-            QuantizeMode qm = AppManager.editorConfig.PositionQuantize;
+            QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
             if ( sender == stripDDBtnQuantize04 || sender == cMenuPianoQuantize04 || sender == menuSettingPositionQuantize04 ) {
                 qm = QuantizeMode.p4;
             } else if ( sender == stripDDBtnQuantize08 || sender == cMenuPianoQuantize08 || sender == menuSettingPositionQuantize08 ) {
@@ -7234,45 +7255,45 @@ namespace Boare.Cadencii {
             } else if ( sender == stripDDBtnQuantizeOff || sender == cMenuPianoQuantizeOff || sender == menuSettingPositionQuantizeOff ) {
                 qm = QuantizeMode.off;
             }
-            AppManager.editorConfig.PositionQuantize = qm;
+            AppManager.editorConfig.setPositionQuantize( qm );
             refreshScreen();
         }
 
         private void h_positionQuantizeTriplet( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.PositionQuantizeTriplet = !AppManager.editorConfig.PositionQuantizeTriplet;
+            AppManager.editorConfig.setPositionQuantizeTriplet( !AppManager.editorConfig.isPositionQuantizeTriplet() );
             refreshScreen();
         }
 
         private void h_lengthQuantize04( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.LengthQuantize = QuantizeMode.p4;
+            AppManager.editorConfig.setLengthQuantize(QuantizeMode.p4 );
         }
 
         private void h_lengthQuantize08( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.LengthQuantize = QuantizeMode.p8;
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p8 );
         }
 
         private void h_lengthQuantize16( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.LengthQuantize = QuantizeMode.p16;
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p16 );
         }
 
         private void h_lengthQuantize32( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.LengthQuantize = QuantizeMode.p32;
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p32 );
         }
 
         private void h_lengthQuantize64( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.LengthQuantize = QuantizeMode.p64;
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p64 );
         }
 
         private void h_lengthQuantize128( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.LengthQuantize = QuantizeMode.p128;
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p128 );
         }
 
         private void h_lengthQuantizeOff( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.LengthQuantize = QuantizeMode.off;
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.off );
         }
 
         private void h_lengthQuantizeTriplet( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.LengthQuantizeTriplet = !AppManager.editorConfig.LengthQuantizeTriplet;
+            AppManager.editorConfig.setLengthQuantizeTriplet( !AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
 
         private void cMenuPianoGrid_Click( Object sender, BEventArgs e ) {
@@ -7522,7 +7543,12 @@ namespace Boare.Cadencii {
         }
 
         private void menuHiddenEditLyric_Click( Object sender, BEventArgs e ) {
-            if ( !AppManager.inputTextBox.Enabled && AppManager.getSelectedEventCount() > 0 ) {
+#if JAVA
+            boolean input_enabled = AppManager.inputTextBox.isVisible();
+#else
+            boolean input_enabled = AppManager.inputTextBox.Enabled;
+#endif
+            if ( !input_enabled && AppManager.getSelectedEventCount() > 0 ) {
                 VsqEvent original = AppManager.getLastSelectedEvent().original;
                 int clock = original.Clock;
                 int note = original.ID.Note;
@@ -7533,7 +7559,7 @@ namespace Boare.Cadencii {
                 showInputTextBox( original.ID.LyricHandle.L0.Phrase,
                                   original.ID.LyricHandle.L0.getPhoneticSymbol(),
                                   pos, m_last_symbol_edit_mode );
-            } else if ( AppManager.inputTextBox.Enabled ) {
+            } else if ( input_enabled ) {
                 TagLyricTextBox tltb = (TagLyricTextBox)AppManager.inputTextBox.getTag();
                 if ( tltb.isPhoneticSymbolEditMode() ) {
                     flipInputTextBoxMode();
@@ -7645,7 +7671,7 @@ namespace Boare.Cadencii {
             if ( e.KeyCode == System.Windows.Forms.Keys.Enter ) {
 #endif
                 CadenciiCommand run = new CadenciiCommand(
-                    VsqCommand.generateCommandTrackChangeName( AppManager.getSelected(), m_txtbox_track_name.Text ) );
+                    VsqCommand.generateCommandTrackChangeName( AppManager.getSelected(), m_txtbox_track_name.getText() ) );
                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
                 m_txtbox_track_name.Dispose();
@@ -8200,22 +8226,22 @@ namespace Boare.Cadencii {
                 stripDDBtnSpeed100.setSelected( true );
                 stripDDBtnSpeed050.setSelected( false );
                 stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.Text = "100";
+                stripDDBtnSpeedTextbox.setText( "100" );
             } else if ( AppManager.editorConfig.RealtimeInputSpeed == 0.5f ) {
                 stripDDBtnSpeed100.setSelected( false );
                 stripDDBtnSpeed050.setSelected( true );
                 stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.Text = "50";
+                stripDDBtnSpeedTextbox.setText( "50" );
             } else if ( AppManager.editorConfig.RealtimeInputSpeed == 1.0f / 3.0f ) {
                 stripDDBtnSpeed100.setSelected( false );
                 stripDDBtnSpeed050.setSelected( false );
                 stripDDBtnSpeed033.setSelected( true );
-                stripDDBtnSpeedTextbox.Text = "33.333";
+                stripDDBtnSpeedTextbox.setText( "33.333" );
             } else {
                 stripDDBtnSpeed100.setSelected( false );
                 stripDDBtnSpeed050.setSelected( false );
                 stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.Text = (AppManager.editorConfig.RealtimeInputSpeed * 100.0f).ToString();
+                stripDDBtnSpeedTextbox.setText( (AppManager.editorConfig.RealtimeInputSpeed * 100.0f).ToString() );
             }
         }
 
@@ -8245,7 +8271,7 @@ namespace Boare.Cadencii {
 #endif
                 float v;
                 try {
-                    v = PortUtil.parseFloat( stripDDBtnSpeedTextbox.Text );
+                    v = PortUtil.parseFloat( stripDDBtnSpeedTextbox.getText() );
                     changeRealtimeInputSpeed( v / 100.0f );
                     AppManager.editorConfig.RealtimeInputSpeed = v / 100.0f;
                     stripDDBtnSpeed.HideDropDown();
@@ -8271,16 +8297,16 @@ namespace Boare.Cadencii {
         /// stripDDBtnSpeedの表示状態を更新します
         /// </summary>
         private void updateStripDDBtnSpeed() {
-            stripDDBtnSpeed.Text = _( "Speed" ) + " " + (AppManager.editorConfig.RealtimeInputSpeed * 100) + "%";
+            stripDDBtnSpeed.setText( _( "Speed" ) + " " + (AppManager.editorConfig.RealtimeInputSpeed * 100) + "%" );
         }
 
         private void menuSetting_DropDownOpening( Object sender, BEventArgs e ) {
-            menuSettingMidi.Enabled = AppManager.getEditMode() != EditMode.REALTIME;
+            menuSettingMidi.setEnabled( AppManager.getEditMode() != EditMode.REALTIME );
         }
 
         private void menuVisualProperty_Click( Object sender, BEventArgs e ) {
 #if ENABLE_PROPERTY
-            if ( menuVisualProperty.Checked ) {
+            if ( menuVisualProperty.isSelected() ) {
                 if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
                     updatePropertyPanelState( PanelState.Docked );
                 } else {
@@ -8308,7 +8334,7 @@ namespace Boare.Cadencii {
         }
 
         private void menuVisualOverview_CheckedChanged( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.OverviewEnabled = menuVisualOverview.Checked;
+            AppManager.editorConfig.OverviewEnabled = menuVisualOverview.isSelected();
             updateLayout();
         }
 
@@ -8337,7 +8363,7 @@ namespace Boare.Cadencii {
 
         private int getOverviewStartToDrawX( int mouse_x ) {
             float clock = mouse_x / m_overview_px_per_clock + m_overview_start_to_draw_clock;
-            int clock_at_left = (int)(clock - (pictPianoRoll.Width - AppManager.keyWidth) / AppManager.scaleX / 2);
+            int clock_at_left = (int)(clock - (pictPianoRoll.getWidth() - AppManager.keyWidth) / AppManager.scaleX / 2);
             return (int)(clock_at_left * AppManager.scaleX);
         }
 
@@ -8365,7 +8391,7 @@ namespace Boare.Cadencii {
 
         private void pictOverview_MouseUp( Object sender, BMouseEventArgs e ) {
             if ( m_overview_mouse_down_mode == OverviewMouseDownMode.LEFT ) {
-                AppManager.startToDrawX = (int)(hScroll.Value * AppManager.scaleX);
+                AppManager.startToDrawX = (int)(hScroll.getValue() * AppManager.scaleX);
             }
             m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
             refreshScreen();
@@ -8401,7 +8427,7 @@ namespace Boare.Cadencii {
             g.setStroke( new BasicStroke() );
             //}
             int current_start = AppManager.clockFromXCoord( AppManager.keyWidth );
-            int current_end = AppManager.clockFromXCoord( pictPianoRoll.Width );
+            int current_end = AppManager.clockFromXCoord( pictPianoRoll.getWidth() );
             int x_start = getOverviewXCoordFromClock( current_start );
             int x_end = getOverviewXCoordFromClock( current_end );
 
@@ -8448,10 +8474,10 @@ namespace Boare.Cadencii {
             g.setClip( null );
 
             // 移動中している最中に，移動開始直前の部分を影付で表示する
-            int act_start_to_draw_x = (int)(hScroll.Value * AppManager.scaleX);
+            int act_start_to_draw_x = (int)(hScroll.getValue() * AppManager.scaleX);
             if ( act_start_to_draw_x != AppManager.startToDrawX ) {
                 int act_start_clock = AppManager.clockFromXCoord( AppManager.keyWidth - AppManager.startToDrawX + act_start_to_draw_x );
-                int act_end_clock = AppManager.clockFromXCoord( pictPianoRoll.Width - AppManager.startToDrawX + act_start_to_draw_x );
+                int act_end_clock = AppManager.clockFromXCoord( pictPianoRoll.getWidth() - AppManager.startToDrawX + act_start_to_draw_x );
                 int act_start_x = getOverviewXCoordFromClock( act_start_clock );
                 int act_end_x = getOverviewXCoordFromClock( act_end_clock );
                 Rectangle rcm = new Rectangle( act_start_x, 0, act_end_x - act_start_x, height );
@@ -8493,12 +8519,12 @@ namespace Boare.Cadencii {
             m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
             int draft_stdx = getOverviewStartToDrawX( e.X );
             int draft = (int)(draft_stdx / AppManager.scaleX);
-            if ( draft < hScroll.Minimum ) {
-                draft = hScroll.Minimum;
-            } else if ( hScroll.Maximum < draft ) {
-                draft = hScroll.Maximum;
+            if ( draft < hScroll.getMinimum() ) {
+                draft = hScroll.getMinimum();
+            } else if ( hScroll.getMaximum() < draft ) {
+                draft = hScroll.getMaximum();
             }
-            hScroll.Value = draft;
+            hScroll.setValue( draft );
             refreshScreen();
         }
 
@@ -8654,7 +8680,7 @@ namespace Boare.Cadencii {
             BMenuItem menu_add = new BMenuItem();
             menu_add.setText( _( "Add" ) );
 #if JAVA
-            menu_add.clickEvent.add( this, "handleBgmAdd_Click" ) );
+            menu_add.clickEvent.add( new BEventHandler( this, "handleBgmAdd_Click" ) );
 #else
             menu_add.Click += new EventHandler( handleBgmAdd_Click );
 #endif
@@ -8732,7 +8758,7 @@ namespace Boare.Cadencii {
             for ( int i = 0; i < count; i++ ) {
                 if ( i == index ) {
                     BgmFile item = (BgmFile)AppManager.getBgm( i ).clone();
-                    item.startAfterPremeasure = parent.Checked;
+                    item.startAfterPremeasure = parent.isSelected();
                     list.add( item );
                 } else {
                     list.add( AppManager.getBgm( i ) );
@@ -8802,26 +8828,26 @@ namespace Boare.Cadencii {
         private void updatePropertyPanelState( PanelState state ) {
             if ( state == PanelState.Docked ) {
                 m_property_panel_container.Add( AppManager.propertyPanel );
-                AppManager.propertyWindow.Visible = false;
+                AppManager.propertyWindow.setVisible( false );
                 menuVisualProperty.setSelected( true );
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
                 splitContainerProperty.IsSplitterFixed = false;
                 splitContainerProperty.Panel1MinSize = _PROPERTY_DOCK_MIN_WIDTH;
-                splitContainerProperty.SplitterDistance = AppManager.editorConfig.PropertyWindowStatus.DockWidth;
+                splitContainerProperty.setDividerLocation( AppManager.editorConfig.PropertyWindowStatus.DockWidth );
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
                 AppManager.propertyWindow.setExtendedState( BForm.ICONIFIED );
             } else if ( state == PanelState.Hidden ) {
-                AppManager.propertyWindow.Visible = false;
+                AppManager.propertyWindow.setVisible( false );
                 menuVisualProperty.setSelected( false );
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
-                    AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.SplitterDistance;
+                    AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
                 }
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Hidden;
                 splitContainerProperty.Panel1MinSize = 0;
-                splitContainerProperty.SplitterDistance = 0;
+                splitContainerProperty.setDividerLocation( 0 );
                 splitContainerProperty.IsSplitterFixed = true;
             } else if ( state == PanelState.Window ) {
-                AppManager.propertyWindow.Visible = true;
+                AppManager.propertyWindow.setVisible( true );
                 if ( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ) {
                     AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
                 }
@@ -8833,11 +8859,11 @@ namespace Boare.Cadencii {
                 normalizeFormLocation( AppManager.propertyWindow );
                 menuVisualProperty.setSelected( true );
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
-                    AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.SplitterDistance;
+                    AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
                 }
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Window;
                 splitContainerProperty.Panel1MinSize = 0;
-                splitContainerProperty.SplitterDistance = 0;
+                splitContainerProperty.setDividerLocation( 0 );
                 splitContainerProperty.IsSplitterFixed = true;
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Normal;
             }
@@ -9017,6 +9043,7 @@ namespace Boare.Cadencii {
         }
 
         private void updateLayout() {
+#if !JAVA
             int width = panel1.Width;
             int height = panel1.Height;
 
@@ -9079,36 +9106,37 @@ namespace Boare.Cadencii {
             // splitContainer1.Panel2
             //trackSelector.Width = splitContainer1.Panel2.Width - _SCROLL_WIDTH;
             //trackSelector.Height = splitContainer1.Panel2.Height;
+#endif
         }
 
         public void updateRendererMenu() {
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_DSB2 ) ) {
-                cMenuTrackTabRendererVOCALOID1.Image = Resources.get_slash();
-                menuTrackRendererVOCALOID1.Image = Resources.get_slash();
+                cMenuTrackTabRendererVOCALOID1.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererVOCALOID1.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
-                cMenuTrackTabRendererVOCALOID1.Image = null;
-                menuTrackRendererVOCALOID1.Image = null;
+                cMenuTrackTabRendererVOCALOID1.setIcon( null );
+                menuTrackRendererVOCALOID1.setIcon( null );
             }
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_DSB3 ) ) {
-                cMenuTrackTabRendererVOCALOID2.Image = Resources.get_slash();
-                menuTrackRendererVOCALOID2.Image = Resources.get_slash();
+                cMenuTrackTabRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
-                cMenuTrackTabRendererVOCALOID2.Image = null;
-                menuTrackRendererVOCALOID2.Image = null;
+                cMenuTrackTabRendererVOCALOID2.setIcon( null );
+                menuTrackRendererVOCALOID2.setIcon( null );
             }
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_UTU0 ) ) {
-                cMenuTrackTabRendererUtau.Image = Resources.get_slash();
-                menuTrackRendererUtau.Image = Resources.get_slash();
+                cMenuTrackTabRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
-                cMenuTrackTabRendererUtau.Image = null;
-                menuTrackRendererUtau.Image = null;
+                cMenuTrackTabRendererUtau.setIcon( null );
+                menuTrackRendererUtau.setIcon( null );
             }
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_STR0 ) ) {
-                cMenuTrackTabRendererStraight.Image = Resources.get_slash();
-                menuTrackRendererStraight.Image = Resources.get_slash();
+                cMenuTrackTabRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
-                cMenuTrackTabRendererStraight.Image = null;
-                menuTrackRendererStraight.Image = null;
+                cMenuTrackTabRendererStraight.setIcon( null );
+                menuTrackRendererStraight.setIcon( null );
             }
         }
 
@@ -9455,18 +9483,18 @@ namespace Boare.Cadencii {
                                        (AppManager.getSelectedTimesigCount() == 0) &&
                                        (AppManager.getSelectedPointIDCount() == 0);
 
-            cMenuTrackSelectorCopy.Enabled = AppManager.getSelectedPointIDCount() > 0;
-            cMenuTrackSelectorCut.Enabled = AppManager.getSelectedPointIDCount() > 0;
-            cMenuTrackSelectorDeleteBezier.Enabled = (AppManager.isCurveMode() && AppManager.getLastSelectedBezier() != null);
-            cMenuTrackSelectorDelete.Enabled = AppManager.getSelectedPointIDCount() > 0; //todo: このへん。右クリック位置にベジエ制御点などがあった場合eneble=trueにする
+            cMenuTrackSelectorCopy.setEnabled( AppManager.getSelectedPointIDCount() > 0 );
+            cMenuTrackSelectorCut.setEnabled( AppManager.getSelectedPointIDCount() > 0 );
+            cMenuTrackSelectorDeleteBezier.setEnabled( (AppManager.isCurveMode() && AppManager.getLastSelectedBezier() != null) );
+            cMenuTrackSelectorDelete.setEnabled( AppManager.getSelectedPointIDCount() > 0 ); //todo: このへん。右クリック位置にベジエ制御点などがあった場合eneble=trueにする
 
-            cMenuPianoCopy.Enabled = !selected_is_null;
-            cMenuPianoCut.Enabled = !selected_is_null;
-            cMenuPianoDelete.Enabled = !selected_is_null;
+            cMenuPianoCopy.setEnabled( !selected_is_null );
+            cMenuPianoCut.setEnabled( !selected_is_null );
+            cMenuPianoDelete.setEnabled( !selected_is_null );
 
-            menuEditCopy.Enabled = !selected_is_null;
-            menuEditCut.Enabled = !selected_is_null;
-            menuEditDelete.Enabled = !selected_is_null;
+            menuEditCopy.setEnabled( !selected_is_null );
+            menuEditCut.setEnabled( !selected_is_null );
+            menuEditDelete.setEnabled( !selected_is_null );
 
             ClipboardEntry ce = AppManager.getCopiedItems();
             int copy_started_clock = ce.copyStartedClock;
@@ -9497,9 +9525,9 @@ namespace Boare.Cadencii {
                 // 複数種類のカーブがコピーされている場合→そのままペーストすればOK
                 enabled = true;
             }
-            cMenuTrackSelectorPaste.Enabled = enabled;
-            cMenuPianoPaste.Enabled = enabled;
-            menuEditPaste.Enabled = enabled;
+            cMenuTrackSelectorPaste.setEnabled( enabled );
+            cMenuPianoPaste.setEnabled( enabled );
+            menuEditPaste.setEnabled( enabled );
 
             /*int copy_started_clock;
             boolean copied_is_null = (AppManager.GetCopiedEvent().Count == 0) &&
@@ -9507,18 +9535,18 @@ namespace Boare.Cadencii {
                                   (AppManager.GetCopiedTimesig( out copy_started_clock ).Count == 0) &&
                                   (AppManager.GetCopiedCurve( out copy_started_clock ).Count == 0) &&
                                   (AppManager.GetCopiedBezier( out copy_started_clock ).Count == 0);
-            menuEditCut.Enabled = !selected_is_null;
-            menuEditCopy.Enabled = !selected_is_null;
-            menuEditDelete.Enabled = !selected_is_null;
-            //stripBtnCopy.Enabled = !selected_is_null;
-            //stripBtnCut.Enabled = !selected_is_null;
+            menuEditCut.isEnabled() = !selected_is_null;
+            menuEditCopy.isEnabled() = !selected_is_null;
+            menuEditDelete.isEnabled() = !selected_is_null;
+            //stripBtnCopy.isEnabled() = !selected_is_null;
+            //stripBtnCut.isEnabled() = !selected_is_null;
 
             if ( AppManager.GetCopiedEvent().Count != 0 ) {
-                menuEditPaste.Enabled = (AppManager.CurrentClock >= AppManager.VsqFile.getPreMeasureClocks());
-                //stripBtnPaste.Enabled = (AppManager.CurrentClock >= AppManager.VsqFile.getPreMeasureClocks());
+                menuEditPaste.isEnabled() = (AppManager.CurrentClock >= AppManager.VsqFile.getPreMeasureClocks());
+                //stripBtnPaste.isEnabled() = (AppManager.CurrentClock >= AppManager.VsqFile.getPreMeasureClocks());
             } else {
-                menuEditPaste.Enabled = !copied_is_null;
-                //stripBtnPaste.Enabled = !copied_is_null;
+                menuEditPaste.isEnabled() = !copied_is_null;
+                //stripBtnPaste.isEnabled() = !copied_is_null;
             }*/
         }
 
@@ -9585,23 +9613,23 @@ namespace Boare.Cadencii {
         }
 
         /// <summary>
-        /// menuVisualWaveform.Checkedの値をもとに、splitterContainer2の表示状態を更新します
+        /// menuVisualWaveform.isSelected()の値をもとに、splitterContainer2の表示状態を更新します
         /// </summary>
         private void updateSplitContainer2Size() {
-            if ( menuVisualWaveform.Checked ) {
+            if ( menuVisualWaveform.isSelected() ) {
                 splitContainer2.Panel2MinSize = _SPL2_PANEL2_MIN_HEIGHT;
                 splitContainer2.IsSplitterFixed = false;
                 splitContainer2.SplitterWidth = _SPL_SPLITTER_WIDTH;
                 if ( m_last_splitcontainer2_split_distance <= 0 || m_last_splitcontainer2_split_distance > splitContainer2.Height ) {
-                    splitContainer2.SplitterDistance = (int)(splitContainer2.Height * 0.9);
+                    splitContainer2.setDividerLocation( (int)(splitContainer2.Height * 0.9) );
                 } else {
-                    splitContainer2.SplitterDistance = m_last_splitcontainer2_split_distance;
+                    splitContainer2.setDividerLocation( m_last_splitcontainer2_split_distance );
                 }
             } else {
-                m_last_splitcontainer2_split_distance = splitContainer2.SplitterDistance;
+                m_last_splitcontainer2_split_distance = splitContainer2.getDividerLocation();
                 splitContainer2.Panel2MinSize = 0;
                 splitContainer2.SplitterWidth = 0;
-                splitContainer2.SplitterDistance = splitContainer2.Height;
+                splitContainer2.setDividerLocation( splitContainer2.Height );
                 splitContainer2.IsSplitterFixed = true;
             }
         }
@@ -9704,7 +9732,11 @@ namespace Boare.Cadencii {
         /// 現在のAppManager.inputTextBoxの状態を元に、歌詞の変更を反映させるコマンドを実行します
         /// </summary>
         private void executeLyricChangeCommand() {
+#if JAVA
+            if ( !AppManager.inputTextBox.isVisible() ) {
+#else
             if ( !AppManager.inputTextBox.Enabled ) {
+#endif
                 return;
             }
             if ( AppManager.inputTextBox.IsDisposed ) {
@@ -9719,17 +9751,17 @@ namespace Boare.Cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "    original_phase,symbol=" + original_phrase + "," + original_symbol );
             AppManager.debugWriteLine( "    phonetic_symbol_edit_mode=" + phonetic_symbol_edit_mode );
-            AppManager.debugWriteLine( "    AppManager.inputTextBox.Text=" + AppManager.inputTextBox.Text );
+            AppManager.debugWriteLine( "    AppManager.inputTextBox.setText(=" + AppManager.inputTextBox.getText() );
 #endif
             String phrase;
             ByRef<String> phonetic_symbol = new ByRef<String>( "" );
-            phrase = AppManager.inputTextBox.Text;
+            phrase = AppManager.inputTextBox.getText();
             if ( !phonetic_symbol_edit_mode ) {
                 if ( AppManager.editorConfig.SelfDeRomanization ) {
                     phrase = KanaDeRomanization.Attach( phrase );
                 }
             }
-            if ( (phonetic_symbol_edit_mode && AppManager.inputTextBox.Text != original_symbol) ||
+            if ( (phonetic_symbol_edit_mode && AppManager.inputTextBox.getText() != original_symbol) ||
                  (!phonetic_symbol_edit_mode && phrase != original_phrase) ) {
                 TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
                 if ( phonetic_symbol_edit_mode ) {
@@ -9801,7 +9833,7 @@ namespace Boare.Cadencii {
                 if ( init_success ) {
                     m_game_mode = GameControlMode.NORMAL;
                     stripLblGameCtrlMode.Image = null;
-                    stripLblGameCtrlMode.Text = m_game_mode.ToString();
+                    stripLblGameCtrlMode.setText( m_game_mode.ToString() );
                     m_timer = new BTimer();
                     m_timer.Interval = 10;
                     m_timer.Tick += new EventHandler( m_timer_Tick );
@@ -9917,16 +9949,16 @@ namespace Boare.Cadencii {
         private void updateGameControlerStatus( Object sender, BEventArgs e ) {
 #if !JAVA
             if ( m_game_mode == GameControlMode.DISABLED ) {
-                stripLblGameCtrlMode.Text = _( "Disabled" );
+                stripLblGameCtrlMode.setText( _( "Disabled" ) );
                 stripLblGameCtrlMode.Image = (System.Drawing.Bitmap)Resources.get_slash().Clone();
             } else if ( m_game_mode == GameControlMode.CURSOR ) {
-                stripLblGameCtrlMode.Text = _( "Cursor" );
+                stripLblGameCtrlMode.setText( _( "Cursor" ) );
                 stripLblGameCtrlMode.Image = null;
             } else if ( m_game_mode == GameControlMode.KEYBOARD ) {
-                stripLblGameCtrlMode.Text = _( "Keyboard" );
+                stripLblGameCtrlMode.setText( _( "Keyboard" ) );
                 stripLblGameCtrlMode.Image = (System.Drawing.Bitmap)Resources.get_piano().Clone();
             } else if ( m_game_mode == GameControlMode.NORMAL ) {
-                stripLblGameCtrlMode.Text = _( "Normal" );
+                stripLblGameCtrlMode.setText( _( "Normal" ) );
                 stripLblGameCtrlMode.Image = null;
             }
 #endif
@@ -9937,14 +9969,14 @@ namespace Boare.Cadencii {
             int midiport = AppManager.editorConfig.MidiInPort.PortNumber;
             bocoree.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
             if ( midiport < 0 || devices.Length <= 0 ) {
-                stripLblMidiIn.Text = _( "Disabled" );
+                stripLblMidiIn.setText( _( "Disabled" );
                 stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_slash().Clone();
             } else {
                 if ( midiport >= devices.Length ) {
                     midiport = 0;
                     AppManager.editorConfig.MidiInPort.PortNumber = midiport;
                 }
-                stripLblMidiIn.Text = devices[midiport].szPname;
+                stripLblMidiIn.setText( devices[midiport].szPname;
                 stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_piano().Clone();
             }
         }
@@ -10077,23 +10109,23 @@ namespace Boare.Cadencii {
         public void ensureVisible( int clock ) {
             // カーソルが画面内にあるかどうか検査
             int clock_left = AppManager.clockFromXCoord( AppManager.keyWidth );
-            int clock_right = AppManager.clockFromXCoord( pictPianoRoll.Width );
+            int clock_right = AppManager.clockFromXCoord( pictPianoRoll.getWidth() );
             int uwidth = clock_right - clock_left;
             if ( clock < clock_left || clock_right < clock ) {
                 int cl_new_center = (clock / uwidth) * uwidth + uwidth / 2;
-                float f_draft = cl_new_center - (pictPianoRoll.Width / 2 + 34 - 70) / AppManager.scaleX;
+                float f_draft = cl_new_center - (pictPianoRoll.getWidth() / 2 + 34 - 70) / AppManager.scaleX;
                 if ( f_draft < 0f ) {
                     f_draft = 0;
                 }
                 int draft = (int)(f_draft);
-                if ( draft < hScroll.Minimum ) {
-                    draft = hScroll.Minimum;
-                } else if ( hScroll.Maximum < draft ) {
-                    draft = hScroll.Maximum;
+                if ( draft < hScroll.getMinimum() ) {
+                    draft = hScroll.getMinimum();
+                } else if ( hScroll.getMaximum() < draft ) {
+                    draft = hScroll.getMaximum();
                 }
-                if ( hScroll.Value != draft ) {
+                if ( hScroll.getValue() != draft ) {
                     AppManager.drawStartIndex[AppManager.getSelected() - 1] = 0;
-                    hScroll.Value = draft;
+                    hScroll.setValue( draft );
                 }
             }
         }
@@ -10106,7 +10138,12 @@ namespace Boare.Cadencii {
         }
 
         private void ProcessSpecialShortcutKey( BPreviewKeyDownEventArgs e ) {
+#if JAVA
+            if ( !AppManager.inputTextBox.isVisible() ) {
+#else
             if ( !AppManager.inputTextBox.Enabled ) {
+#endif
+
 #if JAVA
                 if ( e.KeyValue == KeyEvent.VK_RETURN ) {
 #else
@@ -10161,102 +10198,102 @@ namespace Boare.Cadencii {
             /*if ( AppManager.EditorConfig.Platform == Platform.Macintosh ) {
                 if ( AppManager.EditorConfig.CommandKeyAsControl ) {
                     #region menuStripMain
-                    if ( e.Alt && e.KeyCode == Keys.N && menuFileNew.Enabled ) {
+                    if ( e.Alt && e.KeyCode == Keys.N && menuFileNew.isEnabled() ) {
                         this.menuFileNew_Click( menuFileNew, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.O && menuFileOpen.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.O && menuFileOpen.isEnabled() ) {
                         this.menuFileOpen_Click( menuFileOpen, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.S && menuFileSave.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.S && menuFileSave.isEnabled() ) {
                         this.menuFileSave_Click( menuFileSave, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.Q && menuFileQuit.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.Q && menuFileQuit.isEnabled() ) {
                         this.menuFileQuit_Click( menuFileQuit, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.Z && menuEditUndo.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.Z && menuEditUndo.isEnabled() ) {
                         this.menuEditUndo_Click( menuEditUndo, null );
                         return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.Enabled ) {
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.isEnabled() ) {
                         this.menuEditRedo_Click( this.menuEditRedo, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.X && this.menuEditCut.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.X && this.menuEditCut.isEnabled() ) {
                         this.menuEditCut_Click( this.menuEditCut, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.C && this.menuEditCopy.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.C && this.menuEditCopy.isEnabled() ) {
                         this.menuEditCopy_Click( this.menuEditCopy, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuEditPaste.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuEditPaste.isEnabled() ) {
                         this.menuEditPaste_Click( this.menuEditPaste, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.A && this.menuEditSelectAll.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.A && this.menuEditSelectAll.isEnabled() ) {
                         this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
                         return;
-                    } else if ( e.Alt && e.Shift && this.menuEditSelectAllEvents.Enabled ) {
+                    } else if ( e.Alt && e.Shift && this.menuEditSelectAllEvents.isEnabled() ) {
                         this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuHiddenEditPaste.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
                         this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
                         this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
                         this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
                         return;
-                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && e.Shift && this.menuHiddenVisualForwardParameter.Enabled ) {
+                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && e.Shift && this.menuHiddenVisualForwardParameter.isEnabled() ) {
                         this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
                         return;
-                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && e.Shift && this.menuHiddenVisualBackwardParameter.Enabled ) {
+                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && e.Shift && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
                         this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
                         return;
-                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && this.menuHiddenTrackNext.Enabled ) {
+                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && this.menuHiddenTrackNext.isEnabled() ) {
                         this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
                         return;
-                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && this.menuHiddenTrackBack.Enabled ) {
+                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && this.menuHiddenTrackBack.isEnabled() ) {
                         this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
                         return;
                     }
                     #endregion
 
                     #region cMenuPiano
-                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuPianoUndo.Enabled ) {
+                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuPianoUndo.isEnabled() ) {
                         this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
                         return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.Enabled ) {
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
                         this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuPianoCut.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuPianoCut.isEnabled() ) {
                         this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuPianoCopy.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
                         this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.A && cMenuPianoSelectAll.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
                         this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
                         return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.Enabled ) {
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
                         this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
                         return;
                     }
                     #endregion
 
                     #region cMenuTrackSelector
-                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.Enabled ) {
+                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
                         this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
                         return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.Enabled ) {
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
                         this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
                         this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
                         this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
                         return;
-                    } else if ( e.Alt && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.Enabled ) {
+                    } else if ( e.Alt && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
                         this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
                         return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.Enabled ) {
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
                         this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
                         return;
                     }
@@ -10276,102 +10313,102 @@ namespace Boare.Cadencii {
                     boolean XButton1 = (e.KeyCode & Keys.XButton1) == Keys.XButton1;
 
                     #region menuStripMain
-                    if ( RButton && Clear && (e.KeyCode & Keys.N) == Keys.N && menuFileNew.Enabled ) {
+                    if ( RButton && Clear && (e.KeyCode & Keys.N) == Keys.N && menuFileNew.isEnabled() ) {
                         this.menuFileNew_Click( menuFileNew, null );
                         return;
-                    } else if ( RButton && Return && (e.KeyCode & Keys.O) == Keys.O && menuFileOpen.Enabled ) {
+                    } else if ( RButton && Return && (e.KeyCode & Keys.O) == Keys.O && menuFileOpen.isEnabled() ) {
                         this.menuFileOpen_Click( menuFileOpen, null );
                         return;
-                    } else if ( Pause && (e.KeyCode & Keys.S) == Keys.S && menuFileSave.Enabled ) {
+                    } else if ( Pause && (e.KeyCode & Keys.S) == Keys.S && menuFileSave.isEnabled() ) {
                         this.menuFileSave_Click( menuFileSave, null );
                         return;
-                    } else if ( ControlKey && (e.KeyCode & Keys.Q) == Keys.Q && menuFileQuit.Enabled ) {
+                    } else if ( ControlKey && (e.KeyCode & Keys.Q) == Keys.Q && menuFileQuit.isEnabled() ) {
                         this.menuFileQuit_Click( menuFileQuit, null );
                         return;
-                    } else if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && menuEditUndo.Enabled ) {
+                    } else if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && menuEditUndo.isEnabled() ) {
                         this.menuEditUndo_Click( menuEditUndo, null );
                         return;
-                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && menuEditRedo.Enabled ) {
+                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && menuEditRedo.isEnabled() ) {
                         this.menuEditRedo_Click( this.menuEditRedo, null );
                         return;
-                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.menuEditCut.Enabled ) {
+                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.menuEditCut.isEnabled() ) {
                         this.menuEditCut_Click( this.menuEditCut, null );
                         return;
-                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.menuEditCopy.Enabled ) {
+                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.menuEditCopy.isEnabled() ) {
                         this.menuEditCopy_Click( this.menuEditCopy, null );
                         return;
-                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuEditPaste.Enabled ) {
+                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuEditPaste.isEnabled() ) {
                         this.menuEditPaste_Click( this.menuEditPaste, null );
                         return;
-                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAll.Enabled ) {
+                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAll.isEnabled() ) {
                         this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
                         return;
-                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAllEvents.Enabled ) {
+                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAllEvents.isEnabled() ) {
                         this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
                         return;
-                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuHiddenEditPaste.Enabled ) {
+                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
                         this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
                         return;
-                    } else if ( JunjaMode && (e.KeyCode & Keys.W) == Keys.W && this.menuHiddenEditFlipToolPointerPencil.Enabled ) {
+                    } else if ( JunjaMode && (e.KeyCode & Keys.W) == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
                         this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
                         return;
-                    } else if ( XButton1 && (e.KeyCode & Keys.E) == Keys.E && this.menuHiddenEditFlipToolPointerEraser.Enabled ) {
+                    } else if ( XButton1 && (e.KeyCode & Keys.E) == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
                         this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
                         return;
-                    } else if ( Clear && e.Control && e.Shift && this.menuHiddenVisualForwardParameter.Enabled ) {
+                    } else if ( Clear && e.Control && e.Shift && this.menuHiddenVisualForwardParameter.isEnabled() ) {
                         this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
                         return;
-                    } else if ( LButton && LineFeed && e.Control && e.Shift && this.menuHiddenVisualBackwardParameter.Enabled ) {
+                    } else if ( LButton && LineFeed && e.Control && e.Shift && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
                         this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
                         return;
-                    } else if ( Clear && e.Control && this.menuHiddenTrackNext.Enabled ) {
+                    } else if ( Clear && e.Control && this.menuHiddenTrackNext.isEnabled() ) {
                         this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
                         return;
-                    } else if ( LButton && LineFeed && e.Control && this.menuHiddenTrackBack.Enabled ) {
+                    } else if ( LButton && LineFeed && e.Control && this.menuHiddenTrackBack.isEnabled() ) {
                         this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
                         return;
                     }
                     #endregion
 
                     #region cMenuPiano
-                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuPianoUndo.Enabled ) {
+                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuPianoUndo.isEnabled() ) {
                         this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
                         return;
-                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuPianoRedo.Enabled ) {
+                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
                         this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
                         return;
-                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuPianoCut.Enabled ) {
+                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuPianoCut.isEnabled() ) {
                         this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
                         return;
-                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuPianoCopy.Enabled ) {
+                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
                         this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
                         return;
-                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAll.Enabled ) {
+                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
                         this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
                         return;
-                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAllEvents.Enabled ) {
+                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
                         this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
                         return;
                     }
                     #endregion
 
                     #region cMenuTrackSelector
-                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuTrackSelectorUndo.Enabled ) {
+                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
                         this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
                         return;
-                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuTrackSelectorRedo.Enabled ) {
+                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
                         this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
                         return;
-                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuTrackSelectorCut.Enabled ) {
+                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
                         this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
                         return;
-                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuTrackSelectorCopy.Enabled ) {
+                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
                         this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
                         return;
-                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.cMenuTrackSelectorPaste.Enabled ) {
+                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
                         this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
                         return;
-                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.cMenuTrackSelectorSelectAll.Enabled ) {
+                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
                         this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
                         return;
                     }
@@ -10379,102 +10416,102 @@ namespace Boare.Cadencii {
                 }
             } else {
                 #region menuStripMain
-                if ( e.Control && e.KeyCode == Keys.N && menuFileNew.Enabled ) {
+                if ( e.Control && e.KeyCode == Keys.N && menuFileNew.isEnabled() ) {
                     this.menuFileNew_Click( menuFileNew, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.O && menuFileOpen.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.O && menuFileOpen.isEnabled() ) {
                     this.menuFileOpen_Click( menuFileOpen, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.S && menuFileSave.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.S && menuFileSave.isEnabled() ) {
                     this.menuFileSave_Click( menuFileSave, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.Q && menuFileQuit.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.Q && menuFileQuit.isEnabled() ) {
                     this.menuFileQuit_Click( menuFileQuit, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.Z && menuEditUndo.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.Z && menuEditUndo.isEnabled() ) {
                     this.menuEditUndo_Click( menuEditUndo, null );
                     return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.Enabled ) {
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.isEnabled() ) {
                     this.menuEditRedo_Click( this.menuEditRedo, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.X && this.menuEditCut.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.X && this.menuEditCut.isEnabled() ) {
                     this.menuEditCut_Click( this.menuEditCut, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.C && this.menuEditCopy.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.C && this.menuEditCopy.isEnabled() ) {
                     this.menuEditCopy_Click( this.menuEditCopy, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.V && this.menuEditPaste.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.V && this.menuEditPaste.isEnabled() ) {
                     this.menuEditPaste_Click( this.menuEditPaste, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.A && this.menuEditSelectAll.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.A && this.menuEditSelectAll.isEnabled() ) {
                     this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
                     return;
-                } else if ( e.Control && e.Shift && this.menuEditSelectAllEvents.Enabled ) {
+                } else if ( e.Control && e.Shift && this.menuEditSelectAllEvents.isEnabled() ) {
                     this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.V && this.menuHiddenEditPaste.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
                     this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
                     this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
                     this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
                     return;
-                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenVisualForwardParameter.Enabled ) {
+                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenVisualForwardParameter.isEnabled() ) {
                     this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
                     return;
-                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenVisualBackwardParameter.Enabled ) {
+                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
                     this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
                     return;
-                } else if ( e.Control && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenTrackNext.Enabled ) {
+                } else if ( e.Control && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenTrackNext.isEnabled() ) {
                     this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
                     return;
-                } else if ( e.Control && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenTrackBack.Enabled ) {
+                } else if ( e.Control && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenTrackBack.isEnabled() ) {
                     this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
                     return;
                 }
                 #endregion
 
                 #region cMenuPiano
-                if ( e.Control && e.KeyCode == Keys.Z && cMenuPianoUndo.Enabled ) {
+                if ( e.Control && e.KeyCode == Keys.Z && cMenuPianoUndo.isEnabled() ) {
                     this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
                     return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.Enabled ) {
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
                     this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuPianoCut.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuPianoCut.isEnabled() ) {
                     this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuPianoCopy.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
                     this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.A && cMenuPianoSelectAll.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
                     this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
                     return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.Enabled ) {
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
                     this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
                     return;
                 }
                 #endregion
 
                 #region cMenuTrackSelector
-                if ( e.Control && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.Enabled ) {
+                if ( e.Control && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
                     this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
                     return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.Enabled ) {
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
                     this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
                     this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
                     this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
                     return;
-                } else if ( e.Control && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.Enabled ) {
+                } else if ( e.Control && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
                     this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
                     return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.Enabled ) {
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
                     this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
                     return;
                 }
@@ -10486,17 +10523,17 @@ namespace Boare.Cadencii {
         private void setHScrollRange( int draft_length ) {
             int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
             draft_length += 240;
-            if ( draft_length > hScroll.Maximum ) {
-                hScroll.Maximum = draft_length;
+            if ( draft_length > hScroll.getMaximum() ) {
+                hScroll.setMaximum( draft_length );
             }
-            if ( pictPianoRoll.Width <= AppManager.keyWidth || hScroll.Width <= _ARROWS ) {
+            if ( pictPianoRoll.getWidth() <= AppManager.keyWidth || hScroll.Width <= _ARROWS ) {
                 return;
             }
-            int large_change = (int)((pictPianoRoll.Width - AppManager.keyWidth) / (float)AppManager.scaleX);
-            int box_width = (int)((hScroll.Width - _ARROWS) * (float)large_change / (float)(hScroll.Maximum + large_change));
+            int large_change = (int)((pictPianoRoll.getWidth() - AppManager.keyWidth) / (float)AppManager.scaleX);
+            int box_width = (int)((hScroll.Width - _ARROWS) * (float)large_change / (float)(hScroll.getMaximum() + large_change));
             if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
-                large_change = (int)((float)hScroll.Maximum * (float)box_width / (float)(hScroll.Width - _ARROWS - box_width));
+                large_change = (int)((float)hScroll.getMaximum() * (float)box_width / (float)(hScroll.Width - _ARROWS - box_width));
             }
             if ( large_change > 0 ) {
                 hScroll.LargeChange = large_change;
@@ -10505,14 +10542,14 @@ namespace Boare.Cadencii {
 
         private void setVScrollRange( int draft_length ) {
             int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
-            if ( draft_length > vScroll.Maximum ) {
-                vScroll.Maximum = draft_length;
+            if ( draft_length > vScroll.getMaximum() ) {
+                vScroll.setMaximum( draft_length );
             }
-            int large_change = (int)pictPianoRoll.Height;
-            int box_width = (int)((vScroll.Height - _ARROWS) * (float)large_change / (float)(vScroll.Maximum + large_change));
+            int large_change = (int)pictPianoRoll.getHeight();
+            int box_width = (int)((vScroll.getHeight() - _ARROWS) * (float)large_change / (float)(vScroll.getMaximum() + large_change));
             if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
-                large_change = (int)((float)vScroll.Maximum * (float)box_width / (float)(vScroll.Width - _ARROWS - box_width));
+                large_change = (int)((float)vScroll.getMaximum() * (float)box_width / (float)(vScroll.Width - _ARROWS - box_width));
             }
             if ( large_change > 0 ) {
                 vScroll.LargeChange = large_change;
@@ -10523,7 +10560,7 @@ namespace Boare.Cadencii {
             pictPianoRoll.Refresh();
             picturePositionIndicator.Refresh();
             trackSelector.Refresh();
-            if ( menuVisualWaveform.Checked ) {
+            if ( menuVisualWaveform.isSelected() ) {
                 waveView.Draw();
                 waveView.Refresh();
             }
@@ -10543,9 +10580,9 @@ namespace Boare.Cadencii {
         }
 
         public void flipMixerDialogVisible( boolean visible ) {
-            AppManager.mixerWindow.Visible = visible;
+            AppManager.mixerWindow.setVisible( visible );
             AppManager.editorConfig.MixerVisible = visible;
-            menuVisualMixer.Checked = visible;
+            menuVisualMixer.setSelected( visible );
         }
 
         /// <summary>
@@ -10657,12 +10694,12 @@ namespace Boare.Cadencii {
                 };
                 for ( int j = 0; j < work.Length; j++ ) {
                     ValuePair<String, BMenuItem[]> item = work[j];
-                    if ( dict.containsKey( item.Key ) ) {
-                        BKeys[] k = dict.get( item.Key );
+                    if ( dict.containsKey( item.getKey() ) ) {
+                        BKeys[] k = dict.get( item.getKey() );
                         String s = AppManager.getShortcutDisplayString( k );
                         if ( s != "" ) {
-                            for ( int i = 0; i < item.Value.Length; i++ ) {
-                                item.Value[i].ShortcutKeyDisplayString = s;
+                            for ( int i = 0; i < item.getValue().Length; i++ ) {
+                                item.getValue()[i].ShortcutKeyDisplayString = s;
                             }
                         }
                     }
@@ -10717,7 +10754,7 @@ namespace Boare.Cadencii {
             }
             int current = AppManager.getVsqFile().getBarCountFromClock( AppManager.getCurrentClock() ) + 1;
             int new_clock = AppManager.getVsqFile().getClockFromBarCount( current );
-            if ( new_clock <= hScroll.Maximum + (pictPianoRoll.Width - AppManager.keyWidth) / AppManager.scaleX ) {
+            if ( new_clock <= hScroll.getMaximum() + (pictPianoRoll.getWidth() - AppManager.keyWidth) / AppManager.scaleX ) {
                 AppManager.setCurrentClock( new_clock );
                 ensureCursorVisible();
                 AppManager.setPlaying( playing );
@@ -10941,186 +10978,186 @@ namespace Boare.Cadencii {
             stripLblGameCtrlMode.ToolTipText = _( "Game Controler" );
             this.Invoke( new BEventHandler( updateGameControlerStatus ) );
 
-            stripBtnPointer.Text = _( "Pointer" );
+            stripBtnPointer.setText( _( "Pointer" ) );
             stripBtnPointer.ToolTipText = _( "Pointer" );
-            stripBtnPencil.Text = _( "Pencil" );
+            stripBtnPencil.setText( _( "Pencil" ) );
             stripBtnPencil.ToolTipText = _( "Pencil" );
-            stripBtnLine.Text = _( "Line" );
+            stripBtnLine.setText( _( "Line" ) );
             stripBtnLine.ToolTipText = _( "Line" );
-            stripBtnEraser.Text = _( "Eraser" );
+            stripBtnEraser.setText( _( "Eraser" ) );
             stripBtnEraser.ToolTipText = _( "Eraser" );
-            stripBtnCurve.Text = _( "Curve" );
+            stripBtnCurve.setText( _( "Curve" ) );
             stripBtnCurve.ToolTipText = _( "Curve" );
-            stripBtnGrid.Text = _( "Grid" );
+            stripBtnGrid.setText( _( "Grid" ) );
             stripBtnGrid.ToolTipText = _( "Grid" );
 
             #region main menu
-            menuFile.Text = _( "File" ) + "(&F)";
-            menuFileNew.Text = _( "New" ) + "(&N)";
-            menuFileOpen.Text = _( "Open" ) + "(&O)";
-            menuFileOpenVsq.Text = _( "Open VSQ/Vocaloid Midi" ) + "(&V)";
-            menuFileOpenUst.Text = _( "Open UTAU Project File" ) + "(&U)";
-            menuFileSave.Text = _( "Save" ) + "(&S)";
-            menuFileSaveNamed.Text = _( "Save As" ) + "(&A)";
-            menuFileImport.Text = _( "Import" ) + "(&I)";
-            menuFileImportVsq.Text = _( "VSQ / Vocaloid Midi" );
-            menuFileExport.Text = _( "Export" ) + "(&E)";
-            menuFileRecent.Text = _( "Recent Files" ) + "(&R)";
-            menuFileQuit.Text = _( "Quit" ) + "(&Q)";
+            menuFile.setText( _( "File" ) + "(&F)" );
+            menuFileNew.setText( _( "New" ) + "(&N)" );
+            menuFileOpen.setText( _( "Open" ) + "(&O)" );
+            menuFileOpenVsq.setText( _( "Open VSQ/Vocaloid Midi" ) + "(&V)" );
+            menuFileOpenUst.setText( _( "Open UTAU Project File" ) + "(&U)" );
+            menuFileSave.setText( _( "Save" ) + "(&S)" );
+            menuFileSaveNamed.setText( _( "Save As" ) + "(&A)" );
+            menuFileImport.setText( _( "Import" ) + "(&I)" );
+            menuFileImportVsq.setText( _( "VSQ / Vocaloid Midi" ) );
+            menuFileExport.setText( _( "Export" ) + "(&E)" );
+            menuFileRecent.setText( _( "Recent Files" ) + "(&R)" );
+            menuFileQuit.setText( _( "Quit" ) + "(&Q)" );
 
-            menuEdit.Text = _( "Edit" ) + "(&E)";
-            menuEditUndo.Text = _( "Undo" ) + "(&U)";
-            menuEditRedo.Text = _( "Redo" ) + "(&R)";
-            menuEditCut.Text = _( "Cut" ) + "(&T)";
-            menuEditCopy.Text = _( "Copy" ) + "(&C)";
-            menuEditPaste.Text = _( "Paste" ) + "(&P)";
-            menuEditDelete.Text = _( "Delete" ) + "(&D)";
-            menuEditAutoNormalizeMode.Text = _( "Auto Normalize Mode" ) + "(&N)";
-            menuEditSelectAll.Text = _( "Select All" ) + "(&A)";
-            menuEditSelectAllEvents.Text = _( "Select All Events" ) + "(&E)";
+            menuEdit.setText( _( "Edit" ) + "(&E)" );
+            menuEditUndo.setText( _( "Undo" ) + "(&U)" );
+            menuEditRedo.setText( _( "Redo" ) + "(&R)" );
+            menuEditCut.setText( _( "Cut" ) + "(&T)" );
+            menuEditCopy.setText( _( "Copy" ) + "(&C)" );
+            menuEditPaste.setText( _( "Paste" ) + "(&P)" );
+            menuEditDelete.setText( _( "Delete" ) + "(&D)" );
+            menuEditAutoNormalizeMode.setText( _( "Auto Normalize Mode" ) + "(&N)" );
+            menuEditSelectAll.setText( _( "Select All" ) + "(&A)" );
+            menuEditSelectAllEvents.setText( _( "Select All Events" ) + "(&E)" );
 
-            menuVisual.Text = _( "View" ) + "(&V)";
-            menuVisualControlTrack.Text = _( "Control Track" ) + "(&C)";
-            menuVisualMixer.Text = _( "Mixer" ) + "(&X)";
-            menuVisualWaveform.Text = _( "Waveform" ) + "(&W)";
-            menuVisualProperty.Text = _( "Property Window" );
-            menuVisualOverview.Text = _( "Navigation" ) + "(&V)";
-            menuVisualGridline.Text = _( "Grid Line" ) + "(&G)";
-            menuVisualStartMarker.Text = _( "Start Marker" ) + "(&S)";
-            menuVisualEndMarker.Text = _( "End Marker" ) + "(&E)";
-            menuVisualLyrics.Text = _( "Lyrics/Phoneme" ) + "(&L)";
-            menuVisualNoteProperty.Text = _( "Note Expression/Vibrato" ) + "(&N)";
-            menuVisualPitchLine.Text = _( "Pitch Line" ) + "(&P)";
+            menuVisual.setText( _( "View" ) + "(&V)" );
+            menuVisualControlTrack.setText( _( "Control Track" ) + "(&C)" );
+            menuVisualMixer.setText( _( "Mixer" ) + "(&X)" );
+            menuVisualWaveform.setText( _( "Waveform" ) + "(&W)" );
+            menuVisualProperty.setText( _( "Property Window" ) );
+            menuVisualOverview.setText( _( "Navigation" ) + "(&V)" );
+            menuVisualGridline.setText( _( "Grid Line" ) + "(&G)" );
+            menuVisualStartMarker.setText( _( "Start Marker" ) + "(&S)" );
+            menuVisualEndMarker.setText( _( "End Marker" ) + "(&E)" );
+            menuVisualLyrics.setText( _( "Lyrics/Phoneme" ) + "(&L)" );
+            menuVisualNoteProperty.setText( _( "Note Expression/Vibrato" ) + "(&N)" );
+            menuVisualPitchLine.setText( _( "Pitch Line" ) + "(&P)" );
 
-            menuJob.Text = _( "Job" ) + "(&J)";
-            menuJobNormalize.Text = _( "Normalize Notes" ) + "(&N)";
-            menuJobInsertBar.Text = _( "Insert Bars" ) + "(&I)";
-            menuJobDeleteBar.Text = _( "Delete Bars" ) + "(&D)";
-            menuJobRandomize.Text = _( "Randomize" ) + "(&R)";
-            menuJobConnect.Text = _( "Connect Notes" ) + "(&C)";
-            menuJobLyric.Text = _( "Insert Lyrics" ) + "(&L)";
-            menuJobRewire.Text = _( "Import ReWire Host Tempo" ) + "(&T)";
-            menuJobRealTime.Text = _( "Start Realtime Input" );
-            menuJobReloadVsti.Text = _( "Reload VSTi" ) + "(&R)";
+            menuJob.setText( _( "Job" ) + "(&J)" );
+            menuJobNormalize.setText( _( "Normalize Notes" ) + "(&N)" );
+            menuJobInsertBar.setText( _( "Insert Bars" ) + "(&I)" );
+            menuJobDeleteBar.setText( _( "Delete Bars" ) + "(&D)" );
+            menuJobRandomize.setText( _( "Randomize" ) + "(&R)" );
+            menuJobConnect.setText( _( "Connect Notes" ) + "(&C)" );
+            menuJobLyric.setText( _( "Insert Lyrics" ) + "(&L)" );
+            menuJobRewire.setText( _( "Import ReWire Host Tempo" ) + "(&T)" );
+            menuJobRealTime.setText( _( "Start Realtime Input" ) );
+            menuJobReloadVsti.setText( _( "Reload VSTi" ) + "(&R)" );
 
-            menuTrack.Text = _( "Track" ) + "(&T)";
-            menuTrackOn.Text = _( "Track On" ) + "(&K)";
-            menuTrackAdd.Text = _( "Add Track" ) + "(&A)";
-            menuTrackCopy.Text = _( "Copy Track" ) + "(&C)";
-            menuTrackChangeName.Text = _( "Rename Track" ) + "(&R)";
-            menuTrackDelete.Text = _( "Delete Track" ) + "(&D)";
-            menuTrackRenderCurrent.Text = _( "Render Current Track" ) + "(&T)";
-            menuTrackRenderAll.Text = _( "Render All Tracks" ) + "(&S)";
-            menuTrackOverlay.Text = _( "Overlay" ) + "(&O)";
-            menuTrackRenderer.Text = _( "Renderer" );
+            menuTrack.setText( _( "Track" ) + "(&T)" );
+            menuTrackOn.setText( _( "Track On" ) + "(&K)" );
+            menuTrackAdd.setText( _( "Add Track" ) + "(&A)" );
+            menuTrackCopy.setText( _( "Copy Track" ) + "(&C)" );
+            menuTrackChangeName.setText( _( "Rename Track" ) + "(&R)" );
+            menuTrackDelete.setText( _( "Delete Track" ) + "(&D)" );
+            menuTrackRenderCurrent.setText( _( "Render Current Track" ) + "(&T)" );
+            menuTrackRenderAll.setText( _( "Render All Tracks" ) + "(&S)" );
+            menuTrackOverlay.setText( _( "Overlay" ) + "(&O)" );
+            menuTrackRenderer.setText( _( "Renderer" ) );
 
-            menuLyric.Text = _( "Lyrics" ) + "(&L)";
-            menuLyricExpressionProperty.Text = _( "Note Expression Property" ) + "(&E)";
-            menuLyricVibratoProperty.Text = _( "Note Vibrato Property" ) + "(&V)";
-            menuLyricSymbol.Text = _( "Phoneme Transformation" ) + "(&T)";
-            menuLyricDictionary.Text = _( "User Word Dictionary" ) + "(&C)";
+            menuLyric.setText( _( "Lyrics" ) + "(&L)" );
+            menuLyricExpressionProperty.setText( _( "Note Expression Property" ) + "(&E)" );
+            menuLyricVibratoProperty.setText( _( "Note Vibrato Property" ) + "(&V)" );
+            menuLyricSymbol.setText( _( "Phoneme Transformation" ) + "(&T)" );
+            menuLyricDictionary.setText( _( "User Word Dictionary" ) + "(&C)" );
 
-            menuScript.Text = _( "Script" ) + "(&C)";
-            menuScriptUpdate.Text = _( "Update Script List" ) + "(&U)";
+            menuScript.setText( _( "Script" ) + "(&C)" );
+            menuScriptUpdate.setText( _( "Update Script List" ) + "(&U)" );
 
-            menuSetting.Text = _( "Setting" ) + "(&S)";
-            menuSettingPreference.Text = _( "Preference" ) + "(&P)";
-            menuSettingGameControler.Text = _( "Game Controler" ) + "(&G)";
-            menuSettingGameControlerLoad.Text = _( "Load" ) + "(&L)";
-            menuSettingGameControlerRemove.Text = _( "Remove" ) + "(&R)";
-            menuSettingGameControlerSetting.Text = _( "Setting" ) + "(&S)";
-            menuSettingShortcut.Text = _( "Shortcut Key" ) + "(&S)";
-            menuSettingUtauVoiceDB.Text = _( "UTAU Voice DB" ) + "(&U)";
-            menuSettingDefaultSingerStyle.Text = _( "Singing Style Defaults" ) + "(&D)";
-            menuSettingPositionQuantize.Text = _( "Quantize" ) + "(&Q)";
-            menuSettingPositionQuantizeOff.Text = _( "Off" );
-            menuSettingPositionQuantizeTriplet.Text = _( "Triplet" );
-            menuSettingLengthQuantize.Text = _( "Length" ) + "(&L)";
-            menuSettingLengthQuantizeOff.Text = _( "Off" );
-            menuSettingLengthQuantizeTriplet.Text = _( "Triplet" );
-            menuSettingSingerProperty.Text = _( "Singer Properties" ) + "(&S)";
-            menuSettingPaletteTool.Text = _( "Palette Tool" ) + "(&T)";
+            menuSetting.setText( _( "Setting" ) + "(&S)" );
+            menuSettingPreference.setText( _( "Preference" ) + "(&P)" );
+            menuSettingGameControler.setText( _( "Game Controler" ) + "(&G)" );
+            menuSettingGameControlerLoad.setText( _( "Load" ) + "(&L)" );
+            menuSettingGameControlerRemove.setText( _( "Remove" ) + "(&R)" );
+            menuSettingGameControlerSetting.setText( _( "Setting" ) + "(&S)" );
+            menuSettingShortcut.setText( _( "Shortcut Key" ) + "(&S)" );
+            menuSettingUtauVoiceDB.setText( _( "UTAU Voice DB" ) + "(&U)" );
+            menuSettingDefaultSingerStyle.setText( _( "Singing Style Defaults" ) + "(&D)" );
+            menuSettingPositionQuantize.setText( _( "Quantize" ) + "(&Q)" );
+            menuSettingPositionQuantizeOff.setText( _( "Off" ) );
+            menuSettingPositionQuantizeTriplet.setText( _( "Triplet" ) );
+            menuSettingLengthQuantize.setText( _( "Length" ) + "(&L)" );
+            menuSettingLengthQuantizeOff.setText( _( "Off" ) );
+            menuSettingLengthQuantizeTriplet.setText( _( "Triplet" ) );
+            menuSettingSingerProperty.setText( _( "Singer Properties" ) + "(&S)" );
+            menuSettingPaletteTool.setText( _( "Palette Tool" ) + "(&T)" );
 
-            menuHelp.Text = _( "Help" ) + "(&H)";
-            menuHelpAbout.Text = _( "About Cadencii" ) + "(&A)";
+            menuHelp.setText( _( "Help" ) + "(&H)" );
+            menuHelpAbout.setText( _( "About Cadencii" ) + "(&A)" );
 
-            menuHiddenEditLyric.Text = _( "Start Lyric Input" );
-            menuHiddenEditFlipToolPointerEraser.Text = _( "Chagne Tool Pointer / Eraser" );
-            menuHiddenEditFlipToolPointerPencil.Text = _( "Change Tool Pointer / Pencil" );
-            menuHiddenTrackBack.Text = _( "Previous Track" );
-            menuHiddenTrackNext.Text = _( "Next Track" );
-            menuHiddenVisualBackwardParameter.Text = _( "Previous Control Curve" );
-            menuHiddenVisualForwardParameter.Text = _( "Next Control Curve" );
+            menuHiddenEditLyric.setText( _( "Start Lyric Input" ) );
+            menuHiddenEditFlipToolPointerEraser.setText( _( "Chagne Tool Pointer / Eraser" ) );
+            menuHiddenEditFlipToolPointerPencil.setText( _( "Change Tool Pointer / Pencil" ) );
+            menuHiddenTrackBack.setText( _( "Previous Track" ) );
+            menuHiddenTrackNext.setText( _( "Next Track" ) );
+            menuHiddenVisualBackwardParameter.setText( _( "Previous Control Curve" ) );
+            menuHiddenVisualForwardParameter.setText( _( "Next Control Curve" ) );
             #endregion
 
             #region cMenuPiano
-            cMenuPianoPointer.Text = _( "Arrow" ) + "(&A)";
-            cMenuPianoPencil.Text = _( "Pencil" ) + "(&W)";
-            cMenuPianoEraser.Text = _( "Eraser" ) + "(&E)";
-            cMenuPianoPaletteTool.Text = _( "Palette Tool" );
+            cMenuPianoPointer.setText( _( "Arrow" ) + "(&A)" );
+            cMenuPianoPencil.setText( _( "Pencil" ) + "(&W)" );
+            cMenuPianoEraser.setText( _( "Eraser" ) + "(&E)" );
+            cMenuPianoPaletteTool.setText( _( "Palette Tool" ) );
 
-            cMenuPianoCurve.Text = _( "Curve" ) + "(&V)";
+            cMenuPianoCurve.setText( _( "Curve" ) + "(&V)" );
 
-            cMenuPianoFixed.Text = _( "Note Fixed Length" ) + "(&N)";
-            cMenuPianoFixedTriplet.Text = _( "Triplet" );
-            cMenuPianoFixedOff.Text = _( "Off" );
-            cMenuPianoFixedDotted.Text = _( "Dot" );
-            cMenuPianoQuantize.Text = _( "Quantize" ) + "(&Q)";
-            cMenuPianoQuantizeTriplet.Text = _( "Triplet" );
-            cMenuPianoQuantizeOff.Text = _( "Off" );
-            cMenuPianoLength.Text = _( "Length" ) + "(&L)";
-            cMenuPianoLengthTriplet.Text = _( "Triplet" );
-            cMenuPianoLengthOff.Text = _( "Off" );
-            cMenuPianoGrid.Text = _( "Show/Hide Grid Line" ) + "(&S)";
+            cMenuPianoFixed.setText( _( "Note Fixed Length" ) + "(&N)" );
+            cMenuPianoFixedTriplet.setText( _( "Triplet" ) );
+            cMenuPianoFixedOff.setText( _( "Off" ) );
+            cMenuPianoFixedDotted.setText( _( "Dot" ) );
+            cMenuPianoQuantize.setText( _( "Quantize" ) + "(&Q)" );
+            cMenuPianoQuantizeTriplet.setText( _( "Triplet" ) );
+            cMenuPianoQuantizeOff.setText( _( "Off" ) );
+            cMenuPianoLength.setText( _( "Length" ) + "(&L)" );
+            cMenuPianoLengthTriplet.setText( _( "Triplet" ) );
+            cMenuPianoLengthOff.setText( _( "Off" ) );
+            cMenuPianoGrid.setText( _( "Show/Hide Grid Line" ) + "(&S)" );
 
-            cMenuPianoUndo.Text = _( "Undo" ) + "(&U)";
-            cMenuPianoRedo.Text = _( "Redo" ) + "(&R)";
+            cMenuPianoUndo.setText( _( "Undo" ) + "(&U)" );
+            cMenuPianoRedo.setText( _( "Redo" ) + "(&R)" );
 
-            cMenuPianoCut.Text = _( "Cut" ) + "(&T)";
-            cMenuPianoPaste.Text = _( "Paste" ) + "(&P)";
-            cMenuPianoCopy.Text = _( "Copy" ) + "(&C)";
-            cMenuPianoDelete.Text = _( "Delete" ) + "(&D)";
+            cMenuPianoCut.setText( _( "Cut" ) + "(&T)" );
+            cMenuPianoPaste.setText( _( "Paste" ) + "(&P)" );
+            cMenuPianoCopy.setText( _( "Copy" ) + "(&C)" );
+            cMenuPianoDelete.setText( _( "Delete" ) + "(&D)" );
 
-            cMenuPianoSelectAll.Text = _( "Select All" ) + "(&A)";
-            cMenuPianoSelectAllEvents.Text = _( "Select All Events" ) + "(&E)";
+            cMenuPianoSelectAll.setText( _( "Select All" ) + "(&A)" );
+            cMenuPianoSelectAllEvents.setText( _( "Select All Events" ) + "(&E)" );
 
-            cMenuPianoExpressionProperty.Text = _( "Note Expression Property" ) + "(&P)";
-            cMenuPianoVibratoProperty.Text = _( "Note Vibrato Property" );
-            cMenuPianoImportLyric.Text = _( "Insert Lyrics" ) + "(&P)";
+            cMenuPianoExpressionProperty.setText( _( "Note Expression Property" ) + "(&P)" );
+            cMenuPianoVibratoProperty.setText( _( "Note Vibrato Property" ) );
+            cMenuPianoImportLyric.setText( _( "Insert Lyrics" ) + "(&P)" );
             #endregion
 
             #region cMenuTrackTab
-            cMenuTrackTabTrackOn.Text = _( "Track On" ) + "(&K)";
-            cMenuTrackTabAdd.Text = _( "Add Track" ) + "(&A)";
-            cMenuTrackTabCopy.Text = _( "Copy Track" ) + "(&C)";
-            cMenuTrackTabChangeName.Text = _( "Rename Track" ) + "(&R)";
-            cMenuTrackTabDelete.Text = _( "Delete Track" ) + "(&D)";
+            cMenuTrackTabTrackOn.setText( _( "Track On" ) + "(&K)" );
+            cMenuTrackTabAdd.setText( _( "Add Track" ) + "(&A)" );
+            cMenuTrackTabCopy.setText( _( "Copy Track" ) + "(&C)" );
+            cMenuTrackTabChangeName.setText( _( "Rename Track" ) + "(&R)" );
+            cMenuTrackTabDelete.setText( _( "Delete Track" ) + "(&D)" );
 
-            cMenuTrackTabRenderCurrent.Text = _( "Render Current Track" ) + "(&T)";
-            cMenuTrackTabRenderAll.Text = _( "Render All Tracks" ) + "(&S)";
-            cMenuTrackTabOverlay.Text = _( "Overlay" ) + "(&O)";
-            cMenuTrackTabRenderer.Text = _( "Renderer" );
+            cMenuTrackTabRenderCurrent.setText( _( "Render Current Track" ) + "(&T)" );
+            cMenuTrackTabRenderAll.setText( _( "Render All Tracks" ) + "(&S)" );
+            cMenuTrackTabOverlay.setText( _( "Overlay" ) + "(&O)" );
+            cMenuTrackTabRenderer.setText( _( "Renderer" ) );
             #endregion
 
             #region cMenuTrackSelector
-            cMenuTrackSelectorPointer.Text = _( "Arrow" ) + "(&A)";
-            cMenuTrackSelectorPencil.Text = _( "Pencil" ) + "(&W)";
-            cMenuTrackSelectorLine.Text = _( "Line" ) + "(&L)";
-            cMenuTrackSelectorEraser.Text = _( "Eraser" ) + "(&E)";
-            cMenuTrackSelectorPaletteTool.Text = _( "Palette Tool" );
+            cMenuTrackSelectorPointer.setText( _( "Arrow" ) + "(&A)" );
+            cMenuTrackSelectorPencil.setText( _( "Pencil" ) + "(&W)" );
+            cMenuTrackSelectorLine.setText( _( "Line" ) + "(&L)" );
+            cMenuTrackSelectorEraser.setText( _( "Eraser" ) + "(&E)" );
+            cMenuTrackSelectorPaletteTool.setText( _( "Palette Tool" ) );
 
-            cMenuTrackSelectorCurve.Text = _( "Curve" ) + "(&V)";
+            cMenuTrackSelectorCurve.setText( _( "Curve" ) + "(&V)" );
 
-            cMenuTrackSelectorUndo.Text = _( "Undo" ) + "(&U)";
-            cMenuTrackSelectorRedo.Text = _( "Redo" ) + "(&R)";
+            cMenuTrackSelectorUndo.setText( _( "Undo" ) + "(&U)" );
+            cMenuTrackSelectorRedo.setText( _( "Redo" ) + "(&R)" );
 
-            cMenuTrackSelectorCut.Text = _( "Cut" ) + "(&T)";
-            cMenuTrackSelectorCopy.Text = _( "Copy" ) + "(&C)";
-            cMenuTrackSelectorPaste.Text = _( "Paste" ) + "(&P)";
-            cMenuTrackSelectorDelete.Text = _( "Delete" ) + "(&D)";
-            cMenuTrackSelectorDeleteBezier.Text = _( "Delete Bezier Point" ) + "(&B)";
+            cMenuTrackSelectorCut.setText( _( "Cut" ) + "(&T)" );
+            cMenuTrackSelectorCopy.setText( _( "Copy" ) + "(&C)" );
+            cMenuTrackSelectorPaste.setText( _( "Paste" ) + "(&P)" );
+            cMenuTrackSelectorDelete.setText( _( "Delete" ) + "(&D)" );
+            cMenuTrackSelectorDeleteBezier.setText( _( "Delete Bezier Point" ) + "(&B)" );
 
-            cMenuTrackSelectorSelectAll.Text = _( "Select All Events" ) + "(&E)";
+            cMenuTrackSelectorSelectAll.setText( _( "Select All Events" ) + "(&E)" );
             #endregion
 
             stripLblGameCtrlMode.ToolTipText = _( "Game Controler" );
@@ -11139,7 +11176,7 @@ namespace Boare.Cadencii {
                         String id = (String)tsb.getTag();
                         if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
-                            tsb.Text = ipt.getName( Messaging.getLanguage() );
+                            tsb.setText( ipt.getName( Messaging.getLanguage() ) );
                             tsb.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
                     }
@@ -11153,7 +11190,7 @@ namespace Boare.Cadencii {
                         String id = (String)tsmi.Tag;
                         if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
-                            tsmi.Text = ipt.getName( Messaging.getLanguage() );
+                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
                             tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
                     }
@@ -11167,7 +11204,7 @@ namespace Boare.Cadencii {
                         String id = (String)tsmi.Tag;
                         if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
-                            tsmi.Text = ipt.getName( Messaging.getLanguage() );
+                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
                             tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
                     }
@@ -11181,7 +11218,7 @@ namespace Boare.Cadencii {
                         String id = (String)tsmi.getTag();
                         if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
-                            tsmi.Text = ipt.getName( Messaging.getLanguage() );
+                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
                         }
                     }
                 }
@@ -11352,15 +11389,15 @@ namespace Boare.Cadencii {
         }
 
         private int computeScrollValueFromWheelDelta( int delta ) {
-            double new_val = (double)hScroll.Value - delta * AppManager.editorConfig.WheelOrder / (5.0 * AppManager.scaleX);
+            double new_val = (double)hScroll.getValue() - delta * AppManager.editorConfig.WheelOrder / (5.0 * AppManager.scaleX);
             if ( new_val < 0.0 ) {
                 new_val = 0;
             }
             int draft = (int)new_val;
-            if ( draft > hScroll.Maximum ) {
-                draft = hScroll.Maximum;
-            } else if ( draft < hScroll.Minimum ) {
-                draft = hScroll.Minimum;
+            if ( draft > hScroll.getMaximum() ) {
+                draft = hScroll.getMaximum();
+            } else if ( draft < hScroll.getMinimum() ) {
+                draft = hScroll.getMinimum();
             }
             return draft;
         }
@@ -11384,7 +11421,7 @@ namespace Boare.Cadencii {
                 }
             }
             if ( add_required.size() > 0 ) {
-                AppManager.addSelectedEventAll( add_required.toArray( new Integer[] { } ) );
+                AppManager.addSelectedEventAll( add_required );
             }
             foreach ( CurveType vct in AppManager.CURVE_USAGE ) {
                 if ( vct.isScalar() || vct.isAttachNote() ) {
@@ -11432,7 +11469,7 @@ namespace Boare.Cadencii {
                 }
             }
             if ( add_required.size() > 0 ) {
-                AppManager.addSelectedEventAll( add_required.toArray( new Integer[] { } ) );
+                AppManager.addSelectedEventAll( add_required );
             }
             refreshScreen();
         }
@@ -11440,9 +11477,10 @@ namespace Boare.Cadencii {
         private void deleteEvent() {
 #if DEBUG
             AppManager.debugWriteLine( "DeleteEvent()" );
-            AppManager.debugWriteLine( "    AppManager.inputTextBox.Enabled=" + AppManager.inputTextBox.Enabled );
+            AppManager.debugWriteLine( "    AppManager.inputTextBox.isEnabled()=" + AppManager.inputTextBox.Enabled );
 #endif
-            if ( !AppManager.inputTextBox.Enabled ) {
+
+            if ( !AppManager.inputTextBox.isVisible() ) {
                 if ( AppManager.getSelectedEventCount() > 0 ) {
                     Vector<Integer> ids = new Vector<Integer>();
                     for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
@@ -11491,12 +11529,14 @@ namespace Boare.Cadencii {
                     for ( Iterator itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
                         ValuePair<Integer, SelectedTempoEntry> item = (ValuePair<Integer, SelectedTempoEntry>)itr.next();
                         //SelectedTempoEntry value = AppManager.getSelectedTempo().get( key );
-                        if ( item.Key <= 0 ) {
-                            statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                        if ( item.getKey() <= 0 ) {
+                            statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
                             SystemSounds.Asterisk.Play();
+#endif
                             return;
                         }
-                        clocks.add( item.Key );
+                        clocks.add( item.getKey() );
                     }
                     int[] dum = new int[clocks.size()];
                     for ( int i = 0; i < dum.Length; i++ ) {
@@ -11517,13 +11557,15 @@ namespace Boare.Cadencii {
                     int count = -1;
                     for ( Iterator itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
                         ValuePair<Integer, SelectedTimesigEntry> item = (ValuePair<Integer, SelectedTimesigEntry>)itr.next();
-                        int key = item.Key;
-                        SelectedTimesigEntry value = item.Value;
+                        int key = item.getKey();
+                        SelectedTimesigEntry value = item.getValue();
                         count++;
                         barcounts[count] = key;
                         if ( key <= 0 ) {
-                            statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                            statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
                             SystemSounds.Asterisk.Play();
+#endif
                             return;
                         }
                         numerators[count] = -1;
@@ -11862,8 +11904,8 @@ namespace Boare.Cadencii {
                 Vector<TempoTableEntry> list = new Vector<TempoTableEntry>();
                 for ( Iterator itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTempoEntry> item = (ValuePair<Integer, SelectedTempoEntry>)itr.next();
-                    int key = item.Key;
-                    SelectedTempoEntry value = item.Value;
+                    int key = item.getKey();
+                    SelectedTempoEntry value = item.getValue();
                     min = Math.Min( value.original.Clock, min );
                     list.add( (TempoTableEntry)value.original.clone() );
                 }
@@ -11872,8 +11914,8 @@ namespace Boare.Cadencii {
                 Vector<TimeSigTableEntry> list = new Vector<TimeSigTableEntry>();
                 for ( Iterator itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTimesigEntry> item = (ValuePair<Integer, SelectedTimesigEntry>)itr.next();
-                    int key = item.Key;
-                    SelectedTimesigEntry value = item.Value;
+                    int key = item.getKey();
+                    SelectedTimesigEntry value = item.getValue();
                     min = Math.Min( value.original.Clock, min );
                     list.add( (TimeSigTableEntry)value.original.clone() );
                 }
@@ -11884,8 +11926,8 @@ namespace Boare.Cadencii {
                 ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
 
                 ValuePair<Integer, Integer> t = trackSelector.getSelectedRegion();
-                int start = t.Key;
-                int end = t.Value;
+                int start = t.getKey();
+                int end = t.getValue();
                 ce.copyStartedClock = start;
                 Vector<BezierChain> tmp_bezier = new Vector<BezierChain>();
                 copyCurveCor( AppManager.getSelected(),
@@ -11962,8 +12004,8 @@ namespace Boare.Cadencii {
                     start_clock = AppManager.wholeSelectedInterval.getStart();
                     end_clock = AppManager.wholeSelectedInterval.getEnd();
                 } else {
-                    start_clock = trackSelector.getSelectedRegion().Key;
-                    end_clock = trackSelector.getSelectedRegion().Value;
+                    start_clock = trackSelector.getSelectedRegion().getKey();
+                    end_clock = trackSelector.getSelectedRegion().getValue();
                 }
 
                 // クローンを作成
@@ -12033,8 +12075,8 @@ namespace Boare.Cadencii {
                 int[] clocks = new int[AppManager.getSelectedTempoCount()];
                 for ( Iterator itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTempoEntry> item = (ValuePair<Integer, SelectedTempoEntry>)itr.next();
-                    int key = item.Key;
-                    SelectedTempoEntry value = item.Value;
+                    int key = item.getKey();
+                    SelectedTempoEntry value = item.getValue();
                     count++;
                     dum[count] = -1;
                     clocks[count] = value.original.Clock;
@@ -12051,8 +12093,8 @@ namespace Boare.Cadencii {
                 int count = -1;
                 for ( Iterator itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTimesigEntry> item = (ValuePair<Integer, SelectedTimesigEntry>)itr.next();
-                    int key = item.Key;
-                    SelectedTimesigEntry value = item.Value;
+                    int key = item.getKey();
+                    SelectedTimesigEntry value = item.getValue();
                     count++;
                     barcounts[count] = value.original.BarCount;
                     numerators[count] = -1;
@@ -12129,12 +12171,12 @@ namespace Boare.Cadencii {
                 m_txtbox_track_name = null;
             }
             m_txtbox_track_name = new TextBoxEx();
-            m_txtbox_track_name.Visible = false;
+            m_txtbox_track_name.setVisible( false );
             int selector_width = trackSelector.getSelectorWidth();
             int x = AppManager.keyWidth + (AppManager.getSelected() - 1) * selector_width;
             m_txtbox_track_name.setLocation( x, trackSelector.Height - TrackSelector.OFFSET_TRACK_TAB + 1 );
             m_txtbox_track_name.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            m_txtbox_track_name.Text = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName();
+            m_txtbox_track_name.setText( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName() );
 #if JAVA
             m_txtbox_track_name.keyUpEvent.add( new BEventHandler( this, "m_txtbox_track_name_KeyUp" ) );
 #else
@@ -12222,40 +12264,40 @@ namespace Boare.Cadencii {
             menuSettingPositionQuantizeOff.setSelected( false );
 
 #if !JAVA
-            stripDDBtnQuantize.Text = "QUANTIZE " + QuantizeModeUtil.getString( AppManager.editorConfig.PositionQuantize );
+            stripDDBtnQuantize.setText( "QUANTIZE " + QuantizeModeUtil.getString( AppManager.editorConfig.getPositionQuantize() ) );
 #endif
-            if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p4 ) {
+            if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p4 ) {
                 cMenuPianoQuantize04.setSelected( true );
                 stripDDBtnQuantize04.setSelected( true );
                 menuSettingPositionQuantize04.setSelected( true );
-            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p8 ) {
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p8 ) {
                 cMenuPianoQuantize08.setSelected( true );
                 stripDDBtnQuantize08.setSelected( true );
                 menuSettingPositionQuantize08.setSelected( true );
-            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p16 ) {
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p16 ) {
                 cMenuPianoQuantize16.setSelected( true );
                 stripDDBtnQuantize16.setSelected( true );
                 menuSettingPositionQuantize16.setSelected( true );
-            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p32 ) {
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p32 ) {
                 cMenuPianoQuantize32.setSelected( true );
                 stripDDBtnQuantize32.setSelected( true );
                 menuSettingPositionQuantize32.setSelected( true );
-            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p64 ) {
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p64 ) {
                 cMenuPianoQuantize64.setSelected( true );
                 stripDDBtnQuantize64.setSelected( true );
                 menuSettingPositionQuantize64.setSelected( true );
-            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.p128 ) {
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p128 ) {
                 cMenuPianoQuantize128.setSelected( true );
                 stripDDBtnQuantize128.setSelected( true );
                 menuSettingPositionQuantize128.setSelected( true );
-            } else if ( AppManager.editorConfig.PositionQuantize == QuantizeMode.off ) {
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.off ) {
                 cMenuPianoQuantizeOff.setSelected( true );
                 stripDDBtnQuantizeOff.setSelected( true );
                 menuSettingPositionQuantizeOff.setSelected( true );
             }
-            cMenuPianoQuantizeTriplet.setSelected( AppManager.editorConfig.PositionQuantizeTriplet );
-            stripDDBtnQuantizeTriplet.setSelected( AppManager.editorConfig.PositionQuantizeTriplet );
-            menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.PositionQuantizeTriplet );
+            cMenuPianoQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+            stripDDBtnQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+            menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
 
             cMenuPianoLength04.setSelected( false );
             cMenuPianoLength08.setSelected( false );
@@ -12282,40 +12324,40 @@ namespace Boare.Cadencii {
             menuSettingLengthQuantizeOff.setSelected( false );
 
 #if !JAVA
-            stripDDBtnLength.Text = "LENGTH " + QuantizeModeUtil.getString( AppManager.editorConfig.LengthQuantize );
+            stripDDBtnLength.setText( "LENGTH " + QuantizeModeUtil.getString( AppManager.editorConfig.getLengthQuantize() ) );
 #endif
-            if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p4 ) {
+            if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p4 ) {
                 cMenuPianoLength04.setSelected( true );
                 stripDDBtnLength04.setSelected( true );
                 menuSettingLengthQuantize04.setSelected( true );
-            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p8 ) {
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p8 ) {
                 cMenuPianoLength08.setSelected( true );
                 stripDDBtnLength08.setSelected( true );
                 menuSettingLengthQuantize08.setSelected( true );
-            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p16 ) {
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p16 ) {
                 cMenuPianoLength16.setSelected( true );
                 stripDDBtnLength16.setSelected( true );
                 menuSettingLengthQuantize16.setSelected( true );
-            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p32 ) {
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p32 ) {
                 cMenuPianoLength32.setSelected( true );
                 stripDDBtnLength32.setSelected( true );
                 menuSettingLengthQuantize32.setSelected( true );
-            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p64 ) {
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p64 ) {
                 cMenuPianoLength64.setSelected( true );
                 stripDDBtnLength64.setSelected( true );
                 menuSettingLengthQuantize64.setSelected( true );
-            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.p128 ) {
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p128 ) {
                 cMenuPianoLength128.setSelected( true );
                 stripDDBtnLength128.setSelected( true );
                 menuSettingLengthQuantize128.setSelected( true );
-            } else if ( AppManager.editorConfig.LengthQuantize == QuantizeMode.off ) {
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.off ) {
                 cMenuPianoLengthOff.setSelected( true );
                 stripDDBtnLengthOff.setSelected( true );
                 menuSettingLengthQuantizeOff.setSelected( true );
             }
-            cMenuPianoLengthTriplet.setSelected( AppManager.editorConfig.LengthQuantizeTriplet );
-            stripDDBtnLengthTriplet.setSelected( AppManager.editorConfig.LengthQuantizeTriplet );
-            menuSettingLengthQuantizeTriplet.setSelected( AppManager.editorConfig.LengthQuantizeTriplet );
+            cMenuPianoLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
+            stripDDBtnLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
+            menuSettingLengthQuantizeTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
 
         /// <summary>
@@ -12475,7 +12517,7 @@ namespace Boare.Cadencii {
 #if OBSOLUTE
             m_toolbar_measure.Measure = (barcount - AppManager.VsqFile.PreMeasure + 1) + " : " + (beat + 1) + " : " + odd.ToString( "000" );
 #else
-            stripLblMeasure.Text = (barcount - AppManager.getVsqFile().getPreMeasure() + 1) + " : " + (beat + 1) + " : " + odd.ToString( "000" );
+            stripLblMeasure.setText( (barcount - AppManager.getVsqFile().getPreMeasure() + 1) + " : " + (beat + 1) + " : " + odd.ToString( "000" ) );
 #endif
         }
 
@@ -12793,15 +12835,15 @@ namespace Boare.Cadencii {
             for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
                 ValuePair<Integer, Integer> specif = (ValuePair<Integer, Integer>)itr.next();
                 boolean found = false;
-                for ( Iterator itr2 = AppManager.getVsqFile().Track.get( specif.Key ).getNoteEventIterator(); itr2.hasNext(); ) {
+                for ( Iterator itr2 = AppManager.getVsqFile().Track.get( specif.getKey() ).getNoteEventIterator(); itr2.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr2.next();
-                    if ( item.InternalID == specif.Value ) {
+                    if ( item.InternalID == specif.getValue() ) {
                         found = true;
                         break;
                     }
                 }
                 if ( !found ) {
-                    AppManager.removeSelectedEvent( specif.Key );
+                    AppManager.removeSelectedEvent( specif.getKey() );
                 }
             }
         }
@@ -12812,12 +12854,12 @@ namespace Boare.Cadencii {
         public void undo() {
             if ( AppManager.isUndoAvailable() ) {
                 AppManager.undo();
-                menuEditRedo.Enabled = AppManager.isRedoAvailable();
-                menuEditUndo.Enabled = AppManager.isUndoAvailable();
-                cMenuPianoRedo.Enabled = AppManager.isRedoAvailable();
-                cMenuPianoUndo.Enabled = AppManager.isUndoAvailable();
-                cMenuTrackSelectorRedo.Enabled = AppManager.isRedoAvailable();
-                cMenuTrackSelectorUndo.Enabled = AppManager.isUndoAvailable();
+                menuEditRedo.setEnabled( AppManager.isRedoAvailable() );
+                menuEditUndo.setEnabled( AppManager.isUndoAvailable() );
+                cMenuPianoRedo.setEnabled( AppManager.isRedoAvailable() );
+                cMenuPianoUndo.setEnabled( AppManager.isUndoAvailable() );
+                cMenuTrackSelectorRedo.setEnabled( AppManager.isRedoAvailable() );
+                cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
                 AppManager.mixerWindow.updateStatus();
                 setEdited( true );
                 cleanupDeadSelection();
@@ -12839,12 +12881,12 @@ namespace Boare.Cadencii {
         public void redo() {
             if ( AppManager.isRedoAvailable() ) {
                 AppManager.redo();
-                menuEditRedo.Enabled = AppManager.isRedoAvailable();
-                menuEditUndo.Enabled = AppManager.isUndoAvailable();
-                cMenuPianoRedo.Enabled = AppManager.isRedoAvailable();
-                cMenuPianoUndo.Enabled = AppManager.isUndoAvailable();
-                cMenuTrackSelectorRedo.Enabled = AppManager.isRedoAvailable();
-                cMenuTrackSelectorUndo.Enabled = AppManager.isUndoAvailable();
+                menuEditRedo.setEnabled( AppManager.isRedoAvailable() );
+                menuEditUndo.setEnabled( AppManager.isUndoAvailable() );
+                cMenuPianoRedo.setEnabled( AppManager.isRedoAvailable() );
+                cMenuPianoUndo.setEnabled( AppManager.isUndoAvailable() );
+                cMenuTrackSelectorRedo.setEnabled( AppManager.isRedoAvailable() );
+                cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
                 AppManager.mixerWindow.updateStatus();
                 setEdited( true );
                 cleanupDeadSelection();
@@ -12861,7 +12903,7 @@ namespace Boare.Cadencii {
         }
 
         public int getStartToDrawY() {
-            return (int)((128 * AppManager.editorConfig.PxTrackHeight - vScroll.Height) * (float)vScroll.Value / ((float)vScroll.Maximum));
+            return (int)((128 * AppManager.editorConfig.PxTrackHeight - vScroll.getHeight()) * (float)vScroll.getValue() / ((float)vScroll.getMaximum()));
         }
 
         /// <summary>
@@ -12892,8 +12934,8 @@ namespace Boare.Cadencii {
         /// <returns></returns>
         VsqEvent getItemAtClickedPosition( Point mouse_position, ByRef<Rectangle> rect ) {
             rect.value = new Rectangle();
-            if ( AppManager.keyWidth <= mouse_position.x && mouse_position.x <= pictPianoRoll.Width ) {
-                if ( 0 <= mouse_position.y && mouse_position.y <= pictPianoRoll.Height ) {
+            if ( AppManager.keyWidth <= mouse_position.x && mouse_position.x <= pictPianoRoll.getWidth() ) {
+                if ( 0 <= mouse_position.y && mouse_position.y <= pictPianoRoll.getHeight() ) {
                     int selected = AppManager.getSelected();
                     if ( selected >= 1 ) {
                         for ( int j = 0; j < AppManager.getVsqFile().Track.get( selected ).getEventCount(); j++ ) {
@@ -12910,7 +12952,7 @@ namespace Boare.Cadencii {
                                 int lyric_width = (int)(length * AppManager.scaleX);
                                 if ( x + lyric_width < 0 ) {
                                     continue;
-                                } else if ( pictPianoRoll.Width < x ) {
+                                } else if ( pictPianoRoll.getWidth() < x ) {
                                     break;
                                 }
                                 if ( x <= mouse_position.x && mouse_position.x <= x + lyric_width ) {
@@ -13579,3817 +13621,3818 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
-	private JPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="10,55"
-	private BMenuBar jBMenuBar = null;
-	private BMenu menuFile = null;
-	private BMenuItem menuFileNew = null;
-	private BMenuItem menuFileOpen = null;
-	private BMenuItem menuFileSave = null;
-	private BMenuItem menuFileSaveNamed = null;
-	private JSeparator toolStripMenuItem10 = null;
-	private BMenuItem menuFileOpenVsq = null;
-	private BMenuItem menuFileOpenUst = null;
-	private BMenu menuFileImport = null;
-	private BMenu menuFileExport = null;
-	private JSeparator toolStripMenuItem101 = null;
-	private BMenuItem menuFileRecent = null;
-	private JSeparator toolStripMenuItem102 = null;
-	private BMenuItem menuFileQuit = null;
-	private BMenuItem menuFileImportVsq = null;
-	private BMenuItem menuFileImportMidi = null;
-	private BMenuItem menuFileExportWav = null;
-	private BMenuItem menuFileExportMidi = null;
-	private BMenu menuEdit = null;
-	private BMenuItem menuEditUndo = null;
-	private BMenuItem menuEditRedo = null;
-	private JSeparator toolStripMenuItem103 = null;
-	private BMenuItem menuEditCut = null;
-	private BMenuItem menuEditCopy = null;
-	private BMenuItem menuEditPaste = null;
-	private BMenuItem menuEditDelete = null;
-	private JSeparator toolStripMenuItem104 = null;
-	private BMenuItem menuEditAutoNormalizeMode = null;
-	private JSeparator toolStripMenuItem1041 = null;
-	private BMenuItem menuEditSelectAll = null;
-	private BMenuItem menuEditSelectAllEvents = null;
-	private BMenu menuVisual = null;
-	private BMenuItem menuVisualControlTrack = null;
-	private BMenuItem menuVisualMixer = null;
-	private BMenuItem menuVisualWaveform = null;
-	private BMenuItem menuVisualProperty = null;
-	private BMenuItem menuVisualOverview = null;
-	private JSeparator toolStripMenuItem1031 = null;
-	private BMenuItem menuVisualGridline = null;
-	private JSeparator toolStripMenuItem1032 = null;
-	private BMenuItem menuVisualStartMarker = null;
-	private BMenuItem menuVisualEndMarker = null;
-	private JSeparator toolStripMenuItem1033 = null;
-	private BMenuItem menuVisualNoteProperty = null;
-	private BMenuItem menuVisualLyrics = null;
-	private BMenuItem menuVisualPitchLine = null;
-	private BMenu menuJob = null;
-	private BMenuItem menuJobNormalize = null;
-	private BMenuItem menuJobInsertBar = null;
-	private BMenuItem menuJobDeleteBar = null;
-	private BMenuItem menuJobRandomize = null;
-	private BMenuItem menuJobConnect = null;
-	private BMenuItem menuJobLyric = null;
-	private BMenuItem menuJobRewire = null;
-	private BMenuItem menuJobRealTime = null;
-	private BMenuItem menuJobReloadVsti = null;
-	private BMenu menuTrack = null;
-	private BMenuItem menuTrackOn = null;
-	private JSeparator toolStripMenuItem10321 = null;
-	private BMenuItem menuTrackAdd = null;
-	private BMenuItem menuTrackCopy = null;
-	private BMenuItem menuTrackChangeName = null;
-	private BMenuItem menuTrackDelete = null;
-	private JSeparator toolStripMenuItem10322 = null;
-	private BMenuItem menuTrackRenderCurrent = null;
-	private BMenuItem menuTrackRenderAll = null;
-	private JSeparator toolStripMenuItem10323 = null;
-	private BMenuItem menuTrackOverlay = null;
-	private BMenu menuTrackRenderer = null;
-	private JSeparator toolStripMenuItem10324 = null;
-	private BMenu menuTrackBgm = null;
-	private BMenuItem menuTrackManager = null;
-	private BMenu menuLyric = null;
-	private BMenuItem menuLyricExpressionProperty = null;
-	private BMenuItem menuLyricVibratoProperty = null;
-	private BMenuItem menuLyricSymbol = null;
-	private BMenuItem menuLyricDictionary = null;
-	private BMenu menuScript = null;
-	private BMenuItem menuScriptUpdate = null;
-	private BMenu menuSetting = null;
-	private BMenuItem menuSettingPreference = null;
-	private BMenu menuSettingGameControler = null;
-	private BMenuItem menuSettingShortcut = null;
-	private BMenuItem menuSettingMidi = null;
-	private BMenuItem menuSettingUtauVoiceDB = null;
-	private JSeparator toolStripMenuItem103211 = null;
-	private BMenuItem menuSettingDefaultSingerStyle = null;
-	private JSeparator toolStripMenuItem103212 = null;
-	private BMenu menuSettingPositionQuantize = null;
-	private BMenuItem menuSettingSingerProperty = null;
-	private BMenu menuSettingPaletteTool = null;
-	private BMenuItem menuSettingPositionQuantize04 = null;
-	private BMenuItem menuSettingPositionQuantize08 = null;
-	private BMenuItem menuSettingPositionQuantize16 = null;
-	private BMenuItem menuSettingPositionQuantize32 = null;
-	private BMenuItem menuSettingPositionQuantize64 = null;
-	private BMenuItem menuSettingPositionQuantize128 = null;
-	private BMenuItem menuSettingPositionQuantizeOff = null;
-	private JSeparator toolStripMenuItem1032121 = null;
-	private BMenuItem menuSettingPositionQuantizeTriplet = null;
-	private BMenu menuSettingLengthQuantize = null;
-	private BMenuItem menuSettingLengthQuantize04 = null;
-	private BMenuItem menuSettingLengthQuantize08 = null;
-	private BMenuItem menuSettingLengthQuantize16 = null;
-	private BMenuItem menuSettingLengthQuantize32 = null;
-	private BMenuItem menuSettingLengthQuantize64 = null;
-	private BMenuItem menuSettingLengthQuantize128 = null;
-	private BMenuItem menuSettingLengthQuantizeOff = null;
-	private JSeparator toolStripMenuItem10321211 = null;
-	private BMenuItem menuSettingLengthQuantizeTriplet = null;
-	private BMenu menuHelp = null;
-	private BMenuItem menuHelpAbout = null;
-	private JSplitPane splitContainer2 = null;
-	private JPanel panel1 = null;
-	private JPanel panel2 = null;
-	private JSplitPane splitContainer1 = null;
-	private TrackSelector trackSelector = null;
-	private JSplitPane splitContainerProperty = null;
-	private JPanel m_property_panel_container = null;
-	private BToolBar toolStripFile = null;
-	private BToolBar toolStripBottom = null;
-	private BButton stripBtnFileNew = null;
-	private BButton stripBtnFileOpen = null;
-	private BButton stripBtnFileSave = null;
-	private BButton stripBtnCut = null;
-	private BButton stripBtnCopy = null;
-	private BButton stripBtnPaste = null;
-	private BButton stripBtnUndo = null;
-	private BButton stripBtnRedo = null;
-	private BToolBar toolStripPosition = null;
-	private BButton stripBtnMoveTop = null;
-	private JPanel jPanel = null;
-	private BButton stripBtnRewind = null;
-	private BButton stripBtnForward = null;
-	private BButton stripBtnMoveEnd = null;
-	private BButton stripBtnPlay = null;
-	private BButton stripBtnStop = null;
-	private JToggleButton stripBtnScroll = null;
-	private JToggleButton stripBtnLoop = null;
-	private BToolBar toolStripMeasure = null;
-	private BLabel toolStripLabel5 = null;
-	private BLabel stripLblMeasure = null;
-	private BComboBox stripDDBtnLength = null;
-	private BLabel BLabel = null;
-	private BLabel jLabel1 = null;
-	private BComboBox stripDDBtnQuantize = null;
-	private JToggleButton stripBtnStartMarker = null;
-	private JToggleButton stripBtnEndMarker = null;
-	private BToolBar toolStripTool = null;
-	private JToggleButton stripBtnPointer = null;
-	private JToggleButton stripBtnPencil = null;
-	private JToggleButton stripBtnLine = null;
-	private JToggleButton stripBtnEraser = null;
-	private JToggleButton stripBtnGrid = null;
-	private JToggleButton stripBtnCurve = null;
-	private BLabel toolStripLabel6 = null;
-	private BLabel stripLblCursor = null;
-	private BLabel toolStripLabel8 = null;
-	private BLabel stripLblTempo = null;
-	private BLabel jLabel2 = null;
-	private BLabel stripLblBeat = null;
-	private BLabel jLabel3 = null;
-	private BLabel stripLblGameCtrlMode = null;
-	private BLabel jLabel4 = null;
-	private BLabel stripLblMidiIn = null;
-	private BLabel jLabel5 = null;
-	private BComboBox stripDDBtnSpeed = null;
-	private JPopupMenu cMenuTrackSelector = null;  //  @jve:decl-index=0:visual-constraint="749,73"
-	private JPopupMenu cMenuPiano = null;  //  @jve:decl-index=0:visual-constraint="764,258"
-	private JPopupMenu cMenuTrackTab = null;  //  @jve:decl-index=0:visual-constraint="752,356"
-	private BMenuItem cMenuTrackSelectorPointer = null;
-	private BMenuItem cMenuTrackSelectorPencil = null;
-	private BMenuItem cMenuTrackSelectorLine = null;
-	private BMenuItem cMenuTrackSelectorEraser = null;
-	private BMenuItem cMenuTrackSelectorPaletteTool = null;
-	private BMenuItem cMenuTrackSelectorCurve = null;
-	private BMenuItem cMenuTrackSelectorUndo = null;
-	private BMenuItem cMenuTrackSelectorRedo = null;
-	private BMenuItem cMenuTrackSelectorCut = null;
-	private BMenuItem cMenuTrackSelectorCopy = null;
-	private BMenuItem cMenuTrackSelectorPaste = null;
-	private BMenuItem cMenuTrackSelectorDelete = null;
-	private BMenuItem cMenuTrackSelectorDeleteBezier = null;
-	private BMenuItem cMenuTrackSelectorSelectAll = null;
-	private BMenuItem cMenuPianoPointer = null;
-	private BMenuItem cMenuPianoPencil = null;
-	private BMenuItem cMenuPianoEraser = null;
-	private BMenuItem cMenuPianoPaletteTool = null;
-	private BMenuItem cMenuPianoCurve = null;
-	private BMenu cMenuPianoFixed = null;
-	private BMenu cMenuPianoQuantize = null;
-	private BMenuItem cMenuPianoGrid = null;
-	private BMenuItem cMenuPianoUndo = null;
-	private BMenuItem cMenuPianoRedo = null;
-	private BMenuItem cMenuPianoCut = null;
-	private BMenuItem cMenuPianoCopy = null;
-	private BMenuItem cMenuPianoPaste = null;
-	private BMenuItem cMenuPianoDelete = null;
-	private BMenuItem cMenuPianoSelectAll = null;
-	private BMenuItem cMenuPianoSelectAllEvents = null;
-	private BMenuItem cMenuPianoImportLyric = null;
-	private BMenuItem cMenuPianoExpressionProperty = null;
-	private BMenuItem cMenuPianoVibratoProperty = null;
-	private BMenuItem cMenuPianoFixed02 = null;
-	private BMenuItem cMenuPianoFixed04 = null;
-	private BMenuItem cMenuPianoFixed08 = null;
-	private BMenuItem cMenuPianoFixed01 = null;
-	private BMenuItem cMenuPianoFixed16 = null;
-	private BMenuItem cMenuPianoFixed32 = null;
-	private BMenuItem cMenuPianoFixed64 = null;
-	private BMenuItem cMenuPianoFixed128 = null;
-	private BMenuItem cMenuPianoFixedOff = null;
-	private BMenuItem cMenuPianoFixedTriplet = null;
-	private BMenuItem cMenuPianoFixedDotted = null;
-	private BMenuItem cMenuPianoQuantize04 = null;
-	private BMenuItem cMenuPianoQuantize08 = null;
-	private BMenuItem cMenuPianoQuantize16 = null;
-	private BMenuItem cMenuPianoQuantize32 = null;
-	private BMenuItem cMenuPianoQuantize64 = null;
-	private BMenuItem cMenuPianoQuantize128 = null;
-	private BMenuItem cMenuPianoQuantizeTriplet = null;
-	private BMenu cMenuPianoLength = null;
-	private BMenuItem cMenuPianoLength04 = null;
-	private BMenuItem cMenuPianoLength08 = null;
-	private BMenuItem cMenuPianoLength16 = null;
-	private BMenuItem cMenuPianoLength32 = null;
-	private BMenuItem cMenuPianoLength64 = null;
-	private BMenuItem cMenuPianoLength128 = null;
-	private BMenuItem cMenuPianoLengthTriplet = null;
-	private BMenuItem cMenuTrackTabTrackOn = null;
-	private BMenuItem cMenuTrackTabAdd = null;
-	private BMenuItem cMenuTrackTabCopy = null;
-	private BMenuItem cMenuTrackTabChangeName = null;
-	private BMenuItem cMenuTrackTabDelete = null;
-	private BMenuItem cMenuTrackTabRenderCurrent = null;
-	private BMenuItem cMenuTrackTabRenderAll = null;
-	private BMenuItem cMenuTrackTabOverlay = null;
-	private BMenu cMenuTrackTabRenderer = null;
-	private BMenuItem cMenuTrackTabRendererVOCALOID2 = null;
-	private BMenuItem cMenuTrackTabRendererVOCALOID1 = null;
-	private BMenuItem cMenuTrackTabRendererUtau = null;
-	private BMenuItem cMenuTrackTabRendererStraight = null;
-	private BMenuItem cMenuPianoQuantizeOff = null;
-	private BMenuItem cMenuPianoLengthOff = null;
-	private JPanel panel3 = null;
-	private JPanel jPanel2 = null;
-	private BButton BButton = null;
-	private BButton jButton1 = null;
-	private BButton jButton2 = null;
-	private BButton jButton3 = null;
-	private BButton jButton4 = null;
-	private BButton jButton5 = null;
-	private PictPianoRoll pictPianoRoll = null;
-	private JScrollBar vScroll = null;
-	private JScrollBar hScroll = null;
-	private JPanel pictureBox3 = null;
-	private JSlider trackBar = null;
-	private BButton jButton6 = null;
-	private JPanel picturePositionIndicator = null;
-	private JPanel jPanel1 = null;
-	private JPanel jPanel3 = null;
-	private BLabel statusLabel = null;
-
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		this.setSize(711, 591);
-		this.setBMenuBar(getJBMenuBar());
-		this.setContentPane( this.getJContentPane());
-		this.setTitle("JFrame");
-	}
-
-	/**
-	 * This method initializes jContentPane
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJContentPane() {
-		if (jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(new BorderLayout());
-			jContentPane.setSize(new Dimension(582, 431));
-			jContentPane.add(getJPanel(), BorderLayout.NORTH);
-			jContentPane.add(getSplitContainerProperty(), BorderLayout.CENTER);
-			jContentPane.add(getJPanel3(), BorderLayout.SOUTH);
-		}
-		return jContentPane;
-	}
-
-	/**
-	 * This method initializes jBMenuBar	
-	 * 	
-	 * @return javax.swing.BMenuBar	
-	 */
-	private BMenuBar getJBMenuBar() {
-		if (jBMenuBar == null) {
-			jBMenuBar = new BMenuBar();
-			jBMenuBar.add(getMenuFile());
-			jBMenuBar.add(getMenuEdit());
-			jBMenuBar.add(getMenuVisual());
-			jBMenuBar.add(getMenuJob());
-			jBMenuBar.add(getMenuTrack());
-			jBMenuBar.add(getMenuLyric());
-			jBMenuBar.add(getMenuScript());
-			jBMenuBar.add(getMenuSetting());
-			jBMenuBar.add(getMenuHelp());
-		}
-		return jBMenuBar;
-	}
-
-	/**
-	 * This method initializes menuFile	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuFile() {
-		if (menuFile == null) {
-			menuFile = new BMenu();
-			menuFile.setText("File");
-			menuFile.add(getMenuFileNew());
-			menuFile.add(getMenuFileOpen());
-			menuFile.add(getMenuFileSave());
-			menuFile.add(getMenuFileSaveNamed());
-			menuFile.add(getBMenuItem());
-			menuFile.add(getBMenuItem2());
-			menuFile.add(getBMenuItem3());
-			menuFile.add(getMenuFileImport());
-			menuFile.add(getMenuFileExport());
-			menuFile.add(getToolStripMenuItem101());
-			menuFile.add(getBMenuItem4());
-			menuFile.add(getToolStripMenuItem102());
-			menuFile.add(getBMenuItem5());
-		}
-		return menuFile;
-	}
-
-	/**
-	 * This method initializes menuFileNew	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuFileNew() {
-		if (menuFileNew == null) {
-			menuFileNew = new BMenuItem();
-			menuFileNew.setText("New");
-		}
-		return menuFileNew;
-	}
-
-	/**
-	 * This method initializes menuFileOpen	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuFileOpen() {
-		if (menuFileOpen == null) {
-			menuFileOpen = new BMenuItem();
-			menuFileOpen.setText("Open");
-		}
-		return menuFileOpen;
-	}
-
-	/**
-	 * This method initializes menuFileSave	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuFileSave() {
-		if (menuFileSave == null) {
-			menuFileSave = new BMenuItem();
-			menuFileSave.setText("Save");
-		}
-		return menuFileSave;
-	}
-
-	/**
-	 * This method initializes menuFileSaveNamed	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuFileSaveNamed() {
-		if (menuFileSaveNamed == null) {
-			menuFileSaveNamed = new BMenuItem();
-			menuFileSaveNamed.setText("Save As");
-		}
-		return menuFileSaveNamed;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem10	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getBMenuItem() {
-		if (toolStripMenuItem10 == null) {
-			toolStripMenuItem10 = new JSeparator();
-		}
-		return toolStripMenuItem10;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem2() {
-		if (menuFileOpenVsq == null) {
-			menuFileOpenVsq = new BMenuItem();
-			menuFileOpenVsq.setText("Open VSQ/Vocaloid Midi");
-		}
-		return menuFileOpenVsq;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem3() {
-		if (menuFileOpenUst == null) {
-			menuFileOpenUst = new BMenuItem();
-			menuFileOpenUst.setText("Open UTAU Project File");
-		}
-		return menuFileOpenUst;
-	}
-
-	/**
-	 * This method initializes menuFileImport	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuFileImport() {
-		if (menuFileImport == null) {
-			menuFileImport = new BMenu();
-			menuFileImport.setText("Import");
-			menuFileImport.add(getBMenuItem6());
-			menuFileImport.add(getBMenuItem7());
-		}
-		return menuFileImport;
-	}
-
-	/**
-	 * This method initializes menuFileExport	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuFileExport() {
-		if (menuFileExport == null) {
-			menuFileExport = new BMenu();
-			menuFileExport.setText("Export");
-			menuFileExport.add(getBMenuItem8());
-			menuFileExport.add(getBMenuItem9());
-		}
-		return menuFileExport;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem101	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem101() {
-		if (toolStripMenuItem101 == null) {
-			toolStripMenuItem101 = new JSeparator();
-		}
-		return toolStripMenuItem101;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem4() {
-		if (menuFileRecent == null) {
-			menuFileRecent = new BMenuItem();
-			menuFileRecent.setText("Recent Files");
-		}
-		return menuFileRecent;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem102	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem102() {
-		if (toolStripMenuItem102 == null) {
-			toolStripMenuItem102 = new JSeparator();
-		}
-		return toolStripMenuItem102;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem5() {
-		if (menuFileQuit == null) {
-			menuFileQuit = new BMenuItem();
-			menuFileQuit.setText("Quit");
-		}
-		return menuFileQuit;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem6() {
-		if (menuFileImportVsq == null) {
-			menuFileImportVsq = new BMenuItem();
-			menuFileImportVsq.setText("VSQ / Vocaloid MIDI");
-		}
-		return menuFileImportVsq;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem7() {
-		if (menuFileImportMidi == null) {
-			menuFileImportMidi = new BMenuItem();
-			menuFileImportMidi.setText("Standard MIDI");
-		}
-		return menuFileImportMidi;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem8() {
-		if (menuFileExportWav == null) {
-			menuFileExportWav = new BMenuItem();
-			menuFileExportWav.setText("Wave");
-		}
-		return menuFileExportWav;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem9() {
-		if (menuFileExportMidi == null) {
-			menuFileExportMidi = new BMenuItem();
-			menuFileExportMidi.setText("MIDI");
-		}
-		return menuFileExportMidi;
-	}
-
-	/**
-	 * This method initializes menuEdit	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuEdit() {
-		if (menuEdit == null) {
-			menuEdit = new BMenu();
-			menuEdit.setText("Edit");
-			menuEdit.add(getBMenuItem10());
-			menuEdit.add(getBMenuItem11());
-			menuEdit.add(getToolStripMenuItem103());
-			menuEdit.add(getBMenuItem12());
-			menuEdit.add(getMenuEditCopy());
-			menuEdit.add(getBMenuItem22());
-			menuEdit.add(getBMenuItem13());
-			menuEdit.add(getToolStripMenuItem104());
-			menuEdit.add(getBMenuItem14());
-			menuEdit.add(getToolStripMenuItem1041());
-			menuEdit.add(getBMenuItem15());
-			menuEdit.add(getMenuEditSelectAllEvents());
-		}
-		return menuEdit;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem10() {
-		if (menuEditUndo == null) {
-			menuEditUndo = new BMenuItem();
-			menuEditUndo.setText("Undo");
-		}
-		return menuEditUndo;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem11() {
-		if (menuEditRedo == null) {
-			menuEditRedo = new BMenuItem();
-			menuEditRedo.setText("Redo");
-		}
-		return menuEditRedo;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem103	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem103() {
-		if (toolStripMenuItem103 == null) {
-			toolStripMenuItem103 = new JSeparator();
-		}
-		return toolStripMenuItem103;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem12() {
-		if (menuEditCut == null) {
-			menuEditCut = new BMenuItem();
-			menuEditCut.setText("Cut");
-		}
-		return menuEditCut;
-	}
-
-	/**
-	 * This method initializes menuEditCopy	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuEditCopy() {
-		if (menuEditCopy == null) {
-			menuEditCopy = new BMenuItem();
-			menuEditCopy.setText("Copy");
-		}
-		return menuEditCopy;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem22() {
-		if (menuEditPaste == null) {
-			menuEditPaste = new BMenuItem();
-			menuEditPaste.setText("Paste");
-		}
-		return menuEditPaste;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem13() {
-		if (menuEditDelete == null) {
-			menuEditDelete = new BMenuItem();
-			menuEditDelete.setText("Delete");
-		}
-		return menuEditDelete;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem104	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem104() {
-		if (toolStripMenuItem104 == null) {
-			toolStripMenuItem104 = new JSeparator();
-		}
-		return toolStripMenuItem104;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem14() {
-		if (menuEditAutoNormalizeMode == null) {
-			menuEditAutoNormalizeMode = new BMenuItem();
-			menuEditAutoNormalizeMode.setText("Auto Normalize Mode");
-		}
-		return menuEditAutoNormalizeMode;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem1041	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem1041() {
-		if (toolStripMenuItem1041 == null) {
-			toolStripMenuItem1041 = new JSeparator();
-		}
-		return toolStripMenuItem1041;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem15() {
-		if (menuEditSelectAll == null) {
-			menuEditSelectAll = new BMenuItem();
-			menuEditSelectAll.setText("Select All");
-		}
-		return menuEditSelectAll;
-	}
-
-	/**
-	 * This method initializes menuEditSelectAllEvents	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuEditSelectAllEvents() {
-		if (menuEditSelectAllEvents == null) {
-			menuEditSelectAllEvents = new BMenuItem();
-			menuEditSelectAllEvents.setText("Select All Events");
-		}
-		return menuEditSelectAllEvents;
-	}
-
-	/**
-	 * This method initializes menuVisual	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuVisual() {
-		if (menuVisual == null) {
-			menuVisual = new BMenu();
-			menuVisual.setText("Visual");
-			menuVisual.add(getBMenuItem16());
-			menuVisual.add(getBMenuItem17());
-			menuVisual.add(getMenuVisualWaveform());
-			menuVisual.add(getBMenuItem23());
-			menuVisual.add(getBMenuItem32());
-			menuVisual.add(getToolStripMenuItem1031());
-			menuVisual.add(getBMenuItem18());
-			menuVisual.add(getToolStripMenuItem1032());
-			menuVisual.add(getBMenuItem19());
-			menuVisual.add(getMenuVisualEndMarker());
-			menuVisual.add(getToolStripMenuItem1033());
-			menuVisual.add(getMenuVisualLyrics());
-			menuVisual.add(getBMenuItem20());
-			menuVisual.add(getBMenuItem24());
-		}
-		return menuVisual;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem16() {
-		if (menuVisualControlTrack == null) {
-			menuVisualControlTrack = new BMenuItem();
-			menuVisualControlTrack.setText("Control Track");
-		}
-		return menuVisualControlTrack;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem17() {
-		if (menuVisualMixer == null) {
-			menuVisualMixer = new BMenuItem();
-			menuVisualMixer.setText("Mixer");
-		}
-		return menuVisualMixer;
-	}
-
-	/**
-	 * This method initializes menuVisualWaveform	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuVisualWaveform() {
-		if (menuVisualWaveform == null) {
-			menuVisualWaveform = new BMenuItem();
-			menuVisualWaveform.setText("Waveform");
-		}
-		return menuVisualWaveform;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem23() {
-		if (menuVisualProperty == null) {
-			menuVisualProperty = new BMenuItem();
-			menuVisualProperty.setText("Property Window");
-		}
-		return menuVisualProperty;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem32() {
-		if (menuVisualOverview == null) {
-			menuVisualOverview = new BMenuItem();
-			menuVisualOverview.setText("Navigation");
-		}
-		return menuVisualOverview;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem1031	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem1031() {
-		if (toolStripMenuItem1031 == null) {
-			toolStripMenuItem1031 = new JSeparator();
-		}
-		return toolStripMenuItem1031;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem18() {
-		if (menuVisualGridline == null) {
-			menuVisualGridline = new BMenuItem();
-			menuVisualGridline.setText("Grid Line");
-		}
-		return menuVisualGridline;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem1032	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem1032() {
-		if (toolStripMenuItem1032 == null) {
-			toolStripMenuItem1032 = new JSeparator();
-		}
-		return toolStripMenuItem1032;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem19() {
-		if (menuVisualStartMarker == null) {
-			menuVisualStartMarker = new BMenuItem();
-			menuVisualStartMarker.setText("Start Marker");
-		}
-		return menuVisualStartMarker;
-	}
-
-	/**
-	 * This method initializes menuVisualEndMarker	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuVisualEndMarker() {
-		if (menuVisualEndMarker == null) {
-			menuVisualEndMarker = new BMenuItem();
-			menuVisualEndMarker.setText("End Marker");
-		}
-		return menuVisualEndMarker;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem1033	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem1033() {
-		if (toolStripMenuItem1033 == null) {
-			toolStripMenuItem1033 = new JSeparator();
-		}
-		return toolStripMenuItem1033;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem20() {
-		if (menuVisualNoteProperty == null) {
-			menuVisualNoteProperty = new BMenuItem();
-			menuVisualNoteProperty.setText("Note Expression/Vibrato");
-		}
-		return menuVisualNoteProperty;
-	}
-
-	/**
-	 * This method initializes menuVisualLyrics	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuVisualLyrics() {
-		if (menuVisualLyrics == null) {
-			menuVisualLyrics = new BMenuItem();
-			menuVisualLyrics.setText("Lyrics/Phoneme");
-		}
-		return menuVisualLyrics;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem24() {
-		if (menuVisualPitchLine == null) {
-			menuVisualPitchLine = new BMenuItem();
-			menuVisualPitchLine.setText("Pitch Line");
-		}
-		return menuVisualPitchLine;
-	}
-
-	/**
-	 * This method initializes menuJob	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuJob() {
-		if (menuJob == null) {
-			menuJob = new BMenu();
-			menuJob.setText("Job");
-			menuJob.add(getBMenuItem21());
-			menuJob.add(getMenuJobInsertBar());
-			menuJob.add(getBMenuItem25());
-			menuJob.add(getBMenuItem33());
-			menuJob.add(getBMenuItem42());
-			menuJob.add(getBMenuItem52());
-			menuJob.add(getBMenuItem62());
-			menuJob.add(getBMenuItem72());
-			menuJob.add(getBMenuItem26());
-		}
-		return menuJob;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem21() {
-		if (menuJobNormalize == null) {
-			menuJobNormalize = new BMenuItem();
-			menuJobNormalize.setText("Normalize Notes");
-		}
-		return menuJobNormalize;
-	}
-
-	/**
-	 * This method initializes menuJobInsertBar	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuJobInsertBar() {
-		if (menuJobInsertBar == null) {
-			menuJobInsertBar = new BMenuItem();
-			menuJobInsertBar.setText("Insert Bars");
-		}
-		return menuJobInsertBar;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem25() {
-		if (menuJobDeleteBar == null) {
-			menuJobDeleteBar = new BMenuItem();
-			menuJobDeleteBar.setText("Delete Bars");
-		}
-		return menuJobDeleteBar;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem33() {
-		if (menuJobRandomize == null) {
-			menuJobRandomize = new BMenuItem();
-			menuJobRandomize.setText("Randomize");
-		}
-		return menuJobRandomize;
-	}
-
-	/**
-	 * This method initializes BMenuItem4	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem42() {
-		if (menuJobConnect == null) {
-			menuJobConnect = new BMenuItem();
-			menuJobConnect.setText("Connect Notes");
-		}
-		return menuJobConnect;
-	}
-
-	/**
-	 * This method initializes BMenuItem5	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem52() {
-		if (menuJobLyric == null) {
-			menuJobLyric = new BMenuItem();
-			menuJobLyric.setText("Insert Lyrics");
-		}
-		return menuJobLyric;
-	}
-
-	/**
-	 * This method initializes BMenuItem6	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem62() {
-		if (menuJobRewire == null) {
-			menuJobRewire = new BMenuItem();
-			menuJobRewire.setText("Import ReWire Host Tempo");
-		}
-		return menuJobRewire;
-	}
-
-	/**
-	 * This method initializes BMenuItem7	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem72() {
-		if (menuJobRealTime == null) {
-			menuJobRealTime = new BMenuItem();
-			menuJobRealTime.setText("Start Realtime Input");
-		}
-		return menuJobRealTime;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem26() {
-		if (menuJobReloadVsti == null) {
-			menuJobReloadVsti = new BMenuItem();
-			menuJobReloadVsti.setText("Reload VSTi");
-		}
-		return menuJobReloadVsti;
-	}
-
-	/**
-	 * This method initializes menuTrack	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuTrack() {
-		if (menuTrack == null) {
-			menuTrack = new BMenu();
-			menuTrack.setText("Track");
-			menuTrack.add(getBMenuItem27());
-			menuTrack.add(getToolStripMenuItem10321());
-			menuTrack.add(getMenuTrackAdd());
-			menuTrack.add(getBMenuItem28());
-			menuTrack.add(getBMenuItem34());
-			menuTrack.add(getBMenuItem43());
-			menuTrack.add(getToolStripMenuItem10322());
-			menuTrack.add(getBMenuItem53());
-			menuTrack.add(getBMenuItem63());
-			menuTrack.add(getToolStripMenuItem10323());
-			menuTrack.add(getBMenuItem73());
-			menuTrack.add(getMenuTrackRenderer());
-			menuTrack.add(getToolStripMenuItem10324());
-			menuTrack.add(getMenuTrackBgm());
-			menuTrack.add(getBMenuItem82());
-		}
-		return menuTrack;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem27() {
-		if (menuTrackOn == null) {
-			menuTrackOn = new BMenuItem();
-			menuTrackOn.setText("Track On");
-		}
-		return menuTrackOn;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem10321	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem10321() {
-		if (toolStripMenuItem10321 == null) {
-			toolStripMenuItem10321 = new JSeparator();
-		}
-		return toolStripMenuItem10321;
-	}
-
-	/**
-	 * This method initializes menuTrackAdd	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuTrackAdd() {
-		if (menuTrackAdd == null) {
-			menuTrackAdd = new BMenuItem();
-			menuTrackAdd.setText("Add Track");
-		}
-		return menuTrackAdd;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem28() {
-		if (menuTrackCopy == null) {
-			menuTrackCopy = new BMenuItem();
-			menuTrackCopy.setText("Copy Track");
-		}
-		return menuTrackCopy;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem34() {
-		if (menuTrackChangeName == null) {
-			menuTrackChangeName = new BMenuItem();
-			menuTrackChangeName.setText("Rename Track");
-		}
-		return menuTrackChangeName;
-	}
-
-	/**
-	 * This method initializes BMenuItem4	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem43() {
-		if (menuTrackDelete == null) {
-			menuTrackDelete = new BMenuItem();
-			menuTrackDelete.setText("Delete Track");
-		}
-		return menuTrackDelete;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem10322	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem10322() {
-		if (toolStripMenuItem10322 == null) {
-			toolStripMenuItem10322 = new JSeparator();
-		}
-		return toolStripMenuItem10322;
-	}
-
-	/**
-	 * This method initializes BMenuItem5	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem53() {
-		if (menuTrackRenderCurrent == null) {
-			menuTrackRenderCurrent = new BMenuItem();
-			menuTrackRenderCurrent.setText("Render Current Track");
-		}
-		return menuTrackRenderCurrent;
-	}
-
-	/**
-	 * This method initializes BMenuItem6	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem63() {
-		if (menuTrackRenderAll == null) {
-			menuTrackRenderAll = new BMenuItem();
-			menuTrackRenderAll.setText("Render All Tracks");
-		}
-		return menuTrackRenderAll;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem10323	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem10323() {
-		if (toolStripMenuItem10323 == null) {
-			toolStripMenuItem10323 = new JSeparator();
-		}
-		return toolStripMenuItem10323;
-	}
-
-	/**
-	 * This method initializes BMenuItem7	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem73() {
-		if (menuTrackOverlay == null) {
-			menuTrackOverlay = new BMenuItem();
-			menuTrackOverlay.setText("Overlay");
-		}
-		return menuTrackOverlay;
-	}
-
-	/**
-	 * This method initializes menuTrackRenderer	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuTrackRenderer() {
-		if (menuTrackRenderer == null) {
-			menuTrackRenderer = new BMenu();
-			menuTrackRenderer.setText("Renderer");
-		}
-		return menuTrackRenderer;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem10324	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem10324() {
-		if (toolStripMenuItem10324 == null) {
-			toolStripMenuItem10324 = new JSeparator();
-		}
-		return toolStripMenuItem10324;
-	}
-
-	/**
-	 * This method initializes menuTrackBgm	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuTrackBgm() {
-		if (menuTrackBgm == null) {
-			menuTrackBgm = new BMenu();
-			menuTrackBgm.setText("BGM");
-		}
-		return menuTrackBgm;
-	}
-
-	/**
-	 * This method initializes BMenuItem8	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem82() {
-		if (menuTrackManager == null) {
-			menuTrackManager = new BMenuItem();
-		}
-		return menuTrackManager;
-	}
-
-	/**
-	 * This method initializes menuLyric	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuLyric() {
-		if (menuLyric == null) {
-			menuLyric = new BMenu();
-			menuLyric.setText("Lyrics");
-			menuLyric.add(getBMenuItem29());
-			menuLyric.add(getMenuLyricVibratoProperty());
-			menuLyric.add(getBMenuItem210());
-			menuLyric.add(getBMenuItem35());
-		}
-		return menuLyric;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem29() {
-		if (menuLyricExpressionProperty == null) {
-			menuLyricExpressionProperty = new BMenuItem();
-			menuLyricExpressionProperty.setText("Note Expression Propertry");
-		}
-		return menuLyricExpressionProperty;
-	}
-
-	/**
-	 * This method initializes menuLyricVibratoProperty	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuLyricVibratoProperty() {
-		if (menuLyricVibratoProperty == null) {
-			menuLyricVibratoProperty = new BMenuItem();
-			menuLyricVibratoProperty.setText("Note Vibrato Property");
-		}
-		return menuLyricVibratoProperty;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem210() {
-		if (menuLyricSymbol == null) {
-			menuLyricSymbol = new BMenuItem();
-			menuLyricSymbol.setText("Phoneme Transformation");
-		}
-		return menuLyricSymbol;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem35() {
-		if (menuLyricDictionary == null) {
-			menuLyricDictionary = new BMenuItem();
-			menuLyricDictionary.setText("User Word Dictionary");
-		}
-		return menuLyricDictionary;
-	}
-
-	/**
-	 * This method initializes menuScript	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuScript() {
-		if (menuScript == null) {
-			menuScript = new BMenu();
-			menuScript.setText("Script");
-			menuScript.add(getBMenuItem30());
-		}
-		return menuScript;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem30() {
-		if (menuScriptUpdate == null) {
-			menuScriptUpdate = new BMenuItem();
-			menuScriptUpdate.setText("Update Script List");
-		}
-		return menuScriptUpdate;
-	}
-
-	/**
-	 * This method initializes menuSetting	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuSetting() {
-		if (menuSetting == null) {
-			menuSetting = new BMenu();
-			menuSetting.setText("Setting");
-			menuSetting.add(getBMenuItem31());
-			menuSetting.add(getMenuSettingGameControler());
-			menuSetting.add(getMenuSettingPaletteTool());
-			menuSetting.add(getBMenuItem211());
-			menuSetting.add(getBMenuItem36());
-			menuSetting.add(getBMenuItem44());
-			menuSetting.add(getToolStripMenuItem103211());
-			menuSetting.add(getBMenuItem54());
-			menuSetting.add(getToolStripMenuItem103212());
-			menuSetting.add(getMenuSettingPositionQuantize());
-			menuSetting.add(getMenuSettingLengthQuantize());
-			menuSetting.add(getBMenuItem64());
-		}
-		return menuSetting;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem31() {
-		if (menuSettingPreference == null) {
-			menuSettingPreference = new BMenuItem();
-			menuSettingPreference.setText("Preference");
-		}
-		return menuSettingPreference;
-	}
-
-	/**
-	 * This method initializes menuSettingGameControler	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuSettingGameControler() {
-		if (menuSettingGameControler == null) {
-			menuSettingGameControler = new BMenu();
-			menuSettingGameControler.setText("Game Controler");
-		}
-		return menuSettingGameControler;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem211() {
-		if (menuSettingShortcut == null) {
-			menuSettingShortcut = new BMenuItem();
-			menuSettingShortcut.setText("Shortcut Key");
-		}
-		return menuSettingShortcut;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem36() {
-		if (menuSettingMidi == null) {
-			menuSettingMidi = new BMenuItem();
-		}
-		return menuSettingMidi;
-	}
-
-	/**
-	 * This method initializes BMenuItem4	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem44() {
-		if (menuSettingUtauVoiceDB == null) {
-			menuSettingUtauVoiceDB = new BMenuItem();
-			menuSettingUtauVoiceDB.setText("UTAU Voice DB");
-		}
-		return menuSettingUtauVoiceDB;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem103211	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem103211() {
-		if (toolStripMenuItem103211 == null) {
-			toolStripMenuItem103211 = new JSeparator();
-		}
-		return toolStripMenuItem103211;
-	}
-
-	/**
-	 * This method initializes BMenuItem5	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem54() {
-		if (menuSettingDefaultSingerStyle == null) {
-			menuSettingDefaultSingerStyle = new BMenuItem();
-			menuSettingDefaultSingerStyle.setText("Singing Style Defaults");
-		}
-		return menuSettingDefaultSingerStyle;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem103212	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem103212() {
-		if (toolStripMenuItem103212 == null) {
-			toolStripMenuItem103212 = new JSeparator();
-		}
-		return toolStripMenuItem103212;
-	}
-
-	/**
-	 * This method initializes menuSettingPositionQuantize	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuSettingPositionQuantize() {
-		if (menuSettingPositionQuantize == null) {
-			menuSettingPositionQuantize = new BMenu();
-			menuSettingPositionQuantize.setText("Quantize");
-			menuSettingPositionQuantize.add(getBMenuItem37());
-			menuSettingPositionQuantize.add(getMenuSettingPositionQuantize08());
-			menuSettingPositionQuantize.add(getBMenuItem212());
-			menuSettingPositionQuantize.add(getBMenuItem38());
-			menuSettingPositionQuantize.add(getBMenuItem45());
-			menuSettingPositionQuantize.add(getBMenuItem55());
-			menuSettingPositionQuantize.add(getBMenuItem65());
-			menuSettingPositionQuantize.add(getToolStripMenuItem1032121());
-			menuSettingPositionQuantize.add(getBMenuItem74());
-		}
-		return menuSettingPositionQuantize;
-	}
-
-	/**
-	 * This method initializes BMenuItem6	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem64() {
-		if (menuSettingSingerProperty == null) {
-			menuSettingSingerProperty = new BMenuItem();
-		}
-		return menuSettingSingerProperty;
-	}
-
-	/**
-	 * This method initializes menuSettingPaletteTool	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuSettingPaletteTool() {
-		if (menuSettingPaletteTool == null) {
-			menuSettingPaletteTool = new BMenu();
-			menuSettingPaletteTool.setText("Palette Tool");
-		}
-		return menuSettingPaletteTool;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem37() {
-		if (menuSettingPositionQuantize04 == null) {
-			menuSettingPositionQuantize04 = new BMenuItem();
-			menuSettingPositionQuantize04.setText("1/4");
-		}
-		return menuSettingPositionQuantize04;
-	}
-
-	/**
-	 * This method initializes menuSettingPositionQuantize08	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuSettingPositionQuantize08() {
-		if (menuSettingPositionQuantize08 == null) {
-			menuSettingPositionQuantize08 = new BMenuItem();
-			menuSettingPositionQuantize08.setText("1/8");
-		}
-		return menuSettingPositionQuantize08;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem212() {
-		if (menuSettingPositionQuantize16 == null) {
-			menuSettingPositionQuantize16 = new BMenuItem();
-			menuSettingPositionQuantize16.setText("1/16");
-		}
-		return menuSettingPositionQuantize16;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem38() {
-		if (menuSettingPositionQuantize32 == null) {
-			menuSettingPositionQuantize32 = new BMenuItem();
-			menuSettingPositionQuantize32.setText("1/32");
-		}
-		return menuSettingPositionQuantize32;
-	}
-
-	/**
-	 * This method initializes BMenuItem4	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem45() {
-		if (menuSettingPositionQuantize64 == null) {
-			menuSettingPositionQuantize64 = new BMenuItem();
-			menuSettingPositionQuantize64.setText("1/64");
-		}
-		return menuSettingPositionQuantize64;
-	}
-
-	/**
-	 * This method initializes BMenuItem5	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem55() {
-		if (menuSettingPositionQuantize128 == null) {
-			menuSettingPositionQuantize128 = new BMenuItem();
-			menuSettingPositionQuantize128.setText("1/128");
-		}
-		return menuSettingPositionQuantize128;
-	}
-
-	/**
-	 * This method initializes BMenuItem6	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem65() {
-		if (menuSettingPositionQuantizeOff == null) {
-			menuSettingPositionQuantizeOff = new BMenuItem();
-			menuSettingPositionQuantizeOff.setText("Off");
-		}
-		return menuSettingPositionQuantizeOff;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem1032121	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem1032121() {
-		if (toolStripMenuItem1032121 == null) {
-			toolStripMenuItem1032121 = new JSeparator();
-		}
-		return toolStripMenuItem1032121;
-	}
-
-	/**
-	 * This method initializes BMenuItem7	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem74() {
-		if (menuSettingPositionQuantizeTriplet == null) {
-			menuSettingPositionQuantizeTriplet = new BMenuItem();
-			menuSettingPositionQuantizeTriplet.setText("Triplet");
-		}
-		return menuSettingPositionQuantizeTriplet;
-	}
-
-	/**
-	 * This method initializes menuSettingLengthQuantize	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuSettingLengthQuantize() {
-		if (menuSettingLengthQuantize == null) {
-			menuSettingLengthQuantize = new BMenu();
-			menuSettingLengthQuantize.setText("Length");
-			menuSettingLengthQuantize.add(getMenuSettingLengthQuantize04());
-			menuSettingLengthQuantize.add(getMenuSettingLengthQuantize08());
-			menuSettingLengthQuantize.add(getMenuSettingLengthQuantize16());
-			menuSettingLengthQuantize.add(getMenuSettingLengthQuantize32());
-			menuSettingLengthQuantize.add(getMenuSettingLengthQuantize64());
-			menuSettingLengthQuantize.add(getMenuSettingLengthQuantize128());
-			menuSettingLengthQuantize.add(getMenuSettingLengthQuantizeOff());
-			menuSettingLengthQuantize.add(getToolStripMenuItem10321211());
-			menuSettingLengthQuantize.add(getMenuSettingLengthQuantizeTriplet());
-		}
-		return menuSettingLengthQuantize;
-	}
-
-	/**
-	 * This method initializes menuSettingLengthQuantize04	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuSettingLengthQuantize04() {
-		if (menuSettingLengthQuantize04 == null) {
-			menuSettingLengthQuantize04 = new BMenuItem();
-			menuSettingLengthQuantize04.setText("1/4");
-		}
-		return menuSettingLengthQuantize04;
-	}
-
-	/**
-	 * This method initializes menuSettingLengthQuantize08	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuSettingLengthQuantize08() {
-		if (menuSettingLengthQuantize08 == null) {
-			menuSettingLengthQuantize08 = new BMenuItem();
-			menuSettingLengthQuantize08.setText("1/8");
-		}
-		return menuSettingLengthQuantize08;
-	}
-
-	/**
-	 * This method initializes menuSettingLengthQuantize16	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuSettingLengthQuantize16() {
-		if (menuSettingLengthQuantize16 == null) {
-			menuSettingLengthQuantize16 = new BMenuItem();
-			menuSettingLengthQuantize16.setText("1/16");
-		}
-		return menuSettingLengthQuantize16;
-	}
-
-	/**
-	 * This method initializes menuSettingLengthQuantize32	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuSettingLengthQuantize32() {
-		if (menuSettingLengthQuantize32 == null) {
-			menuSettingLengthQuantize32 = new BMenuItem();
-			menuSettingLengthQuantize32.setText("1/32");
-		}
-		return menuSettingLengthQuantize32;
-	}
-
-	/**
-	 * This method initializes menuSettingLengthQuantize64	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuSettingLengthQuantize64() {
-		if (menuSettingLengthQuantize64 == null) {
-			menuSettingLengthQuantize64 = new BMenuItem();
-			menuSettingLengthQuantize64.setText("1/64");
-		}
-		return menuSettingLengthQuantize64;
-	}
-
-	/**
-	 * This method initializes menuSettingLengthQuantize128	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuSettingLengthQuantize128() {
-		if (menuSettingLengthQuantize128 == null) {
-			menuSettingLengthQuantize128 = new BMenuItem();
-			menuSettingLengthQuantize128.setText("1/128");
-		}
-		return menuSettingLengthQuantize128;
-	}
-
-	/**
-	 * This method initializes menuSettingLengthQuantizeOff	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuSettingLengthQuantizeOff() {
-		if (menuSettingLengthQuantizeOff == null) {
-			menuSettingLengthQuantizeOff = new BMenuItem();
-			menuSettingLengthQuantizeOff.setText("Off");
-		}
-		return menuSettingLengthQuantizeOff;
-	}
-
-	/**
-	 * This method initializes toolStripMenuItem10321211	
-	 * 	
-	 * @return javax.swing.JSeparator	
-	 */
-	private JSeparator getToolStripMenuItem10321211() {
-		if (toolStripMenuItem10321211 == null) {
-			toolStripMenuItem10321211 = new JSeparator();
-		}
-		return toolStripMenuItem10321211;
-	}
-
-	/**
-	 * This method initializes menuSettingLengthQuantizeTriplet	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getMenuSettingLengthQuantizeTriplet() {
-		if (menuSettingLengthQuantizeTriplet == null) {
-			menuSettingLengthQuantizeTriplet = new BMenuItem();
-			menuSettingLengthQuantizeTriplet.setText("Triplet");
-		}
-		return menuSettingLengthQuantizeTriplet;
-	}
-
-	/**
-	 * This method initializes menuHelp	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getMenuHelp() {
-		if (menuHelp == null) {
-			menuHelp = new BMenu();
-			menuHelp.setText("Help");
-			menuHelp.add(getBMenuItem39());
-		}
-		return menuHelp;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getBMenuItem39() {
-		if (menuHelpAbout == null) {
-			menuHelpAbout = new BMenuItem();
-			menuHelpAbout.setText("About Cadencii");
-		}
-		return menuHelpAbout;
-	}
-
-	/**
-	 * This method initializes splitContainer2	
-	 * 	
-	 * @return javax.swing.JSplitPane	
-	 */
-	private JSplitPane getSplitContainer2() {
-		if (splitContainer2 == null) {
-			splitContainer2 = new JSplitPane();
-			splitContainer2.setDividerSize(0);
-			splitContainer2.setDividerLocation(70);
-			splitContainer2.setEnabled(false);
-			splitContainer2.setResizeWeight(1.0D);
-			splitContainer2.setBottomComponent(getPanel2());
-			splitContainer2.setTopComponent(getJPanel1());
-			splitContainer2.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		}
-		return splitContainer2;
-	}
-
-	/**
-	 * This method initializes panel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getPanel1() {
-		if (panel1 == null) {
-			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.fill = GridBagConstraints.NONE;
-			gridBagConstraints11.gridy = 1;
-			gridBagConstraints11.weightx = 0.0D;
-			gridBagConstraints11.anchor = GridBagConstraints.EAST;
-			gridBagConstraints11.gridx = 2;
-			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
-			gridBagConstraints10.gridx = 0;
-			gridBagConstraints10.fill = GridBagConstraints.BOTH;
-			gridBagConstraints10.gridy = 1;
-			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
-			gridBagConstraints9.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints9.gridy = 1;
-			gridBagConstraints9.weighty = 0.0D;
-			gridBagConstraints9.weightx = 1.0D;
-			gridBagConstraints9.gridx = 1;
-			GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
-			gridBagConstraints8.fill = GridBagConstraints.VERTICAL;
-			gridBagConstraints8.gridy = 0;
-			gridBagConstraints8.weighty = 1.0D;
-			gridBagConstraints8.gridx = 3;
-			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-			gridBagConstraints7.gridx = 0;
-			gridBagConstraints7.fill = GridBagConstraints.BOTH;
-			gridBagConstraints7.weightx = 1.0D;
-			gridBagConstraints7.weighty = 1.0D;
-			gridBagConstraints7.gridwidth = 3;
-			gridBagConstraints7.gridy = 0;
-			panel1 = new JPanel();
-			panel1.setLayout(new GridBagLayout());
-			panel1.add(getPictPianoRoll(), gridBagConstraints7);
-			panel1.add(getVScroll(), gridBagConstraints8);
-			panel1.add(getHScroll(), gridBagConstraints9);
-			panel1.add(getPictureBox3(), gridBagConstraints10);
-			panel1.add(getTrackBar(), gridBagConstraints11);
-		}
-		return panel1;
-	}
-
-	/**
-	 * This method initializes panel2	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getPanel2() {
-		if (panel2 == null) {
-			panel2 = new JPanel();
-			panel2.setLayout(new GridBagLayout());
-		}
-		return panel2;
-	}
-
-	/**
-	 * This method initializes splitContainer1	
-	 * 	
-	 * @return javax.swing.JSplitPane	
-	 */
-	private JSplitPane getSplitContainer1() {
-		if (splitContainer1 == null) {
-			splitContainer1 = new JSplitPane();
-			splitContainer1.setDividerLocation(200);
-			splitContainer1.setResizeWeight(1.0D);
-			splitContainer1.setTopComponent(getSplitContainer2());
-			splitContainer1.setBottomComponent(getTrackSelector());
-			splitContainer1.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		}
-		return splitContainer1;
-	}
-
-	/**
-	 * This method initializes trackSelector	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private TrackSelector getTrackSelector() {
-		if (trackSelector == null) {
-			trackSelector = new TrackSelector();
-			trackSelector.setLayout(new GridBagLayout());
-		}
-		return trackSelector;
-	}
-
-	/**
-	 * This method initializes splitContainerProperty	
-	 * 	
-	 * @return javax.swing.JSplitPane	
-	 */
-	private JSplitPane getSplitContainerProperty() {
-		if (splitContainerProperty == null) {
-			splitContainerProperty = new JSplitPane();
-			splitContainerProperty.setDividerLocation(0);
-			splitContainerProperty.setEnabled(false);
-			splitContainerProperty.setDividerSize(0);
-			splitContainerProperty.setRightComponent(getSplitContainer1());
-			splitContainerProperty.setLeftComponent(getM_property_panel_container());
-		}
-		return splitContainerProperty;
-	}
-
-	/**
-	 * This method initializes m_property_panel_container	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getM_property_panel_container() {
-		if (m_property_panel_container == null) {
-			m_property_panel_container = new JPanel();
-			m_property_panel_container.setLayout(new GridBagLayout());
-		}
-		return m_property_panel_container;
-	}
-
-	/**
-	 * This method initializes toolStripFile	
-	 * 	
-	 * @return javax.swing.BToolBar	
-	 */
-	private BToolBar getToolStripFile() {
-		if (toolStripFile == null) {
-			toolStripFile = new BToolBar();
-			toolStripFile.setName("toolStripFile");
-			toolStripFile.add(getStripBtnFileNew());
-			toolStripFile.add(getStripBtnFileOpen());
-			toolStripFile.add(getStripBtnFileSave());
-			toolStripFile.addSeparator();
-			toolStripFile.add(getStripBtnCut());
-			toolStripFile.add(getStripBtnCopy());
-			toolStripFile.add(getStripBtnPaste());
-			toolStripFile.add(getStripBtnUndo());
-			toolStripFile.add(getStripBtnRedo());
-		}
-		return toolStripFile;
-	}
-
-	/**
-	 * This method initializes toolStripBottom	
-	 * 	
-	 * @return javax.swing.BToolBar	
-	 */
-	private BToolBar getToolStripBottom() {
-		if (toolStripBottom == null) {
-			jLabel5 = new BLabel();
-			jLabel5.setText("Speed 1.0x");
-			stripLblMidiIn = new BLabel();
-			stripLblMidiIn.setText("Disabled");
-			jLabel4 = new BLabel();
-			jLabel4.setText("MIDI In");
-			stripLblGameCtrlMode = new BLabel();
-			stripLblGameCtrlMode.setText("Disabled");
-			jLabel3 = new BLabel();
-			jLabel3.setText("Game Controler");
-			stripLblBeat = new BLabel();
-			stripLblBeat.setText("4/4");
-			jLabel2 = new BLabel();
-			jLabel2.setText("BEAT");
-			stripLblTempo = new BLabel();
-			stripLblTempo.setText("120.00");
-			toolStripLabel8 = new BLabel();
-			toolStripLabel8.setText("TEMPO");
-			stripLblCursor = new BLabel();
-			stripLblCursor.setText("0 : 0 : 000");
-			toolStripLabel6 = new BLabel();
-			toolStripLabel6.setText("CURSOR");
-			toolStripBottom = new BToolBar();
-			toolStripBottom.add(toolStripLabel6);
-			toolStripBottom.add(stripLblCursor);
-			toolStripBottom.addSeparator();
-			toolStripBottom.add(toolStripLabel8);
-			toolStripBottom.add(stripLblTempo);
-			toolStripBottom.addSeparator();
-			toolStripBottom.add(jLabel2);
-			toolStripBottom.add(stripLblBeat);
-			toolStripBottom.addSeparator();
-			toolStripBottom.add(jLabel3);
-			toolStripBottom.add(stripLblGameCtrlMode);
-			toolStripBottom.addSeparator();
-			toolStripBottom.add(jLabel4);
-			toolStripBottom.add(stripLblMidiIn);
-			toolStripBottom.add(jLabel5);
-			toolStripBottom.add(getStripDDBtnSpeed());
-			toolStripBottom.addSeparator();
-			
-		}
-		return toolStripBottom;
-	}
-
-	/**
-	 * This method initializes stripBtnFileNew	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnFileNew() {
-		if (stripBtnFileNew == null) {
-			stripBtnFileNew = new BButton();
-			stripBtnFileNew.setText("New");
-		}
-		return stripBtnFileNew;
-	}
-
-	/**
-	 * This method initializes stripBtnFileOpen	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnFileOpen() {
-		if (stripBtnFileOpen == null) {
-			stripBtnFileOpen = new BButton();
-			stripBtnFileOpen.setText("Open");
-		}
-		return stripBtnFileOpen;
-	}
-
-	/**
-	 * This method initializes stripBtnFileSave	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnFileSave() {
-		if (stripBtnFileSave == null) {
-			stripBtnFileSave = new BButton();
-			stripBtnFileSave.setText("Save");
-		}
-		return stripBtnFileSave;
-	}
-
-	/**
-	 * This method initializes stripBtnCut	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnCut() {
-		if (stripBtnCut == null) {
-			stripBtnCut = new BButton();
-			stripBtnCut.setText("Cut");
-		}
-		return stripBtnCut;
-	}
-
-	/**
-	 * This method initializes stripBtnCopy	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnCopy() {
-		if (stripBtnCopy == null) {
-			stripBtnCopy = new BButton();
-			stripBtnCopy.setText("Copy");
-		}
-		return stripBtnCopy;
-	}
-
-	/**
-	 * This method initializes stripBtnPaste	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnPaste() {
-		if (stripBtnPaste == null) {
-			stripBtnPaste = new BButton();
-			stripBtnPaste.setText("Paste");
-		}
-		return stripBtnPaste;
-	}
-
-	/**
-	 * This method initializes stripBtnUndo	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnUndo() {
-		if (stripBtnUndo == null) {
-			stripBtnUndo = new BButton();
-			stripBtnUndo.setText("Undo");
-		}
-		return stripBtnUndo;
-	}
-
-	/**
-	 * This method initializes stripBtnRedo	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnRedo() {
-		if (stripBtnRedo == null) {
-			stripBtnRedo = new BButton();
-			stripBtnRedo.setText("Redo");
-		}
-		return stripBtnRedo;
-	}
-
-	/**
-	 * This method initializes toolStripPosition	
-	 * 	
-	 * @return javax.swing.BToolBar	
-	 */
-	private BToolBar getToolStripPosition() {
-		if (toolStripPosition == null) {
-			toolStripPosition = new BToolBar();
-			toolStripPosition.setName("toolStripPosition");
-			toolStripPosition.add(getStripBtnMoveTop());
-			toolStripPosition.add(getStripBtnRewind());
-			toolStripPosition.add(getStripBtnForward());
-			toolStripPosition.add(getStripBtnMoveEnd());
-			toolStripPosition.add(getStripBtnPlay());
-			toolStripPosition.add(getStripBtnStop());
-			toolStripPosition.add(getStripBtnScroll());
-			toolStripPosition.add(getStripBtnLoop());
-			toolStripPosition.addSeparator();
-		}
-		return toolStripPosition;
-	}
-
-	/**
-	 * This method initializes stripBtnMoveTop	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnMoveTop() {
-		if (stripBtnMoveTop == null) {
-			stripBtnMoveTop = new BButton();
-			stripBtnMoveTop.setText("|<");
-		}
-		return stripBtnMoveTop;
-	}
-
-	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getJPanel() {
-		if (jPanel == null) {
-			GridLayout gridLayout4 = new GridLayout();
-			gridLayout4.setRows(2);
-			GridLayout gridLayout3 = new GridLayout();
-			gridLayout3.setRows(2);
-			GridLayout gridLayout2 = new GridLayout();
-			gridLayout2.setRows(2);
-			GridLayout gridLayout = new GridLayout();
-			gridLayout.setRows(2);
-			jPanel = new JPanel();
-			jPanel.setLayout(new BoxLayout(getJPanel(), BoxLayout.X_AXIS));
-			jPanel.add(getToolStripFile(), null);
-			jPanel.add(getToolStripPosition(), null);
-			jPanel.add(getToolStripTool(), null);
-			jPanel.add(getToolStripMeasure(), null);
-		}
-		return jPanel;
-	}
-
-	/**
-	 * This method initializes stripBtnRewind	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnRewind() {
-		if (stripBtnRewind == null) {
-			stripBtnRewind = new BButton();
-			stripBtnRewind.setText("<<");
-		}
-		return stripBtnRewind;
-	}
-
-	/**
-	 * This method initializes stripBtnForward	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnForward() {
-		if (stripBtnForward == null) {
-			stripBtnForward = new BButton();
-			stripBtnForward.setText(">>");
-		}
-		return stripBtnForward;
-	}
-
-	/**
-	 * This method initializes stripBtnMoveEnd	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnMoveEnd() {
-		if (stripBtnMoveEnd == null) {
-			stripBtnMoveEnd = new BButton();
-			stripBtnMoveEnd.setText(">|");
-		}
-		return stripBtnMoveEnd;
-	}
-
-	/**
-	 * This method initializes stripBtnPlay	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnPlay() {
-		if (stripBtnPlay == null) {
-			stripBtnPlay = new BButton();
-			stripBtnPlay.setText(">");
-		}
-		return stripBtnPlay;
-	}
-
-	/**
-	 * This method initializes stripBtnStop	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getStripBtnStop() {
-		if (stripBtnStop == null) {
-			stripBtnStop = new BButton();
-			stripBtnStop.setText("[  ]");
-		}
-		return stripBtnStop;
-	}
-
-	/**
-	 * This method initializes stripBtnScroll	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnScroll() {
-		if (stripBtnScroll == null) {
-			stripBtnScroll = new JToggleButton();
-			stripBtnScroll.setText("Scroll");
-		}
-		return stripBtnScroll;
-	}
-
-	/**
-	 * This method initializes stripBtnLoop	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnLoop() {
-		if (stripBtnLoop == null) {
-			stripBtnLoop = new JToggleButton();
-			stripBtnLoop.setText("Loop");
-		}
-		return stripBtnLoop;
-	}
-
-	/**
-	 * This method initializes toolStripMeasure	
-	 * 	
-	 * @return javax.swing.BToolBar	
-	 */
-	private BToolBar getToolStripMeasure() {
-		if (toolStripMeasure == null) {
-			jLabel1 = new BLabel();
-			jLabel1.setText("QUANTIZE");
-			BLabel = new BLabel();
-			BLabel.setText("LENGTH");
-			stripLblMeasure = new BLabel();
-			stripLblMeasure.setText("0 : 0 : 000");
-			toolStripLabel5 = new BLabel();
-			toolStripLabel5.setText("MEASURE");
-			toolStripMeasure = new BToolBar();
-			toolStripMeasure.setName("toolStripMeasure");
-			toolStripMeasure.add(toolStripLabel5);
-			toolStripMeasure.add(stripLblMeasure);
-			toolStripMeasure.add(BLabel);
-			toolStripMeasure.add(getStripDDBtnLength());
-			toolStripMeasure.add(jLabel1);
-			toolStripMeasure.add(getStripDDBtnQuantize());
-			toolStripMeasure.add(getStripBtnStartMarker());
-			toolStripMeasure.add(getStripBtnEndMarker());
-			toolStripMeasure.addSeparator();
-		}
-		return toolStripMeasure;
-	}
-
-	/**
-	 * This method initializes stripDDBtnLength	
-	 * 	
-	 * @return javax.swing.BComboBox	
-	 */
-	private BComboBox getStripDDBtnLength() {
-		if (stripDDBtnLength == null) {
-			stripDDBtnLength = new BComboBox();
-		}
-		return stripDDBtnLength;
-	}
-
-	/**
-	 * This method initializes stripDDBtnQuantize	
-	 * 	
-	 * @return javax.swing.BComboBox	
-	 */
-	private BComboBox getStripDDBtnQuantize() {
-		if (stripDDBtnQuantize == null) {
-			stripDDBtnQuantize = new BComboBox();
-		}
-		return stripDDBtnQuantize;
-	}
-
-	/**
-	 * This method initializes stripBtnStartMarker	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnStartMarker() {
-		if (stripBtnStartMarker == null) {
-			stripBtnStartMarker = new JToggleButton();
-		}
-		return stripBtnStartMarker;
-	}
-
-	/**
-	 * This method initializes stripBtnEndMarker	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnEndMarker() {
-		if (stripBtnEndMarker == null) {
-			stripBtnEndMarker = new JToggleButton();
-		}
-		return stripBtnEndMarker;
-	}
-
-	/**
-	 * This method initializes toolStripTool	
-	 * 	
-	 * @return javax.swing.BToolBar	
-	 */
-	private BToolBar getToolStripTool() {
-		if (toolStripTool == null) {
-			toolStripTool = new BToolBar();
-			toolStripTool.add(getStripBtnPointer());
-			toolStripTool.add(getStripBtnPencil());
-			toolStripTool.add(getStripBtnLine());
-			toolStripTool.add(getStripBtnEraser());
-			toolStripTool.add(getStripBtnGrid());
-			toolStripTool.add(getStripBtnCurve());
-			toolStripTool.addSeparator();
-		}
-		return toolStripTool;
-	}
-
-	/**
-	 * This method initializes stripBtnPointer	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnPointer() {
-		if (stripBtnPointer == null) {
-			stripBtnPointer = new JToggleButton();
-			stripBtnPointer.setText("Pointer");
-		}
-		return stripBtnPointer;
-	}
-
-	/**
-	 * This method initializes stripBtnPencil	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnPencil() {
-		if (stripBtnPencil == null) {
-			stripBtnPencil = new JToggleButton();
-			stripBtnPencil.setText("Pencil");
-		}
-		return stripBtnPencil;
-	}
-
-	/**
-	 * This method initializes stripBtnLine	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnLine() {
-		if (stripBtnLine == null) {
-			stripBtnLine = new JToggleButton();
-			stripBtnLine.setText("Line");
-		}
-		return stripBtnLine;
-	}
-
-	/**
-	 * This method initializes stripBtnEraser	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnEraser() {
-		if (stripBtnEraser == null) {
-			stripBtnEraser = new JToggleButton();
-			stripBtnEraser.setToolTipText("");
-			stripBtnEraser.setText("Eraser");
-		}
-		return stripBtnEraser;
-	}
-
-	/**
-	 * This method initializes stripBtnGrid	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnGrid() {
-		if (stripBtnGrid == null) {
-			stripBtnGrid = new JToggleButton();
-			stripBtnGrid.setText("Grid");
-		}
-		return stripBtnGrid;
-	}
-
-	/**
-	 * This method initializes stripBtnCurve	
-	 * 	
-	 * @return javax.swing.JToggleButton	
-	 */
-	private JToggleButton getStripBtnCurve() {
-		if (stripBtnCurve == null) {
-			stripBtnCurve = new JToggleButton();
-			stripBtnCurve.setText("Curve");
-		}
-		return stripBtnCurve;
-	}
-
-	/**
-	 * This method initializes stripDDBtnSpeed	
-	 * 	
-	 * @return javax.swing.BComboBox	
-	 */
-	private BComboBox getStripDDBtnSpeed() {
-		if (stripDDBtnSpeed == null) {
-			stripDDBtnSpeed = new BComboBox();
-		}
-		return stripDDBtnSpeed;
-	}
-
-	/**
-	 * This method initializes cMenuTrackSelector	
-	 * 	
-	 * @return javax.swing.JPopupMenu	
-	 */
-	private JPopupMenu getCMenuTrackSelector() {
-		if (cMenuTrackSelector == null) {
-			cMenuTrackSelector = new JPopupMenu();
-			cMenuTrackSelector.add(getCMenuTrackSelectorPointer());
-			cMenuTrackSelector.add(getCMenuTrackSelectorPencil());
-			cMenuTrackSelector.add(getCMenuTrackSelectorLine());
-			cMenuTrackSelector.add(getCMenuTrackSelectorEraser());
-			cMenuTrackSelector.add(getCMenuTrackSelectorPaletteTool());
-			cMenuTrackSelector.addSeparator();
-			cMenuTrackSelector.add(getCMenuTrackSelectorCurve());
-			cMenuTrackSelector.addSeparator();
-			cMenuTrackSelector.add(getCMenuTrackSelectorUndo());
-			cMenuTrackSelector.add(getCMenuTrackSelectorRedo());
-			cMenuTrackSelector.addSeparator();
-			cMenuTrackSelector.add(getCMenuTrackSelectorCut());
-			cMenuTrackSelector.add(getCMenuTrackSelectorCopy());
-			cMenuTrackSelector.add(getCMenuTrackSelectorPaste());
-			cMenuTrackSelector.add(getCMenuTrackSelectorDelete());
-			cMenuTrackSelector.add(getCMenuTrackSelectorDeleteBezier());
-			cMenuTrackSelector.addSeparator();
-			cMenuTrackSelector.add(getCMenuTrackSelectorSelectAll());
-		}
-		return cMenuTrackSelector;
-	}
-
-	/**
-	 * This method initializes cMenuPiano	
-	 * 	
-	 * @return javax.swing.JPopupMenu	
-	 */
-	private JPopupMenu getCMenuPiano() {
-		if (cMenuPiano == null) {
-			cMenuPiano = new JPopupMenu();
-			cMenuPiano.add(getCMenuPianoPointer());
-			cMenuPiano.add(getCMenuPianoPencil());
-			cMenuPiano.add(getCMenuPianoEraser());
-			cMenuPiano.add(getCMenuPianoPaletteTool());
-			cMenuPiano.addSeparator();
-			cMenuPiano.add(getCMenuPianoCurve());
-			cMenuPiano.addSeparator();
-			cMenuPiano.add(getCMenuPianoFixed());
-			cMenuPiano.add(getCMenuPianoQuantize());
-			cMenuPiano.add(getCMenuPianoLength());
-			cMenuPiano.add(getCMenuPianoGrid());
-			cMenuPiano.addSeparator();
-			cMenuPiano.add(getCMenuPianoUndo());
-			cMenuPiano.add(getCMenuPianoRedo());
-			cMenuPiano.addSeparator();
-			cMenuPiano.add(getCMenuPianoCut());
-			cMenuPiano.add(getCMenuPianoCopy());
-			cMenuPiano.add(getCMenuPianoPaste());
-			cMenuPiano.add(getCMenuPianoDelete());
-			cMenuPiano.addSeparator();
-			cMenuPiano.add(getCMenuPianoSelectAll());
-			cMenuPiano.add(getCMenuPianoSelectAllEvents());
-			cMenuPiano.addSeparator();
-			cMenuPiano.add(getCMenuPianoImportLyric());
-			cMenuPiano.add(getCMenuPianoExpressionProperty());
-			cMenuPiano.add(getCMenuPianoVibratoProperty());
-		}
-		return cMenuPiano;
-	}
-
-	/**
-	 * This method initializes cMenuTrackTab	
-	 * 	
-	 * @return javax.swing.JPopupMenu	
-	 */
-	private JPopupMenu getCMenuTrackTab() {
-		if (cMenuTrackTab == null) {
-			cMenuTrackTab = new JPopupMenu();
-			cMenuTrackTab.add(getCMenuTrackTabTrackOn());
-			cMenuTrackTab.addSeparator();
-			cMenuTrackTab.add(getCMenuTrackTabAdd());
-			cMenuTrackTab.add(getCMenuTrackTabCopy());
-			cMenuTrackTab.add(getCMenuTrackTabChangeName());
-			cMenuTrackTab.add(getCMenuTrackTabDelete());
-			cMenuTrackTab.addSeparator();
-			cMenuTrackTab.add(getCMenuTrackTabRenderCurrent());
-			cMenuTrackTab.add(getCMenuTrackTabRenderAll());
-			cMenuTrackTab.addSeparator();
-			cMenuTrackTab.add(getCMenuTrackTabOverlay());
-			cMenuTrackTab.add(getCMenuTrackTabRenderer());
-		}
-		return cMenuTrackTab;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorPointer() {
-		if (cMenuTrackSelectorPointer == null) {
-			cMenuTrackSelectorPointer = new BMenuItem();
-		}
-		return cMenuTrackSelectorPointer;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorPencil() {
-		if (cMenuTrackSelectorPencil == null) {
-			cMenuTrackSelectorPencil = new BMenuItem();
-		}
-		return cMenuTrackSelectorPencil;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorLine() {
-		if (cMenuTrackSelectorLine == null) {
-			cMenuTrackSelectorLine = new BMenuItem();
-		}
-		return cMenuTrackSelectorLine;
-	}
-
-	/**
-	 * This method initializes cMenuTrackSelectorEraser	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorEraser() {
-		if (cMenuTrackSelectorEraser == null) {
-			cMenuTrackSelectorEraser = new BMenuItem();
-		}
-		return cMenuTrackSelectorEraser;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorPaletteTool() {
-		if (cMenuTrackSelectorPaletteTool == null) {
-			cMenuTrackSelectorPaletteTool = new BMenuItem();
-		}
-		return cMenuTrackSelectorPaletteTool;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorCurve() {
-		if (cMenuTrackSelectorCurve == null) {
-			cMenuTrackSelectorCurve = new BMenuItem();
-		}
-		return cMenuTrackSelectorCurve;
-	}
-
-	/**
-	 * This method initializes cMenuTrackSelectorUndo	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorUndo() {
-		if (cMenuTrackSelectorUndo == null) {
-			cMenuTrackSelectorUndo = new BMenuItem();
-		}
-		return cMenuTrackSelectorUndo;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorRedo() {
-		if (cMenuTrackSelectorRedo == null) {
-			cMenuTrackSelectorRedo = new BMenuItem();
-		}
-		return cMenuTrackSelectorRedo;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorCut() {
-		if (cMenuTrackSelectorCut == null) {
-			cMenuTrackSelectorCut = new BMenuItem();
-		}
-		return cMenuTrackSelectorCut;
-	}
-
-	/**
-	 * This method initializes cMenuTrackSelectorCopy	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorCopy() {
-		if (cMenuTrackSelectorCopy == null) {
-			cMenuTrackSelectorCopy = new BMenuItem();
-		}
-		return cMenuTrackSelectorCopy;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorPaste() {
-		if (cMenuTrackSelectorPaste == null) {
-			cMenuTrackSelectorPaste = new BMenuItem();
-		}
-		return cMenuTrackSelectorPaste;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorDelete() {
-		if (cMenuTrackSelectorDelete == null) {
-			cMenuTrackSelectorDelete = new BMenuItem();
-		}
-		return cMenuTrackSelectorDelete;
-	}
-
-	/**
-	 * This method initializes BMenuItem4	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorDeleteBezier() {
-		if (cMenuTrackSelectorDeleteBezier == null) {
-			cMenuTrackSelectorDeleteBezier = new BMenuItem();
-		}
-		return cMenuTrackSelectorDeleteBezier;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackSelectorSelectAll() {
-		if (cMenuTrackSelectorSelectAll == null) {
-			cMenuTrackSelectorSelectAll = new BMenuItem();
-		}
-		return cMenuTrackSelectorSelectAll;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoPointer() {
-		if (cMenuPianoPointer == null) {
-			cMenuPianoPointer = new BMenuItem();
-		}
-		return cMenuPianoPointer;
-	}
-
-	/**
-	 * This method initializes cMenuPianoPencil	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoPencil() {
-		if (cMenuPianoPencil == null) {
-			cMenuPianoPencil = new BMenuItem();
-		}
-		return cMenuPianoPencil;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoEraser() {
-		if (cMenuPianoEraser == null) {
-			cMenuPianoEraser = new BMenuItem();
-		}
-		return cMenuPianoEraser;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoPaletteTool() {
-		if (cMenuPianoPaletteTool == null) {
-			cMenuPianoPaletteTool = new BMenuItem();
-		}
-		return cMenuPianoPaletteTool;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoCurve() {
-		if (cMenuPianoCurve == null) {
-			cMenuPianoCurve = new BMenuItem();
-		}
-		return cMenuPianoCurve;
-	}
-
-	/**
-	 * This method initializes cMenuPianoFixed	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getCMenuPianoFixed() {
-		if (cMenuPianoFixed == null) {
-			cMenuPianoFixed = new BMenu();
-			cMenuPianoFixed.add(getCMenuPianoFixed01());
-			cMenuPianoFixed.add(getCMenuPianoFixed02());
-			cMenuPianoFixed.add(getCMenuPianoFixed04());
-			cMenuPianoFixed.add(getCMenuPianoFixed08());
-			cMenuPianoFixed.add(getCMenuPianoFixed16());
-			cMenuPianoFixed.add(getCMenuPianoFixed32());
-			cMenuPianoFixed.add(getCMenuPianoFixed64());
-			cMenuPianoFixed.add(getCMenuPianoFixed128());
-			cMenuPianoFixed.add(getCMenuPianoFixedOff());
-			cMenuPianoFixed.addSeparator();
-			cMenuPianoFixed.add(getCMenuPianoFixedTriplet());
-			cMenuPianoFixed.add(getCMenuPianoFixedDotted());
-		}
-		return cMenuPianoFixed;
-	}
-
-	/**
-	 * This method initializes cMenuPianoQuantize	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getCMenuPianoQuantize() {
-		if (cMenuPianoQuantize == null) {
-			cMenuPianoQuantize = new BMenu();
-			cMenuPianoQuantize.add(getCMenuPianoQuantize04());
-			cMenuPianoQuantize.add(getCMenuPianoQuantize08());
-			cMenuPianoQuantize.add(getCMenuPianoQuantize16());
-			cMenuPianoQuantize.add(getCMenuPianoQuantize32());
-			cMenuPianoQuantize.add(getCMenuPianoQuantize64());
-			cMenuPianoQuantize.add(getCMenuPianoQuantize128());
-			cMenuPianoQuantize.add(getCMenuPianoQuantizeOff());
-			cMenuPianoQuantize.addSeparator();
-			cMenuPianoQuantize.add(getCMenuPianoQuantizeTriplet());
-		}
-		return cMenuPianoQuantize;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoGrid() {
-		if (cMenuPianoGrid == null) {
-			cMenuPianoGrid = new BMenuItem();
-		}
-		return cMenuPianoGrid;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoUndo() {
-		if (cMenuPianoUndo == null) {
-			cMenuPianoUndo = new BMenuItem();
-		}
-		return cMenuPianoUndo;
-	}
-
-	/**
-	 * This method initializes cMenuPianoRedo	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoRedo() {
-		if (cMenuPianoRedo == null) {
-			cMenuPianoRedo = new BMenuItem();
-		}
-		return cMenuPianoRedo;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoCut() {
-		if (cMenuPianoCut == null) {
-			cMenuPianoCut = new BMenuItem();
-		}
-		return cMenuPianoCut;
-	}
-
-	/**
-	 * This method initializes cMenuPianoCopy	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoCopy() {
-		if (cMenuPianoCopy == null) {
-			cMenuPianoCopy = new BMenuItem();
-		}
-		return cMenuPianoCopy;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoPaste() {
-		if (cMenuPianoPaste == null) {
-			cMenuPianoPaste = new BMenuItem();
-		}
-		return cMenuPianoPaste;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoDelete() {
-		if (cMenuPianoDelete == null) {
-			cMenuPianoDelete = new BMenuItem();
-		}
-		return cMenuPianoDelete;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoSelectAll() {
-		if (cMenuPianoSelectAll == null) {
-			cMenuPianoSelectAll = new BMenuItem();
-		}
-		return cMenuPianoSelectAll;
-	}
-
-	/**
-	 * This method initializes cMenuPianoSelectAllEvents	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoSelectAllEvents() {
-		if (cMenuPianoSelectAllEvents == null) {
-			cMenuPianoSelectAllEvents = new BMenuItem();
-		}
-		return cMenuPianoSelectAllEvents;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoImportLyric() {
-		if (cMenuPianoImportLyric == null) {
-			cMenuPianoImportLyric = new BMenuItem();
-		}
-		return cMenuPianoImportLyric;
-	}
-
-	/**
-	 * This method initializes cMenuPianoExpressionProperty	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoExpressionProperty() {
-		if (cMenuPianoExpressionProperty == null) {
-			cMenuPianoExpressionProperty = new BMenuItem();
-		}
-		return cMenuPianoExpressionProperty;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoVibratoProperty() {
-		if (cMenuPianoVibratoProperty == null) {
-			cMenuPianoVibratoProperty = new BMenuItem();
-		}
-		return cMenuPianoVibratoProperty;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixed02() {
-		if (cMenuPianoFixed02 == null) {
-			cMenuPianoFixed02 = new BMenuItem();
-		}
-		return cMenuPianoFixed02;
-	}
-
-	/**
-	 * This method initializes cMenuPianoFixed04	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixed04() {
-		if (cMenuPianoFixed04 == null) {
-			cMenuPianoFixed04 = new BMenuItem();
-		}
-		return cMenuPianoFixed04;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixed08() {
-		if (cMenuPianoFixed08 == null) {
-			cMenuPianoFixed08 = new BMenuItem();
-		}
-		return cMenuPianoFixed08;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixed01() {
-		if (cMenuPianoFixed01 == null) {
-			cMenuPianoFixed01 = new BMenuItem();
-		}
-		return cMenuPianoFixed01;
-	}
-
-	/**
-	 * This method initializes BMenuItem4	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixed16() {
-		if (cMenuPianoFixed16 == null) {
-			cMenuPianoFixed16 = new BMenuItem();
-		}
-		return cMenuPianoFixed16;
-	}
-
-	/**
-	 * This method initializes BMenuItem5	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixed32() {
-		if (cMenuPianoFixed32 == null) {
-			cMenuPianoFixed32 = new BMenuItem();
-		}
-		return cMenuPianoFixed32;
-	}
-
-	/**
-	 * This method initializes BMenuItem6	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixed64() {
-		if (cMenuPianoFixed64 == null) {
-			cMenuPianoFixed64 = new BMenuItem();
-		}
-		return cMenuPianoFixed64;
-	}
-
-	/**
-	 * This method initializes BMenuItem7	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixed128() {
-		if (cMenuPianoFixed128 == null) {
-			cMenuPianoFixed128 = new BMenuItem();
-		}
-		return cMenuPianoFixed128;
-	}
-
-	/**
-	 * This method initializes BMenuItem8	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixedOff() {
-		if (cMenuPianoFixedOff == null) {
-			cMenuPianoFixedOff = new BMenuItem();
-		}
-		return cMenuPianoFixedOff;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixedTriplet() {
-		if (cMenuPianoFixedTriplet == null) {
-			cMenuPianoFixedTriplet = new BMenuItem();
-		}
-		return cMenuPianoFixedTriplet;
-	}
-
-	/**
-	 * This method initializes cMenuPianoFixedDotted	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoFixedDotted() {
-		if (cMenuPianoFixedDotted == null) {
-			cMenuPianoFixedDotted = new BMenuItem();
-		}
-		return cMenuPianoFixedDotted;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoQuantize04() {
-		if (cMenuPianoQuantize04 == null) {
-			cMenuPianoQuantize04 = new BMenuItem();
-		}
-		return cMenuPianoQuantize04;
-	}
-
-	/**
-	 * This method initializes cMenuPianoQuantize08	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoQuantize08() {
-		if (cMenuPianoQuantize08 == null) {
-			cMenuPianoQuantize08 = new BMenuItem();
-		}
-		return cMenuPianoQuantize08;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoQuantize16() {
-		if (cMenuPianoQuantize16 == null) {
-			cMenuPianoQuantize16 = new BMenuItem();
-		}
-		return cMenuPianoQuantize16;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoQuantize32() {
-		if (cMenuPianoQuantize32 == null) {
-			cMenuPianoQuantize32 = new BMenuItem();
-		}
-		return cMenuPianoQuantize32;
-	}
-
-	/**
-	 * This method initializes BMenuItem4	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoQuantize64() {
-		if (cMenuPianoQuantize64 == null) {
-			cMenuPianoQuantize64 = new BMenuItem();
-		}
-		return cMenuPianoQuantize64;
-	}
-
-	/**
-	 * This method initializes BMenuItem5	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoQuantize128() {
-		if (cMenuPianoQuantize128 == null) {
-			cMenuPianoQuantize128 = new BMenuItem();
-		}
-		return cMenuPianoQuantize128;
-	}
-
-	/**
-	 * This method initializes BMenuItem6	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoQuantizeTriplet() {
-		if (cMenuPianoQuantizeTriplet == null) {
-			cMenuPianoQuantizeTriplet = new BMenuItem();
-		}
-		return cMenuPianoQuantizeTriplet;
-	}
-
-	/**
-	 * This method initializes cMenuPianoLength	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getCMenuPianoLength() {
-		if (cMenuPianoLength == null) {
-			cMenuPianoLength = new BMenu();
-			cMenuPianoLength.add(getCMenuPianoLength04());
-			cMenuPianoLength.add(getCMenuPianoLength08());
-			cMenuPianoLength.add(getCMenuPianoLength16());
-			cMenuPianoLength.add(getCMenuPianoLength32());
-			cMenuPianoLength.add(getCMenuPianoLength64());
-			cMenuPianoLength.add(getCMenuPianoLength128());
-			cMenuPianoLength.add(getCMenuPianoLengthOff());
-			cMenuPianoLength.addSeparator();
-			cMenuPianoLength.add(getCMenuPianoLengthTriplet());
-		}
-		return cMenuPianoLength;
-	}
-
-	/**
-	 * This method initializes cMenuPianoLength04	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoLength04() {
-		if (cMenuPianoLength04 == null) {
-			cMenuPianoLength04 = new BMenuItem();
-		}
-		return cMenuPianoLength04;
-	}
-
-	/**
-	 * This method initializes cMenuPianoLength08	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoLength08() {
-		if (cMenuPianoLength08 == null) {
-			cMenuPianoLength08 = new BMenuItem();
-		}
-		return cMenuPianoLength08;
-	}
-
-	/**
-	 * This method initializes cMenuPianoLength16	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoLength16() {
-		if (cMenuPianoLength16 == null) {
-			cMenuPianoLength16 = new BMenuItem();
-		}
-		return cMenuPianoLength16;
-	}
-
-	/**
-	 * This method initializes cMenuPianoLength32	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoLength32() {
-		if (cMenuPianoLength32 == null) {
-			cMenuPianoLength32 = new BMenuItem();
-		}
-		return cMenuPianoLength32;
-	}
-
-	/**
-	 * This method initializes cMenuPianoLength64	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoLength64() {
-		if (cMenuPianoLength64 == null) {
-			cMenuPianoLength64 = new BMenuItem();
-		}
-		return cMenuPianoLength64;
-	}
-
-	/**
-	 * This method initializes cMenuPianoLength128	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoLength128() {
-		if (cMenuPianoLength128 == null) {
-			cMenuPianoLength128 = new BMenuItem();
-		}
-		return cMenuPianoLength128;
-	}
-
-	/**
-	 * This method initializes cMenuPianoLengthTriplet	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoLengthTriplet() {
-		if (cMenuPianoLengthTriplet == null) {
-			cMenuPianoLengthTriplet = new BMenuItem();
-		}
-		return cMenuPianoLengthTriplet;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabTrackOn() {
-		if (cMenuTrackTabTrackOn == null) {
-			cMenuTrackTabTrackOn = new BMenuItem();
-		}
-		return cMenuTrackTabTrackOn;
-	}
-
-	/**
-	 * This method initializes cMenuTrackTabAdd	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabAdd() {
-		if (cMenuTrackTabAdd == null) {
-			cMenuTrackTabAdd = new BMenuItem();
-		}
-		return cMenuTrackTabAdd;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabCopy() {
-		if (cMenuTrackTabCopy == null) {
-			cMenuTrackTabCopy = new BMenuItem();
-		}
-		return cMenuTrackTabCopy;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabChangeName() {
-		if (cMenuTrackTabChangeName == null) {
-			cMenuTrackTabChangeName = new BMenuItem();
-		}
-		return cMenuTrackTabChangeName;
-	}
-
-	/**
-	 * This method initializes BMenuItem4	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabDelete() {
-		if (cMenuTrackTabDelete == null) {
-			cMenuTrackTabDelete = new BMenuItem();
-		}
-		return cMenuTrackTabDelete;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabRenderCurrent() {
-		if (cMenuTrackTabRenderCurrent == null) {
-			cMenuTrackTabRenderCurrent = new BMenuItem();
-		}
-		return cMenuTrackTabRenderCurrent;
-	}
-
-	/**
-	 * This method initializes cMenuTrackTabRenderAll	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabRenderAll() {
-		if (cMenuTrackTabRenderAll == null) {
-			cMenuTrackTabRenderAll = new BMenuItem();
-		}
-		return cMenuTrackTabRenderAll;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabOverlay() {
-		if (cMenuTrackTabOverlay == null) {
-			cMenuTrackTabOverlay = new BMenuItem();
-		}
-		return cMenuTrackTabOverlay;
-	}
-
-	/**
-	 * This method initializes cMenuTrackTabRenderer	
-	 * 	
-	 * @return javax.swing.BMenu	
-	 */
-	private BMenu getCMenuTrackTabRenderer() {
-		if (cMenuTrackTabRenderer == null) {
-			cMenuTrackTabRenderer = new BMenu();
-			cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID1());
-			cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID2());
-			cMenuTrackTabRenderer.add(getCMenuTrackTabRendererUtau());
-			cMenuTrackTabRenderer.add(getCMenuTrackTabRendererStraight());
-		}
-		return cMenuTrackTabRenderer;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabRendererVOCALOID2() {
-		if (cMenuTrackTabRendererVOCALOID2 == null) {
-			cMenuTrackTabRendererVOCALOID2 = new BMenuItem();
-		}
-		return cMenuTrackTabRendererVOCALOID2;
-	}
-
-	/**
-	 * This method initializes cMenuTrackTabRendererVOCALOID1	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabRendererVOCALOID1() {
-		if (cMenuTrackTabRendererVOCALOID1 == null) {
-			cMenuTrackTabRendererVOCALOID1 = new BMenuItem();
-		}
-		return cMenuTrackTabRendererVOCALOID1;
-	}
-
-	/**
-	 * This method initializes BMenuItem2	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabRendererUtau() {
-		if (cMenuTrackTabRendererUtau == null) {
-			cMenuTrackTabRendererUtau = new BMenuItem();
-		}
-		return cMenuTrackTabRendererUtau;
-	}
-
-	/**
-	 * This method initializes BMenuItem3	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuTrackTabRendererStraight() {
-		if (cMenuTrackTabRendererStraight == null) {
-			cMenuTrackTabRendererStraight = new BMenuItem();
-		}
-		return cMenuTrackTabRendererStraight;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoQuantizeOff() {
-		if (cMenuPianoQuantizeOff == null) {
-			cMenuPianoQuantizeOff = new BMenuItem();
-		}
-		return cMenuPianoQuantizeOff;
-	}
-
-	/**
-	 * This method initializes BMenuItem	
-	 * 	
-	 * @return javax.swing.BMenuItem	
-	 */
-	private BMenuItem getCMenuPianoLengthOff() {
-		if (cMenuPianoLengthOff == null) {
-			cMenuPianoLengthOff = new BMenuItem();
-		}
-		return cMenuPianoLengthOff;
-	}
-
-	/**
-	 * This method initializes panel3	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getPanel3() {
-		if (panel3 == null) {
-			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-			gridBagConstraints6.gridx = 3;
-			gridBagConstraints6.weightx = 1.0D;
-			gridBagConstraints6.gridheight = 2;
-			gridBagConstraints6.weighty = 1.0D;
-			gridBagConstraints6.fill = GridBagConstraints.BOTH;
-			gridBagConstraints6.gridy = 0;
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.gridx = 4;
-			gridBagConstraints5.gridy = 1;
-			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.gridx = 4;
-			gridBagConstraints4.gridy = 0;
-			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			gridBagConstraints3.gridx = 1;
-			gridBagConstraints3.gridheight = 2;
-			gridBagConstraints3.gridy = 0;
-			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-			gridBagConstraints2.gridx = 2;
-			gridBagConstraints2.weighty = 1.0D;
-			gridBagConstraints2.gridy = 1;
-			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			gridBagConstraints1.gridx = 2;
-			gridBagConstraints1.weighty = 1.0D;
-			gridBagConstraints1.gridy = 0;
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.gridx = 0;
-			gridBagConstraints.gridheight = 2;
-			gridBagConstraints.weighty = 1.0D;
-			gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints.gridy = 0;
-			panel3 = new JPanel();
-			panel3.setLayout(new GridBagLayout());
-			panel3.add(getJButton(), gridBagConstraints);
-			panel3.add(getJButton1(), gridBagConstraints1);
-			panel3.add(getJButton2(), gridBagConstraints2);
-			panel3.add(getJButton3(), gridBagConstraints3);
-			panel3.add(getJButton4(), gridBagConstraints4);
-			panel3.add(getJButton5(), gridBagConstraints5);
-			panel3.add(getJPanel2(), gridBagConstraints6);
-		}
-		return panel3;
-	}
-
-	/**
-	 * This method initializes jPanel2	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getJPanel2() {
-		if (jPanel2 == null) {
-			jPanel2 = new JPanel();
-			jPanel2.setLayout(new GridBagLayout());
-		}
-		return jPanel2;
-	}
-
-	/**
-	 * This method initializes BButton	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getJButton() {
-		if (BButton == null) {
-			BButton = new BButton();
-			BButton.setText("-");
-		}
-		return BButton;
-	}
-
-	/**
-	 * This method initializes jButton1	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getJButton1() {
-		if (jButton1 == null) {
-			jButton1 = new BButton();
-			jButton1.setText("<");
-		}
-		return jButton1;
-	}
-
-	/**
-	 * This method initializes jButton2	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getJButton2() {
-		if (jButton2 == null) {
-			jButton2 = new BButton();
-			jButton2.setText(">");
-		}
-		return jButton2;
-	}
-
-	/**
-	 * This method initializes jButton3	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getJButton3() {
-		if (jButton3 == null) {
-			jButton3 = new BButton();
-			jButton3.setText("+");
-		}
-		return jButton3;
-	}
-
-	/**
-	 * This method initializes jButton4	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getJButton4() {
-		if (jButton4 == null) {
-			jButton4 = new BButton();
-			jButton4.setText("<");
-		}
-		return jButton4;
-	}
-
-	/**
-	 * This method initializes jButton5	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getJButton5() {
-		if (jButton5 == null) {
-			jButton5 = new BButton();
-			jButton5.setText(">");
-		}
-		return jButton5;
-	}
-
-	/**
-	 * This method initializes pictPianoRoll	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private PictPianoRoll getPictPianoRoll() {
-		if (pictPianoRoll == null) {
-			pictPianoRoll = new PictPianoRoll();
-			pictPianoRoll.setLayout(new GridBagLayout());
-		}
-		return pictPianoRoll;
-	}
-
-	/**
-	 * This method initializes vScroll	
-	 * 	
-	 * @return javax.swing.JScrollBar	
-	 */
-	private JScrollBar getVScroll() {
-		if (vScroll == null) {
-			vScroll = new JScrollBar();
-		}
-		return vScroll;
-	}
-
-	/**
-	 * This method initializes hScroll	
-	 * 	
-	 * @return javax.swing.JScrollBar	
-	 */
-	private JScrollBar getHScroll() {
-		if (hScroll == null) {
-			hScroll = new JScrollBar();
-			hScroll.setOrientation(JScrollBar.HORIZONTAL);
-		}
-		return hScroll;
-	}
-
-	/**
-	 * This method initializes pictureBox3	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getPictureBox3() {
-		if (pictureBox3 == null) {
-			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-			gridBagConstraints12.anchor = GridBagConstraints.EAST;
-			pictureBox3 = new JPanel();
-			pictureBox3.setLayout(new GridBagLayout());
-			pictureBox3.setPreferredSize(new Dimension(68, 0));
-			pictureBox3.add(getJButton6(), gridBagConstraints12);
-		}
-		return pictureBox3;
-	}
-
-	/**
-	 * This method initializes trackBar	
-	 * 	
-	 * @return javax.swing.JSlider	
-	 */
-	private JSlider getTrackBar() {
-		if (trackBar == null) {
-			trackBar = new JSlider();
-			trackBar.setPreferredSize(new Dimension(83, 16));
-		}
-		return trackBar;
-	}
-
-	/**
-	 * This method initializes jButton6	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getJButton6() {
-		if (jButton6 == null) {
-			jButton6 = new BButton();
-		}
-		return jButton6;
-	}
-
-	/**
-	 * This method initializes picturePositionIndicator	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getPicturePositionIndicator() {
-		if (picturePositionIndicator == null) {
-			picturePositionIndicator = new JPanel();
-			picturePositionIndicator.setLayout(new GridBagLayout());
-			picturePositionIndicator.setPreferredSize(new Dimension(421, 48));
-		}
-		return picturePositionIndicator;
-	}
-
-	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getJPanel1() {
-		if (jPanel1 == null) {
-			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
-			gridBagConstraints15.gridx = 0;
-			gridBagConstraints15.fill = GridBagConstraints.BOTH;
-			gridBagConstraints15.weightx = 1.0D;
-			gridBagConstraints15.weighty = 1.0D;
-			gridBagConstraints15.gridy = 2;
-			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-			gridBagConstraints14.gridx = 0;
-			gridBagConstraints14.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints14.weightx = 1.0D;
-			gridBagConstraints14.gridy = 1;
-			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-			gridBagConstraints13.gridx = 0;
-			gridBagConstraints13.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints13.anchor = GridBagConstraints.NORTH;
-			gridBagConstraints13.weightx = 1.0D;
-			gridBagConstraints13.gridy = 0;
-			jPanel1 = new JPanel();
-			jPanel1.setLayout(new GridBagLayout());
-			jPanel1.add(getPanel3(), gridBagConstraints13);
-			jPanel1.add(getPicturePositionIndicator(), gridBagConstraints14);
-			jPanel1.add(getPanel1(), gridBagConstraints15);
-		}
-		return jPanel1;
-	}
-
-	/**
-	 * This method initializes jPanel3	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getJPanel3() {
-		if (jPanel3 == null) {
-			GridLayout gridLayout1 = new GridLayout();
-			gridLayout1.setRows(2);
-			gridLayout1.setColumns(1);
-			statusLabel = new BLabel();
-			statusLabel.setText("");
-			jPanel3 = new JPanel();
-			jPanel3.setLayout(gridLayout1);
-			jPanel3.add(getToolStripBottom(), null);
-			jPanel3.add(statusLabel, null);
-		}
-		return jPanel3;
-	}
+#region UI Impl for Java
+    private JPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="10,55"
+    private BMenuBar jBMenuBar = null;
+    private BMenu menuFile = null;
+    private BMenuItem menuFileNew = null;
+    private BMenuItem menuFileOpen = null;
+    private BMenuItem menuFileSave = null;
+    private BMenuItem menuFileSaveNamed = null;
+    private JSeparator toolStripMenuItem10 = null;
+    private BMenuItem menuFileOpenVsq = null;
+    private BMenuItem menuFileOpenUst = null;
+    private BMenu menuFileImport = null;
+    private BMenu menuFileExport = null;
+    private JSeparator toolStripMenuItem101 = null;
+    private BMenuItem menuFileRecent = null;
+    private JSeparator toolStripMenuItem102 = null;
+    private BMenuItem menuFileQuit = null;
+    private BMenuItem menuFileImportVsq = null;
+    private BMenuItem menuFileImportMidi = null;
+    private BMenuItem menuFileExportWav = null;
+    private BMenuItem menuFileExportMidi = null;
+    private BMenu menuEdit = null;
+    private BMenuItem menuEditUndo = null;
+    private BMenuItem menuEditRedo = null;
+    private JSeparator toolStripMenuItem103 = null;
+    private BMenuItem menuEditCut = null;
+    private BMenuItem menuEditCopy = null;
+    private BMenuItem menuEditPaste = null;
+    private BMenuItem menuEditDelete = null;
+    private JSeparator toolStripMenuItem104 = null;
+    private BMenuItem menuEditAutoNormalizeMode = null;
+    private JSeparator toolStripMenuItem1041 = null;
+    private BMenuItem menuEditSelectAll = null;
+    private BMenuItem menuEditSelectAllEvents = null;
+    private BMenu menuVisual = null;
+    private BMenuItem menuVisualControlTrack = null;
+    private BMenuItem menuVisualMixer = null;
+    private BMenuItem menuVisualWaveform = null;
+    private BMenuItem menuVisualProperty = null;
+    private BMenuItem menuVisualOverview = null;
+    private JSeparator toolStripMenuItem1031 = null;
+    private BMenuItem menuVisualGridline = null;
+    private JSeparator toolStripMenuItem1032 = null;
+    private BMenuItem menuVisualStartMarker = null;
+    private BMenuItem menuVisualEndMarker = null;
+    private JSeparator toolStripMenuItem1033 = null;
+    private BMenuItem menuVisualNoteProperty = null;
+    private BMenuItem menuVisualLyrics = null;
+    private BMenuItem menuVisualPitchLine = null;
+    private BMenu menuJob = null;
+    private BMenuItem menuJobNormalize = null;
+    private BMenuItem menuJobInsertBar = null;
+    private BMenuItem menuJobDeleteBar = null;
+    private BMenuItem menuJobRandomize = null;
+    private BMenuItem menuJobConnect = null;
+    private BMenuItem menuJobLyric = null;
+    private BMenuItem menuJobRewire = null;
+    private BMenuItem menuJobRealTime = null;
+    private BMenuItem menuJobReloadVsti = null;
+    private BMenu menuTrack = null;
+    private BMenuItem menuTrackOn = null;
+    private JSeparator toolStripMenuItem10321 = null;
+    private BMenuItem menuTrackAdd = null;
+    private BMenuItem menuTrackCopy = null;
+    private BMenuItem menuTrackChangeName = null;
+    private BMenuItem menuTrackDelete = null;
+    private JSeparator toolStripMenuItem10322 = null;
+    private BMenuItem menuTrackRenderCurrent = null;
+    private BMenuItem menuTrackRenderAll = null;
+    private JSeparator toolStripMenuItem10323 = null;
+    private BMenuItem menuTrackOverlay = null;
+    private BMenu menuTrackRenderer = null;
+    private JSeparator toolStripMenuItem10324 = null;
+    private BMenu menuTrackBgm = null;
+    private BMenuItem menuTrackManager = null;
+    private BMenu menuLyric = null;
+    private BMenuItem menuLyricExpressionProperty = null;
+    private BMenuItem menuLyricVibratoProperty = null;
+    private BMenuItem menuLyricSymbol = null;
+    private BMenuItem menuLyricDictionary = null;
+    private BMenu menuScript = null;
+    private BMenuItem menuScriptUpdate = null;
+    private BMenu menuSetting = null;
+    private BMenuItem menuSettingPreference = null;
+    private BMenu menuSettingGameControler = null;
+    private BMenuItem menuSettingShortcut = null;
+    private BMenuItem menuSettingMidi = null;
+    private BMenuItem menuSettingUtauVoiceDB = null;
+    private JSeparator toolStripMenuItem103211 = null;
+    private BMenuItem menuSettingDefaultSingerStyle = null;
+    private JSeparator toolStripMenuItem103212 = null;
+    private BMenu menuSettingPositionQuantize = null;
+    private BMenuItem menuSettingSingerProperty = null;
+    private BMenu menuSettingPaletteTool = null;
+    private BMenuItem menuSettingPositionQuantize04 = null;
+    private BMenuItem menuSettingPositionQuantize08 = null;
+    private BMenuItem menuSettingPositionQuantize16 = null;
+    private BMenuItem menuSettingPositionQuantize32 = null;
+    private BMenuItem menuSettingPositionQuantize64 = null;
+    private BMenuItem menuSettingPositionQuantize128 = null;
+    private BMenuItem menuSettingPositionQuantizeOff = null;
+    private JSeparator toolStripMenuItem1032121 = null;
+    private BMenuItem menuSettingPositionQuantizeTriplet = null;
+    private BMenu menuSettingLengthQuantize = null;
+    private BMenuItem menuSettingLengthQuantize04 = null;
+    private BMenuItem menuSettingLengthQuantize08 = null;
+    private BMenuItem menuSettingLengthQuantize16 = null;
+    private BMenuItem menuSettingLengthQuantize32 = null;
+    private BMenuItem menuSettingLengthQuantize64 = null;
+    private BMenuItem menuSettingLengthQuantize128 = null;
+    private BMenuItem menuSettingLengthQuantizeOff = null;
+    private JSeparator toolStripMenuItem10321211 = null;
+    private BMenuItem menuSettingLengthQuantizeTriplet = null;
+    private BMenu menuHelp = null;
+    private BMenuItem menuHelpAbout = null;
+    private BSplitPane splitContainer2 = null;
+    private BPanel panel1 = null;
+    private BPanel panel2 = null;
+    private BSplitPane splitContainer1 = null;
+    private TrackSelector trackSelector = null;
+    private BSplitPane splitContainerProperty = null;
+    private BPanel m_property_panel_container = null;
+    private BToolBar toolStripFile = null;
+    private BToolBar toolStripBottom = null;
+    private BButton stripBtnFileNew = null;
+    private BButton stripBtnFileOpen = null;
+    private BButton stripBtnFileSave = null;
+    private BButton stripBtnCut = null;
+    private BButton stripBtnCopy = null;
+    private BButton stripBtnPaste = null;
+    private BButton stripBtnUndo = null;
+    private BButton stripBtnRedo = null;
+    private BToolBar toolStripPosition = null;
+    private BButton stripBtnMoveTop = null;
+    private BPanel BPanel = null;
+    private BButton stripBtnRewind = null;
+    private BButton stripBtnForward = null;
+    private BButton stripBtnMoveEnd = null;
+    private BButton stripBtnPlay = null;
+    private BButton stripBtnStop = null;
+    private BToggleButton stripBtnScroll = null;
+    private BToggleButton stripBtnLoop = null;
+    private BToolBar toolStripMeasure = null;
+    private BLabel toolStripLabel5 = null;
+    private BLabel stripLblMeasure = null;
+    private BComboBox stripDDBtnLength = null;
+    private BLabel BLabel = null;
+    private BLabel jLabel1 = null;
+    private BComboBox stripDDBtnQuantize = null;
+    private BToggleButton stripBtnStartMarker = null;
+    private BToggleButton stripBtnEndMarker = null;
+    private BToolBar toolStripTool = null;
+    private BToggleButton stripBtnPointer = null;
+    private BToggleButton stripBtnPencil = null;
+    private BToggleButton stripBtnLine = null;
+    private BToggleButton stripBtnEraser = null;
+    private BToggleButton stripBtnGrid = null;
+    private BToggleButton stripBtnCurve = null;
+    private BLabel toolStripLabel6 = null;
+    private BLabel stripLblCursor = null;
+    private BLabel toolStripLabel8 = null;
+    private BLabel stripLblTempo = null;
+    private BLabel jLabel2 = null;
+    private BLabel stripLblBeat = null;
+    private BLabel jLabel3 = null;
+    private BLabel stripLblGameCtrlMode = null;
+    private BLabel jLabel4 = null;
+    private BLabel stripLblMidiIn = null;
+    private BLabel jLabel5 = null;
+    private BComboBox stripDDBtnSpeed = null;
+    private BPopupMenu cMenuTrackSelector = null;  //  @jve:decl-index=0:visual-constraint="749,73"
+    private BPopupMenu cMenuPiano = null;  //  @jve:decl-index=0:visual-constraint="764,258"
+    private BPopupMenu cMenuTrackTab = null;  //  @jve:decl-index=0:visual-constraint="752,356"
+    private BMenuItem cMenuTrackSelectorPointer = null;
+    private BMenuItem cMenuTrackSelectorPencil = null;
+    private BMenuItem cMenuTrackSelectorLine = null;
+    private BMenuItem cMenuTrackSelectorEraser = null;
+    private BMenuItem cMenuTrackSelectorPaletteTool = null;
+    private BMenuItem cMenuTrackSelectorCurve = null;
+    private BMenuItem cMenuTrackSelectorUndo = null;
+    private BMenuItem cMenuTrackSelectorRedo = null;
+    private BMenuItem cMenuTrackSelectorCut = null;
+    private BMenuItem cMenuTrackSelectorCopy = null;
+    private BMenuItem cMenuTrackSelectorPaste = null;
+    private BMenuItem cMenuTrackSelectorDelete = null;
+    private BMenuItem cMenuTrackSelectorDeleteBezier = null;
+    private BMenuItem cMenuTrackSelectorSelectAll = null;
+    private BMenuItem cMenuPianoPointer = null;
+    private BMenuItem cMenuPianoPencil = null;
+    private BMenuItem cMenuPianoEraser = null;
+    private BMenuItem cMenuPianoPaletteTool = null;
+    private BMenuItem cMenuPianoCurve = null;
+    private BMenu cMenuPianoFixed = null;
+    private BMenu cMenuPianoQuantize = null;
+    private BMenuItem cMenuPianoGrid = null;
+    private BMenuItem cMenuPianoUndo = null;
+    private BMenuItem cMenuPianoRedo = null;
+    private BMenuItem cMenuPianoCut = null;
+    private BMenuItem cMenuPianoCopy = null;
+    private BMenuItem cMenuPianoPaste = null;
+    private BMenuItem cMenuPianoDelete = null;
+    private BMenuItem cMenuPianoSelectAll = null;
+    private BMenuItem cMenuPianoSelectAllEvents = null;
+    private BMenuItem cMenuPianoImportLyric = null;
+    private BMenuItem cMenuPianoExpressionProperty = null;
+    private BMenuItem cMenuPianoVibratoProperty = null;
+    private BMenuItem cMenuPianoFixed02 = null;
+    private BMenuItem cMenuPianoFixed04 = null;
+    private BMenuItem cMenuPianoFixed08 = null;
+    private BMenuItem cMenuPianoFixed01 = null;
+    private BMenuItem cMenuPianoFixed16 = null;
+    private BMenuItem cMenuPianoFixed32 = null;
+    private BMenuItem cMenuPianoFixed64 = null;
+    private BMenuItem cMenuPianoFixed128 = null;
+    private BMenuItem cMenuPianoFixedOff = null;
+    private BMenuItem cMenuPianoFixedTriplet = null;
+    private BMenuItem cMenuPianoFixedDotted = null;
+    private BMenuItem cMenuPianoQuantize04 = null;
+    private BMenuItem cMenuPianoQuantize08 = null;
+    private BMenuItem cMenuPianoQuantize16 = null;
+    private BMenuItem cMenuPianoQuantize32 = null;
+    private BMenuItem cMenuPianoQuantize64 = null;
+    private BMenuItem cMenuPianoQuantize128 = null;
+    private BMenuItem cMenuPianoQuantizeTriplet = null;
+    private BMenu cMenuPianoLength = null;
+    private BMenuItem cMenuPianoLength04 = null;
+    private BMenuItem cMenuPianoLength08 = null;
+    private BMenuItem cMenuPianoLength16 = null;
+    private BMenuItem cMenuPianoLength32 = null;
+    private BMenuItem cMenuPianoLength64 = null;
+    private BMenuItem cMenuPianoLength128 = null;
+    private BMenuItem cMenuPianoLengthTriplet = null;
+    private BMenuItem cMenuTrackTabTrackOn = null;
+    private BMenuItem cMenuTrackTabAdd = null;
+    private BMenuItem cMenuTrackTabCopy = null;
+    private BMenuItem cMenuTrackTabChangeName = null;
+    private BMenuItem cMenuTrackTabDelete = null;
+    private BMenuItem cMenuTrackTabRenderCurrent = null;
+    private BMenuItem cMenuTrackTabRenderAll = null;
+    private BMenuItem cMenuTrackTabOverlay = null;
+    private BMenu cMenuTrackTabRenderer = null;
+    private BMenuItem cMenuTrackTabRendererVOCALOID2 = null;
+    private BMenuItem cMenuTrackTabRendererVOCALOID1 = null;
+    private BMenuItem cMenuTrackTabRendererUtau = null;
+    private BMenuItem cMenuTrackTabRendererStraight = null;
+    private BMenuItem cMenuPianoQuantizeOff = null;
+    private BMenuItem cMenuPianoLengthOff = null;
+    private BPanel panel3 = null;
+    private BPanel jPanel2 = null;
+    private BButton BButton = null;
+    private BButton jButton1 = null;
+    private BButton jButton2 = null;
+    private BButton jButton3 = null;
+    private BButton jButton4 = null;
+    private BButton jButton5 = null;
+    private PictPianoRoll pictPianoRoll = null;
+    private BVScrollBar vScroll = null;
+    private BHScrollBar hScroll = null;
+    private BPanel pictureBox3 = null;
+    private BSlider trackBar = null;
+    private BButton jButton6 = null;
+    private BPanel picturePositionIndicator = null;
+    private BPanel jPanel1 = null;
+    private BPanel jPanel3 = null;
+    private BLabel statusLabel = null;
+
+    /**
+     * This method initializes this
+     * 
+     * @return void
+     */
+    private void initialize() {
+        this.setSize(711, 591);
+        this.setJMenuBar(getJBMenuBar());
+        this.setContentPane( this.getJContentPane());
+        this.setTitle("JFrame");
+    }
+
+    /**
+     * This method initializes jContentPane
+     * 
+     * @return javax.swing.BPanel
+     */
+    private JPanel getJContentPane() {
+        if (jContentPane == null) {
+            jContentPane = new JPanel();
+            jContentPane.setLayout(new BorderLayout());
+            jContentPane.setSize(new Dimension(582, 431));
+            jContentPane.add(getJPanel(), BorderLayout.NORTH);
+            jContentPane.add(getSplitContainerProperty(), BorderLayout.CENTER);
+            jContentPane.add(getJPanel3(), BorderLayout.SOUTH);
+        }
+        return jContentPane;
+    }
+
+    /**
+     * This method initializes jBMenuBar    
+     *  
+     * @return javax.swing.BMenuBar 
+     */
+    private BMenuBar getJBMenuBar() {
+        if (jBMenuBar == null) {
+            jBMenuBar = new BMenuBar();
+            jBMenuBar.add(getMenuFile());
+            jBMenuBar.add(getMenuEdit());
+            jBMenuBar.add(getMenuVisual());
+            jBMenuBar.add(getMenuJob());
+            jBMenuBar.add(getMenuTrack());
+            jBMenuBar.add(getMenuLyric());
+            jBMenuBar.add(getMenuScript());
+            jBMenuBar.add(getMenuSetting());
+            jBMenuBar.add(getMenuHelp());
+        }
+        return jBMenuBar;
+    }
+
+    /**
+     * This method initializes menuFile 
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuFile() {
+        if (menuFile == null) {
+            menuFile = new BMenu();
+            menuFile.setText("File");
+            menuFile.add(getMenuFileNew());
+            menuFile.add(getMenuFileOpen());
+            menuFile.add(getMenuFileSave());
+            menuFile.add(getMenuFileSaveNamed());
+            menuFile.add(getBMenuItem());
+            menuFile.add(getBMenuItem2());
+            menuFile.add(getBMenuItem3());
+            menuFile.add(getMenuFileImport());
+            menuFile.add(getMenuFileExport());
+            menuFile.add(getToolStripMenuItem101());
+            menuFile.add(getBMenuItem4());
+            menuFile.add(getToolStripMenuItem102());
+            menuFile.add(getBMenuItem5());
+        }
+        return menuFile;
+    }
+
+    /**
+     * This method initializes menuFileNew  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuFileNew() {
+        if (menuFileNew == null) {
+            menuFileNew = new BMenuItem();
+            menuFileNew.setText("New");
+        }
+        return menuFileNew;
+    }
+
+    /**
+     * This method initializes menuFileOpen 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuFileOpen() {
+        if (menuFileOpen == null) {
+            menuFileOpen = new BMenuItem();
+            menuFileOpen.setText("Open");
+        }
+        return menuFileOpen;
+    }
+
+    /**
+     * This method initializes menuFileSave 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuFileSave() {
+        if (menuFileSave == null) {
+            menuFileSave = new BMenuItem();
+            menuFileSave.setText("Save");
+        }
+        return menuFileSave;
+    }
+
+    /**
+     * This method initializes menuFileSaveNamed    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuFileSaveNamed() {
+        if (menuFileSaveNamed == null) {
+            menuFileSaveNamed = new BMenuItem();
+            menuFileSaveNamed.setText("Save As");
+        }
+        return menuFileSaveNamed;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem10  
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getBMenuItem() {
+        if (toolStripMenuItem10 == null) {
+            toolStripMenuItem10 = new JSeparator();
+        }
+        return toolStripMenuItem10;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem2() {
+        if (menuFileOpenVsq == null) {
+            menuFileOpenVsq = new BMenuItem();
+            menuFileOpenVsq.setText("Open VSQ/Vocaloid Midi");
+        }
+        return menuFileOpenVsq;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem3() {
+        if (menuFileOpenUst == null) {
+            menuFileOpenUst = new BMenuItem();
+            menuFileOpenUst.setText("Open UTAU Project File");
+        }
+        return menuFileOpenUst;
+    }
+
+    /**
+     * This method initializes menuFileImport   
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuFileImport() {
+        if (menuFileImport == null) {
+            menuFileImport = new BMenu();
+            menuFileImport.setText("Import");
+            menuFileImport.add(getBMenuItem6());
+            menuFileImport.add(getBMenuItem7());
+        }
+        return menuFileImport;
+    }
+
+    /**
+     * This method initializes menuFileExport   
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuFileExport() {
+        if (menuFileExport == null) {
+            menuFileExport = new BMenu();
+            menuFileExport.setText("Export");
+            menuFileExport.add(getBMenuItem8());
+            menuFileExport.add(getBMenuItem9());
+        }
+        return menuFileExport;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem101 
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem101() {
+        if (toolStripMenuItem101 == null) {
+            toolStripMenuItem101 = new JSeparator();
+        }
+        return toolStripMenuItem101;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem4() {
+        if (menuFileRecent == null) {
+            menuFileRecent = new BMenuItem();
+            menuFileRecent.setText("Recent Files");
+        }
+        return menuFileRecent;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem102 
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem102() {
+        if (toolStripMenuItem102 == null) {
+            toolStripMenuItem102 = new JSeparator();
+        }
+        return toolStripMenuItem102;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem5() {
+        if (menuFileQuit == null) {
+            menuFileQuit = new BMenuItem();
+            menuFileQuit.setText("Quit");
+        }
+        return menuFileQuit;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem6() {
+        if (menuFileImportVsq == null) {
+            menuFileImportVsq = new BMenuItem();
+            menuFileImportVsq.setText("VSQ / Vocaloid MIDI");
+        }
+        return menuFileImportVsq;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem7() {
+        if (menuFileImportMidi == null) {
+            menuFileImportMidi = new BMenuItem();
+            menuFileImportMidi.setText("Standard MIDI");
+        }
+        return menuFileImportMidi;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem8() {
+        if (menuFileExportWav == null) {
+            menuFileExportWav = new BMenuItem();
+            menuFileExportWav.setText("Wave");
+        }
+        return menuFileExportWav;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem9() {
+        if (menuFileExportMidi == null) {
+            menuFileExportMidi = new BMenuItem();
+            menuFileExportMidi.setText("MIDI");
+        }
+        return menuFileExportMidi;
+    }
+
+    /**
+     * This method initializes menuEdit 
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuEdit() {
+        if (menuEdit == null) {
+            menuEdit = new BMenu();
+            menuEdit.setText("Edit");
+            menuEdit.add(getBMenuItem10());
+            menuEdit.add(getBMenuItem11());
+            menuEdit.add(getToolStripMenuItem103());
+            menuEdit.add(getBMenuItem12());
+            menuEdit.add(getMenuEditCopy());
+            menuEdit.add(getBMenuItem22());
+            menuEdit.add(getBMenuItem13());
+            menuEdit.add(getToolStripMenuItem104());
+            menuEdit.add(getBMenuItem14());
+            menuEdit.add(getToolStripMenuItem1041());
+            menuEdit.add(getBMenuItem15());
+            menuEdit.add(getMenuEditSelectAllEvents());
+        }
+        return menuEdit;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem10() {
+        if (menuEditUndo == null) {
+            menuEditUndo = new BMenuItem();
+            menuEditUndo.setText("Undo");
+        }
+        return menuEditUndo;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem11() {
+        if (menuEditRedo == null) {
+            menuEditRedo = new BMenuItem();
+            menuEditRedo.setText("Redo");
+        }
+        return menuEditRedo;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem103 
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem103() {
+        if (toolStripMenuItem103 == null) {
+            toolStripMenuItem103 = new JSeparator();
+        }
+        return toolStripMenuItem103;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem12() {
+        if (menuEditCut == null) {
+            menuEditCut = new BMenuItem();
+            menuEditCut.setText("Cut");
+        }
+        return menuEditCut;
+    }
+
+    /**
+     * This method initializes menuEditCopy 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuEditCopy() {
+        if (menuEditCopy == null) {
+            menuEditCopy = new BMenuItem();
+            menuEditCopy.setText("Copy");
+        }
+        return menuEditCopy;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem22() {
+        if (menuEditPaste == null) {
+            menuEditPaste = new BMenuItem();
+            menuEditPaste.setText("Paste");
+        }
+        return menuEditPaste;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem13() {
+        if (menuEditDelete == null) {
+            menuEditDelete = new BMenuItem();
+            menuEditDelete.setText("Delete");
+        }
+        return menuEditDelete;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem104 
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem104() {
+        if (toolStripMenuItem104 == null) {
+            toolStripMenuItem104 = new JSeparator();
+        }
+        return toolStripMenuItem104;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem14() {
+        if (menuEditAutoNormalizeMode == null) {
+            menuEditAutoNormalizeMode = new BMenuItem();
+            menuEditAutoNormalizeMode.setText("Auto Normalize Mode");
+        }
+        return menuEditAutoNormalizeMode;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem1041    
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem1041() {
+        if (toolStripMenuItem1041 == null) {
+            toolStripMenuItem1041 = new JSeparator();
+        }
+        return toolStripMenuItem1041;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem15() {
+        if (menuEditSelectAll == null) {
+            menuEditSelectAll = new BMenuItem();
+            menuEditSelectAll.setText("Select All");
+        }
+        return menuEditSelectAll;
+    }
+
+    /**
+     * This method initializes menuEditSelectAllEvents  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuEditSelectAllEvents() {
+        if (menuEditSelectAllEvents == null) {
+            menuEditSelectAllEvents = new BMenuItem();
+            menuEditSelectAllEvents.setText("Select All Events");
+        }
+        return menuEditSelectAllEvents;
+    }
+
+    /**
+     * This method initializes menuVisual   
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuVisual() {
+        if (menuVisual == null) {
+            menuVisual = new BMenu();
+            menuVisual.setText("Visual");
+            menuVisual.add(getBMenuItem16());
+            menuVisual.add(getBMenuItem17());
+            menuVisual.add(getMenuVisualWaveform());
+            menuVisual.add(getBMenuItem23());
+            menuVisual.add(getBMenuItem32());
+            menuVisual.add(getToolStripMenuItem1031());
+            menuVisual.add(getBMenuItem18());
+            menuVisual.add(getToolStripMenuItem1032());
+            menuVisual.add(getBMenuItem19());
+            menuVisual.add(getMenuVisualEndMarker());
+            menuVisual.add(getToolStripMenuItem1033());
+            menuVisual.add(getMenuVisualLyrics());
+            menuVisual.add(getBMenuItem20());
+            menuVisual.add(getBMenuItem24());
+        }
+        return menuVisual;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem16() {
+        if (menuVisualControlTrack == null) {
+            menuVisualControlTrack = new BMenuItem();
+            menuVisualControlTrack.setText("Control Track");
+        }
+        return menuVisualControlTrack;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem17() {
+        if (menuVisualMixer == null) {
+            menuVisualMixer = new BMenuItem();
+            menuVisualMixer.setText("Mixer");
+        }
+        return menuVisualMixer;
+    }
+
+    /**
+     * This method initializes menuVisualWaveform   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuVisualWaveform() {
+        if (menuVisualWaveform == null) {
+            menuVisualWaveform = new BMenuItem();
+            menuVisualWaveform.setText("Waveform");
+        }
+        return menuVisualWaveform;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem23() {
+        if (menuVisualProperty == null) {
+            menuVisualProperty = new BMenuItem();
+            menuVisualProperty.setText("Property Window");
+        }
+        return menuVisualProperty;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem32() {
+        if (menuVisualOverview == null) {
+            menuVisualOverview = new BMenuItem();
+            menuVisualOverview.setText("Navigation");
+        }
+        return menuVisualOverview;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem1031    
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem1031() {
+        if (toolStripMenuItem1031 == null) {
+            toolStripMenuItem1031 = new JSeparator();
+        }
+        return toolStripMenuItem1031;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem18() {
+        if (menuVisualGridline == null) {
+            menuVisualGridline = new BMenuItem();
+            menuVisualGridline.setText("Grid Line");
+        }
+        return menuVisualGridline;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem1032    
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem1032() {
+        if (toolStripMenuItem1032 == null) {
+            toolStripMenuItem1032 = new JSeparator();
+        }
+        return toolStripMenuItem1032;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem19() {
+        if (menuVisualStartMarker == null) {
+            menuVisualStartMarker = new BMenuItem();
+            menuVisualStartMarker.setText("Start Marker");
+        }
+        return menuVisualStartMarker;
+    }
+
+    /**
+     * This method initializes menuVisualEndMarker  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuVisualEndMarker() {
+        if (menuVisualEndMarker == null) {
+            menuVisualEndMarker = new BMenuItem();
+            menuVisualEndMarker.setText("End Marker");
+        }
+        return menuVisualEndMarker;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem1033    
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem1033() {
+        if (toolStripMenuItem1033 == null) {
+            toolStripMenuItem1033 = new JSeparator();
+        }
+        return toolStripMenuItem1033;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem20() {
+        if (menuVisualNoteProperty == null) {
+            menuVisualNoteProperty = new BMenuItem();
+            menuVisualNoteProperty.setText("Note Expression/Vibrato");
+        }
+        return menuVisualNoteProperty;
+    }
+
+    /**
+     * This method initializes menuVisualLyrics 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuVisualLyrics() {
+        if (menuVisualLyrics == null) {
+            menuVisualLyrics = new BMenuItem();
+            menuVisualLyrics.setText("Lyrics/Phoneme");
+        }
+        return menuVisualLyrics;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem24() {
+        if (menuVisualPitchLine == null) {
+            menuVisualPitchLine = new BMenuItem();
+            menuVisualPitchLine.setText("Pitch Line");
+        }
+        return menuVisualPitchLine;
+    }
+
+    /**
+     * This method initializes menuJob  
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuJob() {
+        if (menuJob == null) {
+            menuJob = new BMenu();
+            menuJob.setText("Job");
+            menuJob.add(getBMenuItem21());
+            menuJob.add(getMenuJobInsertBar());
+            menuJob.add(getBMenuItem25());
+            menuJob.add(getBMenuItem33());
+            menuJob.add(getBMenuItem42());
+            menuJob.add(getBMenuItem52());
+            menuJob.add(getBMenuItem62());
+            menuJob.add(getBMenuItem72());
+            menuJob.add(getBMenuItem26());
+        }
+        return menuJob;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem21() {
+        if (menuJobNormalize == null) {
+            menuJobNormalize = new BMenuItem();
+            menuJobNormalize.setText("Normalize Notes");
+        }
+        return menuJobNormalize;
+    }
+
+    /**
+     * This method initializes menuJobInsertBar 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuJobInsertBar() {
+        if (menuJobInsertBar == null) {
+            menuJobInsertBar = new BMenuItem();
+            menuJobInsertBar.setText("Insert Bars");
+        }
+        return menuJobInsertBar;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem25() {
+        if (menuJobDeleteBar == null) {
+            menuJobDeleteBar = new BMenuItem();
+            menuJobDeleteBar.setText("Delete Bars");
+        }
+        return menuJobDeleteBar;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem33() {
+        if (menuJobRandomize == null) {
+            menuJobRandomize = new BMenuItem();
+            menuJobRandomize.setText("Randomize");
+        }
+        return menuJobRandomize;
+    }
+
+    /**
+     * This method initializes BMenuItem4   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem42() {
+        if (menuJobConnect == null) {
+            menuJobConnect = new BMenuItem();
+            menuJobConnect.setText("Connect Notes");
+        }
+        return menuJobConnect;
+    }
+
+    /**
+     * This method initializes BMenuItem5   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem52() {
+        if (menuJobLyric == null) {
+            menuJobLyric = new BMenuItem();
+            menuJobLyric.setText("Insert Lyrics");
+        }
+        return menuJobLyric;
+    }
+
+    /**
+     * This method initializes BMenuItem6   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem62() {
+        if (menuJobRewire == null) {
+            menuJobRewire = new BMenuItem();
+            menuJobRewire.setText("Import ReWire Host Tempo");
+        }
+        return menuJobRewire;
+    }
+
+    /**
+     * This method initializes BMenuItem7   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem72() {
+        if (menuJobRealTime == null) {
+            menuJobRealTime = new BMenuItem();
+            menuJobRealTime.setText("Start Realtime Input");
+        }
+        return menuJobRealTime;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem26() {
+        if (menuJobReloadVsti == null) {
+            menuJobReloadVsti = new BMenuItem();
+            menuJobReloadVsti.setText("Reload VSTi");
+        }
+        return menuJobReloadVsti;
+    }
+
+    /**
+     * This method initializes menuTrack    
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuTrack() {
+        if (menuTrack == null) {
+            menuTrack = new BMenu();
+            menuTrack.setText("Track");
+            menuTrack.add(getBMenuItem27());
+            menuTrack.add(getToolStripMenuItem10321());
+            menuTrack.add(getMenuTrackAdd());
+            menuTrack.add(getBMenuItem28());
+            menuTrack.add(getBMenuItem34());
+            menuTrack.add(getBMenuItem43());
+            menuTrack.add(getToolStripMenuItem10322());
+            menuTrack.add(getBMenuItem53());
+            menuTrack.add(getBMenuItem63());
+            menuTrack.add(getToolStripMenuItem10323());
+            menuTrack.add(getBMenuItem73());
+            menuTrack.add(getMenuTrackRenderer());
+            menuTrack.add(getToolStripMenuItem10324());
+            menuTrack.add(getMenuTrackBgm());
+            menuTrack.add(getBMenuItem82());
+        }
+        return menuTrack;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem27() {
+        if (menuTrackOn == null) {
+            menuTrackOn = new BMenuItem();
+            menuTrackOn.setText("Track On");
+        }
+        return menuTrackOn;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem10321   
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem10321() {
+        if (toolStripMenuItem10321 == null) {
+            toolStripMenuItem10321 = new JSeparator();
+        }
+        return toolStripMenuItem10321;
+    }
+
+    /**
+     * This method initializes menuTrackAdd 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuTrackAdd() {
+        if (menuTrackAdd == null) {
+            menuTrackAdd = new BMenuItem();
+            menuTrackAdd.setText("Add Track");
+        }
+        return menuTrackAdd;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem28() {
+        if (menuTrackCopy == null) {
+            menuTrackCopy = new BMenuItem();
+            menuTrackCopy.setText("Copy Track");
+        }
+        return menuTrackCopy;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem34() {
+        if (menuTrackChangeName == null) {
+            menuTrackChangeName = new BMenuItem();
+            menuTrackChangeName.setText("Rename Track");
+        }
+        return menuTrackChangeName;
+    }
+
+    /**
+     * This method initializes BMenuItem4   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem43() {
+        if (menuTrackDelete == null) {
+            menuTrackDelete = new BMenuItem();
+            menuTrackDelete.setText("Delete Track");
+        }
+        return menuTrackDelete;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem10322   
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem10322() {
+        if (toolStripMenuItem10322 == null) {
+            toolStripMenuItem10322 = new JSeparator();
+        }
+        return toolStripMenuItem10322;
+    }
+
+    /**
+     * This method initializes BMenuItem5   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem53() {
+        if (menuTrackRenderCurrent == null) {
+            menuTrackRenderCurrent = new BMenuItem();
+            menuTrackRenderCurrent.setText("Render Current Track");
+        }
+        return menuTrackRenderCurrent;
+    }
+
+    /**
+     * This method initializes BMenuItem6   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem63() {
+        if (menuTrackRenderAll == null) {
+            menuTrackRenderAll = new BMenuItem();
+            menuTrackRenderAll.setText("Render All Tracks");
+        }
+        return menuTrackRenderAll;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem10323   
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem10323() {
+        if (toolStripMenuItem10323 == null) {
+            toolStripMenuItem10323 = new JSeparator();
+        }
+        return toolStripMenuItem10323;
+    }
+
+    /**
+     * This method initializes BMenuItem7   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem73() {
+        if (menuTrackOverlay == null) {
+            menuTrackOverlay = new BMenuItem();
+            menuTrackOverlay.setText("Overlay");
+        }
+        return menuTrackOverlay;
+    }
+
+    /**
+     * This method initializes menuTrackRenderer    
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuTrackRenderer() {
+        if (menuTrackRenderer == null) {
+            menuTrackRenderer = new BMenu();
+            menuTrackRenderer.setText("Renderer");
+        }
+        return menuTrackRenderer;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem10324   
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem10324() {
+        if (toolStripMenuItem10324 == null) {
+            toolStripMenuItem10324 = new JSeparator();
+        }
+        return toolStripMenuItem10324;
+    }
+
+    /**
+     * This method initializes menuTrackBgm 
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuTrackBgm() {
+        if (menuTrackBgm == null) {
+            menuTrackBgm = new BMenu();
+            menuTrackBgm.setText("BGM");
+        }
+        return menuTrackBgm;
+    }
+
+    /**
+     * This method initializes BMenuItem8   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem82() {
+        if (menuTrackManager == null) {
+            menuTrackManager = new BMenuItem();
+        }
+        return menuTrackManager;
+    }
+
+    /**
+     * This method initializes menuLyric    
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuLyric() {
+        if (menuLyric == null) {
+            menuLyric = new BMenu();
+            menuLyric.setText("Lyrics");
+            menuLyric.add(getBMenuItem29());
+            menuLyric.add(getMenuLyricVibratoProperty());
+            menuLyric.add(getBMenuItem210());
+            menuLyric.add(getBMenuItem35());
+        }
+        return menuLyric;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem29() {
+        if (menuLyricExpressionProperty == null) {
+            menuLyricExpressionProperty = new BMenuItem();
+            menuLyricExpressionProperty.setText("Note Expression Propertry");
+        }
+        return menuLyricExpressionProperty;
+    }
+
+    /**
+     * This method initializes menuLyricVibratoProperty 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuLyricVibratoProperty() {
+        if (menuLyricVibratoProperty == null) {
+            menuLyricVibratoProperty = new BMenuItem();
+            menuLyricVibratoProperty.setText("Note Vibrato Property");
+        }
+        return menuLyricVibratoProperty;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem210() {
+        if (menuLyricSymbol == null) {
+            menuLyricSymbol = new BMenuItem();
+            menuLyricSymbol.setText("Phoneme Transformation");
+        }
+        return menuLyricSymbol;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem35() {
+        if (menuLyricDictionary == null) {
+            menuLyricDictionary = new BMenuItem();
+            menuLyricDictionary.setText("User Word Dictionary");
+        }
+        return menuLyricDictionary;
+    }
+
+    /**
+     * This method initializes menuScript   
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuScript() {
+        if (menuScript == null) {
+            menuScript = new BMenu();
+            menuScript.setText("Script");
+            menuScript.add(getBMenuItem30());
+        }
+        return menuScript;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem30() {
+        if (menuScriptUpdate == null) {
+            menuScriptUpdate = new BMenuItem();
+            menuScriptUpdate.setText("Update Script List");
+        }
+        return menuScriptUpdate;
+    }
+
+    /**
+     * This method initializes menuSetting  
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuSetting() {
+        if (menuSetting == null) {
+            menuSetting = new BMenu();
+            menuSetting.setText("Setting");
+            menuSetting.add(getBMenuItem31());
+            menuSetting.add(getMenuSettingGameControler());
+            menuSetting.add(getMenuSettingPaletteTool());
+            menuSetting.add(getBMenuItem211());
+            menuSetting.add(getBMenuItem36());
+            menuSetting.add(getBMenuItem44());
+            menuSetting.add(getToolStripMenuItem103211());
+            menuSetting.add(getBMenuItem54());
+            menuSetting.add(getToolStripMenuItem103212());
+            menuSetting.add(getMenuSettingPositionQuantize());
+            menuSetting.add(getMenuSettingLengthQuantize());
+            menuSetting.add(getBMenuItem64());
+        }
+        return menuSetting;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem31() {
+        if (menuSettingPreference == null) {
+            menuSettingPreference = new BMenuItem();
+            menuSettingPreference.setText("Preference");
+        }
+        return menuSettingPreference;
+    }
+
+    /**
+     * This method initializes menuSettingGameControler 
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuSettingGameControler() {
+        if (menuSettingGameControler == null) {
+            menuSettingGameControler = new BMenu();
+            menuSettingGameControler.setText("Game Controler");
+        }
+        return menuSettingGameControler;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem211() {
+        if (menuSettingShortcut == null) {
+            menuSettingShortcut = new BMenuItem();
+            menuSettingShortcut.setText("Shortcut Key");
+        }
+        return menuSettingShortcut;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem36() {
+        if (menuSettingMidi == null) {
+            menuSettingMidi = new BMenuItem();
+        }
+        return menuSettingMidi;
+    }
+
+    /**
+     * This method initializes BMenuItem4   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem44() {
+        if (menuSettingUtauVoiceDB == null) {
+            menuSettingUtauVoiceDB = new BMenuItem();
+            menuSettingUtauVoiceDB.setText("UTAU Voice DB");
+        }
+        return menuSettingUtauVoiceDB;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem103211  
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem103211() {
+        if (toolStripMenuItem103211 == null) {
+            toolStripMenuItem103211 = new JSeparator();
+        }
+        return toolStripMenuItem103211;
+    }
+
+    /**
+     * This method initializes BMenuItem5   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem54() {
+        if (menuSettingDefaultSingerStyle == null) {
+            menuSettingDefaultSingerStyle = new BMenuItem();
+            menuSettingDefaultSingerStyle.setText("Singing Style Defaults");
+        }
+        return menuSettingDefaultSingerStyle;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem103212  
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem103212() {
+        if (toolStripMenuItem103212 == null) {
+            toolStripMenuItem103212 = new JSeparator();
+        }
+        return toolStripMenuItem103212;
+    }
+
+    /**
+     * This method initializes menuSettingPositionQuantize  
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuSettingPositionQuantize() {
+        if (menuSettingPositionQuantize == null) {
+            menuSettingPositionQuantize = new BMenu();
+            menuSettingPositionQuantize.setText("Quantize");
+            menuSettingPositionQuantize.add(getBMenuItem37());
+            menuSettingPositionQuantize.add(getMenuSettingPositionQuantize08());
+            menuSettingPositionQuantize.add(getBMenuItem212());
+            menuSettingPositionQuantize.add(getBMenuItem38());
+            menuSettingPositionQuantize.add(getBMenuItem45());
+            menuSettingPositionQuantize.add(getBMenuItem55());
+            menuSettingPositionQuantize.add(getBMenuItem65());
+            menuSettingPositionQuantize.add(getToolStripMenuItem1032121());
+            menuSettingPositionQuantize.add(getBMenuItem74());
+        }
+        return menuSettingPositionQuantize;
+    }
+
+    /**
+     * This method initializes BMenuItem6   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem64() {
+        if (menuSettingSingerProperty == null) {
+            menuSettingSingerProperty = new BMenuItem();
+        }
+        return menuSettingSingerProperty;
+    }
+
+    /**
+     * This method initializes menuSettingPaletteTool   
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuSettingPaletteTool() {
+        if (menuSettingPaletteTool == null) {
+            menuSettingPaletteTool = new BMenu();
+            menuSettingPaletteTool.setText("Palette Tool");
+        }
+        return menuSettingPaletteTool;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem37() {
+        if (menuSettingPositionQuantize04 == null) {
+            menuSettingPositionQuantize04 = new BMenuItem();
+            menuSettingPositionQuantize04.setText("1/4");
+        }
+        return menuSettingPositionQuantize04;
+    }
+
+    /**
+     * This method initializes menuSettingPositionQuantize08    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuSettingPositionQuantize08() {
+        if (menuSettingPositionQuantize08 == null) {
+            menuSettingPositionQuantize08 = new BMenuItem();
+            menuSettingPositionQuantize08.setText("1/8");
+        }
+        return menuSettingPositionQuantize08;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem212() {
+        if (menuSettingPositionQuantize16 == null) {
+            menuSettingPositionQuantize16 = new BMenuItem();
+            menuSettingPositionQuantize16.setText("1/16");
+        }
+        return menuSettingPositionQuantize16;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem38() {
+        if (menuSettingPositionQuantize32 == null) {
+            menuSettingPositionQuantize32 = new BMenuItem();
+            menuSettingPositionQuantize32.setText("1/32");
+        }
+        return menuSettingPositionQuantize32;
+    }
+
+    /**
+     * This method initializes BMenuItem4   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem45() {
+        if (menuSettingPositionQuantize64 == null) {
+            menuSettingPositionQuantize64 = new BMenuItem();
+            menuSettingPositionQuantize64.setText("1/64");
+        }
+        return menuSettingPositionQuantize64;
+    }
+
+    /**
+     * This method initializes BMenuItem5   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem55() {
+        if (menuSettingPositionQuantize128 == null) {
+            menuSettingPositionQuantize128 = new BMenuItem();
+            menuSettingPositionQuantize128.setText("1/128");
+        }
+        return menuSettingPositionQuantize128;
+    }
+
+    /**
+     * This method initializes BMenuItem6   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem65() {
+        if (menuSettingPositionQuantizeOff == null) {
+            menuSettingPositionQuantizeOff = new BMenuItem();
+            menuSettingPositionQuantizeOff.setText("Off");
+        }
+        return menuSettingPositionQuantizeOff;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem1032121 
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem1032121() {
+        if (toolStripMenuItem1032121 == null) {
+            toolStripMenuItem1032121 = new JSeparator();
+        }
+        return toolStripMenuItem1032121;
+    }
+
+    /**
+     * This method initializes BMenuItem7   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem74() {
+        if (menuSettingPositionQuantizeTriplet == null) {
+            menuSettingPositionQuantizeTriplet = new BMenuItem();
+            menuSettingPositionQuantizeTriplet.setText("Triplet");
+        }
+        return menuSettingPositionQuantizeTriplet;
+    }
+
+    /**
+     * This method initializes menuSettingLengthQuantize    
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuSettingLengthQuantize() {
+        if (menuSettingLengthQuantize == null) {
+            menuSettingLengthQuantize = new BMenu();
+            menuSettingLengthQuantize.setText("Length");
+            menuSettingLengthQuantize.add(getMenuSettingLengthQuantize04());
+            menuSettingLengthQuantize.add(getMenuSettingLengthQuantize08());
+            menuSettingLengthQuantize.add(getMenuSettingLengthQuantize16());
+            menuSettingLengthQuantize.add(getMenuSettingLengthQuantize32());
+            menuSettingLengthQuantize.add(getMenuSettingLengthQuantize64());
+            menuSettingLengthQuantize.add(getMenuSettingLengthQuantize128());
+            menuSettingLengthQuantize.add(getMenuSettingLengthQuantizeOff());
+            menuSettingLengthQuantize.add(getToolStripMenuItem10321211());
+            menuSettingLengthQuantize.add(getMenuSettingLengthQuantizeTriplet());
+        }
+        return menuSettingLengthQuantize;
+    }
+
+    /**
+     * This method initializes menuSettingLengthQuantize04  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuSettingLengthQuantize04() {
+        if (menuSettingLengthQuantize04 == null) {
+            menuSettingLengthQuantize04 = new BMenuItem();
+            menuSettingLengthQuantize04.setText("1/4");
+        }
+        return menuSettingLengthQuantize04;
+    }
+
+    /**
+     * This method initializes menuSettingLengthQuantize08  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuSettingLengthQuantize08() {
+        if (menuSettingLengthQuantize08 == null) {
+            menuSettingLengthQuantize08 = new BMenuItem();
+            menuSettingLengthQuantize08.setText("1/8");
+        }
+        return menuSettingLengthQuantize08;
+    }
+
+    /**
+     * This method initializes menuSettingLengthQuantize16  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuSettingLengthQuantize16() {
+        if (menuSettingLengthQuantize16 == null) {
+            menuSettingLengthQuantize16 = new BMenuItem();
+            menuSettingLengthQuantize16.setText("1/16");
+        }
+        return menuSettingLengthQuantize16;
+    }
+
+    /**
+     * This method initializes menuSettingLengthQuantize32  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuSettingLengthQuantize32() {
+        if (menuSettingLengthQuantize32 == null) {
+            menuSettingLengthQuantize32 = new BMenuItem();
+            menuSettingLengthQuantize32.setText("1/32");
+        }
+        return menuSettingLengthQuantize32;
+    }
+
+    /**
+     * This method initializes menuSettingLengthQuantize64  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuSettingLengthQuantize64() {
+        if (menuSettingLengthQuantize64 == null) {
+            menuSettingLengthQuantize64 = new BMenuItem();
+            menuSettingLengthQuantize64.setText("1/64");
+        }
+        return menuSettingLengthQuantize64;
+    }
+
+    /**
+     * This method initializes menuSettingLengthQuantize128 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuSettingLengthQuantize128() {
+        if (menuSettingLengthQuantize128 == null) {
+            menuSettingLengthQuantize128 = new BMenuItem();
+            menuSettingLengthQuantize128.setText("1/128");
+        }
+        return menuSettingLengthQuantize128;
+    }
+
+    /**
+     * This method initializes menuSettingLengthQuantizeOff 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuSettingLengthQuantizeOff() {
+        if (menuSettingLengthQuantizeOff == null) {
+            menuSettingLengthQuantizeOff = new BMenuItem();
+            menuSettingLengthQuantizeOff.setText("Off");
+        }
+        return menuSettingLengthQuantizeOff;
+    }
+
+    /**
+     * This method initializes toolStripMenuItem10321211    
+     *  
+     * @return javax.swing.JSeparator   
+     */
+    private JSeparator getToolStripMenuItem10321211() {
+        if (toolStripMenuItem10321211 == null) {
+            toolStripMenuItem10321211 = new JSeparator();
+        }
+        return toolStripMenuItem10321211;
+    }
+
+    /**
+     * This method initializes menuSettingLengthQuantizeTriplet 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getMenuSettingLengthQuantizeTriplet() {
+        if (menuSettingLengthQuantizeTriplet == null) {
+            menuSettingLengthQuantizeTriplet = new BMenuItem();
+            menuSettingLengthQuantizeTriplet.setText("Triplet");
+        }
+        return menuSettingLengthQuantizeTriplet;
+    }
+
+    /**
+     * This method initializes menuHelp 
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getMenuHelp() {
+        if (menuHelp == null) {
+            menuHelp = new BMenu();
+            menuHelp.setText("Help");
+            menuHelp.add(getBMenuItem39());
+        }
+        return menuHelp;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getBMenuItem39() {
+        if (menuHelpAbout == null) {
+            menuHelpAbout = new BMenuItem();
+            menuHelpAbout.setText("About Cadencii");
+        }
+        return menuHelpAbout;
+    }
+
+    /**
+     * This method initializes splitContainer2  
+     *  
+     * @return javax.swing.BSplitPane   
+     */
+    private BSplitPane getSplitContainer2() {
+        if (splitContainer2 == null) {
+            splitContainer2 = new BSplitPane();
+            splitContainer2.setDividerSize(0);
+            splitContainer2.setDividerLocation(70);
+            splitContainer2.setEnabled(false);
+            splitContainer2.setResizeWeight(1.0D);
+            splitContainer2.setBottomComponent(getPanel2());
+            splitContainer2.setTopComponent(getJPanel1());
+            splitContainer2.setOrientation(BSplitPane.VERTICAL_SPLIT);
+        }
+        return splitContainer2;
+    }
+
+    /**
+     * This method initializes panel1   
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getPanel1() {
+        if (panel1 == null) {
+            GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+            gridBagConstraints11.fill = GridBagConstraints.NONE;
+            gridBagConstraints11.gridy = 1;
+            gridBagConstraints11.weightx = 0.0D;
+            gridBagConstraints11.anchor = GridBagConstraints.EAST;
+            gridBagConstraints11.gridx = 2;
+            GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+            gridBagConstraints10.gridx = 0;
+            gridBagConstraints10.fill = GridBagConstraints.BOTH;
+            gridBagConstraints10.gridy = 1;
+            GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+            gridBagConstraints9.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints9.gridy = 1;
+            gridBagConstraints9.weighty = 0.0D;
+            gridBagConstraints9.weightx = 1.0D;
+            gridBagConstraints9.gridx = 1;
+            GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
+            gridBagConstraints8.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints8.gridy = 0;
+            gridBagConstraints8.weighty = 1.0D;
+            gridBagConstraints8.gridx = 3;
+            GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
+            gridBagConstraints7.gridx = 0;
+            gridBagConstraints7.fill = GridBagConstraints.BOTH;
+            gridBagConstraints7.weightx = 1.0D;
+            gridBagConstraints7.weighty = 1.0D;
+            gridBagConstraints7.gridwidth = 3;
+            gridBagConstraints7.gridy = 0;
+            panel1 = new BPanel();
+            panel1.setLayout(new GridBagLayout());
+            panel1.add(getPictPianoRoll(), gridBagConstraints7);
+            panel1.add(getVScroll(), gridBagConstraints8);
+            panel1.add(getHScroll(), gridBagConstraints9);
+            panel1.add(getPictureBox3(), gridBagConstraints10);
+            panel1.add(getTrackBar(), gridBagConstraints11);
+        }
+        return panel1;
+    }
+
+    /**
+     * This method initializes panel2   
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getPanel2() {
+        if (panel2 == null) {
+            panel2 = new BPanel();
+            panel2.setLayout(new GridBagLayout());
+        }
+        return panel2;
+    }
+
+    /**
+     * This method initializes splitContainer1  
+     *  
+     * @return javax.swing.BSplitPane   
+     */
+    private BSplitPane getSplitContainer1() {
+        if (splitContainer1 == null) {
+            splitContainer1 = new BSplitPane();
+            splitContainer1.setDividerLocation(200);
+            splitContainer1.setResizeWeight(1.0D);
+            splitContainer1.setTopComponent(getSplitContainer2());
+            splitContainer1.setBottomComponent(getTrackSelector());
+            splitContainer1.setOrientation(BSplitPane.VERTICAL_SPLIT);
+        }
+        return splitContainer1;
+    }
+
+    /**
+     * This method initializes trackSelector    
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private TrackSelector getTrackSelector() {
+        if (trackSelector == null) {
+            trackSelector = new TrackSelector();
+            trackSelector.setLayout(new GridBagLayout());
+        }
+        return trackSelector;
+    }
+
+    /**
+     * This method initializes splitContainerProperty   
+     *  
+     * @return javax.swing.BSplitPane   
+     */
+    private BSplitPane getSplitContainerProperty() {
+        if (splitContainerProperty == null) {
+            splitContainerProperty = new BSplitPane();
+            splitContainerProperty.setDividerLocation(0);
+            splitContainerProperty.setEnabled(false);
+            splitContainerProperty.setDividerSize(0);
+            splitContainerProperty.setRightComponent(getSplitContainer1());
+            splitContainerProperty.setLeftComponent(getM_property_panel_container());
+        }
+        return splitContainerProperty;
+    }
+
+    /**
+     * This method initializes m_property_panel_container   
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getM_property_panel_container() {
+        if (m_property_panel_container == null) {
+            m_property_panel_container = new BPanel();
+            m_property_panel_container.setLayout(new GridBagLayout());
+        }
+        return m_property_panel_container;
+    }
+
+    /**
+     * This method initializes toolStripFile    
+     *  
+     * @return javax.swing.BToolBar 
+     */
+    private BToolBar getToolStripFile() {
+        if (toolStripFile == null) {
+            toolStripFile = new BToolBar();
+            toolStripFile.setName("toolStripFile");
+            toolStripFile.add(getStripBtnFileNew());
+            toolStripFile.add(getStripBtnFileOpen());
+            toolStripFile.add(getStripBtnFileSave());
+            toolStripFile.addSeparator();
+            toolStripFile.add(getStripBtnCut());
+            toolStripFile.add(getStripBtnCopy());
+            toolStripFile.add(getStripBtnPaste());
+            toolStripFile.add(getStripBtnUndo());
+            toolStripFile.add(getStripBtnRedo());
+        }
+        return toolStripFile;
+    }
+
+    /**
+     * This method initializes toolStripBottom  
+     *  
+     * @return javax.swing.BToolBar 
+     */
+    private BToolBar getToolStripBottom() {
+        if (toolStripBottom == null) {
+            jLabel5 = new BLabel();
+            jLabel5.setText("Speed 1.0x");
+            stripLblMidiIn = new BLabel();
+            stripLblMidiIn.setText("Disabled");
+            jLabel4 = new BLabel();
+            jLabel4.setText("MIDI In");
+            stripLblGameCtrlMode = new BLabel();
+            stripLblGameCtrlMode.setText("Disabled");
+            jLabel3 = new BLabel();
+            jLabel3.setText("Game Controler");
+            stripLblBeat = new BLabel();
+            stripLblBeat.setText("4/4");
+            jLabel2 = new BLabel();
+            jLabel2.setText("BEAT");
+            stripLblTempo = new BLabel();
+            stripLblTempo.setText("120.00");
+            toolStripLabel8 = new BLabel();
+            toolStripLabel8.setText("TEMPO");
+            stripLblCursor = new BLabel();
+            stripLblCursor.setText("0 : 0 : 000");
+            toolStripLabel6 = new BLabel();
+            toolStripLabel6.setText("CURSOR");
+            toolStripBottom = new BToolBar();
+            toolStripBottom.add(toolStripLabel6);
+            toolStripBottom.add(stripLblCursor);
+            toolStripBottom.addSeparator();
+            toolStripBottom.add(toolStripLabel8);
+            toolStripBottom.add(stripLblTempo);
+            toolStripBottom.addSeparator();
+            toolStripBottom.add(jLabel2);
+            toolStripBottom.add(stripLblBeat);
+            toolStripBottom.addSeparator();
+            toolStripBottom.add(jLabel3);
+            toolStripBottom.add(stripLblGameCtrlMode);
+            toolStripBottom.addSeparator();
+            toolStripBottom.add(jLabel4);
+            toolStripBottom.add(stripLblMidiIn);
+            toolStripBottom.add(jLabel5);
+            toolStripBottom.add(getStripDDBtnSpeed());
+            toolStripBottom.addSeparator();
+            
+        }
+        return toolStripBottom;
+    }
+
+    /**
+     * This method initializes stripBtnFileNew  
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnFileNew() {
+        if (stripBtnFileNew == null) {
+            stripBtnFileNew = new BButton();
+            stripBtnFileNew.setText("New");
+        }
+        return stripBtnFileNew;
+    }
+
+    /**
+     * This method initializes stripBtnFileOpen 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnFileOpen() {
+        if (stripBtnFileOpen == null) {
+            stripBtnFileOpen = new BButton();
+            stripBtnFileOpen.setText("Open");
+        }
+        return stripBtnFileOpen;
+    }
+
+    /**
+     * This method initializes stripBtnFileSave 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnFileSave() {
+        if (stripBtnFileSave == null) {
+            stripBtnFileSave = new BButton();
+            stripBtnFileSave.setText("Save");
+        }
+        return stripBtnFileSave;
+    }
+
+    /**
+     * This method initializes stripBtnCut  
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnCut() {
+        if (stripBtnCut == null) {
+            stripBtnCut = new BButton();
+            stripBtnCut.setText("Cut");
+        }
+        return stripBtnCut;
+    }
+
+    /**
+     * This method initializes stripBtnCopy 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnCopy() {
+        if (stripBtnCopy == null) {
+            stripBtnCopy = new BButton();
+            stripBtnCopy.setText("Copy");
+        }
+        return stripBtnCopy;
+    }
+
+    /**
+     * This method initializes stripBtnPaste    
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnPaste() {
+        if (stripBtnPaste == null) {
+            stripBtnPaste = new BButton();
+            stripBtnPaste.setText("Paste");
+        }
+        return stripBtnPaste;
+    }
+
+    /**
+     * This method initializes stripBtnUndo 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnUndo() {
+        if (stripBtnUndo == null) {
+            stripBtnUndo = new BButton();
+            stripBtnUndo.setText("Undo");
+        }
+        return stripBtnUndo;
+    }
+
+    /**
+     * This method initializes stripBtnRedo 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnRedo() {
+        if (stripBtnRedo == null) {
+            stripBtnRedo = new BButton();
+            stripBtnRedo.setText("Redo");
+        }
+        return stripBtnRedo;
+    }
+
+    /**
+     * This method initializes toolStripPosition    
+     *  
+     * @return javax.swing.BToolBar 
+     */
+    private BToolBar getToolStripPosition() {
+        if (toolStripPosition == null) {
+            toolStripPosition = new BToolBar();
+            toolStripPosition.setName("toolStripPosition");
+            toolStripPosition.add(getStripBtnMoveTop());
+            toolStripPosition.add(getStripBtnRewind());
+            toolStripPosition.add(getStripBtnForward());
+            toolStripPosition.add(getStripBtnMoveEnd());
+            toolStripPosition.add(getStripBtnPlay());
+            toolStripPosition.add(getStripBtnStop());
+            toolStripPosition.add(getStripBtnScroll());
+            toolStripPosition.add(getStripBtnLoop());
+            toolStripPosition.addSeparator();
+        }
+        return toolStripPosition;
+    }
+
+    /**
+     * This method initializes stripBtnMoveTop  
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnMoveTop() {
+        if (stripBtnMoveTop == null) {
+            stripBtnMoveTop = new BButton();
+            stripBtnMoveTop.setText("|<");
+        }
+        return stripBtnMoveTop;
+    }
+
+    /**
+     * This method initializes BPanel   
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getJPanel() {
+        if (BPanel == null) {
+            GridLayout gridLayout4 = new GridLayout();
+            gridLayout4.setRows(2);
+            GridLayout gridLayout3 = new GridLayout();
+            gridLayout3.setRows(2);
+            GridLayout gridLayout2 = new GridLayout();
+            gridLayout2.setRows(2);
+            GridLayout gridLayout = new GridLayout();
+            gridLayout.setRows(2);
+            BPanel = new BPanel();
+            BPanel.setLayout(new BoxLayout(getJPanel(), BoxLayout.X_AXIS));
+            BPanel.add(getToolStripFile(), null);
+            BPanel.add(getToolStripPosition(), null);
+            BPanel.add(getToolStripTool(), null);
+            BPanel.add(getToolStripMeasure(), null);
+        }
+        return BPanel;
+    }
+
+    /**
+     * This method initializes stripBtnRewind   
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnRewind() {
+        if (stripBtnRewind == null) {
+            stripBtnRewind = new BButton();
+            stripBtnRewind.setText("<<");
+        }
+        return stripBtnRewind;
+    }
+
+    /**
+     * This method initializes stripBtnForward  
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnForward() {
+        if (stripBtnForward == null) {
+            stripBtnForward = new BButton();
+            stripBtnForward.setText(">>");
+        }
+        return stripBtnForward;
+    }
+
+    /**
+     * This method initializes stripBtnMoveEnd  
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnMoveEnd() {
+        if (stripBtnMoveEnd == null) {
+            stripBtnMoveEnd = new BButton();
+            stripBtnMoveEnd.setText(">|");
+        }
+        return stripBtnMoveEnd;
+    }
+
+    /**
+     * This method initializes stripBtnPlay 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnPlay() {
+        if (stripBtnPlay == null) {
+            stripBtnPlay = new BButton();
+            stripBtnPlay.setText(">");
+        }
+        return stripBtnPlay;
+    }
+
+    /**
+     * This method initializes stripBtnStop 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getStripBtnStop() {
+        if (stripBtnStop == null) {
+            stripBtnStop = new BButton();
+            stripBtnStop.setText("[  ]");
+        }
+        return stripBtnStop;
+    }
+
+    /**
+     * This method initializes stripBtnScroll   
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnScroll() {
+        if (stripBtnScroll == null) {
+            stripBtnScroll = new BToggleButton();
+            stripBtnScroll.setText("Scroll");
+        }
+        return stripBtnScroll;
+    }
+
+    /**
+     * This method initializes stripBtnLoop 
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnLoop() {
+        if (stripBtnLoop == null) {
+            stripBtnLoop = new BToggleButton();
+            stripBtnLoop.setText("Loop");
+        }
+        return stripBtnLoop;
+    }
+
+    /**
+     * This method initializes toolStripMeasure 
+     *  
+     * @return javax.swing.BToolBar 
+     */
+    private BToolBar getToolStripMeasure() {
+        if (toolStripMeasure == null) {
+            jLabel1 = new BLabel();
+            jLabel1.setText("QUANTIZE");
+            BLabel = new BLabel();
+            BLabel.setText("LENGTH");
+            stripLblMeasure = new BLabel();
+            stripLblMeasure.setText("0 : 0 : 000");
+            toolStripLabel5 = new BLabel();
+            toolStripLabel5.setText("MEASURE");
+            toolStripMeasure = new BToolBar();
+            toolStripMeasure.setName("toolStripMeasure");
+            toolStripMeasure.add(toolStripLabel5);
+            toolStripMeasure.add(stripLblMeasure);
+            toolStripMeasure.add(BLabel);
+            toolStripMeasure.add(getStripDDBtnLength());
+            toolStripMeasure.add(jLabel1);
+            toolStripMeasure.add(getStripDDBtnQuantize());
+            toolStripMeasure.add(getStripBtnStartMarker());
+            toolStripMeasure.add(getStripBtnEndMarker());
+            toolStripMeasure.addSeparator();
+        }
+        return toolStripMeasure;
+    }
+
+    /**
+     * This method initializes stripDDBtnLength 
+     *  
+     * @return javax.swing.BComboBox    
+     */
+    private BComboBox getStripDDBtnLength() {
+        if (stripDDBtnLength == null) {
+            stripDDBtnLength = new BComboBox();
+        }
+        return stripDDBtnLength;
+    }
+
+    /**
+     * This method initializes stripDDBtnQuantize   
+     *  
+     * @return javax.swing.BComboBox    
+     */
+    private BComboBox getStripDDBtnQuantize() {
+        if (stripDDBtnQuantize == null) {
+            stripDDBtnQuantize = new BComboBox();
+        }
+        return stripDDBtnQuantize;
+    }
+
+    /**
+     * This method initializes stripBtnStartMarker  
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnStartMarker() {
+        if (stripBtnStartMarker == null) {
+            stripBtnStartMarker = new BToggleButton();
+        }
+        return stripBtnStartMarker;
+    }
+
+    /**
+     * This method initializes stripBtnEndMarker    
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnEndMarker() {
+        if (stripBtnEndMarker == null) {
+            stripBtnEndMarker = new BToggleButton();
+        }
+        return stripBtnEndMarker;
+    }
+
+    /**
+     * This method initializes toolStripTool    
+     *  
+     * @return javax.swing.BToolBar 
+     */
+    private BToolBar getToolStripTool() {
+        if (toolStripTool == null) {
+            toolStripTool = new BToolBar();
+            toolStripTool.add(getStripBtnPointer());
+            toolStripTool.add(getStripBtnPencil());
+            toolStripTool.add(getStripBtnLine());
+            toolStripTool.add(getStripBtnEraser());
+            toolStripTool.add(getStripBtnGrid());
+            toolStripTool.add(getStripBtnCurve());
+            toolStripTool.addSeparator();
+        }
+        return toolStripTool;
+    }
+
+    /**
+     * This method initializes stripBtnPointer  
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnPointer() {
+        if (stripBtnPointer == null) {
+            stripBtnPointer = new BToggleButton();
+            stripBtnPointer.setText("Pointer");
+        }
+        return stripBtnPointer;
+    }
+
+    /**
+     * This method initializes stripBtnPencil   
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnPencil() {
+        if (stripBtnPencil == null) {
+            stripBtnPencil = new BToggleButton();
+            stripBtnPencil.setText("Pencil");
+        }
+        return stripBtnPencil;
+    }
+
+    /**
+     * This method initializes stripBtnLine 
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnLine() {
+        if (stripBtnLine == null) {
+            stripBtnLine = new BToggleButton();
+            stripBtnLine.setText("Line");
+        }
+        return stripBtnLine;
+    }
+
+    /**
+     * This method initializes stripBtnEraser   
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnEraser() {
+        if (stripBtnEraser == null) {
+            stripBtnEraser = new BToggleButton();
+            stripBtnEraser.setToolTipText("");
+            stripBtnEraser.setText("Eraser");
+        }
+        return stripBtnEraser;
+    }
+
+    /**
+     * This method initializes stripBtnGrid 
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnGrid() {
+        if (stripBtnGrid == null) {
+            stripBtnGrid = new BToggleButton();
+            stripBtnGrid.setText("Grid");
+        }
+        return stripBtnGrid;
+    }
+
+    /**
+     * This method initializes stripBtnCurve    
+     *  
+     * @return javax.swing.BToggleButton    
+     */
+    private BToggleButton getStripBtnCurve() {
+        if (stripBtnCurve == null) {
+            stripBtnCurve = new BToggleButton();
+            stripBtnCurve.setText("Curve");
+        }
+        return stripBtnCurve;
+    }
+
+    /**
+     * This method initializes stripDDBtnSpeed  
+     *  
+     * @return javax.swing.BComboBox    
+     */
+    private BComboBox getStripDDBtnSpeed() {
+        if (stripDDBtnSpeed == null) {
+            stripDDBtnSpeed = new BComboBox();
+        }
+        return stripDDBtnSpeed;
+    }
+
+    /**
+     * This method initializes cMenuTrackSelector   
+     *  
+     * @return javax.swing.BPopupMenu   
+     */
+    private BPopupMenu getCMenuTrackSelector() {
+        if (cMenuTrackSelector == null) {
+            cMenuTrackSelector = new BPopupMenu();
+            cMenuTrackSelector.add(getCMenuTrackSelectorPointer());
+            cMenuTrackSelector.add(getCMenuTrackSelectorPencil());
+            cMenuTrackSelector.add(getCMenuTrackSelectorLine());
+            cMenuTrackSelector.add(getCMenuTrackSelectorEraser());
+            cMenuTrackSelector.add(getCMenuTrackSelectorPaletteTool());
+            cMenuTrackSelector.addSeparator();
+            cMenuTrackSelector.add(getCMenuTrackSelectorCurve());
+            cMenuTrackSelector.addSeparator();
+            cMenuTrackSelector.add(getCMenuTrackSelectorUndo());
+            cMenuTrackSelector.add(getCMenuTrackSelectorRedo());
+            cMenuTrackSelector.addSeparator();
+            cMenuTrackSelector.add(getCMenuTrackSelectorCut());
+            cMenuTrackSelector.add(getCMenuTrackSelectorCopy());
+            cMenuTrackSelector.add(getCMenuTrackSelectorPaste());
+            cMenuTrackSelector.add(getCMenuTrackSelectorDelete());
+            cMenuTrackSelector.add(getCMenuTrackSelectorDeleteBezier());
+            cMenuTrackSelector.addSeparator();
+            cMenuTrackSelector.add(getCMenuTrackSelectorSelectAll());
+        }
+        return cMenuTrackSelector;
+    }
+
+    /**
+     * This method initializes cMenuPiano   
+     *  
+     * @return javax.swing.BPopupMenu   
+     */
+    private BPopupMenu getCMenuPiano() {
+        if (cMenuPiano == null) {
+            cMenuPiano = new BPopupMenu();
+            cMenuPiano.add(getCMenuPianoPointer());
+            cMenuPiano.add(getCMenuPianoPencil());
+            cMenuPiano.add(getCMenuPianoEraser());
+            cMenuPiano.add(getCMenuPianoPaletteTool());
+            cMenuPiano.addSeparator();
+            cMenuPiano.add(getCMenuPianoCurve());
+            cMenuPiano.addSeparator();
+            cMenuPiano.add(getCMenuPianoFixed());
+            cMenuPiano.add(getCMenuPianoQuantize());
+            cMenuPiano.add(getCMenuPianoLength());
+            cMenuPiano.add(getCMenuPianoGrid());
+            cMenuPiano.addSeparator();
+            cMenuPiano.add(getCMenuPianoUndo());
+            cMenuPiano.add(getCMenuPianoRedo());
+            cMenuPiano.addSeparator();
+            cMenuPiano.add(getCMenuPianoCut());
+            cMenuPiano.add(getCMenuPianoCopy());
+            cMenuPiano.add(getCMenuPianoPaste());
+            cMenuPiano.add(getCMenuPianoDelete());
+            cMenuPiano.addSeparator();
+            cMenuPiano.add(getCMenuPianoSelectAll());
+            cMenuPiano.add(getCMenuPianoSelectAllEvents());
+            cMenuPiano.addSeparator();
+            cMenuPiano.add(getCMenuPianoImportLyric());
+            cMenuPiano.add(getCMenuPianoExpressionProperty());
+            cMenuPiano.add(getCMenuPianoVibratoProperty());
+        }
+        return cMenuPiano;
+    }
+
+    /**
+     * This method initializes cMenuTrackTab    
+     *  
+     * @return javax.swing.BPopupMenu   
+     */
+    private BPopupMenu getCMenuTrackTab() {
+        if (cMenuTrackTab == null) {
+            cMenuTrackTab = new BPopupMenu();
+            cMenuTrackTab.add(getCMenuTrackTabTrackOn());
+            cMenuTrackTab.addSeparator();
+            cMenuTrackTab.add(getCMenuTrackTabAdd());
+            cMenuTrackTab.add(getCMenuTrackTabCopy());
+            cMenuTrackTab.add(getCMenuTrackTabChangeName());
+            cMenuTrackTab.add(getCMenuTrackTabDelete());
+            cMenuTrackTab.addSeparator();
+            cMenuTrackTab.add(getCMenuTrackTabRenderCurrent());
+            cMenuTrackTab.add(getCMenuTrackTabRenderAll());
+            cMenuTrackTab.addSeparator();
+            cMenuTrackTab.add(getCMenuTrackTabOverlay());
+            cMenuTrackTab.add(getCMenuTrackTabRenderer());
+        }
+        return cMenuTrackTab;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorPointer() {
+        if (cMenuTrackSelectorPointer == null) {
+            cMenuTrackSelectorPointer = new BMenuItem();
+        }
+        return cMenuTrackSelectorPointer;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorPencil() {
+        if (cMenuTrackSelectorPencil == null) {
+            cMenuTrackSelectorPencil = new BMenuItem();
+        }
+        return cMenuTrackSelectorPencil;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorLine() {
+        if (cMenuTrackSelectorLine == null) {
+            cMenuTrackSelectorLine = new BMenuItem();
+        }
+        return cMenuTrackSelectorLine;
+    }
+
+    /**
+     * This method initializes cMenuTrackSelectorEraser 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorEraser() {
+        if (cMenuTrackSelectorEraser == null) {
+            cMenuTrackSelectorEraser = new BMenuItem();
+        }
+        return cMenuTrackSelectorEraser;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorPaletteTool() {
+        if (cMenuTrackSelectorPaletteTool == null) {
+            cMenuTrackSelectorPaletteTool = new BMenuItem();
+        }
+        return cMenuTrackSelectorPaletteTool;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorCurve() {
+        if (cMenuTrackSelectorCurve == null) {
+            cMenuTrackSelectorCurve = new BMenuItem();
+        }
+        return cMenuTrackSelectorCurve;
+    }
+
+    /**
+     * This method initializes cMenuTrackSelectorUndo   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorUndo() {
+        if (cMenuTrackSelectorUndo == null) {
+            cMenuTrackSelectorUndo = new BMenuItem();
+        }
+        return cMenuTrackSelectorUndo;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorRedo() {
+        if (cMenuTrackSelectorRedo == null) {
+            cMenuTrackSelectorRedo = new BMenuItem();
+        }
+        return cMenuTrackSelectorRedo;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorCut() {
+        if (cMenuTrackSelectorCut == null) {
+            cMenuTrackSelectorCut = new BMenuItem();
+        }
+        return cMenuTrackSelectorCut;
+    }
+
+    /**
+     * This method initializes cMenuTrackSelectorCopy   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorCopy() {
+        if (cMenuTrackSelectorCopy == null) {
+            cMenuTrackSelectorCopy = new BMenuItem();
+        }
+        return cMenuTrackSelectorCopy;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorPaste() {
+        if (cMenuTrackSelectorPaste == null) {
+            cMenuTrackSelectorPaste = new BMenuItem();
+        }
+        return cMenuTrackSelectorPaste;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorDelete() {
+        if (cMenuTrackSelectorDelete == null) {
+            cMenuTrackSelectorDelete = new BMenuItem();
+        }
+        return cMenuTrackSelectorDelete;
+    }
+
+    /**
+     * This method initializes BMenuItem4   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorDeleteBezier() {
+        if (cMenuTrackSelectorDeleteBezier == null) {
+            cMenuTrackSelectorDeleteBezier = new BMenuItem();
+        }
+        return cMenuTrackSelectorDeleteBezier;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackSelectorSelectAll() {
+        if (cMenuTrackSelectorSelectAll == null) {
+            cMenuTrackSelectorSelectAll = new BMenuItem();
+        }
+        return cMenuTrackSelectorSelectAll;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoPointer() {
+        if (cMenuPianoPointer == null) {
+            cMenuPianoPointer = new BMenuItem();
+        }
+        return cMenuPianoPointer;
+    }
+
+    /**
+     * This method initializes cMenuPianoPencil 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoPencil() {
+        if (cMenuPianoPencil == null) {
+            cMenuPianoPencil = new BMenuItem();
+        }
+        return cMenuPianoPencil;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoEraser() {
+        if (cMenuPianoEraser == null) {
+            cMenuPianoEraser = new BMenuItem();
+        }
+        return cMenuPianoEraser;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoPaletteTool() {
+        if (cMenuPianoPaletteTool == null) {
+            cMenuPianoPaletteTool = new BMenuItem();
+        }
+        return cMenuPianoPaletteTool;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoCurve() {
+        if (cMenuPianoCurve == null) {
+            cMenuPianoCurve = new BMenuItem();
+        }
+        return cMenuPianoCurve;
+    }
+
+    /**
+     * This method initializes cMenuPianoFixed  
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getCMenuPianoFixed() {
+        if (cMenuPianoFixed == null) {
+            cMenuPianoFixed = new BMenu();
+            cMenuPianoFixed.add(getCMenuPianoFixed01());
+            cMenuPianoFixed.add(getCMenuPianoFixed02());
+            cMenuPianoFixed.add(getCMenuPianoFixed04());
+            cMenuPianoFixed.add(getCMenuPianoFixed08());
+            cMenuPianoFixed.add(getCMenuPianoFixed16());
+            cMenuPianoFixed.add(getCMenuPianoFixed32());
+            cMenuPianoFixed.add(getCMenuPianoFixed64());
+            cMenuPianoFixed.add(getCMenuPianoFixed128());
+            cMenuPianoFixed.add(getCMenuPianoFixedOff());
+            cMenuPianoFixed.addSeparator();
+            cMenuPianoFixed.add(getCMenuPianoFixedTriplet());
+            cMenuPianoFixed.add(getCMenuPianoFixedDotted());
+        }
+        return cMenuPianoFixed;
+    }
+
+    /**
+     * This method initializes cMenuPianoQuantize   
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getCMenuPianoQuantize() {
+        if (cMenuPianoQuantize == null) {
+            cMenuPianoQuantize = new BMenu();
+            cMenuPianoQuantize.add(getCMenuPianoQuantize04());
+            cMenuPianoQuantize.add(getCMenuPianoQuantize08());
+            cMenuPianoQuantize.add(getCMenuPianoQuantize16());
+            cMenuPianoQuantize.add(getCMenuPianoQuantize32());
+            cMenuPianoQuantize.add(getCMenuPianoQuantize64());
+            cMenuPianoQuantize.add(getCMenuPianoQuantize128());
+            cMenuPianoQuantize.add(getCMenuPianoQuantizeOff());
+            cMenuPianoQuantize.addSeparator();
+            cMenuPianoQuantize.add(getCMenuPianoQuantizeTriplet());
+        }
+        return cMenuPianoQuantize;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoGrid() {
+        if (cMenuPianoGrid == null) {
+            cMenuPianoGrid = new BMenuItem();
+        }
+        return cMenuPianoGrid;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoUndo() {
+        if (cMenuPianoUndo == null) {
+            cMenuPianoUndo = new BMenuItem();
+        }
+        return cMenuPianoUndo;
+    }
+
+    /**
+     * This method initializes cMenuPianoRedo   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoRedo() {
+        if (cMenuPianoRedo == null) {
+            cMenuPianoRedo = new BMenuItem();
+        }
+        return cMenuPianoRedo;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoCut() {
+        if (cMenuPianoCut == null) {
+            cMenuPianoCut = new BMenuItem();
+        }
+        return cMenuPianoCut;
+    }
+
+    /**
+     * This method initializes cMenuPianoCopy   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoCopy() {
+        if (cMenuPianoCopy == null) {
+            cMenuPianoCopy = new BMenuItem();
+        }
+        return cMenuPianoCopy;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoPaste() {
+        if (cMenuPianoPaste == null) {
+            cMenuPianoPaste = new BMenuItem();
+        }
+        return cMenuPianoPaste;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoDelete() {
+        if (cMenuPianoDelete == null) {
+            cMenuPianoDelete = new BMenuItem();
+        }
+        return cMenuPianoDelete;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoSelectAll() {
+        if (cMenuPianoSelectAll == null) {
+            cMenuPianoSelectAll = new BMenuItem();
+        }
+        return cMenuPianoSelectAll;
+    }
+
+    /**
+     * This method initializes cMenuPianoSelectAllEvents    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoSelectAllEvents() {
+        if (cMenuPianoSelectAllEvents == null) {
+            cMenuPianoSelectAllEvents = new BMenuItem();
+        }
+        return cMenuPianoSelectAllEvents;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoImportLyric() {
+        if (cMenuPianoImportLyric == null) {
+            cMenuPianoImportLyric = new BMenuItem();
+        }
+        return cMenuPianoImportLyric;
+    }
+
+    /**
+     * This method initializes cMenuPianoExpressionProperty 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoExpressionProperty() {
+        if (cMenuPianoExpressionProperty == null) {
+            cMenuPianoExpressionProperty = new BMenuItem();
+        }
+        return cMenuPianoExpressionProperty;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoVibratoProperty() {
+        if (cMenuPianoVibratoProperty == null) {
+            cMenuPianoVibratoProperty = new BMenuItem();
+        }
+        return cMenuPianoVibratoProperty;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixed02() {
+        if (cMenuPianoFixed02 == null) {
+            cMenuPianoFixed02 = new BMenuItem();
+        }
+        return cMenuPianoFixed02;
+    }
+
+    /**
+     * This method initializes cMenuPianoFixed04    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixed04() {
+        if (cMenuPianoFixed04 == null) {
+            cMenuPianoFixed04 = new BMenuItem();
+        }
+        return cMenuPianoFixed04;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixed08() {
+        if (cMenuPianoFixed08 == null) {
+            cMenuPianoFixed08 = new BMenuItem();
+        }
+        return cMenuPianoFixed08;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixed01() {
+        if (cMenuPianoFixed01 == null) {
+            cMenuPianoFixed01 = new BMenuItem();
+        }
+        return cMenuPianoFixed01;
+    }
+
+    /**
+     * This method initializes BMenuItem4   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixed16() {
+        if (cMenuPianoFixed16 == null) {
+            cMenuPianoFixed16 = new BMenuItem();
+        }
+        return cMenuPianoFixed16;
+    }
+
+    /**
+     * This method initializes BMenuItem5   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixed32() {
+        if (cMenuPianoFixed32 == null) {
+            cMenuPianoFixed32 = new BMenuItem();
+        }
+        return cMenuPianoFixed32;
+    }
+
+    /**
+     * This method initializes BMenuItem6   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixed64() {
+        if (cMenuPianoFixed64 == null) {
+            cMenuPianoFixed64 = new BMenuItem();
+        }
+        return cMenuPianoFixed64;
+    }
+
+    /**
+     * This method initializes BMenuItem7   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixed128() {
+        if (cMenuPianoFixed128 == null) {
+            cMenuPianoFixed128 = new BMenuItem();
+        }
+        return cMenuPianoFixed128;
+    }
+
+    /**
+     * This method initializes BMenuItem8   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixedOff() {
+        if (cMenuPianoFixedOff == null) {
+            cMenuPianoFixedOff = new BMenuItem();
+        }
+        return cMenuPianoFixedOff;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixedTriplet() {
+        if (cMenuPianoFixedTriplet == null) {
+            cMenuPianoFixedTriplet = new BMenuItem();
+        }
+        return cMenuPianoFixedTriplet;
+    }
+
+    /**
+     * This method initializes cMenuPianoFixedDotted    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoFixedDotted() {
+        if (cMenuPianoFixedDotted == null) {
+            cMenuPianoFixedDotted = new BMenuItem();
+        }
+        return cMenuPianoFixedDotted;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoQuantize04() {
+        if (cMenuPianoQuantize04 == null) {
+            cMenuPianoQuantize04 = new BMenuItem();
+        }
+        return cMenuPianoQuantize04;
+    }
+
+    /**
+     * This method initializes cMenuPianoQuantize08 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoQuantize08() {
+        if (cMenuPianoQuantize08 == null) {
+            cMenuPianoQuantize08 = new BMenuItem();
+        }
+        return cMenuPianoQuantize08;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoQuantize16() {
+        if (cMenuPianoQuantize16 == null) {
+            cMenuPianoQuantize16 = new BMenuItem();
+        }
+        return cMenuPianoQuantize16;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoQuantize32() {
+        if (cMenuPianoQuantize32 == null) {
+            cMenuPianoQuantize32 = new BMenuItem();
+        }
+        return cMenuPianoQuantize32;
+    }
+
+    /**
+     * This method initializes BMenuItem4   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoQuantize64() {
+        if (cMenuPianoQuantize64 == null) {
+            cMenuPianoQuantize64 = new BMenuItem();
+        }
+        return cMenuPianoQuantize64;
+    }
+
+    /**
+     * This method initializes BMenuItem5   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoQuantize128() {
+        if (cMenuPianoQuantize128 == null) {
+            cMenuPianoQuantize128 = new BMenuItem();
+        }
+        return cMenuPianoQuantize128;
+    }
+
+    /**
+     * This method initializes BMenuItem6   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoQuantizeTriplet() {
+        if (cMenuPianoQuantizeTriplet == null) {
+            cMenuPianoQuantizeTriplet = new BMenuItem();
+        }
+        return cMenuPianoQuantizeTriplet;
+    }
+
+    /**
+     * This method initializes cMenuPianoLength 
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getCMenuPianoLength() {
+        if (cMenuPianoLength == null) {
+            cMenuPianoLength = new BMenu();
+            cMenuPianoLength.add(getCMenuPianoLength04());
+            cMenuPianoLength.add(getCMenuPianoLength08());
+            cMenuPianoLength.add(getCMenuPianoLength16());
+            cMenuPianoLength.add(getCMenuPianoLength32());
+            cMenuPianoLength.add(getCMenuPianoLength64());
+            cMenuPianoLength.add(getCMenuPianoLength128());
+            cMenuPianoLength.add(getCMenuPianoLengthOff());
+            cMenuPianoLength.addSeparator();
+            cMenuPianoLength.add(getCMenuPianoLengthTriplet());
+        }
+        return cMenuPianoLength;
+    }
+
+    /**
+     * This method initializes cMenuPianoLength04   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoLength04() {
+        if (cMenuPianoLength04 == null) {
+            cMenuPianoLength04 = new BMenuItem();
+        }
+        return cMenuPianoLength04;
+    }
+
+    /**
+     * This method initializes cMenuPianoLength08   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoLength08() {
+        if (cMenuPianoLength08 == null) {
+            cMenuPianoLength08 = new BMenuItem();
+        }
+        return cMenuPianoLength08;
+    }
+
+    /**
+     * This method initializes cMenuPianoLength16   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoLength16() {
+        if (cMenuPianoLength16 == null) {
+            cMenuPianoLength16 = new BMenuItem();
+        }
+        return cMenuPianoLength16;
+    }
+
+    /**
+     * This method initializes cMenuPianoLength32   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoLength32() {
+        if (cMenuPianoLength32 == null) {
+            cMenuPianoLength32 = new BMenuItem();
+        }
+        return cMenuPianoLength32;
+    }
+
+    /**
+     * This method initializes cMenuPianoLength64   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoLength64() {
+        if (cMenuPianoLength64 == null) {
+            cMenuPianoLength64 = new BMenuItem();
+        }
+        return cMenuPianoLength64;
+    }
+
+    /**
+     * This method initializes cMenuPianoLength128  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoLength128() {
+        if (cMenuPianoLength128 == null) {
+            cMenuPianoLength128 = new BMenuItem();
+        }
+        return cMenuPianoLength128;
+    }
+
+    /**
+     * This method initializes cMenuPianoLengthTriplet  
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoLengthTriplet() {
+        if (cMenuPianoLengthTriplet == null) {
+            cMenuPianoLengthTriplet = new BMenuItem();
+        }
+        return cMenuPianoLengthTriplet;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabTrackOn() {
+        if (cMenuTrackTabTrackOn == null) {
+            cMenuTrackTabTrackOn = new BMenuItem();
+        }
+        return cMenuTrackTabTrackOn;
+    }
+
+    /**
+     * This method initializes cMenuTrackTabAdd 
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabAdd() {
+        if (cMenuTrackTabAdd == null) {
+            cMenuTrackTabAdd = new BMenuItem();
+        }
+        return cMenuTrackTabAdd;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabCopy() {
+        if (cMenuTrackTabCopy == null) {
+            cMenuTrackTabCopy = new BMenuItem();
+        }
+        return cMenuTrackTabCopy;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabChangeName() {
+        if (cMenuTrackTabChangeName == null) {
+            cMenuTrackTabChangeName = new BMenuItem();
+        }
+        return cMenuTrackTabChangeName;
+    }
+
+    /**
+     * This method initializes BMenuItem4   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabDelete() {
+        if (cMenuTrackTabDelete == null) {
+            cMenuTrackTabDelete = new BMenuItem();
+        }
+        return cMenuTrackTabDelete;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabRenderCurrent() {
+        if (cMenuTrackTabRenderCurrent == null) {
+            cMenuTrackTabRenderCurrent = new BMenuItem();
+        }
+        return cMenuTrackTabRenderCurrent;
+    }
+
+    /**
+     * This method initializes cMenuTrackTabRenderAll   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabRenderAll() {
+        if (cMenuTrackTabRenderAll == null) {
+            cMenuTrackTabRenderAll = new BMenuItem();
+        }
+        return cMenuTrackTabRenderAll;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabOverlay() {
+        if (cMenuTrackTabOverlay == null) {
+            cMenuTrackTabOverlay = new BMenuItem();
+        }
+        return cMenuTrackTabOverlay;
+    }
+
+    /**
+     * This method initializes cMenuTrackTabRenderer    
+     *  
+     * @return javax.swing.BMenu    
+     */
+    private BMenu getCMenuTrackTabRenderer() {
+        if (cMenuTrackTabRenderer == null) {
+            cMenuTrackTabRenderer = new BMenu();
+            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID1());
+            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID2());
+            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererUtau());
+            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererStraight());
+        }
+        return cMenuTrackTabRenderer;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabRendererVOCALOID2() {
+        if (cMenuTrackTabRendererVOCALOID2 == null) {
+            cMenuTrackTabRendererVOCALOID2 = new BMenuItem();
+        }
+        return cMenuTrackTabRendererVOCALOID2;
+    }
+
+    /**
+     * This method initializes cMenuTrackTabRendererVOCALOID1   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabRendererVOCALOID1() {
+        if (cMenuTrackTabRendererVOCALOID1 == null) {
+            cMenuTrackTabRendererVOCALOID1 = new BMenuItem();
+        }
+        return cMenuTrackTabRendererVOCALOID1;
+    }
+
+    /**
+     * This method initializes BMenuItem2   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabRendererUtau() {
+        if (cMenuTrackTabRendererUtau == null) {
+            cMenuTrackTabRendererUtau = new BMenuItem();
+        }
+        return cMenuTrackTabRendererUtau;
+    }
+
+    /**
+     * This method initializes BMenuItem3   
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuTrackTabRendererStraight() {
+        if (cMenuTrackTabRendererStraight == null) {
+            cMenuTrackTabRendererStraight = new BMenuItem();
+        }
+        return cMenuTrackTabRendererStraight;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoQuantizeOff() {
+        if (cMenuPianoQuantizeOff == null) {
+            cMenuPianoQuantizeOff = new BMenuItem();
+        }
+        return cMenuPianoQuantizeOff;
+    }
+
+    /**
+     * This method initializes BMenuItem    
+     *  
+     * @return javax.swing.BMenuItem    
+     */
+    private BMenuItem getCMenuPianoLengthOff() {
+        if (cMenuPianoLengthOff == null) {
+            cMenuPianoLengthOff = new BMenuItem();
+        }
+        return cMenuPianoLengthOff;
+    }
+
+    /**
+     * This method initializes panel3   
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getPanel3() {
+        if (panel3 == null) {
+            GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+            gridBagConstraints6.gridx = 3;
+            gridBagConstraints6.weightx = 1.0D;
+            gridBagConstraints6.gridheight = 2;
+            gridBagConstraints6.weighty = 1.0D;
+            gridBagConstraints6.fill = GridBagConstraints.BOTH;
+            gridBagConstraints6.gridy = 0;
+            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+            gridBagConstraints5.gridx = 4;
+            gridBagConstraints5.gridy = 1;
+            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+            gridBagConstraints4.gridx = 4;
+            gridBagConstraints4.gridy = 0;
+            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+            gridBagConstraints3.gridx = 1;
+            gridBagConstraints3.gridheight = 2;
+            gridBagConstraints3.gridy = 0;
+            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+            gridBagConstraints2.gridx = 2;
+            gridBagConstraints2.weighty = 1.0D;
+            gridBagConstraints2.gridy = 1;
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            gridBagConstraints1.gridx = 2;
+            gridBagConstraints1.weighty = 1.0D;
+            gridBagConstraints1.gridy = 0;
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridheight = 2;
+            gridBagConstraints.weighty = 1.0D;
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints.gridy = 0;
+            panel3 = new BPanel();
+            panel3.setLayout(new GridBagLayout());
+            panel3.add(getJButton(), gridBagConstraints);
+            panel3.add(getJButton1(), gridBagConstraints1);
+            panel3.add(getJButton2(), gridBagConstraints2);
+            panel3.add(getJButton3(), gridBagConstraints3);
+            panel3.add(getJButton4(), gridBagConstraints4);
+            panel3.add(getJButton5(), gridBagConstraints5);
+            panel3.add(getJPanel2(), gridBagConstraints6);
+        }
+        return panel3;
+    }
+
+    /**
+     * This method initializes jPanel2  
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getJPanel2() {
+        if (jPanel2 == null) {
+            jPanel2 = new BPanel();
+            jPanel2.setLayout(new GridBagLayout());
+        }
+        return jPanel2;
+    }
+
+    /**
+     * This method initializes BButton  
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getJButton() {
+        if (BButton == null) {
+            BButton = new BButton();
+            BButton.setText("-");
+        }
+        return BButton;
+    }
+
+    /**
+     * This method initializes jButton1 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getJButton1() {
+        if (jButton1 == null) {
+            jButton1 = new BButton();
+            jButton1.setText("<");
+        }
+        return jButton1;
+    }
+
+    /**
+     * This method initializes jButton2 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getJButton2() {
+        if (jButton2 == null) {
+            jButton2 = new BButton();
+            jButton2.setText(">");
+        }
+        return jButton2;
+    }
+
+    /**
+     * This method initializes jButton3 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getJButton3() {
+        if (jButton3 == null) {
+            jButton3 = new BButton();
+            jButton3.setText("+");
+        }
+        return jButton3;
+    }
+
+    /**
+     * This method initializes jButton4 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getJButton4() {
+        if (jButton4 == null) {
+            jButton4 = new BButton();
+            jButton4.setText("<");
+        }
+        return jButton4;
+    }
+
+    /**
+     * This method initializes jButton5 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getJButton5() {
+        if (jButton5 == null) {
+            jButton5 = new BButton();
+            jButton5.setText(">");
+        }
+        return jButton5;
+    }
+
+    /**
+     * This method initializes pictPianoRoll    
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private PictPianoRoll getPictPianoRoll() {
+        if (pictPianoRoll == null) {
+            pictPianoRoll = new PictPianoRoll();
+            pictPianoRoll.setLayout(new GridBagLayout());
+        }
+        return pictPianoRoll;
+    }
+
+    /**
+     * This method initializes vScroll  
+     *  
+     * @return javax.swing.JScrollBar   
+     */
+    private BVScrollBar getVScroll() {
+        if (vScroll == null) {
+            vScroll = new BVScrollBar();
+        }
+        return vScroll;
+    }
+
+    /**
+     * This method initializes hScroll  
+     *  
+     * @return javax.swing.JScrollBar   
+     */
+    private BHScrollBar getHScroll() {
+        if (hScroll == null) {
+            hScroll = new BHScrollBar();
+        }
+        return hScroll;
+    }
+
+    /**
+     * This method initializes pictureBox3  
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getPictureBox3() {
+        if (pictureBox3 == null) {
+            GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+            gridBagConstraints12.anchor = GridBagConstraints.EAST;
+            pictureBox3 = new BPanel();
+            pictureBox3.setLayout(new GridBagLayout());
+            pictureBox3.setPreferredSize(new Dimension(68, 0));
+            pictureBox3.add(getJButton6(), gridBagConstraints12);
+        }
+        return pictureBox3;
+    }
+
+    /**
+     * This method initializes trackBar 
+     *  
+     * @return javax.swing.JSlider  
+     */
+    private BSlider getTrackBar() {
+        if (trackBar == null) {
+            trackBar = new BSlider();
+            trackBar.setPreferredSize(new Dimension(83, 16));
+        }
+        return trackBar;
+    }
+
+    /**
+     * This method initializes jButton6 
+     *  
+     * @return javax.swing.BButton  
+     */
+    private BButton getJButton6() {
+        if (jButton6 == null) {
+            jButton6 = new BButton();
+        }
+        return jButton6;
+    }
+
+    /**
+     * This method initializes picturePositionIndicator 
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getPicturePositionIndicator() {
+        if (picturePositionIndicator == null) {
+            picturePositionIndicator = new BPanel();
+            picturePositionIndicator.setLayout(new GridBagLayout());
+            picturePositionIndicator.setPreferredSize(new Dimension(421, 48));
+        }
+        return picturePositionIndicator;
+    }
+
+    /**
+     * This method initializes jPanel1  
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getJPanel1() {
+        if (jPanel1 == null) {
+            GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
+            gridBagConstraints15.gridx = 0;
+            gridBagConstraints15.fill = GridBagConstraints.BOTH;
+            gridBagConstraints15.weightx = 1.0D;
+            gridBagConstraints15.weighty = 1.0D;
+            gridBagConstraints15.gridy = 2;
+            GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+            gridBagConstraints14.gridx = 0;
+            gridBagConstraints14.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints14.weightx = 1.0D;
+            gridBagConstraints14.gridy = 1;
+            GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+            gridBagConstraints13.gridx = 0;
+            gridBagConstraints13.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints13.anchor = GridBagConstraints.NORTH;
+            gridBagConstraints13.weightx = 1.0D;
+            gridBagConstraints13.gridy = 0;
+            jPanel1 = new BPanel();
+            jPanel1.setLayout(new GridBagLayout());
+            jPanel1.add(getPanel3(), gridBagConstraints13);
+            jPanel1.add(getPicturePositionIndicator(), gridBagConstraints14);
+            jPanel1.add(getPanel1(), gridBagConstraints15);
+        }
+        return jPanel1;
+    }
+
+    /**
+     * This method initializes jPanel3  
+     *  
+     * @return javax.swing.BPanel   
+     */
+    private BPanel getJPanel3() {
+        if (jPanel3 == null) {
+            GridLayout gridLayout1 = new GridLayout();
+            gridLayout1.setRows(2);
+            gridLayout1.setColumns(1);
+            statusLabel = new BLabel();
+            statusLabel.setText("");
+            jPanel3 = new BPanel();
+            jPanel3.setLayout(gridLayout1);
+            jPanel3.add(getToolStripBottom(), null);
+            jPanel3.add(statusLabel, null);
+        }
+        return jPanel3;
+    }
+    #endregion
 #else
         #region UI Impl for C#
         /// <summary>
@@ -17666,28 +17709,28 @@ namespace Boare.Cadencii {
             this.stripBtnCurve = new bocoree.windows.forms.BToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.toolStripBottom = new BToolBar();
-            this.toolStripLabel6 = new System.Windows.Forms.ToolStripLabel();
-            this.stripLblCursor = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel6 = new BToolStripLabel();
+            this.stripLblCursor = new BToolStripLabel();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel8 = new System.Windows.Forms.ToolStripLabel();
-            this.stripLblTempo = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel8 = new BToolStripLabel();
+            this.stripLblTempo = new BToolStripLabel();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel10 = new System.Windows.Forms.ToolStripLabel();
-            this.stripLblBeat = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel10 = new BToolStripLabel();
+            this.stripLblBeat = new BToolStripLabel();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.stripLblGameCtrlMode = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel1 = new BStatusLabel();
+            this.stripLblGameCtrlMode = new BStatusLabel();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.stripLblMidiIn = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new BStatusLabel();
+            this.stripLblMidiIn = new BStatusLabel();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripDDBtnSpeed = new System.Windows.Forms.ToolStripDropDownButton();
-            this.stripDDBtnSpeedTextbox = new System.Windows.Forms.ToolStripTextBox();
+            this.stripDDBtnSpeed = new BToolStripDropDownButton();
+            this.stripDDBtnSpeedTextbox = new BToolStripTextBox();
             this.stripDDBtnSpeed033 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnSpeed050 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnSpeed100 = new bocoree.windows.forms.BMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLabel = new BStatusLabel();
             this.splitContainerProperty = new Boare.Lib.AppUtil.BSplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
             this.waveView = new Boare.Cadencii.WaveView();
@@ -17715,10 +17758,10 @@ namespace Boare.Cadencii {
             this.stripBtnScroll = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnLoop = new bocoree.windows.forms.BToolStripButton();
             this.toolStripMeasure = new BToolBar();
-            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
-            this.stripLblMeasure = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel5 = new BToolStripLabel();
+            this.stripLblMeasure = new BToolStripLabel();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripDDBtnLength = new System.Windows.Forms.ToolStripDropDownButton();
+            this.stripDDBtnLength = new BToolStripDropDownButton();
             this.stripDDBtnLength04 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnLength08 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnLength16 = new bocoree.windows.forms.BMenuItem();
@@ -17728,7 +17771,7 @@ namespace Boare.Cadencii {
             this.stripDDBtnLengthOff = new bocoree.windows.forms.BMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.stripDDBtnLengthTriplet = new bocoree.windows.forms.BMenuItem();
-            this.stripDDBtnQuantize = new System.Windows.Forms.ToolStripDropDownButton();
+            this.stripDDBtnQuantize = new BToolStripDropDownButton();
             this.stripDDBtnQuantize04 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnQuantize08 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnQuantize16 = new bocoree.windows.forms.BMenuItem();
@@ -20677,9 +20720,9 @@ namespace Boare.Cadencii {
         private BToolStripButton stripBtnLoop;
         private BToolStripButton stripBtnCurve;
         private BToolBar toolStripMeasure;
-        private System.Windows.Forms.ToolStripLabel stripLblMeasure;
+        private BToolStripLabel stripLblMeasure;
         private System.Windows.Forms.ToolStripSeparator toolStripButton1;
-        private System.Windows.Forms.ToolStripDropDownButton stripDDBtnLength;
+        private BToolStripDropDownButton stripDDBtnLength;
         private BMenuItem stripDDBtnLength04;
         private BMenuItem stripDDBtnLength08;
         private BMenuItem stripDDBtnLength16;
@@ -20688,7 +20731,7 @@ namespace Boare.Cadencii {
         private BMenuItem stripDDBtnLengthOff;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private BMenuItem stripDDBtnLengthTriplet;
-        private System.Windows.Forms.ToolStripDropDownButton stripDDBtnQuantize;
+        private BToolStripDropDownButton stripDDBtnQuantize;
         private BMenuItem stripDDBtnQuantize04;
         private BMenuItem stripDDBtnQuantize08;
         private BMenuItem stripDDBtnQuantize16;
@@ -20697,7 +20740,7 @@ namespace Boare.Cadencii {
         private BMenuItem stripDDBtnQuantizeOff;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private BMenuItem stripDDBtnQuantizeTriplet;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel5;
+        private BToolStripLabel toolStripLabel5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private BToolStripButton stripBtnStartMarker;
@@ -20708,20 +20751,20 @@ namespace Boare.Cadencii {
         private BMenuItem cMenuPianoVibratoProperty;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel6;
-        private System.Windows.Forms.ToolStripLabel stripLblCursor;
+        private BToolStripLabel toolStripLabel6;
+        private BToolStripLabel stripLblCursor;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel8;
-        private System.Windows.Forms.ToolStripLabel stripLblTempo;
+        private BToolStripLabel toolStripLabel8;
+        private BToolStripLabel stripLblTempo;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel10;
-        private System.Windows.Forms.ToolStripLabel stripLblBeat;
+        private BToolStripLabel toolStripLabel10;
+        private BToolStripLabel stripLblBeat;
         private BMenuItem menuScriptUpdate;
         private BMenuItem menuSettingGameControler;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripStatusLabel stripLblGameCtrlMode;
+        private BStatusLabel stripLblGameCtrlMode;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
-        private System.Windows.Forms.ToolStripDropDownButton stripDDBtnSpeed;
+        private BToolStripDropDownButton stripDDBtnSpeed;
         private BMenuItem menuSettingGameControlerSetting;
         private BMenuItem menuSettingGameControlerLoad;
         private BMenuItem stripDDBtnLength128;
@@ -20736,7 +20779,7 @@ namespace Boare.Cadencii {
         private Boare.Lib.AppUtil.BSplitContainer splitContainer2;
         private System.Windows.Forms.Panel panel2;
         private BMenuItem cMenuTrackSelectorDeleteBezier;
-        private System.Windows.Forms.ToolStripStatusLabel stripLblMidiIn;
+        private BStatusLabel stripLblMidiIn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private BMenuItem menuJobRealTime;
         private BMenuItem cMenuTrackTabRenderer;
@@ -20746,8 +20789,8 @@ namespace Boare.Cadencii {
         private BMenuItem menuVisualPitchLine;
         private BMenuItem menuFileImportMidi;
         private BToolBar toolStripFile;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private BStatusLabel toolStripStatusLabel1;
+        private BStatusLabel toolStripStatusLabel2;
         private BToolStripButton stripBtnFileSave;
         private BToolStripButton stripBtnFileOpen;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
@@ -20769,7 +20812,7 @@ namespace Boare.Cadencii {
         private BMenuItem menuTrackRendererUtau;
         private BMenuItem menuFileImportVsq;
         private BMenuItem menuSettingShortcut;
-        private System.Windows.Forms.ToolStripTextBox stripDDBtnSpeedTextbox;
+        private BToolStripTextBox stripDDBtnSpeedTextbox;
         private BMenuItem stripDDBtnSpeed033;
         private BMenuItem stripDDBtnSpeed050;
         private BMenuItem stripDDBtnSpeed100;
@@ -20783,7 +20826,7 @@ namespace Boare.Cadencii {
         private BMenuItem menuHiddenCut;
         private BMenuItem menuSettingUtauVoiceDB;
         private BToolBar toolStripBottom;
-        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
+        private BStatusLabel statusLabel;
         private Boare.Lib.AppUtil.BSplitContainer splitContainerProperty;
         private BPictureBox pictOverview;
         private BMenuItem menuVisualOverview;

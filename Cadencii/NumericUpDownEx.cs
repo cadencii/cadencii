@@ -11,26 +11,39 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import org.kbinani.windows.forms.*;
+#else
 using System;
 using System.Windows.Forms;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
+#endif
 
     /// <summary>
     /// MouseWheelÇ≈IncrementÇ∏Ç¬ílÇëùå∏Ç≥ÇπÇÈÇ±Ç∆ÇÃÇ≈Ç´ÇÈNumericUpDown
     /// </summary>
-    class NumericUpDownEx : NumericUpDown {
+#if JAVA
+    public class NumericUpDownEx extends BNumericUpDown{
+#else
+    public class NumericUpDownEx : BNumericUpDown {
+#endif
         public NumericUpDownEx() {
-            //InitializeComponent();
+#if !JAVA
             this.GotFocus += new EventHandler( NumericUpDownEx_GotFocus );
+#endif
         }
 
-
+#if !JAVA
         private void NumericUpDownEx_GotFocus( object sender, EventArgs e ) {
             this.Select( 0, 10 );
         }
+#endif
 
-
+#if !JAVA
         protected override void OnMouseWheel( MouseEventArgs e ) {
             decimal new_val;
             if ( e.Delta > 0 ) {
@@ -44,6 +57,9 @@ namespace Boare.Cadencii {
                 this.Value = new_val;
             }
         }
+#endif
     }
 
+#if !JAVA
 }
+#endif

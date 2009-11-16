@@ -11,8 +11,50 @@ public class BNumericUpDown extends JPanel{
     private JTextField txtValue = null;
 	private JButton btnUp = null;
 	private JButton btnDown = null;
+	private int value = 0;
+	private int maximum = 100;
+	private int minimum = 0;
 
-	/**
+	private void update(){
+	    getTxtValue().setText( value + "" );
+	}
+	
+	public int getValue(){
+	    return value;
+	}
+	
+	public void setValue( int value ){
+	    if( minimum <= value && value <= maximum ){
+	        this.value = value; 
+	        update();
+	    }
+	}
+	
+	public int getMaximum() {
+        return maximum;
+    }
+
+    public void setMaximum(int maximum) {
+        if( maximum < value ){
+            value = maximum;
+            update();
+        }
+        this.maximum = maximum;
+    }
+
+    public int getMinimum() {
+        return minimum;
+    }
+
+    public void setMinimum(int minimum) {
+        if( value < minimum ){
+            value = minimum;
+            update();
+        }
+        this.minimum = minimum;
+    }
+
+    /**
 	 * This is the default constructor
 	 */
 	public BNumericUpDown() {
@@ -73,6 +115,14 @@ public class BNumericUpDown extends JPanel{
 		if (btnUp == null) {
 			btnUp = new JButton();
 			btnUp.setText("");
+			btnUp.addActionListener(new java.awt.event.ActionListener() {
+			    public void actionPerformed(java.awt.event.ActionEvent e) {
+			        if( value + 1 <= maximum ){
+			            value++;
+			            update();
+			        }
+			    }
+			});
 		}
 		return btnUp;
 	}
@@ -86,6 +136,14 @@ public class BNumericUpDown extends JPanel{
 		if (btnDown == null) {
 			btnDown = new JButton();
 			btnDown.setText("");
+			btnDown.addActionListener(new java.awt.event.ActionListener() {
+			    public void actionPerformed(java.awt.event.ActionEvent e) {
+			        if( value - 1 >= minimum ){
+			            value--;
+			            update();
+			        }
+			    }
+			});
 		}
 		return btnDown;
 	}
