@@ -2,15 +2,15 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JFrame;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
 
-public class FormBeatConfig extends JFrame {
+public class FormBeatConfig extends BForm {
     private static final long serialVersionUID = 4414859292940722020L;
     private BPanel jContentPane = null;
     private BGroupBox groupPosition = null;
@@ -35,6 +35,7 @@ public class FormBeatConfig extends JFrame {
     private BLabel jLabel6 = null;
     private BLabel jLabel7 = null;
     private BLabel jLabel8 = null;
+
     public FormBeatConfig(){
         super();
         initialize();

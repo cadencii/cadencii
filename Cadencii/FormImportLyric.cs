@@ -21,7 +21,6 @@ import org.kbinani.windows.forms.*;
 import org.kbinani.apputil.*;
 #else
 using System;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree;
 using bocoree.util;
@@ -40,6 +39,7 @@ namespace Boare.Cadencii {
 
         public FormImportLyric( int max_notes ) {
 #if JAVA
+            super();
             initialize();
 #else
             InitializeComponent();
@@ -48,15 +48,15 @@ namespace Boare.Cadencii {
             setResources();
             ApplyLanguage();
             String notes = (max_notes > 1) ? " [notes]" : " [note]";
-            lblNotes.Text = "Max : " + max_notes + notes;
+            lblNotes.setText( "Max : " + max_notes + notes );
             m_max_notes = max_notes;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public void ApplyLanguage() {
-            Text = _( "Import lyrics" );
-            btnCancel.Text = _( "Cancel" );
-            btnOK.Text = _( "OK" );
+            setTitle( _( "Import lyrics" ) );
+            btnCancel.setText( _( "Cancel" ) );
+            btnOK.setText( _( "OK" ) );
         }
 
         public static String _( String id ) {
@@ -64,7 +64,7 @@ namespace Boare.Cadencii {
         }
 
         public String[] GetLetters() {
-            Vector<char> _SMALL = new Vector<char>( new char[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'ゃ', 'ゅ', 'ょ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ャ', 'ュ', 'ョ' } );
+            Vector<Char> _SMALL = new Vector<Char>( new char[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'ゃ', 'ゅ', 'ょ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ャ', 'ュ', 'ョ' } );
             String tmp = "";
             for ( int i = 0; i < m_max_notes; i++ ) {
                 if ( i >= txtLyrics.Lines.Length ) {
@@ -109,15 +109,20 @@ namespace Boare.Cadencii {
         }
 
         private void btnOK_Click( Object sender, BEventArgs e ) {
-            this.DialogResult = DialogResult.OK;
+            setDialogResult( BDialogResult.OK );
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+#else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+#endif
         }
 
         private void setResources() {
         }
+
 #if JAVA
         #region UI Impl for Java
 	    private JPanel jContentPane = null;
@@ -260,10 +265,10 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.txtLyrics = new System.Windows.Forms.TextBox();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.lblNotes = new System.Windows.Forms.Label();
+            this.txtLyrics = new BTextBox();
+            this.btnCancel = new BButton();
+            this.btnOK = new BButton();
+            this.lblNotes = new BLabel();
             this.SuspendLayout();
             // 
             // txtLyrics
@@ -328,10 +333,10 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtLyrics;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Label lblNotes;
+        private BTextBox txtLyrics;
+        private BButton btnCancel;
+        private BButton btnOK;
+        private BLabel lblNotes;
         #endregion
 #endif
     }

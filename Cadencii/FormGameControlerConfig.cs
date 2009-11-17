@@ -57,16 +57,16 @@ namespace Boare.Cadencii {
 #endif
             if ( num_dev > 0 ) {
                 pictButton.Image = Resources.get_btn1();
-                progressCount.Maximum = 8;
-                progressCount.Minimum = 0;
-                progressCount.Value = 0;
+                progressCount.setMaximum( 8 );
+                progressCount.setMinimum( 0 );
+                progressCount.setValue( 0 );
                 index = 1;
-                btnSkip.Enabled = true;
-                btnReset.Enabled = true;
-                timer.Start();
+                btnSkip.setEnabled( true );
+                btnReset.setEnabled( true );
+                timer.start();
             } else {
-                btnSkip.Enabled = false;
-                btnReset.Enabled = false;
+                btnSkip.setEnabled( false );
+                btnReset.setEnabled( false );
             }
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -119,26 +119,26 @@ namespace Boare.Cadencii {
             }
             if ( added ) {
                 if ( index <= 8 ) {
-                    progressCount.Value = index;
+                    progressCount.setValue( index );
                 } else if ( index <= 12 ) {
-                    progressCount.Value = index - 8;
+                    progressCount.setValue( index - 8 );
                 } else {
-                    progressCount.Value = index - 12;
+                    progressCount.setValue( index - 12 );
                 }
 
                 if ( index == 8 ) {
                     pictButton.Image = Resources.get_btn2();
-                    progressCount.Value = 0;
-                    progressCount.Maximum = 4;
+                    progressCount.setValue( 0 );
+                    progressCount.setMaximum( 4 );
                 } else if ( index == 12 ) {
                     pictButton.Image = Resources.get_btn3();
-                    progressCount.Value = 0;
-                    progressCount.Maximum = 2;
+                    progressCount.setValue( 0 );
+                    progressCount.setMaximum( 2 );
                 }
                 if ( index == 14 ) {
-                    btnSkip.Enabled = false;
-                    btnOK.Enabled = true;
-                    timer.Stop();
+                    btnSkip.setEnabled( false );
+                    btnOK.setEnabled( true );
+                    timer.stop();
                 }
                 index++;
             }
@@ -211,26 +211,26 @@ namespace Boare.Cadencii {
                 m_list.set( index - 5, -1 );
             }
             if ( index <= 8 ) {
-                progressCount.Value = index;
+                progressCount.setValue( index );
             } else if ( index <= 12 ) {
-                progressCount.Value = index - 8;
+                progressCount.setValue( index - 8 );
             } else {
-                progressCount.Value = index - 12;
+                progressCount.setValue( index - 12 );
             }
 
             if ( index == 8 ) {
                 pictButton.Image = Resources.get_btn2();
-                progressCount.Value = 0;
-                progressCount.Maximum = 4;
+                progressCount.setValue( 0 );
+                progressCount.setMaximum( 4 );
             } else if ( index == 12 ) {
                 pictButton.Image = Resources.get_btn3();
-                progressCount.Value = 0;
-                progressCount.Maximum = 2;
+                progressCount.setValue( 0 );
+                progressCount.setMaximum( 2 );
             }
             if ( index == 14 ) {
-                btnSkip.Enabled = false;
-                btnOK.Enabled = true;
-                timer.Stop();
+                btnSkip.setEnabled( false );
+                btnOK.setEnabled( true );
+                timer.stop();
             }
             index++;
         }
@@ -253,15 +253,214 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            this.timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
+            this.btnSkip.clickEvent.add( new BEventHandler( this, "btnSkip_Click" ) );
+            this.btnReset.clickEvent.add( new BEventHandler( this, "btnReset_Click" ) );
+#else
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
             this.btnSkip.Click += new System.EventHandler( this.btnSkip_Click );
             this.btnReset.Click += new System.EventHandler( this.btnReset_Click );
+#endif
         }
 
         private void setResources() {
         }
+
 #if JAVA
         #region UI Impl for Java
+        private BPanel BPanel = null;
+        private BLabel lblMessage = null;
+        private BPanel pictButton = null;
+        private BProgressBar progressCount = null;
+        private BButton btnSkip = null;
+        private BButton btnReset = null;
+        private BPanel jPanel11 = null;
+        private BButton btnOK = null;
+        private BButton btnCancel = null;
+        private BLabel jLabel4 = null;
+
+        /**
+         * This method initializes this
+         * 
+         */
+        private void initialize() {
+            this.setSize(new Dimension(356, 224));
+            this.setTitle("Game Controler Configuration");
+            this.setContentPane(getJPanel());
+        		
+        }
+
+        /**
+         * This method initializes BPanel	
+         * 	
+         * @return javax.swing.BPanel	
+         */
+        private BPanel getJPanel() {
+            if (BPanel == null) {
+                GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+                gridBagConstraints5.gridx = 0;
+                gridBagConstraints5.gridwidth = 2;
+                gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
+                gridBagConstraints5.weightx = 1.0D;
+                gridBagConstraints5.weighty = 1.0D;
+                gridBagConstraints5.anchor = GridBagConstraints.NORTH;
+                gridBagConstraints5.insets = new Insets(12, 0, 12, 0);
+                gridBagConstraints5.gridy = 4;
+                GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+                gridBagConstraints4.gridx = 1;
+                gridBagConstraints4.weightx = 0.5D;
+                gridBagConstraints4.anchor = GridBagConstraints.EAST;
+                gridBagConstraints4.insets = new Insets(0, 12, 0, 12);
+                gridBagConstraints4.gridy = 3;
+                GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+                gridBagConstraints3.gridx = 0;
+                gridBagConstraints3.weightx = 0.5D;
+                gridBagConstraints3.anchor = GridBagConstraints.WEST;
+                gridBagConstraints3.insets = new Insets(0, 24, 0, 12);
+                gridBagConstraints3.gridy = 3;
+                GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+                gridBagConstraints2.gridx = 0;
+                gridBagConstraints2.gridwidth = 2;
+                gridBagConstraints2.weightx = 1.0D;
+                gridBagConstraints2.fill = GridBagConstraints.HORIZONTAL;
+                gridBagConstraints2.insets = new Insets(12, 12, 12, 12);
+                gridBagConstraints2.gridy = 2;
+                GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+                gridBagConstraints1.gridx = 0;
+                gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
+                gridBagConstraints1.ipadx = 1;
+                gridBagConstraints1.gridwidth = 2;
+                gridBagConstraints1.gridy = 1;
+                GridBagConstraints gridBagConstraints = new GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.gridwidth = 2;
+                gridBagConstraints.insets = new Insets(16, 12, 0, 12);
+                gridBagConstraints.gridy = 0;
+                lblMessage = new BLabel();
+                lblMessage.setText(" ");
+                BPanel = new BPanel();
+                BPanel.setLayout(new GridBagLayout());
+                BPanel.add(lblMessage, gridBagConstraints);
+                BPanel.add(getPictButton(), gridBagConstraints1);
+                BPanel.add(getProgressCount(), gridBagConstraints2);
+                BPanel.add(getBtnSkip(), gridBagConstraints3);
+                BPanel.add(getBtnReset(), gridBagConstraints4);
+                BPanel.add(getJPanel11(), gridBagConstraints5);
+            }
+            return BPanel;
+        }
+
+        /**
+         * This method initializes pictButton	
+         * 	
+         * @return javax.swing.BPanel	
+         */
+        private BPanel getPictButton() {
+            if (pictButton == null) {
+                pictButton = new BPanel();
+                pictButton.setLayout(new GridBagLayout());
+            }
+            return pictButton;
+        }
+
+        /**
+         * This method initializes progressCount	
+         * 	
+         * @return javax.swing.BProgressBar	
+         */
+        private BProgressBar getProgressCount() {
+            if (progressCount == null) {
+                progressCount = new BProgressBar();
+            }
+            return progressCount;
+        }
+
+        /**
+         * This method initializes btnSkip	
+         * 	
+         * @return javax.swing.BButton	
+         */
+        private BButton getBtnSkip() {
+            if (btnSkip == null) {
+                btnSkip = new BButton();
+                btnSkip.setText("Skip");
+            }
+            return btnSkip;
+        }
+
+        /**
+         * This method initializes btnReset	
+         * 	
+         * @return javax.swing.BButton	
+         */
+        private BButton getBtnReset() {
+            if (btnReset == null) {
+                btnReset = new BButton();
+                btnReset.setText("Reset and Exit");
+            }
+            return btnReset;
+        }
+
+        /**
+         * This method initializes jPanel11	
+         * 	
+         * @return org.kbinani.windows.forms.BPanel	
+         */
+        private BPanel getJPanel11() {
+            if (jPanel11 == null) {
+                GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
+                gridBagConstraints17.fill = GridBagConstraints.BOTH;
+                gridBagConstraints17.gridy = 0;
+                gridBagConstraints17.weightx = 1.0D;
+                gridBagConstraints17.gridx = 0;
+                jLabel4 = new BLabel();
+                jLabel4.setText(" ");
+                GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+                gridBagConstraints16.anchor = GridBagConstraints.EAST;
+                gridBagConstraints16.gridy = 0;
+                gridBagConstraints16.insets = new Insets(0, 0, 0, 12);
+                gridBagConstraints16.gridx = 2;
+                GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
+                gridBagConstraints15.anchor = GridBagConstraints.EAST;
+                gridBagConstraints15.gridy = 0;
+                gridBagConstraints15.insets = new Insets(0, 0, 0, 12);
+                gridBagConstraints15.gridx = 1;
+                jPanel11 = new BPanel();
+                jPanel11.setLayout(new GridBagLayout());
+                jPanel11.add(getBtnOK(), gridBagConstraints15);
+                jPanel11.add(getBtnCancel(), gridBagConstraints16);
+                jPanel11.add(jLabel4, gridBagConstraints17);
+            }
+            return jPanel11;
+        }
+
+        /**
+         * This method initializes btnOK	
+         * 	
+         * @return org.kbinani.windows.forms.BButton	
+         */
+        private BButton getBtnOK() {
+            if (btnOK == null) {
+                btnOK = new BButton();
+                btnOK.setText("OK");
+            }
+            return btnOK;
+        }
+
+        /**
+         * This method initializes btnCancel	
+         * 	
+         * @return org.kbinani.windows.forms.BButton	
+         */
+        private BButton getBtnCancel() {
+            if (btnCancel == null) {
+                btnCancel = new BButton();
+                btnCancel.setText("Cancel");
+            }
+            return btnCancel;
+        }
         #endregion
 #else
         #region UI Impl for C#
@@ -290,9 +489,9 @@ namespace Boare.Cadencii {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.lblMessage = new BLabel();
-            this.timer = new System.Windows.Forms.Timer( this.components );
+            this.timer = new BTimer( this.components );
             this.pictButton = new System.Windows.Forms.PictureBox();
-            this.progressCount = new System.Windows.Forms.ProgressBar();
+            this.progressCount = new BProgressBar();
             this.btnSkip = new BButton();
             this.btnOK = new BButton();
             this.btnCancel = new BButton();
@@ -403,9 +602,9 @@ namespace Boare.Cadencii {
         #endregion
 
         private BLabel lblMessage;
-        private System.Windows.Forms.Timer timer;
+        private BTimer timer;
         private System.Windows.Forms.PictureBox pictButton;
-        private System.Windows.Forms.ProgressBar progressCount;
+        private BProgressBar progressCount;
         private BButton btnSkip;
         private BButton btnOK;
         private BButton btnCancel;

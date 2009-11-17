@@ -21,7 +21,6 @@ import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree;
 using bocoree.awt;
@@ -32,6 +31,7 @@ namespace Boare.Cadencii {
     using BEventArgs = System.EventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
+    using BMouseButtons = System.Windows.Forms.MouseButtons;
 #endif
 
 #if JAVA
@@ -183,7 +183,7 @@ namespace Boare.Cadencii {
             Point loc_topleft = m_parent.getLocationOnScreen();
             Point loc_on_screen = new Point( loc_topleft.x + loc_on_trackselector.x, loc_topleft.y + loc_on_trackselector.y );
             PortUtil.setMousePosition( loc_on_screen );
-            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
+            BMouseEventArgs event_arg = new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = BezierPickedSide.BASE;
             m_btn_datapoint_downed = true;
@@ -197,7 +197,7 @@ namespace Boare.Cadencii {
             Point loc_topleft = m_parent.getLocationOnScreen();
             Point loc_on_screen = new Point( loc_on_trackselector.x + loc_topleft.x, loc_on_trackselector.y + loc_topleft.y );
             PortUtil.setMousePosition( loc_on_screen );
-            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
+            BMouseEventArgs event_arg = new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = BezierPickedSide.LEFT;
             m_btn_datapoint_downed = true;
@@ -211,7 +211,7 @@ namespace Boare.Cadencii {
             Point loc_topleft = m_parent.getLocationOnScreen();
             Point loc_on_screen = new Point( loc_on_trackselector.x + loc_topleft.x, loc_on_trackselector.y + loc_topleft.y );
             PortUtil.setMousePosition( loc_on_screen );
-            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
+            BMouseEventArgs event_arg = new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = BezierPickedSide.RIGHT;
             m_btn_datapoint_downed = true;
@@ -221,8 +221,9 @@ namespace Boare.Cadencii {
             m_btn_datapoint_downed = false;
             this.Opacity = 1.0;
             Point loc_on_screen = PortUtil.getMousePosition();
-            System.Drawing.Point loc_on_trackselector = m_parent.PointToClient( new System.Drawing.Point( loc_on_screen.x, loc_on_screen.y ) );
-            BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
+            Point loc_trackselector = m_parent.getLocationOnScreen();
+            Point loc_on_trackselector = new Point( loc_on_screen.x - loc_trackselector.x, loc_on_screen.y - loc_trackselector.y );
+            BMouseEventArgs event_arg = new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseUp( this, event_arg );
             PortUtil.setMousePosition( m_last_mouse_global_location );
             m_parent.Invalidate();
@@ -231,8 +232,9 @@ namespace Boare.Cadencii {
         private void common_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( m_btn_datapoint_downed ) {
                 Point loc_on_screen = PortUtil.getMousePosition();
-                System.Drawing.Point loc_on_trackselector = m_parent.PointToClient( new System.Drawing.Point( loc_on_screen.x, loc_on_screen.y ) );
-                BMouseEventArgs event_arg = new BMouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.X, loc_on_trackselector.Y, 0 );
+                Point loc_trackselector = m_parent.getLocationOnScreen();
+                Point loc_on_trackselector = new Point( loc_on_screen.x - loc_trackselector.x, loc_on_screen.y - loc_trackselector.y );
+                BMouseEventArgs event_arg = new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
                 BezierPoint ret = m_parent.HandleMouseMoveForBezierMove( event_arg, m_picked_side );
 
                 txtDataPointClock.setText( ((int)ret.getBase().getX()).ToString() );
@@ -315,9 +317,9 @@ namespace Boare.Cadencii {
         }
 
         private void setResources() {
-            this.btnLeft.Image = Resources.get_target__pencil();
-            this.btnDataPoint.Image = Resources.get_target__pencil();
-            this.btnRight.Image = Resources.get_target__pencil();
+            this.btnLeft.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
+            this.btnDataPoint.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
+            this.btnRight.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
         }
 
 #if JAVA

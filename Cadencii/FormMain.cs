@@ -8698,7 +8698,7 @@ namespace Boare.Cadencii {
             if ( !(parent.getTag() is int) ) {
                 return;
             }
-            int index = (int)parent.Tag;
+            int index = (int)parent.getTag();
             InputBox ib = null;
             try {
                 ib = new InputBox( _( "Input Offset Seconds" ) );
@@ -8722,7 +8722,7 @@ namespace Boare.Cadencii {
                 try {
                     draft = PortUtil.parseDouble( ib.getResult() );
                     item.readOffsetSeconds = draft;
-                    parent.ToolTipText = draft + " " + _( "seconds" );
+                    parent.setToolTipText( draft + " " + _( "seconds" ) );
                 } catch ( Exception ex3 ) {
                 }
                 CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
@@ -10056,7 +10056,7 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "dd_run_Click" );
 #endif
             try {
-                ScriptInvoker si = (ScriptInvoker)((BMenuItem)sender).Tag;
+                ScriptInvoker si = (ScriptInvoker)((BMenuItem)sender).getTag();
                 String script_file = si.ScriptFile;
 #if DEBUG
                 AppManager.debugWriteLine( "    si.FileTimestamp=" + si.FileTimestamp );
@@ -10975,21 +10975,21 @@ namespace Boare.Cadencii {
                 openWaveDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
 
-            stripLblGameCtrlMode.ToolTipText = _( "Game Controler" );
+            stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
             this.Invoke( new BEventHandler( updateGameControlerStatus ) );
 
             stripBtnPointer.setText( _( "Pointer" ) );
-            stripBtnPointer.ToolTipText = _( "Pointer" );
+            stripBtnPointer.setToolTipText( _( "Pointer" ) );
             stripBtnPencil.setText( _( "Pencil" ) );
-            stripBtnPencil.ToolTipText = _( "Pencil" );
+            stripBtnPencil.setToolTipText( _( "Pencil" ) );
             stripBtnLine.setText( _( "Line" ) );
-            stripBtnLine.ToolTipText = _( "Line" );
+            stripBtnLine.setToolTipText( _( "Line" ) );
             stripBtnEraser.setText( _( "Eraser" ) );
-            stripBtnEraser.ToolTipText = _( "Eraser" );
+            stripBtnEraser.setToolTipText( _( "Eraser" ) );
             stripBtnCurve.setText( _( "Curve" ) );
-            stripBtnCurve.ToolTipText = _( "Curve" );
+            stripBtnCurve.setToolTipText( _( "Curve" ) );
             stripBtnGrid.setText( _( "Grid" ) );
-            stripBtnGrid.ToolTipText = _( "Grid" );
+            stripBtnGrid.setToolTipText( _( "Grid" ) );
 
             #region main menu
             menuFile.setText( _( "File" ) + "(&F)" );
@@ -11160,7 +11160,7 @@ namespace Boare.Cadencii {
             cMenuTrackSelectorSelectAll.setText( _( "Select All Events" ) + "(&E)" );
             #endregion
 
-            stripLblGameCtrlMode.ToolTipText = _( "Game Controler" );
+            stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
 
             // Palette Tool
 #if DEBUG
@@ -11177,7 +11177,7 @@ namespace Boare.Cadencii {
                         if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
                             tsb.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsb.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
+                            tsb.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
                         }
                     }
                 }
@@ -11186,12 +11186,12 @@ namespace Boare.Cadencii {
             foreach ( MenuElement tsi in cMenuPianoPaletteTool.getSubElements() ) {
                 if ( tsi is BMenuItem ) {
                     BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
-                        String id = (String)tsmi.Tag;
+                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
+                        String id = (String)tsmi.getTag();
                         if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
                             tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
+                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
                         }
                     }
                 }
@@ -11200,12 +11200,12 @@ namespace Boare.Cadencii {
             foreach ( MenuElement tsi in cMenuTrackSelectorPaletteTool.getSubElements() ) {
                 if ( tsi is BMenuItem ) {
                     BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
-                        String id = (String)tsmi.Tag;
+                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
+                        String id = (String)tsmi.getTag();
                         if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
                             tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
+                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
                         }
                     }
                 }

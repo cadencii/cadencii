@@ -158,6 +158,15 @@ namespace bocoree.windows.forms {
             base.Checked = value;
         }
 #endif
+        public bocoree.awt.Icon getIcon() {
+            bocoree.awt.Icon ret = new bocoree.awt.Icon();
+            ret.image = base.Image;
+            return ret;
+        }
+
+        public void setIcon( bocoree.awt.Icon value ) {
+            base.Image = value.image;
+        }
         #endregion
     }
 }

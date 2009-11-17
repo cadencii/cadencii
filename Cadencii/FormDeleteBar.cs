@@ -40,8 +40,8 @@ namespace Boare.Cadencii {
             registerEventHandlers();
             setResources();
             ApplyLanguage();
-            numStart.Maximum = max_barcount;
-            numEnd.Maximum = max_barcount;
+            numStart.setMaximum( max_barcount );
+            numEnd.setMaximum( max_barcount );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -58,19 +58,19 @@ namespace Boare.Cadencii {
         }
 
         public int getStart() {
-            return (int)numStart.Value;
+            return numStart.getValue();
         }
 
         public void setStart( int value ) {
-            numStart.Value = value;
+            numStart.setValue( value );
         }
 
         public int getEnd() {
-            return (int)numEnd.Value;
+            return numEnd.getValue();
         }
 
         public void setEnd( int value ) {
-            numEnd.Value = value;
+            numEnd.setValue( value );
         }
 
         private void btnOK_Click( Object sender, BEventArgs e ) {
@@ -78,7 +78,11 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+#else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+#endif
         }
 
         private void setResources() {

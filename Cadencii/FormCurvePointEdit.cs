@@ -20,7 +20,6 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
@@ -54,10 +53,10 @@ namespace Boare.Cadencii {
             VsqBPPairSearchContext context = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() ).findElement( m_editing_id );
             txtDataPointClock.setText( context.clock + "" );
             txtDataPointValue.setText( context.point.value + "" );
-            txtDataPointValue.SelectAll();
+            txtDataPointValue.selectAll();
 
-            btnUndo.Enabled = AppManager.isUndoAvailable();
-            btnRedo.Enabled = AppManager.isRedoAvailable();
+            btnUndo.setEnabled( AppManager.isUndoAvailable() );
+            btnRedo.setEnabled( AppManager.isRedoAvailable() );
         }
 
         private String _( String id ) {
@@ -78,7 +77,7 @@ namespace Boare.Cadencii {
             }
             int value = m_curve.getDefault();
             try {
-                value = PortUtil.parseInt( txtDataPointValue.Text );
+                value = PortUtil.parseInt( txtDataPointValue.getText() );
             } catch ( Exception ex ) {
                 return;
             }
@@ -90,7 +89,7 @@ namespace Boare.Cadencii {
 
             int clock = 0;
             try {
-                clock = PortUtil.parseInt( txtDataPointClock.Text );
+                clock = PortUtil.parseInt( txtDataPointClock.getText() );
             } catch ( Exception ex ) {
                 return;
             }
@@ -115,18 +114,22 @@ namespace Boare.Cadencii {
             }
 
             if ( mode_clock ) {
-                txtDataPointClock.SelectAll();
+                txtDataPointClock.selectAll();
             } else {
-                txtDataPointValue.SelectAll();
+                txtDataPointValue.selectAll();
             }
 
-            btnUndo.Enabled = AppManager.isUndoAvailable();
-            btnRedo.Enabled = AppManager.isRedoAvailable();
+            btnUndo.setEnabled( AppManager.isUndoAvailable() );
+            btnRedo.setEnabled( AppManager.isRedoAvailable() );
             m_changed = false;
         }
 
         private void commonTextBox_KeyUp( Object sender, BKeyEventArgs e ) {
-            if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
+#if JAVA
+            if ( (e.KeyValue & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ) {
+#else
+            if ( (e.KeyCode & System.Windows.Forms.Keys.Enter) != System.Windows.Forms.Keys.Enter ) {
+#endif
                 return;
             }
             applyValue( (sender == txtDataPointClock) );
@@ -161,15 +164,25 @@ namespace Boare.Cadencii {
             VsqBPPair bp = list.getElementB( index );
             m_editing_id = bp.id;
             int clock = list.getKeyClock( index );
+#if JAVA
+            txtDataPointClock.textChangedEvent.remove( new BEventHandler( this, "commonTextBox_TextChanged" ) );
+            txtDataPointValue.textChangedEvent.remove( new BEventHandler( this, "commonTextBox_TextChanged" ) );
+#else
             txtDataPointClock.TextChanged -= commonTextBox_TextChanged;
             txtDataPointValue.TextChanged -= commonTextBox_TextChanged;
+#endif
             txtDataPointClock.setText( clock + "" );
             txtDataPointValue.setText( bp.value + "" );
+#if JAVA
+            txtDataPointClock.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
+            txtDataPointValue.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
+#else
             txtDataPointClock.TextChanged += commonTextBox_TextChanged;
             txtDataPointValue.TextChanged += commonTextBox_TextChanged;
+#endif
 
-            txtDataPointValue.Focus();
-            txtDataPointValue.SelectAll();
+            txtDataPointValue.requestFocus();
+            txtDataPointValue.selectAll();
 
             AppManager.clearSelectedPoint();
             AppManager.addSelectedPoint( m_curve, bp.id );
@@ -222,14 +235,29 @@ namespace Boare.Cadencii {
                 AppManager.mainWindow.updateDrawObjectList();
                 AppManager.mainWindow.refreshScreen();
             }
-            btnUndo.Enabled = AppManager.isUndoAvailable();
-            btnRedo.Enabled = AppManager.isRedoAvailable();
+            btnUndo.setEnabled( AppManager.isUndoAvailable() );
+            btnRedo.setEnabled( AppManager.isRedoAvailable() );
         }
 
         private void setResources() {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            this.btnForward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            this.btnBackward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            this.btnBackward2.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            this.btnForward2.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            this.btnApply.clickEvent.add( new BEventHandler( this, "btnApply_Click" ) );
+            this.txtDataPointClock.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
+            this.txtDataPointClock.keyUpEvent.add( new BKeyEventHandler( this, "commonTextBox_KeyUp" ) );
+            this.txtDataPointValue.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
+            this.txtDataPointValue.keyUpEvent.add( new BKeyEventHandler( this, "commonTextBox_KeyUp" ) );
+            this.btnBackward3.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            this.btnForward3.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            this.btnUndo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
+            this.btnRedo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
+#else
             this.btnForward.Click += new System.EventHandler( this.commonButton_Click );
             this.btnBackward.Click += new System.EventHandler( this.commonButton_Click );
             this.btnBackward2.Click += new System.EventHandler( this.commonButton_Click );
@@ -243,7 +271,9 @@ namespace Boare.Cadencii {
             this.btnForward3.Click += new System.EventHandler( this.commonButton_Click );
             this.btnUndo.Click += new System.EventHandler( this.handleUndoRedo_Click );
             this.btnRedo.Click += new System.EventHandler( this.handleUndoRedo_Click );
+#endif
         }
+
 #if JAVA
         #region UI Impl for Java
         #endregion

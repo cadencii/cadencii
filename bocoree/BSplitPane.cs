@@ -1,5 +1,5 @@
 /*
- * BCheckBox.cs
+ * BSplitPane.cs
  * Copyright (c) 2009 kbinani
  *
  * This file is part of bocoree.
