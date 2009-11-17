@@ -71,7 +71,7 @@ namespace Boare.Cadencii {
             columnNumNotes.Text = _( "Notes" );
             btnCheckAll.setText( _( "Check All" ) );
             btnUnckeckAll.setText( _( "Uncheck All" ) );
-            groupCommonOption.Text = _( "Option" );
+            groupCommonOption.setTitle( _( "Option" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
             chkTempo.setText( _( "Tempo" ) );
@@ -92,7 +92,7 @@ namespace Boare.Cadencii {
             chkNote.setEnabled( (m_mode != FormMidiMode.IMPORT_VSQ) );
             chkPreMeasure.setEnabled( (m_mode != FormMidiMode.IMPORT_VSQ) );
             if ( m_mode == FormMidiMode.EXPORT ) {
-                this.Text = _( "Midi Export" );
+                setTitle( _( "Midi Export" ) );
                 chkPreMeasure.setText( _( "Export pre-measure part" ) );
                 if ( chkExportVocaloidNrpn.isSelected() ) {
                     chkPreMeasure.setEnabled( false );
@@ -168,55 +168,63 @@ namespace Boare.Cadencii {
         }
 
         private void btnCheckAll_Click( Object sender, BEventArgs e ) {
-            for ( int i = 0; i < ListTrack.Items.Count; i++ ) {
-                ListTrack.Items[i].Checked = true;
+            for ( int i = 0; i < listTrack.getItemCount(); i++ ) {
+                listTrack.getItemAt( i ).setSelected( true );
             }
         }
 
         private void btnUnckeckAll_Click( Object sender, BEventArgs e ) {
-            for ( int i = 0; i < ListTrack.Items.Count; i++ ) {
-                ListTrack.Items[i].Checked = false;
+            for ( int i = 0; i < listTrack.getItemCount(); i++ ) {
+                listTrack.getItemAt( i ).setSelected( false );
             }
         }
 
         private void chkExportVocaloidNrpn_CheckedChanged( Object sender, BEventArgs e ) {
             if ( m_mode == FormMidiMode.EXPORT ) {
-                if ( chkExportVocaloidNrpn.Checked ) {
-                    chkPreMeasure.Enabled = false;
-                    AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus = chkPreMeasure.Checked;
-                    chkPreMeasure.Checked = true;
+                if ( chkExportVocaloidNrpn.isSelected() ) {
+                    chkPreMeasure.setEnabled( false );
+                    AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus = chkPreMeasure.isSelected();
+                    chkPreMeasure.setSelected( true );
                 } else {
-                    chkPreMeasure.Enabled = true;
-                    chkPreMeasure.Checked = AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus;
+                    chkPreMeasure.setEnabled( true );
+                    chkPreMeasure.setSelected( AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus );
                 }
             }
         }
 
         private void chkNote_CheckedChanged( Object sender, BEventArgs e ) {
             if ( m_mode == FormMidiMode.EXPORT ) {
-                if ( chkNote.Checked ) {
-                    chkMetaText.Enabled = false;
-                    AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.Checked;
-                    chkMetaText.Checked = false;
+                if ( chkNote.isSelected() ) {
+                    chkMetaText.setEnabled( false );
+                    AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.isSelected();
+                    chkMetaText.setSelected( false );
                 } else {
-                    chkMetaText.Enabled = true;
-                    chkMetaText.Checked = AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus;
+                    chkMetaText.setEnabled( true );
+                    chkMetaText.setSelected( AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus );
                 }
             }
         }
 
         private void chkMetaText_Click( Object sender, BEventArgs e ) {
             if ( m_mode == FormMidiMode.EXPORT ) {
-                AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.Checked;
+                AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.isSelected();
             }
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            this.btnCheckAll.clickEvent.add( new BEventHandler( this, "btnCheckAll_Click" ) );
+            this.btnUnckeckAll.clickEvent.add( new BEventHandler( this, "btnUnckeckAll_Click" ) );
+            this.chkNote.checkedChangedEvent.add( new BEventHandler( this, "chkNote_CheckedChanged" ) );
+            this.chkMetaText.clickEvent.add( new BEventHandler( this, "chkMetaText_Click" ) );
+            this.chkExportVocaloidNrpn.checkedChangedEvent.add( new BEventHandler( this, "chkExportVocaloidNrpn_CheckedChanged" ) );
+#else
             this.btnCheckAll.Click += new System.EventHandler( this.btnCheckAll_Click );
             this.btnUnckeckAll.Click += new System.EventHandler( this.btnUnckeckAll_Click );
             this.chkNote.CheckedChanged += new System.EventHandler( this.chkNote_CheckedChanged );
             this.chkMetaText.Click += new System.EventHandler( this.chkMetaText_Click );
             this.chkExportVocaloidNrpn.CheckedChanged += new System.EventHandler( this.chkExportVocaloidNrpn_CheckedChanged );
+#endif
         }
 
         private void setResources() {
@@ -666,22 +674,22 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
-            this.ListTrack = new System.Windows.Forms.ListView();
+            this.btnCancel = new bocoree.windows.forms.BButton();
+            this.btnOK = new bocoree.windows.forms.BButton();
+            this.listTrack = new bocoree.windows.forms.BListView();
             this.columnTrack = new System.Windows.Forms.ColumnHeader();
             this.columnName = new System.Windows.Forms.ColumnHeader();
             this.columnNumNotes = new System.Windows.Forms.ColumnHeader();
-            this.btnCheckAll = new BButton();
-            this.btnUnckeckAll = new BButton();
-            this.chkBeat = new BCheckBox();
-            this.chkTempo = new BCheckBox();
-            this.chkNote = new BCheckBox();
-            this.chkLyric = new BCheckBox();
-            this.groupCommonOption = new System.Windows.Forms.GroupBox();
-            this.chkMetaText = new BCheckBox();
-            this.chkPreMeasure = new BCheckBox();
-            this.chkExportVocaloidNrpn = new BCheckBox();
+            this.btnCheckAll = new bocoree.windows.forms.BButton();
+            this.btnUnckeckAll = new bocoree.windows.forms.BButton();
+            this.chkBeat = new bocoree.windows.forms.BCheckBox();
+            this.chkTempo = new bocoree.windows.forms.BCheckBox();
+            this.chkNote = new bocoree.windows.forms.BCheckBox();
+            this.chkLyric = new bocoree.windows.forms.BCheckBox();
+            this.groupCommonOption = new bocoree.windows.forms.BGroupBox();
+            this.chkMetaText = new bocoree.windows.forms.BCheckBox();
+            this.chkPreMeasure = new bocoree.windows.forms.BCheckBox();
+            this.chkExportVocaloidNrpn = new bocoree.windows.forms.BCheckBox();
             this.groupCommonOption.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -707,23 +715,23 @@ namespace Boare.Cadencii {
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
-            // ListTrack
+            // listTrack
             // 
-            this.ListTrack.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.listTrack.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.ListTrack.CheckBoxes = true;
-            this.ListTrack.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
+            this.listTrack.CheckBoxes = true;
+            this.listTrack.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
             this.columnTrack,
             this.columnName,
             this.columnNumNotes} );
-            this.ListTrack.FullRowSelect = true;
-            this.ListTrack.Location = new System.Drawing.Point( 12, 41 );
-            this.ListTrack.Name = "ListTrack";
-            this.ListTrack.Size = new System.Drawing.Size( 324, 282 );
-            this.ListTrack.TabIndex = 6;
-            this.ListTrack.UseCompatibleStateImageBehavior = false;
-            this.ListTrack.View = System.Windows.Forms.View.Details;
+            this.listTrack.FullRowSelect = true;
+            this.listTrack.Location = new System.Drawing.Point( 12, 41 );
+            this.listTrack.Name = "listTrack";
+            this.listTrack.Size = new System.Drawing.Size( 324, 282 );
+            this.listTrack.TabIndex = 6;
+            this.listTrack.UseCompatibleStateImageBehavior = false;
+            this.listTrack.View = System.Windows.Forms.View.Details;
             // 
             // columnTrack
             // 
@@ -879,7 +887,7 @@ namespace Boare.Cadencii {
             this.Controls.Add( this.groupCommonOption );
             this.Controls.Add( this.btnUnckeckAll );
             this.Controls.Add( this.btnCheckAll );
-            this.Controls.Add( this.ListTrack );
+            this.Controls.Add( this.listTrack );
             this.Controls.Add( this.btnCancel );
             this.Controls.Add( this.btnOK );
             this.MaximizeBox = false;
@@ -909,9 +917,9 @@ namespace Boare.Cadencii {
         private BCheckBox chkTempo;
         private BCheckBox chkNote;
         private BCheckBox chkLyric;
-        private System.Windows.Forms.GroupBox groupCommonOption;
+        private BGroupBox groupCommonOption;
         private BCheckBox chkExportVocaloidNrpn;
-        public System.Windows.Forms.ListView ListTrack;
+        public BListView listTrack;
         private BCheckBox chkPreMeasure;
         private BCheckBox chkMetaText;
 

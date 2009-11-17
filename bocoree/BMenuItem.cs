@@ -25,6 +25,7 @@ namespace bocoree.windows.forms {
     public class BMenuItem : System.Windows.Forms.ToolStripMenuItem, MenuElement {
         // root implementation of javax.swing.AbstractButton
         #region javax.swing.AbstractButton
+        // root implementation of javax.swing.AbstractButton is in BMenuItem.cs
         public string getText() {
             return base.Text;
         }
@@ -48,7 +49,11 @@ namespace bocoree.windows.forms {
         }
 
         public void setIcon( bocoree.awt.Icon value ) {
-            base.Image = value.image;
+            if ( value == null ) {
+                base.Image = null;
+            } else {
+                base.Image = value.image;
+            }
         }
         #endregion
 
@@ -76,8 +81,7 @@ namespace bocoree.windows.forms {
             return base.OwnerItem;
         }
 #else
-        public object getParent()
-        {
+        public object getParent(){
             return base.Parent;
         }
 #endif

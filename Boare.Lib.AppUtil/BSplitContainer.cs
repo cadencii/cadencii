@@ -103,6 +103,14 @@ namespace Boare.Lib.AppUtil {
             }
         }
 
+        public bool isSplitterFixed() {
+            return this.IsSplitterFixed;
+        }
+
+        public void setSplitterFixed( bool value ) {
+            this.IsSplitterFixed = value;
+        }
+
         /// <summary> 
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>

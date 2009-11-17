@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BListView;
 
 public class FormMidiImExport extends BForm {
 	private static final long serialVersionUID = 1L;
@@ -20,7 +21,7 @@ public class FormMidiImExport extends BForm {
 	private BButton btnCheckAll = null;
 	private BButton btnUncheckAll = null;
 	private JLabel jLabel = null;
-	private JTable jTable = null;
+	private BListView listTrack = null;
 	private JPanel jPanel1 = null;
 	private BCheckBox chkTempo = null;
 	private JPanel jPanel2 = null;
@@ -90,7 +91,7 @@ public class FormMidiImExport extends BForm {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
 			jContentPane.add(getJPanel(), gridBagConstraints3);
-			jContentPane.add(getJTable(), gridBagConstraints4);
+			jContentPane.add(getListTrack(), gridBagConstraints4);
 			jContentPane.add(getJPanel1(), gridBagConstraints12);
 			jContentPane.add(getJPanel2(), gridBagConstraints13);
 		}
@@ -162,15 +163,15 @@ public class FormMidiImExport extends BForm {
 	}
 
 	/**
-	 * This method initializes jTable	
+	 * This method initializes listTrack	
 	 * 	
 	 * @return javax.swing.JTable	
 	 */
-	private JTable getJTable() {
-		if (jTable == null) {
-			jTable = new JTable();
+	private BListView getListTrack() {
+		if (listTrack == null) {
+			listTrack = new BListView();
 		}
-		return jTable;
+		return listTrack;
 	}
 
 	/**

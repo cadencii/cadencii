@@ -41,6 +41,54 @@ namespace Boare.Cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
+        public void ApplyLanguage() {
+            setTitle( _( "Insert Bars" ) );
+            String th_prefix = _( "_PREFIX_TH_" );
+            if ( th_prefix.Equals( "_PREFIX_TH_" ) ) {
+                lblPositionPrefix.setText( "" );
+            } else {
+                lblPositionPrefix.setText( th_prefix );
+            }
+            lblPosition.setText( _( "Position" ) );
+            lblLength.setText( _( "Length" ) );
+            lblThBar.setText( _( "th bar" ) );
+            lblBar.setText( _( "bar" ) );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
+            lblPositionPrefix.Left = numPosition.Left - lblPositionPrefix.Width;
+        }
+
+        public static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        public int getLength() {
+            return (int)numLength.Value;
+        }
+
+        public void setLength( int value ) {
+            numLength.Value = value;
+        }
+
+        public int getPosition() {
+            return (int)numPosition.Value;
+        }
+
+        public void setPosition( int value ) {
+            numPosition.Value = value;
+        }
+
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
+        }
+
+        private void registerEventHandlers() {
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+        }
+
+        private void setResources() {
+        }
+
 #if JAVA
         #region UI Impl for Java
         private void initializeComponent(){
@@ -220,53 +268,6 @@ namespace Boare.Cadencii {
         #endregion
 #endif
 
-        public void ApplyLanguage() {
-            setTitle( _( "Insert Bars" ) );
-            String th_prefix = _( "_PREFIX_TH_" );
-            if ( th_prefix.Equals( "_PREFIX_TH_" ) ) {
-                lblPositionPrefix.setText( "" );
-            } else {
-                lblPositionPrefix.setText( th_prefix );
-            }
-            lblPosition.setText( _( "Position" ) );
-            lblLength.setText( _( "Length" ) );
-            lblThBar.setText( _( "th bar" ) );
-            lblBar.setText( _( "bar" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            lblPositionPrefix.Left = numPosition.Left - lblPositionPrefix.Width;
-        }
-
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
-        public int getLength() {
-            return (int)numLength.Value;
-        }
-
-        public void setLength( int value ) {
-            numLength.Value = value;
-        }
-
-        public int getPosition() {
-            return (int)numPosition.Value;
-        }
-
-        public void setPosition( int value ) {
-            numPosition.Value = value;
-        }
-
-        private void btnOK_Click( Object sender, BEventArgs e ) {
-            setDialogResult( BDialogResult.OK );
-        }
-
-        private void registerEventHandlers() {
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-        }
-
-        private void setResources() {
-        }
     }
 
 #if !JAVA

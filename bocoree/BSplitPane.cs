@@ -32,6 +32,14 @@ namespace bocoree.windows.forms {
         public void setDividerSize( int value ) {
             base.SplitterWidth = value;
         }
+
+        public bool isSplitterFixed() {
+            return base.IsSplitterFixed;
+        }
+
+        public void setSplitterFixed( bool value ) {
+            base.IsSplitterFixed = value;
+        }
     }
 
 }

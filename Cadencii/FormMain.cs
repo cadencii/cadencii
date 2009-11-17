@@ -668,10 +668,7 @@ namespace Boare.Cadencii {
             picturePositionIndicator.Top = 0;
             picturePositionIndicator.Width = panel1.Width;
             // pictPianoRoll
-            pictPianoRoll.Left = 0;
-            pictPianoRoll.Top = picturePositionIndicator.Height;
-            pictPianoRoll.Width = panel1.Width - vScroll.Width;
-            pictPianoRoll.Height = panel1.Height - picturePositionIndicator.Height - hScroll.Height;
+            pictPianoRoll.setBounds( 0, picturePositionIndicator.Height, panel1.Width - vScroll.Width, panel1.Height - picturePositionIndicator.Height - hScroll.Height );
             // vScroll
             vScroll.Left = pictPianoRoll.getWidth();
             vScroll.Top = picturePositionIndicator.Height;
@@ -3137,7 +3134,11 @@ namespace Boare.Cadencii {
 
                 // 音符の再選択
                 AppManager.clearSelectedEvent();
-                AppManager.addSelectedEventAll( Arrays.asList( selected_ids ) );
+                Vector<Integer> list_selected_ids = new Vector<Integer>();
+                for ( int i = 0; i < num; i++ ) {
+                    list_selected_ids.add( selected_ids[i] );
+                }
+                AppManager.addSelectedEventAll( list_selected_ids );
                 AppManager.addSelectedEvent( last_selected_id );
 
                 setEdited( true );
@@ -3243,7 +3244,7 @@ namespace Boare.Cadencii {
             menuVisualMixer.setSelected( !menuVisualMixer.isSelected() );
             AppManager.editorConfig.MixerVisible = menuVisualMixer.isSelected();
             AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
-            this.Focus();
+            requestFocus();
         }
 
         private void menuVisualGridline_CheckedChanged( Object sender, BEventArgs e ) {
@@ -3267,12 +3268,12 @@ namespace Boare.Cadencii {
         private void menuVisualControlTrack_CheckedChanged( Object sender, BEventArgs e ) {
             trackSelector.setCurveVisible( menuVisualControlTrack.isSelected() );
             if ( menuVisualControlTrack.isSelected() ) {
-                splitContainer1.IsSplitterFixed = false;
+                splitContainer1.setSplitterFixed( false );
                 splitContainer1.setDividerLocation( splitContainer1.Height - AppManager.lastTrackSelectorHeight - splitContainer1.getDividerSize() );
                 splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
             } else {
                 AppManager.lastTrackSelectorHeight = splitContainer1.Height - splitContainer1.getDividerLocation() - splitContainer1.getDividerSize();
-                splitContainer1.IsSplitterFixed = true;
+                splitContainer1.setSplitterFixed( true );
                 splitContainer1.Panel2MinSize = _SPL1_PANEL2_MIN_HEIGHT;
                 splitContainer1.setDividerLocation( splitContainer1.Height - _SPL1_PANEL2_MIN_HEIGHT - splitContainer1.getDividerSize() );
             }
@@ -3778,8 +3779,8 @@ namespace Boare.Cadencii {
                     Point proeprty = AppManager.propertyWindow.getLocation();
                     AppManager.editorConfig.PropertyWindowStatus.Bounds = new XmlRectangle( proeprty.x - parent.x,
                                                                                             proeprty.y - parent.y,
-                                                                                            AppManager.propertyWindow.Width,
-                                                                                            AppManager.propertyWindow.Height );
+                                                                                            AppManager.propertyWindow.getWidth(),
+                                                                                            AppManager.propertyWindow.getHeight() );
                 }
             }
         }
@@ -4188,7 +4189,7 @@ namespace Boare.Cadencii {
             if ( m_midi_imexport_dialog == null ) {
                 m_midi_imexport_dialog = new FormMidiImExport();
             }
-            m_midi_imexport_dialog.ListTrack.Items.Clear();
+            m_midi_imexport_dialog.listTrack.Items.Clear();
             m_midi_imexport_dialog.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
             int dialog_result = openMidiDialog.showOpenDialog( this );
@@ -4232,8 +4233,8 @@ namespace Boare.Cadencii {
                         notes++;
                     }
                 }
-                m_midi_imexport_dialog.ListTrack.Items.Add( new System.Windows.Forms.ListViewItem( new String[] { i.ToString(), track_name, notes.ToString() } ) );
-                m_midi_imexport_dialog.ListTrack.Items[i].Checked = true;
+                m_midi_imexport_dialog.listTrack.Items.Add( new System.Windows.Forms.ListViewItem( new String[] { i.ToString(), track_name, notes.ToString() } ) );
+                m_midi_imexport_dialog.listTrack.Items[i].Checked = true;
             }
 
             if ( m_midi_imexport_dialog.showDialog() != BDialogResult.OK ) {
@@ -4353,14 +4354,14 @@ namespace Boare.Cadencii {
                 work.updateTimesigInfo();
             }
 
-            for ( int i = 0; i < m_midi_imexport_dialog.ListTrack.Items.Count; i++ ) {
-                if ( !m_midi_imexport_dialog.ListTrack.Items[i].Checked ) {
+            for ( int i = 0; i < m_midi_imexport_dialog.listTrack.Items.Count; i++ ) {
+                if ( !m_midi_imexport_dialog.listTrack.Items[i].Checked ) {
                     continue;
                 }
                 if ( work.Track.size() + 1 > 16 ) {
                     break;
                 }
-                VsqTrack work_track = new VsqTrack( m_midi_imexport_dialog.ListTrack.Items[i].SubItems[1].Text, "Miku" );
+                VsqTrack work_track = new VsqTrack( m_midi_imexport_dialog.listTrack.Items[i].SubItems[1].Text, "Miku" );
                 Vector<MidiEvent> events = mf.getMidiEventList( i );
                 Collections.sort( events );
                 int events_count = events.size();
@@ -4487,7 +4488,7 @@ namespace Boare.Cadencii {
             if ( m_midi_imexport_dialog == null ) {
                 m_midi_imexport_dialog = new FormMidiImExport();
             }
-            m_midi_imexport_dialog.ListTrack.Items.Clear();
+            m_midi_imexport_dialog.listTrack.Items.Clear();
             VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().Clone();
 
             for ( int i = 0; i < vsq.Track.size(); i++ ) {
@@ -4497,8 +4498,8 @@ namespace Boare.Cadencii {
                     Object obj = itr.next();
                     notes++;
                 }
-                m_midi_imexport_dialog.ListTrack.Items.Add( new System.Windows.Forms.ListViewItem( new String[] { i.ToString(), track.getName(), notes.ToString() } ) );
-                m_midi_imexport_dialog.ListTrack.Items[i].Checked = true;
+                m_midi_imexport_dialog.listTrack.Items.Add( new System.Windows.Forms.ListViewItem( new String[] { i.ToString(), track.getName(), notes.ToString() } ) );
+                m_midi_imexport_dialog.listTrack.Items[i].Checked = true;
             }
             m_midi_imexport_dialog.setMode( FormMidiImExport.FormMidiMode.EXPORT );
             m_midi_imexport_dialog.setLocation( getFormPreferedLocation( m_midi_imexport_dialog ) );
@@ -4507,8 +4508,8 @@ namespace Boare.Cadencii {
                     vsq.removePart( 0, vsq.getPreMeasureClocks() );
                 }
                 int track_count = 0;
-                for ( int i = 0; i < m_midi_imexport_dialog.ListTrack.Items.Count; i++ ) {
-                    if ( m_midi_imexport_dialog.ListTrack.Items[i].Checked ) {
+                for ( int i = 0; i < m_midi_imexport_dialog.listTrack.Items.Count; i++ ) {
+                    if ( m_midi_imexport_dialog.listTrack.Items[i].Checked ) {
                         track_count++;
                     }
                 }
@@ -4538,8 +4539,8 @@ namespace Boare.Cadencii {
                         fs.write( (byte)0x01 );
                         fs.write( (byte)0xe0 );
                         int count = -1;
-                        for ( int i = 0; i < m_midi_imexport_dialog.ListTrack.Items.Count; i++ ) {
-                            if ( !m_midi_imexport_dialog.ListTrack.Items[i].Checked ) {
+                        for ( int i = 0; i < m_midi_imexport_dialog.listTrack.Items.Count; i++ ) {
+                            if ( !m_midi_imexport_dialog.listTrack.Items[i].Checked ) {
                                 continue;
                             }
                             VsqTrack track = vsq.Track.get( i );
@@ -4820,12 +4821,12 @@ namespace Boare.Cadencii {
             if ( m_midi_imexport_dialog == null ) {
                 m_midi_imexport_dialog = new FormMidiImExport();
             }
-            m_midi_imexport_dialog.ListTrack.Items.Clear();
+            m_midi_imexport_dialog.listTrack.Items.Clear();
             for ( int track = 1; track < vsq.Track.size(); track++ ) {
-                m_midi_imexport_dialog.ListTrack.Items.Add( new System.Windows.Forms.ListViewItem( new String[] { track.ToString(), 
+                m_midi_imexport_dialog.listTrack.Items.Add( new System.Windows.Forms.ListViewItem( new String[] { track.ToString(), 
                                                                                              vsq.Track.get( track ).getName(),
                                                                                              vsq.Track.get( track ).getEventCount().ToString() } ) );
-                m_midi_imexport_dialog.ListTrack.Items[track - 1].Checked = true;
+                m_midi_imexport_dialog.listTrack.Items[track - 1].Checked = true;
             }
             m_midi_imexport_dialog.setMode( FormMidiImExport.FormMidiMode.IMPORT_VSQ );
             m_midi_imexport_dialog.setTempo( false );
@@ -4836,8 +4837,8 @@ namespace Boare.Cadencii {
             }
 
             Vector<Integer> add_track = new Vector<Integer>();
-            for ( int i = 0; i < m_midi_imexport_dialog.ListTrack.Items.Count; i++ ) {
-                if ( m_midi_imexport_dialog.ListTrack.Items[i].Checked ) {
+            for ( int i = 0; i < m_midi_imexport_dialog.listTrack.Items.Count; i++ ) {
+                if ( m_midi_imexport_dialog.listTrack.Items[i].Checked ) {
                     add_track.add( i + 1 );
                 }
             }
@@ -6230,13 +6231,23 @@ namespace Boare.Cadencii {
                     #region スタート/エンドマーク
                     if ( AppManager.startMarkerEnabled ) {
                         int startx = AppManager.xCoordFromClocks( AppManager.startMarker ) - AppManager.editorConfig.PxTolerance;
-                        if ( startx <= e.X && e.X <= startx + AppManager.editorConfig.PxTolerance * 2 + Resources.get_start_marker().Width ) {
+#if JAVA
+                        int marker_width = Resources.get_start_marker().getWidth();
+#else
+                        int marker_width = Resources.get_start_marker().Width;
+#endif
+                        if ( startx <= e.X && e.X <= startx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
                             m_startmark_dragging = true;
                         }
                     }
                     if ( AppManager.endMarkerEnabled && !m_startmark_dragging ) {
-                        int endx = AppManager.xCoordFromClocks( AppManager.endMarker ) - Resources.get_end_marker().Width - AppManager.editorConfig.PxTolerance;
-                        if ( endx <= e.X && e.X <= endx + AppManager.editorConfig.PxTolerance * 2 + Resources.get_end_marker().Width ) {
+#if JAVA
+                        int marker_width = Resources.get_end_marker().getWidth();
+#else
+                        int marker_width = Resources.get_end_marker().Width;
+#endif
+                        int endx = AppManager.xCoordFromClocks( AppManager.endMarker ) - marker_width - AppManager.editorConfig.PxTolerance;
+                        if ( endx <= e.X && e.X <= endx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
                             m_endmark_dragging = true;
                         }
                     }
@@ -6967,7 +6978,7 @@ namespace Boare.Cadencii {
 
         private void trackSelector_MouseClick( Object sender, BMouseEventArgs e ) {
             if ( e.Button == BMouseButtons.Right ) {
-                if ( AppManager.keyWidth < e.X && e.X < trackSelector.Width - AppManager.keyWidth ) {
+                if ( AppManager.keyWidth < e.X && e.X < trackSelector.getWidth() - AppManager.keyWidth ) {
                     if ( trackSelector.Height - TrackSelector.OFFSET_TRACK_TAB <= e.Y && e.Y <= trackSelector.Height ) {
                         cMenuTrackTab.show( trackSelector, e.X, e.Y );
                     } else {
@@ -7006,7 +7017,7 @@ namespace Boare.Cadencii {
 #else
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.isVisible() ) {
 #endif
-                    trackSelector.Focus();
+                    trackSelector.requestFocus();
                 }
             }
             if ( e.Button == BMouseButtons.None ) {
@@ -7015,7 +7026,7 @@ namespace Boare.Cadencii {
                 refreshScreen();
                 return;
             }
-            int parent_width = ((TrackSelector)sender).Width;
+            int parent_width = ((TrackSelector)sender).getWidth();
             if ( m_edit_curve_mode == CurveEditMode.MIDDLE_DRAG ) {
                 int dx = e.X - m_button_initial.x;
                 int dy = e.Y - m_button_initial.y;
@@ -7063,7 +7074,7 @@ namespace Boare.Cadencii {
                     if ( m_ext_dragx_trackselector == ExtDragXMode.RIGHT ) {
                         int right_clock = AppManager.clockFromXCoord( parent_width + 5 );
                         int dclock = (int)(px_move / AppManager.scaleX);
-                        d_draft = (73 - trackSelector.Width) / AppManager.scaleX + right_clock + dclock;
+                        d_draft = (73 - trackSelector.getWidth()) / AppManager.scaleX + right_clock + dclock;
                     } else {
                         px_move *= -1;
                         int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
@@ -7995,7 +8006,7 @@ namespace Boare.Cadencii {
             if ( !AppManager.isPlaying() ) {
                 AppManager.setPlaying( true );
             }
-            pictPianoRoll.Focus();
+            pictPianoRoll.requestFocus();
         }
 
         private void stripBtnScroll_Click( Object sender, BEventArgs e ) {
@@ -8204,8 +8215,8 @@ namespace Boare.Cadencii {
                 return;
             }
             Dimension minsize = getWindowMinimumSize();
-            int wid = this.Width;
-            int hei = this.Height;
+            int wid = getWidth();
+            int hei = getHeight();
             boolean change_size_required = false;
             if ( minsize.width > wid ) {
                 wid = minsize.width;
@@ -8349,9 +8360,9 @@ namespace Boare.Cadencii {
             } else if ( m_overview_mouse_down_mode == OverviewMouseDownMode.MIDDLE ) {
                 int dx = e.X - m_overview_mouse_downed_locationx;
                 int draft = m_overview_start_to_draw_clock_initial_value - (int)(dx / m_overview_px_per_clock);
-                int clock = getOverviewClockFromXCoord( pictOverview.Width, draft );
+                int clock = getOverviewClockFromXCoord( pictOverview.getWidth(), draft );
                 if ( AppManager.getVsqFile().TotalClocks < clock ) {
-                    draft = AppManager.getVsqFile().TotalClocks - (int)(pictOverview.Width / m_overview_px_per_clock);
+                    draft = AppManager.getVsqFile().TotalClocks - (int)(pictOverview.getWidth() / m_overview_px_per_clock);
                 }
                 if ( draft < 0 ) {
                     draft = 0;
@@ -8412,7 +8423,7 @@ namespace Boare.Cadencii {
                 if ( x < 0 ) {
                     continue;
                 }
-                if ( pictOverview.Width < x ) {
+                if ( pictOverview.getWidth() < x ) {
                     break;
                 }
                 count++;
@@ -8433,7 +8444,7 @@ namespace Boare.Cadencii {
 
             // 小節ごとの線
             int clock_start = getOverviewClockFromXCoord( 0 );
-            int clock_end = getOverviewClockFromXCoord( pictOverview.Width );
+            int clock_end = getOverviewClockFromXCoord( pictOverview.getWidth() );
             int premeasure = AppManager.getVsqFile().getPreMeasure();
             g.setClip( null );
             BasicStroke pen_bold = new bocoree.awt.BasicStroke( 2 );
@@ -8446,7 +8457,7 @@ namespace Boare.Cadencii {
                 if ( bar.clock() < clock_start ) {
                     continue;
                 }
-                if ( pictOverview.Width < barcountx ) {
+                if ( pictOverview.getWidth() < barcountx ) {
                     break;
                 }
                 if ( bar.isSeparator() ) {
@@ -8587,9 +8598,9 @@ namespace Boare.Cadencii {
                 Thread.Sleep( 100 );
                 double dt = PortUtil.getCurrentTime() - m_overview_btn_downed;
                 int draft = (int)(m_overview_start_to_draw_clock_initial_value + m_overview_direction * dt * _OVERVIEW_SCROLL_SPEED / m_overview_px_per_clock);
-                int clock = getOverviewClockFromXCoord( pictOverview.Width, draft );
+                int clock = getOverviewClockFromXCoord( pictOverview.getWidth(), draft );
                 if ( AppManager.getVsqFile().TotalClocks < clock ) {
-                    draft = AppManager.getVsqFile().TotalClocks - (int)(pictOverview.Width / m_overview_px_per_clock);
+                    draft = AppManager.getVsqFile().TotalClocks - (int)(pictOverview.getWidth() / m_overview_px_per_clock);
                 }
                 if ( draft < 0 ) {
                     draft = 0;
@@ -8831,7 +8842,7 @@ namespace Boare.Cadencii {
                 AppManager.propertyWindow.setVisible( false );
                 menuVisualProperty.setSelected( true );
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
-                splitContainerProperty.IsSplitterFixed = false;
+                splitContainerProperty.setSplitterFixed( false );
                 splitContainerProperty.Panel1MinSize = _PROPERTY_DOCK_MIN_WIDTH;
                 splitContainerProperty.setDividerLocation( AppManager.editorConfig.PropertyWindowStatus.DockWidth );
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
@@ -8845,7 +8856,7 @@ namespace Boare.Cadencii {
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Hidden;
                 splitContainerProperty.Panel1MinSize = 0;
                 splitContainerProperty.setDividerLocation( 0 );
-                splitContainerProperty.IsSplitterFixed = true;
+                splitContainerProperty.setSplitterFixed( true );
             } else if ( state == PanelState.Window ) {
                 AppManager.propertyWindow.setVisible( true );
                 if ( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ) {
@@ -8864,7 +8875,7 @@ namespace Boare.Cadencii {
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Window;
                 splitContainerProperty.Panel1MinSize = 0;
                 splitContainerProperty.setDividerLocation( 0 );
-                splitContainerProperty.IsSplitterFixed = true;
+                splitContainerProperty.setSplitterFixed( true );
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Normal;
             }
         }
@@ -8998,24 +9009,23 @@ namespace Boare.Cadencii {
         /// <param name="form"></param>
         public static void normalizeFormLocation( BForm dlg ) {
             Rectangle rcScreen = PortUtil.getWorkingArea( dlg );
-            int top = dlg.Top;
-            if ( top + dlg.Height > rcScreen.y + rcScreen.height ) {
+            int top = dlg.getY();
+            if ( top + dlg.getHeight() > rcScreen.y + rcScreen.height ) {
                 // ダイアログの下端が隠れる場合、位置をずらす
-                top = rcScreen.y + rcScreen.height - dlg.Height;
+                top = rcScreen.y + rcScreen.height - dlg.getHeight();
             }
             if ( top < rcScreen.y ) {
                 // ダイアログの上端が隠れる場合、位置をずらす
                 top = rcScreen.y;
             }
-            int left = dlg.Left;
-            if ( left + dlg.Width > rcScreen.x + rcScreen.width ) {
-                left = rcScreen.x + rcScreen.width - dlg.Width;
+            int left = dlg.getX();
+            if ( left + dlg.getWidth() > rcScreen.x + rcScreen.width ) {
+                left = rcScreen.x + rcScreen.width - dlg.getWidth();
             }
             if ( left < rcScreen.x ) {
                 left = rcScreen.x;
             }
-            dlg.Top = top;
-            dlg.Left = left;
+            dlg.setLocation( left, top );
         }
 
         /// <summary>
@@ -9618,7 +9628,7 @@ namespace Boare.Cadencii {
         private void updateSplitContainer2Size() {
             if ( menuVisualWaveform.isSelected() ) {
                 splitContainer2.Panel2MinSize = _SPL2_PANEL2_MIN_HEIGHT;
-                splitContainer2.IsSplitterFixed = false;
+                splitContainer2.setSplitterFixed( false );
                 splitContainer2.SplitterWidth = _SPL_SPLITTER_WIDTH;
                 if ( m_last_splitcontainer2_split_distance <= 0 || m_last_splitcontainer2_split_distance > splitContainer2.Height ) {
                     splitContainer2.setDividerLocation( (int)(splitContainer2.Height * 0.9) );
@@ -9630,7 +9640,7 @@ namespace Boare.Cadencii {
                 splitContainer2.Panel2MinSize = 0;
                 splitContainer2.SplitterWidth = 0;
                 splitContainer2.setDividerLocation( splitContainer2.Height );
-                splitContainer2.IsSplitterFixed = true;
+                splitContainer2.setSplitterFixed( true );
             }
         }
 
@@ -9716,9 +9726,14 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <returns></returns>
         private Dimension getWindowMinimumSize() {
-            Dimension current_minsize = new Dimension( this.MinimumSize.Width, this.MinimumSize.Height );
+            Dimension current_minsize = new Dimension( getMinimumSize().width, getMinimumSize().height );
+#if JAVA
+            Dimension client = getContentPane().getSize();
+            Dimension current = getSize();
+#else
             Dimension client = new Dimension( this.ClientSize.Width, this.ClientSize.Height );
             Dimension current = new Dimension( this.Size.Width, this.Size.Height );
+#endif
             return new Dimension( current_minsize.width,
                                   splitContainer1.Panel2MinSize +
                                      _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.MinimumSize.Height +
@@ -12185,8 +12200,8 @@ namespace Boare.Cadencii {
             m_txtbox_track_name.setSize( selector_width, TrackSelector.OFFSET_TRACK_TAB );
             m_txtbox_track_name.Parent = trackSelector;
             m_txtbox_track_name.setVisible( true );
-            m_txtbox_track_name.Focus();
-            m_txtbox_track_name.SelectAll();
+            m_txtbox_track_name.requestFocus();
+            m_txtbox_track_name.selectAll();
         }
 
         private void deleteTrackCore() {
@@ -12782,7 +12797,7 @@ namespace Boare.Cadencii {
             AppManager.inputTextBox.Parent = null;
 #endif
             AppManager.inputTextBox.setEnabled( false );
-            pictPianoRoll.Focus();
+            pictPianoRoll.requestFocus();
         }
 
         /// <summary>

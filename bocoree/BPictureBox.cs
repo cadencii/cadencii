@@ -1,67 +1,47 @@
 ﻿/*
- * BForm.cs
+ * BPictureBox.cs
  * Copyright (c) 2009 kbinani
  *
- * This file is part of bocoree.
+ * This file is part of Boare.Cadencii.
  *
- * bocoree is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
+ * Boare.Cadencii is free software; you can redistribute it and/or
+ * modify it under the terms of the GPLv3 License.
  *
- * bocoree is distributed in the hope that it will be useful,
+ * Boare.Cadencii is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BForm.java
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BPictureBox.java
 #else
-#define COMPONENT_ENABLE_LOCATION
-#define COMPONENT_ENABLE_Y
-#define COMPONENT_ENABLE_X
+using System.Windows.Forms;
 
-using System;
+namespace Boare.Cadencii {
 
-namespace bocoree.windows.forms {
-    using boolean = System.Boolean;
-
-    public class BForm : System.Windows.Forms.Form {
-        protected BDialogResult m_result = BDialogResult.CANCEL;
-
-        public void setDialogResult( BDialogResult value ) {
-            switch ( value ) {
-                case BDialogResult.YES:
-                    this.DialogResult = System.Windows.Forms.DialogResult.Yes;
-                    break;
-                case BDialogResult.NO:
-                    this.DialogResult = System.Windows.Forms.DialogResult.No;
-                    break;
-                case BDialogResult.OK:
-                    this.DialogResult = System.Windows.Forms.DialogResult.OK;
-                    break;
-                case BDialogResult.CANCEL:
-                    this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-                    break;
+    /// <summary>
+    /// KeyDownとKeyUpを受信できるPictureBox
+    /// </summary>
+    public class BPictureBox : PictureBox {
+        public event KeyEventHandler BKeyDown;
+        public event KeyEventHandler BKeyUp;
+        
+        protected override void OnKeyDown( KeyEventArgs e ) {
+            if ( BKeyDown != null ) {
+                BKeyDown( this, e );
             }
         }
 
-        public BDialogResult getDialogResult() {
-            return m_result;
-        }
-
-        public BDialogResult showDialog() {
-            System.Windows.Forms.DialogResult dr = base.ShowDialog();
-            if ( dr == System.Windows.Forms.DialogResult.OK ) {
-                m_result = BDialogResult.OK;
-            } else if ( dr == System.Windows.Forms.DialogResult.Cancel ) {
-                m_result = BDialogResult.CANCEL;
-            } else if ( dr == System.Windows.Forms.DialogResult.Yes ) {
-                m_result = BDialogResult.YES;
-            } else if ( dr == System.Windows.Forms.DialogResult.No ) {
-                m_result = BDialogResult.NO;
+        protected override void OnKeyUp( KeyEventArgs e ) {
+            if ( BKeyUp != null ) {
+                BKeyUp( this, e );
             }
-            return m_result;
         }
 
-        // root implementation of java.awt.Component
+        protected override void OnMouseDown( MouseEventArgs e ) {
+            base.OnMouseDown( e );
+            this.Focus();
+        }
+
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public void setBounds( int x, int y, int width, int height ) {
@@ -75,13 +55,13 @@ namespace bocoree.windows.forms {
         public bocoree.awt.Cursor getCursor() {
             System.Windows.Forms.Cursor c = base.Cursor;
             bocoree.awt.Cursor ret = null;
-            if( c.Equals( System.Windows.Forms.Cursors.Arrow ) ){
+            if ( c.Equals( System.Windows.Forms.Cursors.Arrow ) ) {
                 ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ){
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ) {
                 ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.CROSSHAIR_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ){
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ) {
                 ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ){
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ) {
                 ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.HAND_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
                 ret = new bocoree.awt.Cursor( bocoree.awt.Cursor.TEXT_CURSOR );
@@ -239,114 +219,6 @@ namespace bocoree.windows.forms {
 
         public void requestFocus() {
             base.Focus();
-        }
-        #endregion
-
-        // root implementation of java.awt.Window
-        #region java.awt.Window
-        // root implementation of java.awt.Window is in BForm.cs
-        public void setMinimumSize( bocoree.awt.Dimension size ) {
-            base.MinimumSize = new System.Drawing.Size( size.width, size.height );
-        }
-
-        public bocoree.awt.Dimension getMinimumSize() {
-            return new bocoree.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
-        }
-
-        public void setAlwaysOnTop( boolean alwaysOnTop ) {
-            base.TopMost = alwaysOnTop;
-        }
-
-        public boolean isAlwaysOnTop() {
-            return base.TopMost;
-        }
-        #endregion
-
-        // root implementation of java.awt.Frame
-        #region java.awt.Frame
-        // root implementation of java.awt.Frame is in BForm.cs
-        public const int CROSSHAIR_CURSOR = 1;
-        public const int DEFAULT_CURSOR = 0;
-        public const int E_RESIZE_CURSOR = 11;
-        public const int HAND_CURSOR = 12;
-        public const int ICONIFIED = 1;
-        public const int MAXIMIZED_BOTH = 6;
-        public const int MAXIMIZED_HORIZ = 2;
-        public const int MAXIMIZED_VERT = 4;
-        public const int MOVE_CURSOR = 13;
-        public const int N_RESIZE_CURSOR = 8;
-        public const int NE_RESIZE_CURSOR = 7;
-        public const int NORMAL = 0;
-        public const int NW_RESIZE_CURSOR = 6;
-        public const int S_RESIZE_CURSOR = 9;
-        public const int SE_RESIZE_CURSOR = 5;
-        public const int SW_RESIZE_CURSOR = 4;
-        public const int TEXT_CURSOR = 2;
-        public const int W_RESIZE_CURSOR = 10;
-        public const int WAIT_CURSOR = 3;
-
-        public void setIconImage( System.Drawing.Icon icon ) {
-            base.Icon = icon;
-        }
-
-        public System.Drawing.Icon getIconImage() {
-            return base.Icon;
-        }
-
-        public int getState() {
-            if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
-                return ICONIFIED;
-            } else {
-                return NORMAL;
-            }
-        }
-
-        public void setState( int state ) {
-            if ( state == ICONIFIED ) {
-                if ( base.WindowState != System.Windows.Forms.FormWindowState.Minimized ) {
-                    base.WindowState = System.Windows.Forms.FormWindowState.Minimized;
-                }
-            } else {
-                if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
-                    base.WindowState = System.Windows.Forms.FormWindowState.Normal;
-                }
-            }
-        }
-
-        public int getExtendedState() {
-            if ( base.WindowState == System.Windows.Forms.FormWindowState.Maximized ) {
-                return MAXIMIZED_BOTH;
-            } else if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
-                return ICONIFIED;
-            } else {
-                return NORMAL;
-            }
-        }
-
-        public void setExtendedState( int value ) {
-            if ( value == ICONIFIED ) {
-                base.WindowState = System.Windows.Forms.FormWindowState.Minimized;
-            } else if ( value == MAXIMIZED_BOTH ) {
-                base.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            } else {
-                base.WindowState = System.Windows.Forms.FormWindowState.Normal;
-            }
-        }
-
-        public string getTitle() {
-            return base.Text;
-        }
-
-        public void setTitle( string value ) {
-            base.Text = value;
-        }
-        #endregion
-
-        // root implementation of javax.swing.JComponent
-        #region javax.swing.JComponent
-        // root implementation of javax.swing.JComponent is in BForm.cs
-        public bool requestFocusInWindow() {
-            return base.Focus();
         }
         #endregion
     }
