@@ -490,7 +490,7 @@ namespace Boare.Cadencii {
             this.components = new System.ComponentModel.Container();
             this.lblMessage = new BLabel();
             this.timer = new BTimer( this.components );
-            this.pictButton = new System.Windows.Forms.PictureBox();
+            this.pictButton = new BPictureBox();
             this.progressCount = new BProgressBar();
             this.btnSkip = new BButton();
             this.btnOK = new BButton();
@@ -603,7 +603,7 @@ namespace Boare.Cadencii {
 
         private BLabel lblMessage;
         private BTimer timer;
-        private System.Windows.Forms.PictureBox pictButton;
+        private BPictureBox pictButton;
         private BProgressBar progressCount;
         private BButton btnSkip;
         private BButton btnOK;

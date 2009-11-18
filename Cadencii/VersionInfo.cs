@@ -356,13 +356,13 @@ namespace Boare.Cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.btnFlip = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.timer = new System.Windows.Forms.Timer( this.components );
-            this.btnSaveAuthorList = new System.Windows.Forms.Button();
-            this.lblVstLogo = new System.Windows.Forms.Label();
-            this.pictVstLogo = new System.Windows.Forms.PictureBox();
-            this.lblStraightAcknowledgement = new System.Windows.Forms.Label();
+            this.btnFlip = new BButton();
+            this.btnOK = new BButton();
+            this.timer = new BTimer( this.components );
+            this.btnSaveAuthorList = new BButton();
+            this.lblVstLogo = new BLabel();
+            this.pictVstLogo = new BPictureBox();
+            this.lblStraightAcknowledgement = new BLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -458,13 +458,13 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.Button btnFlip;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Timer timer;
-        private System.Windows.Forms.Button btnSaveAuthorList;
-        private System.Windows.Forms.PictureBox pictVstLogo;
-        private System.Windows.Forms.Label lblVstLogo;
-        private System.Windows.Forms.Label lblStraightAcknowledgement;
+        private BButton btnFlip;
+        private BButton btnOK;
+        private BTimer timer;
+        private BButton btnSaveAuthorList;
+        private BPictureBox pictVstLogo;
+        private BLabel lblVstLogo;
+        private BLabel lblStraightAcknowledgement;
         #endregion
 #endif
     }

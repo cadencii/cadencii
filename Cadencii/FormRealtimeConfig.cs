@@ -11,14 +11,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
 using System.Windows.Forms;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class FormRealtimeConfig extends BForm {
+#else
     public class FormRealtimeConfig : BForm {
+#endif
         private boolean m_game_ctrl_enabled = false;
         private DateTime m_last_event_processed;
 
@@ -156,12 +165,12 @@ namespace Boare.Cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.timer = new System.Windows.Forms.Timer( this.components );
-            this.btnStart = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.lblRealTimeInput = new System.Windows.Forms.Label();
-            this.lblSpeed = new System.Windows.Forms.Label();
-            this.numSpeed = new System.Windows.Forms.NumericUpDown();
+            this.timer = new BTimer( this.components );
+            this.btnStart = new BButton();
+            this.btnCancel = new BButton();
+            this.lblRealTimeInput = new BLabel();
+            this.lblSpeed = new BLabel();
+            this.numSpeed = new BNumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).BeginInit();
             this.SuspendLayout();
             // 
@@ -267,14 +276,16 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.Timer timer;
-        private System.Windows.Forms.Button btnStart;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Label lblRealTimeInput;
-        private System.Windows.Forms.Label lblSpeed;
-        private System.Windows.Forms.NumericUpDown numSpeed;
+        private BTimer timer;
+        private BButton btnStart;
+        private BButton btnCancel;
+        private BLabel lblRealTimeInput;
+        private BLabel lblSpeed;
+        private BNumericUpDown numSpeed;
         #endregion
 #endif
     }
 
+#if !JAVA
 }
+#endif

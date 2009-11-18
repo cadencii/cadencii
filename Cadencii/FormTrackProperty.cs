@@ -11,15 +11,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+pacakge org.kbinani.Cadencii;
+
+#else
 using System;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+#endif
 
-    public class FormTrackProperty : Form {
+#if JAVA
+    public class FormTrackProperty extends BForm{
+#else
+    public class FormTrackProperty : BForm {
+#endif
         private int m_master_tuning;
 
         public FormTrackProperty( int master_tuning_in_cent ) {
@@ -64,6 +74,7 @@ namespace Boare.Cadencii {
 
         private void setResources() {
         }
+
 #if JAVA
 #else
         #region UI Impl for C#
@@ -90,10 +101,10 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.lblMasterTuning = new System.Windows.Forms.Label();
-            this.txtMasterTuning = new System.Windows.Forms.TextBox();
+            this.btnOK = new BButton();
+            this.btnCancel = new BButton();
+            this.lblMasterTuning = new BLabel();
+            this.txtMasterTuning = new BTextBox();
             this.SuspendLayout();
             // 
             // btnOK
@@ -160,12 +171,14 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Label lblMasterTuning;
-        private System.Windows.Forms.TextBox txtMasterTuning;
+        private BButton btnOK;
+        private BButton btnCancel;
+        private BLabel lblMasterTuning;
+        private BTextBox txtMasterTuning;
         #endregion
 #endif
     }
 
+#if !JAVA
 }
+#endif

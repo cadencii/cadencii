@@ -11,6 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
@@ -18,8 +22,13 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class FormTempoConfig extends BForm{
+#else
     class FormTempoConfig : BForm {
+#endif
         public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, decimal tempo, int pre_measure ) {
             InitializeComponent();
             registerEventHandlers();
@@ -108,18 +117,18 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.groupPosition = new System.Windows.Forms.GroupBox();
+            this.groupPosition = new BGroupBox();
             this.numClock = new Boare.Cadencii.NumericUpDownEx();
             this.numBeat = new Boare.Cadencii.NumericUpDownEx();
             this.numBar = new Boare.Cadencii.NumericUpDownEx();
-            this.lblClock = new System.Windows.Forms.Label();
-            this.lblBeat = new System.Windows.Forms.Label();
-            this.lblBar = new System.Windows.Forms.Label();
-            this.groupTempo = new System.Windows.Forms.GroupBox();
-            this.lblTempoRange = new System.Windows.Forms.Label();
+            this.lblClock = new BLabel();
+            this.lblBeat = new BLabel();
+            this.lblBar = new BLabel();
+            this.groupTempo = new BGroupBox();
+            this.lblTempoRange = new BLabel();
             this.numTempo = new Boare.Cadencii.NumericUpDownEx();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new BButton();
+            this.btnCancel = new BButton();
             this.groupPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numClock)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numBeat)).BeginInit();
@@ -287,20 +296,22 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupPosition;
-        private System.Windows.Forms.Label lblClock;
-        private System.Windows.Forms.Label lblBeat;
-        private System.Windows.Forms.Label lblBar;
-        private System.Windows.Forms.GroupBox groupTempo;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnCancel;
+        private BGroupBox groupPosition;
+        private BLabel lblClock;
+        private BLabel lblBeat;
+        private BLabel lblBar;
+        private BGroupBox groupTempo;
+        private BButton btnOK;
+        private BButton btnCancel;
         private NumericUpDownEx numBar;
         private NumericUpDownEx numClock;
         private NumericUpDownEx numBeat;
-        private System.Windows.Forms.Label lblTempoRange;
+        private BLabel lblTempoRange;
         private NumericUpDownEx numTempo;
         #endregion
 #endif
     }
 
+#if !JAVA
 }
+#endif

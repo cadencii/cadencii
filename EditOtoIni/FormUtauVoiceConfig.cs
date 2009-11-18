@@ -2286,7 +2286,7 @@ namespace Boare.EditOtoIni {
             this.btnMinus = new BButton();
             this.btnPlus = new BButton();
             this.hScroll = new System.Windows.Forms.HScrollBar();
-            this.pictWave = new Boare.Cadencii.BPictureBox();
+            this.pictWave = new BPictureBox();
             this.bgWorkRead = new System.ComponentModel.BackgroundWorker();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLblTootip = new System.Windows.Forms.ToolStripStatusLabel();

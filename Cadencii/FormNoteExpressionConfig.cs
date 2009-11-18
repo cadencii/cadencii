@@ -1184,8 +1184,8 @@ namespace Boare.Cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.groupPitchControl = new BGroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new BLabel();
+            this.label4 = new BLabel();
             this.txtBendLength = new Boare.Cadencii.NumberTextBox();
             this.txtBendDepth = new Boare.Cadencii.NumberTextBox();
             this.trackBendLength = new BSlider();
@@ -1195,8 +1195,8 @@ namespace Boare.Cadencii {
             this.lblBendLength = new BLabel();
             this.lblBendDepth = new BLabel();
             this.groupDynamicsControl = new BGroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new BLabel();
+            this.label6 = new BLabel();
             this.txtAccent = new Boare.Cadencii.NumberTextBox();
             this.txtDecay = new Boare.Cadencii.NumberTextBox();
             this.trackAccent = new BSlider();
@@ -1217,8 +1217,8 @@ namespace Boare.Cadencii {
             this.lblDepth = new BLabel();
             this.lblDuration = new BLabel();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.panelVocaloid2Template = new System.Windows.Forms.Panel();
-            this.panelButtons = new System.Windows.Forms.Panel();
+            this.panelVocaloid2Template = new BPanel();
+            this.panelButtons = new BPanel();
             this.groupPitchControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendLength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendDepth)).BeginInit();
@@ -1687,10 +1687,10 @@ namespace Boare.Cadencii {
         private NumberTextBox txtBendDepth;
         private NumberTextBox txtAccent;
         private NumberTextBox txtDecay;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label6;
+        private BLabel label5;
+        private BLabel label4;
+        private BLabel label7;
+        private BLabel label6;
         private BButton btnCancel;
         private BButton btnOK;
         private BComboBox comboTemplate;
@@ -1702,8 +1702,8 @@ namespace Boare.Cadencii {
         private BLabel lblDepth;
         private BLabel lblDuration;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
-        private System.Windows.Forms.Panel panelButtons;
-        private System.Windows.Forms.Panel panelVocaloid2Template;
+        private BPanel panelButtons;
+        private BPanel panelVocaloid2Template;
         private BComboBox comboAttackTemplate;
         private BLabel lblAttackTemplate;
         #endregion

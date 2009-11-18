@@ -12,6 +12,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+#else
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -21,8 +24,13 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class FormMidiConfig extends BForm {
+#else
     public unsafe class FormMidiConfig : BForm {
+#endif
         private byte m_program_normal;
         private byte m_program_bell;
         private byte m_note_normal;
@@ -218,21 +226,21 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.lblDeviceMetronome = new System.Windows.Forms.Label();
-            this.lblProgramNormal = new System.Windows.Forms.Label();
-            this.lblProgramBell = new System.Windows.Forms.Label();
-            this.lblNoteNormal = new System.Windows.Forms.Label();
-            this.lblNoteBell = new System.Windows.Forms.Label();
-            this.chkRingBell = new System.Windows.Forms.CheckBox();
-            this.lblPreUtterance = new System.Windows.Forms.Label();
-            this.lblMillisec = new System.Windows.Forms.Label();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.chkPreview = new System.Windows.Forms.CheckBox();
-            this.comboDeviceMetronome = new System.Windows.Forms.ComboBox();
-            this.groupMetronome = new System.Windows.Forms.GroupBox();
-            this.lblDeviceGeneral = new System.Windows.Forms.Label();
-            this.comboDeviceGeneral = new System.Windows.Forms.ComboBox();
+            this.lblDeviceMetronome = new BLabel();
+            this.lblProgramNormal = new BLabel();
+            this.lblProgramBell = new BLabel();
+            this.lblNoteNormal = new BLabel();
+            this.lblNoteBell = new BLabel();
+            this.chkRingBell = new BCheckBox();
+            this.lblPreUtterance = new BLabel();
+            this.lblMillisec = new BLabel();
+            this.btnOK = new BButton();
+            this.btnCancel = new BButton();
+            this.chkPreview = new BCheckBox();
+            this.comboDeviceMetronome = new BComboBox();
+            this.groupMetronome = new BGroupBox();
+            this.lblDeviceGeneral = new BLabel();
+            this.comboDeviceGeneral = new BComboBox();
             this.numPreUtterance = new Boare.Cadencii.NumericUpDownEx();
             this.numNoteBell = new Boare.Cadencii.NumericUpDownEx();
             this.numNoteNormal = new Boare.Cadencii.NumericUpDownEx();
@@ -504,29 +512,31 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.Label lblDeviceMetronome;
-        private System.Windows.Forms.Label lblProgramNormal;
-        private System.Windows.Forms.Label lblProgramBell;
-        private System.Windows.Forms.Label lblNoteNormal;
-        private System.Windows.Forms.Label lblNoteBell;
-        private System.Windows.Forms.CheckBox chkRingBell;
-        private System.Windows.Forms.Label lblPreUtterance;
-        private System.Windows.Forms.Label lblMillisec;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.CheckBox chkPreview;
+        private BLabel lblDeviceMetronome;
+        private BLabel lblProgramNormal;
+        private BLabel lblProgramBell;
+        private BLabel lblNoteNormal;
+        private BLabel lblNoteBell;
+        private BCheckBox chkRingBell;
+        private BLabel lblPreUtterance;
+        private BLabel lblMillisec;
+        private BButton btnOK;
+        private BButton btnCancel;
+        private BCheckBox chkPreview;
         private NumericUpDownEx numProgramNormal;
         private NumericUpDownEx numProgramBell;
         private NumericUpDownEx numNoteNormal;
         private NumericUpDownEx numNoteBell;
         private NumericUpDownEx numPreUtterance;
-        private System.Windows.Forms.ComboBox comboDeviceMetronome;
-        private System.Windows.Forms.GroupBox groupMetronome;
-        private System.Windows.Forms.Label lblDeviceGeneral;
-        private System.Windows.Forms.ComboBox comboDeviceGeneral;
+        private BComboBox comboDeviceMetronome;
+        private BGroupBox groupMetronome;
+        private BLabel lblDeviceGeneral;
+        private BComboBox comboDeviceGeneral;
         #endregion
 #endif
     }
 
+#if !JAVA
 }
+#endif
 #endif

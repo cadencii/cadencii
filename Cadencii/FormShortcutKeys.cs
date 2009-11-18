@@ -11,6 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -23,8 +27,13 @@ using bocoreex.swing;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class FormShortcutKeys extends BForm{
+#else
     public class FormShortcutKeys : BForm {
+#endif
         private BMenuItem m_dumy;
         private TreeMap<String, ValuePair<String, BKeys[]>> m_dict;
         private TreeMap<String, ValuePair<String, BKeys[]>> m_first_dict;
@@ -292,13 +301,13 @@ namespace Boare.Cadencii {
             System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup( "Setting", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup( "Help", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup( "Other", System.Windows.Forms.HorizontalAlignment.Left );
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.list = new System.Windows.Forms.ListView();
+            this.btnCancel = new BButton();
+            this.btnOK = new BButton();
+            this.list = new BListView();
             this.columnCommand = new System.Windows.Forms.ColumnHeader();
             this.columnShortcut = new System.Windows.Forms.ColumnHeader();
-            this.btnLoadDefault = new System.Windows.Forms.Button();
-            this.btnRevert = new System.Windows.Forms.Button();
+            this.btnLoadDefault = new BButton();
+            this.btnRevert = new BButton();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
             this.SuspendLayout();
             // 
@@ -427,16 +436,18 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.ListView list;
+        private BButton btnCancel;
+        private BButton btnOK;
+        private BListView list;
         private System.Windows.Forms.ColumnHeader columnCommand;
         private System.Windows.Forms.ColumnHeader columnShortcut;
-        private System.Windows.Forms.Button btnLoadDefault;
-        private System.Windows.Forms.Button btnRevert;
+        private BButton btnLoadDefault;
+        private BButton btnRevert;
         private System.Windows.Forms.ToolTip toolTip;
         #endregion
 #endif
     }
 
+#if !JAVA
 }
+#endif

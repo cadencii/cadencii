@@ -11,6 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
 using Boare.Lib.AppUtil;
 using bocoree;
@@ -18,8 +22,13 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class FormNoteProperty extends BForm{
+#else
     public class FormNoteProperty : BForm {
+#endif
         public FormNoteProperty() {
             InitializeComponent();
             registerEventHandlers();
@@ -80,8 +89,8 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.menuWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip = new BMenuBar();
+            this.menuWindow = new BMenuItem();
             this.menuClose = new BMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -136,11 +145,13 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.ToolStripMenuItem menuWindow;
+        private BMenuBar menuStrip;
+        private BMenuItem menuWindow;
         private BMenuItem menuClose;
         #endregion
 #endif
     }
 
+#if !JAVA
 }
+#endif

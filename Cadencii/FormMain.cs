@@ -456,6 +456,7 @@ namespace Boare.Cadencii {
         private BFileChooser saveMidiDialog;
         private BFileChooser openWaveDialog;
         private BTimer timer;
+        private System.ComponentModel.BackgroundWorker bgWorkScreen;
         #endregion
 
         public FormMain() {
@@ -488,6 +489,7 @@ namespace Boare.Cadencii {
             InitializeComponent();
             this.timer = new BTimer( this.components );
 #endif
+            bgWorkScreen = new BackgroundWorker();
             registerEventHandlers();
             setResources();
 
@@ -526,8 +528,8 @@ namespace Boare.Cadencii {
             m_strip_ddbtn_metronome.setText( "Metronome" );
             m_strip_ddbtn_metronome.Name = "m_strip_ddbtn_metronome";
             m_strip_ddbtn_metronome.CheckOnClick = true;
-            m_strip_ddbtn_metronome.isSelected() = AppManager.editorConfig.MetronomeEnabled;
-            m_strip_ddbtn_metronome.isSelected()Changed += new EventHandler( m_strip_ddbtn_metronome_CheckedChanged );
+            m_strip_ddbtn_metronome.setSelected( AppManager.editorConfig.MetronomeEnabled );
+            m_strip_ddbtn_metronome.CheckedChanged += new EventHandler( m_strip_ddbtn_metronome_CheckedChanged );
             toolStripBottom.Items.Add( m_strip_ddbtn_metronome );
 #endif
 
@@ -5102,7 +5104,7 @@ namespace Boare.Cadencii {
             try {
                 form = new FormMidiConfig();
                 form.setLocation( getFormPreferedLocation( form ) );
-                if ( form.ShowDialog() == DialogResult.OK ) {
+                if ( form.showDialog() == BDialogResult.OK ) {
 
                 }
             } catch ( Exception ex ) {
@@ -9984,14 +9986,14 @@ namespace Boare.Cadencii {
             int midiport = AppManager.editorConfig.MidiInPort.PortNumber;
             bocoree.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
             if ( midiport < 0 || devices.Length <= 0 ) {
-                stripLblMidiIn.setText( _( "Disabled" );
+                stripLblMidiIn.setText( _( "Disabled" ) );
                 stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_slash().Clone();
             } else {
                 if ( midiport >= devices.Length ) {
                     midiport = 0;
                     AppManager.editorConfig.MidiInPort.PortNumber = midiport;
                 }
-                stripLblMidiIn.setText( devices[midiport].szPname;
+                stripLblMidiIn.setText( devices[midiport].szPname );
                 stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_piano().Clone();
             }
         }
@@ -17696,24 +17698,23 @@ namespace Boare.Cadencii {
             this.cMenuTrackSelectorDeleteBezier = new bocoree.windows.forms.BMenuItem();
             this.toolStripMenuItem31 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuTrackSelectorSelectAll = new bocoree.windows.forms.BMenuItem();
-            this.trackBar = new System.Windows.Forms.TrackBar();
-            this.bgWorkScreen = new System.ComponentModel.BackgroundWorker();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.trackBar = new BSlider();
+            this.panel1 = new BPanel();
             this.pictKeyLengthSplitter = new BPictureBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.btnRight1 = new System.Windows.Forms.Button();
-            this.btnLeft2 = new System.Windows.Forms.Button();
-            this.btnZoom = new System.Windows.Forms.Button();
-            this.btnMooz = new System.Windows.Forms.Button();
-            this.btnLeft1 = new System.Windows.Forms.Button();
-            this.btnRight2 = new System.Windows.Forms.Button();
-            this.pictOverview = new Boare.Cadencii.BPictureBox();
+            this.panel3 = new BPanel();
+            this.btnRight1 = new BButton();
+            this.btnLeft2 = new BButton();
+            this.btnZoom = new BButton();
+            this.btnMooz = new BButton();
+            this.btnLeft1 = new BButton();
+            this.btnRight2 = new BButton();
+            this.pictOverview = new BPictureBox();
             this.vScroll = new BVScrollBar();
             this.hScroll = new BHScrollBar();
-            this.picturePositionIndicator = new System.Windows.Forms.PictureBox();
+            this.picturePositionIndicator = new BPictureBox();
             this.pictPianoRoll = new Boare.Cadencii.PictPianoRoll();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new BPictureBox();
+            this.pictureBox2 = new BPictureBox();
             this.toolStripTool = new bocoree.windows.forms.BToolBar();
             this.stripBtnPointer = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnPencil = new bocoree.windows.forms.BToolStripButton();
@@ -17747,7 +17748,7 @@ namespace Boare.Cadencii {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new BStatusLabel();
             this.splitContainerProperty = new Boare.Lib.AppUtil.BSplitContainer();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel2 = new BPanel();
             this.waveView = new Boare.Cadencii.WaveView();
             this.splitContainer2 = new Boare.Lib.AppUtil.BSplitContainer();
             this.splitContainer1 = new Boare.Lib.AppUtil.BSplitContainer();
@@ -20586,9 +20587,9 @@ namespace Boare.Cadencii {
         private BMenuItem menuEditUndo;
         private BMenuItem menuEditRedo;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.PictureBox picturePositionIndicator;
+        private BPictureBox pictureBox2;
+        private BPictureBox pictureBox3;
+        private BPictureBox picturePositionIndicator;
         private BPopupMenu cMenuPiano;
         private BMenuItem cMenuPianoPointer;
         private BMenuItem cMenuPianoPencil;
@@ -20714,9 +20715,8 @@ namespace Boare.Cadencii {
         private BMenuItem menuJobReloadVsti;
         private BMenuItem cMenuPianoCurve;
         private BMenuItem cMenuTrackSelectorCurve;
-        private System.Windows.Forms.TrackBar trackBar;
-        private System.ComponentModel.BackgroundWorker bgWorkScreen;
-        private System.Windows.Forms.Panel panel1;
+        private BSlider trackBar;
+        private BPanel panel1;
         private BToolBar toolStripTool;
         private BToolStripButton stripBtnPointer;
         private System.Windows.Forms.ToolStripContainer toolStripContainer;
@@ -20792,7 +20792,7 @@ namespace Boare.Cadencii {
         private WaveView waveView;
         private BMenuItem menuVisualWaveform;
         private Boare.Lib.AppUtil.BSplitContainer splitContainer2;
-        private System.Windows.Forms.Panel panel2;
+        private BPanel panel2;
         private BMenuItem cMenuTrackSelectorDeleteBezier;
         private BStatusLabel stripLblMidiIn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
@@ -20845,13 +20845,13 @@ namespace Boare.Cadencii {
         private Boare.Lib.AppUtil.BSplitContainer splitContainerProperty;
         private BPictureBox pictOverview;
         private BMenuItem menuVisualOverview;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Button btnLeft1;
-        private System.Windows.Forms.Button btnRight2;
-        private System.Windows.Forms.Button btnZoom;
-        private System.Windows.Forms.Button btnMooz;
-        private System.Windows.Forms.Button btnLeft2;
-        private System.Windows.Forms.Button btnRight1;
+        private BPanel panel3;
+        private BButton btnLeft1;
+        private BButton btnRight2;
+        private BButton btnZoom;
+        private BButton btnMooz;
+        private BButton btnLeft2;
+        private BButton btnRight1;
         private Boare.Lib.AppUtil.BSplitContainer splitContainer1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private BMenuItem menuTrackBgm;

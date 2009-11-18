@@ -11,6 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
@@ -21,8 +25,13 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class FormWordDictionary extends BForm{
+#else
     class FormWordDictionary : BForm {
+#endif
         public FormWordDictionary() {
             InitializeComponent();
             registerEventHandlers();
@@ -132,11 +141,11 @@ namespace Boare.Cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.listDictionaries = new System.Windows.Forms.CheckedListBox();
-            this.lblAvailableDictionaries = new System.Windows.Forms.Label();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnUp = new System.Windows.Forms.Button();
-            this.btnDown = new System.Windows.Forms.Button();
+            this.lblAvailableDictionaries = new BLabel();
+            this.btnOK = new BButton();
+            this.btnCancel = new BButton();
+            this.btnUp = new BButton();
+            this.btnDown = new BButton();
             this.SuspendLayout();
             // 
             // listDictionaries
@@ -232,13 +241,15 @@ namespace Boare.Cadencii {
         #endregion
 
         private System.Windows.Forms.CheckedListBox listDictionaries;
-        private System.Windows.Forms.Label lblAvailableDictionaries;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnUp;
-        private System.Windows.Forms.Button btnDown;
+        private BLabel lblAvailableDictionaries;
+        private BButton btnOK;
+        private BButton btnCancel;
+        private BButton btnUp;
+        private BButton btnDown;
         #endregion
 #endif
     }
 
+#if !JAVA
 }
+#endif

@@ -564,8 +564,8 @@ namespace Boare.Cadencii {
             this.menuMain = new BMenuBar();
             this.menuVisual = new BMenuItem();
             this.menuVisualReturn = new BMenuItem();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.hScroll = new bocoree.windows.forms.BHScrollBar();
+            this.panel1 = new BPanel();
+            this.hScroll = new BHScrollBar();
             this.volumeMaster = new Boare.Cadencii.VolumeTracker();
             this.chkTopmost = new BCheckBox();
             this.menuMain.SuspendLayout();
@@ -671,8 +671,8 @@ namespace Boare.Cadencii {
         private BMenuItem menuVisual;
         private BMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;
-        private System.Windows.Forms.Panel panel1;
-        private bocoree.windows.forms.BHScrollBar hScroll;
+        private BPanel panel1;
+        private BHScrollBar hScroll;
         private BCheckBox chkTopmost;
         #endregion
 #endif

@@ -54,6 +54,11 @@ namespace bocoree.windows.forms {
             m_save.FileName = m_selected_file;
         }
 
+        public void setInitialDirectory( string value ) {
+            m_open.InitialDirectory = value;
+            m_save.InitialDirectory = value;
+        }
+
         public int showOpenDialog( Control parent ) {
             m_open.InitialDirectory = m_current_directory;
             string filter = "";

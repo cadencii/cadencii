@@ -83,4 +83,9 @@ public class BBackgroundWorker
         }
     }
 }
+#else
+namespace bocoree.componentModel {
+    public class BBackgroundWorker : System.ComponentModel.BackgroundWorker {
+    }
+}
 #endif

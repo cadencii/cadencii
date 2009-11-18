@@ -16,7 +16,7 @@
 #else
 using System.Windows.Forms;
 
-namespace Boare.Cadencii {
+namespace bocoree.windows.forms {
 
     /// <summary>
     /// KeyDownとKeyUpを受信できるPictureBox

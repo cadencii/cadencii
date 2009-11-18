@@ -11,6 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -19,8 +23,13 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = Boolean;
+#endif
 
+#if JAVA
+    public class FormSingerStyleConfig extends BForm{
+#else
     class FormSingerStyleConfig : BForm {
+#endif
         boolean m_apply_current_track = false;
 
         public void ApplyLanguage() {
@@ -311,31 +320,31 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.groupPitchControl = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.groupPitchControl = new BGroupBox();
+            this.label5 = new BLabel();
+            this.label4 = new BLabel();
             this.txtBendLength = new Boare.Cadencii.NumberTextBox();
             this.txtBendDepth = new Boare.Cadencii.NumberTextBox();
-            this.trackBendLength = new System.Windows.Forms.TrackBar();
-            this.trackBendDepth = new System.Windows.Forms.TrackBar();
-            this.chkDownPortamento = new System.Windows.Forms.CheckBox();
-            this.chkUpPortamento = new System.Windows.Forms.CheckBox();
-            this.lblBendLength = new System.Windows.Forms.Label();
-            this.lblBendDepth = new System.Windows.Forms.Label();
-            this.groupDynamicsControl = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.trackBendLength = new BSlider();
+            this.trackBendDepth = new BSlider();
+            this.chkDownPortamento = new BCheckBox();
+            this.chkUpPortamento = new BCheckBox();
+            this.lblBendLength = new BLabel();
+            this.lblBendDepth = new BLabel();
+            this.groupDynamicsControl = new BGroupBox();
+            this.label7 = new BLabel();
+            this.label6 = new BLabel();
             this.txtAccent = new Boare.Cadencii.NumberTextBox();
             this.txtDecay = new Boare.Cadencii.NumberTextBox();
-            this.trackAccent = new System.Windows.Forms.TrackBar();
-            this.trackDecay = new System.Windows.Forms.TrackBar();
-            this.lblAccent = new System.Windows.Forms.Label();
-            this.lblDecay = new System.Windows.Forms.Label();
-            this.lblTemplate = new System.Windows.Forms.Label();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnApply = new System.Windows.Forms.Button();
-            this.comboTemplate = new System.Windows.Forms.ComboBox();
+            this.trackAccent = new BSlider();
+            this.trackDecay = new BSlider();
+            this.lblAccent = new BLabel();
+            this.lblDecay = new BLabel();
+            this.lblTemplate = new BLabel();
+            this.btnCancel = new BButton();
+            this.btnOK = new BButton();
+            this.btnApply = new BButton();
+            this.comboTemplate = new BComboBox();
             this.groupPitchControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendLength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendDepth)).BeginInit();
@@ -656,33 +665,35 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupPitchControl;
-        private System.Windows.Forms.GroupBox groupDynamicsControl;
-        private System.Windows.Forms.Label lblBendDepth;
-        private System.Windows.Forms.Label lblTemplate;
-        private System.Windows.Forms.Label lblBendLength;
-        private System.Windows.Forms.CheckBox chkDownPortamento;
-        private System.Windows.Forms.CheckBox chkUpPortamento;
-        private System.Windows.Forms.TrackBar trackBendDepth;
-        private System.Windows.Forms.TrackBar trackBendLength;
-        private System.Windows.Forms.TrackBar trackAccent;
-        private System.Windows.Forms.TrackBar trackDecay;
-        private System.Windows.Forms.Label lblAccent;
-        private System.Windows.Forms.Label lblDecay;
+        private BGroupBox groupPitchControl;
+        private BGroupBox groupDynamicsControl;
+        private BLabel lblBendDepth;
+        private BLabel lblTemplate;
+        private BLabel lblBendLength;
+        private BCheckBox chkDownPortamento;
+        private BCheckBox chkUpPortamento;
+        private BSlider trackBendDepth;
+        private BSlider trackBendLength;
+        private BSlider trackAccent;
+        private BSlider trackDecay;
+        private BLabel lblAccent;
+        private BLabel lblDecay;
         private NumberTextBox txtBendLength;
         private NumberTextBox txtBendDepth;
         private NumberTextBox txtAccent;
         private NumberTextBox txtDecay;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Button btnApply;
-        private System.Windows.Forms.ComboBox comboTemplate;
+        private BLabel label5;
+        private BLabel label4;
+        private BLabel label7;
+        private BLabel label6;
+        private BButton btnCancel;
+        private BButton btnOK;
+        private BButton btnApply;
+        private BComboBox comboTemplate;
         #endregion
 #endif
     }
 
+#if !JAVA
 }
+#endif

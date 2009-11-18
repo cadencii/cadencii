@@ -30,6 +30,7 @@ using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.util;
 using bocoree.windows.forms;
+using bocoree.componentModel;
 
 namespace Boare.Cadencii {
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
@@ -335,14 +336,14 @@ namespace Boare.Cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.progressWhole = new System.Windows.Forms.ProgressBar();
-            this.lblSynthesizing = new System.Windows.Forms.Label();
-            this.lblProgress = new System.Windows.Forms.Label();
-            this.progressOne = new System.Windows.Forms.ProgressBar();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.bgWork = new System.ComponentModel.BackgroundWorker();
-            this.timer = new System.Windows.Forms.Timer( this.components );
-            this.lblTime = new System.Windows.Forms.Label();
+            this.progressWhole = new BProgressBar();
+            this.lblSynthesizing = new BLabel();
+            this.lblProgress = new BLabel();
+            this.progressOne = new BProgressBar();
+            this.btnCancel = new BButton();
+            this.bgWork = new BBackgroundWorker();
+            this.timer = new BTimer( this.components );
+            this.lblTime = new BLabel();
             this.SuspendLayout();
             // 
             // progressWhole
@@ -434,14 +435,14 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.ProgressBar progressWhole;
-        private System.Windows.Forms.Label lblSynthesizing;
-        private System.Windows.Forms.Label lblProgress;
-        private System.Windows.Forms.ProgressBar progressOne;
-        private System.Windows.Forms.Button btnCancel;
-        private System.ComponentModel.BackgroundWorker bgWork;
-        private System.Windows.Forms.Timer timer;
-        private System.Windows.Forms.Label lblTime;
+        private BProgressBar progressWhole;
+        private BLabel lblSynthesizing;
+        private BLabel lblProgress;
+        private BProgressBar progressOne;
+        private BButton btnCancel;
+        private BBackgroundWorker bgWork;
+        private BTimer timer;
+        private BLabel lblTime;
         #endregion
 #endif
 
