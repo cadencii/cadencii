@@ -62,6 +62,14 @@ namespace bocoree.windows.forms {
             }
             return ret;
         }
+
+        public bool isCheckBoxes() {
+            return base.CheckBoxes;
+        }
+
+        public void setCheckBoxes( bool value ) {
+            base.CheckBoxes = value;
+        }
     }
 
 }
