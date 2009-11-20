@@ -10,6 +10,7 @@ import javax.swing.KeyStroke;
 import javax.swing.JTable;
 import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BListViewItem;
+import org.kbinani.windows.forms.BListView_DRAFT;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JPanel;
@@ -20,7 +21,7 @@ public class Test extends JFrame {
     private JMenuBar jJMenuBar = null;
     private JMenu jMenu = null;
     private JMenuItem jMenuItem = null;
-    private BListView jTable = null;
+    private BListView_DRAFT jTable = null;
     private JButton jButton = null;
     private JButton jButton1 = null;
     private JPanel jPanel = null;
@@ -33,10 +34,10 @@ public class Test extends JFrame {
     	super();
     	initialize();
     	jTable.setMultiSelect( false );
-        jTable.setCheckBoxes( false );
-    	jTable.addItem( new BListViewItem( new String[] { "foo1", "bar1" } ) );
-    	jTable.addItem( new BListViewItem( new String[] { "foo2", "bar2", "baz2" } ) );
-        jTable.setColumnHeaders( new String[]{ "HEADER1", "HEADER2" } );
+        //jTable.setCheckBoxes( true );
+    	jTable.addItem( "", new BListViewItem( new String[] { "foo1", "bar1" } ) );
+    	jTable.addItem( "mikan", new BListViewItem( new String[] { "foo2", "bar2", "baz2" } ) );
+        jTable.setColumnHeaders( new String[]{ " ", " " } );
     }
 
     /**
@@ -95,9 +96,9 @@ public class Test extends JFrame {
      * 	
      * @return org.kbinani.windows.forms.BListView
      */
-    private BListView getJTable() {
+    private BListView_DRAFT getJTable() {
         if (jTable == null) {
-            jTable = new BListView();
+            jTable = new BListView_DRAFT();
         }
         return jTable;
     }
@@ -115,7 +116,7 @@ public class Test extends JFrame {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     int rowCount = getJTable().getItemCount();
                     for( int i = 0; i < rowCount; i++ ){
-                        System.out.println( i + "\t" + getJTable().getItemAt( i ).isSelected() );
+                        //System.out.println( i + "\t" + getJTable().getItemAt( i ).isSelected() );
                     }
                 }
             });
@@ -136,7 +137,7 @@ public class Test extends JFrame {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     int row = getJTable().getItemCount();
                     BListViewItem copy = (BListViewItem)getJTable().getItemAt( row - 1 ).clone();
-                    getJTable().addItem( copy );
+                    getJTable().addItem( "", copy );
                 }
             });
         }

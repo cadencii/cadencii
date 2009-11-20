@@ -3,30 +3,42 @@ package org.kbinani.windows.forms;
 import java.util.Vector;
 import javax.swing.table.TableModel;
 
-public class BListViewItem implements Cloneable{
+public class BListViewItem_DRAFT implements Cloneable{
+    /*
     private Vector<String> subItems = new Vector<String>();
     private Object tag;
-    protected TableModel tmodel = null;
+    protected BListView_DRAFT table = null;
     protected int row;
+    private boolean isSelected = false;
     private String group = "";
     
-    public BListViewItem( String[] values ){
+    public BListViewItem_DRAFT( String[] values ){
         subItems.clear();
         for( int i = 0; i < values.length; i++ ){
             subItems.add( values[i] );
         }
     }
 
-    protected BListViewItem( TableModel tmodel, int row ){
-        this.tmodel = tmodel;
+    protected BListViewItem_DRAFT( BListView_DRAFT table, int row ){
+        this.table = table;
         this.row = row;
-        int count = tmodel.getColumnCount() - 1;
+        BListViewItem_DRAFT item = table.getItemAt( row );
+        int count = item.getSubItemCount();
         subItems.clear();
         for( int i = 0; i < count; i++ ){
-            subItems.add( tmodel.getValueAt( row, i + 1 ) + "" );
+            subItems.add( item.getSubItemAt( i ) );
         }
     }
 
+    public String getGroup(){
+        return group;
+    }
+    
+    public void setGroup( String value ){
+        group = value;
+        
+    }
+    
     public Object clone(){
         updateStatusFromTableModel();
         int count = subItems.size();
@@ -34,8 +46,23 @@ public class BListViewItem implements Cloneable{
         for( int i = 0; i < count; i++ ){
             values[i] = subItems.get( i );
         }
-        BListViewItem ret = new BListViewItem( values );
+        BListViewItem_DRAFT ret = new BListViewItem_DRAFT( values );
+        ret.isSelected = isSelected();
         return ret;
+    }
+    
+    public boolean isSelected(){
+        if( table != null ){
+            isSelected = (Boolean)table.getItemAt( row ).isSelected();
+        }
+        return isSelected;
+    }
+
+    public void setSelected( boolean value ){
+        if( table != null ){
+            table.getItemAt( row ).setSelected( value );
+        }
+        isSelected = value;
     }
     
     public Object getTag(){
@@ -51,20 +78,19 @@ public class BListViewItem implements Cloneable{
         return subItems.size();
     }
 
-    /**
-     * テーブルモデルへの参照がある場合、テーブルモデルからデータを読み込み更新する
-     */
     private void updateStatusFromTableModel(){
-        if( tmodel == null ){
+        if( table == null ){
             return;
         }
-        int count = tmodel.getColumnCount() - 1;
+        BListViewItem_DRAFT item = table.getItemAt( row );
+        isSelected = (Boolean)item.isSelected();
+        int count = item.getSubItemCount();
         if( subItems.size() != count ){
             subItems.clear();
             subItems.setSize( count );
         }
         for( int i = 0; i < count; i++ ){
-            subItems.set( i, tmodel.getValueAt( row, i + 1 ) + "" );
+            subItems.set( i, item.getSubItemAt( i ) );
         }
     }
     
@@ -77,5 +103,5 @@ public class BListViewItem implements Cloneable{
         updateStatusFromTableModel();
         subItems.set( index, value );
     }
-
+*/
 }

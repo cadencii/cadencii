@@ -4,9 +4,14 @@
 namespace bocoree.windows.forms {
 
     public class BListViewItem : System.Windows.Forms.ListViewItem {
+        private string group = "";
 
         public BListViewItem( string[] values )
             : base( values ) {
+        }
+
+        public object clone() {
+            return base.Clone();
         }
 
         public object getTag() {
@@ -27,14 +32,6 @@ namespace bocoree.windows.forms {
 
         public void setSubItemAt( int index, string value ) {
             base.SubItems[index].Text = value;
-        }
-
-        public bool isSelected() {
-            return base.Checked;
-        }
-
-        public void setSelected( bool value ) {
-            base.Checked = value;
         }
     }
 

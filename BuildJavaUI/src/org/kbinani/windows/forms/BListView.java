@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Vector;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -15,6 +16,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class BListView extends JPanel{
@@ -25,21 +27,29 @@ public class BListView extends JPanel{
     private JTable table = null;
     private boolean isCheckBoxes = false;
     private boolean isColumnModelUpdated = true;
-    
-    /*private class CheckCellRenderer extends JCheckBox implements TableCellRenderer{
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus,
-                int row, int column) {
-            System.out.println( "(row,column)=" + row + "," + column );
-            Object v = tmodel.getValueAt( row, column );
-            if( v instanceof String ){
-                setText( (String)v );
-            }
-            return this;
+    private final int FIRST_COLUMN_WIDTH = 25;
+    private Vector<SubTable> subTables = new Vector<SubTable>();
+
+    private class SubTable extends JTable{
+        public DefaultTableModel tableModel;
+        
+        public SubTable(){
+            super();
+            tableModel = new DefaultTableModel(){
+                             public boolean isCellEditable(int row, int column) {
+                                 if( isCheckBoxes && column == 0 ){
+                                     return true;
+                                 }else{
+                                     return false;
+                                 }
+                             }
+                         }; 
+            setModel( tableModel );
+            setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         }
-    }*/
+    }
     
-    public class CheckCellRenderer extends DefaultTableCellRenderer{
+    private class CheckCellRenderer extends DefaultTableCellRenderer{
         public CheckCellRenderer(){
             super();
         }
@@ -89,8 +99,24 @@ public class BListView extends JPanel{
         super();
         initialize();
         getTable().setModel( getTModel() );
+        getTable().setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
     }
 
+    public DefaultTableModel getTModel(){
+        if( tmodel == null ){
+            tmodel = new DefaultTableModel(){
+                         public boolean isCellEditable(int row, int column) {
+                             if( isCheckBoxes && column == 0 ){
+                                 return true;
+                             }else{
+                                 return false;
+                             }
+                         }
+                     };
+        }
+        return tmodel;
+    }
+    
     public void initialize(){
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.fill = GridBagConstraints.BOTH;
@@ -122,18 +148,23 @@ public class BListView extends JPanel{
     }
     
     private void updateColumnModel(){
-        table.getColumnModel().getColumn( 0 ).setCellEditor( new DefaultCellEditor( new JCheckBox() ) );
-        table.getColumnModel().getColumn( 0 ).setCellRenderer( new CheckCellRenderer() );
+        TableColumn column = table.getColumnModel().getColumn( 0 );
+        column.setCellEditor( new DefaultCellEditor( new JCheckBox() ) );
+        column.setCellRenderer( new CheckCellRenderer() );
+        column.setResizable( true );
+        column.setPreferredWidth( FIRST_COLUMN_WIDTH );
+        column.setResizable( false );
+        table.getTableHeader().setReorderingAllowed( false );
         isColumnModelUpdated = true;
     }
     
-    public void setItemAt( int index, BListViewItem value ){
+    /*public void setItemAt( int index, BListViewItem value ){
         int count = value.getSubItemCount();
         tmodel.setValueAt( value.isSelected(), index, 0 );
         for( int i = 0; i < count; i++ ){
             tmodel.setValueAt( value.getSubItemAt( i ), index, i + 1 );
         }
-    }
+    }*/
 
     public void removeElementAt( int index ){
         tmodel.removeRow( index );
@@ -158,11 +189,15 @@ public class BListView extends JPanel{
         }
         int columns = Math.min( tmodel.getColumnCount() - 1, item.getSubItemCount() );
         Object[] sub = new Object[columns + 1];
-        sub[0] = item.isSelected();
+        sub[0] = false;
         for ( int i = 0; i < columns; i++ ){
             sub[i + 1] = item.getSubItemAt( i );
         }
+        boolean isFirst = tmodel.getColumnCount() <= 0;
         tmodel.addRow( sub );
+        if( isFirst ){
+            table.getColumnModel().getColumn( 0 ).setPreferredWidth( FIRST_COLUMN_WIDTH );
+        }
         if ( !isColumnModelUpdated ){
             updateColumnModel();
         }
@@ -199,21 +234,6 @@ public class BListView extends JPanel{
             ret[i - 1] = tmodel.getColumnName( i );
         }
         return ret;
-    }
-
-    private DefaultTableModel getTModel(){
-        if( tmodel == null ){
-            tmodel = new DefaultTableModel(){
-                public boolean isCellEditable(int row, int column) {
-                    if( isCheckBoxes && column == 0 ){
-                        return true;
-                    }else{
-                        return false;
-                    }
-                }
-            };
-        }
-        return tmodel;
     }
 
     /**

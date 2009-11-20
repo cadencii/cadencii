@@ -1,3 +1,12 @@
+this
+   +-jScrollPane10
+        +-jPanel
+             +----jScrollPane0
+             |       +-jTable0
+             +----jScrollPane1
+             |       +-jTable1
+             +----jLabel
+
 -実装バージョン未定----------------------------------------------------
 -テンポ/拍子の変更ダイアログが発動するのは，ダブルクリック時のみにするべき？
 -操作内容を記録するマクロ機能。
@@ -26,7 +35,6 @@
 -makeRes.csの、Cursorのときの処理を追加する
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
--VOCALOID1の合成エンジンの違いが、どのような機序でVSTPlugins/VOCALOID/vocaloid.dllに通知されるのか？
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
 
 -v3.0.6(3.1.0)done-----------------------------------------------------
