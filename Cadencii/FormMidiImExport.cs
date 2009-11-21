@@ -168,14 +168,14 @@ namespace Boare.Cadencii {
         }
 
         private void btnCheckAll_Click( Object sender, BEventArgs e ) {
-            for ( int i = 0; i < listTrack.getItemCount(); i++ ) {
-                listTrack.getItemAt( i ).setSelected( true );
+            for ( int i = 0; i < listTrack.getItemCount( "" ); i++ ) {
+                listTrack.setItemCheckedAt( "", i, true );
             }
         }
 
         private void btnUnckeckAll_Click( Object sender, BEventArgs e ) {
-            for ( int i = 0; i < listTrack.getItemCount(); i++ ) {
-                listTrack.getItemAt( i ).setSelected( false );
+            for ( int i = 0; i < listTrack.getItemCount( "" ); i++ ) {
+                listTrack.setItemCheckedAt( "", i, false );
             }
         }
 

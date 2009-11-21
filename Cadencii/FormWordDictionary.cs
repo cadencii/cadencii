@@ -25,6 +25,7 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA
@@ -53,20 +54,23 @@ namespace Boare.Cadencii {
             return Messaging.getMessage( id );
         }
 
-        private void FormWordDictionary_Load( object sender, EventArgs e ) {
+        private void FormWordDictionary_Load( Object sender, BEventArgs e ) {
             listDictionaries.Items.Clear();
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                 String name = SymbolTable.getSymbolTable( i ).getName();
                 boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
-                listDictionaries.Items.Add( name, enabled );
+                BListViewItem item = new BListViewItem( new String[] { name } );
+                listDictionaries.addItem( "", item, enabled );
             }
         }
 
         public Vector<ValuePair<String, Boolean>> Result {
             get {
                 Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
-                for ( int i = 0; i < listDictionaries.Items.Count; i++ ) {
-                    ret.add( new ValuePair<String, Boolean>( (String)listDictionaries.Items[i], listDictionaries.GetItemChecked( i ) ) );
+                int count = listDictionaries.getItemCount( "" );
+                for ( int i = 0; i < count; i++ ) {
+                    BListViewItem item = listDictionaries.getItemAt( "", i );
+                    ret.add( new ValuePair<String, Boolean>( item.getSubItemAt( 0 ), listDictionaries.isItemCheckedAt( "", i ) ) );
                 }
                 return ret;
             }
@@ -77,30 +81,36 @@ namespace Boare.Cadencii {
         }
 
         private void btnUp_Click( object sender, EventArgs e ) {
-            int index = listDictionaries.SelectedIndex;
+            int index = listDictionaries.getSelectedIndex( "" );
             if ( index >= 1 ) {
-                listDictionaries.ClearSelected();
-                String upper_name = (String)listDictionaries.Items[index - 1];
-                boolean upper_enabled = listDictionaries.GetItemChecked( index - 1 );
-                listDictionaries.Items[index - 1] = (String)listDictionaries.Items[index];
-                listDictionaries.SetItemChecked( index - 1, listDictionaries.GetItemChecked( index ) );
-                listDictionaries.Items[index] = upper_name;
-                listDictionaries.SetItemChecked( index, upper_enabled );
-                listDictionaries.SetSelected( index - 1, true );
+                listDictionaries.clearSelection( "" );
+                String upper_name = listDictionaries.getItemAt( "", index - 1 ).getSubItemAt( 0 );
+                boolean upper_enabled = listDictionaries.isItemCheckedAt( "", index - 1 );
+                listDictionaries.setItemAt( "", index - 1, (BListViewItem)listDictionaries.getItemAt( "", index ).clone() );
+                listDictionaries.setItemCheckedAt( "", index - 1, listDictionaries.isItemCheckedAt( "", index ) );
+                listDictionaries.setItemAt( "", index, new BListViewItem( new String[]{ upper_name } ) );
+                listDictionaries.setItemCheckedAt( "", index, upper_enabled );
+                listDictionaries.setItemSelectedAt( "", index - 1, true );
             }
         }
 
         private void btnDown_Click( object sender, EventArgs e ) {
-            int index = listDictionaries.SelectedIndex;
-            if ( index + 1 < listDictionaries.Items.Count ) {
-                listDictionaries.ClearSelected();
-                String lower_name = (String)listDictionaries.Items[index + 1];
-                boolean lower_enabled = listDictionaries.CheckedIndices.Contains( index + 1 );
-                listDictionaries.Items[index + 1] = (String)listDictionaries.Items[index];
-                listDictionaries.SetItemChecked( index + 1, listDictionaries.GetItemChecked( index ) );
-                listDictionaries.Items[index] = lower_name;
-                listDictionaries.SetItemChecked( index, lower_enabled );
-                listDictionaries.SetSelected( index + 1, true );
+            int index = listDictionaries.getSelectedIndex( "" );
+            if ( index + 1 < listDictionaries.getItemCount( "" ) ) {
+                try {
+                    listDictionaries.clearSelection( "" );
+                    String lower_name = listDictionaries.getItemAt( "", index + 1 ).getSubItemAt( 0 );
+                    boolean lower_enabled = listDictionaries.isItemCheckedAt( "", index + 1 );
+                    listDictionaries.setItemAt( "", index + 1, (BListViewItem)listDictionaries.getItemAt( "", index ).clone() );
+                    listDictionaries.setItemCheckedAt( "", index + 1, listDictionaries.isItemCheckedAt( "", index ) );
+                    listDictionaries.setItemAt( "", index, new BListViewItem( new String[] { lower_name } ) );
+                    listDictionaries.setItemCheckedAt( "", index, lower_enabled );
+                    listDictionaries.setItemSelectedAt( "", index + 1, true );
+                } catch ( Exception ex ) {
+#if DEBUG
+                    Console.WriteLine( "FormWordDictionary#btnDown_Click; ex=" + ex );
+#endif
+                }
             }
         }
 
@@ -140,12 +150,14 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.listDictionaries = new System.Windows.Forms.CheckedListBox();
-            this.lblAvailableDictionaries = new BLabel();
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
-            this.btnUp = new BButton();
-            this.btnDown = new BButton();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem( "DEFAULT_JP" );
+            this.listDictionaries = new bocoree.windows.forms.BListView();
+            this.lblAvailableDictionaries = new bocoree.windows.forms.BLabel();
+            this.btnOK = new bocoree.windows.forms.BButton();
+            this.btnCancel = new bocoree.windows.forms.BButton();
+            this.btnUp = new bocoree.windows.forms.BButton();
+            this.btnDown = new bocoree.windows.forms.BButton();
             this.SuspendLayout();
             // 
             // listDictionaries
@@ -153,14 +165,22 @@ namespace Boare.Cadencii {
             this.listDictionaries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listDictionaries.FormattingEnabled = true;
-            this.listDictionaries.HorizontalScrollbar = true;
-            this.listDictionaries.Items.AddRange( new object[] {
-            "DEFAULT_JP"} );
+            this.listDictionaries.CheckBoxes = true;
+            listViewGroup1.Header = "ListViewGroup";
+            listViewGroup1.Name = null;
+            this.listDictionaries.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1} );
+            listViewItem1.Checked = true;
+            listViewItem1.Group = listViewGroup1;
+            listViewItem1.StateImageIndex = 1;
+            this.listDictionaries.Items.AddRange( new System.Windows.Forms.ListViewItem[] {
+            listViewItem1} );
             this.listDictionaries.Location = new System.Drawing.Point( 12, 33 );
             this.listDictionaries.Name = "listDictionaries";
             this.listDictionaries.Size = new System.Drawing.Size( 248, 186 );
             this.listDictionaries.TabIndex = 0;
+            this.listDictionaries.UseCompatibleStateImageBehavior = false;
+            this.listDictionaries.View = System.Windows.Forms.View.List;
             // 
             // lblAvailableDictionaries
             // 
@@ -240,13 +260,14 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private System.Windows.Forms.CheckedListBox listDictionaries;
+        private BListView listDictionaries;
         private BLabel lblAvailableDictionaries;
         private BButton btnOK;
         private BButton btnCancel;
         private BButton btnUp;
         private BButton btnDown;
         #endregion
+
 #endif
     }
 

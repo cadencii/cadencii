@@ -27,6 +27,9 @@ using bocoreex.swing;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using Integer = System.Int32;
+    using java = bocoree;
+    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
 #endif
 
 #if JAVA
@@ -37,17 +40,30 @@ namespace Boare.Cadencii {
         private BMenuItem m_dumy;
         private TreeMap<String, ValuePair<String, BKeys[]>> m_dict;
         private TreeMap<String, ValuePair<String, BKeys[]>> m_first_dict;
+        private static int columnWidthCommand = 240;
+        private static int columnWidthShortcutKey = 140;
 
         public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict ) {
-            InitializeComponent();
+            try {
+                InitializeComponent();
+            } catch ( Exception ex ) {
+#if DEBUG
+                Console.WriteLine( "FormShortcutKeys#.ctor; ex=" + ex );
+#endif
+            }
+            list.setColumnHeaders( new String[] { "Command", "Shortcut Key" } );
+            list.setColumnWidth( 0, columnWidthCommand );
+            list.setColumnWidth( 1, columnWidthShortcutKey );
+
             registerEventHandlers();
             setResources();
+            ApplyLanguage();
+
             m_dict = dict;
             m_dumy = new BMenuItem();
             m_dumy.ShowShortcutKeys = true;
             m_first_dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             CopyDict( m_dict, ref m_first_dict );
-            ApplyLanguage();
             UpdateList();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -60,21 +76,34 @@ namespace Boare.Cadencii {
             btnRevert.Text = _( "Revert" );
             btnLoadDefault.Text = _( "Load Default" );
 
-            columnCommand.Text = _( "Command" );
-            columnShortcut.Text = _( "Shortcut Key" );
-
+            list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
             toolTip.SetToolTip( list, _( "Select command and hit key(s) you want to set.\nHit Backspace if you want to remove shortcut key." ) );
 
-            list.Groups["listGroupFile"].Header = _( "File" );
-            list.Groups["listGroupEdit"].Header = _( "Edit" );
-            list.Groups["listGroupVisual"].Header = _( "View" );
-            list.Groups["listGroupJob"].Header = _( "Job" );
-            list.Groups["listGroupLyric"].Header = _( "Lyrics" );
-            list.Groups["listGroupSetting"].Header = _( "Setting" );
-            list.Groups["listGroupHelp"].Header = _( "Help" );
-            list.Groups["listGroupTrack"].Header = _( "Track" );
-            list.Groups["listGroupScript"].Header = _( "Script" );
-            list.Groups["listGroupOther"].Header = _( "Others" );
+            int num_groups = list.getGroupCount();
+            for ( int i = 0; i < num_groups; i++ ) {
+                String name = list.getGroupNameAt( i );
+                if ( name.Equals( "listGroupFile" ) ) {
+                    list.setGroupHeader( name, _( "File" ) );
+                } else if ( name.Equals( "listGroupEdit" ) ) {
+                    list.setGroupHeader( name, _( "Edit" ) );
+                } else if ( name.Equals( "listGroupVisual" ) ) {
+                    list.setGroupHeader( name, _( "View" ) );
+                } else if ( name.Equals( "listGroupJob" ) ) {
+                    list.setGroupHeader( name, _( "Job" ) );
+                } else if ( name.Equals( "listGroupLyric" ) ) {
+                    list.setGroupHeader( name, _( "Lyrics" ) );
+                } else if ( name.Equals( "listGroupSetting" ) ) {
+                    list.setGroupHeader( name, _( "Setting" ) );
+                } else if ( name.Equals( "listGroupHelp" ) ) {
+                    list.setGroupHeader( name, _( "Help" ) );
+                } else if ( name.Equals( "listGroupTrack" ) ) {
+                    list.setGroupHeader( name, _( "Track" ) );
+                } else if ( name.Equals( "listGroupScript" ) ) {
+                    list.setGroupHeader( name, _( "Script" ) );
+                } else if ( name.Equals( "listGroupOther" ) ) {
+                    list.setGroupHeader( name, _( "Others" ) );
+                }
+            }
         }
 
         private static String _( String id ) {
@@ -104,7 +133,7 @@ namespace Boare.Cadencii {
         }
 
         private void UpdateList() {
-            list.Items.Clear();
+            list.clear();
             for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
                 String display = (String)itr.next();
                 Vector<BKeys> a = new Vector<BKeys>();
@@ -113,50 +142,62 @@ namespace Boare.Cadencii {
                 }
                 try {
                     m_dumy.setAccelerator( PortUtil.getKeyStrokeFromBKeys( a.toArray( new BKeys[] { } ) ) );
-                } catch {
+                } catch( Exception ex ) {
                     a.clear();
                 }
-                ListViewItem item = new ListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
+                BListViewItem item = new BListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
                 String name = m_dict.get( display ).getKey();
                 item.Name = name;
                 //item.Tag = a;
+                String group = "";
                 if ( name.StartsWith( "menuFile" ) ) {
-                    item.Group = list.Groups["listGroupFile"];
+                    group = "listGroupFile";
                 } else if ( name.StartsWith( "menuEdit" ) ) {
-                    item.Group = list.Groups["listGroupEdit"];
+                    group = "listGroupEdit";
                 } else if ( name.StartsWith( "menuVisual" ) ) {
-                    item.Group = list.Groups["listGroupVisual"];
+                    group = "listGroupVisual";
                 } else if ( name.StartsWith( "menuJob" ) ) {
-                    item.Group = list.Groups["listGroupJob"];
+                    group = "listGroupJob";
                 } else if ( name.StartsWith( "menuLyric" ) ) {
-                    item.Group = list.Groups["listGroupLyric"];
+                    group = "listGroupLyric";
                 } else if ( name.StartsWith( "menuTrack" ) ) {
-                    item.Group = list.Groups["listGroupTrack"];
+                    group = "listGroupTrack";
                 } else if ( name.StartsWith( "menuScript" ) ) {
-                    item.Group = list.Groups["listGroupScript"];
+                    group = "listGroupScript";
                 } else if ( name.StartsWith( "menuSetting" ) ) {
-                    item.Group = list.Groups["listGroupSetting"];
+                    group = "listGroupSetting";
                 } else if ( name.StartsWith( "menuHelp" ) ) {
-                    item.Group = list.Groups["listGroupHelp"];
+                    group = "listGroupHelp";
                 } else {
-                    item.Group = list.Groups["listGroupOther"];
+                    group = "listGroupOther";
                 }
-                list.Items.Add( item );
+                list.addItem( group, item );
             }
             UpdateColor();
+            ApplyLanguage();
         }
 
         private void list_PreviewKeyDown( object sender, PreviewKeyDownEventArgs e ) {
         }
 
         private void list_KeyDown( object sender, KeyEventArgs e ) {
-            if ( list.SelectedIndices.Count <= 0 ) {
+            string selected_group = "";
+            int selected_index = -1;
+            int num_groups = list.getGroupCount();
+            for ( int i = 0; i < num_groups; i++ ) {
+                String name = list.getGroupNameAt( i );
+                int indx = list.getSelectedIndex( name );
+                if ( indx >= 0 ) {
+                    selected_group = name;
+                    selected_index = indx;
+                    break;
+                }
+            }
+
+            if ( selected_index < 0 ) {
                 return;
             }
-#if DEBUG
-            PortUtil.println( "FormShortcutKeys#list_KeyDown; e.KeyCode=" + e.KeyCode );
-#endif
-            int index = list.SelectedIndices[0];
+            int index = selected_index;
             KeyStroke stroke = KeyStroke.getKeyStroke( 0, 0 );
             stroke.keys = e.KeyCode | e.Modifiers;
             int code = stroke.getKeyCode();
@@ -200,9 +241,10 @@ namespace Boare.Cadencii {
                 }
                 return;
             }
-            //list.Items[index].Tag = res;
-            list.Items[index].SubItems[1].Text = AppManager.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) );
-            String display = list.Items[index].SubItems[0].Text;
+            BListViewItem item = (BListViewItem)list.getItemAt( selected_group, index ).clone();
+            item.setSubItemAt( 1, AppManager.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) ) );
+            list.setItemAt( selected_group, index, item );
+            String display = list.getItemAt( selected_group, index ).getSubItemAt( 0 );
             if ( m_dict.containsKey( display ) ) {
                 m_dict.get( display ).setValue( capturelist.toArray( new BKeys[] { } ) );
             }
@@ -231,28 +273,46 @@ namespace Boare.Cadencii {
         }
 
         private void UpdateColor() {
-            for ( int i = 0; i < list.Items.Count; i++ ) {
-                String compare = list.Items[i].SubItems[1].Text;
-                if ( compare.Equals( "" ) ) {
-                    list.Items[i].BackColor = SystemColors.Window;
-                    continue;
-                }
-                boolean found = false;
-                for ( int j = 0; j < list.Items.Count; j++ ) {
-                    if ( i == j ) {
+            int num_groups = list.getGroupCount();
+            for ( int k = 0; k < num_groups; k++ ) {
+                String name = list.getGroupNameAt( k );
+                for ( int i = 0; i < list.getItemCount( name ); i++ ) {
+                    String compare = list.getItemAt( name, i ).getSubItemAt( 1 );
+                    if ( compare.Equals( "" ) ) {
+                        list.setItemBackColorAt( name, i, java.awt.Color.white );
                         continue;
                     }
-                    if ( compare.Equals( list.Items[j].SubItems[1].Text ) ) {
-                        found = true;
-                        break;
+                    boolean found = false;
+                    for ( int n = 0; n < num_groups; n++ ) {
+                        String search_name = list.getGroupNameAt( n );
+                        for ( int j = 0; j < list.getItemCount( search_name ); j++ ) {
+                            if ( n == k && i == j ) {
+                                continue;
+                            }
+                            if ( compare.Equals( list.getItemAt( search_name, j ).getSubItemAt( 1 ) ) ) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if ( found ) {
+                            break;
+                        }
+                    }
+                    if ( found ) {
+                        list.setItemBackColorAt( name, i, java.awt.Color.yellow );
+                    } else {
+                        list.setItemBackColorAt( name, i, java.awt.Color.white );
                     }
                 }
-                if ( found ) {
-                    list.Items[i].BackColor = Color.Yellow;
-                } else {
-                    list.Items[i].BackColor = SystemColors.Window;
-                }
             }
+        }
+
+        private void FormShortcutKeys_FormClosing( Object sender, BFormClosingEventArgs e ) {
+            columnWidthCommand = list.getColumnWidth( 0 );
+            columnWidthShortcutKey = list.getColumnWidth( 1 );
+#if DEBUG
+            Console.WriteLine( "FormShortcutKeys_FormClosing; columnWidthCommand,columnWidthShortcutKey=" + columnWidthCommand + "," + columnWidthShortcutKey );
+#endif
         }
 
         private void registerEventHandlers() {
@@ -260,10 +320,12 @@ namespace Boare.Cadencii {
             this.list.KeyDown += new System.Windows.Forms.KeyEventHandler( this.list_KeyDown );
             this.btnLoadDefault.Click += new System.EventHandler( this.btnLoadDefault_Click );
             this.btnRevert.Click += new System.EventHandler( this.btnRevert_Click );
+            this.FormClosing += new FormClosingEventHandler( FormShortcutKeys_FormClosing );
         }
 
         private void setResources() {
         }
+
 #if JAVA
 #else
         #region UI Impl for C#
@@ -291,23 +353,11 @@ namespace Boare.Cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "File", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "Edit", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "View", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "Job", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup( "Track", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup( "Lyric", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup( "Script", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup( "Setting", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup( "Help", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup( "Other", System.Windows.Forms.HorizontalAlignment.Left );
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
-            this.list = new BListView();
-            this.columnCommand = new System.Windows.Forms.ColumnHeader();
-            this.columnShortcut = new System.Windows.Forms.ColumnHeader();
-            this.btnLoadDefault = new BButton();
-            this.btnRevert = new BButton();
+            this.btnCancel = new bocoree.windows.forms.BButton();
+            this.btnOK = new bocoree.windows.forms.BButton();
+            this.list = new bocoree.windows.forms.BListView();
+            this.btnLoadDefault = new bocoree.windows.forms.BButton();
+            this.btnRevert = new bocoree.windows.forms.BButton();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
             this.SuspendLayout();
             // 
@@ -338,41 +388,7 @@ namespace Boare.Cadencii {
             this.list.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.list.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
-            this.columnCommand,
-            this.columnShortcut} );
             this.list.FullRowSelect = true;
-            listViewGroup1.Header = "File";
-            listViewGroup1.Name = "listGroupFile";
-            listViewGroup2.Header = "Edit";
-            listViewGroup2.Name = "listGroupEdit";
-            listViewGroup3.Header = "View";
-            listViewGroup3.Name = "listGroupVisual";
-            listViewGroup4.Header = "Job";
-            listViewGroup4.Name = "listGroupJob";
-            listViewGroup5.Header = "Track";
-            listViewGroup5.Name = "listGroupTrack";
-            listViewGroup6.Header = "Lyric";
-            listViewGroup6.Name = "listGroupLyric";
-            listViewGroup7.Header = "Script";
-            listViewGroup7.Name = "listGroupScript";
-            listViewGroup8.Header = "Setting";
-            listViewGroup8.Name = "listGroupSetting";
-            listViewGroup9.Header = "Help";
-            listViewGroup9.Name = "listGroupHelp";
-            listViewGroup10.Header = "Other";
-            listViewGroup10.Name = "listGroupOther";
-            this.list.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4,
-            listViewGroup5,
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8,
-            listViewGroup9,
-            listViewGroup10} );
             this.list.Location = new System.Drawing.Point( 12, 12 );
             this.list.MultiSelect = false;
             this.list.Name = "list";
@@ -380,16 +396,6 @@ namespace Boare.Cadencii {
             this.list.TabIndex = 9;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
-            // 
-            // columnCommand
-            // 
-            this.columnCommand.Text = "Command";
-            this.columnCommand.Width = 240;
-            // 
-            // columnShortcut
-            // 
-            this.columnShortcut.Text = "Shortcut Key";
-            this.columnShortcut.Width = 140;
             // 
             // btnLoadDefault
             // 
@@ -439,8 +445,8 @@ namespace Boare.Cadencii {
         private BButton btnCancel;
         private BButton btnOK;
         private BListView list;
-        private System.Windows.Forms.ColumnHeader columnCommand;
-        private System.Windows.Forms.ColumnHeader columnShortcut;
+        //private System.Windows.Forms.ColumnHeader columnCommand;
+        //private System.Windows.Forms.ColumnHeader columnShortcut;
         private BButton btnLoadDefault;
         private BButton btnRevert;
         private System.Windows.Forms.ToolTip toolTip;

@@ -50,7 +50,7 @@ namespace Boare.Cadencii {
                 m_sample_rate = (int)wr.getSampleRate();
                 m_length = wr.getTotalSamples() / (float)wr.getSampleRate();
 #if DEBUG
-                PortUtil.println( "WaveDrawContext..ctor(String); m_length=" + m_length );
+                //PortUtil.println( "WaveDrawContext..ctor(String); m_length=" + m_length );
 #endif
                 int count = (int)wr.getTotalSamples();
                 for ( int i = 0; i < count; i++ ) {

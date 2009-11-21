@@ -52,6 +52,10 @@ namespace Boare.Cadencii {
         private PlatformEnum m_platform = PlatformEnum.Windows;
         private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
         private BFileChooser openUtauCore;
+        private static int columnWidthHeaderProgramChange = 60;
+        private static int columnWidthHeaderName = 100;
+        private static int columnWidthHeaderPath = 250;
+        private BFontChooser fontDialog;
 
         public Preference() {
 #if JAVA
@@ -84,7 +88,14 @@ namespace Boare.Cadencii {
 #else
             InitializeComponent();
 #endif
-            this.openUtauCore = new BFileChooser( "" );
+            fontDialog = new BFontChooser();
+#if !JAVA
+            fontDialog.dialog.AllowVectorFonts = false;
+            fontDialog.dialog.AllowVerticalFonts = false;
+            fontDialog.dialog.FontMustExist = true;
+            fontDialog.dialog.ShowEffects = false;
+#endif
+            openUtauCore = new BFileChooser( "" );
             ApplyLanguage();
 
             comboVibratoLength.Items.Clear();
@@ -196,6 +207,10 @@ namespace Boare.Cadencii {
 
             txtVOCALOID1.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 ) );
             txtVOCALOID2.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
+
+            listSingers.setColumnWidth( 0, columnWidthHeaderProgramChange );
+            listSingers.setColumnWidth( 1, columnWidthHeaderName );
+            listSingers.setColumnWidth( 2, columnWidthHeaderPath );
 
             registerEventHandlers();
             setResources();
@@ -598,9 +613,7 @@ namespace Boare.Cadencii {
 
             #region tabUtauSingers
             tabUtauSingers.Text = _( "UTAU Singers" );
-            columnHeaderProgramChange.Text = _( "Program Change" );
-            columnHeaderName.Text = _( "Name" );
-            columnHeaderPath.Text = _( "Path" );
+            listSingers.setColumnHeaders( new String[]{ _( "Program Change" ), _( "Name" ), _( "Path" ) } );
             btnAdd.Text = _( "Add" );
             btnRemove.Text = _( "Remove" );
             btnUp.Text = _( "Up" );
@@ -842,9 +855,9 @@ namespace Boare.Cadencii {
         }
 
         private void btnChangeMenuFont_Click( Object sender, BEventArgs e ) {
-            fontDialog.Font = getBaseFont().font;
-            if ( fontDialog.ShowDialog() == DialogResult.OK ) {
-                m_base_font.font = (System.Drawing.Font)fontDialog.Font.Clone();
+            fontDialog.setSelectedFont( getBaseFont() );
+            if ( fontDialog.showDialog() == BDialogResult.OK ) {
+                m_base_font = fontDialog.getSelectedFont();
             }
         }
 
@@ -853,9 +866,9 @@ namespace Boare.Cadencii {
         }
 
         private void btnChangeScreenFont_Click( Object sender, BEventArgs e ) {
-            fontDialog.Font = m_screen_font.font;
-            if ( fontDialog.ShowDialog() == DialogResult.OK ) {
-                m_screen_font = (Font)fontDialog.Font.Clone();
+            fontDialog.setSelectedFont( m_screen_font );
+            if ( fontDialog.showDialog() == BDialogResult.OK ) {
+                m_screen_font = fontDialog.getSelectedFont();
             }
         }
 
@@ -937,12 +950,12 @@ namespace Boare.Cadencii {
         }
 
         private void UpdateUtauSingerList() {
-            listSingers.Items.Clear();
+            listSingers.clear();
             for ( int i = 0; i < m_utau_singers.size(); i++ ) {
                 m_utau_singers.get( i ).Program = i;
-                listSingers.Items.Add( new ListViewItem( new String[] { m_utau_singers.get( i ).Program.ToString(),
-                                                                        m_utau_singers.get( i ).VOICENAME, 
-                                                                        m_utau_singers.get( i ).VOICEIDSTR } ) );
+                listSingers.addItem( "", new BListViewItem( new String[] { m_utau_singers.get( i ).Program.ToString(),
+                                                                           m_utau_singers.get( i ).VOICENAME, 
+                                                                           m_utau_singers.get( i ).VOICEIDSTR } ) );
             }
         }
 
@@ -987,12 +1000,7 @@ namespace Boare.Cadencii {
         }
 
         private int getUtauSingersSelectedIndex() {
-            int count = listSingers.SelectedIndices.Count;
-            if ( count <= 0 ) {
-                return -1;
-            } else {
-                return listSingers.SelectedIndices[0];
-            }
+            return listSingers.getSelectedIndex( "" );
         }
 
         private void listSingers_SelectedIndexChanged( Object sender, BEventArgs e ) {
@@ -1026,7 +1034,7 @@ namespace Boare.Cadencii {
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).clone() );
                 m_utau_singers.set( index + 1, buf );
                 UpdateUtauSingerList();
-                listSingers.Items[index + 1].Selected = true;
+                listSingers.setItemSelectedAt( "", index + 1, true );
             }
         }
 
@@ -1040,12 +1048,18 @@ namespace Boare.Cadencii {
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).clone() );
                 m_utau_singers.set( index - 1, buf );
                 UpdateUtauSingerList();
-                listSingers.Items[index - 1].Selected = true;
+                listSingers.setItemSelectedAt( "", index - 1, true );
             }
         }
 
         private void chkAutoBackup_CheckedChanged( Object sender, BEventArgs e ) {
             numAutoBackupInterval.Enabled = chkAutoBackup.Checked;
+        }
+
+        private void Preference_FormClosing( object sender, FormClosingEventArgs e ) {
+            columnWidthHeaderProgramChange = listSingers.getColumnWidth( 0 );
+            columnWidthHeaderName = listSingers.getColumnWidth( 1 );
+            columnWidthHeaderPath = listSingers.getColumnWidth( 2 );
         }
 
         private void registerEventHandlers() {
@@ -1061,6 +1075,7 @@ namespace Boare.Cadencii {
             this.listSingers.SelectedIndexChanged += new System.EventHandler( this.listSingers_SelectedIndexChanged );
             this.chkAutoBackup.CheckedChanged += new System.EventHandler( this.chkAutoBackup_CheckedChanged );
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            this.FormClosing += new FormClosingEventHandler( Preference_FormClosing );
         }
 
         private void setResources() {
@@ -3515,7 +3530,6 @@ namespace Boare.Cadencii {
             this.chkAutoBackup = new bocoree.windows.forms.BCheckBox();
             this.btnCancel = new bocoree.windows.forms.BButton();
             this.btnOK = new bocoree.windows.forms.BButton();
-            this.fontDialog = new System.Windows.Forms.FontDialog();
             this.folderBrowserSingers = new System.Windows.Forms.FolderBrowserDialog();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
@@ -5087,13 +5101,6 @@ namespace Boare.Cadencii {
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
-            // fontDialog
-            // 
-            this.fontDialog.AllowVectorFonts = false;
-            this.fontDialog.AllowVerticalFonts = false;
-            this.fontDialog.FontMustExist = true;
-            this.fontDialog.ShowEffects = false;
-            // 
             // folderBrowserSingers
             // 
             this.folderBrowserSingers.ShowNewFolderButton = false;
@@ -5167,7 +5174,6 @@ namespace Boare.Cadencii {
         private System.Windows.Forms.TabPage tabAppearance;
         private BButton btnChangeMenuFont;
         private BLabel labelMenu;
-        private System.Windows.Forms.FontDialog fontDialog;
         private BLabel labelMenuFontName;
         private BLabel labelScreen;
         private BButton btnChangeScreenFont;

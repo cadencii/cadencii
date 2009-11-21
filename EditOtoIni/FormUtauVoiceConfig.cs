@@ -125,6 +125,15 @@ namespace Boare.EditOtoIni {
         private Thread m_mouse_hover_generator = null;
         private boolean m_cancel_required = false;
         private Rectangle m_current_bounds;
+        private static int columnWidthFilename = 75;
+        private static int columnWidthAlias = 42;
+        private static int columnWidthOffset = 50;
+        private static int columnWidthConsonant = 72;
+        private static int columnWidthBlank = 51;
+        private static int columnWidthPreUtterance = 92;
+        private static int columnWidthOverlap = 61;
+        private static int columnWidthFrq = 51;
+        private static int columnWidthStf = 60;
 
         public FormUtauVoiceConfig() {
 #if JAVA
@@ -152,6 +161,16 @@ namespace Boare.EditOtoIni {
             panelBottom.Dock = DockStyle.Fill;
 
             splitContainerOut.Dock = DockStyle.Fill;
+            listFiles.setColumnHeaders( new String[] { "File Name", "Alias", "Offset", "Consonant", "Blank", "Pre Utterance", "Overlap", "FRQ", "STF" } );
+            listFiles.setColumnWidth( 0, columnWidthFilename );
+            listFiles.setColumnWidth( 1, columnWidthAlias );
+            listFiles.setColumnWidth( 2, columnWidthOffset );
+            listFiles.setColumnWidth( 3, columnWidthConsonant );
+            listFiles.setColumnWidth( 4, columnWidthBlank );
+            listFiles.setColumnWidth( 5, columnWidthPreUtterance );
+            listFiles.setColumnWidth( 6, columnWidthOverlap );
+            listFiles.setColumnWidth( 7, columnWidthFrq );
+            listFiles.setColumnWidth( 8, columnWidthStf );
 
             UpdateScale();
             m_player = new MediaPlayer();
@@ -342,7 +361,7 @@ namespace Boare.EditOtoIni {
             m_oto_ini = oto_ini_path;
             UpdateFormTitle();
             m_cancel_required = false;
-            listFiles.Items.Clear();
+            listFiles.clear();
 #if JAVA
             bgWorkRead.runWorkerAsync( oto_ini_path );
 #else
@@ -353,9 +372,9 @@ namespace Boare.EditOtoIni {
         private void AddItem( Object sender, boolean bool_value, String[] stringarr_value ) {
             String[] columns = stringarr_value;
             boolean exists = bool_value;
-            ListViewItem item = new ListViewItem( columns );
-            item.Tag = exists;
-            listFiles.Items.Add( item );
+            BListViewItem item = new BListViewItem( columns );
+            item.setTag( exists );
+            listFiles.addItem( "", item );
         }
 
         private void bgWorkRead_DoWork( Object sender, DoWorkEventArgs e ) {
@@ -383,11 +402,11 @@ namespace Boare.EditOtoIni {
                 String line = "";
                 while ( (line = sr.readLine()) != null ) {
 #if DEBUG
-                    PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; line=" + line );
+                    //PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; line=" + line );
 #endif
                     if ( m_cancel_required ) {
 #if DEBUG
-                        PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; cancel required" );
+                        //PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; cancel required" );
 #endif
                         break;
                     }
@@ -439,18 +458,18 @@ namespace Boare.EditOtoIni {
         }
 
         private void listFiles_SelectedIndexChanged( Object sender, EventArgs e ) {
-            if ( listFiles.SelectedIndices.Count <= 0 ) {
+            if ( listFiles.getSelectedIndex( "" ) < 0 ) {
                 return;
             }
-            int index = listFiles.SelectedIndices[0];
-            ListViewItem selected_item = listFiles.Items[index];
+            int index = listFiles.getSelectedIndex( "" );
+            BListViewItem selected_item = listFiles.getItemAt( "", index );
             String name = selected_item.Text + selected_item.SubItems[1].Text;
             boolean enabled = true;
             if ( selected_item.Tag != null && selected_item.Tag is boolean ) {
                 enabled = (boolean)selected_item.Tag;
             }
             if ( !enabled ) {
-                listFiles.SelectedIndices.Clear();
+                listFiles.clearSelection( "" );
                 return;
             }
             int c = m_drawer.size();
@@ -731,8 +750,8 @@ namespace Boare.EditOtoIni {
                     }
                 }
 
-                if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
-                    String file = PortUtil.combinePath( PortUtil.getDirectoryName( m_oto_ini ), listFiles.Items[m_index].SubItems[0].Text );
+                if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
+                    String file = PortUtil.combinePath( PortUtil.getDirectoryName( m_oto_ini ), listFiles.getItemAt( "", m_index ).getSubItemAt( 0 ) );
                     if ( PortUtil.isFileExists( file ) && m_player.SoundLocation != file ) {
                         m_player.Close();
                         m_player.Load( file );
@@ -819,8 +838,10 @@ namespace Boare.EditOtoIni {
         }
 
         private void txtAlias_TextChanged( Object sender, EventArgs e ) {
-            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
-                listFiles.Items[m_index].SubItems[1].Text = txtAlias.Text;
+            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
+                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                item.setSubItemAt( 1, txtAlias.getText() );
+                listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
                 pictWave.Invalidate();
             }
@@ -834,8 +855,10 @@ namespace Boare.EditOtoIni {
                 return;
             }
             m_offset = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
-                listFiles.Items[m_index].SubItems[2].Text = txtOffset.Text;
+            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
+                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                item.setSubItemAt( 2, txtOffset.getText() );
+                listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
                 pictWave.Invalidate();
             }
@@ -849,8 +872,10 @@ namespace Boare.EditOtoIni {
                 return;
             }
             m_consonant = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
-                listFiles.Items[m_index].SubItems[3].Text = txtConsonant.Text;
+            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
+                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index );
+                item.setSubItemAt( 3, txtConsonant.getText() );
+                listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
                 pictWave.Invalidate();
             }
@@ -864,8 +889,10 @@ namespace Boare.EditOtoIni {
                 return;
             }
             m_blank = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
-                listFiles.Items[m_index].SubItems[4].Text = txtBlank.Text;
+            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
+                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                item.setSubItemAt( 4, txtBlank.getText() );
+                listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
                 pictWave.Invalidate();
             }
@@ -879,8 +906,10 @@ namespace Boare.EditOtoIni {
                 return;
             }
             m_pre_utterance = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
-                listFiles.Items[m_index].SubItems[5].Text = txtPreUtterance.Text;
+            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
+                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                item.setSubItemAt( 5, txtPreUtterance.getText() );
+                listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
                 pictWave.Invalidate();
             }
@@ -894,8 +923,10 @@ namespace Boare.EditOtoIni {
                 return;
             }
             m_overlap = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.Items.Count ) {
-                listFiles.Items[m_index].SubItems[6].Text = txtOverlap.Text;
+            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
+                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                item.setSubItemAt( 6, txtOverlap.getText() );
+                listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
                 pictWave.Invalidate();
             }
@@ -966,12 +997,12 @@ namespace Boare.EditOtoIni {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "Shift_JIS" ) );
-                int i1 = listFiles.Items.Count;
+                int i1 = listFiles.getItemCount( "" );
                 for ( int i = 0; i < i1; i++ ) {
-                    int i2 = listFiles.Items[i].SubItems.Count;
-                    sw.write( listFiles.Items[i].SubItems[0].Text + "=" );
+                    int i2 = listFiles.getItemAt( "", i ).getSubItemCount();
+                    sw.write( listFiles.getItemAt( "", i ).getSubItemAt( 0 ) + "=" );
                     for ( int j = 1; j <= 6; j++ ) {
-                        sw.write( (j > 1 ? "," : "") + listFiles.Items[i].SubItems[j].Text );
+                        sw.write( (j > 1 ? "," : "") + listFiles.getItemAt( "", i ).getSubItemAt( j ) );
                     }
                     sw.newLine();
                 }
@@ -996,10 +1027,10 @@ namespace Boare.EditOtoIni {
                 sw2 = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( analyzed_oto_ini ), "Shift_JIS" ) );
                 int count = listFiles.Items.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    int i2 = listFiles.Items[i].SubItems.Count;
-                    sw2.write( listFiles.Items[i].SubItems[0].Text + "=" );
+                    int i2 = listFiles.getItemAt( "", i ).getSubItemCount();
+                    sw2.write( listFiles.getItemAt( "", i ).getSubItemAt( 0 ) + "=" );
                     for ( int j = 1; j <= 6; j++ ) {
-                        String add = listFiles.Items[i].SubItems[j].Text;
+                        String add = listFiles.getItemAt( "", i ).getSubItemAt( j );
                         if ( j == 2 || j == 4 ) { // j==2はoffset, j==4はblank。STF化した場合、この2つは0固定になる。
                             add = "0";
                         }
@@ -1164,27 +1195,27 @@ namespace Boare.EditOtoIni {
         }
 
         private void checkSTFExistence() {
-            int count = listFiles.Items.Count;
+            int count = listFiles.getItemCount( "" );
             if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
             String analyzed = PortUtil.combinePath( PortUtil.getDirectoryName( m_oto_ini ), "analyzed" );
             for ( int i = 0; i < count; i++ ) {
-                ListViewItem item = listFiles.Items[i];
-                String wav_name = item.SubItems[0].Text;
+                BListViewItem item = listFiles.getItemAt( "", i );
+                String wav_name = item.getSubItemAt( 0 );
                 String stf_path = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
                 item.SubItems[8].Text = PortUtil.isFileExists( stf_path ) ? "○" : "";
             }
         }
 
         private void checkFRQExistence() {
-            int count = listFiles.Items.Count;
+            int count = listFiles.getItemCount( "" );
             if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
             String dir = PortUtil.getDirectoryName( m_oto_ini );
             for ( int i = 0; i < count; i++ ) {
-                ListViewItem item = listFiles.Items[i];
+                BListViewItem item = listFiles.getItemAt( "", i );
                 String wav_name = item.SubItems[0].Text;
                 String frq_path = PortUtil.combinePath( dir, wav_name.Replace( ".", "_" ) + ".frq" );
                 item.SubItems[7].Text = PortUtil.isFileExists( frq_path ) ? "○" : "";
@@ -1261,9 +1292,9 @@ namespace Boare.EditOtoIni {
 
         private void generateSTForFRQ( FormGenerateStf.GenerateMode mode ) {
             Vector<StfQueueArgs> list = new Vector<StfQueueArgs>();
-            int count = listFiles.Items.Count;
+            int count = listFiles.getItemCount( "" );
             for ( int i = 0; i < count; i++ ) {
-                ListViewItem item = listFiles.Items[i];
+                BListViewItem item = listFiles.getItemAt( "", i );
                 StfQueueArgs queue = new StfQueueArgs();
                 queue.waveName = item.SubItems[0].Text;
                 queue.offset = item.SubItems[2].Text;
@@ -1310,15 +1341,15 @@ namespace Boare.EditOtoIni {
         }
 
         private bool checkListFileItem( int index, String search ) {
-            ListViewItem item = listFiles.Items[index];
+            BListViewItem item = listFiles.getItemAt( "", index );
             if ( item.SubItems[0].Text.Contains( search ) ) {
                 item.Selected = true;
-                listFiles.EnsureVisible( index );
+                listFiles.ensureRowVisible( "", index );
                 return true;
             }
             if ( item.SubItems[1].Text.Contains( search ) ) {
                 item.Selected = true;
-                listFiles.EnsureVisible( index );
+                listFiles.ensureRowVisible( "", index );
                 return true;
             }
             return false;
@@ -1340,14 +1371,14 @@ namespace Boare.EditOtoIni {
                 return;
             }
             int first_index;
-            if ( listFiles.SelectedIndices.Count <= 0 ) {
-                if ( listFiles.Items.Count <= 0 ) {
+            if ( listFiles.getSelectedIndex( "" ) < 0 ) {
+                if ( listFiles.getItemCount( "" ) <= 0 ) {
                     setSearchTextColor( false );
                     return;
                 }
                 first_index = 0;
             } else {
-                first_index = listFiles.SelectedIndices[0];
+                first_index = listFiles.getSelectedIndex( "" );
             }
             String search = txtSearch.Text;
             if ( go_back ) {
@@ -1357,14 +1388,14 @@ namespace Boare.EditOtoIni {
                         return;
                     }
                 }
-                for ( int i = listFiles.Items.Count - 1; i >= first_index; i-- ) {
+                for ( int i = listFiles.getItemCount( "" ) - 1; i >= first_index; i-- ) {
                     if ( checkListFileItem( i, search ) ) {
                         setSearchTextColor( true );
                         return;
                     }
                 }
             } else {
-                for ( int i = first_index + 1; i < listFiles.Items.Count; i++ ) {
+                for ( int i = first_index + 1; i < listFiles.getItemCount( "" ); i++ ) {
                     if ( checkListFileItem( i, search ) ) {
                         setSearchTextColor( true );
                         return;
@@ -2237,7 +2268,7 @@ namespace Boare.EditOtoIni {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormUtauVoiceConfig ) );
-            this.listFiles = new System.Windows.Forms.ListView();
+            this.listFiles = new BListView();
             this.columnHeaderFilename = new System.Windows.Forms.ColumnHeader();
             this.columnHeaderAlias = new System.Windows.Forms.ColumnHeader();
             this.columnHeaderOffset = new System.Windows.Forms.ColumnHeader();
@@ -3020,7 +3051,7 @@ namespace Boare.EditOtoIni {
 
         #endregion
 
-        private System.Windows.Forms.ListView listFiles;
+        private BListView listFiles;
         private System.Windows.Forms.ColumnHeader columnHeaderFilename;
         private System.Windows.Forms.ColumnHeader columnHeaderAlias;
         private System.Windows.Forms.ColumnHeader columnHeaderOffset;

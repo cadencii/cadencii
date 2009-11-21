@@ -4191,7 +4191,7 @@ namespace Boare.Cadencii {
             if ( m_midi_imexport_dialog == null ) {
                 m_midi_imexport_dialog = new FormMidiImExport();
             }
-            m_midi_imexport_dialog.listTrack.Items.Clear();
+            m_midi_imexport_dialog.listTrack.clear();
             m_midi_imexport_dialog.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
             int dialog_result = openMidiDialog.showOpenDialog( this );
@@ -4235,8 +4235,8 @@ namespace Boare.Cadencii {
                         notes++;
                     }
                 }
-                m_midi_imexport_dialog.listTrack.Items.Add( new System.Windows.Forms.ListViewItem( new String[] { i.ToString(), track_name, notes.ToString() } ) );
-                m_midi_imexport_dialog.listTrack.Items[i].Checked = true;
+                m_midi_imexport_dialog.listTrack.addItem( "", new BListViewItem( new String[] { i.ToString(), track_name, notes.ToString() } ) );
+                m_midi_imexport_dialog.listTrack.setItemCheckedAt( "", i, true );
             }
 
             if ( m_midi_imexport_dialog.showDialog() != BDialogResult.OK ) {
@@ -4356,14 +4356,14 @@ namespace Boare.Cadencii {
                 work.updateTimesigInfo();
             }
 
-            for ( int i = 0; i < m_midi_imexport_dialog.listTrack.Items.Count; i++ ) {
-                if ( !m_midi_imexport_dialog.listTrack.Items[i].Checked ) {
+            for ( int i = 0; i < m_midi_imexport_dialog.listTrack.getItemCount( "" ); i++ ) {
+                if ( !m_midi_imexport_dialog.listTrack.isItemCheckedAt( "", i ) ) {
                     continue;
                 }
                 if ( work.Track.size() + 1 > 16 ) {
                     break;
                 }
-                VsqTrack work_track = new VsqTrack( m_midi_imexport_dialog.listTrack.Items[i].SubItems[1].Text, "Miku" );
+                VsqTrack work_track = new VsqTrack( m_midi_imexport_dialog.listTrack.getItemAt( "", i ).getSubItemAt( 1 ), "Miku" );
                 Vector<MidiEvent> events = mf.getMidiEventList( i );
                 Collections.sort( events );
                 int events_count = events.size();
@@ -4490,7 +4490,7 @@ namespace Boare.Cadencii {
             if ( m_midi_imexport_dialog == null ) {
                 m_midi_imexport_dialog = new FormMidiImExport();
             }
-            m_midi_imexport_dialog.listTrack.Items.Clear();
+            m_midi_imexport_dialog.listTrack.clear();
             VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().Clone();
 
             for ( int i = 0; i < vsq.Track.size(); i++ ) {
@@ -4500,8 +4500,8 @@ namespace Boare.Cadencii {
                     Object obj = itr.next();
                     notes++;
                 }
-                m_midi_imexport_dialog.listTrack.Items.Add( new System.Windows.Forms.ListViewItem( new String[] { i.ToString(), track.getName(), notes.ToString() } ) );
-                m_midi_imexport_dialog.listTrack.Items[i].Checked = true;
+                m_midi_imexport_dialog.listTrack.addItem( "", new BListViewItem( new String[] { i.ToString(), track.getName(), notes.ToString() } ) );
+                m_midi_imexport_dialog.listTrack.setItemCheckedAt( "", i, true );
             }
             m_midi_imexport_dialog.setMode( FormMidiImExport.FormMidiMode.EXPORT );
             m_midi_imexport_dialog.setLocation( getFormPreferedLocation( m_midi_imexport_dialog ) );
@@ -4510,8 +4510,8 @@ namespace Boare.Cadencii {
                     vsq.removePart( 0, vsq.getPreMeasureClocks() );
                 }
                 int track_count = 0;
-                for ( int i = 0; i < m_midi_imexport_dialog.listTrack.Items.Count; i++ ) {
-                    if ( m_midi_imexport_dialog.listTrack.Items[i].Checked ) {
+                for ( int i = 0; i < m_midi_imexport_dialog.listTrack.getItemCount( "" ); i++ ) {
+                    if ( m_midi_imexport_dialog.listTrack.isItemCheckedAt( "", i ) ) {
                         track_count++;
                     }
                 }
@@ -4541,8 +4541,8 @@ namespace Boare.Cadencii {
                         fs.write( (byte)0x01 );
                         fs.write( (byte)0xe0 );
                         int count = -1;
-                        for ( int i = 0; i < m_midi_imexport_dialog.listTrack.Items.Count; i++ ) {
-                            if ( !m_midi_imexport_dialog.listTrack.Items[i].Checked ) {
+                        for ( int i = 0; i < m_midi_imexport_dialog.listTrack.getItemCount( "" ); i++ ) {
+                            if ( !m_midi_imexport_dialog.listTrack.isItemCheckedAt( "", i ) ) {
                                 continue;
                             }
                             VsqTrack track = vsq.Track.get( i );
@@ -4823,12 +4823,12 @@ namespace Boare.Cadencii {
             if ( m_midi_imexport_dialog == null ) {
                 m_midi_imexport_dialog = new FormMidiImExport();
             }
-            m_midi_imexport_dialog.listTrack.Items.Clear();
+            m_midi_imexport_dialog.listTrack.clear();
             for ( int track = 1; track < vsq.Track.size(); track++ ) {
-                m_midi_imexport_dialog.listTrack.Items.Add( new System.Windows.Forms.ListViewItem( new String[] { track.ToString(), 
-                                                                                             vsq.Track.get( track ).getName(),
-                                                                                             vsq.Track.get( track ).getEventCount().ToString() } ) );
-                m_midi_imexport_dialog.listTrack.Items[track - 1].Checked = true;
+                m_midi_imexport_dialog.listTrack.addItem( "", new BListViewItem( new String[] { track.ToString(), 
+                                                                                                vsq.Track.get( track ).getName(),
+                                                                                                vsq.Track.get( track ).getEventCount().ToString() } ) );
+                m_midi_imexport_dialog.listTrack.setItemCheckedAt( "", track - 1, true );
             }
             m_midi_imexport_dialog.setMode( FormMidiImExport.FormMidiMode.IMPORT_VSQ );
             m_midi_imexport_dialog.setTempo( false );
@@ -4839,8 +4839,8 @@ namespace Boare.Cadencii {
             }
 
             Vector<Integer> add_track = new Vector<Integer>();
-            for ( int i = 0; i < m_midi_imexport_dialog.listTrack.Items.Count; i++ ) {
-                if ( m_midi_imexport_dialog.listTrack.Items[i].Checked ) {
+            for ( int i = 0; i < m_midi_imexport_dialog.listTrack.getItemCount( "" ); i++ ) {
+                if ( m_midi_imexport_dialog.listTrack.isItemCheckedAt( "", i ) ) {
                     add_track.add( i + 1 );
                 }
             }
