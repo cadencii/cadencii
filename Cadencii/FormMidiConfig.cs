@@ -64,23 +64,23 @@ namespace Boare.Cadencii {
             AppManager.editorConfig.MetronomeEnabled = true;
             MidiPlayer.SetSpeed( 1.0f, PortUtil.getCurrentTime() );
 
-            comboDeviceMetronome.Items.Clear();
-            comboDeviceGeneral.Items.Clear();
+            comboDeviceMetronome.removeAllItems();
+            comboDeviceGeneral.removeAllItems();
             try {
                 uint num_devs = win32.midiOutGetNumDevs();
                 for ( uint i = 0; i < num_devs; i++ ) {
                     MIDIOUTCAPSA caps = new MIDIOUTCAPSA();
                     win32.midiOutGetDevCapsA( i, ref caps, (uint)Marshal.SizeOf( caps ) );
-                    comboDeviceMetronome.Items.Add( i + ": " + caps.szPname );
-                    comboDeviceGeneral.Items.Add( i + ": " + caps.szPname );
+                    comboDeviceMetronome.addItem( i + ": " + caps.szPname );
+                    comboDeviceGeneral.addItem( i + ": " + caps.szPname );
                 }
             } catch {
             }
-            if ( MidiPlayer.DeviceGeneral < comboDeviceGeneral.Items.Count ) {
-                comboDeviceGeneral.SelectedIndex = (int)MidiPlayer.DeviceGeneral;
+            if ( MidiPlayer.DeviceGeneral < comboDeviceGeneral.getItemCount() ) {
+                comboDeviceGeneral.setSelectedItem( comboDeviceGeneral.getItemAt( (int)MidiPlayer.DeviceGeneral ) );
             }
-            if ( MidiPlayer.DeviceMetronome < comboDeviceMetronome.Items.Count ) {
-                comboDeviceMetronome.SelectedIndex = (int)MidiPlayer.DeviceMetronome;
+            if ( MidiPlayer.DeviceMetronome < comboDeviceMetronome.getItemCount() ) {
+                comboDeviceMetronome.setSelectedItem( comboDeviceMetronome.getItemAt( (int)MidiPlayer.DeviceMetronome ) );
             }
 
             numNoteNormal.Value = (decimal)MidiPlayer.NoteNormal;
@@ -88,7 +88,7 @@ namespace Boare.Cadencii {
             numProgramNormal.Value = (decimal)MidiPlayer.ProgramNormal;
             numProgramBell.Value = (decimal)MidiPlayer.ProgramBell;
             numPreUtterance.Value = (decimal)MidiPlayer.PreUtterance;
-            chkRingBell.Checked = MidiPlayer.RingBell;
+            chkRingBell.setSelected( MidiPlayer.RingBell );
         }
 
         public static String _( String id ) {
@@ -96,7 +96,7 @@ namespace Boare.Cadencii {
         }
 
         public void ApplyLanguage() {
-            this.Text = _( "Metronome Config" );
+            setTitle( _( "Metronome Config" ) );
             lblDeviceGeneral.Text = _( "MIDI Device" );
             lblDeviceMetronome.Text = _( "MIDI Device" );
             groupMetronome.Text = _( "Metronome" );
@@ -105,11 +105,11 @@ namespace Boare.Cadencii {
             lblProgramNormal.Text = _( "Program#" );
             lblProgramBell.Text = _( "Program# (Bell)" );
             lblPreUtterance.Text = _( "Pre Utterance" );
-            chkPreview.Text = _( "Preview" );
-            chkRingBell.Text = _( "Ring Bell" );
+            chkPreview.setText( _( "Preview" ) );
+            chkRingBell.setText( _( "Ring Bell" ) );
 
-            btnOK.Text = _( "OK" );
-            btnCancel.Text = _( "Cancel" );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
         }
 
         private void numProgramNormal_ValueChanged( object sender, EventArgs e ) {
@@ -133,25 +133,25 @@ namespace Boare.Cadencii {
         }
 
         private void comboDeviceMetronome_SelectedIndexChanged( object sender, EventArgs e ) {
-            int index = comboDeviceMetronome.SelectedIndex;
+            int index = comboDeviceMetronome.getSelectedIndex();
             if ( 0 <= index ) {
                 MidiPlayer.DeviceMetronome = (uint)index;
             }
         }
 
         private void comboDeviceGeneral_SelectedIndexChanged( object sender, EventArgs e ) {
-            int index = comboDeviceGeneral.SelectedIndex;
+            int index = comboDeviceGeneral.getSelectedIndex();
             if ( 0 <= index ) {
                 MidiPlayer.DeviceGeneral = (uint)index;
             }
         }
 
         private void chkRingBell_CheckedChanged( object sender, EventArgs e ) {
-            MidiPlayer.RingBell = chkRingBell.Checked;
+            MidiPlayer.RingBell = chkRingBell.isSelected();
         }
 
         private void chkPreview_CheckedChanged( object sender, EventArgs e ) {
-            if ( chkPreview.Checked ) {
+            if ( chkPreview.isSelected() ) {
                 m_preview_started = PortUtil.getCurrentTime();
                 MidiPlayer.Start( new VsqFileEx( "Miku", 2, 4, 4, 500000 ), 0, m_preview_started );
             } else {
@@ -162,7 +162,7 @@ namespace Boare.Cadencii {
         private void FormMidiConfig_FormClosing( object sender, FormClosingEventArgs e ) {
             MidiPlayer.Stop();
             MidiPlayer.SetSpeed( m_speed, PortUtil.getCurrentTime() );
-            if ( this.DialogResult == DialogResult.OK ) {
+            if ( getDialogResult() == BDialogResult.OK ) {
                 AppManager.editorConfig.MidiRingBell = MidiPlayer.RingBell;
                 AppManager.editorConfig.MidiDeviceGeneral.PortNumber = (int)MidiPlayer.DeviceGeneral;
                 AppManager.editorConfig.MidiDeviceMetronome.PortNumber = (int)MidiPlayer.DeviceMetronome;
@@ -200,6 +200,7 @@ namespace Boare.Cadencii {
 
         private void setResources() {
         }
+
 #if JAVA
 #else
         #region UI Impl for C#

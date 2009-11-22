@@ -107,7 +107,7 @@ namespace Boare.Cadencii {
         public void applyLanguage() {
             setTitle( _( "Synthesize" ) );
             lblSynthesizing.Text = _( "now synthesizing..." );
-            btnCancel.Text = _( "Cancel" );
+            btnCancel.setText( _( "Cancel" ) );
         }
 
         private static String _( String id ) {

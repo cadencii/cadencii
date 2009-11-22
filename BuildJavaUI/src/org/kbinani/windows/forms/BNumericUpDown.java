@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import java.awt.Dimension;
 
 public class BNumericUpDown extends JPanel{
     private static final long serialVersionUID = -8499996379673462967L;
@@ -115,6 +116,7 @@ public class BNumericUpDown extends JPanel{
 		if (btnUp == null) {
 			btnUp = new JButton();
 			btnUp.setText("");
+			btnUp.setPreferredSize(new Dimension(20, 10));
 			btnUp.addActionListener(new java.awt.event.ActionListener() {
 			    public void actionPerformed(java.awt.event.ActionEvent e) {
 			        if( value + 1 <= maximum ){
@@ -136,6 +138,7 @@ public class BNumericUpDown extends JPanel{
 		if (btnDown == null) {
 			btnDown = new JButton();
 			btnDown.setText("");
+			btnDown.setPreferredSize(new Dimension(20, 10));
 			btnDown.addActionListener(new java.awt.event.ActionListener() {
 			    public void actionPerformed(java.awt.event.ActionEvent e) {
 			        if( value - 1 >= minimum ){

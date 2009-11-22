@@ -87,9 +87,9 @@ namespace Boare.Cadencii {
             m_tracker = new VolumeTracker[num];
 
             // 同時に表示できるVolumeTrackerの個数を計算
-            Size max = Screen.GetWorkingArea( this ).Size;
-            Size bordersize = SystemInformation.FrameBorderSize;
-            int max_client_width = max.Width - 2 * bordersize.Width;
+            int max = PortUtil.getWorkingArea( this ).width;
+            int bordersize = 4;// TODO: ここもともとは SystemInformation.FrameBorderSize;だった
+            int max_client_width = max - 2 * bordersize;
             int max_num = (int)Math.Floor( max_client_width / (VolumeTracker.WIDTH + 1.0f) );
             num++;
 
@@ -317,7 +317,7 @@ namespace Boare.Cadencii {
 #endif
 
         private void veScrollBar_ValueChanged( Object sender, BEventArgs e ) {
-            this.Invalidate();
+            this.invalidate();
         }
 
         private void volumeMaster_FederChanged( Object sender, BEventArgs e ) {
@@ -371,26 +371,19 @@ namespace Boare.Cadencii {
             }
 #else
             if ( TopMostChanged != null ) {
-                TopMostChanged( this, chkTopmost.Checked );
+                TopMostChanged( this, chkTopmost.isSelected() );
             }
 #endif
-            this.TopMost = chkTopmost.isSelected(); // ここはthis.ShowTopMostにしてはいけない
+            setAlwaysOnTop( chkTopmost.isSelected() ); // ここはthis.ShowTopMostにしてはいけない
         }
 
         public boolean isShowTopMost() {
-#if JAVA
-            return false;
-#else
-            return this.TopMost;
-#endif
+            return isAlwaysOnTop();
         }
 
         public void setShowTopMost( boolean value ) {
-#if JAVA
-#else
-            this.TopMost = value;
+            setAlwaysOnTop( value );
             chkTopmost.setSelected( value );
-#endif
         }
 
         private void registerEventHandlers() {
@@ -418,6 +411,7 @@ namespace Boare.Cadencii {
         private void setResources() {
             setIconImage( Resources.get_icon() );
         }
+
 #if JAVA
 	    private JPanel jContentPane = null;
 	    private JPanel panel1 = null;

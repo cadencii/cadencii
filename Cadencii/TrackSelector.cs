@@ -401,6 +401,22 @@ namespace Boare.Cadencii {
 #if !JAVA
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
+        public void invalidate() {
+            base.Invalidate();
+        }
+
+        public void repaint() {
+            base.Refresh();
+        }
+
+        public void setBounds( int x, int y, int width, int height ) {
+            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
+        }
+
+        public void setBounds( bocoree.awt.Rectangle rc ) {
+            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
+        }
+
         public bocoree.awt.Cursor getCursor() {
             System.Windows.Forms.Cursor c = base.Cursor;
             bocoree.awt.Cursor ret = null;
@@ -554,10 +570,6 @@ namespace Boare.Cadencii {
             return new bocoree.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public void setFont( bocoree.awt.Font font ) {
-            base.Font = font.font;
-        }
-
         public bool isEnabled() {
             return base.Enabled;
         }
@@ -568,6 +580,41 @@ namespace Boare.Cadencii {
 
         public void requestFocus() {
             base.Focus();
+        }
+
+        public bool isFocusOwner() {
+            return base.Focused;
+        }
+
+        public void setPreferredSize( bocoree.awt.Dimension size ) {
+            base.Size = new System.Drawing.Size( size.width, size.height );
+        }
+
+        public bocoree.awt.Font getFont() {
+            return new bocoree.awt.Font( base.Font );
+        }
+
+        public void setFont( bocoree.awt.Font font ) {
+            if ( font == null ) {
+                return;
+            }
+            if ( font.font == null ) {
+                return;
+            }
+            base.Font = font.font;
+        }
+        #endregion
+
+        #region common APIs of org.kbinani.*
+        // root implementation is in BForm.cs
+        public bocoree.awt.Point pointToScreen( bocoree.awt.Point point_on_client ) {
+            bocoree.awt.Point p = getLocationOnScreen();
+            return new bocoree.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
+        }
+
+        public bocoree.awt.Point pointToClient( bocoree.awt.Point point_on_screen ) {
+            bocoree.awt.Point p = getLocationOnScreen();
+            return new bocoree.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
         }
         #endregion
 #endif
@@ -5038,7 +5085,7 @@ namespace Boare.Cadencii {
                                                                 target_point.getID() );
                                 EditingChainID = chain_id;
                                 EditingPointID = target_point.getID();
-                                DialogResult ret = fbpe.ShowDialog();
+                                BDialogResult ret = fbpe.showDialog();
                                 EditingChainID = -1;
                                 EditingPointID = -1;
                                 BezierChain after = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( m_selected_curve, chain_id );
@@ -5049,7 +5096,7 @@ namespace Boare.Cadencii {
                                                                                                before,
                                                                                                AppManager.editorConfig.ControlCurveResolution.getValue() );
                                 executeCommand( revert, false );
-                                if ( ret == DialogResult.OK ) {
+                                if ( ret == BDialogResult.OK ) {
                                     // ダイアログの結果がOKで、かつベジエ曲線が単調増加なら編集を適用
                                     if ( BezierChain.isBezierImplicit( target_chain ) ) {
                                         CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( track,
@@ -5064,7 +5111,9 @@ namespace Boare.Cadencii {
                             } finally {
                                 if ( fbpe != null ) {
                                     try {
+#if !JAVA
                                         fbpe.Dispose();
+#endif
                                     } catch ( Exception ex2 ) {
                                     }
                                 }
@@ -5102,10 +5151,10 @@ namespace Boare.Cadencii {
                                 AppManager.addSelectedPoint( m_selected_curve, bp_id );
                                 FormCurvePointEdit dialog = new FormCurvePointEdit( bp_id, m_selected_curve );
                                 int tx = AppManager.xCoordFromClocks( tclock );
-                                System.Drawing.Point pt = this.PointToScreen( new System.Drawing.Point( tx, 0 ) );
+                                Point pt = pointToScreen( new Point( tx, 0 ) );
                                 this.Invalidate();
-                                dialog.Location = new System.Drawing.Point( pt.X - dialog.Width / 2, pt.Y - dialog.Height );
-                                dialog.ShowDialog();
+                                dialog.setLocation( new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
+                                dialog.showDialog();
                             }
                             #endregion
                         }

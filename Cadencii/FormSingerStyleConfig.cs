@@ -22,7 +22,8 @@ using Boare.Lib.AppUtil;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = Boolean;
+    using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA
@@ -37,88 +38,85 @@ namespace Boare.Cadencii {
             groupPitchControl.Text = _( "Pitch Control" );
             lblBendDepth.Text = _( "Bend Depth" ) + "(&B)";
             lblBendLength.Text = _( "Bend Length" ) + "(&L)";
-            chkUpPortamento.Text = _( "Add portamento in rising movement" ) + "(&R)";
-            chkDownPortamento.Text = _( "Add portamento in falling movement" ) + "(&F)";
+            chkUpPortamento.setText( _( "Add portamento in rising movement" ) + "(&R)" );
+            chkDownPortamento.setText( _( "Add portamento in falling movement" ) + "(&F)" );
 
             groupDynamicsControl.Text = _( "Dynamics Control" );
             lblDecay.Text = _( "Decay" ) + "(&D)";
             lblAccent.Text = _( "Accent" ) + "(&A)";
 
-            btnOK.Text = _( "OK" );
-            btnCancel.Text = _( "Cancel" );
-            btnApply.Text = _( "Apply to current track" ) + "(&C)";
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
+            btnApply.setText( _( "Apply to current track" ) + "(&C)" );
 
+#if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
-            this.Text = _( "Default Singer Style" );
+#endif
+            setTitle( _( "Default Singer Style" ) );
         }
 
         public static String _( String id ) {
             return Messaging.getMessage( id );
         }
 
-        public int PMBendDepth {
-            get {
-                return trackBendDepth.Value;
+        public int getPMBendDepth() {
+            return trackBendDepth.Value;
+        }
+
+        public void setPMBendDepth( int value ) {
+            trackBendDepth.Value = value;
+            txtBendDepth.Text = value + "";
+        }
+
+        public int getPMBendLength() {
+            return trackBendLength.Value;
+        }
+
+        public void setPMBendLength( int value ) {
+            trackBendLength.Value = value;
+            txtBendLength.Text = value + "";
+        }
+
+        public int getPMbPortamentoUse() {
+            int ret = 0;
+            if ( chkUpPortamento.isSelected() ) {
+                ret += 1;
             }
-            set {
-                trackBendDepth.Value = value;
-                txtBendDepth.Text = value + "";
+            if ( chkDownPortamento.isSelected() ) {
+                ret += 2;
+            }
+            return ret;
+        }
+
+        public void setPMbPortamentoUse( int value ) {
+            if ( value % 2 == 1 ) {
+                chkUpPortamento.setSelected( true );
+            } else {
+                chkUpPortamento.setSelected( false );
+            }
+            if ( value >= 2 ) {
+                chkDownPortamento.setSelected( true );
+            } else {
+                chkDownPortamento.setSelected( false );
             }
         }
 
-        public int PMBendLength {
-            get {
-                return trackBendLength.Value;
-            }
-            set {
-                trackBendLength.Value = value;
-                txtBendLength.Text = value + "";
-            }
+        public int getDEMdecGainRate() {
+            return trackDecay.Value;
         }
 
-        public int PMbPortamentoUse {
-            get {
-                int ret = 0;
-                if ( chkUpPortamento.Checked ) {
-                    ret += 1;
-                }
-                if ( chkDownPortamento.Checked ) {
-                    ret += 2;
-                }
-                return ret;
-            }
-            set {
-                if ( value % 2 == 1 ) {
-                    chkUpPortamento.Checked = true;
-                } else {
-                    chkUpPortamento.Checked = false;
-                }
-                if ( value >= 2 ) {
-                    chkDownPortamento.Checked = true;
-                } else {
-                    chkDownPortamento.Checked = false;
-                }
-            }
+        public void setDEMdecGainRate( int value ) {
+            trackDecay.Value = value;
+            txtDecay.Text = value + "";
         }
 
-        public int DEMdecGainRate {
-            get {
-                return trackDecay.Value;
-            }
-            set {
-                trackDecay.Value = value;
-                txtDecay.Text = value + "";
-            }
+        public int getDEMaccent() {
+            return trackAccent.Value;
         }
 
-        public int DEMaccent {
-            get {
-                return trackAccent.Value;
-            }
-            set {
-                trackAccent.Value = value;
-                txtAccent.Text = value + "";
-            }
+        public void setDEMaccent( int value ) {
+            trackAccent.Value = value;
+            txtAccent.Text = value + "";
         }
 
         public FormSingerStyleConfig() {
@@ -127,7 +125,7 @@ namespace Boare.Cadencii {
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             ApplyLanguage();
-            Size current_size = this.ClientSize;
+            Size current_size = getClientSize();
         }
 
         private void trackBendDepth_Scroll( object sender, EventArgs e ) {
@@ -218,46 +216,46 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void btnOK_Click( object sender, EventArgs e ) {
-            this.DialogResult = DialogResult.OK;
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
         }
 
-        private void comboBox1_SelectedIndexChanged( object sender, EventArgs e ) {
-            switch ( comboTemplate.SelectedIndex ) {
+        private void comboBox1_SelectedIndexChanged( Object sender, BEventArgs e ) {
+            switch ( comboTemplate.getSelectedIndex() ) {
                 case 1:
-                    PMBendDepth = 8;
-                    PMBendLength = 0;
-                    PMbPortamentoUse = 0;
-                    DEMdecGainRate = 50;
-                    DEMaccent = 50;
+                    setPMBendDepth( 8 );
+                    setPMBendLength( 0 );
+                    setPMbPortamentoUse( 0 );
+                    setDEMdecGainRate( 50 );
+                    setDEMaccent( 50 );
                     break;
                 case 2:
-                    PMBendDepth = 8;
-                    PMBendLength = 0;
-                    PMbPortamentoUse = 0;
-                    DEMdecGainRate = 50;
-                    DEMaccent = 68;
+                    setPMBendDepth( 8 );
+                    setPMBendLength( 0 );
+                    setPMbPortamentoUse( 0 );
+                    setDEMdecGainRate( 50 );
+                    setDEMaccent( 68 );
                     break;
                 case 3:
-                    PMBendDepth = 8;
-                    PMBendLength = 0;
-                    PMbPortamentoUse = 0;
-                    DEMdecGainRate = 70;
-                    DEMaccent = 80;
+                    setPMBendDepth( 8 );
+                    setPMBendLength( 0 );
+                    setPMbPortamentoUse( 0 );
+                    setDEMdecGainRate( 70 );
+                    setDEMaccent( 80 );
                     break;
                 case 4:
-                    PMBendDepth = 20;
-                    PMBendLength = 0;
-                    PMbPortamentoUse = 3;
-                    DEMdecGainRate = 50;
-                    DEMaccent = 42;
+                    setPMBendDepth( 20 );
+                    setPMBendLength( 0 );
+                    setPMbPortamentoUse( 3 );
+                    setDEMdecGainRate( 50 );
+                    setDEMaccent( 42 );
                     break;
                 case 5:
-                    PMBendDepth = 20;
-                    PMBendLength = 0;
-                    PMbPortamentoUse = 3;
-                    DEMdecGainRate = 50;
-                    DEMaccent = 25;
+                    setPMBendDepth( 20 );
+                    setPMBendLength( 0 );
+                    setPMbPortamentoUse( 3 );
+                    setDEMdecGainRate( 50 );
+                    setDEMaccent( 25 );
                     break;
             }
         }
@@ -272,13 +270,13 @@ namespace Boare.Cadencii {
             }
         }
 
-        public boolean ApplyCurrentTrack {
-            get {
-                return m_apply_current_track;
-            }
+        public boolean getApplyCurrentTrack() {
+            return m_apply_current_track;
         }
 
         private void registerEventHandlers() {
+#if JAVA
+#else
             this.txtBendLength.TextChanged += new System.EventHandler( this.txtBendLength_TextChanged );
             this.txtBendDepth.TextChanged += new System.EventHandler( this.txtBendDepth_TextChanged );
             this.trackBendLength.Scroll += new System.EventHandler( this.trackBendLength_Scroll );
@@ -290,10 +288,12 @@ namespace Boare.Cadencii {
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             this.btnApply.Click += new System.EventHandler( this.btnApply_Click );
             this.comboTemplate.SelectedIndexChanged += new System.EventHandler( this.comboBox1_SelectedIndexChanged );
+#endif
         }
 
         private void setResources() {
         }
+
 #if JAVA
 #else
         #region UI Impl for C#

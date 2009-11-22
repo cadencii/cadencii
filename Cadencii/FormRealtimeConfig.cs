@@ -38,10 +38,8 @@ namespace Boare.Cadencii {
             Boare.Lib.AppUtil.Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public float Speed {
-            get {
-                return (float)numSpeed.Value;
-            }
+        public float getSpeed() {
+            return (float)numSpeed.Value;
         }
 
         private void FormRealtimeConfig_Load( object sender, EventArgs e ) {
@@ -52,7 +50,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private unsafe void timer_Tick( object sender, EventArgs e ) {
+        private void timer_Tick( object sender, EventArgs e ) {
             try {
                 DateTime now = DateTime.Now;
                 double dt_ms = now.Subtract( m_last_event_processed ).TotalMilliseconds;
@@ -77,25 +75,25 @@ namespace Boare.Cadencii {
                 boolean R2 = (buttons[AppManager.editorConfig.GameControlR2] > 0x00);
                 boolean SELECT = (buttons[AppManager.editorConfig.GameControlSelect] > 0x00);
                 if ( dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                    if ( btnStart.Focused ) {
+                    if ( btnStart.isFocusOwner() ) {
                         if ( btn_o ) {
                             timer.Stop();
                             btnStart_Click( this, new EventArgs() );
                             m_last_event_processed = now;
                         } else if ( pov_r ) {
-                            btnCancel.Focus();
+                            btnCancel.requestFocus();
                             m_last_event_processed = now;
                         } else if ( pov_d ) {
                             numSpeed.Focus();
                             m_last_event_processed = now;
                         }
-                    } else if ( btnCancel.Focused ) {
+                    } else if ( btnCancel.isFocusOwner() ) {
                         if ( btn_o ) {
                             timer.Stop();
-                            this.DialogResult = DialogResult.Cancel;
-                            this.Close();
+                            setDialogResult( BDialogResult.CANCEL );
+                            close();
                         } else if ( pov_l ) {
-                            btnStart.Focus();
+                            btnStart.requestFocus();
                             m_last_event_processed = now;
                         } else if ( pov_d || pov_r ) {
                             numSpeed.Focus();
@@ -113,10 +111,10 @@ namespace Boare.Cadencii {
                                 m_last_event_processed = now;
                             }
                         } else if ( pov_l ) {
-                            btnCancel.Focus();
+                            btnCancel.requestFocus();
                             m_last_event_processed = now;
                         } else if ( pov_u ) {
-                            btnStart.Focus();
+                            btnStart.requestFocus();
                             m_last_event_processed = now;
                         }
                     }
@@ -126,8 +124,8 @@ namespace Boare.Cadencii {
         }
 
         private void btnStart_Click( object sender, EventArgs e ) {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            setDialogResult( BDialogResult.OK );
+            close();
         }
 
         private void registerEventHandlers() {
@@ -138,6 +136,7 @@ namespace Boare.Cadencii {
 
         private void setResources() {
         }
+
 #if JAVA
 #else
         #region UI Impl for C#

@@ -86,6 +86,7 @@
     <Compile Include="BEventHandler.cs" />
     <Compile Include="BFileChooser.cs">
     </Compile>
+    <Compile Include="BFolderBrowser.cs" />
     <Compile Include="BFontChooser.cs" />
     <Compile Include="BForm.cs">
       <SubType>Form</SubType>

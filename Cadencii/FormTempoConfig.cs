@@ -59,26 +59,20 @@ namespace Boare.Cadencii {
             lblBeat.Text = _( "Beat" ) + "(&B)";
             lblClock.Text = _( "Clock" ) + "(&L)";
             groupTempo.Text = _( "Tempo" );
-            btnOK.Text = _( "OK" );
-            btnCancel.Text = _( "Cancel" );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
         }
 
-        public int BeatCount {
-            get {
-                return (int)numBeat.Value;
-            }
+        public int getBeatCount() {
+            return (int)numBeat.Value;
         }
 
-        public int Clock {
-            get {
-                return (int)numClock.Value;
-            }
+        public int getClock() {
+            return (int)numClock.Value;
         }
 
-        public decimal Tempo {
-            get {
-                return numTempo.Value;
-            }
+        public decimal getTempo() {
+            return numTempo.Value;
         }
 
         private void btnOK_Click( object sender, EventArgs e ) {
@@ -86,11 +80,15 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+#else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+#endif
         }
 
         private void setResources() {
         }
+
 #if JAVA
 #else
         #region UI Impl for C#

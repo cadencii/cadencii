@@ -1,5 +1,6 @@
 package org.kbinani.windows.forms;
 
+import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -11,7 +12,7 @@ import org.kbinani.BEventHandler;
 
 public class BForm extends JFrame implements WindowListener, KeyListener{
     private static final long serialVersionUID = -3700177079249925623L;
-    public BEvent<BEventHandler> formClosingEvent = new BEvent<BEventHandler>();
+    public BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
     public BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
@@ -27,6 +28,25 @@ public class BForm extends JFrame implements WindowListener, KeyListener{
         super( title );
         addWindowListener( this );
         addKeyListener( this );
+    }
+    
+    public Dimension getClientSize(){
+        return getContentPane().getSize();
+    }
+    
+    public void close(){
+        setVisible( false );
+        try{
+            BFormClosingEventArgs e = new BFormClosingEventArgs();
+            formClosingEvent.raise( this, e );
+            if( e.Cancel ){
+                setVisible( true );
+                return;
+            }
+        }catch( Exception ex ){
+            System.err.println( "BForm#close; ex=" + ex );
+        }
+        dispose();
     }
     
     public void windowActivated( WindowEvent e ){

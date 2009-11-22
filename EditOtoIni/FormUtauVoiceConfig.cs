@@ -134,6 +134,8 @@ namespace Boare.EditOtoIni {
         private static int columnWidthOverlap = 61;
         private static int columnWidthFrq = 51;
         private static int columnWidthStf = 60;
+        private BFileChooser openFileDialog;
+        private BFileChooser saveFileDialog;
 
         public FormUtauVoiceConfig() {
 #if JAVA
@@ -141,6 +143,10 @@ namespace Boare.EditOtoIni {
 #else
             InitializeComponent();
 #endif
+            openFileDialog = new BFileChooser( "" );
+            saveFileDialog = new BFileChooser( "" );
+            openFileDialog.setSelectedFile( "oto.ini" );
+
             pictWave.MouseWheel += new MouseEventHandler( pictWave_MouseWheel );
             splitContainerIn.Panel1.BorderStyle = BorderStyle.None;
             splitContainerIn.Panel2.BorderStyle = BorderStyle.FixedSingle;
@@ -220,15 +226,16 @@ namespace Boare.EditOtoIni {
             ret.InnerSplitterDistancePercentage = splitContainerIn.SplitterDistance / (float)splitContainerIn.Width * 100.0f;
             ret.OuterSplitterDistancePercentage = splitContainerOut.SplitterDistance / (float)splitContainerOut.Height * 100.0f;
             ret.WaveViewScale = m_trackbar_value;
-            ret.ColumnWidthAlias = columnHeaderAlias.Width;
-            ret.ColumnWidthBlank = columnHeaderBlank.Width;
-            ret.ColumnWidthConsonant = columnHeaderConsonant.Width;
-            ret.ColumnWidthFileName = columnHeaderFilename.Width;
-            ret.ColumnWidthFrq = columnHeaderFrq.Width;
-            ret.ColumnWidthOffset = columnHeaderOffset.Width;
-            ret.ColumnWidthOverlap = columnHeaderOverlap.Width;
-            ret.ColumnWidthPreUtterance = columnHeaderPreUtterance.Width;
-            ret.ColumnWidthStf = columnHeaderStf.Width;
+
+            ret.ColumnWidthFileName = listFiles.getColumnWidth( 0 );
+            ret.ColumnWidthAlias = listFiles.getColumnWidth( 1 );
+            ret.ColumnWidthOffset = listFiles.getColumnWidth( 2 );
+            ret.ColumnWidthConsonant = listFiles.getColumnWidth( 3 );
+            ret.ColumnWidthBlank = listFiles.getColumnWidth( 4 );
+            ret.ColumnWidthPreUtterance = listFiles.getColumnWidth( 5 );
+            ret.ColumnWidthOverlap = listFiles.getColumnWidth( 6 );
+            ret.ColumnWidthFrq = listFiles.getColumnWidth( 7 );
+            ret.ColumnWidthStf = listFiles.getColumnWidth( 8 );
             return ret;
         }
 
@@ -250,15 +257,15 @@ namespace Boare.EditOtoIni {
             } else {
                 m_trackbar_value = value.WaveViewScale;
             }
-            columnHeaderAlias.Width = value.ColumnWidthAlias;
-            columnHeaderBlank.Width = value.ColumnWidthBlank;
-            columnHeaderConsonant.Width = value.ColumnWidthConsonant;
-            columnHeaderFilename.Width = value.ColumnWidthFileName;
-            columnHeaderFrq.Width = value.ColumnWidthFrq;
-            columnHeaderOffset.Width = value.ColumnWidthOffset;
-            columnHeaderOverlap.Width = value.ColumnWidthOverlap;
-            columnHeaderPreUtterance.Width = value.ColumnWidthPreUtterance;
-            columnHeaderStf.Width = value.ColumnWidthStf;
+
+            listFiles.setColumnWidth( 1, value.ColumnWidthAlias );
+            listFiles.setColumnWidth( 2, value.ColumnWidthOffset );
+            listFiles.setColumnWidth( 3, value.ColumnWidthConsonant );
+            listFiles.setColumnWidth( 4, value.ColumnWidthBlank );
+            listFiles.setColumnWidth( 5, value.ColumnWidthPreUtterance );
+            listFiles.setColumnWidth( 6, value.ColumnWidthOverlap );
+            listFiles.setColumnWidth( 7, value.ColumnWidthFrq );
+            listFiles.setColumnWidth( 8, value.ColumnWidthStf );
             UpdateScale();
         }
 
@@ -299,20 +306,20 @@ namespace Boare.EditOtoIni {
             lblPreUtterance.setText( _( "Pre Utterance" ) );
             lblOverlap.setText( _( "Overlap" ) );
 
-            columnHeaderFilename.Text = _( "File Name" );
-            columnHeaderAlias.Text = _( "Alias" );
-            columnHeaderOffset.Text = _( "Offset" );
-            columnHeaderConsonant.Text = _( "Consonant" );
-            columnHeaderBlank.Text = _( "Blank" );
-            columnHeaderPreUtterance.Text = _( "Pre Utterance" );
-            columnHeaderOverlap.Text = _( "Overlap" );
+            listFiles.setColumnHeaders( new String[] { _( "File Name" ), _( "Alias" ), _( "Offset" ), _( "Consonant" ), _( "Blank" ), _( "Pre Utterance" ), _( "Overlap" ), "FRQ", "STF" } );
 
+            openFileDialog.clearChoosableFileFilter();
+            saveFileDialog.clearChoosableFileFilter();
             try {
-                openFileDialog.Filter = _( "Voice DB Config(*.ini)|*.ini" ) + "|" + _( "All Files(*.*)|*.*" );
-                saveFileDialog.Filter = _( "Voice DB Config(*.ini)|*.ini" ) + "|" + _( "All Files(*.*)|*.*" );
+                openFileDialog.addFileFilter( _( "Voice DB Config(*.ini)|*.ini" ) );
+                openFileDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                saveFileDialog.addFileFilter( _( "Voice DB Config(*.ini)|*.ini" ) );
+                saveFileDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                openFileDialog.Filter = "Voice DB Config(*.ini)|*.ini|All Files(*.*)|*.*";
-                saveFileDialog.Filter = "Voice DB Config(*.ini)|*.ini|All Files(*.*)|*.*";
+                openFileDialog.addFileFilter( "Voice DB Config(*.ini)|*.ini" );
+                openFileDialog.addFileFilter( "All Files(*.*)|*.*" );
+                saveFileDialog.addFileFilter( "Voice DB Config(*.ini)|*.ini" );
+                saveFileDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
 
             btnRefreshStf.setText( _( "Refresh STF" ) );
@@ -963,8 +970,8 @@ namespace Boare.EditOtoIni {
         }
 
         private void menuFileOpen_Click( Object sender, EventArgs e ) {
-            if ( openFileDialog.ShowDialog() == DialogResult.OK ) {
-                Open( openFileDialog.FileName );
+            if ( openFileDialog.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                Open( openFileDialog.getSelectedFile() );
             }
         }
 
@@ -974,20 +981,20 @@ namespace Boare.EditOtoIni {
 
         private void menuFileSave_Click( Object sender, EventArgs e ) {
             if ( m_oto_ini.Equals( "" ) ) {
-                if ( saveFileDialog.ShowDialog() != DialogResult.OK ) {
+                if ( saveFileDialog.showSaveDialog( this ) != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                m_oto_ini = saveFileDialog.FileName;
+                m_oto_ini = saveFileDialog.getSelectedFile();
             }
             saveCor( m_oto_ini );
             setEdited( false );
         }
 
         private void menuFileSaveAs_Click( Object sender, EventArgs e ) {
-            if ( saveFileDialog.ShowDialog() != DialogResult.OK ) {
+            if ( saveFileDialog.showSaveDialog( this ) != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
-            m_oto_ini = saveFileDialog.FileName;
+            m_oto_ini = saveFileDialog.getSelectedFile();
             saveCor( m_oto_ini );
             setEdited( false );
         }
@@ -1148,12 +1155,12 @@ namespace Boare.EditOtoIni {
                     if ( !m_oto_ini.Equals( "" ) ) {
                         saveCor( m_oto_ini );
                     } else {
-                        DialogResult dr2 = saveFileDialog.ShowDialog();
-                        if ( dr2 == DialogResult.Cancel ) {
+                        int dr2 = saveFileDialog.showSaveDialog( this );
+                        if ( dr2 == BFileChooser.CANCEL_OPTION ) {
                             e.Cancel = true;
                             return;
-                        } else if ( dr2 == DialogResult.OK ) {
-                            m_oto_ini = saveFileDialog.FileName;
+                        } else if ( dr2 == BFileChooser.APPROVE_OPTION ) {
+                            m_oto_ini = saveFileDialog.getSelectedFile();
                             saveCor( m_oto_ini );
                         }
                     }
@@ -2269,15 +2276,6 @@ namespace Boare.EditOtoIni {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormUtauVoiceConfig ) );
             this.listFiles = new BListView();
-            this.columnHeaderFilename = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderAlias = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderOffset = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderConsonant = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderBlank = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderPreUtterance = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderOverlap = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderFrq = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderStf = new System.Windows.Forms.ColumnHeader();
             this.menuStrip = new BMenuBar();
             this.menuFile = new BMenuItem();
             this.menuFileOpen = new BMenuItem();
@@ -2323,8 +2321,6 @@ namespace Boare.EditOtoIni {
             this.statusLblTootip = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainerIn = new Boare.Lib.AppUtil.BSplitContainer();
             this.splitContainerOut = new Boare.Lib.AppUtil.BSplitContainer();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.cmenuListFiles = new System.Windows.Forms.ContextMenuStrip( this.components );
             this.generateSTRAIGHTFileToolStripMenuItem = new BMenuItem();
             this.panelLeft = new System.Windows.Forms.Panel();
@@ -2347,16 +2343,6 @@ namespace Boare.EditOtoIni {
             this.listFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listFiles.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderFilename,
-            this.columnHeaderAlias,
-            this.columnHeaderOffset,
-            this.columnHeaderConsonant,
-            this.columnHeaderBlank,
-            this.columnHeaderPreUtterance,
-            this.columnHeaderOverlap,
-            this.columnHeaderFrq,
-            this.columnHeaderStf} );
             this.listFiles.FullRowSelect = true;
             this.listFiles.HideSelection = false;
             this.listFiles.Location = new System.Drawing.Point( 0, 0 );
@@ -2367,55 +2353,6 @@ namespace Boare.EditOtoIni {
             this.listFiles.UseCompatibleStateImageBehavior = false;
             this.listFiles.View = System.Windows.Forms.View.Details;
             this.listFiles.SelectedIndexChanged += new System.EventHandler( this.listFiles_SelectedIndexChanged );
-            // 
-            // columnHeaderFilename
-            // 
-            this.columnHeaderFilename.Text = "File Name";
-            this.columnHeaderFilename.Width = 75;
-            // 
-            // columnHeaderAlias
-            // 
-            this.columnHeaderAlias.Text = "Alias";
-            this.columnHeaderAlias.Width = 42;
-            // 
-            // columnHeaderOffset
-            // 
-            this.columnHeaderOffset.Text = "Offset";
-            this.columnHeaderOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.columnHeaderOffset.Width = 50;
-            // 
-            // columnHeaderConsonant
-            // 
-            this.columnHeaderConsonant.Text = "Consonant";
-            this.columnHeaderConsonant.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.columnHeaderConsonant.Width = 72;
-            // 
-            // columnHeaderBlank
-            // 
-            this.columnHeaderBlank.Text = "Blank";
-            this.columnHeaderBlank.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.columnHeaderBlank.Width = 51;
-            // 
-            // columnHeaderPreUtterance
-            // 
-            this.columnHeaderPreUtterance.Text = "Pre Utterance";
-            this.columnHeaderPreUtterance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.columnHeaderPreUtterance.Width = 92;
-            // 
-            // columnHeaderOverlap
-            // 
-            this.columnHeaderOverlap.Text = "Overlap";
-            this.columnHeaderOverlap.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.columnHeaderOverlap.Width = 61;
-            // 
-            // columnHeaderFrq
-            // 
-            this.columnHeaderFrq.Text = "FRQ";
-            this.columnHeaderFrq.Width = 51;
-            // 
-            // columnHeaderStf
-            // 
-            this.columnHeaderStf.Text = "STF";
             // 
             // menuStrip
             // 
@@ -2927,10 +2864,6 @@ namespace Boare.EditOtoIni {
             this.splitContainerOut.TabIndex = 2;
             this.splitContainerOut.Text = "bSplitContainer1";
             // 
-            // openFileDialog
-            // 
-            this.openFileDialog.FileName = "oto.ini";
-            // 
             // cmenuListFiles
             // 
             this.cmenuListFiles.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
@@ -3052,14 +2985,6 @@ namespace Boare.EditOtoIni {
         #endregion
 
         private BListView listFiles;
-        private System.Windows.Forms.ColumnHeader columnHeaderFilename;
-        private System.Windows.Forms.ColumnHeader columnHeaderAlias;
-        private System.Windows.Forms.ColumnHeader columnHeaderOffset;
-        private System.Windows.Forms.ColumnHeader columnHeaderConsonant;
-        private System.Windows.Forms.ColumnHeader columnHeaderBlank;
-        private System.Windows.Forms.ColumnHeader columnHeaderPreUtterance;
-        private System.Windows.Forms.ColumnHeader columnHeaderOverlap;
-        private System.Windows.Forms.ColumnHeader columnHeaderFrq;
         private BPictureBox pictWave;
         private Boare.Lib.AppUtil.BSplitContainer splitContainerOut;
         private BMenuBar menuStrip;
@@ -3095,11 +3020,9 @@ namespace Boare.EditOtoIni {
         private BMenuItem menuFileSave;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private BMenuItem menuFileQuit;
-        private System.Windows.Forms.OpenFileDialog openFileDialog;
         private BMenuItem menuFileSaveAs;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.ToolStripStatusLabel statusLblTootip;
-        private System.Windows.Forms.ColumnHeader columnHeaderStf;
+        //private System.Windows.Forms.ColumnHeader columnHeaderStf;
         private System.Windows.Forms.ContextMenuStrip cmenuListFiles;
         private BMenuItem generateSTRAIGHTFileToolStripMenuItem;
         private BMenuItem menuEdit;

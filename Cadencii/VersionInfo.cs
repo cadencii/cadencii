@@ -74,35 +74,39 @@ namespace Boare.Cadencii {
             this.SetStyle( ControlStyles.AllPaintingInWmPaint, true );
 
             m_credit = new AuthorListEntry[] { };
-            btnSaveAuthorList.Visible = false;
+            btnSaveAuthorList.setVisible( false );
             lblVstLogo.ForeColor = m_version_color.color;
             lblStraightAcknowledgement.ForeColor = m_version_color.color;
 #if DEBUG
             GenerateAuthorList();
-            btnSaveAuthorList.Visible = true;
+            btnSaveAuthorList.setVisible( true );
+#if JAVA
+            btnSaveAuthorList.addClick( new BEventHandler( this, "btnSaveAuthorList_Click" ) );
+#else
             btnSaveAuthorList.Click += new EventHandler( btnSaveAuthorList_Click );
+#endif
 #endif
         }
 
         public void ApplyLanguage() {
             String about = String.Format( _( "About {0}" ), m_app_name );
             String credit = _( "Credit" );
-            Dimension size1 = Util.measureString( about, new java.awt.Font( btnFlip.Font ) );
-            Dimension size2 = Util.measureString( credit, new java.awt.Font( btnFlip.Font ) );
+            Dimension size1 = Util.measureString( about, btnFlip.getFont() );
+            Dimension size2 = Util.measureString( credit, btnFlip.getFont() );
             m_button_width_about = Math.Max( 75, (int)(size1.width * 1.3) );
             m_button_width_credit = Math.Max( 75, (int)(size2.width * 1.3) );
             if ( m_credit_mode ) {
-                btnFlip.Width = m_button_width_about;
-                btnFlip.Text = about;
+                btnFlip.setPreferredSize( new Dimension( m_button_width_about, btnFlip.getHeight() ) );
+                btnFlip.setText( about );
             } else {
-                btnFlip.Width = m_button_width_credit;
-                btnFlip.Text = credit;
+                btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
+                btnFlip.setText( credit );
             }
             this.Text = about;
         }
 
         public void setSaveAuthorListVisible( boolean value ) {
-            btnSaveAuthorList.Visible = value;
+            btnSaveAuthorList.setVisible( value );
         }
 
         public static String _( String s ) {
@@ -227,8 +231,12 @@ namespace Boare.Cadencii {
         private void btnFlip_Click( Object sender, BEventArgs e ) {
             m_credit_mode = !m_credit_mode;
             if ( m_credit_mode ) {
-                btnFlip.Width = m_button_width_about;
-                btnFlip.Text = String.Format( _( "About {0}" ), m_app_name );
+                btnFlip.setPreferredSize( new Dimension( m_button_width_about, btnFlip.getHeight() ) );
+                try {
+                    btnFlip.setText( String.Format( _( "About {0}" ), m_app_name ) );
+                } catch ( Exception ex ) {
+                    btnFlip.setText( "About " + m_app_name );
+                }
                 m_scroll_started = PortUtil.getCurrentTime();
                 m_last_speed = 0f;
                 m_last_t = 0f;
@@ -239,8 +247,8 @@ namespace Boare.Cadencii {
                 timer.Enabled = true;
             } else {
                 timer.Enabled = false;
-                btnFlip.Width = m_button_width_credit;
-                btnFlip.Text = _( "Credit" );
+                btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
+                btnFlip.setText( _( "Credit" ) );
                 pictVstLogo.Visible = true;
                 lblVstLogo.Visible = true;
                 lblStraightAcknowledgement.Visible = true;

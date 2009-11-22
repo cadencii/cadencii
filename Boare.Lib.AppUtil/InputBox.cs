@@ -24,7 +24,7 @@ using System.Windows.Forms;
 using bocoree.windows.forms;
 
 namespace Boare.Lib.AppUtil {
-    using BEventArgs = EventArgs;
+    using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA

@@ -190,7 +190,11 @@ namespace Boare.Cadencii {
         }
 
         private void btnLeft_MouseDown( Object sender, BMouseEventArgs e ) {
+#if JAVA
+            setVisible( false );
+#else
             this.Opacity = m_min_opacity;
+#endif
             m_last_mouse_global_location = PortUtil.getMousePosition();
             Point loc_on_trackselector = new Point( AppManager.xCoordFromClocks( (int)m_point.getControlLeft().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getControlLeft().getY() ) );
@@ -204,7 +208,11 @@ namespace Boare.Cadencii {
         }
 
         private void btnRight_MouseDown( Object sender, BMouseEventArgs e ) {
+#if JAVA
+            setVisible( false );
+#else
             this.Opacity = m_min_opacity;
+#endif
             m_last_mouse_global_location = PortUtil.getMousePosition();
             Point loc_on_trackselector = new Point( AppManager.xCoordFromClocks( (int)m_point.getControlRight().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getControlRight().getY() ) );
@@ -219,7 +227,11 @@ namespace Boare.Cadencii {
 
         private void common_MouseUp( Object sender, BMouseEventArgs e ) {
             m_btn_datapoint_downed = false;
+#if JAVA
+            setVisible( true );
+#else
             this.Opacity = 1.0;
+#endif
             Point loc_on_screen = PortUtil.getMousePosition();
             Point loc_trackselector = m_parent.getLocationOnScreen();
             Point loc_on_trackselector = new Point( loc_on_screen.x - loc_trackselector.x, loc_on_screen.y - loc_trackselector.y );

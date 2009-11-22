@@ -44,10 +44,10 @@ namespace Boare.Cadencii {
         public void ApplyLanguage() {
             Text = _( "User Dictionary Configuration" );
             lblAvailableDictionaries.Text = _( "Available Dictionaries" );
-            btnOK.Text = _( "OK" );
-            btnCancel.Text = _( "Cancel" );
-            btnUp.Text = _( "Up" );
-            btnDown.Text = _( "Down" );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
+            btnUp.setText( _( "Up" ) );
+            btnDown.setText( _( "Down" ) );
         }
 
         private static String _( String id ) {
@@ -64,16 +64,14 @@ namespace Boare.Cadencii {
             }
         }
 
-        public Vector<ValuePair<String, Boolean>> Result {
-            get {
-                Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
-                int count = listDictionaries.getItemCount( "" );
-                for ( int i = 0; i < count; i++ ) {
-                    BListViewItem item = listDictionaries.getItemAt( "", i );
-                    ret.add( new ValuePair<String, Boolean>( item.getSubItemAt( 0 ), listDictionaries.isItemCheckedAt( "", i ) ) );
-                }
-                return ret;
+        public Vector<ValuePair<String, Boolean>> getResult() {
+            Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
+            int count = listDictionaries.getItemCount( "" );
+            for ( int i = 0; i < count; i++ ) {
+                BListViewItem item = listDictionaries.getItemAt( "", i );
+                ret.add( new ValuePair<String, Boolean>( item.getSubItemAt( 0 ), listDictionaries.isItemCheckedAt( "", i ) ) );
             }
+            return ret;
         }
 
         private void btnOK_Click( object sender, EventArgs e ) {

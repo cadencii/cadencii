@@ -32,6 +32,7 @@ namespace Boare.Cadencii {
 #endif
         public FormCompileResult( String message, String errors ) {
 #if JAVA
+            super();
             initialize();
 #else
             InitializeComponent();
@@ -45,7 +46,7 @@ namespace Boare.Cadencii {
         }
 
         public void ApplyLanguage() {
-            this.textBox1.setText( _( "Script Compilation Result" ) );
+            textBox1.setText( _( "Script Compilation Result" ) );
         }
 
         private static String _( String id ) {
@@ -57,6 +58,7 @@ namespace Boare.Cadencii {
 
         private void registerEventHandlers() {
         }
+
 #if JAVA
         #region UI Impl for Java
 	    private JPanel jContentPane = null;

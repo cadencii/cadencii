@@ -3593,9 +3593,14 @@ namespace Boare.Cadencii {
 #endif
             updateBgmMenuState();
 
+#if JAVA
+            sizeChangedEvent.add( new BEventHandler( this, "FormMain_SizeChanged" ) );
+            locationChangedEvent.add( new BEventHandler( this, "FormMain_LocationChanged" ) );
+#else
             this.SizeChanged += new System.EventHandler( this.FormMain_SizeChanged );
             this.LocationChanged += new System.EventHandler( this.FormMain_LocationChanged );
-            Refresh();
+#endif
+            repaint();
 #if DEBUG
             //VocaloSysUtil_DRAFT.getLanguageFromName( "" );
             /*ExpressionConfigSys exp_config_sys = new ExpressionConfigSys( @"C:\Program Files\VOCALOID2\expdbdir" );
@@ -3953,15 +3958,13 @@ namespace Boare.Cadencii {
                                 if ( frc.showDialog() == BDialogResult.OK ) {
                                     AppManager.addingEvent = null;
                                     AppManager.setEditMode( EditMode.REALTIME );
-                                    AppManager.editorConfig.RealtimeInputSpeed = frc.Speed;
+                                    AppManager.editorConfig.RealtimeInputSpeed = frc.getSpeed();
                                     AppManager.setPlaying( true );
                                 }
                             } catch ( Exception ex ) {
                             } finally {
                                 try {
-#if !JAVA
-                                    frc.Dispose();
-#endif
+                                    frc.close();
                                 } catch ( Exception ex2 ) {
                                 }
                             }
@@ -4066,7 +4069,7 @@ namespace Boare.Cadencii {
                     AppManager.setEditMode( EditMode.NONE );
                     AppManager.addingEvent = null;
                 }
-                m_timer.Stop();
+                m_timer.stop();
             }
         }
 #endif
@@ -4127,7 +4130,7 @@ namespace Boare.Cadencii {
         }
 
         private void menuFileQuit_Click( Object sender, BEventArgs e ) {
-            this.Close();
+            close();
         }
 
         private void menuFileExportWave_Click( Object sender, BEventArgs e ) {
@@ -5047,24 +5050,24 @@ namespace Boare.Cadencii {
             FormSingerStyleConfig dlg = null;
             try {
                 dlg = new FormSingerStyleConfig();
-                dlg.PMBendDepth = AppManager.editorConfig.DefaultPMBendDepth;
-                dlg.PMBendLength = AppManager.editorConfig.DefaultPMBendLength;
-                dlg.PMbPortamentoUse = AppManager.editorConfig.DefaultPMbPortamentoUse;
-                dlg.DEMdecGainRate = AppManager.editorConfig.DefaultDEMdecGainRate;
-                dlg.DEMaccent = AppManager.editorConfig.DefaultDEMaccent;
+                dlg.setPMBendDepth( AppManager.editorConfig.DefaultPMBendDepth );
+                dlg.setPMBendLength( AppManager.editorConfig.DefaultPMBendLength );
+                dlg.setPMbPortamentoUse( AppManager.editorConfig.DefaultPMbPortamentoUse );
+                dlg.setDEMdecGainRate( AppManager.editorConfig.DefaultDEMdecGainRate );
+                dlg.setDEMaccent( AppManager.editorConfig.DefaultDEMaccent );
 
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 if ( dlg.showDialog() == BDialogResult.OK ) {
-                    if ( dlg.ApplyCurrentTrack ) {
+                    if ( dlg.getApplyCurrentTrack() ) {
                         VsqTrack copy = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
                         boolean changed = false;
                         for ( int i = 0; i < copy.getEventCount(); i++ ) {
                             if ( copy.getEvent( i ).ID.type == VsqIDType.Anote ) {
-                                copy.getEvent( i ).ID.PMBendDepth = dlg.PMBendDepth;
-                                copy.getEvent( i ).ID.PMBendLength = dlg.PMBendLength;
-                                copy.getEvent( i ).ID.PMbPortamentoUse = dlg.PMbPortamentoUse;
-                                copy.getEvent( i ).ID.DEMdecGainRate = dlg.DEMdecGainRate;
-                                copy.getEvent( i ).ID.DEMaccent = dlg.DEMaccent;
+                                copy.getEvent( i ).ID.PMBendDepth = dlg.getPMBendDepth();
+                                copy.getEvent( i ).ID.PMBendLength = dlg.getPMBendLength();
+                                copy.getEvent( i ).ID.PMbPortamentoUse = dlg.getPMbPortamentoUse();
+                                copy.getEvent( i ).ID.DEMdecGainRate = dlg.getDEMdecGainRate();
+                                copy.getEvent( i ).ID.DEMaccent = dlg.getDEMaccent();
                                 changed = true;
                             }
                         }
@@ -5079,19 +5082,17 @@ namespace Boare.Cadencii {
                             refreshScreen();
                         }
                     }
-                    AppManager.editorConfig.DefaultPMBendDepth = dlg.PMBendDepth;
-                    AppManager.editorConfig.DefaultPMBendLength = dlg.PMBendLength;
-                    AppManager.editorConfig.DefaultPMbPortamentoUse = dlg.PMbPortamentoUse;
-                    AppManager.editorConfig.DefaultDEMdecGainRate = dlg.DEMdecGainRate;
-                    AppManager.editorConfig.DefaultDEMaccent = dlg.DEMaccent;
+                    AppManager.editorConfig.DefaultPMBendDepth = dlg.getPMBendDepth();
+                    AppManager.editorConfig.DefaultPMBendLength = dlg.getPMBendLength();
+                    AppManager.editorConfig.DefaultPMbPortamentoUse = dlg.getPMbPortamentoUse();
+                    AppManager.editorConfig.DefaultDEMdecGainRate = dlg.getDEMdecGainRate();
+                    AppManager.editorConfig.DefaultDEMaccent = dlg.getDEMaccent();
                 }
             } catch ( Exception ex ) {
             } finally {
                 if ( dlg != null ) {
                     try {
-#if !JAVA
-                        dlg.Dispose();
-#endif
+                        dlg.close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -5111,7 +5112,9 @@ namespace Boare.Cadencii {
             } finally {
                 if ( form != null ) {
                     try {
+#if !JAVA
                         form.Dispose();
+#endif
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -5363,7 +5366,7 @@ namespace Boare.Cadencii {
                 form = new FormShortcutKeys( dict );
                 form.setLocation( getFormPreferedLocation( form ) );
                 if ( form.showDialog() == BDialogResult.OK ) {
-                    TreeMap<String, ValuePair<String, BKeys[]>> res = form.Result;
+                    TreeMap<String, ValuePair<String, BKeys[]>> res = form.getResult();
                     for ( Iterator itr = res.keySet().iterator(); itr.hasNext(); ) {
                         String display = (String)itr.next();
                         String name = res.get( display ).getKey();
@@ -5389,7 +5392,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( form != null ) {
                     try {
-                        form.Dispose();
+                        form.close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -5541,7 +5544,7 @@ namespace Boare.Cadencii {
                 dlg = new FormWordDictionary();
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 if ( dlg.showDialog() == BDialogResult.OK ) {
-                    Vector<ValuePair<String, Boolean>> result = dlg.Result;
+                    Vector<ValuePair<String, Boolean>> result = dlg.getResult();
                     SymbolTable.changeOrder( result );
                 }
             } catch ( Exception ex ) {
@@ -5671,7 +5674,7 @@ namespace Boare.Cadencii {
                 VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(), internalids, ids ) );
             AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
             setEdited( true );
-            this.Refresh();
+            repaint();
         }
 
         private void menuJobInsertBar_Click( Object sender, BEventArgs e ) {
@@ -5789,7 +5792,7 @@ namespace Boare.Cadencii {
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
-                    this.Refresh();
+                    repaint();
                 }
             } catch ( Exception ex ) {
             } finally {
@@ -5896,7 +5899,7 @@ namespace Boare.Cadencii {
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
-                    this.Refresh();
+                    repaint();
                 }
             } catch ( Exception ex ) {
             } finally {
@@ -6112,11 +6115,11 @@ namespace Boare.Cadencii {
                         dlg = new FormTempoConfig( bar_count, beat_in_bar, timesig.numerator, clocks_in_beat, clock_per_beat, (decimal)(6e7 / tte.Tempo), AppManager.getVsqFile().getPreMeasure() );
                         dlg.setLocation( getFormPreferedLocation( dlg ) );
                         if ( dlg.showDialog() == BDialogResult.OK ) {
-                            int new_beat = dlg.BeatCount;
-                            int new_clocks_in_beat = dlg.Clock;
+                            int new_beat = dlg.getBeatCount();
+                            int new_clocks_in_beat = dlg.getClock();
                             int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
                             CadenciiCommand run = new CadenciiCommand(
-                                VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.Tempo) ) );
+                                VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
                             AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                             setEdited( true );
                             refreshScreen();
@@ -6208,8 +6211,8 @@ namespace Boare.Cadencii {
                     }
                     #endregion
                 }
-                picturePositionIndicator.Refresh();
-                pictPianoRoll.Refresh();
+                picturePositionIndicator.repaint();
+                pictPianoRoll.repaint();
             }
         }
 
@@ -6526,8 +6529,8 @@ namespace Boare.Cadencii {
                                         AppManager.getVsqFile().getPreMeasure() );
                                         dlg.setLocation( getFormPreferedLocation( dlg ) );
                                         if ( dlg.showDialog() == BDialogResult.OK ) {
-                                            int new_beat = dlg.BeatCount;
-                                            int new_clocks_in_beat = dlg.Clock;
+                                            int new_beat = dlg.getBeatCount();
+                                            int new_clocks_in_beat = dlg.getClock();
                                             int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
 #if DEBUG
                                             AppManager.debugWriteLine( "    new_beat=" + new_beat );
@@ -6536,7 +6539,7 @@ namespace Boare.Cadencii {
                                             AppManager.debugWriteLine( "    new_clock=" + new_clock );
 #endif
                                             CadenciiCommand run = new CadenciiCommand(
-                                                VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.Tempo) ) );
+                                                VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
                                             AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                             setEdited( true );
                                             refreshScreen();
@@ -6701,8 +6704,8 @@ namespace Boare.Cadencii {
                     }
                 }
             }
-            pictPianoRoll.Refresh();
-            picturePositionIndicator.Refresh();
+            pictPianoRoll.repaint();
+            picturePositionIndicator.repaint();
         }
 
         private void picturePositionIndicator_MouseMove( Object sender, BMouseEventArgs e ) {
@@ -6721,7 +6724,7 @@ namespace Boare.Cadencii {
                     int key = item.getKey();
                     AppManager.getSelectedTempo( key ).editing.Clock = AppManager.getSelectedTempo( key ).original.Clock + dclock;
                 }
-                picturePositionIndicator.Refresh();
+                picturePositionIndicator.repaint();
             } else if ( m_timesig_dragging ) {
                 int clock = AppManager.clockFromXCoord( e.X ) - m_timesig_dragging_deltaclock;
                 int barcount = AppManager.getVsqFile().getBarCountFromClock( clock );
@@ -6732,7 +6735,7 @@ namespace Boare.Cadencii {
                     int bar = item.getKey();
                     AppManager.getSelectedTimesig( bar ).editing.BarCount = AppManager.getSelectedTimesig( bar ).original.BarCount + dbarcount;
                 }
-                picturePositionIndicator.Refresh();
+                picturePositionIndicator.repaint();
             } else if ( m_startmark_dragging ) {
                 int clock = AppManager.clockFromXCoord( e.X );
                 int unit = AppManager.getPositionQuantizeClock();
@@ -6806,7 +6809,7 @@ namespace Boare.Cadencii {
 #if USE_DOBJ
             updateDrawObjectList();
 #endif
-            this.Refresh();
+            repaint();
         }
         #endregion
 
@@ -7007,7 +7010,9 @@ namespace Boare.Cadencii {
                     m_edit_curve_mode = CurveEditMode.MIDDLE_DRAG;
                     m_button_initial = new Point( e.X, e.Y );
                     m_middle_button_hscroll = hScroll.getValue();
+#if !JAVA
                     this.Cursor = HAND;
+#endif
                 }
             }
         }
@@ -8228,9 +8233,9 @@ namespace Boare.Cadencii {
                 hei = minsize.height;
                 change_size_required = true;
             }
-            this.setMinimumSize( getWindowMinimumSize() );
+            setMinimumSize( getWindowMinimumSize() );
             if ( change_size_required ) {
-                this.setSize( wid, hei );
+                setSize( wid, hei );
             }
         }
 
@@ -8616,7 +8621,7 @@ namespace Boare.Cadencii {
         }
 
         private void invalidatePictOverview( Object sender, BEventArgs e ) {
-            pictOverview.Invalidate();
+            pictOverview.invalidate();
         }
 
         private void btnMooz_Click( Object sender, BEventArgs e ) {
@@ -8868,7 +8873,7 @@ namespace Boare.Cadencii {
                 Point parent = this.getLocation();
                 XmlRectangle rc = AppManager.editorConfig.PropertyWindowStatus.Bounds;
                 Point property = new Point( rc.x, rc.y );
-                AppManager.propertyWindow.Bounds = new System.Drawing.Rectangle( parent.x + property.x, parent.y + property.y, rc.Width, rc.Height );
+                AppManager.propertyWindow.setBounds( new Rectangle( parent.x + property.x, parent.y + property.y, rc.Width, rc.Height ) );
                 normalizeFormLocation( AppManager.propertyWindow );
                 menuVisualProperty.setSelected( true );
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
@@ -10102,7 +10107,7 @@ namespace Boare.Cadencii {
                     FormCompileResult dlg = null;
                     try {
                         dlg = new FormCompileResult( _( "Failed loading script." ), si.ErrorMessage );
-                        dlg.ShowDialog();
+                        dlg.showDialog();
                     } catch ( Exception ex ) {
                     } finally {
                         if ( dlg != null ) {
@@ -10574,15 +10579,15 @@ namespace Boare.Cadencii {
         }
 
         private void refreshScreenCore( Object sender, BEventArgs e ) {
-            pictPianoRoll.Refresh();
-            picturePositionIndicator.Refresh();
-            trackSelector.Refresh();
+            pictPianoRoll.repaint();
+            picturePositionIndicator.repaint();
+            trackSelector.repaint();
             if ( menuVisualWaveform.isSelected() ) {
                 waveView.Draw();
                 waveView.Refresh();
             }
             if ( AppManager.editorConfig.OverviewEnabled ) {
-                pictOverview.Refresh();
+                pictOverview.repaint();
             }
         }
 
@@ -11299,7 +11304,7 @@ namespace Boare.Cadencii {
                         VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(), ids, new_ids ) );
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
-                    this.Refresh();
+                    repaint();
                 }
             } catch ( Exception ex ) {
             } finally {
@@ -11540,7 +11545,7 @@ namespace Boare.Cadencii {
                         setEdited( true );
                         AppManager.clearSelectedEvent();
                     }
-                    this.Refresh();
+                    repaint();
                 } else if ( AppManager.getSelectedTempoCount() > 0 ) {
                     Vector<Integer> clocks = new Vector<Integer>();
                     for ( Iterator itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
@@ -11563,7 +11568,7 @@ namespace Boare.Cadencii {
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
                     AppManager.clearSelectedTempo();
-                    this.Refresh();
+                    repaint();
                 } else if ( AppManager.getSelectedTimesigCount() > 0 ) {
 #if DEBUG
                     AppManager.debugWriteLine( "    Timesig" );
@@ -11593,7 +11598,7 @@ namespace Boare.Cadencii {
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
                     AppManager.clearSelectedTimesig();
-                    this.Refresh();
+                    repaint();
                 }
                 if ( AppManager.getSelectedPointIDCount() > 0 ) {
 #if DEBUG

@@ -69,12 +69,12 @@ namespace Boare.Cadencii {
         }
 
         public void ApplyLanguage() {
-            this.Text = _( "Shortcut Config" );
+            setTitle( _( "Shortcut Config" ) );
 
-            btnOK.Text = _( "OK" );
-            btnCancel.Text = _( "Cancel" );
-            btnRevert.Text = _( "Revert" );
-            btnLoadDefault.Text = _( "Load Default" );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
+            btnRevert.setText( _( "Revert" ) );
+            btnLoadDefault.setText( _( "Load Default" ) );
 
             list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
             toolTip.SetToolTip( list, _( "Select command and hit key(s) you want to set.\nHit Backspace if you want to remove shortcut key." ) );
@@ -110,12 +110,10 @@ namespace Boare.Cadencii {
             return Messaging.getMessage( id );
         }
 
-        public TreeMap<String, ValuePair<String, BKeys[]>> Result {
-            get {
-                TreeMap<String, ValuePair<String, BKeys[]>> ret = new TreeMap<String, ValuePair<String, BKeys[]>>();
-                CopyDict( m_dict, ref ret );
-                return ret;
-            }
+        public TreeMap<String, ValuePair<String, BKeys[]>> getResult() {
+            TreeMap<String, ValuePair<String, BKeys[]>> ret = new TreeMap<String, ValuePair<String, BKeys[]>>();
+            CopyDict( m_dict, ref ret );
+            return ret;
         }
 
         private static void CopyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, ref TreeMap<String, ValuePair<String, BKeys[]>> dest ) {
@@ -316,11 +314,14 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+#else
             this.list.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.list_PreviewKeyDown );
             this.list.KeyDown += new System.Windows.Forms.KeyEventHandler( this.list_KeyDown );
             this.btnLoadDefault.Click += new System.EventHandler( this.btnLoadDefault_Click );
             this.btnRevert.Click += new System.EventHandler( this.btnRevert_Click );
             this.FormClosing += new FormClosingEventHandler( FormShortcutKeys_FormClosing );
+#endif
         }
 
         private void setResources() {
@@ -445,8 +446,6 @@ namespace Boare.Cadencii {
         private BButton btnCancel;
         private BButton btnOK;
         private BListView list;
-        //private System.Windows.Forms.ColumnHeader columnCommand;
-        //private System.Windows.Forms.ColumnHeader columnShortcut;
         private BButton btnLoadDefault;
         private BButton btnRevert;
         private System.Windows.Forms.ToolTip toolTip;

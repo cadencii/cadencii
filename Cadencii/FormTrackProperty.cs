@@ -45,18 +45,16 @@ namespace Boare.Cadencii {
         public void ApplyLanguage() {
             lblMasterTuning.Text = _( "Master Tuning in Cent" );
             this.Text = _( "Track Property" );
-            btnOK.Text = _( "OK" );
-            btnCancel.Text = _( "Cancel" );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
         }
 
         private String _( String id ) {
             return Messaging.getMessage( id );
         }
 
-        public int MasterTuningInCent {
-            get {
-                return m_master_tuning;
-            }
+        public int getMasterTuningInCent() {
+            return m_master_tuning;
         }
 
         private void txtMasterTuning_TextChanged( object sender, EventArgs e ) {

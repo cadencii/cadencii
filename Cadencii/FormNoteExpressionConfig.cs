@@ -168,11 +168,11 @@ namespace Boare.Cadencii {
 
             //comboAttackTemplateを更新
             AttackConfig empty = new AttackConfig();
-            comboAttackTemplate.Items.Clear();
+            comboAttackTemplate.removeAllItems();
             empty.contents.IconID = "$01010000";
             empty.contents.Caption = "[Non Attack]";
-            comboAttackTemplate.Items.Add( empty );
-            comboAttackTemplate.SelectedIndex = 0;
+            comboAttackTemplate.addItem( empty );
+            comboAttackTemplate.setSelectedItem( empty );
             String icon_id = "";
             if ( m_note_head_handle != null ) {
                 icon_id = m_note_head_handle.IconID;
@@ -186,20 +186,26 @@ namespace Boare.Cadencii {
             }
             for ( Iterator itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 AttackConfig item = (AttackConfig)itr.next();
-                comboAttackTemplate.Items.Add( item );
+                comboAttackTemplate.addItem( item );
                 if ( item.contents.IconID.Equals( icon_id ) ) {
-                    comboAttackTemplate.SelectedIndex = comboAttackTemplate.Items.Count - 1;
+                    comboAttackTemplate.setSelectedItem( comboAttackTemplate.getItemAt( comboAttackTemplate.getItemCount() - 1 ) );
                 }
             }
+#if JAVA
+            comboAttackTemplate.selectedIndexChangedEvent.add( new BEventHandler( this, "comboAttackTemplate_SelectedIndexChanged" ) );
+#else
             comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
+#endif
 
+#if !JAVA
             Size current_size = this.ClientSize;
             this.ClientSize = new Size( current_size.Width, flowLayoutPanel.ClientSize.Height + flowLayoutPanel.Top * 2 );
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
+#endif
         }
 
         private void comboAttackTemplate_SelectedIndexChanged( Object sender, BEventArgs e ) {
-            int index = comboAttackTemplate.SelectedIndex;
+            int index = comboAttackTemplate.getSelectedIndex();
             if ( index < 0 ) {
                 return;
             }
@@ -215,7 +221,7 @@ namespace Boare.Cadencii {
             trackDuration.setEnabled( true );
             txtDepth.setEnabled( true );
             trackDepth.setEnabled( true );
-            AttackConfig aconfig = (AttackConfig)comboAttackTemplate.SelectedItem;
+            AttackConfig aconfig = (AttackConfig)comboAttackTemplate.getSelectedItem();
             if ( m_note_head_handle == null ) {
                 txtDuration.setText( aconfig.contents.Duration + "" );
                 txtDepth.setText( aconfig.contents.Depth + "" );
@@ -318,7 +324,7 @@ namespace Boare.Cadencii {
         }
 
         private void comboBox1_SelectedIndexChanged( Object sender, BEventArgs e ) {
-            switch ( comboTemplate.SelectedIndex ) {
+            switch ( comboTemplate.getSelectedIndex() ) {
                 case 1:
                     setPMBendDepth( 8 );
                     setPMBendLength( 0 );

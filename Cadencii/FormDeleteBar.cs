@@ -87,6 +87,7 @@ namespace Boare.Cadencii {
 
         private void setResources() {
         }
+
 #if JAVA
         #region UI Impl for Java
 	    private JPanel jContentPane = null;

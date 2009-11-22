@@ -61,9 +61,40 @@ namespace bocoree.windows.forms {
             return m_result;
         }
 
+        public void close() {
+            base.Close();
+        }
+
+        public bocoree.awt.Dimension getClientSize() {
+            System.Drawing.Size s = base.Size;
+            return new bocoree.awt.Dimension( s.Width, s.Height );
+        }
+
+        // root implementation: common APIs of org.kbinani.*
+        #region common APIs of org.kbinani.*
+        // root implementation is in BForm.cs
+        public bocoree.awt.Point pointToScreen( bocoree.awt.Point point_on_client ) {
+            bocoree.awt.Point p = getLocationOnScreen();
+            return new bocoree.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
+        }
+
+        public bocoree.awt.Point pointToClient( bocoree.awt.Point point_on_screen ) {
+            bocoree.awt.Point p = getLocationOnScreen();
+            return new bocoree.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
+        }
+        #endregion
+
         // root implementation of java.awt.Component
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
+        public void invalidate() {
+            base.Invalidate();
+        }
+
+        public void repaint() {
+            base.Refresh();
+        }
+
         public void setBounds( int x, int y, int width, int height ) {
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
@@ -225,10 +256,6 @@ namespace bocoree.windows.forms {
             return new bocoree.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public void setFont( bocoree.awt.Font font ) {
-            base.Font = font.font;
-        }
-
         public bool isEnabled() {
             return base.Enabled;
         }
@@ -239,6 +266,28 @@ namespace bocoree.windows.forms {
 
         public void requestFocus() {
             base.Focus();
+        }
+
+        public bool isFocusOwner() {
+            return base.Focused;
+        }
+
+        public void setPreferredSize( bocoree.awt.Dimension size ) {
+            base.Size = new System.Drawing.Size( size.width, size.height );
+        }
+
+        public bocoree.awt.Font getFont() {
+            return new bocoree.awt.Font( base.Font );
+        }
+
+        public void setFont( bocoree.awt.Font font ) {
+            if ( font == null ) {
+                return;
+            }
+            if ( font.font == null ) {
+                return;
+            }
+            base.Font = font.font;
         }
         #endregion
 

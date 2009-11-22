@@ -38,7 +38,7 @@ namespace Boare.Cadencii {
         }
 
         public void ApplyLanguage() {
-            this.Text = _( "Note Property" );
+            setTitle( _( "Note Property" ) );
         }
 
         private static String _( String id ) {
@@ -54,7 +54,7 @@ namespace Boare.Cadencii {
         }
 
         private void menuClose_Click( object sender, EventArgs e ) {
-            this.Close();
+            close();
         }
 
         private void registerEventHandlers() {
@@ -63,6 +63,7 @@ namespace Boare.Cadencii {
 
         private void setResources() {
         }
+
 #if JAVA
 #else
         #region UI Impl for C#

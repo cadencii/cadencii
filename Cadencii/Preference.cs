@@ -56,6 +56,7 @@ namespace Boare.Cadencii {
         private static int columnWidthHeaderName = 100;
         private static int columnWidthHeaderPath = 250;
         private BFontChooser fontDialog;
+        private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
 #if JAVA
@@ -96,78 +97,80 @@ namespace Boare.Cadencii {
             fontDialog.dialog.ShowEffects = false;
 #endif
             openUtauCore = new BFileChooser( "" );
+            folderBrowserSingers = new BFolderBrowser();
+            folderBrowserSingers.setNewFolderButtonVisible( false );
             ApplyLanguage();
 
-            comboVibratoLength.Items.Clear();
+            comboVibratoLength.removeAllItems();
             foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
-                comboVibratoLength.Items.Add( DefaultVibratoLengthUtil.toString( dvl ) );
+                comboVibratoLength.addItem( DefaultVibratoLengthUtil.toString( dvl ) );
             }
-            comboVibratoLength.SelectedIndex = 1;
+            comboVibratoLength.setSelectedIndex( 1 );
 
-            comboAutoVibratoMinLength.Items.Clear();
+            comboAutoVibratoMinLength.removeAllItems();
             foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) ) {
-                comboAutoVibratoMinLength.Items.Add( AutoVibratoMinLengthUtil.toString( avml ) );
+                comboAutoVibratoMinLength.addItem( AutoVibratoMinLengthUtil.toString( avml ) );
             }
-            comboAutoVibratoMinLength.SelectedIndex = 0;
+            comboAutoVibratoMinLength.setSelectedIndex( 0 );
 
-            comboAutoVibratoType1.Items.Clear();
+            comboAutoVibratoType1.removeAllItems();
             for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 VibratoConfig vconfig = (VibratoConfig)itr.next();
-                comboAutoVibratoType1.Items.Add( vconfig );
+                comboAutoVibratoType1.addItem( vconfig );
             }
-            if ( comboAutoVibratoType1.Items.Count > 0 ) {
-                comboAutoVibratoType1.SelectedIndex = 0;
+            if ( comboAutoVibratoType1.getItemCount() > 0 ) {
+                comboAutoVibratoType1.setSelectedIndex( 0 );
             }
 
-            comboAutoVibratoType2.Items.Clear();
+            comboAutoVibratoType2.removeAllItems();
             for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID2 ); itr.hasNext(); ) {
                 VibratoConfig vconfig = (VibratoConfig)itr.next();
-                comboAutoVibratoType2.Items.Add( vconfig );
+                comboAutoVibratoType2.addItem( vconfig );
             }
-            if ( comboAutoVibratoType2.Items.Count > 0 ) {
-                comboAutoVibratoType2.SelectedIndex = 0;
+            if ( comboAutoVibratoType2.getItemCount() > 0 ) {
+                comboAutoVibratoType2.setSelectedIndex( 0 );
             }
 
-            comboDynamics.Items.Clear();
-            comboAmplitude.Items.Clear();
-            comboPeriod.Items.Clear();
+            comboDynamics.removeAllItems();
+            comboAmplitude.removeAllItems();
+            comboPeriod.removeAllItems();
             for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ) {
                 ClockResolution cr = (ClockResolution)itr.next();
-                comboDynamics.Items.Add( cr.ToString() );
-                comboAmplitude.Items.Add( cr.ToString() );
-                comboPeriod.Items.Add( cr.ToString() );
+                comboDynamics.addItem( cr.ToString() );
+                comboAmplitude.addItem( cr.ToString() );
+                comboPeriod.addItem( cr.ToString() );
             }
-            comboDynamics.SelectedIndex = 0;
-            comboAmplitude.SelectedIndex = 0;
-            comboPeriod.SelectedIndex = 0;
+            comboDynamics.setSelectedIndex( 0 );
+            comboAmplitude.setSelectedIndex( 0 );
+            comboPeriod.setSelectedIndex( 0 );
 
-            comboLanguage.Items.Clear();
+            comboLanguage.removeAllItems();
             String[] list = Messaging.getRegisteredLanguage();
             int index = 0;
-            comboLanguage.Items.Add( "Default" );
+            comboLanguage.addItem( "Default" );
             int count = 0;
             foreach ( String s in list ) {
                 count++;
-                comboLanguage.Items.Add( s );
+                comboLanguage.addItem( s );
                 if ( s.Equals( Messaging.getLanguage() ) ) {
                     index = count;
                 }
             }
-            comboLanguage.SelectedIndex = index;
+            comboLanguage.setSelectedIndex( index );
 
             SingerConfig[] dict = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
             m_program_change = new Vector<String>();
-            comboDefualtSinger.Items.Clear();
+            comboDefualtSinger.removeAllItems();
             foreach ( SingerConfig kvp in dict ) {
                 m_program_change.add( kvp.VOICENAME );
-                comboDefualtSinger.Items.Add( kvp.VOICENAME );
+                comboDefualtSinger.addItem( kvp.VOICENAME );
             }
-            comboDefualtSinger.Enabled = (comboDefualtSinger.Items.Count > 0);
-            if ( comboDefualtSinger.Items.Count > 0 ) {
-                comboDefualtSinger.SelectedIndex = 0;
+            comboDefualtSinger.setEnabled( (comboDefualtSinger.getItemCount() > 0) );
+            if ( comboDefualtSinger.getItemCount() > 0 ) {
+                comboDefualtSinger.setSelectedIndex( 0 );
             }
 
-            comboPlatform.Items.Clear();
+            comboPlatform.removeAllItems();
 #if DEBUG
             AppManager.debugWriteLine( "Preference.ctor()" );
             AppManager.debugWriteLine( "    Environment.OSVersion.Platform=" + Environment.OSVersion.Platform );
@@ -184,22 +187,22 @@ namespace Boare.Cadencii {
             } else {
 #endif
             foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) ) {
-                comboPlatform.Items.Add( p + "" );
+                comboPlatform.addItem( p + "" );
             }
 #if !DEBUG
             }
 #endif
 
-            comboMidiInPortNumber.Items.Clear();
+            comboMidiInPortNumber.removeAllItems();
 #if ENABLE_MIDI
             bocoree.MIDIINCAPS[] midiins = MidiInDevice.GetMidiInDevices();
             for ( int i = 0; i < midiins.Length; i++ ) {
-                comboMidiInPortNumber.Items.Add( midiins[i] );
+                comboMidiInPortNumber.addItem( midiins[i] );
             }
-            if ( comboMidiInPortNumber.Items.Count == 0 ) {
-                comboMidiInPortNumber.Enabled = false;
+            if ( comboMidiInPortNumber.getItemCount() == 0 ) {
+                comboMidiInPortNumber.setEnabled( false );
             } else {
-                comboMidiInPortNumber.Enabled = true;
+                comboMidiInPortNumber.setEnabled( true );
             }
 #else
             comboMidiInPortNumber.Enabled = false;
@@ -217,15 +220,15 @@ namespace Boare.Cadencii {
         }
 
         public boolean isUseSpaceKeyAsMiddleButtonModifier() {
-            return chkUseSpaceKeyAsMiddleButtonModifier.Checked;
+            return chkUseSpaceKeyAsMiddleButtonModifier.isSelected();
         }
 
         public void setUseSpaceKeyAsMiddleButtonModifier( boolean value ) {
-            chkUseSpaceKeyAsMiddleButtonModifier.Checked = value;
+            chkUseSpaceKeyAsMiddleButtonModifier.setSelected( value );
         }
 
         public int getAutoBackupIntervalMinutes() {
-            if ( chkAutoBackup.Checked ) {
+            if ( chkAutoBackup.isSelected() ) {
                 return (int)numAutoBackupInterval.Value;
             } else {
                 return 0;
@@ -234,34 +237,34 @@ namespace Boare.Cadencii {
 
         public void setAutoBackupIntervalMinutes( int value ) {
             if ( value <= 0 ) {
-                chkAutoBackup.Checked = false;
+                chkAutoBackup.setSelected( false );
             } else {
-                chkAutoBackup.Checked = true;
+                chkAutoBackup.setSelected( true );
                 numAutoBackupInterval.Value = value;
             }
         }
 
         public boolean isSelfDeRomantization() {
-            return chkTranslateRoman.Checked;
+            return chkTranslateRoman.isSelected();
         }
 
         public void setSelfDeRomantization( boolean value ) {
-            chkTranslateRoman.Checked = value;
+            chkTranslateRoman.setSelected( value );
         }
 
         public boolean isInvokeWithWine() {
-            return chkInvokeWithWine.Checked;
+            return chkInvokeWithWine.isSelected();
         }
 
         public void setInvokeWithWine( boolean value ) {
-            chkInvokeWithWine.Checked = value;
+            chkInvokeWithWine.setSelected( value );
         }
 
 #if ENABLE_MIDI
         public int getMidiInPort() {
-            if ( comboMidiInPortNumber.Enabled ) {
-                if ( comboMidiInPortNumber.SelectedIndex >= 0 ) {
-                    return comboMidiInPortNumber.SelectedIndex;
+            if ( comboMidiInPortNumber.isEnabled() ) {
+                if ( comboMidiInPortNumber.getSelectedIndex() >= 0 ) {
+                    return comboMidiInPortNumber.getSelectedIndex();
                 } else {
                     return 0;
                 }
@@ -273,198 +276,198 @@ namespace Boare.Cadencii {
 
 #if ENABLE_MIDI
         public void setMidiInPort( int value ) {
-            if ( comboMidiInPortNumber.Enabled ) {
-                if ( 0 <= value && value < comboMidiInPortNumber.Items.Count ) {
-                    comboMidiInPortNumber.SelectedIndex = value;
+            if ( comboMidiInPortNumber.isEnabled() ) {
+                if ( 0 <= value && value < comboMidiInPortNumber.getItemCount() ) {
+                    comboMidiInPortNumber.setSelectedIndex( value );
                 } else {
-                    comboMidiInPortNumber.SelectedIndex = 0;
+                    comboMidiInPortNumber.setSelectedIndex( 0 );
                 }
             }
         }
 #endif
 
         public boolean isCurveVisibleVel() {
-            return chkVel.Checked;
+            return chkVel.isSelected();
         }
 
         public void setCurveVisibleVel( boolean value ) {
-            chkVel.Checked = value;
+            chkVel.setSelected( value );
         }
 
         public boolean isCurveVisibleAccent() {
-            return chkAccent.Checked;
+            return chkAccent.isSelected();
         }
 
         public void setCurveVisibleAccent( boolean value ) {
-            chkAccent.Checked = value;
+            chkAccent.setSelected( value );
         }
 
         public boolean isCurveVisibleDecay() {
-            return chkDecay.Checked;
+            return chkDecay.isSelected();
         }
 
         public void setCurveVisibleDecay( boolean value ) {
-            chkDecay.Checked = value;
+            chkDecay.setSelected( value );
         }
 
         public boolean isCurveVisibleVibratoRate() {
-            return chkVibratoRate.Checked;
+            return chkVibratoRate.isSelected();
         }
 
         public void setCurveVisibleVibratoRate( boolean value ) {
-            chkVibratoRate.Checked = value;
+            chkVibratoRate.setSelected( value );
         }
 
         public boolean isCurveVisibleVibratoDepth() {
-            return chkVibratoDepth.Checked;
+            return chkVibratoDepth.isSelected();
         }
 
         public void setCurveVisibleVibratoDepth( boolean value ) {
-            chkVibratoDepth.Checked = value;
+            chkVibratoDepth.setSelected( value );
         }
 
         public boolean isCurveVisibleDyn() {
-            return chkDyn.Checked;
+            return chkDyn.isSelected();
         }
 
         public void setCurveVisibleDyn( boolean value ) {
-            chkDyn.Checked = value;
+            chkDyn.setSelected( value );
         }
 
         public boolean isCurveVisibleBre() {
-            return chkBre.Checked;
+            return chkBre.isSelected();
         }
 
         public void setCurveVisibleBre( boolean value ) {
-            chkBre.Checked = value;
+            chkBre.setSelected( value );
         }
 
         public boolean isCurveVisibleBri() {
-            return chkBri.Checked;
+            return chkBri.isSelected();
         }
 
         public void setCurveVisibleBri( boolean value ) {
-            chkBri.Checked = value;
+            chkBri.setSelected( value );
         }
 
         public boolean isCurveVisibleCle() {
-            return chkCle.Checked;
+            return chkCle.isSelected();
         }
 
         public void setCurveVisibleCle( boolean value ) {
-            chkCle.Checked = value;
+            chkCle.setSelected( value );
         }
 
         public boolean isCurveVisibleOpe() {
-            return chkOpe.Checked;
+            return chkOpe.isSelected();
         }
 
         public void setCurveVisibleOpe( boolean value ) {
-            chkOpe.Checked = value;
+            chkOpe.setSelected( value );
         }
 
         public boolean isCurveVisiblePor() {
-            return chkPor.Checked;
+            return chkPor.isSelected();
         }
 
         public void setCurveVisiblePor( boolean value ) {
-            chkPor.Checked = value;
+            chkPor.setSelected( value );
         }
 
         public boolean isCurveVisibleGen() {
-            return chkGen.Checked;
+            return chkGen.isSelected();
         }
 
         public void setCurveVisibleGen( boolean value ) {
-            chkGen.Checked = value;
+            chkGen.setSelected( value );
         }
 
         public boolean isCurveVisiblePit() {
-            return chkPit.Checked;
+            return chkPit.isSelected();
         }
 
         public void setCurveVisiblePit( boolean value ) {
-            chkPit.Checked = value;
+            chkPit.setSelected( value );
         }
 
         public boolean isCurveVisiblePbs() {
-            return chkPbs.Checked;
+            return chkPbs.isSelected();
         }
 
         public void setCurveVisiblePbs( boolean value ) {
-            chkPbs.Checked = value;
+            chkPbs.setSelected( value );
         }
 
         public boolean isCurveVisibleFx2Depth() {
-            return chkFx2Depth.Checked;
+            return chkFx2Depth.isSelected();
         }
 
         public void setCurveVisibleFx2Depth( boolean value ) {
-            chkFx2Depth.Checked = value;
+            chkFx2Depth.setSelected( value );
         }
 
         public boolean isCurveVisibleHarmonics() {
-            return chkHarmonics.Checked;
+            return chkHarmonics.isSelected();
         }
 
         public void setCurveVisibleHarmonics( boolean value ) {
-            chkHarmonics.Checked = value;
+            chkHarmonics.setSelected( value );
         }
 
         public boolean isCurveVisibleReso1() {
-            return chkReso1.Checked;
+            return chkReso1.isSelected();
         }
 
         public void setCurveVisibleReso1( boolean value ) {
-            chkReso1.Checked = value;
+            chkReso1.setSelected( value );
         }
 
         public boolean isCurveVisibleReso2() {
-            return chkReso2.Checked;
+            return chkReso2.isSelected();
         }
 
         public void setCurveVisibleReso2( boolean value ) {
-            chkReso2.Checked = value;
+            chkReso2.setSelected( value );
         }
 
         public boolean isCurveVisibleReso3() {
-            return chkReso3.Checked;
+            return chkReso3.isSelected();
         }
 
         public void setCurveVisibleReso3( boolean value ) {
-            chkReso3.Checked = value;
+            chkReso3.setSelected( value );
         }
 
         public boolean isCurveVisibleReso4() {
-            return chkReso4.Checked;
+            return chkReso4.isSelected();
         }
 
         public void setCurveVisibleReso4( boolean value ) {
-            chkReso4.Checked = value;
+            chkReso4.setSelected( value );
         }
 
         public boolean isCurveVisibleEnvelope() {
-            return chkEnvelope.Checked;
+            return chkEnvelope.isSelected();
         }
 
         public void setCurveVisibleEnvelope( boolean value ) {
-            chkEnvelope.Checked = value;
+            chkEnvelope.setSelected( value );
         }
 
         public boolean isCurveSelectingQuantized() {
-            return chkCurveSelectingQuantized.Checked;
+            return chkCurveSelectingQuantized.isSelected();
         }
 
         public void setCurveSelectingQuantized( boolean value ) {
-            chkCurveSelectingQuantized.Checked = value;
+            chkCurveSelectingQuantized.setSelected( value );
         }
 
         public boolean isPlayPreviewWhenRightClick() {
-            return chkPlayPreviewWhenRightClick.Checked;
+            return chkPlayPreviewWhenRightClick.isSelected();
         }
 
         public void setPlayPreviewWhenRightClick( boolean value ) {
-            chkPlayPreviewWhenRightClick.Checked = value;
+            chkPlayPreviewWhenRightClick.setSelected( value );
         }
 
         public int getMouseHoverTime() {
@@ -484,11 +487,11 @@ namespace Boare.Cadencii {
         }
 
         public boolean isKeepLyricInputMode() {
-            return chkKeepLyricInputMode.Checked;
+            return chkKeepLyricInputMode.isSelected();
         }
 
         public void setKeepLyricInputMode( boolean value ) {
-            chkKeepLyricInputMode.Checked = value;
+            chkKeepLyricInputMode.setSelected( value );
         }
 
         public PlatformEnum getPlatform() {
@@ -497,10 +500,10 @@ namespace Boare.Cadencii {
 
         public void setPlatform( PlatformEnum value ) {
             m_platform = value;
-            for ( int i = 0; i < comboPlatform.Items.Count; i++ ) {
-                String title = (String)comboPlatform.Items[i];
+            for ( int i = 0; i < comboPlatform.getItemCount(); i++ ) {
+                String title = (String)comboPlatform.getItemAt( i );
                 if ( title.Equals( m_platform + "" ) ) {
-                    comboPlatform.SelectedIndex = i;
+                    comboPlatform.setSelectedIndex( i );
                     break;
                 }
             }
@@ -515,17 +518,17 @@ namespace Boare.Cadencii {
         }
 
         public boolean isScrollHorizontalOnWheel() {
-            return chkScrollHorizontal.Checked;
+            return chkScrollHorizontal.isSelected();
         }
 
         public void setScrollHorizontalOnWheel( boolean value ) {
-            chkScrollHorizontal.Checked = value;
+            chkScrollHorizontal.setSelected( value );
         }
 
         public void ApplyLanguage() {
             Text = _( "Preference" );
-            btnCancel.Text = _( "Cancel" );
-            btnOK.Text = _( "OK" );
+            btnCancel.setText( _( "Cancel" ) );
+            btnOK.setText( _( "OK" ) );
             openUtauCore.clearChoosableFileFilter();
             try {
                 openUtauCore.addFileFilter( _( "Executable(*.exe)|*.exe" ) );
@@ -535,7 +538,7 @@ namespace Boare.Cadencii {
                 openUtauCore.addFileFilter( "All Files(*.*)|*.*" );
             }
 
-            folderBrowserSingers.Description = _( "Select Singer Directory" );
+            folderBrowserSingers.setDescription( _( "Select Singer Directory" ) );
 
             #region tabSequence
             tabSequence.Text = _( "Sequence" );
@@ -546,7 +549,7 @@ namespace Boare.Cadencii {
             lblVibratoConfig.Text = _( "Vibrato Settings" );
             lblVibratoLength.Text = _( "Default Vibrato Length" ) + "(&L)";
             groupAutoVibratoConfig.Text = _( "Auto Vibrato Settings" );
-            chkEnableAutoVibrato.Text = _( "Enable Automatic Vibrato" ) + "(&E)";
+            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) + "(&E)" );
             lblAutoVibratoMinLength.Text = _( "Minimum note length for Automatic Vibrato" ) + "(&M)";
             lblAutoVibratoType1.Text = _( "Vibrato Type" ) + ": VOCALOID1 (&T)";
             lblAutoVibratoType2.Text = _( "Vibrato Type" ) + ": VOCALOID2 (&T)";
@@ -562,9 +565,9 @@ namespace Boare.Cadencii {
             lblPreSendTime.Text = _( "Pre-Send time" ) + "(&P)";
             lblWait.Text = _( "Waiting Time" ) + "(&W)";
             lblDefaultPremeasure.Text = _( "Default Pre-measure" ) + "(&M)";
-            chkChasePastEvent.Text = _( "Chase Event" ) + "(&C)";
+            chkChasePastEvent.setText( _( "Chase Event" ) + "(&C)" );
             lblSampleOutput.Text = _( "Playback Sample Sound" );
-            chkEnableSampleOutput.Text = _( "Enable" ) + "(&E)";
+            chkEnableSampleOutput.setText( _( "Enable" ) + "(&E)" );
             lblTiming.Text = _( "Timing" );
             lblPreSendTimeSample.Text = _( "Pre-Send Time for sample sound" ) + "(&G)";
             #endregion
@@ -575,8 +578,8 @@ namespace Boare.Cadencii {
             labelMenu.Text = _( "Menu / Lyrics" );
             labelScreen.Text = _( "Screen" );
             lblLanguage.Text = _( "UI Language" );
-            btnChangeMenuFont.Text = _( "Change" );
-            btnChangeScreenFont.Text = _( "Change" );
+            btnChangeMenuFont.setText( _( "Change" ) );
+            btnChangeScreenFont.setText( _( "Change" ) );
             lblTrackHeight.Text = _( "Track Height (pixel)" );
             groupVisibleCurve.Text = _( "Visible Control Curve" );
             #endregion
@@ -584,16 +587,16 @@ namespace Boare.Cadencii {
             #region tabOperation
             tabOperation.Text = _( "Operation" );
             labelWheelOrder.Text = _( "Mouse wheel Rate" );
-            chkCursorFix.Text = _( "Fix Play Cursor to Center" );
-            chkScrollHorizontal.Text = _( "Horizontal Scroll when Mouse wheel" );
+            chkCursorFix.setText( _( "Fix Play Cursor to Center" ) );
+            chkScrollHorizontal.setText( _( "Horizontal Scroll when Mouse wheel" ) );
             lblMaximumFrameRate.Text = _( "Maximum Frame Rate" );
-            chkKeepLyricInputMode.Text = _( "Keep Lyric Input Mode" );
+            chkKeepLyricInputMode.setText( _( "Keep Lyric Input Mode" ) );
             lblMouseHoverTime.Text = _( "Waiting Time for Preview" );
             lblMilliSecond.Text = _( "milli second" );
-            chkPlayPreviewWhenRightClick.Text = _( "Play Preview On Right Click" );
-            chkCurveSelectingQuantized.Text = _( "Enable Quantize for Curve Selecting" );
+            chkPlayPreviewWhenRightClick.setText( _( "Play Preview On Right Click" ) );
+            chkCurveSelectingQuantized.setText( _( "Enable Quantize for Curve Selecting" ) );
             lblMidiInPort.Text = _( "MIDI In Port Number" );
-            chkUseSpaceKeyAsMiddleButtonModifier.Text = _( "Use space key as Middle button modifier" );
+            chkUseSpaceKeyAsMiddleButtonModifier.setText( _( "Use space key as Middle button modifier" ) );
 
             groupPianoroll.Text = _( "Piano Roll" );
             groupMisc.Text = _( "Misc" );
@@ -604,25 +607,25 @@ namespace Boare.Cadencii {
 
             groupPlatform.Text = _( "Platform" );
             lblPlatform.Text = _( "Current Platform" );
-            chkCommandKeyAsControl.Text = _( "Use Command key as Control key" );
-            chkTranslateRoman.Text = _( "Translate Roman letters into Kana" );
+            chkCommandKeyAsControl.setText( _( "Use Command key as Control key" ) );
+            chkTranslateRoman.setText( _( "Translate Roman letters into Kana" ) );
 
             groupUtauCores.Text = _( "UTAU Cores" );
-            chkInvokeWithWine.Text = _( "Invoke UTAU cores with Wine" );
+            chkInvokeWithWine.setText( _( "Invoke UTAU cores with Wine" ) );
             #endregion
 
             #region tabUtauSingers
             tabUtauSingers.Text = _( "UTAU Singers" );
             listSingers.setColumnHeaders( new String[]{ _( "Program Change" ), _( "Name" ), _( "Path" ) } );
-            btnAdd.Text = _( "Add" );
-            btnRemove.Text = _( "Remove" );
-            btnUp.Text = _( "Up" );
-            btnDown.Text = _( "Down" );
+            btnAdd.setText( _( "Add" ) );
+            btnRemove.setText( _( "Remove" ) );
+            btnUp.setText( _( "Up" ) );
+            btnDown.setText( _( "Down" ) );
             #endregion
 
             #region tabFile
             tabFile.Text = _( "File" );
-            chkAutoBackup.Text = _( "Automatical Backup" );
+            chkAutoBackup.setText( _( "Automatical Backup" ) );
             lblAutoBackupInterval.Text = _( "interval" );
             lblAutoBackupMinutes.Text = _( "minute(s)" );
             #endregion
@@ -633,9 +636,9 @@ namespace Boare.Cadencii {
         }
 
         public String getLanguage() {
-            int index = comboLanguage.SelectedIndex;
-            if ( 0 <= index && index < comboLanguage.Items.Count ) {
-                String title = (String)comboLanguage.Items[index];
+            int index = comboLanguage.getSelectedIndex();
+            if ( 0 <= index && index < comboLanguage.getItemCount() ) {
+                String title = (String)comboLanguage.getItemAt( index );
                 if ( title.Equals( "Default" ) ) {
                     return "";
                 } else {
@@ -648,7 +651,7 @@ namespace Boare.Cadencii {
 
         public ClockResolution getControlCurveResolution() {
             int count = -1;
-            int index = comboDynamics.SelectedIndex;
+            int index = comboDynamics.getSelectedIndex();
             for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ) {
                 ClockResolution vt = (ClockResolution)itr.next();
                 count++;
@@ -656,7 +659,7 @@ namespace Boare.Cadencii {
                     return vt;
                 }
             }
-            comboDynamics.SelectedIndex = 0;
+            comboDynamics.setSelectedIndex( 0 );
             return ClockResolution.L30;
         }
 
@@ -666,7 +669,7 @@ namespace Boare.Cadencii {
                 ClockResolution vt = (ClockResolution)itr.next();
                 count++;
                 if ( vt.Equals( value ) ) {
-                    comboDynamics.SelectedIndex = count;
+                    comboDynamics.setSelectedIndex( count );
                     break;
                 }
             }
@@ -681,26 +684,26 @@ namespace Boare.Cadencii {
         }
 
         public int getPreMeasure() {
-            return comboDefaultPremeasure.SelectedIndex + 1;
+            return comboDefaultPremeasure.getSelectedIndex() + 1;
         }
 
         public void setPreMeasure( int value ) {
-            comboDefaultPremeasure.SelectedIndex = value - 1;
+            comboDefaultPremeasure.setSelectedIndex( value - 1 );
         }
 
         public boolean isEnableAutoVibrato() {
-            return chkEnableAutoVibrato.Checked;
+            return chkEnableAutoVibrato.isSelected();
         }
 
         public void setEnableAutoVibrato( boolean value ) {
-            chkEnableAutoVibrato.Checked = value;
+            chkEnableAutoVibrato.setSelected( value );
         }
 
         public String getAutoVibratoType1() {
             int count = -1;
-            int index = comboAutoVibratoType1.SelectedIndex;
+            int index = comboAutoVibratoType1.getSelectedIndex();
             if ( 0 <= index ) {
-                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.SelectedItem;
+                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.getSelectedItem();
                 return vconfig.contents.IconID;
             } else {
                 return "$04040001";
@@ -708,23 +711,23 @@ namespace Boare.Cadencii {
         }
 
         public void setAutoVibratoType1( String value ) {
-            for ( int i = 0; i < comboAutoVibratoType1.Items.Count; i++ ) {
-                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.Items[i];
+            for ( int i = 0; i < comboAutoVibratoType1.getItemCount(); i++ ) {
+                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.getItemAt( i );
                 if ( vconfig.contents.IconID.Equals( value ) ) {
-                    comboAutoVibratoType1.SelectedIndex = i;
+                    comboAutoVibratoType1.setSelectedIndex( i );
                     return;
                 }
             }
-            if ( comboAutoVibratoType1.Items.Count > 0 ) {
-                comboAutoVibratoType1.SelectedIndex = 0;
+            if ( comboAutoVibratoType1.getItemCount() > 0 ) {
+                comboAutoVibratoType1.setSelectedIndex( 0 );
             }
         }
 
         public String getAutoVibratoType2() {
             int count = -1;
-            int index = comboAutoVibratoType2.SelectedIndex;
+            int index = comboAutoVibratoType2.getSelectedIndex();
             if ( 0 <= index ) {
-                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.SelectedItem;
+                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.getSelectedItem();
                 return vconfig.contents.IconID;
             } else {
                 return "$04040001";
@@ -732,28 +735,28 @@ namespace Boare.Cadencii {
         }
 
         public void setAutoVibratoType2( String value ) {
-            for ( int i = 0; i < comboAutoVibratoType2.Items.Count; i++ ) {
-                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.Items[i];
+            for ( int i = 0; i < comboAutoVibratoType2.getItemCount(); i++ ) {
+                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.getItemAt( i );
                 if ( vconfig.contents.IconID.Equals( value ) ) {
-                    comboAutoVibratoType2.SelectedIndex = i;
+                    comboAutoVibratoType2.setSelectedIndex( i );
                     return;
                 }
             }
-            if ( comboAutoVibratoType2.Items.Count > 0 ) {
-                comboAutoVibratoType2.SelectedIndex = 0;
+            if ( comboAutoVibratoType2.getItemCount() > 0 ) {
+                comboAutoVibratoType2.setSelectedIndex( 0 );
             }
         }
 
         public AutoVibratoMinLengthEnum getAutoVibratoMinimumLength() {
             int count = -1;
-            int index = comboAutoVibratoMinLength.SelectedIndex;
+            int index = comboAutoVibratoMinLength.getSelectedIndex();
             foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) ) {
                 count++;
                 if ( count == index ) {
                     return avml;
                 }
             }
-            comboAutoVibratoMinLength.SelectedIndex = 0;
+            comboAutoVibratoMinLength.setSelectedIndex( 0 );
             return AutoVibratoMinLengthEnum.L1;
         }
 
@@ -762,7 +765,7 @@ namespace Boare.Cadencii {
             foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) ) {
                 count++;
                 if ( avml == value ) {
-                    comboAutoVibratoMinLength.SelectedIndex = count;
+                    comboAutoVibratoMinLength.setSelectedIndex( count );
                     break;
                 }
             }
@@ -770,14 +773,14 @@ namespace Boare.Cadencii {
 
         public DefaultVibratoLengthEnum getDefaultVibratoLength() {
             int count = -1;
-            int index = comboVibratoLength.SelectedIndex;
+            int index = comboVibratoLength.getSelectedIndex();
             foreach ( DefaultVibratoLengthEnum vt in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 count++;
                 if ( index == count ) {
                     return vt;
                 }
             }
-            comboVibratoLength.SelectedIndex = 1;
+            comboVibratoLength.setSelectedIndex( 1 );
             return DefaultVibratoLengthEnum.L66;
         }
 
@@ -793,11 +796,11 @@ namespace Boare.Cadencii {
         }
 
         public boolean isCursorFixed() {
-            return chkCursorFix.Checked;
+            return chkCursorFix.isSelected();
         }
 
         public void setCursorFixed( boolean value ) {
-            chkCursorFix.Checked = value;
+            chkCursorFix.setSelected( value );
         }
 
         public int getWheelOrder() {
@@ -834,8 +837,8 @@ namespace Boare.Cadencii {
         }
 
         public String getDefaultSingerName() {
-            if ( comboDefualtSinger.SelectedIndex >= 0 ) {
-                return m_program_change.get( comboDefualtSinger.SelectedIndex );
+            if ( comboDefualtSinger.getSelectedIndex() >= 0 ) {
+                return m_program_change.get( comboDefualtSinger.getSelectedIndex() );
             } else {
                 return "Miku";
             }
@@ -850,7 +853,7 @@ namespace Boare.Cadencii {
                 }
             }
             if ( index >= 0 ) {
-                comboDefualtSinger.SelectedIndex = index;
+                comboDefualtSinger.setSelectedIndex( index );
             }
         }
 
@@ -881,22 +884,22 @@ namespace Boare.Cadencii {
         }
 
         private void comboPlatform_SelectedIndexChanged( Object sender, BEventArgs e ) {
-            String title = (String)comboPlatform.SelectedItem;
+            String title = (String)comboPlatform.getSelectedItem();
             foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) ) {
                 if ( title.Equals( p + "" ) ) {
                     m_platform = p;
-                    chkCommandKeyAsControl.Enabled = p != PlatformEnum.Windows;
+                    chkCommandKeyAsControl.setEnabled( p != PlatformEnum.Windows );
                     break;
                 }
             }
         }
 
         public boolean isCommandKeyAsControl() {
-            return chkCommandKeyAsControl.Checked;
+            return chkCommandKeyAsControl.isSelected();
         }
 
         public void setCommandKeyAsControl( boolean value ) {
-            chkCommandKeyAsControl.Checked = value;
+            chkCommandKeyAsControl.setSelected( value );
         }
 
         private void btnResampler_Click( Object sender, BEventArgs e ) {
@@ -960,8 +963,8 @@ namespace Boare.Cadencii {
         }
 
         private void btnAdd_Click( Object sender, BEventArgs e ) {
-            if ( folderBrowserSingers.ShowDialog() == DialogResult.OK ) {
-                String dir = folderBrowserSingers.SelectedPath;
+            if ( folderBrowserSingers.showDialog() == BDialogResult.OK ) {
+                String dir = folderBrowserSingers.getSelectedPath();
                 SingerConfig sc = new SingerConfig();
                 String character = PortUtil.combinePath( dir, "character.txt" );
                 String name = "";
@@ -1006,13 +1009,13 @@ namespace Boare.Cadencii {
         private void listSingers_SelectedIndexChanged( Object sender, BEventArgs e ) {
             int index = getUtauSingersSelectedIndex();
             if ( index < 0 ) {
-                btnRemove.Enabled = false;
-                btnUp.Enabled = false;
-                btnDown.Enabled = false;
+                btnRemove.setEnabled( false );
+                btnUp.setEnabled( false );
+                btnDown.setEnabled( false );
             } else {
-                btnRemove.Enabled = true;
-                btnUp.Enabled = 0 <= index - 1 && index - 1 < m_utau_singers.size();
-                btnDown.Enabled = 0 <= index + 1 && index + 1 < m_utau_singers.size();
+                btnRemove.setEnabled( true );
+                btnUp.setEnabled( 0 <= index - 1 && index - 1 < m_utau_singers.size() );
+                btnDown.setEnabled( 0 <= index + 1 && index + 1 < m_utau_singers.size() );
             }
         }
 
@@ -1053,7 +1056,7 @@ namespace Boare.Cadencii {
         }
 
         private void chkAutoBackup_CheckedChanged( Object sender, BEventArgs e ) {
-            numAutoBackupInterval.Enabled = chkAutoBackup.Checked;
+            numAutoBackupInterval.Enabled = chkAutoBackup.isSelected();
         }
 
         private void Preference_FormClosing( object sender, FormClosingEventArgs e ) {
@@ -3520,9 +3523,6 @@ namespace Boare.Cadencii {
             this.btnUp = new bocoree.windows.forms.BButton();
             this.btnDown = new bocoree.windows.forms.BButton();
             this.listSingers = new BListView();
-            this.columnHeaderProgramChange = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderName = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderPath = new System.Windows.Forms.ColumnHeader();
             this.tabFile = new System.Windows.Forms.TabPage();
             this.lblAutoBackupMinutes = new bocoree.windows.forms.BLabel();
             this.numAutoBackupInterval = new Boare.Cadencii.NumericUpDownEx();
@@ -3530,7 +3530,6 @@ namespace Boare.Cadencii {
             this.chkAutoBackup = new bocoree.windows.forms.BCheckBox();
             this.btnCancel = new bocoree.windows.forms.BButton();
             this.btnOK = new bocoree.windows.forms.BButton();
-            this.folderBrowserSingers = new System.Windows.Forms.FolderBrowserDialog();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupAutoVibratoConfig.SuspendLayout();
@@ -4992,10 +4991,6 @@ namespace Boare.Cadencii {
             this.listSingers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listSingers.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderProgramChange,
-            this.columnHeaderName,
-            this.columnHeaderPath} );
             this.listSingers.FullRowSelect = true;
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
@@ -5005,20 +5000,6 @@ namespace Boare.Cadencii {
             this.listSingers.TabIndex = 120;
             this.listSingers.UseCompatibleStateImageBehavior = false;
             this.listSingers.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeaderProgramChange
-            // 
-            this.columnHeaderProgramChange.Text = "Program Change";
-            // 
-            // columnHeaderName
-            // 
-            this.columnHeaderName.Text = "Name";
-            this.columnHeaderName.Width = 100;
-            // 
-            // columnHeaderPath
-            // 
-            this.columnHeaderPath.Text = "Path";
-            this.columnHeaderPath.Width = 250;
             // 
             // tabFile
             // 
@@ -5100,10 +5081,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 200;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
-            // folderBrowserSingers
-            // 
-            this.folderBrowserSingers.ShowNewFolderButton = false;
             // 
             // Preference
             // 
@@ -5286,11 +5263,7 @@ namespace Boare.Cadencii {
         private BButton btnAdd;
         private BGroupBox groupPianoroll;
         private BGroupBox groupMisc;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserSingers;
         private BButton btnRemove;
-        private System.Windows.Forms.ColumnHeader columnHeaderProgramChange;
-        private System.Windows.Forms.ColumnHeader columnHeaderName;
-        private System.Windows.Forms.ColumnHeader columnHeaderPath;
         private BCheckBox chkTranslateRoman;
         private BCheckBox chkPbs;
         private BCheckBox chkEnvelope;

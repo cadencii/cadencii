@@ -44,6 +44,14 @@ namespace bocoree.windows.forms {
 
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
+        public void invalidate() {
+            base.Invalidate();
+        }
+
+        public void repaint() {
+            base.Refresh();
+        }
+
         public void setBounds( int x, int y, int width, int height ) {
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
@@ -205,10 +213,6 @@ namespace bocoree.windows.forms {
             return new bocoree.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public void setFont( bocoree.awt.Font font ) {
-            base.Font = font.font;
-        }
-
         public bool isEnabled() {
             return base.Enabled;
         }
@@ -219,6 +223,28 @@ namespace bocoree.windows.forms {
 
         public void requestFocus() {
             base.Focus();
+        }
+
+        public bool isFocusOwner() {
+            return base.Focused;
+        }
+
+        public void setPreferredSize( bocoree.awt.Dimension size ) {
+            base.Size = new System.Drawing.Size( size.width, size.height );
+        }
+
+        public bocoree.awt.Font getFont() {
+            return new bocoree.awt.Font( base.Font );
+        }
+
+        public void setFont( bocoree.awt.Font font ) {
+            if ( font == null ) {
+                return;
+            }
+            if ( font.font == null ) {
+                return;
+            }
+            base.Font = font.font;
         }
         #endregion
     }

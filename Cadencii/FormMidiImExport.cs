@@ -28,6 +28,7 @@ using bocoree.windows.forms;
 namespace Boare.Cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
+    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
 #endif
 
 #if JAVA
@@ -43,6 +44,9 @@ namespace Boare.Cadencii {
 
         private FormMidiMode m_mode;
         private VsqFileEx m_vsq;
+        private static int columnWidthTrack = 54;
+        private static int columnWidthName = 122;
+        private static int columnWidthNotes = 126;
 
         public FormMidiImExport() {
 #if JAVA
@@ -54,6 +58,11 @@ namespace Boare.Cadencii {
             setMode( FormMidiMode.EXPORT );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
 #endif
+            listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
+            listTrack.setColumnWidth( 0, columnWidthTrack );
+            listTrack.setColumnWidth( 1, columnWidthName );
+            listTrack.setColumnWidth( 2, columnWidthNotes );
+
             registerEventHandlers();
             setResources();
         }
@@ -66,9 +75,7 @@ namespace Boare.Cadencii {
             } else {
                 setTitle( _( "VSQ/Vocaloid Midi Import" ) );
             }
-            columnTrack.Text = _( "Track" );
-            columnName.Text = _( "Name" );
-            columnNumNotes.Text = _( "Notes" );
+            listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
             btnCheckAll.setText( _( "Check All" ) );
             btnUnckeckAll.setText( _( "Uncheck All" ) );
             groupCommonOption.setTitle( _( "Option" ) );
@@ -211,6 +218,12 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void FormMidiImExport_FormClosing( Object sender, BFormClosingEventArgs e ) {
+            columnWidthTrack = listTrack.getColumnWidth( 0 );
+            columnWidthName = listTrack.getColumnWidth( 1 );
+            columnWidthNotes = listTrack.getColumnWidth( 2 );
+        }
+
         private void registerEventHandlers() {
 #if JAVA
             this.btnCheckAll.clickEvent.add( new BEventHandler( this, "btnCheckAll_Click" ) );
@@ -224,11 +237,13 @@ namespace Boare.Cadencii {
             this.chkNote.CheckedChanged += new System.EventHandler( this.chkNote_CheckedChanged );
             this.chkMetaText.Click += new System.EventHandler( this.chkMetaText_Click );
             this.chkExportVocaloidNrpn.CheckedChanged += new System.EventHandler( this.chkExportVocaloidNrpn_CheckedChanged );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
 #endif
         }
 
         private void setResources() {
         }
+
 #if JAVA
         #region UI Impl for Java
 	    private JPanel jContentPane = null;
@@ -677,9 +692,6 @@ namespace Boare.Cadencii {
             this.btnCancel = new bocoree.windows.forms.BButton();
             this.btnOK = new bocoree.windows.forms.BButton();
             this.listTrack = new bocoree.windows.forms.BListView();
-            this.columnTrack = new System.Windows.Forms.ColumnHeader();
-            this.columnName = new System.Windows.Forms.ColumnHeader();
-            this.columnNumNotes = new System.Windows.Forms.ColumnHeader();
             this.btnCheckAll = new bocoree.windows.forms.BButton();
             this.btnUnckeckAll = new bocoree.windows.forms.BButton();
             this.chkBeat = new bocoree.windows.forms.BCheckBox();
@@ -721,10 +733,6 @@ namespace Boare.Cadencii {
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listTrack.CheckBoxes = true;
-            this.listTrack.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
-            this.columnTrack,
-            this.columnName,
-            this.columnNumNotes} );
             this.listTrack.FullRowSelect = true;
             this.listTrack.Location = new System.Drawing.Point( 12, 41 );
             this.listTrack.Name = "listTrack";
@@ -732,21 +740,6 @@ namespace Boare.Cadencii {
             this.listTrack.TabIndex = 6;
             this.listTrack.UseCompatibleStateImageBehavior = false;
             this.listTrack.View = System.Windows.Forms.View.Details;
-            // 
-            // columnTrack
-            // 
-            this.columnTrack.Text = "track";
-            this.columnTrack.Width = 54;
-            // 
-            // columnName
-            // 
-            this.columnName.Text = "name";
-            this.columnName.Width = 122;
-            // 
-            // columnNumNotes
-            // 
-            this.columnNumNotes.Text = "notes";
-            this.columnNumNotes.Width = 126;
             // 
             // btnCheckAll
             // 
@@ -908,9 +901,6 @@ namespace Boare.Cadencii {
 
         private BButton btnCancel;
         private BButton btnOK;
-        private System.Windows.Forms.ColumnHeader columnTrack;
-        private System.Windows.Forms.ColumnHeader columnName;
-        private System.Windows.Forms.ColumnHeader columnNumNotes;
         private BButton btnCheckAll;
         private BButton btnUnckeckAll;
         private BCheckBox chkBeat;
