@@ -16,7 +16,6 @@ package org.kbinani.Cadencii;
 
 #else
 using System;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree.windows.forms;
 
@@ -53,12 +52,12 @@ namespace Boare.Cadencii {
         }
 
         public void ApplyLanguage() {
-            Text = _( "Global Tempo" );
-            groupPosition.Text = _( "Position" );
+            setTitle( _( "Global Tempo" ) );
+            groupPosition.setTitle( _( "Position" ) );
             lblBar.Text = _( "Measure" ) + "(&M)";
             lblBeat.Text = _( "Beat" ) + "(&B)";
             lblClock.Text = _( "Clock" ) + "(&L)";
-            groupTempo.Text = _( "Tempo" );
+            groupTempo.setTitle( _( "Tempo" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
         }
@@ -76,7 +75,7 @@ namespace Boare.Cadencii {
         }
 
         private void btnOK_Click( object sender, EventArgs e ) {
-            this.DialogResult = DialogResult.OK;
+            setDialogResult( BDialogResult.OK );
         }
 
         private void registerEventHandlers() {

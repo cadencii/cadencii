@@ -99,7 +99,7 @@ namespace Boare.Cadencii {
             setTitle( _( "Metronome Config" ) );
             lblDeviceGeneral.Text = _( "MIDI Device" );
             lblDeviceMetronome.Text = _( "MIDI Device" );
-            groupMetronome.Text = _( "Metronome" );
+            groupMetronome.setTitle( _( "Metronome" ) );
             lblNoteNormal.Text = _( "Note#" );
             lblNoteBell.Text = _( "Note# (Bell)" );
             lblProgramNormal.Text = _( "Program#" );

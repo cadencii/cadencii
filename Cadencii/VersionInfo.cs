@@ -69,9 +69,11 @@ namespace Boare.Cadencii {
             setResources();
             ApplyLanguage();
 
+#if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );
             this.SetStyle( ControlStyles.UserPaint, true );
             this.SetStyle( ControlStyles.AllPaintingInWmPaint, true );
+#endif
 
             m_credit = new AuthorListEntry[] { };
             btnSaveAuthorList.setVisible( false );
@@ -102,7 +104,7 @@ namespace Boare.Cadencii {
                 btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
                 btnFlip.setText( credit );
             }
-            this.Text = about;
+            setTitle( about );
         }
 
         public void setSaveAuthorListVisible( boolean value ) {
@@ -166,7 +168,7 @@ namespace Boare.Cadencii {
             int font_size = 10;
             Font font = new Font( font_name, java.awt.Font.PLAIN, font_size );
             Dimension size = Boare.Lib.AppUtil.Util.measureString( "the quick brown fox jumped over the lazy dogs. THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS. 0123456789", font );
-            int width = this.Width;
+            int width = getWidth();
             int height = size.height;
             //StringFormat sf = new StringFormat();
             m_scroll = new BufferedImage( (int)width, (int)(40f + m_credit.Length * height * 1.1f), BufferedImage.TYPE_INT_BGR );
@@ -224,8 +226,8 @@ namespace Boare.Cadencii {
         }
 
         private void btnOK_Click( Object sender, BEventArgs e ) {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            setDialogResult( BDialogResult.OK );
+            close();
         }
 
         private void btnFlip_Click( Object sender, BEventArgs e ) {
@@ -253,11 +255,11 @@ namespace Boare.Cadencii {
                 lblVstLogo.Visible = true;
                 lblStraightAcknowledgement.Visible = true;
             }
-            this.Invalidate();
+            invalidate();
         }
 
         private void timer_Tick( Object sender, BEventArgs e ) {
-            this.Invalidate();
+            invalidate();
         }
 
         private void VersionInfoEx_Paint( Object sender, BPaintEventArgs e ) {
@@ -273,8 +275,8 @@ namespace Boare.Cadencii {
 
         public void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
-            g.clipRect( 0, 0, this.Width, m_height );
-            g.clearRect( 0, 0, this.Width, this.Height );
+            g.clipRect( 0, 0, getWidth(), m_height );
+            g.clearRect( 0, 0, getWidth(), getHeight() );
             if ( m_credit_mode ) {
                 float times = (float)(PortUtil.getCurrentTime() - m_scroll_started) - 3f;
                 float speed = (float)((2.0 - bocoree.math.erfcc( times * 0.8 )) / 2.0) * m_speed;
@@ -282,7 +284,7 @@ namespace Boare.Cadencii {
                 m_shift += (speed + m_last_speed) * dt / 2f;
                 m_last_t = times;
                 m_last_speed = speed;
-                float dx = (this.Width - m_scroll.getWidth( null )) * 0.5f;
+                float dx = (getWidth() - m_scroll.getWidth( null )) * 0.5f;
                 if ( m_scroll != null ) {
                     g.drawImage( m_scroll, (int)dx, (int)(90f - m_shift), null );
                     if ( 90f - m_shift + m_scroll.getHeight( null ) < 0 ) {
@@ -290,12 +292,12 @@ namespace Boare.Cadencii {
                     }
                 }
                 int grad_height = 60;
-                Rectangle top = new Rectangle( 0, 0, this.Width, grad_height );
+                Rectangle top = new Rectangle( 0, 0, getWidth(), grad_height );
                 /*using ( LinearGradientBrush lgb = new LinearGradientBrush( top, Color.White, Color.Transparent, LinearGradientMode.Vertical ) ) {
                     g.FillRectangle( lgb, top );
                 }*/
-                Rectangle bottom = new Rectangle( 0, m_height - grad_height, this.Width, grad_height );
-                g.clipRect( 0, m_height - grad_height + 1, this.Width, grad_height - 1 );
+                Rectangle bottom = new Rectangle( 0, m_height - grad_height, getWidth(), grad_height );
+                g.clipRect( 0, m_height - grad_height + 1, getWidth(), grad_height - 1 );
                 /*using ( LinearGradientBrush lgb = new LinearGradientBrush( bottom, Color.Transparent, Color.White, LinearGradientMode.Vertical ) ) {
                     g.FillRectangle( lgb, bottom );
                 }*/
@@ -311,15 +313,19 @@ namespace Boare.Cadencii {
 
         private void VersionInfoEx_KeyDown( Object sender, BKeyEventArgs e ) {
             if ( (e.KeyCode & Keys.Escape) == Keys.Escape ) {
-                this.DialogResult = DialogResult.Cancel;
-                this.Close();
+                setDialogResult( BDialogResult.CANCEL );
+                close();
             }
         }
 
         private void VersionInfoEx_FontChanged( Object sender, BEventArgs e ) {
+#if JAVA
+                Util.applyFontRecurse( this, getFont() );
+#else
             for ( int i = 0; i < this.Controls.Count; i++ ) {
                 Util.applyFontRecurse( this.Controls[i], new java.awt.Font( this.Font ) );
             }
+#endif
         }
 
         private void registerEventHandlers() {

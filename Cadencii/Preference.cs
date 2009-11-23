@@ -548,7 +548,7 @@ namespace Boare.Cadencii {
             lblPeriod.Text = _( "Vibrato Rate" ) + "(&V)";
             lblVibratoConfig.Text = _( "Vibrato Settings" );
             lblVibratoLength.Text = _( "Default Vibrato Length" ) + "(&L)";
-            groupAutoVibratoConfig.Text = _( "Auto Vibrato Settings" );
+            groupAutoVibratoConfig.setTitle( _( "Auto Vibrato Settings" ) );
             chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) + "(&E)" );
             lblAutoVibratoMinLength.Text = _( "Minimum note length for Automatic Vibrato" ) + "(&M)";
             lblAutoVibratoType1.Text = _( "Vibrato Type" ) + ": VOCALOID1 (&T)";
@@ -574,14 +574,14 @@ namespace Boare.Cadencii {
 
             #region tabAppearance
             tabAppearance.Text = _( "Appearance" );
-            groupFont.Text = _( "Font" );
+            groupFont.setTitle( _( "Font" ) );
             labelMenu.Text = _( "Menu / Lyrics" );
             labelScreen.Text = _( "Screen" );
             lblLanguage.Text = _( "UI Language" );
             btnChangeMenuFont.setText( _( "Change" ) );
             btnChangeScreenFont.setText( _( "Change" ) );
             lblTrackHeight.Text = _( "Track Height (pixel)" );
-            groupVisibleCurve.Text = _( "Visible Control Curve" );
+            groupVisibleCurve.setTitle( _( "Visible Control Curve" ) );
             #endregion
 
             #region tabOperation
@@ -598,19 +598,19 @@ namespace Boare.Cadencii {
             lblMidiInPort.Text = _( "MIDI In Port Number" );
             chkUseSpaceKeyAsMiddleButtonModifier.setText( _( "Use space key as Middle button modifier" ) );
 
-            groupPianoroll.Text = _( "Piano Roll" );
-            groupMisc.Text = _( "Misc" );
+            groupPianoroll.setTitle( _( "Piano Roll" ) );
+            groupMisc.setTitle( _( "Misc" ) );
             #endregion
 
             #region tabPlatform
             tabPlatform.Text = _( "Platform" );
 
-            groupPlatform.Text = _( "Platform" );
+            groupPlatform.setTitle( _( "Platform" ) );
             lblPlatform.Text = _( "Current Platform" );
             chkCommandKeyAsControl.setText( _( "Use Command key as Control key" ) );
             chkTranslateRoman.setText( _( "Translate Roman letters into Kana" ) );
 
-            groupUtauCores.Text = _( "UTAU Cores" );
+            groupUtauCores.setTitle( _( "UTAU Cores" ) );
             chkInvokeWithWine.setText( _( "Invoke UTAU cores with Wine" ) );
             #endregion
 
@@ -865,7 +865,7 @@ namespace Boare.Cadencii {
         }
 
         private void btnOK_Click( Object sender, BEventArgs e ) {
-            this.DialogResult = DialogResult.OK;
+            setDialogResult( BDialogResult.OK );
         }
 
         private void btnChangeScreenFont_Click( Object sender, BEventArgs e ) {

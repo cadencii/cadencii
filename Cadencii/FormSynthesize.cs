@@ -28,9 +28,9 @@ using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
+using bocoree.componentModel;
 using bocoree.util;
 using bocoree.windows.forms;
-using bocoree.componentModel;
 
 namespace Boare.Cadencii {
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
@@ -138,7 +138,7 @@ namespace Boare.Cadencii {
                 bgWork.RunWorkerAsync();
             } else {
                 m_rendering_started = false;
-                this.DialogResult = DialogResult.Cancel;
+                setDialogResult( BDialogResult.CANCEL );
             }
         }
 
@@ -245,16 +245,16 @@ namespace Boare.Cadencii {
                 while ( bgWork.IsBusy ) {
                     Application.DoEvents();
                 }
-                DialogResult = DialogResult.Cancel;
+                setDialogResult( BDialogResult.CANCEL );
             } else {
-                DialogResult = DialogResult.OK;
+                setDialogResult( BDialogResult.OK );
             }
         }
 
         private void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
             timer.Enabled = false;
-            DialogResult = DialogResult.OK;
-            this.Close();
+            setDialogResult( BDialogResult.OK );
+            close();
         }
 
         private void timer_Tick( Object sender, BEventArgs e ) {

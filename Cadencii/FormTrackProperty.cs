@@ -44,7 +44,7 @@ namespace Boare.Cadencii {
 
         public void ApplyLanguage() {
             lblMasterTuning.Text = _( "Master Tuning in Cent" );
-            this.Text = _( "Track Property" );
+            setTitle( _( "Track Property" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
         }

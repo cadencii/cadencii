@@ -46,23 +46,23 @@ using bocoree.xml;
 using bocoreex.swing;
 
 namespace Boare.Cadencii {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
-    using BKeyPressEventArgs = System.Windows.Forms.KeyPressEventArgs;
-    using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
-    using BMouseButtons = System.Windows.Forms.MouseButtons;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BFormClosedEventArgs = System.Windows.Forms.FormClosedEventArgs;
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
+    using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
+    using BFormClosedEventArgs = System.Windows.Forms.FormClosedEventArgs;
+    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
+    using BKeyPressEventArgs = System.Windows.Forms.KeyPressEventArgs;
+    using BMouseButtons = System.Windows.Forms.MouseButtons;
+    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
+    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
+    using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
     using Integer = System.Int32;
     using java = bocoree;
     using Long = System.Int64;
-    using javax = bocoreex;
+
 #endif
 
 #if JAVA
@@ -1239,9 +1239,7 @@ namespace Boare.Cadencii {
                         } finally {
                             if ( dlg != null ) {
                                 try {
-#if !JAVA
-                                    dlg.Dispose();
-#endif
+                                    dlg.close();
                                 } catch ( Exception ex2 ) {
                                 }
                             }
@@ -1807,9 +1805,7 @@ namespace Boare.Cadencii {
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
-#if !JAVA
-                                            dlg.Dispose();
-#endif
+                                            dlg.close();
                                         } catch ( Exception ex2 ) {
                                         }
                                     }
@@ -4167,18 +4163,16 @@ namespace Boare.Cadencii {
                         AppManager.getVsqFile().TotalClocks + 240,
                         true );
 
-                    DateTime started = DateTime.Now;
-                    fs.ShowDialog();
+                    double started = PortUtil.getCurrentTime();
+                    fs.showDialog();
 #if DEBUG
-                    bocoree.debug.push_log( "elapsed time=" + DateTime.Now.Subtract( started ).TotalSeconds + "sec" );
+                    bocoree.debug.push_log( "elapsed time=" + (PortUtil.getCurrentTime() - started) + "sec" );
 #endif
                 } catch ( Exception ex ) {
                 } finally {
                     if ( fs != null ) {
                         try {
-#if !JAVA
-                            fs.Dispose();
-#endif
+                            fs.close();
                         } catch ( Exception ex2 ) {
                         }
                     }
@@ -5551,9 +5545,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( dlg != null ) {
                     try {
-#if !JAVA
-                        dlg.Dispose();
-#endif
+                        dlg.close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -6128,9 +6120,7 @@ namespace Boare.Cadencii {
                     } finally {
                         if ( dlg != null ) {
                             try {
-#if !JAVA
-                                dlg.Dispose();
-#endif
+                                dlg.close();
                             } catch ( Exception ex2 ) {
                             }
                         }
@@ -6519,14 +6509,13 @@ namespace Boare.Cadencii {
                                     int clocks_in_beat = clocks_in_bar - (beat_in_bar - 1) * clock_per_beat;
                                     FormTempoConfig dlg = null;
                                     try {
-                                        dlg = new FormTempoConfig(
-                                        bar_count - AppManager.getVsqFile().getPreMeasure() + 1,
-                                        beat_in_bar,
-                                        local_numerator,
-                                        clocks_in_beat,
-                                        clock_per_beat,
-                                        (decimal)(6e7 / changing_tempo),
-                                        AppManager.getVsqFile().getPreMeasure() );
+                                        dlg = new FormTempoConfig( bar_count - AppManager.getVsqFile().getPreMeasure() + 1,
+                                                                   beat_in_bar,
+                                                                   local_numerator,
+                                                                   clocks_in_beat,
+                                                                   clock_per_beat,
+                                                                   (decimal)(6e7 / changing_tempo),
+                                                                   AppManager.getVsqFile().getPreMeasure() );
                                         dlg.setLocation( getFormPreferedLocation( dlg ) );
                                         if ( dlg.showDialog() == BDialogResult.OK ) {
                                             int new_beat = dlg.getBeatCount();
@@ -6548,9 +6537,7 @@ namespace Boare.Cadencii {
                                     } finally {
                                         if ( dlg != null ) {
                                             try {
-#if !JAVA
-                                                dlg.Dispose();
-#endif
+                                                dlg.close();
                                             } catch ( Exception ex2 ) {
                                             }
                                         }
@@ -6837,7 +6824,10 @@ namespace Boare.Cadencii {
 #endif
                 m_versioninfo.setVisible( true );
             } else {
-                if ( m_versioninfo.IsDisposed ) {
+#if !JAVA
+                if ( m_versioninfo.IsDisposed ) 
+#endif
+                {
                     m_versioninfo = new Boare.Cadencii.VersionInfo( _APP_NAME, version_str );
                     //m_versioninfo.Credit = Boare.Cadencii.Properties.Resources.author_list;
                     m_versioninfo.setAuthorList( _CREDIT );
@@ -8613,7 +8603,11 @@ namespace Boare.Cadencii {
                     draft = 0;
                 }
                 m_overview_start_to_draw_clock = draft;
+#if JAVA
+                if ( this == null ) {
+#else
                 if ( this == null || (this != null && this.IsDisposed) ) {
+#endif
                     break;
                 }
                 this.Invoke( new BEventHandler( invalidatePictOverview ) );
@@ -10911,9 +10905,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( dlg != null ) {
                     try {
-#if !JAVA
-                        dlg.Dispose();
-#endif
+                        dlg.close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -11352,9 +11344,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( dlg != null ) {
                     try {
-#if !JAVA
-                        dlg.Dispose();
-#endif
+                        dlg.close();
                     } catch ( Exception ex2 ) {
                     }
                 }

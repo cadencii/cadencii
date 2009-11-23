@@ -24,8 +24,8 @@ using bocoree.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -42,7 +42,7 @@ namespace Boare.Cadencii {
         }
 
         public void ApplyLanguage() {
-            Text = _( "User Dictionary Configuration" );
+            setTitle( _( "User Dictionary Configuration" ) );
             lblAvailableDictionaries.Text = _( "Available Dictionaries" );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );

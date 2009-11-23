@@ -35,13 +35,13 @@ namespace Boare.Cadencii {
 
         public void ApplyLanguage() {
             lblTemplate.Text = _( "Template" ) + "(&T)";
-            groupPitchControl.Text = _( "Pitch Control" );
+            groupPitchControl.setTitle( _( "Pitch Control" ) );
             lblBendDepth.Text = _( "Bend Depth" ) + "(&B)";
             lblBendLength.Text = _( "Bend Length" ) + "(&L)";
             chkUpPortamento.setText( _( "Add portamento in rising movement" ) + "(&R)" );
             chkDownPortamento.setText( _( "Add portamento in falling movement" ) + "(&F)" );
 
-            groupDynamicsControl.Text = _( "Dynamics Control" );
+            groupDynamicsControl.setTitle( _( "Dynamics Control" ) );
             lblDecay.Text = _( "Decay" ) + "(&D)";
             lblAccent.Text = _( "Accent" ) + "(&A)";
 
