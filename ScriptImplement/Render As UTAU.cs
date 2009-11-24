@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Boare.Lib.Vsq;
 using Boare.Lib.AppUtil;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 
 public class RenderAsUtau : Form {
     private System.ComponentModel.IContainer components = null;

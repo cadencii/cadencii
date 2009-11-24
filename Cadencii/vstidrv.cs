@@ -15,7 +15,7 @@
 using System;
 using System.Runtime.InteropServices;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 using VstSdk;
 
 namespace Boare.Cadencii {

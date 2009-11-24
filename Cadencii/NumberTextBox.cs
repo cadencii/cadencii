@@ -21,7 +21,7 @@ import org.kbinani.windows.forms.*;
 #define COMPONENT_ENABLE_LOCATION
 using System;
 using bocoree;
-using bocoree.awt;
+using bocoree.java.awt;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {

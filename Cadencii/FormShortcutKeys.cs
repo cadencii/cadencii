@@ -20,15 +20,15 @@ using System.Drawing;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree;
-using bocoree.awt.event_;
-using bocoree.util;
+using bocoree.java.awt.event_;
+using bocoree.java.util;
 using bocoree.windows.forms;
-using bocoreex.swing;
+using bocoree.javax.swing;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using Integer = System.Int32;
-    using java = bocoree;
+    using java = bocoree.java;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
 #endif
 

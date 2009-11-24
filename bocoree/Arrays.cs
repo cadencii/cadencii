@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace bocoree.util {
+namespace bocoree.java.util {
 
     public static class Arrays {
         public static Vector<T> asList<T>( T[] a ) {

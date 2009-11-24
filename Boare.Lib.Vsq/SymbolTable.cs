@@ -22,8 +22,8 @@ using System;
 using System.Text;
 using System.Windows.Forms;
 using bocoree;
-using bocoree.util;
-using bocoree.io;
+using bocoree.java.util;
+using bocoree.java.io;
 
 namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;

@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if !JAVA
-namespace bocoree.awt.image {
+namespace bocoree.java.awt.image {
 
     public class BufferedImage/* : bocoree.awt.Image*/{
         public static int TYPE_INT_BGR = 0;

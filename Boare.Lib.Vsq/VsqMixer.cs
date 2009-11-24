@@ -20,7 +20,7 @@ import org.kbinani.*;
 #else
 using System;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace Boare.Lib.Vsq {
 #endif

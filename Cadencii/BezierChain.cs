@@ -24,8 +24,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.Serialization;
 using bocoree;
-using bocoree.util;
-using bocoree.io;
+using bocoree.java.util;
+using bocoree.java.io;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;

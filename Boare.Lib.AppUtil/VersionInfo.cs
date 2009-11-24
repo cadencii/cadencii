@@ -17,13 +17,13 @@ using System;
 //using System.Drawing.Drawing2D;
 //using System.Windows.Forms;
 using bocoree;
-using bocoree.awt;
-using bocoree.awt.image;
+using bocoree.java.awt;
+using bocoree.java.awt.image;
 
 namespace Boare.Lib.AppUtil {
-    using java = bocoree;
-    using javax = bocoreex;
-    using Graphics = bocoree.awt.Graphics2D;
+    using java = bocoree.java;
+    using javax = bocoree.javax;
+    using Graphics = bocoree.java.awt.Graphics2D;
 
     public partial class VersionInfo : System.Windows.Forms.Form {
         DateTime m_scroll_started;

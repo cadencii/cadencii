@@ -32,9 +32,9 @@ using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.awt;
-using bocoree.io;
-using bocoree.util;
+using bocoree.java.awt;
+using bocoree.java.io;
+using bocoree.java.util;
 using bocoree.windows.forms;
 using bocoree.xml;
 using Microsoft.CSharp;
@@ -43,7 +43,7 @@ namespace Boare.Cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using Integer = System.Int32;
-    using java = bocoree;
+    using java = bocoree.java;
     using Long = System.Int64;
 #endif
 
@@ -150,9 +150,9 @@ namespace Boare.Cadencii {
                                              "using Boare.Lib.Vsq;",
                                              "using Boare.Cadencii;",
                                              "using bocoree;",
-                                             "using bocoree.io;",
-                                             "using bocoree.util;",
-                                             "using bocoree.awt;",
+                                             "using bocoree.java.io;",
+                                             "using bocoree.java.util;",
+                                             "using bocoree.java.awt;",
                                              "using Boare.Lib.Media;",
                                              "using Boare.Lib.AppUtil;",
                                              "using System.Windows.Forms;",

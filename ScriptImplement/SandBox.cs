@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using Boare.Cadencii;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
-using bocoree.util;
+using bocoree.java.util;
 
 public class Search {
     public static bool Edit( VsqFile vsq ) {

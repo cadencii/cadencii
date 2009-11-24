@@ -25,9 +25,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using bocoree;
 
 namespace Boare.Lib.AppUtil {
-    using java = bocoree;
+    using java = bocoree.java;
     using boolean = System.Boolean;
 #endif
 
@@ -41,7 +42,7 @@ namespace Boare.Lib.AppUtil {
             applyToolStripFontRecurse( item, font );
         }
 #else
-        public static void applyContextMenuFontRecurse( ContextMenuStrip item, bocoree.awt.Font font ) {
+        public static void applyContextMenuFontRecurse( ContextMenuStrip item, bocoree.java.awt.Font font ) {
             item.Font = font.font;
             foreach ( ToolStripItem tsi in item.Items ) {
                 applyToolStripFontRecurse( tsi, font );
@@ -59,7 +60,7 @@ namespace Boare.Lib.AppUtil {
             }
         }
 #else
-        public static void applyToolStripFontRecurse( ToolStripItem item, bocoree.awt.Font font ) {
+        public static void applyToolStripFontRecurse( ToolStripItem item, bocoree.java.awt.Font font ) {
             item.Font = font.font;
             if ( item is ToolStripMenuItem ) {
                 ToolStripMenuItem tsmi = (ToolStripMenuItem)item;
@@ -120,7 +121,7 @@ namespace Boare.Lib.AppUtil {
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
-                        java.awt.Color c = new bocoree.awt.Color( b2.GetPixel( x, y ) );
+                        java.awt.Color c = new bocoree.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 ) {
                             found = true;
@@ -142,7 +143,7 @@ namespace Boare.Lib.AppUtil {
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
-                        java.awt.Color c = new bocoree.awt.Color( b2.GetPixel( x, y ) );
+                        java.awt.Color c = new bocoree.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 ) {
                             found = true;

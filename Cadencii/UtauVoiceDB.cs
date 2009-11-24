@@ -15,7 +15,7 @@ using System;
 using System.IO;
 using System.Text;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace Boare.Cadencii {
 

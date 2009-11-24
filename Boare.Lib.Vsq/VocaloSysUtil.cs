@@ -22,8 +22,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Win32;
 using bocoree;
-using bocoree.util;
-using bocoree.io;
+using bocoree.java.util;
+using bocoree.java.io;
 
 namespace Boare.Lib.Vsq {
 #endif

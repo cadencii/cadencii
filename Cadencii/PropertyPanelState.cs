@@ -21,8 +21,8 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using bocoree;
-using bocoree.util;
-using bocoree.io;
+using bocoree.java.util;
+using bocoree.java.io;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {

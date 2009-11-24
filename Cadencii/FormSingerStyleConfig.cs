@@ -16,14 +16,16 @@ package org.kbinani.Cadencii;
 
 #else
 using System;
-using System.Drawing;
+//using System.Drawing;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
+using bocoree.java.awt;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using java = bocoree.java;
 #endif
 
 #if JAVA
@@ -125,7 +127,7 @@ namespace Boare.Cadencii {
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             ApplyLanguage();
-            Size current_size = getClientSize();
+            Dimension current_size = getClientSize();
         }
 
         private void trackBendDepth_Scroll( object sender, EventArgs e ) {

@@ -18,7 +18,7 @@ using Boare.Cadencii;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace GenerateKeySound {
 

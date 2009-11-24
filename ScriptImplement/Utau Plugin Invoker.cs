@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using Boare.Cadencii;
 using System.Collections.Generic;
 using Boare.Lib.Vsq;
-using bocoree.util;
+using bocoree.java.util;
 
 public class Utau_Plugin_Invoker {
     private static bool s_finished = false;

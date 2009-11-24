@@ -16,7 +16,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace bocoree.io {
+namespace bocoree.java.io {
 
     public class FileWriter {
         public StreamWriter m_writer;

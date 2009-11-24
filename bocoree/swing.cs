@@ -13,12 +13,12 @@
  */
 #if !JAVA
 using System;
-using bocoree.awt.event_;
-namespace bocoreex.swing {
+using bocoree.java.awt.event_;
+namespace bocoree.javax.swing {
 
     public class KeyStroke {
         public System.Windows.Forms.Keys keys = System.Windows.Forms.Keys.None;
-        private static bocoree.util.TreeMap<string, int> keyCodes = null;
+        private static bocoree.java.util.TreeMap<string, int> keyCodes = null;
 
         private KeyStroke(){
         }

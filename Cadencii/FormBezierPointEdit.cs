@@ -23,8 +23,8 @@ import org.kbinani.windows.forms.*;
 using System;
 using Boare.Lib.AppUtil;
 using bocoree;
-using bocoree.awt;
-using bocoree.util;
+using bocoree.java.awt;
+using bocoree.java.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {

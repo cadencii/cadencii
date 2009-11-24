@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using bocoree.awt;
+using bocoree.java.awt;
 
 namespace bocoree.windows.forms {
 

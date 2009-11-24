@@ -19,7 +19,7 @@
 #define COMPONENT_ENABLE_TOOL_TIP_TEXT
 using System.Collections.Generic;
 using System.Windows.Forms;
-using bocoreex.swing;
+using bocoree.javax.swing;
 
 namespace bocoree.windows.forms {
     public class BMenuItem : System.Windows.Forms.ToolStripMenuItem, MenuElement {
@@ -42,13 +42,13 @@ namespace bocoree.windows.forms {
             base.Checked = value;
         }
 #endif
-        public bocoree.awt.Icon getIcon() {
-            bocoree.awt.Icon ret = new bocoree.awt.Icon();
+        public bocoree.java.awt.Icon getIcon() {
+            bocoree.java.awt.Icon ret = new bocoree.java.awt.Icon();
             ret.image = base.Image;
             return ret;
         }
 
-        public void setIcon( bocoree.awt.Icon value ) {
+        public void setIcon( bocoree.java.awt.Icon value ) {
             if ( value == null ) {
                 base.Image = null;
             } else {
@@ -95,10 +95,10 @@ namespace bocoree.windows.forms {
         }
 
 #if COMPONENT_ENABLE_LOCATION
-        public bocoree.awt.Point getLocation()
+        public bocoree.java.awt.Point getLocation()
         {
             System.Drawing.Point loc = this.Location;
-            return new bocoree.awt.Point( loc.X, loc.Y );
+            return new bocoree.java.awt.Point( loc.X, loc.Y );
         }
 
         public void setLocation( int x, int y )
@@ -106,15 +106,15 @@ namespace bocoree.windows.forms {
             base.Location = new System.Drawing.Point( x, y );
         }
 
-        public void setLocation( bocoree.awt.Point p )
+        public void setLocation( bocoree.java.awt.Point p )
         {
             base.Location = new System.Drawing.Point( p.x, p.y );
         }
 #endif
 
-        public bocoree.awt.Rectangle getBounds() {
+        public bocoree.java.awt.Rectangle getBounds() {
             System.Drawing.Rectangle r = base.Bounds;
-            return new bocoree.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
+            return new bocoree.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
         }
 
 #if COMPONENT_ENABLE_X
@@ -139,35 +139,35 @@ namespace bocoree.windows.forms {
             return base.Height;
         }
 
-        public bocoree.awt.Dimension getSize() {
-            return new bocoree.awt.Dimension( base.Size.Width, base.Size.Height );
+        public bocoree.java.awt.Dimension getSize() {
+            return new bocoree.java.awt.Dimension( base.Size.Width, base.Size.Height );
         }
 
         public void setSize( int width, int height ) {
             base.Size = new System.Drawing.Size( width, height );
         }
 
-        public void setSize( bocoree.awt.Dimension d ) {
+        public void setSize( bocoree.java.awt.Dimension d ) {
             setSize( d.width, d.height );
         }
 
-        public void setBackground( bocoree.awt.Color color ) {
+        public void setBackground( bocoree.java.awt.Color color ) {
             base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
         }
 
-        public bocoree.awt.Color getBackground() {
-            return new bocoree.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
+        public bocoree.java.awt.Color getBackground() {
+            return new bocoree.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
         }
 
-        public void setForeground( bocoree.awt.Color color ) {
+        public void setForeground( bocoree.java.awt.Color color ) {
             base.ForeColor = color.color;
         }
 
-        public bocoree.awt.Color getForeground() {
-            return new bocoree.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
+        public bocoree.java.awt.Color getForeground() {
+            return new bocoree.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public void setFont( bocoree.awt.Font font ) {
+        public void setFont( bocoree.java.awt.Font font ) {
             base.Font = font.font;
         }
 

@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace bocoree.io {
+namespace bocoree.java.io {
 
     public interface OutputStream {
     }

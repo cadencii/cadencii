@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Threading;
 using Boare.Lib.Vsq;
-using bocoree.io;
+using bocoree.java.io;
 using Boare.Cadencii;
 using System.Windows.Forms;
 

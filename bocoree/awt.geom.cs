@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if !JAVA
-namespace bocoree {
+namespace bocoree.java {
 
     public class AffineTransform {
         System.Drawing.Drawing2D.Matrix m_matrix;

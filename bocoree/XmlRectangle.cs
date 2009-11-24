@@ -17,7 +17,7 @@ package org.kbinani;
 import java.awt.*;
 #else
 using System.Xml.Serialization;
-using bocoree.awt;
+using bocoree.java.awt;
 
 namespace bocoree{
 #endif

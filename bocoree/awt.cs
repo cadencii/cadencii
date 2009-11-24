@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if !JAVA
-namespace bocoree.awt {
+namespace bocoree.java.awt {
 
     public class Icon {
         public System.Drawing.Image image;
@@ -189,9 +189,9 @@ namespace bocoree.awt {
             nativeGraphics.Clip = new System.Drawing.Region( new System.Drawing.Rectangle( x, y, width, height ) );
         }
 
-        public void drawImage( bocoree.awt.image.BufferedImage img, int x, int y, object obs ) {
-            if ( img is bocoree.awt.image.BufferedImage ) {
-                nativeGraphics.DrawImage( ((bocoree.awt.image.BufferedImage)img).m_image, new System.Drawing.Point( x, y ) );
+        public void drawImage( bocoree.java.awt.image.BufferedImage img, int x, int y, object obs ) {
+            if ( img is bocoree.java.awt.image.BufferedImage ) {
+                nativeGraphics.DrawImage( ((bocoree.java.awt.image.BufferedImage)img).m_image, new System.Drawing.Point( x, y ) );
             }
         }
     }

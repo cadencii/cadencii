@@ -24,9 +24,9 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using Boare.Lib.Vsq;
-using bocoree.awt;
-using bocoree.io;
-using bocoree.util;
+using bocoree.java.awt;
+using bocoree.java.io;
+using bocoree.java.util;
 using bocoree.windows.forms;
 using bocoree.xml;
 

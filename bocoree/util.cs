@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace bocoree.util {
+namespace bocoree.java.util {
     using boolean = Boolean;
 
     public interface Entry<K, V> {

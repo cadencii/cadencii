@@ -20,7 +20,7 @@ import org.kbinani.*;
 #else
 using System;
 using bocoree;
-using bocoree.io;
+using bocoree.java.io;
 
 namespace Boare.Lib.Media {
     using boolean = System.Boolean;

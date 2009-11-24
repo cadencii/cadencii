@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace Boare.Cadencii {
 

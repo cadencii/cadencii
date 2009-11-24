@@ -20,7 +20,7 @@ using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {

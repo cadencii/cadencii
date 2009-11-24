@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace bocoree.util {
+namespace bocoree.java.util {
 
     public class ListIterator<T> : Iterator {
         private List<T> m_list;

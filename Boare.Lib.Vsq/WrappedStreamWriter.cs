@@ -18,7 +18,7 @@ import java.io.*;
 #else
 using System;
 using bocoree;
-using bocoree.io;
+using bocoree.java.io;
 
 namespace Boare.Lib.Vsq {
 #endif

@@ -19,7 +19,7 @@ import org.kbinani.vsq.*;
 #else
 using System;
 using Boare.Lib.Vsq;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace Boare.Cadencii {
 #endif

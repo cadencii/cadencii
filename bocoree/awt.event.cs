@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if !JAVA
-namespace bocoree.awt.event_{
+namespace bocoree.java.awt.event_{
 
     public class InputEvent {
         public const int ALT_DOWN_MASK = 512;

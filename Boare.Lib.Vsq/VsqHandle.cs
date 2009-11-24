@@ -20,8 +20,8 @@ import org.kbinani.*;
 #else
 using System;
 using bocoree;
-using bocoree.io;
-using bocoree.util;
+using bocoree.java.io;
+using bocoree.java.util;
 
 namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;

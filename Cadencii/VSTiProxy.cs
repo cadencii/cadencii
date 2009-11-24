@@ -28,7 +28,7 @@ using System.Windows.Forms;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;

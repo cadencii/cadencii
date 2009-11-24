@@ -17,7 +17,7 @@ package org.kbinani.Cadencii;
 import java.util.*;
 #else
 using System;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;

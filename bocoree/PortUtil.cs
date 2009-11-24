@@ -31,11 +31,11 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.IO;
 using System.Text;
-using bocoree.awt;
-using bocoree.awt.event_;
-using bocoree.util;
+using bocoree.java.awt;
+using bocoree.java.awt.event_;
+using bocoree.java.util;
 using bocoree.windows.forms;
-using bocoreex.swing;
+using bocoree.javax.swing;
 
 namespace bocoree {
     using boolean = System.Boolean;

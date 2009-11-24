@@ -18,7 +18,7 @@ import java.awt.*;
 #else
 using System;
 using System.Drawing;
-using bocoree.awt;
+using bocoree.java.awt;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;

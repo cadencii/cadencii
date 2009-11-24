@@ -21,7 +21,7 @@ import org.kbinani.*;
 using System;
 using System.Reflection;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace Boare.Lib.Vsq {
     using boolean = System.Boolean;

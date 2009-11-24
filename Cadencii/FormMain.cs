@@ -37,13 +37,13 @@ using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.awt;
-using bocoree.awt.event_;
-using bocoree.io;
-using bocoree.util;
+using bocoree.java.awt;
+using bocoree.java.awt.event_;
+using bocoree.java.io;
+using bocoree.java.util;
 using bocoree.windows.forms;
 using bocoree.xml;
-using bocoreex.swing;
+using bocoree.javax.swing;
 
 namespace Boare.Cadencii {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
@@ -60,7 +60,7 @@ namespace Boare.Cadencii {
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
     using Integer = System.Int32;
-    using java = bocoree;
+    using java = bocoree.java;
     using Long = System.Int64;
 
 #endif
@@ -670,15 +670,15 @@ namespace Boare.Cadencii {
             picturePositionIndicator.Top = 0;
             picturePositionIndicator.Width = panel1.Width;
             // pictPianoRoll
-            pictPianoRoll.setBounds( 0, picturePositionIndicator.Height, panel1.Width - vScroll.Width, panel1.Height - picturePositionIndicator.Height - hScroll.Height );
+            pictPianoRoll.setBounds( 0, picturePositionIndicator.Height, panel1.Width - vScroll.Width, panel1.Height - picturePositionIndicator.Height - hScroll.getHeight() );
             // vScroll
             vScroll.Left = pictPianoRoll.getWidth();
             vScroll.Top = picturePositionIndicator.Height;
             vScroll.Height = pictPianoRoll.getHeight();
             // pictureBox3
             pictureBox3.Left = 0;
-            pictureBox3.Top = panel1.Height - hScroll.Height;
-            pictureBox3.Height = hScroll.Height;
+            pictureBox3.Top = panel1.Height - hScroll.getHeight();
+            pictureBox3.Height = hScroll.getHeight();
             // hScroll
             hScroll.Left = pictureBox3.Width;
             hScroll.Top = panel1.Height - hScroll.Height;
@@ -8406,11 +8406,11 @@ namespace Boare.Cadencii {
         }
 
         private void pictOverview_Paint( Object sender, BPaintEventArgs e ) {
-            Graphics2D g = new bocoree.awt.Graphics2D( e.Graphics );
+            Graphics2D g = new bocoree.java.awt.Graphics2D( e.Graphics );
             int count = 0;
             int sum = 0;
             int height = pictOverview.Height;
-            BasicStroke pen = new bocoree.awt.BasicStroke( _OVERVIEW_DOT_DIAM );
+            BasicStroke pen = new bocoree.java.awt.BasicStroke( _OVERVIEW_DOT_DIAM );
             g.setStroke( pen );
             g.setColor( s_note_fill );
             //using ( Pen pen = new Pen( s_note_fill, _OVERVIEW_DOT_DIAM ) ) {
@@ -8444,8 +8444,8 @@ namespace Boare.Cadencii {
             int clock_end = getOverviewClockFromXCoord( pictOverview.getWidth() );
             int premeasure = AppManager.getVsqFile().getPreMeasure();
             g.setClip( null );
-            BasicStroke pen_bold = new bocoree.awt.BasicStroke( 2 );
-            Color pen_color = new bocoree.awt.Color( 0, 0, 0, 130 );
+            BasicStroke pen_bold = new bocoree.java.awt.BasicStroke( 2 );
+            Color pen_color = new bocoree.java.awt.Color( 0, 0, 0, 130 );
 
             int barcountx = 0;
             String barcountstr = "";
@@ -10542,17 +10542,17 @@ namespace Boare.Cadencii {
             if ( draft_length > hScroll.getMaximum() ) {
                 hScroll.setMaximum( draft_length );
             }
-            if ( pictPianoRoll.getWidth() <= AppManager.keyWidth || hScroll.Width <= _ARROWS ) {
+            if ( pictPianoRoll.getWidth() <= AppManager.keyWidth || hScroll.getWidth() <= _ARROWS ) {
                 return;
             }
             int large_change = (int)((pictPianoRoll.getWidth() - AppManager.keyWidth) / (float)AppManager.scaleX);
-            int box_width = (int)((hScroll.Width - _ARROWS) * (float)large_change / (float)(hScroll.getMaximum() + large_change));
+            int box_width = (int)((hScroll.getWidth() - _ARROWS) * (float)large_change / (float)(hScroll.getMaximum() + large_change));
             if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
-                large_change = (int)((float)hScroll.getMaximum() * (float)box_width / (float)(hScroll.Width - _ARROWS - box_width));
+                large_change = (int)((float)hScroll.getMaximum() * (float)box_width / (float)(hScroll.getWidth() - _ARROWS - box_width));
             }
             if ( large_change > 0 ) {
-                hScroll.LargeChange = large_change;
+                hScroll.setVisibleAmount( large_change );
             }
         }
 

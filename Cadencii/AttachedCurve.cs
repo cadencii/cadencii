@@ -19,8 +19,8 @@ import org.kbinani.*;
 #else
 using System;
 using bocoree;
-using bocoree.util;
-using bocoree.io;
+using bocoree.java.util;
+using bocoree.java.io;
 
 namespace Boare.Cadencii {
 #endif

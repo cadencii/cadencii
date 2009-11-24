@@ -14,7 +14,7 @@
  */
 using System;
 
-namespace bocoree.io {
+namespace bocoree.java.io {
 
     public class RandomAccessFile {
         private System.IO.FileStream m_stream;

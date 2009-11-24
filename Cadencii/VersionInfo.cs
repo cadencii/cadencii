@@ -24,8 +24,8 @@ using System;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree;
-using bocoree.awt;
-using bocoree.awt.image;
+using bocoree.java.awt;
+using bocoree.java.awt.image;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
@@ -34,8 +34,8 @@ namespace Boare.Cadencii {
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using Graphics = Graphics2D;
-    using java = bocoree;
-    using javax = bocoreex;
+    using java = bocoree.java;
+    using javax = bocoree.javax;
 #endif
 
 #if JAVA

@@ -30,7 +30,7 @@ using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
@@ -118,8 +118,8 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "FormMixer#updateStatus;" );
             AppManager.debugWriteLine( "    num_vtracker_on_panel=" + num_vtracker_on_panel );
             AppManager.debugWriteLine( "    panel_capacity=" + panel_capacity );
-            AppManager.debugWriteLine( "    hScroll.Maximum=" + hScroll.Maximum );
-            AppManager.debugWriteLine( "    hScroll.LargeChange=" + hScroll.LargeChange );
+            AppManager.debugWriteLine( "    hScroll.Maximum=" + hScroll.getMaximum() );
+            AppManager.debugWriteLine( "    hScroll.LargeChange=" + hScroll.getVisibleAmount() );
 #endif
 
             int j = -1;

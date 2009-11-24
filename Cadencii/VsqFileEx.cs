@@ -23,8 +23,8 @@ import org.kbinani.xml.*;
 using System;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.io;
-using bocoree.util;
+using bocoree.java.io;
+using bocoree.java.util;
 using bocoree.xml;
 
 namespace Boare.Cadencii {

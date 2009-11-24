@@ -19,7 +19,7 @@ import java.util.*;
 #else
 using System;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace Boare.Lib.Vsq {
     using Integer = System.Int32;

@@ -29,7 +29,7 @@ using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.componentModel;
-using bocoree.util;
+using bocoree.java.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {

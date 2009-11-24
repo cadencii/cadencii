@@ -25,7 +25,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 using bocoree.windows.forms;
 
 namespace Boare.EditOtoIni {

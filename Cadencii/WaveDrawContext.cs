@@ -20,7 +20,7 @@ import org.kbinani.*;
 using System;
 using Boare.Lib.Media;
 using bocoree;
-using bocoree.awt;
+using bocoree.java.awt;
 
 namespace Boare.Cadencii {
 #endif

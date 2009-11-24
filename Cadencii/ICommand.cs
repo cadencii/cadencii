@@ -18,7 +18,7 @@ import java.util.*;
 #else
 using System.Collections.Generic;
 using bocoree;
-using bocoree.util;
+using bocoree.java.util;
 
 namespace Boare.Cadencii {
 #endif

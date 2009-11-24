@@ -33,9 +33,9 @@ using Boare.Cadencii;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
 using bocoree;
-using bocoree.awt;
-using bocoree.io;
-using bocoree.util;
+using bocoree.java.awt;
+using bocoree.java.io;
+using bocoree.java.util;
 using bocoree.windows.forms;
 using bocoree.xml;
 
@@ -45,8 +45,8 @@ namespace Boare.EditOtoIni {
     using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Float = System.Single;
-    using Graphics = bocoree.awt.Graphics2D;
-    using java = bocoree;
+    using Graphics = bocoree.java.awt.Graphics2D;
+    using java = bocoree.java;
 #endif
 
 #if JAVA

@@ -17,8 +17,8 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.util;
-using bocoree.io;
+using bocoree.java.util;
+using bocoree.java.io;
 
 namespace Boare.Cadencii {
 

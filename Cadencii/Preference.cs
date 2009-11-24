@@ -29,15 +29,15 @@ using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.awt;
-using bocoree.io;
-using bocoree.util;
+using bocoree.java.awt;
+using bocoree.java.io;
+using bocoree.java.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
-    using java = bocoree;
+    using java = bocoree.java;
 #endif
 
 #if JAVA

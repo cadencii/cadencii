@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace bocoree.util {
+namespace bocoree.java.util {
 
     [Serializable]
 #if VECTOR_TEST

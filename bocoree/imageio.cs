@@ -12,10 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if !JAVA
-using bocoree.awt.image;
-using bocoree.io;
+using bocoree.java.awt.image;
+using bocoree.java.io;
 
-namespace bocoreex.imageio {
+namespace bocoree.javax.imageio {
 
     public class ImageIO {
         public static bool write( BufferedImage im, string formatName, File output ) {

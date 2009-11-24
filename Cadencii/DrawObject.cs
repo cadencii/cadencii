@@ -19,7 +19,7 @@ import java.awt.*;
 #else
 using System;
 using Boare.Lib.Vsq;
-using bocoree.awt;
+using bocoree.java.awt;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;

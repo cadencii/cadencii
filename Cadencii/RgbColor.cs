@@ -16,7 +16,7 @@ package org.kbinani.Cadencii;
 
 import java.awt.*;
 #else
-using bocoree.awt;
+using bocoree.java.awt;
 
 namespace Boare.Cadencii {
 #endif
