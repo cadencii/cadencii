@@ -54,9 +54,9 @@ namespace Boare.Cadencii {
         public void ApplyLanguage() {
             setTitle( _( "Global Tempo" ) );
             groupPosition.setTitle( _( "Position" ) );
-            lblBar.Text = _( "Measure" ) + "(&M)";
-            lblBeat.Text = _( "Beat" ) + "(&B)";
-            lblClock.Text = _( "Clock" ) + "(&L)";
+            lblBar.setText( _( "Measure" ) + "(&M)" );
+            lblBeat.setText( _( "Beat" ) + "(&B)" );
+            lblClock.setText( _( "Clock" ) + "(&L)" );
             groupTempo.setTitle( _( "Tempo" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );

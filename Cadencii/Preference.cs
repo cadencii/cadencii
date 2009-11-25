@@ -526,7 +526,7 @@ namespace Boare.Cadencii {
         }
 
         public void ApplyLanguage() {
-            Text = _( "Preference" );
+            setTitle( _( "Preference" ) );
             btnCancel.setText( _( "Cancel" ) );
             btnOK.setText( _( "OK" ) );
             openUtauCore.clearChoosableFileFilter();
@@ -541,61 +541,73 @@ namespace Boare.Cadencii {
             folderBrowserSingers.setDescription( _( "Select Singer Directory" ) );
 
             #region tabSequence
+#if JAVA
+            tabSequence.setTitle( _( "Sequence" ) );
+#else
             tabSequence.Text = _( "Sequence" );
-            lblResolution.Text = _( "Resolution(VSTi)" );
-            lblDynamics.Text = _( "Dynamics" ) + "(&D)";
-            lblAmplitude.Text = _( "Vibrato Depth" ) + "(&R)";
-            lblPeriod.Text = _( "Vibrato Rate" ) + "(&V)";
-            lblVibratoConfig.Text = _( "Vibrato Settings" );
-            lblVibratoLength.Text = _( "Default Vibrato Length" ) + "(&L)";
+#endif
+            lblResolution.setText( _( "Resolution(VSTi)" ) );
+            lblDynamics.setText( _( "Dynamics" ) + "(&D)" );
+            lblAmplitude.setText( _( "Vibrato Depth" ) + "(&R)" );
+            lblPeriod.setText( _( "Vibrato Rate" ) + "(&V)" );
+            lblVibratoConfig.setText( _( "Vibrato Settings" ) );
+            lblVibratoLength.setText( _( "Default Vibrato Length" ) + "(&L)" );
             groupAutoVibratoConfig.setTitle( _( "Auto Vibrato Settings" ) );
             chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) + "(&E)" );
-            lblAutoVibratoMinLength.Text = _( "Minimum note length for Automatic Vibrato" ) + "(&M)";
-            lblAutoVibratoType1.Text = _( "Vibrato Type" ) + ": VOCALOID1 (&T)";
-            lblAutoVibratoType2.Text = _( "Vibrato Type" ) + ": VOCALOID2 (&T)";
-            #endregion
-
-            #region tabAudio
-            //tabAudio.Text = _( "Audio Settings" );
+            lblAutoVibratoMinLength.setText( _( "Minimum note length for Automatic Vibrato" ) + "(&M)" );
+            lblAutoVibratoType1.setText( _( "Vibrato Type" ) + ": VOCALOID1 (&T)" );
+            lblAutoVibratoType2.setText( _( "Vibrato Type" ) + ": VOCALOID2 (&T)" );
             #endregion
 
             #region tabAnother
+#if JAVA
+            tabAnother.setTitle( _( "Other Settings" ) );
+#else
             tabAnother.Text = _( "Other Settings" );
-            lblDefaultSinger.Text = _( "Default Singer" ) + "(&S)";
-            lblPreSendTime.Text = _( "Pre-Send time" ) + "(&P)";
-            lblWait.Text = _( "Waiting Time" ) + "(&W)";
-            lblDefaultPremeasure.Text = _( "Default Pre-measure" ) + "(&M)";
+#endif
+            lblDefaultSinger.setText( _( "Default Singer" ) + "(&S)" );
+            lblPreSendTime.setText( _( "Pre-Send time" ) + "(&P)" );
+            lblWait.setText( _( "Waiting Time" ) + "(&W)" );
+            lblDefaultPremeasure.setText( _( "Default Pre-measure" ) + "(&M)" );
             chkChasePastEvent.setText( _( "Chase Event" ) + "(&C)" );
-            lblSampleOutput.Text = _( "Playback Sample Sound" );
+            lblSampleOutput.setText( _( "Playback Sample Sound" ) );
             chkEnableSampleOutput.setText( _( "Enable" ) + "(&E)" );
-            lblTiming.Text = _( "Timing" );
-            lblPreSendTimeSample.Text = _( "Pre-Send Time for sample sound" ) + "(&G)";
+            lblTiming.setText( _( "Timing" ) );
+            lblPreSendTimeSample.setText( _( "Pre-Send Time for sample sound" ) + "(&G)" );
             #endregion
 
             #region tabAppearance
+#if JAVA
+            tabAppearance.setTitle( _( "Appearance" ) );
+#else
             tabAppearance.Text = _( "Appearance" );
+#endif
             groupFont.setTitle( _( "Font" ) );
-            labelMenu.Text = _( "Menu / Lyrics" );
-            labelScreen.Text = _( "Screen" );
-            lblLanguage.Text = _( "UI Language" );
+            labelMenu.setText( _( "Menu / Lyrics" ) );
+            labelScreen.setText( _( "Screen" ) );
+            lblLanguage.setText( _( "UI Language" ) );
             btnChangeMenuFont.setText( _( "Change" ) );
             btnChangeScreenFont.setText( _( "Change" ) );
-            lblTrackHeight.Text = _( "Track Height (pixel)" );
+            lblTrackHeight.setText( _( "Track Height (pixel)" ) );
             groupVisibleCurve.setTitle( _( "Visible Control Curve" ) );
             #endregion
 
             #region tabOperation
+#if JAVA
+            tabOperation.setTitle( _( "Operation" ) );
+#else
             tabOperation.Text = _( "Operation" );
-            labelWheelOrder.Text = _( "Mouse wheel Rate" );
+#endif
+            labelWheelOrder.setText( _( "Mouse wheel Rate" ) );
             chkCursorFix.setText( _( "Fix Play Cursor to Center" ) );
             chkScrollHorizontal.setText( _( "Horizontal Scroll when Mouse wheel" ) );
-            lblMaximumFrameRate.Text = _( "Maximum Frame Rate" );
+            lblMaximumFrameRate.setText( _( "Maximum Frame Rate" ) );
             chkKeepLyricInputMode.setText( _( "Keep Lyric Input Mode" ) );
-            lblMouseHoverTime.Text = _( "Waiting Time for Preview" );
-            lblMilliSecond.Text = _( "milli second" );
+            lblMouseHoverTime.setText( _( "Waiting Time for Preview" ) );
+            lblMilliSecond.setText( _( "milli second" ) );
             chkPlayPreviewWhenRightClick.setText( _( "Play Preview On Right Click" ) );
             chkCurveSelectingQuantized.setText( _( "Enable Quantize for Curve Selecting" ) );
-            lblMidiInPort.Text = _( "MIDI In Port Number" );
+            lblMidiInPort.setText( _( "MIDI In Port Number" ) );
             chkUseSpaceKeyAsMiddleButtonModifier.setText( _( "Use space key as Middle button modifier" ) );
 
             groupPianoroll.setTitle( _( "Piano Roll" ) );
@@ -603,10 +615,14 @@ namespace Boare.Cadencii {
             #endregion
 
             #region tabPlatform
+#if JAVA
+            tabPlatform.setTitle( _( "Platform" ) );
+#else
             tabPlatform.Text = _( "Platform" );
+#endif
 
             groupPlatform.setTitle( _( "Platform" ) );
-            lblPlatform.Text = _( "Current Platform" );
+            lblPlatform.setText( _( "Current Platform" ) );
             chkCommandKeyAsControl.setText( _( "Use Command key as Control key" ) );
             chkTranslateRoman.setText( _( "Translate Roman letters into Kana" ) );
 
@@ -615,7 +631,11 @@ namespace Boare.Cadencii {
             #endregion
 
             #region tabUtauSingers
+#if JAVA
+            tabUtauSingers.setTitle( _( "UTAU Singers" ) );
+#else
             tabUtauSingers.Text = _( "UTAU Singers" );
+#endif
             listSingers.setColumnHeaders( new String[]{ _( "Program Change" ), _( "Name" ), _( "Path" ) } );
             btnAdd.setText( _( "Add" ) );
             btnRemove.setText( _( "Remove" ) );
@@ -624,10 +644,14 @@ namespace Boare.Cadencii {
             #endregion
 
             #region tabFile
+#if JAVA
+            tabFile.setTitle( _( "File" ) );
+#else
             tabFile.Text = _( "File" );
+#endif
             chkAutoBackup.setText( _( "Automatical Backup" ) );
-            lblAutoBackupInterval.Text = _( "interval" );
-            lblAutoBackupMinutes.Text = _( "minute(s)" );
+            lblAutoBackupInterval.setText( _( "interval" ) );
+            lblAutoBackupMinutes.setText( _( "minute(s)" ) );
             #endregion
         }
 
@@ -823,7 +847,7 @@ namespace Boare.Cadencii {
 
         public void setScreenFont( Font value ) {
             m_screen_font = value;
-            labelScreenFontName.Text = m_screen_font.getName();
+            labelScreenFontName.setText( m_screen_font.getName() );
         }
 
         public java.awt.Font getBaseFont() {
@@ -832,7 +856,7 @@ namespace Boare.Cadencii {
 
         public void setBaseFont( java.awt.Font value ) {
             m_base_font = value;
-            labelMenuFontName.Text = m_base_font.getName();
+            labelMenuFontName.setText( m_base_font.getName() );
             UpdateFonts( m_base_font.getName() );
         }
 

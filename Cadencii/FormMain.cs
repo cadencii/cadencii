@@ -670,7 +670,7 @@ namespace Boare.Cadencii {
             picturePositionIndicator.Top = 0;
             picturePositionIndicator.Width = panel1.Width;
             // pictPianoRoll
-            pictPianoRoll.setBounds( 0, picturePositionIndicator.Height, panel1.Width - vScroll.Width, panel1.Height - picturePositionIndicator.Height - hScroll.getHeight() );
+            pictPianoRoll.setBounds( 0, picturePositionIndicator.Height, panel1.Width - vScroll.getWidth(), panel1.Height - picturePositionIndicator.Height - hScroll.getHeight() );
             // vScroll
             vScroll.Left = pictPianoRoll.getWidth();
             vScroll.Top = picturePositionIndicator.Height;
@@ -8645,7 +8645,7 @@ namespace Boare.Cadencii {
         }
 
         public void updateBgmMenuState() {
-            menuTrackBgm.DropDown.Items.Clear();
+            menuTrackBgm.removeAll();
             int count = AppManager.getBgmCount();
             if ( count > 0 ) {
                 for ( int i = 0; i < count; i++ ) {
@@ -9739,7 +9739,7 @@ namespace Boare.Cadencii {
                                   splitContainer1.Panel2MinSize +
                                      _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.MinimumSize.Height +
                                      toolStripContainer.TopToolStripPanel.Height +
-                                     menuStripMain.Height + statusStrip1.Height +
+                                     menuStripMain.getHeight() + statusStrip1.Height +
                                      (current.height - client.height) +
                                      20 );
         }
@@ -10565,10 +10565,10 @@ namespace Boare.Cadencii {
             int box_width = (int)((vScroll.getHeight() - _ARROWS) * (float)large_change / (float)(vScroll.getMaximum() + large_change));
             if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
-                large_change = (int)((float)vScroll.getMaximum() * (float)box_width / (float)(vScroll.Width - _ARROWS - box_width));
+                large_change = (int)((float)vScroll.getMaximum() * (float)box_width / (float)(vScroll.getWidth() - _ARROWS - box_width));
             }
             if ( large_change > 0 ) {
-                vScroll.LargeChange = large_change;
+                vScroll.setVisibleAmount( large_change );
             }
         }
 

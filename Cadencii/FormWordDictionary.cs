@@ -43,7 +43,7 @@ namespace Boare.Cadencii {
 
         public void ApplyLanguage() {
             setTitle( _( "User Dictionary Configuration" ) );
-            lblAvailableDictionaries.Text = _( "Available Dictionaries" );
+            lblAvailableDictionaries.setText( _( "Available Dictionaries" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
             btnUp.setText( _( "Up" ) );

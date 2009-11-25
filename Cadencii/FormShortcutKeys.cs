@@ -61,7 +61,9 @@ namespace Boare.Cadencii {
 
             m_dict = dict;
             m_dumy = new BMenuItem();
+#if !JAVA
             m_dumy.ShowShortcutKeys = true;
+#endif
             m_first_dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             CopyDict( m_dict, ref m_first_dict );
             UpdateList();

@@ -60,7 +60,9 @@ namespace Boare.Cadencii {
             lblBar.setText( _( "bar" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
+#if !JAVA
             lblPositionPrefix.Left = numPosition.Left - lblPositionPrefix.Width;
+#endif
         }
 
         public static String _( String id ) {

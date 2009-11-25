@@ -39,7 +39,7 @@ namespace Boare.Cadencii {
         }
 
         public float getSpeed() {
-            return (float)numSpeed.Value;
+            return (float)numSpeed.getValue();
         }
 
         private void FormRealtimeConfig_Load( object sender, EventArgs e ) {
@@ -84,7 +84,7 @@ namespace Boare.Cadencii {
                             btnCancel.requestFocus();
                             m_last_event_processed = now;
                         } else if ( pov_d ) {
-                            numSpeed.Focus();
+                            numSpeed.requestFocus();
                             m_last_event_processed = now;
                         }
                     } else if ( btnCancel.isFocusOwner() ) {
@@ -96,18 +96,18 @@ namespace Boare.Cadencii {
                             btnStart.requestFocus();
                             m_last_event_processed = now;
                         } else if ( pov_d || pov_r ) {
-                            numSpeed.Focus();
+                            numSpeed.requestFocus();
                             m_last_event_processed = now;
                         }
-                    } else if ( numSpeed.Focused ) {
+                    } else if ( numSpeed.isFocusOwner() ) {
                         if ( R1 ) {
-                            if ( numSpeed.Value + numSpeed.Increment <= numSpeed.Maximum ) {
-                                numSpeed.Value += numSpeed.Increment;
+                            if ( numSpeed.getValue() + numSpeed.getIncrement() <= numSpeed.getMaximum() ) {
+                                numSpeed.setValue( numSpeed.getValue() + numSpeed.getIncrement() );
                                 m_last_event_processed = now;
                             }
                         } else if ( L1 ) {
-                            if ( numSpeed.Value - numSpeed.Increment >= numSpeed.Minimum ) {
-                                numSpeed.Value -= numSpeed.Increment;
+                            if ( numSpeed.getValue() - numSpeed.getIncrement() >= numSpeed.getMinimum() ) {
+                                numSpeed.setValue( numSpeed.getValue() - numSpeed.getIncrement() );
                                 m_last_event_processed = now;
                             }
                         } else if ( pov_l ) {

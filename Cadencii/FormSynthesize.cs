@@ -76,7 +76,7 @@ namespace Boare.Cadencii {
             InitializeComponent();
             registerEventHandlers();
             setResources();
-            lblProgress.Text = "1/" + 1;
+            lblProgress.setText( "1/" + 1 );
             progressWhole.Maximum = 1;
             m_partial_mode = true;
             m_clock_start = clock_start;
@@ -95,7 +95,7 @@ namespace Boare.Cadencii {
             InitializeComponent();
             registerEventHandlers();
             setResources();
-            lblProgress.Text = "1/" + m_tracks.Length;
+            lblProgress.setText( "1/" + m_tracks.Length );
             progressWhole.Maximum = m_tracks.Length;
             m_partial_mode = false;
             m_clock_end = end;
@@ -106,7 +106,7 @@ namespace Boare.Cadencii {
 
         public void applyLanguage() {
             setTitle( _( "Synthesize" ) );
-            lblSynthesizing.Text = _( "now synthesizing..." );
+            lblSynthesizing.setText( _( "now synthesizing..." ) );
             btnCancel.setText( _( "Cancel" ) );
         }
 
@@ -126,7 +126,7 @@ namespace Boare.Cadencii {
         }
 
         private void FormSynthesize_Load( Object sender, BEventArgs e ) {
-            lblTime.Text = "";
+            lblTime.setText( "" );
             Start();
         }
 
@@ -144,7 +144,7 @@ namespace Boare.Cadencii {
 
         private void UpdateProgress( Object sender, int value ) {
             progressWhole.Value = value > progressWhole.Maximum ? progressWhole.Maximum : value;
-            lblProgress.Text = value + "/" + m_tracks.Length;
+            lblProgress.setText( value + "/" + m_tracks.Length );
             m_finished = value - 1;
         }
 
@@ -262,9 +262,9 @@ namespace Boare.Cadencii {
             long elapsed = (long)VSTiProxy.getElapsedSeconds();
             long remaining = (long)VSTiProxy.computeRemainintSeconds();
             if ( progress >= 0.0 && remaining >= 0.0 ) {
-                lblTime.Text = _( "Remaining" ) + " " + getTimeSpanString( remaining ) + " (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")";
+                lblTime.setText( _( "Remaining" ) + " " + getTimeSpanString( remaining ) + " (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")" );
             } else {
-                lblTime.Text = _( "Remaining" ) + " [unknown] (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")";
+                lblTime.setText( _( "Remaining" ) + " [unknown] (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")" );
             }
             progressOne.Value = (int)progress > 100 ? 100 : (int)progress;
         }

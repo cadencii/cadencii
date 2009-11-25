@@ -15,7 +15,16 @@ public class BNumericUpDown extends JPanel{
 	private int value = 0;
 	private int maximum = 100;
 	private int minimum = 0;
+	private int increment = 1;
 
+	public int getIncrement(){
+	    return increment;
+	}
+	
+	public void setIncrement( int value ){
+	    increment = value;
+	}
+	
 	private void update(){
 	    getTxtValue().setText( value + "" );
 	}
@@ -119,8 +128,8 @@ public class BNumericUpDown extends JPanel{
 			btnUp.setPreferredSize(new Dimension(20, 10));
 			btnUp.addActionListener(new java.awt.event.ActionListener() {
 			    public void actionPerformed(java.awt.event.ActionEvent e) {
-			        if( value + 1 <= maximum ){
-			            value++;
+			        if( value + increment <= maximum ){
+			            value += increment;
 			            update();
 			        }
 			    }
@@ -141,8 +150,8 @@ public class BNumericUpDown extends JPanel{
 			btnDown.setPreferredSize(new Dimension(20, 10));
 			btnDown.addActionListener(new java.awt.event.ActionListener() {
 			    public void actionPerformed(java.awt.event.ActionEvent e) {
-			        if( value - 1 >= minimum ){
-			            value--;
+			        if( value - increment >= minimum ){
+			            value -= increment;
 			            update();
 			        }
 			    }

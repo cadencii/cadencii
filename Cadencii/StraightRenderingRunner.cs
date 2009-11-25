@@ -290,7 +290,9 @@ namespace Boare.Cadencii {
                     CurveType.PBS,
                     CurveType.DYN,
                     CurveType.BRE,
-                    CurveType.GEN, };
+                    CurveType.GEN,
+                    CurveType.CLE,
+                    CurveType.BRI, };
             // メモリーストリームに出力
             writer.write( "[Tempo]" );
             writer.newLine();

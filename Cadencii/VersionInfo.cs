@@ -77,8 +77,8 @@ namespace Boare.Cadencii {
 
             m_credit = new AuthorListEntry[] { };
             btnSaveAuthorList.setVisible( false );
-            lblVstLogo.ForeColor = m_version_color.color;
-            lblStraightAcknowledgement.ForeColor = m_version_color.color;
+            lblVstLogo.setForeground( m_version_color );
+            lblStraightAcknowledgement.setForeground( m_version_color );
 #if DEBUG
             GenerateAuthorList();
             btnSaveAuthorList.setVisible( true );
@@ -124,8 +124,8 @@ namespace Boare.Cadencii {
 
         public void setVersionColor( Color value ) {
             m_version_color = value;
-            lblVstLogo.ForeColor = value.color;
-            lblStraightAcknowledgement.ForeColor = value.color;
+            lblVstLogo.setForeground( value );
+            lblStraightAcknowledgement.setForeground( value );
         }
 
         /// <summary>
@@ -244,16 +244,16 @@ namespace Boare.Cadencii {
                 m_last_t = 0f;
                 m_shift = 0f;
                 pictVstLogo.Visible = false;
-                lblVstLogo.Visible = false;
-                lblStraightAcknowledgement.Visible = false;
+                lblVstLogo.setVisible( false );
+                lblStraightAcknowledgement.setVisible( false );
                 timer.Enabled = true;
             } else {
                 timer.Enabled = false;
                 btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
                 btnFlip.setText( _( "Credit" ) );
                 pictVstLogo.Visible = true;
-                lblVstLogo.Visible = true;
-                lblStraightAcknowledgement.Visible = true;
+                lblVstLogo.setVisible( true );
+                lblStraightAcknowledgement.setVisible( true );
             }
             invalidate();
         }

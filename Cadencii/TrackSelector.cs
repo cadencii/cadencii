@@ -362,40 +362,40 @@ namespace Boare.Cadencii {
             registerEventHandlers();
             setResources();
             m_modifier_key = (AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
-            cmenuCurveVelocity.Tag = CurveType.VEL;
-            cmenuCurveAccent.Tag = CurveType.Accent;
-            cmenuCurveDecay.Tag = CurveType.Decay;
+            cmenuCurveVelocity.setTag( CurveType.VEL );
+            cmenuCurveAccent.setTag( CurveType.Accent );
+            cmenuCurveDecay.setTag( CurveType.Decay );
 
-            cmenuCurveDynamics.Tag = CurveType.DYN;
-            cmenuCurveVibratoRate.Tag = CurveType.VibratoRate;
-            cmenuCurveVibratoDepth.Tag = CurveType.VibratoDepth;
+            cmenuCurveDynamics.setTag( CurveType.DYN );
+            cmenuCurveVibratoRate.setTag( CurveType.VibratoRate );
+            cmenuCurveVibratoDepth.setTag( CurveType.VibratoDepth );
 
-            cmenuCurveReso1Amp.Tag = CurveType.reso1amp;
-            cmenuCurveReso1BW.Tag = CurveType.reso1bw;
-            cmenuCurveReso1Freq.Tag = CurveType.reso1freq;
-            cmenuCurveReso2Amp.Tag = CurveType.reso2amp;
-            cmenuCurveReso2BW.Tag = CurveType.reso2bw;
-            cmenuCurveReso2Freq.Tag = CurveType.reso2freq;
-            cmenuCurveReso3Amp.Tag = CurveType.reso3amp;
-            cmenuCurveReso3BW.Tag = CurveType.reso3bw;
-            cmenuCurveReso3Freq.Tag = CurveType.reso3freq;
-            cmenuCurveReso4Amp.Tag = CurveType.reso4amp;
-            cmenuCurveReso4BW.Tag = CurveType.reso4bw;
-            cmenuCurveReso4Freq.Tag = CurveType.reso4freq;
+            cmenuCurveReso1Amp.setTag( CurveType.reso1amp );
+            cmenuCurveReso1BW.setTag( CurveType.reso1bw );
+            cmenuCurveReso1Freq.setTag( CurveType.reso1freq );
+            cmenuCurveReso2Amp.setTag( CurveType.reso2amp );
+            cmenuCurveReso2BW.setTag( CurveType.reso2bw );
+            cmenuCurveReso2Freq.setTag( CurveType.reso2freq );
+            cmenuCurveReso3Amp.setTag( CurveType.reso3amp );
+            cmenuCurveReso3BW.setTag( CurveType.reso3bw );
+            cmenuCurveReso3Freq.setTag( CurveType.reso3freq );
+            cmenuCurveReso4Amp.setTag( CurveType.reso4amp );
+            cmenuCurveReso4BW.setTag( CurveType.reso4bw );
+            cmenuCurveReso4Freq.setTag( CurveType.reso4freq );
 
-            cmenuCurveHarmonics.Tag = CurveType.harmonics;
-            cmenuCurveBreathiness.Tag = CurveType.BRE;
-            cmenuCurveBrightness.Tag = CurveType.BRI;
-            cmenuCurveClearness.Tag = CurveType.CLE;
-            cmenuCurveOpening.Tag = CurveType.OPE;
-            cmenuCurveGenderFactor.Tag = CurveType.GEN;
+            cmenuCurveHarmonics.setTag( CurveType.harmonics );
+            cmenuCurveBreathiness.setTag( CurveType.BRE );
+            cmenuCurveBrightness.setTag( CurveType.BRI );
+            cmenuCurveClearness.setTag( CurveType.CLE );
+            cmenuCurveOpening.setTag( CurveType.OPE );
+            cmenuCurveGenderFactor.setTag( CurveType.GEN );
 
-            cmenuCurvePortamentoTiming.Tag = CurveType.POR;
-            cmenuCurvePitchBend.Tag = CurveType.PIT;
-            cmenuCurvePitchBendSensitivity.Tag = CurveType.PBS;
+            cmenuCurvePortamentoTiming.setTag( CurveType.POR );
+            cmenuCurvePitchBend.setTag( CurveType.PIT );
+            cmenuCurvePitchBendSensitivity.setTag( CurveType.PBS );
 
-            cmenuCurveEffect2Depth.Tag = CurveType.fx2depth;
-            cmenuCurveEnvelope.Tag = CurveType.Env;
+            cmenuCurveEffect2Depth.setTag( CurveType.fx2depth );
+            cmenuCurveEnvelope.setTag( CurveType.Env );
         }
 
 #if !JAVA
@@ -619,6 +619,7 @@ namespace Boare.Cadencii {
         #endregion
 #endif
 
+#if !JAVA
         protected override void OnResize( BEventArgs e ) {
             base.OnResize( e );
             vScroll.Width = VSCROLL_WIDTH;
@@ -631,6 +632,7 @@ namespace Boare.Cadencii {
             panelZoomButton.Left = this.Width - VSCROLL_WIDTH;
             panelZoomButton.Top = this.Height - ZOOMPANEL_HEIGHT - 2;
         }
+#endif
 
         public void applyLanguage() {
         }
@@ -859,13 +861,13 @@ namespace Boare.Cadencii {
         }
 
         public void paint( Graphics graphics ) {
-            System.Drawing.Size size = new System.Drawing.Size( this.Width - vScroll.Width + 2, this.Height );
+            Dimension size = new Dimension( getWidth() - vScroll.getWidth() + 2, getHeight() );
             Graphics2D g = (Graphics2D)graphics;
             Color brs_string = Color.black;
             Color rect_curve = new Color( 41, 46, 55 );
             int centre = 8 + getGraphHeight() / 2;
             g.setColor( Color.darkGray );
-            g.fillRect( 0, size.Height - 2 * OFFSET_TRACK_TAB, size.Width, 2 * OFFSET_TRACK_TAB );
+            g.fillRect( 0, size.height - 2 * OFFSET_TRACK_TAB, size.width, 2 * OFFSET_TRACK_TAB );
             int numeric_view = m_mouse_value;
             System.Drawing.Point p = this.PointToClient( Control.MousePosition );
             Point mouse = new Point( p.X, p.Y );
@@ -873,15 +875,15 @@ namespace Boare.Cadencii {
             #region SINGER
             Shape last = g.getClip();
             g.setColor( m_generic_line );
-            g.drawLine( 2, size.Height - 2 * OFFSET_TRACK_TAB,
-                        size.Width - 3, size.Height - 2 * OFFSET_TRACK_TAB );
-            g.drawLine( AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB + 1,
-                        AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB + 15 );
+            g.drawLine( 2, size.height - 2 * OFFSET_TRACK_TAB,
+                        size.width - 3, size.height - 2 * OFFSET_TRACK_TAB );
+            g.drawLine( AppManager.keyWidth, size.height - 2 * OFFSET_TRACK_TAB + 1,
+                        AppManager.keyWidth, size.height - 2 * OFFSET_TRACK_TAB + 15 );
             g.setFont( AppManager.baseFont8 );
             g.setColor( brs_string );
-            g.drawString( "SINGER", 9, size.Height - 2 * OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
-            g.clipRect( AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB,
-                        size.Width - AppManager.keyWidth, OFFSET_TRACK_TAB );
+            g.drawString( "SINGER", 9, size.height - 2 * OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
+            g.clipRect( AppManager.keyWidth, size.height - 2 * OFFSET_TRACK_TAB,
+                        size.width - AppManager.keyWidth, OFFSET_TRACK_TAB );
             VsqTrack draw_target = null;
             if ( AppManager.getVsqFile() != null ) {
                 draw_target = AppManager.getVsqFile().Track.get( AppManager.getSelected() );
@@ -896,7 +898,7 @@ namespace Boare.Cadencii {
                     if ( ve.ID.type == VsqIDType.Singer ) {
                         int clock = ve.Clock;
                         int x = AppManager.xCoordFromClocks( clock );
-                        Rectangle rc = new Rectangle( x, size.Height - 2 * OFFSET_TRACK_TAB + 1, SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 5 );
+                        Rectangle rc = new Rectangle( x, size.height - 2 * OFFSET_TRACK_TAB + 1, SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 5 );
                         g.setColor( Color.white );
                         g.fillRect( rc.x, rc.y, rc.width, rc.height );
                         if ( AppManager.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
@@ -919,10 +921,10 @@ namespace Boare.Cadencii {
             #region トラック選択欄
             int selecter_width = getSelectorWidth();
             g.setColor( m_generic_line );
-            g.drawLine( 1, size.Height - OFFSET_TRACK_TAB,
-                        size.Width - 2, size.Height - OFFSET_TRACK_TAB );
+            g.drawLine( 1, size.height - OFFSET_TRACK_TAB,
+                        size.width - 2, size.height - OFFSET_TRACK_TAB );
             g.setColor( brs_string );
-            g.drawString( "TRACK", 9, size.Height - OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
+            g.drawString( "TRACK", 9, size.height - OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
             if ( AppManager.getVsqFile() != null ) {
                 for ( int i = 0; i < 16; i++ ) {
                     int x = AppManager.keyWidth + i * selecter_width;
@@ -930,7 +932,7 @@ namespace Boare.Cadencii {
                     try {
 #endif
                         drawTrackTab( g,
-                                      new Rectangle( x, size.Height - OFFSET_TRACK_TAB + 1, selecter_width, OFFSET_TRACK_TAB - 1 ),
+                                      new Rectangle( x, size.height - OFFSET_TRACK_TAB + 1, selecter_width, OFFSET_TRACK_TAB - 1 ),
                                       (i + 1 < AppManager.getVsqFile().Track.size()) ? (i + 1) + " " + AppManager.getVsqFile().Track.get( i + 1 ).getName() : "",
                                       (i == AppManager.getSelected() - 1),
                                       draw_target.getCommon().PlayMode >= 0,
@@ -952,17 +954,17 @@ namespace Boare.Cadencii {
                 #region カーブエディタ
                 // カーブエディタの下の線
                 g.setColor( new Color( 156, 161, 169 ) );
-                g.drawLine( AppManager.keyWidth, size.Height - 42,
-                            size.Width - 3, size.Height - 42 );
+                g.drawLine( AppManager.keyWidth, size.height - 42,
+                            size.width - 3, size.height - 42 );
 
                 // カーブエディタの上の線
                 g.setColor( new Color( 46, 47, 50 ) );
                 g.drawLine( AppManager.keyWidth, 8,
-                            size.Width - 3, 8 );
+                            size.width - 3, 8 );
 
                 g.setColor( new Color( 125, 123, 124 ) );
                 g.drawLine( AppManager.keyWidth, 0,
-                            AppManager.keyWidth, size.Height );
+                            AppManager.keyWidth, size.height );
 
                 if ( AppManager.isCurveSelectedIntervalEnabled() ) {
                     int x0 = AppManager.xCoordFromClocks( AppManager.curveSelectedInterval.getStart() );
@@ -974,7 +976,7 @@ namespace Boare.Cadencii {
                 #region 小節ごとのライン
                 if ( AppManager.getVsqFile() != null ) {
                     int dashed_line_step = AppManager.getPositionQuantizeClock();
-                    g.clipRect( AppManager.keyWidth, HEADER, size.Width - AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB );
+                    g.clipRect( AppManager.keyWidth, HEADER, size.width - AppManager.keyWidth, size.height - 2 * OFFSET_TRACK_TAB );
                     Color white100 = new Color( 0, 0, 0, 100 );
                     for ( Iterator itr = AppManager.getVsqFile().getBarLineIterator( AppManager.clockFromXCoord( Width ) ); itr.hasNext(); ) {
                         VsqBarLineType blt = (VsqBarLineType)itr.next();
@@ -982,14 +984,14 @@ namespace Boare.Cadencii {
                         int local_clock_step = 480 * 4 / blt.getLocalDenominator();
                         if ( blt.isSeparator() ) {
                             g.setColor( white100 );
-                            g.drawLine( x, size.Height - 42 - 1, x, 8 + 1 );
+                            g.drawLine( x, size.height - 42 - 1, x, 8 + 1 );
                         } else {
                             g.setColor( white100 );
                             g.drawLine( x, centre - 5, x, centre + 6 );
                             Color pen = new Color( 12, 12, 12 );
                             g.setColor( pen );
                             g.drawLine( x, 8, x, 14 );
-                            g.drawLine( x, size.Height - 43, x, size.Height - 42 - 6 );
+                            g.drawLine( x, size.height - 43, x, size.height - 42 - 6 );
                         }
                         if ( dashed_line_step > 1 && AppManager.isGridVisible() ) {
                             int numDashedLine = local_clock_step / dashed_line_step;
@@ -999,7 +1001,7 @@ namespace Boare.Cadencii {
                                 int x2 = AppManager.xCoordFromClocks( blt.clock() + i * dashed_line_step );
                                 g.drawLine( x2, centre - 2, x2, centre + 3 );
                                 g.drawLine( x2, 8, x2, 12 );
-                                g.drawLine( x2, size.Height - 43, x2, size.Height - 43 - 4 );
+                                g.drawLine( x2, size.height - 43, x2, size.height - 43 - 4 );
                             }
                         }
                     }
@@ -1216,11 +1218,11 @@ namespace Boare.Cadencii {
                             int x = AppManager.xCoordFromClocks( item.editing.Clock );
                             g.setColor( s_pen_128_128_128 );
                             g.drawPolygon( new int[] { x, x, x + SINGER_ITEM_WIDTH, x + SINGER_ITEM_WIDTH },
-                                           new int[] { size.Height - OFFSET_TRACK_TAB, size.Height - 2 * OFFSET_TRACK_TAB + 1, size.Height - 2 * OFFSET_TRACK_TAB + 1, size.Height - OFFSET_TRACK_TAB },
+                                           new int[] { size.height - OFFSET_TRACK_TAB, size.height - 2 * OFFSET_TRACK_TAB + 1, size.height - 2 * OFFSET_TRACK_TAB + 1, size.height - OFFSET_TRACK_TAB },
                                            4 );
                             g.setColor( s_pen_246_251_010 );
-                            g.drawLine( x, size.Height - OFFSET_TRACK_TAB,
-                                        x + SINGER_ITEM_WIDTH, size.Height - OFFSET_TRACK_TAB );
+                            g.drawLine( x, size.height - OFFSET_TRACK_TAB,
+                                        x + SINGER_ITEM_WIDTH, size.height - OFFSET_TRACK_TAB );
                         }
                     }
                     #endregion
@@ -1232,7 +1234,7 @@ namespace Boare.Cadencii {
                 #region カーブの種類一覧
                 Color font_color_normal = Color.black;
                 g.setColor( new Color( 212, 212, 212 ) );
-                g.fillRect( 0, 0, AppManager.keyWidth, size.Height - 2 * OFFSET_TRACK_TAB );
+                g.fillRect( 0, 0, AppManager.keyWidth, size.height - 2 * OFFSET_TRACK_TAB );
 
                 // 数値ビュー
                 Rectangle num_view = new Rectangle( 13, 4, 38, 16 );
@@ -1274,10 +1276,10 @@ namespace Boare.Cadencii {
 
             #region 現在のマーカー
             int marker_x = AppManager.xCoordFromClocks( AppManager.getCurrentClock() );
-            if ( AppManager.keyWidth <= marker_x && marker_x <= size.Width ) {
+            if ( AppManager.keyWidth <= marker_x && marker_x <= size.width ) {
                 g.setColor( Color.white );
                 g.setStroke( new BasicStroke( 2f ) );
-                g.drawLine( marker_x, 0, marker_x, size.Height - 18 );
+                g.drawLine( marker_x, 0, marker_x, size.height - 18 );
                 g.setStroke( new BasicStroke() );
             }
             #endregion
@@ -1318,18 +1320,18 @@ namespace Boare.Cadencii {
             #region 外枠
             // 左外側
             g.setColor( new Color( 160, 160, 160 ) );
-            g.drawLine( 0, 0, 0, size.Height - 2 );
+            g.drawLine( 0, 0, 0, size.height - 2 );
             // 左内側
             g.setColor( new Color( 105, 105, 105 ) );
-            g.drawLine( 1, 0, 1, size.Height - 1 );
+            g.drawLine( 1, 0, 1, size.height - 1 );
             // 下内側
             g.setColor( new Color( 192, 192, 192 ) );
-            g.drawLine( 1, size.Height - 2,
-                        size.Width + 20, size.Height - 2 );
+            g.drawLine( 1, size.height - 2,
+                        size.width + 20, size.height - 2 );
             // 下外側
             g.setColor( Color.white );
-            g.drawLine( 0, size.Height - 1,
-                        size.Width + 20, size.Height - 1 );
+            g.drawLine( 0, size.height - 1,
+                        size.width + 20, size.height - 1 );
             /*/ 右外側
             g.drawLine( Pens.White,
                         new Point( size.Width - 1, 0 ),
@@ -1750,7 +1752,7 @@ namespace Boare.Cadencii {
         /// トラック選択部分の、トラック1個分の幅を調べます。pixel
         /// </summary>
         public int getSelectorWidth() {
-            return (int)((this.Width - vScroll.Width) / 16.0f);
+            return (int)((getWidth() - vScroll.getWidth()) / 16.0f);
         }
 
         /// <summary>
@@ -1760,16 +1762,16 @@ namespace Boare.Cadencii {
         /// <param name="track"></param>
         /// <param name="color"></param>
         public void drawVEL( Graphics2D g, VsqTrack track, Color color, boolean is_front, CurveType type ) {
-            System.Drawing.Point pmouse = this.PointToClient( Control.MousePosition );
-            Point mouse = new Point( pmouse.X, pmouse.Y );
+            Point pmouse = pointToClient( PortUtil.getMousePosition() );
+            Point mouse = new Point( pmouse.x, pmouse.y );
 
             int HEADER = 8;
             int height = getGraphHeight();
             float order = (type.equals( CurveType.VEL )) ? height / 127f : height / 100f;
-            int oy = this.Height - 42;
+            int oy = getHeight() - 42;
             Shape last_clip = g.getClip();
             int xoffset = 6 + AppManager.keyWidth - AppManager.startToDrawX;
-            g.clipRect( AppManager.keyWidth, HEADER, this.Width - AppManager.keyWidth - vScroll.Width, height );
+            g.clipRect( AppManager.keyWidth, HEADER, getWidth() - AppManager.keyWidth - vScroll.getWidth(), height );
             float scale = AppManager.scaleX;
             int count = track.getEventCount();
 
@@ -1784,7 +1786,7 @@ namespace Boare.Cadencii {
                 int x = (int)(clock * scale) + xoffset;
                 if ( x + VEL_BAR_WIDTH < 0 ) {
                     continue;
-                } else if ( this.Width - vScroll.Width < x ) {
+                } else if ( this.Width - vScroll.getWidth() < x ) {
                     break;
                 } else {
                     int value = 0;
@@ -1978,11 +1980,11 @@ namespace Boare.Cadencii {
             Shape last_clip = g.getClip();
             int graph_height = getGraphHeight();
             g.clipRect( AppManager.keyWidth, HEADER,
-                        this.Width - AppManager.keyWidth - vScroll.Width, graph_height );
+                        getWidth() - AppManager.keyWidth - vScroll.getWidth(), graph_height );
 
             //int track = AppManager.Selected;
             int cl_start = AppManager.clockFromXCoord( AppManager.keyWidth );
-            int cl_end = AppManager.clockFromXCoord( this.Width - vScroll.Width );
+            int cl_end = AppManager.clockFromXCoord( getWidth() - vScroll.getWidth() );
             if ( is_front ) {
                 /* // draw shadow of non-note area
                 Shape last_clip2 = g.getClip();
@@ -2081,7 +2083,7 @@ namespace Boare.Cadencii {
                     }
                 }
                 g.setColor( shadow );
-                g.fillRect( last_shadow_x, HEADER, this.Width - AppManager.keyWidth - vScroll.Width, graph_height );
+                g.fillRect( last_shadow_x, HEADER, getWidth() - AppManager.keyWidth - vScroll.getWidth(), graph_height );
             }
             g.setClip( last_clip );
         }
@@ -2098,10 +2100,10 @@ namespace Boare.Cadencii {
             int min = list.getMinimum();
             int height = getGraphHeight();
             float order = height / (float)(max - min);
-            int oy = this.Height - 42;
+            int oy = getHeight() - 42;
             Shape last_clip = g.getClip();
             g.clipRect( AppManager.keyWidth, HEADER,
-                        this.Width - AppManager.keyWidth - vScroll.Width, this.Height - 2 * OFFSET_TRACK_TAB );
+                        getWidth() - AppManager.keyWidth - vScroll.getWidth(), getHeight() - 2 * OFFSET_TRACK_TAB );
 
             // 選択範囲。この四角の中に入っていたら、選択されているとみなす
             Rectangle select_window = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
@@ -2113,7 +2115,7 @@ namespace Boare.Cadencii {
 
             int start = AppManager.keyWidth;
             int start_clock = AppManager.clockFromXCoord( start );
-            int end = this.Width - vScroll.Width;
+            int end = getWidth() - vScroll.getWidth();
             int end_clock = AppManager.clockFromXCoord( end );
             int hilight_start = AppManager.curveSelectedInterval.getStart();
             int hilight_end = AppManager.curveSelectedInterval.getEnd();
@@ -2124,7 +2126,7 @@ namespace Boare.Cadencii {
             Vector<Integer> pointsx = new Vector<Integer>();
             Vector<Integer> pointsy = new Vector<Integer>();
             Vector<Integer> index_selected_in_points = new Vector<Integer>(); // pointsのうち、選択された状態のものが格納されたインデックス
-            pointsx.add( this.Width - vScroll.Width ); pointsy.add( oy );
+            pointsx.add( getWidth() - vScroll.getWidth() ); pointsy.add( oy );
             pointsx.add( AppManager.keyWidth ); pointsy.add( oy );
             int first_y = list.getValue( start_clock );
             int last_y = oy - (int)((first_y - min) * order);
@@ -2177,7 +2179,7 @@ namespace Boare.Cadencii {
                 pointsx.add( AppManager.keyWidth ); pointsy.add( last_y );
             }
             last_y = oy - (int)((list.getValue( end_clock ) - min) * order);
-            pointsx.add( this.Width - vScroll.Width ); pointsy.add( last_y );
+            pointsx.add( getWidth() - vScroll.getWidth() ); pointsy.add( last_y );
             g.setColor( brush );
             g.fillPolygon( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
                            PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
@@ -2266,9 +2268,12 @@ namespace Boare.Cadencii {
             int min = list.getMinimum();
             int height = getGraphHeight();
             float order = height / (float)(max - min);
-            int oy = this.Height - 42;
+            int oy = getHeight() - 42;
             Shape last_clip = g.getClip();
-            g.clipRect( position.x + AppManager.keyWidth, position.y + HEADER, this.Width - AppManager.keyWidth - vScroll.Width, this.Height - 2 * OFFSET_TRACK_TAB );
+            g.clipRect( position.x + AppManager.keyWidth, 
+                        position.y + HEADER, 
+                        getWidth() - AppManager.keyWidth - vScroll.getWidth(),
+                        getHeight() - 2 * OFFSET_TRACK_TAB );
             int count = -1;
             count++;
             m_pointsx[count] = position.x + AppManager.keyWidth;
@@ -2328,10 +2333,10 @@ namespace Boare.Cadencii {
                 }
             }
             count++;
-            m_pointsx[count] = position.x + this.Width - vScroll.Width;
+            m_pointsx[count] = position.x + getWidth() - vScroll.getWidth();
             m_pointsy[count] = position.y + last_y;
             count++;
-            m_pointsx[count] = position.x + this.Width - vScroll.Width;
+            m_pointsx[count] = position.x + getWidth() - vScroll.getWidth();
             m_pointsy[count] = position.y + oy;
             int[] pbufx = new int[count];
             int[] pbufy = new int[count];
@@ -2348,14 +2353,14 @@ namespace Boare.Cadencii {
         /// カーブエディタのグラフ部分の高さを取得します(pixel)
         /// </summary>
         public int getGraphHeight() {
-            return this.Height - 42 - 8;
+            return getHeight() - 42 - 8;
         }
 
         /// <summary>
         /// カーブエディタのグラフ部分の幅を取得します。(pixel)
         /// </summary>
         public int getGraphWidth() {
-            return this.Width - AppManager.keyWidth - vScroll.Width;
+            return getWidth() - AppManager.keyWidth - vScroll.getWidth();
         }
 
         private void TrackSelector_Load( Object sender, BEventArgs e ) {
@@ -2397,105 +2402,105 @@ namespace Boare.Cadencii {
                         }
                         String version = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
                         if ( version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
-                            cmenuCurveVelocity.Visible = true;
-                            cmenuCurveAccent.Visible = true;
-                            cmenuCurveDecay.Visible = true;
+                            cmenuCurveVelocity.setVisible( true );
+                            cmenuCurveAccent.setVisible( true );
+                            cmenuCurveDecay.setVisible( true );
 
-                            cmenuCurveSeparator1.Visible = true;
-                            cmenuCurveDynamics.Visible = true;
-                            cmenuCurveVibratoRate.Visible = true;
-                            cmenuCurveVibratoDepth.Visible = true;
+                            cmenuCurveSeparator1.setVisible( true );
+                            cmenuCurveDynamics.setVisible( true );
+                            cmenuCurveVibratoRate.setVisible( true );
+                            cmenuCurveVibratoDepth.setVisible( true );
 
-                            cmenuCurveSeparator2.Visible = true;
-                            cmenuCurveReso1.Visible = true;
-                            cmenuCurveReso2.Visible = true;
-                            cmenuCurveReso3.Visible = true;
-                            cmenuCurveReso4.Visible = true;
+                            cmenuCurveSeparator2.setVisible( true );
+                            cmenuCurveReso1.setVisible( true );
+                            cmenuCurveReso2.setVisible( true );
+                            cmenuCurveReso3.setVisible( true );
+                            cmenuCurveReso4.setVisible( true );
 
-                            cmenuCurveSeparator3.Visible = true;
-                            cmenuCurveHarmonics.Visible = true;
-                            cmenuCurveBreathiness.Visible = true;
-                            cmenuCurveBrightness.Visible = true;
-                            cmenuCurveClearness.Visible = true;
-                            cmenuCurveOpening.Visible = false;
-                            cmenuCurveGenderFactor.Visible = true;
+                            cmenuCurveSeparator3.setVisible( true );
+                            cmenuCurveHarmonics.setVisible( true );
+                            cmenuCurveBreathiness.setVisible( true );
+                            cmenuCurveBrightness.setVisible( true );
+                            cmenuCurveClearness.setVisible( true );
+                            cmenuCurveOpening.setVisible( false );
+                            cmenuCurveGenderFactor.setVisible( true );
 
-                            cmenuCurveSeparator4.Visible = true;
-                            cmenuCurvePortamentoTiming.Visible = true;
-                            cmenuCurvePitchBend.Visible = true;
-                            cmenuCurvePitchBendSensitivity.Visible = true;
+                            cmenuCurveSeparator4.setVisible( true );
+                            cmenuCurvePortamentoTiming.setVisible( true );
+                            cmenuCurvePitchBend.setVisible( true );
+                            cmenuCurvePitchBendSensitivity.setVisible( true );
 
-                            cmenuCurveSeparator5.Visible = true;
-                            cmenuCurveEffect2Depth.Visible = true;
-                            cmenuCurveEnvelope.Visible = false;
+                            cmenuCurveSeparator5.setVisible( true );
+                            cmenuCurveEffect2Depth.setVisible( true );
+                            cmenuCurveEnvelope.setVisible( false );
 
-                            cmenuCurveBreathiness.Text = "Noise";
+                            cmenuCurveBreathiness.setText( "Noise" );
                         } else if ( version.StartsWith( VSTiProxy.RENDERER_UTU0 ) || version.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
-                            cmenuCurveVelocity.Visible = false;
-                            cmenuCurveAccent.Visible = false;
-                            cmenuCurveDecay.Visible = false;
+                            cmenuCurveVelocity.setVisible( false );
+                            cmenuCurveAccent.setVisible( false );
+                            cmenuCurveDecay.setVisible( false );
 
-                            cmenuCurveSeparator1.Visible = false;
-                            cmenuCurveDynamics.Visible = false;
-                            cmenuCurveVibratoRate.Visible = true;
-                            cmenuCurveVibratoDepth.Visible = true;
+                            cmenuCurveSeparator1.setVisible( false );
+                            cmenuCurveDynamics.setVisible( false );
+                            cmenuCurveVibratoRate.setVisible( true );
+                            cmenuCurveVibratoDepth.setVisible( true );
 
-                            cmenuCurveSeparator2.Visible = false;
-                            cmenuCurveReso1.Visible = false;
-                            cmenuCurveReso2.Visible = false;
-                            cmenuCurveReso3.Visible = false;
-                            cmenuCurveReso4.Visible = false;
+                            cmenuCurveSeparator2.setVisible( false );
+                            cmenuCurveReso1.setVisible( false );
+                            cmenuCurveReso2.setVisible( false );
+                            cmenuCurveReso3.setVisible( false );
+                            cmenuCurveReso4.setVisible( false );
 
-                            cmenuCurveSeparator3.Visible = false;
-                            cmenuCurveHarmonics.Visible = false;
-                            cmenuCurveBreathiness.Visible = false;
-                            cmenuCurveBrightness.Visible = false;
-                            cmenuCurveClearness.Visible = false;
-                            cmenuCurveOpening.Visible = false;
-                            cmenuCurveGenderFactor.Visible = false;
+                            cmenuCurveSeparator3.setVisible( false );
+                            cmenuCurveHarmonics.setVisible( false );
+                            cmenuCurveBreathiness.setVisible( false );
+                            cmenuCurveBrightness.setVisible( false );
+                            cmenuCurveClearness.setVisible( false );
+                            cmenuCurveOpening.setVisible( false );
+                            cmenuCurveGenderFactor.setVisible( false );
 
-                            cmenuCurveSeparator4.Visible = true;
-                            cmenuCurvePortamentoTiming.Visible = false;
-                            cmenuCurvePitchBend.Visible = true;
-                            cmenuCurvePitchBendSensitivity.Visible = true;
+                            cmenuCurveSeparator4.setVisible( true );
+                            cmenuCurvePortamentoTiming.setVisible( false );
+                            cmenuCurvePitchBend.setVisible( true );
+                            cmenuCurvePitchBendSensitivity.setVisible( true );
 
-                            cmenuCurveSeparator5.Visible = true;
-                            cmenuCurveEffect2Depth.Visible = false;
-                            cmenuCurveEnvelope.Visible = true;
+                            cmenuCurveSeparator5.setVisible( true );
+                            cmenuCurveEffect2Depth.setVisible( false );
+                            cmenuCurveEnvelope.setVisible( true );
                         } else {
-                            cmenuCurveVelocity.Visible = true;
-                            cmenuCurveAccent.Visible = true;
-                            cmenuCurveDecay.Visible = true;
+                            cmenuCurveVelocity.setVisible( true );
+                            cmenuCurveAccent.setVisible( true );
+                            cmenuCurveDecay.setVisible( true );
 
-                            cmenuCurveSeparator1.Visible = true;
-                            cmenuCurveDynamics.Visible = true;
-                            cmenuCurveVibratoRate.Visible = true;
-                            cmenuCurveVibratoDepth.Visible = true;
+                            cmenuCurveSeparator1.setVisible( true );
+                            cmenuCurveDynamics.setVisible( true );
+                            cmenuCurveVibratoRate.setVisible( true );
+                            cmenuCurveVibratoDepth.setVisible( true );
 
-                            cmenuCurveSeparator2.Visible = false;
-                            cmenuCurveReso1.Visible = false;
-                            cmenuCurveReso2.Visible = false;
-                            cmenuCurveReso3.Visible = false;
-                            cmenuCurveReso4.Visible = false;
+                            cmenuCurveSeparator2.setVisible( false );
+                            cmenuCurveReso1.setVisible( false );
+                            cmenuCurveReso2.setVisible( false );
+                            cmenuCurveReso3.setVisible( false );
+                            cmenuCurveReso4.setVisible( false );
 
-                            cmenuCurveSeparator3.Visible = true;
-                            cmenuCurveHarmonics.Visible = false;
-                            cmenuCurveBreathiness.Visible = true;
-                            cmenuCurveBrightness.Visible = true;
-                            cmenuCurveClearness.Visible = true;
-                            cmenuCurveOpening.Visible = true;
-                            cmenuCurveGenderFactor.Visible = true;
+                            cmenuCurveSeparator3.setVisible( true );
+                            cmenuCurveHarmonics.setVisible( false );
+                            cmenuCurveBreathiness.setVisible( true );
+                            cmenuCurveBrightness.setVisible( true );
+                            cmenuCurveClearness.setVisible( true );
+                            cmenuCurveOpening.setVisible( true );
+                            cmenuCurveGenderFactor.setVisible( true );
 
-                            cmenuCurveSeparator4.Visible = true;
-                            cmenuCurvePortamentoTiming.Visible = true;
-                            cmenuCurvePitchBend.Visible = true;
-                            cmenuCurvePitchBendSensitivity.Visible = true;
+                            cmenuCurveSeparator4.setVisible( true );
+                            cmenuCurvePortamentoTiming.setVisible( true );
+                            cmenuCurvePitchBend.setVisible( true );
+                            cmenuCurvePitchBendSensitivity.setVisible( true );
 
-                            cmenuCurveSeparator5.Visible = false;
-                            cmenuCurveEffect2Depth.Visible = false;
-                            cmenuCurveEnvelope.Visible = false;
+                            cmenuCurveSeparator5.setVisible( false );
+                            cmenuCurveEffect2Depth.setVisible( false );
+                            cmenuCurveEnvelope.setVisible( false );
 
-                            cmenuCurveBreathiness.Text = "Breathiness";
+                            cmenuCurveBreathiness.setText( "Breathiness" );
                         }
                         for ( int i = 0; i < sub_cmenu_curve.Length; i++ ) {
                             MenuElement tsi = sub_cmenu_curve[i];
@@ -2531,7 +2536,7 @@ namespace Boare.Cadencii {
                             }
                         }
 
-                        cmenuCurve.Show( this, e.Location );
+                        cmenuCurve.show( this, e.X, e.Y );
                     }
                 }
             }
@@ -3117,7 +3122,7 @@ namespace Boare.Cadencii {
                 #region MouseDown occred on other position
                 boolean clock_inner_note = false; //マウスの降りたクロックが，ノートの範囲内かどうかをチェック
                 int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
-                int right_clock = AppManager.clockFromXCoord( this.Width - vScroll.Width );
+                int right_clock = AppManager.clockFromXCoord( getWidth() - vScroll.getWidth() );
                 for ( Iterator itr = vsq.Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
                     if ( ve.ID.type == VsqIDType.Anote ) {
@@ -5559,11 +5564,11 @@ namespace Boare.Cadencii {
             this.cmenuCurveVelocity = new BMenuItem();
             this.cmenuCurveAccent = new BMenuItem();
             this.cmenuCurveDecay = new BMenuItem();
-            this.cmenuCurveSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmenuCurveSeparator1 = new BMenuSeparator();
             this.cmenuCurveDynamics = new BMenuItem();
             this.cmenuCurveVibratoRate = new BMenuItem();
             this.cmenuCurveVibratoDepth = new BMenuItem();
-            this.cmenuCurveSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmenuCurveSeparator2 = new BMenuSeparator();
             this.cmenuCurveReso1 = new BMenuItem();
             this.cmenuCurveReso1Freq = new BMenuItem();
             this.cmenuCurveReso1BW = new BMenuItem();
@@ -5580,20 +5585,20 @@ namespace Boare.Cadencii {
             this.cmenuCurveReso4Freq = new BMenuItem();
             this.cmenuCurveReso4BW = new BMenuItem();
             this.cmenuCurveReso4Amp = new BMenuItem();
-            this.cmenuCurveSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmenuCurveSeparator3 = new BMenuSeparator();
             this.cmenuCurveHarmonics = new BMenuItem();
             this.cmenuCurveBreathiness = new BMenuItem();
             this.cmenuCurveBrightness = new BMenuItem();
             this.cmenuCurveClearness = new BMenuItem();
             this.cmenuCurveOpening = new BMenuItem();
             this.cmenuCurveGenderFactor = new BMenuItem();
-            this.cmenuCurveSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmenuCurveSeparator4 = new BMenuSeparator();
             this.cmenuCurvePortamentoTiming = new BMenuItem();
             this.cmenuCurvePitchBend = new BMenuItem();
             this.cmenuCurvePitchBendSensitivity = new BMenuItem();
-            this.cmenuCurveSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.cmenuCurveSeparator5 = new BMenuSeparator();
             this.cmenuCurveEffect2Depth = new BMenuItem();
-            this.vScroll = new System.Windows.Forms.VScrollBar();
+            this.vScroll = new BVScrollBar();
             this.panelZoomButton = new System.Windows.Forms.Panel();
             this.cmenuCurveEnvelope = new BMenuItem();
             this.cmenuCurve.SuspendLayout();
@@ -5923,7 +5928,7 @@ namespace Boare.Cadencii {
         private System.Windows.Forms.ToolTip toolTip;
         private BPopupMenu cmenuCurve;
         private BMenuItem cmenuCurveVelocity;
-        private System.Windows.Forms.ToolStripSeparator cmenuCurveSeparator2;
+        private BMenuSeparator cmenuCurveSeparator2;
         private BMenuItem cmenuCurveReso1;
         private BMenuItem cmenuCurveReso1Freq;
         private BMenuItem cmenuCurveReso1BW;
@@ -5940,24 +5945,24 @@ namespace Boare.Cadencii {
         private BMenuItem cmenuCurveReso4Freq;
         private BMenuItem cmenuCurveReso4BW;
         private BMenuItem cmenuCurveReso4Amp;
-        private System.Windows.Forms.ToolStripSeparator cmenuCurveSeparator3;
+        private BMenuSeparator cmenuCurveSeparator3;
         private BMenuItem cmenuCurveHarmonics;
         private BMenuItem cmenuCurveDynamics;
-        private System.Windows.Forms.ToolStripSeparator cmenuCurveSeparator1;
+        private BMenuSeparator cmenuCurveSeparator1;
         private BMenuItem cmenuCurveBreathiness;
         private BMenuItem cmenuCurveBrightness;
         private BMenuItem cmenuCurveClearness;
         private BMenuItem cmenuCurveGenderFactor;
-        private System.Windows.Forms.ToolStripSeparator cmenuCurveSeparator4;
+        private BMenuSeparator cmenuCurveSeparator4;
         private BMenuItem cmenuCurvePortamentoTiming;
-        private System.Windows.Forms.ToolStripSeparator cmenuCurveSeparator5;
+        private BMenuSeparator cmenuCurveSeparator5;
         private BMenuItem cmenuCurveEffect2Depth;
         private BMenuItem cmenuCurveOpening;
         private BMenuItem cmenuCurveAccent;
         private BMenuItem cmenuCurveDecay;
         private BMenuItem cmenuCurveVibratoRate;
         private BMenuItem cmenuCurveVibratoDepth;
-        private System.Windows.Forms.VScrollBar vScroll;
+        private BVScrollBar vScroll;
         private System.Windows.Forms.Panel panelZoomButton;
         private BMenuItem cmenuCurvePitchBend;
         private BMenuItem cmenuCurvePitchBendSensitivity;

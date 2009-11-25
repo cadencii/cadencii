@@ -36,16 +36,16 @@ namespace Boare.Cadencii {
         boolean m_apply_current_track = false;
 
         public void ApplyLanguage() {
-            lblTemplate.Text = _( "Template" ) + "(&T)";
+            lblTemplate.setText( _( "Template" ) + "(&T)" );
             groupPitchControl.setTitle( _( "Pitch Control" ) );
-            lblBendDepth.Text = _( "Bend Depth" ) + "(&B)";
-            lblBendLength.Text = _( "Bend Length" ) + "(&L)";
+            lblBendDepth.setText( _( "Bend Depth" ) + "(&B)" );
+            lblBendLength.setText( _( "Bend Length" ) + "(&L)" );
             chkUpPortamento.setText( _( "Add portamento in rising movement" ) + "(&R)" );
             chkDownPortamento.setText( _( "Add portamento in falling movement" ) + "(&F)" );
 
             groupDynamicsControl.setTitle( _( "Dynamics Control" ) );
-            lblDecay.Text = _( "Decay" ) + "(&D)";
-            lblAccent.Text = _( "Accent" ) + "(&A)";
+            lblDecay.setText( _( "Decay" ) + "(&D)" );
+            lblAccent.setText( _( "Accent" ) + "(&A)" );
 
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );

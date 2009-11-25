@@ -97,14 +97,14 @@ namespace Boare.Cadencii {
 
         public void ApplyLanguage() {
             setTitle( _( "Metronome Config" ) );
-            lblDeviceGeneral.Text = _( "MIDI Device" );
-            lblDeviceMetronome.Text = _( "MIDI Device" );
+            lblDeviceGeneral.setText( _( "MIDI Device" ) );
+            lblDeviceMetronome.setText( _( "MIDI Device" ) );
             groupMetronome.setTitle( _( "Metronome" ) );
-            lblNoteNormal.Text = _( "Note#" );
-            lblNoteBell.Text = _( "Note# (Bell)" );
-            lblProgramNormal.Text = _( "Program#" );
-            lblProgramBell.Text = _( "Program# (Bell)" );
-            lblPreUtterance.Text = _( "Pre Utterance" );
+            lblNoteNormal.setText( _( "Note#" ) );
+            lblNoteBell.setText( _( "Note# (Bell)" ) );
+            lblProgramNormal.setText( _( "Program#" ) );
+            lblProgramBell.setText( _( "Program# (Bell)" ) );
+            lblPreUtterance.setText( _( "Pre Utterance" ) );
             chkPreview.setText( _( "Preview" ) );
             chkRingBell.setText( _( "Ring Bell" ) );
 

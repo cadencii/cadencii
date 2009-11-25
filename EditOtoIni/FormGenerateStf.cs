@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using bocoree;
 using bocoree.java.util;
 using bocoree.windows.forms;
+using bocoree.componentModel;
 
 namespace Boare.EditOtoIni {
     using BEventArgs = System.EventArgs;
@@ -329,15 +330,15 @@ namespace Boare.EditOtoIni {
             if ( e.UserState is int[] ) {
                 int[] rational = (int[])e.UserState;
                 if ( rational.Length >= 2 ) {
-                    lblPercent.Text = e.ProgressPercentage + " % (" + rational[0] + "/" + rational[1] + ")";
+                    lblPercent.setText( e.ProgressPercentage + " % (" + rational[0] + "/" + rational[1] + ")" );
                 } else {
-                    lblPercent.Text = e.ProgressPercentage + " %";
+                    lblPercent.setText( e.ProgressPercentage + " %" );
                 }
             } else {
-                lblPercent.Text = e.ProgressPercentage + " %";
+                lblPercent.setText( e.ProgressPercentage + " %" );
             }
 
-            lblTime.Text = _( "Remaining" ) + " " + getTimeSpanString( m_remaining ) + " (" + getTimeSpanString( m_elapsed ) + " " + _( "elapsed" ) + ")";
+            lblTime.setText( _( "Remaining" ) + " " + getTimeSpanString( m_remaining ) + " (" + getTimeSpanString( m_elapsed ) + " " + _( "elapsed" ) + ")" );
         }
 
         private void btnCancel_Click( Object sender, BEventArgs e ) {
@@ -500,11 +501,11 @@ namespace Boare.EditOtoIni {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.lblPercent = new System.Windows.Forms.Label();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.bgWork = new System.ComponentModel.BackgroundWorker();
-            this.lblTime = new System.Windows.Forms.Label();
+            this.lblPercent = new BLabel();
+            this.progressBar = new BProgressBar();
+            this.btnCancel = new BButton();
+            this.bgWork = new BBackgroundWorker();
+            this.lblTime = new BLabel();
             this.SuspendLayout();
             // 
             // lblPercent
@@ -579,11 +580,11 @@ namespace Boare.EditOtoIni {
 
         #endregion
 
-        private System.Windows.Forms.Label lblPercent;
-        private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.Button btnCancel;
-        private System.ComponentModel.BackgroundWorker bgWork;
-        private System.Windows.Forms.Label lblTime;
+        private BLabel lblPercent;
+        private BProgressBar progressBar;
+        private BButton btnCancel;
+        private BBackgroundWorker bgWork;
+        private BLabel lblTime;
         #endregion
 #endif
     }

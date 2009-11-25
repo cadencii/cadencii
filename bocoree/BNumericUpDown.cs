@@ -1,9 +1,33 @@
-﻿#if JAVA
+﻿/*
+ * BNumericUpDown.cs
+ * Copyright (c) 2009 kbinani
+ *
+ * This file is part of bocoree.
+ *
+ * bocoree is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
+ *
+ * bocoree is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+#if JAVA
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BNumericUpDown.java
 #else
+#define COMPONENT_ENABLE_FOCUS
+#define COMPONENT_ENABLE_REPAINT
+
 namespace bocoree.windows.forms {
 
     public class BNumericUpDown : System.Windows.Forms.NumericUpDown {
+        public int getIncrement() {
+            return base.Increment;
+        }
+
+        public void setIncrement( int value ) {
+            base.Increment = value;
+        }
+
         public int getValue() {
             return (int)base.Value;
         }
@@ -30,16 +54,27 @@ namespace bocoree.windows.forms {
 
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
+        public void invalidate() {
+            base.Invalidate();
+        }
+
+#if COMPONENT_ENABLE_REPAINT
+        public void repaint() {
+            base.Refresh();
+        }
+#endif
+
+#if COMPONENT_ENABLE_CURSOR
         public bocoree.java.awt.Cursor getCursor() {
             System.Windows.Forms.Cursor c = base.Cursor;
             bocoree.java.awt.Cursor ret = null;
-            if ( c.Equals( System.Windows.Forms.Cursors.Arrow ) ) {
+            if( c.Equals( System.Windows.Forms.Cursors.Arrow ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.CROSSHAIR_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.HAND_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.TEXT_CURSOR );
@@ -71,6 +106,7 @@ namespace bocoree.windows.forms {
         public void setCursor( bocoree.java.awt.Cursor value ) {
             base.Cursor = value.cursor;
         }
+#endif
 
         public bool isVisible() {
             return base.Visible;
@@ -111,6 +147,14 @@ namespace bocoree.windows.forms {
         }
 
 #if COMPONENT_ENABLE_LOCATION
+        public void setBounds( int x, int y, int width, int height ) {
+            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
+        }
+
+        public void setBounds( bocoree.java.awt.Rectangle rc ) {
+            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
+        }
+
         public bocoree.java.awt.Point getLocationOnScreen() {
             System.Drawing.Point p = base.PointToScreen( base.Location );
             return new bocoree.java.awt.Point( p.X, p.Y );
@@ -183,10 +227,6 @@ namespace bocoree.windows.forms {
             return new bocoree.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public void setFont( bocoree.java.awt.Font font ) {
-            base.Font = font.font;
-        }
-
         public bool isEnabled() {
             return base.Enabled;
         }
@@ -195,8 +235,32 @@ namespace bocoree.windows.forms {
             base.Enabled = value;
         }
 
+#if COMPONENT_ENABLE_FOCUS
         public void requestFocus() {
             base.Focus();
+        }
+
+        public bool isFocusOwner() {
+            return base.Focused;
+        }
+#endif
+
+        public void setPreferredSize( bocoree.java.awt.Dimension size ) {
+            base.Size = new System.Drawing.Size( size.width, size.height );
+        }
+
+        public bocoree.java.awt.Font getFont() {
+            return new bocoree.java.awt.Font( base.Font );
+        }
+
+        public void setFont( bocoree.java.awt.Font font ) {
+            if ( font == null ) {
+                return;
+            }
+            if ( font.font == null ) {
+                return;
+            }
+            base.Font = font.font;
         }
         #endregion
     }
