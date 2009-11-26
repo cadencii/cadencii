@@ -22,10 +22,24 @@ namespace bocoree.java.awt {
         public ImageIcon( System.Drawing.Image image ) {
             this.image = image;
         }
+
+        public ImageIcon( Image image ) {
+            if ( image != null ) {
+                this.image = image.image;
+            }
+        }
     }
 
     public class Image{
         public System.Drawing.Image image;
+
+        public int getWidth( object observer ) {
+            return image.Width;
+        }
+
+        public int getHeight( object observer ) {
+            return image.Height;
+        }
     }
 
     public class Cursor {
@@ -193,6 +207,13 @@ namespace bocoree.java.awt {
             if ( img is bocoree.java.awt.image.BufferedImage ) {
                 nativeGraphics.DrawImage( ((bocoree.java.awt.image.BufferedImage)img).m_image, new System.Drawing.Point( x, y ) );
             }
+        }
+
+        public void drawImage( bocoree.java.awt.Image img, int x, int y, object obs ) {
+            if ( img == null ) {
+                return;
+            }
+            nativeGraphics.DrawImage( img.image, new System.Drawing.Point( x, y ) );
         }
     }
 

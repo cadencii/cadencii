@@ -574,8 +574,8 @@ namespace Boare.EditOtoIni {
             for ( int i = 0; i < c; i++ ) {
                 spl[i] = listFiles.Items[m_index].SubItems[i].Text;
             }*/
-            g.clearRect( 0, 0, pictWave.Width, pictWave.Height );
-            int h = pictWave.Height;
+            g.clearRect( 0, 0, pictWave.getWidth(), pictWave.getHeight() );
+            int h = pictWave.getHeight();
 
             int x_offset = XFromSec( 0.0f );
             Rectangle rc = new Rectangle( x_offset, 0, (int)(m_offset / 1000.0f * m_px_per_sec), h );
@@ -594,9 +594,9 @@ namespace Boare.EditOtoIni {
 
             m_drawer.get( m_index ).draw( g,
                                           Color.black,
-                                          new Rectangle( 0, 0, pictWave.Width, h ),
+                                          new Rectangle( 0, 0, pictWave.getWidth(), h ),
                                           m_start_to_draw,
-                                          (float)(m_start_to_draw + pictWave.Width / m_px_per_sec) );
+                                          (float)(m_start_to_draw + pictWave.getWidth() / m_px_per_sec) );
 
             int x_overlap = XFromSec( m_overlap / 1000.0f );
             g.setColor( m_pen_overlap );
@@ -705,7 +705,7 @@ namespace Boare.EditOtoIni {
 
         private void UpdateScale() {
             m_px_per_sec = 10.0 * Math.Pow( 10.0, m_trackbar_value / 10.0 );
-            hScroll.LargeChange = (int)(pictWave.Width / m_px_per_sec * 1000 * ORDER);
+            hScroll.LargeChange = (int)(pictWave.getWidth() / m_px_per_sec * 1000 * ORDER);
         }
 
         private void hScroll_ValueChanged( Object sender, EventArgs e ) {
@@ -850,7 +850,7 @@ namespace Boare.EditOtoIni {
                 item.setSubItemAt( 1, txtAlias.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
-                pictWave.Invalidate();
+                pictWave.invalidate();
             }
         }
 
@@ -867,7 +867,7 @@ namespace Boare.EditOtoIni {
                 item.setSubItemAt( 2, txtOffset.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
-                pictWave.Invalidate();
+                pictWave.invalidate();
             }
         }
 
@@ -884,7 +884,7 @@ namespace Boare.EditOtoIni {
                 item.setSubItemAt( 3, txtConsonant.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
-                pictWave.Invalidate();
+                pictWave.invalidate();
             }
         }
 
@@ -901,7 +901,7 @@ namespace Boare.EditOtoIni {
                 item.setSubItemAt( 4, txtBlank.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
-                pictWave.Invalidate();
+                pictWave.invalidate();
             }
         }
 
@@ -918,7 +918,7 @@ namespace Boare.EditOtoIni {
                 item.setSubItemAt( 5, txtPreUtterance.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
-                pictWave.Invalidate();
+                pictWave.invalidate();
             }
         }
 
@@ -935,7 +935,7 @@ namespace Boare.EditOtoIni {
                 item.setSubItemAt( 6, txtOverlap.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
-                pictWave.Invalidate();
+                pictWave.invalidate();
             }
         }
 
@@ -1332,7 +1332,7 @@ namespace Boare.EditOtoIni {
         }
 
         private void refreshScreenCore( Object sender, BEventArgs e ) {
-            pictWave.Invalidate();
+            pictWave.invalidate();
         }
 
         private void txtSearch_TextChanged( Object sender, BEventArgs e ) {
@@ -2321,7 +2321,7 @@ namespace Boare.EditOtoIni {
             this.statusLblTootip = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainerIn = new Boare.Lib.AppUtil.BSplitContainer();
             this.splitContainerOut = new Boare.Lib.AppUtil.BSplitContainer();
-            this.cmenuListFiles = new System.Windows.Forms.ContextMenuStrip( this.components );
+            this.cmenuListFiles = new BPopupMenu( this.components );
             this.generateSTRAIGHTFileToolStripMenuItem = new BMenuItem();
             this.panelLeft = new System.Windows.Forms.Panel();
             this.buttonPrevious = new BButton();
@@ -3022,8 +3022,7 @@ namespace Boare.EditOtoIni {
         private BMenuItem menuFileQuit;
         private BMenuItem menuFileSaveAs;
         private System.Windows.Forms.ToolStripStatusLabel statusLblTootip;
-        //private System.Windows.Forms.ColumnHeader columnHeaderStf;
-        private System.Windows.Forms.ContextMenuStrip cmenuListFiles;
+        private BPopupMenu cmenuListFiles;
         private BMenuItem generateSTRAIGHTFileToolStripMenuItem;
         private BMenuItem menuEdit;
         private BMenuItem menuEditGenerateSTF;

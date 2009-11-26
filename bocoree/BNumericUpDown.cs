@@ -21,7 +21,7 @@ namespace bocoree.windows.forms {
 
     public class BNumericUpDown : System.Windows.Forms.NumericUpDown {
         public int getIncrement() {
-            return base.Increment;
+            return (int)base.Increment;
         }
 
         public void setIncrement( int value ) {

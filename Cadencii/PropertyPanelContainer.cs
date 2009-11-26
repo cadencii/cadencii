@@ -70,8 +70,8 @@ namespace Boare.Cadencii {
         }
 
         private void setResources() {
-            this.btnClose.Image = Resources.get_cross_small();
-            this.btnWindow.Image = Resources.get_chevron_small_collapse();
+            this.btnClose.Image = Resources.get_cross_small().image;
+            this.btnWindow.Image = Resources.get_chevron_small_collapse().image;
         }
 
 #if JAVA

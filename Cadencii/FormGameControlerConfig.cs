@@ -56,7 +56,7 @@ namespace Boare.Cadencii {
             int num_dev = winmmhelp.JoyGetNumJoyDev();
 #endif
             if ( num_dev > 0 ) {
-                pictButton.Image = Resources.get_btn1();
+                pictButton.setImage( Resources.get_btn1() );
                 progressCount.setMaximum( 8 );
                 progressCount.setMinimum( 0 );
                 progressCount.setValue( 0 );
@@ -127,11 +127,11 @@ namespace Boare.Cadencii {
                 }
 
                 if ( index == 8 ) {
-                    pictButton.Image = Resources.get_btn2();
+                    pictButton.setImage( Resources.get_btn2() );
                     progressCount.setValue( 0 );
                     progressCount.setMaximum( 4 );
                 } else if ( index == 12 ) {
-                    pictButton.Image = Resources.get_btn3();
+                    pictButton.setImage( Resources.get_btn3() );
                     progressCount.setValue( 0 );
                     progressCount.setMaximum( 2 );
                 }
@@ -219,11 +219,11 @@ namespace Boare.Cadencii {
             }
 
             if ( index == 8 ) {
-                pictButton.Image = Resources.get_btn2();
+                pictButton.setImage( Resources.get_btn2() );
                 progressCount.setValue( 0 );
                 progressCount.setMaximum( 4 );
             } else if ( index == 12 ) {
-                pictButton.Image = Resources.get_btn3();
+                pictButton.setImage( Resources.get_btn3() );
                 progressCount.setValue( 0 );
                 progressCount.setMaximum( 2 );
             }

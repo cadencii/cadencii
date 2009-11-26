@@ -11,27 +11,45 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import org.kbinani.windows.forms.*;
+#else
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using Boare.Lib.Media;
+using bocoree;
+using bocoree.java.awt;
+using bocoree.java.awt.image;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
+    using BEventArgs = System.EventArgs;
+#endif
 
-    public class WaveView : UserControl {
+#if JAVA
+    public class WaveView extends BPanel {
+#else
+    public class WaveView : BPanel {
+#endif
         private float m_sample_rate = 44100;
         private float[] m_wave = new float[0];
+#if !JAVA
         private PictureBox m_pict;
-        private Bitmap m_bmp;
+#endif
+        private BufferedImage m_bmp;
         private int m_last_w = 0;
         private int m_last_h = 0;
         private int m_shiftx = 0;
         private int skip = 100;
         private float m_last_scalex;
         private int m_last_stdx;
-        private Size m_last_size;
+        private Dimension m_last_size;
 
         public WaveView() {
+#if JAVA
+#else
             this.SetStyle( ControlStyles.DoubleBuffer, true );
             this.SetStyle( ControlStyles.UserPaint, true );
             m_pict = new PictureBox();
@@ -40,96 +58,131 @@ namespace Boare.Cadencii {
             this.Resize += new EventHandler( WaveView_Resize );
             this.Paint += new PaintEventHandler( WaveView_Paint );
             m_pict.Paint += new PaintEventHandler( m_pict_Paint );
+#endif
         }
 
         /// <summary>
         /// 現在の波形画像をリセットします
         /// </summary>
-        public void Clear() {
+        public void clear() {
             if ( m_bmp != null ) {
-                using ( Graphics g = Graphics.FromImage( m_bmp ) ) {
-                    g.Clear( Color.Transparent );
+                try {
+                    Graphics2D g = m_bmp.createGraphics();
+                    g.setColor( Color.white );
+                    g.clearRect( 0, 0, m_bmp.getWidth(), m_bmp.getHeight() );
+                } catch ( Exception ex ) {
                 }
             }
         }
 
+#if JAVA
+        public void paint( Graphics g1 ){
+            Graphics2D g = (Graphics2D)g1;
+            if( m_bmp != null ){
+                g.drawImage( m_bmp, 0, 0, m_bmp.getWidth(), m_bmp.getHeight() );
+            }
+        }
+#else
         void WaveView_Paint( object sender, PaintEventArgs e ) {
             m_pict.Invalidate();
         }
 
         private void m_pict_Paint( object sender, PaintEventArgs e ) {
             if ( m_bmp != null ) {
-                e.Graphics.DrawImage( m_bmp, m_shiftx, 0, m_bmp.Width, m_bmp.Height );
+                e.Graphics.DrawImage( m_bmp.m_image, m_shiftx, 0, m_bmp.getWidth(), m_bmp.getHeight() );
             }
         }
+#endif
 
-        private void WaveView_Resize( object sender, EventArgs e ) {
-            if ( this.Width != 0 && this.Height != 0 ) {
-                if ( this.Width != m_last_w || this.Height != m_last_h ) {
-                    Draw();
+        private void WaveView_Resize( Object sender, BEventArgs e ) {
+            if ( getWidth() != 0 && getHeight() != 0 ) {
+                if ( getWidth() != m_last_w || getHeight() != m_last_h ) {
+                    draw();
                 }
-                m_last_w = this.Width;
-                m_last_h = this.Height;
+                m_last_w = getWidth();
+                m_last_h = getHeight();
             }
+#if !JAVA
             m_pict.Invalidate();
+#endif
         }
 
-        public void LoadWave( String file ){
-            using ( WaveReader reader = new WaveReader( file ) ) {
+        public void loadWave( String file ){
+            WaveReader reader = null;
+            try {
+                reader = new WaveReader( file );
                 m_wave = new float[reader.getTotalSamples() / skip];
                 for ( int i = 0; i < reader.getTotalSamples() / skip; i++ ) {
-                    float[] left, right;
-                    reader.read( i * skip, 1, out left, out right );
-                    m_wave[i] = 0.5f * (left[0] + right[0]);
+                    ByRef<float[]> left = new ByRef<float[]>();
+                    ByRef<float[]> right = new ByRef<float[]>();
+                    reader.read( i * skip, 1, left, right );
+                    m_wave[i] = 0.5f * (left.value[0] + right.value[0]);
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                try {
+                    reader.close();
+                } catch ( Exception ex2 ) {
                 }
             }
             m_last_scalex = -1;
-            Draw();
+            draw();
         }
 
-        public void Draw(){
-            if ( this.Width <= 0 || this.Height <= 0 ) {
+        public void draw(){
+            if ( getWidth() <= 0 || getHeight() <= 0 ) {
                 return;
             }
 
             // 前回の描画ステータスと同じなら描画する必要なし
-            if ( this.Size == m_last_size && AppManager.startToDrawX == m_last_stdx && AppManager.scaleX == m_last_scalex ) {
+            Dimension size = getSize();
+            if ( size.width == m_last_size.width && size.height == m_last_size.height && AppManager.startToDrawX == m_last_stdx && AppManager.scaleX == m_last_scalex ) {
                 return;
             }
-            m_last_size = this.Size;
+            m_last_size = getSize();
             m_last_stdx = AppManager.startToDrawX;
             m_last_scalex = AppManager.scaleX;
 
+#if !JAVA
             m_pict.Image = null;
-            if ( m_bmp != null ) {
-                m_bmp.Dispose();
+            if ( m_bmp != null && m_bmp.m_image != null ) {
+                m_bmp.m_image.Dispose();
             }
-            m_bmp = new Bitmap( this.Width, this.Height );
+#endif
+            m_bmp = new BufferedImage( getWidth(), getHeight(), BufferedImage.TYPE_INT_BGR );
 
             int stdx = (int)(AppManager.startToDrawX / AppManager.scaleX);//            +(int)(AppManager._KEY_LENGTH / AppManager.ScaleX);
             double stdx_sec = AppManager.getVsqFile().getSecFromClock( stdx );
-            int etdx = (int)(stdx + Width / AppManager.scaleX); // end to draw x
+            int etdx = (int)(stdx + getWidth() / AppManager.scaleX); // end to draw x
             double etdx_sec = AppManager.getVsqFile().getSecFromClock( etdx );
             int sample_start = (int)(stdx_sec * m_sample_rate / (float)skip);
             int sample_end = (int)(etdx_sec * m_sample_rate / (float)skip);
             if ( sample_start < 0 ) sample_start = 0;
-            using ( Pen pen = new Pen( Color.FromArgb( 50, 50, 50 ) ) )
-            using ( Graphics g = Graphics.FromImage( m_bmp ) ) {
-                g.Clear( Color.Transparent );
-                int centre = this.Height / 2;
+            Graphics2D g = null;
+            try {
+                g.setColor( new Color( 50, 50, 50 ) );
+                g = m_bmp.createGraphics();
+                g.clearRect( 0, 0, m_bmp.getWidth(), m_bmp.getHeight() );
+                int centre = getHeight() / 2;
                 Point last = new Point( 0, centre );
                 for ( int i = sample_start; i < sample_end && i < m_wave.Length; i++ ) {
                     float sec = i * skip / m_sample_rate;
                     int x = (int)((AppManager.getVsqFile().getClockFromSec( sec ) - stdx) * AppManager.scaleX);
                     int y = centre - (int)(m_wave[i] * centre);
                     Point p = new Point( x, y );
-                    g.DrawLine( pen, last, p );
+                    g.drawLine( last.x, last.y, p.x, p.y );
                     last = p;
                 }
+            } catch ( Exception ex ) {
+            } finally {
             }
-            m_pict.Image = m_bmp;
-            this.Invalidate();
+#if !JAVA
+            m_pict.Image = m_bmp.m_image;
+#endif
+            invalidate();
         }
     }
-    
+
+#if !JAVA
 }
+#endif

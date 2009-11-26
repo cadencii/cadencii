@@ -155,6 +155,7 @@ namespace bocoree.windows.forms {
         #endregion
 
         #region javax.swing.AbstractButton
+        // root implementation of javax.swing.AbstractButton is in BMenuItem.cs
         public string getText() {
             return base.Text;
         }
@@ -171,12 +172,18 @@ namespace bocoree.windows.forms {
             base.Checked = value;
         }
 #endif
-        public System.Drawing.Image getIcon() {
-            return base.Image;
+        public bocoree.java.awt.Icon getIcon() {
+            bocoree.java.awt.Icon ret = new bocoree.java.awt.Icon();
+            ret.image = base.Image;
+            return ret;
         }
 
-        public void setIcon( System.Drawing.Image value ) {
-            base.Image = value;
+        public void setIcon( bocoree.java.awt.Icon value ) {
+            if ( value == null ) {
+                base.Image = null;
+            } else {
+                base.Image = value.image;
+            }
         }
         #endregion
     }

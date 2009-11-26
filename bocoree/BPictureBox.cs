@@ -42,6 +42,26 @@ namespace bocoree.windows.forms {
             this.Focus();
         }
 
+        public void setImage( bocoree.java.awt.Image value ) {
+            if ( value != null ) {
+                if ( value.image != null ) {
+                    base.Image = value.image;
+                }
+            } else {
+                base.Image = null;
+            }
+        }
+
+        public bocoree.java.awt.Image getImage() {
+            if ( base.Image == null ) {
+                return null;
+            } else {
+                bocoree.java.awt.Image ret = new bocoree.java.awt.Image();
+                ret.image = base.Image;
+                return ret;
+            }
+        }
+
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public void invalidate() {

@@ -796,7 +796,7 @@ namespace Boare.Cadencii {
 
         private void initResource() {
 #if ENABLE_MIDI
-            m_strip_ddbtn_metronome.setIcon( Resources.get_alarm_clock() );
+            m_strip_ddbtn_metronome.setIcon( new ImageIcon( Resources.get_alarm_clock() ) );
 #endif
         }
 
@@ -3929,7 +3929,7 @@ namespace Boare.Cadencii {
                         event_processed = true;
                         m_game_mode = GameControlMode.KEYBOARD;
                         stripLblGameCtrlMode.setText( m_game_mode.ToString() );
-                        stripLblGameCtrlMode.Image = Resources.get_piano();
+                        stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_piano() ) );
                     }
                     m_last_select = SELECT;
                 } else if ( m_game_mode == GameControlMode.KEYBOARD ) {
@@ -6127,7 +6127,7 @@ namespace Boare.Cadencii {
                     }
 
                     #endregion
-                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.Height - 1 ) {
+                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
                     #region 拍子の変更
                     int index = -1;
                     // クリック位置に拍子が表示されているかどうか検査
@@ -6226,21 +6226,13 @@ namespace Boare.Cadencii {
                     #region スタート/エンドマーク
                     if ( AppManager.startMarkerEnabled ) {
                         int startx = AppManager.xCoordFromClocks( AppManager.startMarker ) - AppManager.editorConfig.PxTolerance;
-#if JAVA
-                        int marker_width = Resources.get_start_marker().getWidth();
-#else
-                        int marker_width = Resources.get_start_marker().Width;
-#endif
+                        int marker_width = Resources.get_start_marker().getWidth( this );
                         if ( startx <= e.X && e.X <= startx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
                             m_startmark_dragging = true;
                         }
                     }
                     if ( AppManager.endMarkerEnabled && !m_startmark_dragging ) {
-#if JAVA
-                        int marker_width = Resources.get_end_marker().getWidth();
-#else
-                        int marker_width = Resources.get_end_marker().Width;
-#endif
+                        int marker_width = Resources.get_end_marker().getWidth( this );
                         int endx = AppManager.xCoordFromClocks( AppManager.endMarker ) - marker_width - AppManager.editorConfig.PxTolerance;
                         if ( endx <= e.X && e.X <= endx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
                             m_endmark_dragging = true;
@@ -6311,7 +6303,7 @@ namespace Boare.Cadencii {
                         AppManager.clearSelectedTimesig();
                     }
                     #endregion
-                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.Height - 1 ) {
+                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
                     #region 拍子
                     // クリック位置に拍子が表示されているかどうか検査
                     int index = -1;
@@ -6550,7 +6542,7 @@ namespace Boare.Cadencii {
                         m_endmark_dragging = false;
                         #endregion
                     }
-                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.Height - 1 ) {
+                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
                     if ( m_timesig_dragging ) {
                         int count = AppManager.getSelectedTimesigCount();
                         int[] barcounts = new int[count];
@@ -6974,7 +6966,7 @@ namespace Boare.Cadencii {
         private void trackSelector_MouseClick( Object sender, BMouseEventArgs e ) {
             if ( e.Button == BMouseButtons.Right ) {
                 if ( AppManager.keyWidth < e.X && e.X < trackSelector.getWidth() - AppManager.keyWidth ) {
-                    if ( trackSelector.Height - TrackSelector.OFFSET_TRACK_TAB <= e.Y && e.Y <= trackSelector.Height ) {
+                    if ( trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB <= e.Y && e.Y <= trackSelector.getHeight() ) {
                         cMenuTrackTab.show( trackSelector, e.X, e.Y );
                     } else {
                         cMenuTrackSelector.show( trackSelector, e.X, e.Y );
@@ -7152,7 +7144,7 @@ namespace Boare.Cadencii {
 
         private void trackSelector_SelectedTrackChanged( Object sender, int selected ) {
             if ( menuVisualWaveform.isSelected() ) {
-                waveView.Clear();
+                waveView.clear();
                 String file = PortUtil.combinePath( AppManager.getTempWaveDir(), selected + ".wav" );
                 if ( PortUtil.isFileExists( file ) ) {
                     Thread load_wave = new Thread( new ParameterizedThreadStart( this.LoadWaveThreadProc ) );
@@ -8409,8 +8401,8 @@ namespace Boare.Cadencii {
             Graphics2D g = new bocoree.java.awt.Graphics2D( e.Graphics );
             int count = 0;
             int sum = 0;
-            int height = pictOverview.Height;
-            BasicStroke pen = new bocoree.java.awt.BasicStroke( _OVERVIEW_DOT_DIAM );
+            int height = pictOverview.getHeight();
+            BasicStroke pen = new java.awt.BasicStroke( _OVERVIEW_DOT_DIAM );
             g.setStroke( pen );
             g.setColor( s_note_fill );
             //using ( Pen pen = new Pen( s_note_fill, _OVERVIEW_DOT_DIAM ) ) {
@@ -8463,7 +8455,7 @@ namespace Boare.Cadencii {
                     if ( (barcount % 5 == 0 && barcount > 0) || barcount == 1 ) {
                         g.setColor( pen_color );
                         g.setStroke( pen_bold );
-                        g.drawLine( x, 0, x, pictOverview.Height );
+                        g.drawLine( x, 0, x, pictOverview.getHeight() );
 
                         g.setStroke( new BasicStroke() );
                         if ( !barcountstr.Equals( "" ) ) {
@@ -8475,7 +8467,7 @@ namespace Boare.Cadencii {
                         barcountx = x;
                     } else {
                         g.setColor( pen_color );
-                        g.drawLine( x, 0, x, pictOverview.Height );
+                        g.drawLine( x, 0, x, pictOverview.getHeight() );
                     }
                 }
             }
@@ -8507,7 +8499,7 @@ namespace Boare.Cadencii {
             int px_current_clock = (int)((AppManager.getCurrentClock() - m_overview_start_to_draw_clock) * m_overview_px_per_clock);
             g.setStroke( new BasicStroke( 2 ) );
             g.setColor( Color.white );
-            g.drawLine( px_current_clock, 0, px_current_clock, pictOverview.Height );
+            g.drawLine( px_current_clock, 0, px_current_clock, pictOverview.getHeight() );
             g.setStroke( new BasicStroke() );
         }
 
@@ -9620,7 +9612,7 @@ namespace Boare.Cadencii {
         /// <param name="arg"></param>
         private void LoadWaveThreadProc( Object arg ) {
             String file = (String)arg;
-            waveView.LoadWave( file );
+            waveView.loadWave( file );
         }
 
         /// <summary>
@@ -9966,13 +9958,13 @@ namespace Boare.Cadencii {
 #if !JAVA
             if ( m_game_mode == GameControlMode.DISABLED ) {
                 stripLblGameCtrlMode.setText( _( "Disabled" ) );
-                stripLblGameCtrlMode.Image = (System.Drawing.Bitmap)Resources.get_slash().Clone();
+                stripLblGameCtrlMode.Image = (System.Drawing.Image)Resources.get_slash().image.Clone();
             } else if ( m_game_mode == GameControlMode.CURSOR ) {
                 stripLblGameCtrlMode.setText( _( "Cursor" ) );
                 stripLblGameCtrlMode.Image = null;
             } else if ( m_game_mode == GameControlMode.KEYBOARD ) {
                 stripLblGameCtrlMode.setText( _( "Keyboard" ) );
-                stripLblGameCtrlMode.Image = (System.Drawing.Bitmap)Resources.get_piano().Clone();
+                stripLblGameCtrlMode.Image = (System.Drawing.Image)Resources.get_piano().image.Clone();
             } else if ( m_game_mode == GameControlMode.NORMAL ) {
                 stripLblGameCtrlMode.setText( _( "Normal" ) );
                 stripLblGameCtrlMode.Image = null;
@@ -9986,14 +9978,14 @@ namespace Boare.Cadencii {
             bocoree.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
             if ( midiport < 0 || devices.Length <= 0 ) {
                 stripLblMidiIn.setText( _( "Disabled" ) );
-                stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_slash().Clone();
+                stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_slash().image.Clone();
             } else {
                 if ( midiport >= devices.Length ) {
                     midiport = 0;
                     AppManager.editorConfig.MidiInPort.PortNumber = midiport;
                 }
                 stripLblMidiIn.setText( devices[midiport].szPname );
-                stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_piano().Clone();
+                stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_piano().image.Clone();
             }
         }
 #endif
@@ -10577,7 +10569,7 @@ namespace Boare.Cadencii {
             picturePositionIndicator.repaint();
             trackSelector.repaint();
             if ( menuVisualWaveform.isSelected() ) {
-                waveView.Draw();
+                waveView.draw();
                 waveView.Refresh();
             }
             if ( AppManager.editorConfig.OverviewEnabled ) {
@@ -12186,7 +12178,7 @@ namespace Boare.Cadencii {
             m_txtbox_track_name.setVisible( false );
             int selector_width = trackSelector.getSelectorWidth();
             int x = AppManager.keyWidth + (AppManager.getSelected() - 1) * selector_width;
-            m_txtbox_track_name.setLocation( x, trackSelector.Height - TrackSelector.OFFSET_TRACK_TAB + 1 );
+            m_txtbox_track_name.setLocation( x, trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB + 1 );
             m_txtbox_track_name.BorderStyle = System.Windows.Forms.BorderStyle.None;
             m_txtbox_track_name.setText( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName() );
 #if JAVA
@@ -13037,8 +13029,8 @@ namespace Boare.Cadencii {
             Font SMALL_FONT = null;
             try {
                 SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
-                int width = picturePositionIndicator.Width;
-                int height = picturePositionIndicator.Height;
+                int width = picturePositionIndicator.getWidth();
+                int height = picturePositionIndicator.getHeight();
 
                 #region 小節ごとの線
                 int dashed_line_step = AppManager.getPositionQuantizeClock();
@@ -13099,10 +13091,10 @@ namespace Boare.Cadencii {
                                 int edit_clock_x = AppManager.xCoordFromClocks( AppManager.getVsqFile().getClockFromBarCount( AppManager.getSelectedTimesig( barcount ).editing.BarCount ) );
                                 g.setColor( s_pen_187_187_255 );
                                 g.drawLine( edit_clock_x - 1, 32,
-                                            edit_clock_x - 1, picturePositionIndicator.Height - 1 );
+                                            edit_clock_x - 1, picturePositionIndicator.getHeight() - 1 );
                                 g.setColor( s_pen_007_007_151 );
                                 g.drawLine( edit_clock_x, 32,
-                                            edit_clock_x, picturePositionIndicator.Height - 1 );
+                                            edit_clock_x, picturePositionIndicator.getHeight() - 1 );
                             }
                         }
                     }
@@ -13172,19 +13164,19 @@ namespace Boare.Cadencii {
                 }
                 if ( AppManager.startMarkerEnabled ) {
                     int x = AppManager.xCoordFromClocks( AppManager.startMarker );
-                    g.nativeGraphics.DrawImage(
-                        Resources.get_start_marker(), x, 3 );
+                    g.drawImage(
+                        Resources.get_start_marker(), x, 3, this );
                 }
                 if ( AppManager.endMarkerEnabled ) {
                     int x = AppManager.xCoordFromClocks( AppManager.endMarker ) - 6;
-                    g.nativeGraphics.DrawImage(
-                        Resources.get_end_marker(), x, 3 );
+                    g.drawImage(
+                        Resources.get_end_marker(), x, 3, this );
                 }
                 #endregion
 
                 #region TEMPO & BEAT
                 // TEMPO BEATの文字の部分。小節数が被っている可能性があるので、塗り潰す
-                g.setColor( new Color( picturePositionIndicator.BackColor ) );
+                g.setColor( picturePositionIndicator.getBackground() );
                 g.fillRect( 2, 3, AppManager.keyWidth - 2, 45 );
                 // 横ライン上
                 g.setColor( new Color( 104, 104, 104 ) );
@@ -13603,32 +13595,32 @@ namespace Boare.Cadencii {
         }
 
         private void setResources() {
-            this.stripBtnPointer.Image = Resources.get_arrow_135();
-            this.stripBtnPencil.Image = Resources.get_pencil();
-            this.stripBtnLine.Image = Resources.get_layer_shape_line();
-            this.stripBtnEraser.Image = Resources.get_eraser();
-            this.stripBtnGrid.Image = Resources.get_ruler_crop();
-            this.stripBtnCurve.Image = Resources.get_layer_shape_curve();
-            this.stripLblGameCtrlMode.Image = Resources.get_slash();
-            this.stripLblMidiIn.Image = Resources.get_slash();
-            this.stripBtnFileNew.Image = Resources.get_disk__plus();
-            this.stripBtnFileOpen.Image = Resources.get_folder_horizontal_open();
-            this.stripBtnFileSave.Image = Resources.get_disk();
-            this.stripBtnCut.Image = Resources.get_scissors();
-            this.stripBtnCopy.Image = Resources.get_documents();
-            this.stripBtnPaste.Image = Resources.get_clipboard_paste();
-            this.stripBtnUndo.Image = Resources.get_arrow_skip_180();
-            this.stripBtnRedo.Image = Resources.get_arrow_skip();
-            this.stripBtnMoveTop.Image = Resources.get_control_stop_180();
-            this.stripBtnRewind.Image = Resources.get_control_double_180();
-            this.stripBtnForward.Image = Resources.get_control_double();
-            this.stripBtnMoveEnd.Image = Resources.get_control_stop();
-            this.stripBtnPlay.Image = Resources.get_control();
-            this.stripBtnStop.Image = Resources.get_control_pause();
-            this.stripBtnScroll.Image = Resources.get_arrow_circle_double();
-            this.stripBtnLoop.Image = Resources.get_arrow_return();
-            this.stripBtnStartMarker.Image = Resources.get_pin__arrow();
-            this.stripBtnEndMarker.Image = Resources.get_pin__arrow_inv();
+            this.stripBtnPointer.setIcon( new ImageIcon( Resources.get_arrow_135() ) );
+            this.stripBtnPencil.setIcon( new ImageIcon( Resources.get_pencil() ) );
+            this.stripBtnLine.setIcon( new ImageIcon( Resources.get_layer_shape_line() ) );
+            this.stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
+            this.stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
+            this.stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
+            this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
+            this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+            this.stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
+            this.stripBtnFileOpen.setIcon( new ImageIcon( Resources.get_folder_horizontal_open() ) );
+            this.stripBtnFileSave.setIcon( new ImageIcon( Resources.get_disk() ) );
+            this.stripBtnCut.setIcon( new ImageIcon( Resources.get_scissors() ) );
+            this.stripBtnCopy.setIcon( new ImageIcon( Resources.get_documents() ) );
+            this.stripBtnPaste.setIcon( new ImageIcon( Resources.get_clipboard_paste() ) );
+            this.stripBtnUndo.setIcon( new ImageIcon( Resources.get_arrow_skip_180() ) );
+            this.stripBtnRedo.setIcon( new ImageIcon( Resources.get_arrow_skip() ) );
+            this.stripBtnMoveTop.setIcon( new ImageIcon( Resources.get_control_stop_180() ) );
+            this.stripBtnRewind.setIcon( new ImageIcon( Resources.get_control_double_180() ) );
+            this.stripBtnForward.setIcon( new ImageIcon( Resources.get_control_double() ) );
+            this.stripBtnMoveEnd.setIcon( new ImageIcon( Resources.get_control_stop() ) );
+            this.stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
+            this.stripBtnStop.setIcon( new ImageIcon( Resources.get_control_pause() ) );
+            this.stripBtnScroll.setIcon( new ImageIcon( Resources.get_arrow_circle_double() ) );
+            this.stripBtnLoop.setIcon( new ImageIcon( Resources.get_arrow_return() ) );
+            this.stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
+            this.stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
             setIconImage( Resources.get_icon() );
         }
 

@@ -243,7 +243,7 @@ namespace Boare.Cadencii {
                 m_last_speed = 0f;
                 m_last_t = 0f;
                 m_shift = 0f;
-                pictVstLogo.Visible = false;
+                pictVstLogo.setVisible( false );
                 lblVstLogo.setVisible( false );
                 lblStraightAcknowledgement.setVisible( false );
                 timer.Enabled = true;
@@ -251,7 +251,7 @@ namespace Boare.Cadencii {
                 timer.Enabled = false;
                 btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
                 btnFlip.setText( _( "Credit" ) );
-                pictVstLogo.Visible = true;
+                pictVstLogo.setVisible( true );
                 lblVstLogo.setVisible( true );
                 lblStraightAcknowledgement.setVisible( true );
             }
@@ -338,7 +338,7 @@ namespace Boare.Cadencii {
         }
 
         private void setResources() {
-            this.pictVstLogo.Image = Resources.get_VSTonWht();
+            this.pictVstLogo.setImage( Resources.get_VSTonWht() );
         }
 
 #if JAVA

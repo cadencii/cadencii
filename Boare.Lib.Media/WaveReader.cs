@@ -324,10 +324,9 @@ namespace Boare.Lib.Media {
             }
         }
 
-#if !JAVA
-        public void read( long start, int length, out float[] left, out float[] right ) {
-            left = new float[length];
-            right = new float[length];
+        public void read( long start, int length, ByRef<float[]> left, ByRef<float[]> right ) {
+            left.value = new float[length];
+            right.value = new float[length];
             if ( !m_opened ) {
                 return;
             }
@@ -340,8 +339,8 @@ namespace Boare.Lib.Media {
                 i_start = -(int)required_sample_start + 1;
                 // 0 -> i_start - 1までは0で埋める
                 for ( int i = 0; i < i_start; i++ ) {
-                    left[i] = 0.0f;
-                    right[i] = 0.0f;
+                    left.value[i] = 0.0f;
+                    right.value[i] = 0.0f;
                 }
                 m_stream.seek( m_header_offset );
             } else {
@@ -352,8 +351,8 @@ namespace Boare.Lib.Media {
                 i_end = length - 1 - (int)required_sample_end + m_total_samples;
                 // i_end + 1 -> length - 1までは0で埋める
                 for ( int i = i_end + 1; i < length; i++ ) {
-                    left[i] = 0.0f;
-                    right[i] = 0.0f;
+                    left.value[i] = 0.0f;
+                    right.value[i] = 0.0f;
                 }
             }
 
@@ -366,15 +365,15 @@ namespace Boare.Lib.Media {
                         int ret = m_stream.read( buf, 0, 4 );
                         if ( ret < 4 ) {
                             for ( int j = i; j < length; j++ ) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
+                                left.value[j] = 0.0f;
+                                right.value[j] = 0.0f;
                             }
                             break;
                         }
                         short l = (short)(buf[0] | buf[1] << 8);
                         short r = (short)(buf[2] | buf[3] << 8);
-                        left[i] = l * coeff_left;
-                        right[i] = r * coeff_right;
+                        left.value[i] = l * coeff_left;
+                        right.value[i] = r * coeff_right;
                     }
                 } else {
                     byte[] buf = new byte[2];
@@ -383,14 +382,14 @@ namespace Boare.Lib.Media {
                         int ret = m_stream.read( buf, 0, 2 );
                         if ( ret < 2 ) {
                             for ( int j = i; j < length; j++ ) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
+                                left.value[j] = 0.0f;
+                                right.value[j] = 0.0f;
                             }
                             break;
                         }
                         short l = (short)(buf[0] | buf[1] << 8);
-                        left[i] = l * coeff_left;
-                        right[i] = left[i];
+                        left.value[i] = l * coeff_left;
+                        right.value[i] = left.value[i];
                     }
                 }
             } else {
@@ -402,13 +401,13 @@ namespace Boare.Lib.Media {
                         int ret = m_stream.read( buf, 0, 2 );
                         if ( ret < 2 ) {
                             for ( int j = i; j < length; j++ ) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
+                                left.value[j] = 0.0f;
+                                right.value[j] = 0.0f;
                             }
                             break;
                         }
-                        left[i] = (buf[0] - 64.0f) * coeff_left;
-                        right[i] = (buf[1] - 64.0f) * coeff_right;
+                        left.value[i] = (buf[0] - 64.0f) * coeff_left;
+                        right.value[i] = (buf[1] - 64.0f) * coeff_right;
                     }
                 } else {
                     byte[] buf = new byte[1];
@@ -417,18 +416,17 @@ namespace Boare.Lib.Media {
                         int ret = m_stream.read( buf, 0, 1 );
                         if ( ret < 1 ) {
                             for ( int j = i; j < length; j++ ) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
+                                left.value[j] = 0.0f;
+                                right.value[j] = 0.0f;
                             }
                             break;
                         }
-                        left[i] = (buf[0] - 64.0f) * coeff_left;
-                        right[i] = left[i];
+                        left.value[i] = (buf[0] - 64.0f) * coeff_left;
+                        right.value[i] = left.value[i];
                     }
                 }
             }
         }
-#endif
 
 #if !JAVA
         public unsafe void read( long start, int length, ref IntPtr ptr_left, ref IntPtr ptr_right ) {

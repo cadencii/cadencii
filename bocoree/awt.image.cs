@@ -40,6 +40,14 @@ namespace bocoree.java.awt.image {
         public int getWidth( object observer ) {
             return m_image.Width;
         }
+
+        public int getWidth() {
+            return m_image.Width;
+        }
+
+        public int getHeight() {
+            return m_image.Height;
+        }
     }
 
 }

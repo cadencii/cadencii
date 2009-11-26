@@ -32,6 +32,18 @@ namespace bocoree.windows.forms {
         public string getToolTipText() {
             return base.ToolTipText;
         }
+
+        public bocoree.java.awt.Icon getIcon() {
+            return new bocoree.java.awt.ImageIcon( base.Image );
+        }
+
+        public void setIcon( bocoree.java.awt.Icon value ) {
+            if ( value == null ) {
+                base.Image = null;
+            } else {
+                base.Image = value.image;
+            }
+        }
     }
 
 }
