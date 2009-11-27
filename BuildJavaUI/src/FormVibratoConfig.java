@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,8 +14,9 @@ import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BTextBox;
 
+//SECTION-END-IMPORT
 public class FormVibratoConfig extends BForm {
-
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private BPanel jContentPane = null;
 	private BPanel jPanel2 = null;
@@ -26,6 +28,7 @@ public class FormVibratoConfig extends BForm {
 	private BLabel lblVibratoType = null;
 	private BComboBox comboVibratoType = null;
 
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -34,6 +37,7 @@ public class FormVibratoConfig extends BForm {
 		initialize();
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -184,4 +188,5 @@ public class FormVibratoConfig extends BForm {
 		return comboVibratoType;
 	}
 
+	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -7,7 +8,9 @@ import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BProgressBar;
 
+//SECTION-END-IMPORT
 public class FormGenerateStf extends BForm {
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BLabel lblPercent = null;
@@ -16,6 +19,7 @@ public class FormGenerateStf extends BForm {
 	private BButton btnCancel = null;
 	private BLabel jLabel2 = null;
 
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -24,6 +28,7 @@ public class FormGenerateStf extends BForm {
 		initialize();
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -109,4 +114,5 @@ public class FormGenerateStf extends BForm {
 		return btnCancel;
 	}
 
+	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

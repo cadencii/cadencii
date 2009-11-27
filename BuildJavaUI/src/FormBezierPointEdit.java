@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -10,8 +11,10 @@ import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextBox;
 
-public class FormBezierPointEdit extends BForm {
+//SECTION-END-IMPORT
 
+public class FormBezierPointEdit extends BForm {
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BButton btnBackward = null;
@@ -40,6 +43,8 @@ public class FormBezierPointEdit extends BForm {
 	private BLabel jLabel4 = null;
 	private BLabel jLabel5 = null;
 	private JPanel jPanel3 = null;
+
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -48,6 +53,7 @@ public class FormBezierPointEdit extends BForm {
 		initialize();
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -489,4 +495,5 @@ public class FormBezierPointEdit extends BForm {
 		return jPanel3;
 	}
 
+	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

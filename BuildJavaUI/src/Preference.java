@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,8 +19,9 @@ import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BTextBox;
 
+//SECTION-END-IMPORT
 public class Preference extends JFrame {
-
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private BPanel tabSequence = null;
 	private BLabel lblResolution = null;
@@ -154,10 +156,13 @@ public class Preference extends JFrame {
 	private BPanel panelUpper = null;
     private JTabbedPane tabPane = null;
 	private BTextBox numAutoBackupInterval = null;
+	
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
 	public Preference() {
+	    //SECTION-BEGIN-CTOR
 		super();
 		initialize();
 		tabPane = new JTabbedPane();
@@ -184,8 +189,11 @@ public class Preference extends JFrame {
 		}catch( Exception ex ){
             System.err.println( "Preference#.ctor; ex=" + ex );
 		}
+		
+		//SECTION-END-CTOR
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -2339,4 +2347,5 @@ public class Preference extends JFrame {
 		return numAutoBackupInterval;
 	}
 
+	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="-49,12"

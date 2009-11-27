@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,8 +10,10 @@ import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
+//SECTION-END-IMPORT
 
 public class FormBeatConfig extends BForm {
+    //SECTION-BEGIN-FIELD
     private static final long serialVersionUID = 4414859292940722020L;
     private BPanel jContentPane = null;
     private BGroupBox groupPosition = null;
@@ -36,11 +39,13 @@ public class FormBeatConfig extends BForm {
     private BLabel jLabel7 = null;
     private BLabel jLabel8 = null;
 
+    //SECTION-END-FIELD
     public FormBeatConfig(){
         super();
         initialize();
     }
     
+    //SECTION-BEGIN-METHOD
     /**
      * This method initializes this
      * 
@@ -354,4 +359,6 @@ public class FormBeatConfig extends BForm {
         }
         return btnCancel;
     }
+
+    //SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="15,16"

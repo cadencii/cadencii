@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,7 +15,9 @@ import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BListView;
 
+//SECTION-END-IMPORT
 public class FormMidiImExport extends BForm {
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private JPanel jPanel = null;
@@ -39,6 +42,8 @@ public class FormMidiImExport extends BForm {
 	private BCheckBox chkExportVocaloidNrpn = null;
 	private BCheckBox chkPreMeasure = null;
 	private JLabel jLabel12 = null;
+	
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -47,6 +52,7 @@ public class FormMidiImExport extends BForm {
 		initialize();
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -440,4 +446,5 @@ public class FormMidiImExport extends BForm {
 		return chkPreMeasure;
 	}
 
+	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

@@ -6,8 +6,8 @@ using System.Drawing;
 using System.Reflection;
 using bocoree;
 using bocoree.windows.forms;
-using bocoree.awt.event_;
-using bocoreex.swing;
+using bocoree.java.awt.event_;
+using bocoree.javax.swing;
 
 class pp_cs2java {
     static String s_base_dir = "";     // 出力先
@@ -233,21 +233,68 @@ class pp_cs2java {
         }
 
         string tmp2 = Path.GetTempFileName();
+        string indent = "";
+        if ( -s_shift_indent > 0 ) {
+            indent = new string( ' ', -s_shift_indent );
+        }
         using ( StreamWriter sw = new StreamWriter( tmp2, false, Encoding.GetEncoding( s_encoding ) ) )
         using ( StreamReader sr = new StreamReader( path, Encoding.GetEncoding( s_encoding ) ) ) {
             string line = "";
             while ( (line = sr.ReadLine()) != null ) {
-                if ( line.StartsWith( "//INCLUDE " ) ) {
-                    string p = line.Substring( 10 );
+                string linetrim = line.Trim();
+                if ( linetrim.StartsWith( "//INCLUDE " ) ) {
+                    string p = linetrim.Substring( 10 );
                     string include_path = Path.Combine( Path.GetDirectoryName( path ), p );
 #if DEBUG
                     Console.WriteLine( "include_path=" + include_path );
+                    Console.WriteLine( "File.Exists(include_path)=" + File.Exists( include_path ) );
 #endif
                     if ( File.Exists( include_path ) ) {
                         using ( StreamReader sr_include = new StreamReader( include_path ) ) {
                             string line2 = "";
                             while ( (line2 = sr_include.ReadLine()) != null ) {
-                                sw.WriteLine( line2 );
+                                sw.WriteLine( indent + line2 );
+                            }
+                        }
+                    }
+                } else if( linetrim.StartsWith( "//INCLUDE-SECTION " ) ){
+                    string s = linetrim.Substring( 18 );
+                    string[] spl = s.Split( new char[] { ' ' } );
+                    string section_name = spl[0];
+#if DEBUG
+                    Console.WriteLine( "include-section; section_name=" + section_name );
+#endif
+                    string p = spl[1];
+                    string include_path = Path.Combine( Path.GetDirectoryName( path ), p );
+#if DEBUG
+                    Console.WriteLine( "include_path=" + include_path );
+                    Console.WriteLine( "File.Exists(include_path)=" + File.Exists( include_path ) );
+#endif
+                    if ( File.Exists( include_path ) ) {
+                        using ( StreamReader sr_include = new StreamReader( include_path ) ) {
+                            string line2 = "";
+                            bool section_begin = false;
+                            while ( (line2 = sr_include.ReadLine()) != null ) {
+                                if ( section_begin ) {
+                                    string strim = line2.Trim();
+                                    if ( strim.StartsWith( "//SECTION-END-" ) ) {
+                                        string name = strim.Substring( 14 );
+                                        if ( name == section_name ) {
+                                            section_begin = false;
+                                            break;
+                                        }
+                                    } else {
+                                        sw.WriteLine( indent + line2 );
+                                    }
+                                } else {
+                                    string strim = line2.Trim();
+                                    if ( strim.StartsWith( "//SECTION-BEGIN-" ) ) {
+                                        string name = strim.Substring( 16 );
+                                        if ( name == section_name ) {
+                                            section_begin = true;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -267,6 +314,10 @@ class pp_cs2java {
             bool comment_mode = false;
             String comment_indent = "";
             while ( (line = sr.ReadLine()) != null ) {
+#if DEBUG
+                //Console.WriteLine( "pp_cs2java#preprocessCor; line=" + line );
+#endif
+                string linetrim = line.Trim();
                 line_num++;
                 if ( line.StartsWith( "#" ) ) {
                     String trim = line.Replace( " ", "" );
@@ -301,8 +352,8 @@ class pp_cs2java {
                     }
                     continue;
                 }
-                if ( line.StartsWith( "package" ) ) {
-                    String trim = line.Substring( 7 ).Replace( " ", "" );
+                if ( linetrim.StartsWith( "package" ) ) {
+                    String trim = linetrim.Substring( 7 ).Replace( " ", "" );
                     int index = trim.IndexOf( "//" );
                     if ( index >= 1 ) {
                         trim = trim.Substring( 0, index );
@@ -404,11 +455,14 @@ class pp_cs2java {
                         }
                         comment_mode = draft_comment_mode;
                     }
-                    if ( line != "" ) {
-                        lines++;
-                    }
                     if ( !line.Contains( "#region" ) && !line.Contains( "#endregion" ) && !line.Contains( "[Serializable]" ) ) {
                         sw.WriteLine( line );
+                        if ( line != "" ) {
+                            lines++;
+                        }
+#if DEBUG
+                        //Console.WriteLine( "preprocessCor; line=" + line );
+#endif
                     }
                 }
             }
@@ -437,13 +491,20 @@ class pp_cs2java {
             }
             out_path = Path.Combine( out_path, Path.GetFileNameWithoutExtension( path ) + ".java" );
         }
+#if DEBUG
+        Console.WriteLine( "pp_cs2java#preprocessCor; out_path=" + out_path );
+#endif
 
         if ( File.Exists( out_path ) ) {
             File.Delete( out_path );
         }
         if ( !s_ignore_empty || (s_ignore_empty && lines > 0) ) {
             if ( package != "" || !s_ignore_unknown_package ) {
-                s_classes.Add( Path.GetFileNameWithoutExtension( path ) );
+                string class_name = Path.GetFileNameWithoutExtension( path );
+#if DEBUG
+                Console.WriteLine( "pp_cs2java#preprocessCor; class_name=" + class_name + "; lines=" + lines );
+#endif
+                s_classes.Add( class_name );
                 File.Copy( tmp, out_path );
             }
         }

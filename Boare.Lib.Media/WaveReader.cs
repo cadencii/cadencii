@@ -324,7 +324,11 @@ namespace Boare.Lib.Media {
             }
         }
 
-        public void read( long start, int length, ByRef<float[]> left, ByRef<float[]> right ) {
+        public void read( long start, int length, ByRef<float[]> left, ByRef<float[]> right ) 
+#if JAVA
+            throws IOException
+#endif
+        {
             left.value = new float[length];
             right.value = new float[length];
             if ( !m_opened ) {

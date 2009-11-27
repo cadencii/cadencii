@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,8 +14,9 @@ import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BSlider;
 import org.kbinani.windows.forms.BTextBox;
 
+//SECTION-END-IMPORT
 public class FormNoteExpressionConfig extends BForm {
-
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BPanel panelVocaloid2Template = null;
@@ -59,6 +61,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BButton btnOK = null;
 	private BButton btnCancel = null;
 
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -67,6 +70,7 @@ public class FormNoteExpressionConfig extends BForm {
 		initialize();
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -736,4 +740,5 @@ public class FormNoteExpressionConfig extends BForm {
 		return btnCancel;
 	}
 
+	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

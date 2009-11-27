@@ -14,13 +14,8 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-import java.awt.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormMixer.java
 import org.kbinani.*;
-import org.kbinani.apputil.*;
-import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
@@ -413,123 +408,10 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
-	    private JPanel jContentPane = null;
-	    private JPanel panel1 = null;
-	    private JScrollBar hScroll = null;
-	    private VolumeTracker volumeMaster = null;
-	    private JCheckBox chkTopmost = null;
-
-	    /**
-	     * This method initializes this
-	     * 
-	     * @return void
-	     */
-	    private void initialize() {
-		    this.setSize(377, 653);
-		    this.setContentPane(getJContentPane());
-		    this.setTitle("JFrame");
-	    }
-
-	    /**
-	     * This method initializes jContentPane
-	     * 
-	     * @return javax.swing.JPanel
-	     */
-	    private JPanel getJContentPane() {
-		    if (jContentPane == null) {
-			    GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			    gridBagConstraints5.gridx = 1;
-			    gridBagConstraints5.weightx = 0.0D;
-			    gridBagConstraints5.anchor = GridBagConstraints.SOUTH;
-			    gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
-			    gridBagConstraints5.gridy = 1;
-			    GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			    gridBagConstraints4.gridx = 1;
-			    gridBagConstraints4.weightx = 0.0D;
-			    gridBagConstraints4.weighty = 1.0D;
-			    gridBagConstraints4.fill = GridBagConstraints.BOTH;
-			    gridBagConstraints4.anchor = GridBagConstraints.NORTH;
-			    gridBagConstraints4.gridy = 0;
-			    GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			    gridBagConstraints3.gridx = 0;
-			    gridBagConstraints3.fill = GridBagConstraints.BOTH;
-			    gridBagConstraints3.weightx = 1.0D;
-			    gridBagConstraints3.weighty = 1.0D;
-			    gridBagConstraints3.gridy = 0;
-			    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			    gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
-			    gridBagConstraints1.gridy = 1;
-			    gridBagConstraints1.weighty = 0.0D;
-			    gridBagConstraints1.anchor = GridBagConstraints.SOUTH;
-			    gridBagConstraints1.weightx = 1.0D;
-			    gridBagConstraints1.gridx = 0;
-			    GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			    gridBagConstraints.gridx = 0;
-			    gridBagConstraints.weighty = 1.0D;
-			    gridBagConstraints.fill = GridBagConstraints.VERTICAL;
-			    gridBagConstraints.anchor = GridBagConstraints.NORTH;
-			    gridBagConstraints.gridy = 0;
-			    jContentPane = new JPanel();
-			    jContentPane.setLayout(new GridBagLayout());
-			    jContentPane.add(getHScroll(), gridBagConstraints1);
-			    jContentPane.add(getPanel1(), gridBagConstraints3);
-			    jContentPane.add(getVolumeMaster(), gridBagConstraints4);
-			    jContentPane.add(getChkTopmost(), gridBagConstraints5);
-		    }
-		    return jContentPane;
-	    }
-
-	    /**
-	     * This method initializes panel1	
-	     * 	
-	     * @return javax.swing.JPanel	
-	     */
-	    private JPanel getPanel1() {
-		    if (panel1 == null) {
-			    panel1 = new JPanel();
-			    panel1.setLayout(new GridBagLayout());
-		    }
-		    return panel1;
-	    }
-
-	    /**
-	     * This method initializes hScroll	
-	     * 	
-	     * @return javax.swing.JScrollBar	
-	     */
-	    private JScrollBar getHScroll() {
-		    if (hScroll == null) {
-			    hScroll = new JScrollBar();
-			    hScroll.setOrientation(JScrollBar.HORIZONTAL);
-		    }
-		    return hScroll;
-	    }
-
-	    /**
-	     * This method initializes volumeMaster	
-	     * 	
-	     * @return javax.swing.JPanel	
-	     */
-	    private JPanel getVolumeMaster() {
-		    if (volumeMaster == null) {
-			    volumeMaster = new VolumeTracker();
-		    }
-		    return volumeMaster;
-	    }
-
-	    /**
-	     * This method initializes chkTopmost	
-	     * 	
-	     * @return javax.swing.JCheckBox	
-	     */
-	    private JCheckBox getChkTopmost() {
-		    if (chkTopmost == null) {
-			    chkTopmost = new JCheckBox();
-			    chkTopmost.setText("Top most");
-			    chkTopmost.setText("Top most");
-		    }
-		    return chkTopmost;
-	    }
+        #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormMixer.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormMixer.java
+        #endregion
 #else
         #region UI Impl for C#
         /// <summary>

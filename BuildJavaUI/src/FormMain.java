@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -22,7 +23,10 @@ import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BVScrollBar;
 
+//SECTION-END-IMPORT
+
 public class FormMain extends BForm {
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="10,55"
     private BMenuBar jBMenuBar = null;
@@ -288,6 +292,8 @@ public class FormMain extends BForm {
     private BPanel jPanel1 = null;
     private BPanel jPanel3 = null;
     private BLabel statusLabel = null;
+
+    //SECTION-END-FIELD
     /**
      * This is the default constructor
      */
@@ -296,6 +302,7 @@ public class FormMain extends BForm {
         initialize();
     }
 
+    //SECTION-BEGIN-METHOD
     /**
      * This method initializes this
      * 
@@ -3842,4 +3849,5 @@ public class FormMain extends BForm {
         return jPanel3;
     }
 
+    //SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="18,34"

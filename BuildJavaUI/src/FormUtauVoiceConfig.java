@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -20,8 +21,9 @@ import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BSplitPane;
 import org.kbinani.windows.forms.BTextBox;
 
+//SECTION-END-IMPORT
 public class FormUtauVoiceConfig extends BForm {
-
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private BPanel splitContainerOut = null;
 	private BMenuBar jJMenuBar = null;
@@ -90,6 +92,8 @@ public class FormUtauVoiceConfig extends BForm {
 	private BTextBox txtOverlap = null;
 	private BLabel jLabel24 = null;
 	private BLabel jLabel54 = null;
+	
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -98,6 +102,7 @@ public class FormUtauVoiceConfig extends BForm {
 		initialize();
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -1018,4 +1023,5 @@ public class FormUtauVoiceConfig extends BForm {
 		return txtOverlap;
 	}
 
+	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="30,22"

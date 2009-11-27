@@ -12,11 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.componentModel;
-
-import org.kbinani.*;
-
-public class BCancelEventArgs extends BEventArgs{
-
-}
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentModel\BCancelEventArgs.java
 #endif

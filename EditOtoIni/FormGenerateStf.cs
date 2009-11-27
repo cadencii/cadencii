@@ -14,11 +14,7 @@
 #if JAVA
 package org.kbinani.EditOtoIni;
 
-import java.util.*;
-import javax.swing.*;
-import org.kbinani.*;
-import org.kbinani.windows.forms.*;
-import org.kbinani.componentModel.*;
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormGenerateStf.java
 #else
 using System;
 using System.ComponentModel;
@@ -382,99 +378,8 @@ namespace Boare.EditOtoIni {
         }
 #if JAVA
         #region UI Impl for Java
-	    private BPanel jContentPane = null;
-	    private BLabel lblPercent = null;
-	    private BLabel lblTime = null;
-	    private JProgressBar progressBar = null;
-	    private BButton btnCancel = null;
-	    private BLabel jLabel2 = null;
-        private BBackgroundWorker bgWork = null;
-
-	    /**
-	     * This method initializes this
-	     * 
-	     * @return void
-	     */
-	    private void initialize() {
-		    this.setSize(387, 162);
-		    this.setContentPane(getJContentPane());
-		    this.setTitle("JFrame");
-            this.bgWork = new BBackgroundWorker();
-	    }
-
-	    /**
-	     * This method initializes jContentPane
-	     * 
-	     * @return javax.swing.JPanel
-	     */
-	    private JPanel getJContentPane() {
-		    if (jContentPane == null) {
-			    GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			    gridBagConstraints4.gridx = 0;
-			    gridBagConstraints4.weighty = 1.0D;
-			    gridBagConstraints4.gridy = 4;
-			    jLabel2 = new BLabel();
-			    jLabel2.setText("");
-			    GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			    gridBagConstraints3.gridx = 0;
-			    gridBagConstraints3.anchor = GridBagConstraints.EAST;
-			    gridBagConstraints3.insets = new Insets(8, 0, 0, 16);
-			    gridBagConstraints3.gridy = 3;
-			    GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-			    gridBagConstraints2.gridx = 0;
-			    gridBagConstraints2.weightx = 1.0D;
-			    gridBagConstraints2.fill = GridBagConstraints.HORIZONTAL;
-			    gridBagConstraints2.insets = new Insets(2, 16, 0, 16);
-			    gridBagConstraints2.gridy = 2;
-			    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			    gridBagConstraints1.gridx = 0;
-			    gridBagConstraints1.anchor = GridBagConstraints.WEST;
-			    gridBagConstraints1.insets = new Insets(2, 16, 2, 0);
-			    gridBagConstraints1.gridy = 1;
-			    lblTime = new BLabel();
-			    lblTime.setText("remaining 0s (elapsed 0s)");
-			    GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			    gridBagConstraints.gridx = 0;
-			    gridBagConstraints.insets = new Insets(16, 16, 2, 0);
-			    gridBagConstraints.anchor = GridBagConstraints.WEST;
-			    gridBagConstraints.gridy = 0;
-			    lblPercent = new BLabel();
-			    lblPercent.setText("0 %");
-			    jContentPane = new JPanel();
-			    jContentPane.setLayout(new GridBagLayout());
-			    jContentPane.add(lblPercent, gridBagConstraints);
-			    jContentPane.add(lblTime, gridBagConstraints1);
-			    jContentPane.add(getProgressBar(), gridBagConstraints2);
-			    jContentPane.add(getBtnCancel(), gridBagConstraints3);
-			    jContentPane.add(jLabel2, gridBagConstraints4);
-		    }
-		    return jContentPane;
-	    }
-
-	    /**
-	     * This method initializes progressBar	
-	     * 	
-	     * @return javax.swing.JProgressBar	
-	     */
-	    private JProgressBar getProgressBar() {
-		    if (progressBar == null) {
-			    progressBar = new JProgressBar();
-		    }
-		    return progressBar;
-	    }
-
-	    /**
-	     * This method initializes btnCancel	
-	     * 	
-	     * @return javax.swing.BButton	
-	     */
-	    private BButton getBtnCancel() {
-		    if (btnCancel == null) {
-			    btnCancel = new BButton();
-			    btnCancel.setText("Cancel");
-		    }
-		    return btnCancel;
-	    }
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormGenerateStf.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormGenerateStf.java
         #endregion
 #else
         #region UI Impl for C#

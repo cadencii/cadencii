@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -7,12 +8,16 @@ import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextArea;
 
+//SECTION-END-IMPORT
 public class FormCompileResult extends BForm {
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BLabel label1 = null;
 	private BTextArea textBox1 = null;
 	private BButton btnOK = null;
+
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -21,6 +26,7 @@ public class FormCompileResult extends BForm {
 		initialize();
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -93,4 +99,5 @@ public class FormCompileResult extends BForm {
 		return btnOK;
 	}
 
+	//SECTION-END-METHOD
 }

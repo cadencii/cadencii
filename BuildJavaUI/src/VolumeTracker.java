@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -9,14 +10,17 @@ import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BSlider;
 import org.kbinani.windows.forms.BTextBox;
 
+//SECTION-END-IMPORT
 public class VolumeTracker extends JPanel {
-
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private BTextBox txtFeder = null;
 	private BSlider trackFeder = null;
 	private BSlider trackPanpot = null;
 	private BTextBox txtPanpot = null;
 	private BLabel lblTitle = null;
+	
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -25,6 +29,7 @@ public class VolumeTracker extends JPanel {
 		initialize();
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -144,4 +149,5 @@ public class VolumeTracker extends JPanel {
 		return txtPanpot;
 	}
 
+	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

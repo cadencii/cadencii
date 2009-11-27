@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,8 +9,9 @@ import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BNumericUpDown;
 
+//SECTION-END-IMPORT
 public class FormInsertBar extends BForm {
-
+    //SECTION-BEGIN-FIELD
     private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;
     private BLabel lblPosition = null;
@@ -22,6 +24,8 @@ public class FormInsertBar extends BForm {
     private BButton btnOK = null;
     private BButton btnCancel = null;
     private JLabel lblPositionPrefix = null;
+    
+    //SECTION-END-FIELD
     /**
      * This is the default constructor
      */
@@ -30,6 +34,7 @@ public class FormInsertBar extends BForm {
         initialize();
     }
 
+    //SECTION-BEGIN-METHOD
     /**
      * This method initializes this
      * 
@@ -191,4 +196,5 @@ public class FormInsertBar extends BForm {
         return btnCancel;
     }
 
+    //SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

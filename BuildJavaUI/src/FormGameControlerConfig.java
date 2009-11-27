@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,7 +9,9 @@ import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BProgressBar;
 
+//SECTION-END-IMPORT
 public class FormGameControlerConfig extends BForm {
+    //SECTION-BEGIN-FIELD
     private static final long serialVersionUID = 1L;
     private BPanel BPanel = null;
     private BLabel lblMessage = null;
@@ -21,6 +24,7 @@ public class FormGameControlerConfig extends BForm {
     private BButton btnCancel = null;
     private BLabel jLabel4 = null;
 
+    //SECTION-END-FIELD
     /**
      * This method initializes 
      * 
@@ -30,6 +34,7 @@ public class FormGameControlerConfig extends BForm {
     	initialize();
     }
 
+    //SECTION-BEGIN-METHOD
     /**
      * This method initializes this
      * 
@@ -212,5 +217,5 @@ public class FormGameControlerConfig extends BForm {
         return btnCancel;
     }
 
-    
+    //SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

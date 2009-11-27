@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,8 +9,9 @@ import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextArea;
 
+//SECTION-END-IMPORT
 public class FormImportLyric extends BForm {
-    //FIELDS BEGIN
+    //SECTION-BEGIN-FIELD
     private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;
     private BLabel lblNotes = null;
@@ -19,7 +21,8 @@ public class FormImportLyric extends BForm {
     private BButton btnCancel = null;
     private JButton jButton = null;
     private JButton jButton1 = null;
-    //FIELDS END
+
+    //SECTION-END-FIELD
     /**
      * This is the default constructor
      */
@@ -28,7 +31,7 @@ public class FormImportLyric extends BForm {
     	initialize();
     }
     
-    //UI-IMPL BEGIN
+    //SECTION-BEGIN-METHOD
     /**
      * This method initializes this
      * 
@@ -168,5 +171,5 @@ public class FormImportLyric extends BForm {
         return jButton1;
     }
     
-    //UI-IMPL END
+    //SECTION-END-METHOD
 }

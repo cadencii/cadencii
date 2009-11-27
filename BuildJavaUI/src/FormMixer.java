@@ -1,3 +1,4 @@
+//SECTION-BEGIN-IMPORT
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
@@ -6,8 +7,9 @@ import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BPanel;
 
+//SECTION-END-IMPORT
 public class FormMixer extends BForm {
-
+    //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BPanel panel1 = null;
@@ -15,6 +17,7 @@ public class FormMixer extends BForm {
 	private VolumeTracker volumeMaster = null;
 	private BCheckBox chkTopmost = null;
 
+	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -23,6 +26,7 @@ public class FormMixer extends BForm {
 		initialize();
 	}
 
+	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
 	 * 
@@ -134,4 +138,5 @@ public class FormMixer extends BForm {
 		return chkTopmost;
 	}
 
+	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"
