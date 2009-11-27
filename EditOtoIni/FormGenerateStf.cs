@@ -320,8 +320,8 @@ namespace Boare.EditOtoIni {
 #else
         private void bgWork_ProgressChanged( Object sender, ProgressChangedEventArgs e )
 #endif
- {
-            progressBar.Value = e.ProgressPercentage;
+        {
+            progressBar.setValue( e.ProgressPercentage );
 
             if ( e.UserState is int[] ) {
                 int[] rational = (int[])e.UserState;

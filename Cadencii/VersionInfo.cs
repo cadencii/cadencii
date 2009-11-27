@@ -60,11 +60,18 @@ namespace Boare.Cadencii {
         private Color m_app_name_color = Color.black;
         private Color m_version_color = new Color( 105, 105, 105 );
         private boolean m_shadow_enablde = false;
+        private BTimer timer;
 
         public VersionInfo( String app_name, String version ) {
             m_version = version;
             m_app_name = app_name;
             InitializeComponent();
+#if JAVA
+            timer = new BTimer();
+#else
+            timer = new BTimer( this.components );
+#endif
+            timer.setDelay( 30 );
             registerEventHandlers();
             setResources();
             ApplyLanguage();
@@ -246,9 +253,9 @@ namespace Boare.Cadencii {
                 pictVstLogo.setVisible( false );
                 lblVstLogo.setVisible( false );
                 lblStraightAcknowledgement.setVisible( false );
-                timer.Enabled = true;
+                timer.start();
             } else {
-                timer.Enabled = false;
+                timer.stop();
                 btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
                 btnFlip.setText( _( "Credit" ) );
                 pictVstLogo.setVisible( true );
@@ -372,7 +379,6 @@ namespace Boare.Cadencii {
             this.components = new System.ComponentModel.Container();
             this.btnFlip = new BButton();
             this.btnOK = new BButton();
-            this.timer = new BTimer( this.components );
             this.btnSaveAuthorList = new BButton();
             this.lblVstLogo = new BLabel();
             this.pictVstLogo = new BPictureBox();
@@ -400,10 +406,6 @@ namespace Boare.Cadencii {
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
-            // timer
-            // 
-            this.timer.Interval = 30;
             // 
             // btnSaveAuthorList
             // 
@@ -474,7 +476,6 @@ namespace Boare.Cadencii {
 
         private BButton btnFlip;
         private BButton btnOK;
-        private BTimer timer;
         private BButton btnSaveAuthorList;
         private BPictureBox pictVstLogo;
         private BLabel lblVstLogo;

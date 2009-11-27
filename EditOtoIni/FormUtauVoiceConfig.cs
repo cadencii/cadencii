@@ -783,27 +783,27 @@ namespace Boare.EditOtoIni {
             } else if ( m_mode == MouseMode.MoveOffset ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init + (float)(dx / m_px_per_sec * 1000) );
-                txtOffset.Text = draft.ToString();
+                txtOffset.setText( draft.ToString() );
                 check_hscroll_minimum = true;
                 minimum = Math.Min( draft, minimum );
             } else if ( m_mode == MouseMode.MoveConsonant ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init + (float)(dx / m_px_per_sec * 1000) );
-                txtConsonant.Text = draft.ToString();
+                txtConsonant.setText( draft.ToString() );
             } else if ( m_mode == MouseMode.MoveBlank ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init - (float)(dx / m_px_per_sec * 1000) );
-                txtBlank.Text = draft.ToString();
+                txtBlank.setText( draft.ToString() );
             } else if ( m_mode == MouseMode.MovePreUtterance ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init + (float)(dx / m_px_per_sec * 1000) );
-                txtPreUtterance.Text = draft.ToString();
+                txtPreUtterance.setText( draft.ToString() );
                 check_hscroll_minimum = true;
                 minimum = Math.Min( draft, minimum );
             } else if ( m_mode == MouseMode.MoveOverlap ) {
                 int dx = e.X - m_mouse_downed.x;
                 float draft = round2Digits( m_move_init + (float)(dx / m_px_per_sec * 1000) );
-                txtOverlap.Text = draft.ToString();
+                txtOverlap.setText( draft.ToString() );
                 check_hscroll_minimum = true;
                 minimum = Math.Min( draft, minimum );
             }
@@ -1048,19 +1048,19 @@ namespace Boare.EditOtoIni {
         }
 
         private void menuFileOpen_MouseEnter( Object sender, BEventArgs e ) {
-            statusLblTootip.Text = _( "Open Voice DB configuration file" );
+            statusLblTootip.setText( _( "Open Voice DB configuration file" ) );
         }
 
         private void menuFileSave_MouseEnter( Object sender, BEventArgs e ) {
-            statusLblTootip.Text = _( "Save Voice DB configuration file." );
+            statusLblTootip.setText( _( "Save Voice DB configuration file." ) );
         }
 
         private void menuFileSaveAs_MouseEnter( Object sender, BEventArgs e ) {
-            statusLblTootip.Text = _( "Save Voice DB configuration file with new name." );
+            statusLblTootip.setText( _( "Save Voice DB configuration file with new name." ) );
         }
 
         private void menuFileQuit_MouseEnter( Object sender, BEventArgs e ) {
-            statusLblTootip.Text = _( "Close this window." );
+            statusLblTootip.setText( _( "Close this window." ) );
         }
 
         private void FormUtauVoiceConfig_Load( Object sender, BEventArgs e ) {
@@ -1355,16 +1355,16 @@ namespace Boare.EditOtoIni {
 
         private void setSearchTextColor( bool found ) {
             if ( found ) {
-                txtSearch.BackColor = System.Drawing.SystemColors.Window;
-                txtSearch.ForeColor = System.Drawing.SystemColors.WindowText;
+                txtSearch.setBackground( Color.white );
+                txtSearch.setForeground( Color.black );
             } else {
-                txtSearch.BackColor = System.Drawing.Color.LightCoral;
-                txtSearch.ForeColor = System.Drawing.Color.White;
+                txtSearch.setBackground( PortUtil.LightCoral );
+                txtSearch.setForeground( PortUtil.White );
             }
         }
 
         private void searchCor( bool go_back ) {
-            if ( txtSearch.Text.Equals( "" ) ) {
+            if ( txtSearch.getText().Equals( "" ) ) {
                 setSearchTextColor( false );
                 return;
             }
@@ -1378,7 +1378,7 @@ namespace Boare.EditOtoIni {
             } else {
                 first_index = listFiles.getSelectedIndex( "" );
             }
-            String search = txtSearch.Text;
+            String search = txtSearch.getText();
             if ( go_back ) {
                 for ( int i = first_index - 1; i >= 0; i-- ) {
                     if ( checkListFileItem( i, search ) ) {
@@ -1491,7 +1491,7 @@ namespace Boare.EditOtoIni {
             this.pictWave = new BPictureBox();
             this.bgWorkRead = new System.ComponentModel.BackgroundWorker();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.statusLblTootip = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLblTootip = new BStatusLabel();
             this.splitContainerIn = new Boare.Lib.AppUtil.BSplitContainer();
             this.splitContainerOut = new Boare.Lib.AppUtil.BSplitContainer();
             this.cmenuListFiles = new BPopupMenu( this.components );
@@ -2194,7 +2194,7 @@ namespace Boare.EditOtoIni {
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private BMenuItem menuFileQuit;
         private BMenuItem menuFileSaveAs;
-        private System.Windows.Forms.ToolStripStatusLabel statusLblTootip;
+        private BStatusLabel statusLblTootip;
         private BPopupMenu cmenuListFiles;
         private BMenuItem generateSTRAIGHTFileToolStripMenuItem;
         private BMenuItem menuEdit;

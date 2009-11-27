@@ -30,9 +30,12 @@ namespace Boare.Cadencii {
 #endif
         private boolean m_game_ctrl_enabled = false;
         private DateTime m_last_event_processed;
+        private BTimer timer;
 
         public FormRealtimeConfig() {
             InitializeComponent();
+            timer = new BTimer( this.components );
+            timer.setDelay( 10 );
             registerEventHandlers();
             setResources();
             Boare.Lib.AppUtil.Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -46,7 +49,7 @@ namespace Boare.Cadencii {
             int num_joydev = winmmhelp.JoyGetNumJoyDev();
             m_game_ctrl_enabled = (num_joydev > 0);
             if ( m_game_ctrl_enabled ) {
-                timer.Start();
+                timer.start();
             }
         }
 
@@ -77,7 +80,7 @@ namespace Boare.Cadencii {
                 if ( dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
                     if ( btnStart.isFocusOwner() ) {
                         if ( btn_o ) {
-                            timer.Stop();
+                            timer.stop();
                             btnStart_Click( this, new EventArgs() );
                             m_last_event_processed = now;
                         } else if ( pov_r ) {
@@ -89,7 +92,7 @@ namespace Boare.Cadencii {
                         }
                     } else if ( btnCancel.isFocusOwner() ) {
                         if ( btn_o ) {
-                            timer.Stop();
+                            timer.stop();
                             setDialogResult( BDialogResult.CANCEL );
                             close();
                         } else if ( pov_l ) {
@@ -164,7 +167,6 @@ namespace Boare.Cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.timer = new BTimer( this.components );
             this.btnStart = new BButton();
             this.btnCancel = new BButton();
             this.lblRealTimeInput = new BLabel();
@@ -172,10 +174,6 @@ namespace Boare.Cadencii {
             this.numSpeed = new BNumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).BeginInit();
             this.SuspendLayout();
-            // 
-            // timer
-            // 
-            this.timer.Interval = 10;
             // 
             // btnStart
             // 
@@ -275,7 +273,6 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private BTimer timer;
         private BButton btnStart;
         private BButton btnCancel;
         private BLabel lblRealTimeInput;

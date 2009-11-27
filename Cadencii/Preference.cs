@@ -900,41 +900,55 @@ namespace Boare.Cadencii {
         }
 
         private void btnResampler_Click( Object sender, BEventArgs e ) {
-            if ( txtResampler.Text != "" && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtResampler.Text ) ) ) {
-                openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtResampler.Text ) );
+            if ( !txtResampler.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtResampler.getText() ) ) ) {
+                openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtResampler.getText() ) );
             }
             openUtauCore.setSelectedFile( "resampler.exe" );
             int dr = openUtauCore.showOpenDialog( this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
-                txtResampler.Text = openUtauCore.getSelectedFile();
+                string path = openUtauCore.getSelectedFile();
+                txtResampler.setText( path );
+                if ( txtWavtool.getText().Equals( "" ) ) {
+                    string wavtool = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "wavtool.exe" );
+                    if ( PortUtil.isFileExists( wavtool ) ) {
+                        txtWavtool.setText( wavtool );
+                    }
+                }
             }
         }
 
         private void btnWavtool_Click( Object sender, BEventArgs e ) {
-            if ( txtWavtool.Text != "" && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.Text ) ) ) {
-                openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtWavtool.Text ) );
+            if ( !txtWavtool.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.getText() ) ) ) {
+                openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtWavtool.getText() ) );
             }
             openUtauCore.setSelectedFile( "wavtool.exe" );
             int dr = openUtauCore.showOpenDialog( this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
-                txtWavtool.Text = openUtauCore.getSelectedFile();
+                string path = openUtauCore.getSelectedFile();
+                txtWavtool.setText( path );
+                if ( txtResampler.getText().Equals( "" ) ) {
+                    string resampler = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "resampler.exe" );
+                    if ( PortUtil.isFileExists( resampler ) ) {
+                        txtResampler.setText( resampler );
+                    }
+                }
             }
         }
 
         public String getPathResampler() {
-            return txtResampler.Text;
+            return txtResampler.getText();
         }
 
         public void setPathResampler( String value ) {
-            txtResampler.Text = value;
+            txtResampler.setText( value );
         }
 
         public String getPathWavtool() {
-            return txtWavtool.Text;
+            return txtWavtool.getText();
         }
 
         public void setPathWavtool( String value ) {
-            txtWavtool.Text = value;
+            txtWavtool.setText( value );
         }
 
         public Vector<SingerConfig> getUtauSingers() {

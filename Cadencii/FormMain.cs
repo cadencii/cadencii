@@ -681,7 +681,7 @@ namespace Boare.Cadencii {
             // hScroll
             hScroll.Left = pictureBox3.Width;
             hScroll.Top = panel1.Height - hScroll.Height;
-            hScroll.Width = panel1.Width - pictureBox3.Width - trackBar.Width - pictureBox2.Width;
+            hScroll.Width = panel1.Width - pictureBox3.Width - trackBar.getWidth() - pictureBox2.Width;
             // trackBar
             trackBar.Left = pictureBox3.Width + hScroll.Width;
             trackBar.Top = panel1.Height - hScroll.Height;
@@ -1727,9 +1727,7 @@ namespace Boare.Cadencii {
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
-#if !JAVA
-                                            dlg.Dispose();
-#endif
+                                            dlg.close();
                                         } catch ( Exception ex2 ) {
                                         }
                                     }
@@ -2830,6 +2828,7 @@ namespace Boare.Cadencii {
                             AppManager.addingEvent.ID.LyricHandle = lyric;
                             AppManager.addingEvent.ID.VibratoDelay = vibrato_delay;
                             //AppManager.addingEvent.InternalID = work.GetNextId( 0 );
+
                             boolean changed = true;
                             while ( changed ) {
                                 changed = false;
@@ -3457,7 +3456,7 @@ namespace Boare.Cadencii {
 
         private void FormMain_Load( Object sender, BEventArgs e ) {
             applyLanguage();
-            trackBar.Value = AppManager.editorConfig.DefaultXScale;
+            trackBar.setValue( AppManager.editorConfig.DefaultXScale );
             AppManager.setCurrentClock( 0 );
             setEdited( false );
 
@@ -3880,7 +3879,7 @@ namespace Boare.Cadencii {
 
                     if ( !event_processed && !btn_o && m_last_btn_o ) {
                         if ( AppManager.isPlaying() ) {
-                            timer.Stop();
+                            timer.stop();
                         }
                         AppManager.setPlaying( !AppManager.isPlaying() );
                         m_last_event_processed = now;
@@ -3944,7 +3943,7 @@ namespace Boare.Cadencii {
                         if ( AppManager.isPlaying() ) {
                             AppManager.setEditMode( EditMode.NONE );
                             AppManager.setPlaying( false );
-                            timer.Stop();
+                            timer.stop();
                         } else {
                             m_timer.stop();
                             FormRealtimeConfig frc = null;
@@ -5105,9 +5104,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( form != null ) {
                     try {
-#if !JAVA
-                        form.Dispose();
-#endif
+                        form.close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -5217,7 +5214,7 @@ namespace Boare.Cadencii {
                 AppManager.editorConfig.ScrollHorizontalOnWheel = m_preference_dlg.isScrollHorizontalOnWheel();
                 AppManager.editorConfig.MaximumFrameRate = m_preference_dlg.getMaximumFrameRate();
                 int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
-                timer.Interval = (fps <= 0) ? 1 : fps;
+                timer.setDelay( (fps <= 0) ? 1 : fps );
                 AppManager.editorConfig.Platform = m_preference_dlg.getPlatform();
                 s_modifier_key = ((AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
                 applyShortcut();
@@ -5425,9 +5422,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( dlg != null ) {
                     try {
-#if !JAVA
-                        dlg.Dispose();
-#endif
+                        dlg.close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -5564,7 +5559,7 @@ namespace Boare.Cadencii {
                 AppManager.setPlaying( true );
                 //menuJobRealTime.setText( _( "Stop Realtime Input" );
             } else {
-                timer.Stop();
+                timer.stop();
                 AppManager.setPlaying( false );
                 AppManager.setEditMode( EditMode.NONE );
                 //menuJobRealTime.setText( _( "Start Realtime Input" );
@@ -5789,9 +5784,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( dlg != null ) {
                     try {
-#if !JAVA
-                        dlg.Dispose();
-#endif
+                        dlg.close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -5896,9 +5889,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( dlg != null ) {
                     try {
-#if !JAVA
-                        dlg.Dispose();
-#endif
+                        dlg.close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -6191,9 +6182,7 @@ namespace Boare.Cadencii {
                     } finally {
                         if ( dlg != null ) {
                             try {
-#if !JAVA
-                                dlg.Dispose();
-#endif
+                                dlg.close();
                             } catch ( Exception ex2 ) {
                             }
                         }
@@ -6665,9 +6654,7 @@ namespace Boare.Cadencii {
                                     } finally {
                                         if ( dlg != null ) {
                                             try {
-#if !JAVA
-                                                dlg.Dispose();
-#endif
+                                                dlg.close();
                                             } catch ( Exception ex2 ) {
                                             }
                                         }
@@ -6782,7 +6769,7 @@ namespace Boare.Cadencii {
         }
 
         private void trackBar_ValueChanged( Object sender, BEventArgs e ) {
-            AppManager.scaleX = trackBar.Value / 480f;
+            AppManager.scaleX = trackBar.getValue() / 480f;
             AppManager.startToDrawX = (int)(hScroll.getValue() * AppManager.scaleX);
 #if USE_DOBJ
             updateDrawObjectList();
@@ -7215,9 +7202,7 @@ namespace Boare.Cadencii {
                 } finally {
                     if ( dlg != null ) {
                         try {
-#if !JAVA
-                            dlg.Dispose();
-#endif
+                            dlg.close();
                         } catch ( Exception ex2 ) {
                         }
                     }
@@ -7849,7 +7834,7 @@ namespace Boare.Cadencii {
 
             if ( (play_time < 0.0 || m_preview_ending_time < now) && AppManager.getEditMode() != EditMode.REALTIME ) {
                 AppManager.setPlaying( false );
-                timer.Stop();
+                timer.stop();
                 if ( AppManager.startMarkerEnabled ) {
                     AppManager.setCurrentClock( AppManager.startMarker );
                 }
@@ -7864,7 +7849,7 @@ namespace Boare.Cadencii {
                     //AppManager.CurrentClock = 0;
                     //EnsureCursorVisible();
                     if ( !AppManager.isRepeatMode() ) {
-                        timer.Stop();
+                        timer.stop();
                         AppManager.setPlaying( false );
                     }
                 }
@@ -7875,7 +7860,7 @@ namespace Boare.Cadencii {
                 if ( AppManager.isRepeatMode() ) {
                     AppManager.setPlaying( true );
                 } else {
-                    timer.Stop();
+                    timer.stop();
                 }
             } else {
                 AppManager.setCurrentClock( (int)clock );
@@ -8011,7 +7996,7 @@ namespace Boare.Cadencii {
 
         private void stripBtnStop_Click( Object sender, BEventArgs e ) {
             AppManager.setPlaying( false );
-            timer.Stop();
+            timer.stop();
             pictPianoRoll.requestFocus();
         }
 
@@ -8273,7 +8258,11 @@ namespace Boare.Cadencii {
                     v = PortUtil.parseFloat( stripDDBtnSpeedTextbox.getText() );
                     changeRealtimeInputSpeed( v / 100.0f );
                     AppManager.editorConfig.RealtimeInputSpeed = v / 100.0f;
+#if JAVA
+                    //TODO: FormMain#stripDDBtnSpeedTextBox_KeyDown
+#else
                     stripDDBtnSpeed.HideDropDown();
+#endif
                     updateStripDDBtnSpeed();
                 } catch ( Exception ex ) {
                 }
@@ -8579,7 +8568,8 @@ namespace Boare.Cadencii {
         }
 
         private void updateOverview() {
-            while ( true ) {
+            boolean д = true;
+            for (;д;) {
 #if DEBUG
                 PortUtil.println( "updateOverview" );
 #endif
@@ -9373,7 +9363,7 @@ namespace Boare.Cadencii {
                 BToolStripButton tsb = new BToolStripButton();
 #if !JAVA
                 if ( icon != null ) {
-                    tsb.Image = icon;
+                    tsb.setIcon( new ImageIcon( icon ) );
                 }
 #endif
                 tsb.setText( name );
@@ -9818,7 +9808,7 @@ namespace Boare.Cadencii {
         private void removeGameControler() {
 #if !JAVA
             if ( m_timer != null ) {
-                m_timer.Stop();
+                m_timer.stop();
                 m_timer.Dispose();
                 m_timer = null;
             }
@@ -9839,12 +9829,12 @@ namespace Boare.Cadencii {
                 }
                 if ( init_success ) {
                     m_game_mode = GameControlMode.NORMAL;
-                    stripLblGameCtrlMode.Image = null;
+                    stripLblGameCtrlMode.setIcon( null );
                     stripLblGameCtrlMode.setText( m_game_mode.ToString() );
                     m_timer = new BTimer();
-                    m_timer.Interval = 10;
+                    m_timer.setDelay( 10 );
                     m_timer.Tick += new EventHandler( m_timer_Tick );
-                    m_timer.Start();
+                    m_timer.start();
                 } else {
                     m_game_mode = GameControlMode.DISABLED;
                 }
@@ -9957,16 +9947,16 @@ namespace Boare.Cadencii {
 #if !JAVA
             if ( m_game_mode == GameControlMode.DISABLED ) {
                 stripLblGameCtrlMode.setText( _( "Disabled" ) );
-                stripLblGameCtrlMode.Image = (System.Drawing.Image)Resources.get_slash().image.Clone();
+                stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else if ( m_game_mode == GameControlMode.CURSOR ) {
                 stripLblGameCtrlMode.setText( _( "Cursor" ) );
-                stripLblGameCtrlMode.Image = null;
+                stripLblGameCtrlMode.setIcon( null );
             } else if ( m_game_mode == GameControlMode.KEYBOARD ) {
                 stripLblGameCtrlMode.setText( _( "Keyboard" ) );
-                stripLblGameCtrlMode.Image = (System.Drawing.Image)Resources.get_piano().image.Clone();
+                stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_piano() ) );
             } else if ( m_game_mode == GameControlMode.NORMAL ) {
                 stripLblGameCtrlMode.setText( _( "Normal" ) );
-                stripLblGameCtrlMode.Image = null;
+                stripLblGameCtrlMode.setIcon( null );
             }
 #endif
         }
@@ -9977,14 +9967,14 @@ namespace Boare.Cadencii {
             bocoree.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
             if ( midiport < 0 || devices.Length <= 0 ) {
                 stripLblMidiIn.setText( _( "Disabled" ) );
-                stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_slash().image.Clone();
+                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
                 if ( midiport >= devices.Length ) {
                     midiport = 0;
                     AppManager.editorConfig.MidiInPort.PortNumber = midiport;
                 }
                 stripLblMidiIn.setText( devices[midiport].szPname );
-                stripLblMidiIn.Image = (System.Drawing.Bitmap)Resources.get_piano().image.Clone();
+                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_piano() ) );
             }
         }
 #endif
@@ -10097,9 +10087,7 @@ namespace Boare.Cadencii {
                     } finally {
                         if ( dlg != null ) {
                             try {
-#if !JAVA
-                                dlg.Dispose();
-#endif
+                                dlg.close();
                             } catch ( Exception ex2 ) {
                             }
                         }
@@ -10157,7 +10145,7 @@ namespace Boare.Cadencii {
                 if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
 #endif
                     if ( AppManager.isPlaying() ) {
-                        timer.Stop();
+                        timer.stop();
                     }
                     AppManager.setPlaying( !AppManager.isPlaying() );
 #if JAVA
@@ -10167,7 +10155,7 @@ namespace Boare.Cadencii {
 #endif
                     if ( !AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
                         if ( AppManager.isPlaying() ) {
-                            timer.Stop();
+                            timer.stop();
                         }
                         AppManager.setPlaying( !AppManager.isPlaying() );
                     }
@@ -11293,9 +11281,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( dlg != null ) {
                     try {
-#if !JAVA
-                        dlg.Dispose();
-#endif
+                        dlg.close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -11382,9 +11368,7 @@ namespace Boare.Cadencii {
             } finally {
                 if ( dlg != null ) {
                     try {
-#if !JAVA
-                        dlg.Dispose();
-#endif
+                        dlg.close();
                     } catch ( Exception ex2 ) {
                     }
                 }

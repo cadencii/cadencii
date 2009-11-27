@@ -85,6 +85,14 @@ namespace bocoree.windows.forms {
             bocoree.java.awt.Point p = getLocationOnScreen();
             return new bocoree.java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
         }
+
+        public object getTag() {
+            return base.Tag;
+        }
+
+        public void setTag( object value ) {
+            base.Tag = value;
+        }
         #endregion
 
         // root implementation of java.awt.Component

@@ -64,10 +64,12 @@ namespace Boare.Cadencii {
             Vector<Char> _SMALL = new Vector<Char>( new char[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'ゃ', 'ゅ', 'ょ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ャ', 'ュ', 'ョ' } );
             String tmp = "";
             for ( int i = 0; i < m_max_notes; i++ ) {
-                if ( i >= txtLyrics.Lines.Length ) {
+                if ( i >= txtLyrics.getLineCount() ) {
                     break;
                 }
-                tmp += txtLyrics.Lines[i] + " ";
+                int start = txtLyrics.getLineStartOffset( i );
+                int end = txtLyrics.getLineEndOffset( i );
+                tmp += txtLyrics.getText( start, end - start ) + " ";
             }
             String[] spl = PortUtil.splitString( tmp, new char[] { '\n', '\t', ' ', '　', '\r' }, true );
             Vector<String> ret = new Vector<String>();
@@ -150,7 +152,7 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.txtLyrics = new BTextBox();
+            this.txtLyrics = new BTextArea();
             this.btnCancel = new BButton();
             this.btnOK = new BButton();
             this.lblNotes = new BLabel();
@@ -218,7 +220,7 @@ namespace Boare.Cadencii {
 
         #endregion
 
-        private BTextBox txtLyrics;
+        private BTextArea txtLyrics;
         private BButton btnCancel;
         private BButton btnOK;
         private BLabel lblNotes;

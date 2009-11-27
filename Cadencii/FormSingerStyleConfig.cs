@@ -19,6 +19,7 @@ using System;
 //using System.Drawing;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
+using bocoree;
 using bocoree.java.awt;
 using bocoree.windows.forms;
 
@@ -62,21 +63,21 @@ namespace Boare.Cadencii {
         }
 
         public int getPMBendDepth() {
-            return trackBendDepth.Value;
+            return trackBendDepth.getValue();
         }
 
         public void setPMBendDepth( int value ) {
-            trackBendDepth.Value = value;
-            txtBendDepth.Text = value + "";
+            trackBendDepth.setValue( value );
+            txtBendDepth.setText( value + "" );
         }
 
         public int getPMBendLength() {
-            return trackBendLength.Value;
+            return trackBendLength.getValue();
         }
 
         public void setPMBendLength( int value ) {
-            trackBendLength.Value = value;
-            txtBendLength.Text = value + "";
+            trackBendLength.setValue( value );
+            txtBendLength.setText( value + "" );
         }
 
         public int getPMbPortamentoUse() {
@@ -104,21 +105,21 @@ namespace Boare.Cadencii {
         }
 
         public int getDEMdecGainRate() {
-            return trackDecay.Value;
+            return trackDecay.getValue();
         }
 
         public void setDEMdecGainRate( int value ) {
-            trackDecay.Value = value;
-            txtDecay.Text = value + "";
+            trackDecay.setValue( value );
+            txtDecay.setText( value + "" );
         }
 
         public int getDEMaccent() {
-            return trackAccent.Value;
+            return trackAccent.getValue();
         }
 
         public void setDEMaccent( int value ) {
-            trackAccent.Value = value;
-            txtAccent.Text = value + "";
+            trackAccent.setValue( value );
+            txtAccent.setText( value + "" );
         }
 
         public FormSingerStyleConfig() {
@@ -130,88 +131,88 @@ namespace Boare.Cadencii {
             Dimension current_size = getClientSize();
         }
 
-        private void trackBendDepth_Scroll( object sender, EventArgs e ) {
-            txtBendDepth.Text = trackBendDepth.Value + "";
+        private void trackBendDepth_Scroll( Object sender, BEventArgs e ) {
+            txtBendDepth.setText( trackBendDepth.getValue() + "" );
         }
 
-        private void txtBendDepth_TextChanged( object sender, EventArgs e ) {
+        private void txtBendDepth_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtBendDepth.Text );
-                if ( draft != trackBendDepth.Value ) {
-                    if ( draft < trackBendDepth.Minimum ) {
-                        draft = trackBendDepth.Minimum;
-                        txtBendDepth.Text = draft + "";
-                    } else if ( trackBendDepth.Maximum < draft ) {
-                        draft = trackBendDepth.Maximum;
-                        txtBendDepth.Text = draft + "";
+                int draft = PortUtil.parseInt( txtBendDepth.getText() );
+                if ( draft != trackBendDepth.getValue() ) {
+                    if ( draft < trackBendDepth.getMinimum() ) {
+                        draft = trackBendDepth.getMinimum();
+                        txtBendDepth.setText( draft + "" );
+                    } else if ( trackBendDepth.getMaximum() < draft ) {
+                        draft = trackBendDepth.getMaximum();
+                        txtBendDepth.setText( draft + "" );
                     }
-                    trackBendDepth.Value = draft;
+                    trackBendDepth.setValue( draft );
                 }
             } catch {
                 //txtBendDepth.Text = trackBendDepth.Value + "";
             }
         }
 
-        private void trackBendLength_Scroll( object sender, EventArgs e ) {
-            txtBendLength.Text = trackBendLength.Value + "";
+        private void trackBendLength_Scroll( Object sender, BEventArgs e ) {
+            txtBendLength.setText( trackBendLength.getValue() + "" );
         }
 
-        private void txtBendLength_TextChanged( object sender, EventArgs e ) {
+        private void txtBendLength_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtBendLength.Text );
-                if ( draft != trackBendLength.Value ) {
-                    if ( draft < trackBendLength.Minimum ) {
-                        draft = trackBendLength.Minimum;
-                        txtBendLength.Text = draft + "";
-                    } else if ( trackBendLength.Maximum < draft ) {
-                        draft = trackBendLength.Maximum;
-                        txtBendLength.Text = draft + "";
+                int draft = int.Parse( txtBendLength.getText() );
+                if ( draft != trackBendLength.getValue() ) {
+                    if ( draft < trackBendLength.getMinimum() ) {
+                        draft = trackBendLength.getMinimum();
+                        txtBendLength.setText( draft + "" );
+                    } else if ( trackBendLength.getMaximum() < draft ) {
+                        draft = trackBendLength.getMaximum();
+                        txtBendLength.setText( draft + "" );
                     }
-                    trackBendLength.Value = draft;
+                    trackBendLength.setValue( draft );
                 }
             } catch {
                 //txtBendLength.Text = trackBendLength.Value + "";
             }
         }
 
-        private void trackDecay_Scroll( object sender, EventArgs e ) {
-            txtDecay.Text = trackDecay.Value + "";
+        private void trackDecay_Scroll( Object sender, BEventArgs e ) {
+            txtDecay.setText( trackDecay.getValue() + "" );
         }
 
-        private void txtDecay_TextChanged( object sender, EventArgs e ) {
+        private void txtDecay_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtDecay.Text );
-                if ( draft != trackDecay.Value ) {
-                    if ( draft < trackDecay.Minimum ) {
-                        draft = trackDecay.Minimum;
-                        txtDecay.Text = draft + "";
-                    } else if ( trackDecay.Maximum < draft ) {
-                        draft = trackDecay.Maximum;
-                        txtDecay.Text = draft + "";
+                int draft = PortUtil.parseInt( txtDecay.getText() );
+                if ( draft != trackDecay.getValue() ) {
+                    if ( draft < trackDecay.getMinimum() ) {
+                        draft = trackDecay.getMinimum();
+                        txtDecay.setText( draft + "" );
+                    } else if ( trackDecay.getMaximum() < draft ) {
+                        draft = trackDecay.getMaximum();
+                        txtDecay.setText( draft + "" );
                     }
-                    trackDecay.Value = draft;
+                    trackDecay.setValue( draft );
                 }
             } catch {
                 //txtDecay.Text = trackDecay.Value + "";
             }
         }
 
-        private void trackAccent_Scroll( object sender, EventArgs e ) {
-            txtAccent.Text = trackAccent.Value + "";
+        private void trackAccent_Scroll( Object sender, BEventArgs e ) {
+            txtAccent.setText( trackAccent.getValue() + "" );
         }
 
-        private void txtAccent_TextChanged( object sender, EventArgs e ) {
+        private void txtAccent_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtAccent.Text );
-                if ( draft != trackAccent.Value ) {
-                    if ( draft < trackAccent.Minimum ) {
-                        draft = trackAccent.Minimum;
-                        txtAccent.Text = draft + "";
-                    } else if ( trackAccent.Maximum < draft ) {
-                        draft = trackAccent.Maximum;
-                        txtAccent.Text = draft + "";
+                int draft = PortUtil.parseInt( txtAccent.getText() );
+                if ( draft != trackAccent.getValue() ) {
+                    if ( draft < trackAccent.getMinimum() ) {
+                        draft = trackAccent.getMinimum();
+                        txtAccent.setText( draft + "" );
+                    } else if ( trackAccent.getMaximum() < draft ) {
+                        draft = trackAccent.getMaximum();
+                        txtAccent.setText( draft + "" );
                     }
-                    trackAccent.Value = draft;
+                    trackAccent.setValue( draft );
                 }
             } catch {
                 //txtAccent.Text = trackAccent.Value + "";

@@ -38,7 +38,7 @@ namespace Boare.Cadencii {
             setResources();
             ApplyLanguage();
             m_master_tuning = master_tuning_in_cent;
-            txtMasterTuning.Text = master_tuning_in_cent.ToString();
+            txtMasterTuning.setText( master_tuning_in_cent.ToString() );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -60,7 +60,7 @@ namespace Boare.Cadencii {
         private void txtMasterTuning_TextChanged( object sender, EventArgs e ) {
             int v = m_master_tuning;
             try {
-                v = PortUtil.parseInt( txtMasterTuning.Text );
+                v = PortUtil.parseInt( txtMasterTuning.getText() );
                 m_master_tuning = v;
             } catch ( Exception ex ) {
             }

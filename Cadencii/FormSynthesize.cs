@@ -60,6 +60,7 @@ namespace Boare.Cadencii {
         private int m_finished = -1;
         private boolean m_rendering_started = false;
         private boolean m_reflect_amp_to_wave = false;
+        private BTimer timer;
 
         public FormSynthesize( VsqFileEx vsq,
                                int presend,
@@ -74,10 +75,17 @@ namespace Boare.Cadencii {
             m_tracks = new int[] { track };
             m_files = new String[] { file };
             InitializeComponent();
+
+#if JAVA
+            timer = new BTimer();
+#else
+            timer = new BTimer( this.components );
+#endif
+            timer.setDelay( 1000 );
             registerEventHandlers();
             setResources();
             lblProgress.setText( "1/" + 1 );
-            progressWhole.Maximum = 1;
+            progressWhole.setMaximum( 1 );
             m_partial_mode = true;
             m_clock_start = clock_start;
             m_clock_end = clock_end;
@@ -93,10 +101,16 @@ namespace Boare.Cadencii {
             m_tracks = tracks;
             m_files = files;
             InitializeComponent();
+#if JAVA
+            timer = new BTimer();
+#else
+            timer = new BTimer( this.components );
+#endif
+            timer.setDelay( 1000 );
             registerEventHandlers();
             setResources();
             lblProgress.setText( "1/" + m_tracks.Length );
-            progressWhole.Maximum = m_tracks.Length;
+            progressWhole.setMaximum( m_tracks.Length );
             m_partial_mode = false;
             m_clock_end = end;
             m_reflect_amp_to_wave = reflect_amp_to_wave;
@@ -133,7 +147,7 @@ namespace Boare.Cadencii {
         private void Start() {
             if ( VSTiProxy.CurrentUser.Equals( "" ) ) {
                 VSTiProxy.CurrentUser = AppManager.getID();
-                timer.Enabled = true;
+                timer.start();
                 m_rendering_started = true;
                 bgWork.RunWorkerAsync();
             } else {
@@ -143,7 +157,7 @@ namespace Boare.Cadencii {
         }
 
         private void UpdateProgress( Object sender, int value ) {
-            progressWhole.Value = value > progressWhole.Maximum ? progressWhole.Maximum : value;
+            progressWhole.setValue( value > progressWhole.getMaximum() ? progressWhole.getMaximum() : value );
             lblProgress.setText( value + "/" + m_tracks.Length );
             m_finished = value - 1;
         }
@@ -235,7 +249,7 @@ namespace Boare.Cadencii {
         }
 
         private void FormSynthesize_FormClosing( Object sender, BFormClosingEventArgs e ) {
-            timer.Enabled = false;
+            timer.stop();
             if ( m_rendering_started ) {
                 VSTiProxy.CurrentUser = "";
             }
@@ -252,7 +266,7 @@ namespace Boare.Cadencii {
         }
 
         private void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
-            timer.Enabled = false;
+            timer.stop();
             setDialogResult( BDialogResult.OK );
             close();
         }
@@ -266,7 +280,7 @@ namespace Boare.Cadencii {
             } else {
                 lblTime.setText( _( "Remaining" ) + " [unknown] (" + getTimeSpanString( elapsed ) + " " + _( "elapsed" ) + ")" );
             }
-            progressOne.Value = (int)progress > 100 ? 100 : (int)progress;
+            progressOne.setValue( (int)progress > 100 ? 100 : (int)progress );
         }
 
         private static String getTimeSpanString( long span ) {
@@ -342,7 +356,6 @@ namespace Boare.Cadencii {
             this.progressOne = new BProgressBar();
             this.btnCancel = new BButton();
             this.bgWork = new BBackgroundWorker();
-            this.timer = new BTimer( this.components );
             this.lblTime = new BLabel();
             this.SuspendLayout();
             // 
@@ -395,10 +408,6 @@ namespace Boare.Cadencii {
             this.bgWork.WorkerReportsProgress = true;
             this.bgWork.WorkerSupportsCancellation = true;
             // 
-            // timer
-            // 
-            this.timer.Interval = 1000;
-            // 
             // lblTime
             // 
             this.lblTime.AutoSize = true;
@@ -441,7 +450,6 @@ namespace Boare.Cadencii {
         private BProgressBar progressOne;
         private BButton btnCancel;
         private BBackgroundWorker bgWork;
-        private BTimer timer;
         private BLabel lblTime;
         #endregion
 #endif

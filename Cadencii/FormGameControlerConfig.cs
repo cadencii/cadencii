@@ -37,9 +37,21 @@ namespace Boare.Cadencii {
         private Vector<Integer> m_list = new Vector<Integer>();
         private Vector<Integer> m_povs = new Vector<Integer>();
         private int index;
+        private BTimer timer;
 
         public FormGameControlerConfig() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
+
+#if JAVA
+            timer = new BTimer();
+#else
+            timer = new BTimer( this.components );
+#endif
             registerEventHandlers();
             setResources();
             for ( int i = 0; i < 10; i++ ) {
@@ -298,7 +310,6 @@ namespace Boare.Cadencii {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.lblMessage = new BLabel();
-            this.timer = new BTimer( this.components );
             this.pictButton = new BPictureBox();
             this.progressCount = new BProgressBar();
             this.btnSkip = new BButton();
@@ -411,7 +422,6 @@ namespace Boare.Cadencii {
         #endregion
 
         private BLabel lblMessage;
-        private BTimer timer;
         private BPictureBox pictButton;
         private BProgressBar progressCount;
         private BButton btnSkip;

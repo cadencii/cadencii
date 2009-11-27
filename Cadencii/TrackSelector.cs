@@ -5116,9 +5116,7 @@ namespace Boare.Cadencii {
                             } finally {
                                 if ( fbpe != null ) {
                                     try {
-#if !JAVA
-                                        fbpe.Dispose();
-#endif
+                                        fbpe.close();
                                     } catch ( Exception ex2 ) {
                                     }
                                 }
@@ -5181,7 +5179,7 @@ namespace Boare.Cadencii {
                         TagForCMenuSinger tag = new TagForCMenuSinger();
                         tag.SingerChangeExists = true;
                         tag.InternalID = ve.InternalID;
-                        cmenuSinger.Tag = tag;//                        new KeyValuePair<boolean, int>( true, ve.InternalID );
+                        cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( true, ve.InternalID );
                         MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
                         for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                             BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
@@ -5192,7 +5190,7 @@ namespace Boare.Cadencii {
                                 tsmi.setSelected( false );
                             }
                         }
-                        cmenuSinger.Show( this, e.Location );
+                        cmenuSinger.show( this, e.X, e.Y );
                     } else {
                         if ( !m_cmenu_singer_prepared.Equals( renderer ) ) {
                             prepareSingerMenu( renderer );
@@ -5211,13 +5209,13 @@ namespace Boare.Cadencii {
                         TagForCMenuSinger tag = new TagForCMenuSinger();
                         tag.SingerChangeExists = false;
                         tag.Clock = clock;
-                        cmenuSinger.Tag = tag;//                        new KeyValuePair<boolean, int>( false, clock );
+                        cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( false, clock );
                         MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
                         for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                             BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
                             tsmi.setSelected( false );
                         }
-                        cmenuSinger.Show( this, e.Location );
+                        cmenuSinger.show( this, e.X, e.Y );
                     }
                 }
                 #endregion
@@ -5225,7 +5223,7 @@ namespace Boare.Cadencii {
         }
 
         public void prepareSingerMenu( String renderer ) {
-            cmenuSinger.Items.Clear();
+            cmenuSinger.removeAll();
             //Vector<Integer> list = new Vector<Integer>();
             Vector<SingerConfig> items = null;
             if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) || renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
@@ -5279,18 +5277,29 @@ namespace Boare.Cadencii {
                     tag.SingerName = sc.VOICENAME;
                     tag.ToolTipText = tip;
                     tag.ToolTipPxWidth = 0;
-                    tsmi.Tag = tag;
+                    tsmi.setTag( tag );
+#if JAVA
+                    tsmi.clickEvent.add( new BEventHandler( this, "tsmi_Click" ) );
+#else
                     tsmi.Click += new EventHandler( tsmi_Click );
+#endif
                     if ( AppManager.editorConfig.Platform == PlatformEnum.Windows ) {
                         // TODO: cmenuSinger.ItemsのToolTip。monoで実行するとMouseHoverで落ちる
+#if JAVA
+#else
                         tsmi.MouseHover += new EventHandler( tsmi_MouseHover );
+#endif
                     }
-                    cmenuSinger.Items.Add( tsmi );
+                    cmenuSinger.add( tsmi );
                     //list.Add( i );
                     count++;
                 }
             }
+#if JAVA
+            cmenuSinger.visibleChangedEvent.add( new BEventHandler( this, "cmenuSinger_VisibleChanged" ) );
+#else
             cmenuSinger.VisibleChanged += new EventHandler( cmenuSinger_VisibleChanged );
+#endif
             m_cmenusinger_tooltip_width = new int[count];
             //m_cmenusinger_map = list.ToArray();
             for ( int i = 0; i < count; i++ ) {
@@ -5300,38 +5309,42 @@ namespace Boare.Cadencii {
         }
 
         private void cmenuSinger_VisibleChanged( Object sender, BEventArgs e ) {
+#if JAVA
+#else
             toolTip.Hide( cmenuSinger );
+#endif
         }
 
         private void tsmi_MouseEnter( Object sender, BEventArgs e ) {
-            //toolTip.Hide( cmenuSinger );
             tsmi_MouseHover( sender, e );
         }
 
         private void tsmi_MouseHover( Object sender, BEventArgs e ) {
             try {
-                TagForCMenuSingerDropDown tag = (TagForCMenuSingerDropDown)((ToolStripMenuItem)sender).Tag;
+                TagForCMenuSingerDropDown tag = (TagForCMenuSingerDropDown)((BMenuItem)sender).getTag();
                 String tip = tag.ToolTipText;
                 String singer = tag.SingerName;
 
                 // tooltipを表示するy座標を決める
                 int y = 0;
-                for ( int i = 0; i < cmenuSinger.Items.Count; i++ ) {
-                    TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)cmenuSinger.Items[i].Tag;
+                MenuElement[] sub = cmenuSinger.getSubElements();
+                for ( int i = 0; i < sub.Length; i++ ) {
+                    BMenuItem item = (BMenuItem)sub[i];
+                    TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)item.getTag();
                     String singer2 = tag2.SingerName;
                     if ( singer.Equals( singer2 ) ) {
                         break;
                     }
-                    y += cmenuSinger.Items[i].Height;
+                    y += item.getHeight();
                 }
 
                 int tip_width = tag.ToolTipPxWidth;
-                System.Drawing.Point ppts = cmenuSinger.PointToScreen( new System.Drawing.Point( 0, 0 ) );
-                Point pts = new Point( ppts.X, ppts.Y );
-                System.Drawing.Rectangle rrc = Screen.GetBounds( this );
-                Rectangle rc = new Rectangle( rrc.X, rrc.Y, rrc.Width, rrc.Height );
+                Point ppts = cmenuSinger.pointToScreen( new Point( 0, 0 ) );
+                Point pts = new Point( ppts.x, ppts.y );
+                Rectangle rrc = PortUtil.getScreenBounds( this );
+                Rectangle rc = new Rectangle( rrc.x, rrc.y, rrc.width, rrc.height );
                 toolTip.Tag = singer;
-                if ( pts.x + cmenuSinger.Width + tip_width > rc.width ) {
+                if ( pts.x + cmenuSinger.getWidth() + tip_width > rc.width ) {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( -tip_width, y ), 5000 );
                 } else {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( cmenuSinger.Width, y ), 5000 );
@@ -5362,7 +5375,7 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "    ((ToolStripMenuItem)sender).Tag.GetType()=" + ((ToolStripMenuItem)sender).Tag.GetType() );
 #endif
             if ( sender is ToolStripMenuItem ) {
-                TagForCMenuSinger tag = (TagForCMenuSinger)cmenuSinger.Tag;
+                TagForCMenuSinger tag = (TagForCMenuSinger)cmenuSinger.getTag();
                 TagForCMenuSingerDropDown tag_dditem = (TagForCMenuSingerDropDown)((ToolStripMenuItem)sender).Tag;
                 String singer = tag_dditem.SingerName;
                 VsqID item = null;

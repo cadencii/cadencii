@@ -784,7 +784,8 @@ namespace Boare.Cadencii {
         public static String trimString( String item, Font font, int width ) {
             String edited = item;
             int delete_count = PortUtil.getStringLength( item );
-            while ( true ) {
+            boolean д = true;
+            for(;д;){
                 Dimension measured = Util.measureString( edited, font );
                 if ( measured.width <= width ) {
                     return edited;
@@ -796,6 +797,7 @@ namespace Boare.Cadencii {
                     return edited;
                 }
             }
+            return item;
         }
 
 

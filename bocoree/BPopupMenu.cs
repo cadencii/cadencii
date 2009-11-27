@@ -14,6 +14,7 @@
 #if JAVA
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BPopupMenu.java
 #else
+#define COMPONENT_ENABLE_LOCATION
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -41,6 +42,14 @@ namespace bocoree.windows.forms {
             base.Show( c, x, y );
         }
 
+        public void add( ToolStripItem item ) {
+            base.Items.Add( item );
+        }
+
+        public void removeAll() {
+            base.Items.Clear();
+        }
+
         #region javax.swing.MenuElement
         public MenuElement[] getSubElements() {
             List<MenuElement> list = new List<MenuElement>();
@@ -54,8 +63,83 @@ namespace bocoree.windows.forms {
         #endregion
 
         #region java.awt.Component
+        // root implementation of java.awt.Component is in BForm.cs
+        public void invalidate() {
+            base.Invalidate();
+        }
+
+#if COMPONENT_ENABLE_REPAINT
+        public void repaint() {
+            base.Refresh();
+        }
+#endif
+
+#if COMPONENT_ENABLE_CURSOR
+        public bocoree.java.awt.Cursor getCursor() {
+            System.Windows.Forms.Cursor c = base.Cursor;
+            bocoree.java.awt.Cursor ret = null;
+            if( c.Equals( System.Windows.Forms.Cursors.Arrow ) ){
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ){
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.CROSSHAIR_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ){
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ){
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.HAND_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.TEXT_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanEast ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.E_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanNE ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.NE_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanNorth ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.N_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanNW ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.NW_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanSE ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.SE_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanSouth ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.S_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanSW ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.SW_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanWest ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.W_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.SizeAll ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.MOVE_CURSOR );
+            } else {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.CUSTOM_CURSOR );
+            }
+            ret.cursor = c;
+            return ret;
+        }
+
+        public void setCursor( bocoree.java.awt.Cursor value ) {
+            base.Cursor = value.cursor;
+        }
+#endif
+
+        public bool isVisible() {
+            return base.Visible;
+        }
+
+        public void setVisible( bool value ) {
+            base.Visible = value;
+        }
+
+#if COMPONENT_ENABLE_TOOL_TIP_TEXT
+        public void setToolTipText( string value )
+        {
+            base.ToolTipText = value;
+        }
+
+        public String getToolTipText()
+        {
+            return base.ToolTipText;
+        }
+#endif
+
 #if COMPONENT_PARENT_AS_OWNERITEM
-        public object getParent() {
+        public Object getParent() {
             return base.OwnerItem;
         }
 #else
@@ -73,19 +157,29 @@ namespace bocoree.windows.forms {
         }
 
 #if COMPONENT_ENABLE_LOCATION
-        public bocoree.java.awt.Point getLocation()
-        {
+        public void setBounds( int x, int y, int width, int height ) {
+            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
+        }
+
+        public void setBounds( bocoree.java.awt.Rectangle rc ) {
+            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
+        }
+
+        public bocoree.java.awt.Point getLocationOnScreen() {
+            System.Drawing.Point p = base.PointToScreen( base.Location );
+            return new bocoree.java.awt.Point( p.X, p.Y );
+        }
+
+        public bocoree.java.awt.Point getLocation() {
             System.Drawing.Point loc = this.Location;
             return new bocoree.java.awt.Point( loc.X, loc.Y );
         }
 
-        public void setLocation( int x, int y )
-        {
+        public void setLocation( int x, int y ) {
             base.Location = new System.Drawing.Point( x, y );
         }
 
-        public void setLocation( bocoree.java.awt.Point p )
-        {
+        public void setLocation( bocoree.java.awt.Point p ) {
             base.Location = new System.Drawing.Point( p.x, p.y );
         }
 #endif
@@ -96,15 +190,13 @@ namespace bocoree.windows.forms {
         }
 
 #if COMPONENT_ENABLE_X
-        public int getX()
-        {
+        public int getX() {
             return base.Left;
         }
 #endif
 
 #if COMPONENT_ENABLE_Y
-        public int getY()
-        {
+        public int getY() {
             return base.Top;
         }
 #endif
@@ -145,16 +237,61 @@ namespace bocoree.windows.forms {
             return new bocoree.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public void setFont( bocoree.java.awt.Font font ) {
-            base.Font = font.font;
-        }
-
-        public bool getEnabled() {
+        public bool isEnabled() {
             return base.Enabled;
         }
 
         public void setEnabled( bool value ) {
             base.Enabled = value;
+        }
+
+#if COMPONENT_ENABLE_FOCUS
+        public void requestFocus() {
+            base.Focus();
+        }
+
+        public bool isFocusOwner() {
+            return base.Focused;
+        }
+#endif
+
+        public void setPreferredSize( bocoree.java.awt.Dimension size ) {
+            base.Size = new System.Drawing.Size( size.width, size.height );
+        }
+
+        public bocoree.java.awt.Font getFont() {
+            return new bocoree.java.awt.Font( base.Font );
+        }
+
+        public void setFont( bocoree.java.awt.Font font ) {
+            if ( font == null ) {
+                return;
+            }
+            if ( font.font == null ) {
+                return;
+            }
+            base.Font = font.font;
+        }
+        #endregion
+
+        #region common APIs of org.kbinani.*
+        // root implementation is in BForm.cs
+        public bocoree.java.awt.Point pointToScreen( bocoree.java.awt.Point point_on_client ) {
+            bocoree.java.awt.Point p = getLocationOnScreen();
+            return new bocoree.java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
+        }
+
+        public bocoree.java.awt.Point pointToClient( bocoree.java.awt.Point point_on_screen ) {
+            bocoree.java.awt.Point p = getLocationOnScreen();
+            return new bocoree.java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
+        }
+
+        public object getTag() {
+            return base.Tag;
+        }
+
+        public void setTag( object value ) {
+            base.Tag = value;
         }
         #endregion
     }

@@ -425,7 +425,7 @@ namespace Boare.Cadencii {
             }
 #endif
             try {
-                int panpot = PortUtil.parseInt( txtPanpot.Text );
+                int panpot = PortUtil.parseInt( txtPanpot.getText() );
                 if ( panpot < -64 ) {
                     panpot = -64;
                 }

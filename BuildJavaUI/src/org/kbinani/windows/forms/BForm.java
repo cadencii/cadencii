@@ -128,6 +128,7 @@ public class BForm extends JFrame implements WindowListener, KeyListener{
     public void setDialogResult( BDialogResult value ){
         m_closed = true;
         m_result = value;
+        close();
     }
     
     /* root implementation of java.awt.Component */
