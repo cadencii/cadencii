@@ -14,10 +14,10 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormCurvePointEdit.java
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
-import org.kbinani.windows.forms.*;
 #else
 using System;
 using Boare.Lib.AppUtil;
@@ -276,6 +276,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormCurvePointEdit.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormCurvePointEdit.java
         #endregion
 #else
         #region UI Impl for C#
