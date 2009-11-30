@@ -14,7 +14,7 @@ public class BBackgroundWorker{
         
         public WorkerRunner( BEvent<BDoWorkEventHandler> delegate, Object argument ){
             m_delegate = delegate;
-            BDoWorkEventArgs m_arg = new BDoWorkEventArgs( argument );
+            m_arg = new BDoWorkEventArgs( argument );
         }
 
         public void run(){

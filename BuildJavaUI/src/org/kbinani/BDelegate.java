@@ -19,6 +19,27 @@ public class BDelegate{
     Method m_method = null;
     Object m_invoker = null;
     
+    /**
+     * このデリゲートが，指定されたアイテムと同じであればtrueを返します．
+     * このデリゲートが表すメソッドの引数・戻り値の型と，デリゲートの発動元のオブジェクトが全て等しい場合に，デリゲートが同じであると判定されます．
+     */
+    public boolean equals( Object item ){
+        if( item == null ){
+            return false;
+        }
+        if( !(item instanceof BDelegate) ){
+            return false;
+        }
+        BDelegate casted = (BDelegate)item;
+        if( !m_method.equals( casted.m_method ) ){
+            return false;
+        }
+        if( m_invoker != casted.m_invoker ){
+            return false;
+        }
+        return true;
+    }
+    
     public BDelegate( Class<?> invoker, String method_name, Class<?> return_type, Class<?>... argument_type )
         throws Exception
     {

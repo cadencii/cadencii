@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+//INCLUDE-SECTION INCLUDE ..\BuildJavaUI\src\FormNoteProperty.java
 #else
 using System;
 using Boare.Lib.AppUtil;
@@ -65,6 +66,10 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
+        #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormNoteProperty.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormNoteProperty.java
+        #endregion
 #else
         #region UI Impl for C#
         /// <summary>
