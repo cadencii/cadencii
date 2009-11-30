@@ -17,6 +17,7 @@ import org.kbinani.windows.forms.BTextBox;
 //SECTION-END-IMPORT
 public class FormVibratoConfig extends BForm {
     //SECTION-BEGIN-FIELD
+    
 	private static final long serialVersionUID = 1L;
 	private BPanel jContentPane = null;
 	private BPanel jPanel2 = null;

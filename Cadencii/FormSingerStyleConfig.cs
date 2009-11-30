@@ -14,9 +14,9 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormSingerStyleConfig.java
 #else
 using System;
-//using System.Drawing;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree;
@@ -298,6 +298,10 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
+        #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormSingerStyleConfig.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormSingerStyleConfig.java
+        #endregion
 #else
         #region UI Impl for C#
         /// <summary>

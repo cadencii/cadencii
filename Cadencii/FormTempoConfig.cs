@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormTempoConfig.java
 #else
 using System;
 using Boare.Lib.AppUtil;
@@ -89,6 +90,10 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
+        #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormTempoConfig.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormTempoConfig.java
+        #endregion
 #else
         #region UI Impl for C#
         /// <summary>

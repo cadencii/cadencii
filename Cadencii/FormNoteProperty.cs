@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION INCLUDE ..\BuildJavaUI\src\FormNoteProperty.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormNoteProperty.java
 #else
 using System;
 using Boare.Lib.AppUtil;

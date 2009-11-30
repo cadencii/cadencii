@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\VersionInfo.java
 import java.awt.*;
 import java.awt.image.*;
 import org.kbinani.*;
@@ -350,6 +351,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\VersionInfo.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\VersionInfo.java
         #endregion
 #else
         #region UI Impl for C#
@@ -376,13 +379,12 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-            this.btnFlip = new BButton();
-            this.btnOK = new BButton();
-            this.btnSaveAuthorList = new BButton();
-            this.lblVstLogo = new BLabel();
-            this.pictVstLogo = new BPictureBox();
-            this.lblStraightAcknowledgement = new BLabel();
+            this.btnFlip = new bocoree.windows.forms.BButton();
+            this.btnOK = new bocoree.windows.forms.BButton();
+            this.btnSaveAuthorList = new bocoree.windows.forms.BButton();
+            this.lblVstLogo = new bocoree.windows.forms.BLabel();
+            this.pictVstLogo = new bocoree.windows.forms.BPictureBox();
+            this.lblStraightAcknowledgement = new bocoree.windows.forms.BLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -450,7 +452,7 @@ namespace Boare.Cadencii {
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size( 300, 423 );
+            this.ClientSize = new System.Drawing.Size( 300, 419 );
             this.Controls.Add( this.pictVstLogo );
             this.Controls.Add( this.lblStraightAcknowledgement );
             this.Controls.Add( this.lblVstLogo );

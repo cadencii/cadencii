@@ -22,7 +22,8 @@ import org.kbinani.windows.forms.BTextBox;
 //SECTION-END-IMPORT
 public class Preference extends JFrame {
     //SECTION-BEGIN-FIELD
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 	private BPanel tabSequence = null;
 	private BLabel lblResolution = null;
 	private BPanel BPanel = null;

@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormRealtimeConfig.java
 #else
 using System;
 using System.Windows.Forms;
@@ -141,6 +142,10 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
+        #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormRealtimeConfig.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormRealtimeConfig.java
+        #endregion
 #else
         #region UI Impl for C#
         /// <summary>

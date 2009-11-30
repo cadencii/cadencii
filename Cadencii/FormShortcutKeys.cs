@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormShortcutKeys.java
 #else
 using System;
 using System.Drawing;
@@ -330,6 +331,10 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
+        #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormShortcutKeys.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormShortcutKeys.java
+        #endregion
 #else
         #region UI Impl for C#
         /// <summary>
