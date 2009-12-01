@@ -11,7 +11,8 @@ import org.kbinani.windows.forms.BTextBox;
 //SECTION-END-IMPORT
 public class FormDeleteBar extends BForm {
     //SECTION-BEGIN-FIELD
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BLabel lblStart = null;
 	private BTextBox numStart = null;
@@ -31,8 +32,8 @@ public class FormDeleteBar extends BForm {
 		super();
 		initialize();
 	}
-
 	//SECTION-BEGIN-METHOD
+
 	/**
 	 * This method initializes this
 	 * 

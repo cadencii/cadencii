@@ -12,6 +12,7 @@ import org.kbinani.windows.forms.BTextArea;
 //SECTION-END-IMPORT
 public class FormImportLyric extends BForm {
     //SECTION-BEGIN-FIELD
+
     private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;
     private BLabel lblNotes = null;
@@ -30,8 +31,8 @@ public class FormImportLyric extends BForm {
     	super();
     	initialize();
     }
-    
     //SECTION-BEGIN-METHOD
+
     /**
      * This method initializes this
      * 

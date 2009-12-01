@@ -11,7 +11,8 @@ import org.kbinani.windows.forms.BTextArea;
 //SECTION-END-IMPORT
 public class FormCompileResult extends BForm {
     //SECTION-BEGIN-FIELD
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BLabel label1 = null;
 	private BTextArea textBox1 = null;
@@ -25,8 +26,8 @@ public class FormCompileResult extends BForm {
 		super();
 		initialize();
 	}
-
 	//SECTION-BEGIN-METHOD
+
 	/**
 	 * This method initializes this
 	 * 

@@ -12,10 +12,10 @@ import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
-
 public class FormBezierPointEdit extends BForm {
     //SECTION-BEGIN-FIELD
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BButton btnBackward = null;
 	private BCheckBox chkEnableSmooth = null;
@@ -52,8 +52,8 @@ public class FormBezierPointEdit extends BForm {
 		super();
 		initialize();
 	}
-
 	//SECTION-BEGIN-METHOD
+
 	/**
 	 * This method initializes this
 	 * 
