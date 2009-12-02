@@ -1076,6 +1076,10 @@ namespace Boare.Cadencii {
             columnWidthHeaderPath = listSingers.getColumnWidth( 2 );
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
             this.btnChangeScreenFont.Click += new System.EventHandler( this.btnChangeScreenFont_Click );
             this.btnChangeMenuFont.Click += new System.EventHandler( this.btnChangeMenuFont_Click );
@@ -1090,6 +1094,7 @@ namespace Boare.Cadencii {
             this.chkAutoBackup.CheckedChanged += new System.EventHandler( this.chkAutoBackup_CheckedChanged );
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             this.FormClosing += new FormClosingEventHandler( Preference_FormClosing );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

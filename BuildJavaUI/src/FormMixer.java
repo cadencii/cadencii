@@ -10,7 +10,8 @@ import org.kbinani.windows.forms.BPanel;
 //SECTION-END-IMPORT
 public class FormMixer extends BForm {
     //SECTION-BEGIN-FIELD
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BPanel panel1 = null;
 	private BHScrollBar hScroll = null;
@@ -25,8 +26,8 @@ public class FormMixer extends BForm {
 		super();
 		initialize();
 	}
-
 	//SECTION-BEGIN-METHOD
+
 	/**
 	 * This method initializes this
 	 * 

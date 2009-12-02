@@ -130,6 +130,7 @@ namespace Boare.EditOtoIni {
 
         public FormUtauVoiceConfig() {
 #if JAVA
+            super();
             initialize();
 #else
             InitializeComponent();

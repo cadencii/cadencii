@@ -88,8 +88,13 @@ namespace Boare.Cadencii {
             setDialogResult( BDialogResult.OK );
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

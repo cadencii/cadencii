@@ -12,16 +12,30 @@ public class BNumericUpDown extends JPanel{
     private JTextField txtValue = null;
 	private JButton btnUp = null;
 	private JButton btnDown = null;
-	private int value = 0;
-	private int maximum = 100;
-	private int minimum = 0;
-	private int increment = 1;
+	private float value = 0;
+	private float maximum = 100;
+	private float minimum = 0;
+	private float increment = 1;
+	private int decimalPlaces = 0;
+	private float minimumStep = 1;
 
-	public int getIncrement(){
+	public int getDecimalPlaces(){
+	    return decimalPlaces;
+	}
+	
+	public void setDecimalPlaces( int value ){
+	    decimalPlaces = value;
+	    minimumStep = (float)Math.pow( 0.1, value );
+	    if( increment < minimumStep ){
+	        increment = minimumStep;
+	    }
+	}
+	
+	public float getIncrement(){
 	    return increment;
 	}
 	
-	public void setIncrement( int value ){
+	public void setIncrement( float value ){
 	    increment = value;
 	}
 	
@@ -29,22 +43,22 @@ public class BNumericUpDown extends JPanel{
 	    getTxtValue().setText( value + "" );
 	}
 	
-	public int getValue(){
+	public float getValue(){
 	    return value;
 	}
 	
-	public void setValue( int value ){
+	public void setValue( float value ){
 	    if( minimum <= value && value <= maximum ){
 	        this.value = value; 
 	        update();
 	    }
 	}
 	
-	public int getMaximum() {
+	public float getMaximum() {
         return maximum;
     }
 
-    public void setMaximum(int maximum) {
+    public void setMaximum( float maximum ){
         if( maximum < value ){
             value = maximum;
             update();
@@ -52,11 +66,11 @@ public class BNumericUpDown extends JPanel{
         this.maximum = maximum;
     }
 
-    public int getMinimum() {
+    public float getMinimum() {
         return minimum;
     }
 
-    public void setMinimum(int minimum) {
+    public void setMinimum( float minimum ){
         if( value < minimum ){
             value = minimum;
             update();

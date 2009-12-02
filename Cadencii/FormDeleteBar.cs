@@ -32,6 +32,7 @@ namespace Boare.Cadencii {
 #endif
         public FormDeleteBar( int max_barcount ) {
 #if JAVA
+            super();
             initialize();
 #else
             InitializeComponent();
@@ -57,7 +58,7 @@ namespace Boare.Cadencii {
         }
 
         public int getStart() {
-            return numStart.getValue();
+            return (int)numStart.getValue();
         }
 
         public void setStart( int value ) {
@@ -65,7 +66,7 @@ namespace Boare.Cadencii {
         }
 
         public int getEnd() {
-            return numEnd.getValue();
+            return (int)numEnd.getValue();
         }
 
         public void setEnd( int value ) {
@@ -76,11 +77,17 @@ namespace Boare.Cadencii {
             setDialogResult( BDialogResult.OK );
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
 #if JAVA
             this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
 #else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 

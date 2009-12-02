@@ -15,6 +15,10 @@
 package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormNoteProperty.java
+
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using Boare.Lib.AppUtil;
@@ -23,6 +27,7 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA
@@ -31,7 +36,12 @@ namespace Boare.Cadencii {
     public class FormNoteProperty : BForm {
 #endif
         public FormNoteProperty() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             ApplyLanguage();
@@ -54,7 +64,7 @@ namespace Boare.Cadencii {
             menuClose.setAccelerator( PortUtil.getKeyStrokeFromBKeys( value ) );
         }
 
-        private void menuClose_Click( object sender, EventArgs e ) {
+        private void menuClose_Click( Object sender, BEventArgs e ) {
             close();
         }
 

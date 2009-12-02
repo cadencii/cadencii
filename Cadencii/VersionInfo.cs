@@ -64,18 +64,21 @@ namespace Boare.Cadencii {
         private BTimer timer;
 
         public VersionInfo( String app_name, String version ) {
-            m_version = version;
-            m_app_name = app_name;
-            InitializeComponent();
 #if JAVA
+            super();
+            initialize();
             timer = new BTimer();
 #else
+            InitializeComponent();
             timer = new BTimer( this.components );
 #endif
             timer.setDelay( 30 );
             registerEventHandlers();
             setResources();
             ApplyLanguage();
+
+            m_version = version;
+            m_app_name = app_name;
 
 #if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );

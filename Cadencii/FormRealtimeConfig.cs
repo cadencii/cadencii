@@ -15,12 +15,16 @@
 package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormRealtimeConfig.java
+
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
-using System.Windows.Forms;
+using bocoree;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
+    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif
 
@@ -30,11 +34,16 @@ namespace Boare.Cadencii {
     public class FormRealtimeConfig : BForm {
 #endif
         private boolean m_game_ctrl_enabled = false;
-        private DateTime m_last_event_processed;
+        private double m_last_event_processed;
         private BTimer timer;
 
         public FormRealtimeConfig() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             timer = new BTimer( this.components );
             timer.setDelay( 10 );
             registerEventHandlers();
@@ -46,7 +55,7 @@ namespace Boare.Cadencii {
             return (float)numSpeed.getValue();
         }
 
-        private void FormRealtimeConfig_Load( object sender, EventArgs e ) {
+        private void FormRealtimeConfig_Load( Object sender, BEventArgs e ) {
             int num_joydev = winmmhelp.JoyGetNumJoyDev();
             m_game_ctrl_enabled = (num_joydev > 0);
             if ( m_game_ctrl_enabled ) {
@@ -54,10 +63,11 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void timer_Tick( object sender, EventArgs e ) {
+        private void timer_Tick( Object sender, BEventArgs e ) {
+#if !JAVA
             try {
-                DateTime now = DateTime.Now;
-                double dt_ms = now.Subtract( m_last_event_processed ).TotalMilliseconds;
+                double now = PortUtil.getCurrentTime();
+                double dt_ms = (now - m_last_event_processed) * 1000.0;
                 //JoystickState state = m_game_ctrl.CurrentJoystickState;
                 int len = winmmhelp.JoyGetNumButtons( 0 );
                 byte[] buttons = new byte[len];
@@ -123,19 +133,25 @@ namespace Boare.Cadencii {
                         }
                     }
                 }
-            } catch {
+            } catch ( Exception ex ) {
             }
+#endif
         }
 
-        private void btnStart_Click( object sender, EventArgs e ) {
+        private void btnStart_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
             close();
+        }
+
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
         }
 
         private void registerEventHandlers() {
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
             this.btnStart.Click += new System.EventHandler( this.btnStart_Click );
             this.Load += new System.EventHandler( this.FormRealtimeConfig_Load );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

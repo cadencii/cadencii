@@ -15,9 +15,14 @@
 package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormWordDictionary.java
+
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
@@ -35,7 +40,12 @@ namespace Boare.Cadencii {
     class FormWordDictionary : BForm {
 #endif
         public FormWordDictionary() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             ApplyLanguage();
@@ -75,11 +85,11 @@ namespace Boare.Cadencii {
             return ret;
         }
 
-        private void btnOK_Click( object sender, EventArgs e ) {
-            DialogResult = DialogResult.OK;
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
         }
 
-        private void btnUp_Click( object sender, EventArgs e ) {
+        private void btnUp_Click( Object sender, BEventArgs e ) {
             int index = listDictionaries.getSelectedIndex( "" );
             if ( index >= 1 ) {
                 listDictionaries.clearSelection( "" );
@@ -93,7 +103,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void btnDown_Click( object sender, EventArgs e ) {
+        private void btnDown_Click( Object sender, BEventArgs e ) {
             int index = listDictionaries.getSelectedIndex( "" );
             if ( index + 1 < listDictionaries.getItemCount( "" ) ) {
                 try {
@@ -113,11 +123,16 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             this.btnUp.Click += new System.EventHandler( this.btnUp_Click );
             this.btnDown.Click += new System.EventHandler( this.btnDown_Click );
             this.Load += new System.EventHandler( this.FormWordDictionary_Load );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

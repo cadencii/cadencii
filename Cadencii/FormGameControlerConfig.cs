@@ -17,6 +17,7 @@ package org.kbinani.Cadencii;
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormGameControlerConfig.java
 import java.util.*;
 import org.kbinani.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using Boare.Lib.AppUtil;
@@ -261,6 +262,15 @@ namespace Boare.Cadencii {
             m_povs.set( 1, 27000 ); // left
             m_povs.set( 2, 0 ); // up
             m_povs.set( 3, 9000 ); // right
+            setDialogResult( BDialogResult.OK );
+        }
+
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
         }
 
         private void registerEventHandlers() {
@@ -268,10 +278,14 @@ namespace Boare.Cadencii {
             this.timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
             this.btnSkip.clickEvent.add( new BEventHandler( this, "btnSkip_Click" ) );
             this.btnReset.clickEvent.add( new BEventHandler( this, "btnReset_Click" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
 #else
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
             this.btnSkip.Click += new System.EventHandler( this.btnSkip_Click );
             this.btnReset.Click += new System.EventHandler( this.btnReset_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 

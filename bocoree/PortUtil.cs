@@ -211,6 +211,10 @@ namespace bocoree {
         private PortUtil() {
         }
 
+        /// <summary>
+        /// 単位は秒
+        /// </summary>
+        /// <returns></returns>
         public static double getCurrentTime() {
 #if JAVA
             return new Date().getTime();

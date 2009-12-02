@@ -14,35 +14,15 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-import org.kbinani.*;
+import org.kbinani.BEventHandler;
 
-public class TopMostChangedEventHandler implements IEventHandler{
-    private BDelegate m_delegate = null;
-    private Object m_sender = null;
-
+public class TopMostChangedEventHandler extends BEventHandler{
     public TopMostChangedEventHandler( Object sender, String method_name ){
-        m_sender = sender;
-        try{
-            m_delegate = new BDelegate( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-        }catch( Exception ex ){
-            System.out.println( "TopMostChangedEventHandler#.ctor; ex=" + ex );
-        }
+        super( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
     }
-
-    public TopMostChangedEventHandler( Class sender, String method_name ){
-        try{
-            m_delegate = new BDelegate( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-        }catch( Exception ex ){
-            System.out.println( "TopMostChangedEventHandler#.ctor; ex=" + ex );
-        }
-    }
-
-    public void invoke( Object... arguments ){
-        try{
-            m_delegate.invoke( m_sender, arguments );
-        }catch( Exception ex ){
-            System.out.println( "TopMostChangedEventHandler#invoke; ex=" + ex );
-        }
+    
+    public TopMostChangedEventHandler( Class<?> sender, String method_name ){
+        super( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
     }
 }
 #else

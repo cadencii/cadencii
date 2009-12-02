@@ -71,15 +71,18 @@ namespace Boare.Cadencii {
                                int clock_end,
                                int temp_premeasure,
                                boolean reflect_amp_to_wave ) {
+#if JAVA
+            super();
+#endif
             m_vsq = vsq;
             m_presend = presend;
             m_tracks = new int[] { track };
             m_files = new String[] { file };
-            InitializeComponent();
-
 #if JAVA
+            initialize();
             timer = new BTimer();
 #else
+            InitializeComponent();
             timer = new BTimer( this.components );
 #endif
             timer.setDelay( 1000 );
@@ -97,14 +100,18 @@ namespace Boare.Cadencii {
         }
 
         public FormSynthesize( VsqFileEx vsq, int presend, int[] tracks, String[] files, int end, boolean reflect_amp_to_wave ) {
+#if JAVA
+            super();
+#endif
             m_vsq = vsq;
             m_presend = presend;
             m_tracks = tracks;
             m_files = files;
-            InitializeComponent();
 #if JAVA
+            initialize();
             timer = new BTimer();
 #else
+            InitializeComponent();
             timer = new BTimer( this.components );
 #endif
             timer.setDelay( 1000 );
@@ -311,12 +318,17 @@ namespace Boare.Cadencii {
             return ret + PortUtil.formatDecimal( added ? "00" : "0", span ) + _( "sec" );
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
             this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
             this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
             this.Load += new System.EventHandler( this.FormSynthesize_Load );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormSynthesize_FormClosing );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

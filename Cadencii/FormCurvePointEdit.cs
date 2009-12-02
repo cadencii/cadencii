@@ -18,6 +18,7 @@ package org.kbinani.Cadencii;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using Boare.Lib.AppUtil;
@@ -38,12 +39,15 @@ namespace Boare.Cadencii {
 #endif
         long m_editing_id = -1;
         CurveType m_curve;
-        private BButton btnUndo;
-        private BButton btnRedo;
         boolean m_changed = false;
 
         public FormCurvePointEdit( long editing_id, CurveType curve ) {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             applyLanguage();
@@ -239,6 +243,10 @@ namespace Boare.Cadencii {
             btnRedo.setEnabled( AppManager.isRedoAvailable() );
         }
 
+        private void btnExit_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void setResources() {
         }
 
@@ -271,6 +279,7 @@ namespace Boare.Cadencii {
             this.btnForward3.Click += new System.EventHandler( this.commonButton_Click );
             this.btnUndo.Click += new System.EventHandler( this.handleUndoRedo_Click );
             this.btnRedo.Click += new System.EventHandler( this.handleUndoRedo_Click );
+            btnExit.Click += new EventHandler( btnExit_Click );
 #endif
         }
 
@@ -494,6 +503,8 @@ namespace Boare.Cadencii {
         private BButton btnApply;
         private BButton btnBackward3;
         private BButton btnForward3;
+        private BButton btnUndo;
+        private BButton btnRedo;
         #endregion
 #endif
     }

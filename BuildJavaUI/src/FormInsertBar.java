@@ -12,6 +12,7 @@ import org.kbinani.windows.forms.BNumericUpDown;
 //SECTION-END-IMPORT
 public class FormInsertBar extends BForm {
     //SECTION-BEGIN-FIELD
+
     private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;
     private BLabel lblPosition = null;
@@ -33,8 +34,8 @@ public class FormInsertBar extends BForm {
         super();
         initialize();
     }
-
     //SECTION-BEGIN-METHOD
+
     /**
      * This method initializes this
      * 

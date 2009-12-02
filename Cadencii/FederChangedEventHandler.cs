@@ -1,36 +1,28 @@
-﻿#if JAVA
+﻿/*
+ * FederChangedEventHandler.cs
+ * Copyright (c) 2009 kbinani
+ *
+ * This file is part of Boare.Cadencii.
+ *
+ * Boare.Cadencii is free software; you can redistribute it and/or
+ * modify it under the terms of the GPLv3 License.
+ *
+ * Boare.Cadencii is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+#if JAVA
 package org.kbinani.Cadencii;
 
-import java.lang.reflect.*;
-import org.kbinani.*;
+import org.kbinani.BEventHandler;
 
-public class FederChangedEventHandler implements IEventHandler{
-    private BDelegate m_delegate = null;
-    private Object m_invoker = null;
-
-    public FederChangedEventHandler( Object invoker, String method_name ){
-        m_invoker = invoker;
-        try{
-            m_delegate = new BDelegate( m_invoker, method_name, Void.TYPE, Integer.TYPE, Integer.TYPE );
-        }catch( Exception ex ){
-            System.out.println( "FederChangedEventHandler#.ctor; ex=" + ex );
-        }
+public class FederChangedEventHandler extends BEventHandler{
+    public FederChangedEventHandler( Object sender, String method_name ){
+        super( sender, method_name, Void.TYPE, Integer.TYPE, Integer.TYPE );
     }
-
-    public FederChangedEventHandler( Class invoker, String method_name ){
-        try{
-            m_delegate = new BDelegate( invoker, method_name, Void.TYPE, Integer.TYPE, Integer.TYPE );
-        }catch( Exception ex ){
-            System.out.println( "FederChangedEventHandler#.ctor; ex=" + ex );
-        }
-    }
-
-    public void invoke( Object... arguments ){
-        try{
-            m_delegate.invoke( m_invoker, arguments );
-        }catch( Exception ex ){
-            System.out.println( "FederChangedEventHandler#invoke; ex=" + ex );
-        }
+    
+    public FederChangedEventHandler( Class<?> sender, String method_name ){
+        super( sender, method_name, Void.TYPE, Integer.TYPE, Integer.TYPE );
     }
 }
 #else

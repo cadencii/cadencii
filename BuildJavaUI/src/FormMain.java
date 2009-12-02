@@ -24,10 +24,10 @@ import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BVScrollBar;
 
 //SECTION-END-IMPORT
-
 public class FormMain extends BForm {
     //SECTION-BEGIN-FIELD
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="10,55"
     private BMenuBar jBMenuBar = null;
     private BMenu menuFile = null;
@@ -301,8 +301,8 @@ public class FormMain extends BForm {
         super();
         initialize();
     }
-
     //SECTION-BEGIN-METHOD
+
     /**
      * This method initializes this
      * 

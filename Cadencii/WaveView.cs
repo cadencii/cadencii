@@ -15,6 +15,12 @@
 package org.kbinani.Cadencii;
 
 import org.kbinani.windows.forms.*;
+
+import java.awt.*;
+import java.awt.image.*;
+import org.kbinani.*;
+import org.kbinani.media.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;

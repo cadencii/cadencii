@@ -28,6 +28,7 @@ using bocoree.componentModel;
 namespace Boare.EditOtoIni {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
+    using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
 #endif
 
 #if JAVA
@@ -74,12 +75,7 @@ namespace Boare.EditOtoIni {
             return Boare.Lib.AppUtil.Messaging.getMessage( id );
         }
 
-#if JAVA
-        private void bgWork_DoWork( Object sender, BDoWorkEventArgs e )
-#else
-        private void bgWork_DoWork( Object sender, DoWorkEventArgs e )
-#endif
- {
+        private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ){
 #if DEBUG
             Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; m_oto_ini=" + m_oto_ini );
 #endif
@@ -339,6 +335,12 @@ namespace Boare.EditOtoIni {
 
         private void btnCancel_Click( Object sender, BEventArgs e ) {
             m_abort_required = true;
+            if ( bgWork.IsBusy ) {
+                while ( bgWork.IsBusy ) {
+                    Application.DoEvents();
+                }
+            }
+            setDialogResult( BDialogResult.CANCEL );
         }
 
 #if JAVA
@@ -346,7 +348,7 @@ namespace Boare.EditOtoIni {
 #else
         private void bgWork_RunWorkerCompleted( Object sender, RunWorkerCompletedEventArgs e )
 #endif
- {
+        {
             this.Close();
         }
 
@@ -376,6 +378,18 @@ namespace Boare.EditOtoIni {
             }
             return ret + PortUtil.formatDecimal( added ? "00" : "0", span ) + _( "sec" );
         }
+
+        private void registerEventHandlers() {
+            this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
+            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
+            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
+            this.bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
+            this.Load += new System.EventHandler( this.FormGenerateStf_Load );
+        }
+
+        private void setResources() {
+        }
+
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormGenerateStf.java
@@ -441,14 +455,10 @@ namespace Boare.EditOtoIni {
             this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
             // 
             // bgWork
             // 
             this.bgWork.WorkerReportsProgress = true;
-            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
-            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
-            this.bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
             // 
             // lblTime
             // 
@@ -477,7 +487,6 @@ namespace Boare.EditOtoIni {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FormGenerateStf";
-            this.Load += new System.EventHandler( this.FormGenerateStf_Load );
             this.ResumeLayout( false );
             this.PerformLayout();
 

@@ -24,6 +24,7 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA
@@ -34,7 +35,12 @@ namespace Boare.Cadencii {
         private int m_master_tuning;
 
         public FormTrackProperty( int master_tuning_in_cent ) {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             ApplyLanguage();
@@ -58,7 +64,7 @@ namespace Boare.Cadencii {
             return m_master_tuning;
         }
 
-        private void txtMasterTuning_TextChanged( object sender, EventArgs e ) {
+        private void txtMasterTuning_TextChanged( Object sender, BEventArgs e ) {
             int v = m_master_tuning;
             try {
                 v = PortUtil.parseInt( txtMasterTuning.getText() );
@@ -67,8 +73,18 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
+        }
+
         private void registerEventHandlers() {
             this.txtMasterTuning.TextChanged += new System.EventHandler( this.txtMasterTuning_TextChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

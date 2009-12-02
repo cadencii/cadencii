@@ -16,11 +16,13 @@ package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormMain.java
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.componentModel.*;
+import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
@@ -3270,8 +3272,8 @@ namespace Boare.Cadencii {
             } else {
                 AppManager.lastTrackSelectorHeight = splitContainer1.Height - splitContainer1.getDividerLocation() - splitContainer1.getDividerSize();
                 splitContainer1.setSplitterFixed( true );
-                splitContainer1.Panel2MinSize = _SPL1_PANEL2_MIN_HEIGHT;
                 splitContainer1.setDividerLocation( splitContainer1.Height - _SPL1_PANEL2_MIN_HEIGHT - splitContainer1.getDividerSize() );
+                splitContainer1.Panel2MinSize = _SPL1_PANEL2_MIN_HEIGHT;
             }
             refreshScreen();
         }
@@ -6094,7 +6096,7 @@ namespace Boare.Cadencii {
                     int clocks_in_beat = clocks_in_bar - (beat_in_bar - 1) * clock_per_beat;
                     FormTempoConfig dlg = null;
                     try {
-                        dlg = new FormTempoConfig( bar_count, beat_in_bar, timesig.numerator, clocks_in_beat, clock_per_beat, (decimal)(6e7 / tte.Tempo), AppManager.getVsqFile().getPreMeasure() );
+                        dlg = new FormTempoConfig( bar_count, beat_in_bar, timesig.numerator, clocks_in_beat, clock_per_beat, (float)(6e7 / tte.Tempo), AppManager.getVsqFile().getPreMeasure() );
                         dlg.setLocation( getFormPreferedLocation( dlg ) );
                         if ( dlg.showDialog() == BDialogResult.OK ) {
                             int new_beat = dlg.getBeatCount();
@@ -6494,7 +6496,7 @@ namespace Boare.Cadencii {
                                                                    local_numerator,
                                                                    clocks_in_beat,
                                                                    clock_per_beat,
-                                                                   (decimal)(6e7 / changing_tempo),
+                                                                   (float)(6e7 / changing_tempo),
                                                                    AppManager.getVsqFile().getPreMeasure() );
                                         dlg.setLocation( getFormPreferedLocation( dlg ) );
                                         if ( dlg.showDialog() == BDialogResult.OK ) {

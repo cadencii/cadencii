@@ -15,9 +15,14 @@
 package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormVibratoConfig.java
+
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
@@ -25,8 +30,8 @@ using bocoree.java.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -189,11 +194,17 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
 #if JAVA
             btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
 #else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 

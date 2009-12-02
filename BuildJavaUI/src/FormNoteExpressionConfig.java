@@ -17,7 +17,8 @@ import org.kbinani.windows.forms.BTextBox;
 //SECTION-END-IMPORT
 public class FormNoteExpressionConfig extends BForm {
     //SECTION-BEGIN-FIELD
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BPanel panelVocaloid2Template = null;
 	private BLabel lblTemplate = null;
@@ -69,8 +70,8 @@ public class FormNoteExpressionConfig extends BForm {
 		super();
 		initialize();
 	}
-
 	//SECTION-BEGIN-METHOD
+
 	/**
 	 * This method initializes this
 	 * 

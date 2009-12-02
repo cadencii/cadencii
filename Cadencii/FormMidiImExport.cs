@@ -221,6 +221,14 @@ namespace Boare.Cadencii {
             columnWidthNotes = listTrack.getColumnWidth( 2 );
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
+        }
+
         private void registerEventHandlers() {
 #if JAVA
             this.btnCheckAll.clickEvent.add( new BEventHandler( this, "btnCheckAll_Click" ) );
@@ -235,6 +243,8 @@ namespace Boare.Cadencii {
             this.chkMetaText.Click += new System.EventHandler( this.chkMetaText_Click );
             this.chkExportVocaloidNrpn.CheckedChanged += new System.EventHandler( this.chkExportVocaloidNrpn_CheckedChanged );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 

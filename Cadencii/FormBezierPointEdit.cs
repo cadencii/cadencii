@@ -56,6 +56,7 @@ namespace Boare.Cadencii {
                                     int selected_chain_id,
                                     int selected_point_id ) {
 #if JAVA
+            super();
             initialize();
 #else
             InitializeComponent();
@@ -147,6 +148,7 @@ namespace Boare.Cadencii {
                 setDialogResult( BDialogResult.OK );
             } catch ( Exception ex ) {
                 AppManager.showMessageBox( _( "Integer format error" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_ERROR_MESSAGE );
+                setDialogResult( BDialogResult.CANCEL );
             }
         }
 
@@ -295,6 +297,10 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
 #if JAVA
             this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
@@ -312,6 +318,7 @@ namespace Boare.Cadencii {
             this.btnForward.Click += new System.EventHandler( this.btnForward_Click );
 #else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            this.btnCancel.Click += new EventHandler( btnCancel_Click );
             this.chkEnableSmooth.CheckedChanged += new System.EventHandler( this.chkEnableSmooth_CheckedChanged );
             this.btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
             this.btnLeft.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );

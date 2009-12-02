@@ -14,48 +14,15 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-import org.kbinani.*;
+import org.kbinani.BEventHandler;
 
-public class SelectedEventChangedEventHandler implements IEventHandler
-{
-    private BDelegate m_delegate = null;
-    private Object m_sender = null;
-
-    public SelectedEventChangedEventHandler( Object sender, String method_name )
-    {
-        m_sender = sender;
-        try
-        {
-            m_delegate = new BDelegate( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-        }
-        catch( Exception ex )
-        {
-            System.out.println( "SelectedEventChangedEventHandler#.ctor; ex=" + ex );
-        }
+public class SelectedEventChangedEventHandler extends BEventHandler{
+    public SelectedEventChangedEventHandler( Object sender, String method_name ){
+        super( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
     }
-
-    public SelectedEventChangedEventHandler( Class sender, String method_name )
-    {
-        try
-        {
-            m_delegate = new BDelegate( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-        }
-        catch( Exception ex )
-        {
-            System.out.println( "SelectedEventChangedEventHandler#.ctor; ex=" + ex );
-        }
-    }
-
-    public void invoke( Object... arguments )
-    {
-        try
-        {
-            m_delegate.invoke( m_sender, arguments );
-        }
-        catch( Exception ex )
-        {
-            System.out.println( "SelectedEventChangedEventHandler#invoke; ex=" + ex );
-        }
+    
+    public SelectedEventChangedEventHandler( Class<?> sender, String method_name ){
+        super( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
     }
 }
 #else

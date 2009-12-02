@@ -27,6 +27,7 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA
@@ -47,7 +48,12 @@ namespace Boare.Cadencii {
         private boolean m_metronome_enabled_init_stat;
 
         public FormMidiConfig() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             ApplyLanguage();
@@ -188,6 +194,14 @@ namespace Boare.Cadencii {
             AppManager.editorConfig.MetronomeEnabled = m_metronome_enabled_init_stat;
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
+        }
+
         private void registerEventHandlers() {
             this.chkRingBell.CheckedChanged += new System.EventHandler( this.chkRingBell_CheckedChanged );
             this.chkPreview.CheckedChanged += new System.EventHandler( this.chkPreview_CheckedChanged );
@@ -199,6 +213,8 @@ namespace Boare.Cadencii {
             this.numProgramBell.ValueChanged += new System.EventHandler( this.numProgramBell_ValueChanged );
             this.numProgramNormal.ValueChanged += new System.EventHandler( this.numProgramNormal_ValueChanged );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMidiConfig_FormClosing );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

@@ -15,6 +15,10 @@
 package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormTempoConfig.java
+
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using Boare.Lib.AppUtil;
@@ -22,6 +26,7 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA
@@ -29,22 +34,27 @@ namespace Boare.Cadencii {
 #else
     class FormTempoConfig : BForm {
 #endif
-        public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, decimal tempo, int pre_measure ) {
+        public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, float tempo, int pre_measure ) {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             ApplyLanguage();
-            numBar.Minimum = -pre_measure + 1;
-            numBar.Maximum = decimal.MaxValue;
-            numBar.Value = bar_count;
+            numBar.setMinimum( -pre_measure + 1 );
+            numBar.setMaximum( 100000 );
+            numBar.setValue( bar_count );
 
-            numBeat.Minimum = 1;
-            numBeat.Maximum = beat_max;
-            numBeat.Value = beat;
-            numClock.Minimum = 0;
-            numClock.Maximum = clock_max;
-            numClock.Value = clock;
-            numTempo.Value = tempo;
+            numBeat.setMinimum( 1 );
+            numBeat.setMaximum( beat_max );
+            numBeat.setValue( beat );
+            numClock.setMinimum( 0 );
+            numClock.setMaximum( clock_max );
+            numClock.setValue( clock );
+            numTempo.setValue( tempo );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -75,14 +85,19 @@ namespace Boare.Cadencii {
             return numTempo.Value;
         }
 
-        private void btnOK_Click( object sender, EventArgs e ) {
+        private void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
+        }
+
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
         }
 
         private void registerEventHandlers() {
 #if JAVA
 #else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 

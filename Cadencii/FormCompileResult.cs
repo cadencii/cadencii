@@ -15,12 +15,14 @@
 package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormCompileResult.java
+import org.kbinani.*;
 #else
 using System;
 using Boare.Lib.AppUtil;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
+    using BEventArgs = System.EventArgs;
 #endif
 
 #if JAVA
@@ -51,10 +53,15 @@ namespace Boare.Cadencii {
             return Messaging.getMessage( id );
         }
 
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
+        }
+
         private void setResources() {
         }
 
         private void registerEventHandlers() {
+            btnOK.Click += new EventHandler( btnOK_Click );
         }
 
 #if JAVA

@@ -15,22 +15,28 @@
 package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormShortcutKeys.java
+
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using bocoree;
 using bocoree.java.awt.event_;
 using bocoree.java.util;
-using bocoree.windows.forms;
 using bocoree.javax.swing;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
-    using java = bocoree.java;
+    using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
+    using boolean = System.Boolean;
+    using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
+    using java = bocoree.java;
 #endif
 
 #if JAVA
@@ -46,7 +52,12 @@ namespace Boare.Cadencii {
 
         public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict ) {
             try {
+#if JAVA
+                super();
+                initialize();
+#else
                 InitializeComponent();
+#endif
             } catch ( Exception ex ) {
 #if DEBUG
                 Console.WriteLine( "FormShortcutKeys#.ctor; ex=" + ex );
@@ -66,7 +77,7 @@ namespace Boare.Cadencii {
             m_dumy.ShowShortcutKeys = true;
 #endif
             m_first_dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
-            CopyDict( m_dict, ref m_first_dict );
+            CopyDict( m_dict, m_first_dict );
             UpdateList();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -115,11 +126,11 @@ namespace Boare.Cadencii {
 
         public TreeMap<String, ValuePair<String, BKeys[]>> getResult() {
             TreeMap<String, ValuePair<String, BKeys[]>> ret = new TreeMap<String, ValuePair<String, BKeys[]>>();
-            CopyDict( m_dict, ref ret );
+            CopyDict( m_dict, ret );
             return ret;
         }
 
-        private static void CopyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, ref TreeMap<String, ValuePair<String, BKeys[]>> dest ) {
+        private static void CopyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, TreeMap<String, ValuePair<String, BKeys[]>> dest ) {
             dest.clear();
             for ( Iterator itr = src.keySet().iterator(); itr.hasNext(); ) {
                 String name = (String)itr.next();
@@ -178,10 +189,10 @@ namespace Boare.Cadencii {
             ApplyLanguage();
         }
 
-        private void list_PreviewKeyDown( object sender, PreviewKeyDownEventArgs e ) {
+        private void list_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
         }
 
-        private void list_KeyDown( object sender, KeyEventArgs e ) {
+        private void list_KeyDown( Object sender, BKeyEventArgs e ) {
             string selected_group = "";
             int selected_index = -1;
             int num_groups = list.getGroupCount();
@@ -253,12 +264,12 @@ namespace Boare.Cadencii {
             e.Handled = true;
         }
 
-        private void btnRevert_Click( object sender, EventArgs e ) {
-            CopyDict( m_first_dict, ref m_dict );
+        private void btnRevert_Click( Object sender, BEventArgs e ) {
+            CopyDict( m_first_dict, m_dict );
             UpdateList();
         }
 
-        private void btnLoadDefault_Click( object sender, EventArgs e ) {
+        private void btnLoadDefault_Click( Object sender, BEventArgs e ) {
             for ( int i = 0; i < EditorConfig.DEFAULT_SHORTCUT_KEYS.size(); i++ ) {
                 String name = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Key;
                 BKeys[] keys = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Value;
@@ -316,6 +327,14 @@ namespace Boare.Cadencii {
 #endif
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
+        private void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
+        }
+
         private void registerEventHandlers() {
 #if JAVA
 #else
@@ -324,6 +343,8 @@ namespace Boare.Cadencii {
             this.btnLoadDefault.Click += new System.EventHandler( this.btnLoadDefault_Click );
             this.btnRevert.Click += new System.EventHandler( this.btnRevert_Click );
             this.FormClosing += new FormClosingEventHandler( FormShortcutKeys_FormClosing );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 

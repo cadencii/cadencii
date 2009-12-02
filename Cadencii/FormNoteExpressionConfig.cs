@@ -425,6 +425,10 @@ namespace Boare.Cadencii {
             }
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
 #if JAVA
 #else
@@ -442,6 +446,7 @@ namespace Boare.Cadencii {
             this.txtDuration.TextChanged += new System.EventHandler( this.txtDuration_TextChanged );
             this.trackDepth.Scroll += new System.EventHandler( this.trackDepth_Scroll );
             this.trackDuration.Scroll += new System.EventHandler( this.trackDuration_Scroll );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 

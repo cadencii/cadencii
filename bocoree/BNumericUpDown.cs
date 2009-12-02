@@ -20,36 +20,55 @@
 namespace bocoree.windows.forms {
 
     public class BNumericUpDown : System.Windows.Forms.NumericUpDown {
-        public int getIncrement() {
-            return (int)base.Increment;
+        decimal minimumStep = 1;
+
+        public BNumericUpDown() {
+            base.DecimalPlaces = 0;
         }
 
-        public void setIncrement( int value ) {
-            base.Increment = value;
+        public int getDecimalPlaces() {
+            return base.DecimalPlaces;
         }
 
-        public int getValue() {
-            return (int)base.Value;
+        public void setDecimalPlaces( int value ) {
+            base.DecimalPlaces = value;
+            minimumStep = 1;
+            for ( int i = 0; i < value; i++ ) {
+                minimumStep = decimal.Divide( minimumStep, 10 );
+            }
         }
 
-        public void setValue( int value ) {
-            base.Value = value;
+        public float getIncrement() {
+            return (float)base.Increment;
         }
 
-        public int getMaximum() {
-            return (int)base.Maximum;
+        public void setIncrement( float value ) {
+            base.Increment = (decimal)value;
         }
 
-        public void setMaximum( int value ) {
-            base.Maximum = value;
+        public float getValue() {
+            float v = (float)base.Value;
+            return v + (float)minimumStep * 0.1f;
         }
 
-        public int getMinimum() {
-            return (int)base.Minimum;
+        public void setValue( float value ) {
+            base.Value = (decimal)value;
         }
 
-        public void setMinimum( int value ) {
-            base.Minimum = value;
+        public float getMaximum() {
+            return (float)base.Maximum;
+        }
+
+        public void setMaximum( float value ) {
+            base.Maximum = (decimal)value;
+        }
+
+        public float getMinimum() {
+            return (float)base.Minimum;
+        }
+
+        public void setMinimum( float value ) {
+            base.Minimum = (decimal)value;
         }
 
         #region java.awt.Component

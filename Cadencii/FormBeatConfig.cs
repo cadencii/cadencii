@@ -48,7 +48,7 @@ namespace Boare.Cadencii {
         }
 
         public int getStart() {
-            return numStart.getValue();
+            return (int)numStart.getValue();
         }
 
         public boolean isEndSpecified() {
@@ -56,11 +56,11 @@ namespace Boare.Cadencii {
         }
 
         public int getEnd() {
-            return numEnd.getValue();
+            return (int)numEnd.getValue();
         }
 
         public int getNumerator() {
-            return numNumerator.getValue();
+            return (int)numNumerator.getValue();
         }
 
         public int getDenominator() {
@@ -73,6 +73,7 @@ namespace Boare.Cadencii {
 
         public FormBeatConfig( int bar_count, int numerator, int denominator, boolean num_enabled, int pre_measure ) {
 #if JAVA
+            super();
             initialize();
 #else
             InitializeComponent();
@@ -142,6 +143,10 @@ namespace Boare.Cadencii {
             setDialogResult( BDialogResult.OK );
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
 #if JAVA
             chkEnd.checkedChangedEvent.add( new BEventHandler( this, "chkEnd_CheckedChanged" ) );
@@ -149,6 +154,7 @@ namespace Boare.Cadencii {
 #else
             this.chkEnd.CheckedChanged += new System.EventHandler( this.chkEnd_CheckedChanged );
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            this.btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 
@@ -185,20 +191,20 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.groupPosition = new BGroupBox();
-            this.lblBar2 = new BLabel();
-            this.lblBar1 = new BLabel();
+            this.groupPosition = new bocoree.windows.forms.BGroupBox();
+            this.lblBar2 = new bocoree.windows.forms.BLabel();
+            this.lblBar1 = new bocoree.windows.forms.BLabel();
             this.numEnd = new Boare.Cadencii.NumericUpDownEx();
             this.numStart = new Boare.Cadencii.NumericUpDownEx();
-            this.chkEnd = new BCheckBox();
-            this.lblStart = new BLabel();
-            this.groupBeat = new BGroupBox();
-            this.comboDenominator = new BComboBox();
-            this.label2 = new BLabel();
-            this.label1 = new BLabel();
+            this.chkEnd = new bocoree.windows.forms.BCheckBox();
+            this.lblStart = new bocoree.windows.forms.BLabel();
+            this.groupBeat = new bocoree.windows.forms.BGroupBox();
+            this.comboDenominator = new bocoree.windows.forms.BComboBox();
+            this.label2 = new bocoree.windows.forms.BLabel();
+            this.label1 = new bocoree.windows.forms.BLabel();
             this.numNumerator = new Boare.Cadencii.NumericUpDownEx();
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
+            this.btnOK = new bocoree.windows.forms.BButton();
+            this.btnCancel = new bocoree.windows.forms.BButton();
             this.groupPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStart)).BeginInit();

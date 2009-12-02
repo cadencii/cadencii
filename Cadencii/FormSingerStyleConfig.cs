@@ -15,6 +15,11 @@
 package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormSingerStyleConfig.java
+
+import java.awt.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
@@ -24,9 +29,9 @@ using bocoree.java.awt;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
-    using java = bocoree.java;
+    using boolean = System.Boolean;
+
 #endif
 
 #if JAVA
@@ -123,7 +128,12 @@ namespace Boare.Cadencii {
         }
 
         public FormSingerStyleConfig() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -148,7 +158,7 @@ namespace Boare.Cadencii {
                     }
                     trackBendDepth.setValue( draft );
                 }
-            } catch {
+            } catch ( Exception ex ) {
                 //txtBendDepth.Text = trackBendDepth.Value + "";
             }
         }
@@ -159,7 +169,7 @@ namespace Boare.Cadencii {
 
         private void txtBendLength_TextChanged( Object sender, BEventArgs e ) {
             try {
-                int draft = int.Parse( txtBendLength.getText() );
+                int draft = PortUtil.parseInt( txtBendLength.getText() );
                 if ( draft != trackBendLength.getValue() ) {
                     if ( draft < trackBendLength.getMinimum() ) {
                         draft = trackBendLength.getMinimum();
@@ -170,7 +180,7 @@ namespace Boare.Cadencii {
                     }
                     trackBendLength.setValue( draft );
                 }
-            } catch {
+            } catch ( Exception ex ) {
                 //txtBendLength.Text = trackBendLength.Value + "";
             }
         }
@@ -192,7 +202,7 @@ namespace Boare.Cadencii {
                     }
                     trackDecay.setValue( draft );
                 }
-            } catch {
+            } catch ( Exception ex ) {
                 //txtDecay.Text = trackDecay.Value + "";
             }
         }
@@ -214,7 +224,7 @@ namespace Boare.Cadencii {
                     }
                     trackAccent.setValue( draft );
                 }
-            } catch {
+            } catch ( Exception ex ){
                 //txtAccent.Text = trackAccent.Value + "";
             }
         }
@@ -263,7 +273,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void btnApply_Click( object sender, EventArgs e ) {
+        private void btnApply_Click( Object sender, BEventArgs e ) {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
                                   AppManager.MSGBOX_YES_NO_OPTION,
@@ -275,6 +285,10 @@ namespace Boare.Cadencii {
 
         public boolean getApplyCurrentTrack() {
             return m_apply_current_track;
+        }
+
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
         }
 
         private void registerEventHandlers() {
@@ -291,6 +305,7 @@ namespace Boare.Cadencii {
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             this.btnApply.Click += new System.EventHandler( this.btnApply_Click );
             this.comboTemplate.SelectedIndexChanged += new System.EventHandler( this.comboBox1_SelectedIndexChanged );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 

@@ -111,11 +111,17 @@ namespace Boare.Cadencii {
             setDialogResult( BDialogResult.OK );
         }
 
+        private void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
         private void registerEventHandlers() {
 #if JAVA
             this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
 #else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }
 
@@ -152,20 +158,23 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.txtLyrics = new BTextArea();
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
-            this.lblNotes = new BLabel();
+            this.txtLyrics = new bocoree.windows.forms.BTextArea();
+            this.btnCancel = new bocoree.windows.forms.BButton();
+            this.btnOK = new bocoree.windows.forms.BButton();
+            this.lblNotes = new bocoree.windows.forms.BLabel();
             this.SuspendLayout();
             // 
             // txtLyrics
             // 
+            this.txtLyrics.AcceptsReturn = true;
+            this.txtLyrics.AcceptsTab = true;
             this.txtLyrics.Location = new System.Drawing.Point( 12, 35 );
             this.txtLyrics.Multiline = true;
             this.txtLyrics.Name = "txtLyrics";
             this.txtLyrics.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtLyrics.Size = new System.Drawing.Size( 426, 263 );
             this.txtLyrics.TabIndex = 0;
+            this.txtLyrics.WordWrap = false;
             // 
             // btnCancel
             // 
@@ -197,6 +206,7 @@ namespace Boare.Cadencii {
             // 
             // FormImportLyric
             // 
+            this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;

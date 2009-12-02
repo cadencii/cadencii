@@ -14,48 +14,15 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-import org.kbinani.*;
+import org.kbinani.BEventHandler;
 
-public class StateChangeRequiredEventHandler implements IEventHandler
-{
-    private BDelegate m_delegate = null;
-    private Object m_sender = null;
-
-    public StateChangeRequiredEventHandler( Object sender, String method_name )
-    {
-        m_sender = sender;
-        try
-        {
-            m_delegate = new BDelegate( sender, method_name, Void.TYPE, Object.class, PanelState.class );
-        }
-        catch( Exception ex )
-        {
-            System.out.println( "StateChangeRequiredEventHandler#.ctor; ex=" + ex );
-        }
+public class StateChangeRequiredEventHandler extends BEventHandler{
+    public StateChangeRequiredEventHandler( Object sender, String method_name ){
+        super( sender, method_name, Void.TYPE, Object.class, PanelState.class );
     }
-
-    public StateChangeRequiredEventHandler( Class sender, String method_name )
-    {
-        try
-        {
-            m_delegate = new BDelegate( sender, method_name, Void.TYPE, Object.class, PanelState.class );
-        }
-        catch( Exception ex )
-        {
-            System.out.println( "StateChangeRequiredEventHandler#.ctor; ex=" + ex );
-        }
-    }
-
-    public void invoke( Object... arguments )
-    {
-        try
-        {
-            m_delegate.invoke( m_sender, arguments );
-        }
-        catch( Exception ex )
-        {
-            System.out.println( "StateChangeRequiredEventHandler#invoke; ex=" + ex );
-        }
+    
+    public StateChangeRequiredEventHandler( Class<?> sender, String method_name ){
+        super( sender, method_name, Void.TYPE, Object.class, PanelState.class );
     }
 }
 #else

@@ -36,6 +36,7 @@ this
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
+-BSplitPaneのpanel*MinSizeプロパティ
 
 -v3.0.6(3.1.0)done-----------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。
