@@ -14,7 +14,11 @@
 #if JAVA
 pacakge org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormTrackProperty.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormTrackProperty.java
+
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
@@ -92,8 +96,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormTrackProperty.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormTrackProperty.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormTrackProperty.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormTrackProperty.java
         #endregion
 #else
         #region UI Impl for C#

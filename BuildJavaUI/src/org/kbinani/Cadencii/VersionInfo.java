@@ -1,3 +1,5 @@
+package org.kbinani.Cadencii;
+
 //SECTION-BEGIN-IMPORT
 import java.awt.CardLayout;
 import java.awt.Color;

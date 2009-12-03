@@ -39,7 +39,7 @@ namespace Boare.Cadencii {
 #endif
         public static String STRAIGHT_SYNTH = "vConnect.exe";
         private const int MAX_CACHE = 512;
-        private static TreeMap<String, double> s_cache = new TreeMap<String, double>();
+        private static TreeMap<String, Double> s_cache = new TreeMap<String, Double>();
         const int TEMPO = 120;
 
         boolean m_rendering = false;
@@ -144,9 +144,9 @@ namespace Boare.Cadencii {
             VsqEvent current = events.get( 0 );
             VsqEvent next = null;
 
-            string singer = singer_event.ID.IconHandle.IDS;
+            String singer = singer_event.ID.IconHandle.IDS;
             int num_singers = m_singer_config_sys.size();
-            string singer_path = "";
+            String singer_path = "";
             for ( int i = 0; i < num_singers; i++ ) {
                 SingerConfig sc = m_singer_config_sys.get( i );
                 if ( sc.VOICENAME.Equals( singer ) ) {
@@ -158,7 +158,7 @@ namespace Boare.Cadencii {
             if ( singer_path.Equals( "" ) ) {
                 return;
             }
-            string oto_ini = PortUtil.combinePath( PortUtil.combinePath( singer_path, "analyzed" ), "oto.ini" );
+            String oto_ini = PortUtil.combinePath( PortUtil.combinePath( singer_path, "analyzed" ), "oto.ini" );
             if ( !PortUtil.isFileExists( oto_ini ) ) {
                 // STRAIGHT合成用のoto.iniが存在しないので離脱
                 return;
@@ -225,12 +225,12 @@ namespace Boare.Cadencii {
         /// 連続した音符を元に，StraightRenderingQueueを作成
         /// </summary>
         /// <param name="list"></param>
-        private void appendQueueCor( VsqFileEx vsq, int track, Vector<VsqEvent> list, int sample_rate, string oto_ini ) {
+        private void appendQueueCor( VsqFileEx vsq, int track, Vector<VsqEvent> list, int sample_rate, String oto_ini ) {
             if ( list.size() <= 0 ) {
                 return;
             }
 
-            const int OFFSET = 1920;
+            int OFFSET = 1920;
             CurveType[] CURVE = new CurveType[]{
                     CurveType.PIT,
                     CurveType.PBS,
@@ -341,7 +341,7 @@ namespace Boare.Cadencii {
                 if ( src == null ) {
                     continue;
                 }
-                string name = "";
+                String name = "";
                 if ( curve.equals( CurveType.PIT ) ) {
                     name = "[PitchBendBPList]";
                 } else if ( curve.equals( CurveType.PBS ) ) {
@@ -369,7 +369,7 @@ namespace Boare.Cadencii {
 
         public void run() {
             m_started_date = PortUtil.getCurrentTime();
-            const int BUF_LEN = 1024;
+            int BUF_LEN = 1024;
             m_rendering = true;
             m_abort_required = false;
             String straight_synth = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
@@ -491,7 +491,7 @@ namespace Boare.Cadencii {
 #if !DEBUG
                     try {
                         PortUtil.deleteFile( tmp_file + ".usq" );
-                    } catch {
+                    } catch( Exception ex ){
                     }
 #endif
 
@@ -533,7 +533,7 @@ namespace Boare.Cadencii {
                     if ( PortUtil.isFileExists( tmp_file + ".wav" ) ) {
                         wr = new WaveReader( tmp_file + ".wav" );
                     }
-                } catch {
+                } catch( Exception ex ) {
                     wr = null;
                 }
                 int wave_samples = 0;
@@ -889,7 +889,7 @@ namespace Boare.Cadencii {
                 String key = (String)itr.next();
                 try {
                     PortUtil.deleteFile( PortUtil.combinePath( tmp_dir, key + ".wav" ) );
-                } catch {
+                } catch( Exception ex ) {
                 }
             }
             s_cache.clear();
@@ -917,7 +917,7 @@ namespace Boare.Cadencii {
                     //PortUtil.println( "  waiting..." );
 #endif
 #if JAVA
-                    Thread.sleep( 0 ); ここいけてる？
+                    Thread.sleep( 0 ); //ここいけてる？
 #else
                     System.Windows.Forms.Application.DoEvents();
 #endif

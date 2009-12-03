@@ -14,9 +14,14 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\Preference.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\Preference.java
+
+import java.awt.*;
 import java.util.*;
+import java.io.*;
 import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
@@ -58,7 +63,7 @@ namespace Boare.Cadencii {
 
         public Preference() {
 #if JAVA
-            //INCLUDE-SECTION CTOR ..\BuildJavaUI\src\Preference.java
+            //INCLUDE-SECTION CTOR ..\BuildJavaUI\src\org\kbinani\Cadencii\Preference.java
 #else
             InitializeComponent();
 #endif
@@ -1102,8 +1107,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\Preference.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\Preference.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\Preference.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\Preference.java
         #endregion
 #else
         #region UI Impl for C#

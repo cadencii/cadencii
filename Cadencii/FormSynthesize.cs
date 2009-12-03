@@ -14,7 +14,8 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormSynthesize.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormSynthesize.java
+
 import java.util.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
@@ -336,8 +337,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormSynthesize.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormSynthesize.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormSynthesize.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormSynthesize.java
         #endregion
 #else
         #region UI Impl for C#

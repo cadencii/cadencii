@@ -1,3 +1,5 @@
+package org.kbinani.Cadencii;
+
 //SECTION-BEGIN-IMPORT
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -46,7 +48,7 @@ public class FormMain extends BForm {
     private BMenuItem menuFileQuit = null;
     private BMenuItem menuFileImportVsq = null;
     private BMenuItem menuFileImportMidi = null;
-    private BMenuItem menuFileExportWav = null;
+    private BMenuItem menuFileExportWave = null;
     private BMenuItem menuFileExportMidi = null;
     private BMenu menuEdit = null;
     private BMenuItem menuEditUndo = null;
@@ -581,11 +583,11 @@ public class FormMain extends BForm {
      * @return javax.swing.BMenuItem    
      */
     private BMenuItem getBMenuItem8() {
-        if (menuFileExportWav == null) {
-            menuFileExportWav = new BMenuItem();
-            menuFileExportWav.setText("Wave");
+        if (menuFileExportWave == null) {
+            menuFileExportWave = new BMenuItem();
+            menuFileExportWave.setText("Wave");
         }
-        return menuFileExportWav;
+        return menuFileExportWave;
     }
 
     /**

@@ -14,9 +14,12 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormBezierPointEdit.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormBezierPointEdit.java
+
 import java.awt.*;
+import java.util.*;
 import org.kbinani.*;
+import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
@@ -342,8 +345,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormBezierPointEdit.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormBezierPointEdit.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormBezierPointEdit.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormBezierPointEdit.java
         #endregion
 #else
         #region UI Impl for C#

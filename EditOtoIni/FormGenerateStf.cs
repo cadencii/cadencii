@@ -14,7 +14,12 @@
 #if JAVA
 package org.kbinani.EditOtoIni;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormGenerateStf.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormGenerateStf.java
+
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.componentModel.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.ComponentModel;
@@ -392,8 +397,8 @@ namespace Boare.EditOtoIni {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormGenerateStf.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormGenerateStf.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormGenerateStf.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormGenerateStf.java
         #endregion
 #else
         #region UI Impl for C#

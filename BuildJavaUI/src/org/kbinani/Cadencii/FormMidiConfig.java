@@ -1,3 +1,5 @@
+package org.kbinani.Cadencii;
+
 //SECTION-BEGIN-IMPORT
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
@@ -16,6 +18,7 @@ import org.kbinani.windows.forms.BButton;
 //SECTION-END-IMPORT
 public class FormMidiConfig extends BForm {
     //SECTION-BEGIN-FIELD
+
     private JPanel jPanel = null;
     private BGroupBox groupMetronome = null;
     private JLabel lblDeviceMetronome = null;

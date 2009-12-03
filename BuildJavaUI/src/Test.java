@@ -3,18 +3,22 @@ import org.kbinani.BEventHandler;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BSplitPane;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JCheckBox;
+import javax.swing.JSplitPane;
 
 
 public class Test extends BForm {
 
-    private JPanel jPanel = null;
-    private BCheckBox chkFoo = null;
+    private BSplitPane jSplitPane = null;
+    private JButton jButton = null;
+    private JButton jButton1 = null;
+
     /**
      * This method initializes 
      * 
@@ -22,57 +26,54 @@ public class Test extends BForm {
     public Test() {
     	super();
     	initialize();
-    	registerEventHandlers();
-    }
-
-    public void registerEventHandlers(){
-        chkFoo.checkedChangedEvent.add( new BEventHandler( this, "chkFoo_CheckedChanged" ) );
+    	jSplitPane.setPanel1MinSize( 100 );
     }
      
-    public void chkFoo_CheckedChanged( Object sender, BEventArgs e ){
-        System.out.println( "Test#chkFoo_CheckedChanged" );
-        if( sender instanceof BCheckBox ){
-            BCheckBox b = (BCheckBox)sender;
-            System.out.println( "Test#chkFoo_CheckedChanged; isSelected=" + b.isSelected() );
-        }
-    }
-    
     /**
      * This method initializes this
      * 
      */
     private void initialize() {
         this.setSize(new Dimension(315, 240));
-        this.setContentPane(getJPanel());    		
+        this.setContentPane(getJSplitPane());
     }
 
     /**
-     * This method initializes jPanel	
+     * This method initializes jSplitPane	
      * 	
-     * @return javax.swing.JPanel	
+     * @return javax.swing.JSplitPane	
      */
-    private JPanel getJPanel() {
-        if (jPanel == null) {
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.gridx = 0;
-            gridBagConstraints1.gridy = 0;
-            jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            jPanel.add(getChkFoo(), gridBagConstraints1);
+    private BSplitPane getJSplitPane() {
+        if (jSplitPane == null) {
+            jSplitPane = new BSplitPane();
+            jSplitPane.setLeftComponent(getJButton());
+            jSplitPane.setRightComponent(getJButton1());
         }
-        return jPanel;
+        return jSplitPane;
     }
 
     /**
-     * This method initializes chkFoo	
+     * This method initializes jButton	
      * 	
-     * @return org.kbinani.windows.forms.BCheckBox
+     * @return javax.swing.JButton	
      */
-    private BCheckBox getChkFoo() {
-        if (chkFoo == null) {
-            chkFoo = new BCheckBox();
+    private JButton getJButton() {
+        if (jButton == null) {
+            jButton = new JButton();
         }
-        return chkFoo;
+        return jButton;
+    }
+
+    /**
+     * This method initializes jButton1	
+     * 	
+     * @return javax.swing.JButton	
+     */
+    private JButton getJButton1() {
+        if (jButton1 == null) {
+            jButton1 = new JButton();
+        }
+        return jButton1;
     }
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

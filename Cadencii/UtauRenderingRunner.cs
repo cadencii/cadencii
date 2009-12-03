@@ -34,13 +34,13 @@ namespace Boare.Cadencii {
 #endif
 
 #if JAVA
-    public class UtauRenderingRUnner implements RenderingRunner{
+    public class UtauRenderingRunner implements RenderingRunner{
 #else
     public class UtauRenderingRunner : RenderingRunner {
 #endif
         public const String FILEBASE = "temp.wav";
         private const int MAX_CACHE = 512;
-        private static TreeMap<String, ValuePair<String, DateTime>> s_cache = new TreeMap<String, ValuePair<String, DateTime>>();
+        private static TreeMap<String, ValuePair<String, Double>> s_cache = new TreeMap<String, ValuePair<String, Double>>();
         
         private Vector<RenderQueue> m_resampler_queue = new Vector<RenderQueue>();
         private boolean m_abort_required = false;
@@ -66,7 +66,7 @@ namespace Boare.Cadencii {
         Vector<WaveReader> m_reader;
         boolean m_direct_play;
         boolean m_reflect_amp_to_wave = false;
-        DateTime m_started_date;
+        double m_started_date;
         double m_running_rate;
         long m_total_samples;
 
@@ -113,11 +113,11 @@ namespace Boare.Cadencii {
         public static void clearCache() {
             for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
                 String key = (String)itr.next();
-                ValuePair<String, DateTime> value = s_cache.get( key );
+                ValuePair<String, Double> value = s_cache.get( key );
                 String file = value.getKey();
                 try {
                     PortUtil.deleteFile( file );
-                } catch {
+                } catch ( Exception ex ) {
                 }
             }
             s_cache.clear();
@@ -145,14 +145,14 @@ namespace Boare.Cadencii {
         }
 
         public double getElapsedSeconds() {
-            return DateTime.Now.Subtract( m_started_date ).TotalSeconds;
+            return PortUtil.getCurrentTime() - m_started_date;
         }
 
         public void run() {
 #if DEBUG
             PortUtil.println( "UtauRenderingRunner#run" );
 #endif
-            m_started_date = DateTime.Now;
+            m_started_date = PortUtil.getCurrentTime();
             m_rendering = true;
 #if MAKEBAT_SP
             StreamWriter bat = null;
@@ -272,7 +272,7 @@ namespace Boare.Cadencii {
                         }
                         RenderQueue rq = new RenderQueue();
                         rq.ResamplerArg = "";
-                        rq.WavtoolArgPrefix = "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + item.Clock + "@" + String.Format( "{0:f2}", t_temp2 );
+                        rq.WavtoolArgPrefix = "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + item.Clock + "@" + PortUtil.formatMessage( "{0:f2}", t_temp2 );
                         rq.WavtoolArgSuffix = " 0 0";
                         rq.Oto = new OtoArgs();
                         rq.FileName = "";
@@ -306,7 +306,7 @@ namespace Boare.Cadencii {
                     // ピッチを取得
                     String pitch = "";
                     boolean allzero = true;
-                    const int delta_clock = 5;  //ピッチを取得するクロック間隔
+                    int delta_clock = 5;  //ピッチを取得するクロック間隔
                     int tempo = 120;
                     double delta_sec = delta_clock / (8.0 * tempo); //ピッチを取得する時間間隔
                     if ( item.ID.VibratoHandle == null ) {
@@ -371,12 +371,12 @@ namespace Boare.Cadencii {
                     boolean exist_in_cache = s_cache.containsKey( search_key );
                     if ( !exist_in_cache ) {
                         if ( s_cache.size() + 1 >= MAX_CACHE ) {
-                            DateTime old = DateTime.Now;
+                            double old = PortUtil.getCurrentTime();
                             String delfile = "";
                             String delkey = "";
                             for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
                                 String key = (String)itr.next();
-                                ValuePair<String, DateTime> value = s_cache.get( key );
+                                ValuePair<String, Double> value = s_cache.get( key );
                                 if ( old.CompareTo( value.getValue() ) < 0 ) {
                                     old = value.getValue();
                                     delfile = value.getKey();
@@ -388,16 +388,16 @@ namespace Boare.Cadencii {
                                 bocoree.debug.push_log( "deleting... \"" + delfile + "\"" );
 #endif
                                 PortUtil.deleteFile( delfile );
-                            } catch {
+                            } catch ( Exception ex ) {
                             }
                             s_cache.remove( delkey );
                         }
-                        s_cache.put( search_key, new ValuePair<String, DateTime>( filename, DateTime.Now ) );
+                        s_cache.put( search_key, new ValuePair<String, Double>( filename, PortUtil.getCurrentTime() ) );
                     } else {
                         filename = s_cache.get( search_key ).getKey();
                     }
 
-                    rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" 0 " + item.ID.Length + "@" + String.Format( "{0:f2}", t_temp );
+                    rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" 0 " + item.ID.Length + "@" + PortUtil.formatMessage( "{0:f2}", t_temp );
                     UstEnvelope env = item.UstEvent.Envelope;
                     if ( env == null ) {
                         env = new UstEnvelope();
@@ -421,7 +421,7 @@ namespace Boare.Cadencii {
                 bocoree.debug.push_log( "s_cache:" );
                 for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
                     String key = (String)itr.next();
-                    ValuePair<String, DateTime> value = s_cache.get( key );
+                    ValuePair<String, Double> value = s_cache.get( key );
                     bocoree.debug.push_log( "    arg=" + key );
                     bocoree.debug.push_log( "    file=" + value.getKey() );
                 }
@@ -599,9 +599,9 @@ namespace Boare.Cadencii {
                         int remain = sampleFrames;
                         m_left = new double[length];
                         m_right = new double[length];
-                        const float k_inv64 = 1.0f / 64.0f;
-                        const float k_inv32768 = 1.0f / 32768.0f;
-                        const int buflen = 1024;
+                        float k_inv64 = 1.0f / 64.0f;
+                        float k_inv32768 = 1.0f / 32768.0f;
+                        int buflen = 1024;
                         byte[] wavbuf = new byte[buflen];
                         int pos = 0;
                         RandomAccessFile dat = null;

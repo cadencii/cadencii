@@ -212,6 +212,41 @@ namespace bocoree {
         }
 
         /// <summary>
+        /// java:コンポーネントのnameプロパティを返します。C#:コントロールのNameプロパティを返します。
+        /// objがnullだったり、型がComponent/Controlでない場合は空文字を返します。
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static String getComponentName( Object obj ) {
+            if ( obj == null ) {
+                return "";
+            }
+#if JAVA
+            if( obj instanceof Component ){
+                return ((Component)obj).getName();
+            }else{
+                return "";
+            }
+#else
+            if ( obj is System.Windows.Forms.Control ) {
+                return ((System.Windows.Forms.Control)obj).Name;
+            } else {
+                return "";
+            }
+#endif
+        }
+
+#if JAVA
+        public static String formatMessage( String patern, Object... args ){
+            return MessageFormat.format( patern, args );
+        }
+#else
+        public static String formatMessage( String patern, params Object[] args ) {
+            return String.Format( patern, args );
+        }
+#endif
+
+        /// <summary>
         /// 単位は秒
         /// </summary>
         /// <returns></returns>

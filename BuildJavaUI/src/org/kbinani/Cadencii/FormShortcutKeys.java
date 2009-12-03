@@ -1,3 +1,5 @@
+package org.kbinani.Cadencii;
+
 //SECTION-BEGIN-IMPORT
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BListView;

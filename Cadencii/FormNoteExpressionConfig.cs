@@ -14,9 +14,13 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormNoteExpressionConfig.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormNoteExpressionConfig.java
+
+import java.util.*;
 import org.kbinani.*;
+import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Drawing;
@@ -455,8 +459,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormNoteExpressionConfig.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormNoteExpressionConfig.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormNoteExpressionConfig.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormNoteExpressionConfig.java
         #endregion
 #else
         #region UI Impl for C#

@@ -1,6 +1,8 @@
 package org.kbinani.windows.forms;
 
 import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -10,7 +12,7 @@ import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
 
-public class BForm extends JFrame implements WindowListener, KeyListener{
+public class BForm extends JFrame implements WindowListener, KeyListener, ComponentListener{
     private static final long serialVersionUID = -3700177079249925623L;
     public BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
     public BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
@@ -28,6 +30,7 @@ public class BForm extends JFrame implements WindowListener, KeyListener{
         super( title );
         addWindowListener( this );
         addKeyListener( this );
+        addComponentListener( this );
     }
     
     public Dimension getClientSize(){
@@ -95,6 +98,9 @@ public class BForm extends JFrame implements WindowListener, KeyListener{
             System.out.println( "BForm#windowOpened; ex=" + ex );
         }
     }
+    
+    public BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
+    public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
     
     public class ShowDialogRunner implements Runnable{
         public void run(){
@@ -165,4 +171,34 @@ public class BForm extends JFrame implements WindowListener, KeyListener{
         }
     }
     /* END REGION java.awt.Component */
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+        // TODO 自動生成されたメソッド・スタブ
+        
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+        try{
+            locationChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BForm#componentMoved; ex=" + ex );
+        }
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        try{
+            sizeChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BForm#componentResized; ex=" + ex );
+        }
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+        // TODO 自動生成されたメソッド・スタブ
+        
+    }
 }

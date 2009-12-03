@@ -1,3 +1,5 @@
+package org.kbinani.Cadencii;
+
 //SECTION-BEGIN-IMPORT
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,7 +10,6 @@ import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
@@ -24,7 +25,7 @@ public class FormMidiImExport extends BForm {
 	private BButton btnCheckAll = null;
 	private BButton btnUncheckAll = null;
 	private JLabel jLabel = null;
-	private BListView listTrack = null;
+	public BListView listTrack = null;
 	private JPanel jPanel1 = null;
 	private BCheckBox chkTempo = null;
 	private JPanel jPanel2 = null;

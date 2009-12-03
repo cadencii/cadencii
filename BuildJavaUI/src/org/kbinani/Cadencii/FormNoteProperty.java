@@ -1,3 +1,5 @@
+package org.kbinani.Cadencii;
+
 //SECTION-BEGIN-IMPORT
 import org.kbinani.windows.forms.BForm;
 import java.awt.Dimension;
@@ -7,6 +9,7 @@ import java.awt.GridBagLayout;
 //SECTION-END-IMPORT
 public class FormNoteProperty extends BForm {
     //SECTION-BEGIN-FIELD
+
     private JPanel jPanel = null;
 
     //SECTION-END-FIELD

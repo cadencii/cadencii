@@ -14,8 +14,12 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormMixer.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMixer.java
+
+import java.util.*;
 import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
@@ -29,9 +33,9 @@ using bocoree.java.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -45,9 +49,9 @@ namespace Boare.Cadencii {
 #if JAVA
         public BEvent<FederChangedEventHandler> federChangedEvent = new BEvent<FederChangedEventHandler>();
         public BEvent<PanpotChangedEventHandler> panpotChangedEvent = new BEvent<PanpotChangedEventHandler>();
-        public BEvent<SoloChangedEventHandler> soloChanged = new BEvent<SoloChangedEventHandler>();
-        public BEvent<MuteChangedEventHandler> muteChanged = new BEvent<MuteChangedEventHandler>();
-        public BEvent<TopMostChangedEventHandler> topMostChanged = new BEvent<TopMostChangedEventHandler>();
+        public BEvent<SoloChangedEventHandler> soloChangedEvent = new BEvent<SoloChangedEventHandler>();
+        public BEvent<MuteChangedEventHandler> muteChangedEvent = new BEvent<MuteChangedEventHandler>();
+        public BEvent<TopMostChangedEventHandler> topMostChangedEvent = new BEvent<TopMostChangedEventHandler>();
 #else
         public event FederChangedEventHandler FederChanged;
         public event PanpotChangedEventHandler PanpotChanged;
@@ -409,8 +413,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormMixer.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormMixer.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMixer.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMixer.java
         #endregion
 #else
         #region UI Impl for C#

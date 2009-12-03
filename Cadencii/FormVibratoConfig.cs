@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormVibratoConfig.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormVibratoConfig.java
 
 import java.util.*;
 import org.kbinani.*;
@@ -213,8 +213,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormVibratoConfig.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormVibratoConfig.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormVibratoConfig.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormVibratoConfig.java
         #endregion
 #else
         #region UI Impl for C#

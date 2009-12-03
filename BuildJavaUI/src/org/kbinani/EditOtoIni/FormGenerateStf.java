@@ -1,3 +1,5 @@
+package org.kbinani.EditOtoIni;
+
 //SECTION-BEGIN-IMPORT
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

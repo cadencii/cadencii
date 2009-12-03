@@ -1,9 +1,10 @@
+package org.kbinani.Cadencii;
+
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
@@ -16,6 +17,7 @@ import org.kbinani.windows.forms.BPanel;
 public class FormTempoConfig extends BForm {
     //SECTION-BEGIN-FIELD
     
+    private static final long serialVersionUID = 3025908775165151783L;
     private JPanel jPanel = null;
     private BGroupBox groupPosition = null;
     private BLabel lblBar = null;

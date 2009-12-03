@@ -21,11 +21,6 @@ using System.Windows.Forms;
 namespace bocoree.windows.forms {
     public interface MenuElement {
         MenuElement[] getSubElements();
-        String getName();
-        String getText();
-        void setAccelerator( bocoree.javax.swing.KeyStroke stroke );
-        bocoree.javax.swing.KeyStroke getAccelerator();
-        object getParent();
     }
 
     public class BMenuBar : System.Windows.Forms.MenuStrip, MenuElement {

@@ -11,13 +11,18 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.util.*;
+#else
 using System;
-using System.IO;
-using System.Text;
 using bocoree;
 using bocoree.java.util;
+using bocoree.java.io;
 
 namespace Boare.Cadencii {
+#endif
 
     public class UtauVoiceDB {
         private Vector<OtoArgs> m_configs = new Vector<OtoArgs>();
@@ -29,41 +34,61 @@ namespace Boare.Cadencii {
             }
 
             // oto.ini読込み
-            using ( StreamReader sr = new StreamReader( oto_ini, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
+            BufferedReader sr = null;
+            try {
+                sr = new BufferedReader( new InputStreamReader( new FileInputStream( oto_ini ), "Shift_JIS" ) );
                 String line;
-                while ( sr.Peek() >= 0 ) {
+                while ( sr.ready() ) {
                     try {
-                        line = sr.ReadLine();
+                        line = sr.readLine();
                         String[] spl = line.Split( '=' );
                         String file_name = spl[0]; // あ.wav
                         String a2 = spl[1]; // ,0,36,64,0,0
-                        String a1 = Path.GetFileNameWithoutExtension( file_name );
+                        String a1 = PortUtil.getFileNameWithoutExtension( file_name );
                         spl = a2.Split( ',' );
                         OtoArgs oa = new OtoArgs();
                         oa.fileName = file_name;
                         oa.Alias = spl[0];
-                        oa.msOffset = int.Parse( spl[1] );
-                        oa.msConsonant = int.Parse( spl[2] );
-                        oa.msBlank = int.Parse( spl[3] );
-                        oa.msPreUtterance = int.Parse( spl[4] );
-                        oa.msOverlap = int.Parse( spl[5] );
+                        oa.msOffset = PortUtil.parseInt( spl[1] );
+                        oa.msConsonant = PortUtil.parseInt( spl[2] );
+                        oa.msBlank = PortUtil.parseInt( spl[3] );
+                        oa.msPreUtterance = PortUtil.parseInt( spl[4] );
+                        oa.msOverlap = PortUtil.parseInt( spl[5] );
                         m_configs.add( oa );
-                    } catch {
+                    } catch ( Exception ex3 ) {
+                    }
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sr != null ) {
+                    try {
+                        sr.close();
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
 
             // character.txt読込み
-            String character = Path.Combine( Path.GetDirectoryName( oto_ini ), "character.txt" );
+            String character = PortUtil.combinePath( PortUtil.getDirectoryName( oto_ini ), "character.txt" );
             if ( PortUtil.isFileExists( character ) ) {
-                using ( StreamReader sr = new StreamReader( character, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
+                BufferedReader sr2 = null;
+                try {
+                    sr2 = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
                     String line = "";
-                    while ( (line = sr.ReadLine()) != null ) {
+                    while ( (line = sr2.readLine()) != null ) {
                         String[] spl = line.Split( '=' );
                         if ( spl.Length > 1 ) {
                             if ( spl[0].ToLower() == "name" ) {
                                 m_name = spl[1];
                             }
+                        }
+                    }
+                } catch ( Exception ex ) {
+                } finally {
+                    if ( sr2 != null ) {
+                        try {
+                            sr2.close();
+                        } catch ( Exception ex2 ) {
                         }
                     }
                 }
@@ -79,7 +104,7 @@ namespace Boare.Cadencii {
             int count = m_configs.size();
             for ( Iterator itr = m_configs.iterator(); itr.hasNext(); ) {
                 OtoArgs item = (OtoArgs)itr.next();
-                if ( Path.GetFileNameWithoutExtension( item.fileName ).Equals( lyric ) ) {
+                if ( PortUtil.getFileNameWithoutExtension( item.fileName ).Equals( lyric ) ) {
                     return item;
                 }
                 if ( item.Alias.Equals( lyric ) ) {
@@ -94,4 +119,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

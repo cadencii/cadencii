@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormWordDictionary.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormWordDictionary.java
 
 import java.util.*;
 import org.kbinani.*;
@@ -140,8 +140,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormWordDictionary.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormWordDictionary.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormWordDictionary.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormWordDictionary.java
         #endregion
 #else
         #region UI Impl for C#

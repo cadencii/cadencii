@@ -1,3 +1,5 @@
+package org.kbinani.EditOtoIni;
+
 //SECTION-BEGIN-IMPORT
 import java.awt.BorderLayout;
 import java.awt.Dimension;

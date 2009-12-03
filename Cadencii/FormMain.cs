@@ -14,9 +14,11 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormMain.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
+
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import org.kbinani.*;
@@ -3454,7 +3456,9 @@ namespace Boare.Cadencii {
                 m_midi_in.Dispose();
             }
 #endif
+#if !JAVA
             bgWorkScreen.Dispose();
+#endif
             e.Cancel = false;
         }
 
@@ -3464,6 +3468,9 @@ namespace Boare.Cadencii {
             AppManager.setCurrentClock( 0 );
             setEdited( false );
 
+#if JAVA
+            //TODO: FormMain#FormMain_Load; イベントハンドラ
+#else
             AppManager.PreviewStarted += new EventHandler( AppManager_PreviewStarted );
             AppManager.PreviewAborted += new EventHandler( AppManager_PreviewAborted );
             AppManager.GridVisibleChanged += new EventHandler( AppManager_GridVisibleChanged );
@@ -3471,6 +3478,8 @@ namespace Boare.Cadencii {
             AppManager.CurrentClockChanged += new EventHandler( AppManager_CurrentClockChanged );
             AppManager.SelectedToolChanged += new EventHandler( AppManager_SelectedToolChanged );
             EditorConfig.QuantizeModeChanged += new EventHandler( EditorConfig_QuantizeModeChanged );
+#endif
+
 #if ENABLE_PROPERTY
             m_property_panel_container.StateChangeRequired += new StateChangeRequiredEventHandler( m_property_panel_container_StateChangeRequired );
 #endif
@@ -3509,8 +3518,8 @@ namespace Boare.Cadencii {
             AppManager.mixerWindow.federChangedEvent.add( new FederChangedEventHandler( this, "m_mixer_dlg_FederChanged" ) );
             AppManager.mixerWindow.panpotChangedEvent.add( new PanpotChangedEventHandler( this, "m_mixer_dlg_PanpotChanged" ) );
             AppManager.mixerWindow.muteChangedEvent.add( new MuteChangedEventHandler( this, "m_mixer_dlg_MuteChanged" ) );
-            AppManager.mixerWindow.soloChangedEvent( new SoloChangedEventHandler( this, "m_mixer_dlg_SoloChanged" ) );
-            AppManager.mixerWindow.topMostChangedEvent( new TopMostChangedEventHandler( this, "m_mixer_dlg_TopMostChanged" ) );
+            AppManager.mixerWindow.soloChangedEvent.add( new SoloChangedEventHandler( this, "m_mixer_dlg_SoloChanged" ) );
+            AppManager.mixerWindow.topMostChangedEvent.add( new TopMostChangedEventHandler( this, "m_mixer_dlg_TopMostChanged" ) );
 #else
             AppManager.mixerWindow.FederChanged += new FederChangedEventHandler( m_mixer_dlg_FederChanged );
             AppManager.mixerWindow.PanpotChanged += new PanpotChangedEventHandler( m_mixer_dlg_PanpotChanged );
@@ -3524,7 +3533,11 @@ namespace Boare.Cadencii {
                 AppManager.mixerWindow.setVisible( true );
             }
 
+#if JAVA
+            trackSelector.commandExecutedEvent.add( new BEventHandler( this, "trackSelector_CommandExecuted" ) );
+#else
             trackSelector.CommandExecuted += new EventHandler( trackSelector_CommandExecuted );
+#endif
 
 #if ENABLE_SCRIPT
             updateScriptShortcut();
@@ -3561,8 +3574,8 @@ namespace Boare.Cadencii {
             Point a = new Point( p.x + p0.x, p.y + p0.y );
             Rectangle rc = new Rectangle( a.x,
                                           a.y,
-                                          AppManager.editorConfig.PropertyWindowStatus.Bounds.Width,
-                                          AppManager.editorConfig.PropertyWindowStatus.Bounds.Height );
+                                          AppManager.editorConfig.PropertyWindowStatus.Bounds.getWidth(),
+                                          AppManager.editorConfig.PropertyWindowStatus.Bounds.getHeight() );
 
             if ( a.y > rcScreen.y + rcScreen.height ) {
                 a = new Point( a.x, rcScreen.y + rcScreen.height - rc.height );
@@ -4081,7 +4094,7 @@ namespace Boare.Cadencii {
             for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
                 if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
                     AppManager.showMessageBox(
-                        String.Format(
+                        PortUtil.formatMessage(
                             _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
                         ),
                         _APP_NAME,
@@ -4104,7 +4117,7 @@ namespace Boare.Cadencii {
             for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
                 if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
                     AppManager.showMessageBox(
-                        String.Format(
+                        PortUtil.formatMessage(
                             _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
                         ),
                         _APP_NAME,
@@ -4234,7 +4247,7 @@ namespace Boare.Cadencii {
                         notes++;
                     }
                 }
-                m_midi_imexport_dialog.listTrack.addItem( "", new BListViewItem( new String[] { i.ToString(), track_name, notes.ToString() } ) );
+                m_midi_imexport_dialog.listTrack.addItem( "", new BListViewItem( new String[] { i + "", track_name, notes + "" } ) );
                 m_midi_imexport_dialog.listTrack.setItemCheckedAt( "", i, true );
             }
 
@@ -4490,7 +4503,7 @@ namespace Boare.Cadencii {
                 m_midi_imexport_dialog = new FormMidiImExport();
             }
             m_midi_imexport_dialog.listTrack.clear();
-            VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().Clone();
+            VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
 
             for ( int i = 0; i < vsq.Track.size(); i++ ) {
                 VsqTrack track = vsq.Track.get( i );
@@ -4499,7 +4512,7 @@ namespace Boare.Cadencii {
                     Object obj = itr.next();
                     notes++;
                 }
-                m_midi_imexport_dialog.listTrack.addItem( "", new BListViewItem( new String[] { i.ToString(), track.getName(), notes.ToString() } ) );
+                m_midi_imexport_dialog.listTrack.addItem( "", new BListViewItem( new String[] { i + "", track.getName(), notes + "" } ) );
                 m_midi_imexport_dialog.listTrack.setItemCheckedAt( "", i, true );
             }
             m_midi_imexport_dialog.setMode( FormMidiImExport.FormMidiMode.EXPORT );
@@ -4535,7 +4548,7 @@ namespace Boare.Cadencii {
                         fs.write( (byte)0x00 );
                         fs.write( (byte)0x01 );
                         //トラック数
-                        VsqFile.writeUnsignedShort( fs, (ushort)track_count );
+                        VsqFile.writeUnsignedShort( fs, track_count );
                         //時間単位
                         fs.write( (byte)0x01 );
                         fs.write( (byte)0xe0 );
@@ -4592,14 +4605,14 @@ namespace Boare.Cadencii {
                                     }
                                     MidiEvent noteon = new MidiEvent();
                                     noteon.clock = clock_on;
-                                    noteon.firstByte = 0x90;
+                                    noteon.firstByte = (byte)0x90;
                                     noteon.data = new byte[2];
                                     noteon.data[0] = (byte)ve.ID.Note;
                                     noteon.data[1] = (byte)ve.ID.Dynamics;
                                     events.add( noteon );
                                     MidiEvent noteoff = new MidiEvent();
                                     noteoff.clock = clock_off;
-                                    noteoff.firstByte = 0x80;
+                                    noteoff.firstByte = (byte)0x80;
                                     noteoff.data = new byte[2];
                                     noteoff.data[0] = (byte)ve.ID.Note;
                                     noteoff.data[1] = 0x7f;
@@ -4618,10 +4631,10 @@ namespace Boare.Cadencii {
                                     }
                                     MidiEvent add = new MidiEvent();
                                     add.clock = clock_on;
-                                    add.firstByte = 0xff;
+                                    add.firstByte = (byte)0xff;
                                     byte[] lyric = PortUtil.getEncodedByte( "Shift_JIS", ve.ID.LyricHandle.L0.Phrase );
                                     add.data = new byte[lyric.Length + 1];
-                                    add.data[0] = 0x05;
+                                    add.data[0] = (byte)0x05;
                                     for ( int j = 0; j < lyric.Length; j++ ) {
                                         add.data[j + 1] = lyric[j];
                                     }
@@ -4711,7 +4724,7 @@ namespace Boare.Cadencii {
                             // チャンクの先頭に戻ってチャンクのサイズを記入
                             long pos = fs.getFilePointer();
                             fs.seek( first_position - 4 );
-                            VsqFile.writeUnsignedInt( fs, (uint)(pos - first_position) );
+                            VsqFile.writeUnsignedInt( fs, pos - first_position );
                             // ファイルを元の位置にseek
                             fs.seek( pos );
                         }
@@ -4824,9 +4837,9 @@ namespace Boare.Cadencii {
             }
             m_midi_imexport_dialog.listTrack.clear();
             for ( int track = 1; track < vsq.Track.size(); track++ ) {
-                m_midi_imexport_dialog.listTrack.addItem( "", new BListViewItem( new String[] { track.ToString(), 
+                m_midi_imexport_dialog.listTrack.addItem( "", new BListViewItem( new String[] { track + "", 
                                                                                                 vsq.Track.get( track ).getName(),
-                                                                                                vsq.Track.get( track ).getEventCount().ToString() } ) );
+                                                                                                vsq.Track.get( track ).getEventCount() + "" } ) );
                 m_midi_imexport_dialog.listTrack.setItemCheckedAt( "", track - 1, true );
             }
             m_midi_imexport_dialog.setMode( FormMidiImExport.FormMidiMode.IMPORT_VSQ );
@@ -5138,7 +5151,7 @@ namespace Boare.Cadencii {
             m_preference_dlg.setPlatform( AppManager.editorConfig.Platform );
             m_preference_dlg.setKeepLyricInputMode( AppManager.editorConfig.KeepLyricInputMode );
             m_preference_dlg.setPxTrackHeight( AppManager.editorConfig.PxTrackHeight );
-            m_preference_dlg.setMouseHoverTime( AppManager.editorConfig.MouseHoverTime );
+            m_preference_dlg.setMouseHoverTime( AppManager.editorConfig.getMouseHoverTime() );
             m_preference_dlg.setPlayPreviewWhenRightClick( AppManager.editorConfig.PlayPreviewWhenRightClick );
             m_preference_dlg.setCurveSelectingQuantized( AppManager.editorConfig.CurveSelectingQuantized );
             m_preference_dlg.setCurveVisibleAccent( AppManager.editorConfig.CurveVisibleAccent );
@@ -5204,7 +5217,11 @@ namespace Boare.Cadencii {
                     applyLanguage();
                     m_preference_dlg.ApplyLanguage();
                     AppManager.mixerWindow.applyLanguage();
+#if JAVA
+                    if ( m_versioninfo != null ) {
+#else
                     if ( m_versioninfo != null && !m_versioninfo.IsDisposed ) {
+#endif
                         m_versioninfo.ApplyLanguage();
                     }
 #if ENABLE_PROPERTY
@@ -5229,7 +5246,7 @@ namespace Boare.Cadencii {
                     updateDrawObjectList();
 #endif
                 }
-                AppManager.editorConfig.MouseHoverTime = m_preference_dlg.getMouseHoverTime();
+                AppManager.editorConfig.setMouseHoverTime( m_preference_dlg.getMouseHoverTime() );
                 AppManager.editorConfig.PlayPreviewWhenRightClick = m_preference_dlg.isPlayPreviewWhenRightClick();
                 AppManager.editorConfig.CurveSelectingQuantized = m_preference_dlg.isCurveSelectingQuantized();
 
@@ -5326,19 +5343,31 @@ namespace Boare.Cadencii {
                 if ( menu != null ) {
                     String parent = "";
                     MenuElement owner_item = null;
-                    Object pa = menu.getParent();
+                    if ( !(menu is BMenuItem) ) {
+                        continue;
+                    }
+                    BMenuItem casted_menu = (BMenuItem)menu;
+                    Object pa = casted_menu.getParent();
                     if ( pa != null && pa is MenuElement ) {
                         owner_item = (MenuElement)pa;
                     }
-                    if ( owner_item != null && !owner_item.getName().Equals( menuHidden.getName() ) ) {
-                        String s = owner_item.getText();
+
+                    if ( owner_item == null ) {
+                        continue;
+                    }
+                    if ( !(owner_item is BMenuItem) ) {
+                        continue;
+                    }
+                    BMenuItem casted_owner_item = (BMenuItem)owner_item;
+                    if ( !casted_owner_item.getName().Equals( menuHidden.getName() ) ) {
+                        String s = casted_owner_item.getText();
                         int i = s.IndexOf( "(&" );
                         if ( i > 0 ) {
                             s = s.Substring( 0, i );
                         }
                         parent = s + " -> ";
                     }
-                    String s1 = menu.getText();
+                    String s1 = casted_menu.getText();
                     int i1 = s1.IndexOf( "(&" );
                     if ( i1 > 0 ) {
                         s1 = s1.Substring( 0, i1 );
@@ -6012,9 +6041,11 @@ namespace Boare.Cadencii {
 
         private void vScroll_ValueChanged( Object sender, BEventArgs e ) {
             if ( m_txtbox_track_name != null ) {
+#if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
             refreshScreen();
@@ -6043,9 +6074,11 @@ namespace Boare.Cadencii {
 #endif
             AppManager.startToDrawX = (int)(hScroll.getValue() * AppManager.scaleX);
             if ( m_txtbox_track_name != null ) {
+#if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
             refreshScreen();
@@ -6200,9 +6233,11 @@ namespace Boare.Cadencii {
 
         private void picturePositionIndicator_MouseDown( Object sender, BMouseEventArgs e ) {
             if ( m_txtbox_track_name != null ) {
+#if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
 
@@ -6765,9 +6800,11 @@ namespace Boare.Cadencii {
 
         private void trackBar_MouseDown( Object sender, BMouseEventArgs e ) {
             if ( m_txtbox_track_name != null ) {
+#if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
         }
@@ -6964,9 +7001,11 @@ namespace Boare.Cadencii {
                 }
             }
             if ( m_txtbox_track_name != null ) {
+#if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
         }
@@ -6994,7 +7033,11 @@ namespace Boare.Cadencii {
 #if ENABLE_PROPERTY
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
 #else
+#if JAVA
+                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.isVisible() ) {
+#else
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.isVisible() ) {
+#endif
 #endif
                     trackSelector.requestFocus();
                 }
@@ -7795,27 +7838,33 @@ namespace Boare.Cadencii {
 
         private void pictureBox3_MouseDown( Object sender, BMouseEventArgs e ) {
             if ( m_txtbox_track_name != null ) {
+#if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
         }
 
         private void pictureBox2_MouseDown( Object sender, BMouseEventArgs e ) {
             if ( m_txtbox_track_name != null ) {
+#if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
         }
 
         private void menuStrip1_MouseDown( Object sender, BMouseEventArgs e ) {
             if ( m_txtbox_track_name != null ) {
+#if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
         }
@@ -8784,7 +8833,7 @@ namespace Boare.Cadencii {
                 }
             }
             if ( found ) {
-                AppManager.showMessageBox( string.Format( _( "file '{0}' is already registered as BGM." ), file ),
+                AppManager.showMessageBox( PortUtil.formatMessage( _( "file '{0}' is already registered as BGM." ), file ),
                                  _( "Error" ),
                                  AppManager.MSGBOX_DEFAULT_OPTION,
                                  AppManager.MSGBOX_WARNING_MESSAGE );
@@ -8810,7 +8859,7 @@ namespace Boare.Cadencii {
             }
             int index = (int)parent.getTag();
             BgmFile bgm = AppManager.getBgm( index );
-            if ( AppManager.showMessageBox( string.Format( _( "remove '{0}'?" ), bgm.file ),
+            if ( AppManager.showMessageBox( PortUtil.formatMessage( _( "remove '{0}'?" ), bgm.file ),
                                   "Cadencii",
                                   AppManager.MSGBOX_YES_NO_OPTION,
                                   AppManager.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
@@ -8971,13 +9020,41 @@ namespace Boare.Cadencii {
         /// <param name="tree"></param>
         /// <returns></returns>
         private MenuElement searchMenuItemRecurse( String name, MenuElement tree ) {
-            if ( tree.getName().Equals( name ) ) {
+            String tree_name = "";
+#if JAVA
+            if( tree instanceof Component ){
+                tree_name = ((Component)tree).getName();
+            }else{
+                return null;
+            }
+#else
+            if ( tree is System.Windows.Forms.Control ) {
+                tree_name = ((System.Windows.Forms.Control)tree).Name;
+            } else {
+                return null;
+            }
+#endif
+            if ( tree_name.Equals( name ) ) {
                 return tree;
             } else {
                 MenuElement[] subitems = tree.getSubElements();
                 for ( int i = 0; i < subitems.Length; i++ ) {
                     MenuElement tsi = subitems[i];
-                    if ( tsi.getName().Equals( name ) ) {
+                    String tsi_name = "";
+#if JAVA
+                    if( tsi instanceof Component ){
+                        tsi_name = ((Component)tsi).getName();
+                    }else{
+                        continue;
+                    }
+#else
+                    if ( tsi is System.Windows.Forms.Control ) {
+                        tsi_name = ((System.Windows.Forms.Control)tsi).Name;
+                    } else {
+                        continue;
+                    }
+#endif
+                    if ( tsi_name.Equals( name ) ) {
                         return tsi;
                     }
                     MenuElement ret = searchMenuItemRecurse( name, tsi );
@@ -9740,9 +9817,11 @@ namespace Boare.Cadencii {
 #endif
                 return;
             }
+#if !JAVA
             if ( AppManager.inputTextBox.IsDisposed ) {
                 return;
             }
+#endif
             int selected = AppManager.getSelected();
             SelectedEventEntry last_selected_event = AppManager.getLastSelectedEvent();
             String original_phrase = last_selected_event.original.ID.LyricHandle.L0.Phrase;
@@ -10653,7 +10732,21 @@ namespace Boare.Cadencii {
                     }
                     MenuElement menu = searchMenuItemFromName( key );
                     if ( menu != null ) {
-                        applyMenuItemShortcut( dict, menu, menu.getName() );
+                        String menu_name = "";
+#if JAVA
+                        if( menu instanceof Component ){
+                            menu_name = ((Component)menu).getName();
+                        }else{
+                            continue;
+                        }
+#else
+                        if ( menu is System.Windows.Forms.Control ) {
+                            menu_name = ((System.Windows.Forms.Control)menu).Name;
+                        } else {
+                            continue;
+                        }
+#endif
+                        applyMenuItemShortcut( dict, menu, menu_name );
                     }
                 }
                 if ( dict.containsKey( "menuEditCopy" ) ) {
@@ -10715,10 +10808,10 @@ namespace Boare.Cadencii {
                     if ( sub_tsi.Length == 1 ) {
                         MenuElement dd_run = sub_tsi[0];
 #if DEBUG
-                        AppManager.debugWriteLine( "    dd_run.name=" + dd_run.getName() );
+                        AppManager.debugWriteLine( "    dd_run.name=" + PortUtil.getComponentName( dd_run ) );
 #endif
-                        if ( dict.containsKey( dd_run.getName() ) ) {
-                            applyMenuItemShortcut( dict, tsi, tsi.getName() );
+                        if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
+                            applyMenuItemShortcut( dict, tsi, PortUtil.getComponentName( tsi ) );
                         }
                     }
                 }
@@ -10735,9 +10828,25 @@ namespace Boare.Cadencii {
         private void applyMenuItemShortcut( TreeMap<String, BKeys[]> dict, MenuElement item, String item_name ) {
             try {
                 if ( dict.containsKey( item_name ) ) {
-                    item.setAccelerator( PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
+#if JAVA
+                    if( item instanceof JMenuItem ){
+                        ((JMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
+                    }
+#else
+                    if ( item is BMenuItem ) {
+                        ((BMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
+                    }
+#endif
                 } else {
-                    item.setAccelerator( PortUtil.getKeyStrokeFromBKeys( new BKeys[] { BKeys.None } ) );
+#if JAVA
+                    if( item instanceof JMenuItem ){
+                        ((JMenuItem)item).setAccelerator( new BKeys[]{ BKeys.None } );
+                    }
+#else
+                    if ( item is BMenuItem ) {
+                        ((BMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( new BKeys[] { BKeys.None } ) );
+                    }
+#endif
                 }
             } catch ( Exception ex ) {
             }
@@ -12156,9 +12265,11 @@ namespace Boare.Cadencii {
 
         private void changeTrackNameCore() {
             if ( m_txtbox_track_name != null ) {
+#if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
                     m_txtbox_track_name.Dispose();
                 }
+#endif
                 m_txtbox_track_name = null;
             }
             m_txtbox_track_name = new TextBoxEx();
@@ -12183,7 +12294,7 @@ namespace Boare.Cadencii {
         private void deleteTrackCore() {
             int selected = AppManager.getSelected();
             if ( AppManager.showMessageBox(
-                    String.Format( _( "Do you wish to remove track? {0} : '{1}'" ), selected, AppManager.getVsqFile().Track.get( selected ).getName() ),
+                    PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, AppManager.getVsqFile().Track.get( selected ).getName() ),
                     _APP_NAME,
                     AppManager.MSGBOX_YES_NO_OPTION,
                     AppManager.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
@@ -13613,8 +13724,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
     #region UI Impl for Java
-    //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormMain.java
-    //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormMain.java
+    //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
+    //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
     #endregion
 #else
         #region UI Impl for C#

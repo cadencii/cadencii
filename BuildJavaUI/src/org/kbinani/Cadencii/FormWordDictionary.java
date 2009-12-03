@@ -1,3 +1,5 @@
+package org.kbinani.Cadencii;
+
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -14,6 +16,7 @@ import org.kbinani.windows.forms.BPanel;
 public class FormWordDictionary extends BForm {
     //SECTION-BEGIN-FIELD
 
+    private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private BLabel lblAvailableDictionaries = null;
     private BPanel jPanel2 = null;

@@ -11,15 +11,18 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import org.kbinani.vsq.*;
+#else
+using System;
 using Boare.Lib.Vsq;
 
 namespace Boare.Cadencii {
+#endif
 
     public class StraightRenderingQueue {
-        /*/// <summary>
-        /// 生のメタテキスト
-        /// </summary>
-        public string metatext;*/
         /// <summary>
         /// このキューのレンダリング結果のwavを、曲頭から何フレーム目にmixしたらよいかを表す
         /// </summary>
@@ -27,7 +30,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// 音源のフォルダ
         /// </summary>
-        public string oto_ini;
+        public String oto_ini;
         /// <summary>
         /// このキューのレンダリング結果の、おおよその長さ。正確な長さはレンダリング結果が出るまでは不明。
         /// </summary>
@@ -39,4 +42,6 @@ namespace Boare.Cadencii {
         public int endClock;
     }
 
+#if !JAVA
 }
+#endif

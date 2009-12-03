@@ -14,7 +14,8 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\VolumeTracker.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\VolumeTracker.java
+
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 #else
@@ -461,8 +462,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\VolumeTracker.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\VolumeTracker.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\VolumeTracker.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\VolumeTracker.java
         #endregion
 #else
         #region UI Impl for C#

@@ -40,6 +40,22 @@ namespace bocoree.windows.forms {
         public void setSplitterFixed( bool value ) {
             base.IsSplitterFixed = value;
         }
+
+        public int getPanel1MinSize() {
+            return base.Panel1MinSize;
+        }
+
+        public void setPanel1MinSize( int value ) {
+            base.Panel1MinSize = value;
+        }
+
+        public int getPanel2MinSize() {
+            return base.Panel2MinSize;
+        }
+
+        public void setPanel2MinSize( int value ) {
+            base.Panel2MinSize = value;
+        }
     }
 
 }

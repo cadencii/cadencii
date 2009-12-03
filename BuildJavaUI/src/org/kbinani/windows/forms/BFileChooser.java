@@ -5,9 +5,9 @@ import java.io.File;
 import javax.swing.JFileChooser;
 
 public class BFileChooser{
-    public final int APPROVE_OPTION = 0;
-    public final int CANCEL_OPTION = 1;
-    public final int ERROR_OPTION = -1;
+    public static final int APPROVE_OPTION = 0;
+    public static final int CANCEL_OPTION = 1;
+    public static final int ERROR_OPTION = -1;
     private JFileChooser m_dialog = null;
     
     public BFileChooser( String currentDirectoryPath ){

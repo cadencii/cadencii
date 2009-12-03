@@ -14,7 +14,8 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\VersionInfo.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\VersionInfo.java
+
 import java.awt.*;
 import java.awt.image.*;
 import org.kbinani.*;
@@ -102,7 +103,7 @@ namespace Boare.Cadencii {
         }
 
         public void ApplyLanguage() {
-            String about = String.Format( _( "About {0}" ), m_app_name );
+            String about = PortUtil.formatMessage( _( "About {0}" ), m_app_name );
             String credit = _( "Credit" );
             Dimension size1 = Util.measureString( about, btnFlip.getFont() );
             Dimension size2 = Util.measureString( credit, btnFlip.getFont() );
@@ -246,7 +247,7 @@ namespace Boare.Cadencii {
             if ( m_credit_mode ) {
                 btnFlip.setPreferredSize( new Dimension( m_button_width_about, btnFlip.getHeight() ) );
                 try {
-                    btnFlip.setText( String.Format( _( "About {0}" ), m_app_name ) );
+                    btnFlip.setText( PortUtil.formatMessage( _( "About {0}" ), m_app_name ) );
                 } catch ( Exception ex ) {
                     btnFlip.setText( "About " + m_app_name );
                 }
@@ -354,8 +355,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\VersionInfo.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\VersionInfo.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\VersionInfo.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\VersionInfo.java
         #endregion
 #else
         #region UI Impl for C#

@@ -14,9 +14,11 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormShortcutKeys.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormShortcutKeys.java
 
+import java.awt.event.*;
 import java.util.*;
+import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
@@ -353,8 +355,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormShortcutKeys.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormShortcutKeys.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormShortcutKeys.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormShortcutKeys.java
         #endregion
 #else
         #region UI Impl for C#

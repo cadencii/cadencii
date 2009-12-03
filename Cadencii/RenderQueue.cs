@@ -11,13 +11,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
 
 namespace Boare.Cadencii {
+    using boolean = System.Boolean;
+#endif
 
-    using boolean = Boolean;
-
-    class RenderQueue {
+    public class RenderQueue {
         public String ResamplerArg;
         public String WavtoolArgPrefix;
         public String WavtoolArgSuffix;
@@ -27,4 +31,6 @@ namespace Boare.Cadencii {
         public boolean ResamplerFinished;
     }
 
+#if !JAVA
 }
+#endif
