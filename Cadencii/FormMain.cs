@@ -3267,13 +3267,13 @@ namespace Boare.Cadencii {
             trackSelector.setCurveVisible( menuVisualControlTrack.isSelected() );
             if ( menuVisualControlTrack.isSelected() ) {
                 splitContainer1.setSplitterFixed( false );
-                splitContainer1.setDividerLocation( splitContainer1.Height - AppManager.lastTrackSelectorHeight - splitContainer1.getDividerSize() );
-                splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
+                splitContainer1.setDividerLocation( splitContainer1.getHeight() - AppManager.lastTrackSelectorHeight - splitContainer1.getDividerSize() );
+                splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
             } else {
-                AppManager.lastTrackSelectorHeight = splitContainer1.Height - splitContainer1.getDividerLocation() - splitContainer1.getDividerSize();
+                AppManager.lastTrackSelectorHeight = splitContainer1.getHeight() - splitContainer1.getDividerLocation() - splitContainer1.getDividerSize();
                 splitContainer1.setSplitterFixed( true );
-                splitContainer1.setDividerLocation( splitContainer1.Height - _SPL1_PANEL2_MIN_HEIGHT - splitContainer1.getDividerSize() );
-                splitContainer1.Panel2MinSize = _SPL1_PANEL2_MIN_HEIGHT;
+                splitContainer1.setDividerLocation( splitContainer1.getHeight() - _SPL1_PANEL2_MIN_HEIGHT - splitContainer1.getDividerSize() );
+                splitContainer1.setPanel2MinSize( _SPL1_PANEL2_MIN_HEIGHT );
             }
             refreshScreen();
         }
@@ -3398,7 +3398,9 @@ namespace Boare.Cadencii {
             clearTempWave();
             String tempdir = AppManager.getTempWaveDir();
             String log = PortUtil.combinePath( tempdir, "run.log" );
+#if !JAVA
             bocoree.debug.close();
+#endif
             try {
                 if ( PortUtil.isFileExists( log ) ) {
                     PortUtil.deleteFile( log );

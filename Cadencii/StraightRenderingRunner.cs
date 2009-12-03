@@ -11,6 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.media.*;
+import org.kbinani.vsq.*;
+#else
 using System;
 using System.Diagnostics;
 using Boare.Lib.Media;
@@ -21,11 +30,16 @@ using bocoree.java.util;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class StraightRenderingRunner implements RenderingRunner{
+#else
     public class StraightRenderingRunner : RenderingRunner {
+#endif
         public static String STRAIGHT_SYNTH = "vConnect.exe";
         private const int MAX_CACHE = 512;
-        private static TreeMap<String, DateTime> s_cache = new TreeMap<String, DateTime>();
+        private static TreeMap<String, double> s_cache = new TreeMap<String, double>();
         const int TEMPO = 120;
 
         boolean m_rendering = false;
@@ -456,6 +470,12 @@ namespace Boare.Cadencii {
                 }
                 tmp_file = PortUtil.combinePath( tmp_dir, hash );
                 if ( !s_cache.containsKey( hash ) || !PortUtil.isFileExists( tmp_file + ".wav" ) ) {
+#if JAVA
+                    String[] args = new String[]{ straight_synth, "\"" + tmp_file + ".usq\"", "\"" + tmp_file + ".wav\"" };
+                    ProcessBuilder pb = new ProcessBuilder( args );
+                    Process process = pb.start();
+                    process.waitFot();
+#else
                     using ( Process process = new Process() ) {
                         process.StartInfo.FileName = straight_synth;
                         process.StartInfo.Arguments = "\"" + tmp_file + ".usq\" \"" + tmp_file + ".wav\"";
@@ -463,24 +483,10 @@ namespace Boare.Cadencii {
                         process.StartInfo.CreateNoWindow = true;
                         process.StartInfo.UseShellExecute = false;
                         process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-#if DEBUG
-                        //process.StartInfo.RedirectStandardError = true;
-                        //process.StartInfo.RedirectStandardOutput = true;
-#endif
                         process.Start();
-#if DEBUG
-                        //String stdout = process.StandardOutput.ReadToEnd();
-                        //String stderr = process.StandardError.ReadToEnd();
-                        //PortUtil.println( "StraightRenderingRunner#run; stdout=" + stdout );
-                        //PortUtil.println( "StraightRenderingRunner#run; stderr=" + stderr );
-#endif
                         process.WaitForExit();
                     }
-                    /*straightdrv.init( queue.metatext, queue.oto_ini );
-                    WaveWriter ww = new WaveWriter( tmp_file + ".wav", WaveChannel.Monoral, 16, 44100 );
-                    ww.Append( straightdrv.synthesize() );
-                    ww.Close();
-                    straightdrv.uninitialize();*/
+#endif
 
 #if !DEBUG
                     try {
@@ -492,11 +498,11 @@ namespace Boare.Cadencii {
                     if ( s_cache.size() > MAX_CACHE ) {
                         // キャッシュの許容個数を超えたので、古いものを削除
                         boolean first = true;
-                        DateTime old_date = DateTime.Now;
+                        double old_date = PortUtil.getCurrentTime();
                         String old_key = "";
                         for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ) {
                             String key = (String)itr.next();
-                            DateTime time = s_cache.get( key );
+                            double time = s_cache.get( key );
                             if ( first ) {
                                 old_date = time;
                                 old_key = key;
@@ -513,7 +519,7 @@ namespace Boare.Cadencii {
                         } catch ( Exception ex ) {
                         }
                     }
-                    s_cache.put( hash, DateTime.Now );
+                    s_cache.put( hash, PortUtil.getCurrentTime() );
                 }
 
                 long next_wave_start = max_next_wave_start;
@@ -1029,4 +1035,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

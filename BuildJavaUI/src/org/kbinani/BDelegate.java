@@ -63,6 +63,7 @@ public class BDelegate{
                 }
             }
             if( same ){
+                System.out.println( "BDelegate#.ctor; method found" );
                 m_method = method;
                 break;
             }

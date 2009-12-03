@@ -74,15 +74,15 @@ namespace Boare.Cadencii {
         }
 
         public int getBeatCount() {
-            return (int)numBeat.Value;
+            return (int)numBeat.getValue();
         }
 
         public int getClock() {
-            return (int)numClock.Value;
+            return (int)numClock.getValue();
         }
 
-        public decimal getTempo() {
-            return numTempo.Value;
+        public float getTempo() {
+            return numTempo.getValue();
         }
 
         private void btnOK_Click( Object sender, BEventArgs e ) {

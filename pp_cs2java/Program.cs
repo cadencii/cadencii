@@ -246,8 +246,8 @@ class pp_cs2java {
                     string p = linetrim.Substring( 10 );
                     string include_path = Path.Combine( Path.GetDirectoryName( path ), p );
 #if DEBUG
-                    Console.WriteLine( "include_path=" + include_path );
-                    Console.WriteLine( "File.Exists(include_path)=" + File.Exists( include_path ) );
+                    //Console.WriteLine( "include_path=" + include_path );
+                    //Console.WriteLine( "File.Exists(include_path)=" + File.Exists( include_path ) );
 #endif
                     if ( File.Exists( include_path ) ) {
                         using ( StreamReader sr_include = new StreamReader( include_path ) ) {
@@ -262,13 +262,13 @@ class pp_cs2java {
                     string[] spl = s.Split( new char[] { ' ' } );
                     string section_name = spl[0];
 #if DEBUG
-                    Console.WriteLine( "include-section; section_name=" + section_name );
+                   // Console.WriteLine( "include-section; section_name=" + section_name );
 #endif
                     string p = spl[1];
                     string include_path = Path.Combine( Path.GetDirectoryName( path ), p );
 #if DEBUG
-                    Console.WriteLine( "include_path=" + include_path );
-                    Console.WriteLine( "File.Exists(include_path)=" + File.Exists( include_path ) );
+                   // Console.WriteLine( "include_path=" + include_path );
+                    //Console.WriteLine( "File.Exists(include_path)=" + File.Exists( include_path ) );
 #endif
                     if ( File.Exists( include_path ) ) {
                         using ( StreamReader sr_include = new StreamReader( include_path ) ) {
@@ -307,7 +307,7 @@ class pp_cs2java {
         using ( StreamWriter sw = new StreamWriter( tmp, false, enc ) )
         using ( StreamReader sr = new StreamReader( tmp2, Encoding.GetEncoding( s_encoding ) ) ) {
 #if DEBUG
-            Console.WriteLine( "path=" + path );
+           // Console.WriteLine( "path=" + path );
 #endif
             String line = "";
             int line_num = 0;
@@ -492,7 +492,7 @@ class pp_cs2java {
             out_path = Path.Combine( out_path, Path.GetFileNameWithoutExtension( path ) + ".java" );
         }
 #if DEBUG
-        Console.WriteLine( "pp_cs2java#preprocessCor; out_path=" + out_path );
+        //Console.WriteLine( "pp_cs2java#preprocessCor; out_path=" + out_path );
 #endif
 
         if ( File.Exists( out_path ) ) {
@@ -502,7 +502,7 @@ class pp_cs2java {
             if ( package != "" || !s_ignore_unknown_package ) {
                 string class_name = Path.GetFileNameWithoutExtension( path );
 #if DEBUG
-                Console.WriteLine( "pp_cs2java#preprocessCor; class_name=" + class_name + "; lines=" + lines );
+                //Console.WriteLine( "pp_cs2java#preprocessCor; class_name=" + class_name + "; lines=" + lines );
 #endif
                 s_classes.Add( class_name );
                 File.Copy( tmp, out_path );

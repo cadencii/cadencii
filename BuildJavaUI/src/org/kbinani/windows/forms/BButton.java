@@ -23,7 +23,7 @@ public class BButton extends JButton implements ActionListener, MouseListener, M
     
     public void actionPerformed( ActionEvent e ){
         try{
-            clickEvent.raise( new BEventArgs() );
+            clickEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
             System.out.println( "BButton#actionPerformed; ex=" + ex );
         }

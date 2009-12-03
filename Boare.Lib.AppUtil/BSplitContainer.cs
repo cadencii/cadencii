@@ -58,6 +58,14 @@ namespace Boare.Lib.AppUtil {
             m_distance_rate = m_splitter_distance / (double)(m_splitter_distance + m_panel2_distance);
         }
 
+        public int getHeight() {
+            return this.Height;
+        }
+
+        public int getWidth() {
+            return this.Width;
+        }
+
         public System.Windows.Forms.FixedPanel FixedPanel {
             get {
                 return m_fixed_panel;
@@ -245,32 +253,48 @@ namespace Boare.Lib.AppUtil {
         private void m_panel1_SizeChanged( object sender, EventArgs e ) {
             m_panel1.Invalidate( true );
         }
-        
+
+        public int getPanel1MinSize() {
+            return m_panel1_min;
+        }
+
+        public void setPanel1MinSize( int value ) {
+            int min_splitter_distance = value;
+            if ( m_splitter_distance < min_splitter_distance && min_splitter_distance > 0 ) {
+                m_splitter_distance = min_splitter_distance;
+            }
+            UpdateLayout( m_splitter_distance, m_splitter_width, value, m_panel2_min, false );
+        }
+
         public int Panel1MinSize {
             get {
-                return m_panel1_min;
+                return getPanel1MinSize();
             }
             set {
-                int min_splitter_distance = value;
-                if ( m_splitter_distance < min_splitter_distance && min_splitter_distance > 0 ) {
-                    m_splitter_distance = min_splitter_distance;
-                }
-                UpdateLayout( m_splitter_distance, m_splitter_width, value, m_panel2_min, false );
+                setPanel2MinSize( value );
             }
+        }
+
+        public int getPanel2MinSize() {
+            return m_panel2_min;
+        }
+
+        public void setPanel2MinSize( int value ) {
+            int max_splitter_distance = (m_orientation == Orientation.Horizontal) ?
+                                        this.Width - m_splitter_width - value :
+                                        this.Height - m_splitter_width - value;
+            if ( m_splitter_distance > max_splitter_distance && max_splitter_distance > 0 ) {
+                m_splitter_distance = max_splitter_distance;
+            }
+            UpdateLayout( m_splitter_distance, m_splitter_width, m_panel1_min, value, false );
         }
 
         public int Panel2MinSize {
             get {
-                return m_panel2_min;
+                return getPanel2MinSize();
             }
             set {
-                int max_splitter_distance = (m_orientation == Orientation.Horizontal) ?
-                                            this.Width - m_splitter_width - value :
-                                            this.Height - m_splitter_width - value;
-                if ( m_splitter_distance > max_splitter_distance && max_splitter_distance > 0 ) {
-                    m_splitter_distance = max_splitter_distance;
-                }
-                UpdateLayout( m_splitter_distance, m_splitter_width, m_panel1_min, value, false );
+                setPanel2MinSize( value );
             }
         }
 

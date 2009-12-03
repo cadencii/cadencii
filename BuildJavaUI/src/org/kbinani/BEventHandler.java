@@ -2,7 +2,7 @@ package org.kbinani;
 
 public class BEventHandler{
     protected BDelegate m_delegate = null;
-    protected Object m_invoker = null;
+    //protected Object m_invoker = null;
 
     protected BEventHandler( Class<?> invoker, String method_name, Class<?> return_type, Class<?> arg1, Class<?> arg2 ){
         try{
@@ -13,9 +13,9 @@ public class BEventHandler{
     }
     
     protected BEventHandler( Object invoker, String method_name, Class<?> return_type, Class<?> arg1, Class<?> arg2 ){
-        m_invoker = invoker;
+        //m_invoker = invoker;
         try{
-            m_delegate = new BDelegate( m_invoker, method_name, return_type, arg1, arg2 );
+            m_delegate = new BDelegate( invoker, method_name, return_type, arg1, arg2 );
         }catch( Exception ex ){
             System.err.println( "BEventHandler#.ctor; ex=" + ex );
         }
@@ -42,7 +42,7 @@ public class BEventHandler{
     
     public void invoke( Object... arguments ){
         try{
-            m_delegate.invoke( m_invoker, arguments );
+            m_delegate.invoke( arguments );
         }catch( Exception ex ){
             System.out.println( "BEventHandler#invoke; ex=" + ex );
         }

@@ -11,13 +11,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-//#define MAKEBAT_SP
+#if JAVA
+package org.kbinani.Cadencii;
+
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.media.*;
+import org.kbinani.vsq.*;
+#else
 using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Text;
-using System.Windows.Forms;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
@@ -25,11 +29,15 @@ using bocoree.java.io;
 using bocoree.java.util;
 
 namespace Boare.Cadencii {
-    using boolean = Boolean;
-    using Integer = Int32;
-    using java = bocoree;
+    using boolean = System.Boolean;
+    using Integer = System.Int32;
+#endif
 
+#if JAVA
+    public class UtauRenderingRUnner implements RenderingRunner{
+#else
     public class UtauRenderingRunner : RenderingRunner {
+#endif
         public const String FILEBASE = "temp.wav";
         private const int MAX_CACHE = 512;
         private static TreeMap<String, ValuePair<String, DateTime>> s_cache = new TreeMap<String, ValuePair<String, DateTime>>();
@@ -122,7 +130,11 @@ namespace Boare.Cadencii {
         public void abortRendering() {
             m_abort_required = true;
             while ( m_rendering ) {
-                Application.DoEvents();
+#if JAVA
+                Thread.sleep( 0 );
+#else
+                System.Windows.Forms.Application.DoEvents();
+#endif
             }
             int count = m_reader.size();
             for ( int i = 0; i < count; i++ ) {
@@ -150,8 +162,8 @@ namespace Boare.Cadencii {
                 double sample_length = m_vsq.getSecFromClock( m_vsq.TotalClocks ) * m_sample_rate;
                 m_abort_required = false;
                 m_progress = 0.0;
-                if ( !Directory.Exists( m_temp_dir ) ) {
-                    Directory.CreateDirectory( m_temp_dir );
+                if ( !PortUtil.isDirectoryExists( m_temp_dir ) ) {
+                    PortUtil.createDirectory( m_temp_dir );
                 }
 
 #if MAKEBAT_SP
@@ -169,7 +181,7 @@ namespace Boare.Cadencii {
                     String singer_path = singers.get( pc ).VOICEIDSTR;
 
                     //TODO: mono on linuxにて、singer_pathが取得できていない？
-                    String config_file = Path.Combine( singer_path, "oto.ini" );
+                    String config_file = PortUtil.combinePath( singer_path, "oto.ini" );
                     UtauVoiceDB db = new UtauVoiceDB( config_file );
 #if MAKEBAT_SP
                     log.Write( "    #" + pc + "; PortUtil.isFileExists( oto.ini )=" + PortUtil.isFileExists( config_file ) );
@@ -181,15 +193,15 @@ namespace Boare.Cadencii {
                 log.WriteLine( "...done" );
 #endif
 
-                String file = Path.Combine( m_temp_dir, FILEBASE );
+                String file = PortUtil.combinePath( m_temp_dir, FILEBASE );
                 if ( PortUtil.isFileExists( file ) ) {
                     PortUtil.deleteFile( file );
                 }
-                String file_whd = Path.Combine( m_temp_dir, FILEBASE + ".whd" );
+                String file_whd = PortUtil.combinePath( m_temp_dir, FILEBASE + ".whd" );
                 if ( PortUtil.isFileExists( file_whd ) ) {
                     PortUtil.deleteFile( file_whd );
                 }
-                String file_dat = Path.Combine( m_temp_dir, FILEBASE + ".dat" );
+                String file_dat = PortUtil.combinePath( m_temp_dir, FILEBASE + ".dat" );
                 if ( PortUtil.isFileExists( file_dat ) ) {
                     PortUtil.deleteFile( file_dat );
                 }
@@ -260,7 +272,7 @@ namespace Boare.Cadencii {
                         }
                         RenderQueue rq = new RenderQueue();
                         rq.ResamplerArg = "";
-                        rq.WavtoolArgPrefix = "\"" + file + "\" \"" + Path.Combine( singer, "R.wav" ) + "\" 0 " + item.Clock + "@" + String.Format( "{0:f2}", t_temp2 );
+                        rq.WavtoolArgPrefix = "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + item.Clock + "@" + String.Format( "{0:f2}", t_temp2 );
                         rq.WavtoolArgSuffix = " 0 0";
                         rq.Oto = new OtoArgs();
                         rq.FileName = "";
@@ -288,7 +300,7 @@ namespace Boare.Cadencii {
                     oa.msPreUtterance = item.UstEvent.PreUtterance;
                     oa.msOverlap = item.UstEvent.VoiceOverlap;
                     RenderQueue rq2 = new RenderQueue();
-                    String resampler_arg_prefix = "\"" + Path.Combine( singer2, lyric + ".wav" ) + "\"";
+                    String resampler_arg_prefix = "\"" + PortUtil.combinePath( singer2, lyric + ".wav" ) + "\"";
                     String resampler_arg_suffix = "\"" + note + "\" 100 " + item.UstEvent.Flags + "L" + " " + oa.msOffset + " " + millisec + " " + oa.msConsonant + " " + oa.msBlank + " 100 " + item.UstEvent.Moduration;
 
                     // ピッチを取得
@@ -348,7 +360,7 @@ namespace Boare.Cadencii {
                     }
 
                     //4_あ_C#4_550.wav
-                    String filename = Path.Combine( m_temp_dir, Misc.getmd5( s_cache.size() + resampler_arg_prefix + resampler_arg_suffix + pitch ) + ".wav" );
+                    String filename = PortUtil.combinePath( m_temp_dir, Misc.getmd5( s_cache.size() + resampler_arg_prefix + resampler_arg_suffix + pitch ) + ".wav" );
 
                     rq2.ResamplerArg = resampler_arg_prefix + " \"" + filename + "\" " + resampler_arg_suffix;
                     if ( !allzero ) {
@@ -439,6 +451,14 @@ namespace Boare.Cadencii {
 #if MAKEBAT_SP
                         bat.WriteLine( "\"" + m_resampler + "\" " + arg );
 #endif
+
+#if JAVA
+                        String[] args = m_invoke_with_wine ? new String[]{ "wine \"" + m_resampler + "\"", arg }
+                                                           : new String[]{ "\"" + m_resampler + "\"", arg };
+                        ProcessBuilder pb = new ProcessBuilder( args );
+                        Process process = pb.start();
+                        process.waitFor();                        
+#else
                         using ( Process process = new Process() ) {
                             process.StartInfo.FileName = (m_invoke_with_wine ? "wine \"" : "\"") + m_resampler + "\"";
                             process.StartInfo.Arguments = arg;
@@ -450,6 +470,7 @@ namespace Boare.Cadencii {
                             process.Start();
                             process.WaitForExit();
                         }
+#endif
                     }
                     if ( m_abort_required ) {
                         break;
@@ -915,6 +936,12 @@ namespace Boare.Cadencii {
             bocoree.debug.push_log( "wavtool arg=" + arg );
 #endif
 
+#if JAVA
+            String[] args = new String[]{ (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"", arg };
+            ProcessBuilder pb = new ProcessBuilder( args );
+            Process process = pb.start();
+            process.waitFor();
+#else
             using ( Process process = new Process() ) {
                 process.StartInfo.FileName = (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"";
                 process.StartInfo.Arguments = arg;
@@ -923,6 +950,7 @@ namespace Boare.Cadencii {
                 process.Start();
                 process.WaitForExit();
             }
+#endif
         }
 
         private static String NoteStringFromNoteNumber( int note_number ) {
@@ -932,4 +960,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif
