@@ -98,6 +98,22 @@ namespace bocoree.windows.forms {
         // root implementation of java.awt.Component
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
+        public java.awt.Dimension getMinimumSize() {
+            return new bocoree.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
+        }
+
+        public void setMinimumSize( java.awt.Dimension value ) {
+            base.MinimumSize = new System.Drawing.Size( value.width, value.height );
+        }
+
+        public java.awt.Dimension getMaximumSize() {
+            return new bocoree.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+        }
+
+        public void setMaximumSize( java.awt.Dimension value ) {
+            base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+        }
+
         public void invalidate() {
             base.Invalidate();
         }
@@ -311,14 +327,6 @@ namespace bocoree.windows.forms {
         // root implementation of java.awt.Window
         #region java.awt.Window
         // root implementation of java.awt.Window is in BForm.cs
-        public void setMinimumSize( bocoree.java.awt.Dimension size ) {
-            base.MinimumSize = new System.Drawing.Size( size.width, size.height );
-        }
-
-        public bocoree.java.awt.Dimension getMinimumSize() {
-            return new bocoree.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
-        }
-
         public void setAlwaysOnTop( boolean alwaysOnTop ) {
             base.TopMost = alwaysOnTop;
         }

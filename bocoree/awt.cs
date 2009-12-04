@@ -96,14 +96,14 @@ namespace bocoree.java.awt {
         }
     }
 
-    public class Graphics2D {
+    public class Graphics {
         public System.Drawing.Graphics nativeGraphics;
         public Color color = Color.black;
         private BasicStroke m_stroke = new BasicStroke();
         public System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush( System.Drawing.Color.Black );
         private System.Drawing.Font m_font = new System.Drawing.Font( "Arial", 10 );
 
-        public Graphics2D( System.Drawing.Graphics g ) {
+        public Graphics( System.Drawing.Graphics g ) {
             nativeGraphics = g;
         }
 
@@ -214,6 +214,12 @@ namespace bocoree.java.awt {
                 return;
             }
             nativeGraphics.DrawImage( img.image, new System.Drawing.Point( x, y ) );
+        }
+    }
+
+    public class Graphics2D : Graphics{
+        public Graphics2D( System.Drawing.Graphics g )
+            : base( g ) {
         }
     }
 

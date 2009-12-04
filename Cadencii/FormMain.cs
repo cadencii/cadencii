@@ -6106,7 +6106,7 @@ namespace Boare.Cadencii {
                         } else if ( getWidth() < x ) {
                             break;
                         }
-                        String s = (60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo).ToString( "#.00" );
+                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
                         Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 ) );
                         if ( isInRect( new Point( e.X, e.Y ), new Rectangle( x, 14, (int)size.width, 14 ) ) ) {
                             index = i;
@@ -6813,15 +6813,17 @@ namespace Boare.Cadencii {
 
         #region menuHelp
         private void menuHelpAbout_Click( Object sender, BEventArgs e ) {
+#if JAVA
+            String version_str = AppManager.getVersion();
+#else
             String version_str = AppManager.getVersion() + "\n\n" +
                                  AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.AppUtil.Util ) ) + "\n" +
                                  AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.Media.Wave ) ) + "\n" +
                                  AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.Vsq.VsqFile ) ) + "\n" +
-                                 AppManager.getAssemblyNameAndFileVersion( typeof( bocoree.math ) /*) + "\n" +
-                                 AppManager.GetAssemblyNameAndFileVersion( typeof( Boare.Cadencii.vstidrv )*/
-                                                                                                              );
+                                 AppManager.getAssemblyNameAndFileVersion( typeof( bocoree.math ) );
+#endif
             if ( m_versioninfo == null ) {
-                m_versioninfo = new Boare.Cadencii.VersionInfo( _APP_NAME, version_str );
+                m_versioninfo = new VersionInfo( _APP_NAME, version_str );
                 //m_versioninfo.Credit = Boare.Cadencii.Properties.Resources.author_list;
                 m_versioninfo.setAuthorList( _CREDIT );
 #if DEBUG
@@ -6839,7 +6841,7 @@ namespace Boare.Cadencii {
                 if ( m_versioninfo.IsDisposed ) 
 #endif
                 {
-                    m_versioninfo = new Boare.Cadencii.VersionInfo( _APP_NAME, version_str );
+                    m_versioninfo = new VersionInfo( _APP_NAME, version_str );
                     //m_versioninfo.Credit = Boare.Cadencii.Properties.Resources.author_list;
                     m_versioninfo.setAuthorList( _CREDIT );
 #if DEBUG
@@ -7139,7 +7141,7 @@ namespace Boare.Cadencii {
 
         private void trackSelector_PreferredMinHeightChanged( Object sender, BEventArgs e ) {
             if ( menuVisualControlTrack.isSelected() ) {
-                splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
+                splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
 #if DEBUG
                 PortUtil.println( "FormMain#trackSelector_PreferredMinHeightChanged; splitContainer1.Panel2MinSize changed" );
 #endif
@@ -7152,7 +7154,7 @@ namespace Boare.Cadencii {
 
         private void trackSelector_RenderRequired( Object sender, int[] tracks ) {
             render( tracks );
-            Vector<Integer> t = new Vector<Integer>( tracks );
+            Vector<Integer> t = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( tracks ) ) );
             if ( t.contains( AppManager.getSelected() ) ) {
                 String file = PortUtil.combinePath( AppManager.getTempWaveDir(), AppManager.getSelected() + ".wav" );
                 if ( PortUtil.isFileExists( file ) ) {
@@ -9682,19 +9684,19 @@ namespace Boare.Cadencii {
         /// </summary>
         private void updateSplitContainer2Size() {
             if ( menuVisualWaveform.isSelected() ) {
-                splitContainer2.Panel2MinSize = _SPL2_PANEL2_MIN_HEIGHT;
+                splitContainer2.setPanel2MinSize( _SPL2_PANEL2_MIN_HEIGHT );
                 splitContainer2.setSplitterFixed( false );
-                splitContainer2.SplitterWidth = _SPL_SPLITTER_WIDTH;
-                if ( m_last_splitcontainer2_split_distance <= 0 || m_last_splitcontainer2_split_distance > splitContainer2.Height ) {
-                    splitContainer2.setDividerLocation( (int)(splitContainer2.Height * 0.9) );
+                splitContainer2.setDividerSize( _SPL_SPLITTER_WIDTH );
+                if ( m_last_splitcontainer2_split_distance <= 0 || m_last_splitcontainer2_split_distance > splitContainer2.getHeight() ) {
+                    splitContainer2.setDividerLocation( (int)(splitContainer2.getHeight() * 0.9) );
                 } else {
                     splitContainer2.setDividerLocation( m_last_splitcontainer2_split_distance );
                 }
             } else {
                 m_last_splitcontainer2_split_distance = splitContainer2.getDividerLocation();
-                splitContainer2.Panel2MinSize = 0;
-                splitContainer2.SplitterWidth = 0;
-                splitContainer2.setDividerLocation( splitContainer2.Height );
+                splitContainer2.setPanel2MinSize( 0 );
+                splitContainer2.setDividerSize( 0 );
+                splitContainer2.setDividerLocation( splitContainer2.getHeight() );
                 splitContainer2.setSplitterFixed( true );
             }
         }
@@ -9785,17 +9787,23 @@ namespace Boare.Cadencii {
 #if JAVA
             Dimension client = getContentPane().getSize();
             Dimension current = getSize();
+            return new Dimension( current_minsize.width,
+                                  splitContainer1.getPanel2MinSize() +
+                                  _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.getMinimumSize().height +
+                                  menuStripMain.getHeight() +
+                                  (current.height - client.height) +
+                                  20 );
 #else
             Dimension client = new Dimension( this.ClientSize.Width, this.ClientSize.Height );
             Dimension current = new Dimension( this.Size.Width, this.Size.Height );
-#endif
             return new Dimension( current_minsize.width,
-                                  splitContainer1.Panel2MinSize +
-                                     _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.MinimumSize.Height +
-                                     toolStripContainer.TopToolStripPanel.Height +
-                                     menuStripMain.getHeight() + statusStrip1.Height +
-                                     (current.height - client.height) +
-                                     20 );
+                                  splitContainer1.getPanel2MinSize() +
+                                  _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.getMinimumSize().height +
+                                  toolStripContainer.TopToolStripPanel.Height +
+                                  menuStripMain.getHeight() + statusStrip1.Height +
+                                  (current.height - client.height) +
+                                  20 );
+#endif
         }
 
         /// <summary>
@@ -13106,7 +13114,7 @@ namespace Boare.Cadencii {
             AppManager.baseFont9OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont9 );
         }
 
-        private void picturePositionIndicatorDrawTo( Graphics2D g ) {
+        private void picturePositionIndicatorDrawTo( java.awt.Graphics g ) {
             Font SMALL_FONT = null;
             try {
                 SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
@@ -13189,7 +13197,7 @@ namespace Boare.Cadencii {
                         if ( width < x ) {
                             break;
                         }
-                        String s = (60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo).ToString( "#.00" );
+                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
                         if ( AppManager.isSelectedTempoContains( clock ) ) {
                             g.setColor( AppManager.getHilightColor() );
                             g.drawString( s, x + 4, 21 );

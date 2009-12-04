@@ -28,6 +28,7 @@ using Boare.Lib.Vsq;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.util;
+using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
@@ -37,7 +38,7 @@ namespace Boare.Cadencii {
 #if JAVA
     public class PictPianoRoll extends BPanel {
 #else
-    public class PictPianoRoll : PictureBox {
+    public class PictPianoRoll : BPictureBox {
 #endif
 
 #if JAVA
