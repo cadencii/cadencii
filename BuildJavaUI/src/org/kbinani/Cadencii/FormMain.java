@@ -24,6 +24,8 @@ import org.kbinani.windows.forms.BSplitPane;
 import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BVScrollBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -294,6 +296,17 @@ public class FormMain extends BForm {
     private BPanel jPanel1 = null;
     private BPanel jPanel3 = null;
     private BLabel statusLabel = null;
+    private JMenu menuHidden = null;
+    private JMenuItem menuHiddenEditLyric = null;
+    private JMenuItem menuHiddenEditFlipToolPointerPencil = null;
+    private JMenuItem menuHiddenEditFlipToolPointerEraser = null;
+    private JMenuItem menuHiddenVisualForwardParameter = null;
+    private JMenuItem menuHiddenVisualBackwardParameter = null;
+    private JMenuItem menuHiddenTrackNext = null;
+    private JMenuItem menuHiddenTrackBack = null;
+    private JMenuItem menuHiddenCopy = null;
+    private JMenuItem menuHiddenPaste = null;
+    private JMenuItem menuHiddenCut = null;
 
     //SECTION-END-FIELD
     /**
@@ -351,6 +364,7 @@ public class FormMain extends BForm {
             jBMenuBar.add(getMenuScript());
             jBMenuBar.add(getMenuSetting());
             jBMenuBar.add(getMenuHelp());
+            jBMenuBar.add(getMenuHidden());
         }
         return jBMenuBar;
     }
@@ -3849,6 +3863,159 @@ public class FormMain extends BForm {
             jPanel3.add(statusLabel, null);
         }
         return jPanel3;
+    }
+
+    /**
+     * This method initializes menuHidden	
+     * 	
+     * @return javax.swing.JMenu	
+     */
+    private JMenu getMenuHidden() {
+        if (menuHidden == null) {
+            menuHidden = new JMenu();
+            menuHidden.setText("Hidden");
+            menuHidden.add(getMenuHiddenEditLyric());
+            menuHidden.add(getMenuHiddenEditFlipToolPointerPencil());
+            menuHidden.add(getMenuHiddenEditFlipToolPointerEraser());
+            menuHidden.add(getMenuHiddenVisualForwardParameter());
+            menuHidden.add(getMenuHiddenVisualBackwardParameter());
+            menuHidden.add(getMenuHiddenTrackNext());
+            menuHidden.add(getMenuHiddenTrackBack());
+            menuHidden.add(getMenuHiddenCopy());
+            menuHidden.add(getMenuHiddenPaste());
+            menuHidden.add(getMenuHiddenCut());
+        }
+        return menuHidden;
+    }
+
+    /**
+     * This method initializes menuHiddenEditLyric	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenEditLyric() {
+        if (menuHiddenEditLyric == null) {
+            menuHiddenEditLyric = new JMenuItem();
+            menuHiddenEditLyric.setText("Start Lyric Input");
+        }
+        return menuHiddenEditLyric;
+    }
+
+    /**
+     * This method initializes menuHiddenEditFlipToolPointerPencil	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenEditFlipToolPointerPencil() {
+        if (menuHiddenEditFlipToolPointerPencil == null) {
+            menuHiddenEditFlipToolPointerPencil = new JMenuItem();
+            menuHiddenEditFlipToolPointerPencil.setText("Change Tool Pointer / Pencil");
+        }
+        return menuHiddenEditFlipToolPointerPencil;
+    }
+
+    /**
+     * This method initializes menuHiddenEditFlipToolPointerEraser	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenEditFlipToolPointerEraser() {
+        if (menuHiddenEditFlipToolPointerEraser == null) {
+            menuHiddenEditFlipToolPointerEraser = new JMenuItem();
+            menuHiddenEditFlipToolPointerEraser.setText("Change Tool Pointer/ Eraser");
+        }
+        return menuHiddenEditFlipToolPointerEraser;
+    }
+
+    /**
+     * This method initializes menuHiddenVisualForwardParameter	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenVisualForwardParameter() {
+        if (menuHiddenVisualForwardParameter == null) {
+            menuHiddenVisualForwardParameter = new JMenuItem();
+            menuHiddenVisualForwardParameter.setText("Next Control Curve");
+        }
+        return menuHiddenVisualForwardParameter;
+    }
+
+    /**
+     * This method initializes menuHiddenVisualBackwardParameter	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenVisualBackwardParameter() {
+        if (menuHiddenVisualBackwardParameter == null) {
+            menuHiddenVisualBackwardParameter = new JMenuItem();
+            menuHiddenVisualBackwardParameter.setText("Previous Control Curve");
+        }
+        return menuHiddenVisualBackwardParameter;
+    }
+
+    /**
+     * This method initializes menuHiddenTrackNext	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenTrackNext() {
+        if (menuHiddenTrackNext == null) {
+            menuHiddenTrackNext = new JMenuItem();
+            menuHiddenTrackNext.setText("Next Track");
+        }
+        return menuHiddenTrackNext;
+    }
+
+    /**
+     * This method initializes menuHiddenTrackBack	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenTrackBack() {
+        if (menuHiddenTrackBack == null) {
+            menuHiddenTrackBack = new JMenuItem();
+            menuHiddenTrackBack.setText("Previous Track");
+        }
+        return menuHiddenTrackBack;
+    }
+
+    /**
+     * This method initializes menuHiddenCopy	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenCopy() {
+        if (menuHiddenCopy == null) {
+            menuHiddenCopy = new JMenuItem();
+            menuHiddenCopy.setText("Copy");
+        }
+        return menuHiddenCopy;
+    }
+
+    /**
+     * This method initializes menuHiddenPaste	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenPaste() {
+        if (menuHiddenPaste == null) {
+            menuHiddenPaste = new JMenuItem();
+            menuHiddenPaste.setText("Paste");
+        }
+        return menuHiddenPaste;
+    }
+
+    /**
+     * This method initializes menuHiddenCut	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuHiddenCut() {
+        if (menuHiddenCut == null) {
+            menuHiddenCut = new JMenuItem();
+            menuHiddenCut.setText("Cut");
+        }
+        return menuHiddenCut;
     }
 
     //SECTION-END-METHOD

@@ -392,7 +392,7 @@ namespace Boare.Cadencii {
             ret.AttachedCurves = (AttachedCurve)AttachedCurves.clone();
             /*ret.m_pitch.Clear();
             for ( int i = 0; i < m_pitch.Count; i++ ) {
-                ret.m_pitch.Add( (VsqBPList)m_pitch[i].Clone() );
+                ret.m_pitch.Add( (VsqBPList)m_pitch[i].clone() );
             }*/
             c = BgmFiles.size();
             for ( int i = 0; i < c; i++ ) {
@@ -441,7 +441,7 @@ namespace Boare.Cadencii {
             command.args[0] = track;
             command.args[1] = item.clone();
             command.args[2] = attached_curve.clone();
-            //command.Args[3] = pitch.Clone();
+            //command.Args[3] = pitch.clone();
             return command;
         }
 
@@ -458,7 +458,7 @@ namespace Boare.Cadencii {
             command.args[1] = mixer;
             command.args[2] = position;
             command.args[3] = attached_curve.clone();
-            //command.Args[4] = pitch.Clone();
+            //command.Args[4] = pitch.clone();
             return command;
         }
 

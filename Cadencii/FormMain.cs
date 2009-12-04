@@ -4660,7 +4660,7 @@ namespace Boare.Cadencii {
                                 for ( int j = 0; j < nrpn.Length; j++ ) {
                                     MidiEvent me = new MidiEvent();
                                     me.clock = nrpn[j].getClock();
-                                    me.firstByte = 0xb0;
+                                    me.firstByte = (byte)0xb0;
                                     me.data = new byte[2];
                                     me.data[0] = nrpn[j].getParameter();
                                     me.data[1] = nrpn[j].Value;
@@ -5299,7 +5299,7 @@ namespace Boare.Cadencii {
                 AppManager.updateAutoBackupTimerStatus();
 
                 if ( menuVisualControlTrack.isSelected() ) {
-                    splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
+                    splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
                 }
 
                 AppManager.saveConfig();
@@ -5687,7 +5687,7 @@ namespace Boare.Cadencii {
             }
 
             for ( int j = 0; j < ids.Length - 1; j++ ) {
-                ids[j].Length = clocks[j + 1] - clocks[j];
+                ids[j].setLength( clocks[j + 1] - clocks[j] );
             }
             CadenciiCommand run = new CadenciiCommand(
                 VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(), internalids, ids ) );
@@ -5718,7 +5718,7 @@ namespace Boare.Cadencii {
                     int clock_start = AppManager.getVsqFile().getClockFromBarCount( pos );
                     int clock_end = AppManager.getVsqFile().getClockFromBarCount( pos + length );
                     int dclock = clock_end - clock_start;
-                    VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().Clone();
+                    VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().clone();
 
                     for ( int track = 1; track < temp.Track.size(); track++ ) {
                         BezierCurves newbc = new BezierCurves();
@@ -5763,7 +5763,7 @@ namespace Boare.Cadencii {
                                     adding1.id = bc.id;
                                     list.add( adding1 );
                                 } else {
-                                    list.add( (BezierChain)bc.Clone() );
+                                    list.add( (BezierChain)bc.clone() );
                                 }
                             }
 
@@ -5786,7 +5786,7 @@ namespace Boare.Cadencii {
                             VsqBPList src = AppManager.getVsqFile().Track.get( track ).getCurve( curve.getName() );
                             target.clear();
                             for ( Iterator itr = src.keyClockIterator(); itr.hasNext(); ) {
-                                int key = (int)itr.next();
+                                int key = (Integer)itr.next();
                                 if ( key >= clock_start ) {
                                     target.add( key + dclock, src.getValue( key ) );
                                 } else {
@@ -5841,7 +5841,7 @@ namespace Boare.Cadencii {
 
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 if ( dlg.showDialog() == BDialogResult.OK ) {
-                    VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().Clone();
+                    VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().clone();
                     int start = dlg.getStart() + AppManager.getVsqFile().getPreMeasure() - 1;
                     int end = dlg.getEnd() + AppManager.getVsqFile().getPreMeasure() - 1;
 #if DEBUG
@@ -5903,7 +5903,7 @@ namespace Boare.Cadencii {
                                             bc.points.get( i ).setBase( new PointD( t.getX() - dclock, t.getY() ) );
                                         }
                                     }
-                                    list.add( (BezierChain)bc.Clone() );
+                                    list.add( (BezierChain)bc.clone() );
                                 }
                             }
 
@@ -5930,7 +5930,7 @@ namespace Boare.Cadencii {
         }
 
         private void menuJobNormalize_Click( Object sender, BEventArgs e ) {
-            VsqFile work = (VsqFile)AppManager.getVsqFile().Clone();
+            VsqFile work = (VsqFile)AppManager.getVsqFile().clone();
             int track = AppManager.getSelected();
             boolean changed = true;
             boolean total_changed = false;
@@ -6032,7 +6032,7 @@ namespace Boare.Cadencii {
 
         #region vScroll
         private void vScroll_Enter( Object sender, BEventArgs e ) {
-            pictPianoRoll.Select();
+            pictPianoRoll.requestFocus();
         }
 
         private void vScroll_Resize( Object sender, BEventArgs e ) {
@@ -6054,7 +6054,7 @@ namespace Boare.Cadencii {
 
         #region hScroll
         private void hScroll_Enter( Object sender, BEventArgs e ) {
-            pictPianoRoll.Select();
+            pictPianoRoll.requestFocus();
         }
 
         private void hScroll_Resize( Object sender, BEventArgs e ) {
@@ -6091,7 +6091,7 @@ namespace Boare.Cadencii {
         }
 
         private void picturePositionIndicator_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
-            if ( e.X < AppManager.keyWidth || Width - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
                 return;
             }
             if ( e.Button == BMouseButtons.Left ) {
@@ -6103,7 +6103,7 @@ namespace Boare.Cadencii {
                         int x = AppManager.xCoordFromClocks( clock );
                         if ( x < 0 ) {
                             continue;
-                        } else if ( Width < x ) {
+                        } else if ( getWidth() < x ) {
                             break;
                         }
                         String s = (60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo).ToString( "#.00" );
@@ -6241,7 +6241,7 @@ namespace Boare.Cadencii {
                 m_txtbox_track_name = null;
             }
 
-            if ( e.X < AppManager.keyWidth || Width - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
                 return;
             }
 
@@ -6275,7 +6275,7 @@ namespace Boare.Cadencii {
                         int x = AppManager.xCoordFromClocks( clock );
                         if ( x < 0 ) {
                             continue;
-                        } else if ( Width < x ) {
+                        } else if ( getWidth() < x ) {
                             break;
                         }
                         String s = (60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo).ToString( "#.00" );
@@ -6395,7 +6395,7 @@ namespace Boare.Cadencii {
         }
 
         private void picturePositionIndicator_MouseClick( Object sender, BMouseEventArgs e ) {
-            if ( e.X < AppManager.keyWidth || Width - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
                 return;
             }
 
@@ -6495,73 +6495,69 @@ namespace Boare.Cadencii {
                             AppManager.clearSelectedEvent();
                             AppManager.clearSelectedTempo();
                             AppManager.clearSelectedTimesig();
-                            switch ( AppManager.getSelectedTool() ) {
-                                case EditTool.ARROW:
-                                case EditTool.ERASER:
-                                    break;
-                                case EditTool.PENCIL:
-                                case EditTool.LINE:
-                                    int changing_clock = AppManager.clockFromXCoord( e.X );
-                                    int changing_tempo = AppManager.getVsqFile().getTempoAt( changing_clock );
-                                    int bar_count;
-                                    int bar_top_clock;
-                                    int local_denominator, local_numerator;
-                                    bar_count = AppManager.getVsqFile().getBarCountFromClock( changing_clock );
-                                    bar_top_clock = AppManager.getVsqFile().getClockFromBarCount( bar_count );
-                                    int index2 = -1;
-                                    for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
-                                        if ( AppManager.getVsqFile().TimesigTable.get( i ).BarCount > bar_count ) {
-                                            index2 = i;
-                                            break;
-                                        }
+                            EditTool selected = AppManager.getSelectedTool();
+                            if ( selected == EditTool.PENCIL ||
+                                selected == EditTool.LINE ) {
+                                int changing_clock = AppManager.clockFromXCoord( e.X );
+                                int changing_tempo = AppManager.getVsqFile().getTempoAt( changing_clock );
+                                int bar_count;
+                                int bar_top_clock;
+                                int local_denominator, local_numerator;
+                                bar_count = AppManager.getVsqFile().getBarCountFromClock( changing_clock );
+                                bar_top_clock = AppManager.getVsqFile().getClockFromBarCount( bar_count );
+                                int index2 = -1;
+                                for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
+                                    if ( AppManager.getVsqFile().TimesigTable.get( i ).BarCount > bar_count ) {
+                                        index2 = i;
+                                        break;
                                     }
-                                    if ( index2 >= 1 ) {
-                                        local_denominator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Denominator;
-                                        local_numerator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Numerator;
-                                    } else {
-                                        local_denominator = AppManager.getVsqFile().TimesigTable.get( 0 ).Denominator;
-                                        local_numerator = AppManager.getVsqFile().TimesigTable.get( 0 ).Numerator;
-                                    }
-                                    int clock_per_beat = 480 * 4 / local_denominator;
-                                    int clocks_in_bar = changing_clock - bar_top_clock;
-                                    int beat_in_bar = clocks_in_bar / clock_per_beat + 1;
-                                    int clocks_in_beat = clocks_in_bar - (beat_in_bar - 1) * clock_per_beat;
-                                    FormTempoConfig dlg = null;
-                                    try {
-                                        dlg = new FormTempoConfig( bar_count - AppManager.getVsqFile().getPreMeasure() + 1,
-                                                                   beat_in_bar,
-                                                                   local_numerator,
-                                                                   clocks_in_beat,
-                                                                   clock_per_beat,
-                                                                   (float)(6e7 / changing_tempo),
-                                                                   AppManager.getVsqFile().getPreMeasure() );
-                                        dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                        if ( dlg.showDialog() == BDialogResult.OK ) {
-                                            int new_beat = dlg.getBeatCount();
-                                            int new_clocks_in_beat = dlg.getClock();
-                                            int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
+                                }
+                                if ( index2 >= 1 ) {
+                                    local_denominator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Denominator;
+                                    local_numerator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Numerator;
+                                } else {
+                                    local_denominator = AppManager.getVsqFile().TimesigTable.get( 0 ).Denominator;
+                                    local_numerator = AppManager.getVsqFile().TimesigTable.get( 0 ).Numerator;
+                                }
+                                int clock_per_beat = 480 * 4 / local_denominator;
+                                int clocks_in_bar = changing_clock - bar_top_clock;
+                                int beat_in_bar = clocks_in_bar / clock_per_beat + 1;
+                                int clocks_in_beat = clocks_in_bar - (beat_in_bar - 1) * clock_per_beat;
+                                FormTempoConfig dlg = null;
+                                try {
+                                    dlg = new FormTempoConfig( bar_count - AppManager.getVsqFile().getPreMeasure() + 1,
+                                                               beat_in_bar,
+                                                               local_numerator,
+                                                               clocks_in_beat,
+                                                               clock_per_beat,
+                                                               (float)(6e7 / changing_tempo),
+                                                               AppManager.getVsqFile().getPreMeasure() );
+                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
+                                    if ( dlg.showDialog() == BDialogResult.OK ) {
+                                        int new_beat = dlg.getBeatCount();
+                                        int new_clocks_in_beat = dlg.getClock();
+                                        int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
 #if DEBUG
-                                            AppManager.debugWriteLine( "    new_beat=" + new_beat );
-                                            AppManager.debugWriteLine( "    new_clocks_in_beat=" + new_clocks_in_beat );
-                                            AppManager.debugWriteLine( "    changing_clock=" + changing_clock );
-                                            AppManager.debugWriteLine( "    new_clock=" + new_clock );
+                                        AppManager.debugWriteLine( "    new_beat=" + new_beat );
+                                        AppManager.debugWriteLine( "    new_clocks_in_beat=" + new_clocks_in_beat );
+                                        AppManager.debugWriteLine( "    changing_clock=" + changing_clock );
+                                        AppManager.debugWriteLine( "    new_clock=" + new_clock );
 #endif
-                                            CadenciiCommand run = new CadenciiCommand(
-                                                VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
-                                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                                            setEdited( true );
-                                            refreshScreen();
-                                        }
-                                    } catch ( Exception ex ) {
-                                    } finally {
-                                        if ( dlg != null ) {
-                                            try {
-                                                dlg.close();
-                                            } catch ( Exception ex2 ) {
-                                            }
+                                        CadenciiCommand run = new CadenciiCommand(
+                                            VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                        setEdited( true );
+                                        refreshScreen();
+                                    }
+                                } catch ( Exception ex ) {
+                                } finally {
+                                    if ( dlg != null ) {
+                                        try {
+                                            dlg.close();
+                                        } catch ( Exception ex2 ) {
                                         }
                                     }
-                                    break;
+                                }
                             }
                             #endregion
                         }
@@ -6638,67 +6634,63 @@ namespace Boare.Cadencii {
                             AppManager.clearSelectedEvent();
                             AppManager.clearSelectedTempo();
                             AppManager.clearSelectedTimesig();
-                            switch ( AppManager.getSelectedTool() ) {
-                                case EditTool.ERASER:
-                                case EditTool.ARROW:
-                                    break;
-                                case EditTool.PENCIL:
-                                case EditTool.LINE:
-                                    int pre_measure = AppManager.getVsqFile().getPreMeasure();
-                                    int clock = AppManager.clockFromXCoord( e.X );
-                                    int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
-                                    int numerator, denominator;
-                                    Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
-                                    int total_clock = AppManager.getVsqFile().TotalClocks;
-                                    //int max_barcount = AppManager.VsqFile.getBarCountFromClock( total_clock ) - pre_measure + 1;
-                                    //int min_barcount = 1;
+                            EditTool selected = AppManager.getSelectedTool();
+                            if ( selected == EditTool.PENCIL ||
+                                selected == EditTool.LINE ) {
+                                int pre_measure = AppManager.getVsqFile().getPreMeasure();
+                                int clock = AppManager.clockFromXCoord( e.X );
+                                int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
+                                int numerator, denominator;
+                                Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
+                                int total_clock = AppManager.getVsqFile().TotalClocks;
+                                //int max_barcount = AppManager.VsqFile.getBarCountFromClock( total_clock ) - pre_measure + 1;
+                                //int min_barcount = 1;
 #if DEBUG
-                                    AppManager.debugWriteLine( "FormMain.picturePositionIndicator_MouseClick; bar_count=" + (bar_count - pre_measure + 1) );
+                                AppManager.debugWriteLine( "FormMain.picturePositionIndicator_MouseClick; bar_count=" + (bar_count - pre_measure + 1) );
 #endif
-                                    FormBeatConfig dlg = null;
-                                    try {
-                                        dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
-                                        dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                        if ( dlg.showDialog() == BDialogResult.OK ) {
-                                            if ( dlg.isEndSpecified() ) {
-                                                int[] new_barcounts = new int[2];
-                                                int[] numerators = new int[2];
-                                                int[] denominators = new int[2];
-                                                int[] barcounts = new int[2];
-                                                new_barcounts[0] = dlg.getStart() + pre_measure - 1;
-                                                new_barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
-                                                numerators[0] = dlg.getNumerator();
-                                                numerators[1] = timesig.numerator;
+                                FormBeatConfig dlg = null;
+                                try {
+                                    dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
+                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
+                                    if ( dlg.showDialog() == BDialogResult.OK ) {
+                                        if ( dlg.isEndSpecified() ) {
+                                            int[] new_barcounts = new int[2];
+                                            int[] numerators = new int[2];
+                                            int[] denominators = new int[2];
+                                            int[] barcounts = new int[2];
+                                            new_barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                            new_barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
+                                            numerators[0] = dlg.getNumerator();
+                                            numerators[1] = timesig.numerator;
 
-                                                denominators[0] = dlg.getDenominator();
-                                                denominators[1] = timesig.denominator;
+                                            denominators[0] = dlg.getDenominator();
+                                            denominators[1] = timesig.denominator;
 
-                                                barcounts[0] = dlg.getStart() + pre_measure - 1;
-                                                barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
-                                                CadenciiCommand run = new CadenciiCommand(
-                                                    VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
-                                                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                                                setEdited( true );
-                                            } else {
-                                                CadenciiCommand run = new CadenciiCommand(
-                                                    VsqCommand.generateCommandUpdateTimesig( bar_count,
-                                                                                   dlg.getStart() + pre_measure - 1,
-                                                                                   dlg.getNumerator(),
-                                                                                   dlg.getDenominator() ) );
-                                                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                                                setEdited( true );
-                                            }
-                                        }
-                                    } catch ( Exception ex ) {
-                                    } finally {
-                                        if ( dlg != null ) {
-                                            try {
-                                                dlg.close();
-                                            } catch ( Exception ex2 ) {
-                                            }
+                                            barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                            barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
+                                            CadenciiCommand run = new CadenciiCommand(
+                                                VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
+                                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                            setEdited( true );
+                                        } else {
+                                            CadenciiCommand run = new CadenciiCommand(
+                                                VsqCommand.generateCommandUpdateTimesig( bar_count,
+                                                                               dlg.getStart() + pre_measure - 1,
+                                                                               dlg.getNumerator(),
+                                                                               dlg.getDenominator() ) );
+                                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                            setEdited( true );
                                         }
                                     }
-                                    break;
+                                } catch ( Exception ex ) {
+                                } finally {
+                                    if ( dlg != null ) {
+                                        try {
+                                            dlg.close();
+                                        } catch ( Exception ex2 ) {
+                                        }
+                                    }
+                                }
                             }
                             #endregion
                         }
@@ -6795,7 +6787,7 @@ namespace Boare.Cadencii {
 
         #region trackBar
         private void trackBar_Enter( Object sender, BEventArgs e ) {
-            pictPianoRoll.Select();
+            pictPianoRoll.requestFocus();
         }
 
         private void trackBar_MouseDown( Object sender, BMouseEventArgs e ) {
@@ -6869,7 +6861,7 @@ namespace Boare.Cadencii {
 #if DEBUG
             /*InputBox ib = new InputBox( "input shift seconds" );
             if ( ib.ShowDialog() == DialogResult.OK ) {
-                VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().Clone();
+                VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
                 VsqFileEx.shift( vsq, double.Parse( ib.Result ) );
                 CadenciiCommand run = VsqFileEx.generateCommandReplace( vsq );
                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
@@ -7784,7 +7776,7 @@ namespace Boare.Cadencii {
                 SelectedBezierPoint sbp = (SelectedBezierPoint)itr.next();
                 int chain_id = sbp.chainID;
                 int point_id = sbp.pointID;
-                BezierChain chain = (BezierChain)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( trackSelector.getSelectedCurve(), chain_id ).Clone();
+                BezierChain chain = (BezierChain)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( trackSelector.getSelectedCurve(), chain_id ).clone();
                 int index = -1;
                 for ( int i = 0; i < chain.points.size(); i++ ) {
                     if ( chain.points.get( i ).getID() == point_id ) {
@@ -10904,34 +10896,25 @@ namespace Boare.Cadencii {
             cMenuPianoFixedOff.setSelected( false );
             cMenuPianoFixedTriplet.setSelected( false );
             cMenuPianoFixedDotted.setSelected( false );
-            switch ( m_pencil_mode.getMode() ) {
-                case PencilModeEnum.L1:
-                    cMenuPianoFixed01.setSelected( true );
-                    break;
-                case PencilModeEnum.L2:
-                    cMenuPianoFixed02.setSelected( true );
-                    break;
-                case PencilModeEnum.L4:
-                    cMenuPianoFixed04.setSelected( true );
-                    break;
-                case PencilModeEnum.L8:
-                    cMenuPianoFixed08.setSelected( true );
-                    break;
-                case PencilModeEnum.L16:
-                    cMenuPianoFixed16.setSelected( true );
-                    break;
-                case PencilModeEnum.L32:
-                    cMenuPianoFixed32.setSelected( true );
-                    break;
-                case PencilModeEnum.L64:
-                    cMenuPianoFixed64.setSelected( true );
-                    break;
-                case PencilModeEnum.L128:
-                    cMenuPianoFixed128.setSelected( true );
-                    break;
-                case PencilModeEnum.Off:
-                    cMenuPianoFixedOff.setSelected( true );
-                    break;
+            PencilModeEnum mode = m_pencil_mode.getMode();
+            if ( mode == PencilModeEnum.L1 ) {
+                cMenuPianoFixed01.setSelected( true );
+            } else if ( mode == PencilModeEnum.L2 ) {
+                cMenuPianoFixed02.setSelected( true );
+            } else if ( mode == PencilModeEnum.L4 ) {
+                cMenuPianoFixed04.setSelected( true );
+            } else if ( mode == PencilModeEnum.L8 ) {
+                cMenuPianoFixed08.setSelected( true );
+            } else if ( mode == PencilModeEnum.L16 ) {
+                cMenuPianoFixed16.setSelected( true );
+            } else if ( mode == PencilModeEnum.L32 ) {
+                cMenuPianoFixed32.setSelected( true );
+            } else if ( mode == PencilModeEnum.L64 ) {
+                cMenuPianoFixed64.setSelected( true );
+            } else if ( mode == PencilModeEnum.L128 ) {
+                cMenuPianoFixed128.setSelected( true );
+            } else if ( mode == PencilModeEnum.Off ) {
+                cMenuPianoFixedOff.setSelected( true );
             }
             cMenuPianoFixedTriplet.setSelected( m_pencil_mode.isTriplet() );
             cMenuPianoFixedDotted.setSelected( m_pencil_mode.isDot() );
@@ -11589,7 +11572,7 @@ namespace Boare.Cadencii {
                     }
                     VsqCommand run = VsqCommand.generateCommandEventDeleteRange( AppManager.getSelected(), ids );
                     if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                        VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().Clone();
+                        VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().clone();
                         work.executeCommand( run );
                         int stdx = AppManager.startToDrawX;
                         int start_clock = AppManager.wholeSelectedInterval.getStart();
@@ -11874,7 +11857,7 @@ namespace Boare.Cadencii {
                     }
                     for ( Iterator itr2 = copied_bezier.get( curve ).iterator(); itr2.hasNext(); ) {
                         BezierChain bc = (BezierChain)itr2.next();
-                        BezierChain bc_copy = (BezierChain)bc.Clone();
+                        BezierChain bc_copy = (BezierChain)bc.clone();
                         for ( Iterator itr3 = bc_copy.points.iterator(); itr3.hasNext(); ) {
                             BezierPoint bp = (BezierPoint)itr3.next();
                             bp.setBase( new PointD( bp.getBase().getX() + dclock, bp.getBase().getY() ) );
@@ -11915,7 +11898,7 @@ namespace Boare.Cadencii {
                 setEdited( true );
                 refreshScreen();
             } else if ( commands > 1 ) {
-                VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().Clone();
+                VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().clone();
                 if ( add_event != null ) {
                     work.executeCommand( add_event );
                 }
@@ -12109,7 +12092,7 @@ namespace Boare.Cadencii {
                 }
 
                 // クローンを作成
-                VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().Clone();
+                VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().clone();
                 if ( delete_event != null ) {
                     // 選択されたノートイベントがあれば、クローンに対して削除を実行
                     work.executeCommand( delete_event );
@@ -12243,7 +12226,7 @@ namespace Boare.Cadencii {
                     copied_chain.add( bc.extractPartialBezier( start, chain_end ) );
                 } else if ( start <= chain_start && chain_end <= end ) {
                     // (4) 全部コピーでOK
-                    copied_chain.add( (BezierChain)bc.Clone() );
+                    copied_chain.add( (BezierChain)bc.clone() );
                 }
             }
         }
@@ -12298,7 +12281,7 @@ namespace Boare.Cadencii {
                     _APP_NAME,
                     AppManager.MSGBOX_YES_NO_OPTION,
                     AppManager.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
-                //VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().Clone();
+                //VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().clone();
                 CadenciiCommand run = VsqFileEx.generateCommandDeleteTrack( AppManager.getSelected() );
                 //temp.executeCommand( run );
                 //CadenciiCommand run2 = VsqFileEx.generateCommandReplace( temp );
@@ -12319,7 +12302,7 @@ namespace Boare.Cadencii {
             int i = AppManager.getVsqFile().Track.size();
             String name = "Voice" + i;
             String singer = "Miku";
-            //VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().Clone();
+            //VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().clone();
             CadenciiCommand run = VsqFileEx.generateCommandAddTrack( new VsqTrack( name, singer ),
                                                                      new VsqMixerEntry( 0, 0, 0, 0 ),
                                                                      i,

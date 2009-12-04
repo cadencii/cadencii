@@ -215,7 +215,7 @@ namespace Boare.Cadencii {
 #if DEBUG
             bocoree.debug.push_log( "s_working_renderer=" + s_working_renderer );
 #endif
-            VsqFileEx split = (VsqFileEx)vsq.Clone();
+            VsqFileEx split = (VsqFileEx)vsq.clone();
             split.updateTotalClocks();
             int clock_start = (int)vsq.getClockFromSec( start_sec );
             int clock_end = (int)vsq.getClockFromSec( end_sec );

@@ -191,7 +191,7 @@ namespace Boare.Cadencii {
                 }
             }
 
-            m_vsq = (VsqFileEx)vsq.Clone();
+            m_vsq = (VsqFileEx)vsq.clone();
             m_started_sec = m_vsq.getSecFromClock( start_clock );
             ByRef<Integer> bar = new ByRef<Integer>();
             Timesig timesig = m_vsq.getTimesigAt( start_clock, bar );

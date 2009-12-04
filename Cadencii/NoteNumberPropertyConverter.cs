@@ -62,17 +62,17 @@ namespace Boare.Cadencii {
             if ( AppManager.editorConfig != null ) {
                 int odd = note % 12;
                 int order = (note - odd) / 12 - 2;
-                switch ( AppManager.editorConfig.PropertyWindowStatus.LastUsedNoteNumberExpression ) {
-                    case NoteNumberExpressionType.Numeric:
-                        return note + "";
-                    case NoteNumberExpressionType.International:
-                        return VsqNote.getNoteString( note );
-                    case NoteNumberExpressionType.Japanese:
-                        return jp[odd] + order;
-                    case NoteNumberExpressionType.JapaneseFixedDo:
-                        return jpfixed[odd] + order;
-                    case NoteNumberExpressionType.Deutsche:
-                        return de[odd] + order;
+                NoteNumberExpressionType exp_type = AppManager.editorConfig.PropertyWindowStatus.LastUsedNoteNumberExpression;
+                if ( exp_type == NoteNumberExpressionType.Numeric ) {
+                    return note + "";
+                } else if ( exp_type == NoteNumberExpressionType.International ) {
+                    return VsqNote.getNoteString( note );
+                } else if ( exp_type == NoteNumberExpressionType.Japanese ) {
+                    return jp[odd] + order;
+                } else if ( exp_type == NoteNumberExpressionType.JapaneseFixedDo ) {
+                    return jpfixed[odd] + order;
+                } else if ( exp_type == NoteNumberExpressionType.Deutsche ) {
+                    return de[odd] + order;
                 }
             } else {
                 return VsqNote.getNoteString( note );

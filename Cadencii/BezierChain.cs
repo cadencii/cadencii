@@ -205,7 +205,7 @@ namespace Boare.Cadencii {
                 }
                 if ( t_start <= this.points.get( i ).getBase().getX() && this.points.get( i ).getBase().getX() <= t_end ) {
                     if ( !t_start_added ) {
-                        edited.points.add( (BezierPoint)this.points.get( i ).Clone() );
+                        edited.points.add( (BezierPoint)this.points.get( i ).clone() );
                         count++;
                     } else {
                         t_start_added = false;
@@ -232,7 +232,7 @@ namespace Boare.Cadencii {
             }
 
             if ( this.points.get( this.points.size() - 1 ).getBase().getX() == t_end && !t_start_added ) {
-                edited.add( (BezierPoint)this.points.get( this.points.size() - 1 ).Clone() );
+                edited.add( (BezierPoint)this.points.get( this.points.size() - 1 ).clone() );
                 count++;
             }
 

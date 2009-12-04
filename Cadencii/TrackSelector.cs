@@ -978,7 +978,7 @@ namespace Boare.Cadencii {
                     int dashed_line_step = AppManager.getPositionQuantizeClock();
                     g.clipRect( AppManager.keyWidth, HEADER, size.width - AppManager.keyWidth, size.height - 2 * OFFSET_TRACK_TAB );
                     Color white100 = new Color( 0, 0, 0, 100 );
-                    for ( Iterator itr = AppManager.getVsqFile().getBarLineIterator( AppManager.clockFromXCoord( Width ) ); itr.hasNext(); ) {
+                    for ( Iterator itr = AppManager.getVsqFile().getBarLineIterator( AppManager.clockFromXCoord( getWidth() ) ); itr.hasNext(); ) {
                         VsqBarLineType blt = (VsqBarLineType)itr.next();
                         int x = AppManager.xCoordFromClocks( blt.clock() );
                         int local_clock_step = 480 * 4 / blt.getLocalDenominator();
@@ -1060,7 +1060,7 @@ namespace Boare.Cadencii {
                             int last_clock = clock_start;
                             int ycenter = yCoordFromValue( 0 );
                             g.setColor( nrml );
-                            g.drawLine( AppManager.keyWidth, ycenter, Width, ycenter );
+                            g.drawLine( AppManager.keyWidth, ycenter, getWidth(), ycenter );
                             for ( int i = 0; i < c; i++ ) {
                                 int cl = pbs.getKeyClock( i );
                                 if ( cl < clock_start ) {
@@ -2604,7 +2604,7 @@ namespace Boare.Cadencii {
                     if ( !BezierChain.isBezierImplicit( target ) ) {
                         item.setBase( new PointD( old.x, old.y ) );
                     }
-                    ret = (BezierPoint)target.points.get( index ).Clone();
+                    ret = (BezierPoint)target.points.get( index ).clone();
                 } else if ( picked == BezierPickedSide.LEFT ) {
                     if ( item.getControlLeftType() != BezierControlType.Master ) {
                         Point old1 = item.getControlLeft().toPoint();
@@ -2632,7 +2632,7 @@ namespace Boare.Cadencii {
                             item.setControlLeft( new PointD( old.x, old.y ) );
                         }
                     }
-                    ret = (BezierPoint)item.Clone();
+                    ret = (BezierPoint)item.clone();
                 } else if ( picked == BezierPickedSide.RIGHT ) {
                     if ( item.getControlRightType() != BezierControlType.Master ) {
                         Point old1 = item.getControlLeft().toPoint();
@@ -2660,7 +2660,7 @@ namespace Boare.Cadencii {
                             item.setControlRight( new PointD( old.x, old.y ) );
                         }
                     }
-                    ret = (BezierPoint)item.Clone();
+                    ret = (BezierPoint)item.clone();
                 }
             }
             return ret;
@@ -2723,72 +2723,70 @@ namespace Boare.Cadencii {
             if ( e.Button == MouseButtons.Left &&
                  0 <= e.Y && e.Y <= Height - 2 * OFFSET_TRACK_TAB &&
                  m_mouse_down_mode == MouseDownMode.CURVE_EDIT ) {
-                switch ( AppManager.getSelectedTool() ) {
-                    case EditTool.PENCIL:
-                        if ( e.X + AppManager.startToDrawX != m_mouse_down_location.x || e.Y != m_mouse_down_location.y ) {
-                            m_pencil_moved = true;
-                        } else {
-                            m_pencil_moved = false;
-                        }
+                EditTool selected = AppManager.getSelectedTool();
+                if ( selected == EditTool.PENCIL ) {
+                    if ( e.X + AppManager.startToDrawX != m_mouse_down_location.x || e.Y != m_mouse_down_location.y ) {
+                        m_pencil_moved = true;
+                    } else {
+                        m_pencil_moved = false;
+                    }
 
-                        if ( m_mouse_trace != null ) {
-                            Vector<Integer> removelist = new Vector<Integer>();
-                            int x = e.X + AppManager.startToDrawX;
-                            if ( x < m_mouse_trace_last_x ) {
-                                for ( Iterator itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
-                                    int key = (Integer)itr.next();
-                                    if ( x <= key && key < m_mouse_trace_last_x ) {
-                                        removelist.add( key );
-                                    }
-                                }
-                            } else if ( m_mouse_trace_last_x < x ) {
-                                for ( Iterator itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
-                                    int key = (Integer)itr.next();
-                                    if ( m_mouse_trace_last_x < key && key <= x ) {
-                                        removelist.add( key );
-                                    }
+                    if ( m_mouse_trace != null ) {
+                        Vector<Integer> removelist = new Vector<Integer>();
+                        int x = e.X + AppManager.startToDrawX;
+                        if ( x < m_mouse_trace_last_x ) {
+                            for ( Iterator itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
+                                int key = (Integer)itr.next();
+                                if ( x <= key && key < m_mouse_trace_last_x ) {
+                                    removelist.add( key );
                                 }
                             }
-                            for ( int i = 0; i < removelist.size(); i++ ) {
-                                m_mouse_trace.remove( removelist.get( i ) );
-                            }
-                            if ( x == m_mouse_trace_last_x ) {
-                                m_mouse_trace.put( x, e.Y );
-                                m_mouse_trace_last_y = e.Y;
-                            } else {
-                                float a = (e.Y - m_mouse_trace_last_y) / (float)(x - m_mouse_trace_last_x);
-                                float b = m_mouse_trace_last_y - a * m_mouse_trace_last_x;
-                                int start = Math.Min( x, m_mouse_trace_last_x );
-                                int end = Math.Max( x, m_mouse_trace_last_x );
-                                for ( int xx = start; xx <= end; xx++ ) {
-                                    int yy = (int)(a * xx + b);
-                                    if ( m_mouse_trace.ContainsKey( xx ) ) {
-                                        m_mouse_trace[xx] = yy;
-                                    } else {
-                                        m_mouse_trace.Add( xx, yy );
-                                    }
+                        } else if ( m_mouse_trace_last_x < x ) {
+                            for ( Iterator itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
+                                int key = (Integer)itr.next();
+                                if ( m_mouse_trace_last_x < key && key <= x ) {
+                                    removelist.add( key );
                                 }
-                                m_mouse_trace_last_x = x;
-                                m_mouse_trace_last_y = e.Y;
                             }
                         }
-                        break;
-                    case EditTool.ARROW:
-                    case EditTool.ERASER:
-                        int draft_clock = clock;
-                        if ( AppManager.editorConfig.CurveSelectingQuantized ) {
-                            int unit = AppManager.getPositionQuantizeClock();
-                            int odd = clock % unit;
-                            int nclock = clock;
-                            nclock -= odd;
-                            if ( odd > unit / 2 ) {
-                                nclock += unit;
-                            }
-                            draft_clock = nclock;
+                        for ( int i = 0; i < removelist.size(); i++ ) {
+                            m_mouse_trace.remove( removelist.get( i ) );
                         }
-                        AppManager.curveSelectingRectangle.width = draft_clock - AppManager.curveSelectingRectangle.x;
-                        AppManager.curveSelectingRectangle.height = value - AppManager.curveSelectingRectangle.y;
-                        break;
+                        if ( x == m_mouse_trace_last_x ) {
+                            m_mouse_trace.put( x, e.Y );
+                            m_mouse_trace_last_y = e.Y;
+                        } else {
+                            float a = (e.Y - m_mouse_trace_last_y) / (float)(x - m_mouse_trace_last_x);
+                            float b = m_mouse_trace_last_y - a * m_mouse_trace_last_x;
+                            int start = Math.Min( x, m_mouse_trace_last_x );
+                            int end = Math.Max( x, m_mouse_trace_last_x );
+                            for ( int xx = start; xx <= end; xx++ ) {
+                                int yy = (int)(a * xx + b);
+                                if ( m_mouse_trace.ContainsKey( xx ) ) {
+                                    m_mouse_trace[xx] = yy;
+                                } else {
+                                    m_mouse_trace.Add( xx, yy );
+                                }
+                            }
+                            m_mouse_trace_last_x = x;
+                            m_mouse_trace_last_y = e.Y;
+                        }
+                    }
+                } else if ( selected == EditTool.ARROW ||
+                            selected == EditTool.ERASER ) {
+                    int draft_clock = clock;
+                    if ( AppManager.editorConfig.CurveSelectingQuantized ) {
+                        int unit = AppManager.getPositionQuantizeClock();
+                        int odd = clock % unit;
+                        int nclock = clock;
+                        nclock -= odd;
+                        if ( odd > unit / 2 ) {
+                            nclock += unit;
+                        }
+                        draft_clock = nclock;
+                    }
+                    AppManager.curveSelectingRectangle.width = draft_clock - AppManager.curveSelectingRectangle.x;
+                    AppManager.curveSelectingRectangle.height = value - AppManager.curveSelectingRectangle.y;
                 }
             } else if ( m_mouse_down_mode == MouseDownMode.SINGER_LIST ) {
                 int dclock = clock - m_singer_move_started_clock;
@@ -3272,7 +3270,7 @@ namespace Boare.Cadencii {
                                         Rectangle rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                         if ( isInRect( e.X, e.Y, rc ) ) {
                                             AppManager.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.BASE, bp ) );
-                                            m_editing_bezier_original = (BezierChain)bc.Clone();
+                                            m_editing_bezier_original = (BezierChain)bc.clone();
                                             found = true;
                                             break;
                                         }
@@ -3282,7 +3280,7 @@ namespace Boare.Cadencii {
                                             rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                             if ( isInRect( e.X, e.Y, rc ) ) {
                                                 AppManager.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.LEFT, bp ) );
-                                                m_editing_bezier_original = (BezierChain)bc.Clone();
+                                                m_editing_bezier_original = (BezierChain)bc.clone();
                                                 found = true;
                                                 break;
                                             }
@@ -3293,7 +3291,7 @@ namespace Boare.Cadencii {
                                             rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                             if ( isInRect( e.X, e.Y, rc ) ) {
                                                 AppManager.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.RIGHT, bp ) );
-                                                m_editing_bezier_original = (BezierChain)bc.Clone();
+                                                m_editing_bezier_original = (BezierChain)bc.clone();
                                                 found = true;
                                                 break;
                                             }
@@ -3616,7 +3614,7 @@ namespace Boare.Cadencii {
                     BezierChain bc = dict.get( j );
                     for ( int i = 1; i < bc.size(); i++ ) {
                         if ( !is_middle && bc.points.get( i - 1 ).getBase().getX() <= clock && clock <= bc.points.get( i ).getBase().getX() ) {
-                            target_chain = (BezierChain)bc.Clone();
+                            target_chain = (BezierChain)bc.clone();
                             is_middle = true;
                         }
                         if ( !too_near ) {
@@ -3644,7 +3642,7 @@ namespace Boare.Cadencii {
                             int last = (int)bc.points.get( bc.points.size() - 1 ).getBase().getX();
                             if ( tmax < last && last < clock ) {
                                 tmax = last;
-                                target_chain = (BezierChain)bc.Clone();
+                                target_chain = (BezierChain)bc.clone();
                             }
                         }
                     }
@@ -3676,7 +3674,7 @@ namespace Boare.Cadencii {
                         executeCommand( run, false );
                         m_mouse_down_mode = MouseDownMode.BEZIER_ADD_NEW;
                     } else {
-                        m_editing_bezier_original = (BezierChain)target_chain.Clone();
+                        m_editing_bezier_original = (BezierChain)target_chain.clone();
                         bp = new BezierPoint( pt, pt, pt );
                         point_id = target_chain.getNextId();
                         bp.setID( point_id );
@@ -3838,7 +3836,7 @@ namespace Boare.Cadencii {
                          locy <= Height - OFFSET_TRACK_TAB &&
                          x <= locx && locx <= x + SINGER_ITEM_WIDTH ) {
                         return ve;
-                    } else if ( Width < x ) {
+                    } else if ( getWidth() < x ) {
                         //return null;
                     }
                 } else if ( ve.ID.type == VsqIDType.Anote ) {
@@ -3854,7 +3852,7 @@ namespace Boare.Cadencii {
                         continue;
                     }
                     if ( 0 <= locy && locy <= Height - 2 * OFFSET_TRACK_TAB &&
-                         AppManager.keyWidth <= locx && locx <= Width ) {
+                         AppManager.keyWidth <= locx && locx <= getWidth() ) {
                         if ( y <= locy && locy <= Height - FOOTER && x <= locx && locx <= x + VEL_BAR_WIDTH ) {
                             return ve;
                         }
@@ -3886,7 +3884,7 @@ namespace Boare.Cadencii {
                      m_mouse_down_mode == MouseDownMode.BEZIER_EDIT ) {
                     if ( e.Button == MouseButtons.Left && sender is TrackSelector ) {
                         int chain_id = AppManager.getLastSelectedBezier().chainID;
-                        BezierChain edited = (BezierChain)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( m_selected_curve, chain_id ).Clone();
+                        BezierChain edited = (BezierChain)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( m_selected_curve, chain_id ).clone();
                         if ( m_mouse_down_mode == MouseDownMode.BEZIER_ADD_NEW ) {
                             edited.id = chain_id;
                             CadenciiCommand pre = VsqFileEx.generateCommandDeleteBezierChain( AppManager.getSelected(),
@@ -5027,7 +5025,7 @@ namespace Boare.Cadencii {
             Keys modifier = Control.ModifierKeys;
             if ( 0 <= e.Y && e.Y <= Height - 2 * OFFSET_TRACK_TAB ) {
                 #region MouseDown occured on curve-pane
-                if ( AppManager.keyWidth <= e.X && e.X <= Width ) {
+                if ( AppManager.keyWidth <= e.X && e.X <= getWidth() ) {
                     if ( !m_selected_curve.equals( CurveType.VEL ) &&
                          !m_selected_curve.equals( CurveType.Accent ) &&
                          !m_selected_curve.equals( CurveType.Decay ) &&
