@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
@@ -31,6 +32,11 @@ public class BForm extends JFrame implements WindowListener, KeyListener, Compon
         addWindowListener( this );
         addKeyListener( this );
         addComponentListener( this );
+        try{
+            UIManager.getInstalledLookAndFeels();
+            UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+        }catch( Exception e ){
+        }
     }
     
     public Dimension getClientSize(){

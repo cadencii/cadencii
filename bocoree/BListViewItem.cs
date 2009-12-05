@@ -23,6 +23,10 @@ namespace bocoree.windows.forms {
             : base( values ) {
         }
 
+        public BListViewItem()
+            : base() {
+        }
+
         public object clone() {
             return base.Clone();
         }

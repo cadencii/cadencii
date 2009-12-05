@@ -32,6 +32,13 @@ namespace Boare.Cadencii {
             m_y = y;
         }
 
+#if JAVA
+        public PointD() {
+            m_x = 0;
+            m_y = 0;
+        }
+#endif
+
         public Point toPoint() {
             return new Point( (int)m_x, (int)m_y );
         }

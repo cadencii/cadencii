@@ -25,11 +25,11 @@ namespace Boare.Cadencii {
     public struct OtoArgs {
         public String fileName;
         public String Alias;
-        public int msOffset;
-        public int msConsonant;
-        public int msBlank;
-        public int msPreUtterance;
-        public int msOverlap;
+        public float msOffset;
+        public float msConsonant;
+        public float msBlank;
+        public float msPreUtterance;
+        public float msOverlap;
     }
 
 #if !JAVA

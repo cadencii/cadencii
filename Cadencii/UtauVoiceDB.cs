@@ -49,11 +49,11 @@ namespace Boare.Cadencii {
                         OtoArgs oa = new OtoArgs();
                         oa.fileName = file_name;
                         oa.Alias = spl[0];
-                        oa.msOffset = PortUtil.parseInt( spl[1] );
-                        oa.msConsonant = PortUtil.parseInt( spl[2] );
-                        oa.msBlank = PortUtil.parseInt( spl[3] );
-                        oa.msPreUtterance = PortUtil.parseInt( spl[4] );
-                        oa.msOverlap = PortUtil.parseInt( spl[5] );
+                        oa.msOffset = PortUtil.parseFloat( spl[1] );
+                        oa.msConsonant = PortUtil.parseFloat( spl[2] );
+                        oa.msBlank = PortUtil.parseFloat( spl[3] );
+                        oa.msPreUtterance = PortUtil.parseFloat( spl[4] );
+                        oa.msOverlap = PortUtil.parseFloat( spl[5] );
                         m_configs.add( oa );
                     } catch ( Exception ex3 ) {
                     }

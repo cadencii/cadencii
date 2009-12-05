@@ -489,7 +489,7 @@ namespace Boare.Cadencii {
 #if DEBUG
                     AppManager.debugWriteLine( "sec_fin=" + sec_fin );
 #endif
-                    int mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
+                    float mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
                     String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
 #if MAKEBAT_SP
                     bat.WriteLine( "\"" + m_wavtool + "\" " + arg_wavtool );

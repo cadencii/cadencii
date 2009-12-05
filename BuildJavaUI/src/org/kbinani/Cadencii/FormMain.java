@@ -307,7 +307,10 @@ public class FormMain extends BForm {
     private JMenuItem menuHiddenCopy = null;
     private JMenuItem menuHiddenPaste = null;
     private JMenuItem menuHiddenCut = null;
-
+    private JMenuItem menuTrackRendererVOCALOID1 = null;
+    private JMenuItem menuTrackRendererVOCALOID2 = null;
+    private JMenuItem menuTrackRendererUtau = null;
+    private JMenuItem menuTrackRendererStraight = null;
     //SECTION-END-FIELD
     /**
      * This is the default constructor
@@ -324,7 +327,7 @@ public class FormMain extends BForm {
      * @return void
      */
     private void initialize() {
-        this.setSize(711, 591);
+        this.setSize(845, 591);
         this.setJMenuBar(getJBMenuBar());
         this.setContentPane( this.getJContentPane());
         this.setTitle("JFrame");
@@ -1317,6 +1320,10 @@ public class FormMain extends BForm {
         if (menuTrackRenderer == null) {
             menuTrackRenderer = new BMenu();
             menuTrackRenderer.setText("Renderer");
+            menuTrackRenderer.add(getMenuTrackRendererVOCALOID1());
+            menuTrackRenderer.add(getMenuTrackRendererVOCALOID2());
+            menuTrackRenderer.add(getMenuTrackRendererUtau());
+            menuTrackRenderer.add(getMenuTrackRendererStraight());
         }
         return menuTrackRenderer;
     }
@@ -4016,6 +4023,58 @@ public class FormMain extends BForm {
             menuHiddenCut.setText("Cut");
         }
         return menuHiddenCut;
+    }
+
+    /**
+     * This method initializes menuTrackRendererVOCALOID1	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuTrackRendererVOCALOID1() {
+        if (menuTrackRendererVOCALOID1 == null) {
+            menuTrackRendererVOCALOID1 = new JMenuItem();
+            menuTrackRendererVOCALOID1.setText("VOCALOID1");
+        }
+        return menuTrackRendererVOCALOID1;
+    }
+
+    /**
+     * This method initializes menuTrackRendererVOCALOID2	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuTrackRendererVOCALOID2() {
+        if (menuTrackRendererVOCALOID2 == null) {
+            menuTrackRendererVOCALOID2 = new JMenuItem();
+            menuTrackRendererVOCALOID2.setText("VOCALOID2");
+        }
+        return menuTrackRendererVOCALOID2;
+    }
+
+    /**
+     * This method initializes menuTrackRendererUtau	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuTrackRendererUtau() {
+        if (menuTrackRendererUtau == null) {
+            menuTrackRendererUtau = new JMenuItem();
+            menuTrackRendererUtau.setText("UTAU");
+        }
+        return menuTrackRendererUtau;
+    }
+
+    /**
+     * This method initializes menuTrackRendererStraight	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private JMenuItem getMenuTrackRendererStraight() {
+        if (menuTrackRendererStraight == null) {
+            menuTrackRendererStraight = new JMenuItem();
+            menuTrackRendererStraight.setText("Straight X UTAU");
+        }
+        return menuTrackRendererStraight;
     }
 
     //SECTION-END-METHOD

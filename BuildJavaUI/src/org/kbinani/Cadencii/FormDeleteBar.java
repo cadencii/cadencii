@@ -9,6 +9,8 @@ import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextBox;
+import java.awt.Dimension;
+import javax.swing.SwingConstants;
 
 //SECTION-END-IMPORT
 public class FormDeleteBar extends BForm {
@@ -42,7 +44,7 @@ public class FormDeleteBar extends BForm {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(210, 149);
+		this.setSize(245, 149);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
 	}
@@ -77,9 +79,13 @@ public class FormDeleteBar extends BForm {
 			gridBagConstraints3.gridx = 0;
 			gridBagConstraints3.anchor = GridBagConstraints.EAST;
 			gridBagConstraints3.insets = new Insets(4, 16, 0, 8);
+			gridBagConstraints3.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints3.gridy = 1;
 			lblEnd = new BLabel();
 			lblEnd.setText("End");
+			lblEnd.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblEnd.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblEnd.setVerticalAlignment(SwingConstants.CENTER);
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			gridBagConstraints2.gridx = 2;
 			gridBagConstraints2.insets = new Insets(8, 8, 0, 16);
@@ -96,9 +102,11 @@ public class FormDeleteBar extends BForm {
 			gridBagConstraints.gridx = 0;
 			gridBagConstraints.anchor = GridBagConstraints.EAST;
 			gridBagConstraints.insets = new Insets(8, 16, 0, 8);
+			gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints.gridy = 0;
 			lblStart = new BLabel();
 			lblStart.setText("Start");
+			lblStart.setPreferredSize(new Dimension(30, 13));
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
 			jContentPane.add(lblStart, gridBagConstraints);

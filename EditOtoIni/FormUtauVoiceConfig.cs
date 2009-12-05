@@ -838,7 +838,7 @@ namespace Boare.EditOtoIni {
 
         private void txtAlias_TextChanged( Object sender, EventArgs e ) {
             if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                BListViewItem item = listFiles.getItemAt( "", m_index );
                 item.setSubItemAt( 1, txtAlias.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
@@ -855,7 +855,7 @@ namespace Boare.EditOtoIni {
             }
             m_offset = round2Digits( i );
             if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                BListViewItem item = listFiles.getItemAt( "", m_index );
                 item.setSubItemAt( 2, txtOffset.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
@@ -872,7 +872,7 @@ namespace Boare.EditOtoIni {
             }
             m_consonant = round2Digits( i );
             if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index );
+                BListViewItem item = listFiles.getItemAt( "", m_index );
                 item.setSubItemAt( 3, txtConsonant.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
@@ -889,7 +889,7 @@ namespace Boare.EditOtoIni {
             }
             m_blank = round2Digits( i );
             if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                BListViewItem item = listFiles.getItemAt( "", m_index );
                 item.setSubItemAt( 4, txtBlank.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
@@ -906,7 +906,7 @@ namespace Boare.EditOtoIni {
             }
             m_pre_utterance = round2Digits( i );
             if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                BListViewItem item = listFiles.getItemAt( "", m_index );
                 item.setSubItemAt( 5, txtPreUtterance.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );
@@ -923,7 +923,7 @@ namespace Boare.EditOtoIni {
             }
             m_overlap = round2Digits( i );
             if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = (BListViewItem)listFiles.getItemAt( "", m_index ).clone();
+                BListViewItem item = listFiles.getItemAt( "", m_index );
                 item.setSubItemAt( 6, txtOverlap.getText() );
                 listFiles.setItemAt( "", m_index, item );
                 setEdited( true );

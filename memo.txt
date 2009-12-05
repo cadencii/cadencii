@@ -36,7 +36,8 @@ this
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
--BSplitPaneのpanel*MinSizeプロパティ
+-JAVA用のstripDDBtnQuantize*とstripDDBtnLength*を実装する（現状ではcomboBoxになっている）
+-右クリック時のpopupmenuがでない
 
 -v3.0.6(3.1.0)done-----------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。
@@ -52,6 +53,7 @@ this
 -VsqFileEx#.ctor( UstFile )をVsqFile#.ctor( UstFile )に移動
 -Form*.Designer.csのInitializeComponentから，リソースを指定するメソッド（initializeResources）と，イベントを登録するメソッド（registerEventHandlers）を抽出するユーティリティ->extractEventHandlerAndResource.cs
 -音源DBのインストール箇所がデフォルトと違う場合に、音源DBが検出されない不具合を修正。
+-oto.iniに小数点が含まれていると音ヌケが発生する不具合を修正。
 
 -v3.0.5done------------------------------------------------------------
 -bug0017[1Nov2009_1056JST_228-01]「Cadenciiについて」のクレジットの表示がなくなっている。

@@ -460,6 +460,7 @@ namespace Boare.Cadencii {
         private BFileChooser openWaveDialog;
         private BTimer timer;
         private BBackgroundWorker bgWorkScreen;
+        private WaveView waveView;
         #endregion
 
         public FormMain() {
@@ -493,6 +494,20 @@ namespace Boare.Cadencii {
             timer = new BTimer( this.components );
 #endif
             bgWorkScreen = new BBackgroundWorker();
+            waveView = new WaveView();
+#if JAVA
+#else
+            this.panel2.Controls.Add( this.waveView );
+            this.waveView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.waveView.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))) );
+            this.waveView.Location = new System.Drawing.Point( 66, 0 );
+            this.waveView.Margin = new System.Windows.Forms.Padding( 0 );
+            this.waveView.Name = "waveView";
+            this.waveView.Size = new System.Drawing.Size( 355, 59 );
+            this.waveView.TabIndex = 17;
+#endif
             registerEventHandlers();
             setResources();
 
@@ -6278,7 +6293,7 @@ namespace Boare.Cadencii {
                         } else if ( getWidth() < x ) {
                             break;
                         }
-                        String s = (60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo).ToString( "#.00" );
+                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
                         Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 ) );
                         if ( isInRect( new Point( e.X, e.Y ), new Rectangle( x, 14, (int)size.width, 14 ) ) ) {
                             index = i;
@@ -6777,7 +6792,11 @@ namespace Boare.Cadencii {
         }
 
         private void picturePositionIndicator_Paint( Object sender, BPaintEventArgs e ) {
+#if JAVA
+            picturePositionIndicatorDrawTo( e.Graphics );
+#else
             picturePositionIndicatorDrawTo( new Graphics2D( e.Graphics ) );
+#endif
         }
 
         private void picturePositionIndicator_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
@@ -7158,9 +7177,14 @@ namespace Boare.Cadencii {
             if ( t.contains( AppManager.getSelected() ) ) {
                 String file = PortUtil.combinePath( AppManager.getTempWaveDir(), AppManager.getSelected() + ".wav" );
                 if ( PortUtil.isFileExists( file ) ) {
-                    Thread loadwave_thread = new Thread( new ParameterizedThreadStart( this.LoadWaveThreadProc ) );
+#if JAVA
+                    Thread loadwave_thread = new Thread( new LoadWaveProc( file ) );
+                    loadwave_thread.start();
+#else
+                    Thread loadwave_thread = new Thread( new ParameterizedThreadStart( this.loadWave ) );
                     loadwave_thread.IsBackground = true;
                     loadwave_thread.Start( file );
+#endif
                 }
             }
         }
@@ -7174,9 +7198,14 @@ namespace Boare.Cadencii {
                 waveView.clear();
                 String file = PortUtil.combinePath( AppManager.getTempWaveDir(), selected + ".wav" );
                 if ( PortUtil.isFileExists( file ) ) {
-                    Thread load_wave = new Thread( new ParameterizedThreadStart( this.LoadWaveThreadProc ) );
+#if JAVA
+                    Thread load_wave = new LoadWaveProc( file );
+                    load_wave.start();
+#else
+                    Thread load_wave = new Thread( new ParameterizedThreadStart( this.loadWave ) );
                     load_wave.IsBackground = true;
-                    load_wave.Start( (Object)file );
+                    load_wave.Start( file );
+#endif
                 }
             }
             AppManager.clearSelectedBezier();
@@ -7456,7 +7485,7 @@ namespace Boare.Cadencii {
         }
 
         private void commonTrackRenderAll_Click( Object sender, BEventArgs e ) {
-            Vector<Integer> list = new Vector<int>();
+            Vector<Integer> list = new Vector<Integer>();
             int c = AppManager.getVsqFile().Track.size();
             for ( int i = 1; i < c; i++ ) {
                 if ( AppManager.getRenderRequired( i ) ) {
@@ -7466,7 +7495,7 @@ namespace Boare.Cadencii {
             if ( list.size() <= 0 ) {
                 return;
             }
-            render( list.toArray( new int[] { } ) );
+            render( PortUtil.convertIntArray( list.toArray( new Integer[] { } ) ) );
         }
 
         private void menuTrackRenderer_DropDownOpening( Object sender, BEventArgs e ) {
@@ -8568,21 +8597,29 @@ namespace Boare.Cadencii {
             m_overview_start_to_draw_clock_initial_value = m_overview_start_to_draw_clock;
             if ( m_overview_update_thread != null ) {
                 try {
+#if JAVA
+                    m_overview_update_thread.stop();
+                    while( m_overview_update_thread.isAlive() ){
+                        Thread.sleep( 0 );
+                    }
+#else
                     m_overview_update_thread.Abort();
                     while ( m_overview_update_thread.IsAlive ) {
-#if JAVA
-                        Thread.sleep( 0 );
-#else
                         System.Windows.Forms.Application.DoEvents();
-#endif
                     }
+#endif
                 } catch ( Exception ex ) {
                 }
                 m_overview_update_thread = null;
             }
             m_overview_direction = -1;
-            m_overview_update_thread = new Thread( new ThreadStart( updateOverview ) );
+#if JAVA
+            m_overview_update_thread = new UpdateOverviewProc();
+            m_overview_update_thread.start();
+#else
+            m_overview_update_thread = new Thread( new ThreadStart( this.updateOverview ) );
             m_overview_update_thread.Start();
+#endif
         }
 
         private void btnLeft_MouseUp( Object sender, BMouseEventArgs e ) {
@@ -8594,33 +8631,49 @@ namespace Boare.Cadencii {
             m_overview_start_to_draw_clock_initial_value = m_overview_start_to_draw_clock;
             if ( m_overview_update_thread != null ) {
                 try {
-                    while ( m_overview_update_thread.IsAlive ) {
 #if JAVA
+                    while( m_overview_update_thread.isAlive() ){
                         Thread.sleep( 0 );
-#else
-                        System.Windows.Forms.Application.DoEvents();
-#endif
                     }
+#else
+                    while ( m_overview_update_thread.IsAlive ) {
+                        System.Windows.Forms.Application.DoEvents();
+                    }
+#endif
                 } catch ( Exception ex ) {
                 }
                 m_overview_update_thread = null;
             }
             m_overview_direction = 1;
-            m_overview_update_thread = new Thread( new ThreadStart( updateOverview ) );
+#if JAVA
+            m_overview_update_thread = new UpdateOverviewProc();
+            m_overview_update_thread.start();
+#else
+            m_overview_update_thread = new Thread( new ThreadStart( this.updateOverview ) );
             m_overview_update_thread.Start();
+#endif
         }
 
         private void btnRight_MouseUp( Object sender, BMouseEventArgs e ) {
             overviewStopThread();
         }
 
+#if JAVA
+        public class UpdateOverviewProc extends Thread{
+        public void run(){
+#else
         private void updateOverview() {
+#endif
             boolean д = true;
-            for (;д;) {
+            for ( ; д; ) {
 #if DEBUG
                 PortUtil.println( "updateOverview" );
 #endif
+#if JAVA
+                Thread.sleep( 100 );
+#else
                 Thread.Sleep( 100 );
+#endif
                 double dt = PortUtil.getCurrentTime() - m_overview_btn_downed;
                 int draft = (int)(m_overview_start_to_draw_clock_initial_value + m_overview_direction * dt * _OVERVIEW_SCROLL_SPEED / m_overview_px_per_clock);
                 int clock = getOverviewClockFromXCoord( pictOverview.getWidth(), draft );
@@ -8638,8 +8691,11 @@ namespace Boare.Cadencii {
 #endif
                     break;
                 }
-                this.Invoke( new BEventHandler( invalidatePictOverview ) );
+                pictOverview.invalidate();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
             }
+#if JAVA
+        }
+#endif
         }
 
         private void invalidatePictOverview( Object sender, BEventArgs e ) {
@@ -9674,10 +9730,24 @@ namespace Boare.Cadencii {
         /// waveView用のwaveファイルを読込むスレッドで使用する
         /// </summary>
         /// <param name="arg"></param>
-        private void LoadWaveThreadProc( Object arg ) {
+#if JAVA
+        private class LoadWaveProc extends Thread {
+            private String file = "";
+
+            public LoadWaveProc( String file ){
+                this.file = file;
+            }
+
+            public void run(){
+                waveView.loadWave( file );
+            }
+        }
+#else
+        private void loadWave( Object arg ) {
             String file = (String)arg;
             waveView.loadWave( file );
         }
+#endif
 
         /// <summary>
         /// menuVisualWaveform.isSelected()の値をもとに、splitterContainer2の表示状態を更新します
@@ -10944,7 +11014,11 @@ namespace Boare.Cadencii {
                             bocoree.debug.push_log( "    ex=" + ex.ToString() );
                             bocoree.debug.push_log( "    error_count=" + error );
 #endif
-                            System.Threading.Thread.Sleep( 100 );
+#if JAVA
+                            Thread.sleep( 100 );
+#else
+                            Thread.Sleep( 100 );
+#endif
                         }
                     }
                 }
@@ -13338,14 +13412,17 @@ namespace Boare.Cadencii {
         private void overviewStopThread() {
             if ( m_overview_update_thread != null ) {
                 try {
+#if JAVA
+                    m_overview_update_thread.stop();
+                    while( m_overview_update_thread.isAlive() ){
+                        Thread.sleep( 0 );
+                    }
+#else
                     m_overview_update_thread.Abort();
                     while ( m_overview_update_thread != null && m_overview_update_thread.IsAlive ) {
-#if JAVA
-                        Thread.sleep( 0 );
-#else
                         System.Windows.Forms.Application.DoEvents();
-#endif
                     }
+#endif
                 } catch ( Exception ex ) {
                 }
                 m_overview_update_thread = null;
@@ -13872,7 +13949,7 @@ namespace Boare.Cadencii {
             this.menuHiddenCopy = new bocoree.windows.forms.BMenuItem();
             this.menuHiddenPaste = new bocoree.windows.forms.BMenuItem();
             this.menuHiddenCut = new bocoree.windows.forms.BMenuItem();
-            this.cMenuPiano = new BPopupMenu( this.components );
+            this.cMenuPiano = new bocoree.windows.forms.BPopupMenu( this.components );
             this.cMenuPianoPointer = new bocoree.windows.forms.BMenuItem();
             this.cMenuPianoPencil = new bocoree.windows.forms.BMenuItem();
             this.cMenuPianoEraser = new bocoree.windows.forms.BMenuItem();
@@ -13930,7 +14007,7 @@ namespace Boare.Cadencii {
             this.cMenuPianoExpressionProperty = new bocoree.windows.forms.BMenuItem();
             this.cMenuPianoVibratoProperty = new bocoree.windows.forms.BMenuItem();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.cMenuTrackTab = new BPopupMenu( this.components );
+            this.cMenuTrackTab = new bocoree.windows.forms.BPopupMenu( this.components );
             this.cMenuTrackTabTrackOn = new bocoree.windows.forms.BMenuItem();
             this.toolStripMenuItem24 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuTrackTabAdd = new bocoree.windows.forms.BMenuItem();
@@ -13947,7 +14024,7 @@ namespace Boare.Cadencii {
             this.cMenuTrackTabRendererVOCALOID2 = new bocoree.windows.forms.BMenuItem();
             this.cMenuTrackTabRendererUtau = new bocoree.windows.forms.BMenuItem();
             this.cMenuTrackTabRendererStraight = new bocoree.windows.forms.BMenuItem();
-            this.cMenuTrackSelector = new BPopupMenu( this.components );
+            this.cMenuTrackSelector = new bocoree.windows.forms.BPopupMenu( this.components );
             this.cMenuTrackSelectorPointer = new bocoree.windows.forms.BMenuItem();
             this.cMenuTrackSelectorPencil = new bocoree.windows.forms.BMenuItem();
             this.cMenuTrackSelectorLine = new bocoree.windows.forms.BMenuItem();
@@ -13966,23 +14043,23 @@ namespace Boare.Cadencii {
             this.cMenuTrackSelectorDeleteBezier = new bocoree.windows.forms.BMenuItem();
             this.toolStripMenuItem31 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuTrackSelectorSelectAll = new bocoree.windows.forms.BMenuItem();
-            this.trackBar = new BSlider();
-            this.panel1 = new BPanel();
-            this.pictKeyLengthSplitter = new BPictureBox();
-            this.panel3 = new BPanel();
-            this.btnRight1 = new BButton();
-            this.btnLeft2 = new BButton();
-            this.btnZoom = new BButton();
-            this.btnMooz = new BButton();
-            this.btnLeft1 = new BButton();
-            this.btnRight2 = new BButton();
-            this.pictOverview = new BPictureBox();
-            this.vScroll = new BVScrollBar();
-            this.hScroll = new BHScrollBar();
-            this.picturePositionIndicator = new BPictureBox();
+            this.trackBar = new bocoree.windows.forms.BSlider();
+            this.panel1 = new bocoree.windows.forms.BPanel();
+            this.pictKeyLengthSplitter = new bocoree.windows.forms.BPictureBox();
+            this.panel3 = new bocoree.windows.forms.BPanel();
+            this.btnRight1 = new bocoree.windows.forms.BButton();
+            this.btnLeft2 = new bocoree.windows.forms.BButton();
+            this.btnZoom = new bocoree.windows.forms.BButton();
+            this.btnMooz = new bocoree.windows.forms.BButton();
+            this.btnLeft1 = new bocoree.windows.forms.BButton();
+            this.btnRight2 = new bocoree.windows.forms.BButton();
+            this.pictOverview = new bocoree.windows.forms.BPictureBox();
+            this.vScroll = new bocoree.windows.forms.BVScrollBar();
+            this.hScroll = new bocoree.windows.forms.BHScrollBar();
+            this.picturePositionIndicator = new bocoree.windows.forms.BPictureBox();
             this.pictPianoRoll = new Boare.Cadencii.PictPianoRoll();
-            this.pictureBox3 = new BPictureBox();
-            this.pictureBox2 = new BPictureBox();
+            this.pictureBox3 = new bocoree.windows.forms.BPictureBox();
+            this.pictureBox2 = new bocoree.windows.forms.BPictureBox();
             this.toolStripTool = new bocoree.windows.forms.BToolBar();
             this.stripBtnPointer = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnPencil = new bocoree.windows.forms.BToolStripButton();
@@ -13992,35 +14069,34 @@ namespace Boare.Cadencii {
             this.stripBtnGrid = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnCurve = new bocoree.windows.forms.BToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
-            this.toolStripBottom = new BToolBar();
-            this.toolStripLabel6 = new BToolStripLabel();
-            this.stripLblCursor = new BToolStripLabel();
+            this.toolStripBottom = new bocoree.windows.forms.BToolBar();
+            this.toolStripLabel6 = new bocoree.windows.forms.BToolStripLabel();
+            this.stripLblCursor = new bocoree.windows.forms.BToolStripLabel();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel8 = new BToolStripLabel();
-            this.stripLblTempo = new BToolStripLabel();
+            this.toolStripLabel8 = new bocoree.windows.forms.BToolStripLabel();
+            this.stripLblTempo = new bocoree.windows.forms.BToolStripLabel();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel10 = new BToolStripLabel();
-            this.stripLblBeat = new BToolStripLabel();
+            this.toolStripLabel10 = new bocoree.windows.forms.BToolStripLabel();
+            this.stripLblBeat = new bocoree.windows.forms.BToolStripLabel();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripStatusLabel1 = new BStatusLabel();
-            this.stripLblGameCtrlMode = new BStatusLabel();
+            this.toolStripStatusLabel1 = new bocoree.windows.forms.BStatusLabel();
+            this.stripLblGameCtrlMode = new bocoree.windows.forms.BStatusLabel();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripStatusLabel2 = new BStatusLabel();
-            this.stripLblMidiIn = new BStatusLabel();
+            this.toolStripStatusLabel2 = new bocoree.windows.forms.BStatusLabel();
+            this.stripLblMidiIn = new bocoree.windows.forms.BStatusLabel();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripDDBtnSpeed = new BToolStripDropDownButton();
-            this.stripDDBtnSpeedTextbox = new BToolStripTextBox();
+            this.stripDDBtnSpeed = new bocoree.windows.forms.BToolStripDropDownButton();
+            this.stripDDBtnSpeedTextbox = new bocoree.windows.forms.BToolStripTextBox();
             this.stripDDBtnSpeed033 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnSpeed050 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnSpeed100 = new bocoree.windows.forms.BMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new BStatusLabel();
+            this.statusLabel = new bocoree.windows.forms.BStatusLabel();
             this.splitContainerProperty = new Boare.Lib.AppUtil.BSplitContainer();
-            this.panel2 = new BPanel();
-            this.waveView = new Boare.Cadencii.WaveView();
+            this.panel2 = new bocoree.windows.forms.BPanel();
             this.splitContainer2 = new Boare.Lib.AppUtil.BSplitContainer();
             this.splitContainer1 = new Boare.Lib.AppUtil.BSplitContainer();
-            this.toolStripFile = new BToolBar();
+            this.toolStripFile = new bocoree.windows.forms.BToolBar();
             this.stripBtnFileNew = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnFileOpen = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnFileSave = new bocoree.windows.forms.BToolStripButton();
@@ -14031,7 +14107,7 @@ namespace Boare.Cadencii {
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnUndo = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnRedo = new bocoree.windows.forms.BToolStripButton();
-            this.toolStripPosition = new BToolBar();
+            this.toolStripPosition = new bocoree.windows.forms.BToolBar();
             this.stripBtnMoveTop = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnRewind = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnForward = new bocoree.windows.forms.BToolStripButton();
@@ -14041,11 +14117,11 @@ namespace Boare.Cadencii {
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnScroll = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnLoop = new bocoree.windows.forms.BToolStripButton();
-            this.toolStripMeasure = new BToolBar();
-            this.toolStripLabel5 = new BToolStripLabel();
-            this.stripLblMeasure = new BToolStripLabel();
+            this.toolStripMeasure = new bocoree.windows.forms.BToolBar();
+            this.toolStripLabel5 = new bocoree.windows.forms.BToolStripLabel();
+            this.stripLblMeasure = new bocoree.windows.forms.BToolStripLabel();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripDDBtnLength = new BToolStripDropDownButton();
+            this.stripDDBtnLength = new bocoree.windows.forms.BToolStripDropDownButton();
             this.stripDDBtnLength04 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnLength08 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnLength16 = new bocoree.windows.forms.BMenuItem();
@@ -14055,7 +14131,7 @@ namespace Boare.Cadencii {
             this.stripDDBtnLengthOff = new bocoree.windows.forms.BMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.stripDDBtnLengthTriplet = new bocoree.windows.forms.BMenuItem();
-            this.stripDDBtnQuantize = new BToolStripDropDownButton();
+            this.stripDDBtnQuantize = new bocoree.windows.forms.BToolStripDropDownButton();
             this.stripDDBtnQuantize04 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnQuantize08 = new bocoree.windows.forms.BMenuItem();
             this.stripDDBtnQuantize16 = new bocoree.windows.forms.BMenuItem();
@@ -14088,7 +14164,6 @@ namespace Boare.Cadencii {
             this.toolStripContainer.SuspendLayout();
             this.toolStripBottom.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.toolStripFile.SuspendLayout();
             this.toolStripPosition.SuspendLayout();
             this.toolStripMeasure.SuspendLayout();
@@ -14352,7 +14427,7 @@ namespace Boare.Cadencii {
             // 
             // menuVisualControlTrack
             // 
-            this.menuVisualControlTrack.setSelected( true );
+            this.menuVisualControlTrack.Checked = true;
             this.menuVisualControlTrack.CheckOnClick = true;
             this.menuVisualControlTrack.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuVisualControlTrack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -14427,7 +14502,7 @@ namespace Boare.Cadencii {
             // 
             // menuVisualLyrics
             // 
-            this.menuVisualLyrics.setSelected( true );
+            this.menuVisualLyrics.Checked = true;
             this.menuVisualLyrics.CheckOnClick = true;
             this.menuVisualLyrics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuVisualLyrics.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -14437,7 +14512,7 @@ namespace Boare.Cadencii {
             // 
             // menuVisualNoteProperty
             // 
-            this.menuVisualNoteProperty.setSelected( true );
+            this.menuVisualNoteProperty.Checked = true;
             this.menuVisualNoteProperty.CheckOnClick = true;
             this.menuVisualNoteProperty.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuVisualNoteProperty.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -15605,7 +15680,7 @@ namespace Boare.Cadencii {
             this.toolStripMenuItem31,
             this.cMenuTrackSelectorSelectAll} );
             this.cMenuTrackSelector.Name = "cMenuTrackSelector";
-            this.cMenuTrackSelector.Size = new System.Drawing.Size( 186, 358 );
+            this.cMenuTrackSelector.Size = new System.Drawing.Size( 186, 336 );
             // 
             // cMenuTrackSelectorPointer
             // 
@@ -15854,31 +15929,19 @@ namespace Boare.Cadencii {
             // 
             this.vScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.vScroll.LargeChange = 10;
             this.vScroll.Location = new System.Drawing.Point( 405, 93 );
-            this.vScroll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.vScroll.Maximum = 100;
-            this.vScroll.Minimum = 0;
             this.vScroll.Name = "vScroll";
             this.vScroll.Size = new System.Drawing.Size( 16, 173 );
-            this.vScroll.SmallChange = 1;
             this.vScroll.TabIndex = 17;
-            this.vScroll.Value = 0;
             // 
             // hScroll
             // 
             this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.LargeChange = 10;
             this.hScroll.Location = new System.Drawing.Point( 66, 266 );
-            this.hScroll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.hScroll.Maximum = 100;
-            this.hScroll.Minimum = 0;
             this.hScroll.Name = "hScroll";
             this.hScroll.Size = new System.Drawing.Size( 256, 16 );
-            this.hScroll.SmallChange = 1;
             this.hScroll.TabIndex = 16;
-            this.hScroll.Value = 0;
             // 
             // picturePositionIndicator
             // 
@@ -15947,7 +16010,7 @@ namespace Boare.Cadencii {
             // 
             // stripBtnPointer
             // 
-            this.stripBtnPointer.setSelected( true );
+            this.stripBtnPointer.Checked = true;
             this.stripBtnPointer.CheckState = System.Windows.Forms.CheckState.Checked;
             this.stripBtnPointer.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.stripBtnPointer.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -16251,23 +16314,10 @@ namespace Boare.Cadencii {
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.DarkGray;
-            this.panel2.Controls.Add( this.waveView );
             this.panel2.Location = new System.Drawing.Point( 3, 291 );
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size( 421, 59 );
             this.panel2.TabIndex = 19;
-            // 
-            // waveView
-            // 
-            this.waveView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.waveView.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))) );
-            this.waveView.Location = new System.Drawing.Point( 66, 0 );
-            this.waveView.Margin = new System.Windows.Forms.Padding( 0 );
-            this.waveView.Name = "waveView";
-            this.waveView.Size = new System.Drawing.Size( 355, 59 );
-            this.waveView.TabIndex = 17;
             // 
             // splitContainer2
             // 
@@ -16599,54 +16649,54 @@ namespace Boare.Cadencii {
             // stripDDBtnLength04
             // 
             this.stripDDBtnLength04.Name = "stripDDBtnLength04";
-            this.stripDDBtnLength04.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnLength04.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength04.Text = "1/4";
             // 
             // stripDDBtnLength08
             // 
             this.stripDDBtnLength08.Name = "stripDDBtnLength08";
-            this.stripDDBtnLength08.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnLength08.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength08.Text = "1/8";
             // 
             // stripDDBtnLength16
             // 
             this.stripDDBtnLength16.Name = "stripDDBtnLength16";
-            this.stripDDBtnLength16.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnLength16.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength16.Text = "1/16";
             // 
             // stripDDBtnLength32
             // 
             this.stripDDBtnLength32.Name = "stripDDBtnLength32";
-            this.stripDDBtnLength32.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnLength32.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength32.Text = "1/32";
             // 
             // stripDDBtnLength64
             // 
             this.stripDDBtnLength64.Name = "stripDDBtnLength64";
-            this.stripDDBtnLength64.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnLength64.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength64.Text = "1/64";
             // 
             // stripDDBtnLength128
             // 
             this.stripDDBtnLength128.Name = "stripDDBtnLength128";
-            this.stripDDBtnLength128.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnLength128.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength128.Text = "1/128";
             // 
             // stripDDBtnLengthOff
             // 
             this.stripDDBtnLengthOff.Name = "stripDDBtnLengthOff";
-            this.stripDDBtnLengthOff.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnLengthOff.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLengthOff.Text = "Off";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size( 100, 6 );
+            this.toolStripSeparator2.Size = new System.Drawing.Size( 149, 6 );
             // 
             // stripDDBtnLengthTriplet
             // 
             this.stripDDBtnLengthTriplet.Name = "stripDDBtnLengthTriplet";
-            this.stripDDBtnLengthTriplet.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnLengthTriplet.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLengthTriplet.Text = "Triplet";
             // 
             // stripDDBtnQuantize
@@ -16672,54 +16722,54 @@ namespace Boare.Cadencii {
             // stripDDBtnQuantize04
             // 
             this.stripDDBtnQuantize04.Name = "stripDDBtnQuantize04";
-            this.stripDDBtnQuantize04.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnQuantize04.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnQuantize04.Text = "1/4";
             // 
             // stripDDBtnQuantize08
             // 
             this.stripDDBtnQuantize08.Name = "stripDDBtnQuantize08";
-            this.stripDDBtnQuantize08.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnQuantize08.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnQuantize08.Text = "1/8";
             // 
             // stripDDBtnQuantize16
             // 
             this.stripDDBtnQuantize16.Name = "stripDDBtnQuantize16";
-            this.stripDDBtnQuantize16.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnQuantize16.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnQuantize16.Text = "1/16";
             // 
             // stripDDBtnQuantize32
             // 
             this.stripDDBtnQuantize32.Name = "stripDDBtnQuantize32";
-            this.stripDDBtnQuantize32.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnQuantize32.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnQuantize32.Text = "1/32";
             // 
             // stripDDBtnQuantize64
             // 
             this.stripDDBtnQuantize64.Name = "stripDDBtnQuantize64";
-            this.stripDDBtnQuantize64.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnQuantize64.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnQuantize64.Text = "1/64";
             // 
             // stripDDBtnQuantize128
             // 
             this.stripDDBtnQuantize128.Name = "stripDDBtnQuantize128";
-            this.stripDDBtnQuantize128.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnQuantize128.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnQuantize128.Text = "1/128";
             // 
             // stripDDBtnQuantizeOff
             // 
             this.stripDDBtnQuantizeOff.Name = "stripDDBtnQuantizeOff";
-            this.stripDDBtnQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnQuantizeOff.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnQuantizeOff.Text = "Off";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size( 100, 6 );
+            this.toolStripSeparator3.Size = new System.Drawing.Size( 149, 6 );
             // 
             // stripDDBtnQuantizeTriplet
             // 
             this.stripDDBtnQuantizeTriplet.Name = "stripDDBtnQuantizeTriplet";
-            this.stripDDBtnQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
+            this.stripDDBtnQuantizeTriplet.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnQuantizeTriplet.Text = "Triplet";
             // 
             // toolStripSeparator6
@@ -16782,7 +16832,6 @@ namespace Boare.Cadencii {
             this.toolStripBottom.PerformLayout();
             this.statusStrip1.ResumeLayout( false );
             this.statusStrip1.PerformLayout();
-            this.panel2.ResumeLayout( false );
             this.toolStripFile.ResumeLayout( false );
             this.toolStripFile.PerformLayout();
             this.toolStripPosition.ResumeLayout( false );
@@ -17057,7 +17106,6 @@ namespace Boare.Cadencii {
         private BMenuItem cMenuPianoQuantize128;
         private BMenuItem cMenuPianoLength128;
         private BMenuItem cMenuPianoFixed128;
-        private WaveView waveView;
         private BMenuItem menuVisualWaveform;
         private Boare.Lib.AppUtil.BSplitContainer splitContainer2;
         private BPanel panel2;

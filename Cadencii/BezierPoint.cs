@@ -32,7 +32,7 @@ namespace Boare.Cadencii {
     [Serializable]
     public class BezierPoint : IComparable<BezierPoint>, ICloneable {
 #endif
-        PointD m_base;
+        PointD center;
 #if !JAVA
         [XmlIgnore]
 #endif
@@ -70,7 +70,7 @@ namespace Boare.Cadencii {
 #endif
 
         public String toString() {
-            return "m_base=" + m_base.getX() + "," + m_base.getY() + "\n" +
+            return "m_base=" + center.getX() + "," + center.getY() + "\n" +
                 "m_control_left=" + controlLeft.getX() + "," + controlLeft.getY() + "\n" +
                 "m_control_right=" + controlRight.getX() + "," + controlRight.getY() + "\n" +
                 "m_type_left=" + m_type_left + "\n" +
@@ -82,7 +82,7 @@ namespace Boare.Cadencii {
 
 #if JAVA
         public BezierPoint( PointD p1 ){
-            this( p1.X, p1.Y );
+            this( p1.getX(), p1.getY() );
 #else
         public BezierPoint( PointD p1 )
             : this( p1.getX(), p1.getY() ) {
@@ -91,7 +91,7 @@ namespace Boare.Cadencii {
 
         public BezierPoint( double x, double y ) {
             PointD p = new PointD( x, y );
-            m_base = p;
+            center = p;
             controlLeft = p;
             controlRight = p;
             m_type_left = BezierControlType.None;
@@ -99,9 +99,9 @@ namespace Boare.Cadencii {
         }
 
         public BezierPoint( PointD p1, PointD left, PointD right ) {
-            m_base = p1;
-            controlLeft = new PointD( left.getX() - m_base.getX(), left.getY() - m_base.getY() );
-            controlRight = new PointD( right.getX() - m_base.getX(), right.getY() - m_base.getY() );
+            center = p1;
+            controlLeft = new PointD( left.getX() - center.getX(), left.getY() - center.getY() );
+            controlRight = new PointD( right.getX() - center.getX(), right.getY() - center.getY() );
             m_type_left = BezierControlType.None;
             m_type_right = BezierControlType.None;
         }
@@ -161,11 +161,11 @@ namespace Boare.Cadencii {
 #endif
 
         public PointD getBase() {
-            return m_base;
+            return center;
         }
 
         public void setBase( PointD value ) {
-            m_base = value;
+            center = value;
         }
 
         public void setPosition( BezierPickedSide picked_side, PointD new_position ) {
@@ -214,14 +214,14 @@ namespace Boare.Cadencii {
 
         public PointD getControlLeft() {
             if ( m_type_left != BezierControlType.None ) {
-                return new PointD( m_base.getX() + controlLeft.getX(), m_base.getY() + controlLeft.getY() );
+                return new PointD( center.getX() + controlLeft.getX(), center.getY() + controlLeft.getY() );
             } else {
-                return m_base;
+                return center;
             }
         }
 
         public void setControlLeft( PointD value ) {
-            controlLeft = new PointD( value.getX() - m_base.getX(), value.getY() - m_base.getY() );
+            controlLeft = new PointD( value.getX() - center.getX(), value.getY() - center.getY() );
         }
 
 #if !JAVA
@@ -240,14 +240,14 @@ namespace Boare.Cadencii {
 
         public PointD getControlRight() {
             if ( m_type_right != BezierControlType.None ) {
-                return new PointD( m_base.getX() + controlRight.getX(), m_base.getY() + controlRight.getY() );
+                return new PointD( center.getX() + controlRight.getX(), center.getY() + controlRight.getY() );
             } else {
-                return m_base;
+                return center;
             }
         }
 
         public void setControlRight( PointD value ) {
-            controlRight = new PointD( value.getX() - m_base.getX(), value.getY() - m_base.getY() );
+            controlRight = new PointD( value.getX() - center.getX(), value.getY() - center.getY() );
         }
 
 #if !JAVA

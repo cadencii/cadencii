@@ -57,19 +57,16 @@ namespace Boare.EditOtoIni {
 #if JAVA
             super();
             initialize();
-            loadEvent.add( new BEventHandler( this, "FormGenerateStf_Load" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
-            bgWork.progressChangedEvent.add( new BProgressChangedEventHandler( this, "bgWork_ProgressChanged" ) );
-            bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_WorkerCompleted" ) );
 #else
             InitializeComponent();
 #endif
+            registerEventHandlers();
+            setResources();
             m_oto_ini = oto_ini;
             m_list_files = list;
             m_mode = mode;
-            btnCancel.Text = _( "Cancel" );
-            this.Text = string.Format( _( "Generate {0} file" ), mode + "" );
+            btnCancel.setText( _( "Cancel" ) );
+            setTitle( PortUtil.formatMessage( _( "Generate {0} file" ), mode + "" ) );
         }
 
         private void FormGenerateStf_Load( Object sender, BEventArgs e ) {
@@ -385,11 +382,19 @@ namespace Boare.EditOtoIni {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            loadEvent.add( new BEventHandler( this, "FormGenerateStf_Load" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
+            bgWork.progressChangedEvent.add( new BProgressChangedEventHandler( this, "bgWork_ProgressChanged" ) );
+            bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_WorkerCompleted" ) );
+#else
             this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
             this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
             this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
             this.bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
             this.Load += new System.EventHandler( this.FormGenerateStf_Load );
+#endif
         }
 
         private void setResources() {

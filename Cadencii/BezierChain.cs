@@ -20,12 +20,13 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
-using System.Collections.Generic;
-using System.Drawing;
+//using System.Collections.Generic;
+//using System.Drawing;
 using System.Runtime.Serialization;
 using bocoree;
 using bocoree.java.util;
 using bocoree.java.io;
+using bocoree.java.awt;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
@@ -75,9 +76,9 @@ namespace Boare.Cadencii {
         /// <param name="X1"></param>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static PointD[] cutUnitBezier( PointD X0, PointD C0, PointD C1, PointD X1, double x ) {
+        public static PointD[] cutUnitBezier( PointD X0, PointD C0, PointD C1, PointD X1, double x ){
             if ( X0.getX() >= x || x >= X1.getX() ) {
-                throw new ArgumentOutOfRangeException();
+                return null;
             }
             PointD[] ret = new PointD[7];
             for ( int i = 0; i < 7; i++ ) {
@@ -130,14 +131,14 @@ namespace Boare.Cadencii {
 
         public BezierChain extractPartialBezier( double t_start, double t_end ) {
             if ( this.size() <= 1 ) {
-                throw new ArgumentException( "chain must has two or more bezier points" );
+                throw new Exception( "chain must has two or more bezier points" );
             }
             double start = this.points.get( 0 ).getBase().getX();
             double end = this.points.get( this.size() - 1 ).getBase().getX();
             
             // [from, to]が、このベジエ曲線の範囲内にあるかどうかを検査
             if ( start > t_start || t_end > end ) {
-                throw new ArgumentException( "no bezier point appeared in the range of \"from\" to \"to\"" );
+                throw new Exception( "no bezier point appeared in the range of \"from\" to \"to\"" );
             }
 
             // t_start, t_endが既存のベジエデータ点位置を被っていないかどうか検査しながらコピー
@@ -394,7 +395,7 @@ namespace Boare.Cadencii {
 
         public BezierChain() {
             points = new Vector<BezierPoint>();
-            m_color = Color.Black;
+            m_color = Color.black;
         }
 
 #if !JAVA
@@ -419,7 +420,7 @@ namespace Boare.Cadencii {
         public void add( BezierPoint bp ) {
             if ( points == null ) {
                 points = new Vector<BezierPoint>();
-                m_color = Color.Black;
+                m_color = Color.black;
             }
             points.add( bp );
             Collections.sort( points );

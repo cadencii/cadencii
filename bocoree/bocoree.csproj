@@ -163,6 +163,7 @@
     <Compile Include="BTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="BThread.cs" />
     <Compile Include="BTimer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -199,6 +200,7 @@
     <Compile Include="imageio.cs" />
     <Compile Include="io.cs" />
     <Compile Include="Iterator.cs" />
+    <Compile Include="lang.cs" />
     <Compile Include="ListIterator.cs" />
     <Compile Include="math.cs" />
     <Compile Include="Misc.cs" />
