@@ -116,8 +116,8 @@ class makeRes{
                     string instance = "s_" + name;
                     string fname = Path.GetFileName( tpath );
                     sw.WriteLine( "#if JAVA" );
-                    sw.WriteLine( cs_space + "    private static Icon " + instance + " = null;" );
-                    sw.WriteLine( cs_space + "    public static Icon get_" + name + "(){" );
+                    sw.WriteLine( cs_space + "    private static Image " + instance + " = null;" );
+                    sw.WriteLine( cs_space + "    public static Image get_" + name + "(){" );
                     sw.WriteLine( "#else" );
                     sw.WriteLine( cs_space + "    private static System.Drawing.Icon " + instance + " = null;" );
                     sw.WriteLine( cs_space + "    public static System.Drawing.Icon get_" + name + "(){" );
@@ -126,8 +126,7 @@ class makeRes{
                     sw.WriteLine( cs_space + "            try{" );
                     sw.WriteLine( cs_space + "                String res_path = PortUtil.combinePath( getBasePath(), \"" + fname + "\" );" );
                     sw.WriteLine( "#if JAVA" );
-                    sw.WriteLine( cs_space + "                Image img = ImageIO.read( new File( res_path ) );" );
-                    sw.WriteLine( cs_space + "                " + instance + " = new ImageIcon( img );" );
+                    sw.WriteLine( cs_space + "                " + instance + " = ImageIO.read( new File( res_path ) );" );
                     sw.WriteLine( "#else" );
                     sw.WriteLine( cs_space + "                " + instance + " = new System.Drawing.Icon( res_path );" );
                     sw.WriteLine( "#endif" );

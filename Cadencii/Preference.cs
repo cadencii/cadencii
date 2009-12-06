@@ -80,13 +80,23 @@ namespace Boare.Cadencii {
             ApplyLanguage();
 
             comboVibratoLength.removeAllItems();
-            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
+#if JAVA
+            for( DefaultVibratoLengthEnum dvl : DefaultVibratoLengthEnum.values() )
+#else
+            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) )
+#endif
+            {
                 comboVibratoLength.addItem( DefaultVibratoLengthUtil.toString( dvl ) );
             }
             comboVibratoLength.setSelectedIndex( 1 );
 
             comboAutoVibratoMinLength.removeAllItems();
-            foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) ) {
+#if JAVA
+            for( AutoVibratoMinLengthEnum avml : AutoVibratoMinLengthEnum.values() )
+#else
+            foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) )
+#endif
+            {
                 comboAutoVibratoMinLength.addItem( AutoVibratoMinLengthUtil.toString( avml ) );
             }
             comboAutoVibratoMinLength.setSelectedIndex( 0 );
@@ -153,23 +163,44 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "Preference.ctor()" );
             AppManager.debugWriteLine( "    Environment.OSVersion.Platform=" + Environment.OSVersion.Platform );
 #endif
-#if !DEBUG
+
+#if DEBUG
+#if JAVA
+            for( PlatformEnum p : PlatformEnum.values() )
+#else
+            foreach( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) )
+#endif
+            {
+                comboPlatform.addItem( p + "" );
+            }
+#else // #if DEBUG
+#if JAVA
+            String osname = System.getProperty( "os.name" );
+            if( osname.indexOf( "Windows" ) >= 0 ){
+                comboPlatform.addItem( PlatformEnum.Windows + "" );
+                comboPlatform.setEnabled( false );
+                chkCommandKeyAsControl.setEnabled( false );
+            }else{
+                for( PlatformEnum p : PlatformEnum.values() ){
+                    comboPlatform.addItem( p + "" );
+                }
+            }
+#else // #if JAVA
             PlatformID platform = Environment.OSVersion.Platform;
             if ( platform == PlatformID.Win32NT ||
                  platform == PlatformID.Win32S ||
                  platform == PlatformID.Win32Windows ||
                  platform == PlatformID.WinCE ) {
-                comboPlatform.Items.Add( Platform.Windows + "" );
-                comboPlatform.Enabled = false;
-                chkCommandKeyAsControl.Enabled = false;
+                comboPlatform.addItem( PlatformEnum.Windows + "" );
+                comboPlatform.setEnabled( false );
+                chkCommandKeyAsControl.setEnabled( false );
             } else {
-#endif
-            foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) ) {
-                comboPlatform.addItem( p + "" );
+                foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) ) {
+                    comboPlatform.addItem( p + "" );
+                }
             }
-#if !DEBUG
-            }
-#endif
+#endif // #if JAVA
+#endif // #if DEBUG
 
             comboMidiInPortNumber.removeAllItems();
 #if ENABLE_MIDI
@@ -183,7 +214,7 @@ namespace Boare.Cadencii {
                 comboMidiInPortNumber.setEnabled( true );
             }
 #else
-            comboMidiInPortNumber.Enabled = false;
+            comboMidiInPortNumber.setEnabled( false );
 #endif
 
             txtVOCALOID1.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 ) );
@@ -207,7 +238,7 @@ namespace Boare.Cadencii {
 
         public int getAutoBackupIntervalMinutes() {
             if ( chkAutoBackup.isSelected() ) {
-                return (int)numAutoBackupInterval.Value;
+                return (int)numAutoBackupInterval.getValue();
             } else {
                 return 0;
             }
@@ -218,7 +249,7 @@ namespace Boare.Cadencii {
                 chkAutoBackup.setSelected( false );
             } else {
                 chkAutoBackup.setSelected( true );
-                numAutoBackupInterval.Value = value;
+                numAutoBackupInterval.setValue( value );
             }
         }
 
@@ -449,19 +480,19 @@ namespace Boare.Cadencii {
         }
 
         public int getMouseHoverTime() {
-            return (int)numMouseHoverTime.Value;
+            return (int)numMouseHoverTime.getValue();
         }
 
         public void setMouseHoverTime( int value ) {
-            numMouseHoverTime.Value = value;
+            numMouseHoverTime.setValue( value );
         }
 
         public int getPxTrackHeight() {
-            return (int)numTrackHeight.Value;
+            return (int)numTrackHeight.getValue();
         }
 
         public void setPxTrackHeight( int value ) {
-            numTrackHeight.Value = value;
+            numTrackHeight.setValue( value );
         }
 
         public boolean isKeepLyricInputMode() {
@@ -488,11 +519,11 @@ namespace Boare.Cadencii {
         }
 
         public int getMaximumFrameRate() {
-            return (int)numMaximumFrameRate.Value;
+            return (int)numMaximumFrameRate.getValue();
         }
 
         public void setMaximumFrameRate( int value ) {
-            numMaximumFrameRate.Value = value;
+            numMaximumFrameRate.setValue( value );
         }
 
         public boolean isScrollHorizontalOnWheel() {
@@ -518,12 +549,43 @@ namespace Boare.Cadencii {
 
             folderBrowserSingers.setDescription( _( "Select Singer Directory" ) );
 
-            #region tabSequence
+            #region tabのタイトル
 #if JAVA
-            tabSequence.setTitle( _( "Sequence" ) );
+            int c = tabPane.getTabCount();
+            for( int i = 0; i < c; i++ ){
+                Component c = tabPane.getTabComponentAt( i );
+                if( !(c instanceof BPanel) ){
+                    continue;
+                }
+                BPanel p = (BPanel)c;
+                if( p == tabSequence ){
+                    tabPane.setTitleAt( i, _( "Sequence" ) );
+                }else if( p == tabAnother ){
+                    tabPane.setTitleAt( i, _( "Other Settings" ) );
+                }else if( p == tabAppearance ){
+                    tabPane.setTitleAt( i, _( "Appearance" ) );
+                }else if( p == tabOperation ){
+                    tabPane.setTitleAt( i, _( "Operation" ) );
+                }else if( p == tabPlatform ){
+                    tabPane.setTitleAt( i, _( "Platform" ) );
+                }else if( p == tabUtauSingers ){
+                    tabPane.setTitleAt( i, _( "UTAU Singers" ) );
+                }else if( p == tabFile ){
+                    tabPane.setTitleAt( i, _( "File" ) );
+                }
+            }
 #else
             tabSequence.Text = _( "Sequence" );
+            tabAnother.Text = _( "Other Settings" );
+            tabAppearance.Text = _( "Appearance" );
+            tabOperation.Text = _( "Operation" );
+            tabPlatform.Text = _( "Platform" );
+            tabUtauSingers.Text = _( "UTAU Singers" );
+            tabFile.Text = _( "File" );
 #endif
+            #endregion
+
+            #region tabSequence
             lblResolution.setText( _( "Resolution(VSTi)" ) );
             lblDynamics.setText( _( "Dynamics" ) + "(&D)" );
             lblAmplitude.setText( _( "Vibrato Depth" ) + "(&R)" );
@@ -538,11 +600,6 @@ namespace Boare.Cadencii {
             #endregion
 
             #region tabAnother
-#if JAVA
-            tabAnother.setTitle( _( "Other Settings" ) );
-#else
-            tabAnother.Text = _( "Other Settings" );
-#endif
             lblDefaultSinger.setText( _( "Default Singer" ) + "(&S)" );
             lblPreSendTime.setText( _( "Pre-Send time" ) + "(&P)" );
             lblWait.setText( _( "Waiting Time" ) + "(&W)" );
@@ -555,11 +612,6 @@ namespace Boare.Cadencii {
             #endregion
 
             #region tabAppearance
-#if JAVA
-            tabAppearance.setTitle( _( "Appearance" ) );
-#else
-            tabAppearance.Text = _( "Appearance" );
-#endif
             groupFont.setTitle( _( "Font" ) );
             labelMenu.setText( _( "Menu / Lyrics" ) );
             labelScreen.setText( _( "Screen" ) );
@@ -571,11 +623,6 @@ namespace Boare.Cadencii {
             #endregion
 
             #region tabOperation
-#if JAVA
-            tabOperation.setTitle( _( "Operation" ) );
-#else
-            tabOperation.Text = _( "Operation" );
-#endif
             labelWheelOrder.setText( _( "Mouse wheel Rate" ) );
             chkCursorFix.setText( _( "Fix Play Cursor to Center" ) );
             chkScrollHorizontal.setText( _( "Horizontal Scroll when Mouse wheel" ) );
@@ -593,12 +640,6 @@ namespace Boare.Cadencii {
             #endregion
 
             #region tabPlatform
-#if JAVA
-            tabPlatform.setTitle( _( "Platform" ) );
-#else
-            tabPlatform.Text = _( "Platform" );
-#endif
-
             groupPlatform.setTitle( _( "Platform" ) );
             lblPlatform.setText( _( "Current Platform" ) );
             chkCommandKeyAsControl.setText( _( "Use Command key as Control key" ) );
@@ -609,11 +650,6 @@ namespace Boare.Cadencii {
             #endregion
 
             #region tabUtauSingers
-#if JAVA
-            tabUtauSingers.setTitle( _( "UTAU Singers" ) );
-#else
-            tabUtauSingers.Text = _( "UTAU Singers" );
-#endif
             listSingers.setColumnHeaders( new String[]{ _( "Program Change" ), _( "Name" ), _( "Path" ) } );
             btnAdd.setText( _( "Add" ) );
             btnRemove.setText( _( "Remove" ) );
@@ -622,11 +658,6 @@ namespace Boare.Cadencii {
             #endregion
 
             #region tabFile
-#if JAVA
-            tabFile.setTitle( _( "File" ) );
-#else
-            tabFile.Text = _( "File" );
-#endif
             chkAutoBackup.setText( _( "Automatical Backup" ) );
             lblAutoBackupInterval.setText( _( "interval" ) );
             lblAutoBackupMinutes.setText( _( "minute(s)" ) );
@@ -678,11 +709,11 @@ namespace Boare.Cadencii {
         }
 
         public int getPreSendTime() {
-            return (int)numPreSendTime.Value;
+            return (int)numPreSendTime.getValue();
         }
 
         public void setPreSendTime( int value ) {
-            numPreSendTime.Value = value;
+            numPreSendTime.setValue( value );
         }
 
         public int getPreMeasure() {
@@ -752,7 +783,12 @@ namespace Boare.Cadencii {
         public AutoVibratoMinLengthEnum getAutoVibratoMinimumLength() {
             int count = -1;
             int index = comboAutoVibratoMinLength.getSelectedIndex();
-            foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) ) {
+#if JAVA
+            for( AutoVibratoMinLengthEnum avml : AutoVibratoMinLengthEnum.values() )
+#else
+            foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) )
+#endif
+            {
                 count++;
                 if ( count == index ) {
                     return avml;
@@ -764,7 +800,12 @@ namespace Boare.Cadencii {
 
         public void setAutoVibratoMinimumLength( AutoVibratoMinLengthEnum value ) {
             int count = -1;
-            foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) ) {
+#if JAVA
+            for( AutoVibratoMinLengthEnum avml : AutoVibratoMinLengthEnum.values() )
+#else
+            foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) )
+#endif
+            {
                 count++;
                 if ( avml == value ) {
                     comboAutoVibratoMinLength.setSelectedIndex( count );
@@ -776,7 +817,12 @@ namespace Boare.Cadencii {
         public DefaultVibratoLengthEnum getDefaultVibratoLength() {
             int count = -1;
             int index = comboVibratoLength.getSelectedIndex();
-            foreach ( DefaultVibratoLengthEnum vt in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
+#if JAVA
+            for( DefaultVibratoLengthEnum vt : DefaultVibratoLengthEnum.values() )
+#else
+            foreach ( DefaultVibratoLengthEnum vt in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) )
+#endif
+            {
                 count++;
                 if ( index == count ) {
                     return vt;
@@ -788,10 +834,15 @@ namespace Boare.Cadencii {
 
         public void setDefaultVibratoLength( DefaultVibratoLengthEnum value ) {
             int count = -1;
-            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
+#if JAVA
+            for( DefaultVibratoLengthEnum dvl : DefaultVibratoLengthEnum.valuse() )
+#else
+            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) )
+#endif
+            {
                 count++;
                 if ( dvl == value ) {
-                    comboVibratoLength.SelectedIndex = count;
+                    comboVibratoLength.setSelectedIndex( count );
                     break;
                 }
             }
@@ -806,16 +857,16 @@ namespace Boare.Cadencii {
         }
 
         public int getWheelOrder() {
-            return (int)numericUpDownEx1.Value;
+            return (int)numericUpDownEx1.getValue();
         }
 
         public void setWheelOrder( int value ) {
-            if ( value < numericUpDownEx1.Minimum ) {
-                numericUpDownEx1.Value = numericUpDownEx1.Minimum;
-            } else if ( numericUpDownEx1.Maximum < value ) {
-                numericUpDownEx1.Value = numericUpDownEx1.Maximum;
+            if ( value < numericUpDownEx1.getMinimum() ) {
+                numericUpDownEx1.setValue( numericUpDownEx1.getMinimum() );
+            } else if ( numericUpDownEx1.getMaximum() < value ) {
+                numericUpDownEx1.setValue( numericUpDownEx1.getMaximum() );
             } else {
-                numericUpDownEx1.Value = value;
+                numericUpDownEx1.setValue( value );
             }
         }
 
@@ -887,7 +938,12 @@ namespace Boare.Cadencii {
 
         private void comboPlatform_SelectedIndexChanged( Object sender, BEventArgs e ) {
             String title = (String)comboPlatform.getSelectedItem();
-            foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) ) {
+#if JAVA
+            for( PlatformEnum p : PlatformEnum.values() )
+#else
+            foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) )
+#endif
+            {
                 if ( title.Equals( p + "" ) ) {
                     m_platform = p;
                     chkCommandKeyAsControl.setEnabled( p != PlatformEnum.Windows );
@@ -1072,7 +1128,7 @@ namespace Boare.Cadencii {
         }
 
         private void chkAutoBackup_CheckedChanged( Object sender, BEventArgs e ) {
-            numAutoBackupInterval.Enabled = chkAutoBackup.isSelected();
+            numAutoBackupInterval.setEnabled( chkAutoBackup.isSelected() );
         }
 
         private void Preference_FormClosing( Object sender, BFormClosingEventArgs e ) {
@@ -1086,6 +1142,8 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+#else
             this.btnChangeScreenFont.Click += new System.EventHandler( this.btnChangeScreenFont_Click );
             this.btnChangeMenuFont.Click += new System.EventHandler( this.btnChangeMenuFont_Click );
             this.btnWavtool.Click += new System.EventHandler( this.btnWavtool_Click );
@@ -1100,6 +1158,7 @@ namespace Boare.Cadencii {
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             this.FormClosing += new FormClosingEventHandler( Preference_FormClosing );
             btnCancel.Click += new EventHandler( btnCancel_Click );
+#endif
         }
 
         private void setResources() {

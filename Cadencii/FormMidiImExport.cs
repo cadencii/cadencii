@@ -76,7 +76,7 @@ namespace Boare.Cadencii {
             }
             listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
             btnCheckAll.setText( _( "Check All" ) );
-            btnUnckeckAll.setText( _( "Uncheck All" ) );
+            btnUncheckAll.setText( _( "Uncheck All" ) );
             groupCommonOption.setTitle( _( "Option" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
@@ -234,13 +234,13 @@ namespace Boare.Cadencii {
         private void registerEventHandlers() {
 #if JAVA
             this.btnCheckAll.clickEvent.add( new BEventHandler( this, "btnCheckAll_Click" ) );
-            this.btnUnckeckAll.clickEvent.add( new BEventHandler( this, "btnUnckeckAll_Click" ) );
+            this.btnUncheckAll.clickEvent.add( new BEventHandler( this, "btnUnckeckAll_Click" ) );
             this.chkNote.checkedChangedEvent.add( new BEventHandler( this, "chkNote_CheckedChanged" ) );
             this.chkMetaText.clickEvent.add( new BEventHandler( this, "chkMetaText_Click" ) );
             this.chkExportVocaloidNrpn.checkedChangedEvent.add( new BEventHandler( this, "chkExportVocaloidNrpn_CheckedChanged" ) );
 #else
             this.btnCheckAll.Click += new System.EventHandler( this.btnCheckAll_Click );
-            this.btnUnckeckAll.Click += new System.EventHandler( this.btnUnckeckAll_Click );
+            this.btnUncheckAll.Click += new System.EventHandler( this.btnUnckeckAll_Click );
             this.chkNote.CheckedChanged += new System.EventHandler( this.chkNote_CheckedChanged );
             this.chkMetaText.Click += new System.EventHandler( this.chkMetaText_Click );
             this.chkExportVocaloidNrpn.CheckedChanged += new System.EventHandler( this.chkExportVocaloidNrpn_CheckedChanged );
@@ -287,7 +287,7 @@ namespace Boare.Cadencii {
             this.btnOK = new bocoree.windows.forms.BButton();
             this.listTrack = new bocoree.windows.forms.BListView();
             this.btnCheckAll = new bocoree.windows.forms.BButton();
-            this.btnUnckeckAll = new bocoree.windows.forms.BButton();
+            this.btnUncheckAll = new bocoree.windows.forms.BButton();
             this.chkBeat = new bocoree.windows.forms.BCheckBox();
             this.chkTempo = new bocoree.windows.forms.BCheckBox();
             this.chkNote = new bocoree.windows.forms.BCheckBox();
@@ -347,13 +347,13 @@ namespace Boare.Cadencii {
             // 
             // btnUnckeckAll
             // 
-            this.btnUnckeckAll.AutoSize = true;
-            this.btnUnckeckAll.Location = new System.Drawing.Point( 93, 12 );
-            this.btnUnckeckAll.Name = "btnUnckeckAll";
-            this.btnUnckeckAll.Size = new System.Drawing.Size( 77, 23 );
-            this.btnUnckeckAll.TabIndex = 8;
-            this.btnUnckeckAll.Text = "Uncheck All";
-            this.btnUnckeckAll.UseVisualStyleBackColor = true;
+            this.btnUncheckAll.AutoSize = true;
+            this.btnUncheckAll.Location = new System.Drawing.Point( 93, 12 );
+            this.btnUncheckAll.Name = "btnUnckeckAll";
+            this.btnUncheckAll.Size = new System.Drawing.Size( 77, 23 );
+            this.btnUncheckAll.TabIndex = 8;
+            this.btnUncheckAll.Text = "Uncheck All";
+            this.btnUncheckAll.UseVisualStyleBackColor = true;
             // 
             // chkBeat
             // 
@@ -472,7 +472,7 @@ namespace Boare.Cadencii {
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size( 348, 458 );
             this.Controls.Add( this.groupCommonOption );
-            this.Controls.Add( this.btnUnckeckAll );
+            this.Controls.Add( this.btnUncheckAll );
             this.Controls.Add( this.btnCheckAll );
             this.Controls.Add( this.listTrack );
             this.Controls.Add( this.btnCancel );
@@ -496,7 +496,7 @@ namespace Boare.Cadencii {
         private BButton btnCancel;
         private BButton btnOK;
         private BButton btnCheckAll;
-        private BButton btnUnckeckAll;
+        private BButton btnUncheckAll;
         private BCheckBox chkBeat;
         private BCheckBox chkTempo;
         private BCheckBox chkNote;

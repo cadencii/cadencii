@@ -607,25 +607,25 @@ namespace Boare.Cadencii {
             // toolStipの位置を，前回終了時の位置に戻す
             Vector<BToolBar> top = new Vector<BToolBar>();
             Vector<BToolBar> bottom = new Vector<BToolBar>();
-            if ( toolStripTool.Parent != null ) {
-                if ( toolStripTool.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
+            if ( toolStripTool.getParent() != null ) {
+                if ( toolStripTool.getParent() == toolStripContainer.TopToolStripPanel ) {
                     toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripTool );
                     top.add( toolStripTool );
-                } else if ( toolStripTool.Parent.Equals( toolStripContainer.BottomToolStripPanel ) ) {
+                } else if ( toolStripTool.getParent() == toolStripContainer.BottomToolStripPanel ) {
                     toolStripContainer.BottomToolStripPanel.Controls.Remove( toolStripTool );
                     bottom.add( toolStripTool );
                 }
             }
-            if ( toolStripMeasure.Parent != null ) {
-                if ( toolStripMeasure.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
+            if ( toolStripMeasure.getParent() != null ) {
+                if ( toolStripMeasure.getParent() == toolStripContainer.TopToolStripPanel ) {
                     toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripMeasure );
                     top.add( toolStripMeasure );
-                } else if ( toolStripMeasure.Parent.Equals( toolStripContainer.BottomToolStripPanel ) ) {
+                } else if ( toolStripMeasure.getParent() == toolStripContainer.BottomToolStripPanel ) {
                     toolStripContainer.BottomToolStripPanel.Controls.Remove( toolStripMeasure );
                     bottom.add( toolStripMeasure );
                 }
             }
-            if ( toolStripPosition.Parent != null ) {
+            if ( toolStripPosition.getParent() != null ) {
                 if ( toolStripPosition.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripPosition );
                     top.add( toolStripPosition );
@@ -634,7 +634,7 @@ namespace Boare.Cadencii {
                     bottom.add( toolStripPosition );
                 }
             }
-            if ( toolStripFile.Parent != null ) {
+            if ( toolStripFile.getParent() != null ) {
                 if ( toolStripFile.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripFile );
                     top.add( toolStripFile );
@@ -1299,9 +1299,13 @@ namespace Boare.Cadencii {
                         }
                     }
 
-                    WaveReader wr = new WaveReader( file );
-                    wr.setTag( track );
-                    sounds.add( wr );
+                    WaveReader wr = null;
+                    try {
+                        wr = new WaveReader( file );
+                        wr.setTag( track );
+                        sounds.add( wr );
+                    } catch ( Exception ex ) {
+                    }
                 }
 
                 // リアルタイム再生用のデータを準備
@@ -1321,14 +1325,18 @@ namespace Boare.Cadencii {
                 double pre_measure_sec = vsq.getSecFromClock( vsq.getPreMeasureClocks() );
                 for ( int i = 0; i < bgm_count; i++ ) {
                     BgmFile bgm = AppManager.getBgm( i );
-                    WaveReader wr = new WaveReader( bgm.file );
-                    wr.setTag( (int)(-i - 1) );
-                    double offset = bgm.readOffsetSeconds;
-                    if ( bgm.startAfterPremeasure ) {
-                        offset -= pre_measure_sec;
+                    WaveReader wr = null;
+                    try {
+                        wr = new WaveReader( bgm.file );
+                        wr.setTag( (int)(-i - 1) );
+                        double offset = bgm.readOffsetSeconds;
+                        if ( bgm.startAfterPremeasure ) {
+                            offset -= pre_measure_sec;
+                        }
+                        wr.setOffsetSeconds( offset );
+                        sounds.add( wr );
+                    } catch ( Exception ex ) {
                     }
-                    wr.setOffsetSeconds( offset );
-                    sounds.add( wr );
                 }
 
                 if ( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().PlayMode >= 0 && count > 0 ) {
@@ -1381,7 +1389,7 @@ namespace Boare.Cadencii {
                 if ( m_midi_in != null ) {
                     m_midi_in.Start();
                 }
-                MidiPlayer.SetSpeed( AppManager.editorConfig.RealtimeInputSpeed, m_last_ignitted );
+                MidiPlayer.SetSpeed( AppManager.editorConfig.getRealtimeInputSpeed(), m_last_ignitted );
                 MidiPlayer.Start( AppManager.getVsqFile(), clock, m_last_ignitted );
 #endif
             } else {
@@ -3984,7 +3992,7 @@ namespace Boare.Cadencii {
                                 if ( frc.showDialog() == BDialogResult.OK ) {
                                     AppManager.addingEvent = null;
                                     AppManager.setEditMode( EditMode.REALTIME );
-                                    AppManager.editorConfig.RealtimeInputSpeed = frc.getSpeed();
+                                    AppManager.editorConfig.setRealtimeInputSpeed( frc.getSpeed() );
                                     AppManager.setPlaying( true );
                                 }
                             } catch ( Exception ex ) {
@@ -5237,7 +5245,7 @@ namespace Boare.Cadencii {
 #else
                     if ( m_versioninfo != null && !m_versioninfo.IsDisposed ) {
 #endif
-                        m_versioninfo.ApplyLanguage();
+                        m_versioninfo.applyLanguage();
                     }
 #if ENABLE_PROPERTY
                     AppManager.propertyWindow.ApplyLanguage();
@@ -7294,19 +7302,47 @@ namespace Boare.Cadencii {
 
         private void handlePositionQuantize( Object sender, BEventArgs e ) {
             QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
-            if ( sender == stripDDBtnQuantize04 || sender == cMenuPianoQuantize04 || sender == menuSettingPositionQuantize04 ) {
+            if ( sender == cMenuPianoQuantize04 ||
+#if ENABLE_STRIP_DROPDOWN
+                sender == stripDDBtnQuantize04 ||
+#endif
+                sender == menuSettingPositionQuantize04 ) {
                 qm = QuantizeMode.p4;
-            } else if ( sender == stripDDBtnQuantize08 || sender == cMenuPianoQuantize08 || sender == menuSettingPositionQuantize08 ) {
+            } else if ( sender == cMenuPianoQuantize08 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize08 ||
+#endif
+                        sender == menuSettingPositionQuantize08 ) {
                 qm = QuantizeMode.p8;
-            } else if ( sender == stripDDBtnQuantize16 || sender == cMenuPianoQuantize16 || sender == menuSettingPositionQuantize16 ) {
+            } else if ( sender == cMenuPianoQuantize16 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize16 ||
+#endif
+                        sender == menuSettingPositionQuantize16 ) {
                 qm = QuantizeMode.p16;
-            } else if ( sender == stripDDBtnQuantize32 || sender == cMenuPianoQuantize32 || sender == menuSettingPositionQuantize32 ) {
+            } else if ( sender == cMenuPianoQuantize32 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize32 ||
+#endif
+                        sender == menuSettingPositionQuantize32 ) {
                 qm = QuantizeMode.p32;
-            } else if ( sender == stripDDBtnQuantize64 || sender == cMenuPianoQuantize64 || sender == menuSettingPositionQuantize64 ) {
+            } else if ( sender == cMenuPianoQuantize64 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize64 ||
+#endif
+                        sender == menuSettingPositionQuantize64 ) {
                 qm = QuantizeMode.p64;
-            } else if ( sender == stripDDBtnQuantize128 || sender == cMenuPianoQuantize128 || sender == menuSettingPositionQuantize128 ) {
+            } else if ( sender == cMenuPianoQuantize128 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize128 ||
+#endif
+                        sender == menuSettingPositionQuantize128 ) {
                 qm = QuantizeMode.p128;
-            } else if ( sender == stripDDBtnQuantizeOff || sender == cMenuPianoQuantizeOff || sender == menuSettingPositionQuantizeOff ) {
+            } else if ( sender == cMenuPianoQuantizeOff ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantizeOff ||
+#endif
+                        sender == menuSettingPositionQuantizeOff ) {
                 qm = QuantizeMode.off;
             }
             AppManager.editorConfig.setPositionQuantize( qm );
@@ -7728,7 +7764,9 @@ namespace Boare.Cadencii {
                     VsqCommand.generateCommandTrackChangeName( AppManager.getSelected(), m_txtbox_track_name.getText() ) );
                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
+#if !JAVA
                 m_txtbox_track_name.Dispose();
+#endif
                 m_txtbox_track_name = null;
                 refreshScreen();
 #if JAVA
@@ -7736,7 +7774,10 @@ namespace Boare.Cadencii {
 #else
             } else if ( e.KeyCode == System.Windows.Forms.Keys.Escape ) {
 #endif
+
+#if !JAVA
                 m_txtbox_track_name.Dispose();
+#endif
                 m_txtbox_track_name = null;
             }
         }
@@ -7904,7 +7945,7 @@ namespace Boare.Cadencii {
                 play_time = (float)(PortUtil.getCurrentTime() - AppManager.previewStartedTime);
             }
             if ( AppManager.getEditMode() == EditMode.REALTIME ) {
-                play_time = play_time * AppManager.editorConfig.RealtimeInputSpeed;
+                play_time = play_time * AppManager.editorConfig.getRealtimeInputSpeed();
             }
             float now = (float)(play_time + m_direct_play_shift);
 
@@ -7965,17 +8006,22 @@ namespace Boare.Cadencii {
 
         private void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e ) {
             try {
+#if JAVA
+                refreshScreenCore( this, new BEventArgs() );
+#else
                 this.Invoke( new EventHandler( this.refreshScreenCore ) );
+#endif
             } catch ( Exception ex ) {
             }
         }
 
+#if !JAVA
         private void toolStripEdit_Move( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.ToolEditTool.Location = new XmlPoint( toolStripTool.Location.X, toolStripTool.Location.Y );
+            AppManager.editorConfig.ToolEditTool.Location = new XmlPoint( toolStripTool.getX(), toolStripTool.getY() );
         }
 
         private void toolStripEdit_ParentChanged( Object sender, BEventArgs e ) {
-            if ( toolStripTool.Parent != null ) {
+            if ( toolStripTool.getParent() != null ) {
                 if ( toolStripTool.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     AppManager.editorConfig.ToolEditTool.Parent = ToolStripLocation.ParentPanel.Top;
                 } else {
@@ -7985,7 +8031,7 @@ namespace Boare.Cadencii {
         }
 
         private void toolStripPosition_Move( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.ToolPositionLocation.Location = new XmlPoint( toolStripPosition.Location.X, toolStripPosition.Location.Y );
+            AppManager.editorConfig.ToolPositionLocation.Location = new XmlPoint( toolStripPosition.getX(), toolStripPosition.getY() );
         }
 
         private void toolStripPosition_ParentChanged( Object sender, BEventArgs e ) {
@@ -8013,7 +8059,7 @@ namespace Boare.Cadencii {
         }
 
         void toolStripFile_Move( Object sender, BEventArgs e ) {
-            AppManager.editorConfig.ToolFileLocation.Location = new XmlPoint( toolStripFile.Location.X, toolStripFile.Location.Y );
+            AppManager.editorConfig.ToolFileLocation.Location = new XmlPoint( toolStripFile.getX(), toolStripFile.getY() );
         }
 
         void toolStripFile_ParentChanged( Object sender, BEventArgs e ) {
@@ -8025,6 +8071,7 @@ namespace Boare.Cadencii {
                 }
             }
         }
+#endif
 
         #region stripBtn*
         private void stripBtnGrid_CheckedChanged( Object sender, BEventArgs e ) {
@@ -8281,18 +8328,19 @@ namespace Boare.Cadencii {
             }
         }
 
+#if ENABLE_STRIP_DROPDOWN
         private void stripDDBtnSpeed_DropDownOpening( Object sender, BEventArgs e ) {
-            if ( AppManager.editorConfig.RealtimeInputSpeed == 1.0f ) {
+            if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f ) {
                 stripDDBtnSpeed100.setSelected( true );
                 stripDDBtnSpeed050.setSelected( false );
                 stripDDBtnSpeed033.setSelected( false );
                 stripDDBtnSpeedTextbox.setText( "100" );
-            } else if ( AppManager.editorConfig.RealtimeInputSpeed == 0.5f ) {
+            } else if ( AppManager.editorConfig.getRealtimeInputSpeed() == 0.5f ) {
                 stripDDBtnSpeed100.setSelected( false );
                 stripDDBtnSpeed050.setSelected( true );
                 stripDDBtnSpeed033.setSelected( false );
                 stripDDBtnSpeedTextbox.setText( "50" );
-            } else if ( AppManager.editorConfig.RealtimeInputSpeed == 1.0f / 3.0f ) {
+            } else if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f / 3.0f ) {
                 stripDDBtnSpeed100.setSelected( false );
                 stripDDBtnSpeed050.setSelected( false );
                 stripDDBtnSpeed033.setSelected( true );
@@ -8301,28 +8349,36 @@ namespace Boare.Cadencii {
                 stripDDBtnSpeed100.setSelected( false );
                 stripDDBtnSpeed050.setSelected( false );
                 stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.setText( (AppManager.editorConfig.RealtimeInputSpeed * 100.0f).ToString() );
+                stripDDBtnSpeedTextbox.setText( (AppManager.editorConfig.getRealtimeInputSpeed() * 100.0f).ToString() );
             }
         }
+#endif
 
+#if ENABLE_STRIP_DROPDOWN
         private void stripDDBtnSpeed100_Click( Object sender, BEventArgs e ) {
             changeRealtimeInputSpeed( 1.0f );
-            AppManager.editorConfig.RealtimeInputSpeed = 1.0f;
+            AppManager.editorConfig.setRealtimeInputSpeed( 1.0f );
             updateStripDDBtnSpeed();
         }
+#endif
 
+#if ENABLE_STRIP_DROPDOWN
         private void stripDDBtnSpeed050_Click( Object sender, BEventArgs e ) {
             changeRealtimeInputSpeed( 0.5f );
-            AppManager.editorConfig.RealtimeInputSpeed = 0.5f;
+            AppManager.editorConfig.setRealtimeInputSpeed( 0.5f );
             updateStripDDBtnSpeed();
         }
+#endif
 
+#if ENABLE_STRIP_DROPDOWN
         private void stripDDBtnSpeed033_Click( Object sender, BEventArgs e ) {
             changeRealtimeInputSpeed( 1.0f / 3.0f );
-            AppManager.editorConfig.RealtimeInputSpeed = 1.0f / 3.0f;
+            AppManager.editorConfig.setRealtimeInputSpeed( 1.0f / 3.0f );
             updateStripDDBtnSpeed();
         }
+#endif
 
+#if ENABLE_STRIP_DROPDOWN
         private void stripDDBtnSpeedTextbox_KeyDown( Object sender, BKeyEventArgs e ) {
 #if JAVA
             if ( e.KeyValue == KeyEvent.VK_ENTER ) {
@@ -8333,7 +8389,7 @@ namespace Boare.Cadencii {
                 try {
                     v = PortUtil.parseFloat( stripDDBtnSpeedTextbox.getText() );
                     changeRealtimeInputSpeed( v / 100.0f );
-                    AppManager.editorConfig.RealtimeInputSpeed = v / 100.0f;
+                    AppManager.editorConfig.setRealtimeInputSpeed( v / 100.0f );
 #if JAVA
                     //TODO: FormMain#stripDDBtnSpeedTextBox_KeyDown
 #else
@@ -8344,9 +8400,10 @@ namespace Boare.Cadencii {
                 }
             }
         }
+#endif
 
         public void changeRealtimeInputSpeed( float newv ) {
-            float old = AppManager.editorConfig.RealtimeInputSpeed;
+            float old = AppManager.editorConfig.getRealtimeInputSpeed();
             double now = PortUtil.getCurrentTime();
             float play_time = (float)(now - AppManager.previewStartedTime) * old / newv;
             int sec = (int)(Math.Floor( play_time ) + 0.1);
@@ -8357,12 +8414,14 @@ namespace Boare.Cadencii {
 #endif
         }
 
+#if ENABLE_STRIP_DROPDOWN
         /// <summary>
         /// stripDDBtnSpeedの表示状態を更新します
         /// </summary>
         private void updateStripDDBtnSpeed() {
-            stripDDBtnSpeed.setText( _( "Speed" ) + " " + (AppManager.editorConfig.RealtimeInputSpeed * 100) + "%" );
+            stripDDBtnSpeed.setText( _( "Speed" ) + " " + (AppManager.editorConfig.getRealtimeInputSpeed() * 100) + "%" );
         }
+#endif
 
         private void menuSetting_DropDownOpening( Object sender, BEventArgs e ) {
             menuSettingMidi.setEnabled( AppManager.getEditMode() != EditMode.REALTIME );
@@ -8388,6 +8447,13 @@ namespace Boare.Cadencii {
                 return;
             }
 
+#if JAVA
+            Runtime r = Runtime.getRuntime();
+            try{
+                r.exec( "\"" + edit_oto_ini + "\"" );
+            }catch( Exception ex ){
+            }
+#else
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = Environment.GetEnvironmentVariable( "ComSpec" );
             psi.Arguments = "/c \"" + edit_oto_ini + "\"";
@@ -8395,6 +8461,7 @@ namespace Boare.Cadencii {
             psi.CreateNoWindow = true;
             psi.UseShellExecute = false;
             Process.Start( psi );
+#endif
         }
 
         private void menuVisualOverview_CheckedChanged( Object sender, BEventArgs e ) {
@@ -8462,7 +8529,11 @@ namespace Boare.Cadencii {
         }
 
         private void pictOverview_Paint( Object sender, BPaintEventArgs e ) {
+#if JAVA
+            Graphics2D g = (Graphics2D)e.Graphics;
+#else
             Graphics2D g = new bocoree.java.awt.Graphics2D( e.Graphics );
+#endif
             int count = 0;
             int sum = 0;
             int height = pictOverview.getHeight();
@@ -8500,8 +8571,8 @@ namespace Boare.Cadencii {
             int clock_end = getOverviewClockFromXCoord( pictOverview.getWidth() );
             int premeasure = AppManager.getVsqFile().getPreMeasure();
             g.setClip( null );
-            BasicStroke pen_bold = new bocoree.java.awt.BasicStroke( 2 );
-            Color pen_color = new bocoree.java.awt.Color( 0, 0, 0, 130 );
+            BasicStroke pen_bold = new java.awt.BasicStroke( 2 );
+            Color pen_color = new java.awt.Color( 0, 0, 0, 130 );
 
             int barcountx = 0;
             String barcountstr = "";
@@ -8670,7 +8741,11 @@ namespace Boare.Cadencii {
                 PortUtil.println( "updateOverview" );
 #endif
 #if JAVA
-                Thread.sleep( 100 );
+                try{
+                    Thread.sleep( 100 );
+                }catch( InterruptedException ex ){
+                    break;
+                }
 #else
                 Thread.Sleep( 100 );
 #endif
@@ -8755,7 +8830,11 @@ namespace Boare.Cadencii {
                     menu_start_after_premeasure.setTag( (int)i );
                     menu_start_after_premeasure.setCheckOnClick( true );
                     menu_start_after_premeasure.setSelected( item.startAfterPremeasure );
+#if JAVA
+                    menu_start_after_premeasure.checkedChangedEvent.add( new BEventHandler( this, "handleBgmStartAfterPremeasure_CheckedChanged" ) );
+#else
                     menu_start_after_premeasure.CheckedChanged += new EventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
+#endif
                     menu.add( menu_start_after_premeasure );
 
                     BMenuItem menu_offset_second = new BMenuItem();
@@ -8791,10 +8870,10 @@ namespace Boare.Cadencii {
             if ( parent.getTag() == null ) {
                 return;
             }
-            if ( !(parent.getTag() is int) ) {
+            if ( !(parent.getTag() is Integer) ) {
                 return;
             }
-            int index = (int)parent.getTag();
+            int index = (Integer)parent.getTag();
             InputBox ib = null;
             try {
                 ib = new InputBox( _( "Input Offset Seconds" ) );
@@ -8845,10 +8924,10 @@ namespace Boare.Cadencii {
             if ( parent.getTag() == null ) {
                 return;
             }
-            if ( !(parent.getTag() is int) ) {
+            if ( !(parent.getTag() is Integer) ) {
                 return;
             }
-            int index = (int)parent.getTag();
+            int index = (Integer)parent.getTag();
             Vector<BgmFile> list = new Vector<BgmFile>();
             int count = AppManager.getBgmCount();
             for ( int i = 0; i < count; i++ ) {
@@ -8904,10 +8983,10 @@ namespace Boare.Cadencii {
             if ( parent.getTag() == null ) {
                 return;
             }
-            if ( !(parent.getTag() is int) ) {
+            if ( !(parent.getTag() is Integer) ) {
                 return;
             }
-            int index = (int)parent.getTag();
+            int index = (Integer)parent.getTag();
             BgmFile bgm = AppManager.getBgm( index );
             if ( AppManager.showMessageBox( PortUtil.formatMessage( _( "remove '{0}'?" ), bgm.file ),
                                   "Cadencii",
@@ -9149,7 +9228,7 @@ namespace Boare.Cadencii {
         private Point getFormPreferedLocation( BForm dlg ) {
             Point mouse = PortUtil.getMousePosition();
             Rectangle rcScreen = PortUtil.getWorkingArea( this );
-            int top = mouse.y - dlg.Height / 2;
+            int top = mouse.y - dlg.getHeight() / 2;
             if ( top + dlg.getHeight() > rcScreen.y + rcScreen.height ) {
                 // ダイアログの下端が隠れる場合、位置をずらす
                 top = rcScreen.y + rcScreen.height - dlg.getHeight();
@@ -9370,7 +9449,7 @@ namespace Boare.Cadencii {
                     g.drawPolygon( listx, listy, listx.Length );
                 }
                 //g.SmoothingMode = old;
-            } catch ( OverflowException oex ) {
+            } catch ( Exception oex ) {
 #if DEBUG
                 AppManager.debugWriteLine( "DrawUtauVibrato; oex=" + oex );
 #endif
@@ -10293,7 +10372,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if JAVA
-                if ( e.KeyValue == KeyEvent.VK_RETURN ) {
+                if ( e.KeyValue == KeyEvent.VK_ENTER ) {
 #else
                 if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
 #endif
@@ -10710,7 +10789,7 @@ namespace Boare.Cadencii {
             trackSelector.repaint();
             if ( menuVisualWaveform.isSelected() ) {
                 waveView.draw();
-                waveView.Refresh();
+                waveView.repaint();
             }
             if ( AppManager.editorConfig.OverviewEnabled ) {
                 pictOverview.repaint();
@@ -10718,13 +10797,13 @@ namespace Boare.Cadencii {
         }
 
         public void refreshScreen() {
-            //#if DEBUG
-            //            RefreshScreenCore();
-            //#else
+#if JAVA
+            refreshScreenCore( this, new BEventArgs() );
+#else
             if ( !bgWorkScreen.IsBusy ) {
                 bgWorkScreen.RunWorkerAsync();
             }
-            //#endif
+#endif
         }
 
         public void flipMixerDialogVisible( boolean visible ) {
@@ -10830,40 +10909,42 @@ namespace Boare.Cadencii {
                 }
                 #endregion
 
-                ValuePair<String, BMenuItem[]>[] work = new ValuePair<String, BMenuItem[]>[]{
-                    new ValuePair<String, BMenuItem[]>( "menuEditUndo", new BMenuItem[]{ cMenuPianoUndo, cMenuTrackSelectorUndo } ),
-                    new ValuePair<String, BMenuItem[]>( "menuEditRedo", new BMenuItem[]{ cMenuPianoRedo, cMenuTrackSelectorRedo } ),
-                    new ValuePair<String, BMenuItem[]>( "menuEditCut", new BMenuItem[]{ cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ),
-                    new ValuePair<String, BMenuItem[]>( "menuEditCopy", new BMenuItem[]{ cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ),
-                    new ValuePair<String, BMenuItem[]>( "menuEditPaste", new BMenuItem[]{ cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ),
-                    new ValuePair<String, BMenuItem[]>( "menuEditSelectAll", new BMenuItem[]{ cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ),
-                    new ValuePair<String, BMenuItem[]>( "menuEditSelectAllEvents", new BMenuItem[]{ cMenuPianoSelectAllEvents } ),
-                    new ValuePair<String, BMenuItem[]>( "menuEditDelete", new BMenuItem[]{ menuEditDelete } ),
-                    new ValuePair<String, BMenuItem[]>( "menuVisualGridline", new BMenuItem[]{ cMenuPianoGrid } ),
-                    new ValuePair<String, BMenuItem[]>( "menuJobLyric", new BMenuItem[]{ cMenuPianoImportLyric } ),
-                    new ValuePair<String, BMenuItem[]>( "menuLyricExpressionProperty", new BMenuItem[]{ cMenuPianoExpressionProperty } ),
-                    new ValuePair<String, BMenuItem[]>( "menuLyricVibratoProperty", new BMenuItem[]{ cMenuPianoVibratoProperty } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackOn", new BMenuItem[]{ cMenuTrackTabTrackOn } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackAdd", new BMenuItem[]{ cMenuTrackTabAdd } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackCopy", new BMenuItem[]{ cMenuTrackTabCopy } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackDelete", new BMenuItem[]{ cMenuTrackTabDelete } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackRenderCurrent", new BMenuItem[]{ cMenuTrackTabRenderCurrent } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackRenderAll", new BMenuItem[]{ cMenuTrackTabRenderAll } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[]{ cMenuTrackTabOverlay } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[]{ cMenuTrackTabRendererVOCALOID1 } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[]{ cMenuTrackTabRendererVOCALOID2 } ),
-                    new ValuePair<String, BMenuItem[]>( "menuTrackRendererUtau", new BMenuItem[]{ cMenuTrackTabRendererUtau } ),
-                };
-                for ( int j = 0; j < work.Length; j++ ) {
-                    ValuePair<String, BMenuItem[]> item = work[j];
+                Vector<ValuePair<String, BMenuItem[]>> work = new Vector<ValuePair<String, BMenuItem[]>>();
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditUndo", new BMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditRedo", new BMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditCut", new BMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditCopy", new BMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditPaste", new BMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAll", new BMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAllEvents", new BMenuItem[] { cMenuPianoSelectAllEvents } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditDelete", new BMenuItem[] { menuEditDelete } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuVisualGridline", new BMenuItem[] { cMenuPianoGrid } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuJobLyric", new BMenuItem[] { cMenuPianoImportLyric } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuLyricExpressionProperty", new BMenuItem[] { cMenuPianoExpressionProperty } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuLyricVibratoProperty", new BMenuItem[] { cMenuPianoVibratoProperty } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOn", new BMenuItem[] { cMenuTrackTabTrackOn } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackAdd", new BMenuItem[] { cMenuTrackTabAdd } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackCopy", new BMenuItem[] { cMenuTrackTabCopy } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackDelete", new BMenuItem[] { cMenuTrackTabDelete } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderCurrent", new BMenuItem[] { cMenuTrackTabRenderCurrent } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderAll", new BMenuItem[] { cMenuTrackTabRenderAll } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[] { cMenuTrackTabOverlay } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererUtau", new BMenuItem[] { cMenuTrackTabRendererUtau } ) );
+                int c = work.size();
+                for ( int j = 0; j < c; j++ ) {
+                    ValuePair<String, BMenuItem[]> item = work.get( j );
                     if ( dict.containsKey( item.getKey() ) ) {
                         BKeys[] k = dict.get( item.getKey() );
                         String s = AppManager.getShortcutDisplayString( k );
+#if !JAVA
                         if ( s != "" ) {
                             for ( int i = 0; i < item.getValue().Length; i++ ) {
                                 item.getValue()[i].ShortcutKeyDisplayString = s;
                             }
                         }
+#endif
                     }
                 }
 
@@ -10910,7 +10991,7 @@ namespace Boare.Cadencii {
                 } else {
 #if JAVA
                     if( item instanceof JMenuItem ){
-                        ((JMenuItem)item).setAccelerator( new BKeys[]{ BKeys.None } );
+                        ((JMenuItem)item).setAccelerator( KeyStroke.getKeyStroke( 0, 0 ) );
                     }
 #else
                     if ( item is BMenuItem ) {
@@ -11015,7 +11096,10 @@ namespace Boare.Cadencii {
                             bocoree.debug.push_log( "    error_count=" + error );
 #endif
 #if JAVA
-                            Thread.sleep( 100 );
+                            try{
+                                Thread.sleep( 100 );
+                            }catch( Exception ex2 ){
+                            }
 #else
                             Thread.Sleep( 100 );
 #endif
@@ -11042,7 +11126,7 @@ namespace Boare.Cadencii {
         private void render( int[] tracks ) {
             String tmppath = AppManager.getTempWaveDir();
             if ( !PortUtil.isDirectoryExists( tmppath ) ) {
-                System.IO.Directory.CreateDirectory( tmppath );
+                PortUtil.createDirectory( tmppath );
             }
             String[] files = new String[tracks.Length];
             for ( int i = 0; i < tracks.Length; i++ ) {
@@ -11147,7 +11231,11 @@ namespace Boare.Cadencii {
             }
 
             stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
+#if JAVA
+            updateGameControlerStatus( this, new BEventArgs() );
+#else
             this.Invoke( new BEventHandler( updateGameControlerStatus ) );
+#endif
 
             stripBtnPointer.setText( _( "Pointer" ) );
             stripBtnPointer.setToolTipText( _( "Pointer" ) );
@@ -11402,7 +11490,9 @@ namespace Boare.Cadencii {
             }
 #endif
 
+#if ENABLE_STRIP_DROPDOWN
             updateStripDDBtnSpeed();
+#endif
         }
 
         private void importLyric() {
@@ -11707,7 +11797,8 @@ namespace Boare.Cadencii {
                     for ( int i = 0; i < dum.Length; i++ ) {
                         dum[i] = -1;
                     }
-                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks.toArray( new Integer[] { } ), clocks.toArray( new Integer[] { } ), dum ) );
+                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
+                                                                                                           PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ), dum ) );
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
                     AppManager.clearSelectedTempo();
@@ -12337,20 +12428,24 @@ namespace Boare.Cadencii {
 #endif
                 m_txtbox_track_name = null;
             }
+#if JAVA
+            m_txtbox_track_name = new TextBoxEx( this );
+#else
             m_txtbox_track_name = new TextBoxEx();
+#endif
             m_txtbox_track_name.setVisible( false );
             int selector_width = trackSelector.getSelectorWidth();
             int x = AppManager.keyWidth + (AppManager.getSelected() - 1) * selector_width;
             m_txtbox_track_name.setLocation( x, trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB + 1 );
-            m_txtbox_track_name.BorderStyle = System.Windows.Forms.BorderStyle.None;
             m_txtbox_track_name.setText( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName() );
 #if JAVA
-            m_txtbox_track_name.keyUpEvent.add( new BEventHandler( this, "m_txtbox_track_name_KeyUp" ) );
+            m_txtbox_track_name.keyUpEvent.add( new BKeyEventHandler( this, "m_txtbox_track_name_KeyUp" ) );
 #else
+            m_txtbox_track_name.BorderStyle = System.Windows.Forms.BorderStyle.None;
             m_txtbox_track_name.KeyUp += new System.Windows.Forms.KeyEventHandler( m_txtbox_track_name_KeyUp );
+            m_txtbox_track_name.Parent = trackSelector;
 #endif
             m_txtbox_track_name.setSize( selector_width, TrackSelector.OFFSET_TRACK_TAB );
-            m_txtbox_track_name.Parent = trackSelector;
             m_txtbox_track_name.setVisible( true );
             m_txtbox_track_name.requestFocus();
             m_txtbox_track_name.selectAll();
@@ -12414,6 +12509,7 @@ namespace Boare.Cadencii {
             cMenuPianoQuantize128.setSelected( false );
             cMenuPianoQuantizeOff.setSelected( false );
 
+#if ENABLE_STRIP_DROPDOWN
             stripDDBtnQuantize04.setSelected( false );
             stripDDBtnQuantize08.setSelected( false );
             stripDDBtnQuantize16.setSelected( false );
@@ -12421,6 +12517,7 @@ namespace Boare.Cadencii {
             stripDDBtnQuantize64.setSelected( false );
             stripDDBtnQuantize128.setSelected( false );
             stripDDBtnQuantizeOff.setSelected( false );
+#endif
 
             menuSettingPositionQuantize04.setSelected( false );
             menuSettingPositionQuantize08.setSelected( false );
@@ -12435,35 +12532,51 @@ namespace Boare.Cadencii {
 #endif
             if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p4 ) {
                 cMenuPianoQuantize04.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize04.setSelected( true );
+#endif
                 menuSettingPositionQuantize04.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p8 ) {
                 cMenuPianoQuantize08.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize08.setSelected( true );
+#endif
                 menuSettingPositionQuantize08.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p16 ) {
                 cMenuPianoQuantize16.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize16.setSelected( true );
+#endif
                 menuSettingPositionQuantize16.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p32 ) {
                 cMenuPianoQuantize32.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize32.setSelected( true );
+#endif
                 menuSettingPositionQuantize32.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p64 ) {
                 cMenuPianoQuantize64.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize64.setSelected( true );
+#endif
                 menuSettingPositionQuantize64.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p128 ) {
                 cMenuPianoQuantize128.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize128.setSelected( true );
+#endif
                 menuSettingPositionQuantize128.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.off ) {
                 cMenuPianoQuantizeOff.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantizeOff.setSelected( true );
+#endif
                 menuSettingPositionQuantizeOff.setSelected( true );
             }
             cMenuPianoQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+#if ENABLE_STRIP_DROPDOWN
             stripDDBtnQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+#endif
             menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
 
             cMenuPianoLength04.setSelected( false );
@@ -12474,6 +12587,7 @@ namespace Boare.Cadencii {
             cMenuPianoLength128.setSelected( false );
             cMenuPianoLengthOff.setSelected( false );
 
+#if ENABLE_STRIP_DROPDOWN
             stripDDBtnLength04.setSelected( false );
             stripDDBtnLength08.setSelected( false );
             stripDDBtnLength16.setSelected( false );
@@ -12481,6 +12595,7 @@ namespace Boare.Cadencii {
             stripDDBtnLength64.setSelected( false );
             stripDDBtnLength128.setSelected( false );
             stripDDBtnLengthOff.setSelected( false );
+#endif
 
             menuSettingLengthQuantize04.setSelected( false );
             menuSettingLengthQuantize08.setSelected( false );
@@ -12495,35 +12610,51 @@ namespace Boare.Cadencii {
 #endif
             if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p4 ) {
                 cMenuPianoLength04.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength04.setSelected( true );
+#endif
                 menuSettingLengthQuantize04.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p8 ) {
                 cMenuPianoLength08.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength08.setSelected( true );
+#endif
                 menuSettingLengthQuantize08.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p16 ) {
                 cMenuPianoLength16.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength16.setSelected( true );
+#endif
                 menuSettingLengthQuantize16.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p32 ) {
                 cMenuPianoLength32.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength32.setSelected( true );
+#endif
                 menuSettingLengthQuantize32.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p64 ) {
                 cMenuPianoLength64.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength64.setSelected( true );
+#endif
                 menuSettingLengthQuantize64.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p128 ) {
                 cMenuPianoLength128.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength128.setSelected( true );
+#endif
                 menuSettingLengthQuantize128.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.off ) {
                 cMenuPianoLengthOff.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLengthOff.setSelected( true );
+#endif
                 menuSettingLengthQuantizeOff.setSelected( true );
             }
             cMenuPianoLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
+#if ENABLE_STRIP_DROPDOWN
             stripDDBtnLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
+#endif
             menuSettingLengthQuantizeTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
 
@@ -12564,7 +12695,7 @@ namespace Boare.Cadencii {
                             tsmi.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
                         } else
 #endif
- {
+                        {
                             tsmi.setSelected( false );
                         }
                     }
@@ -12684,7 +12815,7 @@ namespace Boare.Cadencii {
 #if OBSOLUTE
             m_toolbar_measure.Measure = (barcount - AppManager.VsqFile.PreMeasure + 1) + " : " + (beat + 1) + " : " + odd.ToString( "000" );
 #else
-            stripLblMeasure.setText( (barcount - AppManager.getVsqFile().getPreMeasure() + 1) + " : " + (beat + 1) + " : " + odd.ToString( "000" ) );
+            stripLblMeasure.setText( (barcount - AppManager.getVsqFile().getPreMeasure() + 1) + " : " + (beat + 1) + " : " + PortUtil.formatDecimal( "000", odd ) );
 #endif
         }
 
@@ -12993,10 +13124,10 @@ namespace Boare.Cadencii {
         /// 「選択されている」と登録されているオブジェクトのうち、Undo, Redoなどによって存在しなくなったものを登録解除する
         /// </summary>
         public void cleanupDeadSelection() {
-            Vector<ValuePair<int, int>> list = new Vector<ValuePair<int, int>>();
+            Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
             for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                 SelectedEventEntry item = (SelectedEventEntry)itr.next();
-                list.add( new ValuePair<int, int>( item.track, item.original.InternalID ) );
+                list.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
             }
 
             for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
@@ -13188,7 +13319,8 @@ namespace Boare.Cadencii {
             AppManager.baseFont9OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont9 );
         }
 
-        private void picturePositionIndicatorDrawTo( java.awt.Graphics g ) {
+        private void picturePositionIndicatorDrawTo( java.awt.Graphics g1 ) {
+            Graphics2D g = (Graphics2D)g1;
             Font SMALL_FONT = null;
             try {
                 SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
@@ -13209,7 +13341,7 @@ namespace Boare.Cadencii {
                         //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                         g.setColor( Color.black );
                         g.setFont( SMALL_FONT );
-                        g.drawString( current.ToString(), x + 4, 6 );
+                        g.drawString( current + "", x + 4, 6 );
                         //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
                     } else {
                         g.setColor( s_pen_105_105_105 );
@@ -13430,6 +13562,9 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            //TODO:
+#else
             this.menuStripMain.MouseDown += new System.Windows.Forms.MouseEventHandler( this.menuStrip1_MouseDown );
             this.menuFileNew.MouseEnter += new System.EventHandler( this.menuFileNew_MouseEnter );
             this.menuFileNew.Click += new System.EventHandler( this.commonFileNew_Click );
@@ -13758,6 +13893,7 @@ namespace Boare.Cadencii {
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler( this.FormMain_FormClosed );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMain_FormClosing );
             this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.FormMain_PreviewKeyDown );
+#endif
         }
 
         private void setResources() {
@@ -13791,10 +13927,17 @@ namespace Boare.Cadencii {
         }
 
 #if JAVA
-    #region UI Impl for Java
-    //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
-    //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
-    #endregion
+        #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
+        BMenuItem stripDDBtnQuantize04 = null;
+        BMenuItem stripDDBtnQuantize08 = null;
+        BMenuItem stripDDBtnQuantize16 = null;
+        BMenuItem stripDDBtnQuantize32 = null;
+        BMenuItem stripDDBtnQuantize64 = null;
+        BMenuItem stripDDBtnQuantize128 = null;
+        BMenuItem stripDDBtnQuantizeOff = null;
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
+        #endregion
 #else
         #region UI Impl for C#
         /// <summary>
@@ -16649,54 +16792,54 @@ namespace Boare.Cadencii {
             // stripDDBtnLength04
             // 
             this.stripDDBtnLength04.Name = "stripDDBtnLength04";
-            this.stripDDBtnLength04.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnLength04.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength04.Text = "1/4";
             // 
             // stripDDBtnLength08
             // 
             this.stripDDBtnLength08.Name = "stripDDBtnLength08";
-            this.stripDDBtnLength08.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnLength08.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength08.Text = "1/8";
             // 
             // stripDDBtnLength16
             // 
             this.stripDDBtnLength16.Name = "stripDDBtnLength16";
-            this.stripDDBtnLength16.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnLength16.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength16.Text = "1/16";
             // 
             // stripDDBtnLength32
             // 
             this.stripDDBtnLength32.Name = "stripDDBtnLength32";
-            this.stripDDBtnLength32.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnLength32.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength32.Text = "1/32";
             // 
             // stripDDBtnLength64
             // 
             this.stripDDBtnLength64.Name = "stripDDBtnLength64";
-            this.stripDDBtnLength64.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnLength64.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength64.Text = "1/64";
             // 
             // stripDDBtnLength128
             // 
             this.stripDDBtnLength128.Name = "stripDDBtnLength128";
-            this.stripDDBtnLength128.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnLength128.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLength128.Text = "1/128";
             // 
             // stripDDBtnLengthOff
             // 
             this.stripDDBtnLengthOff.Name = "stripDDBtnLengthOff";
-            this.stripDDBtnLengthOff.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnLengthOff.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLengthOff.Text = "Off";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size( 149, 6 );
+            this.toolStripSeparator2.Size = new System.Drawing.Size( 100, 6 );
             // 
             // stripDDBtnLengthTriplet
             // 
             this.stripDDBtnLengthTriplet.Name = "stripDDBtnLengthTriplet";
-            this.stripDDBtnLengthTriplet.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnLengthTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnLengthTriplet.Text = "Triplet";
             // 
             // stripDDBtnQuantize
@@ -16722,54 +16865,54 @@ namespace Boare.Cadencii {
             // stripDDBtnQuantize04
             // 
             this.stripDDBtnQuantize04.Name = "stripDDBtnQuantize04";
-            this.stripDDBtnQuantize04.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnQuantize04.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize04.Text = "1/4";
             // 
             // stripDDBtnQuantize08
             // 
             this.stripDDBtnQuantize08.Name = "stripDDBtnQuantize08";
-            this.stripDDBtnQuantize08.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnQuantize08.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize08.Text = "1/8";
             // 
             // stripDDBtnQuantize16
             // 
             this.stripDDBtnQuantize16.Name = "stripDDBtnQuantize16";
-            this.stripDDBtnQuantize16.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnQuantize16.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize16.Text = "1/16";
             // 
             // stripDDBtnQuantize32
             // 
             this.stripDDBtnQuantize32.Name = "stripDDBtnQuantize32";
-            this.stripDDBtnQuantize32.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnQuantize32.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize32.Text = "1/32";
             // 
             // stripDDBtnQuantize64
             // 
             this.stripDDBtnQuantize64.Name = "stripDDBtnQuantize64";
-            this.stripDDBtnQuantize64.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnQuantize64.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize64.Text = "1/64";
             // 
             // stripDDBtnQuantize128
             // 
             this.stripDDBtnQuantize128.Name = "stripDDBtnQuantize128";
-            this.stripDDBtnQuantize128.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnQuantize128.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantize128.Text = "1/128";
             // 
             // stripDDBtnQuantizeOff
             // 
             this.stripDDBtnQuantizeOff.Name = "stripDDBtnQuantizeOff";
-            this.stripDDBtnQuantizeOff.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantizeOff.Text = "Off";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size( 149, 6 );
+            this.toolStripSeparator3.Size = new System.Drawing.Size( 100, 6 );
             // 
             // stripDDBtnQuantizeTriplet
             // 
             this.stripDDBtnQuantizeTriplet.Name = "stripDDBtnQuantizeTriplet";
-            this.stripDDBtnQuantizeTriplet.Size = new System.Drawing.Size( 152, 22 );
+            this.stripDDBtnQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.stripDDBtnQuantizeTriplet.Text = "Triplet";
             // 
             // toolStripSeparator6

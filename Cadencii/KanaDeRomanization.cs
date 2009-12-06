@@ -11,18 +11,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+import org.kbinani.*;
+#else
 using System;
+using bocoree;
 
 namespace Boare.Cadencii {
-
     using boolean = System.Boolean;
+#endif
 
-    public static class KanaDeRomanization {
+    public class KanaDeRomanization {
+        const int _MAX_MATCH = 4;
         public static String Attach( String roman ) {
             char[] arr = roman.ToCharArray();
             String ret = "";
             int index = 0;
-            const int _MAX_MATCH = 4;
             while ( index < arr.Length ) {
                 // _MAX_MATCH～2文字のマッチ
                 boolean processed = false;
@@ -32,10 +38,10 @@ namespace Boare.Cadencii {
                         for ( int j = 0; j < i; j++ ) {
                             s += "" + arr[index + j];
                         }
-                        boolean trailing;
-                        String res = AttachCor( s, out trailing );
+                        ByRef<Boolean> trailing = new ByRef<Boolean>();
+                        String res = AttachCor( s, trailing );
                         if ( res != s ) {
-                            if ( !trailing ) {
+                            if ( !trailing.value ) {
                                 index = index + i;
                             } else {
                                 index = index + i - 1;
@@ -51,16 +57,16 @@ namespace Boare.Cadencii {
                 }
 
                 // 1文字のマッチ
-                boolean trailing1;
-                ret += AttachCor( arr[index] + "", out trailing1 );
+                ByRef<Boolean> trailing1 = new ByRef<Boolean>();
+                ret += AttachCor( arr[index] + "", trailing1 );
                 index++;
             }
             return ret;
         }
 
-        private static String AttachCor( String roman, out boolean trailing ) {
+        private static String AttachCor( String roman, ByRef<Boolean> trailing ) {
             String s = roman.ToLower();
-            trailing = false;
+            trailing.value = false;
             if ( s.Equals( "a" ) ) {
                 return "あ";
             } else if ( s.Equals( "i" ) ||
@@ -401,7 +407,7 @@ namespace Boare.Cadencii {
                         s.Equals( "vv" ) ||
                         s.Equals( "bb" ) ||
                         s.Equals( "mm" ) ) {
-                trailing = true;
+                trailing.value = true;
                 return "っ";
             } else if ( s.Equals( "-" ) ) {
                 return "ー";
@@ -501,4 +507,6 @@ namespace Boare.Cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

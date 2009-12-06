@@ -163,7 +163,6 @@
     <Compile Include="BTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BThread.cs" />
     <Compile Include="BTimer.cs">
       <SubType>Component</SubType>
     </Compile>

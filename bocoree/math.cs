@@ -1,5 +1,4 @@
-﻿#if !JAVA
-/*
+﻿/*
  * math.cs
  * Copyright (c) 2008-2009 kbinani
  *
@@ -12,12 +11,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani;
+
+#else
 using System;
-using System.Collections.Generic;
 
 namespace bocoree {
+#endif
 
+#if JAVA
+    public class math{
+#else
     public partial class math {
+#endif
         private const double _PI2 = 2.0 * Math.PI;
         private const double _PI4 = 4.0 * Math.PI;
         private const double _PI6 = 6.0 * Math.PI;
@@ -40,70 +47,78 @@ namespace bocoree {
             Kaiser,
         }
 
-        public static double window_func( WindowFunctionType type, double x ) {
-            switch ( type ) {
-                case WindowFunctionType.Akaike:
-                    return wnd_akaike( x );
-                case WindowFunctionType.Bartlett:
-                    return wnd_bartlett( x );
-                case WindowFunctionType.Blackman:
-                    return wnd_blackman( x );
-                case WindowFunctionType.Blackman_Harris:
-                    return wnd_blackman_harris( x );
-                case WindowFunctionType.Blackman_Nattall:
-                    return wnd_blackman_nattall( x );
-                case WindowFunctionType.flap_top:
-                    return wnd_flap_top( x );
-                case WindowFunctionType.Gauss:
-                    throw new ApplicationException( "too few argument for Gauss window function" );
-                case WindowFunctionType.Hamming:
-                    return wnd_hamming( x );
-                case WindowFunctionType.Hann:
-                    return wnd_hann( x );
-                case WindowFunctionType.Kaiser:
-                    throw new ApplicationException( "too few argument for Kaiser window function" );
-                case WindowFunctionType.Nuttall:
-                    return wnd_nuttall( x );
-                case WindowFunctionType.Parzen:
-                    return wnd_parzen( x );
-                case WindowFunctionType.rectangular:
-                    return wnd_rectangular( x );
-                case WindowFunctionType.Welch:
-                    return wnd_welch( x );
+        public static double window_func( WindowFunctionType type, double x )
+#if JAVA
+            throws Exception
+#endif
+        {
+            if ( type == WindowFunctionType.Akaike ) {
+                return wnd_akaike( x );
+            } else if ( type == WindowFunctionType.Bartlett ) {
+                return wnd_bartlett( x );
+            } else if ( type == WindowFunctionType.Blackman ) {
+                return wnd_blackman( x );
+            } else if ( type == WindowFunctionType.Blackman_Harris ) {
+                return wnd_blackman_harris( x );
+            } else if ( type == WindowFunctionType.Blackman_Nattall ) {
+                return wnd_blackman_nattall( x );
+            } else if ( type == WindowFunctionType.flap_top ) {
+                return wnd_flap_top( x );
+            } else if ( type == WindowFunctionType.Gauss ) {
+                throw new Exception( "too few argument for Gauss window function" );
+            } else if ( type == WindowFunctionType.Hamming ) {
+                return wnd_hamming( x );
+            } else if ( type == WindowFunctionType.Hann ) {
+                return wnd_hann( x );
+            } else if ( type == WindowFunctionType.Kaiser ) {
+                throw new Exception( "too few argument for Kaiser window function" );
+            } else if ( type == WindowFunctionType.Nuttall ) {
+                return wnd_nuttall( x );
+            } else if ( type == WindowFunctionType.Parzen ) {
+                return wnd_parzen( x );
+            } else if ( type == WindowFunctionType.rectangular ) {
+                return wnd_rectangular( x );
+            } else if ( type == WindowFunctionType.Welch ) {
+                return wnd_welch( x );
             }
             return 0.0;
         }
 
-        public static double window_func( WindowFunctionType type, double x, params double[] param ) {
-            switch ( type ) {
-                case WindowFunctionType.Akaike:
-                    return wnd_akaike( x );
-                case WindowFunctionType.Bartlett:
-                    return wnd_bartlett( x );
-                case WindowFunctionType.Blackman:
-                    return wnd_blackman( x );
-                case WindowFunctionType.Blackman_Harris:
-                    return wnd_blackman_harris( x );
-                case WindowFunctionType.Blackman_Nattall:
-                    return wnd_blackman_nattall( x );
-                case WindowFunctionType.flap_top:
-                    return wnd_flap_top( x );
-                case WindowFunctionType.Gauss:
-                    return wnd_gauss( x, param[0] );
-                case WindowFunctionType.Hamming:
-                    return wnd_hamming( x );
-                case WindowFunctionType.Hann:
-                    return wnd_hann( x );
-                case WindowFunctionType.Kaiser:
-                    return wnd_kaiser( x, param[0] );
-                case WindowFunctionType.Nuttall:
-                    return wnd_nuttall( x );
-                case WindowFunctionType.Parzen:
-                    return wnd_parzen( x );
-                case WindowFunctionType.rectangular:
-                    return wnd_rectangular( x );
-                case WindowFunctionType.Welch:
-                    return wnd_welch( x );
+#if JAVA
+        public static double window_func( WindowFunctionType type, double x, double... param ) 
+#else
+        public static double window_func( WindowFunctionType type, double x, params double[] param ) 
+#endif
+        {
+
+            if ( type == WindowFunctionType.Akaike ) {
+                return wnd_akaike( x );
+            } else if ( type == WindowFunctionType.Bartlett ) {
+                return wnd_bartlett( x );
+            } else if ( type == WindowFunctionType.Blackman ) {
+                return wnd_blackman( x );
+            } else if ( type == WindowFunctionType.Blackman_Harris ) {
+                return wnd_blackman_harris( x );
+            } else if ( type == WindowFunctionType.Blackman_Nattall ) {
+                return wnd_blackman_nattall( x );
+            } else if ( type == WindowFunctionType.flap_top ) {
+                return wnd_flap_top( x );
+            } else if ( type == WindowFunctionType.Gauss ) {
+                return wnd_gauss( x, param[0] );
+            } else if ( type == WindowFunctionType.Hamming ) {
+                return wnd_hamming( x );
+            } else if ( type == WindowFunctionType.Hann ) {
+                return wnd_hann( x );
+            } else if ( type == WindowFunctionType.Kaiser ) {
+                return wnd_kaiser( x, param[0] );
+            } else if ( type == WindowFunctionType.Nuttall ) {
+                return wnd_nuttall( x );
+            } else if ( type == WindowFunctionType.Parzen ) {
+                return wnd_parzen( x );
+            } else if ( type == WindowFunctionType.rectangular ) {
+                return wnd_rectangular( x );
+            } else if ( type == WindowFunctionType.Welch ) {
+                return wnd_welch( x );
             }
             return 0.0;
         }
@@ -271,5 +286,6 @@ namespace bocoree {
         }
     }
 
+#if !JAVA
 }
 #endif

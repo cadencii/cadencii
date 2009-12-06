@@ -60,7 +60,12 @@ namespace Boare.Cadencii {
         }
 
         public static Iterator iterator() {
-            return new Vector<ClockResolution>( new ClockResolution[] { L1, L2, L4, L8, L16, L30, L60, L90, L120, L240, L480, Free } ).iterator();
+            ClockResolution[] arr = new ClockResolution[] { L1, L2, L4, L8, L16, L30, L60, L90, L120, L240, L480, Free };
+#if JAVA
+            return Arrays.asList( arr ).iterator();
+#else
+            return new Vector<ClockResolution>( arr ).iterator();
+#endif
         }
 
         private ClockResolution( int value ) {
@@ -77,7 +82,7 @@ namespace Boare.Cadencii {
             if ( m_value == 1 ) {
                 return "Free";
             } else {
-                return m_value.ToString();
+                return m_value + "";
             }
         }
     }

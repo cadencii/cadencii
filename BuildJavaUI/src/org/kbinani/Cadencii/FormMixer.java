@@ -7,7 +7,12 @@ import javax.swing.JPanel;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BHScrollBar;
+import org.kbinani.windows.forms.BMenu;
+import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPanel;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 //SECTION-END-IMPORT
 public class FormMixer extends BForm {
@@ -19,6 +24,9 @@ public class FormMixer extends BForm {
 	private BHScrollBar hScroll = null;
 	private VolumeTracker volumeMaster = null;
 	private BCheckBox chkTopmost = null;
+    private JMenuBar menuMain = null;
+    private BMenu menuVisual = null;
+    private BMenuItem menuVisualReturn = null;
 
 	//SECTION-END-FIELD
 	/**
@@ -37,6 +45,7 @@ public class FormMixer extends BForm {
 	 */
 	private void initialize() {
 		this.setSize(377, 653);
+		this.setJMenuBar(getMenuMain());
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
 	}
@@ -140,6 +149,44 @@ public class FormMixer extends BForm {
 		}
 		return chkTopmost;
 	}
+
+    /**
+     * This method initializes menuMain	
+     * 	
+     * @return javax.swing.JMenuBar	
+     */
+    private JMenuBar getMenuMain() {
+        if (menuMain == null) {
+            menuMain = new JMenuBar();
+            menuMain.add(getMenuVisual());
+        }
+        return menuMain;
+    }
+
+    /**
+     * This method initializes menuVisual	
+     * 	
+     * @return javax.swing.JMenu	
+     */
+    private BMenu getMenuVisual() {
+        if (menuVisual == null) {
+            menuVisual = new BMenu();
+            menuVisual.add(getMenuVisualReturn());
+        }
+        return menuVisual;
+    }
+
+    /**
+     * This method initializes menuVisualReturn	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private BMenuItem getMenuVisualReturn() {
+        if (menuVisualReturn == null) {
+            menuVisualReturn = new BMenuItem();
+        }
+        return menuVisualReturn;
+    }
 
 	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

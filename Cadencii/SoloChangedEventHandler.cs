@@ -4,7 +4,7 @@ package org.kbinani.Cadencii;
 import java.lang.reflect.*;
 import org.kbinani.*;
 
-public class SoloChangedEventHandler implements IEventHandler{
+public class SoloChangedEventHandler extends BEventHandler{
     private BDelegate m_delegate = null;
     private Object m_invoker = null;
 

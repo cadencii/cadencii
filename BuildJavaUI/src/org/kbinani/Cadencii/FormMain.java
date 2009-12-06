@@ -32,8 +32,8 @@ public class FormMain extends BForm {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
-    private JPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="10,55"
-    private BMenuBar jBMenuBar = null;
+    private JPanel jContentPane = null;
+    private BMenuBar menuStripMain = null;
     private BMenu menuFile = null;
     private BMenuItem menuFileNew = null;
     private BMenuItem menuFileOpen = null;
@@ -279,7 +279,7 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPianoQuantizeOff = null;
     private BMenuItem cMenuPianoLengthOff = null;
     private BPanel panel3 = null;
-    private BPanel jPanel2 = null;
+    private BPanel pictOverview = null;
     private BButton BButton = null;
     private BButton jButton1 = null;
     private BButton jButton2 = null;
@@ -307,10 +307,13 @@ public class FormMain extends BForm {
     private JMenuItem menuHiddenCopy = null;
     private JMenuItem menuHiddenPaste = null;
     private JMenuItem menuHiddenCut = null;
-    private JMenuItem menuTrackRendererVOCALOID1 = null;
-    private JMenuItem menuTrackRendererVOCALOID2 = null;
-    private JMenuItem menuTrackRendererUtau = null;
-    private JMenuItem menuTrackRendererStraight = null;
+    private BMenuItem menuTrackRendererVOCALOID1 = null;
+    private BMenuItem menuTrackRendererVOCALOID2 = null;
+    private BMenuItem menuTrackRendererUtau = null;
+    private BMenuItem menuTrackRendererStraight = null;
+    private BMenuItem menuSettingGameControlerSetting = null;
+    private BMenuItem menuSettingGameControlerLoad = null;
+    private BMenuItem menuSettingGameControlerRemove = null;
     //SECTION-END-FIELD
     /**
      * This is the default constructor
@@ -328,7 +331,11 @@ public class FormMain extends BForm {
      */
     private void initialize() {
         this.setSize(845, 591);
-        this.setJMenuBar(getJBMenuBar());
+        this.setJMenuBar(getMenuStripMain());
+        this.setContentPane(getJContentPane());
+        this.setJMenuBar(getMenuStripMain());
+        this.setContentPane(getJContentPane());
+        this.setJMenuBar(getMenuStripMain());
         this.setContentPane( this.getJContentPane());
         this.setTitle("JFrame");
     }
@@ -342,7 +349,6 @@ public class FormMain extends BForm {
         if (jContentPane == null) {
             jContentPane = new JPanel();
             jContentPane.setLayout(new BorderLayout());
-            jContentPane.setSize(new Dimension(582, 431));
             jContentPane.add(getJPanel(), BorderLayout.NORTH);
             jContentPane.add(getSplitContainerProperty(), BorderLayout.CENTER);
             jContentPane.add(getJPanel3(), BorderLayout.SOUTH);
@@ -351,25 +357,25 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes jBMenuBar    
+     * This method initializes menuStripMain    
      *  
      * @return javax.swing.BMenuBar 
      */
-    private BMenuBar getJBMenuBar() {
-        if (jBMenuBar == null) {
-            jBMenuBar = new BMenuBar();
-            jBMenuBar.add(getMenuFile());
-            jBMenuBar.add(getMenuEdit());
-            jBMenuBar.add(getMenuVisual());
-            jBMenuBar.add(getMenuJob());
-            jBMenuBar.add(getMenuTrack());
-            jBMenuBar.add(getMenuLyric());
-            jBMenuBar.add(getMenuScript());
-            jBMenuBar.add(getMenuSetting());
-            jBMenuBar.add(getMenuHelp());
-            jBMenuBar.add(getMenuHidden());
+    private BMenuBar getMenuStripMain() {
+        if (menuStripMain == null) {
+            menuStripMain = new BMenuBar();
+            menuStripMain.add(getMenuFile());
+            menuStripMain.add(getMenuEdit());
+            menuStripMain.add(getMenuVisual());
+            menuStripMain.add(getMenuJob());
+            menuStripMain.add(getMenuTrack());
+            menuStripMain.add(getMenuLyric());
+            menuStripMain.add(getMenuScript());
+            menuStripMain.add(getMenuSetting());
+            menuStripMain.add(getMenuHelp());
+            menuStripMain.add(getMenuHidden());
         }
-        return jBMenuBar;
+        return menuStripMain;
     }
 
     /**
@@ -1508,6 +1514,9 @@ public class FormMain extends BForm {
         if (menuSettingGameControler == null) {
             menuSettingGameControler = new BMenu();
             menuSettingGameControler.setText("Game Controler");
+            menuSettingGameControler.add(getMenuSettingGameControlerSetting());
+            menuSettingGameControler.add(getMenuSettingGameControlerLoad());
+            menuSettingGameControler.add(getMenuSettingGameControlerRemove());
         }
         return menuSettingGameControler;
     }
@@ -1924,7 +1933,7 @@ public class FormMain extends BForm {
         if (splitContainer2 == null) {
             splitContainer2 = new BSplitPane();
             splitContainer2.setDividerSize(0);
-            splitContainer2.setDividerLocation(70);
+            splitContainer2.setDividerLocation(300);
             splitContainer2.setEnabled(false);
             splitContainer2.setResizeWeight(1.0D);
             splitContainer2.setBottomComponent(getPanel2());
@@ -2001,7 +2010,7 @@ public class FormMain extends BForm {
     private BSplitPane getSplitContainer1() {
         if (splitContainer1 == null) {
             splitContainer1 = new BSplitPane();
-            splitContainer1.setDividerLocation(200);
+            splitContainer1.setDividerLocation(400);
             splitContainer1.setResizeWeight(1.0D);
             splitContainer1.setTopComponent(getSplitContainer2());
             splitContainer1.setBottomComponent(getTrackSelector());
@@ -3630,22 +3639,22 @@ public class FormMain extends BForm {
             panel3.add(getJButton3(), gridBagConstraints3);
             panel3.add(getJButton4(), gridBagConstraints4);
             panel3.add(getJButton5(), gridBagConstraints5);
-            panel3.add(getJPanel2(), gridBagConstraints6);
+            panel3.add(getPictOverview(), gridBagConstraints6);
         }
         return panel3;
     }
 
     /**
-     * This method initializes jPanel2  
+     * This method initializes pictOverview  
      *  
      * @return javax.swing.BPanel   
      */
-    private BPanel getJPanel2() {
-        if (jPanel2 == null) {
-            jPanel2 = new BPanel();
-            jPanel2.setLayout(new GridBagLayout());
+    private BPanel getPictOverview() {
+        if (pictOverview == null) {
+            pictOverview = new BPanel();
+            pictOverview.setLayout(new GridBagLayout());
         }
-        return jPanel2;
+        return pictOverview;
     }
 
     /**
@@ -4030,9 +4039,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuTrackRendererVOCALOID1() {
+    private BMenuItem getMenuTrackRendererVOCALOID1() {
         if (menuTrackRendererVOCALOID1 == null) {
-            menuTrackRendererVOCALOID1 = new JMenuItem();
+            menuTrackRendererVOCALOID1 = new BMenuItem();
             menuTrackRendererVOCALOID1.setText("VOCALOID1");
         }
         return menuTrackRendererVOCALOID1;
@@ -4043,9 +4052,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuTrackRendererVOCALOID2() {
+    private BMenuItem getMenuTrackRendererVOCALOID2() {
         if (menuTrackRendererVOCALOID2 == null) {
-            menuTrackRendererVOCALOID2 = new JMenuItem();
+            menuTrackRendererVOCALOID2 = new BMenuItem();
             menuTrackRendererVOCALOID2.setText("VOCALOID2");
         }
         return menuTrackRendererVOCALOID2;
@@ -4056,9 +4065,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuTrackRendererUtau() {
+    private BMenuItem getMenuTrackRendererUtau() {
         if (menuTrackRendererUtau == null) {
-            menuTrackRendererUtau = new JMenuItem();
+            menuTrackRendererUtau = new BMenuItem();
             menuTrackRendererUtau.setText("UTAU");
         }
         return menuTrackRendererUtau;
@@ -4069,12 +4078,51 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuTrackRendererStraight() {
+    private BMenuItem getMenuTrackRendererStraight() {
         if (menuTrackRendererStraight == null) {
-            menuTrackRendererStraight = new JMenuItem();
+            menuTrackRendererStraight = new BMenuItem();
             menuTrackRendererStraight.setText("Straight X UTAU");
         }
         return menuTrackRendererStraight;
+    }
+
+    /**
+     * This method initializes menuSettingGameControlerSetting	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private BMenuItem getMenuSettingGameControlerSetting() {
+        if (menuSettingGameControlerSetting == null) {
+            menuSettingGameControlerSetting = new BMenuItem();
+            menuSettingGameControlerSetting.setText("Setting(&S)");
+        }
+        return menuSettingGameControlerSetting;
+    }
+
+    /**
+     * This method initializes menuSettingGameControlerLoad	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private BMenuItem getMenuSettingGameControlerLoad() {
+        if (menuSettingGameControlerLoad == null) {
+            menuSettingGameControlerLoad = new BMenuItem();
+            menuSettingGameControlerLoad.setText("Load(&L)");
+        }
+        return menuSettingGameControlerLoad;
+    }
+
+    /**
+     * This method initializes menuSettingGameControlerRemove	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private BMenuItem getMenuSettingGameControlerRemove() {
+        if (menuSettingGameControlerRemove == null) {
+            menuSettingGameControlerRemove = new BMenuItem();
+            menuSettingGameControlerRemove.setText("Remove(&R)");
+        }
+        return menuSettingGameControlerRemove;
     }
 
     //SECTION-END-METHOD

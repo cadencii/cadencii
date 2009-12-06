@@ -36,6 +36,7 @@ namespace Boare.Cadencii {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using boolean = System.Boolean;
+    using Integer = System.Int32;
 #endif
 
 #if JAVA
@@ -161,7 +162,7 @@ namespace Boare.Cadencii {
                 m_tracker[j] = new VolumeTracker();
                 m_tracker[j].setFeder( item.feder );
                 m_tracker[j].setPanpot( item.panpot );
-                m_tracker[j].setTitle( Path.GetFileName( item.file ) );
+                m_tracker[j].setTitle( PortUtil.getFileName( item.file ) );
                 m_tracker[j].setNumber( "" );
 #if !JAVA
                 m_tracker[j].Location = new Point( j * (VolumeTracker.WIDTH + 1), 0 );
@@ -207,7 +208,7 @@ namespace Boare.Cadencii {
 
         private void FormMixer_PanpotChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (int)parent.getTag();
+            int track = (Integer)parent.getTag();
 #if JAVA
             try{
                 panpotChangedEvent.raise( track, parent.getPanpot() );
@@ -223,7 +224,7 @@ namespace Boare.Cadencii {
 
         private void FormMixer_FederChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (int)parent.getTag();
+            int track = (Integer)parent.getTag();
 #if JAVA
             try{
                 federChangedEvent.raise( track, parent.getFeder() );
@@ -239,10 +240,10 @@ namespace Boare.Cadencii {
 
         private void FormMixer_IsSoloChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (int)parent.getTag();
+            int track = (Integer)parent.getTag();
 #if JAVA
             try{
-                soloChangedEvent.raise( track, parent.iSolo() );
+                soloChangedEvent.raise( track, parent.isSolo() );
             }catch( Exception ex ){
                 System.err.println( "FormMixer#FormMixer_IsSoloChanged; ex=" + ex );
             }
@@ -255,7 +256,7 @@ namespace Boare.Cadencii {
 
         private void FormMixer_IsMutedChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (int)parent.getTag();
+            int track = (Integer)parent.getTag();
 #if JAVA
             try{
                 muteChangedEvent.raise( track, parent.isMuted() );
@@ -364,7 +365,7 @@ namespace Boare.Cadencii {
         private void chkTopmost_CheckedChanged( Object sender, BEventArgs e ) {
 #if JAVA
             try{
-                topMostChangedEvent.raise( this, chkTopMost.isSelected() );
+                topMostChangedEvent.raise( this, chkTopmost.isSelected() );
             }catch( Exception ex ){
                 System.err.println( "FormMixer#chkTopmost_CheckedChanged; ex=" + ex );
             }
@@ -389,7 +390,7 @@ namespace Boare.Cadencii {
 #if JAVA
             menuVisualReturn.clickEvent.add( new BEventHandler( this, "menuVisualReturn_Click" ) );
 //            panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
-            hScroll.ValueChanged += new System.EventHandler( this.veScrollBar_ValueChanged );
+            hScroll.valueChangedEvent.add( new BEventHandler( this, "veScrollBar_ValueChanged" ) );
             volumeMaster.panpotChangedEvent.add( new BEventHandler( this, "volumeMaster_PanpotChanged" ) );
             volumeMaster.isMutedChangedEvent.add( new BEventHandler( this, "volumeMaster_IsMutedChanged" ) );
             volumeMaster.federChangedEvent.add( new BEventHandler( this, "volumeMaster_FederChanged" ) );
@@ -441,13 +442,13 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.menuMain = new BMenuBar();
-            this.menuVisual = new BMenuItem();
-            this.menuVisualReturn = new BMenuItem();
-            this.panel1 = new BPanel();
-            this.hScroll = new BHScrollBar();
+            this.menuMain = new bocoree.windows.forms.BMenuBar();
+            this.menuVisual = new bocoree.windows.forms.BMenuItem();
+            this.menuVisualReturn = new bocoree.windows.forms.BMenuItem();
+            this.panel1 = new bocoree.windows.forms.BPanel();
+            this.hScroll = new bocoree.windows.forms.BHScrollBar();
             this.volumeMaster = new Boare.Cadencii.VolumeTracker();
-            this.chkTopmost = new BCheckBox();
+            this.chkTopmost = new bocoree.windows.forms.BCheckBox();
             this.menuMain.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();

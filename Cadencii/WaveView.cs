@@ -67,6 +67,12 @@ namespace Boare.Cadencii {
 #endif
         }
 
+#if !JAVA
+        public void repaint() {
+            this.Refresh();
+        }
+#endif
+
         /// <summary>
         /// 現在の波形画像をリセットします
         /// </summary>

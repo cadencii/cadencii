@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BPictureBox;
 
 //SECTION-END-IMPORT
 public class VersionInfo extends BForm {
@@ -28,6 +29,7 @@ public class VersionInfo extends BForm {
     private JLabel jLabel1 = null;
     private JTextArea lblVstLogo = null;
     private JTextArea lblStraightAcknowledgement = null;
+    private BPictureBox pictVstLogo = null;
     
     //SECTION-END-FIELD
     /**
@@ -143,6 +145,7 @@ public class VersionInfo extends BForm {
             jPanel1.setBackground(Color.white);
             jPanel1.add(jLabel1, gridBagConstraints5);
             jPanel1.add(getLblVstLogo(), gridBagConstraints6);
+            jPanel1.add(getPictVstLogo(), new GridBagConstraints());
             jPanel1.add(getLblStraightAcknowledgement(), gridBagConstraints7);
         }
         return jPanel1;
@@ -228,6 +231,19 @@ public class VersionInfo extends BForm {
             lblStraightAcknowledgement.setLineWrap(true);
         }
         return lblStraightAcknowledgement;
+    }
+
+    /**
+     * This method initializes pictVstLogo	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private BPictureBox getPictVstLogo() {
+        if (pictVstLogo == null) {
+            pictVstLogo = new BPictureBox();
+            pictVstLogo.setLayout(new GridBagLayout());
+        }
+        return pictVstLogo;
     }
 
     //SECTION-END-METHOD

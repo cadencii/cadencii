@@ -18,6 +18,7 @@ import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BTextBox;
 
@@ -140,7 +141,7 @@ public class Preference extends JFrame {
 	private BButton btnWavtool = null;
 	private BCheckBox chkInvokeWithWine = null;
 	private BPanel tabUtauSingers = null;
-	private JTable listSingers = null;
+	private BListView listSingers = null;
 	private BButton btnAdd = null;
 	private BButton btnRemove = null;
 	private BButton btnUp = null;
@@ -2043,9 +2044,9 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.JTable	
 	 */
-	private JTable getListSingers() {
+	private BListView getListSingers() {
 		if (listSingers == null) {
-			listSingers = new JTable();
+			listSingers = new BListView();
 		}
 		return listSingers;
 	}

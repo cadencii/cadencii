@@ -14,19 +14,21 @@ import javax.swing.border.TitledBorder;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BListView;
 
 //SECTION-END-IMPORT
 public class FormMidiImExport extends BForm {
     //SECTION-BEGIN-FIELD
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private JPanel jPanel = null;
 	private BButton btnCheckAll = null;
 	private BButton btnUncheckAll = null;
 	private JLabel jLabel = null;
 	public BListView listTrack = null;
-	private JPanel jPanel1 = null;
+	private BGroupBox groupCommonOption = null;
 	private BCheckBox chkTempo = null;
 	private JPanel jPanel2 = null;
 	private BButton btnOK = null;
@@ -35,9 +37,9 @@ public class FormMidiImExport extends BForm {
 	private BCheckBox chkBeat = null;
 	private BCheckBox chkLyric = null;
 	private JLabel jLabel1 = null;
-	private JPanel chkMetaText = null;
+	private JPanel panel2 = null;
 	private BCheckBox chkNote = null;
-	private BCheckBox jCheckBox11 = null;
+	private BCheckBox chkMetaText = null;
 	private JLabel jLabel11 = null;
 	private JPanel jPanel32 = null;
 	private BCheckBox chkExportVocaloidNrpn = null;
@@ -99,7 +101,7 @@ public class FormMidiImExport extends BForm {
 			jContentPane.setLayout(new GridBagLayout());
 			jContentPane.add(getJPanel(), gridBagConstraints3);
 			jContentPane.add(getListTrack(), gridBagConstraints4);
-			jContentPane.add(getJPanel1(), gridBagConstraints12);
+			jContentPane.add(getGroupCommonOption(), gridBagConstraints12);
 			jContentPane.add(getJPanel2(), gridBagConstraints13);
 		}
 		return jContentPane;
@@ -182,12 +184,12 @@ public class FormMidiImExport extends BForm {
 	}
 
 	/**
-	 * This method initializes jPanel1	
+	 * This method initializes groupCommonOption	
 	 * 	
 	 * @return javax.swing.JPanel	
 	 */
-	private JPanel getJPanel1() {
-		if (jPanel1 == null) {
+	private JPanel getGroupCommonOption() {
+		if (groupCommonOption == null) {
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			gridBagConstraints11.gridx = 0;
 			gridBagConstraints11.fill = GridBagConstraints.HORIZONTAL;
@@ -205,14 +207,14 @@ public class FormMidiImExport extends BForm {
 			gridBagConstraints9.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints9.weightx = 1.0D;
 			gridBagConstraints9.gridy = 0;
-			jPanel1 = new JPanel();
-			jPanel1.setLayout(new GridBagLayout());
-			jPanel1.setBorder(BorderFactory.createTitledBorder(null, "Option", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			jPanel1.add(getJPanel3(), gridBagConstraints9);
-			jPanel1.add(getChkMetaText(), gridBagConstraints10);
-			jPanel1.add(getJPanel32(), gridBagConstraints11);
+			groupCommonOption = new BGroupBox();
+			groupCommonOption.setLayout(new GridBagLayout());
+			groupCommonOption.setBorder(BorderFactory.createTitledBorder(null, "Option", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			groupCommonOption.add(getJPanel3(), gridBagConstraints9);
+			groupCommonOption.add(getPanel2(), gridBagConstraints10);
+			groupCommonOption.add(getJPanel32(), gridBagConstraints11);
 		}
-		return jPanel1;
+		return groupCommonOption;
 	}
 
 	/**
@@ -338,12 +340,12 @@ public class FormMidiImExport extends BForm {
 	}
 
 	/**
-	 * This method initializes chkMetaText	
+	 * This method initializes panel2	
 	 * 	
 	 * @return javax.swing.JPanel	
 	 */
-	private JPanel getChkMetaText() {
-		if (chkMetaText == null) {
+	private JPanel getPanel2() {
+		if (panel2 == null) {
 			GridBagConstraints gridBagConstraints81 = new GridBagConstraints();
 			gridBagConstraints81.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints81.gridy = 0;
@@ -357,13 +359,13 @@ public class FormMidiImExport extends BForm {
 			GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
 			gridBagConstraints51.gridx = 0;
 			gridBagConstraints51.gridy = 0;
-			chkMetaText = new JPanel();
-			chkMetaText.setLayout(new GridBagLayout());
-			chkMetaText.add(getChkNote(), gridBagConstraints51);
-			chkMetaText.add(getJCheckBox11(), gridBagConstraints61);
-			chkMetaText.add(jLabel11, gridBagConstraints81);
+			panel2 = new JPanel();
+			panel2.setLayout(new GridBagLayout());
+			panel2.add(getChkNote(), gridBagConstraints51);
+			panel2.add(getChkMetaText(), gridBagConstraints61);
+			panel2.add(jLabel11, gridBagConstraints81);
 		}
-		return chkMetaText;
+		return panel2;
 	}
 
 	/**
@@ -380,16 +382,16 @@ public class FormMidiImExport extends BForm {
 	}
 
 	/**
-	 * This method initializes jCheckBox11	
+	 * This method initializes chkMetaText	
 	 * 	
 	 * @return javax.swing.BCheckBox	
 	 */
-	private BCheckBox getJCheckBox11() {
-		if (jCheckBox11 == null) {
-			jCheckBox11 = new BCheckBox();
-			jCheckBox11.setText("vocaloid meta-text");
+	private BCheckBox getChkMetaText() {
+		if (chkMetaText == null) {
+			chkMetaText = new BCheckBox();
+			chkMetaText.setText("vocaloid meta-text");
 		}
-		return jCheckBox11;
+		return chkMetaText;
 	}
 
 	/**

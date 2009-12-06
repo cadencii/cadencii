@@ -17,6 +17,7 @@ package org.kbinani.Cadencii;
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\VersionInfo.java
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.*;
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
@@ -76,7 +77,7 @@ namespace Boare.Cadencii {
             timer.setDelay( 30 );
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
 
             m_version = version;
             m_app_name = app_name;
@@ -92,17 +93,17 @@ namespace Boare.Cadencii {
             lblVstLogo.setForeground( m_version_color );
             lblStraightAcknowledgement.setForeground( m_version_color );
 #if DEBUG
-            GenerateAuthorList();
+            generateAuthorList();
             btnSaveAuthorList.setVisible( true );
 #if JAVA
-            btnSaveAuthorList.addClick( new BEventHandler( this, "btnSaveAuthorList_Click" ) );
+            btnSaveAuthorList.clickEvent.add( new BEventHandler( this, "btnSaveAuthorList_Click" ) );
 #else
             btnSaveAuthorList.Click += new EventHandler( btnSaveAuthorList_Click );
 #endif
 #endif
         }
 
-        public void ApplyLanguage() {
+        public void applyLanguage() {
             String about = PortUtil.formatMessage( _( "About {0}" ), m_app_name );
             String credit = _( "Credit" );
             Dimension size1 = Util.measureString( about, btnFlip.getFont() );
@@ -168,18 +169,18 @@ namespace Boare.Cadencii {
         public void setAuthorList( AuthorListEntry[] value ) {
             m_credit = value;
 #if JAVA
-            GenerateAuthorList();
+            generateAuthorList();
 #else
-            GenerateAuthorList();
+            generateAuthorList();
 #endif
         }
 
-        private void GenerateAuthorList() {
+        private void generateAuthorList() {
             int shadow_shift = 2;
-            string font_name = "Arial";
+            String font_name = "Arial";
             int font_size = 10;
             Font font = new Font( font_name, java.awt.Font.PLAIN, font_size );
-            Dimension size = Boare.Lib.AppUtil.Util.measureString( "the quick brown fox jumped over the lazy dogs. THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS. 0123456789", font );
+            Dimension size = Util.measureString( "the quick brown fox jumped over the lazy dogs. THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS. 0123456789", font );
             int width = getWidth();
             int height = size.height;
             //StringFormat sf = new StringFormat();
@@ -274,9 +275,13 @@ namespace Boare.Cadencii {
             invalidate();
         }
 
-        private void VersionInfoEx_Paint( Object sender, BPaintEventArgs e ) {
+        private void VersionInfo_Paint( Object sender, BPaintEventArgs e ) {
             try {
+#if JAVA
+                paint( e.Graphics );
+#else
                 paint( new Graphics2D( e.Graphics ) );
+#endif
             } catch ( Exception ex ) {
 #if DEBUG
                 Console.WriteLine( "VersionInfoEx_Paint" );
@@ -291,7 +296,7 @@ namespace Boare.Cadencii {
             g.clearRect( 0, 0, getWidth(), getHeight() );
             if ( m_credit_mode ) {
                 float times = (float)(PortUtil.getCurrentTime() - m_scroll_started) - 3f;
-                float speed = (float)((2.0 - bocoree.math.erfcc( times * 0.8 )) / 2.0) * m_speed;
+                float speed = (float)((2.0 - math.erfcc( times * 0.8 )) / 2.0) * m_speed;
                 float dt = times - m_last_t;
                 m_shift += (speed + m_last_speed) * dt / 2f;
                 m_last_t = times;
@@ -323,16 +328,21 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void VersionInfoEx_KeyDown( Object sender, BKeyEventArgs e ) {
-            if ( (e.KeyCode & Keys.Escape) == Keys.Escape ) {
+        private void VersionInfo_KeyDown( Object sender, BKeyEventArgs e ) {
+#if JAVA
+            if( (e.getKeyCode() & KeyEvent.VK_ESCAPE) == KeyEvent.VK_ESCAPE )
+#else
+            if ( (e.KeyCode & Keys.Escape) == Keys.Escape ) 
+#endif
+            {
                 setDialogResult( BDialogResult.CANCEL );
                 close();
             }
         }
 
-        private void VersionInfoEx_FontChanged( Object sender, BEventArgs e ) {
+        private void VersionInfo_FontChanged( Object sender, BEventArgs e ) {
 #if JAVA
-                Util.applyFontRecurse( this, getFont() );
+            Util.applyFontRecurse( this, getFont() );
 #else
             for ( int i = 0; i < this.Controls.Count; i++ ) {
                 Util.applyFontRecurse( this.Controls[i], new java.awt.Font( this.Font ) );
@@ -341,16 +351,19 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+#else
             this.btnFlip.Click += new System.EventHandler( this.btnFlip_Click );
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
-            this.Paint += new System.Windows.Forms.PaintEventHandler( this.VersionInfoEx_Paint );
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfoEx_KeyDown );
-            this.FontChanged += new System.EventHandler( this.VersionInfoEx_FontChanged );
+            this.Paint += new System.Windows.Forms.PaintEventHandler( this.VersionInfo_Paint );
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfo_KeyDown );
+            this.FontChanged += new System.EventHandler( this.VersionInfo_FontChanged );
+#endif
         }
 
         private void setResources() {
-            this.pictVstLogo.setImage( Resources.get_VSTonWht() );
+            pictVstLogo.setImage( Resources.get_VSTonWht() );
         }
 
 #if JAVA
