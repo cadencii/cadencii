@@ -551,8 +551,8 @@ namespace Boare.Cadencii {
 
             #region tabのタイトル
 #if JAVA
-            int c = tabPane.getTabCount();
-            for( int i = 0; i < c; i++ ){
+            int count = tabPane.getTabCount();
+            for( int i = 0; i < count; i++ ){
                 Component c = tabPane.getTabComponentAt( i );
                 if( !(c instanceof BPanel) ){
                     continue;
@@ -835,7 +835,7 @@ namespace Boare.Cadencii {
         public void setDefaultVibratoLength( DefaultVibratoLengthEnum value ) {
             int count = -1;
 #if JAVA
-            for( DefaultVibratoLengthEnum dvl : DefaultVibratoLengthEnum.valuse() )
+            for( DefaultVibratoLengthEnum dvl : DefaultVibratoLengthEnum.values() )
 #else
             foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) )
 #endif
@@ -932,7 +932,7 @@ namespace Boare.Cadencii {
             if ( font_name.Equals( "" ) ) {
                 return;
             }
-            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)tabSequence.Font.Size );
+            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)getFont().getSize() );
             Util.applyFontRecurse( this, font );
         }
 
@@ -967,10 +967,10 @@ namespace Boare.Cadencii {
             openUtauCore.setSelectedFile( "resampler.exe" );
             int dr = openUtauCore.showOpenDialog( this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
-                string path = openUtauCore.getSelectedFile();
+                String path = openUtauCore.getSelectedFile();
                 txtResampler.setText( path );
                 if ( txtWavtool.getText().Equals( "" ) ) {
-                    string wavtool = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "wavtool.exe" );
+                    String wavtool = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "wavtool.exe" );
                     if ( PortUtil.isFileExists( wavtool ) ) {
                         txtWavtool.setText( wavtool );
                     }
@@ -985,10 +985,10 @@ namespace Boare.Cadencii {
             openUtauCore.setSelectedFile( "wavtool.exe" );
             int dr = openUtauCore.showOpenDialog( this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
-                string path = openUtauCore.getSelectedFile();
+                String path = openUtauCore.getSelectedFile();
                 txtWavtool.setText( path );
                 if ( txtResampler.getText().Equals( "" ) ) {
-                    string resampler = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "resampler.exe" );
+                    String resampler = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "resampler.exe" );
                     if ( PortUtil.isFileExists( resampler ) ) {
                         txtResampler.setText( resampler );
                     }
@@ -1028,7 +1028,7 @@ namespace Boare.Cadencii {
             listSingers.clear();
             for ( int i = 0; i < m_utau_singers.size(); i++ ) {
                 m_utau_singers.get( i ).Program = i;
-                listSingers.addItem( "", new BListViewItem( new String[] { m_utau_singers.get( i ).Program.ToString(),
+                listSingers.addItem( "", new BListViewItem( new String[] { m_utau_singers.get( i ).Program + "",
                                                                            m_utau_singers.get( i ).VOICENAME, 
                                                                            m_utau_singers.get( i ).VOICEIDSTR } ) );
             }
@@ -1047,7 +1047,7 @@ namespace Boare.Cadencii {
                         sr = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
                         String line = "";
                         while ( (line = sr.readLine()) != null ) {
-                            String[] spl = line.Split( '=' );
+                            String[] spl = PortUtil.splitString( line, '=' );
                             if ( spl.Length >= 2 ) {
                                 if ( spl[0].ToLower().Equals( "name" ) ) {
                                     name = spl[1];

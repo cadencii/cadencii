@@ -356,9 +356,14 @@ namespace Boare.Cadencii {
 #endif
 
         public TrackSelector() {
+#if JAVA
+            super();
+            initialize();
+#else
             this.SetStyle( ControlStyles.DoubleBuffer, true );
             this.SetStyle( ControlStyles.UserPaint, true );
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             m_modifier_key = (AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
@@ -651,7 +656,7 @@ namespace Boare.Cadencii {
             return max_columns;
         }
 
-        private int getRowsPerColumn() {
+        public int getRowsPerColumn() {
             int max_columns = getMaxColumns();
             int row_per_column = m_viewing_curves.size() / max_columns;
             if ( row_per_column * max_columns < m_viewing_curves.size() ) {

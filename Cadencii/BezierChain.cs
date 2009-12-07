@@ -129,7 +129,11 @@ namespace Boare.Cadencii {
             return new PointD( x, y );
         }
 
-        public BezierChain extractPartialBezier( double t_start, double t_end ) {
+        public BezierChain extractPartialBezier( double t_start, double t_end )
+#if JAVA
+            throws Exception
+#endif
+        {
             if ( this.size() <= 1 ) {
                 throw new Exception( "chain must has two or more bezier points" );
             }

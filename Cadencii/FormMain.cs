@@ -452,6 +452,14 @@ namespace Boare.Cadencii {
         /// AppManager.keyWidthを調節するモードに入る直前での、keyWidthの値
         /// </summary>
         private int m_key_length_init_value = 68;
+        /// <summary>
+        /// AppManager.keyWidthを調節するモードに入る直前での、trackSelectorのgetRowsPerColumn()の値
+        /// </summary>
+        private int m_key_length_trackselector_rowspercolumn = 1;
+        /// <summary>
+        /// AppManager.keyWidthを調節するモードに入る直前での、splitContainer1のSplitterLocationの値
+        /// </summary>
+        private int m_key_length_splitter_distance = 0;
         private BFileChooser openXmlVsqDialog;
         private BFileChooser saveXmlVsqDialog;
         private BFileChooser openUstDialog;
@@ -13512,6 +13520,8 @@ namespace Boare.Cadencii {
             m_key_length_splitter_mouse_downed = true;
             m_key_length_splitter_initial_mouse = PortUtil.getMousePosition();
             m_key_length_init_value = AppManager.keyWidth;
+            m_key_length_trackselector_rowspercolumn = trackSelector.getRowsPerColumn();
+            m_key_length_splitter_distance = splitContainer1.getDividerLocation();
         }
 
         private void pictKeyLengthSplitter_MouseMove( Object sender, BMouseEventArgs e ) {
@@ -13526,6 +13536,15 @@ namespace Boare.Cadencii {
                 draft = AppManager.MAX_KEY_WIDTH;
             }
             AppManager.keyWidth = draft;
+            int current = trackSelector.getRowsPerColumn();
+            if ( current >= m_key_length_trackselector_rowspercolumn ) {
+                int max_divider_location = splitContainer1.getHeight() - splitContainer1.getDividerSize() - splitContainer1.getPanel2MinSize();
+                if ( max_divider_location < m_key_length_splitter_distance ) {
+                    splitContainer1.setDividerLocation( max_divider_location );
+                } else {
+                    splitContainer1.setDividerLocation( m_key_length_splitter_distance );
+                }
+            } 
             updateLayout();
             refreshScreen();
         }

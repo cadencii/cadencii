@@ -17,10 +17,16 @@ import javax.swing.border.TitledBorder;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListView;
+import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BTextBox;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
 
 //SECTION-END-IMPORT
 public class Preference extends JFrame {
@@ -44,7 +50,7 @@ public class Preference extends JFrame {
 	private BLabel lblVibratoLength = null;
 	private BComboBox comboVibratoLength = null;
 	private BLabel jLabel13 = null;
-	private BPanel groupAutoVibratoConfig = null;
+	private BGroupBox groupAutoVibratoConfig = null;
 	private BPanel jPanel3 = null;
 	private BCheckBox chkEnableAutoVibrato = null;
 	private BLabel lblAutoVibratoMinLength = null;
@@ -55,20 +61,20 @@ public class Preference extends JFrame {
 	private BComboBox comboAutoVibratoType1 = null;
 	private BLabel lblAutoVibratoType2 = null;
 	private BComboBox comboAutoVibratoType2 = null;
-	private BPanel tabAnother = null;
+	private BPanel tabAnother = null;  //  @jve:decl-index=0:visual-constraint="399,949"
 	private BLabel lblDefaultSinger = null;
 	private BComboBox comboDefualtSinger = null;
 	private BLabel lblPreSendTime = null;
-	private BComboBox numPreSendTime = null;
+	private BNumericUpDown numPreSendTime = null;
 	private BLabel jLabel8 = null;
 	private BLabel lblWait = null;
-	private BComboBox numWait = null;
+	private BNumericUpDown numWait = null;
 	private BLabel jLabel81 = null;
 	private BLabel lblDefaultPremeasure = null;
 	private BComboBox comboDefaultPremeasure = null;
 	private BLabel jLabel9 = null;
 	private BPanel tabAppearance = null;
-	private BPanel groupFont = null;
+	private BGroupBox groupFont = null;
 	private BLabel labelMenu = null;
 	private BLabel labelMenuFontName = null;
 	private BButton btnChangeMenuFont = null;
@@ -80,8 +86,8 @@ public class Preference extends JFrame {
 	private BComboBox comboLanguage = null;
 	private BPanel jPanel71 = null;
 	private BLabel lblTrackHeight = null;
-	private BComboBox numTrackHeight = null;
-	private BPanel groupVisibleCurve = null;
+	private BNumericUpDown numTrackHeight = null;
+	private BGroupBox groupVisibleCurve = null;
 	private BCheckBox chkAccent = null;
 	private BCheckBox chkDecay = null;
 	private BCheckBox chkVibratoRate = null;
@@ -104,35 +110,35 @@ public class Preference extends JFrame {
 	private BCheckBox chkReso4 = null;
 	private BCheckBox chkEnvelope = null;
 	private BPanel tabOperation = null;
-	private BPanel groupPianoroll = null;
+	private BGroupBox groupPianoroll = null;
 	private BLabel labelWheelOrder = null;
-	private BComboBox numericUpDownEx1 = null;
+	private BNumericUpDown numericUpDownEx1 = null;
 	private BCheckBox chkCursorFix = null;
 	private BCheckBox chkScrollHorizontal = null;
 	private BCheckBox chkKeepLyricInputMode = null;
 	private BCheckBox chkPlayPreviewWhenRightClick = null;
 	private BCheckBox chkCurveSelectingQuantized = null;
 	private BCheckBox chkUseSpaceKeyAsMiddleButtonModifier = null;
-	private BPanel groupMisc = null;
+	private BGroupBox groupMisc = null;
 	private BLabel lblMaximumFrameRate = null;
-	private BComboBox numMaximumFrameRate = null;
+	private BNumericUpDown numMaximumFrameRate = null;
 	private BLabel lblMilliSecond = null;
 	private BLabel lblMouseHoverTime = null;
-	private BComboBox numMouseHoverTime = null;
+	private BNumericUpDown numMouseHoverTime = null;
 	private BLabel lblMidiInPort = null;
 	private BComboBox comboMidiInPortNumber = null;
 	private BPanel tabPlatform = null;
-	private BPanel groupPlatform = null;
+	private BGroupBox groupPlatform = null;
 	private BLabel lblPlatform = null;
 	private BComboBox comboPlatform = null;
 	private BCheckBox chkCommandKeyAsControl = null;
 	private BCheckBox chkTranslateRoman = null;
-	private BPanel groupVsti = null;
+	private BGroupBox groupVsti = null;
 	private BLabel lblVOCALOID1 = null;
 	private BTextBox txtVOCALOID1 = null;
 	private BLabel lblVOCALOID2 = null;
 	private BTextBox txtVOCALOID2 = null;
-	private BPanel groupUtauCores = null;
+	private BGroupBox groupUtauCores = null;
 	private BLabel lblResampler = null;
 	private BTextBox txtResampler = null;
 	private BButton btnResampler = null;
@@ -159,9 +165,18 @@ public class Preference extends JFrame {
 	private BPanel jPanel5 = null;
 	private BPanel panelUpper = null;
     private JTabbedPane tabPane = null;
-	private BTextBox numAutoBackupInterval = null;
-	
-	//SECTION-END-FIELD
+	private BNumericUpDown numAutoBackupInterval = null;
+    private JCheckBox chkChasePastEvent = null;
+    private JLabel lblSampleOutput = null;
+    private JCheckBox chkEnableSampleOutput = null;
+    private JLabel lblTiming = null;
+    private BNumericUpDown numTiming = null;
+    private JLabel label14 = null;
+    private JLabel lblPreSendTimeSample = null;
+    private BNumericUpDown numPreSendTimeSample = null;
+    private JLabel label15 = null;
+    private JPanel jPanel = null;
+    //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -445,7 +460,7 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getGroupAutoVibratoConfig() {
+	private BGroupBox getGroupAutoVibratoConfig() {
 		if (groupAutoVibratoConfig == null) {
 			GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
 			gridBagConstraints51.gridx = 0;
@@ -463,7 +478,7 @@ public class Preference extends JFrame {
 			gridBagConstraints.weightx = 1.0D;
 			gridBagConstraints.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints.gridy = 0;
-			groupAutoVibratoConfig = new BPanel();
+			groupAutoVibratoConfig = new BGroupBox();
 			groupAutoVibratoConfig.setLayout(new GridBagLayout());
 			groupAutoVibratoConfig.setBorder(BorderFactory.createTitledBorder(null, "Auto Vibrato Settings", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupAutoVibratoConfig.add(getChkEnableAutoVibrato(), gridBagConstraints);
@@ -607,10 +622,64 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getTabAnother() {
 		if (tabAnother == null) {
+			GridBagConstraints gridBagConstraints130 = new GridBagConstraints();
+			gridBagConstraints130.gridx = 0;
+			gridBagConstraints130.gridwidth = 3;
+			gridBagConstraints130.anchor = GridBagConstraints.WEST;
+			gridBagConstraints130.insets = new Insets(0, 48, 0, 0);
+			gridBagConstraints130.gridy = 8;
+			label15 = new JLabel();
+			label15.setText("msec(50-500)");
+			numPreSendTimeSample = new BNumericUpDown();
+			numPreSendTimeSample.setValue(50);
+			numPreSendTimeSample.setPreferredSize(new Dimension(68, 20));
+			lblPreSendTimeSample = new JLabel();
+			lblPreSendTimeSample.setText("Pre-Send Time for sample sound");
+			GridBagConstraints gridBagConstraints126 = new GridBagConstraints();
+			gridBagConstraints126.gridx = 2;
+			gridBagConstraints126.anchor = GridBagConstraints.WEST;
+			gridBagConstraints126.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints126.gridy = 7;
+			label14 = new JLabel();
+			label14.setText("msec(500-1500)");
+			GridBagConstraints gridBagConstraints125 = new GridBagConstraints();
+			gridBagConstraints125.gridx = 1;
+			gridBagConstraints125.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints125.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints125.gridy = 7;
+			numTiming = new BNumericUpDown();
+			numTiming.setValue( 500 );
+			numTiming.setPreferredSize(new Dimension(68, 20));
+			GridBagConstraints gridBagConstraints124 = new GridBagConstraints();
+			gridBagConstraints124.gridx = 0;
+			gridBagConstraints124.anchor = GridBagConstraints.WEST;
+			gridBagConstraints124.insets = new Insets(3, 48, 3, 0);
+			gridBagConstraints124.gridy = 7;
+			lblTiming = new JLabel();
+			lblTiming.setText("Timing");
+			GridBagConstraints gridBagConstraints123 = new GridBagConstraints();
+			gridBagConstraints123.gridx = 0;
+			gridBagConstraints123.insets = new Insets(0, 24, 0, 0);
+			gridBagConstraints123.anchor = GridBagConstraints.WEST;
+			gridBagConstraints123.gridy = 6;
+			GridBagConstraints gridBagConstraints122 = new GridBagConstraints();
+			gridBagConstraints122.gridx = 0;
+			gridBagConstraints122.anchor = GridBagConstraints.WEST;
+			gridBagConstraints122.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints122.gridwidth = 3;
+			gridBagConstraints122.gridy = 5;
+			lblSampleOutput = new JLabel();
+			lblSampleOutput.setText("Playback Sample Sound");
+			GridBagConstraints gridBagConstraints90 = new GridBagConstraints();
+			gridBagConstraints90.gridx = 0;
+			gridBagConstraints90.anchor = GridBagConstraints.WEST;
+			gridBagConstraints90.insets = new Insets(0, 24, 0, 0);
+			gridBagConstraints90.gridwidth = 3;
+			gridBagConstraints90.gridy = 4;
 			GridBagConstraints gridBagConstraints35 = new GridBagConstraints();
 			gridBagConstraints35.gridx = 0;
 			gridBagConstraints35.weighty = 1.0D;
-			gridBagConstraints35.gridy = 4;
+			gridBagConstraints35.gridy = 9;
 			jLabel9 = new BLabel();
 			jLabel9.setText("   ");
 			GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
@@ -689,6 +758,7 @@ public class Preference extends JFrame {
 			lblDefaultSinger.setText("Default Singer");
 			tabAnother = new BPanel();
 			tabAnother.setLayout(new GridBagLayout());
+			tabAnother.setSize(new Dimension(420, 283));
 			tabAnother.add(lblDefaultSinger, gridBagConstraints23);
 			tabAnother.add(getComboDefualtSinger(), gridBagConstraints24);
 			tabAnother.add(lblPreSendTime, gridBagConstraints25);
@@ -700,6 +770,13 @@ public class Preference extends JFrame {
 			tabAnother.add(lblDefaultPremeasure, gridBagConstraints33);
 			tabAnother.add(getComboDefaultPremeasure(), gridBagConstraints34);
 			tabAnother.add(jLabel9, gridBagConstraints35);
+			tabAnother.add(getChkChasePastEvent(), gridBagConstraints90);
+			tabAnother.add(lblSampleOutput, gridBagConstraints122);
+			tabAnother.add(getChkEnableSampleOutput(), gridBagConstraints123);
+			tabAnother.add(lblTiming, gridBagConstraints124);
+			tabAnother.add(numTiming, gridBagConstraints125);
+			tabAnother.add(label14, gridBagConstraints126);
+			tabAnother.add(getJPanel2(), gridBagConstraints130);
 		}
 		return tabAnother;
 	}
@@ -722,9 +799,9 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BComboBox	
 	 */
-	private BComboBox getNumPreSendTime() {
+	private BNumericUpDown getNumPreSendTime() {
 		if (numPreSendTime == null) {
-			numPreSendTime = new BComboBox();
+			numPreSendTime = new BNumericUpDown();
 			numPreSendTime.setPreferredSize(new Dimension(68, 20));
 		}
 		return numPreSendTime;
@@ -735,9 +812,9 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BComboBox	
 	 */
-	private BComboBox getNumWait() {
+	private BNumericUpDown getNumWait() {
 		if (numWait == null) {
-			numWait = new BComboBox();
+			numWait = new BNumericUpDown();
 			numWait.setPreferredSize(new Dimension(68, 20));
 		}
 		return numWait;
@@ -801,7 +878,7 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getGroupFont() {
+	private BGroupBox getGroupFont() {
 		if (groupFont == null) {
 			GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
 			gridBagConstraints41.gridx = 2;
@@ -843,7 +920,7 @@ public class Preference extends JFrame {
 			gridBagConstraints36.gridy = 0;
 			labelMenu = new BLabel();
 			labelMenu.setText("Menu/Lyrics");
-			groupFont = new BPanel();
+			groupFont = new BGroupBox();
 			groupFont.setLayout(new GridBagLayout());
 			groupFont.setBorder(BorderFactory.createTitledBorder(null, "Font", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupFont.add(labelMenu, gridBagConstraints36);
@@ -960,9 +1037,9 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BComboBox	
 	 */
-	private BComboBox getNumTrackHeight() {
+	private BNumericUpDown getNumTrackHeight() {
 		if (numTrackHeight == null) {
-			numTrackHeight = new BComboBox();
+			numTrackHeight = new BNumericUpDown();
 			numTrackHeight.setPreferredSize(new Dimension(121, 20));
 		}
 		return numTrackHeight;
@@ -973,7 +1050,7 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getGroupVisibleCurve() {
+	private BGroupBox getGroupVisibleCurve() {
 		if (groupVisibleCurve == null) {
 			GridBagConstraints gridBagConstraints68 = new GridBagConstraints();
 			gridBagConstraints68.gridx = 0;
@@ -1084,7 +1161,7 @@ public class Preference extends JFrame {
 			gridBagConstraints47.weightx = 0.25D;
 			gridBagConstraints47.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints47.gridy = 0;
-			groupVisibleCurve = new BPanel();
+			groupVisibleCurve = new BGroupBox();
 			groupVisibleCurve.setLayout(new GridBagLayout());
 			groupVisibleCurve.setBorder(BorderFactory.createTitledBorder(null, "Visible Control Curve", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupVisibleCurve.add(getChkAccent(), gridBagConstraints47);
@@ -1420,7 +1497,7 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getGroupPianoroll() {
+	private BGroupBox getGroupPianoroll() {
 		if (groupPianoroll == null) {
 			GridBagConstraints gridBagConstraints77 = new GridBagConstraints();
 			gridBagConstraints77.gridx = 0;
@@ -1473,7 +1550,7 @@ public class Preference extends JFrame {
 			gridBagConstraints70.gridy = 0;
 			labelWheelOrder = new BLabel();
 			labelWheelOrder.setText("Mouse wheel Rate");
-			groupPianoroll = new BPanel();
+			groupPianoroll = new BGroupBox();
 			groupPianoroll.setLayout(new GridBagLayout());
 			groupPianoroll.setBorder(BorderFactory.createTitledBorder(null, "Piano Roll", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupPianoroll.add(labelWheelOrder, gridBagConstraints70);
@@ -1493,9 +1570,9 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BComboBox	
 	 */
-	private BComboBox getNumericUpDownEx1() {
+	private BNumericUpDown getNumericUpDownEx1() {
 		if (numericUpDownEx1 == null) {
-			numericUpDownEx1 = new BComboBox();
+			numericUpDownEx1 = new BNumericUpDown();
 			numericUpDownEx1.setPreferredSize(new Dimension(120, 20));
 		}
 		return numericUpDownEx1;
@@ -1584,7 +1661,7 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getGroupMisc() {
+	private BGroupBox getGroupMisc() {
 		if (groupMisc == null) {
 			GridBagConstraints gridBagConstraints86 = new GridBagConstraints();
 			gridBagConstraints86.fill = GridBagConstraints.NONE;
@@ -1637,7 +1714,7 @@ public class Preference extends JFrame {
 			gridBagConstraints79.gridy = 0;
 			lblMaximumFrameRate = new BLabel();
 			lblMaximumFrameRate.setText("Maximum Frame Rate");
-			groupMisc = new BPanel();
+			groupMisc = new BGroupBox();
 			groupMisc.setLayout(new GridBagLayout());
 			groupMisc.setBorder(BorderFactory.createTitledBorder(null, "Misc", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupMisc.add(lblMaximumFrameRate, gridBagConstraints79);
@@ -1656,9 +1733,9 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BComboBox	
 	 */
-	private BComboBox getNumMaximumFrameRate() {
+	private BNumericUpDown getNumMaximumFrameRate() {
 		if (numMaximumFrameRate == null) {
-			numMaximumFrameRate = new BComboBox();
+			numMaximumFrameRate = new BNumericUpDown();
 			numMaximumFrameRate.setPreferredSize(new Dimension(120, 20));
 		}
 		return numMaximumFrameRate;
@@ -1669,9 +1746,9 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BComboBox	
 	 */
-	private BComboBox getNumMouseHoverTime() {
+	private BNumericUpDown getNumMouseHoverTime() {
 		if (numMouseHoverTime == null) {
-			numMouseHoverTime = new BComboBox();
+			numMouseHoverTime = new BNumericUpDown();
 			numMouseHoverTime.setPreferredSize(new Dimension(120, 20));
 		}
 		return numMouseHoverTime;
@@ -1731,7 +1808,7 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getGroupPlatform() {
+	private BGroupBox getGroupPlatform() {
 		if (groupPlatform == null) {
 			GridBagConstraints gridBagConstraints92 = new GridBagConstraints();
 			gridBagConstraints92.gridx = 0;
@@ -1759,7 +1836,7 @@ public class Preference extends JFrame {
 			gridBagConstraints88.gridy = 0;
 			lblPlatform = new BLabel();
 			lblPlatform.setText("Current Platform");
-			groupPlatform = new BPanel();
+			groupPlatform = new BGroupBox();
 			groupPlatform.setLayout(new GridBagLayout());
 			groupPlatform.setBorder(BorderFactory.createTitledBorder(null, "Platform", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupPlatform.add(lblPlatform, gridBagConstraints88);
@@ -1814,7 +1891,7 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getGroupVsti() {
+	private BGroupBox getGroupVsti() {
 		if (groupVsti == null) {
 			GridBagConstraints gridBagConstraints97 = new GridBagConstraints();
 			gridBagConstraints97.fill = GridBagConstraints.HORIZONTAL;
@@ -1844,7 +1921,7 @@ public class Preference extends JFrame {
 			gridBagConstraints94.gridy = 0;
 			lblVOCALOID1 = new BLabel();
 			lblVOCALOID1.setText("VOCALOID1");
-			groupVsti = new BPanel();
+			groupVsti = new BGroupBox();
 			groupVsti.setLayout(new GridBagLayout());
 			groupVsti.setBorder(BorderFactory.createTitledBorder(null, "VST Instruments", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupVsti.add(lblVOCALOID1, gridBagConstraints94);
@@ -1884,7 +1961,7 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getGroupUtauCores() {
+	private BGroupBox getGroupUtauCores() {
 		if (groupUtauCores == null) {
 			GridBagConstraints gridBagConstraints105 = new GridBagConstraints();
 			gridBagConstraints105.gridx = 0;
@@ -1925,7 +2002,7 @@ public class Preference extends JFrame {
 			gridBagConstraints99.gridy = 0;
 			lblResampler = new BLabel();
 			lblResampler.setText("resampler");
-			groupUtauCores = new BPanel();
+			groupUtauCores = new BGroupBox();
 			groupUtauCores.setLayout(new GridBagLayout());
 			groupUtauCores.setBorder(BorderFactory.createTitledBorder(null, "UTAU Cores", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupUtauCores.add(lblResampler, gridBagConstraints99);
@@ -2343,13 +2420,67 @@ public class Preference extends JFrame {
 	 * 	
 	 * @return javax.swing.BTextBox	
 	 */
-	private BTextBox getNumAutoBackupInterval() {
+	private BNumericUpDown getNumAutoBackupInterval() {
 		if (numAutoBackupInterval == null) {
-			numAutoBackupInterval = new BTextBox();
+			numAutoBackupInterval = new BNumericUpDown();
 			numAutoBackupInterval.setPreferredSize(new Dimension(69, 20));
 		}
 		return numAutoBackupInterval;
 	}
+
+    /**
+     * This method initializes chkChasePastEvent	
+     * 	
+     * @return javax.swing.JCheckBox	
+     */
+    private JCheckBox getChkChasePastEvent() {
+        if (chkChasePastEvent == null) {
+            chkChasePastEvent = new JCheckBox();
+            chkChasePastEvent.setText("Chase Event");
+        }
+        return chkChasePastEvent;
+    }
+
+    /**
+     * This method initializes chkEnableSampleOutput	
+     * 	
+     * @return javax.swing.JCheckBox	
+     */
+    private JCheckBox getChkEnableSampleOutput() {
+        if (chkEnableSampleOutput == null) {
+            chkEnableSampleOutput = new JCheckBox();
+            chkEnableSampleOutput.setText("Enable");
+        }
+        return chkEnableSampleOutput;
+    }
+
+    /**
+     * This method initializes jPanel	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel2() {
+        if (jPanel == null) {
+            GridBagConstraints gridBagConstraints129 = new GridBagConstraints();
+            gridBagConstraints129.gridx = 2;
+            gridBagConstraints129.insets = new Insets(3, 12, 3, 0);
+            gridBagConstraints129.gridy = 0;
+            GridBagConstraints gridBagConstraints128 = new GridBagConstraints();
+            gridBagConstraints128.gridx = 1;
+            gridBagConstraints128.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints128.insets = new Insets(3, 12, 3, 0);
+            gridBagConstraints128.gridy = 0;
+            GridBagConstraints gridBagConstraints127 = new GridBagConstraints();
+            gridBagConstraints127.gridx = 0;
+            gridBagConstraints127.gridy = 0;
+            jPanel = new JPanel();
+            jPanel.setLayout(new GridBagLayout());
+            jPanel.add(lblPreSendTimeSample, gridBagConstraints127);
+            jPanel.add(numPreSendTimeSample, gridBagConstraints128);
+            jPanel.add(label15, gridBagConstraints129);
+        }
+        return jPanel;
+    }
 
 	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="-49,12"

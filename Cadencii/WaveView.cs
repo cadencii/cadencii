@@ -91,7 +91,7 @@ namespace Boare.Cadencii {
         public void paint( Graphics g1 ){
             Graphics2D g = (Graphics2D)g1;
             if( m_bmp != null ){
-                g.drawImage( m_bmp, 0, 0, m_bmp.getWidth(), m_bmp.getHeight() );
+                g.drawImage( m_bmp, 0, 0, m_bmp.getWidth(), m_bmp.getHeight(), this );
             }
         }
 #else

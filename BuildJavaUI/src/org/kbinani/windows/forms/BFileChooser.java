@@ -14,6 +14,10 @@ public class BFileChooser{
         m_dialog = new JFileChooser( currentDirectoryPath );
     }
     
+    public void setInitialDirectory( String path ){
+        m_dialog.setCurrentDirectory( new File( path ) );
+    }
+    
     public void addFileFilter( String filter ){
         // TODO: [not implemented yet at BFileChooser#addFileFilter]
     }
@@ -37,6 +41,10 @@ public class BFileChooser{
     public String getSelectedFile(){
         File f = m_dialog.getSelectedFile();
         return f.getAbsolutePath();
+    }
+    
+    public void setSelectedFile( String file ){
+        m_dialog.setSelectedFile( new File( file ) );
     }
     
     public int showOpenDialog( Component parent ){
