@@ -136,9 +136,41 @@ namespace Boare.Cadencii {
         }
 #endif
 
+        #region common APIs of org.kbinani.*
+        // root implementation is in BForm.cs
+        public java.awt.Point pointToScreen( java.awt.Point point_on_client ) {
+            java.awt.Point p = getLocationOnScreen();
+            return new java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
+        }
+
+        public java.awt.Point pointToClient( java.awt.Point point_on_screen ) {
+            java.awt.Point p = getLocationOnScreen();
+            return new java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
+        }
+
+#if JAVA
+        Object tag = null;
+        public Object getTag(){
+            return tag;
+        }
+
+        public void setTag( Object value ){
+            tag = value;
+        }
+#else
+        public Object getTag() {
+            return base.Tag;
+        }
+
+        public void setTag( Object value ) {
+            base.Tag = value;
+        }
+#endif
+        #endregion
+        
         private void paint( Graphics2D g ) {
-            Dimension window_size = new Dimension( this.Width, this.Height );
-            System.Drawing.Point p = this.PointToClient( Control.MousePosition );
+            Dimension window_size = new Dimension( getWidth(), getHeight() );
+            Point p = pointToClient( PortUtil.getMousePosition() );
             Point mouse_position = new Point( p.X, p.Y );
             int start_draw_x = AppManager.startToDrawX;
             int start_draw_y = (AppManager.mainWindow != null) ? AppManager.mainWindow.getStartToDrawY() : 0;
@@ -161,12 +193,17 @@ namespace Boare.Cadencii {
             float scalex = AppManager.scaleX;
             float inv_scalex = 1f / scalex;
 
-            if ( AppManager.getSelectedEventCount() > 0 && AppManager.inputTextBox.Enabled ) {
+            if ( AppManager.getSelectedEventCount() > 0 && AppManager.inputTextBox.isVisible() ) {
                 VsqEvent original = AppManager.getLastSelectedEvent().original;
                 int event_x = (int)(original.Clock * scalex + xoffset);
                 int event_y = -original.ID.Note * track_height + yoffset;
+#if JAVA
+                Point p = pointToScreen( new Point( event_x + 4, event_y + 2 ) );
+                AppManager.inputTextBox.setLocation( p );
+#else
                 AppManager.inputTextBox.Left = event_x + 4;
                 AppManager.inputTextBox.Top = event_y + 2;
+#endif
             }
 
             Color black = AppManager.editorConfig.PianorollColorVocalo2Black.getColor();
@@ -440,7 +477,7 @@ namespace Boare.Cadencii {
                 if ( selected >= 1 ) {
                     Shape r = g.getClip();
                     g.clipRect( AppManager.keyWidth, 0,
-                                this.Width - AppManager.keyWidth, this.Height );
+                                getWidth() - AppManager.keyWidth, getHeight() );
                     int j_start = AppManager.drawStartIndex[selected - 1];
 
                     boolean first = true;
@@ -561,13 +598,13 @@ namespace Boare.Cadencii {
                     if ( AppManager.addingEvent != null ) {
                         int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
                         y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
-                        if ( AppManager.addingEvent.ID.Length <= 0 ) {
+                        if ( AppManager.addingEvent.ID.getLength() <= 0 ) {
                             //g.setStroke( s_pen_dashed_171_171_171 );
                             g.setColor( new Color( 171, 171, 171 ) );
                             g.drawRect( x, y, 10, track_height - 1 );
                             //g.setStroke( new BasicStroke() );
                         } else {
-                            int length = (int)(AppManager.addingEvent.ID.Length * scalex);
+                            int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
                             g.setColor( s_pen_a136_000_000_000 );
                             g.drawRect( x, y, length, track_height - 1 );
                         }
@@ -575,7 +612,7 @@ namespace Boare.Cadencii {
                 } else if ( edit_mode == EditMode.EDIT_VIBRATO_DELAY ) {
                     int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
                     y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
-                    int length = (int)(AppManager.addingEvent.ID.Length * scalex);
+                    int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
                     g.setColor( s_pen_a136_000_000_000 );
                     g.drawRect( x, y, length, track_height - 1 );
                 } else if ( (edit_mode == EditMode.MOVE_ENTRY ||
@@ -586,13 +623,13 @@ namespace Boare.Cadencii {
                         SelectedEventEntry ev = (SelectedEventEntry)itr.next();
                         int x = (int)(ev.editing.Clock * scalex + xoffset);
                         y = -ev.editing.ID.Note * track_height + yoffset + 1;
-                        if ( ev.editing.ID.Length == 0 ) {
+                        if ( ev.editing.ID.getLength() == 0 ) {
                             g.setColor( new Color( 171, 171, 171 ) );
                             g.setStroke( s_pen_dashed_171_171_171 );
                             g.drawRect( x, y, 10, track_height - 1 );
                             g.setStroke( new BasicStroke() );
                         } else {
-                            int length = (int)(ev.editing.ID.Length * scalex);
+                            int length = (int)(ev.editing.ID.getLength() * scalex);
                             g.setColor( s_pen_a136_000_000_000 );
                             g.drawRect( x, y, length, track_height - 1 );
                         }
@@ -621,10 +658,10 @@ namespace Boare.Cadencii {
                 int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
                 y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
                 int length;
-                if ( AppManager.addingEvent.ID.Length == 0 ) {
+                if ( AppManager.addingEvent.ID.getLength() == 0 ) {
                     length = 10;
                 } else {
-                    length = (int)(AppManager.addingEvent.ID.Length * scalex);
+                    length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
                 }
                 x += length;
                 g.setColor( s_pen_LU );
@@ -640,7 +677,7 @@ namespace Boare.Cadencii {
                     VsqEvent last = AppManager.getLastSelectedEvent().editing;
                     int x = (int)(last.Clock * scalex + xoffset);
                     y = -last.ID.Note * track_height + yoffset + 1;
-                    int length = (int)(last.ID.Length * scalex);
+                    int length = (int)(last.ID.getLength() * scalex);
                     // 縦線
                     g.setColor( s_pen_LU );
                     g.drawLine( x, 0, x, y - 1 );
@@ -666,7 +703,7 @@ namespace Boare.Cadencii {
                 #region EditMode.MoveEntry
                 int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
                 y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
-                int length = (int)(AppManager.addingEvent.ID.Length * scalex);
+                int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
                 // 縦線
                 g.setColor( s_pen_LU );
                 g.drawLine( x, 0, x, y - 1 );
@@ -703,7 +740,7 @@ namespace Boare.Cadencii {
                 VsqEvent last = AppManager.getLastSelectedEvent().editing;
                 int x = (int)(last.Clock * scalex + xoffset);
                 y = -last.ID.Note * track_height + yoffset + 1;
-                int length = (int)(last.ID.Length * scalex);
+                int length = (int)(last.ID.getLength() * scalex);
                 x += length;
                 g.setColor( s_pen_LU );
                 g.drawLine( x, 0, x, y - 1 );
@@ -723,14 +760,14 @@ namespace Boare.Cadencii {
                 g.drawLine( x + 1, 0, x + 1, y - 1 );
                 g.drawLine( x + 1, y + track_height, x + 1, height );
                 double max_length = AppManager.addingEventLength - _PX_ACCENT_HEADER / scalex;
-                double drate = AppManager.addingEvent.ID.Length / max_length;
+                double drate = AppManager.addingEvent.ID.getLength() / max_length;
                 if ( drate > 0.99 ) {
                     drate = 1.00;
                 }
                 int rate = (int)(drate * 100.0);
                 String percent = rate + "%";
                 Dimension size = Util.measureString( percent, s_F9PT );
-                int delay_x = (int)((AppManager.addingEvent.Clock + AppManager.addingEvent.ID.Length - AppManager.addingEventLength + AppManager.addingEvent.ID.VibratoDelay) * scalex + xoffset);
+                int delay_x = (int)((AppManager.addingEvent.Clock + AppManager.addingEvent.ID.getLength() - AppManager.addingEventLength + AppManager.addingEvent.ID.VibratoDelay) * scalex + xoffset);
                 Rectangle pxArea = new Rectangle( delay_x,
                                                   (int)(y + track_height * 2.5),
                                                   (int)(size.width * 1.2),
@@ -773,10 +810,10 @@ namespace Boare.Cadencii {
             #region pictPianoRoll_Paintより
             // マーカー
             int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + 6 + AppManager.keyWidth - AppManager.startToDrawX);
-            if ( AppManager.keyWidth <= marker_x && marker_x <= this.Width ) {
+            if ( AppManager.keyWidth <= marker_x && marker_x <= getWidth() ) {
                 g.setColor( Color.white );
                 g.setStroke( new BasicStroke( 2f ) );
-                g.drawLine( marker_x, 0, marker_x, this.Height );
+                g.drawLine( marker_x, 0, marker_x, getHeight() );
                 g.setStroke( new BasicStroke() );
             }
 
@@ -804,10 +841,10 @@ namespace Boare.Cadencii {
                 int end = (int)(AppManager.wholeSelectedInterval.getEnd() * scalex) + xoffset + 2;
                 if ( start < end ) {
                     g.setColor( new Color( 0, 0, 0, 98 ) );
-                    g.fillRect( start, 0, end - start, this.Height );
+                    g.fillRect( start, 0, end - start, getHeight() );
                 }
             } else if ( AppManager.isPointerDowned ) {
-                System.Drawing.Point pmouse = this.PointToClient( Control.MousePosition );
+                Point pmouse = pointToClient( PortUtil.getMousePosition() );
                 Point mouse = new Point( pmouse.X, pmouse.Y );
                 int tx, ty, twidth, theight;
                 int lx = AppManager.mouseDownLocation.x - AppManager.startToDrawX;
@@ -962,32 +999,43 @@ namespace Boare.Cadencii {
 #if !JAVA
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
+        public java.awt.Dimension getMinimumSize() {
+            return new bocoree.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
+        }
+
+        public void setMinimumSize( java.awt.Dimension value ) {
+            base.MinimumSize = new System.Drawing.Size( value.width, value.height );
+        }
+
+        public java.awt.Dimension getMaximumSize() {
+            return new bocoree.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+        }
+
+        public void setMaximumSize( java.awt.Dimension value ) {
+            base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+        }
+
         public void invalidate() {
             base.Invalidate();
         }
 
+#if COMPONENT_ENABLE_REPAINT
         public void repaint() {
             base.Refresh();
         }
+#endif
 
-        public void setBounds( int x, int y, int width, int height ) {
-            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
-        }
-
-        public void setBounds( bocoree.java.awt.Rectangle rc ) {
-            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
-        }
-
+#if COMPONENT_ENABLE_CURSOR
         public bocoree.java.awt.Cursor getCursor() {
             System.Windows.Forms.Cursor c = base.Cursor;
             bocoree.java.awt.Cursor ret = null;
-            if ( c.Equals( System.Windows.Forms.Cursors.Arrow ) ) {
+            if( c.Equals( System.Windows.Forms.Cursors.Arrow ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.CROSSHAIR_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.HAND_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.TEXT_CURSOR );
@@ -1019,6 +1067,7 @@ namespace Boare.Cadencii {
         public void setCursor( bocoree.java.awt.Cursor value ) {
             base.Cursor = value.cursor;
         }
+#endif
 
         public bool isVisible() {
             return base.Visible;
@@ -1059,6 +1108,14 @@ namespace Boare.Cadencii {
         }
 
 #if COMPONENT_ENABLE_LOCATION
+        public void setBounds( int x, int y, int width, int height ) {
+            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
+        }
+
+        public void setBounds( bocoree.java.awt.Rectangle rc ) {
+            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
+        }
+
         public bocoree.java.awt.Point getLocationOnScreen() {
             System.Drawing.Point p = base.PointToScreen( base.Location );
             return new bocoree.java.awt.Point( p.X, p.Y );
@@ -1139,6 +1196,7 @@ namespace Boare.Cadencii {
             base.Enabled = value;
         }
 
+#if COMPONENT_ENABLE_FOCUS
         public void requestFocus() {
             base.Focus();
         }
@@ -1146,6 +1204,7 @@ namespace Boare.Cadencii {
         public bool isFocusOwner() {
             return base.Focused;
         }
+#endif
 
         public void setPreferredSize( bocoree.java.awt.Dimension size ) {
             base.Size = new System.Drawing.Size( size.width, size.height );

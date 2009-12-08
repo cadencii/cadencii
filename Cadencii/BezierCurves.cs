@@ -158,7 +158,12 @@ namespace Boare.Cadencii {
                     // 被っている箇所が2箇所以上ある可能性があるので、ifでヒットしてもbreakしない
                     if ( start < chain_start && chain_start <= end && end < chain_end ) {
                         // bcのchain_start ~ endを削除し、chain_startで結合
-                        BezierChain bc_edit = bc.extractPartialBezier( start, chain_start );
+                        BezierChain bc_edit = null;
+                        try {
+                            bc_edit = bc.extractPartialBezier( start, chain_start );
+                        } catch ( Exception ex ) {
+                            continue;
+                        }
                         bc_edit.id = bc.id;
                         int last = bc_edit.size() - 1;
 
@@ -191,7 +196,12 @@ namespace Boare.Cadencii {
                         break;
                     } else if ( chain_start < start && start <= chain_end && chain_end < end ) {
                         // bcのstart ~ chain_endを削除し、chain_endで結合
-                        BezierChain bc_edit = bc.extractPartialBezier( chain_end, end );
+                        BezierChain bc_edit = null;
+                        try {
+                            bc_edit = bc.extractPartialBezier( chain_end, end );
+                        } catch ( Exception ex ) {
+                            continue;
+                        }
                         bc_edit.id = bc.id;
                         int last = chain.size() - 1;
 
@@ -225,8 +235,18 @@ namespace Boare.Cadencii {
                     } else if ( start < chain_start && chain_end < end ) {
                         // bcのchain_start ~ chain_endをchainで置き換え
                         // left + chain + right
-                        BezierChain left = bc.extractPartialBezier( start, chain_start );
-                        BezierChain right = bc.extractPartialBezier( chain_end, end );
+                        BezierChain left = null;
+                        try {
+                            left = bc.extractPartialBezier( start, chain_start );
+                        } catch ( Exception ex ) {
+                            continue;
+                        }
+                        BezierChain right = null;
+                        try {
+                            right = bc.extractPartialBezier( chain_end, end );
+                        } catch ( Exception ex ) {
+                            continue;
+                        }
                         left.id = bc.id;
 
                         // 接合部ではステップ変化
@@ -316,25 +336,34 @@ namespace Boare.Cadencii {
                     }
                     if ( clock_start < chain_start && chain_start < clock_end && clock_end < chain_end ) {
                         // end ~ chain_endを残す
-                        BezierChain chain = bc.extractPartialBezier( clock_end, chain_end );
-                        chain.id = bc.id;
-                        tmp.add( chain );
-                        edited = true;
+                        try {
+                            BezierChain chain = bc.extractPartialBezier( clock_end, chain_end );
+                            chain.id = bc.id;
+                            tmp.add( chain );
+                            edited = true;
+                        } catch ( Exception ex ) {
+                        }
                     } else if ( chain_start <= clock_start && clock_end <= chain_end ) {
                         // chain_start ~ startとend ~ chain_endを残す
-                        BezierChain chain1 = bc.extractPartialBezier( chain_start, clock_start );
-                        chain1.id = bc.id;
-                        BezierChain chain2 = bc.extractPartialBezier( clock_end, chain_end );
-                        chain2.id = -1;  // 後で番号をつける
-                        tmp.add( chain1 );
-                        tmp.add( chain2 );
-                        edited = true;
+                        try {
+                            BezierChain chain1 = bc.extractPartialBezier( chain_start, clock_start );
+                            chain1.id = bc.id;
+                            BezierChain chain2 = bc.extractPartialBezier( clock_end, chain_end );
+                            chain2.id = -1;  // 後で番号をつける
+                            tmp.add( chain1 );
+                            tmp.add( chain2 );
+                            edited = true;
+                        } catch ( Exception ex ) {
+                        }
                     } else if ( chain_start < clock_start && clock_start < chain_end && chain_end < clock_end ) {
                         // chain_start ~ startを残す
-                        BezierChain chain = bc.extractPartialBezier( chain_start, clock_start );
-                        chain.id = bc.id;
-                        tmp.add( chain );
-                        edited = true;
+                        try {
+                            BezierChain chain = bc.extractPartialBezier( chain_start, clock_start );
+                            chain.id = bc.id;
+                            tmp.add( chain );
+                            edited = true;
+                        } catch ( Exception ex ) {
+                        }
                     } else if ( clock_start <= chain_start && chain_end <= clock_end ) {
                         // 全体を削除
                         edited = true;

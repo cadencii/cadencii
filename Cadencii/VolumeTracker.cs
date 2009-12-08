@@ -16,6 +16,7 @@ package org.kbinani.Cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\VolumeTracker.java
 
+import java.awt.event.*;
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 #else
@@ -360,7 +361,7 @@ namespace Boare.Cadencii {
 
         private void trackFeder_ValueChanged( Object sender, BEventArgs e ) {
             m_feder = getFederFromYCoord( 151 - (trackFeder.getValue() - 26) );
-            txtFeder.setText( (m_feder / 10.0).ToString() );
+            txtFeder.setText( (m_feder / 10.0) + "" );
 #if JAVA
             try{
                 federChangedEvent.raise( this, new BEventArgs() );
@@ -375,7 +376,7 @@ namespace Boare.Cadencii {
         }
 
         private void trackPanpot_ValueChanged( Object sender, BEventArgs e ) {
-            txtPanpot.setText( trackPanpot.getValue().ToString() );
+            txtPanpot.setText( trackPanpot.getValue() + "" );
 #if JAVA
             try{
                 panpotChangedEvent.raise( this, new BEventArgs() );

@@ -14,10 +14,14 @@
 #if JAVA
 package org.kbinani.Cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\TrackSelector.java
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import javax.swing.*;
 import org.kbinani.*;
+import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
@@ -25,7 +29,6 @@ import org.kbinani.windows.forms.*;
 //#define MONITOR_FPS
 using System;
 using System.Threading;
-using System.Windows.Forms;
 using Boare.Lib.AppUtil;
 using Boare.Lib.Vsq;
 using bocoree;
@@ -35,14 +38,16 @@ using bocoree.java.util;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
-    using BEventArgs = EventArgs;
-    using BKeyEventArgs = KeyEventArgs;
-    using BMouseEventArgs = MouseEventArgs;
+    using BEventArgs = System.EventArgs;
+    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
+    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
-    using Graphics = Graphics2D;
+    using Graphics = bocoree.java.awt.Graphics2D;
     using Integer = System.Int32;
     using java = bocoree.java;
     using Long = System.Int64;
+    using BMouseButtons = System.Windows.Forms.MouseButtons;
+    using Float = System.Single;
 #endif
 
 #if JAVA
@@ -344,6 +349,7 @@ namespace Boare.Cadencii {
         public BEvent<SelectedTrackChangedEventHandler> selectedTrackChangedEvent = new BEvent<SelectedTrackChangedEventHandler>();
         public BEvent<BEventHandler> commandExecutedEvent = new BEvent<BEventHandler>();
         public BEvent<RenderRequiredEventHandler> renderRequiredEvent = new BEvent<RenderRequiredEventHandler>();
+        public BEvent<BEventHandler> preferredMinHeightChangedEvent = new BEvent<BEventHandler>();
 #else
         public event SelectedCurveChangedEventHandler SelectedCurveChanged;
         public event SelectedTrackChangedEventHandler SelectedTrackChanged;
@@ -360,8 +366,8 @@ namespace Boare.Cadencii {
             super();
             initialize();
 #else
-            this.SetStyle( ControlStyles.DoubleBuffer, true );
-            this.SetStyle( ControlStyles.UserPaint, true );
+            this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
+            this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
             InitializeComponent();
 #endif
             registerEventHandlers();
@@ -609,33 +615,52 @@ namespace Boare.Cadencii {
             base.Font = font.font;
         }
         #endregion
+#endif
 
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
-        public bocoree.java.awt.Point pointToScreen( bocoree.java.awt.Point point_on_client ) {
-            bocoree.java.awt.Point p = getLocationOnScreen();
-            return new bocoree.java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
+        public java.awt.Point pointToScreen( java.awt.Point point_on_client ) {
+            java.awt.Point p = getLocationOnScreen();
+            return new java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
         }
 
-        public bocoree.java.awt.Point pointToClient( bocoree.java.awt.Point point_on_screen ) {
-            bocoree.java.awt.Point p = getLocationOnScreen();
-            return new bocoree.java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
+        public java.awt.Point pointToClient( java.awt.Point point_on_screen ) {
+            java.awt.Point p = getLocationOnScreen();
+            return new java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
         }
-        #endregion
+
+#if JAVA
+        Object tag = null;
+        public Object getTag(){
+            return tag;
+        }
+
+        public void setTag( Object value ){
+            tag = value;
+        }
+#else
+        public Object getTag() {
+            return base.Tag;
+        }
+
+        public void setTag( Object value ) {
+            base.Tag = value;
+        }
 #endif
+        #endregion
 
 #if !JAVA
         protected override void OnResize( BEventArgs e ) {
             base.OnResize( e );
             vScroll.Width = VSCROLL_WIDTH;
-            vScroll.Height = this.Height - ZOOMPANEL_HEIGHT - 2;
-            vScroll.Left = this.Width - VSCROLL_WIDTH;
+            vScroll.Height = getHeight() - ZOOMPANEL_HEIGHT - 2;
+            vScroll.Left = getWidth() - VSCROLL_WIDTH;
             vScroll.Top = 0;
 
             panelZoomButton.Width = VSCROLL_WIDTH;
             panelZoomButton.Height = ZOOMPANEL_HEIGHT;
-            panelZoomButton.Left = this.Width - VSCROLL_WIDTH;
-            panelZoomButton.Top = this.Height - ZOOMPANEL_HEIGHT - 2;
+            panelZoomButton.Left = getWidth() - VSCROLL_WIDTH;
+            panelZoomButton.Top = getHeight() - ZOOMPANEL_HEIGHT - 2;
         }
 #endif
 
@@ -737,9 +762,13 @@ namespace Boare.Cadencii {
             } else {
                 AppManager.getVsqFile().executeCommand( command );
             }
+#if JAVA
+            commandExecutedEvent.raise( this, new BEventArgs() );
+#else
             if ( CommandExecuted != null ) {
                 CommandExecuted( this, new BEventArgs() );
             }
+#endif
         }
 
         public ValuePair<Integer, Integer> getSelectedRegion() {
@@ -762,9 +791,13 @@ namespace Boare.Cadencii {
             m_selected_curve = value;
             if ( !old.equals( m_selected_curve ) ) {
                 m_last_selected_curve = old;
+#if JAVA
+                selectedCurveChangedEvent.raise( this, m_selected_curve );
+#else
                 if ( SelectedCurveChanged != null ) {
                     SelectedCurveChanged( this, m_selected_curve );
                 }
+#endif
             }
         }
 
@@ -780,7 +813,7 @@ namespace Boare.Cadencii {
         }
 
         public int valueFromYCoord( int y, int max, int min ) {
-            int oy = this.Height - 42;
+            int oy = getHeight() - 42;
             float order = getGraphHeight() / (float)(max - min);
             return (int)((oy - y) / order) + min;
         }
@@ -792,7 +825,7 @@ namespace Boare.Cadencii {
         }
 
         public int yCoordFromValue( int value, int max, int min ) {
-            int oy = this.Height - 42;
+            int oy = getHeight() - 42;
             float order = getGraphHeight() / (float)(max - min);
             return oy - (int)((value - min) * order);
         }
@@ -809,7 +842,7 @@ namespace Boare.Cadencii {
         }
 
 #if !JAVA
-        protected override void OnPaint( PaintEventArgs e ) {
+        protected override void OnPaint( System.Windows.Forms.PaintEventArgs e ) {
             paint( new Graphics2D( e.Graphics ) );
 #if MONITOR_FPS
             DateTime dnow = DateTime.Now;
@@ -838,7 +871,7 @@ namespace Boare.Cadencii {
         public float getScaleY() {
             int max = m_selected_curve.getMaximum();
             int min = m_selected_curve.getMinimum();
-            int oy = this.Height - 42;
+            int oy = getHeight() - 42;
             return getGraphHeight() / (float)(max - min);
         }
 
@@ -858,8 +891,14 @@ namespace Boare.Cadencii {
             int x = 7 + ix * AppManager.MIN_KEY_WIDTH;
             int y = centre - row_per_column * UNIT_HEIGHT_PER_CURVE / 2 + 2 + UNIT_HEIGHT_PER_CURVE * iy;
             int min_size = getPreferredMinSize();
-            if ( m_last_preferred_min_height != min_size && PreferredMinHeightChanged != null ) {
-                PreferredMinHeightChanged( this, new BEventArgs() );
+            if ( m_last_preferred_min_height != min_size ){
+#if JAVA
+                preferredMinHeightChangedEvent.raise( this, new BEventArgs() );
+#else
+                if ( PreferredMinHeightChanged != null ) {
+                    PreferredMinHeightChanged( this, new BEventArgs() );
+                }
+#endif
                 m_last_preferred_min_height = min_size;
             }
             return new Rectangle( x, y, 56, 14 );
@@ -874,8 +913,8 @@ namespace Boare.Cadencii {
             g.setColor( Color.darkGray );
             g.fillRect( 0, size.height - 2 * OFFSET_TRACK_TAB, size.width, 2 * OFFSET_TRACK_TAB );
             int numeric_view = m_mouse_value;
-            System.Drawing.Point p = this.PointToClient( Control.MousePosition );
-            Point mouse = new Point( p.X, p.Y );
+            Point p = pointToClient( PortUtil.getMousePosition() );
+            Point mouse = new Point( p.x, p.y );
 
             #region SINGER
             Shape last = g.getClip();
@@ -1046,8 +1085,10 @@ namespace Boare.Cadencii {
                         }
                         if ( m_selected_curve.equals( CurveType.PIT ) ) {
                             #region PBSの値に応じて，メモリを記入する
+#if !JAVA
                             System.Drawing.Drawing2D.SmoothingMode old = g.nativeGraphics.SmoothingMode;
                             g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+#endif
                             Color nrml = new Color( 0, 0, 0, 190 );
                             Color dash = new Color( 0, 0, 0, 128 );
                             Stroke nrml_stroke = new BasicStroke();
@@ -1057,7 +1098,7 @@ namespace Boare.Cadencii {
                             int c = pbs.size();
                             int premeasure = AppManager.getVsqFile().getPreMeasureClocks();
                             int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
-                            int clock_end = AppManager.clockFromXCoord( this.Width );
+                            int clock_end = AppManager.clockFromXCoord( getWidth() );
                             if ( clock_start < premeasure && premeasure < clock_end ) {
                                 clock_start = premeasure;
                             }
@@ -1118,7 +1159,9 @@ namespace Boare.Cadencii {
                                 g.setColor( pen );
                                 g.drawLine( x10, y, x20, y );
                             }
+#if !JAVA
                             g.nativeGraphics.SmoothingMode = old;
+#endif
                             #endregion
                         }
                         drawAttachedCurve( g, AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( m_selected_curve ) );
@@ -1157,7 +1200,7 @@ namespace Boare.Cadencii {
                             Vector<Integer> ptx = new Vector<Integer>();
                             Vector<Integer> pty = new Vector<Integer>();
                             int stdx = AppManager.startToDrawX;
-                            int height = this.Height - 42;
+                            int height = getHeight() - 42;
 
                             int count = 0;
                             int lastx = 0;
@@ -1202,7 +1245,7 @@ namespace Boare.Cadencii {
                             int y_start = Math.Min( yini, yend );
                             int y_end = Math.Max( yini, yend );
                             if ( y_start < 8 ) y_start = 8;
-                            if ( y_end > this.Height - 42 - 8 ) y_end = this.Height - 42;
+                            if ( y_end > getHeight() - 42 - 8 ) y_end = getHeight() - 42;
                             if ( x_start < x_end ) {
                                 g.setColor( BRS_A144_255_255_255 );
                                 g.fillRect( x_start, y_start, x_end - x_start, y_end - y_start );
@@ -1250,7 +1293,7 @@ namespace Boare.Cadencii {
                 //sf.LineAlignment = StringAlignment.Far;
                 g.setFont( AppManager.baseFont9 );
                 g.setColor( brs_string );
-                g.drawString( numeric_view.ToString(), num_view.x, num_view.y ); // sf );
+                g.drawString( numeric_view + "", num_view.x, num_view.y ); // sf );
 
                 // 現在表示されているカーブの名前
                 //sf.Alignment = StringAlignment.Center;
@@ -1290,7 +1333,7 @@ namespace Boare.Cadencii {
             #endregion
 
             // マウス位置での値
-            if ( isInRect( mouse.x, mouse.y, new Rectangle( AppManager.keyWidth, HEADER, this.Width, this.getGraphHeight() ) ) &&
+            if ( isInRect( mouse.x, mouse.y, new Rectangle( AppManager.keyWidth, HEADER, getWidth(), this.getGraphHeight() ) ) &&
                  m_mouse_down_mode != MouseDownMode.PRE_UTTERANCE_MOVE &&
                  m_mouse_down_mode != MouseDownMode.OVERLAP_MOVE &&
                  m_mouse_down_mode != MouseDownMode.VEL_EDIT ) {
@@ -1350,13 +1393,13 @@ namespace Boare.Cadencii {
 
         private void drawEnvelope( Graphics2D g, VsqTrack track, Color fill_color ) {
             int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
-            int clock_end = AppManager.clockFromXCoord( this.Width );
+            int clock_end = AppManager.clockFromXCoord( getWidth() );
 
             VsqFileEx vsq = AppManager.getVsqFile();
             VsqEvent last = null;
             Polygon highlight = null;
-            System.Drawing.Point pmouse = this.PointToClient( Control.MousePosition );
-            Point mouse = new Point( pmouse.X, pmouse.Y );
+            Point pmouse = pointToClient( PortUtil.getMousePosition() );
+            Point mouse = new Point( pmouse.x, pmouse.y );
             int px_preutterance = int.MinValue;
             int px_overlap = int.MinValue;
             int drawn_id = -1;
@@ -1367,14 +1410,14 @@ namespace Boare.Cadencii {
             Color brs = fill_color;
             Point selected_point = new Point();
             boolean selected_found = false;
-            boolean search_mouse = (0 <= mouse.y && mouse.y <= this.Height);
+            boolean search_mouse = (0 <= mouse.y && mouse.y <= getHeight());
             for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 if ( last == null ) {
                     last = item;
                     continue;
                 }
-                if ( item.Clock + item.ID.Length < clock_start ) {
+                if ( item.Clock + item.ID.getLength() < clock_start ) {
                     last = item;
                     continue;
                 }
@@ -1572,7 +1615,7 @@ namespace Boare.Cadencii {
                     if ( x + DOT_WID < AppManager.keyWidth ) {
                         continue;
                     }
-                    if ( this.Width < x - DOT_WID ) {
+                    if ( getWidth() < x - DOT_WID ) {
                         break;
                     }
                     int y = yCoordFromValue( item.value );
@@ -1594,7 +1637,7 @@ namespace Boare.Cadencii {
         /// <returns>見つかった場合は真を、そうでなければ偽を返します</returns>
         private boolean findEnvelopePointAt( int locx, int locy, ByRef<Integer> internal_id, ByRef<Integer> point_kind ) {
             int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
-            int clock_end = AppManager.clockFromXCoord( this.Width );
+            int clock_end = AppManager.clockFromXCoord( getWidth() );
             VsqEvent last = null;
             int dotwid = DOT_WID * 2 + 1;
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -1604,7 +1647,7 @@ namespace Boare.Cadencii {
                     last = item;
                     continue;
                 }
-                if ( item.Clock + item.ID.Length < clock_start ) {
+                if ( item.Clock + item.ID.getLength() < clock_start ) {
                     last = item;
                     continue;
                 }
@@ -1649,7 +1692,7 @@ namespace Boare.Cadencii {
 
         private Polygon getEnvelopePoints( VsqFileEx vsq, VsqEvent item, VsqEvent next_item, ByRef<Integer> px_pre_utteramce, ByRef<Integer> px_overlap ) {
             double sec_start = vsq.getSecFromClock( item.Clock );
-            double sec_end = vsq.getSecFromClock( item.Clock + item.ID.Length );
+            double sec_end = vsq.getSecFromClock( item.Clock + item.ID.getLength() );
             UstEvent ust_event = item.UstEvent;
             if ( ust_event == null ) {
                 ust_event = new UstEvent();
@@ -1719,7 +1762,7 @@ namespace Boare.Cadencii {
             g.setColor( border );
             g.drawLine( destRect.x, destRect.y,
                         destRect.x, destRect.y + destRect.height );
-            if ( name.Length > 0 ) {
+            if ( PortUtil.getStringLength( name ) > 0 ) {
                 // 上横線
                 g.setColor( border );
                 g.drawLine( destRect.x + 1, destRect.y,
@@ -1747,7 +1790,7 @@ namespace Boare.Cadencii {
                 g.drawLine( destRect.x, destRect.y + destRect.height - 1,
                             destRect.x + destRect.width, destRect.y + destRect.height - 1 );
             }
-            g.nativeGraphics.ResetClip();
+            g.setClip( null );
             g.setColor( m_generic_line );
             g.drawLine( destRect.x + destRect.width, destRect.y,
                         destRect.x + destRect.width, destRect.y + destRect.height );
@@ -1791,7 +1834,7 @@ namespace Boare.Cadencii {
                 int x = (int)(clock * scale) + xoffset;
                 if ( x + VEL_BAR_WIDTH < 0 ) {
                     continue;
-                } else if ( this.Width - vScroll.getWidth() < x ) {
+                } else if ( getWidth() - vScroll.getWidth() < x ) {
                     break;
                 } else {
                     int value = 0;
@@ -1837,12 +1880,12 @@ namespace Boare.Cadencii {
                 }
             }
             if ( cursor_should_be_hand ) {
-                if ( this.Cursor != Cursors.Hand ) {
-                    this.Cursor = Cursors.Hand;
+                if ( getCursor().getType() != java.awt.Cursor.HAND_CURSOR ){
+                    setCursor( new Cursor( java.awt.Cursor.HAND_CURSOR ) );
                 }
             } else {
-                if ( this.Cursor != Cursors.Default ) {
-                    this.Cursor = Cursors.Default;
+                if ( getCursor().getType() != java.awt.Cursor.DEFAULT_CURSOR ) {
+                    setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                 }
             }
             g.setClip( last_clip );
@@ -2030,7 +2073,7 @@ namespace Boare.Cadencii {
                 for ( Iterator itr = draw_target.getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
                     int start = ve.Clock + ve.ID.VibratoDelay;
-                    int end = ve.Clock + ve.ID.Length;
+                    int end = ve.Clock + ve.ID.getLength();
                     if ( end < cl_start ) {
                         continue;
                     }
@@ -2210,8 +2253,8 @@ namespace Boare.Cadencii {
 
                 boolean draw_dot_near_mouse = true; // マウスの近くのデータ点だけ描画するモード
                 int threshold_near_px = 200;  // マウスに「近い」と判定する距離（ピクセル単位）。
-                System.Drawing.Point pmouse = this.PointToClient( Control.MousePosition );
-                Point mouse = new Point( pmouse.X, pmouse.Y );
+                Point pmouse = pointToClient( PortUtil.getMousePosition() );
+                Point mouse = new Point( pmouse.x, pmouse.y );
                 Color white5 = new Color( 255, 255, 255, 200 );
                 for ( int i = 4; i < c_points; i += 2 ) {
                     Point p = new Point( pointsx.get( i ), pointsy.get( i ) );
@@ -2220,7 +2263,7 @@ namespace Boare.Cadencii {
                         g.fillRect( p.x - DOT_WID, p.y - DOT_WID, w, w );
                     } else {
                         if ( draw_dot_near_mouse ) {
-                            if ( mouse.y < 0 || this.Height < mouse.y ) {
+                            if ( mouse.y < 0 || getHeight() < mouse.y ) {
                                 continue;
                             }
                             double x = Math.Abs( p.x - mouse.x ) / (double)threshold_near_px;
@@ -2243,8 +2286,8 @@ namespace Boare.Cadencii {
             // m_mouse_down_modeごとの描画
             if ( is_front ) {
                 if ( m_mouse_down_mode == MouseDownMode.POINT_MOVE ) {
-                    System.Drawing.Point pmouse = this.PointToClient( Control.MousePosition );
-                    Point mouse = new Point( pmouse.X, pmouse.Y );
+                    Point pmouse = pointToClient( PortUtil.getMousePosition() );
+                    Point mouse = new Point( pmouse.x, pmouse.y );
                     int dx = mouse.x + AppManager.startToDrawX - m_mouse_down_location.x;
                     int dy = mouse.y - m_mouse_down_location.y;
                     int w = DOT_WID * 2 + 1;
@@ -2369,14 +2412,16 @@ namespace Boare.Cadencii {
         }
 
         private void TrackSelector_Load( Object sender, BEventArgs e ) {
-            this.SetStyle( ControlStyles.DoubleBuffer, true );
-            this.SetStyle( ControlStyles.UserPaint, true );
-            this.SetStyle( ControlStyles.AllPaintingInWmPaint, true );
+#if !JAVA
+            this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
+            this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
+            this.SetStyle( System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true );
+#endif
         }
 
         private void TrackSelector_MouseClick( Object sender, BMouseEventArgs e ) {
             if ( m_curve_visible ) {
-                if ( e.Button == MouseButtons.Left ) {
+                if ( e.Button == BMouseButtons.Left ) {
                     // カーブの種類一覧上で発生したイベントかどうかを検査
                     for ( Iterator itr = m_viewing_curves.iterator(); itr.hasNext(); ) {
                         CurveType curve = (CurveType)itr.next();
@@ -2386,9 +2431,9 @@ namespace Boare.Cadencii {
                             return;
                         }
                     }
-                } else if ( e.Button == MouseButtons.Right ) {
+                } else if ( e.Button == BMouseButtons.Right ) {
                     if ( 0 <= e.X && e.X <= AppManager.keyWidth &&
-                         0 <= e.Y && e.Y <= this.Height - 2 * OFFSET_TRACK_TAB ) {
+                         0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB ) {
                         MenuElement[] sub_cmenu_curve = cmenuCurve.getSubElements();
                         for ( int i = 0; i < sub_cmenu_curve.Length; i++ ) {
                             MenuElement tsi = sub_cmenu_curve[i];
@@ -2704,13 +2749,19 @@ namespace Boare.Cadencii {
             }
             m_mouse_value = value;
 
-            if ( e.Button == MouseButtons.None ) {
+            if ( e.Button == BMouseButtons.None ) {
                 return;
             }
             if ( (e.X + AppManager.startToDrawX != m_mouse_down_location.x || e.Y != m_mouse_down_location.y) ) {
+#if JAVA
+                if( m_mouse_hover_thread != null && m_mouse_hover_thread.isAlive() ){
+                    m_mouse_hover_thread.stop();
+                }
+#else
                 if ( m_mouse_hover_thread != null && m_mouse_hover_thread.IsAlive ) {
                     m_mouse_hover_thread.Abort();
                 }
+#endif
                 if ( m_mouse_down_mode == MouseDownMode.VEL_WAIT_HOVER ) {
                     m_mouse_down_mode = MouseDownMode.VEL_EDIT;
                 }
@@ -2725,8 +2776,8 @@ namespace Boare.Cadencii {
                 clock = AppManager.getVsqFile().getPreMeasure();
             }
 
-            if ( e.Button == MouseButtons.Left &&
-                 0 <= e.Y && e.Y <= Height - 2 * OFFSET_TRACK_TAB &&
+            if ( e.Button == BMouseButtons.Left &&
+                 0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB &&
                  m_mouse_down_mode == MouseDownMode.CURVE_EDIT ) {
                 EditTool selected = AppManager.getSelectedTool();
                 if ( selected == EditTool.PENCIL ) {
@@ -2767,11 +2818,7 @@ namespace Boare.Cadencii {
                             int end = Math.Max( x, m_mouse_trace_last_x );
                             for ( int xx = start; xx <= end; xx++ ) {
                                 int yy = (int)(a * xx + b);
-                                if ( m_mouse_trace.ContainsKey( xx ) ) {
-                                    m_mouse_trace[xx] = yy;
-                                } else {
-                                    m_mouse_trace.Add( xx, yy );
-                                }
+                                m_mouse_trace.put( xx, yy );
                             }
                             m_mouse_trace_last_x = x;
                             m_mouse_trace_last_y = e.Y;
@@ -2980,7 +3027,7 @@ namespace Boare.Cadencii {
         }
 
         private void processMouseDownSelectRegion( BMouseEventArgs e ) {
-            if ( (Control.ModifierKeys & Keys.Control) != Keys.Control ) {
+            if ( (PortUtil.getCurrentModifierKey() & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
                 AppManager.clearSelectedPoint();
             }
 
@@ -3019,10 +3066,12 @@ namespace Boare.Cadencii {
             m_mouse_moved = false;
             m_mouse_downed = true;
             if ( AppManager.keyWidth < e.X && clock < vsq.getPreMeasure() ) {
+#if !JAVA
                 System.Media.SystemSounds.Asterisk.Play();
+#endif
                 return;
             }
-            m_modifier_on_mouse_down = PortUtil.getModifierFromKeys( Control.ModifierKeys );
+            m_modifier_on_mouse_down = PortUtil.getCurrentModifierKey();
             int max = m_selected_curve.getMaximum();
             int min = m_selected_curve.getMinimum();
             int value = valueFromYCoord( e.Y );
@@ -3032,8 +3081,8 @@ namespace Boare.Cadencii {
                 value = max;
             }
 
-            if ( Height - OFFSET_TRACK_TAB <= e.Y && e.Y < Height ) {
-                if ( e.Button == MouseButtons.Left ) {
+            if ( getHeight() - OFFSET_TRACK_TAB <= e.Y && e.Y < getHeight() ) {
+                if ( e.Button == BMouseButtons.Left ) {
                     #region MouseDown occured on track list
                     m_mouse_down_mode = MouseDownMode.TRACK_LIST;
                     //AppManager.isCurveSelectedIntervalEnabled() = false;
@@ -3047,16 +3096,24 @@ namespace Boare.Cadencii {
                                     int new_selected = i + 1;
                                     if ( AppManager.getSelected() != new_selected ) {
                                         AppManager.setSelected( i + 1 );
+#if JAVA
+                                        selectedTrackChangedEvent.raise( this, i + 1 );
+#else
                                         if ( SelectedTrackChanged != null ) {
                                             SelectedTrackChanged( this, i + 1 );
                                         }
-                                        Invalidate();
+#endif
+                                        invalidate();
                                         return;
                                     } else if ( x + selecter_width - _PX_WIDTH_RENDER <= e.X && e.X < e.X + selecter_width ) {
                                         if ( AppManager.getRenderRequired( AppManager.getSelected() ) && !AppManager.isPlaying() ) {
+#if JAVA
+                                            renderRequiredEvent.raise( this, new int[]{ AppManager.getSelected() } );
+#else
                                             if ( RenderRequired != null ) {
                                                 RenderRequired( this, new int[] { AppManager.getSelected() } );
                                             }
+#endif
                                         }
                                     }
                                 }
@@ -3065,7 +3122,7 @@ namespace Boare.Cadencii {
                     }
                     #endregion
                 }
-            } else if ( Height - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y < Height - OFFSET_TRACK_TAB ) {
+            } else if ( getHeight() - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y < getHeight() - OFFSET_TRACK_TAB ) {
                 #region MouseDown occured on singer tab
                 m_mouse_down_mode = MouseDownMode.SINGER_LIST;
                 AppManager.clearSelectedPoint();
@@ -3095,7 +3152,7 @@ namespace Boare.Cadencii {
                             } else {
                                 AppManager.addSelectedEvent( ve.InternalID );
                             }
-                        } else if ( (Control.ModifierKeys & Keys.Shift) == Keys.Shift ) {
+                        } else if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                             int last_clock = AppManager.getLastSelectedEvent().original.Clock;
                             int tmin = Math.Min( ve.Clock, last_clock );
                             int tmax = Math.Max( ve.Clock, last_clock );
@@ -3133,7 +3190,7 @@ namespace Boare.Cadencii {
                         if ( right_clock < start ) {
                             break;
                         }
-                        int end = ve.Clock + ve.ID.Length;
+                        int end = ve.Clock + ve.ID.getLength();
                         if ( end < left_clock ) {
                             continue;
                         }
@@ -3147,7 +3204,7 @@ namespace Boare.Cadencii {
                 AppManager.debugWriteLine( "    clock_inner_note=" + clock_inner_note );
 #endif
                 if ( AppManager.keyWidth <= e.X ) {
-                    if ( e.Button == MouseButtons.Left && !m_spacekey_downed ) {
+                    if ( e.Button == BMouseButtons.Left && !m_spacekey_downed ) {
                         //AppManager.isCurveSelectedIntervalEnabled() = false;
                         m_mouse_down_mode = MouseDownMode.CURVE_EDIT;
                         int quantized_clock = clock;
@@ -3166,11 +3223,11 @@ namespace Boare.Cadencii {
                             if ( AppManager.isCurveMode() ) {
                                 if ( m_selected_curve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                 } else if ( !m_selected_curve.equals( CurveType.VEL ) &&
@@ -3178,18 +3235,18 @@ namespace Boare.Cadencii {
                                             !m_selected_curve.equals( CurveType.Decay ) &&
                                             !m_selected_curve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownBezier( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                 }
                             } else {
                                 if ( m_selected_curve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                 }
@@ -3204,11 +3261,11 @@ namespace Boare.Cadencii {
                                     // todo: TrackSelector_MouseDownのベジエ曲線
                                 } else if ( m_selected_curve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                 } else if ( !m_selected_curve.equals( CurveType.VEL ) &&
@@ -3216,7 +3273,7 @@ namespace Boare.Cadencii {
                                             !m_selected_curve.equals( CurveType.Decay ) &&
                                             !m_selected_curve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownBezier( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                 } else {
@@ -3227,24 +3284,29 @@ namespace Boare.Cadencii {
                                 #region NOT CurveMode
                                 if ( m_selected_curve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                 }
                                 m_mouse_trace = null;
                                 m_mouse_trace = new TreeMap<Integer, Integer>();
                                 int x = e.X + AppManager.startToDrawX;
-                                m_mouse_trace.Add( x, e.Y );
+                                m_mouse_trace.put( x, e.Y );
                                 m_mouse_trace_last_x = x;
                                 m_mouse_trace_last_y = e.Y;
                                 m_pencil_moved = false;
 
+#if JAVA
+                                m_mouse_hover_thread = new MouseHoverEventGeneratorProc();
+                                m_mouse_hover_thread.start();
+#else
                                 m_mouse_hover_thread = new Thread( new ThreadStart( MouseHoverEventGenerator ) );
                                 m_mouse_hover_thread.Start();
+#endif
                                 #endregion
                             }
                             #endregion
@@ -3254,11 +3316,11 @@ namespace Boare.Cadencii {
                             if ( m_selected_curve.isScalar() || m_selected_curve.isAttachNote() ) {
                                 if ( m_selected_curve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                 }
@@ -3332,7 +3394,7 @@ namespace Boare.Cadencii {
                                         }
                                         AppManager.clearSelectedEvent();
                                         AppManager.addSelectedEventAll( list );
-                                    } else if ( (Control.ModifierKeys & Keys.Shift) == Keys.Shift ) {
+                                    } else if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                                         // clicked with Shift key
                                         SelectedEventEntry last_selected = AppManager.getLastSelectedEvent();
                                         if ( last_selected != null ) {
@@ -3382,9 +3444,14 @@ namespace Boare.Cadencii {
                                                                                         (VsqEvent)ve.clone(),
                                                                                         (VsqEvent)ve.clone() ) );
                                     }
+#if JAVA
+                                    m_mouse_hover_thread = new MouseHoverGeneratorProc();
+                                    m_mouse_hover_thread.start();
+#else
                                     m_mouse_hover_thread = new Thread( new ThreadStart( MouseHoverEventGenerator ) );
                                     m_mouse_hover_thread.Start();
-                                    Invalidate();
+#endif
+                                    invalidate();
                                     return;
                                 }
 
@@ -3395,7 +3462,7 @@ namespace Boare.Cadencii {
                                         if ( (m_modifier_on_mouse_down & m_modifier_key) == m_modifier_key ) {
                                             AppManager.removeSelectedPoint( id );
                                             m_mouse_down_mode = MouseDownMode.NONE;
-                                            Invalidate();
+                                            invalidate();
                                             return;
                                         }
                                     } else {
@@ -3416,7 +3483,7 @@ namespace Boare.Cadencii {
                                                 m_moving_points.add( new BPPair( list.getKeyClock( i ), item.value ) );
                                             }
                                         }
-                                        Invalidate();
+                                        invalidate();
                                         return;
                                     }
                                 } else {
@@ -3476,7 +3543,7 @@ namespace Boare.Cadencii {
                                                                                                                        AppManager.editorConfig.ControlCurveResolution.getValue() );
                                                     executeCommand( run, true );
                                                     m_mouse_down_mode = MouseDownMode.NONE;
-                                                    Invalidate();
+                                                    invalidate();
                                                     return;
                                                 } else {
                                                     // 1個しかデータ点がないので、BezierChainを削除
@@ -3486,7 +3553,7 @@ namespace Boare.Cadencii {
                                                                                                                       AppManager.editorConfig.ControlCurveResolution.getValue() );
                                                     executeCommand( run, true );
                                                     m_mouse_down_mode = MouseDownMode.NONE;
-                                                    Invalidate();
+                                                    invalidate();
                                                     return;
                                                 }
                                             } else {
@@ -3508,7 +3575,7 @@ namespace Boare.Cadencii {
                                                                                                                    AppManager.editorConfig.ControlCurveResolution.getValue() );
                                                 executeCommand( run, true );
                                                 m_mouse_down_mode = MouseDownMode.NONE;
-                                                Invalidate();
+                                                invalidate();
                                                 return;
                                             }
                                         }
@@ -3528,7 +3595,7 @@ namespace Boare.Cadencii {
                                                                                                  work ) );
                                                 executeCommand( run, true );
                                                 m_mouse_down_mode = MouseDownMode.NONE;
-                                                Invalidate();
+                                                invalidate();
                                                 return;
                                             }
                                         }
@@ -3546,7 +3613,7 @@ namespace Boare.Cadencii {
                             }
                             #endregion
                         }
-                    } else if ( e.Button == MouseButtons.Right ) {
+                    } else if ( e.Button == BMouseButtons.Right ) {
                         if ( AppManager.isCurveMode() ) {
                             if ( !m_selected_curve.equals( CurveType.VEL ) && !m_selected_curve.equals( CurveType.Env ) ) {
                                 Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( m_selected_curve );
@@ -3576,7 +3643,7 @@ namespace Boare.Cadencii {
                 }
                 #endregion
             }
-            Invalidate();
+            invalidate();
         }
 
 
@@ -3593,7 +3660,7 @@ namespace Boare.Cadencii {
             }
             int px_shift = DOT_WID + AppManager.editorConfig.PxToleranceBezier;
             int px_width = px_shift * 2 + 1;
-            int modifier = PortUtil.getModifierFromKeys( Control.ModifierKeys );
+            int modifier = PortUtil.getCurrentModifierKey();
 
             int track = AppManager.getSelected();
             boolean too_near = false; // clicked position is too near to existing bezier points
@@ -3773,7 +3840,7 @@ namespace Boare.Cadencii {
             }
             double sec = AppManager.getVsqFile().getSecFromClock( AppManager.clockFromXCoord( e.X ) );
             m_envelope_range_begin = AppManager.getVsqFile().getSecFromClock( item.Clock ) - item.UstEvent.PreUtterance / 1000.0;
-            m_envelope_range_end = AppManager.getVsqFile().getSecFromClock( item.Clock + item.ID.Length );
+            m_envelope_range_end = AppManager.getVsqFile().getSecFromClock( item.Clock + item.ID.getLength() );
             if ( next != null ) {
                 double sec_start_next = AppManager.getVsqFile().getSecFromClock( next.Clock ) - next.UstEvent.PreUtterance / 1000.0 + next.UstEvent.VoiceOverlap / 1000.0;
                 if ( sec_start_next < m_envelope_range_end ) {
@@ -3803,9 +3870,13 @@ namespace Boare.Cadencii {
             if ( !m_selected_curve.equals( curve ) ) {
                 m_last_selected_curve = m_selected_curve;
                 m_selected_curve = curve;
+#if JAVA
+                selectedCurveChangedEvent.raise( this, curve );
+#else
                 if ( SelectedCurveChanged != null ) {
                     SelectedCurveChanged( this, curve );
                 }
+#endif
             }
         }
 
@@ -3837,8 +3908,8 @@ namespace Boare.Cadencii {
                 VsqEvent ve = target.getEvent( i );
                 if ( ve.ID.type == VsqIDType.Singer ) {
                     int x = AppManager.xCoordFromClocks( ve.Clock );
-                    if ( Height - 2 * OFFSET_TRACK_TAB <= locy &&
-                         locy <= Height - OFFSET_TRACK_TAB &&
+                    if ( getHeight() - 2 * OFFSET_TRACK_TAB <= locy &&
+                         locy <= getHeight() - OFFSET_TRACK_TAB &&
                          x <= locx && locx <= x + SINGER_ITEM_WIDTH ) {
                         return ve;
                     } else if ( getWidth() < x ) {
@@ -3856,9 +3927,9 @@ namespace Boare.Cadencii {
                     } else {
                         continue;
                     }
-                    if ( 0 <= locy && locy <= Height - 2 * OFFSET_TRACK_TAB &&
+                    if ( 0 <= locy && locy <= getHeight() - 2 * OFFSET_TRACK_TAB &&
                          AppManager.keyWidth <= locx && locx <= getWidth() ) {
-                        if ( y <= locy && locy <= Height - FOOTER && x <= locx && locx <= x + VEL_BAR_WIDTH ) {
+                        if ( y <= locy && locy <= getHeight() - FOOTER && x <= locx && locx <= x + VEL_BAR_WIDTH ) {
                             return ve;
                         }
                     }
@@ -3873,9 +3944,15 @@ namespace Boare.Cadencii {
 #endif
             m_mouse_downed = false;
             if ( m_mouse_hover_thread != null ) {
+#if JAVA
+                if( m_mouse_hover_thread.isAlive() ){
+                    m_mouse_hover_thread.stop();
+                }
+#else
                 if ( m_mouse_hover_thread.IsAlive ) {
                     m_mouse_hover_thread.Abort();
                 }
+#endif
             }
             if ( m_curve_visible ) {
                 int max = m_selected_curve.getMaximum();
@@ -3887,7 +3964,7 @@ namespace Boare.Cadencii {
                 if ( m_mouse_down_mode == MouseDownMode.BEZIER_ADD_NEW ||
                      m_mouse_down_mode == MouseDownMode.BEZIER_MODE ||
                      m_mouse_down_mode == MouseDownMode.BEZIER_EDIT ) {
-                    if ( e.Button == MouseButtons.Left && sender is TrackSelector ) {
+                    if ( e.Button == BMouseButtons.Left && sender is TrackSelector ) {
                         int chain_id = AppManager.getLastSelectedBezier().chainID;
                         BezierChain edited = (BezierChain)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( m_selected_curve, chain_id ).clone();
                         if ( m_mouse_down_mode == MouseDownMode.BEZIER_ADD_NEW ) {
@@ -3933,7 +4010,7 @@ namespace Boare.Cadencii {
                     }
                 } else if ( m_mouse_down_mode == MouseDownMode.CURVE_EDIT ||
                           m_mouse_down_mode == MouseDownMode.VEL_WAIT_HOVER ) {
-                    if ( e.Button == MouseButtons.Left ) {
+                    if ( e.Button == BMouseButtons.Left ) {
                         if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
                             #region Arrow
                             if ( m_selected_curve.equals( CurveType.Env ) ) {
@@ -4086,7 +4163,7 @@ namespace Boare.Cadencii {
                                             continue;
                                         }
                                         int cl_vib_start = ve.Clock + ve.ID.VibratoDelay;
-                                        int cl_vib_length = ve.ID.Length - ve.ID.VibratoDelay;
+                                        int cl_vib_length = ve.ID.getLength() - ve.ID.VibratoDelay;
                                         int cl_vib_end = cl_vib_start + cl_vib_length;
                                         int clear_start = int.MaxValue;
                                         int clear_end = int.MinValue;
@@ -4117,7 +4194,7 @@ namespace Boare.Cadencii {
                                             } else {
                                                 target = item.VibratoHandle.RateBP;
                                             }
-                                            Vector<float> bpx = new Vector<float>();
+                                            Vector<Float> bpx = new Vector<Float>();
                                             Vector<Integer> bpy = new Vector<Integer>();
                                             boolean start_added = false;
                                             boolean end_added = false;
@@ -4154,16 +4231,20 @@ namespace Boare.Cadencii {
                                                 }
                                             }
                                             if ( m_selected_curve.equals( CurveType.VibratoDepth ) ) {
-                                                item.VibratoHandle.DepthBP = new VibratoBPList( bpx.toArray( new float[] { } ), bpy.toArray( new int[] { } ) );
+                                                item.VibratoHandle.DepthBP = new VibratoBPList( PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
+                                                                                                PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) );
                                             } else {
-                                                item.VibratoHandle.RateBP = new VibratoBPList( bpx.toArray( new float[] { } ), bpy.toArray( new int[] { } ) );
+                                                item.VibratoHandle.RateBP = new VibratoBPList( PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
+                                                                                               PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) );
                                             }
                                             internal_ids.add( ve.InternalID );
                                             items.add( item );
                                         }
                                     }
                                     CadenciiCommand run = new CadenciiCommand(
-                                        VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(), internal_ids.toArray( new Integer[] { } ), items.toArray( new VsqID[] { } ) ) );
+                                        VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(), 
+                                                                                               PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ), 
+                                                                                               items.toArray( new VsqID[] { } ) ) );
                                     executeCommand( run, true );
                                     #endregion
                                 } else if ( m_selected_curve.equals( CurveType.Env ) ) {
@@ -4214,7 +4295,7 @@ namespace Boare.Cadencii {
                                     AppManager.debugWriteLine( "        start=" + start );
                                     AppManager.debugWriteLine( "        end=" + end );
 #endif
-                                    TreeMap<Integer, int> velocity = new TreeMap<Integer, int>();
+                                    TreeMap<Integer, Integer> velocity = new TreeMap<Integer, Integer>();
                                     for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
                                         VsqEvent ve = (VsqEvent)itr.next();
                                         if ( start <= ve.Clock && ve.Clock < end ) {
@@ -4236,16 +4317,16 @@ namespace Boare.Cadencii {
                                                 AppManager.debugWriteLine( "        key0,key1=" + key0 + "," + key1 );
 #endif
                                                 if ( key0_clock < ve.Clock && ve.Clock < key1_clock ) {
-                                                    int key0_value = valueFromYCoord( m_mouse_trace[key0] );
-                                                    int key1_value = valueFromYCoord( m_mouse_trace[key1] );
+                                                    int key0_value = valueFromYCoord( m_mouse_trace.get( key0 ) );
+                                                    int key1_value = valueFromYCoord( m_mouse_trace.get( key1 ) );
                                                     float a = (key1_value - key0_value) / (float)(key1_clock - key0_clock);
                                                     float b = key0_value - a * key0_clock;
                                                     int new_value = (int)(a * ve.Clock + b);
                                                     velocity.put( ve.InternalID, new_value );
                                                 } else if ( key0_clock == ve.Clock ) {
-                                                    velocity.put( ve.InternalID, valueFromYCoord( m_mouse_trace[key0] ) );
+                                                    velocity.put( ve.InternalID, valueFromYCoord( m_mouse_trace.get( key0 ) ) );
                                                 } else if ( key1_clock == ve.Clock ) {
-                                                    velocity.put( ve.InternalID, valueFromYCoord( m_mouse_trace[key1] ) );
+                                                    velocity.put( ve.InternalID, valueFromYCoord( m_mouse_trace.get( key1 ) ) );
                                                 }
                                                 lkey = key;
                                             }
@@ -4256,7 +4337,7 @@ namespace Boare.Cadencii {
                                         for ( Iterator itr = velocity.keySet().iterator(); itr.hasNext(); ) {
                                             int key = (Integer)itr.next();
                                             int value = (Integer)velocity.get( key );
-                                            cpy.add( new ValuePair<int, int>( key, value ) );
+                                            cpy.add( new ValuePair<Integer, Integer>( key, value ) );
                                         }
                                         CadenciiCommand run = null;
                                         if ( m_selected_curve.equals( CurveType.VEL ) ) {
@@ -4286,9 +4367,9 @@ namespace Boare.Cadencii {
                                     for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
                                         VsqEvent ve = (VsqEvent)itr.next();
                                         int cl_vib_start = ve.Clock + ve.ID.VibratoDelay;
-                                        float cl_vib_length = ve.ID.Length - ve.ID.VibratoDelay;
+                                        float cl_vib_length = ve.ID.getLength() - ve.ID.VibratoDelay;
                                         int vib_start = AppManager.xCoordFromClocks( cl_vib_start ) + stdx;          // 仮想スクリーン上の、ビブラートの描画開始位置
-                                        int vib_end = AppManager.xCoordFromClocks( ve.Clock + ve.ID.Length ) + stdx; // 仮想スクリーン上の、ビブラートの描画終了位置
+                                        int vib_end = AppManager.xCoordFromClocks( ve.Clock + ve.ID.getLength() ) + stdx; // 仮想スクリーン上の、ビブラートの描画終了位置
                                         int chk_start = Math.Max( vib_start, start );       // マウスのトレースと、ビブラートの描画範囲がオーバーラップしている部分を検出
                                         int chk_end = Math.Min( vib_end, end );
                                         float add_min = (AppManager.clockFromXCoord( chk_start - stdx ) - cl_vib_start) / cl_vib_length;
@@ -4299,11 +4380,11 @@ namespace Boare.Cadencii {
                                         AppManager.debugWriteLine( "    add_min,add_max=" + add_min + " " + add_max );
 #endif
                                         if ( chk_start < chk_end ) {    // オーバーラップしている。
-                                            Vector<ValuePair<float, int>> edit = new Vector<ValuePair<float, int>>();
+                                            Vector<ValuePair<Float, Integer>> edit = new Vector<ValuePair<Float, Integer>>();
                                             for ( int i = chk_start; i < chk_end; i += step_px ) {
                                                 if ( m_mouse_trace.ContainsKey( i ) ) {
-                                                    edit.add( new ValuePair<float, int>( (AppManager.clockFromXCoord( i - stdx ) - cl_vib_start) / cl_vib_length,
-                                                                                            valueFromYCoord( m_mouse_trace[i] ) ) );
+                                                    edit.add( new ValuePair<Float, Integer>( (AppManager.clockFromXCoord( i - stdx ) - cl_vib_start) / cl_vib_length,
+                                                                                            valueFromYCoord( m_mouse_trace.get( i ) ) ) );
                                                 } else {
                                                     //for ( int j = 0; j < m_mouse_trace.Keys.Count - 1; j++ ) {
                                                     int j = -1;
@@ -4332,7 +4413,7 @@ namespace Boare.Cadencii {
                                                             } else if ( max < value ) {
                                                                 val = max;
                                                             }
-                                                            edit.add( new ValuePair<float, int>( (clock - cl_vib_start) / cl_vib_length, val ) );
+                                                            edit.add( new ValuePair<Float, Integer>( (clock - cl_vib_start) / cl_vib_length, val ) );
                                                             break;
                                                         }
                                                         lkey = key;
@@ -4343,13 +4424,13 @@ namespace Boare.Cadencii {
                                             int c = AppManager.clockFromXCoord( end - stdx );
                                             float lastx = (c - cl_vib_start) / cl_vib_length;
                                             if ( 0 <= lastx && lastx <= 1 ) {
-                                                int v = valueFromYCoord( m_mouse_trace[end] );
+                                                int v = valueFromYCoord( m_mouse_trace.get( end ) );
                                                 if ( v < min ) {
                                                     v = min;
                                                 } else if ( max < v ) {
                                                     v = max;
                                                 }
-                                                edit.add( new ValuePair<float, int>( lastx, v ) );
+                                                edit.add( new ValuePair<Float, Integer>( lastx, v ) );
                                             }
                                             if ( ve.ID.VibratoHandle != null ) {
                                                 VibratoBPList target = null;
@@ -4361,7 +4442,7 @@ namespace Boare.Cadencii {
                                                 if ( target.getCount() > 0 ) {
                                                     for ( int i = 0; i < target.getCount(); i++ ) {
                                                         if ( target.getElement( i ).X < add_min || add_max < target.getElement( i ).X ) {
-                                                            edit.add( new ValuePair<float, int>( target.getElement( i ).X,
+                                                            edit.add( new ValuePair<Float, Integer>( target.getElement( i ).X,
                                                                                                      target.getElement( i ).Y ) );
                                                         }
                                                     }
@@ -4387,7 +4468,7 @@ namespace Boare.Cadencii {
                                     if ( internal_ids.size() > 0 ) {
                                         CadenciiCommand run = new CadenciiCommand(
                                             VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(),
-                                                                                                   internal_ids.toArray( new Integer[] { } ),
+                                                                                                   PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
                                                                                                    items.toArray( new VsqID[] { } ) ) );
                                         executeCommand( run, true );
                                     }
@@ -4438,7 +4519,7 @@ namespace Boare.Cadencii {
                                     for ( int i = start; i <= end; i += step_px ) {
                                         if ( m_mouse_trace.ContainsKey( i ) ) {
                                             int clock = AppManager.clockFromXCoord( i - stdx );
-                                            int value = valueFromYCoord( m_mouse_trace[i] );
+                                            int value = valueFromYCoord( m_mouse_trace.get( i ) );
                                             if ( value < min ) {
                                                 value = min;
                                             } else if ( max < value ) {
@@ -4467,8 +4548,8 @@ namespace Boare.Cadencii {
                                                 int value0 = lvalue;
                                                 int value1 = value;
                                                 if ( key0 <= i && i < key1 ) {
-                                                    float a = (m_mouse_trace[key1] - m_mouse_trace[key0]) / (float)(key1 - key0);
-                                                    int newy = (int)(m_mouse_trace[key0] + a * (i - key0));
+                                                    float a = (m_mouse_trace.get( key1 ) - m_mouse_trace.get( key0 )) / (float)(key1 - key0);
+                                                    int newy = (int)(m_mouse_trace.get( key0 ) + a * (i - key0));
                                                     int clock = AppManager.clockFromXCoord( i - stdx );
                                                     int val = valueFromYCoord( newy, max, min );
                                                     if ( val < min ) {
@@ -4490,7 +4571,7 @@ namespace Boare.Cadencii {
                                     }
                                     if ( (end - start) % step_px != 0 ) {
                                         int clock = AppManager.clockFromXCoord( end - stdx );
-                                        int value = valueFromYCoord( m_mouse_trace[end] );
+                                        int value = valueFromYCoord( m_mouse_trace.get( end ) );
                                         if ( value < min ) {
                                             value = min;
                                         } else if ( max < value ) {
@@ -4563,7 +4644,7 @@ namespace Boare.Cadencii {
                                 for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ve = (VsqEvent)itr.next();
                                     int cl_vib_start = ve.Clock + ve.ID.VibratoDelay;
-                                    int cl_vib_length = ve.ID.Length - ve.ID.VibratoDelay;
+                                    int cl_vib_length = ve.ID.getLength() - ve.ID.VibratoDelay;
                                     int cl_vib_end = cl_vib_start + cl_vib_length;
                                     //int vib_start = XCoordFromClocks( cl_vib_start ) + stdx;          // 仮想スクリーン上の、ビブラートの描画開始位置
                                     //int vib_end = XCoordFromClocks( ve.Clock + ve.ID.Length ) + stdx; // 仮想スクリーン上の、ビブラートの描画終了位置
@@ -4577,15 +4658,15 @@ namespace Boare.Cadencii {
                                     AppManager.debugWriteLine( "    add_min,add_max=" + add_min + " " + add_max );
 #endif
                                     if ( chk_start < chk_end ) {    // オーバーラップしている。
-                                        Vector<ValuePair<float, int>> edit = new Vector<ValuePair<float, int>>();
+                                        Vector<ValuePair<Float, Integer>> edit = new Vector<ValuePair<Float, Integer>>();
                                         for ( int i = chk_start; i < chk_end; i += step_clock ) {
                                             float x = (i - cl_vib_start) / (float)cl_vib_length;
                                             if ( 0 <= x && x <= 1 ) {
                                                 int y = (int)(a0 * i + b0);
-                                                edit.add( new ValuePair<float, int>( x, y ) );
+                                                edit.add( new ValuePair<Float, Integer>( x, y ) );
                                             }
                                         }
-                                        edit.add( new ValuePair<float, int>( (chk_end - cl_vib_start) / (float)cl_vib_length, (int)(a0 * chk_end + b0) ) );
+                                        edit.add( new ValuePair<Float, Integer>( (chk_end - cl_vib_start) / (float)cl_vib_length, (int)(a0 * chk_end + b0) ) );
                                         if ( ve.ID.VibratoHandle != null ) {
                                             VibratoBPList target = null;
                                             if ( m_selected_curve.equals( CurveType.VibratoRate ) ) {
@@ -4596,7 +4677,7 @@ namespace Boare.Cadencii {
                                             if ( target.getCount() > 0 ) {
                                                 for ( int i = 0; i < target.getCount(); i++ ) {
                                                     if ( target.getElement( i ).X < add_min || add_max < target.getElement( i ).X ) {
-                                                        edit.add( new ValuePair<float, int>( target.getElement( i ).X,
+                                                        edit.add( new ValuePair<Float, Integer>( target.getElement( i ).X,
                                                                                                  target.getElement( i ).Y ) );
                                                     }
                                                 }
@@ -4622,8 +4703,8 @@ namespace Boare.Cadencii {
                                 if ( internal_ids.size() > 0 ) {
                                     CadenciiCommand run = new CadenciiCommand(
                                         VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(),
-                                                                                        internal_ids.toArray( new Integer[] { } ),
-                                                                                        items.toArray( new VsqID[] { } ) ) );
+                                                                                               PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
+                                                                                               items.toArray( new VsqID[] { } ) ) );
                                     executeCommand( run, true );
                                 }
                             } else if ( m_selected_curve.equals( CurveType.Env ) ) {
@@ -4689,7 +4770,9 @@ namespace Boare.Cadencii {
                                 }
                             }
                             if ( contains_first_singer ) {
+#if !JAVA
                                 System.Media.SystemSounds.Asterisk.Play();
+#endif
                             } else {
                                 if ( !is_valid ) {
                                     int tmin = clocks[0];
@@ -4700,7 +4783,9 @@ namespace Boare.Cadencii {
                                     for ( int j = 0; j < count; j++ ) {
                                         clocks[j] += dclock;
                                     }
+#if !JAVA
                                     System.Media.SystemSounds.Asterisk.Play();
+#endif
                                 }
                                 boolean changed = false;
                                 for ( int j = 0; j < ids.Length; j++ ) {
@@ -4806,8 +4891,8 @@ namespace Boare.Cadencii {
                     }
                 } else if ( m_mouse_down_mode == MouseDownMode.POINT_MOVE ) {
                     if ( m_mouse_moved ) {
-                        System.Drawing.Point pmouse = this.PointToClient( Control.MousePosition );
-                        Point mouse = new Point( pmouse.X, pmouse.Y );
+                        Point pmouse = pointToClient( PortUtil.getMousePosition() );
+                        Point mouse = new Point( pmouse.x, pmouse.y );
                         int dx = mouse.x + AppManager.startToDrawX - m_mouse_down_location.x;
                         int dy = mouse.y - m_mouse_down_location.y;
 
@@ -4845,7 +4930,7 @@ namespace Boare.Cadencii {
                 }
             }
             m_mouse_down_mode = MouseDownMode.NONE;
-            this.Invalidate();
+            invalidate();
         }
 
         private void TrackSelector_MouseHover( Object sender, BEventArgs e ) {
@@ -4859,8 +4944,8 @@ namespace Boare.Cadencii {
             }
             if ( m_mouse_downed && !m_pencil_moved && AppManager.getSelectedTool() == EditTool.PENCIL &&
                  !m_selected_curve.equals( CurveType.VEL ) ) {
-                System.Drawing.Point pmouse = this.PointToClient( Control.MousePosition );
-                Point mouse = new Point( pmouse.X, pmouse.Y );
+                Point pmouse = pointToClient( PortUtil.getMousePosition() );
+                Point mouse = new Point( pmouse.x, pmouse.y );
                 int clock = AppManager.clockFromXCoord( mouse.x );
                 int value = valueFromYCoord( mouse.y );
                 int min = m_selected_curve.getMinimum();
@@ -4881,7 +4966,7 @@ namespace Boare.Cadencii {
                             continue;
                         }
                         int cl_vib_start = ve.Clock + ve.ID.VibratoDelay;
-                        int cl_vib_end = ve.Clock + ve.ID.Length;
+                        int cl_vib_end = ve.Clock + ve.ID.getLength();
                         if ( cl_vib_start <= clock && clock < cl_vib_end ) {
                             x = (clock - cl_vib_start) / (float)(cl_vib_end - cl_vib_start);
                             edited = (VsqID)ve.ID.clone();
@@ -4901,7 +4986,7 @@ namespace Boare.Cadencii {
                                     edited.VibratoHandle.RateBP = new VibratoBPList( new float[] { x },
                                                                                      new int[] { value } );
                                 } else {
-                                    Vector<float> xs = new Vector<float>();
+                                    Vector<Float> xs = new Vector<Float>();
                                     Vector<Integer> vals = new Vector<Integer>();
                                     boolean first = true;
                                     for ( int i = 0; i < edited.VibratoHandle.RateBP.getCount(); i++ ) {
@@ -4926,7 +5011,8 @@ namespace Boare.Cadencii {
                                         xs.add( x );
                                         vals.add( value );
                                     }
-                                    edited.VibratoHandle.RateBP = new VibratoBPList( xs.toArray( new float[] { } ), vals.toArray( new int[] { } ) );
+                                    edited.VibratoHandle.RateBP = new VibratoBPList( PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
+                                                                                     PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) );
                                 }
                             }
                         } else {
@@ -4937,7 +5023,7 @@ namespace Boare.Cadencii {
                                     edited.VibratoHandle.DepthBP = new VibratoBPList( new float[] { x },
                                                                                       new int[] { value } );
                                 } else {
-                                    Vector<float> xs = new Vector<float>();
+                                    Vector<Float> xs = new Vector<Float>();
                                     Vector<Integer> vals = new Vector<Integer>();
                                     boolean first = true;
                                     for ( int i = 0; i < edited.VibratoHandle.DepthBP.getCount(); i++ ) {
@@ -4962,7 +5048,8 @@ namespace Boare.Cadencii {
                                         xs.add( x );
                                         vals.add( value );
                                     }
-                                    edited.VibratoHandle.DepthBP = new VibratoBPList( xs.toArray( new float[] { } ), vals.toArray( new int[] { } ) );
+                                    edited.VibratoHandle.DepthBP = new VibratoBPList( PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
+                                                                                      PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) );
                                 }
                             }
                         }
@@ -5004,31 +5091,37 @@ namespace Boare.Cadencii {
                 AppManager.debugWriteLine( "    m_veledit_selected.ContainsKey(m_veledit_last_selectedid" + m_veledit_selected.containsKey( m_veledit_last_selectedid ) );
 #endif
                 m_mouse_down_mode = MouseDownMode.VEL_EDIT;
-                this.Invalidate();
+                invalidate();
             }
         }
 
+#if JAVA
+        private class MouseHoverEventGeneratorProc extends Thread{
+            public void run(){
+                Thread.sleep( 1000 );
+                TrackSelector_MouseHover( this, new BEventArgs() );
+            }
+        }
+#else
         private void MouseHoverEventGenerator() {
-#if DEBUG
-            AppManager.debugWriteLine( "MouseHoverEventGenerator" );
-#endif
-            System.Threading.Thread.Sleep( (int)(SystemInformation.MouseHoverTime * 0.8) );
-#if DEBUG
-            AppManager.debugWriteLine( "   firing" );
-#endif
+            Thread.Sleep( (int)(System.Windows.Forms.SystemInformation.MouseHoverTime * 0.8) );
             Invoke( new EventHandler( TrackSelector_MouseHover ) );
         }
+#endif
 
         private void TrackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
-#if DEBUG
-            AppManager.debugWriteLine( "TrackSelector_MouseDoubleClick" );
-#endif
+#if JAVA
+            if( m_mouse_hover_thread != null && m_mouse_hover_thread.isAlive() ){
+                m_mouse_hover_thread.stop();
+            }
+#else
             if ( m_mouse_hover_thread != null && m_mouse_hover_thread.IsAlive ) {
                 m_mouse_hover_thread.Abort();
             }
+#endif
 
-            Keys modifier = Control.ModifierKeys;
-            if ( 0 <= e.Y && e.Y <= Height - 2 * OFFSET_TRACK_TAB ) {
+            //int modifier = PortUtil.getCurrentModifierKey();
+            if ( 0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB ) {
                 #region MouseDown occured on curve-pane
                 if ( AppManager.keyWidth <= e.X && e.X <= getWidth() ) {
                     if ( !m_selected_curve.equals( CurveType.VEL ) &&
@@ -5158,7 +5251,7 @@ namespace Boare.Cadencii {
                                 FormCurvePointEdit dialog = new FormCurvePointEdit( bp_id, m_selected_curve );
                                 int tx = AppManager.xCoordFromClocks( tclock );
                                 Point pt = pointToScreen( new Point( tx, 0 ) );
-                                this.Invalidate();
+                                invalidate();
                                 dialog.setLocation( new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
                                 dialog.showDialog();
                             }
@@ -5167,7 +5260,7 @@ namespace Boare.Cadencii {
                     }
                 }
                 #endregion
-            } else if ( Height - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y <= Height - OFFSET_TRACK_TAB ) {
+            } else if ( getHeight() - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y <= getHeight() - OFFSET_TRACK_TAB ) {
                 #region MouseDown occured on singer list
                 if ( AppManager.getSelectedTool() != EditTool.ERASER ) {
                     VsqEvent ve = findItemAt( e.X, e.Y );
@@ -5232,9 +5325,9 @@ namespace Boare.Cadencii {
             if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) || renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
                 items = AppManager.editorConfig.UtauSingers;
             } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
-                items = new Vector<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) );
+                items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) ) );
             } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
-                items = new Vector<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) );
+                items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) ) );
             } else {
                 return;
             }
@@ -5323,6 +5416,7 @@ namespace Boare.Cadencii {
         }
 
         private void tsmi_MouseHover( Object sender, BEventArgs e ) {
+#if !JAVA
             try {
                 TagForCMenuSingerDropDown tag = (TagForCMenuSingerDropDown)((BMenuItem)sender).getTag();
                 String tip = tag.ToolTipText;
@@ -5346,7 +5440,7 @@ namespace Boare.Cadencii {
                 Point pts = new Point( ppts.x, ppts.y );
                 Rectangle rrc = PortUtil.getScreenBounds( this );
                 Rectangle rc = new Rectangle( rrc.x, rrc.y, rrc.width, rrc.height );
-                toolTip.Tag = singer;
+                toolTip.setTag( singer );
                 if ( pts.x + cmenuSinger.getWidth() + tip_width > rc.width ) {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( -tip_width, y ), 5000 );
                 } else {
@@ -5356,6 +5450,7 @@ namespace Boare.Cadencii {
                 PortUtil.println( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
                 AppManager.debugWriteLine( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
             }
+#endif
         }
 
         private struct TagForCMenuSinger {
@@ -5375,11 +5470,10 @@ namespace Boare.Cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "CmenuSingerClick" );
             AppManager.debugWriteLine( "    sender.GetType()=" + sender.GetType() );
-            AppManager.debugWriteLine( "    ((ToolStripMenuItem)sender).Tag.GetType()=" + ((ToolStripMenuItem)sender).Tag.GetType() );
 #endif
-            if ( sender is ToolStripMenuItem ) {
+            if ( sender is BMenuItem ) {
                 TagForCMenuSinger tag = (TagForCMenuSinger)cmenuSinger.getTag();
-                TagForCMenuSingerDropDown tag_dditem = (TagForCMenuSingerDropDown)((ToolStripMenuItem)sender).Tag;
+                TagForCMenuSingerDropDown tag_dditem = (TagForCMenuSingerDropDown)((BMenuItem)sender).getTag();
                 String singer = tag_dditem.SingerName;
                 VsqID item = null;
                 if ( m_cmenu_singer_prepared.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
@@ -5409,14 +5503,14 @@ namespace Boare.Cadencii {
         }
 
 #if !JAVA
-        private void toolTip_Draw( Object sender, DrawToolTipEventArgs e ) {
+        private void toolTip_Draw( Object sender, System.Windows.Forms.DrawToolTipEventArgs e ) {
             System.Drawing.Rectangle rrc = e.Bounds;
             Rectangle rc = new Rectangle( rrc.X, rrc.Y, rrc.Width, rrc.Height );
 #if DEBUG
             AppManager.debugWriteLine( "toolTip_Draw" );
             AppManager.debugWriteLine( "    sender.GetType()=" + sender.GetType() );
 #endif
-            String singer = (String)((ToolTip)sender).Tag;
+            String singer = (String)((System.Windows.Forms.ToolTip)sender).Tag;
             MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
             for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                 MenuElement tsi = sub_cmenu_singer[i];
@@ -5431,34 +5525,44 @@ namespace Boare.Cadencii {
             }
             e.DrawBackground();
             e.DrawBorder();
-            e.DrawText( TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.NoFullWidthCharacterBreak );
+            e.DrawText( System.Windows.Forms.TextFormatFlags.VerticalCenter | System.Windows.Forms.TextFormatFlags.Left | System.Windows.Forms.TextFormatFlags.NoFullWidthCharacterBreak );
         }
 #endif
 
         private void TrackSelector_KeyDown( Object sender, BKeyEventArgs e ) {
-            if ( (e.KeyCode & Keys.Space) == Keys.Space ) {
+#if JAVA
+            if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
+#else
+            if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space ) 
+#endif
+            {
                 m_spacekey_downed = true;
             }
         }
 
         private void TrackSelector_KeyUp( Object sender, BKeyEventArgs e ) {
-            if ( (e.KeyCode & Keys.Space) == Keys.Space ) {
+#if JAVA
+            if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
+#else
+            if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space )
+#endif
+            {
                 m_spacekey_downed = false;
             }
         }
 
         private void cmenuCurveCommon_Click( Object sender, BEventArgs e ) {
-            if ( sender is ToolStripMenuItem ) {
-                ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
-                if ( tsmi.Tag is CurveType ) {
-                    CurveType curve = (CurveType)tsmi.Tag;
+            if ( sender is BMenuItem ) {
+                BMenuItem tsmi = (BMenuItem)sender;
+                if ( tsmi.getTag() is CurveType ) {
+                    CurveType curve = (CurveType)tsmi.getTag();
                     changeCurve( curve );
                 }
             }
         }
 
 #if !JAVA
-        private void panelZoomButton_Paint( Object sender, PaintEventArgs e ) {
+        private void panelZoomButton_Paint( Object sender, System.Windows.Forms.PaintEventArgs e ) {
             Graphics2D g = new Graphics2D( e.Graphics );
             // 外枠
             int halfheight = panelZoomButton.Height / 2;
@@ -5500,6 +5604,8 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+#else
             this.toolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler( this.toolTip_Draw );
             this.cmenuCurveVelocity.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             this.cmenuCurveAccent.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
@@ -5540,6 +5646,7 @@ namespace Boare.Cadencii {
             this.MouseDown += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseDown );
             this.MouseUp += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseUp );
             this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.TrackSelector_KeyDown );
+#endif
         }
 
         private void setResources() {
@@ -5547,6 +5654,8 @@ namespace Boare.Cadencii {
 
 #if JAVA
         #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\TrackSelector.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\TrackSelector.java
         #endregion
 #else
         #region UI Impl for C#
@@ -5574,49 +5683,49 @@ namespace Boare.Cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.cmenuSinger = new BPopupMenu( this.components );
+            this.cmenuSinger = new bocoree.windows.forms.BPopupMenu( this.components );
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.cmenuCurve = new BPopupMenu( this.components );
-            this.cmenuCurveVelocity = new BMenuItem();
-            this.cmenuCurveAccent = new BMenuItem();
-            this.cmenuCurveDecay = new BMenuItem();
-            this.cmenuCurveSeparator1 = new BMenuSeparator();
-            this.cmenuCurveDynamics = new BMenuItem();
-            this.cmenuCurveVibratoRate = new BMenuItem();
-            this.cmenuCurveVibratoDepth = new BMenuItem();
-            this.cmenuCurveSeparator2 = new BMenuSeparator();
-            this.cmenuCurveReso1 = new BMenuItem();
-            this.cmenuCurveReso1Freq = new BMenuItem();
-            this.cmenuCurveReso1BW = new BMenuItem();
-            this.cmenuCurveReso1Amp = new BMenuItem();
-            this.cmenuCurveReso2 = new BMenuItem();
-            this.cmenuCurveReso2Freq = new BMenuItem();
-            this.cmenuCurveReso2BW = new BMenuItem();
-            this.cmenuCurveReso2Amp = new BMenuItem();
-            this.cmenuCurveReso3 = new BMenuItem();
-            this.cmenuCurveReso3Freq = new BMenuItem();
-            this.cmenuCurveReso3BW = new BMenuItem();
-            this.cmenuCurveReso3Amp = new BMenuItem();
-            this.cmenuCurveReso4 = new BMenuItem();
-            this.cmenuCurveReso4Freq = new BMenuItem();
-            this.cmenuCurveReso4BW = new BMenuItem();
-            this.cmenuCurveReso4Amp = new BMenuItem();
-            this.cmenuCurveSeparator3 = new BMenuSeparator();
-            this.cmenuCurveHarmonics = new BMenuItem();
-            this.cmenuCurveBreathiness = new BMenuItem();
-            this.cmenuCurveBrightness = new BMenuItem();
-            this.cmenuCurveClearness = new BMenuItem();
-            this.cmenuCurveOpening = new BMenuItem();
-            this.cmenuCurveGenderFactor = new BMenuItem();
-            this.cmenuCurveSeparator4 = new BMenuSeparator();
-            this.cmenuCurvePortamentoTiming = new BMenuItem();
-            this.cmenuCurvePitchBend = new BMenuItem();
-            this.cmenuCurvePitchBendSensitivity = new BMenuItem();
-            this.cmenuCurveSeparator5 = new BMenuSeparator();
-            this.cmenuCurveEffect2Depth = new BMenuItem();
-            this.vScroll = new BVScrollBar();
+            this.cmenuCurve = new bocoree.windows.forms.BPopupMenu( this.components );
+            this.cmenuCurveVelocity = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveAccent = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveDecay = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator1 = new bocoree.windows.forms.BMenuSeparator();
+            this.cmenuCurveDynamics = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveVibratoRate = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveVibratoDepth = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator2 = new bocoree.windows.forms.BMenuSeparator();
+            this.cmenuCurveReso1 = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso1Freq = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso1BW = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso1Amp = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso2 = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso2Freq = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso2BW = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso2Amp = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso3 = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso3Freq = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso3BW = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso3Amp = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso4 = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso4Freq = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso4BW = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveReso4Amp = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator3 = new bocoree.windows.forms.BMenuSeparator();
+            this.cmenuCurveHarmonics = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveBreathiness = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveBrightness = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveClearness = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveOpening = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveGenderFactor = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator4 = new bocoree.windows.forms.BMenuSeparator();
+            this.cmenuCurvePortamentoTiming = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurvePitchBend = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurvePitchBendSensitivity = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator5 = new bocoree.windows.forms.BMenuSeparator();
+            this.cmenuCurveEffect2Depth = new bocoree.windows.forms.BMenuItem();
+            this.cmenuCurveEnvelope = new bocoree.windows.forms.BMenuItem();
+            this.vScroll = new bocoree.windows.forms.BVScrollBar();
             this.panelZoomButton = new System.Windows.Forms.Panel();
-            this.cmenuCurveEnvelope = new BMenuItem();
             this.cmenuCurve.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -5662,7 +5771,7 @@ namespace Boare.Cadencii {
             this.cmenuCurveEffect2Depth,
             this.cmenuCurveEnvelope} );
             this.cmenuCurve.Name = "cmenuCurve";
-            this.cmenuCurve.Size = new System.Drawing.Size( 185, 518 );
+            this.cmenuCurve.Size = new System.Drawing.Size( 185, 496 );
             // 
             // cmenuCurveVelocity
             // 
@@ -5723,19 +5832,19 @@ namespace Boare.Cadencii {
             // cmenuCurveReso1Freq
             // 
             this.cmenuCurveReso1Freq.Name = "cmenuCurveReso1Freq";
-            this.cmenuCurveReso1Freq.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso1Freq.Size = new System.Drawing.Size( 152, 22 );
             this.cmenuCurveReso1Freq.Text = "Frequency";
             // 
             // cmenuCurveReso1BW
             // 
             this.cmenuCurveReso1BW.Name = "cmenuCurveReso1BW";
-            this.cmenuCurveReso1BW.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso1BW.Size = new System.Drawing.Size( 152, 22 );
             this.cmenuCurveReso1BW.Text = "Band Width";
             // 
             // cmenuCurveReso1Amp
             // 
             this.cmenuCurveReso1Amp.Name = "cmenuCurveReso1Amp";
-            this.cmenuCurveReso1Amp.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso1Amp.Size = new System.Drawing.Size( 152, 22 );
             this.cmenuCurveReso1Amp.Text = "Amplitude";
             // 
             // cmenuCurveReso2
@@ -5751,19 +5860,19 @@ namespace Boare.Cadencii {
             // cmenuCurveReso2Freq
             // 
             this.cmenuCurveReso2Freq.Name = "cmenuCurveReso2Freq";
-            this.cmenuCurveReso2Freq.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso2Freq.Size = new System.Drawing.Size( 152, 22 );
             this.cmenuCurveReso2Freq.Text = "Frequency";
             // 
             // cmenuCurveReso2BW
             // 
             this.cmenuCurveReso2BW.Name = "cmenuCurveReso2BW";
-            this.cmenuCurveReso2BW.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso2BW.Size = new System.Drawing.Size( 152, 22 );
             this.cmenuCurveReso2BW.Text = "Band Width";
             // 
             // cmenuCurveReso2Amp
             // 
             this.cmenuCurveReso2Amp.Name = "cmenuCurveReso2Amp";
-            this.cmenuCurveReso2Amp.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso2Amp.Size = new System.Drawing.Size( 152, 22 );
             this.cmenuCurveReso2Amp.Text = "Amplitude";
             // 
             // cmenuCurveReso3
@@ -5779,19 +5888,19 @@ namespace Boare.Cadencii {
             // cmenuCurveReso3Freq
             // 
             this.cmenuCurveReso3Freq.Name = "cmenuCurveReso3Freq";
-            this.cmenuCurveReso3Freq.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso3Freq.Size = new System.Drawing.Size( 152, 22 );
             this.cmenuCurveReso3Freq.Text = "Frequency";
             // 
             // cmenuCurveReso3BW
             // 
             this.cmenuCurveReso3BW.Name = "cmenuCurveReso3BW";
-            this.cmenuCurveReso3BW.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso3BW.Size = new System.Drawing.Size( 152, 22 );
             this.cmenuCurveReso3BW.Text = "Band Width";
             // 
             // cmenuCurveReso3Amp
             // 
             this.cmenuCurveReso3Amp.Name = "cmenuCurveReso3Amp";
-            this.cmenuCurveReso3Amp.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso3Amp.Size = new System.Drawing.Size( 152, 22 );
             this.cmenuCurveReso3Amp.Text = "Amplitude";
             // 
             // cmenuCurveReso4
@@ -5897,6 +6006,12 @@ namespace Boare.Cadencii {
             this.cmenuCurveEffect2Depth.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveEffect2Depth.Text = "Effect2 Depth";
             // 
+            // cmenuCurveEnvelope
+            // 
+            this.cmenuCurveEnvelope.Name = "cmenuCurveEnvelope";
+            this.cmenuCurveEnvelope.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveEnvelope.Text = "Envelope";
+            // 
             // vScroll
             // 
             this.vScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -5916,12 +6031,6 @@ namespace Boare.Cadencii {
             this.panelZoomButton.Name = "panelZoomButton";
             this.panelZoomButton.Size = new System.Drawing.Size( 16, 33 );
             this.panelZoomButton.TabIndex = 3;
-            // 
-            // cmenuCurveEnvelope
-            // 
-            this.cmenuCurveEnvelope.Name = "cmenuCurveEnvelope";
-            this.cmenuCurveEnvelope.Size = new System.Drawing.Size( 184, 22 );
-            this.cmenuCurveEnvelope.Text = "Envelope";
             // 
             // TrackSelector
             // 

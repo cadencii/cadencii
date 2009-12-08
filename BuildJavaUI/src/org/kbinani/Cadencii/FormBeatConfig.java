@@ -11,6 +11,7 @@ import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 
 //SECTION-END-IMPORT
@@ -21,20 +22,20 @@ public class FormBeatConfig extends BForm {
     private BPanel jContentPane = null;
     private BGroupBox groupPosition = null;
     private BLabel lblStart = null;
-    private BComboBox numStart = null;
+    private BNumericUpDown numStart = null;
     private BLabel lblBar1 = null;
     private BCheckBox chkEnd = null;
-    private BComboBox numEnd = null;
+    private BNumericUpDown numEnd = null;
     private BLabel lblBar2 = null;
     private BGroupBox groupBeat = null;
-    private BComboBox numNumerator = null;
+    private BNumericUpDown numNumerator = null;
     private BLabel jLabel = null;
     private BLabel jLabel1 = null;
-    private BComboBox numDenominator = null;
+    private BComboBox comboDenominator = null;
     private BPanel jPanel1 = null;
     private BLabel jLabel2 = null;
     private BLabel jLabel3 = null;
-    private BButton btnOk = null;
+    private BButton btnOK = null;
     private BButton btnCancel = null;
     private BLabel jLabel4 = null;
     private BLabel jLabel5 = null;
@@ -194,9 +195,9 @@ public class FormBeatConfig extends BForm {
      *  
      * @return javax.swing.BComboBox    
      */
-    private BComboBox getNumStart() {
+    private BNumericUpDown getNumStart() {
         if (numStart == null) {
-            numStart = new BComboBox();
+            numStart = new BNumericUpDown();
             numStart.setPreferredSize(new Dimension(31, 20));
         }
         return numStart;
@@ -220,9 +221,9 @@ public class FormBeatConfig extends BForm {
      *  
      * @return javax.swing.BComboBox    
      */
-    private BComboBox getNumEnd() {
+    private BNumericUpDown getNumEnd() {
         if (numEnd == null) {
-            numEnd = new BComboBox();
+            numEnd = new BNumericUpDown();
             numEnd.setPreferredSize(new Dimension(31, 20));
         }
         return numEnd;
@@ -273,7 +274,7 @@ public class FormBeatConfig extends BForm {
             groupBeat.add(getNumNumerator(), gridBagConstraints7);
             groupBeat.add(jLabel, gridBagConstraints10);
             groupBeat.add(jLabel1, gridBagConstraints11);
-            groupBeat.add(getNumDenominator(), gridBagConstraints12);
+            groupBeat.add(getComboDenominator(), gridBagConstraints12);
             groupBeat.add(jLabel2, gridBagConstraints13);
             groupBeat.add(jLabel3, gridBagConstraints14);
         }
@@ -285,25 +286,25 @@ public class FormBeatConfig extends BForm {
      *  
      * @return javax.swing.BComboBox    
      */
-    private BComboBox getNumNumerator() {
+    private BNumericUpDown getNumNumerator() {
         if (numNumerator == null) {
-            numNumerator = new BComboBox();
+            numNumerator = new BNumericUpDown();
             numNumerator.setPreferredSize(new Dimension(31, 20));
         }
         return numNumerator;
     }
 
     /**
-     * This method initializes numDenominator   
+     * This method initializes comboDenominator   
      *  
      * @return javax.swing.BComboBox    
      */
-    private BComboBox getNumDenominator() {
-        if (numDenominator == null) {
-            numDenominator = new BComboBox();
-            numDenominator.setPreferredSize(new Dimension(31, 20));
+    private BComboBox getComboDenominator() {
+        if (comboDenominator == null) {
+            comboDenominator = new BComboBox();
+            comboDenominator.setPreferredSize(new Dimension(31, 20));
         }
-        return numDenominator;
+        return comboDenominator;
     }
 
     /**
@@ -343,11 +344,11 @@ public class FormBeatConfig extends BForm {
      * @return javax.swing.BButton  
      */
     private BButton getBtnOk() {
-        if (btnOk == null) {
-            btnOk = new BButton();
-            btnOk.setText("OK");
+        if (btnOK == null) {
+            btnOK = new BButton();
+            btnOK.setText("OK");
         }
-        return btnOk;
+        return btnOK;
     }
 
     /**

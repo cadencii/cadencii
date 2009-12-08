@@ -3,6 +3,7 @@ package org.kbinani.Cadencii;
 //SECTION-BEGIN-IMPORT
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BForm;
@@ -10,9 +11,6 @@ import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPanel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 //SECTION-END-IMPORT
 public class FormMixer extends BForm {

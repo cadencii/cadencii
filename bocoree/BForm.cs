@@ -76,23 +76,34 @@ namespace bocoree.windows.forms {
         // root implementation: common APIs of org.kbinani.*
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
-        public bocoree.java.awt.Point pointToScreen( bocoree.java.awt.Point point_on_client ) {
-            bocoree.java.awt.Point p = getLocationOnScreen();
-            return new bocoree.java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
+        public java.awt.Point pointToScreen( java.awt.Point point_on_client ) {
+            java.awt.Point p = getLocationOnScreen();
+            return new java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
         }
 
-        public bocoree.java.awt.Point pointToClient( bocoree.java.awt.Point point_on_screen ) {
-            bocoree.java.awt.Point p = getLocationOnScreen();
-            return new bocoree.java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
+        public java.awt.Point pointToClient( java.awt.Point point_on_screen ) {
+            java.awt.Point p = getLocationOnScreen();
+            return new java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
         }
 
-        public object getTag() {
+#if JAVA
+        Object tag = null;
+        public Object getTag(){
+            return tag;
+        }
+
+        public void setTag( Object value ){
+            tag = value;
+        }
+#else
+        public Object getTag() {
             return base.Tag;
         }
 
-        public void setTag( object value ) {
+        public void setTag( Object value ) {
             base.Tag = value;
         }
+#endif
         #endregion
 
         // root implementation of java.awt.Component

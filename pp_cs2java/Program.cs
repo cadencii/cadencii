@@ -55,6 +55,7 @@ class pp_cs2java {
         {"Math.Sin(", "Math.sin("},
         {"Math.Cos(", "Math.cos("},
         {"Math.Sqrt(", "Math.sqrt("},
+        {"Math.Atan2(", "Math.atan2("},
         {".ToLower()", ".toLowerCase()"},
         {".ToUpper()", ".toUpperCase()" },
         {".IndexOf(", ".indexOf("},

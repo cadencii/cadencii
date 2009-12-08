@@ -335,9 +335,13 @@ namespace Boare.Cadencii {
                         if ( start < pre_measure_clocks ) {
                             if ( pre_measure_clocks < end ) {
                                 // プリメジャーのところでカットし，既存のものと置き換える
-                                BezierChain new_chain = chain.extractPartialBezier( pre_measure_clocks, end );
-                                new_chain.id = chain.id;
-                                list.set( j, new_chain );
+                                BezierChain new_chain = null;
+                                try {
+                                    new_chain = chain.extractPartialBezier( pre_measure_clocks, end );
+                                    new_chain.id = chain.id;
+                                    list.set( j, new_chain );
+                                } catch ( Exception ex ) {
+                                }
                             } else {
                                 remove_required_event.add( chain.id );
                             }

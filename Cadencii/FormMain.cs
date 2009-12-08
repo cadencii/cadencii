@@ -12396,18 +12396,34 @@ namespace Boare.Cadencii {
                 }
                 int chain_start = (int)bc.points.get( 0 ).getBase().getX();
                 int chain_end = (int)bc.points.get( len - 1 ).getBase().getX();
+                BezierChain add = null;
                 if ( start < chain_start && chain_start < end && end < chain_end ) {
                     // (1) chain_start ~ end をコピー
-                    copied_chain.add( bc.extractPartialBezier( chain_start, end ) );
+                    try{
+                        add = bc.extractPartialBezier( chain_start, end );
+                    }catch( Exception ex ){
+                        add = null;
+                    }
                 } else if ( chain_start <= start && end <= chain_end ) {
                     // (2) start ~ endをコピー
-                    copied_chain.add( bc.extractPartialBezier( start, end ) );
+                    try {
+                        add = bc.extractPartialBezier( start, end );
+                    } catch ( Exception ex ) {
+                        add = null;
+                    }
                 } else if ( chain_start < start && start < chain_end && chain_end <= end ) {
                     // (3) start ~ chain_endをコピー
-                    copied_chain.add( bc.extractPartialBezier( start, chain_end ) );
+                    try {
+                        add = bc.extractPartialBezier( start, chain_end );
+                    } catch ( Exception ex ) {
+                        add = null;
+                    }
                 } else if ( start <= chain_start && chain_end <= end ) {
                     // (4) 全部コピーでOK
-                    copied_chain.add( (BezierChain)bc.clone() );
+                    add = (BezierChain)bc.clone();
+                }
+                if ( add != null ) {
+                    copied_chain.add( add );
                 }
             }
         }
