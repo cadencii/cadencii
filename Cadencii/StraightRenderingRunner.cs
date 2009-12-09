@@ -317,7 +317,8 @@ namespace Boare.Cadencii {
             writer.write( oto_ini );
             writer.newLine();
             Vector<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
-            Vector<String> print_targets = new Vector<String>( new String[]{ "Length",
+            Vector<String> print_targets = new Vector<String>( Arrays.asList(
+                                                               new String[]{ "Length",
                                                                              "Note#",
                                                                              "Dynamics",
                                                                              "DEMdecGainRate",
@@ -325,7 +326,7 @@ namespace Boare.Cadencii {
                                                                              "PreUtterance",
                                                                              "VoiceOverlap",
                                                                              "PMBendDepth",
-                                                                             "PMBendLength" } );
+                                                                             "PMBendLength" } ) );
             for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 item.write( writer, print_targets );

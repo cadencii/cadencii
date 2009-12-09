@@ -53,9 +53,11 @@ namespace Boare.Cadencii {
         private static int columnWidthShortcutKey = 140;
 
         public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict ) {
+#if JAVA
+            super();
+#endif
             try {
 #if JAVA
-                super();
                 initialize();
 #else
                 InitializeComponent();
@@ -93,7 +95,11 @@ namespace Boare.Cadencii {
             btnLoadDefault.setText( _( "Load Default" ) );
 
             list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
+#if JAVA
+            System.err.println( "info; FormShortcutKeys#ApplyLanguage; \"toolTip.SetToolTip( list, _( \"Select command and hit key(s) you want to set.\\nHit Backspace if you want to remove shortcut key.\" ) )" );
+#else
             toolTip.SetToolTip( list, _( "Select command and hit key(s) you want to set.\nHit Backspace if you want to remove shortcut key." ) );
+#endif
 
             int num_groups = list.getGroupCount();
             for ( int i = 0; i < num_groups; i++ ) {
@@ -161,7 +167,7 @@ namespace Boare.Cadencii {
                 }
                 BListViewItem item = new BListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
                 String name = m_dict.get( display ).getKey();
-                item.Name = name;
+                item.setName( name );
                 //item.Tag = a;
                 String group = "";
                 if ( name.StartsWith( "menuFile" ) ) {
@@ -195,7 +201,7 @@ namespace Boare.Cadencii {
         }
 
         private void list_KeyDown( Object sender, BKeyEventArgs e ) {
-            string selected_group = "";
+            String selected_group = "";
             int selected_index = -1;
             int num_groups = list.getGroupCount();
             for ( int i = 0; i < num_groups; i++ ) {
@@ -212,8 +218,12 @@ namespace Boare.Cadencii {
                 return;
             }
             int index = selected_index;
+#if JAVA
+            KeyStroke stroke = KeyStroke.getKeyStroke( e.getKeyCode(), e.getModifiers() );
+#else
             KeyStroke stroke = KeyStroke.getKeyStroke( 0, 0 );
             stroke.keys = e.KeyCode | e.Modifiers;
+#endif
             int code = stroke.getKeyCode();
             int modifier = stroke.getModifiers();
 
@@ -244,15 +254,19 @@ namespace Boare.Cadencii {
             // 指定されたキーの組み合わせが、ショートカットとして適切かどうか判定
             try {
 #if JAVA
-                m_dumy.setAccelerator( KeyStroke.getKeyStrok( capture.getValue(), modifier ) );
+                m_dumy.setAccelerator( KeyStroke.getKeyStroke( capture.getValue(), modifier ) );
 #else
                 m_dumy.setAccelerator( KeyStroke.getKeyStroke( (int)capture, modifier ) );
 #endif
             } catch ( Exception ex ) {
+#if JAVA
+                System.err.println( "info; FormShortcutKeys#list_KeyDown; not implemented yet \"e.KeyCode & Keys.Up ... e.Handled = true\"" );
+#else
                 if ( ((e.KeyCode & Keys.Up) != Keys.Up) &&
                      ((e.KeyCode & Keys.Down) != Keys.Down) ) {
                     e.Handled = true;
                 }
+#endif
                 return;
             }
             BListViewItem item = (BListViewItem)list.getItemAt( selected_group, index ).clone();
@@ -263,7 +277,9 @@ namespace Boare.Cadencii {
                 m_dict.get( display ).setValue( capturelist.toArray( new BKeys[] { } ) );
             }
             UpdateColor();
+#if !JAVA
             e.Handled = true;
+#endif
         }
 
         private void btnRevert_Click( Object sender, BEventArgs e ) {

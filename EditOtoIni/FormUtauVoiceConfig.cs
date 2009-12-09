@@ -428,7 +428,7 @@ namespace Boare.EditOtoIni {
                         wdc.Freq = Boare.Cadencii.UtauFreq.FromFrq( freq );
                     }
                     m_drawer.add( wdc );
-                    Vector<String> columns = new Vector<String>( spl );
+                    Vector<String> columns = new Vector<String>( Arrays.asList( spl ) );
                     columns.insertElementAt( f, 0 );
                     columns.add( freq_exists ? "○" : "" );
                     String stf = PortUtil.combinePath( PortUtil.combinePath( dir, "analyzed" ), wave_name + ".stf" );

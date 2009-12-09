@@ -15,6 +15,9 @@
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BPictureBox.java
 #else
 #define COMPONENT_ENABLE_REPAINT
+#define COMPONENT_ENABLE_LOCATION
+#define COMPONENT_ENABLE_FOCUS
+
 using System.Windows.Forms;
 
 namespace bocoree.windows.forms {

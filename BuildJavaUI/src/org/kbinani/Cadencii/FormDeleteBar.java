@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BTextBox;
 import java.awt.Dimension;
 import javax.swing.SwingConstants;
@@ -19,10 +20,10 @@ public class FormDeleteBar extends BForm {
     private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private BLabel lblStart = null;
-	private BTextBox numStart = null;
+	private BNumericUpDown numStart = null;
 	private BLabel label3 = null;
 	private BLabel lblEnd = null;
-	private BTextBox numEnd = null;
+	private BNumericUpDown numEnd = null;
 	private BLabel label4 = null;
 	private JPanel jPanel = null;
 	private BButton btnOK = null;
@@ -125,9 +126,9 @@ public class FormDeleteBar extends BForm {
 	 * 	
 	 * @return javax.swing.BTextBox	
 	 */
-	private BTextBox getNumStart() {
+	private BNumericUpDown getNumStart() {
 		if (numStart == null) {
-			numStart = new BTextBox();
+			numStart = new BNumericUpDown();
 		}
 		return numStart;
 	}
@@ -137,9 +138,9 @@ public class FormDeleteBar extends BForm {
 	 * 	
 	 * @return javax.swing.BTextBox	
 	 */
-	private BTextBox getNumEnd() {
+	private BNumericUpDown getNumEnd() {
 		if (numEnd == null) {
-			numEnd = new BTextBox();
+			numEnd = new BNumericUpDown();
 		}
 		return numEnd;
 	}

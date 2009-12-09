@@ -64,7 +64,11 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+#else
             btnOK.Click += new EventHandler( btnOK_Click );
+#endif
         }
 
 #if JAVA

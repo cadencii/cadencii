@@ -63,6 +63,7 @@ namespace Boare.Cadencii {
         private boolean m_rendering_started = false;
         private boolean m_reflect_amp_to_wave = false;
         private BTimer timer;
+        private BBackgroundWorker bgWork;
 
         public FormSynthesize( VsqFileEx vsq,
                                int presend,
@@ -71,36 +72,39 @@ namespace Boare.Cadencii {
                                int clock_start,
                                int clock_end,
                                int temp_premeasure,
-                               boolean reflect_amp_to_wave ) {
+                               boolean reflect_amp_to_wave )
 #if JAVA
-            super();
-#endif
-            m_vsq = vsq;
-            m_presend = presend;
-            m_tracks = new int[] { track };
-            m_files = new String[] { file };
-#if JAVA
-            initialize();
-            timer = new BTimer();
+        {
+            this( vsq, presend, new int[] { track }, new String[]{ file }, clock_start, clock_end, temp_premeasure, reflect_amp_to_wave, false );
 #else
-            InitializeComponent();
-            timer = new BTimer( this.components );
+            : this( vsq, presend, new int[] { track }, new String[] { file }, clock_start, clock_end, temp_premeasure, reflect_amp_to_wave, false ) {
+
 #endif
-            timer.setDelay( 1000 );
-            registerEventHandlers();
-            setResources();
-            lblProgress.setText( "1/" + 1 );
-            progressWhole.setMaximum( 1 );
-            m_partial_mode = true;
-            m_clock_start = clock_start;
-            m_clock_end = clock_end;
-            m_temp_premeasure = temp_premeasure;
-            m_reflect_amp_to_wave = reflect_amp_to_wave;
-            applyLanguage();
-            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public FormSynthesize( VsqFileEx vsq, int presend, int[] tracks, String[] files, int end, boolean reflect_amp_to_wave ) {
+        public FormSynthesize( VsqFileEx vsq,
+                               int presend,
+                               int[] tracks,
+                               String[] files,
+                               int end,
+                               boolean reflect_amp_to_wave )
+#if JAVA
+        {
+            this( vsq, presend, tracks, files, 0, end, reflect_amp_to_wave, true );
+#else
+            : this( vsq, presend, tracks, files, 0, end, 0, reflect_amp_to_wave, true ) {
+#endif
+        }
+
+        private FormSynthesize( VsqFileEx vsq, 
+                                int presend, 
+                                int[] tracks,
+                                String[] files,
+                                int start,
+                                int end,
+                                int temp_premeasure,
+                                boolean reflect_amp_to_wave,
+                                boolean partial_mode ) {
 #if JAVA
             super();
 #endif
@@ -114,14 +118,19 @@ namespace Boare.Cadencii {
 #else
             InitializeComponent();
             timer = new BTimer( this.components );
+            bgWork = new BBackgroundWorker();
+            bgWork.WorkerReportsProgress = true;
+            bgWork.WorkerSupportsCancellation = true;
 #endif
             timer.setDelay( 1000 );
             registerEventHandlers();
             setResources();
             lblProgress.setText( "1/" + m_tracks.Length );
             progressWhole.setMaximum( m_tracks.Length );
-            m_partial_mode = false;
+            m_partial_mode = partial_mode;
+            m_clock_start = start;
             m_clock_end = end;
+            m_temp_premeasure = temp_premeasure;
             m_reflect_amp_to_wave = reflect_amp_to_wave;
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -143,9 +152,9 @@ namespace Boare.Cadencii {
         public int[] getFinished() {
             Vector<Integer> list = new Vector<Integer>();
             for ( int i = 0; i <= m_finished; i++ ) {
-                list.Add( m_tracks[i] );
+                list.add( m_tracks[i] );
             }
-            return list.toArray( new Integer[] { } );
+            return PortUtil.convertIntArray( list.toArray( new Integer[] { } ) );
         }
 
         private void FormSynthesize_Load( Object sender, BEventArgs e ) {
@@ -158,7 +167,7 @@ namespace Boare.Cadencii {
                 VSTiProxy.CurrentUser = AppManager.getID();
                 timer.start();
                 m_rendering_started = true;
-                bgWork.RunWorkerAsync();
+                bgWork.runWorkerAsync();
             } else {
                 m_rendering_started = false;
                 setDialogResult( BDialogResult.CANCEL );
@@ -172,88 +181,99 @@ namespace Boare.Cadencii {
         }
 
         private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
-            double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
-            double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.MasterPanpot );
-            double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.MasterPanpot );
-            if ( m_partial_mode ) {
-                this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (Object)1 );
-                double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Feder );
-                double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
-                double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
-                double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
-                double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
-                WaveWriter ww = null;
-                try {
-                    ww = new WaveWriter( m_files[0] );
-                    VSTiProxy.render( m_vsq,
-                                      m_tracks[0],
-                                      ww,
-                                      m_vsq.getSecFromClock( m_clock_start ),
-                                      m_vsq.getSecFromClock( m_clock_end ),
-                                      m_presend,
-                                      false,
-                                      new WaveReader[] { },
-                                      0.0,
-                                      false,
-                                      AppManager.getTempWaveDir(),
-                                      m_reflect_amp_to_wave );
-                } catch ( Exception ex ) {
-                } finally {
-                    if ( ww != null ) {
-                        try {
-#if !JAVA
-                            ww.Dispose();
+            try {
+                double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
+                double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.MasterPanpot );
+                double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.MasterPanpot );
+                if ( m_partial_mode ) {
+#if JAVA
+                    UpdateProgress( this, 1 );
+#else
+                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (Object)1 );
 #endif
-                        } catch ( Exception ex2 ) {
+                    double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Feder );
+                    double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
+                    double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
+                    double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
+                    double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
+                    WaveWriter ww = null;
+                    try {
+                        ww = new WaveWriter( m_files[0] );
+                        VSTiProxy.render( m_vsq,
+                                          m_tracks[0],
+                                          ww,
+                                          m_vsq.getSecFromClock( m_clock_start ),
+                                          m_vsq.getSecFromClock( m_clock_end ),
+                                          m_presend,
+                                          false,
+                                          new WaveReader[] { },
+                                          0.0,
+                                          false,
+                                          AppManager.getTempWaveDir(),
+                                          m_reflect_amp_to_wave );
+                    } catch ( Exception ex ) {
+                    } finally {
+                        if ( ww != null ) {
+                            try {
+                                ww.close();
+                            } catch ( Exception ex2 ) {
+                            }
                         }
                     }
-                }
-            } else {
-                for ( int i = 0; i < m_tracks.Length; i++ ) {
-                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (Object)(i + 1) );
-                    Vector<VsqNrpn> nrpn = new Vector<VsqNrpn>( VsqFile.generateNRPN( m_vsq, m_tracks[i], m_presend ) );
-                    int count = m_vsq.Track.get( m_tracks[i] ).getEventCount();
-                    if ( count > 0 ) {
+                } else {
+                    for ( int i = 0; i < m_tracks.Length; i++ ) {
+#if JAVA
+                    UpdateProgress( this, i + 1 );
+#else
+                        this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (Object)(i + 1) );
+#endif
+                        Vector<VsqNrpn> nrpn = new Vector<VsqNrpn>( Arrays.asList( VsqFile.generateNRPN( m_vsq, m_tracks[i], m_presend ) ) );
+                        int count = m_vsq.Track.get( m_tracks[i] ).getEventCount();
+                        if ( count > 0 ) {
 #if DEBUG
-                        AppManager.debugWriteLine( "FormSynthesize+bgWork_DoWork" );
-                        AppManager.debugWriteLine( "    System.IO.Directory.GetCurrentDirectory()=" + System.IO.Directory.GetCurrentDirectory() );
-                        AppManager.debugWriteLine( "    VsqUtil.VstiDllPath=" + VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
+                            AppManager.debugWriteLine( "FormSynthesize+bgWork_DoWork" );
+                            AppManager.debugWriteLine( "    System.IO.Directory.GetCurrentDirectory()=" + System.IO.Directory.GetCurrentDirectory() );
+                            AppManager.debugWriteLine( "    VsqUtil.VstiDllPath=" + VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
 #endif
-                        double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( m_tracks[i] - 1 ).Feder );
-                        double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( m_tracks[i] - 1 ).Panpot );
-                        double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( m_tracks[i] - 1 ).Panpot );
-                        double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
-                        double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
-                        int total_clocks = m_vsq.TotalClocks;
-                        double total_sec = m_vsq.getSecFromClock( total_clocks );
-                        WaveWriter ww = null;
-                        try {
-                            ww = new WaveWriter( m_files[i] );
-                            VSTiProxy.render( m_vsq,
-                                              m_tracks[i],
-                                              ww,
-                                              m_vsq.getSecFromClock( m_clock_start ),
-                                              m_vsq.getSecFromClock( m_clock_end ),
-                                              m_presend,
-                                              false,
-                                              new WaveReader[] { },
-                                              0.0,
-                                              false,
-                                              AppManager.getTempWaveDir(),
-                                              m_reflect_amp_to_wave );
-                        } catch ( Exception ex ) {
-                        } finally {
-                            if ( ww != null ) {
-                                try {
-#if !JAVA
-                                    ww.Dispose();
-#endif
-                                } catch ( Exception ex2 ) {
+                            double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( m_tracks[i] - 1 ).Feder );
+                            double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( m_tracks[i] - 1 ).Panpot );
+                            double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( m_tracks[i] - 1 ).Panpot );
+                            double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
+                            double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
+                            int total_clocks = m_vsq.TotalClocks;
+                            double total_sec = m_vsq.getSecFromClock( total_clocks );
+                            WaveWriter ww = null;
+                            try {
+                                ww = new WaveWriter( m_files[i] );
+                                VSTiProxy.render( m_vsq,
+                                                  m_tracks[i],
+                                                  ww,
+                                                  m_vsq.getSecFromClock( m_clock_start ),
+                                                  m_vsq.getSecFromClock( m_clock_end ),
+                                                  m_presend,
+                                                  false,
+                                                  new WaveReader[] { },
+                                                  0.0,
+                                                  false,
+                                                  AppManager.getTempWaveDir(),
+                                                  m_reflect_amp_to_wave );
+                            } catch ( Exception ex ) {
+                            } finally {
+                                if ( ww != null ) {
+                                    try {
+                                        ww.close();
+                                    } catch ( Exception ex2 ) {
+                                    }
                                 }
                             }
                         }
                     }
                 }
+#if JAVA
+            }catch( InterruptedException ex ){
+#else
+            } catch ( System.Threading.ThreadInterruptedException ex ) {
+#endif
             }
         }
 
@@ -262,11 +282,15 @@ namespace Boare.Cadencii {
             if ( m_rendering_started ) {
                 VSTiProxy.CurrentUser = "";
             }
-            if ( bgWork.IsBusy ) {
+            if ( bgWork.isBusy() ) {
                 VSTiProxy.abortRendering();
-                bgWork.CancelAsync();
-                while ( bgWork.IsBusy ) {
+                bgWork.cancelAsync();
+                while ( bgWork.isBusy() ) {
+#if JAVA
+                    Thread.sleep( 0 );
+#else
                     Application.DoEvents();
+#endif
                 }
                 setDialogResult( BDialogResult.CANCEL );
             } else {
@@ -324,12 +348,21 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
+            bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_RunWorkerCompleted" ) );
+            timer.tickEvent.add(  new BEventHandler( this, "timer_Tick" ) );
+            loadEvent.add( new BEventHandler( this, "FormSynthesize_Load" ) );
+            formClosingEvent.add( new BFormClosingEventHandler( this, "FormSynthesize_FormClosing" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+#else
             this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
             this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
             this.Load += new System.EventHandler( this.FormSynthesize_Load );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormSynthesize_FormClosing );
             btnCancel.Click += new EventHandler( btnCancel_Click );
+#endif
         }
 
         private void setResources() {
@@ -371,7 +404,6 @@ namespace Boare.Cadencii {
             this.lblProgress = new BLabel();
             this.progressOne = new BProgressBar();
             this.btnCancel = new BButton();
-            this.bgWork = new BBackgroundWorker();
             this.lblTime = new BLabel();
             this.SuspendLayout();
             // 
@@ -419,11 +451,6 @@ namespace Boare.Cadencii {
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // bgWork
-            // 
-            this.bgWork.WorkerReportsProgress = true;
-            this.bgWork.WorkerSupportsCancellation = true;
-            // 
             // lblTime
             // 
             this.lblTime.AutoSize = true;
@@ -465,7 +492,6 @@ namespace Boare.Cadencii {
         private BLabel lblProgress;
         private BProgressBar progressOne;
         private BButton btnCancel;
-        private BBackgroundWorker bgWork;
         private BLabel lblTime;
         #endregion
 #endif

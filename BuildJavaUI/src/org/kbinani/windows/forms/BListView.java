@@ -106,10 +106,15 @@ public class BListView extends JPanel implements MouseMotionListener{
         }
         
         public void addItemCor( BListViewItem item ){
-            addItemCor( item, false );
+            addItemCor( item, false, true );
         }
         
-        public void addItemCor( BListViewItem item, boolean checked ){
+        public void addItemCor( BListViewItem item, boolean enabled ){
+            addItemCor( item, false, enabled );
+        }
+        
+        public void addItemCor( BListViewItem item, boolean checked, boolean enabled ){
+            System.err.println( "info; BListView#$Group#addItemCor; not implemented yet; \"enabled\"" );
             if( tableModel.getColumnCount() <= 0 ){
                 tableModel.setColumnCount( item.getSubItemCount() + 1 );
             }
@@ -547,6 +552,10 @@ public class BListView extends JPanel implements MouseMotionListener{
     }
     
     public void addItem( String group, BListViewItem item ){
+        addItem( group, item, true );
+    }
+    
+    public void addItem( String group, BListViewItem item, boolean enabled ){
         if ( group == null || (group != null && group.equals( "" )) ){
             // defaultGroup‚É’Ç‰Á
             defaultGroup.addItemCor( item );

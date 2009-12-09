@@ -9,6 +9,7 @@ import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
+import org.kbinani.windows.forms.BPictureBox;
 import org.kbinani.windows.forms.BProgressBar;
 
 //SECTION-END-IMPORT
@@ -18,7 +19,7 @@ public class FormGameControlerConfig extends BForm {
     private static final long serialVersionUID = 1L;
     private BPanel BPanel = null;
     private BLabel lblMessage = null;
-    private BPanel pictButton = null;
+    private BPictureBox pictButton = null;
     private BProgressBar progressCount = null;
     private BButton btnSkip = null;
     private BButton btnReset = null;
@@ -115,9 +116,9 @@ public class FormGameControlerConfig extends BForm {
      * 	
      * @return javax.swing.BPanel	
      */
-    private BPanel getPictButton() {
+    private BPictureBox getPictButton() {
         if (pictButton == null) {
-            pictButton = new BPanel();
+            pictButton = new BPictureBox();
             pictButton.setLayout(new GridBagLayout());
         }
         return pictButton;

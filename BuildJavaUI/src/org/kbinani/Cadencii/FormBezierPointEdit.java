@@ -24,23 +24,23 @@ public class FormBezierPointEdit extends BForm {
 	private BButton btnForward = null;
 	private BGroupBox groupLeft = null;
 	private BLabel lblLeftClock = null;
-	private BTextBox BTextBox = null;
+	private BTextBox txtLeftClock = null;
 	private BLabel lblLeftValue = null;
-	private BTextBox jTextField1 = null;
+	private BTextBox txtLeftValue = null;
 	private BButton btnLeft = null;
 	private BGroupBox groupDataPoint = null;
 	private BLabel lblDataPointClock = null;
-	private BTextBox jTextField2 = null;
+	private BTextBox txtDataPointClock = null;
 	private BLabel lblDataPointValue = null;
-	private BTextBox jTextField11 = null;
+	private BTextBox txtDataPointValue = null;
 	private BButton btnDataPoint = null;
 	private BGroupBox groupRight = null;
 	private BLabel lblRightClock = null;
-	private BTextBox jTextField3 = null;
+	private BTextBox txtRightClock = null;
 	private BLabel lblRightValue = null;
-	private BTextBox jTextField12 = null;
+	private BTextBox txtRightValue = null;
 	private BButton btnRight = null;
-	private BButton btnOk = null;
+	private BButton btnOK = null;
 	private BButton btnCancel = null;
 	private BLabel jLabel4 = null;
 	private BLabel jLabel5 = null;
@@ -226,7 +226,7 @@ public class FormBezierPointEdit extends BForm {
 			groupLeft.add(lblLeftClock, gridBagConstraints3);
 			groupLeft.add(getJTextField(), gridBagConstraints4);
 			groupLeft.add(lblLeftValue, gridBagConstraints5);
-			groupLeft.add(getJTextField1(), gridBagConstraints6);
+			groupLeft.add(getTxtLeftValue(), gridBagConstraints6);
 			groupLeft.add(getBtnLeft(), gridBagConstraints7);
 		}
 		return groupLeft;
@@ -238,22 +238,22 @@ public class FormBezierPointEdit extends BForm {
 	 * @return javax.swing.BTextBox	
 	 */
 	private BTextBox getJTextField() {
-		if (BTextBox == null) {
-			BTextBox = new BTextBox();
+		if (txtLeftClock == null) {
+			txtLeftClock = new BTextBox();
 		}
-		return BTextBox;
+		return txtLeftClock;
 	}
 
 	/**
-	 * This method initializes jTextField1	
+	 * This method initializes txtLeftValue	
 	 * 	
 	 * @return javax.swing.BTextBox	
 	 */
-	private BTextBox getJTextField1() {
-		if (jTextField1 == null) {
-			jTextField1 = new BTextBox();
+	private BTextBox getTxtLeftValue() {
+		if (txtLeftValue == null) {
+			txtLeftValue = new BTextBox();
 		}
-		return jTextField1;
+		return txtLeftValue;
 	}
 
 	/**
@@ -314,36 +314,36 @@ public class FormBezierPointEdit extends BForm {
 			groupDataPoint.setLayout(new GridBagLayout());
 			groupDataPoint.setTitle("Data Point");
 			groupDataPoint.add(lblDataPointClock, gridBagConstraints31);
-			groupDataPoint.add(getJTextField2(), gridBagConstraints41);
+			groupDataPoint.add(getTxtDataPointClock(), gridBagConstraints41);
 			groupDataPoint.add(lblDataPointValue, gridBagConstraints51);
-			groupDataPoint.add(getJTextField11(), gridBagConstraints61);
+			groupDataPoint.add(getTxtDataPointValue(), gridBagConstraints61);
 			groupDataPoint.add(getBtnDataPoint(), gridBagConstraints71);
 		}
 		return groupDataPoint;
 	}
 
 	/**
-	 * This method initializes jTextField2	
+	 * This method initializes txtDataPointClock	
 	 * 	
 	 * @return javax.swing.BTextBox	
 	 */
-	private BTextBox getJTextField2() {
-		if (jTextField2 == null) {
-			jTextField2 = new BTextBox();
+	private BTextBox getTxtDataPointClock() {
+		if (txtDataPointClock == null) {
+			txtDataPointClock = new BTextBox();
 		}
-		return jTextField2;
+		return txtDataPointClock;
 	}
 
 	/**
-	 * This method initializes jTextField11	
+	 * This method initializes txtDataPointValue	
 	 * 	
 	 * @return javax.swing.BTextBox	
 	 */
-	private BTextBox getJTextField11() {
-		if (jTextField11 == null) {
-			jTextField11 = new BTextBox();
+	private BTextBox getTxtDataPointValue() {
+		if (txtDataPointValue == null) {
+			txtDataPointValue = new BTextBox();
 		}
-		return jTextField11;
+		return txtDataPointValue;
 	}
 
 	/**
@@ -402,36 +402,36 @@ public class FormBezierPointEdit extends BForm {
 			groupRight.setLayout(new GridBagLayout());
 			groupRight.setTitle("Right Control Point");
 			groupRight.add(lblRightClock, gridBagConstraints32);
-			groupRight.add(getJTextField3(), gridBagConstraints42);
+			groupRight.add(getTxtRightClock(), gridBagConstraints42);
 			groupRight.add(lblRightValue, gridBagConstraints52);
-			groupRight.add(getJTextField12(), gridBagConstraints62);
+			groupRight.add(getTxtRightValue(), gridBagConstraints62);
 			groupRight.add(getBtnRight(), gridBagConstraints72);
 		}
 		return groupRight;
 	}
 
 	/**
-	 * This method initializes jTextField3	
+	 * This method initializes txtRightClock	
 	 * 	
 	 * @return javax.swing.BTextBox	
 	 */
-	private BTextBox getJTextField3() {
-		if (jTextField3 == null) {
-			jTextField3 = new BTextBox();
+	private BTextBox getTxtRightClock() {
+		if (txtRightClock == null) {
+			txtRightClock = new BTextBox();
 		}
-		return jTextField3;
+		return txtRightClock;
 	}
 
 	/**
-	 * This method initializes jTextField12	
+	 * This method initializes txtRightValue	
 	 * 	
 	 * @return javax.swing.BTextBox	
 	 */
-	private BTextBox getJTextField12() {
-		if (jTextField12 == null) {
-			jTextField12 = new BTextBox();
+	private BTextBox getTxtRightValue() {
+		if (txtRightValue == null) {
+			txtRightValue = new BTextBox();
 		}
-		return jTextField12;
+		return txtRightValue;
 	}
 
 	/**
@@ -449,16 +449,16 @@ public class FormBezierPointEdit extends BForm {
 	}
 
 	/**
-	 * This method initializes btnOk	
+	 * This method initializes btnOK	
 	 * 	
 	 * @return javax.swing.BButton	
 	 */
-	private BButton getBtnOk() {
-		if (btnOk == null) {
-			btnOk = new BButton();
-			btnOk.setText("OK");
+	private BButton getBtnOK() {
+		if (btnOK == null) {
+			btnOK = new BButton();
+			btnOK.setText("OK");
 		}
-		return btnOk;
+		return btnOK;
 	}
 
 	/**
@@ -492,7 +492,7 @@ public class FormBezierPointEdit extends BForm {
 			jPanel3 = new JPanel();
 			jPanel3.setLayout(new GridBagLayout());
 			jPanel3.add(getBtnCancel(), gridBagConstraints12);
-			jPanel3.add(getBtnOk(), gridBagConstraints11);
+			jPanel3.add(getBtnOK(), gridBagConstraints11);
 		}
 		return jPanel3;
 	}

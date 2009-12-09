@@ -9,6 +9,7 @@ public class BListViewItem implements Cloneable{
     protected TableModel tmodel = null;
     protected int row;
     private String group = "";
+    private String name = "";
     
     public BListViewItem( String[] values ){
         subItems.clear();
@@ -27,6 +28,14 @@ public class BListViewItem implements Cloneable{
         }
     }
 
+    public String getName(){
+        return name;
+    }
+    
+    public void setName( String value ){
+        name = value;
+    }
+    
     public Object clone(){
         updateStatusFromTableModel();
         int count = subItems.size();

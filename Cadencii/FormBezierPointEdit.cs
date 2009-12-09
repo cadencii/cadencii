@@ -97,12 +97,12 @@ namespace Boare.Cadencii {
         }
 
         private void UpdateStatus() {
-            txtDataPointClock.setText( m_point.getBase().getX().ToString() );
-            txtDataPointValue.setText( m_point.getBase().getY().ToString() );
-            txtLeftClock.setText( ((int)(m_point.getBase().getX() + m_point.controlLeft.getX())).ToString() );
-            txtLeftValue.setText( ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())).ToString() );
-            txtRightClock.setText( ((int)(m_point.getBase().getX() + m_point.controlRight.getX())).ToString() );
-            txtRightValue.setText( ((int)(m_point.getBase().getY() + m_point.controlRight.getY())).ToString() );
+            txtDataPointClock.setText( m_point.getBase().getX() + "" );
+            txtDataPointValue.setText( m_point.getBase().getY() + "" );
+            txtLeftClock.setText( ((int)(m_point.getBase().getX() + m_point.controlLeft.getX())) + "" );
+            txtLeftValue.setText( ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())) + "" );
+            txtRightClock.setText( ((int)(m_point.getBase().getX() + m_point.controlRight.getX())) + "" );
+            txtRightValue.setText( ((int)(m_point.getBase().getY() + m_point.controlRight.getY())) + "" );
             boolean smooth = m_point.getControlLeftType() != BezierControlType.None || m_point.getControlRightType() != BezierControlType.None;
             chkEnableSmooth.setSelected( smooth );
             btnLeft.setEnabled( smooth );
@@ -172,15 +172,17 @@ namespace Boare.Cadencii {
                 m_point.setControlLeftType( BezierControlType.None );
                 m_point.setControlRightType( BezierControlType.None );
             }
-            txtLeftClock.setText( ((int)(m_point.getBase().getX() + m_point.controlLeft.getX())).ToString() );
-            txtLeftValue.setText( ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())).ToString() );
-            txtRightClock.setText( ((int)(m_point.getBase().getX() + m_point.controlRight.getX())).ToString() );
-            txtRightValue.setText( ((int)(m_point.getBase().getY() + m_point.controlRight.getY())).ToString() );
-            m_parent.Invalidate();
+            txtLeftClock.setText( ((int)(m_point.getBase().getX() + m_point.controlLeft.getX())) + "" );
+            txtLeftValue.setText( ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())) + "" );
+            txtRightClock.setText( ((int)(m_point.getBase().getX() + m_point.controlRight.getX())) + "" );
+            txtRightValue.setText( ((int)(m_point.getBase().getY() + m_point.controlRight.getY())) + "" );
+            m_parent.invalidate();
         }
 
         private void btnDataPoint_MouseDown( Object sender, BMouseEventArgs e ) {
+#if !JAVA
             this.Opacity = m_min_opacity;
+#endif
             m_last_mouse_global_location = PortUtil.getMousePosition();
             Point loc_on_trackselector = new Point( AppManager.xCoordFromClocks( (int)m_point.getBase().getX() ),
                                                     m_parent.yCoordFromValue( (int)m_point.getBase().getY() ) );
@@ -242,7 +244,7 @@ namespace Boare.Cadencii {
             BMouseEventArgs event_arg = new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseUp( this, event_arg );
             PortUtil.setMousePosition( m_last_mouse_global_location );
-            m_parent.Invalidate();
+            m_parent.invalidate();
         }
 
         private void common_MouseMove( Object sender, BMouseEventArgs e ) {
@@ -253,14 +255,14 @@ namespace Boare.Cadencii {
                 BMouseEventArgs event_arg = new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
                 BezierPoint ret = m_parent.HandleMouseMoveForBezierMove( event_arg, m_picked_side );
 
-                txtDataPointClock.setText( ((int)ret.getBase().getX()).ToString() );
-                txtDataPointValue.setText( ((int)ret.getBase().getY()).ToString() );
-                txtLeftClock.setText( ((int)ret.getControlLeft().getX()).ToString() );
-                txtLeftValue.setText( ((int)ret.getControlLeft().getY()).ToString() );
-                txtRightClock.setText( ((int)ret.getControlRight().getX()).ToString() );
-                txtRightValue.setText( ((int)ret.getControlRight().getY()).ToString() );
+                txtDataPointClock.setText( ((int)ret.getBase().getX()) + "" );
+                txtDataPointValue.setText( ((int)ret.getBase().getY()) + "" );
+                txtLeftClock.setText( ((int)ret.getControlLeft().getX()) + "" );
+                txtLeftValue.setText( ((int)ret.getControlLeft().getY()) + "" );
+                txtRightClock.setText( ((int)ret.getControlRight().getX()) + "" );
+                txtRightValue.setText( ((int)ret.getControlRight().getY()) + "" );
 
-                m_parent.Invalidate();
+                m_parent.invalidate();
             }
         }
 
@@ -278,7 +280,7 @@ namespace Boare.Cadencii {
                 m_point = target.points.get( index );
                 UpdateStatus();
                 m_parent.EditingPointID = m_point_id;
-                m_parent.Invalidate();
+                m_parent.invalidate();
             }
         }
 
@@ -296,7 +298,7 @@ namespace Boare.Cadencii {
                 m_point = target.points.get( index );
                 UpdateStatus();
                 m_parent.EditingPointID = m_point_id;
-                m_parent.Invalidate();
+                m_parent.invalidate();
             }
         }
 
@@ -308,17 +310,17 @@ namespace Boare.Cadencii {
 #if JAVA
             this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
             this.chkEnableSmooth.checkedChangedEvent.add( new BEventHandler( this, "chkEnableSmooth_CheckedChanged" ) );
-            this.btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
-            this.btnLeft.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );
-            this.btnLeft.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
-            this.btnDataPoint.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
-            this.btnDataPoint.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnDataPoint_MouseDown );
-            this.btnDataPoint.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
-            this.btnRight.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
-            this.btnRight.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseDown );
-            this.btnRight.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
-            this.btnBackward.Click += new System.EventHandler( this.btnBackward_Click );
-            this.btnForward.Click += new System.EventHandler( this.btnForward_Click );
+            this.btnLeft.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
+            this.btnLeft.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
+            this.btnLeft.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
+            this.btnDataPoint.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
+            this.btnDataPoint.mouseDownEvent.add( new BMouseEventHandler( this, "btnDataPoint_MouseDown" ) );
+            this.btnDataPoint.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
+            this.btnRight.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
+            this.btnRight.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
+            this.btnRight.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
+            this.btnBackward.clickEvent.add( new BEventHandler( this, "btnBackward_Click" ) );
+            this.btnForward.clickEvent.add( new BEventHandler( this, "btnForward_Click" ) );
 #else
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             this.btnCancel.Click += new EventHandler( btnCancel_Click );

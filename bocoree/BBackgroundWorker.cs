@@ -16,6 +16,13 @@
 #else
 namespace bocoree.componentModel {
     public class BBackgroundWorker : System.ComponentModel.BackgroundWorker {
+        public bool isBusy() {
+            return base.IsBusy;
+        }
+
+        public void cancelAsync() {
+            base.CancelAsync();
+        }
     }
 }
 #endif

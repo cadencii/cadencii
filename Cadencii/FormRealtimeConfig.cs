@@ -17,11 +17,13 @@ package org.kbinani.Cadencii;
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormRealtimeConfig.java
 
 import org.kbinani.*;
+import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
 using bocoree;
 using bocoree.windows.forms;
+using Boare.Lib.AppUtil;
 
 namespace Boare.Cadencii {
     using BEventArgs = System.EventArgs;
@@ -41,14 +43,15 @@ namespace Boare.Cadencii {
 #if JAVA
             super();
             initialize();
+            timer = new BTimer();
 #else
             InitializeComponent();
-#endif
             timer = new BTimer( this.components );
+#endif
             timer.setDelay( 10 );
             registerEventHandlers();
             setResources();
-            Boare.Lib.AppUtil.Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         public float getSpeed() {
@@ -56,7 +59,12 @@ namespace Boare.Cadencii {
         }
 
         private void FormRealtimeConfig_Load( Object sender, BEventArgs e ) {
+#if JAVA
+            System.err.println( "info; FormRealtimeConfig#FormRealtimeConfig_Load; not implemented yet; \"int num_joydev = 0\"" );
+            int num_joydev = 0;
+#else
             int num_joydev = winmmhelp.JoyGetNumJoyDev();
+#endif
             m_game_ctrl_enabled = (num_joydev > 0);
             if ( m_game_ctrl_enabled ) {
                 timer.start();
@@ -148,10 +156,17 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
+            btnStart.clickEvent.add( new BEventHandler( this, "btnStart_Click" ) );
+            this.loadEvent.add( new BEventHandler( this, "FormRealtimeConfig_Load" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+#else
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
             this.btnStart.Click += new System.EventHandler( this.btnStart_Click );
             this.Load += new System.EventHandler( this.FormRealtimeConfig_Load );
             btnCancel.Click += new EventHandler( btnCancel_Click );
+#endif
         }
 
         private void setResources() {

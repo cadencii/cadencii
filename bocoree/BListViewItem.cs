@@ -50,6 +50,14 @@ namespace bocoree.windows.forms {
         public void setSubItemAt( int index, string value ) {
             base.SubItems[index].Text = value;
         }
+
+        public string getName() {
+            return base.Name;
+        }
+
+        public void setName( string value ) {
+            base.Name = value;
+        }
     }
 
 }

@@ -69,7 +69,11 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+#if JAVA
+            menuClose.clickEvent.add( new BEventHandler( this, "menuClose_Click" ) );
+#else
             this.menuClose.Click += new System.EventHandler( this.menuClose_Click );
+#endif
         }
 
         private void setResources() {

@@ -3445,7 +3445,7 @@ namespace Boare.Cadencii {
                                                                                         (VsqEvent)ve.clone() ) );
                                     }
 #if JAVA
-                                    m_mouse_hover_thread = new MouseHoverGeneratorProc();
+                                    m_mouse_hover_thread = new MouseHoverEventGeneratorProc();
                                     m_mouse_hover_thread.start();
 #else
                                     m_mouse_hover_thread = new Thread( new ThreadStart( MouseHoverEventGenerator ) );
@@ -4382,7 +4382,7 @@ namespace Boare.Cadencii {
                                         if ( chk_start < chk_end ) {    // オーバーラップしている。
                                             Vector<ValuePair<Float, Integer>> edit = new Vector<ValuePair<Float, Integer>>();
                                             for ( int i = chk_start; i < chk_end; i += step_px ) {
-                                                if ( m_mouse_trace.ContainsKey( i ) ) {
+                                                if ( m_mouse_trace.containsKey( i ) ) {
                                                     edit.add( new ValuePair<Float, Integer>( (AppManager.clockFromXCoord( i - stdx ) - cl_vib_start) / cl_vib_length,
                                                                                             valueFromYCoord( m_mouse_trace.get( i ) ) ) );
                                                 } else {
@@ -4517,7 +4517,7 @@ namespace Boare.Cadencii {
                                     int last_value = int.MinValue;
                                     int index = 0;
                                     for ( int i = start; i <= end; i += step_px ) {
-                                        if ( m_mouse_trace.ContainsKey( i ) ) {
+                                        if ( m_mouse_trace.containsKey( i ) ) {
                                             int clock = AppManager.clockFromXCoord( i - stdx );
                                             int value = valueFromYCoord( m_mouse_trace.get( i ) );
                                             if ( value < min ) {
@@ -5440,7 +5440,7 @@ namespace Boare.Cadencii {
                 Point pts = new Point( ppts.x, ppts.y );
                 Rectangle rrc = PortUtil.getScreenBounds( this );
                 Rectangle rc = new Rectangle( rrc.x, rrc.y, rrc.width, rrc.height );
-                toolTip.setTag( singer );
+                toolTip.Tag = singer;
                 if ( pts.x + cmenuSinger.getWidth() + tip_width > rc.width ) {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( -tip_width, y ), 5000 );
                 } else {

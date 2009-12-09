@@ -135,9 +135,6 @@ namespace Boare.Cadencii {
         }
 
         public FormNoteExpressionConfig( SynthesizerType type, NoteHeadHandle note_head_handle ) {
-            if ( note_head_handle != null ) {
-                m_note_head_handle = (NoteHeadHandle)note_head_handle.clone();
-            }
 #if JAVA
             super();
             initialize();
@@ -148,6 +145,11 @@ namespace Boare.Cadencii {
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             ApplyLanguage();
+
+            if ( note_head_handle != null ) {
+                m_note_head_handle = (NoteHeadHandle)note_head_handle.clone();
+            }
+            
             if ( type == SynthesizerType.VOCALOID1 ) {
 #if JAVA
                 getContentPane().remove( groupDynamicsControl );

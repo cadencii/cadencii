@@ -171,7 +171,7 @@ namespace Boare.Cadencii {
         private void paint( Graphics2D g ) {
             Dimension window_size = new Dimension( getWidth(), getHeight() );
             Point p = pointToClient( PortUtil.getMousePosition() );
-            Point mouse_position = new Point( p.X, p.Y );
+            Point mouse_position = new Point( p.x, p.y );
             int start_draw_x = AppManager.startToDrawX;
             int start_draw_y = (AppManager.mainWindow != null) ? AppManager.mainWindow.getStartToDrawY() : 0;
 
@@ -198,8 +198,7 @@ namespace Boare.Cadencii {
                 int event_x = (int)(original.Clock * scalex + xoffset);
                 int event_y = -original.ID.Note * track_height + yoffset;
 #if JAVA
-                Point p = pointToScreen( new Point( event_x + 4, event_y + 2 ) );
-                AppManager.inputTextBox.setLocation( p );
+                AppManager.inputTextBox.setLocation( pointToScreen( new Point( event_x + 4, event_y + 2 ) ) );
 #else
                 AppManager.inputTextBox.Left = event_x + 4;
                 AppManager.inputTextBox.Top = event_y + 2;
@@ -845,7 +844,7 @@ namespace Boare.Cadencii {
                 }
             } else if ( AppManager.isPointerDowned ) {
                 Point pmouse = pointToClient( PortUtil.getMousePosition() );
-                Point mouse = new Point( pmouse.X, pmouse.Y );
+                Point mouse = new Point( pmouse.x, pmouse.y );
                 int tx, ty, twidth, theight;
                 int lx = AppManager.mouseDownLocation.x - AppManager.startToDrawX;
                 if ( lx < mouse.x ) {

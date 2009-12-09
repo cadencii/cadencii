@@ -9,6 +9,7 @@ public class BKeyEventArgs extends BEventArgs{
     public boolean Control;
     public int KeyValue;
     public boolean Shift;
+    public int KeyCode;
     
     public BKeyEventArgs( KeyEvent e ){
         m_original = e;
@@ -17,6 +18,7 @@ public class BKeyEventArgs extends BEventArgs{
         Control = m_original.isControlDown();
         KeyValue = m_original.getKeyCode();
         Shift = m_original.isShiftDown();
+        KeyCode = m_original.getKeyCode();
     }
     
     public char getKeyChar(){

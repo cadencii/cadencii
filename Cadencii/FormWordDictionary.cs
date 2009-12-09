@@ -66,7 +66,7 @@ namespace Boare.Cadencii {
         }
 
         private void FormWordDictionary_Load( Object sender, BEventArgs e ) {
-            listDictionaries.Items.Clear();
+            listDictionaries.clear();
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                 String name = SymbolTable.getSymbolTable( i ).getName();
                 boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
@@ -128,11 +128,19 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            this.btnUp.Click += new System.EventHandler( this.btnUp_Click );
-            this.btnDown.Click += new System.EventHandler( this.btnDown_Click );
-            this.Load += new System.EventHandler( this.FormWordDictionary_Load );
+#if JAVA
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnUp.clickEvent.add( new BEventHandler( this, "btnUp_Click" ) );
+            btnDown.clickEvent.add( new BEventHandler( this, "btnDown_Click" ) );
+            loadEvent.add( new BEventHandler( this, "FormWordDictionary_Load" ) );
+            btnCancel.clickEvent.add(= new BEventHandler( this, "btnCancel_Click" ) );
+#else
+            btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            btnUp.Click += new System.EventHandler( this.btnUp_Click );
+            btnDown.Click += new System.EventHandler( this.btnDown_Click );
+            Load += new System.EventHandler( this.FormWordDictionary_Load );
             btnCancel.Click += new EventHandler( btnCancel_Click );
+#endif
         }
 
         private void setResources() {

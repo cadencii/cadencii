@@ -42,6 +42,7 @@ namespace bocoree {
     using Float = System.Single;
     using Integer = System.Int32;
     using Long = System.Int64;
+    using Character = System.Char;
 #endif
 
 #if JAVA
@@ -1556,6 +1557,18 @@ namespace bocoree {
 #endif
         }
 
+        public static Character[] convertCharArray( char[] arr ) {
+#if JAVA
+            Character[] ret = new Character[arr.length];
+            for( int i = 0; i < arr.length; i++ ){
+                ret[i] = arr[i];
+            }
+            return ret;
+#else
+            return arr;
+#endif
+        }
+
 #if JAVA
         public static int[] convertIntArray( Integer[] arr ){
             int[] ret = new int[arr.length];
@@ -1583,6 +1596,14 @@ namespace bocoree {
 
         public static float[] convertFloatArray( Float[] arr ){
             float[] ret = new float[arr.length];
+            for( int i = 0; i < arr.length; i++ ){
+                ret[i] = arr[i];
+            }
+            return ret;
+        }
+
+        public static char[] convertFloatArray( Character[] arr ){
+            char[] ret = new char[arr.length];
             for( int i = 0; i < arr.length; i++ ){
                 ret[i] = arr[i];
             }

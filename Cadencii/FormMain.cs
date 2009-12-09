@@ -10253,7 +10253,7 @@ namespace Boare.Cadencii {
 
             System.IO.DirectoryInfo current = new System.IO.DirectoryInfo( script_path );
             int count = 0;
-            Vector<System.IO.FileInfo> files = new Vector<System.IO.FileInfo>( current.GetFiles( "*.txt" ) );
+            Vector<System.IO.FileInfo> files = new Vector<System.IO.FileInfo>( Arrays.asList( current.GetFiles( "*.txt" ) ) );
             files.addAll( Arrays.asList( current.GetFiles( "*.cs" ) ) );
             for ( Iterator itr = files.iterator(); itr.hasNext(); ) {
                 System.IO.FileInfo fi = (System.IO.FileInfo)itr.next();

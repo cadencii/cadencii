@@ -2,6 +2,7 @@
 package org.kbinani.Cadencii;
 
 import java.awt.*;
+import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
 import org.kbinani.*;
@@ -11,7 +12,7 @@ using System.IO;
 using bocoree;
 using bocoree.java.awt;
 
-namespace Boare.Cadencii{
+namespace Boare.Cadenii{
 #endif
 
     public class Resources{

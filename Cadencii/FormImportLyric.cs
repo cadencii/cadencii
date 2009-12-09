@@ -29,6 +29,7 @@ using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
     using BEventArgs = System.EventArgs;
+    using Character = System.Char;
 #endif
 
 #if JAVA
@@ -65,7 +66,10 @@ namespace Boare.Cadencii {
         }
 
         public String[] GetLetters() {
-            Vector<Char> _SMALL = new Vector<Char>( new char[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'ゃ', 'ゅ', 'ょ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ャ', 'ュ', 'ョ' } );
+            Vector<Character> _SMALL = new Vector<Character>( Arrays.asList( new Character[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
+                                                                                               'ゃ', 'ゅ', 'ょ',
+                                                                                               'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
+                                                                                               'ャ', 'ュ', 'ョ' } ) );
             String tmp = "";
             for ( int i = 0; i < m_max_notes; i++ ) {
                 if ( i >= txtLyrics.getLineCount() ) {
@@ -85,26 +89,26 @@ namespace Boare.Cadencii {
                 while ( i + 1 < list.Length ) {
                     i++;
                     if ( 0x41 <= list[i] && list[i] <= 0x176 ) {
-                        t += list[i].ToString();
+                        t += list[i] + "";
                     } else {
-                        if ( t.Length > 0 ) {
+                        if ( PortUtil.getStringLength( t ) > 0 ) {
                             ret.add( t );
                             t = "";
                         }
                         if ( i + 1 < list.Length ) {
                             if ( _SMALL.contains( list[i + 1] ) ) {
                                 // 次の文字が拗音の場合
-                                ret.add( list[i].ToString() + list[i + 1].ToString() );
+                                ret.add( list[i] + "" + list[i + 1] + "" );
                                 i++;
                             } else {
-                                ret.add( list[i].ToString() );
+                                ret.add( list[i] + "" );
                             }
                         } else {
-                            ret.add( list[i].ToString() );
+                            ret.add( list[i] + "" );
                         }
                     }
                 }
-                if ( t.Length > 0 ) {
+                if ( PortUtil.getStringLength( t ) > 0 ) {
                     ret.add( t );
                 }
             }
@@ -124,7 +128,7 @@ namespace Boare.Cadencii {
             this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
 #else
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            btnOK.Click += new System.EventHandler( this.btnOK_Click );
             btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }

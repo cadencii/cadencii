@@ -11,24 +11,25 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
 public class FormCurvePointEdit extends BForm {
     //SECTION-BEGIN-FIELD
     private JPanel jPanel = null;
-    private JButton btnBackward3 = null;
-    private JButton btnBackward2 = null;
-    private JButton btnBackward = null;
-    private JButton btnForward = null;
-    private JButton btnForward2 = null;
-    private JButton btnForward3 = null;
+    private BButton btnBackward3 = null;
+    private BButton btnBackward2 = null;
+    private BButton btnBackward = null;
+    private BButton btnForward = null;
+    private BButton btnForward2 = null;
+    private BButton btnForward3 = null;
     private JPanel jPanel1 = null;
     private JLabel lblDataPointValue = null;
-    private JTextField txtDataPointValue = null;
-    private JButton btnUndo = null;
+    private BTextBox txtDataPointValue = null;
+    private BButton btnUndo = null;
     private JLabel lblDataPointClock = null;
-    private JTextField txtDataPointClock = null;
-    private JButton btnRedo = null;
+    private BTextBox txtDataPointClock = null;
+    private BButton btnRedo = null;
     private JPanel jPanel3 = null;
     private BButton btnExit = null;
     private BButton btnApply = null;
@@ -103,9 +104,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnBackward3() {
+    private BButton getBtnBackward3() {
         if (btnBackward3 == null) {
-            btnBackward3 = new JButton();
+            btnBackward3 = new BButton();
             btnBackward3.setText("<10");
             btnBackward3.setPreferredSize(new Dimension(55, 30));
         }
@@ -117,9 +118,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnBackward2() {
+    private BButton getBtnBackward2() {
         if (btnBackward2 == null) {
-            btnBackward2 = new JButton();
+            btnBackward2 = new BButton();
             btnBackward2.setText("<5");
             btnBackward2.setPreferredSize(new Dimension(48, 30));
         }
@@ -131,9 +132,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnBackward() {
+    private BButton getBtnBackward() {
         if (btnBackward == null) {
-            btnBackward = new JButton();
+            btnBackward = new BButton();
             btnBackward.setText("<");
             btnBackward.setPreferredSize(new Dimension(41, 30));
         }
@@ -145,9 +146,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnForward() {
+    private BButton getBtnForward() {
         if (btnForward == null) {
-            btnForward = new JButton();
+            btnForward = new BButton();
             btnForward.setText(">");
             btnForward.setPreferredSize(new Dimension(41, 30));
         }
@@ -159,9 +160,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnForward2() {
+    private BButton getBtnForward2() {
         if (btnForward2 == null) {
-            btnForward2 = new JButton();
+            btnForward2 = new BButton();
             btnForward2.setText("5>");
             btnForward2.setPreferredSize(new Dimension(48, 30));
         }
@@ -173,9 +174,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnForward3() {
+    private BButton getBtnForward3() {
         if (btnForward3 == null) {
-            btnForward3 = new JButton();
+            btnForward3 = new BButton();
             btnForward3.setText("10>");
             btnForward3.setPreferredSize(new Dimension(55, 30));
         }
@@ -255,9 +256,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JTextField	
      */
-    private JTextField getTxtDataPointValue() {
+    private BTextBox getTxtDataPointValue() {
         if (txtDataPointValue == null) {
-            txtDataPointValue = new JTextField();
+            txtDataPointValue = new BTextBox();
             txtDataPointValue.setPreferredSize(new Dimension(71, 20));
         }
         return txtDataPointValue;
@@ -268,9 +269,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnUndo() {
+    private BButton getBtnUndo() {
         if (btnUndo == null) {
-            btnUndo = new JButton();
+            btnUndo = new BButton();
             btnUndo.setText("undo");
             btnUndo.setPreferredSize(new Dimension(63, 23));
         }
@@ -282,9 +283,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JTextField	
      */
-    private JTextField getTxtDataPointClock() {
+    private BTextBox getTxtDataPointClock() {
         if (txtDataPointClock == null) {
-            txtDataPointClock = new JTextField();
+            txtDataPointClock = new BTextBox();
             txtDataPointClock.setPreferredSize(new Dimension(71, 20));
         }
         return txtDataPointClock;
@@ -295,9 +296,9 @@ public class FormCurvePointEdit extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnRedo() {
+    private BButton getBtnRedo() {
         if (btnRedo == null) {
-            btnRedo = new JButton();
+            btnRedo = new BButton();
             btnRedo.setText("redo");
             btnRedo.setPreferredSize(new Dimension(63, 23));
         }

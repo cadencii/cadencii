@@ -55,6 +55,7 @@ class makeRes{
                 sw.WriteLine();
             }
             sw.WriteLine( "import java.awt.*;" );
+            sw.WriteLine( "import java.io.*;" );
             sw.WriteLine( "import javax.imageio.*;" );
             sw.WriteLine( "import javax.swing.*;" );
             sw.WriteLine( "import org.kbinani.*;" );

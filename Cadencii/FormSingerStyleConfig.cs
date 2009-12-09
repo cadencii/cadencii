@@ -279,7 +279,7 @@ namespace Boare.Cadencii {
                                   AppManager.MSGBOX_YES_NO_OPTION,
                                   AppManager.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
                 m_apply_current_track = true;
-                DialogResult = DialogResult.OK;
+                setDialogResult( BDialogResult.OK );
             }
         }
 

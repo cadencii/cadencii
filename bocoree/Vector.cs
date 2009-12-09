@@ -84,7 +84,7 @@ namespace bocoree.java.util {
     }
 #else
     public class Vector<T> : List<T> {
-        public Vector( ICollection<T> list ) :
+        internal Vector( ICollection<T> list ) :
             base( list ) {
         }
 

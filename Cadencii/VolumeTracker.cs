@@ -212,7 +212,7 @@ namespace Boare.Cadencii {
             if ( old != m_muted ){
 #if JAVA
                 try{
-                    isMuteChangedEvent.raise( this, new BEventArgs() );
+                    isMutedChangedEvent.raise( this, new BEventArgs() );
                 }catch( Exception ex ){
                     System.err.println( "VolumeTracker#setMuted; ex=" + ex );
                 }
