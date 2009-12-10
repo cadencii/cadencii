@@ -553,7 +553,7 @@ namespace Boare.Cadencii {
 #if JAVA
             int count = tabPane.getTabCount();
             for( int i = 0; i < count; i++ ){
-                Component c = tabPane.getTabComponentAt( i );
+                Component c = tabPane.getComponentAt( i );
                 if( !(c instanceof BPanel) ){
                     continue;
                 }

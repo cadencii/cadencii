@@ -20,7 +20,6 @@ public class BPopupMenu extends JPopupMenu implements ComponentListener {
         tag = value;
     }
 
-    @Override
     public void componentHidden(ComponentEvent e) {
         try{
             visibleChangedEvent.raise( this, new BEventArgs() );
@@ -29,19 +28,16 @@ public class BPopupMenu extends JPopupMenu implements ComponentListener {
         }
     }
 
-    @Override
     public void componentMoved(ComponentEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         
     }
 
-    @Override
     public void componentResized(ComponentEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         
     }
 
-    @Override
     public void componentShown(ComponentEvent e) {
         try{
             visibleChangedEvent.raise( this, new BEventArgs() );

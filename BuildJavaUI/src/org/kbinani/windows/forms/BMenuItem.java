@@ -54,13 +54,11 @@ public class BMenuItem extends JMenuItem implements ActionListener, MouseListene
         checkOnClick = value;
     }
 
-    @Override
     public void mouseClicked(MouseEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         
     }
 
-    @Override
     public void mouseEntered(MouseEvent e) {
         try{
             mouseEnterEvent.raise( this, new BEventArgs() );
@@ -69,7 +67,6 @@ public class BMenuItem extends JMenuItem implements ActionListener, MouseListene
         }
     }
 
-    @Override
     public void mouseExited(MouseEvent e) {
         try{
             mouseLeaveEvent.raise( this, new BEventArgs() );
@@ -78,13 +75,11 @@ public class BMenuItem extends JMenuItem implements ActionListener, MouseListene
         }
     }
 
-    @Override
     public void mousePressed(MouseEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         
     }
 
-    @Override
     public void mouseReleased(MouseEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         

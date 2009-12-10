@@ -89,16 +89,16 @@ namespace Boare.Cadencii {
 #else
         public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer( typeof( AttachedCurve ) );
 #endif
-        public static Font baseFont8 = new Font( Font.DIALOG, Font.PLAIN, 8 );
-        public static Font baseFont9 = new Font( Font.DIALOG, Font.PLAIN, 9 );
+        public static Font baseFont8 = new Font( "Dialog", Font.PLAIN, 8 );
+        public static Font baseFont9 = new Font( "Dialog", Font.PLAIN, 9 );
         /// <summary>
         /// ピアノロールの歌詞の描画に使用されるフォント。
         /// </summary>
-        public static Font baseFont10 = new Font( Font.DIALOG, Font.PLAIN, 10 );
+        public static Font baseFont10 = new Font( "Dialog", Font.PLAIN, 10 );
         /// <summary>
         /// ピアノロールの歌詞の描画に使用されるフォント。（発音記号固定の物の場合）
         /// </summary>
-        public static Font baseFont10Bold = new Font( Font.DIALOG, Font.BOLD, 10 );
+        public static Font baseFont10Bold = new Font( "Dialog", Font.BOLD, 10 );
         /// <summary>
         /// 歌詞を音符の（高さ方向の）真ん中に描画するためのオフセット
         /// </summary>
@@ -325,7 +325,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// 現在の演奏カーソルの位置(m_current_clockと意味は同じ。CurrentClockが変更されると、自動で更新される)
         /// </summary>
-        private static PlayPositionSpecifier s_current_play_position;
+        private static PlayPositionSpecifier s_current_play_position = new PlayPositionSpecifier();
 
         /// <summary>
         /// selectedPointIDsに格納されているデータ点の，CurveType
@@ -345,7 +345,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// コントロールカーブ上で現在選択されている範囲（x:クロック、y:各コントロールカーブの単位に同じ）。マウスが動いているときのみ使用
         /// </summary>
-        public static java.awt.Rectangle curveSelectingRectangle;
+        public static Rectangle curveSelectingRectangle = new Rectangle();
         /// <summary>
         /// コントロールカーブ上で選択された範囲（単位：クロック）
         /// </summary>
@@ -428,7 +428,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// マウスが降りた仮想スクリーン上の座標(ピクセル)
         /// </summary>
-        public static Point mouseDownLocation;
+        public static Point mouseDownLocation = new Point();
         public static int lastTrackSelectorHeight;
 
 #if JAVA

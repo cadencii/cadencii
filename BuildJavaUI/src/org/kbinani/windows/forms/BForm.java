@@ -178,13 +178,11 @@ public class BForm extends JFrame implements WindowListener, KeyListener, Compon
     }
     /* END REGION java.awt.Component */
 
-    @Override
     public void componentHidden(ComponentEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         
     }
 
-    @Override
     public void componentMoved(ComponentEvent e) {
         try{
             locationChangedEvent.raise( this, new BEventArgs() );
@@ -193,7 +191,6 @@ public class BForm extends JFrame implements WindowListener, KeyListener, Compon
         }
     }
 
-    @Override
     public void componentResized(ComponentEvent e) {
         try{
             sizeChangedEvent.raise( this, new BEventArgs() );
@@ -202,7 +199,6 @@ public class BForm extends JFrame implements WindowListener, KeyListener, Compon
         }
     }
 
-    @Override
     public void componentShown(ComponentEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         

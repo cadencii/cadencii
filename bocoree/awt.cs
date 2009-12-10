@@ -408,11 +408,6 @@ namespace bocoree.java.awt {
         public const int PLAIN = 0;
         public const int ITALIC = 2;
         public const int BOLD = 1;
-        public static readonly string DIALOG = "Dialog";
-        public static readonly string DIALOG_INPUT = "DialogInput";
-        public static readonly string MONOSPACED = "Monospaced";
-        public static readonly string SANS_SERIF = "SansSerif";
-        public static readonly string SERIF = "Serif";
         public System.Drawing.Font font;
 
         public Font( System.Drawing.Font value ) {

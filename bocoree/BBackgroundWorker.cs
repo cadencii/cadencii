@@ -23,6 +23,10 @@ namespace bocoree.componentModel {
         public void cancelAsync() {
             base.CancelAsync();
         }
+
+        public void runWorkerAsync() {
+            base.RunWorkerAsync();
+        }
     }
 }
 #endif

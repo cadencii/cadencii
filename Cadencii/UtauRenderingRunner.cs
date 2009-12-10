@@ -131,14 +131,22 @@ namespace Boare.Cadencii {
             m_abort_required = true;
             while ( m_rendering ) {
 #if JAVA
-                Thread.sleep( 0 );
+                try{
+                    Thread.sleep( 0 );
+                }catch( Exception ex ){
+                    break;
+                }
 #else
                 System.Windows.Forms.Application.DoEvents();
 #endif
             }
+            m_rendering = false;
             int count = m_reader.size();
             for ( int i = 0; i < count; i++ ) {
-                m_reader.get( i ).close();
+                try {
+                    m_reader.get( i ).close();
+                } catch ( Exception ex ) {
+                }
                 m_reader.set( i, null );
             }
             m_reader.clear();
@@ -249,7 +257,7 @@ namespace Boare.Cadencii {
                     double sec_start = m_vsq.getSecFromClock( item.Clock );
                     double sec_start_act = sec_start - item.UstEvent.PreUtterance / 1000.0;
                     sec_end_old = sec_end;
-                    sec_end = m_vsq.getSecFromClock( item.Clock + item.ID.Length );
+                    sec_end = m_vsq.getSecFromClock( item.Clock + item.ID.getLength() );
                     double sec_end_act = sec_end;
                     VsqEvent item_next = null;
                     if ( k + 1 < events_count ) {
@@ -261,7 +269,7 @@ namespace Boare.Cadencii {
                             sec_end_act = sec_start_act_next;
                         }
                     }
-                    float t_temp = (float)(item.ID.Length / (sec_end - sec_start) / 8.0);
+                    float t_temp = (float)(item.ID.getLength() / (sec_end - sec_start) / 8.0);
                     if ( (count == 0 && sec_start > 0.0) || (sec_start > sec_end_old) ) {
                         double sec_start2 = sec_end_old;
                         double sec_end2 = sec_start;
@@ -318,7 +326,7 @@ namespace Boare.Cadencii {
                             if ( pvalue != 0 ) {
                                 allzero = false;
                             }
-                            pitch += " " + pvalue.ToString( "0.00" );
+                            pitch += " " + PortUtil.formatDecimal( "0.00", pvalue );
                             if ( i == 0 ) {
                                 pitch += "Q" + tempo;
                             }
@@ -332,7 +340,7 @@ namespace Boare.Cadencii {
                             double gtime = sec_start_act + delta_sec * i;
                             int clock = (int)m_vsq.getClockFromSec( gtime );
                             float pvalue = (float)target.getPitchAt( clock );
-                            pitch += " " + pvalue.ToString( "0.00" );
+                            pitch += " " + PortUtil.formatDecimal( "0.00", pvalue );
                             if ( totalcount == 0 ) {
                                 pitch += "Q" + tempo;
                             }
@@ -344,13 +352,13 @@ namespace Boare.Cadencii {
                                                                       item.ID.VibratoHandle.DepthBP,
                                                                       item.ID.VibratoHandle.StartDepth,
                                                                       item.Clock + item.ID.VibratoDelay,
-                                                                      item.ID.Length - item.ID.VibratoDelay,
+                                                                      item.ID.getLength() - item.ID.VibratoDelay,
                                                                       (float)delta_sec );
                         for ( int i = 0; i < ret.size(); i++ ) {
                             float gtime = (float)ret.get( i ).getX();
                             int clock = (int)m_vsq.getClockFromSec( gtime );
                             float pvalue = (float)target.getPitchAt( clock );
-                            pitch += " " + (pvalue + ret.get( i ).getY() * 100.0f).ToString( "0.00" );
+                            pitch += " " + PortUtil.formatDecimal( "0.00", pvalue + ret.get( i ).getY() * 100.0f );
                             if ( totalcount == 0 ) {
                                 pitch += "Q" + tempo;
                             }
@@ -360,7 +368,7 @@ namespace Boare.Cadencii {
                     }
 
                     //4_あ_C#4_550.wav
-                    String filename = PortUtil.combinePath( m_temp_dir, Misc.getmd5( s_cache.size() + resampler_arg_prefix + resampler_arg_suffix + pitch ) + ".wav" );
+                    String filename = PortUtil.combinePath( m_temp_dir, PortUtil.getMD5FromString( s_cache.size() + resampler_arg_prefix + resampler_arg_suffix + pitch ) + ".wav" );
 
                     rq2.ResamplerArg = resampler_arg_prefix + " \"" + filename + "\" " + resampler_arg_suffix;
                     if ( !allzero ) {
@@ -377,7 +385,7 @@ namespace Boare.Cadencii {
                             for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
                                 String key = (String)itr.next();
                                 ValuePair<String, Double> value = s_cache.get( key );
-                                if ( old.CompareTo( value.getValue() ) < 0 ) {
+                                if ( old < value.getValue() ) {
                                     old = value.getValue();
                                     delfile = value.getKey();
                                     delkey = key;
@@ -397,7 +405,7 @@ namespace Boare.Cadencii {
                         filename = s_cache.get( search_key ).getKey();
                     }
 
-                    rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" 0 " + item.ID.Length + "@" + PortUtil.formatMessage( "{0:f2}", t_temp );
+                    rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" 0 " + item.ID.getLength() + "@" + PortUtil.formatMessage( "{0:f2}", t_temp );
                     UstEnvelope env = item.UstEvent.Envelope;
                     if ( env == null ) {
                         env = new UstEnvelope();
@@ -799,7 +807,11 @@ namespace Boare.Cadencii {
                         }
                         m_left = null;
                         m_right = null;
+#if JAVA
+                        System.gc();
+#else
                         GC.Collect();
+#endif
 #if DEBUG
                         AppManager.debugWriteLine( "...done(calling WaveIncoming)" );
 #endif
@@ -886,11 +898,17 @@ namespace Boare.Cadencii {
                         R[i] = R[i] * amplify.right;
                     }
                     if ( m_wave_writer != null ) {
-                        m_wave_writer.append( L, R );
+                        try {
+                            m_wave_writer.append( L, R );
+                        } catch ( Exception ex ) {
+                        }
                     }
                 } else {
                     if ( m_wave_writer != null ) {
-                        m_wave_writer.append( L, R );
+                        try {
+                            m_wave_writer.append( L, R );
+                        } catch ( Exception ex ) {
+                        }
                     }
                     for ( int i = 0; i < length; i++ ) {
                         if ( i % 100 == 0 ) {
@@ -905,21 +923,24 @@ namespace Boare.Cadencii {
                 double[] reader_r = new double[length];
                 double[] reader_l = new double[length];
                 for ( int i = 0; i < count; i++ ) {
-                    WaveReader wr = m_reader.get( i );
-                    amplify.left = 1.0;
-                    amplify.right = 1.0;
-                    if ( wr.getTag() != null && wr.getTag() is int ) {
-                        int track = (int)wr.getTag();
-                        if ( 0 < track ) {
-                            amplify = AppManager.getAmplifyCoeffNormalTrack( track );
-                        } else if ( 0 > track ) {
-                            amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
+                    try {
+                        WaveReader wr = m_reader.get( i );
+                        amplify.left = 1.0;
+                        amplify.right = 1.0;
+                        if ( wr.getTag() != null && wr.getTag() is Integer ) {
+                            int track = (Integer)wr.getTag();
+                            if ( 0 < track ) {
+                                amplify = AppManager.getAmplifyCoeffNormalTrack( track );
+                            } else if ( 0 > track ) {
+                                amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
+                            }
                         }
-                    }
-                    wr.read( start, length, reader_l, reader_r );
-                    for ( int j = 0; j < length; j++ ) {
-                        L[j] += reader_l[j] * amplify.left;
-                        R[j] += reader_r[j] * amplify.right;
+                        wr.read( start, length, reader_l, reader_r );
+                        for ( int j = 0; j < length; j++ ) {
+                            L[j] += reader_l[j] * amplify.left;
+                            R[j] += reader_r[j] * amplify.right;
+                        }
+                    } catch ( Exception ex ) {
                     }
                 }
                 reader_l = null;
@@ -939,8 +960,11 @@ namespace Boare.Cadencii {
 #if JAVA
             String[] args = new String[]{ (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"", arg };
             ProcessBuilder pb = new ProcessBuilder( args );
-            Process process = pb.start();
-            process.waitFor();
+            try{
+                Process process = pb.start();
+                process.waitFor();
+            }catch( Exception ex ){
+            }
 #else
             using ( Process process = new Process() ) {
                 process.StartInfo.FileName = (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"";

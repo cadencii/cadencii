@@ -141,12 +141,12 @@ namespace Boare.Cadencii {
                 }
             }
             if ( renderer.StartsWith( RENDERER_STR0 ) ) {
-                if ( PortUtil.isFileExists( Path.Combine( Application.StartupPath, StraightRenderingRunner.STRAIGHT_SYNTH ) ) ) {
+                if ( PortUtil.isFileExists( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner.STRAIGHT_SYNTH ) ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
                     for ( int i = 0; i < count; i++ ) {
-                        String analyzed = Path.Combine( AppManager.editorConfig.UtauSingers.get( i ).VOICEIDSTR, "analyzed" );
-                        if ( Directory.Exists( analyzed ) ) {
-                            String analyzed_oto_ini = Path.Combine( analyzed, "oto.ini" );
+                        String analyzed = PortUtil.combinePath( AppManager.editorConfig.UtauSingers.get( i ).VOICEIDSTR, "analyzed" );
+                        if ( PortUtil.isDirectoryExists( analyzed ) ) {
+                            String analyzed_oto_ini = PortUtil.combinePath( analyzed, "oto.ini" );
                             if ( PortUtil.isFileExists( analyzed_oto_ini ) ) {
                                 return true;
                             }
@@ -229,7 +229,7 @@ namespace Boare.Cadencii {
             VsqEvent extra_note = new VsqEvent( extra_note_clock, new VsqID( 0 ) );
             extra_note.ID.type = VsqIDType.Anote;
             extra_note.ID.Note = 60;
-            extra_note.ID.Length = extra_note_clock_end - extra_note_clock;
+            extra_note.ID.setLength( extra_note_clock_end - extra_note_clock );
             extra_note.ID.VibratoHandle = null;
             extra_note.ID.LyricHandle = new LyricHandle( "a", "a" );
             split.Track.get( track ).addEvent( extra_note );
@@ -310,15 +310,26 @@ namespace Boare.Cadencii {
 #endif
             }
             if ( direct_play ) {
+#if JAVA
+                Thread thread = new Thread( s_rendering_context );
+                thread.start();
+#else
                 Thread thread = new Thread( new ParameterizedThreadStart( renderWithDirectPlay ) );
                 thread.Priority = ThreadPriority.Normal;
                 thread.Start( s_rendering_context );
+#endif
             } else {
                 s_rendering_context.run();
             }
         }
 
+#if JAVA
+        private class RenderWithDirectPlayProc extends Thread{
+        public void run(){
+            Object argument = s_rendering_context;
+#else
         private static void renderWithDirectPlay( Object argument ) {
+#endif
 #if ENABLE_VOCALOID
             if ( argument is VocaloRenderingRunner ) {
                 VocaloRenderingRunner sra = (VocaloRenderingRunner)argument;
@@ -333,6 +344,9 @@ namespace Boare.Cadencii {
                 arg.run();
             }
         }
+#if JAVA
+        }
+#endif
 
         public static double computeRemainintSeconds() {
             if ( s_rendering_context != null ) {

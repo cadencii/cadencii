@@ -108,6 +108,8 @@ namespace Boare.Cadencii {
             byte[] btn;
             int pov;
 #if JAVA
+            pov = -1;
+            btn = new byte[]{};
 #else
             winmmhelp.JoyGetStatus( 0, out btn, out pov );
 #endif

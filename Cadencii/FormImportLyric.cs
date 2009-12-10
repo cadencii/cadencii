@@ -75,9 +75,12 @@ namespace Boare.Cadencii {
                 if ( i >= txtLyrics.getLineCount() ) {
                     break;
                 }
-                int start = txtLyrics.getLineStartOffset( i );
-                int end = txtLyrics.getLineEndOffset( i );
-                tmp += txtLyrics.getText( start, end - start ) + " ";
+                try {
+                    int start = txtLyrics.getLineStartOffset( i );
+                    int end = txtLyrics.getLineEndOffset( i );
+                    tmp += txtLyrics.getText( start, end - start ) + " ";
+                } catch ( Exception ex ) {
+                }
             }
             String[] spl = PortUtil.splitString( tmp, new char[] { '\n', '\t', ' ', '　', '\r' }, true );
             Vector<String> ret = new Vector<String>();

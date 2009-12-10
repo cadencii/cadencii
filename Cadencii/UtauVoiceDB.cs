@@ -15,6 +15,8 @@
 package org.kbinani.Cadencii;
 
 import java.util.*;
+import java.io.*;
+import org.kbinani.*;
 #else
 using System;
 using bocoree;
@@ -41,11 +43,11 @@ namespace Boare.Cadencii {
                 while ( sr.ready() ) {
                     try {
                         line = sr.readLine();
-                        String[] spl = line.Split( '=' );
+                        String[] spl = PortUtil.splitString( line, '=' );
                         String file_name = spl[0]; // あ.wav
                         String a2 = spl[1]; // ,0,36,64,0,0
                         String a1 = PortUtil.getFileNameWithoutExtension( file_name );
-                        spl = a2.Split( ',' );
+                        spl = PortUtil.splitString( a2, ',' );
                         OtoArgs oa = new OtoArgs();
                         oa.fileName = file_name;
                         oa.Alias = spl[0];
@@ -76,9 +78,9 @@ namespace Boare.Cadencii {
                     sr2 = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
                     String line = "";
                     while ( (line = sr2.readLine()) != null ) {
-                        String[] spl = line.Split( '=' );
+                        String[] spl = PortUtil.splitString(  line, '=' );
                         if ( spl.Length > 1 ) {
-                            if ( spl[0].ToLower() == "name" ) {
+                            if ( spl[0].ToLower().Equals( "name" ) ) {
                                 m_name = spl[1];
                             }
                         }

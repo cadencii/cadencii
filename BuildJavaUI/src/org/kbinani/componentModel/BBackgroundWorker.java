@@ -48,11 +48,11 @@ public class BBackgroundWorker{
     public BBackgroundWorker(){
     }
 
-    public void runWorkAsync(){
-        runWorkAsync( null );
+    public void runWorkerAsync(){
+        runWorkerAsync( null );
     }
 
-    public void runWorkAsync( Object argument ){
+    public void runWorkerAsync( Object argument ){
         m_runner = new WorkerRunner( doWorkEvent, argument );
         thread = new Thread( m_runner );
         thread.start();

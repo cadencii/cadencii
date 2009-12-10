@@ -133,7 +133,7 @@ namespace Boare.Cadencii {
             btnUp.clickEvent.add( new BEventHandler( this, "btnUp_Click" ) );
             btnDown.clickEvent.add( new BEventHandler( this, "btnDown_Click" ) );
             loadEvent.add( new BEventHandler( this, "FormWordDictionary_Load" ) );
-            btnCancel.clickEvent.add(= new BEventHandler( this, "btnCancel_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
 #else
             btnOK.Click += new System.EventHandler( this.btnOK_Click );
             btnUp.Click += new System.EventHandler( this.btnUp_Click );

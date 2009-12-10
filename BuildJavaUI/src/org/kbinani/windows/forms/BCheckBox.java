@@ -27,7 +27,6 @@ public class BCheckBox extends JCheckBox implements ActionListener, MouseListene
         }
     }
 
-    @Override
     public void mouseClicked( MouseEvent e ){
         try{
             clickEvent.raise( this, new BEventArgs() );
@@ -36,25 +35,21 @@ public class BCheckBox extends JCheckBox implements ActionListener, MouseListene
         }
     }
 
-    @Override
     public void mouseEntered(MouseEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         
     }
 
-    @Override
     public void mouseExited(MouseEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         
     }
 
-    @Override
     public void mousePressed(MouseEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         
     }
 
-    @Override
     public void mouseReleased(MouseEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         

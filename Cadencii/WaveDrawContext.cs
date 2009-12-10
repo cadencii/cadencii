@@ -16,6 +16,7 @@ package org.kbinani.Cadencii;
 
 import java.awt.*;
 import org.kbinani.*;
+import org.kbinani.media.*;
 #else
 using System;
 using Boare.Lib.Media;
@@ -23,6 +24,7 @@ using bocoree;
 using bocoree.java.awt;
 
 namespace Boare.Cadencii {
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -46,7 +48,7 @@ namespace Boare.Cadencii {
             Wave wr = null;
             try {
                 wr = new Wave( file );
-                m_wave = new byte[wr.getTotalSamples()];
+                m_wave = new byte[(int)wr.getTotalSamples()];
                 m_sample_rate = (int)wr.getSampleRate();
                 m_length = wr.getTotalSamples() / (float)wr.getSampleRate();
 #if DEBUG
@@ -89,7 +91,11 @@ namespace Boare.Cadencii {
 
         public void Dispose() {
             m_wave = null;
+#if JAVA
+            System.gc();
+#else
             GC.Collect();
+#endif
         }
 
         public void draw( Graphics2D g, Color pen, Rectangle rect, float sec_start, float sec_end ) {
@@ -118,7 +124,7 @@ namespace Boare.Cadencii {
             last = m_wave[0];
             int lastx = ox;
             int lasty = oy - (int)(last * order_y);
-            bool drawn = false;
+            boolean drawn = false;
             g.setColor( pen );
             for ( int i = start + 1; i <= end; i++ ) {
                 byte v = m_wave[i];

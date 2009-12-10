@@ -55,6 +55,8 @@ namespace Boare.Cadencii {
 
         public WaveView() {
 #if JAVA
+            super();
+            //m_pict = new BPictureBox();
 #else
             this.SetStyle( ControlStyles.DoubleBuffer, true );
             this.SetStyle( ControlStyles.UserPaint, true );

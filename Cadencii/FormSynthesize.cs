@@ -90,7 +90,7 @@ namespace Boare.Cadencii {
                                boolean reflect_amp_to_wave )
 #if JAVA
         {
-            this( vsq, presend, tracks, files, 0, end, reflect_amp_to_wave, true );
+            this( vsq, presend, tracks, files, 0, end, 0, reflect_amp_to_wave, true );
 #else
             : this( vsq, presend, tracks, files, 0, end, 0, reflect_amp_to_wave, true ) {
 #endif
@@ -270,9 +270,9 @@ namespace Boare.Cadencii {
                     }
                 }
 #if JAVA
-            }catch( InterruptedException ex ){
+            }catch( Exception ex ){
 #else
-            } catch ( System.Threading.ThreadInterruptedException ex ) {
+            } catch ( Exception ex ) {
 #endif
             }
         }
@@ -287,7 +287,11 @@ namespace Boare.Cadencii {
                 bgWork.cancelAsync();
                 while ( bgWork.isBusy() ) {
 #if JAVA
-                    Thread.sleep( 0 );
+                    try{
+                        Thread.sleep( 0 );
+                    }catch( Exception ex ){
+                        break;
+                    }
 #else
                     Application.DoEvents();
 #endif

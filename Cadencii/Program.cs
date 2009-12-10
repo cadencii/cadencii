@@ -11,13 +11,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.Cadencii;
+
+#else
 using System;
-using System.IO;
 using System.Windows.Forms;
 
 namespace Boare.Cadencii{
+#endif
 
     public class Program {
+#if JAVA
+        public static void main( String[] args ){
+            AppManager.init();
+            AppManager.mainWindow = new FormMain();
+            AppManager.mainWindow.setVisible( true );
+        }
+#else
         [STAThread]
         static void Main() {
             Application.EnableVisualStyles();
@@ -34,6 +45,9 @@ namespace Boare.Cadencii{
             }
 #endif
         }
+#endif
     }
 
+#if !JAVA
 }
+#endif

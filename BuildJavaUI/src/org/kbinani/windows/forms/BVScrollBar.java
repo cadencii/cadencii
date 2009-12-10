@@ -16,7 +16,6 @@ public class BVScrollBar extends JScrollBar implements AdjustmentListener {
         setOrientation( JScrollBar.VERTICAL );
     }
 
-    @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
         try{
             valueChangedEvent.raise( this, new BEventArgs() );

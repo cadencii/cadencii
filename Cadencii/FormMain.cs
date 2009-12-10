@@ -142,7 +142,7 @@ namespace Boare.Cadencii {
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
         };
-        private readonly Font s_F9PT = new Font( java.awt.Font.SANS_SERIF, java.awt.Font.PLAIN, 9 );
+        private readonly Font s_F9PT = new Font( "SansSerif", java.awt.Font.PLAIN, 9 );
         #endregion
 
         #region Constants and internal enums
@@ -497,6 +497,9 @@ namespace Boare.Cadencii {
 #if JAVA
 		    initialize();
             timer = new BTimer();
+            getCMenuPiano();
+            getCMenuTrackTab();
+            getCMenuTrackSelector();
 #else
             InitializeComponent();
             timer = new BTimer( this.components );
@@ -9161,6 +9164,9 @@ namespace Boare.Cadencii {
 #if JAVA
             if( tree instanceof Component ){
                 tree_name = ((Component)tree).getName();
+                if( tree_name == null ){
+                    tree_name = "";
+                }
             }else{
                 return null;
             }
@@ -9181,6 +9187,9 @@ namespace Boare.Cadencii {
 #if JAVA
                     if( tsi instanceof Component ){
                         tsi_name = ((Component)tsi).getName();
+                        if( tsi_name == null ){
+                            tsi_name = "";
+                        }
                     }else{
                         continue;
                     }
@@ -13932,33 +13941,36 @@ namespace Boare.Cadencii {
         }
 
         private void setResources() {
-            this.stripBtnPointer.setIcon( new ImageIcon( Resources.get_arrow_135() ) );
-            this.stripBtnPencil.setIcon( new ImageIcon( Resources.get_pencil() ) );
-            this.stripBtnLine.setIcon( new ImageIcon( Resources.get_layer_shape_line() ) );
-            this.stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
-            this.stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
-            this.stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
-            this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
-            this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
-            this.stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
-            this.stripBtnFileOpen.setIcon( new ImageIcon( Resources.get_folder_horizontal_open() ) );
-            this.stripBtnFileSave.setIcon( new ImageIcon( Resources.get_disk() ) );
-            this.stripBtnCut.setIcon( new ImageIcon( Resources.get_scissors() ) );
-            this.stripBtnCopy.setIcon( new ImageIcon( Resources.get_documents() ) );
-            this.stripBtnPaste.setIcon( new ImageIcon( Resources.get_clipboard_paste() ) );
-            this.stripBtnUndo.setIcon( new ImageIcon( Resources.get_arrow_skip_180() ) );
-            this.stripBtnRedo.setIcon( new ImageIcon( Resources.get_arrow_skip() ) );
-            this.stripBtnMoveTop.setIcon( new ImageIcon( Resources.get_control_stop_180() ) );
-            this.stripBtnRewind.setIcon( new ImageIcon( Resources.get_control_double_180() ) );
-            this.stripBtnForward.setIcon( new ImageIcon( Resources.get_control_double() ) );
-            this.stripBtnMoveEnd.setIcon( new ImageIcon( Resources.get_control_stop() ) );
-            this.stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
-            this.stripBtnStop.setIcon( new ImageIcon( Resources.get_control_pause() ) );
-            this.stripBtnScroll.setIcon( new ImageIcon( Resources.get_arrow_circle_double() ) );
-            this.stripBtnLoop.setIcon( new ImageIcon( Resources.get_arrow_return() ) );
-            this.stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
-            this.stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
-            setIconImage( Resources.get_icon() );
+            try {
+                this.stripBtnPointer.setIcon( new ImageIcon( Resources.get_arrow_135() ) );
+                this.stripBtnPencil.setIcon( new ImageIcon( Resources.get_pencil() ) );
+                this.stripBtnLine.setIcon( new ImageIcon( Resources.get_layer_shape_line() ) );
+                this.stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
+                this.stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
+                this.stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
+                this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
+                this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+                this.stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
+                this.stripBtnFileOpen.setIcon( new ImageIcon( Resources.get_folder_horizontal_open() ) );
+                this.stripBtnFileSave.setIcon( new ImageIcon( Resources.get_disk() ) );
+                this.stripBtnCut.setIcon( new ImageIcon( Resources.get_scissors() ) );
+                this.stripBtnCopy.setIcon( new ImageIcon( Resources.get_documents() ) );
+                this.stripBtnPaste.setIcon( new ImageIcon( Resources.get_clipboard_paste() ) );
+                this.stripBtnUndo.setIcon( new ImageIcon( Resources.get_arrow_skip_180() ) );
+                this.stripBtnRedo.setIcon( new ImageIcon( Resources.get_arrow_skip() ) );
+                this.stripBtnMoveTop.setIcon( new ImageIcon( Resources.get_control_stop_180() ) );
+                this.stripBtnRewind.setIcon( new ImageIcon( Resources.get_control_double_180() ) );
+                this.stripBtnForward.setIcon( new ImageIcon( Resources.get_control_double() ) );
+                this.stripBtnMoveEnd.setIcon( new ImageIcon( Resources.get_control_stop() ) );
+                this.stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
+                this.stripBtnStop.setIcon( new ImageIcon( Resources.get_control_pause() ) );
+                this.stripBtnScroll.setIcon( new ImageIcon( Resources.get_arrow_circle_double() ) );
+                this.stripBtnLoop.setIcon( new ImageIcon( Resources.get_arrow_return() ) );
+                this.stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
+                this.stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
+                setIconImage( Resources.get_icon() );
+            } catch ( Exception ex ) {
+            }
         }
 
 #if JAVA

@@ -20,8 +20,12 @@ namespace Boare.Cadencii {
     using boolean = Boolean;
 #endif
 
-    public interface RenderingRunner {
-        void run();
+#if JAVA
+    public interface RenderingRunner extends Runnable {
+#else
+    public interface RenderingRunner : Runnable {
+#endif
+        //void run();
         double getProgress();
         void abortRendering();
         boolean isRendering();

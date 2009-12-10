@@ -224,7 +224,11 @@ namespace bocoree {
             }
 #if JAVA
             if( obj instanceof Component ){
-                return ((Component)obj).getName();
+                String s = ((Component)obj).getName();
+                if( s == null ){
+                    s = "";
+                }
+                return s;
             }else{
                 return "";
             }
@@ -458,6 +462,14 @@ namespace bocoree {
             return getbytes_uint32_le( v );
         }
 
+        public static byte[] getbytes_int32_be( int data ) {
+            long v = data;
+            if ( v < 0 ) {
+                v += 4294967296L;
+            }
+            return getbytes_uint32_be( v );
+        }
+
         public static byte[] getbytes_int64_be( long data ) {
 #if JAVA
             byte[] dat = new byte[8];
@@ -613,6 +625,150 @@ namespace bocoree {
                 i = i - 65536;
             }
             return (short)i;
+        }
+
+        public static double make_double_le( byte[] buf ) {
+#if JAVA
+            long n = 0L;
+            for ( int i = 7; i >= 0; i-- ) {
+                n = (n << 8) | (buf[i] & 0xffL);
+            }
+            return Double.longBitsToDouble( n );
+#else
+            if ( !BitConverter.IsLittleEndian ) {
+                for ( int i = 0; i < 4; i++ ) {
+                    byte d = buf[i];
+                    buf[i] = buf[7 - i];
+                    buf[7 - i] = d;
+                }
+            }
+            return BitConverter.ToDouble( buf, 0 );
+#endif
+        }
+
+        public static double make_double_be( byte[] buf ) {
+#if JAVA
+            long n = 0L;
+            for ( int i = 0; i <= 7; i++ ) {
+                n = (n << 8) | (buf[i] & 0xffL);
+            }
+            return Double.longBitsToDouble( n );
+#else
+            if ( BitConverter.IsLittleEndian ) {
+                for ( int i = 0; i < 4; i++ ) {
+                    byte d = buf[i];
+                    buf[i] = buf[7 - i];
+                    buf[7 - i] = d;
+                }
+            }
+            return BitConverter.ToDouble( buf, 0 );
+#endif
+        }
+
+        public static float make_float_le( byte[] buf ) {
+#if JAVA
+            int n = 0;
+            for ( int i = 3; i >= 0; i-- ) {
+                n = (n << 8) | (buf[i] & 0xff);
+            }
+            return Float.intBitsToFloat( n );
+#else
+            if ( !BitConverter.IsLittleEndian ) {
+                for ( int i = 0; i < 2; i++ ) {
+                    byte d = buf[i];
+                    buf[i] = buf[3 - i];
+                    buf[3 - i] = d;
+                }
+            }
+            return BitConverter.ToSingle( buf, 0 );
+#endif
+        }
+
+        public static float make_float_be( byte[] buf ) {
+#if JAVA
+            int n = 0;
+            for ( int i = 0; i <= 3; i++ ) {
+                n = (n << 8) | (buf[i] & 0xff);
+            }
+            return Float.intBitsToFloat( n );
+#else
+            if ( BitConverter.IsLittleEndian ) {
+                for ( int i = 0; i < 2; i++ ) {
+                    byte d = buf[i];
+                    buf[i] = buf[3 - i];
+                    buf[3 - i] = d;
+                }
+            }
+            return BitConverter.ToSingle( buf, 0 );
+#endif
+        }
+
+        public static byte[] getbytes_double_le( double value ) {
+#if JAVA
+            long n = Double.doubleToLongBits( value );
+            return getbytes_int64_le( n );
+#else
+            byte[] ret = BitConverter.GetBytes( value );
+            if ( !BitConverter.IsLittleEndian ) {
+                for ( int i = 0; i < 4; i++ ) {
+                    byte d = ret[i];
+                    ret[i] = ret[7 - i];
+                    ret[7 - i] = d;
+                }
+            }
+            return ret;
+#endif
+        }
+
+        public static byte[] getbytes_double_be( double value ) {
+#if JAVA
+            long n = Double.doubleToLongBits( value );
+            return getbytes_int64_be( n );
+#else
+            byte[] ret = BitConverter.GetBytes( value );
+            if ( BitConverter.IsLittleEndian ) {
+                for ( int i = 0; i < 4; i++ ) {
+                    byte d = ret[i];
+                    ret[i] = ret[7 - i];
+                    ret[7 - i] = d;
+                }
+            }
+            return ret;
+#endif
+        }
+
+        public static byte[] getbytes_float_le( float value ) {
+#if JAVA
+            int n = Float.floatToIntBits( value );
+            return getbytes_int32_le( n );
+#else
+            byte[] ret = BitConverter.GetBytes( value );
+            if ( !BitConverter.IsLittleEndian ) {
+                for ( int i = 0; i < 2; i++ ) {
+                    byte d = ret[i];
+                    ret[i] = ret[3 - i];
+                    ret[3 - i] = d;
+                }
+            }
+            return ret;
+#endif
+        }
+
+        public static byte[] getbytes_float_be( float value ) {
+#if JAVA
+            int n = Float.floatToIntBits( value );
+            return getbytes_int32_be( n );
+#else
+            byte[] ret = BitConverter.GetBytes( value );
+            if ( BitConverter.IsLittleEndian ) {
+                for ( int i = 0; i < 2; i++ ) {
+                    byte d = ret[i];
+                    ret[i] = ret[3 - i];
+                    ret[3 - i] = d;
+                }
+            }
+            return ret;
+#endif
         }
         #endregion
 

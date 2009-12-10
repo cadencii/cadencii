@@ -287,7 +287,6 @@ public class BListView extends JPanel implements MouseMotionListener{
         g.table.clearSelection();
     }
     
-    @Override
     public void mouseDragged( MouseEvent e ){
         System.out.println( "BListView_DRAFT#mouseDragged" );
         TableColumn column = null;
@@ -315,7 +314,6 @@ public class BListView extends JPanel implements MouseMotionListener{
         updateColumnWidth( w, defaultGroup );
     }
     
-    @Override
     public void mouseMoved( MouseEvent e ){
     }
 

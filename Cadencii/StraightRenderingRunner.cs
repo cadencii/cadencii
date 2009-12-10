@@ -30,6 +30,7 @@ using bocoree.java.util;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using Integer = System.Int32;
 #endif
 
 #if JAVA
@@ -194,7 +195,7 @@ namespace Boare.Cadencii {
                 }
 
                 double current_sec_start = vsq.getSecFromClock( current.Clock ) - current.UstEvent.PreUtterance / 1000.0;
-                double current_sec_end = vsq.getSecFromClock( current.Clock + current.ID.Length );
+                double current_sec_end = vsq.getSecFromClock( current.Clock + current.ID.getLength() );
                 double next_sec_start = double.MaxValue;
                 if ( next != null ) {
                     // 次の音符の開始位置
@@ -241,10 +242,10 @@ namespace Boare.Cadencii {
             VsqTrack vsq_track = (VsqTrack)vsq.Track.get( track ).clone();
             VsqEvent ve0 = list.get( 0 );
             int first_clock = ve0.Clock;
-            int last_clock = ve0.Clock + ve0.ID.Length;
+            int last_clock = ve0.Clock + ve0.ID.getLength();
             if ( list.size() > 1 ) {
                 VsqEvent ve9 = list.get( list.size() - 1 );
-                last_clock = ve9.Clock + ve9.ID.Length;
+                last_clock = ve9.Clock + ve9.ID.getLength();
             }
             double start_sec = vsq.getSecFromClock( first_clock ); // 最初の音符の，曲頭からの時間
             int clock_shift = OFFSET - first_clock; // 最初の音符が，ダミー・トラックのOFFSET clockから始まるようシフトする．
@@ -284,7 +285,7 @@ namespace Boare.Cadencii {
             int tlast_clock = 0;
             for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
-                tlast_clock = item.Clock + item.ID.Length;
+                tlast_clock = item.Clock + item.ID.getLength();
             }
             double abstract_sec = tlast_clock / (8.0 * TEMPO);
 
@@ -298,7 +299,11 @@ namespace Boare.Cadencii {
             m_queue.add( queue );
         }
 
-        private void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) {
+        private void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) 
+#if JAVA
+            throws IOException
+#endif
+        {
             CurveType[] CURVE = new CurveType[]{
                     CurveType.PIT,
                     CurveType.PBS,
@@ -310,7 +315,7 @@ namespace Boare.Cadencii {
             // メモリーストリームに出力
             writer.write( "[Tempo]" );
             writer.newLine();
-            writer.write( TEMPO.ToString() );
+            writer.write( TEMPO + "" );
             writer.newLine();
             writer.write( "[oto.ini]" );
             writer.newLine();
@@ -463,7 +468,10 @@ namespace Boare.Cadencii {
                         }
                     }
                 }
-                hash = PortUtil.getMD5( tmp_file ).Replace( "_", "" );
+                try {
+                    hash = PortUtil.getMD5( tmp_file ).Replace( "_", "" );
+                } catch ( Exception ex ) {
+                }
                 try {
                     PortUtil.copyFile( tmp_file, PortUtil.combinePath( tmp_dir, hash + ".usq" ) );
                     PortUtil.deleteFile( tmp_file );
@@ -474,8 +482,12 @@ namespace Boare.Cadencii {
 #if JAVA
                     String[] args = new String[]{ straight_synth, "\"" + tmp_file + ".usq\"", "\"" + tmp_file + ".wav\"" };
                     ProcessBuilder pb = new ProcessBuilder( args );
-                    Process process = pb.start();
-                    process.waitFot();
+                    try{
+                        Process process = pb.start();
+                        process.waitFor();
+                    }catch( Exception ex ){
+                        System.err.println( "StraightRenderingRunner#run; ex=" + ex );
+                    }
 #else
                     using ( Process process = new Process() ) {
                         process.StartInfo.FileName = straight_synth;
@@ -537,316 +549,322 @@ namespace Boare.Cadencii {
                 } catch( Exception ex ) {
                     wr = null;
                 }
-                int wave_samples = 0;
-                if ( wr != null ) wave_samples = wr.getTotalSamples();
-                int overlapped = 0;
+                try {
+                    int wave_samples = 0;
+                    if ( wr != null ) wave_samples = wr.getTotalSamples();
+                    int overlapped = 0;
 #if DEBUG
-                log.write( queue.startFrame + "\t" + (queue.startFrame + wave_samples) + "\t" + next_wave_start + "\t" + (cached_data_l == null ? 0 : cached_data_l.Length) );
-                log.newLine();
+                    log.write( queue.startFrame + "\t" + (queue.startFrame + wave_samples) + "\t" + next_wave_start + "\t" + (cached_data_l == null ? 0 : cached_data_l.Length) );
+                    log.newLine();
 #endif
-                if ( next_wave_start <= queue.startFrame + wave_samples ) {
-                    // 次のキューの開始位置が、このキューの終了位置よりも早い場合
-                    // オーバーラップしているサンプル数
-                    overlapped = (int)(queue.startFrame + wave_samples - next_wave_start);
-                    wave_samples = (int)(next_wave_start - queue.startFrame); //ここまでしか読み取らない
-                } else {
-                    //chached_data_l = null;
-                    //chached_data_r = null;
-                }
+                    if ( next_wave_start <= queue.startFrame + wave_samples ) {
+                        // 次のキューの開始位置が、このキューの終了位置よりも早い場合
+                        // オーバーラップしているサンプル数
+                        overlapped = (int)(queue.startFrame + wave_samples - next_wave_start);
+                        wave_samples = (int)(next_wave_start - queue.startFrame); //ここまでしか読み取らない
+                    } else {
+                        //chached_data_l = null;
+                        //chached_data_r = null;
+                    }
 
-                if ( cached_data_l == null || cached_data_r == null ) {
+                    if ( cached_data_l == null || cached_data_r == null ) {
 #if DEBUG
-                    PortUtil.println( "StraightRenderingRunner#run; cache is null" );
+                        PortUtil.println( "StraightRenderingRunner#run; cache is null" );
 #endif
-                    // キャッシュが残っていない場合
-                    int remain = wave_samples;
-                    long pos = 0;
-                    double[] left = null, right = null;
-                    while ( remain > 0 ) {
-                        int len = (remain > BUF_LEN) ? BUF_LEN : remain;
-                        if ( left == null || right == null ) {
-                            left = new double[len];
-                            right = new double[len];
-                        } else {
-                            if ( left.Length != len || right.Length != len ) {
-                                left = null;
-                                right = null;
+                        // キャッシュが残っていない場合
+                        int remain = wave_samples;
+                        long pos = 0;
+                        double[] left = null, right = null;
+                        while ( remain > 0 ) {
+                            int len = (remain > BUF_LEN) ? BUF_LEN : remain;
+                            if ( left == null || right == null ) {
                                 left = new double[len];
                                 right = new double[len];
+                            } else {
+                                if ( left.Length != len || right.Length != len ) {
+                                    left = null;
+                                    right = null;
+                                    left = new double[len];
+                                    right = new double[len];
+                                }
                             }
+                            if ( wr != null ) {
+                                wr.read( pos, len, left, right );
+                            }
+                            WaveIncoming( left, right );
+                            pos += len;
+                            remain -= len;
                         }
-                        if ( wr != null ) {
-                            wr.read( pos, len, left, right );
-                        }
-                        WaveIncoming( left, right );
-                        pos += len;
-                        remain -= len;
-                    }
-                    left = null;
-                    right = null;
+                        left = null;
+                        right = null;
 
-                    int rendererd_length = 0;
-                    if ( wr != null ) rendererd_length = wr.getTotalSamples();
-                    if ( wave_samples < rendererd_length ) {
-                        // 次のキューのためにデータを残す
-                        if ( wr != null ) {
-                            if ( cached_data_l == null ) {
-                                cached_data_l = new double[overlapped];
-                            } else if( cached_data_l.Length != overlapped ) {
-                                cached_data_l = null;
-                                cached_data_l = new double[overlapped];
-                            }
-                            if ( cached_data_r == null ) {
-                                cached_data_r = new double[overlapped];
-                            } else if ( cached_data_r.Length != overlapped ) {
-                                cached_data_r = null;
-                                cached_data_r = new double[overlapped];
-                            }
-                            wr.read( pos, overlapped, cached_data_l, cached_data_r );
-                        }
-                    } else if ( i + 1 < count ) {
-                        // 次のキューのためにデータを残す必要がない場合で、かつ、最後のキューでない場合。
-                        // キュー間の無音部分を0で埋める
-                        int silence_samples = (int)(next_wave_start - (queue.startFrame + rendererd_length));
-                        double[] silence = new double[silence_samples];
-                        WaveIncoming( silence, silence );
-                    }
-                } else {
-#if DEBUG
-                    PortUtil.println( "StraightRenderingRunner#run; cache is NOT null" );
-#endif
-                    // キャッシュが残っている場合
-                    int rendered_length = 0;
-                    if ( wr != null ) rendered_length = wr.getTotalSamples();
-                    if ( rendered_length < cached_data_l.Length ) {
-                        if ( next_wave_start < queue.startFrame + rendered_length ) {
-#if DEBUG
-                            PortUtil.println( "StraightRenderingRunner#run; (i) or (ii)" );
-#endif
-                            // PATTERN A
-                            //  ----[*****************************]----------------->  cache
-                            //  ----[*********************]------------------------->  renderd result
-                            //  -----------------[******************************...->  next rendering queue (not rendered yet)
-                            //                  ||
-                            //                  \/
-                            //  ----[***********]----------------------------------->  append
-                            //  -----------------[********][******]----------------->  new cache
-                            //  
-                            //                         OR
-                            // PATTERN B
-                            //  ----[*****************************]----------------->   cache
-                            //  ----[***************]------------------------------->   rendered result
-                            //  ----------------------------[*******************...->   next rendering queue (not rendered yet)
-                            //                  ||
-                            //                  \/
-                            //  ----[***************][*****]------------------------>   append
-                            //  ----------------------------[*****]----------------->   new chache
-                            //  
-                            try {
-                                double[] left = new double[rendered_length];
-                                double[] right = new double[rendered_length];
-                                wr.read( 0, rendered_length, left, right );
-                                for ( int j = 0; j < left.Length; j++ ) {
-                                    cached_data_l[j] += left[j];
-                                    cached_data_r[j] += right[j];
+                        int rendererd_length = 0;
+                        if ( wr != null ) rendererd_length = wr.getTotalSamples();
+                        if ( wave_samples < rendererd_length ) {
+                            // 次のキューのためにデータを残す
+                            if ( wr != null ) {
+                                if ( cached_data_l == null ) {
+                                    cached_data_l = new double[overlapped];
+                                } else if ( cached_data_l.Length != overlapped ) {
+                                    cached_data_l = null;
+                                    cached_data_l = new double[overlapped];
                                 }
-                                int append_len = (int)(next_wave_start - queue.startFrame);
-                                double[] buf_l = new double[append_len];
-                                double[] buf_r = new double[append_len];
-                                for ( int j = 0; j < append_len; j++ ) {
-                                    buf_l[j] = cached_data_l[j];
-                                    buf_r[j] = cached_data_r[j];
+                                if ( cached_data_r == null ) {
+                                    cached_data_r = new double[overlapped];
+                                } else if ( cached_data_r.Length != overlapped ) {
+                                    cached_data_r = null;
+                                    cached_data_r = new double[overlapped];
                                 }
-                                WaveIncoming( buf_l, buf_r );
-                                buf_l = null;
-                                buf_r = null;
-                                buf_l = cached_data_l;
-                                buf_r = cached_data_r;
-                                int new_cache_len = (int)((queue.startFrame + buf_l.Length) - next_wave_start);
-                                cached_data_l = new double[new_cache_len];
-                                cached_data_r = new double[new_cache_len];
-                                for ( int j = 0; j < new_cache_len; j++ ) {
-                                    cached_data_l[j] = buf_l[j + append_len];
-                                    cached_data_r[j] = buf_r[j + append_len];
-                                }
-                            } catch ( Exception ex ) {
-                                AppManager.debugWriteLine( "StraightRenderingRunner#run; (A),(B); ex=" + ex );
+                                wr.read( pos, overlapped, cached_data_l, cached_data_r );
                             }
-                        } else {
-#if DEBUG
-                            PortUtil.println( "StraightRenderingRunner#run; (iii)" );
-#endif
-                            // PATTERN C
-                            //  ----[*****************************]----------------->   cache
-                            //  ----[***************]------------------------------->   rendered result
-                            //  -----------------------------------------[******...->   next rendering queue (not rendered yet)
-                            //                  ||
-                            //                  \/
-                            //  ----[*****************************]----------------->   append
-                            //  ---------------------------------------------------->   new chache -> NULL!!
-                            //  -----------------------------------[****]----------->   append#2 (silence)
-                            //  
-                            try {
-                                double[] left = new double[rendered_length];
-                                double[] right = new double[rendered_length];
-                                wr.read( 0, rendered_length, left, right );
-                                for ( int j = 0; j < left.Length; j++ ) {
-                                    cached_data_l[j] += left[j];
-                                    cached_data_r[j] += right[j];
-                                }
-                                WaveIncoming( cached_data_l, cached_data_r );
-                                int silence_len = (int)(next_wave_start - (queue.startFrame + cached_data_l.Length));
-                                cached_data_l = null;
-                                cached_data_r = null;
-                                left = new double[silence_len];
-                                right = new double[silence_len];
-                                WaveIncoming( left, right );
-                            } catch ( Exception ex ) {
-                                AppManager.debugWriteLine( "StraightRenderingRunner#run; (C); ex=" + ex );
-                            }
+                        } else if ( i + 1 < count ) {
+                            // 次のキューのためにデータを残す必要がない場合で、かつ、最後のキューでない場合。
+                            // キュー間の無音部分を0で埋める
+                            int silence_samples = (int)(next_wave_start - (queue.startFrame + rendererd_length));
+                            double[] silence = new double[silence_samples];
+                            WaveIncoming( silence, silence );
                         }
                     } else {
-                        if ( next_wave_start < queue.startFrame + cached_data_l.Length ) {
 #if DEBUG
-                            PortUtil.println( "StraightRenderingRunner#run; (iv)" );
+                        PortUtil.println( "StraightRenderingRunner#run; cache is NOT null" );
 #endif
-                            // PATTERN D
-                            //  ----[*************]--------------------------------->  cache
-                            //  ----[*********************]------------------------->  renderd result
-                            //  ------------[***********************************...->  next rendering queue (not rendered yet)
-                            //                  ||
-                            //                  \/
-                            //  ----[******]---------------------------------------->  append
-                            //  ------------[*****][******]------------------------->  new cache
-                            //  
-                            try {
-                                double[] left = new double[cached_data_l.Length];
-                                double[] right = new double[cached_data_l.Length];
-                                wr.read( 0, cached_data_l.Length, left, right );
-                                for ( int j = 0; j < cached_data_l.Length; j++ ) {
-                                    cached_data_l[j] += left[j];
-                                    cached_data_r[j] += right[j];
-                                }
+                        // キャッシュが残っている場合
+                        int rendered_length = 0;
+                        if ( wr != null ) rendered_length = wr.getTotalSamples();
+                        if ( rendered_length < cached_data_l.Length ) {
+                            if ( next_wave_start < queue.startFrame + rendered_length ) {
 #if DEBUG
-                                PortUtil.println( "    next_wave_start=" + next_wave_start + "; queue.startFrame=" + queue.startFrame );
+                                PortUtil.println( "StraightRenderingRunner#run; (i) or (ii)" );
 #endif
-                                int append_len = (int)(next_wave_start - queue.startFrame);
+                                // PATTERN A
+                                //  ----[*****************************]----------------->  cache
+                                //  ----[*********************]------------------------->  renderd result
+                                //  -----------------[******************************...->  next rendering queue (not rendered yet)
+                                //                  ||
+                                //                  \/
+                                //  ----[***********]----------------------------------->  append
+                                //  -----------------[********][******]----------------->  new cache
+                                //  
+                                //                         OR
+                                // PATTERN B
+                                //  ----[*****************************]----------------->   cache
+                                //  ----[***************]------------------------------->   rendered result
+                                //  ----------------------------[*******************...->   next rendering queue (not rendered yet)
+                                //                  ||
+                                //                  \/
+                                //  ----[***************][*****]------------------------>   append
+                                //  ----------------------------[*****]----------------->   new chache
+                                //  
+                                try {
+                                    double[] left = new double[rendered_length];
+                                    double[] right = new double[rendered_length];
+                                    wr.read( 0, rendered_length, left, right );
+                                    for ( int j = 0; j < left.Length; j++ ) {
+                                        cached_data_l[j] += left[j];
+                                        cached_data_r[j] += right[j];
+                                    }
+                                    int append_len = (int)(next_wave_start - queue.startFrame);
+                                    double[] buf_l = new double[append_len];
+                                    double[] buf_r = new double[append_len];
+                                    for ( int j = 0; j < append_len; j++ ) {
+                                        buf_l[j] = cached_data_l[j];
+                                        buf_r[j] = cached_data_r[j];
+                                    }
+                                    WaveIncoming( buf_l, buf_r );
+                                    buf_l = null;
+                                    buf_r = null;
+                                    buf_l = cached_data_l;
+                                    buf_r = cached_data_r;
+                                    int new_cache_len = (int)((queue.startFrame + buf_l.Length) - next_wave_start);
+                                    cached_data_l = new double[new_cache_len];
+                                    cached_data_r = new double[new_cache_len];
+                                    for ( int j = 0; j < new_cache_len; j++ ) {
+                                        cached_data_l[j] = buf_l[j + append_len];
+                                        cached_data_r[j] = buf_r[j + append_len];
+                                    }
+                                } catch ( Exception ex ) {
+                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (A),(B); ex=" + ex );
+                                }
+                            } else {
 #if DEBUG
-                                PortUtil.println( "    append_len=" + append_len );
+                                PortUtil.println( "StraightRenderingRunner#run; (iii)" );
 #endif
-                                double[] buf_l = new double[append_len];
-                                double[] buf_r = new double[append_len];
-                                for ( int j = 0; j < append_len; j++ ) {
-                                    buf_l[j] = cached_data_l[j];
-                                    buf_r[j] = cached_data_r[j];
+                                // PATTERN C
+                                //  ----[*****************************]----------------->   cache
+                                //  ----[***************]------------------------------->   rendered result
+                                //  -----------------------------------------[******...->   next rendering queue (not rendered yet)
+                                //                  ||
+                                //                  \/
+                                //  ----[*****************************]----------------->   append
+                                //  ---------------------------------------------------->   new chache -> NULL!!
+                                //  -----------------------------------[****]----------->   append#2 (silence)
+                                //  
+                                try {
+                                    double[] left = new double[rendered_length];
+                                    double[] right = new double[rendered_length];
+                                    wr.read( 0, rendered_length, left, right );
+                                    for ( int j = 0; j < left.Length; j++ ) {
+                                        cached_data_l[j] += left[j];
+                                        cached_data_r[j] += right[j];
+                                    }
+                                    WaveIncoming( cached_data_l, cached_data_r );
+                                    int silence_len = (int)(next_wave_start - (queue.startFrame + cached_data_l.Length));
+                                    cached_data_l = null;
+                                    cached_data_r = null;
+                                    left = new double[silence_len];
+                                    right = new double[silence_len];
+                                    WaveIncoming( left, right );
+                                } catch ( Exception ex ) {
+                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (C); ex=" + ex );
                                 }
-                                WaveIncoming( buf_l, buf_r );
-                                buf_l = cached_data_l;
-                                buf_r = cached_data_r;
-                                int new_cache_len = (int)((queue.startFrame + rendered_length) - next_wave_start);
-                                cached_data_l = new double[new_cache_len];
-                                cached_data_r = new double[new_cache_len];
-                                int old_cache_len = buf_l.Length;
-                                for ( int j = append_len; j < old_cache_len; j++ ) {
-                                    cached_data_l[j - append_len] = buf_l[j];
-                                    cached_data_r[j - append_len] = buf_r[j];
-                                }
-                                int tlen = rendered_length - old_cache_len;
-                                buf_l = new double[tlen];
-                                buf_r = new double[tlen];
-                                wr.read( old_cache_len, rendered_length - old_cache_len, buf_l, buf_r );
-                                for ( int j = 0; j < buf_l.Length; j++ ) {
-                                    cached_data_l[j + (old_cache_len - append_len)] = buf_l[j];
-                                    cached_data_r[j + (old_cache_len - append_len)] = buf_r[j];
-                                }
-                            } catch ( Exception ex ) {
-                                AppManager.debugWriteLine( "StraightRenderingRunner#run; (D); ex=" + ex );
-                            }
-                        } else if ( next_wave_start < queue.startFrame + rendered_length ) {
-#if DEBUG
-                            PortUtil.println( "StraightRenderingRunner#run; (v)" );
-#endif
-                            // PATTERN E
-                            //  ----[*************]--------------------------------->  cache
-                            //  ----[*********************]------------------------->  renderd result
-                            //  ----------------------[*************************...->  next rendering queue (not rendered yet)
-                            //                  ||
-                            //                  \/
-                            //  ----[*************][*]------------------------------>  append
-                            //  ----------------------[***]------------------------->  new cache
-                            //  
-                            try {
-                                double[] left = new double[cached_data_l.Length];
-                                double[] right = new double[cached_data_l.Length];
-                                wr.read( 0, cached_data_l.Length, left, right );
-                                for ( int j = 0; j < cached_data_l.Length; j++ ) {
-                                    cached_data_l[j] += left[j];
-                                    cached_data_r[j] += right[j];
-                                }
-                                WaveIncoming( cached_data_l, cached_data_r );
-                                int append_len = (int)(next_wave_start - (queue.startFrame + cached_data_l.Length));
-                                left = null;
-                                right = null;
-                                left = new double[append_len];
-                                right = new double[append_len];
-                                wr.read( cached_data_l.Length, append_len, left, right );
-                                WaveIncoming( left, right );
-                                int new_cache_len = (int)(queue.startFrame + rendered_length - next_wave_start);
-                                int old_cache_len = cached_data_l.Length;
-                                cached_data_l = null;
-                                cached_data_r = null;
-                                cached_data_l = new double[new_cache_len];
-                                cached_data_r = new double[new_cache_len];
-                                wr.read( old_cache_len + append_len, new_cache_len, cached_data_l, cached_data_r );
-                            } catch ( Exception ex ) {
-                                AppManager.debugWriteLine( "StraightRenderingRunner#run; (E); ex=" + ex );
                             }
                         } else {
+                            if ( next_wave_start < queue.startFrame + cached_data_l.Length ) {
 #if DEBUG
-                            PortUtil.println( "StraightRenderingRunner#run; (vi)" );
+                                PortUtil.println( "StraightRenderingRunner#run; (iv)" );
 #endif
-                            // PATTERN F
-                            //  ----[*************]--------------------------------->  cache
-                            //  ----[*********************]------------------------->  renderd result
-                            //  --------------------------------[***************...->  next rendering queue (not rendered yet)
-                            //                  ||
-                            //                  \/
-                            //  ----[*************][******]------------------------->  append
-                            //  ---------------------------------------------------->  new cache -> NULL!!
-                            //  ---------------------------[***]-------------------->  append#2 (silence)
-                            //  
-                            try {
-                                double[] left = new double[cached_data_l.Length];
-                                double[] right = new double[cached_data_l.Length];
-                                wr.read( 0, cached_data_l.Length, left, right );
-                                for ( int j = 0; j < cached_data_l.Length; j++ ) {
-                                    cached_data_l[j] += left[j];
-                                    cached_data_r[j] += right[j];
+                                // PATTERN D
+                                //  ----[*************]--------------------------------->  cache
+                                //  ----[*********************]------------------------->  renderd result
+                                //  ------------[***********************************...->  next rendering queue (not rendered yet)
+                                //                  ||
+                                //                  \/
+                                //  ----[******]---------------------------------------->  append
+                                //  ------------[*****][******]------------------------->  new cache
+                                //  
+                                try {
+                                    double[] left = new double[cached_data_l.Length];
+                                    double[] right = new double[cached_data_l.Length];
+                                    wr.read( 0, cached_data_l.Length, left, right );
+                                    for ( int j = 0; j < cached_data_l.Length; j++ ) {
+                                        cached_data_l[j] += left[j];
+                                        cached_data_r[j] += right[j];
+                                    }
+#if DEBUG
+                                    PortUtil.println( "    next_wave_start=" + next_wave_start + "; queue.startFrame=" + queue.startFrame );
+#endif
+                                    int append_len = (int)(next_wave_start - queue.startFrame);
+#if DEBUG
+                                    PortUtil.println( "    append_len=" + append_len );
+#endif
+                                    double[] buf_l = new double[append_len];
+                                    double[] buf_r = new double[append_len];
+                                    for ( int j = 0; j < append_len; j++ ) {
+                                        buf_l[j] = cached_data_l[j];
+                                        buf_r[j] = cached_data_r[j];
+                                    }
+                                    WaveIncoming( buf_l, buf_r );
+                                    buf_l = cached_data_l;
+                                    buf_r = cached_data_r;
+                                    int new_cache_len = (int)((queue.startFrame + rendered_length) - next_wave_start);
+                                    cached_data_l = new double[new_cache_len];
+                                    cached_data_r = new double[new_cache_len];
+                                    int old_cache_len = buf_l.Length;
+                                    for ( int j = append_len; j < old_cache_len; j++ ) {
+                                        cached_data_l[j - append_len] = buf_l[j];
+                                        cached_data_r[j - append_len] = buf_r[j];
+                                    }
+                                    int tlen = rendered_length - old_cache_len;
+                                    buf_l = new double[tlen];
+                                    buf_r = new double[tlen];
+                                    wr.read( old_cache_len, rendered_length - old_cache_len, buf_l, buf_r );
+                                    for ( int j = 0; j < buf_l.Length; j++ ) {
+                                        cached_data_l[j + (old_cache_len - append_len)] = buf_l[j];
+                                        cached_data_r[j + (old_cache_len - append_len)] = buf_r[j];
+                                    }
+                                } catch ( Exception ex ) {
+                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (D); ex=" + ex );
                                 }
-                                WaveIncoming( cached_data_l, cached_data_r );
-                                left = null;
-                                right = null;
-                                int tlen = rendered_length - cached_data_l.Length;
-                                left = new double[tlen];
-                                right = new double[tlen];
-                                wr.read( cached_data_l.Length, rendered_length - cached_data_l.Length, left, right );
-                                WaveIncoming( left, right );
-                                cached_data_l = null;
-                                cached_data_r = null;
-                                int silence_len = (int)(next_wave_start - (queue.startFrame + rendered_length));
-                                left = new double[silence_len];
-                                right = new double[silence_len];
-                                WaveIncoming( left, right );
-                            } catch ( Exception ex ) {
-                                AppManager.debugWriteLine( "StraightRenderingRunner#run; (F); ex=" + ex );
+                            } else if ( next_wave_start < queue.startFrame + rendered_length ) {
+#if DEBUG
+                                PortUtil.println( "StraightRenderingRunner#run; (v)" );
+#endif
+                                // PATTERN E
+                                //  ----[*************]--------------------------------->  cache
+                                //  ----[*********************]------------------------->  renderd result
+                                //  ----------------------[*************************...->  next rendering queue (not rendered yet)
+                                //                  ||
+                                //                  \/
+                                //  ----[*************][*]------------------------------>  append
+                                //  ----------------------[***]------------------------->  new cache
+                                //  
+                                try {
+                                    double[] left = new double[cached_data_l.Length];
+                                    double[] right = new double[cached_data_l.Length];
+                                    wr.read( 0, cached_data_l.Length, left, right );
+                                    for ( int j = 0; j < cached_data_l.Length; j++ ) {
+                                        cached_data_l[j] += left[j];
+                                        cached_data_r[j] += right[j];
+                                    }
+                                    WaveIncoming( cached_data_l, cached_data_r );
+                                    int append_len = (int)(next_wave_start - (queue.startFrame + cached_data_l.Length));
+                                    left = null;
+                                    right = null;
+                                    left = new double[append_len];
+                                    right = new double[append_len];
+                                    wr.read( cached_data_l.Length, append_len, left, right );
+                                    WaveIncoming( left, right );
+                                    int new_cache_len = (int)(queue.startFrame + rendered_length - next_wave_start);
+                                    int old_cache_len = cached_data_l.Length;
+                                    cached_data_l = null;
+                                    cached_data_r = null;
+                                    cached_data_l = new double[new_cache_len];
+                                    cached_data_r = new double[new_cache_len];
+                                    wr.read( old_cache_len + append_len, new_cache_len, cached_data_l, cached_data_r );
+                                } catch ( Exception ex ) {
+                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (E); ex=" + ex );
+                                }
+                            } else {
+#if DEBUG
+                                PortUtil.println( "StraightRenderingRunner#run; (vi)" );
+#endif
+                                // PATTERN F
+                                //  ----[*************]--------------------------------->  cache
+                                //  ----[*********************]------------------------->  renderd result
+                                //  --------------------------------[***************...->  next rendering queue (not rendered yet)
+                                //                  ||
+                                //                  \/
+                                //  ----[*************][******]------------------------->  append
+                                //  ---------------------------------------------------->  new cache -> NULL!!
+                                //  ---------------------------[***]-------------------->  append#2 (silence)
+                                //  
+                                try {
+                                    double[] left = new double[cached_data_l.Length];
+                                    double[] right = new double[cached_data_l.Length];
+                                    wr.read( 0, cached_data_l.Length, left, right );
+                                    for ( int j = 0; j < cached_data_l.Length; j++ ) {
+                                        cached_data_l[j] += left[j];
+                                        cached_data_r[j] += right[j];
+                                    }
+                                    WaveIncoming( cached_data_l, cached_data_r );
+                                    left = null;
+                                    right = null;
+                                    int tlen = rendered_length - cached_data_l.Length;
+                                    left = new double[tlen];
+                                    right = new double[tlen];
+                                    wr.read( cached_data_l.Length, rendered_length - cached_data_l.Length, left, right );
+                                    WaveIncoming( left, right );
+                                    cached_data_l = null;
+                                    cached_data_r = null;
+                                    int silence_len = (int)(next_wave_start - (queue.startFrame + rendered_length));
+                                    left = new double[silence_len];
+                                    right = new double[silence_len];
+                                    WaveIncoming( left, right );
+                                } catch ( Exception ex ) {
+                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (F); ex=" + ex );
+                                }
                             }
                         }
                     }
-                }
-
-                if ( wr != null ) {
-                    wr.close();
-                    wr = null;
+                } catch ( Exception ex ) {
+                } finally {
+                    if ( wr != null ) {
+                        try {
+                            wr.close();
+                        } catch ( Exception ex2 ) {
+                        }
+                        wr = null;
+                    }
                 }
 
                 processed_samples += queue.abstractFrameLength;
@@ -918,17 +936,25 @@ namespace Boare.Cadencii {
                     //PortUtil.println( "  waiting..." );
 #endif
 #if JAVA
-                    Thread.sleep( 0 ); //ここいけてる？
+                    try{
+                        Thread.sleep( 0 ); //ここいけてる？
+                    }catch( InterruptedException ex ){
+                        break;
+                    }
 #else
                     System.Windows.Forms.Application.DoEvents();
 #endif
                 }
+                m_abort_required = false;
             }
             m_rendering = false;
             m_abort_required = false;
             int count = m_reader.size();
             for ( int i = 0; i < count; i++ ) {
-                m_reader.get( i ).close();
+                try {
+                    m_reader.get( i ).close();
+                } catch ( Exception ex ) {
+                }
                 m_reader.set( i, null );
             }
             m_reader.clear();
@@ -987,11 +1013,19 @@ namespace Boare.Cadencii {
                         R[i] = R[i] * amplify.right;
                     }
                     if ( m_wave_writer != null ) {
-                        m_wave_writer.append( L, R );
+                        try {
+                            m_wave_writer.append( L, R );
+                        } catch ( Exception ex ) {
+                            PortUtil.println( "StraightRenderingRunner#WaveIncoming; ex=" + ex );
+                        }
                     }
                 } else {
                     if ( m_wave_writer != null ) {
-                        m_wave_writer.append( L, R );
+                        try {
+                            m_wave_writer.append( L, R );
+                        } catch ( Exception ex ) {
+                            PortUtil.println( "StraightRenderingRunner#WaveIncoming; ex=" + ex );
+                        }
                     }
                     for ( int i = 0; i < length; i++ ) {
                         if ( i % 100 == 0 ) {
@@ -1009,21 +1043,25 @@ namespace Boare.Cadencii {
                 double[] reader_r = new double[length];
                 double[] reader_l = new double[length];
                 for ( int i = 0; i < count; i++ ) {
-                    WaveReader wr = m_reader.get( i );
-                    amplify.left = 1.0;
-                    amplify.right = 1.0;
-                    if ( wr.getTag() != null && wr.getTag() is int ) {
-                        int track = (int)wr.getTag();
-                        if ( 0 < track ) {
-                            amplify = AppManager.getAmplifyCoeffNormalTrack( track );
-                        } else if ( 0 > track ) {
-                            amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
+                    try {
+                        WaveReader wr = m_reader.get( i );
+                        amplify.left = 1.0;
+                        amplify.right = 1.0;
+                        if ( wr.getTag() != null && wr.getTag() is Integer ) {
+                            int track = (Integer)wr.getTag();
+                            if ( 0 < track ) {
+                                amplify = AppManager.getAmplifyCoeffNormalTrack( track );
+                            } else if ( 0 > track ) {
+                                amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
+                            }
                         }
-                    }
-                    wr.read( start, length, reader_l, reader_r );
-                    for ( int j = 0; j < length; j++ ) {
-                        L[j] += reader_l[j] * amplify.left;
-                        R[j] += reader_r[j] * amplify.right;
+                        wr.read( start, length, reader_l, reader_r );
+                        for ( int j = 0; j < length; j++ ) {
+                            L[j] += reader_l[j] * amplify.left;
+                            R[j] += reader_r[j] * amplify.right;
+                        }
+                    } catch ( Exception ex ) {
+                        PortUtil.println( "StraightRenderingRunner#WaveIncoming; ex=" + ex );
                     }
                 }
                 reader_l = null;

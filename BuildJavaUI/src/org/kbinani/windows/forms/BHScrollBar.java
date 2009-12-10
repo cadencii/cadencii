@@ -16,7 +16,6 @@ public class BHScrollBar extends JScrollBar implements AdjustmentListener {
         setOrientation( JScrollBar.HORIZONTAL );
     }
 
-    @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
         try{
             valueChangedEvent.raise( this, new BEventArgs() );

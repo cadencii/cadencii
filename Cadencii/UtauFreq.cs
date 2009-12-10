@@ -35,10 +35,10 @@ namespace Boare.Cadencii {
         private UtauFreq() {
         }
 
-        public static UtauFreq FromWav( String file ) {
+        /*public static UtauFreq FromWav( String file ) {
             throw new NotImplementedException();
             return null;
-        }
+        }*/
 
         /// <summary>
         /// *.frqファイルからのコンストラクタ
@@ -61,10 +61,10 @@ namespace Boare.Cadencii {
                 ret.SampleInterval = PortUtil.make_int32_le( buf0 );
 
                 fs.read( buf0, 0, 8 );
-                ret.AverageFrequency = BitConverter.ToDouble( buf0, 0 );
+                ret.AverageFrequency = PortUtil.make_double_le( buf0 );
 
                 for ( int i = 0; i < 4; i++ ) {
-                    int len2 = fs.Read( buf0, 0, 4 );
+                    int len2 = fs.read( buf0, 0, 4 );
                     int i1 = PortUtil.make_int32_le( buf0 );
                 }
                 fs.read( buf0, 0, 4 );
@@ -75,8 +75,11 @@ namespace Boare.Cadencii {
                 int len = fs.read( buf, 0, 16 );
                 int index = 0;
                 while ( len > 0 ) {
-                    double d1 = BitConverter.ToDouble( buf, 0 );
-                    double d2 = BitConverter.ToDouble( buf, 8 );
+                    double d1 = PortUtil.make_double_le( buf );
+                    for ( int i = 0; i < 4; i++ ) {
+                        buf[i] = buf[i + 4];
+                    }
+                    double d2 = PortUtil.make_double_le( buf );
                     ret.Frequency[index] = d1;
                     ret.Volume[index] = d2;
                     len = fs.read( buf, 0, 16 );
@@ -94,7 +97,11 @@ namespace Boare.Cadencii {
             return ret;
         }
 
-        public void Write( FileOutputStream fs ) {
+        public void Write( FileOutputStream fs ) 
+#if JAVA
+            throws IOException
+#endif
+        {
             byte[] buf0 = new byte[8];
             char[] ch8 = Header.ToCharArray();
             for ( int i = 0; i < 8; i++ ) {
@@ -109,7 +116,7 @@ namespace Boare.Cadencii {
             buf0 = PortUtil.getbytes_uint32_le( SampleInterval );
             fs.write( buf0, 0, 4 );
 
-            buf0 = BitConverter.GetBytes( AverageFrequency );
+            buf0 = PortUtil.getbytes_double_le( AverageFrequency );
             fs.write( buf0, 0, 8 );
 
             for ( int i = 0; i < 4; i++ ) {
@@ -119,9 +126,9 @@ namespace Boare.Cadencii {
             buf0 = PortUtil.getbytes_int32_le( NumPoints );
             fs.write( buf0, 0, 4 );
             for ( int i = 0; i < NumPoints; i++ ) {
-                buf0 = BitConverter.GetBytes( Frequency[i] );
+                buf0 = PortUtil.getbytes_double_le( Frequency[i] );
                 fs.write( buf0, 0, 8 );
-                buf0 = BitConverter.GetBytes( Volume[i] );
+                buf0 = PortUtil.getbytes_double_le( Volume[i] );
                 fs.write( buf0, 0, 8 );
             }
         }
