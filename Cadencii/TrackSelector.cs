@@ -4667,136 +4667,142 @@ namespace Boare.Cadencii {
                                 y0 = y1;
                                 y1 = b;
                             }
-                            float a0 = (y1 - y0) / (float)(x1 - x0);
-                            float b0 = y0 - a0 * x0;
-                            if ( m_selected_curve.equals( CurveType.VEL ) || m_selected_curve.equals( CurveType.Accent ) || m_selected_curve.equals( CurveType.Decay ) ) {
-                                Vector<ValuePair<Integer, Integer>> velocity = new Vector<ValuePair<Integer, Integer>>();
-                                for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = (VsqEvent)itr.next();
-                                    if ( x0 <= ve.Clock && ve.Clock < x1 ) {
-                                        int new_value = (int)(a0 * ve.Clock + b0);
-                                        velocity.add( new ValuePair<Integer, Integer>( ve.InternalID, new_value ) );
-                                    }
-                                }
-                                CadenciiCommand run = null;
-                                if ( velocity.size() > 0 ) {
-                                    if ( m_selected_curve.equals( CurveType.VEL ) ) {
-                                        run = new CadenciiCommand( VsqCommand.generateCommandEventChangeVelocity( AppManager.getSelected(), velocity ) );
-                                    } else if ( m_selected_curve.equals( CurveType.Accent ) ) {
-                                        run = new CadenciiCommand( VsqCommand.generateCommandEventChangeAccent( AppManager.getSelected(), velocity ) );
-                                    } else if ( m_selected_curve.equals( CurveType.Decay ) ) {
-                                        run = new CadenciiCommand( VsqCommand.generateCommandEventChangeDecay( AppManager.getSelected(), velocity ) );
-                                    }
-                                }
-                                if ( run != null ) {
-                                    executeCommand( run, true );
-                                }
-                            } else if ( m_selected_curve.equals( CurveType.VibratoDepth ) || m_selected_curve.equals( CurveType.VibratoRate ) ) {
-                                int stdx = AppManager.startToDrawX;
-                                int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
-                                int cl_start = x0;
-                                int cl_end = x1;
-#if DEBUG
-                                AppManager.debugWriteLine( "    cl_start,cl_end=" + cl_start + " " + cl_end );
-#endif
-                                Vector<Integer> internal_ids = new Vector<Integer>();
-                                Vector<VsqID> items = new Vector<VsqID>();
-                                for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = (VsqEvent)itr.next();
-                                    int cl_vib_start = ve.Clock + ve.ID.VibratoDelay;
-                                    int cl_vib_length = ve.ID.getLength() - ve.ID.VibratoDelay;
-                                    int cl_vib_end = cl_vib_start + cl_vib_length;
-                                    //int vib_start = XCoordFromClocks( cl_vib_start ) + stdx;          // 仮想スクリーン上の、ビブラートの描画開始位置
-                                    //int vib_end = XCoordFromClocks( ve.Clock + ve.ID.Length ) + stdx; // 仮想スクリーン上の、ビブラートの描画終了位置
-                                    int chk_start = Math.Max( cl_vib_start, cl_start );       // マウスのトレースと、ビブラートの描画範囲がオーバーラップしている部分を検出
-                                    int chk_end = Math.Min( cl_vib_end, cl_end );
-                                    float add_min = (chk_start - cl_vib_start) / (float)cl_vib_length;
-                                    float add_max = (chk_end - cl_vib_start) / (float)cl_vib_length;
-#if DEBUG
-                                    AppManager.debugWriteLine( "    cl_vib_start,cl_vib_end=" + cl_vib_start + " " + cl_vib_end );
-                                    AppManager.debugWriteLine( "    chk_start,chk_end=" + chk_start + " " + chk_end );
-                                    AppManager.debugWriteLine( "    add_min,add_max=" + add_min + " " + add_max );
-#endif
-                                    if ( chk_start < chk_end ) {    // オーバーラップしている。
-                                        Vector<ValuePair<Float, Integer>> edit = new Vector<ValuePair<Float, Integer>>();
-                                        for ( int i = chk_start; i < chk_end; i += step_clock ) {
-                                            float x = (i - cl_vib_start) / (float)cl_vib_length;
-                                            if ( 0 <= x && x <= 1 ) {
-                                                int y = (int)(a0 * i + b0);
-                                                edit.add( new ValuePair<Float, Integer>( x, y ) );
-                                            }
+                            if ( x1 != x0 ) {
+                                float a0 = (y1 - y0) / (float)(x1 - x0);
+                                float b0 = y0 - a0 * x0;
+                                if ( m_selected_curve.equals( CurveType.VEL ) || m_selected_curve.equals( CurveType.Accent ) || m_selected_curve.equals( CurveType.Decay ) ) {
+                                    Vector<ValuePair<Integer, Integer>> velocity = new Vector<ValuePair<Integer, Integer>>();
+                                    for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+                                        VsqEvent ve = (VsqEvent)itr.next();
+                                        if ( x0 <= ve.Clock && ve.Clock < x1 ) {
+                                            int new_value = (int)(a0 * ve.Clock + b0);
+                                            velocity.add( new ValuePair<Integer, Integer>( ve.InternalID, new_value ) );
                                         }
-                                        edit.add( new ValuePair<Float, Integer>( (chk_end - cl_vib_start) / (float)cl_vib_length, (int)(a0 * chk_end + b0) ) );
-                                        if ( ve.ID.VibratoHandle != null ) {
-                                            VibratoBPList target = null;
-                                            if ( m_selected_curve.equals( CurveType.VibratoRate ) ) {
-                                                target = ve.ID.VibratoHandle.RateBP;
-                                            } else {
-                                                target = ve.ID.VibratoHandle.DepthBP;
-                                            }
-                                            if ( target.getCount() > 0 ) {
-                                                for ( int i = 0; i < target.getCount(); i++ ) {
-                                                    if ( target.getElement( i ).X < add_min || add_max < target.getElement( i ).X ) {
-                                                        edit.add( new ValuePair<Float, Integer>( target.getElement( i ).X,
-                                                                                                 target.getElement( i ).Y ) );
-                                                    }
+                                    }
+                                    CadenciiCommand run = null;
+                                    if ( velocity.size() > 0 ) {
+                                        if ( m_selected_curve.equals( CurveType.VEL ) ) {
+                                            run = new CadenciiCommand( VsqCommand.generateCommandEventChangeVelocity( AppManager.getSelected(), velocity ) );
+                                        } else if ( m_selected_curve.equals( CurveType.Accent ) ) {
+                                            run = new CadenciiCommand( VsqCommand.generateCommandEventChangeAccent( AppManager.getSelected(), velocity ) );
+                                        } else if ( m_selected_curve.equals( CurveType.Decay ) ) {
+                                            run = new CadenciiCommand( VsqCommand.generateCommandEventChangeDecay( AppManager.getSelected(), velocity ) );
+                                        }
+                                    }
+                                    if ( run != null ) {
+                                        executeCommand( run, true );
+                                    }
+                                } else if ( m_selected_curve.equals( CurveType.VibratoDepth ) || m_selected_curve.equals( CurveType.VibratoRate ) ) {
+                                    int stdx = AppManager.startToDrawX;
+                                    int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
+                                    int cl_start = x0;
+                                    int cl_end = x1;
+#if DEBUG
+                                    AppManager.debugWriteLine( "    cl_start,cl_end=" + cl_start + " " + cl_end );
+#endif
+                                    Vector<Integer> internal_ids = new Vector<Integer>();
+                                    Vector<VsqID> items = new Vector<VsqID>();
+                                    for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+                                        VsqEvent ve = (VsqEvent)itr.next();
+                                        int cl_vib_start = ve.Clock + ve.ID.VibratoDelay;
+                                        int cl_vib_length = ve.ID.getLength() - ve.ID.VibratoDelay;
+                                        int cl_vib_end = cl_vib_start + cl_vib_length;
+                                        //int vib_start = XCoordFromClocks( cl_vib_start ) + stdx;          // 仮想スクリーン上の、ビブラートの描画開始位置
+                                        //int vib_end = XCoordFromClocks( ve.Clock + ve.ID.Length ) + stdx; // 仮想スクリーン上の、ビブラートの描画終了位置
+                                        int chk_start = Math.Max( cl_vib_start, cl_start );       // マウスのトレースと、ビブラートの描画範囲がオーバーラップしている部分を検出
+                                        int chk_end = Math.Min( cl_vib_end, cl_end );
+                                        float add_min = (chk_start - cl_vib_start) / (float)cl_vib_length;
+                                        float add_max = (chk_end - cl_vib_start) / (float)cl_vib_length;
+#if DEBUG
+                                        AppManager.debugWriteLine( "    cl_vib_start,cl_vib_end=" + cl_vib_start + " " + cl_vib_end );
+                                        AppManager.debugWriteLine( "    chk_start,chk_end=" + chk_start + " " + chk_end );
+                                        AppManager.debugWriteLine( "    add_min,add_max=" + add_min + " " + add_max );
+#endif
+                                        if ( chk_start < chk_end ) {    // オーバーラップしている。
+                                            Vector<ValuePair<Float, Integer>> edit = new Vector<ValuePair<Float, Integer>>();
+                                            for ( int i = chk_start; i < chk_end; i += step_clock ) {
+                                                float x = (i - cl_vib_start) / (float)cl_vib_length;
+                                                if ( 0 <= x && x <= 1 ) {
+                                                    int y = (int)(a0 * i + b0);
+                                                    edit.add( new ValuePair<Float, Integer>( x, y ) );
                                                 }
                                             }
-                                            Collections.sort( edit );
-                                            VsqID id = (VsqID)ve.ID.clone();
-                                            float[] bpx = new float[edit.size()];
-                                            int[] bpy = new int[edit.size()];
-                                            for ( int i = 0; i < edit.size(); i++ ) {
-                                                bpx[i] = edit.get( i ).getKey();
-                                                bpy[i] = edit.get( i ).getValue();
+                                            edit.add( new ValuePair<Float, Integer>( (chk_end - cl_vib_start) / (float)cl_vib_length, (int)(a0 * chk_end + b0) ) );
+                                            if ( ve.ID.VibratoHandle != null ) {
+                                                VibratoBPList target = null;
+                                                if ( m_selected_curve.equals( CurveType.VibratoRate ) ) {
+                                                    target = ve.ID.VibratoHandle.RateBP;
+                                                } else {
+                                                    target = ve.ID.VibratoHandle.DepthBP;
+                                                }
+                                                if ( target.getCount() > 0 ) {
+                                                    for ( int i = 0; i < target.getCount(); i++ ) {
+                                                        if ( target.getElement( i ).X < add_min || add_max < target.getElement( i ).X ) {
+                                                            edit.add( new ValuePair<Float, Integer>( target.getElement( i ).X,
+                                                                                                     target.getElement( i ).Y ) );
+                                                        }
+                                                    }
+                                                }
+                                                Collections.sort( edit );
+                                                VsqID id = (VsqID)ve.ID.clone();
+                                                float[] bpx = new float[edit.size()];
+                                                int[] bpy = new int[edit.size()];
+                                                for ( int i = 0; i < edit.size(); i++ ) {
+                                                    bpx[i] = edit.get( i ).getKey();
+                                                    bpy[i] = edit.get( i ).getValue();
+                                                }
+                                                if ( m_selected_curve.equals( CurveType.VibratoDepth ) ) {
+                                                    id.VibratoHandle.DepthBP = new VibratoBPList( bpx, bpy );
+                                                } else {
+                                                    id.VibratoHandle.RateBP = new VibratoBPList( bpx, bpy );
+                                                }
+                                                internal_ids.add( ve.InternalID );
+                                                items.add( id );
                                             }
-                                            if ( m_selected_curve.equals( CurveType.VibratoDepth ) ) {
-                                                id.VibratoHandle.DepthBP = new VibratoBPList( bpx, bpy );
-                                            } else {
-                                                id.VibratoHandle.RateBP = new VibratoBPList( bpx, bpy );
-                                            }
-                                            internal_ids.add( ve.InternalID );
-                                            items.add( id );
                                         }
                                     }
-                                }
-                                if ( internal_ids.size() > 0 ) {
-                                    CadenciiCommand run = new CadenciiCommand(
-                                        VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(),
-                                                                                               PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
-                                                                                               items.toArray( new VsqID[] { } ) ) );
-                                    executeCommand( run, true );
-                                }
-                            } else if ( m_selected_curve.equals( CurveType.Env ) ) {
-                                // todo:
-                            } else {
-                                VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_selected_curve.getName() );
-                                if ( list != null ) {
-                                    int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
-                                    Vector<Long> delete = new Vector<Long>();
-                                    TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
-                                    int c = list.size();
-                                    for ( int i = 0; i < c; i++ ) {
-                                        int cl = list.getKeyClock( i );
-                                        if ( x0 <= cl && cl <= x1 ) {
-                                            delete.add( list.getElementB( i ).id );
-                                        } else if ( x1 < cl ) {
-                                            break;
+                                    if ( internal_ids.size() > 0 ) {
+                                        CadenciiCommand run = new CadenciiCommand(
+                                            VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(),
+                                                                                                   PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
+                                                                                                   items.toArray( new VsqID[] { } ) ) );
+                                        executeCommand( run, true );
+                                    }
+                                } else if ( m_selected_curve.equals( CurveType.Env ) ) {
+                                    // todo:
+                                } else {
+                                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_selected_curve.getName() );
+                                    if ( list != null ) {
+                                        int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
+                                        Vector<Long> delete = new Vector<Long>();
+                                        TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                                        int c = list.size();
+                                        for ( int i = 0; i < c; i++ ) {
+                                            int cl = list.getKeyClock( i );
+                                            if ( x0 <= cl && cl <= x1 ) {
+                                                delete.add( list.getElementB( i ).id );
+                                            } else if ( x1 < cl ) {
+                                                break;
+                                            }
                                         }
+                                        int index = 0;
+                                        long maxid = list.getMaxID();
+                                        int lasty = int.MinValue;
+                                        for ( int i = x0; i <= x1; i += step_clock ) {
+                                            int y = (int)(a0 * i + b0);
+                                            if ( lasty != y ) {
+                                                index++;
+                                                add.put( i, new VsqBPPair( y, maxid + index ) );
+                                                lasty = y;
+                                            }
+                                        }
+                                        CadenciiCommand run = new CadenciiCommand(
+                                            VsqCommand.generateCommandTrackCurveEdit2( AppManager.getSelected(),
+                                                                                       m_selected_curve.getName(),
+                                                                                       delete,
+                                                                                       add ) );
+                                        executeCommand( run, true );
                                     }
-                                    int index = 0;
-                                    long maxid = list.getMaxID();
-                                    for ( int i = x0; i <= x1; i += step_clock ) {
-                                        int y = (int)(a0 * i + b0);
-                                        index++;
-                                        add.put( i, new VsqBPPair( y, maxid + index ) );
-                                    }
-                                    CadenciiCommand run = new CadenciiCommand(
-                                        VsqCommand.generateCommandTrackCurveEdit2( AppManager.getSelected(),
-                                                                                   m_selected_curve.getName(),
-                                                                                   delete,
-                                                                                   add ) );
-                                    executeCommand( run, true );
                                 }
                             }
                             #endregion
