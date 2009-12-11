@@ -13,4 +13,55 @@
  */
 #if JAVA
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\BEvent.java
+#else
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+
+namespace bocoree.windows.forms {
+
+    public class BEvent<T> where T : BEventHandler {
+        private List<T> m_delegates;
+
+        public BEvent(){
+            m_delegates = new List<T>();
+        }
+
+        public BEvent<T> registerNative( object bind, string eventName, Delegate aDelegate ) {
+            if ( bind == null || eventName == "" ) {
+                return this;
+            }
+            Type t = bind.GetType();
+            foreach ( EventInfo ei in t.GetEvents() ) {
+                if ( ei.Name == eventName ) {
+                    ei.AddEventHandler( bind, aDelegate );
+                    break;
+                }
+            }
+            return this;
+        }
+
+        public void add( T aDelegate ) {
+            m_delegates.Add( aDelegate );
+        }
+
+        public void remove( T aDelegate ) {
+            int count = m_delegates.Count;
+            for ( int i = 0; i < count; i++ ) {
+                T item = m_delegates[1];
+                if ( aDelegate.equals( item ) ) {
+                    m_delegates.RemoveAt( i );
+                    break;
+                }
+            }
+        }
+
+        public void raise( params Object[] args ) {
+            int count = m_delegates.Count;
+            for ( int i = 0; i < count; i++ ) {
+                m_delegates[i].invoke( args );
+            }
+        }
+    }
+}
 #endif

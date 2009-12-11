@@ -62,6 +62,8 @@ class pp_cs2java {
         {" : ICloneable", " implements Cloneable" },
         {" : Iterator", " implements Iterator" },
         {".LastIndexOf(", ".lastIndexOf(" },
+        {"base", "super"},
+        {" EventArgs", " BEventArgs"},
     };
 
     static void Main( string[] args ) {
@@ -399,6 +401,38 @@ class pp_cs2java {
                 if ( print_this_line ) {
                     for ( int i = 0; i < REPLACE.GetLength( 0 ); i++ ) {
                         line = line.Replace( REPLACE[i, 0], REPLACE[i, 1] );
+                    }
+                    int index_typeof = line.IndexOf( "typeof" );
+                    while( index_typeof >= 0 ){
+                        int bra = line.IndexOf( "(", index_typeof );
+                        int cket = line.IndexOf( ")", index_typeof );
+                        string prefix = line.Substring( 0, index_typeof );
+                        string suffix = line.Substring( cket + 1 );
+                        string typename = line.Substring( bra + 1, cket - bra - 1 ).Trim();
+                        string javaclass = typename + ".class";
+                        switch( typename ){
+                            case "int":
+                                javaclass = "Integer.TYPE";
+                                break;
+                            case "float":
+                                javaclass = "Float.TYPE";
+                                break;
+                            case "double":
+                                javaclass = "Double.TYPE";
+                                break;
+                            case "void":
+                                javaclass = "Void.TYPE";
+                                break;
+                            case "bool":
+                            case "boolean":
+                                javaclass = "Boolean.TYPE";
+                                break;
+                            case "byte":
+                                javaclass = "Byte.TYPE";
+                                break;
+                        }
+                        line = prefix + javaclass + " " + suffix;
+                        index_typeof = line.IndexOf( "typeof" );
                     }
                     int index_foreach = line.IndexOf( "foreach" );
                     if ( index_foreach >= 0 ) {

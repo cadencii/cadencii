@@ -58,7 +58,7 @@ namespace Boare.Cadencii {
             return (float)numSpeed.getValue();
         }
 
-        private void FormRealtimeConfig_Load( Object sender, BEventArgs e ) {
+        public void FormRealtimeConfig_Load( Object sender, BEventArgs e ) {
 #if JAVA
             System.err.println( "info; FormRealtimeConfig#FormRealtimeConfig_Load; not implemented yet; \"int num_joydev = 0\"" );
             int num_joydev = 0;
@@ -156,15 +156,14 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+            loadEvent.add( new BEventHandler( this, "FormRealtimeConfig_Load" ) );
 #if JAVA
             timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
             btnStart.clickEvent.add( new BEventHandler( this, "btnStart_Click" ) );
-            this.loadEvent.add( new BEventHandler( this, "FormRealtimeConfig_Load" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
 #else
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
             this.btnStart.Click += new System.EventHandler( this.btnStart_Click );
-            this.Load += new System.EventHandler( this.FormRealtimeConfig_Load );
             btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }

@@ -51,8 +51,8 @@ using bocoree.componentModel;
 namespace Boare.Cadencii {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
+    //using EventArgs = System.EventArgs;
+    //using BEventHandler = System.EventHandler;
     using BFormClosedEventArgs = System.Windows.Forms.FormClosedEventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
@@ -830,7 +830,7 @@ namespace Boare.Cadencii {
         }
 
 #if ENABLE_MIDI
-        private void m_strip_ddbtn_metronome_CheckedChanged( Object sender, BEventArgs e ) {
+        private void m_strip_ddbtn_metronome_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.editorConfig.MetronomeEnabled = m_strip_ddbtn_metronome.isSelected();
             if ( AppManager.editorConfig.MetronomeEnabled && AppManager.getEditMode() == EditMode.REALTIME ) {
                 MidiPlayer.RestartMetronome();
@@ -838,7 +838,7 @@ namespace Boare.Cadencii {
         }
 #endif
 
-        private void commonStripPaletteTool_Clicked( Object sender, BEventArgs e ) {
+        private void commonStripPaletteTool_Clicked( Object sender, EventArgs e ) {
             String id = "";  //選択されたツールのID
 #if ENABLE_SCRIPT
             if ( sender is BToolStripButton ) {
@@ -1036,7 +1036,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void m_input_textbox_ImeModeChanged( Object sender, BEventArgs e ) {
+        private void m_input_textbox_ImeModeChanged( Object sender, EventArgs e ) {
 #if DEBUG
             Console.WriteLine( "FormMain#m_input_textbox_ImeModeChanged; imemode=" + AppManager.inputTextBox.ImeMode );
 #endif
@@ -1055,7 +1055,7 @@ namespace Boare.Cadencii {
             AppManager.setSelectedTool( tool );
         }
 
-        private void m_toolbar_measure_EndMarkerClick( Object sender, BEventArgs e ) {
+        private void m_toolbar_measure_EndMarkerClick( Object sender, EventArgs e ) {
             AppManager.endMarkerEnabled = !AppManager.endMarkerEnabled;
 #if DEBUG
             AppManager.debugWriteLine( "m_toolbar_measure_EndMarkerClick" );
@@ -1064,7 +1064,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void m_toolbar_measure_StartMarkerClick( Object sender, BEventArgs e ) {
+        private void m_toolbar_measure_StartMarkerClick( Object sender, EventArgs e ) {
             AppManager.startMarkerEnabled = !AppManager.startMarkerEnabled;
 #if DEBUG
             AppManager.debugWriteLine( "m_toolbar_measure_StartMarkerClick" );
@@ -1073,7 +1073,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void handleRecentFileMenuItem_Click( Object sender, BEventArgs e ) {
+        private void handleRecentFileMenuItem_Click( Object sender, EventArgs e ) {
             if ( sender is BMenuItem ) {
                 BMenuItem item = (BMenuItem)sender;
                 if ( item.getTag() is String ) {
@@ -1084,7 +1084,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void handleRecentFileMenuItem_MouseEnter( Object sender, BEventArgs e ) {
+        private void handleRecentFileMenuItem_MouseEnter( Object sender, EventArgs e ) {
             if ( sender is BMenuItem ) {
                 BMenuItem item = (BMenuItem)sender;
 #if JAVA
@@ -1096,25 +1096,19 @@ namespace Boare.Cadencii {
         }
 
         #region AppManager
-        private void AppManager_CurrentClockChanged( Object sender, BEventArgs e ) {
-#if JAVA
+        public void AppManager_CurrentClockChanged( Object sender, EventArgs e ) {
             stripLblBeat.setText( AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator );
             stripLblTempo.setText( PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo ) );
             stripLblCursor.setText( AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock ) );
-#else
-            stripLblBeat.setText( AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator );
-            stripLblTempo.setText( PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo ) );
-            stripLblCursor.setText( AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock ) );
-#endif
         }
 
-        private void AppManager_GridVisibleChanged( Object sender, BEventArgs e ) {
+        public void AppManager_GridVisibleChanged( Object sender, EventArgs e ) {
             menuVisualGridline.setSelected( AppManager.isGridVisible() );
             stripBtnGrid.setSelected( AppManager.isGridVisible() );
             cMenuPianoGrid.setSelected( AppManager.isGridVisible() );
         }
 
-        private void AppManager_PreviewAborted( Object sender, BEventArgs e ) {
+        public void AppManager_PreviewAborted( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "AppManager_PreviewAborted" );
 #endif
@@ -1146,7 +1140,7 @@ namespace Boare.Cadencii {
             timer.stop();
         }
 
-        private void AppManager_PreviewStarted( Object sender, BEventArgs e ) {
+        public void AppManager_PreviewStarted( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "m_config_PreviewStarted" );
 #endif
@@ -1415,11 +1409,11 @@ namespace Boare.Cadencii {
             timer.start();
         }
 
-        private void AppManager_SelectedToolChanged( Object sender, BEventArgs e ) {
+        public void AppManager_SelectedToolChanged( Object sender, EventArgs e ) {
             applySelectedTool();
         }
 
-        private void AppManager_SelectedEventChanged( Object sender, boolean selected_event_is_null ) {
+        public void AppManager_SelectedEventChanged( Object sender, boolean selected_event_is_null ) {
             menuEditCut.setEnabled( !selected_event_is_null );
             menuEditPaste.setEnabled( !selected_event_is_null );
             menuEditDelete.setEnabled( !selected_event_is_null );
@@ -3274,32 +3268,32 @@ namespace Boare.Cadencii {
         #endregion
 
         #region menuVisual*
-        private void menuVisualMixer_Click( Object sender, BEventArgs e ) {
+        private void menuVisualMixer_Click( Object sender, EventArgs e ) {
             menuVisualMixer.setSelected( !menuVisualMixer.isSelected() );
             AppManager.editorConfig.MixerVisible = menuVisualMixer.isSelected();
             AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
             requestFocus();
         }
 
-        private void menuVisualGridline_CheckedChanged( Object sender, BEventArgs e ) {
+        private void menuVisualGridline_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.setGridVisible( menuVisualGridline.isSelected() );
             refreshScreen();
         }
 
-        private void menuVisualLyrics_CheckedChanged( Object sender, BEventArgs e ) {
+        private void menuVisualLyrics_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.editorConfig.ShowLyric = menuVisualLyrics.isSelected();
         }
 
-        private void menuVisualNoteProperty_CheckedChanged( Object sender, BEventArgs e ) {
+        private void menuVisualNoteProperty_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.editorConfig.ShowExpLine = menuVisualNoteProperty.isSelected();
             refreshScreen();
         }
 
-        private void menuVisualPitchLine_CheckedChanged( Object sender, BEventArgs e ) {
+        private void menuVisualPitchLine_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.editorConfig.ViewAtcualPitch = menuVisualPitchLine.isSelected();
         }
 
-        private void menuVisualControlTrack_CheckedChanged( Object sender, BEventArgs e ) {
+        private void menuVisualControlTrack_CheckedChanged( Object sender, EventArgs e ) {
             trackSelector.setCurveVisible( menuVisualControlTrack.isSelected() );
             if ( menuVisualControlTrack.isSelected() ) {
                 splitContainer1.setSplitterFixed( false );
@@ -3314,56 +3308,56 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuHiddenVisualForwardParameter_Click( Object sender, BEventArgs e ) {
+        private void menuHiddenVisualForwardParameter_Click( Object sender, EventArgs e ) {
             trackSelector.SelectNextCurve();
         }
 
-        private void menuHiddenVisualBackwardParameter_Click( Object sender, BEventArgs e ) {
+        private void menuHiddenVisualBackwardParameter_Click( Object sender, EventArgs e ) {
             trackSelector.SelectPreviousCurve();
         }
 
-        private void menuVisualWaveform_CheckedChanged( Object sender, BEventArgs e ) {
+        private void menuVisualWaveform_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.editorConfig.ViewWaveform = menuVisualWaveform.isSelected();
             updateSplitContainer2Size();
         }
 
-        private void menuVisualControlTrack_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualControlTrack_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Show/Hide control curves." ) );
         }
 
-        private void menuVisualMixer_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualMixer_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Show/Hide mixer window." ) );
         }
 
-        private void menuVisualWaveform_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualWaveform_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Show/Hide waveform." ) );
         }
 
-        private void menuVisualProperty_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualProperty_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Show/Hide property window." ) );
         }
 
-        private void menuVisualGridline_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualGridline_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Show/Hide grid line." ) );
         }
 
-        private void menuVisualStartMarker_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualStartMarker_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Enable/Disable start marker." ) );
         }
 
-        private void menuVisualEndMarker_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualEndMarker_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Enable/Disable end marker." ) );
         }
 
-        private void menuVisualLyrics_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualLyrics_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Show/Hide lyrics." ) );
         }
 
-        private void menuVisualNoteProperty_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualNoteProperty_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Show/Hide expression lines." ) );
         }
 
-        private void menuVisualPitchLine_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuVisualPitchLine_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Show/Hide pitch bend lines." ) );
         }
         #endregion
@@ -3496,23 +3490,19 @@ namespace Boare.Cadencii {
             e.Cancel = false;
         }
 
-        private void FormMain_Load( Object sender, BEventArgs e ) {
+        public void FormMain_Load( Object sender, EventArgs e ) {
             applyLanguage();
             trackBar.setValue( AppManager.editorConfig.DefaultXScale );
             AppManager.setCurrentClock( 0 );
             setEdited( false );
 
-#if JAVA
-            //TODO: FormMain#FormMain_Load; イベントハンドラ
-#else
-            AppManager.PreviewStarted += new EventHandler( AppManager_PreviewStarted );
-            AppManager.PreviewAborted += new EventHandler( AppManager_PreviewAborted );
-            AppManager.GridVisibleChanged += new EventHandler( AppManager_GridVisibleChanged );
-            AppManager.SelectedEventChanged += new SelectedEventChangedEventHandler( AppManager_SelectedEventChanged );
-            AppManager.CurrentClockChanged += new EventHandler( AppManager_CurrentClockChanged );
-            AppManager.SelectedToolChanged += new EventHandler( AppManager_SelectedToolChanged );
+            AppManager.previewStartedEvent.add( new BEventHandler( this, "AppManager_PreviewStarted" ) );
+            AppManager.previewAbortedEvent.add( new BEventHandler( this, "AppManager_PreviewAborted" ) );
+            AppManager.gridVisibleChangedEvent.add( new BEventHandler( this, "AppManager_GridVisibleChanged" ) );
+            AppManager.selectedEventChangedEvent.add( new SelectedEventChangedEventHandler( this, "AppManager_SelectedEventChanged" ) );
+            AppManager.currentClockChangedEvent.add( new BEventHandler( this, "AppManager_CurrentClockChanged" ) );
+            AppManager.selectedToolChangedEvent.add( new BEventHandler( this, "AppManager_SelectedToolChanged" ) );
             EditorConfig.QuantizeModeChanged += new EventHandler( EditorConfig_QuantizeModeChanged );
-#endif
 
 #if ENABLE_PROPERTY
             m_property_panel_container.StateChangeRequired += new StateChangeRequiredEventHandler( m_property_panel_container_StateChangeRequired );
@@ -3819,7 +3809,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if ENABLE_PROPERTY
-        private void m_note_proerty_dlg_LocationOrSizeChanged( Object sender, BEventArgs e ) {
+        private void m_note_proerty_dlg_LocationOrSizeChanged( Object sender, EventArgs e ) {
 #if DEBUG
             PortUtil.println( "m_note_proeprty_dlg_LocationOrSizeChanged; WindowState=" + AppManager.propertyWindow.WindowState );
 #endif
@@ -3838,13 +3828,13 @@ namespace Boare.Cadencii {
         }
 #endif
 
-        private void FormMain_LocationChanged( Object sender, BEventArgs e ) {
+        private void FormMain_LocationChanged( Object sender, EventArgs e ) {
             if ( getExtendedState() == BForm.NORMAL ) {
                 AppManager.editorConfig.WindowRect = this.getBounds();
             }
         }
 
-        private void FormMain_SizeChanged( Object sender, BEventArgs e ) {
+        private void FormMain_SizeChanged( Object sender, EventArgs e ) {
             if ( getExtendedState() == BForm.NORMAL ) {
                 AppManager.editorConfig.WindowRect = this.getBounds();
 #if ENABLE_PROPERTY
@@ -3887,17 +3877,17 @@ namespace Boare.Cadencii {
             ProcessSpecialShortcutKey( e );
         }
 
-        private void FormMain_Deactivate( Object sender, BEventArgs e ) {
+        private void FormMain_Deactivate( Object sender, EventArgs e ) {
             m_form_activated = false;
         }
 
-        private void FormMain_Activated( Object sender, BEventArgs e ) {
+        private void FormMain_Activated( Object sender, EventArgs e ) {
             m_form_activated = true;
         }
         #endregion
 
 #if !JAVA
-        private void m_timer_Tick( Object sender, BEventArgs e ) {
+        private void m_timer_Tick( Object sender, EventArgs e ) {
             if ( !m_form_activated ) {
                 return;
             }
@@ -4119,12 +4109,12 @@ namespace Boare.Cadencii {
         }
 #endif
 
-        private void EditorConfig_QuantizeModeChanged( Object sender, BEventArgs e ) {
+        private void EditorConfig_QuantizeModeChanged( Object sender, EventArgs e ) {
             applyQuantizeMode();
         }
 
         #region menuFile*
-        private void menuFileSaveNamed_Click( Object sender, BEventArgs e ) {
+        private void menuFileSaveNamed_Click( Object sender, EventArgs e ) {
             for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
                 if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
                     AppManager.showMessageBox(
@@ -4147,7 +4137,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void commonFileSave_Click( Object sender, BEventArgs e ) {
+        private void commonFileSave_Click( Object sender, EventArgs e ) {
             for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
                 if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
                     AppManager.showMessageBox(
@@ -4174,11 +4164,11 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuFileQuit_Click( Object sender, BEventArgs e ) {
+        private void menuFileQuit_Click( Object sender, EventArgs e ) {
             close();
         }
 
-        private void menuFileExportWave_Click( Object sender, BEventArgs e ) {
+        private void menuFileExportWave_Click( Object sender, EventArgs e ) {
             int dialog_result = BFileChooser.CANCEL_OPTION;
             String filename = "";
             BFileChooser sfd = null;
@@ -4229,11 +4219,11 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuFileExport_DropDownOpening( Object sender, BEventArgs e ) {
+        private void menuFileExport_DropDownOpening( Object sender, EventArgs e ) {
             menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) && VSTiProxy.CurrentUser.Equals( "" ) );
         }
 
-        private void menuFileImportMidi_Click( Object sender, BEventArgs e ) {
+        private void menuFileImportMidi_Click( Object sender, EventArgs e ) {
             if ( m_midi_imexport_dialog == null ) {
                 m_midi_imexport_dialog = new FormMidiImExport();
             }
@@ -4532,7 +4522,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuFileExportMidi_Click( Object sender, BEventArgs e ) {
+        private void menuFileExportMidi_Click( Object sender, EventArgs e ) {
             if ( m_midi_imexport_dialog == null ) {
                 m_midi_imexport_dialog = new FormMidiImExport();
             }
@@ -4775,7 +4765,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuFileOpenVsq_Click( Object sender, BEventArgs e ) {
+        private void menuFileOpenVsq_Click( Object sender, EventArgs e ) {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -4824,7 +4814,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuFileOpenUst_Click( Object sender, BEventArgs e ) {
+        private void menuFileOpenUst_Click( Object sender, EventArgs e ) {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -4853,7 +4843,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuFileImportVsq_Click( Object sender, BEventArgs e ) {
+        private void menuFileImportVsq_Click( Object sender, EventArgs e ) {
             int dialog_result = openMidiDialog.showOpenDialog( this );
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
@@ -4998,7 +4988,7 @@ namespace Boare.Cadencii {
             setEdited( true );
         }
 
-        private void commonFileOpen_Click( Object sender, BEventArgs e ) {
+        private void commonFileOpen_Click( Object sender, EventArgs e ) {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -5019,7 +5009,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void commonFileNew_Click( Object sender, BEventArgs e ) {
+        private void commonFileNew_Click( Object sender, EventArgs e ) {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -5035,61 +5025,61 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuFileNew_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileNew_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Create new project." ) );
         }
 
-        private void menuFileOpen_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileOpen_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Open Cadencii project." ) );
         }
 
-        private void menuFileSave_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileSave_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Save current project." ) );
         }
 
-        private void menuFileSaveNamed_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileSaveNamed_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Save current project with new name." ) );
         }
 
-        private void menuFileOpenVsq_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileOpenVsq_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Open VSQ / VOCALOID MIDI and create new project." ) );
         }
 
-        private void menuFileOpenUst_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileOpenUst_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Open UTAU project and create new project." ) );
         }
 
-        private void menuFileImport_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileImport_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Import." ) );
         }
 
-        private void menuFileImportVsq_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileImportVsq_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Import VSQ / VOCALOID MIDI." ) );
         }
 
-        private void menuFileImportMidi_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileImportMidi_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Import Standard MIDI." ) );
         }
 
-        private void menuFileExportWave_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileExportWave_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Export to WAVE file." ) );
         }
 
-        private void menuFileExportMidi_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileExportMidi_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Export to Standard MIDI." ) );
         }
 
-        private void menuFileRecent_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileRecent_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Recent projects." ) );
         }
 
-        private void menuFileQuit_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuFileQuit_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Close this window." ) );
         }
         #endregion
 
         #region menuSetting*
-        private void menuSettingDefaultSingerStyle_Click( Object sender, BEventArgs e ) {
+        private void menuSettingDefaultSingerStyle_Click( Object sender, EventArgs e ) {
             FormSingerStyleConfig dlg = null;
             try {
                 dlg = new FormSingerStyleConfig();
@@ -5143,7 +5133,7 @@ namespace Boare.Cadencii {
         }
 
 #if ENABLE_MIDI
-        private void menuSettingMidi_Click( Object sender, BEventArgs e ) {
+        private void menuSettingMidi_Click( Object sender, EventArgs e ) {
             FormMidiConfig form = null;
             try {
                 form = new FormMidiConfig();
@@ -5163,7 +5153,7 @@ namespace Boare.Cadencii {
         }
 #endif
 
-        private void menuSettingPreference_Click( Object sender, BEventArgs e ) {
+        private void menuSettingPreference_Click( Object sender, EventArgs e ) {
             if ( m_preference_dlg == null ) {
                 m_preference_dlg = new Preference();
             }
@@ -5349,7 +5339,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuSettingShortcut_Click( Object sender, BEventArgs e ) {
+        private void menuSettingShortcut_Click( Object sender, EventArgs e ) {
             TreeMap<String, ValuePair<String, BKeys[]>> dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             TreeMap<String, BKeys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary();
 
@@ -5456,15 +5446,15 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuSettingGameControlerLoad_Click( Object sender, BEventArgs e ) {
+        private void menuSettingGameControlerLoad_Click( Object sender, EventArgs e ) {
             loadGameControler();
         }
 
-        private void menuSettingGameControlerRemove_Click( Object sender, BEventArgs e ) {
+        private void menuSettingGameControlerRemove_Click( Object sender, EventArgs e ) {
             removeGameControler();
         }
 
-        private void menuSettingGameControlerSetting_Click( Object sender, BEventArgs e ) {
+        private void menuSettingGameControlerSetting_Click( Object sender, EventArgs e ) {
             FormGameControlerConfig dlg = null;
             try {
                 dlg = new FormGameControlerConfig();
@@ -5498,30 +5488,30 @@ namespace Boare.Cadencii {
         #endregion
 
         #region menuEdit*
-        private void menuEditDelete_Click( Object sender, BEventArgs e ) {
+        private void menuEditDelete_Click( Object sender, EventArgs e ) {
             deleteEvent();
         }
 
-        private void commonEditPaste_Click( Object sender, BEventArgs e ) {
+        private void commonEditPaste_Click( Object sender, EventArgs e ) {
             pasteEvent();
         }
 
-        private void commonEditCopy_Click( Object sender, BEventArgs e ) {
+        private void commonEditCopy_Click( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "commonEditCopy_Click" );
 #endif
             copyEvent();
         }
 
-        private void commonEditCut_Click( Object sender, BEventArgs e ) {
+        private void commonEditCut_Click( Object sender, EventArgs e ) {
             cutEvent();
         }
 
-        private void menuEdit_DropDownOpening( Object sender, BEventArgs e ) {
+        private void menuEdit_DropDownOpening( Object sender, EventArgs e ) {
             updateCopyAndPasteButtonStatus();
         }
 
-        private void commonEditUndo_Click( Object sender, BEventArgs e ) {
+        private void commonEditUndo_Click( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "menuEditUndo_Click" );
 #endif
@@ -5530,7 +5520,7 @@ namespace Boare.Cadencii {
         }
 
 
-        private void commonEditRedo_Click( Object sender, BEventArgs e ) {
+        private void commonEditRedo_Click( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "menuEditRedo_Click" );
 #endif
@@ -5538,62 +5528,62 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuEditSelectAllEvents_Click( Object sender, BEventArgs e ) {
+        private void menuEditSelectAllEvents_Click( Object sender, EventArgs e ) {
             selectAllEvent();
         }
 
-        private void menuEditSelectAll_Click( Object sender, BEventArgs e ) {
+        private void menuEditSelectAll_Click( Object sender, EventArgs e ) {
             selectAll();
         }
 
-        private void menuEditAutoNormalizeMode_Click( Object sender, BEventArgs e ) {
+        private void menuEditAutoNormalizeMode_Click( Object sender, EventArgs e ) {
             AppManager.autoNormalize = !AppManager.autoNormalize;
             menuEditAutoNormalizeMode.setSelected( AppManager.autoNormalize );
         }
 
-        private void menuEditUndo_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuEditUndo_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Undo." ) );
         }
 
-        private void menuEditRedo_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuEditRedo_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Redo." ) );
         }
 
-        private void menuEditCut_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuEditCut_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Cut selected items." ) );
         }
 
-        private void menuEditCopy_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuEditCopy_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Copy selected items." ) );
         }
 
-        private void menuEditPaste_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuEditPaste_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Paste copied items to current song position." ) );
         }
 
-        private void menuEditDelete_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuEditDelete_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Delete selected items." ) );
         }
 
-        private void menuEditAutoNormalizeMode_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuEditAutoNormalizeMode_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Avoid automaticaly polyphonic editing." ) );
         }
 
-        private void menuEditSelectAll_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuEditSelectAll_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Select all items and control curves of current track." ) );
         }
 
-        private void menuEditSelectAllEvents_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuEditSelectAllEvents_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Select all items of current track." ) );
         }
         #endregion
 
         #region menuLyric*
-        private void menuLyricExpressionProperty_Click( Object sender, BEventArgs e ) {
+        private void menuLyricExpressionProperty_Click( Object sender, EventArgs e ) {
             editNoteExpressionProperty();
         }
 
-        private void menuLyricDictionary_Click( Object sender, BEventArgs e ) {
+        private void menuLyricDictionary_Click( Object sender, EventArgs e ) {
             FormWordDictionary dlg = null;
             try {
                 dlg = new FormWordDictionary();
@@ -5613,13 +5603,13 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuLyricVibratoProperty_Click( Object sender, BEventArgs e ) {
+        private void menuLyricVibratoProperty_Click( Object sender, EventArgs e ) {
             editNoteVibratoProperty();
         }
         #endregion
 
         #region menuJob
-        private void menuJobRealTime_Click( Object sender, BEventArgs e ) {
+        private void menuJobRealTime_Click( Object sender, EventArgs e ) {
             if ( !AppManager.isPlaying() ) {
                 AppManager.addingEvent = null;
                 AppManager.setEditMode( EditMode.REALTIME );
@@ -5633,11 +5623,11 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuJobReloadVsti_Click( Object sender, BEventArgs e ) {
+        private void menuJobReloadVsti_Click( Object sender, EventArgs e ) {
             //VSTiProxy.ReloadPlugin(); //todo: FormMain+menuJobReloadVsti_Click
         }
 
-        private void menuJob_DropDownOpening( Object sender, BEventArgs e ) {
+        private void menuJob_DropDownOpening( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "menuJob_DropDownOpening" );
             AppManager.debugWriteLine( "    menuJob.Bounds=" + menuJob.Bounds );
@@ -5684,11 +5674,11 @@ namespace Boare.Cadencii {
             menuJobLyric.setEnabled( AppManager.getLastSelectedEvent() != null );
         }
 
-        private void menuJobLyric_Click( Object sender, BEventArgs e ) {
+        private void menuJobLyric_Click( Object sender, EventArgs e ) {
             importLyric();
         }
 
-        private void menuJobConnect_Click( Object sender, BEventArgs e ) {
+        private void menuJobConnect_Click( Object sender, EventArgs e ) {
             int count = AppManager.getSelectedEventCount();
             int[] clocks = new int[count];
             VsqID[] ids = new VsqID[count];
@@ -5730,7 +5720,7 @@ namespace Boare.Cadencii {
             repaint();
         }
 
-        private void menuJobInsertBar_Click( Object sender, BEventArgs e ) {
+        private void menuJobInsertBar_Click( Object sender, EventArgs e ) {
             int total_clock = AppManager.getVsqFile().TotalClocks;
             int total_barcount = AppManager.getVsqFile().getBarCountFromClock( total_clock ) + 1;
             FormInsertBar dlg = null;
@@ -5858,7 +5848,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuJobDeleteBar_Click( Object sender, BEventArgs e ) {
+        private void menuJobDeleteBar_Click( Object sender, EventArgs e ) {
             int total_clock = AppManager.getVsqFile().TotalClocks;
             int total_barcount = AppManager.getVsqFile().getBarCountFromClock( total_clock ) + 1;
             int clock = AppManager.getCurrentClock();
@@ -5963,7 +5953,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuJobNormalize_Click( Object sender, BEventArgs e ) {
+        private void menuJobNormalize_Click( Object sender, EventArgs e ) {
             VsqFile work = (VsqFile)AppManager.getVsqFile().clone();
             int track = AppManager.getSelected();
             boolean changed = true;
@@ -6018,45 +6008,45 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuJobNormalize_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuJobNormalize_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Correct overlapped item." ) );
         }
 
-        private void menuJobInsertBar_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuJobInsertBar_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Insert bar." ) );
         }
 
-        private void menuJobDeleteBar_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuJobDeleteBar_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Delete bar." ) );
         }
 
-        private void menuJobRandomize_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuJobRandomize_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Randomize items." ) + _( "(not implemented)" ) );
         }
 
-        private void menuJobConnect_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuJobConnect_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Lengthen note end to neighboring note." ) );
         }
 
-        private void menuJobLyric_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuJobLyric_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Import lyric." ) );
         }
 
-        private void menuJobRewire_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuJobRewire_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Import tempo from ReWire host." ) + _( "(not implemented)" ) );
         }
 
-        private void menuJobRealTime_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuJobRealTime_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Start realtime input." ) );
         }
 
-        private void menuJobReloadVsti_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuJobReloadVsti_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Reload VSTi dll." ) + _( "(not implemented)" ) );
         }
         #endregion
 
         #region menuScript
-        private void menuScriptUpdate_Click( Object sender, BEventArgs e ) {
+        private void menuScriptUpdate_Click( Object sender, EventArgs e ) {
 #if ENABLE_SCRIPT
             updateScriptShortcut();
             applyShortcut();
@@ -6065,15 +6055,15 @@ namespace Boare.Cadencii {
         #endregion
 
         #region vScroll
-        private void vScroll_Enter( Object sender, BEventArgs e ) {
+        private void vScroll_Enter( Object sender, EventArgs e ) {
             pictPianoRoll.requestFocus();
         }
 
-        private void vScroll_Resize( Object sender, BEventArgs e ) {
+        private void vScroll_Resize( Object sender, EventArgs e ) {
             setVScrollRange( vScroll.getMaximum() );
         }
 
-        private void vScroll_ValueChanged( Object sender, BEventArgs e ) {
+        private void vScroll_ValueChanged( Object sender, EventArgs e ) {
             if ( m_txtbox_track_name != null ) {
 #if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
@@ -6087,11 +6077,11 @@ namespace Boare.Cadencii {
         #endregion
 
         #region hScroll
-        private void hScroll_Enter( Object sender, BEventArgs e ) {
+        private void hScroll_Enter( Object sender, EventArgs e ) {
             pictPianoRoll.requestFocus();
         }
 
-        private void hScroll_Resize( Object sender, BEventArgs e ) {
+        private void hScroll_Resize( Object sender, EventArgs e ) {
 #if DEBUG
             PortUtil.println( "FormMain#hScroll_Resize" );
 #endif
@@ -6100,7 +6090,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void hScroll_ValueChanged( Object sender, BEventArgs e ) {
+        private void hScroll_ValueChanged( Object sender, EventArgs e ) {
 #if DEBUG
             //PortUtil.println( "hScroll_ValueChanged" );
             //PortUtil.println( "    Value/Maximum=" + hScroll.getValue() + "/" + hScroll.getMaximum() );
@@ -6803,7 +6793,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void picturePositionIndicator_MouseLeave( Object sender, BEventArgs e ) {
+        private void picturePositionIndicator_MouseLeave( Object sender, EventArgs e ) {
             m_startmark_dragging = false;
             m_endmark_dragging = false;
             m_tempo_dragging = false;
@@ -6824,7 +6814,7 @@ namespace Boare.Cadencii {
         #endregion
 
         #region trackBar
-        private void trackBar_Enter( Object sender, BEventArgs e ) {
+        private void trackBar_Enter( Object sender, EventArgs e ) {
             pictPianoRoll.requestFocus();
         }
 
@@ -6839,7 +6829,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void trackBar_ValueChanged( Object sender, BEventArgs e ) {
+        private void trackBar_ValueChanged( Object sender, EventArgs e ) {
             AppManager.scaleX = trackBar.getValue() / 480f;
             AppManager.startToDrawX = (int)(hScroll.getValue() * AppManager.scaleX);
 #if USE_DOBJ
@@ -6850,7 +6840,7 @@ namespace Boare.Cadencii {
         #endregion
 
         #region menuHelp
-        private void menuHelpAbout_Click( Object sender, BEventArgs e ) {
+        private void menuHelpAbout_Click( Object sender, EventArgs e ) {
 #if JAVA
             String version_str = AppManager.getVersion();
 #else
@@ -6896,7 +6886,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuHelpDebug_Click( Object sender, BEventArgs e ) {
+        private void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "menuHelpDebug_Click" );
 #if DEBUG
             /*InputBox ib = new InputBox( "input shift seconds" );
@@ -7017,7 +7007,7 @@ namespace Boare.Cadencii {
         #endregion
 
         #region trackSelector
-        private void trackSelector_CommandExecuted( Object sender, BEventArgs e ) {
+        private void trackSelector_CommandExecuted( Object sender, EventArgs e ) {
             setEdited( true );
             refreshScreen();
         }
@@ -7177,7 +7167,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void trackSelector_PreferredMinHeightChanged( Object sender, BEventArgs e ) {
+        private void trackSelector_PreferredMinHeightChanged( Object sender, EventArgs e ) {
             if ( menuVisualControlTrack.isSelected() ) {
                 splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
 #if DEBUG
@@ -7238,27 +7228,27 @@ namespace Boare.Cadencii {
         #endregion
 
         #region cMenuPiano*
-        private void cMenuPianoDelete_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoDelete_Click( Object sender, EventArgs e ) {
             deleteEvent();
         }
 
-        private void cMenuPianoVibratoProperty_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoVibratoProperty_Click( Object sender, EventArgs e ) {
             editNoteVibratoProperty();
         }
 
-        private void cMenuPianoPaste_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoPaste_Click( Object sender, EventArgs e ) {
             pasteEvent();
         }
 
-        private void cMenuPianoCopy_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoCopy_Click( Object sender, EventArgs e ) {
             copyEvent();
         }
 
-        private void cMenuPianoCut_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoCut_Click( Object sender, EventArgs e ) {
             cutEvent();
         }
 
-        private void cMenuPianoExpression_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoExpression_Click( Object sender, EventArgs e ) {
             if ( AppManager.getSelectedEventCount() > 0 ) {
                 SynthesizerType type = SynthesizerType.VOCALOID2;
                 if ( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
@@ -7299,19 +7289,19 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void cMenuPianoPointer_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoPointer_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.ARROW );
         }
 
-        private void cMenuPianoPencil_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoPencil_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.PENCIL );
         }
 
-        private void cMenuPianoEraser_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoEraser_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.ERASER );
         }
 
-        private void handlePositionQuantize( Object sender, BEventArgs e ) {
+        private void handlePositionQuantize( Object sender, EventArgs e ) {
             QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
             if ( sender == cMenuPianoQuantize04 ||
 #if ENABLE_STRIP_DROPDOWN
@@ -7360,65 +7350,65 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void h_positionQuantizeTriplet( Object sender, BEventArgs e ) {
+        private void h_positionQuantizeTriplet( Object sender, EventArgs e ) {
             AppManager.editorConfig.setPositionQuantizeTriplet( !AppManager.editorConfig.isPositionQuantizeTriplet() );
             refreshScreen();
         }
 
-        private void h_lengthQuantize04( Object sender, BEventArgs e ) {
+        private void h_lengthQuantize04( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize(QuantizeMode.p4 );
         }
 
-        private void h_lengthQuantize08( Object sender, BEventArgs e ) {
+        private void h_lengthQuantize08( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p8 );
         }
 
-        private void h_lengthQuantize16( Object sender, BEventArgs e ) {
+        private void h_lengthQuantize16( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p16 );
         }
 
-        private void h_lengthQuantize32( Object sender, BEventArgs e ) {
+        private void h_lengthQuantize32( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p32 );
         }
 
-        private void h_lengthQuantize64( Object sender, BEventArgs e ) {
+        private void h_lengthQuantize64( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p64 );
         }
 
-        private void h_lengthQuantize128( Object sender, BEventArgs e ) {
+        private void h_lengthQuantize128( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p128 );
         }
 
-        private void h_lengthQuantizeOff( Object sender, BEventArgs e ) {
+        private void h_lengthQuantizeOff( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.off );
         }
 
-        private void h_lengthQuantizeTriplet( Object sender, BEventArgs e ) {
+        private void h_lengthQuantizeTriplet( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantizeTriplet( !AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
 
-        private void cMenuPianoGrid_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoGrid_Click( Object sender, EventArgs e ) {
             cMenuPianoGrid.setSelected( !cMenuPianoGrid.isSelected() );
             AppManager.setGridVisible( cMenuPianoGrid.isSelected() );
         }
 
-        private void cMenuPianoUndo_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoUndo_Click( Object sender, EventArgs e ) {
             undo();
         }
 
-        private void cMenuPianoRedo_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoRedo_Click( Object sender, EventArgs e ) {
             redo();
         }
 
-        private void cMenuPianoSelectAllEvents_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoSelectAllEvents_Click( Object sender, EventArgs e ) {
             selectAllEvent();
         }
 
-        private void cMenuPianoProperty_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoProperty_Click( Object sender, EventArgs e ) {
             editNoteExpressionProperty();
         }
 
-        private void cMenuPianoImportLyric_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoImportLyric_Click( Object sender, EventArgs e ) {
             importLyric();
         }
 
@@ -7427,89 +7417,89 @@ namespace Boare.Cadencii {
             cMenuPianoImportLyric.setEnabled( AppManager.getLastSelectedEvent() != null );
         }
 
-        private void cMenuPianoSelectAll_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoSelectAll_Click( Object sender, EventArgs e ) {
             selectAll();
         }
 
-        private void cMenuPianoFixed01_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixed01_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setMode( PencilModeEnum.L1 );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixed02_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixed02_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setMode( PencilModeEnum.L2 );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixed04_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixed04_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setMode( PencilModeEnum.L4 );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixed08_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixed08_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setMode( PencilModeEnum.L8 );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixed16_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixed16_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setMode( PencilModeEnum.L16 );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixed32_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixed32_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setMode( PencilModeEnum.L32 );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixed64_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixed64_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setMode( PencilModeEnum.L64 );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixed128_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixed128_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setMode( PencilModeEnum.L128 );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixedOff_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixedOff_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setMode( PencilModeEnum.Off );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixedTriplet_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixedTriplet_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setTriplet( !m_pencil_mode.isTriplet() );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoFixedDotted_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoFixedDotted_Click( Object sender, EventArgs e ) {
             m_pencil_mode.setDot( !m_pencil_mode.isDot() );
             updateCMenuPianoFixed();
         }
 
-        private void cMenuPianoCurve_Click( Object sender, BEventArgs e ) {
+        private void cMenuPianoCurve_Click( Object sender, EventArgs e ) {
             AppManager.setCurveMode( !AppManager.isCurveMode() );
             applySelectedTool();
         }
         #endregion
 
         #region menuTrack*
-        private void menuTrack_DropDownOpening( Object sender, BEventArgs e ) {
+        private void menuTrack_DropDownOpening( Object sender, EventArgs e ) {
             updateTrackMenuStatus();
         }
 
-        private void menuTrackCopy_Click( Object sender, BEventArgs e ) {
+        private void menuTrackCopy_Click( Object sender, EventArgs e ) {
             copyTrackCore();
         }
 
-        private void menuTrackChangeName_Click( Object sender, BEventArgs e ) {
+        private void menuTrackChangeName_Click( Object sender, EventArgs e ) {
             changeTrackNameCore();
         }
 
-        private void menuTrackDelete_Click( Object sender, BEventArgs e ) {
+        private void menuTrackDelete_Click( Object sender, EventArgs e ) {
             deleteTrackCore();
         }
 
-        private void menuTrackOn_Click( Object sender, BEventArgs e ) {
+        private void menuTrackOn_Click( Object sender, EventArgs e ) {
             menuTrackOn.setSelected( !menuTrackOn.isSelected() );
             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackChangePlayMode( AppManager.getSelected(),
                                                                                                       menuTrackOn.isSelected() ? 1 : -1 ) );
@@ -7518,20 +7508,20 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuTrackAdd_Click( Object sender, BEventArgs e ) {
+        private void menuTrackAdd_Click( Object sender, EventArgs e ) {
             addTrackCore();
         }
 
-        private void menuTrackOverlay_Click( Object sender, BEventArgs e ) {
+        private void menuTrackOverlay_Click( Object sender, EventArgs e ) {
             AppManager.setOverlay( !AppManager.isOverlay() );
             refreshScreen();
         }
 
-        private void menuTrackRenderCurrent_Click( Object sender, BEventArgs e ) {
+        private void menuTrackRenderCurrent_Click( Object sender, EventArgs e ) {
             render( new int[] { AppManager.getSelected() } );
         }
 
-        private void commonTrackRenderAll_Click( Object sender, BEventArgs e ) {
+        private void commonTrackRenderAll_Click( Object sender, EventArgs e ) {
             Vector<Integer> list = new Vector<Integer>();
             int c = AppManager.getVsqFile().Track.size();
             for ( int i = 1; i < c; i++ ) {
@@ -7545,65 +7535,65 @@ namespace Boare.Cadencii {
             render( PortUtil.convertIntArray( list.toArray( new Integer[] { } ) ) );
         }
 
-        private void menuTrackRenderer_DropDownOpening( Object sender, BEventArgs e ) {
+        private void menuTrackRenderer_DropDownOpening( Object sender, EventArgs e ) {
             updateRendererMenu();
         }
 
-        private void menuTrackOn_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackOn_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Enable current track." ) );
         }
 
-        private void menuTrackAdd_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackAdd_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Add new track." ) );
         }
 
-        private void menuTrackCopy_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackCopy_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Copy current track." ) );
         }
 
-        private void menuTrackChangeName_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackChangeName_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Change track name." ) );
         }
 
-        private void menuTrackDelete_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackDelete_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Delete current track." ) );
         }
 
-        private void menuTrackRenderCurrent_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackRenderCurrent_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Render current track." ) );
         }
 
-        private void menuTrackRenderAll_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackRenderAll_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Render all tracks." ) );
         }
 
-        private void menuTrackOverlay_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackOverlay_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Show background items." ) );
         }
 
-        private void menuTrackRenderer_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackRenderer_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Select voice synthesis engine." ) );
         }
 
-        private void menuTrackRendererVOCALOID1_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackRendererVOCALOID1_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "VOCALOID1" ) );
         }
 
-        private void menuTrackRendererVOCALOID2_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackRendererVOCALOID2_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "VOCALOID2" ) );
         }
 
-        private void menuTrackRendererUtau_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackRendererUtau_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "UTAU" ) );
         }
 
-        private void menuTrackMasterTuning_MouseEnter( Object sender, BEventArgs e ) {
+        private void menuTrackMasterTuning_MouseEnter( Object sender, EventArgs e ) {
             statusLabel.setText( _( "Set global pitch shift." ) );
         }
         #endregion
 
         #region menuHidden*
-        private void menuHiddenTrackNext_Click( Object sender, BEventArgs e ) {
+        private void menuHiddenTrackNext_Click( Object sender, EventArgs e ) {
             if ( AppManager.getSelected() == AppManager.getVsqFile().Track.size() - 1 ) {
                 AppManager.setSelected( 1 );
             } else {
@@ -7612,7 +7602,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuHiddenTrackBack_Click( Object sender, BEventArgs e ) {
+        private void menuHiddenTrackBack_Click( Object sender, EventArgs e ) {
             if ( AppManager.getSelected() == 1 ) {
                 AppManager.setSelected( AppManager.getVsqFile().Track.size() - 1 );
             } else {
@@ -7621,11 +7611,11 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuHiddenEditPaste_Click( Object sender, BEventArgs e ) {
+        private void menuHiddenEditPaste_Click( Object sender, EventArgs e ) {
             pasteEvent();
         }
 
-        private void menuHiddenEditFlipToolPointerPencil_Click( Object sender, BEventArgs e ) {
+        private void menuHiddenEditFlipToolPointerPencil_Click( Object sender, EventArgs e ) {
             if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
                 AppManager.setSelectedTool( EditTool.PENCIL );
             } else {
@@ -7634,7 +7624,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuHiddenEditFlipToolPointerEraser_Click( Object sender, BEventArgs e ) {
+        private void menuHiddenEditFlipToolPointerEraser_Click( Object sender, EventArgs e ) {
             if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
                 AppManager.setSelectedTool( EditTool.ERASER );
             } else {
@@ -7643,7 +7633,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void menuHiddenEditLyric_Click( Object sender, BEventArgs e ) {
+        private void menuHiddenEditLyric_Click( Object sender, EventArgs e ) {
 #if JAVA
             boolean input_enabled = AppManager.inputTextBox.isVisible();
 #else
@@ -7670,15 +7660,15 @@ namespace Boare.Cadencii {
         #endregion
 
         #region cMenuTrackTab
-        private void cMenuTrackTabCopy_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackTabCopy_Click( Object sender, EventArgs e ) {
             copyTrackCore();
         }
 
-        private void cMenuTrackTabChangeName_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackTabChangeName_Click( Object sender, EventArgs e ) {
             changeTrackNameCore();
         }
 
-        private void cMenuTrackTabTrackOn_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackTabTrackOn_Click( Object sender, EventArgs e ) {
             cMenuTrackTabTrackOn.setSelected( !cMenuTrackTabTrackOn.isSelected() );
             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackChangePlayMode( AppManager.getSelected(),
                                                                                                       cMenuTrackTabTrackOn.isSelected() ? 1 : -1 ) );
@@ -7687,11 +7677,11 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void cMenuTrackTabDelete_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackTabDelete_Click( Object sender, EventArgs e ) {
             deleteTrackCore();
         }
 
-        private void cMenuTrackTabAdd_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackTabAdd_Click( Object sender, EventArgs e ) {
             addTrackCore();
         }
 
@@ -7750,16 +7740,16 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void cMenuTrackTabOverlay_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackTabOverlay_Click( Object sender, EventArgs e ) {
             AppManager.setOverlay( !AppManager.isOverlay() );
             refreshScreen();
         }
 
-        private void cMenuTrackTabRenderCurrent_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackTabRenderCurrent_Click( Object sender, EventArgs e ) {
             render( new int[] { AppManager.getSelected() } );
         }
 
-        private void cMenuTrackTabRenderer_DropDownOpening( Object sender, BEventArgs e ) {
+        private void cMenuTrackTabRenderer_DropDownOpening( Object sender, EventArgs e ) {
             updateRendererMenu();
         }
         #endregion
@@ -7816,45 +7806,45 @@ namespace Boare.Cadencii {
             cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
         }
 
-        private void cMenuTrackSelectorPointer_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorPointer_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.ARROW );
             refreshScreen();
         }
 
-        private void cMenuTrackSelectorPencil_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorPencil_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.PENCIL );
             refreshScreen();
         }
 
-        private void cMenuTrackSelectorLine_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorLine_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.LINE );
         }
 
-        private void cMenuTrackSelectorEraser_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorEraser_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.ERASER );
         }
 
-        private void cMenuTrackSelectorCurve_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorCurve_Click( Object sender, EventArgs e ) {
             AppManager.setCurveMode( !AppManager.isCurveMode() );
         }
 
-        private void cMenuTrackSelectorSelectAll_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorSelectAll_Click( Object sender, EventArgs e ) {
             selectAllEvent();
         }
 
-        private void cMenuTrackSelectorCut_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorCut_Click( Object sender, EventArgs e ) {
             cutEvent();
         }
 
-        private void cMenuTrackSelectorCopy_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorCopy_Click( Object sender, EventArgs e ) {
             copyEvent();
         }
 
-        private void cMenuTrackSelectorDelete_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorDelete_Click( Object sender, EventArgs e ) {
             deleteEvent();
         }
 
-        private void cMenuTrackSelectorDeleteBezier_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorDeleteBezier_Click( Object sender, EventArgs e ) {
             for ( Iterator itr = AppManager.getSelectedBezierEnumerator(); itr.hasNext(); ) {
                 SelectedBezierPoint sbp = (SelectedBezierPoint)itr.next();
                 int chain_id = sbp.chainID;
@@ -7890,11 +7880,11 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void cMenuTrackSelectorPaste_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorPaste_Click( Object sender, EventArgs e ) {
             pasteEvent();
         }
 
-        private void cMenuTrackSelectorUndo_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorUndo_Click( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "cMenuTrackSelectorUndo_Click" );
 #endif
@@ -7902,7 +7892,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void cMenuTrackSelectorRedo_Click( Object sender, BEventArgs e ) {
+        private void cMenuTrackSelectorRedo_Click( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "cMenuTrackSelectorRedo_Click" );
 #endif
@@ -7944,7 +7934,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void timer_Tick( Object sender, BEventArgs e ) {
+        private void timer_Tick( Object sender, EventArgs e ) {
             float play_time = -1.0f;
             if ( AppManager.rendererAvailable ) {
                 // レンダリング用VSTiが利用可能な状態でAppManager_PreviewStartedした場合
@@ -8018,7 +8008,7 @@ namespace Boare.Cadencii {
         private void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e ) {
             try {
 #if JAVA
-                refreshScreenCore( this, new BEventArgs() );
+                refreshScreenCore( this, new EventArgs() );
 #else
                 this.Invoke( new EventHandler( this.refreshScreenCore ) );
 #endif
@@ -8027,11 +8017,11 @@ namespace Boare.Cadencii {
         }
 
 #if !JAVA
-        private void toolStripEdit_Move( Object sender, BEventArgs e ) {
+        private void toolStripEdit_Move( Object sender, EventArgs e ) {
             AppManager.editorConfig.ToolEditTool.Location = new XmlPoint( toolStripTool.getX(), toolStripTool.getY() );
         }
 
-        private void toolStripEdit_ParentChanged( Object sender, BEventArgs e ) {
+        private void toolStripEdit_ParentChanged( Object sender, EventArgs e ) {
             if ( toolStripTool.getParent() != null ) {
                 if ( toolStripTool.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     AppManager.editorConfig.ToolEditTool.Parent = ToolStripLocation.ParentPanel.Top;
@@ -8041,11 +8031,11 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void toolStripPosition_Move( Object sender, BEventArgs e ) {
+        private void toolStripPosition_Move( Object sender, EventArgs e ) {
             AppManager.editorConfig.ToolPositionLocation.Location = new XmlPoint( toolStripPosition.getX(), toolStripPosition.getY() );
         }
 
-        private void toolStripPosition_ParentChanged( Object sender, BEventArgs e ) {
+        private void toolStripPosition_ParentChanged( Object sender, EventArgs e ) {
             if ( toolStripPosition.Parent != null ) {
                 if ( toolStripPosition.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     AppManager.editorConfig.ToolPositionLocation.Parent = ToolStripLocation.ParentPanel.Top;
@@ -8055,11 +8045,11 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void toolStripMeasure_Move( Object sender, BEventArgs e ) {
+        private void toolStripMeasure_Move( Object sender, EventArgs e ) {
             AppManager.editorConfig.ToolMeasureLocation.Location = new XmlPoint( toolStripMeasure.Location.X, toolStripMeasure.Location.Y );
         }
 
-        private void toolStripMeasure_ParentChanged( Object sender, BEventArgs e ) {
+        private void toolStripMeasure_ParentChanged( Object sender, EventArgs e ) {
             if ( toolStripMeasure.Parent != null ) {
                 if ( toolStripMeasure.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     AppManager.editorConfig.ToolMeasureLocation.Parent = ToolStripLocation.ParentPanel.Top;
@@ -8069,11 +8059,11 @@ namespace Boare.Cadencii {
             }
         }
 
-        void toolStripFile_Move( Object sender, BEventArgs e ) {
+        void toolStripFile_Move( Object sender, EventArgs e ) {
             AppManager.editorConfig.ToolFileLocation.Location = new XmlPoint( toolStripFile.getX(), toolStripFile.getY() );
         }
 
-        void toolStripFile_ParentChanged( Object sender, BEventArgs e ) {
+        void toolStripFile_ParentChanged( Object sender, EventArgs e ) {
             if ( toolStripFile.Parent != null ) {
                 if ( toolStripFile.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     AppManager.editorConfig.ToolFileLocation.Parent = ToolStripLocation.ParentPanel.Top;
@@ -8085,56 +8075,56 @@ namespace Boare.Cadencii {
 #endif
 
         #region stripBtn*
-        private void stripBtnGrid_CheckedChanged( Object sender, BEventArgs e ) {
+        private void stripBtnGrid_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.setGridVisible( stripBtnGrid.isSelected() );
         }
 
-        private void stripBtnArrow_Click( Object sender, BEventArgs e ) {
+        private void stripBtnArrow_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.ARROW );
         }
 
-        private void stripBtnPencil_Click( Object sender, BEventArgs e ) {
+        private void stripBtnPencil_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.PENCIL );
         }
 
-        private void stripBtnLine_Click( Object sender, BEventArgs e ) {
+        private void stripBtnLine_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.LINE );
         }
 
-        private void stripBtnEraser_Click( Object sender, BEventArgs e ) {
+        private void stripBtnEraser_Click( Object sender, EventArgs e ) {
             AppManager.setSelectedTool( EditTool.ERASER );
         }
 
-        private void stripBtnCurve_Click( Object sender, BEventArgs e ) {
+        private void stripBtnCurve_Click( Object sender, EventArgs e ) {
             AppManager.setCurveMode( !AppManager.isCurveMode() );
         }
 
-        private void stripBtnPlay_Click( Object sender, BEventArgs e ) {
+        private void stripBtnPlay_Click( Object sender, EventArgs e ) {
             if ( !AppManager.isPlaying() ) {
                 AppManager.setPlaying( true );
             }
             pictPianoRoll.requestFocus();
         }
 
-        private void stripBtnScroll_Click( Object sender, BEventArgs e ) {
+        private void stripBtnScroll_Click( Object sender, EventArgs e ) {
             stripBtnScroll.setSelected(  !stripBtnScroll.isSelected() );
             AppManager.autoScroll = stripBtnScroll.isSelected();
             pictPianoRoll.requestFocus();
         }
 
-        private void stripBtnLoop_Click( Object sender, BEventArgs e ) {
+        private void stripBtnLoop_Click( Object sender, EventArgs e ) {
             stripBtnLoop.setSelected( !stripBtnLoop.isSelected() );
             AppManager.setRepeatMode( stripBtnLoop.isSelected() );
             pictPianoRoll.requestFocus();
         }
 
-        private void stripBtnStop_Click( Object sender, BEventArgs e ) {
+        private void stripBtnStop_Click( Object sender, EventArgs e ) {
             AppManager.setPlaying( false );
             timer.stop();
             pictPianoRoll.requestFocus();
         }
 
-        private void handleStartMarker_Click( Object sender, BEventArgs e ) {
+        private void handleStartMarker_Click( Object sender, EventArgs e ) {
             AppManager.startMarkerEnabled = !AppManager.startMarkerEnabled;
             stripBtnStartMarker.setSelected( AppManager.startMarkerEnabled );
             menuVisualStartMarker.setSelected( AppManager.startMarkerEnabled );
@@ -8142,7 +8132,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void handleEndMarker_Click( Object sender, BEventArgs e ) {
+        private void handleEndMarker_Click( Object sender, EventArgs e ) {
             AppManager.endMarkerEnabled = !AppManager.endMarkerEnabled;
             stripBtnEndMarker.setSelected( AppManager.endMarkerEnabled );
             menuVisualEndMarker.setSelected( AppManager.endMarkerEnabled );
@@ -8150,7 +8140,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void stripBtnMoveEnd_Click( Object sender, BEventArgs e ) {
+        private void stripBtnMoveEnd_Click( Object sender, EventArgs e ) {
             if ( AppManager.isPlaying() ) {
                 AppManager.setPlaying( false );
             }
@@ -8159,7 +8149,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void stripBtnMoveTop_Click( Object sender, BEventArgs e ) {
+        private void stripBtnMoveTop_Click( Object sender, EventArgs e ) {
             if ( AppManager.isPlaying() ) {
                 AppManager.setPlaying( false );
             }
@@ -8168,11 +8158,11 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void stripBtnRewind_Click( Object sender, BEventArgs e ) {
+        private void stripBtnRewind_Click( Object sender, EventArgs e ) {
             rewind();
         }
 
-        private void stripBtnForward_Click( Object sender, BEventArgs e ) {
+        private void stripBtnForward_Click( Object sender, EventArgs e ) {
             forward();
         }
         #endregion
@@ -8197,7 +8187,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void commonRendererVOCALOID1_Click( Object sender, BEventArgs e ) {
+        private void commonRendererVOCALOID1_Click( Object sender, EventArgs e ) {
             String old = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
             if ( !old.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
                 VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
@@ -8227,7 +8217,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void commonRendererVOCALOID2_Click( Object sender, BEventArgs e ) {
+        private void commonRendererVOCALOID2_Click( Object sender, EventArgs e ) {
             String old = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
             if ( !old.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
                 VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
@@ -8257,7 +8247,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void commonRendererUtau_Click( Object sender, BEventArgs e ) {
+        private void commonRendererUtau_Click( Object sender, EventArgs e ) {
             String old = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
             if ( !old.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
                 VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
@@ -8287,7 +8277,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void commonRendererStraight_Click( Object sender, BEventArgs e ) {
+        private void commonRendererStraight_Click( Object sender, EventArgs e ) {
             String old = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
             if ( !old.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
                 VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
@@ -8317,7 +8307,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void toolStripContainer_TopToolStripPanel_SizeChanged( Object sender, BEventArgs e ) {
+        private void toolStripContainer_TopToolStripPanel_SizeChanged( Object sender, EventArgs e ) {
             if ( getExtendedState() == BForm.ICONIFIED ) {
                 return;
             }
@@ -8340,7 +8330,7 @@ namespace Boare.Cadencii {
         }
 
 #if ENABLE_STRIP_DROPDOWN
-        private void stripDDBtnSpeed_DropDownOpening( Object sender, BEventArgs e ) {
+        private void stripDDBtnSpeed_DropDownOpening( Object sender, EventArgs e ) {
             if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f ) {
                 stripDDBtnSpeed100.setSelected( true );
                 stripDDBtnSpeed050.setSelected( false );
@@ -8366,7 +8356,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if ENABLE_STRIP_DROPDOWN
-        private void stripDDBtnSpeed100_Click( Object sender, BEventArgs e ) {
+        private void stripDDBtnSpeed100_Click( Object sender, EventArgs e ) {
             changeRealtimeInputSpeed( 1.0f );
             AppManager.editorConfig.setRealtimeInputSpeed( 1.0f );
             updateStripDDBtnSpeed();
@@ -8374,7 +8364,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if ENABLE_STRIP_DROPDOWN
-        private void stripDDBtnSpeed050_Click( Object sender, BEventArgs e ) {
+        private void stripDDBtnSpeed050_Click( Object sender, EventArgs e ) {
             changeRealtimeInputSpeed( 0.5f );
             AppManager.editorConfig.setRealtimeInputSpeed( 0.5f );
             updateStripDDBtnSpeed();
@@ -8382,7 +8372,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if ENABLE_STRIP_DROPDOWN
-        private void stripDDBtnSpeed033_Click( Object sender, BEventArgs e ) {
+        private void stripDDBtnSpeed033_Click( Object sender, EventArgs e ) {
             changeRealtimeInputSpeed( 1.0f / 3.0f );
             AppManager.editorConfig.setRealtimeInputSpeed( 1.0f / 3.0f );
             updateStripDDBtnSpeed();
@@ -8434,11 +8424,11 @@ namespace Boare.Cadencii {
         }
 #endif
 
-        private void menuSetting_DropDownOpening( Object sender, BEventArgs e ) {
+        private void menuSetting_DropDownOpening( Object sender, EventArgs e ) {
             menuSettingMidi.setEnabled( AppManager.getEditMode() != EditMode.REALTIME );
         }
 
-        private void menuVisualProperty_Click( Object sender, BEventArgs e ) {
+        private void menuVisualProperty_Click( Object sender, EventArgs e ) {
 #if ENABLE_PROPERTY
             if ( menuVisualProperty.isSelected() ) {
                 if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
@@ -8452,7 +8442,7 @@ namespace Boare.Cadencii {
 #endif
         }
 
-        private void menuSettingUtauVoiceDB_Click( Object sender, BEventArgs e ) {
+        private void menuSettingUtauVoiceDB_Click( Object sender, EventArgs e ) {
             String edit_oto_ini = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "EditOtoIni.exe" );
             if ( !PortUtil.isFileExists( edit_oto_ini ) ) {
                 return;
@@ -8475,7 +8465,7 @@ namespace Boare.Cadencii {
 #endif
         }
 
-        private void menuVisualOverview_CheckedChanged( Object sender, BEventArgs e ) {
+        private void menuVisualOverview_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.editorConfig.OverviewEnabled = menuVisualOverview.isSelected();
             updateLayout();
         }
@@ -8784,11 +8774,11 @@ namespace Boare.Cadencii {
 #endif
         }
 
-        private void invalidatePictOverview( Object sender, BEventArgs e ) {
+        private void invalidatePictOverview( Object sender, EventArgs e ) {
             pictOverview.invalidate();
         }
 
-        private void btnMooz_Click( Object sender, BEventArgs e ) {
+        private void btnMooz_Click( Object sender, EventArgs e ) {
             int draft = m_overview_scale_count - 1;
             if ( draft < _OVERVIEW_SCALE_COUNT_MIN ) {
                 draft = _OVERVIEW_SCALE_COUNT_MIN;
@@ -8799,7 +8789,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        private void btnZoom_Click( Object sender, BEventArgs e ) {
+        private void btnZoom_Click( Object sender, EventArgs e ) {
             int draft = m_overview_scale_count + 1;
             if ( _OVERVIEW_SCALE_COUNT_MAX < draft ) {
                 draft = _OVERVIEW_SCALE_COUNT_MAX;
@@ -8873,7 +8863,7 @@ namespace Boare.Cadencii {
             menuTrackBgm.add( menu_add );
         }
 
-        private void handleBgmOffsetSeconds_Click( Object sender, BEventArgs e ) {
+        private void handleBgmOffsetSeconds_Click( Object sender, EventArgs e ) {
             if ( !(sender is BMenuItem) ) {
                 return;
             }
@@ -8927,7 +8917,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void handleBgmStartAfterPremeasure_CheckedChanged( Object sender, BEventArgs e ) {
+        private void handleBgmStartAfterPremeasure_CheckedChanged( Object sender, EventArgs e ) {
             if ( !(sender is BMenuItem) ) {
                 return;
             }
@@ -8955,7 +8945,7 @@ namespace Boare.Cadencii {
             setEdited( true );
         }
 
-        private void handleBgmAdd_Click( Object sender, BEventArgs e ) {
+        private void handleBgmAdd_Click( Object sender, EventArgs e ) {
             if ( openWaveDialog.showOpenDialog( this ) != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
@@ -8986,7 +8976,7 @@ namespace Boare.Cadencii {
             updateBgmMenuState();
         }
 
-        private void handleBgmRemove_Click( Object sender, BEventArgs e ) {
+        private void handleBgmRemove_Click( Object sender, EventArgs e ) {
             if ( !(sender is BMenuItem) ) {
                 return;
             }
@@ -9618,7 +9608,7 @@ namespace Boare.Cadencii {
 #if JAVA
                 tsmi.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
 #else
-                tsmi.Click += new BEventHandler( commonStripPaletteTool_Clicked );
+                tsmi.Click += new EventHandler( commonStripPaletteTool_Clicked );
 #endif
                 cMenuTrackSelectorPaletteTool.add( tsmi );
 
@@ -9658,7 +9648,7 @@ namespace Boare.Cadencii {
         }
 #endif
 
-        private void commonSettingPaletteTool( Object sender, BEventArgs e ) {
+        private void commonSettingPaletteTool( Object sender, EventArgs e ) {
 #if ENABLE_SCRIPT
             if ( sender is BMenuItem ) {
                 BMenuItem tsmi = (BMenuItem)sender;
@@ -10192,7 +10182,7 @@ namespace Boare.Cadencii {
         /// <summary>
         /// 現在のゲームコントローラのモードに応じてstripLblGameCtrlModeの表示状態を更新します。
         /// </summary>
-        private void updateGameControlerStatus( Object sender, BEventArgs e ) {
+        private void updateGameControlerStatus( Object sender, EventArgs e ) {
 #if !JAVA
             if ( m_game_mode == GameControlMode.DISABLED ) {
                 stripLblGameCtrlMode.setText( _( "Disabled" ) );
@@ -10297,7 +10287,7 @@ namespace Boare.Cadencii {
 #endif
 
 #if ENABLE_SCRIPT
-        private void dd_run_Click( Object sender, BEventArgs e ) {
+        private void dd_run_Click( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "dd_run_Click" );
 #endif
@@ -10800,7 +10790,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void refreshScreenCore( Object sender, BEventArgs e ) {
+        private void refreshScreenCore( Object sender, EventArgs e ) {
             pictPianoRoll.repaint();
             picturePositionIndicator.repaint();
             trackSelector.repaint();
@@ -10815,7 +10805,7 @@ namespace Boare.Cadencii {
 
         public void refreshScreen() {
 #if JAVA
-            refreshScreenCore( this, new BEventArgs() );
+            refreshScreenCore( this, new EventArgs() );
 #else
             if ( !bgWorkScreen.IsBusy ) {
                 bgWorkScreen.RunWorkerAsync();
@@ -11249,9 +11239,9 @@ namespace Boare.Cadencii {
 
             stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
 #if JAVA
-            updateGameControlerStatus( this, new BEventArgs() );
+            updateGameControlerStatus( this, new EventArgs() );
 #else
-            this.Invoke( new BEventHandler( updateGameControlerStatus ) );
+            this.Invoke( new EventHandler( updateGameControlerStatus ) );
 #endif
 
             stripBtnPointer.setText( _( "Pointer" ) );
@@ -13537,7 +13527,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void menuTrackManager_Click( Object sender, BEventArgs e ) {
+        private void menuTrackManager_Click( Object sender, EventArgs e ) {
 
         }
 
@@ -13578,7 +13568,7 @@ namespace Boare.Cadencii {
             m_key_length_splitter_mouse_downed = false;
         }
 
-        private void overviewCommon_MouseLeave( Object sender, BEventArgs e ) {
+        private void overviewCommon_MouseLeave( Object sender, EventArgs e ) {
 #if DEBUG
             PortUtil.println( "FormMain#overviewCommon_MouseLeave" );
 #endif
@@ -13606,6 +13596,7 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+            loadEvent.add( new BEventHandler( this, "FormMain_Load" ) );
 #if JAVA
             //TODO:
 #else
@@ -13932,7 +13923,6 @@ namespace Boare.Cadencii {
             this.stripBtnStartMarker.Click += new System.EventHandler( this.handleStartMarker_Click );
             this.stripBtnEndMarker.Click += new System.EventHandler( this.handleEndMarker_Click );
             this.Deactivate += new System.EventHandler( this.FormMain_Deactivate );
-            this.Load += new System.EventHandler( this.FormMain_Load );
             this.Activated += new System.EventHandler( this.FormMain_Activated );
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler( this.FormMain_FormClosed );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMain_FormClosing );

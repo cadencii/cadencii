@@ -65,7 +65,7 @@ namespace Boare.Cadencii {
             return Messaging.getMessage( id );
         }
 
-        private void FormWordDictionary_Load( Object sender, BEventArgs e ) {
+        public void FormWordDictionary_Load( Object sender, BEventArgs e ) {
             listDictionaries.clear();
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                 String name = SymbolTable.getSymbolTable( i ).getName();
@@ -128,17 +128,16 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+            loadEvent.add( new BEventHandler( this, "FormWordDictionary_Load" ) );
 #if JAVA
             btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
             btnUp.clickEvent.add( new BEventHandler( this, "btnUp_Click" ) );
             btnDown.clickEvent.add( new BEventHandler( this, "btnDown_Click" ) );
-            loadEvent.add( new BEventHandler( this, "FormWordDictionary_Load" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
 #else
             btnOK.Click += new System.EventHandler( this.btnOK_Click );
             btnUp.Click += new System.EventHandler( this.btnUp_Click );
             btnDown.Click += new System.EventHandler( this.btnDown_Click );
-            Load += new System.EventHandler( this.FormWordDictionary_Load );
             btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
         }

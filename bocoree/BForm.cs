@@ -29,6 +29,17 @@ namespace bocoree.windows.forms {
     public class BForm : System.Windows.Forms.Form {
         protected BDialogResult m_result = BDialogResult.CANCEL;
 
+        public BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
+
+        public BForm()
+            : base() {
+            loadEvent.registerNative( this, "Load", new EventHandler( __handleLoadEvent ) );
+        }
+
+        private void __handleLoadEvent( object sender, EventArgs e ) {
+            loadEvent.raise( this, e );
+        }
+
         public void setDialogResult( BDialogResult value ) {
             switch ( value ) {
                 case BDialogResult.YES:

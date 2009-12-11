@@ -431,7 +431,6 @@ namespace Boare.Cadencii {
         public static Point mouseDownLocation = new Point();
         public static int lastTrackSelectorHeight;
 
-#if JAVA
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewAbortedEvent = new BEvent<BEventHandler>();
@@ -441,20 +440,6 @@ namespace Boare.Cadencii {
         /// CurrentClockプロパティの値が変更された時発生します
         /// </summary>
         public static BEvent<BEventHandler> currentClockChangedEvent= new BEvent<BEventHandler>();
-#else
-        /// <summary>
-        /// グリッド線を表示するか否かを表す値が変更された時発生します
-        /// </summary>
-        public static event EventHandler GridVisibleChanged;
-        public static event EventHandler PreviewStarted;
-        public static event EventHandler PreviewAborted;
-        public static event SelectedEventChangedEventHandler SelectedEventChanged;
-        public static event EventHandler SelectedToolChanged;
-        /// <summary>
-        /// CurrentClockプロパティの値が変更された時発生します
-        /// </summary>
-        public static event EventHandler CurrentClockChanged;
-#endif
 
         private const String TEMPDIR_NAME = "cadencii";
 
@@ -1042,17 +1027,11 @@ namespace Boare.Cadencii {
             boolean old = s_is_curve_mode;
             s_is_curve_mode = value;
             if ( old != s_is_curve_mode ){
-#if JAVA
                 try{
-                    selectedToolChangedEvent.raise( AppManager.class, new BEventArgs() );
+                    selectedToolChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
                 }catch( Exception ex ){
-                    System.err.println( "AppManager#setCurveMode; ex=" + ex );
+                    PortUtil.stderr.println( "AppManager#setCurveMode; ex=" + ex );
                 }
-#else
-                if ( SelectedToolChanged != null ) {
-                    SelectedToolChanged( typeof( AppManager ), new BEventArgs() );
-                }
-#endif
             }
         }
 
@@ -1180,17 +1159,11 @@ namespace Boare.Cadencii {
             EditTool old = s_selected_tool;
             s_selected_tool = value;
             if ( old != s_selected_tool ){
-#if JAVA
                 try{
-                    selectedToolChangedEvent.raise( AppManager.class, new BEventArgs() );
+                    selectedToolChangedEvent.raise( typeof( AppManager ), new EventArgs() );
                 }catch( Exception ex ){
-                    System.err.println( "AppManager#setSelectedTool; ex=" + ex );
+                    PortUtil.stderr.println( "AppManager#setSelectedTool; ex=" + ex );
                 }
-#else
-                if ( SelectedToolChanged != null ) {
-                    SelectedToolChanged( typeof( AppManager ), new BEventArgs() );
-                }
-#endif
             }
         }
 
@@ -1492,17 +1465,11 @@ namespace Boare.Cadencii {
                         // まだ選択されていなかった場合
                         s_selected_events.add( new SelectedEventEntry( s_selected, ev, (VsqEvent)ev.clone() ) );
                         if ( !silent ){
-#if JAVA
                             try{
-                                selectedEventChangedEvent.raise( AppManager.class, false );
+                                selectedEventChangedEvent.raise( typeof( AppManager ), false );
                             }catch( Exception ex ){
-                                System.err.println( "AppManager#addSelectedEventCor; ex=" + ex );
+                                PortUtil.stderr.println( "AppManager#addSelectedEventCor; ex=" + ex );
                             }
-#else
-                            if ( SelectedEventChanged != null ) {
-                                SelectedEventChanged( typeof( AppManager ), false );
-                            }
-#endif
                         }
                     } else {
                         // すでに選択されているアイテムの再選択
@@ -1613,24 +1580,15 @@ namespace Boare.Cadencii {
         /// 現在選択されたアイテムが存在するかどうかを調べ，必要であればSelectedEventChangedイベントを発生させます
         /// </summary>
         private static void checkSelectedItemExistence() {
-#if !JAVA
-            if ( SelectedEventChanged != null )
-#endif
-            {
-                boolean ret = s_selected_bezier.size() == 0 &&
-                              s_selected_events.size() == 0 &&
-                              s_selected_tempo.size() == 0 &&
-                              s_selected_timesig.size() == 0 &&
-                              selectedPointIDs.size() == 0;
-#if JAVA
-                try{
-                    selectedEventChangedEvent.raise( AppManager.class, ret );
-                }catch( Exception ex ){
-                    System.err.println( "AppManager#checkSelectedItemExistence; ex=" + ex );
-                }
-#else
-                SelectedEventChanged( typeof( AppManager ), ret );
-#endif
+            boolean ret = s_selected_bezier.size() == 0 &&
+                          s_selected_events.size() == 0 &&
+                          s_selected_tempo.size() == 0 &&
+                          s_selected_timesig.size() == 0 &&
+                          selectedPointIDs.size() == 0;
+            try {
+                selectedEventChangedEvent.raise( typeof( AppManager ), ret );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#checkSelectedItemExistence; ex=" + ex );
             }
         }
 
@@ -1677,17 +1635,11 @@ namespace Boare.Cadencii {
         public static void setGridVisible( boolean value ) {
             if ( value != s_grid_visible ) {
                 s_grid_visible = value;
-#if JAVA
-                try{
-                    gridVisibleChangedEvent.raise( AppManager.class, new BEventArgs() );
-                }catch( Exception ex ){
-                    System.err.println( "AppManager#setGridVisible; ex=" + ex );
+                try {
+                    gridVisibleChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "AppManager#setGridVisible; ex=" + ex );
                 }
-#else
-                if ( GridVisibleChanged != null ) {
-                    GridVisibleChanged( typeof( AppManager ), new BEventArgs() );
-                }
-#endif
             }
         }
 
@@ -1714,29 +1666,17 @@ namespace Boare.Cadencii {
             s_playing = value;
             if ( previous != s_playing ) {
                 if ( s_playing ) {
-#if JAVA
-                    try{
-                        previewStartedEvent.raise( AppManager.class, new BEventArgs() );
-                    }catch( Exception ex ){
-                        System.err.println( "AppManager#setPlaying; ex=" + ex );
+                    try {
+                        previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
                     }
-#else
-                    if ( PreviewStarted != null ) {
-                        PreviewStarted( typeof( AppManager ), new BEventArgs() );
-                    }
-#endif
                 } else if ( !s_playing ){
-#if JAVA
                     try{
-                        previewAbortedEvent.raise( AppManager.class, new BEventArgs() );
+                        previewAbortedEvent.raise( typeof( AppManager ), new BEventArgs() );
                     }catch( Exception ex ){
-                        System.err.println( "AppManager#setPlaying; ex=" + ex );
+                        PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
                     }
-#else
-                    if ( PreviewAborted != null ) {
-                        PreviewAborted( typeof( AppManager ), new BEventArgs() );
-                    }
-#endif
                 }
             }
         }
@@ -1807,18 +1747,12 @@ namespace Boare.Cadencii {
             s_current_play_position.denominator = timesig.denominator;
             s_current_play_position.numerator = timesig.numerator;
             s_current_play_position.tempo = s_vsq.getTempoAt( s_current_clock );
-            if ( old != s_current_clock ){
-#if JAVA
-                try{
-                    currentClockChangedEvent.raise( AppManager.class, new BEventArgs() );
-                }catch( Exception ex ){
-                    System.err.println( "AppManager#setCurrentClock; ex=" + ex );
+            if ( old != s_current_clock ) {
+                try {
+                    currentClockChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "AppManager#setCurrentClock; ex=" + ex );
                 }
-#else
-                if ( CurrentClockChanged != null ) {
-                    CurrentClockChanged( typeof( AppManager ), new BEventArgs() );
-                }
-#endif
             }
         }
 

@@ -928,26 +928,34 @@ namespace Boare.Cadencii {
             return ret;
         }
 
+        public VsqFileEx()
 #if JAVA
-        public VsqFileEx()
         {
-            this( "Miku", 1, 4, 4, 500000 );
 #else
-        public VsqFileEx()
-            : this( "Miku", 1, 4, 4, 500000 ) {
+            :
+#endif
+            this( "Miku", 1, 4, 4, 500000 )
+#if JAVA
+            ;
+#else
+        {
 #endif
             Track.clear();
             TempoTable.clear();
             TimesigTable.clear();
         }
 
-#if JAVA
         public VsqFileEx( String singer, int pre_measure, int numerator, int denominator, int tempo )
+#if JAVA
         {
-            super( singer, pre_measure, numerator, denominator, tempo );
 #else
-        public VsqFileEx( String singer, int pre_measure, int numerator, int denominator, int tempo ) :
-            base( singer, pre_measure, numerator, denominator, tempo ) {
+            :
+#endif
+            base( singer, pre_measure, numerator, denominator, tempo )
+#if JAVA
+            ;
+#else
+        {
 #endif
             AttachedCurves = new AttachedCurve();
             int count = Track.size();
@@ -956,12 +964,17 @@ namespace Boare.Cadencii {
             }
         }
 
+        public VsqFileEx( UstFile ust )
 #if JAVA
-        public VsqFileEx( UstFile ust ){
-            super( ust );
+        {
 #else
-        public VsqFileEx( UstFile ust ) :
-            base( ust ) {
+            :
+#endif
+            base( ust )
+#if JAVA
+            ;
+#else
+        {
 #endif
             AttachedCurves = new AttachedCurve();
             int count = Track.size();
@@ -970,12 +983,17 @@ namespace Boare.Cadencii {
             }
         }
 
+        public VsqFileEx( String _fpath, String encoding )
 #if JAVA
-        public VsqFileEx( String _fpath, String encoding ) throws FileNotFoundException{
-            super( _fpath, encoding );
+        {
 #else
-        public VsqFileEx( String _fpath, String encoding ) :
-            base( _fpath, encoding ) {
+            :
+#endif
+            base( _fpath, encoding )
+#if JAVA
+            ;
+#else
+        {
 #endif
             AttachedCurves = new AttachedCurve();
 

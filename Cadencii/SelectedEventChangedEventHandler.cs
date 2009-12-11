@@ -15,20 +15,49 @@
 package org.kbinani.Cadencii;
 
 import org.kbinani.BEventHandler;
-
-public class SelectedEventChangedEventHandler extends BEventHandler{
-    public SelectedEventChangedEventHandler( Object sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-    }
-    
-    public SelectedEventChangedEventHandler( Class<?> sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-    }
-}
 #else
+using System;
+using bocoree;
+
 namespace Boare.Cadencii {
+    using boolean = System.Boolean;
+#endif
 
-    public delegate void SelectedEventChangedEventHandler( object sender, bool selected_is_null );
+#if JAVA
+    public class SelectedEventChangedEventHandler extends BEventHandler{
+#else
+    public class SelectedEventChangedEventHandler : BEventHandler {
+#endif
+        public SelectedEventChangedEventHandler( Object sender, String method_name )
+        //...きもちわるい
+#if JAVA
+        {
+#else
+            :
+#endif
+            base( sender, method_name, typeof( void ), typeof( Object ), typeof( boolean ) )
+#if JAVA
+            ;
+#else
+        {
+#endif
+        }
 
+        public SelectedEventChangedEventHandler( Type sender, String method_name )
+#if JAVA
+        {
+#else
+            :
+#endif
+            base( sender, method_name, typeof( void ), typeof( Object ), typeof( boolean ) )
+#if JAVA
+            ;
+#else
+        {
+#endif
+        }
+    }
+
+#if !JAVA
 }
 #endif

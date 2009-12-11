@@ -157,7 +157,7 @@ namespace Boare.Cadencii {
             return PortUtil.convertIntArray( list.toArray( new Integer[] { } ) );
         }
 
-        private void FormSynthesize_Load( Object sender, BEventArgs e ) {
+        public void FormSynthesize_Load( Object sender, BEventArgs e ) {
             lblTime.setText( "" );
             Start();
         }
@@ -352,18 +352,17 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
+            loadEvent.add( new BEventHandler( this, "FormSynthesize_Load" ) );
 #if JAVA
             bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
             bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_RunWorkerCompleted" ) );
             timer.tickEvent.add(  new BEventHandler( this, "timer_Tick" ) );
-            loadEvent.add( new BEventHandler( this, "FormSynthesize_Load" ) );
             formClosingEvent.add( new BFormClosingEventHandler( this, "FormSynthesize_FormClosing" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
 #else
             this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
             this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
-            this.Load += new System.EventHandler( this.FormSynthesize_Load );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormSynthesize_FormClosing );
             btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif

@@ -212,6 +212,28 @@ namespace bocoree {
         private PortUtil() {
         }
 
+        public static InternalStdOut stdout = new InternalStdOut();
+        public class InternalStdOut {
+            public void println( String s ) {
+#if JAVA
+                System.out.println( s );
+#else
+                Console.Out.WriteLine( s );
+#endif
+            }
+        }
+
+        public static InternalStdErr stderr = new InternalStdErr();
+        public class InternalStdErr {
+            public void println( String s ) {
+#if JAVA
+                System.err.println( s );
+#else
+                Console.Error.WriteLine( s );
+#endif
+            }
+        }
+
         /// <summary>
         /// java:コンポーネントのnameプロパティを返します。C#:コントロールのNameプロパティを返します。
         /// objがnullだったり、型がComponent/Controlでない場合は空文字を返します。
