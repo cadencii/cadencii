@@ -16,7 +16,7 @@
 #else
 using bocoree;
 
-namespace bocoree.componentModel {
+namespace bocoree.componentmodel {
     public class BBackgroundWorker : System.ComponentModel.BackgroundWorker {
         // root impl of DoWork event
         #region impl of DoWork

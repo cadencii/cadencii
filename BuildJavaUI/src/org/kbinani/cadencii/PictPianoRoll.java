@@ -1,4 +1,4 @@
-package org.kbinani.Cadencii;
+package org.kbinani.cadencii;
 
 import javax.swing.JPanel;
 

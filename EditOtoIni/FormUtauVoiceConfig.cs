@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.EditOtoIni;
+package org.kbinani.editotoini;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormUtauVoiceConfig.java
 #else

@@ -12,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.EditOtoIni;
+package org.kbinani.editotoini;
 
-import org.kbinani.Cadencii.*;
+import org.kbinani.cadencii.*;
 #else
 using Boare.Cadencii;
 

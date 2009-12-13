@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.Cadencii;
+package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
 
@@ -23,7 +23,7 @@ import java.util.*;
 import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
-import org.kbinani.componentModel.*;
+import org.kbinani.componentmodel.*;
 import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
@@ -46,7 +46,7 @@ using bocoree.java.util;
 using bocoree.windows.forms;
 using bocoree.xml;
 using bocoree.javax.swing;
-using bocoree.componentModel;
+using bocoree.componentmodel;
 
 namespace Boare.Cadencii {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;

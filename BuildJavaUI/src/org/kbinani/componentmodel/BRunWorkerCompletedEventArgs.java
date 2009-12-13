@@ -1,4 +1,4 @@
-package org.kbinani.componentModel;
+package org.kbinani.componentmodel;
 
 import org.kbinani.*;
 

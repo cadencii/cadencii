@@ -1,4 +1,4 @@
-package org.kbinani.componentModel;
+package org.kbinani.componentmodel;
 
 import org.kbinani.*;
 
@@ -7,7 +7,7 @@ public class BRunWorkerCompletedEventHandler extends BEventHandler{
         super( sender, method_name, Void.TYPE, Object.class, BRunWorkerCompletedEventArgs.class );
     }
 
-    public BRunWorkerCompletedEventHandler( Class sender, String method_name ){
+    public BRunWorkerCompletedEventHandler( Class<?> sender, String method_name ){
         super( sender, method_name, Void.TYPE, Object.class, BRunWorkerCompletedEventArgs.class );
     }
 }

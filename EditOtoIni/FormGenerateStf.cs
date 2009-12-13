@@ -12,13 +12,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.EditOtoIni;
+package org.kbinani.editotoini;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormGenerateStf.java
 
 import java.util.*;
 import org.kbinani.*;
-import org.kbinani.componentModel.*;
+import org.kbinani.componentmodel.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
@@ -28,7 +28,7 @@ using System.Windows.Forms;
 using bocoree;
 using bocoree.java.util;
 using bocoree.windows.forms;
-using bocoree.componentModel;
+using bocoree.componentmodel;
 
 namespace Boare.EditOtoIni {
     using BEventArgs = System.EventArgs;

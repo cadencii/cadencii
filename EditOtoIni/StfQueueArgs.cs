@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.EditOtoIni;
+package org.kbinani.editotoini;
 #else
 using System;
 

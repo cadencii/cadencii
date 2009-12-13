@@ -1,4 +1,4 @@
-package org.kbinani.componentModel;
+package org.kbinani.componentmodel;
 
 import org.kbinani.*;
 
@@ -7,7 +7,7 @@ public class BProgressChangedEventHandler extends BEventHandler{
         super( sender, method_name, Void.TYPE, Object.class, BProgressChangedEventArgs.class );
     }
 
-    public BProgressChangedEventHandler( Class sender, String method_name ){
+    public BProgressChangedEventHandler( Class<?> sender, String method_name ){
         super( sender, method_name, Void.TYPE, Object.class, BProgressChangedEventArgs.class );
     }
 }

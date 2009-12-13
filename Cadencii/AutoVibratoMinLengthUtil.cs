@@ -1,5 +1,5 @@
 ﻿#if JAVA
-package org.kbinani.Cadencii;
+package org.kbinani.cadencii;
 #else
 using System;
 

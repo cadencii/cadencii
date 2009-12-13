@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.componentModel;
+package org.kbinani.componentmodel;
 
 import org.kbinani.BEventHandler;
 #else
@@ -20,7 +20,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace bocoree.componentModel {
+namespace bocoree.componentmodel {
 #endif
 
 #if JAVA

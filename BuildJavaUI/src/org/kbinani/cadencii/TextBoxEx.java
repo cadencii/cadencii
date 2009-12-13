@@ -1,4 +1,4 @@
-package org.kbinani.Cadencii;
+package org.kbinani.cadencii;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

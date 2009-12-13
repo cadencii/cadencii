@@ -1,5 +1,5 @@
 #if JAVA
-package org.kbinani.Cadencii;
+package org.kbinani.cadencii;
 
 import java.awt.*;
 import java.io.*;

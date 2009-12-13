@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.Cadencii;
+package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormSynthesize.java
 
@@ -22,7 +22,7 @@ import org.kbinani.apputil.*;
 import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
-import org.kbinani.componentModel.*;
+import org.kbinani.componentmodel.*;
 #else
 using System;
 using System.Windows.Forms;
@@ -30,7 +30,7 @@ using Boare.Lib.AppUtil;
 using Boare.Lib.Media;
 using Boare.Lib.Vsq;
 using bocoree;
-using bocoree.componentModel;
+using bocoree.componentmodel;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
