@@ -273,7 +273,7 @@ namespace Boare.Cadencii {
 #endif
                 return;
             }
-            BListViewItem item = (BListViewItem)list.getItemAt( selected_group, index ).clone();
+            BListViewItem item = list.getItemAt( selected_group, index );
             item.setSubItemAt( 1, AppManager.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) ) );
             list.setItemAt( selected_group, index, item );
             String display = list.getItemAt( selected_group, index ).getSubItemAt( 0 );

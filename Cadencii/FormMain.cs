@@ -202,6 +202,14 @@ namespace Boare.Cadencii {
             MIDDLE,
         }
 
+        enum PositionIndicatorMouseDownMode {
+            NONE,
+            MARK_START,
+            MARK_END,
+            TEMPO,
+            TIMESIG,
+        }
+
         /// <summary>
         /// スクロールバーの最小サイズ(ピクセル)
         /// </summary>
@@ -329,15 +337,15 @@ namespace Boare.Cadencii {
         /// マウスが降りているかどうかを表すフラグ．AppManager.isPointerDownedとは別なので注意
         /// </summary>
         public boolean m_mouse_downed = false;
-        /// <summary>
+        /* /// <summary>
         /// テンポ変更の位置を、マウスドラッグで移動させているかどうかを表すフラグ
-        /// </summary>
-        public boolean m_tempo_dragging = false;
+        /// </summary> */
+        //public boolean m_tempo_dragging = false;
         public int m_tempo_dragging_deltaclock = 0;
-        /// <summary>
+        /* /// <summary>
         /// 拍子変更の位置を、マウスドラッグで移動させているかどうかを表すフラグ
         /// </summary>
-        public boolean m_timesig_dragging = false;
+        public boolean m_timesig_dragging = false;*/
         public int m_timesig_dragging_deltaclock = 0;
         public boolean m_mouse_downed_trackselector = false;
         private ExtDragXMode m_ext_dragx_trackselector = ExtDragXMode.NONE;
@@ -354,8 +362,8 @@ namespace Boare.Cadencii {
         /// 鉛筆のモード
         /// </summary>
         public PencilMode m_pencil_mode = new PencilMode();
-        public boolean m_startmark_dragging = false;
-        public boolean m_endmark_dragging = false;
+        //public boolean m_startmark_dragging = false;
+        //public boolean m_endmark_dragging = false;
         /// <summary>
         /// ビブラート範囲を編集中の音符のInternalID
         /// </summary>
@@ -431,6 +439,10 @@ namespace Boare.Cadencii {
         /// Overview画面でマウスが降りている状態かどうか
         /// </summary>
         private OverviewMouseDownMode m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
+        /// <summary>
+        /// PositionIndicatorのマウスモード
+        /// </summary>
+        private PositionIndicatorMouseDownMode m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
         /// <summary>
         /// Overview画面で、マウスが下りた位置のx座標
         /// </summary>
@@ -1574,11 +1586,9 @@ namespace Boare.Cadencii {
                         show_context_menu = false;
                     }
                 } else {
-#endif
                     if ( AppManager.editorConfig.PlayPreviewWhenRightClick ) {
                         show_context_menu = false;
                     }
-#if ENABLE_MOUSEHOVER
                 }
 #endif
                 show_context_menu = show_context_menu && !m_mouse_moved;
@@ -3218,6 +3228,9 @@ namespace Boare.Cadencii {
             boolean horizontal = (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
             if ( AppManager.editorConfig.ScrollHorizontalOnWheel ) {
                 horizontal = !horizontal;
+            }
+            if ( e.X <= AppManager.keyWidth || pictPianoRoll.getWidth() < e.X ) {
+                horizontal = false;
             }
             if ( horizontal ) {
                 hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
@@ -6272,8 +6285,7 @@ namespace Boare.Cadencii {
                 return;
             }
 
-            m_startmark_dragging = false;
-            m_endmark_dragging = false;
+            m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
             int modifiers = PortUtil.getCurrentModifierKey();
             if ( e.Button == BMouseButtons.Left ) {
                 if ( 0 <= e.Y && e.Y <= 18 ) {
@@ -6282,14 +6294,14 @@ namespace Boare.Cadencii {
                         int startx = AppManager.xCoordFromClocks( AppManager.startMarker ) - AppManager.editorConfig.PxTolerance;
                         int marker_width = Resources.get_start_marker().getWidth( this );
                         if ( startx <= e.X && e.X <= startx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
-                            m_startmark_dragging = true;
+                            m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.MARK_START;
                         }
                     }
-                    if ( AppManager.endMarkerEnabled && !m_startmark_dragging ) {
+                    if ( AppManager.endMarkerEnabled && m_position_indicator_mouse_down_mode != PositionIndicatorMouseDownMode.MARK_START ) {
                         int marker_width = Resources.get_end_marker().getWidth( this );
                         int endx = AppManager.xCoordFromClocks( AppManager.endMarker ) - marker_width - AppManager.editorConfig.PxTolerance;
                         if ( endx <= e.X && e.X <= endx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
-                            m_endmark_dragging = true;
+                            m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.MARK_END;
                         }
                     }
                     #endregion
@@ -6318,7 +6330,7 @@ namespace Boare.Cadencii {
                         if ( AppManager.getSelectedTool() != EditTool.ERASER ) {
                             int mouse_clock = AppManager.clockFromXCoord( e.X );
                             m_tempo_dragging_deltaclock = mouse_clock - clock;
-                            m_tempo_dragging = true;
+                            m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.TEMPO;
                         }
                         if ( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                             if ( AppManager.getSelectedTempoCount() > 0 ) {
@@ -6377,7 +6389,7 @@ namespace Boare.Cadencii {
                             int barcount_clock = AppManager.getVsqFile().getClockFromBarCount( barcount );
                             int mouse_clock = AppManager.clockFromXCoord( e.X );
                             m_timesig_dragging_deltaclock = mouse_clock - barcount_clock;
-                            m_timesig_dragging = true;
+                            m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.TIMESIG;
                         }
                         if ( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                             if ( AppManager.getSelectedTimesigCount() > 0 ) {
@@ -6421,7 +6433,7 @@ namespace Boare.Cadencii {
             refreshScreen();
         }
 
-        public void picturePositionIndicator_MouseClick( Object sender, BMouseEventArgs e ) {
+        public void picturePositionIndicator_MouseUp( Object sender, BMouseEventArgs e ) {
             if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
                 return;
             }
@@ -6431,10 +6443,9 @@ namespace Boare.Cadencii {
             AppManager.debugWriteLine( "picturePositionIndicator_MouseClick" );
 #endif
             if ( e.Button == BMouseButtons.Left ) {
-                if ( 4 <= e.Y && e.Y <= 18 ) {
-                    #region マーカー位置の変更
-                    if ( !m_startmark_dragging && !m_endmark_dragging ) {
-
+                if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.NONE ) {
+                    if ( 4 <= e.Y && e.Y <= 18 ) {
+                        #region マーカー位置の変更
                         int clock = AppManager.clockFromXCoord( e.X );
                         if ( AppManager.editorConfig.getPositionQuantize() != QuantizeMode.off ) {
                             int unit = AppManager.getPositionQuantizeClock();
@@ -6446,43 +6457,8 @@ namespace Boare.Cadencii {
                         }
                         AppManager.setCurrentClock( clock );
                         refreshScreen();
-                    } else {
-                        m_startmark_dragging = false;
-                        m_endmark_dragging = false;
-                    }
-                    #endregion
-                } else if ( 18 < e.Y && e.Y <= 32 ) {
-                    if ( m_tempo_dragging ) {
-                        int count = AppManager.getSelectedTempoCount();
-                        int[] clocks = new int[count];
-                        int[] new_clocks = new int[count];
-                        int[] tempos = new int[count];
-                        int i = -1;
-                        boolean contains_first_tempo = false;
-                        for ( Iterator itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
-                            ValuePair<Integer, SelectedTempoEntry> item = (ValuePair<Integer, SelectedTempoEntry>)itr.next();
-                            int clock = item.getKey();
-                            i++;
-                            clocks[i] = clock;
-                            if ( clock == 0 ) {
-                                contains_first_tempo = true;
-                                break;
-                            }
-                            TempoTableEntry editing = AppManager.getSelectedTempo( clock ).editing;
-                            new_clocks[i] = editing.Clock;
-                            tempos[i] = editing.Tempo;
-                        }
-                        if ( contains_first_tempo ) {
-#if !JAVA
-                            SystemSounds.Asterisk.Play();
-#endif
-                        } else {
-                            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, new_clocks, tempos ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                            setEdited( true );
-                        }
-                        m_tempo_dragging = false;
-                    } else if ( !m_startmark_dragging && !m_endmark_dragging ) {
+                        #endregion
+                    } else if ( 18 < e.Y && e.Y <= 32 ) {
                         #region テンポの変更
 #if DEBUG
                         AppManager.debugWriteLine( "TempoChange" );
@@ -6588,45 +6564,9 @@ namespace Boare.Cadencii {
                             }
                             #endregion
                         }
-                        m_startmark_dragging = false;
-                        m_endmark_dragging = false;
+                        m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
                         #endregion
-                    }
-                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
-                    if ( m_timesig_dragging ) {
-                        int count = AppManager.getSelectedTimesigCount();
-                        int[] barcounts = new int[count];
-                        int[] new_barcounts = new int[count];
-                        int[] numerators = new int[count];
-                        int[] denominators = new int[count];
-                        int i = -1;
-                        boolean contains_first_bar = false;
-                        for ( Iterator itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
-                            ValuePair<Integer, SelectedTimesigEntry> item = (ValuePair<Integer, SelectedTimesigEntry>)itr.next();
-                            int bar = item.getKey();
-                            i++;
-                            barcounts[i] = bar;
-                            if ( bar == 0 ) {
-                                contains_first_bar = true;
-                                break;
-                            }
-                            TimeSigTableEntry editing = AppManager.getSelectedTimesig( bar ).editing;
-                            new_barcounts[i] = editing.BarCount;
-                            numerators[i] = editing.Numerator;
-                            denominators[i] = editing.Denominator;
-                        }
-                        if ( contains_first_bar ) {
-#if !JAVA
-                            SystemSounds.Asterisk.Play();
-#endif
-                        } else {
-                            CadenciiCommand run = new CadenciiCommand(
-                                VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                            setEdited( true );
-                        }
-                        m_timesig_dragging = false;
-                    } else if ( !m_startmark_dragging && !m_endmark_dragging ) {
+                    } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
                         #region 拍子の変更
                         AppManager.clearSelectedEvent();
                         AppManager.clearSelectedTempo();
@@ -6721,8 +6661,380 @@ namespace Boare.Cadencii {
                             }
                             #endregion
                         }
-                        m_startmark_dragging = false;
-                        m_endmark_dragging = false;
+                        m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
+                        #endregion
+                    }
+                } else if( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TEMPO ){
+                    int count = AppManager.getSelectedTempoCount();
+                    int[] clocks = new int[count];
+                    int[] new_clocks = new int[count];
+                    int[] tempos = new int[count];
+                    int i = -1;
+                    boolean contains_first_tempo = false;
+                    for ( Iterator itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
+                        ValuePair<Integer, SelectedTempoEntry> item = (ValuePair<Integer, SelectedTempoEntry>)itr.next();
+                        int clock = item.getKey();
+                        i++;
+                        clocks[i] = clock;
+                        if ( clock == 0 ) {
+                            contains_first_tempo = true;
+                            break;
+                        }
+                        TempoTableEntry editing = AppManager.getSelectedTempo( clock ).editing;
+                        new_clocks[i] = editing.Clock;
+                        tempos[i] = editing.Tempo;
+                    }
+                    if ( contains_first_tempo ) {
+#if !JAVA
+                        SystemSounds.Asterisk.Play();
+#endif
+                    } else {
+                        CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, new_clocks, tempos ) );
+                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                        setEdited( true );
+                    }
+                    m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
+                } else if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
+                    int count = AppManager.getSelectedTimesigCount();
+                    int[] barcounts = new int[count];
+                    int[] new_barcounts = new int[count];
+                    int[] numerators = new int[count];
+                    int[] denominators = new int[count];
+                    int i = -1;
+                    boolean contains_first_bar = false;
+                    for ( Iterator itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
+                        ValuePair<Integer, SelectedTimesigEntry> item = (ValuePair<Integer, SelectedTimesigEntry>)itr.next();
+                        int bar = item.getKey();
+                        i++;
+                        barcounts[i] = bar;
+                        if ( bar == 0 ) {
+                            contains_first_bar = true;
+                            break;
+                        }
+                        TimeSigTableEntry editing = AppManager.getSelectedTimesig( bar ).editing;
+                        new_barcounts[i] = editing.BarCount;
+                        numerators[i] = editing.Numerator;
+                        denominators[i] = editing.Denominator;
+                    }
+                    if ( contains_first_bar ) {
+#if !JAVA
+                        SystemSounds.Asterisk.Play();
+#endif
+                    } else {
+                        CadenciiCommand run = new CadenciiCommand(
+                            VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
+                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                        setEdited( true );
+                    }
+                    m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
+                }
+            }
+            pictPianoRoll.repaint();
+            picturePositionIndicator.repaint();
+        }
+
+        public void picturePositionIndicator_MouseUp_OLD( Object sender, BMouseEventArgs e ) {
+            if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
+                return;
+            }
+
+            int modifiers = PortUtil.getCurrentModifierKey();
+#if DEBUG
+            AppManager.debugWriteLine( "picturePositionIndicator_MouseClick" );
+#endif
+            if ( e.Button == BMouseButtons.Left ) {
+                if ( 4 <= e.Y && e.Y <= 18 ) {
+                    #region マーカー位置の変更
+                    if ( m_position_indicator_mouse_down_mode != PositionIndicatorMouseDownMode.MARK_START &&
+                         m_position_indicator_mouse_down_mode != PositionIndicatorMouseDownMode.MARK_END ) {
+
+                        int clock = AppManager.clockFromXCoord( e.X );
+                        if ( AppManager.editorConfig.getPositionQuantize() != QuantizeMode.off ) {
+                            int unit = AppManager.getPositionQuantizeClock();
+                            int odd = clock % unit;
+                            clock -= odd;
+                            if ( odd > unit / 2 ) {
+                                clock += unit;
+                            }
+                        }
+                        AppManager.setCurrentClock( clock );
+                        refreshScreen();
+                    } else {
+                        m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
+                    }
+                    #endregion
+                } else if ( 18 < e.Y && e.Y <= 32 ) {
+                    if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TEMPO ) {
+                        int count = AppManager.getSelectedTempoCount();
+                        int[] clocks = new int[count];
+                        int[] new_clocks = new int[count];
+                        int[] tempos = new int[count];
+                        int i = -1;
+                        boolean contains_first_tempo = false;
+                        for ( Iterator itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
+                            ValuePair<Integer, SelectedTempoEntry> item = (ValuePair<Integer, SelectedTempoEntry>)itr.next();
+                            int clock = item.getKey();
+                            i++;
+                            clocks[i] = clock;
+                            if ( clock == 0 ) {
+                                contains_first_tempo = true;
+                                break;
+                            }
+                            TempoTableEntry editing = AppManager.getSelectedTempo( clock ).editing;
+                            new_clocks[i] = editing.Clock;
+                            tempos[i] = editing.Tempo;
+                        }
+                        if ( contains_first_tempo ) {
+#if !JAVA
+                            SystemSounds.Asterisk.Play();
+#endif
+                        } else {
+                            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, new_clocks, tempos ) );
+                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                            setEdited( true );
+                        }
+                        m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
+                    } else if ( m_position_indicator_mouse_down_mode != PositionIndicatorMouseDownMode.MARK_START &&
+                                m_position_indicator_mouse_down_mode != PositionIndicatorMouseDownMode.MARK_END ) {
+                        #region テンポの変更
+#if DEBUG
+                        AppManager.debugWriteLine( "TempoChange" );
+#endif
+                        AppManager.clearSelectedEvent();
+                        AppManager.clearSelectedTimesig();
+                        if ( AppManager.getSelectedTempoCount() > 0 ) {
+                            #region テンポ変更があった場合
+                            int index = -1;
+                            int clock = AppManager.getLastSelectedTempoClock();
+                            for ( int i = 0; i < AppManager.getVsqFile().TempoTable.size(); i++ ) {
+                                if ( clock == AppManager.getVsqFile().TempoTable.get( i ).Clock ) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            if ( index >= 0 && AppManager.getSelectedTool() == EditTool.ERASER ) {
+                                #region ツールがEraser
+                                if ( AppManager.getVsqFile().TempoTable.get( index ).Clock == 0 ) {
+                                    statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
+                                    SystemSounds.Asterisk.Play();
+#endif
+                                    return;
+                                }
+                                CadenciiCommand run = new CadenciiCommand(
+                                    VsqCommand.generateCommandUpdateTempo( AppManager.getVsqFile().TempoTable.get( index ).Clock,
+                                                                 AppManager.getVsqFile().TempoTable.get( index ).Clock,
+                                                                 -1 ) );
+                                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                setEdited( true );
+                                #endregion
+                            }
+                            #endregion
+                        } else {
+                            #region テンポ変更がなかった場合
+                            AppManager.clearSelectedEvent();
+                            AppManager.clearSelectedTempo();
+                            AppManager.clearSelectedTimesig();
+                            EditTool selected = AppManager.getSelectedTool();
+                            if ( selected == EditTool.PENCIL ||
+                                selected == EditTool.LINE ) {
+                                int changing_clock = AppManager.clockFromXCoord( e.X );
+                                int changing_tempo = AppManager.getVsqFile().getTempoAt( changing_clock );
+                                int bar_count;
+                                int bar_top_clock;
+                                int local_denominator, local_numerator;
+                                bar_count = AppManager.getVsqFile().getBarCountFromClock( changing_clock );
+                                bar_top_clock = AppManager.getVsqFile().getClockFromBarCount( bar_count );
+                                int index2 = -1;
+                                for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
+                                    if ( AppManager.getVsqFile().TimesigTable.get( i ).BarCount > bar_count ) {
+                                        index2 = i;
+                                        break;
+                                    }
+                                }
+                                if ( index2 >= 1 ) {
+                                    local_denominator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Denominator;
+                                    local_numerator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Numerator;
+                                } else {
+                                    local_denominator = AppManager.getVsqFile().TimesigTable.get( 0 ).Denominator;
+                                    local_numerator = AppManager.getVsqFile().TimesigTable.get( 0 ).Numerator;
+                                }
+                                int clock_per_beat = 480 * 4 / local_denominator;
+                                int clocks_in_bar = changing_clock - bar_top_clock;
+                                int beat_in_bar = clocks_in_bar / clock_per_beat + 1;
+                                int clocks_in_beat = clocks_in_bar - (beat_in_bar - 1) * clock_per_beat;
+                                FormTempoConfig dlg = null;
+                                try {
+                                    dlg = new FormTempoConfig( bar_count - AppManager.getVsqFile().getPreMeasure() + 1,
+                                                               beat_in_bar,
+                                                               local_numerator,
+                                                               clocks_in_beat,
+                                                               clock_per_beat,
+                                                               (float)(6e7 / changing_tempo),
+                                                               AppManager.getVsqFile().getPreMeasure() );
+                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
+                                    if ( dlg.showDialog() == BDialogResult.OK ) {
+                                        int new_beat = dlg.getBeatCount();
+                                        int new_clocks_in_beat = dlg.getClock();
+                                        int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
+#if DEBUG
+                                        AppManager.debugWriteLine( "    new_beat=" + new_beat );
+                                        AppManager.debugWriteLine( "    new_clocks_in_beat=" + new_clocks_in_beat );
+                                        AppManager.debugWriteLine( "    changing_clock=" + changing_clock );
+                                        AppManager.debugWriteLine( "    new_clock=" + new_clock );
+#endif
+                                        CadenciiCommand run = new CadenciiCommand(
+                                            VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                        setEdited( true );
+                                        refreshScreen();
+                                    }
+                                } catch ( Exception ex ) {
+                                } finally {
+                                    if ( dlg != null ) {
+                                        try {
+                                            dlg.close();
+                                        } catch ( Exception ex2 ) {
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                        }
+                        m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
+                        #endregion
+                    }
+                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
+                    if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
+                        int count = AppManager.getSelectedTimesigCount();
+                        int[] barcounts = new int[count];
+                        int[] new_barcounts = new int[count];
+                        int[] numerators = new int[count];
+                        int[] denominators = new int[count];
+                        int i = -1;
+                        boolean contains_first_bar = false;
+                        for ( Iterator itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
+                            ValuePair<Integer, SelectedTimesigEntry> item = (ValuePair<Integer, SelectedTimesigEntry>)itr.next();
+                            int bar = item.getKey();
+                            i++;
+                            barcounts[i] = bar;
+                            if ( bar == 0 ) {
+                                contains_first_bar = true;
+                                break;
+                            }
+                            TimeSigTableEntry editing = AppManager.getSelectedTimesig( bar ).editing;
+                            new_barcounts[i] = editing.BarCount;
+                            numerators[i] = editing.Numerator;
+                            denominators[i] = editing.Denominator;
+                        }
+                        if ( contains_first_bar ) {
+#if !JAVA
+                            SystemSounds.Asterisk.Play();
+#endif
+                        } else {
+                            CadenciiCommand run = new CadenciiCommand(
+                                VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
+                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                            setEdited( true );
+                        }
+                        m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
+                    } else if ( m_position_indicator_mouse_down_mode != PositionIndicatorMouseDownMode.MARK_START &&
+                                m_position_indicator_mouse_down_mode != PositionIndicatorMouseDownMode.MARK_END ) {
+                        #region 拍子の変更
+                        AppManager.clearSelectedEvent();
+                        AppManager.clearSelectedTempo();
+                        if ( AppManager.getSelectedTimesigCount() > 0 ) {
+                            #region 拍子変更があった場合
+                            int index = 0;
+                            int last_barcount = AppManager.getLastSelectedTimesigBarcount();
+                            for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
+                                if ( AppManager.getVsqFile().TimesigTable.get( i ).BarCount == last_barcount ) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
+                                #region ツールがEraser
+                                if ( AppManager.getVsqFile().TimesigTable.get( index ).Clock == 0 ) {
+                                    statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
+                                    SystemSounds.Asterisk.Play();
+#endif
+                                    return;
+                                }
+                                int barcount = AppManager.getVsqFile().TimesigTable.get( index ).BarCount;
+                                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTimesig( barcount, barcount, -1, -1 ) );
+                                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                setEdited( true );
+                                #endregion
+                            }
+                            #endregion
+                        } else {
+                            #region 拍子変更がなかった場合
+                            AppManager.clearSelectedEvent();
+                            AppManager.clearSelectedTempo();
+                            AppManager.clearSelectedTimesig();
+                            EditTool selected = AppManager.getSelectedTool();
+                            if ( selected == EditTool.PENCIL ||
+                                selected == EditTool.LINE ) {
+                                int pre_measure = AppManager.getVsqFile().getPreMeasure();
+                                int clock = AppManager.clockFromXCoord( e.X );
+                                int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
+                                int numerator, denominator;
+                                Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
+                                int total_clock = AppManager.getVsqFile().TotalClocks;
+                                //int max_barcount = AppManager.VsqFile.getBarCountFromClock( total_clock ) - pre_measure + 1;
+                                //int min_barcount = 1;
+#if DEBUG
+                                AppManager.debugWriteLine( "FormMain.picturePositionIndicator_MouseClick; bar_count=" + (bar_count - pre_measure + 1) );
+#endif
+                                FormBeatConfig dlg = null;
+                                try {
+                                    dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
+                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
+                                    if ( dlg.showDialog() == BDialogResult.OK ) {
+                                        if ( dlg.isEndSpecified() ) {
+                                            int[] new_barcounts = new int[2];
+                                            int[] numerators = new int[2];
+                                            int[] denominators = new int[2];
+                                            int[] barcounts = new int[2];
+                                            new_barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                            new_barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
+                                            numerators[0] = dlg.getNumerator();
+                                            numerators[1] = timesig.numerator;
+
+                                            denominators[0] = dlg.getDenominator();
+                                            denominators[1] = timesig.denominator;
+
+                                            barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                            barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
+                                            CadenciiCommand run = new CadenciiCommand(
+                                                VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
+                                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                            setEdited( true );
+                                        } else {
+                                            CadenciiCommand run = new CadenciiCommand(
+                                                VsqCommand.generateCommandUpdateTimesig( bar_count,
+                                                                               dlg.getStart() + pre_measure - 1,
+                                                                               dlg.getNumerator(),
+                                                                               dlg.getDenominator() ) );
+                                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                            setEdited( true );
+                                        }
+                                    }
+                                } catch ( Exception ex ) {
+                                } finally {
+                                    if ( dlg != null ) {
+                                        try {
+                                            dlg.close();
+                                        } catch ( Exception ex2 ) {
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                        }
+                        m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
                         #endregion
                     }
                 }
@@ -6732,7 +7044,7 @@ namespace Boare.Cadencii {
         }
 
         public void picturePositionIndicator_MouseMove( Object sender, BMouseEventArgs e ) {
-            if ( m_tempo_dragging ) {
+            if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TEMPO ) {
                 int clock = AppManager.clockFromXCoord( e.X ) - m_tempo_dragging_deltaclock;
                 int step = AppManager.getPositionQuantizeClock();
                 int odd = clock % step;
@@ -6748,7 +7060,7 @@ namespace Boare.Cadencii {
                     AppManager.getSelectedTempo( key ).editing.Clock = AppManager.getSelectedTempo( key ).original.Clock + dclock;
                 }
                 picturePositionIndicator.repaint();
-            } else if ( m_timesig_dragging ) {
+            } else if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
                 int clock = AppManager.clockFromXCoord( e.X ) - m_timesig_dragging_deltaclock;
                 int barcount = AppManager.getVsqFile().getBarCountFromClock( clock );
                 int last_barcount = AppManager.getLastSelectedTimesigBarcount();
@@ -6759,7 +7071,7 @@ namespace Boare.Cadencii {
                     AppManager.getSelectedTimesig( bar ).editing.BarCount = AppManager.getSelectedTimesig( bar ).original.BarCount + dbarcount;
                 }
                 picturePositionIndicator.repaint();
-            } else if ( m_startmark_dragging ) {
+            } else if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.MARK_START ) {
                 int clock = AppManager.clockFromXCoord( e.X );
                 int unit = AppManager.getPositionQuantizeClock();
                 int odd = clock % unit;
@@ -6776,7 +7088,7 @@ namespace Boare.Cadencii {
                     AppManager.endMarker = draft_end;
                 }
                 refreshScreen();
-            } else if ( m_endmark_dragging ) {
+            } else if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.MARK_END ) {
                 int clock = AppManager.clockFromXCoord( e.X );
                 int unit = AppManager.getPositionQuantizeClock();
                 int odd = clock % unit;
@@ -6797,10 +7109,7 @@ namespace Boare.Cadencii {
         }
 
         public void picturePositionIndicator_MouseLeave( Object sender, EventArgs e ) {
-            m_startmark_dragging = false;
-            m_endmark_dragging = false;
-            m_tempo_dragging = false;
-            m_timesig_dragging = false;
+            m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
         }
 
         public void picturePositionIndicator_Paint( Object sender, BPaintEventArgs e ) {
@@ -13463,7 +13772,7 @@ namespace Boare.Cadencii {
                             g.drawString( s, x + 4, 36 );
                         }
 
-                        if ( m_timesig_dragging ) {
+                        if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
                             if ( AppManager.isSelectedTimesigContains( barcount ) ) {
                                 int edit_clock_x = AppManager.xCoordFromClocks( AppManager.getVsqFile().getClockFromBarCount( AppManager.getSelectedTimesig( barcount ).editing.BarCount ) );
                                 g.setColor( s_pen_187_187_255 );
@@ -13494,7 +13803,7 @@ namespace Boare.Cadencii {
                             g.drawString( s, x + 4, 21 );
                         }
 
-                        if ( m_tempo_dragging ) {
+                        if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TEMPO ) {
                             if ( AppManager.isSelectedTempoContains( clock ) ) {
                                 int edit_clock_x = AppManager.xCoordFromClocks( AppManager.getSelectedTempo( clock ).editing.Clock );
                                 g.setColor( s_pen_187_187_255 );
@@ -13919,8 +14228,8 @@ namespace Boare.Cadencii {
             picturePositionIndicator.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "picturePositionIndicator_PreviewKeyDown" ) );
             picturePositionIndicator.mouseMoveEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseMove" ) );
             picturePositionIndicator.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseDoubleClick" ) );
-            picturePositionIndicator.mouseClickEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseClick" ) );
             picturePositionIndicator.mouseDownEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseDown" ) );
+            picturePositionIndicator.mouseUpEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseUp" ) );
             picturePositionIndicator.paintEvent.add( new BPaintEventHandler( this, "picturePositionIndicator_Paint" ) );
             pictPianoRoll.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "pictPianoRoll_PreviewKeyDown" ) );
             pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );

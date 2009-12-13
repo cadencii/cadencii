@@ -5,14 +5,9 @@
 -編集履歴
 -エラー通知
 -曲のタイムライン上にユーザが付けるタグ（付箋）的な物。「次の付箋に進む」「前の付箋に戻る」
+-AquesToneRenderingRunnerを実装
 
 -v3.0.6todo------------------------------------------------------------
--Play With SynthとPlay After Synthを切り替えられるようにする。
--PortUtil.getbytes*, make_*系の実装の妥当性確認。
--13時間31分35.77秒を超える曲をレンダリングするとクラッシュする（たぶん）．要確認．PlaySound.cpp, vstidrv.cs, UtauRenderingRunner.cs, StraightRenderingRunner.cs, VocaloRenderingRunner.csに要修正の可能性
--VsqHandleのcastTo**はクローンする必要があるのかどうか検討
--最新のバージョンがあるかどうかを問い合わせる機能
--英語音源のとき、歌詞/発音記号の入力はどうなってる？
 
 -v3.1.0todo------------------------------------------------------------
 -ミキサーダイアログのミュートとソロボタン
@@ -26,7 +21,18 @@
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
--右クリック時のpopupmenuがでない
+-VOCALOID1のアイコンパレットの機能
+-スタートマーカーとエンドマーカーがある時、wav出力範囲をマーカー範囲に限定する
+-Play With SynthとPlay After Synthを切り替えられるようにする。
+-PortUtil.getbytes*, make_*系の実装の妥当性確認。
+-13時間31分35.77秒を超える曲をレンダリングするとクラッシュする（たぶん）．要確認．PlaySound.cpp, vstidrv.cs, UtauRenderingRunner.cs, StraightRenderingRunner.cs, VocaloRenderingRunner.csに要修正の可能性
+-VsqHandleのcastTo**はクローンする必要があるのかどうか検討
+-最新のバージョンがあるかどうかを問い合わせる機能
+-英語音源のとき、歌詞/発音記号の入力はどうなってる？
+-スタートマーカーとエンドマーカーを移動中、範囲外でMouseUpしたときの処理。
+
+-v3.1.0done------------------------------------------------------------
+-ピアノロールの鍵盤部分とスクロールバーの部分でのホイール操作を、縦方向のスクロールに割り当てる
 
 -v3.0.6(3.1.0)done-----------------------------------------------------
 -bug0018[2Nov2009_1959JST_かつ-01]ショートカットキーが設定できなくなっている。

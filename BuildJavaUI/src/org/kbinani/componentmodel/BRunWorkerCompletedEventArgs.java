@@ -2,8 +2,7 @@ package org.kbinani.componentmodel;
 
 import org.kbinani.*;
 
-public class BRunWorkerCompletedEventArgs extends BEventArgs
-{
+public class BRunWorkerCompletedEventArgs extends BEventArgs{
     private Object m_result = null;
     private Exception m_error = null;
     private boolean m_cancelled = false;

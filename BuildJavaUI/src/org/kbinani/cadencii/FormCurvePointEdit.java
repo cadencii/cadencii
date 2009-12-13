@@ -5,10 +5,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BTextBox;
@@ -16,6 +14,8 @@ import org.kbinani.windows.forms.BTextBox;
 //SECTION-END-IMPORT
 public class FormCurvePointEdit extends BForm {
     //SECTION-BEGIN-FIELD
+    
+    private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private BButton btnBackward3 = null;
     private BButton btnBackward2 = null;
