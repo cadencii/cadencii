@@ -26,24 +26,104 @@ namespace bocoree.windows.forms {
     /// KeyDownとKeyUpを受信できるPictureBox
     /// </summary>
     public class BPictureBox : PictureBox {
-        public event KeyEventHandler BKeyDown;
-        public event KeyEventHandler BKeyUp;
+        #region event impl MouseMove
+        // root impl of MouseMove event is in BButton
+        public BEvent<BMouseEventHandler> mouseMoveEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseMove( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseMove( mevent );
+            mouseMoveEvent.raise( this, mevent );
+        }
+        #endregion
+
+        public BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseDown( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseDown( mevent );
+            mouseDownEvent.raise( this, mevent );
+            base.Focus();
+        }
+
+        #region event impl MouseUp
+        // root impl of MouseUp event is in BButton
+        public BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseUp( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseUp( mevent );
+            mouseUpEvent.raise( this, mevent );
+        }
+        #endregion
+
+        #region event impl MouseEnter
+        // root impl of MouseEnter event is in BButton
+        public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
+        protected override void OnMouseEnter( System.EventArgs e ) {
+            base.OnMouseEnter( e );
+            mouseEnterEvent.raise( this, e );
+        }
+        #endregion
+
+        #region event impl Enter
+        // root impl of Enter event is in BButton
+        public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
+        protected override void OnEnter( System.EventArgs e ) {
+            base.OnEnter( e );
+            enterEvent.raise( this, e );
+        }
+        #endregion
+
+        #region event impl MouseLeave
+        // root impl of MouseLeave event is in BButton
+        public BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
+        protected override void OnMouseLeave( System.EventArgs e ) {
+            base.OnMouseLeave( e );
+            mouseLeaveEvent.raise( this, e );
+        }
+        #endregion
+
+        #region event impl MouseDoubleClick
+        // root impl of MouseDoubleClick is in BButton
+        public BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseDoubleClick( System.Windows.Forms.MouseEventArgs e ) {
+            base.OnMouseDoubleClick( e );
+            mouseDoubleClickEvent.raise( this, e );
+        }
+        #endregion
+
+        #region event impl Paint
+        // root impl of Paint is in BButton
+        public BEvent<BPaintEventHandler> paintEvent = new BEvent<BPaintEventHandler>();
+        protected override void OnPaint( System.Windows.Forms.PaintEventArgs pevent ) {
+            base.OnPaint( pevent );
+            paintEvent.raise( this, pevent );
+        }
+        #endregion
+
+        #region event impl MouseClick
+        // root impl of MouseClick is in BButton
+        public BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseClick( System.Windows.Forms.MouseEventArgs e ) {
+            base.OnMouseClick( e );
+            mouseClickEvent.raise( this, e );
+        }
+        #endregion
+
+        #region event impl PreviewKeyDown
+        // root implf of PreviewKeyDown is in BButton
+        public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+        protected override void OnPreviewKeyDown( System.Windows.Forms.PreviewKeyDownEventArgs e ) {
+            base.OnPreviewKeyDown( e );
+            previewKeyDownEvent.raise( this, e );
+        }
+        #endregion
         
+        public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
         protected override void OnKeyDown( KeyEventArgs e ) {
-            if ( BKeyDown != null ) {
-                BKeyDown( this, e );
-            }
+            base.OnKeyDown( e );
+            keyDownEvent.raise( this, e );
         }
 
+        public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
         protected override void OnKeyUp( KeyEventArgs e ) {
-            if ( BKeyUp != null ) {
-                BKeyUp( this, e );
-            }
-        }
-
-        protected override void OnMouseDown( MouseEventArgs e ) {
-            base.OnMouseDown( e );
-            this.Focus();
+            base.OnKeyUp( e );
+            keyUpEvent.raise( this, e );
         }
 
         public void setImage( bocoree.java.awt.Image value ) {
@@ -186,7 +266,7 @@ namespace bocoree.windows.forms {
         }
 
         public bocoree.java.awt.Point getLocationOnScreen() {
-            System.Drawing.Point p = base.PointToScreen( base.Location );
+            System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
             return new bocoree.java.awt.Point( p.X, p.Y );
         }
 

@@ -22,6 +22,40 @@ namespace bocoree.windows.forms{
     public class BMenuSeparator : ToolStripSeparator {
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
+        public java.awt.Dimension getMinimumSize() {
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            int w = base.MinimumSize.Width;
+            int h = base.MinimumSize.Height;
+#else
+            int w = 0;
+            int h = 0;
+#endif
+            return new bocoree.java.awt.Dimension( w, h );
+        }
+
+        public void setMinimumSize( java.awt.Dimension value ) {
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            base.MinimumSize = new System.Drawing.Size( value.width, value.height );
+#endif
+        }
+
+        public java.awt.Dimension getMaximumSize() {
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            int w = base.MaximumSize.Width;
+            int h = base.MaximumSize.Height;
+#else
+            int w = int.MaxValue;
+            int h = int.MaxValue;
+#endif
+            return new bocoree.java.awt.Dimension( w, h );
+        }
+
+        public void setMaximumSize( java.awt.Dimension value ) {
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+#endif
+        }
+
         public void invalidate() {
             base.Invalidate();
         }
@@ -124,7 +158,7 @@ namespace bocoree.windows.forms{
         }
 
         public bocoree.java.awt.Point getLocationOnScreen() {
-            System.Drawing.Point p = base.PointToScreen( base.Location );
+            System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
             return new bocoree.java.awt.Point( p.X, p.Y );
         }
 

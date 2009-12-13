@@ -127,13 +127,8 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
-#if JAVA
-            this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-#else
-            btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
         }
 
         private void setResources() {

@@ -1,5 +1,5 @@
 ﻿/*
- * BDoWorkEventHandler.cs
+ * BPreviewKeyDownEventHandler.cs
  * Copyright (c) 2009 kbinani
  *
  * This file is part of bocoree.
@@ -12,29 +12,28 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.componentModel;
+package org.kbinani.windows.forms;
 
 import org.kbinani.BEventHandler;
 #else
 using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace bocoree.componentModel {
+namespace bocoree.windows.forms {
 #endif
 
 #if JAVA
-    public class BDoWorkEventHandler extends BEventHandler{
+    public class BPreviewKeyDownEventHandler extends BEventHandler{
 #else
-    public class BDoWorkEventHandler : BEventHandler {
+    public class BPreviewKeyDownEventHandler : BEventHandler {
 #endif
-        public BDoWorkEventHandler( Object sender, String method_name )
+        public BPreviewKeyDownEventHandler( Object sender, String method_name )
 #if JAVA
         {
 #else
             :
 #endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) )
+            base( sender, method_name, typeof( void ), typeof( Object ), typeof( PreviewKeyDownEventArgs ) )
 #if JAVA
             ;
 #else
@@ -42,13 +41,13 @@ namespace bocoree.componentModel {
 #endif
         }
 
-        public BDoWorkEventHandler( Type sender, String method_name )
+        public BPreviewKeyDownEventHandler( Type sender, String method_name )
 #if JAVA
         {
 #else
             :
 #endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) )
+        base( sender, method_name, typeof( void ), typeof( Object ), typeof( PreviewKeyDownEventArgs ) )
 #if JAVA
             ;
 #else

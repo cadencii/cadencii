@@ -20,6 +20,7 @@
 #define COMPONENT_ENABLE_FOCUS
 #define COMPONENT_ENABLE_CURSOR
 #define COMPONENT_ENABLE_REPAINT
+#define COMPONENT_ENABLE_MINMAX_SIZE
 
 using System;
 
@@ -29,15 +30,67 @@ namespace bocoree.windows.forms {
     public class BForm : System.Windows.Forms.Form {
         protected BDialogResult m_result = BDialogResult.CANCEL;
 
+        // root impl of Load event
+        #region event impl Load
+        // root impl of Load event is in BForm.cs
         public BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
+        protected override void OnLoad( EventArgs e ) {
+            base.OnLoad( e );
+            loadEvent.raise( this, e );
+        }
+        #endregion
+
+        // root implf of Activated
+        #region event impl Activated
+        // root implf of Activated is in BForm
+        public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
+        protected override void OnActivated( EventArgs e ) {
+            base.OnActivated( e );
+            activatedEvent.raise( this, e );
+        }
+        #endregion
+
+        // root implf of Deactivate
+        #region event impl Deactivate
+        // root implf of Deactivate is in BForm
+        public BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
+        protected override void OnDeactivate( EventArgs e ) {
+            base.OnDeactivate( e );
+            deactivateEvent.raise( this, e );
+        }
+        #endregion
+
+        // root implf of FormClosed
+        #region event impl FormClosed
+        // root implf of FormClosed is in BForm
+        public BEvent<BFormClosedEventHandler> formClosedEvent = new BEvent<BFormClosedEventHandler>();
+        protected override void OnFormClosed( System.Windows.Forms.FormClosedEventArgs e ) {
+            base.OnFormClosed( e );
+            formClosedEvent.raise( this, e );
+        }
+        #endregion
+
+        // root implf of FormClosing
+        #region event impl FormClosing
+        // root implf of FormClosing is in BForm
+        public BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
+        protected override void OnFormClosing( System.Windows.Forms.FormClosingEventArgs e ) {
+            base.OnFormClosing( e );
+            formClosingEvent.raise( this, e );
+        }
+        #endregion
+
+        #region event impl PreviewKeyDown
+        // root implf of PreviewKeyDown is in BButton
+        public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+        protected override void OnPreviewKeyDown( System.Windows.Forms.PreviewKeyDownEventArgs e ) {
+            base.OnPreviewKeyDown( e );
+            previewKeyDownEvent.raise( this, e );
+        }
+        #endregion
 
         public BForm()
             : base() {
-            loadEvent.registerNative( this, "Load", new EventHandler( __handleLoadEvent ) );
-        }
-
-        private void __handleLoadEvent( object sender, EventArgs e ) {
-            loadEvent.raise( this, e );
         }
 
         public void setDialogResult( BDialogResult value ) {
@@ -121,19 +174,37 @@ namespace bocoree.windows.forms {
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {
-            return new bocoree.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            int w = base.MinimumSize.Width;
+            int h = base.MinimumSize.Height;
+#else
+            int w = 0;
+            int h = 0;
+#endif
+            return new bocoree.java.awt.Dimension( w, h );
         }
 
         public void setMinimumSize( java.awt.Dimension value ) {
+#if COMPONENT_ENABLE_MINMAX_SIZE
             base.MinimumSize = new System.Drawing.Size( value.width, value.height );
+#endif
         }
 
         public java.awt.Dimension getMaximumSize() {
-            return new bocoree.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            int w = base.MaximumSize.Width;
+            int h = base.MaximumSize.Height;
+#else
+            int w = int.MaxValue;
+            int h = int.MaxValue;
+#endif
+            return new bocoree.java.awt.Dimension( w, h );
         }
 
         public void setMaximumSize( java.awt.Dimension value ) {
+#if COMPONENT_ENABLE_MINMAX_SIZE
             base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+#endif
         }
 
         public void invalidate() {
@@ -238,7 +309,7 @@ namespace bocoree.windows.forms {
         }
 
         public bocoree.java.awt.Point getLocationOnScreen() {
-            System.Drawing.Point p = base.PointToScreen( base.Location );
+            System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
             return new bocoree.java.awt.Point( p.X, p.Y );
         }
 

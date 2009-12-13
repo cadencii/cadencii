@@ -1944,7 +1944,7 @@ namespace Boare.Cadencii {
             Vector<BKeys> list2 = new Vector<BKeys>();
             foreach ( BKeys key in keys ) {
 #if DEBUG
-                AppManager.debugWriteLine( "    " + key );
+                //AppManager.debugWriteLine( "    " + key );
 #endif
                 if ( key != BKeys.Control && key != BKeys.Shift && key != BKeys.Alt ) {
                     list2.add( key );

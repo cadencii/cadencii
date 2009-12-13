@@ -18,14 +18,13 @@ import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuBar;
 import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPanel;
+import org.kbinani.windows.forms.BPictureBox;
 import org.kbinani.windows.forms.BPopupMenu;
 import org.kbinani.windows.forms.BSlider;
 import org.kbinani.windows.forms.BSplitPane;
 import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BVScrollBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -279,34 +278,34 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPianoQuantizeOff = null;
     private BMenuItem cMenuPianoLengthOff = null;
     private BPanel panel3 = null;
-    private BPanel pictOverview = null;
-    private BButton BButton = null;
-    private BButton jButton1 = null;
-    private BButton jButton2 = null;
-    private BButton jButton3 = null;
-    private BButton jButton4 = null;
-    private BButton jButton5 = null;
+    private BPictureBox pictOverview = null;
+    private BButton btnMooz = null;
+    private BButton btnLeft1 = null;
+    private BButton btnRight1 = null;
+    private BButton btnZoom = null;
+    private BButton btnLeft2 = null;
+    private BButton btnRight2 = null;
     private PictPianoRoll pictPianoRoll = null;
     private BVScrollBar vScroll = null;
     private BHScrollBar hScroll = null;
     private BPanel pictureBox3 = null;
     private BSlider trackBar = null;
-    private BButton jButton6 = null;
+    private BButton pictKeyLengthSplitter = null;
     private BPanel picturePositionIndicator = null;
     private BPanel jPanel1 = null;
     private BPanel jPanel3 = null;
     private BLabel statusLabel = null;
-    private JMenu menuHidden = null;
-    private JMenuItem menuHiddenEditLyric = null;
-    private JMenuItem menuHiddenEditFlipToolPointerPencil = null;
-    private JMenuItem menuHiddenEditFlipToolPointerEraser = null;
-    private JMenuItem menuHiddenVisualForwardParameter = null;
-    private JMenuItem menuHiddenVisualBackwardParameter = null;
-    private JMenuItem menuHiddenTrackNext = null;
-    private JMenuItem menuHiddenTrackBack = null;
-    private JMenuItem menuHiddenCopy = null;
-    private JMenuItem menuHiddenPaste = null;
-    private JMenuItem menuHiddenCut = null;
+    private BMenu menuHidden = null;
+    private BMenuItem menuHiddenEditLyric = null;
+    private BMenuItem menuHiddenEditFlipToolPointerPencil = null;
+    private BMenuItem menuHiddenEditFlipToolPointerEraser = null;
+    private BMenuItem menuHiddenVisualForwardParameter = null;
+    private BMenuItem menuHiddenVisualBackwardParameter = null;
+    private BMenuItem menuHiddenTrackNext = null;
+    private BMenuItem menuHiddenTrackBack = null;
+    private BMenuItem menuHiddenCopy = null;
+    private BMenuItem menuHiddenPaste = null;
+    private BMenuItem menuHiddenCut = null;
     private BMenuItem menuTrackRendererVOCALOID1 = null;
     private BMenuItem menuTrackRendererVOCALOID2 = null;
     private BMenuItem menuTrackRendererUtau = null;
@@ -314,6 +313,9 @@ public class FormMain extends BForm {
     private BMenuItem menuSettingGameControlerSetting = null;
     private BMenuItem menuSettingGameControlerLoad = null;
     private BMenuItem menuSettingGameControlerRemove = null;
+    private BMenuItem menuHelpDebug = null;
+    private BPanel pictureBox2 = null;
+
     //SECTION-END-FIELD
     /**
      * This is the default constructor
@@ -1907,6 +1909,7 @@ public class FormMain extends BForm {
             menuHelp = new BMenu();
             menuHelp.setText("Help");
             menuHelp.add(getBMenuItem39());
+            menuHelp.add(getMenuHelpDebug());
         }
         return menuHelp;
     }
@@ -1950,6 +1953,10 @@ public class FormMain extends BForm {
      */
     private BPanel getPanel1() {
         if (panel1 == null) {
+            GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+            gridBagConstraints16.gridx = 3;
+            gridBagConstraints16.fill = GridBagConstraints.BOTH;
+            gridBagConstraints16.gridy = 1;
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
             gridBagConstraints11.fill = GridBagConstraints.NONE;
             gridBagConstraints11.gridy = 1;
@@ -1985,6 +1992,7 @@ public class FormMain extends BForm {
             panel1.add(getHScroll(), gridBagConstraints9);
             panel1.add(getPictureBox3(), gridBagConstraints10);
             panel1.add(getTrackBar(), gridBagConstraints11);
+            panel1.add(getJPanel2(), gridBagConstraints16);
         }
         return panel1;
     }
@@ -3634,11 +3642,11 @@ public class FormMain extends BForm {
             panel3 = new BPanel();
             panel3.setLayout(new GridBagLayout());
             panel3.add(getJButton(), gridBagConstraints);
-            panel3.add(getJButton1(), gridBagConstraints1);
-            panel3.add(getJButton2(), gridBagConstraints2);
-            panel3.add(getJButton3(), gridBagConstraints3);
-            panel3.add(getJButton4(), gridBagConstraints4);
-            panel3.add(getJButton5(), gridBagConstraints5);
+            panel3.add(getBtnLeft1(), gridBagConstraints1);
+            panel3.add(getBtnRight1(), gridBagConstraints2);
+            panel3.add(getBtnZoom(), gridBagConstraints3);
+            panel3.add(getBtnLeft2(), gridBagConstraints4);
+            panel3.add(getBtnRight2(), gridBagConstraints5);
             panel3.add(getPictOverview(), gridBagConstraints6);
         }
         return panel3;
@@ -3649,10 +3657,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BPanel   
      */
-    private BPanel getPictOverview() {
+    private BPictureBox getPictOverview() {
         if (pictOverview == null) {
-            pictOverview = new BPanel();
-            pictOverview.setLayout(new GridBagLayout());
+            pictOverview = new BPictureBox();
         }
         return pictOverview;
     }
@@ -3663,76 +3670,76 @@ public class FormMain extends BForm {
      * @return javax.swing.BButton  
      */
     private BButton getJButton() {
-        if (BButton == null) {
-            BButton = new BButton();
-            BButton.setText("-");
+        if (btnMooz == null) {
+            btnMooz = new BButton();
+            btnMooz.setText("-");
         }
-        return BButton;
+        return btnMooz;
     }
 
     /**
-     * This method initializes jButton1 
+     * This method initializes btnLeft1 
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getJButton1() {
-        if (jButton1 == null) {
-            jButton1 = new BButton();
-            jButton1.setText("<");
+    private BButton getBtnLeft1() {
+        if (btnLeft1 == null) {
+            btnLeft1 = new BButton();
+            btnLeft1.setText("<");
         }
-        return jButton1;
+        return btnLeft1;
     }
 
     /**
-     * This method initializes jButton2 
+     * This method initializes btnRight1 
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getJButton2() {
-        if (jButton2 == null) {
-            jButton2 = new BButton();
-            jButton2.setText(">");
+    private BButton getBtnRight1() {
+        if (btnRight1 == null) {
+            btnRight1 = new BButton();
+            btnRight1.setText(">");
         }
-        return jButton2;
+        return btnRight1;
     }
 
     /**
-     * This method initializes jButton3 
+     * This method initializes btnZoom 
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getJButton3() {
-        if (jButton3 == null) {
-            jButton3 = new BButton();
-            jButton3.setText("+");
+    private BButton getBtnZoom() {
+        if (btnZoom == null) {
+            btnZoom = new BButton();
+            btnZoom.setText("+");
         }
-        return jButton3;
+        return btnZoom;
     }
 
     /**
-     * This method initializes jButton4 
+     * This method initializes btnLeft2 
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getJButton4() {
-        if (jButton4 == null) {
-            jButton4 = new BButton();
-            jButton4.setText("<");
+    private BButton getBtnLeft2() {
+        if (btnLeft2 == null) {
+            btnLeft2 = new BButton();
+            btnLeft2.setText("<");
         }
-        return jButton4;
+        return btnLeft2;
     }
 
     /**
-     * This method initializes jButton5 
+     * This method initializes btnRight2 
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getJButton5() {
-        if (jButton5 == null) {
-            jButton5 = new BButton();
-            jButton5.setText(">");
+    private BButton getBtnRight2() {
+        if (btnRight2 == null) {
+            btnRight2 = new BButton();
+            btnRight2.setText(">");
         }
-        return jButton5;
+        return btnRight2;
     }
 
     /**
@@ -3784,7 +3791,7 @@ public class FormMain extends BForm {
             pictureBox3 = new BPanel();
             pictureBox3.setLayout(new GridBagLayout());
             pictureBox3.setPreferredSize(new Dimension(68, 0));
-            pictureBox3.add(getJButton6(), gridBagConstraints12);
+            pictureBox3.add(getPictKeyLengthSplitter(), gridBagConstraints12);
         }
         return pictureBox3;
     }
@@ -3803,15 +3810,15 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes jButton6 
+     * This method initializes pictKeyLengthSplitter 
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getJButton6() {
-        if (jButton6 == null) {
-            jButton6 = new BButton();
+    private BButton getPictKeyLengthSplitter() {
+        if (pictKeyLengthSplitter == null) {
+            pictKeyLengthSplitter = new BButton();
         }
-        return jButton6;
+        return pictKeyLengthSplitter;
     }
 
     /**
@@ -3886,9 +3893,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenu	
      */
-    private JMenu getMenuHidden() {
+    private BMenu getMenuHidden() {
         if (menuHidden == null) {
-            menuHidden = new JMenu();
+            menuHidden = new BMenu();
             menuHidden.setText("Hidden");
             menuHidden.add(getMenuHiddenEditLyric());
             menuHidden.add(getMenuHiddenEditFlipToolPointerPencil());
@@ -3909,9 +3916,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenEditLyric() {
+    private BMenuItem getMenuHiddenEditLyric() {
         if (menuHiddenEditLyric == null) {
-            menuHiddenEditLyric = new JMenuItem();
+            menuHiddenEditLyric = new BMenuItem();
             menuHiddenEditLyric.setText("Start Lyric Input");
         }
         return menuHiddenEditLyric;
@@ -3922,9 +3929,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenEditFlipToolPointerPencil() {
+    private BMenuItem getMenuHiddenEditFlipToolPointerPencil() {
         if (menuHiddenEditFlipToolPointerPencil == null) {
-            menuHiddenEditFlipToolPointerPencil = new JMenuItem();
+            menuHiddenEditFlipToolPointerPencil = new BMenuItem();
             menuHiddenEditFlipToolPointerPencil.setText("Change Tool Pointer / Pencil");
         }
         return menuHiddenEditFlipToolPointerPencil;
@@ -3935,9 +3942,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenEditFlipToolPointerEraser() {
+    private BMenuItem getMenuHiddenEditFlipToolPointerEraser() {
         if (menuHiddenEditFlipToolPointerEraser == null) {
-            menuHiddenEditFlipToolPointerEraser = new JMenuItem();
+            menuHiddenEditFlipToolPointerEraser = new BMenuItem();
             menuHiddenEditFlipToolPointerEraser.setText("Change Tool Pointer/ Eraser");
         }
         return menuHiddenEditFlipToolPointerEraser;
@@ -3948,9 +3955,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenVisualForwardParameter() {
+    private BMenuItem getMenuHiddenVisualForwardParameter() {
         if (menuHiddenVisualForwardParameter == null) {
-            menuHiddenVisualForwardParameter = new JMenuItem();
+            menuHiddenVisualForwardParameter = new BMenuItem();
             menuHiddenVisualForwardParameter.setText("Next Control Curve");
         }
         return menuHiddenVisualForwardParameter;
@@ -3961,9 +3968,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenVisualBackwardParameter() {
+    private BMenuItem getMenuHiddenVisualBackwardParameter() {
         if (menuHiddenVisualBackwardParameter == null) {
-            menuHiddenVisualBackwardParameter = new JMenuItem();
+            menuHiddenVisualBackwardParameter = new BMenuItem();
             menuHiddenVisualBackwardParameter.setText("Previous Control Curve");
         }
         return menuHiddenVisualBackwardParameter;
@@ -3974,9 +3981,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenTrackNext() {
+    private BMenuItem getMenuHiddenTrackNext() {
         if (menuHiddenTrackNext == null) {
-            menuHiddenTrackNext = new JMenuItem();
+            menuHiddenTrackNext = new BMenuItem();
             menuHiddenTrackNext.setText("Next Track");
         }
         return menuHiddenTrackNext;
@@ -3987,9 +3994,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenTrackBack() {
+    private BMenuItem getMenuHiddenTrackBack() {
         if (menuHiddenTrackBack == null) {
-            menuHiddenTrackBack = new JMenuItem();
+            menuHiddenTrackBack = new BMenuItem();
             menuHiddenTrackBack.setText("Previous Track");
         }
         return menuHiddenTrackBack;
@@ -4000,9 +4007,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenCopy() {
+    private BMenuItem getMenuHiddenCopy() {
         if (menuHiddenCopy == null) {
-            menuHiddenCopy = new JMenuItem();
+            menuHiddenCopy = new BMenuItem();
             menuHiddenCopy.setText("Copy");
         }
         return menuHiddenCopy;
@@ -4013,9 +4020,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenPaste() {
+    private BMenuItem getMenuHiddenPaste() {
         if (menuHiddenPaste == null) {
-            menuHiddenPaste = new JMenuItem();
+            menuHiddenPaste = new BMenuItem();
             menuHiddenPaste.setText("Paste");
         }
         return menuHiddenPaste;
@@ -4026,9 +4033,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private JMenuItem getMenuHiddenCut() {
+    private BMenuItem getMenuHiddenCut() {
         if (menuHiddenCut == null) {
-            menuHiddenCut = new JMenuItem();
+            menuHiddenCut = new BMenuItem();
             menuHiddenCut.setText("Cut");
         }
         return menuHiddenCut;
@@ -4123,6 +4130,31 @@ public class FormMain extends BForm {
             menuSettingGameControlerRemove.setText("Remove(&R)");
         }
         return menuSettingGameControlerRemove;
+    }
+
+    /**
+     * This method initializes menuHelpDebug	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */
+    private BMenuItem getMenuHelpDebug() {
+        if (menuHelpDebug == null) {
+            menuHelpDebug = new BMenuItem();
+        }
+        return menuHelpDebug;
+    }
+
+    /**
+     * This method initializes jPanel	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private BPanel getJPanel2() {
+        if (pictureBox2 == null) {
+            pictureBox2 = new BPanel();
+            pictureBox2.setLayout(new GridBagLayout());
+        }
+        return pictureBox2;
     }
 
     //SECTION-END-METHOD

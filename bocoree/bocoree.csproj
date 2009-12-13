@@ -71,6 +71,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BCancelEventArgs.cs" />
+    <Compile Include="BCancelEventHandler.cs" />
     <Compile Include="BCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -92,6 +93,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="BFormClosedEventArgs.cs" />
+    <Compile Include="BFormClosedEventHandler.cs" />
     <Compile Include="BFormClosingEventArgs.cs" />
     <Compile Include="BFormClosingEventHandler.cs" />
     <Compile Include="BFormWindowState.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="BKeyEventArgs.cs" />
     <Compile Include="BKeyEventHandler.cs" />
     <Compile Include="BKeyPressEventArgs.cs" />
+    <Compile Include="BKeyPressEventHandler.cs" />
     <Compile Include="BKeys.cs" />
     <Compile Include="BLabel.cs">
       <SubType>Component</SubType>
@@ -125,6 +128,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BPaintEventArgs.cs" />
+    <Compile Include="BPaintEventHandler.cs" />
     <Compile Include="BPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -135,6 +139,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BPreviewKeyDownEventArgs.cs" />
+    <Compile Include="BPreviewKeyDownEventHandler.cs" />
     <Compile Include="BProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -148,6 +153,7 @@
     <Compile Include="BMenuSeparator.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="BScrollBar.cs" />
     <Compile Include="BSlider.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -197,6 +203,8 @@
     <Compile Include="fft.cs" />
     <Compile Include="IEventHandler.cs" />
     <Compile Include="imageio.cs" />
+    <Compile Include="InternalStdErr.cs" />
+    <Compile Include="InternalStdOut.cs" />
     <Compile Include="io.cs" />
     <Compile Include="Iterator.cs" />
     <Compile Include="lang.cs" />

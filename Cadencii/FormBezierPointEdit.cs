@@ -307,36 +307,20 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
-#if JAVA
-            this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            this.chkEnableSmooth.checkedChangedEvent.add( new BEventHandler( this, "chkEnableSmooth_CheckedChanged" ) );
-            this.btnLeft.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
-            this.btnLeft.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
-            this.btnLeft.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
-            this.btnDataPoint.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
-            this.btnDataPoint.mouseDownEvent.add( new BMouseEventHandler( this, "btnDataPoint_MouseDown" ) );
-            this.btnDataPoint.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
-            this.btnRight.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
-            this.btnRight.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
-            this.btnRight.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
-            this.btnBackward.clickEvent.add( new BEventHandler( this, "btnBackward_Click" ) );
-            this.btnForward.clickEvent.add( new BEventHandler( this, "btnForward_Click" ) );
-#else
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            this.btnCancel.Click += new EventHandler( btnCancel_Click );
-            this.chkEnableSmooth.CheckedChanged += new System.EventHandler( this.chkEnableSmooth_CheckedChanged );
-            this.btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
-            this.btnLeft.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnLeft_MouseDown );
-            this.btnLeft.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
-            this.btnDataPoint.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
-            this.btnDataPoint.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnDataPoint_MouseDown );
-            this.btnDataPoint.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
-            this.btnRight.MouseMove += new System.Windows.Forms.MouseEventHandler( this.common_MouseMove );
-            this.btnRight.MouseDown += new System.Windows.Forms.MouseEventHandler( this.btnRight_MouseDown );
-            this.btnRight.MouseUp += new System.Windows.Forms.MouseEventHandler( this.common_MouseUp );
-            this.btnBackward.Click += new System.EventHandler( this.btnBackward_Click );
-            this.btnForward.Click += new System.EventHandler( this.btnForward_Click );
-#endif
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            chkEnableSmooth.checkedChangedEvent.add( new BEventHandler( this, "chkEnableSmooth_CheckedChanged" ) );
+            btnLeft.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
+            btnLeft.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
+            btnLeft.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
+            btnDataPoint.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
+            btnDataPoint.mouseDownEvent.add( new BMouseEventHandler( this, "btnDataPoint_MouseDown" ) );
+            btnDataPoint.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
+            btnRight.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
+            btnRight.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
+            btnRight.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
+            btnBackward.clickEvent.add( new BEventHandler( this, "btnBackward_Click" ) );
+            btnForward.clickEvent.add( new BEventHandler( this, "btnForward_Click" ) );
         }
 
         private void setResources() {

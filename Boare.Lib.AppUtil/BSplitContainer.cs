@@ -271,7 +271,7 @@ namespace Boare.Lib.AppUtil {
                 return getPanel1MinSize();
             }
             set {
-                setPanel2MinSize( value );
+                setPanel1MinSize( value );
             }
         }
 

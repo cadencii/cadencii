@@ -155,7 +155,7 @@ namespace bocoree.windows.forms {
         }
 
         public bocoree.java.awt.Point getLocationOnScreen() {
-            System.Drawing.Point p = base.PointToScreen( base.Location );
+            System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
             return new bocoree.java.awt.Point( p.X, p.Y );
         }
 

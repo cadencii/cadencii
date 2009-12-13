@@ -14,29 +14,170 @@
 #if JAVA
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BButton.java
 #else
+#define COMPONENT_ENABLE_FOCUS
+
 namespace bocoree.windows.forms {
 
     public class BButton : System.Windows.Forms.Button {
+        // root impl of Click event
+        #region event impl Click
+        // root impl of Click event is in BButton
+        public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
+        protected override void OnClick( System.EventArgs e ) {
+            base.OnClick( e );
+            clickEvent.raise( this, e );
+        }
+        #endregion
+
+        // root impl of MouseMove event
+        #region event impl MouseMove
+        // root impl of MouseMove event is in BButton
+        public BEvent<BMouseEventHandler> mouseMoveEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseMove( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseMove( mevent );
+            mouseMoveEvent.raise( this, mevent );
+        }
+        #endregion
+
+        // root impl of MouseDown event
+        #region event impl MouseDown
+        // root impl of MouseDown event is in BButton
+        public BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseDown( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseDown( mevent );
+            mouseDownEvent.raise( this, mevent );
+        }
+        #endregion
+
+        // root impl of MouseUp event
+        #region event impl MouseUp
+        // root impl of MouseUp event is in BButton
+        public BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseUp( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseUp( mevent );
+            mouseUpEvent.raise( this, mevent );
+        }
+        #endregion
+
+        // root impl of MouseEnter event
+        #region event impl MouseEnter
+        // root impl of MouseEnter event is in BButton
+        public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
+        protected override void OnMouseEnter( System.EventArgs e ) {
+            base.OnMouseEnter( e );
+            mouseEnterEvent.raise( this, e );
+        }
+        #endregion
+
+        // root impl of Enter event
+        #region event impl Enter
+        // root impl of Enter event is in BButton
+        public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
+        protected override void OnEnter( System.EventArgs e ) {
+            base.OnEnter( e );
+            enterEvent.raise( this, e );
+        }
+        #endregion
+
+        // root impl of MouseLeave event
+        #region event impl MouseLeave
+        // root impl of MouseLeave event is in BButton
+        public BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
+        protected override void OnMouseLeave( System.EventArgs e ) {
+            base.OnMouseLeave( e );
+            mouseLeaveEvent.raise( this, e );
+        }
+        #endregion
+
+        // root impl of MouseDoubleClick event
+        #region event impl MouseDoubleClick
+        // root impl of MouseDoubleClick is in BButton
+        public BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseDoubleClick( System.Windows.Forms.MouseEventArgs e ) {
+            base.OnMouseDoubleClick( e );
+            mouseDoubleClickEvent.raise( this, e );
+        }
+        #endregion
+
+        // root impl of MouseClick event
+        #region event impl MouseClick
+        // root impl of MouseClick is in BButton
+        public BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseClick( System.Windows.Forms.MouseEventArgs e ) {
+            base.OnMouseClick( e );
+            mouseClickEvent.raise( this, e );
+        }
+        #endregion
+
+        // root impl of Paint event
+        #region event impl Paint
+        // root impl of Paint is in BButton
+        public BEvent<BPaintEventHandler> paintEvent = new BEvent<BPaintEventHandler>();
+        protected override void OnPaint( System.Windows.Forms.PaintEventArgs pevent ) {
+            base.OnPaint( pevent );
+            paintEvent.raise( this, pevent );
+        }
+        #endregion
+
+        // root impl of Resize event
+        #region event impl Resize
+        // root impl of Resize event is in BButton
+        public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
+        protected override void OnResize( System.EventArgs e ) {
+            base.OnResize( e );
+            resizeEvent.raise( this, e );
+        }
+        #endregion
+
+        // root implf of PreviewKeyDown
+        #region event impl PreviewKeyDown
+        // root implf of PreviewKeyDown is in BButton
+        public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+        protected override void OnPreviewKeyDown( System.Windows.Forms.PreviewKeyDownEventArgs e ) {
+            base.OnPreviewKeyDown( e );
+            previewKeyDownEvent.raise( this, e );
+        }
+        #endregion
+
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
-        public void setBounds( int x, int y, int width, int height ) {
-            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
+        public java.awt.Dimension getMinimumSize() {
+            return new bocoree.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
         }
 
-        public void setBounds( bocoree.java.awt.Rectangle rc ) {
-            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
+        public void setMinimumSize( java.awt.Dimension value ) {
+            base.MinimumSize = new System.Drawing.Size( value.width, value.height );
         }
 
+        public java.awt.Dimension getMaximumSize() {
+            return new bocoree.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+        }
+
+        public void setMaximumSize( java.awt.Dimension value ) {
+            base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+        }
+
+        public void invalidate() {
+            base.Invalidate();
+        }
+
+#if COMPONENT_ENABLE_REPAINT
+        public void repaint() {
+            base.Refresh();
+        }
+#endif
+
+#if COMPONENT_ENABLE_CURSOR
         public bocoree.java.awt.Cursor getCursor() {
             System.Windows.Forms.Cursor c = base.Cursor;
             bocoree.java.awt.Cursor ret = null;
-            if ( c.Equals( System.Windows.Forms.Cursors.Arrow ) ) {
+            if( c.Equals( System.Windows.Forms.Cursors.Arrow ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.CROSSHAIR_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.HAND_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.TEXT_CURSOR );
@@ -68,6 +209,7 @@ namespace bocoree.windows.forms {
         public void setCursor( bocoree.java.awt.Cursor value ) {
             base.Cursor = value.cursor;
         }
+#endif
 
         public bool isVisible() {
             return base.Visible;
@@ -108,8 +250,16 @@ namespace bocoree.windows.forms {
         }
 
 #if COMPONENT_ENABLE_LOCATION
+        public void setBounds( int x, int y, int width, int height ) {
+            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
+        }
+
+        public void setBounds( bocoree.java.awt.Rectangle rc ) {
+            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
+        }
+
         public bocoree.java.awt.Point getLocationOnScreen() {
-            System.Drawing.Point p = base.PointToScreen( base.Location );
+            System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
             return new bocoree.java.awt.Point( p.X, p.Y );
         }
 
@@ -188,6 +338,7 @@ namespace bocoree.windows.forms {
             base.Enabled = value;
         }
 
+#if COMPONENT_ENABLE_FOCUS
         public void requestFocus() {
             base.Focus();
         }
@@ -195,6 +346,7 @@ namespace bocoree.windows.forms {
         public bool isFocusOwner() {
             return base.Focused;
         }
+#endif
 
         public void setPreferredSize( bocoree.java.awt.Dimension size ) {
             base.Size = new System.Drawing.Size( size.width, size.height );

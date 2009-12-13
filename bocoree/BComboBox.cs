@@ -7,6 +7,16 @@ using System.Windows.Forms;
 namespace bocoree.windows.forms{
 
     public class BComboBox : ComboBox {
+        // root impl of SelectedIndexChanged event
+        #region event impl SelectedIndexChanged
+        // root impl of SelectedIndexChanged event is in BComboBox
+        public BEvent<BEventHandler> selectedIndexChangedEvent = new BEvent<BEventHandler>();
+        protected override void OnSelectedIndexChanged( EventArgs e ) {
+            base.OnSelectedIndexChanged( e );
+            selectedIndexChangedEvent.raise( this, e );
+        }
+        #endregion
+
         public void addItem( object item ) {
             base.Items.Add( item );
         }
@@ -53,24 +63,43 @@ namespace bocoree.windows.forms{
 
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
-        public void setBounds( int x, int y, int width, int height ) {
-            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
+        public java.awt.Dimension getMinimumSize() {
+            return new bocoree.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
         }
 
-        public void setBounds( bocoree.java.awt.Rectangle rc ) {
-            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
+        public void setMinimumSize( java.awt.Dimension value ) {
+            base.MinimumSize = new System.Drawing.Size( value.width, value.height );
         }
 
+        public java.awt.Dimension getMaximumSize() {
+            return new bocoree.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+        }
+
+        public void setMaximumSize( java.awt.Dimension value ) {
+            base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+        }
+
+        public void invalidate() {
+            base.Invalidate();
+        }
+
+#if COMPONENT_ENABLE_REPAINT
+        public void repaint() {
+            base.Refresh();
+        }
+#endif
+
+#if COMPONENT_ENABLE_CURSOR
         public bocoree.java.awt.Cursor getCursor() {
             System.Windows.Forms.Cursor c = base.Cursor;
             bocoree.java.awt.Cursor ret = null;
-            if ( c.Equals( System.Windows.Forms.Cursors.Arrow ) ) {
+            if( c.Equals( System.Windows.Forms.Cursors.Arrow ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.CROSSHAIR_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
-            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ) {
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ){
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.HAND_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
                 ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.TEXT_CURSOR );
@@ -102,6 +131,7 @@ namespace bocoree.windows.forms{
         public void setCursor( bocoree.java.awt.Cursor value ) {
             base.Cursor = value.cursor;
         }
+#endif
 
         public bool isVisible() {
             return base.Visible;
@@ -142,8 +172,16 @@ namespace bocoree.windows.forms{
         }
 
 #if COMPONENT_ENABLE_LOCATION
+        public void setBounds( int x, int y, int width, int height ) {
+            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
+        }
+
+        public void setBounds( bocoree.java.awt.Rectangle rc ) {
+            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
+        }
+
         public bocoree.java.awt.Point getLocationOnScreen() {
-            System.Drawing.Point p = base.PointToScreen( base.Location );
+            System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
             return new bocoree.java.awt.Point( p.X, p.Y );
         }
 
@@ -222,6 +260,7 @@ namespace bocoree.windows.forms{
             base.Enabled = value;
         }
 
+#if COMPONENT_ENABLE_FOCUS
         public void requestFocus() {
             base.Focus();
         }
@@ -229,6 +268,7 @@ namespace bocoree.windows.forms{
         public bool isFocusOwner() {
             return base.Focused;
         }
+#endif
 
         public void setPreferredSize( bocoree.java.awt.Dimension size ) {
             base.Size = new System.Drawing.Size( size.width, size.height );

@@ -1,5 +1,5 @@
 ﻿/*
- * BDoWorkEventHandler.cs
+ * BCancelEventHandler.cs
  * Copyright (c) 2009 kbinani
  *
  * This file is part of bocoree.
@@ -24,17 +24,17 @@ namespace bocoree.componentModel {
 #endif
 
 #if JAVA
-    public class BDoWorkEventHandler extends BEventHandler{
+    public class BCancelEventHandler extends BEventHandler{
 #else
-    public class BDoWorkEventHandler : BEventHandler {
+    public class BCancelEventHandler : BEventHandler {
 #endif
-        public BDoWorkEventHandler( Object sender, String method_name )
+        public BCancelEventHandler( Object sender, String method_name )
 #if JAVA
         {
 #else
             :
 #endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) )
+            base( sender, method_name, typeof( void ), typeof( Object ), typeof( CancelEventArgs ) )
 #if JAVA
             ;
 #else
@@ -42,13 +42,13 @@ namespace bocoree.componentModel {
 #endif
         }
 
-        public BDoWorkEventHandler( Type sender, String method_name )
+        public BCancelEventHandler( Type sender, String method_name )
 #if JAVA
         {
 #else
             :
 #endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) )
+            base( sender, method_name, typeof( void ), typeof( Object ), typeof( CancelEventArgs ) )
 #if JAVA
             ;
 #else

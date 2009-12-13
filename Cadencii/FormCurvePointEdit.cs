@@ -253,7 +253,6 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
-#if JAVA
             this.btnForward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
             this.btnBackward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
             this.btnBackward2.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
@@ -267,22 +266,7 @@ namespace Boare.Cadencii {
             this.btnForward3.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
             this.btnUndo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
             this.btnRedo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
-#else
-            this.btnForward.Click += new System.EventHandler( this.commonButton_Click );
-            this.btnBackward.Click += new System.EventHandler( this.commonButton_Click );
-            this.btnBackward2.Click += new System.EventHandler( this.commonButton_Click );
-            this.btnForward2.Click += new System.EventHandler( this.commonButton_Click );
-            this.btnApply.Click += new System.EventHandler( this.btnApply_Click );
-            this.txtDataPointClock.TextChanged += new System.EventHandler( this.commonTextBox_TextChanged );
-            this.txtDataPointClock.KeyUp += new System.Windows.Forms.KeyEventHandler( this.commonTextBox_KeyUp );
-            this.txtDataPointValue.TextChanged += new System.EventHandler( this.commonTextBox_TextChanged );
-            this.txtDataPointValue.KeyUp += new System.Windows.Forms.KeyEventHandler( this.commonTextBox_KeyUp );
-            this.btnBackward3.Click += new System.EventHandler( this.commonButton_Click );
-            this.btnForward3.Click += new System.EventHandler( this.commonButton_Click );
-            this.btnUndo.Click += new System.EventHandler( this.handleUndoRedo_Click );
-            this.btnRedo.Click += new System.EventHandler( this.handleUndoRedo_Click );
-            btnExit.Click += new EventHandler( btnExit_Click );
-#endif
+            btnExit.clickEvent.add( new BEventHandler( this, "btnExit_Click" ) );
         }
 
 #if JAVA

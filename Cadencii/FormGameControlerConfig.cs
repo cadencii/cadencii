@@ -23,6 +23,7 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using Boare.Lib.AppUtil;
+using bocoree;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
@@ -278,19 +279,11 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
-#if JAVA
-            this.timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
-            this.btnSkip.clickEvent.add( new BEventHandler( this, "btnSkip_Click" ) );
-            this.btnReset.clickEvent.add( new BEventHandler( this, "btnReset_Click" ) );
+            timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
+            btnSkip.clickEvent.add( new BEventHandler( this, "btnSkip_Click" ) );
+            btnReset.clickEvent.add( new BEventHandler( this, "btnReset_Click" ) );
             btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-#else
-            this.timer.Tick += new System.EventHandler( this.timer_Tick );
-            this.btnSkip.Click += new System.EventHandler( this.btnSkip_Click );
-            this.btnReset.Click += new System.EventHandler( this.btnReset_Click );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
         }
 
         private void setResources() {

@@ -12,6 +12,7 @@ using bocoree.javax.swing;
 class pp_cs2java {
     static String s_base_dir = "";     // 出力先
     static String s_target_dir = "";   // ファイルの検索開始位置
+    static string s_target_file = "";
     static bool s_recurse = false;
     static String s_encoding = "UTF-8";
     static bool s_ignore_empty = true; // プリプロセッサを通すと中身が空になるファイルを無視する場合はtrue
@@ -64,89 +65,45 @@ class pp_cs2java {
         {".LastIndexOf(", ".lastIndexOf(" },
         {"base", "super"},
         {" EventArgs", " BEventArgs"},
+        {" MouseEventArgs", " BMouseEventArgs"},
+        {" KeyEventArgs", " BKeyEventArgs"},
+        {" CancelEventArgs", " BCancelEventArgs"},
+        {" DoWorkEventArgs", " BDoWorkEventArgs"},
+        {" PaintEventArgs", " BPaintEventArgs"},
+        {" PreviewKeyDownEventArgs", " BPreviewKeyDownEventArgs"},
+        {" FormClosedEventArgs", " BFormClosedEventArgs"},
+        {" FormClosingEventArgs", " BFormClosingEventArgs"},
+        {" PaintEventArgs", " BPaintEventArgs"},
+        {" Type ", " Class "},
     };
 
+    static void printUsage() {
+        Console.WriteLine( "pp_cs2java" );
+        Console.WriteLine( "Copyright (C) kbinani, All Rights Reserved" );
+        Console.WriteLine( "Usage:" );
+        Console.WriteLine( "    pp_cs2java -t [search path] -b [output path] {options}" );
+        Console.WriteLine( "    pp_cs2java -i [file] -b [output path] {options}" );
+        Console.WriteLine( "Options:" );
+        Console.WriteLine( "    -r                     enable recursive search" );
+        Console.WriteLine( "    -e                     disable ignoring empty file" );
+        Console.WriteLine( "    -c                     enable comment parse" );
+        Console.WriteLine( "    -D[name]               define preprocessor directive" );
+        Console.WriteLine( "    -t [path]              set search directory path" );
+        Console.WriteLine( "    -i [path]              set target file" );
+        Console.WriteLine( "    -b [path]              set output directory path" );
+        Console.WriteLine( "    -s [number]            increase indent [number] column(s)" );
+        Console.WriteLine( "                           (decrease if minus)" );
+        Console.WriteLine( "    -encoding [enc. name]  set text file encoding" );
+        Console.WriteLine( "    -m [path]              set path of source code for debug" );
+        Console.WriteLine( "    -h,-help               print this help" );
+    }
+
     static void Main( string[] args ) {
-        /*Random r = new Random( DateTime.Now.Millisecond );
-        for ( int k = 0; k < 10000; k++ )
-        {
-            short v = (short)(short.MinValue + ((double)short.MaxValue - (double)short.MinValue) * r.NextDouble());
-            byte[] ret = PortUtil.getbytes_int16_le( v );
-            byte[] ret_g = BitConverter.GetBytes( v );
-            bool erro = false;
-            for ( int i = 0; i < ret.Length; i++ )
-            {
-                if ( ret[i] != ret_g[i] )
-                {
-                    Console.WriteLine( "error; ret != ret_g" );
-                    Console.Write( "ret  =" );
-                    for ( int j = 0; j < ret.Length; j++ )
-                    {
-                        Console.Write( string.Format( "0x{0:X2} ", ret[j] ) );
-                    }
-                    Console.Write( "ret_g=" );
-                    for ( int j = 0; j < ret_g.Length; j++ )
-                    {
-                        Console.Write( string.Format( "0x{0:X2} ", ret_g[j] ) );
-                    }
-                    erro = true;
-                }
-            }
-            if ( erro )
-            {
-                break;
-            }
-            short v_inv = PortUtil.make_int16_le( ret );
-            if ( v != v_inv )
-            {
-                Console.WriteLine( "error; v != v_inv; v=" + v );
-            }
-        }*/
-        /*using ( StreamWriter sw = new StreamWriter( "getBKeysFromCode.txt" ) ) {
-            foreach ( string str in Enum.GetNames( typeof( BKeys ) ) ) {
-                BKeys bkey = (BKeys)Enum.Parse( typeof( BKeys ), str );
-                int ibkey = (int)bkey;
-                foreach ( FieldInfo fin in typeof( KeyEvent ).GetFields() ) {
-                    if ( fin.FieldType == typeof( int ) ) {
-                        string name = fin.Name;
-                        int iname = (int)fin.GetValue( typeof( KeyEvent ) );
-                        if ( iname == ibkey ) {
-                            sw.WriteLine( "case KeyEvent." + name + ":" );
-                            sw.WriteLine( "    return BKeys." + str + ";" );
-                        }
-                    }
-                }
-            }
-        }*/
-
-        /*Dictionary<string, int> list = new Dictionary<string, int>();
-        foreach ( FieldInfo fi in typeof( bocoree.awt.event_.KeyEvent ).GetFields() ) {
-            if ( fi.FieldType == typeof( int ) ) {
-                string key = fi.Name;
-                int value = (int)fi.GetValue( typeof( bocoree.awt.event_.KeyEvent ) );
-                list.Add( key, value );
-            }
-        }
-        using ( StreamWriter sw = new StreamWriter( "keymap.txt" ) ) {
-            foreach ( string str in Enum.GetNames( typeof( bocoree.windows.forms.BKeys ) ) ) {
-                bocoree.windows.forms.BKeys bkey = (bocoree.windows.forms.BKeys)Enum.Parse( typeof( bocoree.windows.forms.BKeys ), str );
-                int key = (int)bkey;
-                if ( list.ContainsValue( key ) ) {
-                    sw.Write( key + "\t" + str + "\t" );
-                    foreach ( string s in list.Keys ) {
-                        int kk = list[s];
-                        if ( kk == key ) {
-                            sw.Write( s + "\t" );
-                        }
-                    }
-                    sw.WriteLine();
-                } else {
-                    sw.WriteLine( key + "\t" + str + "\t" );
-                }
-            }
-        }*/
-
         String current_parse = "";
+        bool print_usage = false;
+        if ( args.Length <= 0 ) {
+            print_usage = true;
+        }
         for ( int i = 0; i < args.Length; i++ ) {
             if ( args[i].StartsWith( "-" ) && current_parse != "-s" ) {
                 current_parse = args[i];
@@ -165,6 +122,8 @@ class pp_cs2java {
                         s_defines.Add( def );
                     }
                     current_parse = "";
+                } else if ( current_parse == "-h" || current_parse == "-help" ) {
+                    print_usage = true;
                 }
             } else {
                 if ( current_parse == "-t" ) {
@@ -181,18 +140,40 @@ class pp_cs2java {
                     current_parse = "";
                 } else if ( current_parse == "-m" ) {
                     s_main_class_path = args[i];
+                    current_parse = "";
+                } else if ( current_parse == "-i" ) {
+                    s_target_file = args[i];
+                    current_parse = "";
                 }
             }
         }
 
-        if ( s_base_dir == "" || s_target_dir == "" ) {
+        if ( print_usage ) {
+            printUsage();
+        }
+        if ( args.Length <= 0 ) {
             return;
         }
 
-        if ( s_recurse ) {
-            preprocessRecurse( s_target_dir );
-        } else {
-            preprocess( s_target_dir );
+        if ( s_target_file == "" && s_target_dir == "" ) {
+            Console.WriteLine( "error; target file or path has not specified" );
+            return;
+        }
+
+        if ( s_base_dir == "" ) {
+            Console.WriteLine( "error; output path has not specified" );
+            return;
+        }
+
+        if ( s_target_dir != "" ) {
+            if ( s_recurse ) {
+                preprocessRecurse( s_target_dir );
+            } else {
+                preprocess( s_target_dir );
+            }
+        }
+        if ( s_target_file != "" ) {
+            preprocessCor( s_target_file );
         }
 
         if ( s_main_class_path != "" ) {
@@ -548,4 +529,5 @@ class pp_cs2java {
         }
         File.Delete( tmp );
     }
+
 }

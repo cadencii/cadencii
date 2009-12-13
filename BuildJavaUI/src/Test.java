@@ -3,6 +3,7 @@ import org.kbinani.BEventHandler;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BSplitPane;
 import java.awt.Dimension;
 import javax.swing.JPanel;
@@ -11,13 +12,17 @@ import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.swing.JCheckBox;
 import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 
 public class Test extends BForm {
-
-    private BSplitPane jSplitPane = null;
-    private JButton jButton = null;
-    private JButton jButton1 = null;
+    private JMenuBar jJMenuBar = null;
+    private BMenu jMenu = null;
+    private JMenuItem jMenuItem = null;
+    private JMenu jMenu1 = null;
 
     /**
      * This method initializes 
@@ -26,7 +31,6 @@ public class Test extends BForm {
     public Test() {
     	super();
     	initialize();
-    	jSplitPane.setPanel1MinSize( 100 );
     }
      
     /**
@@ -35,45 +39,61 @@ public class Test extends BForm {
      */
     private void initialize() {
         this.setSize(new Dimension(315, 240));
-        this.setContentPane(getJSplitPane());
+        this.setJMenuBar(getJJMenuBar());
     }
 
     /**
-     * This method initializes jSplitPane	
+     * This method initializes jJMenuBar	
      * 	
-     * @return javax.swing.JSplitPane	
+     * @return javax.swing.JMenuBar	
      */
-    private BSplitPane getJSplitPane() {
-        if (jSplitPane == null) {
-            jSplitPane = new BSplitPane();
-            jSplitPane.setLeftComponent(getJButton());
-            jSplitPane.setRightComponent(getJButton1());
+    private JMenuBar getJJMenuBar() {
+        if (jJMenuBar == null) {
+            jJMenuBar = new JMenuBar();
+            jJMenuBar.add(getJMenu());
+            jJMenuBar.add(getJMenu1());
         }
-        return jSplitPane;
+        return jJMenuBar;
     }
 
     /**
-     * This method initializes jButton	
+     * This method initializes jMenu	
      * 	
-     * @return javax.swing.JButton	
+     * @return javax.swing.JMenu	
      */
-    private JButton getJButton() {
-        if (jButton == null) {
-            jButton = new JButton();
+    private BMenu getJMenu() {
+        if (jMenu == null) {
+            jMenu = new BMenu();
+            jMenu.setText("File");
+            jMenu.add(getJMenuItem());
         }
-        return jButton;
+        return jMenu;
     }
 
     /**
-     * This method initializes jButton1	
+     * This method initializes jMenuItem	
      * 	
-     * @return javax.swing.JButton	
+     * @return javax.swing.JMenuItem	
      */
-    private JButton getJButton1() {
-        if (jButton1 == null) {
-            jButton1 = new JButton();
+    private JMenuItem getJMenuItem() {
+        if (jMenuItem == null) {
+            jMenuItem = new JMenuItem();
+            jMenuItem.setText("Open");
         }
-        return jButton1;
+        return jMenuItem;
+    }
+
+    /**
+     * This method initializes jMenu1	
+     * 	
+     * @return javax.swing.JMenu	
+     */
+    private JMenu getJMenu1() {
+        if (jMenu1 == null) {
+            jMenu1 = new JMenu();
+            jMenu1.setText("Edit");
+        }
+        return jMenu1;
     }
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

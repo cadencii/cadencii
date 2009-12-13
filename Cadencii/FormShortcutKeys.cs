@@ -67,6 +67,10 @@ namespace Boare.Cadencii {
                 Console.WriteLine( "FormShortcutKeys#.ctor; ex=" + ex );
 #endif
             }
+
+#if DEBUG
+            PortUtil.println( "FormShortcutKeys#.ctor; dict.size()=" + dict.size() );
+#endif
             list.setColumnHeaders( new String[] { "Command", "Shortcut Key" } );
             list.setColumnWidth( 0, columnWidthCommand );
             list.setColumnWidth( 1, columnWidthShortcutKey );

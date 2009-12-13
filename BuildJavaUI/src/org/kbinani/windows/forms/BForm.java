@@ -13,7 +13,11 @@ import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
 
-public class BForm extends JFrame implements WindowListener, KeyListener, ComponentListener{
+public class BForm extends JFrame 
+                   implements WindowListener, 
+                              KeyListener, 
+                              ComponentListener
+{
     private static final long serialVersionUID = -3700177079249925623L;
     public BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
     public BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
@@ -39,6 +43,35 @@ public class BForm extends JFrame implements WindowListener, KeyListener, Compon
         }
     }
     
+    // root imol of KeyListener is in BButton
+    public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
+    public void keyPressed( KeyEvent e ) {
+        try{
+            previewKeyDownEvent.raise( this, new BPreviewKeyDownEventArgs( e ) );
+            keyDownEvent.raise( this, new BKeyEventArgs( e ) );
+        }catch( Exception ex ){
+            System.err.println( "BButton#keyPressed; ex=" + ex );
+        }
+    }
+    public void keyReleased(KeyEvent e) {
+        try{
+            keyUpEvent.raise( this, new BKeyEventArgs( e ) );
+        }catch( Exception ex ){
+            System.err.println( "BButton#keyReleased; ex=" + ex );
+        }
+    }
+    public void keyTyped(KeyEvent e) {
+        try{
+            previewKeyDownEvent.raise( this, new BPreviewKeyDownEventArgs( e ) );
+            keyPressEvent.raise( this, new BKeyPressEventArgs( e ) );
+        }catch( Exception ex ){
+            System.err.println( "BButton#keyType; ex=" + ex );
+        }
+    }
+
     public Dimension getClientSize(){
         return getContentPane().getSize();
     }
@@ -143,41 +176,6 @@ public class BForm extends JFrame implements WindowListener, KeyListener, Compon
         close();
     }
     
-    /* root implementation of java.awt.Component */
-    /* REGION java.awt.Component */
-    /* root implementation of java.awt.Component instanceof in BForm.cs(java) */
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyPressedEvent = new BEvent<BKeyEventHandler>();
-    
-    public void keyPressed( KeyEvent e0 ){
-        try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyDownEvent.raise( this, e );
-        }catch( Exception ex ){
-            System.err.println( "BForm#keyPressed; ex=" + ex );
-        }
-    }
-    
-    public void keyReleased( KeyEvent e0 ){
-        try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyUpEvent.raise( this, e );
-        }catch( Exception ex ){
-            System.err.println( "BForm#keyReleased; ex=" + ex );
-        }
-    }
-    
-    public void keyTyped( KeyEvent e0 ){
-        try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyPressedEvent.raise( this, e );
-        }catch( Exception ex ){
-            System.err.println( "BForm#keyTyped; ex=" + ex );
-        }
-    }
-    /* END REGION java.awt.Component */
-
     public void componentHidden(ComponentEvent e) {
         // TODO 自動生成されたメソッド・スタブ
         

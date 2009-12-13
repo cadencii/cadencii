@@ -415,12 +415,17 @@ namespace Boare.Lib.Vsq {
                 search.Equals( "len_act2" ) ||
                 search.Equals( "gackpoid" ) ||
                 search.Equals( "luka_jpn" ) ||
-                search.Equals( "megpoid" ) ) {
+                search.Equals( "megpoid" ) ||
+                search.Equals( "sfa2_miki" ) ||
+                search.Equals( "yuki" ) ||
+                search.Equals( "kiyoteru" ) )
+            {
                 return VsqVoiceLanguage.Japanese;
             } else if ( search.Equals( "sweet_ann" ) ||
                 search.Equals( "prima" ) ||
                 search.Equals( "luka_eng" ) ||
-                search.Equals( "sonika" ) ) {
+                search.Equals( "sonika" ) )
+            {
                 return VsqVoiceLanguage.English;
             }
             return VsqVoiceLanguage.Japanese;

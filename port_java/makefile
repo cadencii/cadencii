@@ -1,3 +1,7 @@
+RM=del
+
+all: Cadencii.jar
+
 apputil:
 	javac org_kbinani_apputil.java -encoding UTF-8
 
@@ -10,12 +14,17 @@ media:
 vsq:
 	javac org_kbinani_vsq.java -encoding UTF-8
 
-Cadencii:
-	javac org_kbinani_Cadencii.java -encoding UTF-8
+Cadencii.jar: clean org/kbinani/Cadencii/*.java org/kbinani/apputil/*.java org/kbinani/vsq/*.java org/kbinani/media/*.java org/kbinani/windows/forms/*.java org/kbinani/componentModel/*.java org/kbinani/*.java org/kbinani/xml/*.java
+	javac org/kbinani/Cadencii/Program.java -encoding UTF8 -target 5 -source 5
+	jar cfm Cadencii.jar Cadencii.mf org/kbinani/Cadencii/*.class org/kbinani/apputil/*.class org/kbinani/vsq/*.class org/kbinani/media/*.class org/kbinani/windows/forms/*.class org/kbinani/componentModel/*.class org/kbinani/*.class org/kbinani/xml/*.class
 
-all:
-	$(MAKE) corlib
-	$(MAKE) apputil
-	$(MAKE) media
-	$(MAKE) vsq
-	$(MAKE) Cadencii
+clean:
+	$(RM) org\kbinani\Cadencii\*.class
+	$(RM) org\kbinani\apputil\*.class
+	$(RM) org\kbinani\vsq\*.class
+	$(RM) org\kbinani\media\*.class
+	$(RM) org\kbinani\windows\forms\*.class
+	$(RM) org\kbinani\componentModel\*.class
+	$(RM) org\kbinani\*.class
+	$(RM) org\kbinani\xml\*.class
+	$(RM) Cadencii.jar

@@ -40,15 +40,6 @@ namespace Boare.Cadencii {
 #else
     public class PictPianoRoll : BPictureBox {
 #endif
-
-#if JAVA
-        public BEvent<BKeyEventHandler> keyDownEvent;
-        public BEvent<BKeyEventHandler> keyUpEvent;
-#else
-        public event KeyEventHandler BKeyDown;
-        public event KeyEventHandler BKeyUp;
-#endif
-
         private readonly Color s_brs_192_192_192 = new Color( 192, 192, 192 );
         private readonly Color s_brs_a098_000_000_000 = new Color( 0, 0, 0, 98 );
         private readonly Color s_brs_106_108_108 = new Color( 106, 108, 108 );
@@ -107,19 +98,14 @@ namespace Boare.Cadencii {
         private const int _PX_ACCENT_HEADER = 21;
 
 #if !JAVA
-        protected override void OnKeyDown( KeyEventArgs e ) {
-            if ( BKeyDown != null ) {
-                BKeyDown( this, e );
-            }
+        #region event impl PreviewKeyDown
+        // root implf of PreviewKeyDown is in BButton
+        public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+        protected override void OnPreviewKeyDown( System.Windows.Forms.PreviewKeyDownEventArgs e ) {
+            base.OnPreviewKeyDown( e );
+            previewKeyDownEvent.raise( this, e );
         }
-#endif
-
-#if !JAVA
-        protected override void OnKeyUp( KeyEventArgs e ) {
-            if ( BKeyUp != null ) {
-                BKeyUp( this, e );
-            }
-        }
+        #endregion
 #endif
 
 #if !JAVA
@@ -168,7 +154,8 @@ namespace Boare.Cadencii {
 #endif
         #endregion
         
-        private void paint( Graphics2D g ) {
+        public void paint( Graphics g1 ) {
+            Graphics2D g = (Graphics2D)g1;
             try {
 #if JAVA
                 System.out.println( "PictPianoRoll#paint" );
@@ -914,7 +901,7 @@ namespace Boare.Cadencii {
         /// </summary>
         /// <param name="g"></param>
         /// <param name="accent"></param>
-        private void DrawAccentLine( Graphics2D g, Point origin, int accent ) {
+        private void DrawAccentLine( Graphics g, Point origin, int accent ) {
             int x0 = origin.x + 1;
             int y0 = origin.y + 10;
             int height = 4 + accent * 4 / 100;
@@ -938,7 +925,7 @@ namespace Boare.Cadencii {
         /// <param name="note">描画する音符のノートナンバー</param>
         /// <param name="clock_start">ビブラートが始まるクロック位置</param>
         /// <param name="clock_width">ビブラートのクロック長さ</param>
-        private void drawVibratoPitchbend( Graphics2D g,
+        private void drawVibratoPitchbend( Graphics g,
                                            VibratoBPList rate,
                                            int start_rate,
                                            VibratoBPList depth,
@@ -984,7 +971,7 @@ namespace Boare.Cadencii {
             }
         }
 
-        private void drawVibratoLine( Graphics2D g, Point origin, int vibrato_length ) {
+        private void drawVibratoLine( Graphics g, Point origin, int vibrato_length ) {
             int x0 = origin.x + 1;
             int y0 = origin.y + 10;
             int clipx = origin.x + 1;

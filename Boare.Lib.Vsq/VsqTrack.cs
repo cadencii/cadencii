@@ -523,7 +523,6 @@ namespace Boare.Lib.Vsq {
                         // meta textを抽出
                         byte type = item.data[0];
                         if ( type == 0x01 || type == 0x03 ) {
-                            //String line = PortUtil.getDecodedString( encoding, dat, 1, dat.Length - 1 );
                             if ( type == 0x01 ) {
                                 int colon_count = 0;
                                 for ( int j = 0; j < item.data.Length - 1; j++ ) {
@@ -553,27 +552,12 @@ namespace Boare.Lib.Vsq {
                                     buffer.removeElementAt( 0 );
                                     index_0x0a = buffer.indexOf( 0x0a );
                                 }
-                                /*int second_colon = line.IndexOf( ':', 3 );
-                                line = line.Substring( second_colon + 1 );
-                                line = line.Replace( "\\n", "\n" );
-                                String[] lines = PortUtil.splitString( line, '\n' );
-                                int c = lines.Length;
-                                for ( int j = 0; j < c; j++ ) {
-                                    if ( j < c - 1 ) {
-                                        sw.writeLine( lines[j] );
-                                    } else {
-                                        sw.write( lines[j] );
-                                    }
-                                }*/
                             } else {
                                 for ( int j = 0; j < item.data.Length - 1; j++ ) {
                                     buffer.add( item.data[j + 1] );
                                 }
                                 track_name = PortUtil.getDecodedString( encoding, 
                                                                         PortUtil.convertByteArray( buffer.toArray( new Byte[] { } ) ) );
-#if DEBUG
-                                Console.WriteLine( "VsqTrack#.ctor; track_name=" + track_name );
-#endif
                                 buffer.clear();
                             }
                         }
@@ -581,6 +565,17 @@ namespace Boare.Lib.Vsq {
                         continue;
                     }
                 }
+                // oketa ketaoさんありがとう =>
+                int remain = buffer.size();
+                if ( remain > 0 ) {
+                    byte[] cpy = new byte[remain];
+                    for ( int j = 0; j < remain; j++ ) {
+                        cpy[j] = buffer.get( j );
+                    }
+                    String line = PortUtil.getDecodedString( encoding, cpy );
+                    sw.writeLine( line );
+                }
+                // <=
                 sw.rewind();
                 MetaText = new VsqMetaText( sw );
                 setName( track_name );

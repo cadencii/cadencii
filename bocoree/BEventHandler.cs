@@ -22,6 +22,9 @@ namespace bocoree {
     public class BEventHandler {
         protected MethodInfo m_delegate = null;
         protected Object m_invoker = null;
+#if DEBUG
+        private static System.IO.StreamWriter m_log = null;
+#endif
 
         private BEventHandler( Type invoker, Object bind, String method_name, Type return_type, Type arg1, Type arg2 ) {
             try {
@@ -46,6 +49,13 @@ namespace bocoree {
                 }
                 m_invoker = bind;
                 if ( m_delegate == null ) {
+#if DEBUG
+                    if ( m_log == null ) {
+                        m_log = new System.IO.StreamWriter( System.IO.Path.Combine( System.Windows.Forms.Application.StartupPath, "error_event_handler.txt" ) );
+                        m_log.AutoFlush = true;
+                    }
+                    m_log.WriteLine( method_name );
+#endif
                     throw new Exception( "cannot create delegate; method_name=" + method_name );
                 }
             } catch ( Exception ex ) {

@@ -17,6 +17,7 @@
 #define ABSTRACT_BUTTON_ENABLE_IS_SELECTED
 #define COMPONENT_PARENT_AS_OWNERITEM
 #define COMPONENT_ENABLE_TOOL_TIP_TEXT
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using bocoree.javax.swing;
@@ -52,6 +53,95 @@ namespace bocoree.windows.forms {
         #endregion
 
         #region java.awt.Component
+        // root implementation of java.awt.Component is in BForm.cs
+        public java.awt.Dimension getMinimumSize() {
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            int w = base.MinimumSize.Width;
+            int h = base.MinimumSize.Height;
+#else
+            int w = 0;
+            int h = 0;
+#endif
+            return new bocoree.java.awt.Dimension( w, h );
+        }
+
+        public void setMinimumSize( java.awt.Dimension value ) {
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            base.MinimumSize = new System.Drawing.Size( value.width, value.height );
+#endif
+        }
+
+        public java.awt.Dimension getMaximumSize() {
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            int w = base.MaximumSize.Width;
+            int h = base.MaximumSize.Height;
+#else
+            int w = int.MaxValue;
+            int h = int.MaxValue;
+#endif
+            return new bocoree.java.awt.Dimension( w, h );
+        }
+
+        public void setMaximumSize( java.awt.Dimension value ) {
+#if COMPONENT_ENABLE_MINMAX_SIZE
+            base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+#endif
+        }
+
+        public void invalidate() {
+            base.Invalidate();
+        }
+
+#if COMPONENT_ENABLE_REPAINT
+        public void repaint() {
+            base.Refresh();
+        }
+#endif
+
+#if COMPONENT_ENABLE_CURSOR
+        public bocoree.java.awt.Cursor getCursor() {
+            System.Windows.Forms.Cursor c = base.Cursor;
+            bocoree.java.awt.Cursor ret = null;
+            if( c.Equals( System.Windows.Forms.Cursors.Arrow ) ){
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ){
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.CROSSHAIR_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ){
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.DEFAULT_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ){
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.HAND_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.TEXT_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanEast ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.E_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanNE ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.NE_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanNorth ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.N_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanNW ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.NW_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanSE ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.SE_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanSouth ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.S_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanSW ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.SW_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.PanWest ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.W_RESIZE_CURSOR );
+            } else if ( c.Equals( System.Windows.Forms.Cursors.SizeAll ) ) {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.MOVE_CURSOR );
+            } else {
+                ret = new bocoree.java.awt.Cursor( bocoree.java.awt.Cursor.CUSTOM_CURSOR );
+            }
+            ret.cursor = c;
+            return ret;
+        }
+
+        public void setCursor( bocoree.java.awt.Cursor value ) {
+            base.Cursor = value.cursor;
+        }
+#endif
+
         public bool isVisible() {
             return base.Visible;
         }
@@ -65,18 +155,17 @@ namespace bocoree.windows.forms {
             base.ToolTipText = value;
         }
 
-        public string getToolTipText() {
+        public String getToolTipText() {
             return base.ToolTipText;
         }
 #endif
 
 #if COMPONENT_PARENT_AS_OWNERITEM
-        public object getParent() {
+        public Object getParent() {
             return base.OwnerItem;
         }
 #else
-        public object getParent()
-        {
+        public object getParent() {
             return base.Parent;
         }
 #endif
@@ -90,19 +179,29 @@ namespace bocoree.windows.forms {
         }
 
 #if COMPONENT_ENABLE_LOCATION
-        public bocoree.java.awt.Point getLocation()
-        {
+        public void setBounds( int x, int y, int width, int height ) {
+            base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
+        }
+
+        public void setBounds( bocoree.java.awt.Rectangle rc ) {
+            base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
+        }
+
+        public bocoree.java.awt.Point getLocationOnScreen() {
+            System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
+            return new bocoree.java.awt.Point( p.X, p.Y );
+        }
+
+        public bocoree.java.awt.Point getLocation() {
             System.Drawing.Point loc = this.Location;
             return new bocoree.java.awt.Point( loc.X, loc.Y );
         }
 
-        public void setLocation( int x, int y )
-        {
+        public void setLocation( int x, int y ) {
             base.Location = new System.Drawing.Point( x, y );
         }
 
-        public void setLocation( bocoree.java.awt.Point p )
-        {
+        public void setLocation( bocoree.java.awt.Point p ) {
             base.Location = new System.Drawing.Point( p.x, p.y );
         }
 #endif
@@ -113,15 +212,13 @@ namespace bocoree.windows.forms {
         }
 
 #if COMPONENT_ENABLE_X
-        public int getX()
-        {
+        public int getX() {
             return base.Left;
         }
 #endif
 
 #if COMPONENT_ENABLE_Y
-        public int getY()
-        {
+        public int getY() {
             return base.Top;
         }
 #endif
@@ -162,16 +259,40 @@ namespace bocoree.windows.forms {
             return new bocoree.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public void setFont( bocoree.java.awt.Font font ) {
-            base.Font = font.font;
-        }
-
-        public bool getEnabled() {
+        public bool isEnabled() {
             return base.Enabled;
         }
 
         public void setEnabled( bool value ) {
             base.Enabled = value;
+        }
+
+#if COMPONENT_ENABLE_FOCUS
+        public void requestFocus() {
+            base.Focus();
+        }
+
+        public bool isFocusOwner() {
+            return base.Focused;
+        }
+#endif
+
+        public void setPreferredSize( bocoree.java.awt.Dimension size ) {
+            base.Size = new System.Drawing.Size( size.width, size.height );
+        }
+
+        public bocoree.java.awt.Font getFont() {
+            return new bocoree.java.awt.Font( base.Font );
+        }
+
+        public void setFont( bocoree.java.awt.Font font ) {
+            if ( font == null ) {
+                return;
+            }
+            if ( font.font == null ) {
+                return;
+            }
+            base.Font = font.font;
         }
         #endregion
 

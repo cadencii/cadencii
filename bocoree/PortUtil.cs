@@ -198,6 +198,8 @@ namespace bocoree {
         public static Color WhiteSmoke = new Color( 245, 245, 245 );
         public static Color Yellow = new Color( 255, 255, 0 );
         public static Color YellowGreen = new Color( 154, 205, 50 );
+        public static InternalStdOut stdout = new InternalStdOut();
+        public static InternalStdErr stderr = new InternalStdErr();
 
 #if JAVA
         static{
@@ -210,28 +212,6 @@ namespace bocoree {
 #endif
 
         private PortUtil() {
-        }
-
-        public static InternalStdOut stdout = new InternalStdOut();
-        public class InternalStdOut {
-            public void println( String s ) {
-#if JAVA
-                System.out.println( s );
-#else
-                Console.Out.WriteLine( s );
-#endif
-            }
-        }
-
-        public static InternalStdErr stderr = new InternalStdErr();
-        public class InternalStdErr {
-            public void println( String s ) {
-#if JAVA
-                System.err.println( s );
-#else
-                Console.Error.WriteLine( s );
-#endif
-            }
         }
 
         /// <summary>
@@ -1114,8 +1094,9 @@ namespace bocoree {
 #endif
         }
 
-        public static void drawStringEx( Graphics2D g, String s, Font font, Rectangle rect, int align, int valign ) {
+        public static void drawStringEx( Graphics g1, String s, Font font, Rectangle rect, int align, int valign ) {
 #if JAVA
+            Graphics2D g = (Graphics2D)g1;
             g.setFont( font );
             FontMetrics fm = g.getFontMetrics();
             Dimension ret = new Dimension( fm.stringWidth( s ), fm.getHeight() );
@@ -1152,7 +1133,7 @@ namespace bocoree {
             } else {
                 sf.LineAlignment = System.Drawing.StringAlignment.Center;
             }
-            g.nativeGraphics.DrawString( s, font.font, g.brush, new System.Drawing.RectangleF( rect.x, rect.y, rect.width, rect.height ), sf );
+            g1.nativeGraphics.DrawString( s, font.font, g1.brush, new System.Drawing.RectangleF( rect.x, rect.y, rect.width, rect.height ), sf );
 #endif
         }
         #endregion

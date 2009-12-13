@@ -1,5 +1,5 @@
 ﻿/*
- * BDoWorkEventHandler.cs
+ * BFormClosedEventHandler.cs
  * Copyright (c) 2009 kbinani
  *
  * This file is part of bocoree.
@@ -12,47 +12,46 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.componentModel;
+package org.kbinani.windows.forms;
 
 import org.kbinani.BEventHandler;
 #else
 using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace bocoree.componentModel {
+namespace bocoree.windows.forms {
 #endif
 
 #if JAVA
-    public class BDoWorkEventHandler extends BEventHandler{
+    public class BFormClosedEventHandler extends BEventHandler{
 #else
-    public class BDoWorkEventHandler : BEventHandler {
+    public class BFormClosedEventHandler : BEventHandler {
 #endif
-        public BDoWorkEventHandler( Object sender, String method_name )
+        public BFormClosedEventHandler( Object sender, String method_name )
 #if JAVA
         {
 #else
             :
 #endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) )
+ base( sender, method_name, typeof( void ), typeof( Object ), typeof( FormClosedEventArgs ) )
 #if JAVA
             ;
 #else
-        {
+ {
 #endif
         }
 
-        public BDoWorkEventHandler( Type sender, String method_name )
+        public BFormClosedEventHandler( Type sender, String method_name )
 #if JAVA
         {
 #else
             :
 #endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) )
+ base( sender, method_name, typeof( void ), typeof( Object ), typeof( FormClosedEventArgs ) )
 #if JAVA
             ;
 #else
-        {
+ {
 #endif
         }
     }

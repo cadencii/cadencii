@@ -18,7 +18,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace bocoree.windows.forms {
+namespace bocoree {
 
     public class BEvent<T> where T : BEventHandler {
         private List<T> m_delegates;
@@ -27,7 +27,7 @@ namespace bocoree.windows.forms {
             m_delegates = new List<T>();
         }
 
-        public BEvent<T> registerNative( object bind, string eventName, Delegate aDelegate ) {
+        /*public BEvent<T> registerNative( object bind, string eventName, Delegate aDelegate ) {
             if ( bind == null || eventName == "" ) {
                 return this;
             }
@@ -39,7 +39,7 @@ namespace bocoree.windows.forms {
                 }
             }
             return this;
-        }
+        }*/
 
         public void add( T aDelegate ) {
             m_delegates.Add( aDelegate );

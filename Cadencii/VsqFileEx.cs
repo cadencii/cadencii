@@ -985,6 +985,7 @@ namespace Boare.Cadencii {
 
         public VsqFileEx( String _fpath, String encoding )
 #if JAVA
+            throws FileNotFoundException
         {
 #else
             :

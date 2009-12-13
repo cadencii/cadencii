@@ -9,7 +9,10 @@ import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
 
-public class BTextBox extends JTextField implements KeyListener, DocumentListener{
+public class BTextBox extends JTextField 
+                      implements KeyListener, 
+                                 DocumentListener
+{
     private static final long serialVersionUID = 7503633539526888136L;
 
     public BTextBox(){
@@ -18,20 +21,18 @@ public class BTextBox extends JTextField implements KeyListener, DocumentListene
         getDocument().addDocumentListener( this );
     }
     
+    /* root impl of TextChanged event */
+    // root impl of TextChanged event is in BTextBox
     public BEvent<BEventHandler> textChangedEvent = new BEvent<BEventHandler>();
-    
     public void changedUpdate( DocumentEvent e ){
         updates( e );
     }
-    
     public void insertUpdate( DocumentEvent e ){
         updates( e );
     }
-    
     public void removeUpdate( DocumentEvent e ){
         updates( e );
     }
-     
     public void updates( DocumentEvent e ){
         try{
             textChangedEvent.raise( this, new BEventArgs() );
@@ -62,36 +63,33 @@ public class BTextBox extends JTextField implements KeyListener, DocumentListene
     }
     /* END REGION */
     
-    /* REGION java.awt.Component */
-    /* root implementation of java.awt.Component instanceof in BForm.cs(java) */
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    // root imol of KeyListener is in BButton
+    public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
     public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyPressedEvent = new BEvent<BKeyEventHandler>();
-    
-    public void keyPressed( KeyEvent e0 ){
+    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
+    public void keyPressed( KeyEvent e ) {
         try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyDownEvent.raise( this, e );
+            previewKeyDownEvent.raise( this, new BPreviewKeyDownEventArgs( e ) );
+            keyDownEvent.raise( this, new BKeyEventArgs( e ) );
         }catch( Exception ex ){
-            System.err.println( "BForm#keyPressed; ex=" + ex );
+            System.err.println( "BButton#keyPressed; ex=" + ex );
         }
     }
-    
-    public void keyReleased( KeyEvent e0 ){
+    public void keyReleased(KeyEvent e) {
         try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyUpEvent.raise( this, e );
+            keyUpEvent.raise( this, new BKeyEventArgs( e ) );
         }catch( Exception ex ){
-            System.err.println( "BForm#keyReleased; ex=" + ex );
+            System.err.println( "BButton#keyReleased; ex=" + ex );
         }
     }
-    
-    public void keyTyped( KeyEvent e0 ){
+    public void keyTyped(KeyEvent e) {
         try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyPressedEvent.raise( this, e );
+            previewKeyDownEvent.raise( this, new BPreviewKeyDownEventArgs( e ) );
+            keyPressEvent.raise( this, new BKeyPressEventArgs( e ) );
         }catch( Exception ex ){
-            System.err.println( "BForm#keyTyped; ex=" + ex );
+            System.err.println( "BButton#keyType; ex=" + ex );
         }
     }
+
 }

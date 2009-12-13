@@ -23,6 +23,16 @@ using bocoree.javax.swing;
 namespace bocoree.windows.forms {
 
     public class BPopupMenu : System.Windows.Forms.ContextMenuStrip, MenuElement {
+        // root impl of Opening event
+        #region event impl Opening
+        // root impl of Opening event is in BPopupMenu
+        public BEvent<BEventHandler> openingEvent = new BEvent<BEventHandler>();
+        protected override void OnOpening( System.ComponentModel.CancelEventArgs e ) {
+            base.OnOpening( e );
+            openingEvent.raise( this, e );
+        }
+        #endregion
+
         public BPopupMenu( System.ComponentModel.IContainer container )
             : base( container ) {
         }
@@ -64,6 +74,22 @@ namespace bocoree.windows.forms {
 
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
+        public java.awt.Dimension getMinimumSize() {
+            return new bocoree.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
+        }
+
+        public void setMinimumSize( java.awt.Dimension value ) {
+            base.MinimumSize = new System.Drawing.Size( value.width, value.height );
+        }
+
+        public java.awt.Dimension getMaximumSize() {
+            return new bocoree.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+        }
+
+        public void setMaximumSize( java.awt.Dimension value ) {
+            base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+        }
+
         public void invalidate() {
             base.Invalidate();
         }
@@ -166,7 +192,7 @@ namespace bocoree.windows.forms {
         }
 
         public bocoree.java.awt.Point getLocationOnScreen() {
-            System.Drawing.Point p = base.PointToScreen( base.Location );
+            System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
             return new bocoree.java.awt.Point( p.X, p.Y );
         }
 

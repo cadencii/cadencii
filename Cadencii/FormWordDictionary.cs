@@ -73,6 +73,7 @@ namespace Boare.Cadencii {
                 BListViewItem item = new BListViewItem( new String[] { name } );
                 listDictionaries.addItem( "", item, enabled );
             }
+            listDictionaries.setColumnWidth( 0, listDictionaries.getWidth() );
         }
 
         public Vector<ValuePair<String, Boolean>> getResult() {

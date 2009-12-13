@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: com.boare.cadencii.Program
+Main-Class: org.kbinani.Cadencii.Program

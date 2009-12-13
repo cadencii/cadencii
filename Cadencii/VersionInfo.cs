@@ -74,13 +74,13 @@ namespace Boare.Cadencii {
             InitializeComponent();
             timer = new BTimer( this.components );
 #endif
+            m_version = version;
+            m_app_name = app_name;
+
             timer.setDelay( 30 );
             registerEventHandlers();
             setResources();
             applyLanguage();
-
-            m_version = version;
-            m_app_name = app_name;
 
 #if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );
@@ -396,6 +396,7 @@ namespace Boare.Cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.btnFlip = new bocoree.windows.forms.BButton();
             this.btnOK = new bocoree.windows.forms.BButton();
             this.btnSaveAuthorList = new bocoree.windows.forms.BButton();

@@ -207,18 +207,18 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
-            this.chkRingBell.CheckedChanged += new System.EventHandler( this.chkRingBell_CheckedChanged );
-            this.chkPreview.CheckedChanged += new System.EventHandler( this.chkPreview_CheckedChanged );
-            this.comboDeviceMetronome.SelectedIndexChanged += new System.EventHandler( this.comboDeviceMetronome_SelectedIndexChanged );
-            this.comboDeviceGeneral.SelectedIndexChanged += new System.EventHandler( this.comboDeviceGeneral_SelectedIndexChanged );
-            this.numPreUtterance.ValueChanged += new System.EventHandler( this.numPreUtterance_ValueChanged );
-            this.numNoteBell.ValueChanged += new System.EventHandler( this.numNoteBell_ValueChanged );
-            this.numNoteNormal.ValueChanged += new System.EventHandler( this.numNoteNormal_ValueChanged );
-            this.numProgramBell.ValueChanged += new System.EventHandler( this.numProgramBell_ValueChanged );
-            this.numProgramNormal.ValueChanged += new System.EventHandler( this.numProgramNormal_ValueChanged );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMidiConfig_FormClosing );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+            chkRingBell.checkedChangedEvent.add( new BEventHandler( this, "chkRingBell_CheckedChanged" ) );
+            chkPreview.checkedChangedEvent.add( new BEventHandler( this, "chkPreview_CheckedChanged" ) );
+            comboDeviceMetronome.selectedIndexChangedEvent.add( new BEventHandler( this, "comboDeviceMetronome_SelectedIndexChanged" ) );
+            comboDeviceGeneral.selectedIndexChangedEvent.add( new BEventHandler( this, "comboDeviceGeneral_SelectedIndexChanged" ) );
+            numPreUtterance.valueChangedEvent.add( new BEventHandler( this, "numPreUtterance_ValueChanged" ) );
+            numNoteBell.valueChangedEvent.add( new BEventHandler( this, "numNoteBell_ValueChanged" ) );
+            numNoteNormal.valueChangedEvent.add( new BEventHandler( this, "umNoteNormal_ValueChanged" ) );
+            numProgramBell.valueChangedEvent.add( new BEventHandler( this, "umProgramBell_ValueChanged" ) );
+            numProgramNormal.valueChangedEvent.add( new BEventHandler( this, "numProgramNormal_ValueChanged" ) );
+            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMidiConfig_FormClosing" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
         }
 
         private void setResources() {

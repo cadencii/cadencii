@@ -22,6 +22,7 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using Boare.Lib.AppUtil;
+using bocoree;
 using bocoree.windows.forms;
 
 namespace Boare.Cadencii {
@@ -85,13 +86,8 @@ namespace Boare.Cadencii {
         }
 
         private void registerEventHandlers() {
-#if JAVA
-            this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-#else
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
         }
 
         private void setResources() {

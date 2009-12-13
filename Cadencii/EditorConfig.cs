@@ -24,6 +24,7 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using Boare.Lib.Vsq;
+using bocoree;
 using bocoree.java.awt;
 using bocoree.java.io;
 using bocoree.java.util;
@@ -32,6 +33,7 @@ using bocoree.xml;
 
 namespace Boare.Cadencii {
     using boolean = System.Boolean;
+    using BEventArgs = System.EventArgs;
 #endif
 
     /// <summary>
@@ -372,11 +374,7 @@ namespace Boare.Cadencii {
         /// PositionQuantize, PositionQuantizeTriplet, LengthQuantize, LengthQuantizeTripletの描くプロパティのいずれかが
         /// 変更された時発生します
         /// </summary>
-#if JAVA
-        public static BEvent quantizeModeChangedEvent = new BEvent();
-#else
-        public static event EventHandler QuantizeModeChanged;
-#endif
+        public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
 
         public BKeys[] getShortcutKeyFor( BMenuItem menu_item ) {
             String name = menu_item.getName();
@@ -523,17 +521,11 @@ namespace Boare.Cadencii {
         public void setPositionQuantize( QuantizeMode value ) {
             if ( m_position_quantize != value ) {
                 m_position_quantize = value;
-#if JAVA
                 try{
-                    quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
+                    quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 }catch( Exception ex ){
-                    System.err.println( "EditorConfig#setPositionQuantize; ex=" + ex );
+                    PortUtil.stderr.println( "EditorConfig#setPositionQuantize; ex=" + ex );
                 }
-#else
-                if ( QuantizeModeChanged != null ) {
-                    QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );
-                }
-#endif
             }
         }
 
@@ -556,17 +548,11 @@ namespace Boare.Cadencii {
         public void setPositionQuantizeTriplet( boolean value ) {
             if ( m_position_quantize_triplet != value ) {
                 m_position_quantize_triplet = value;
-#if JAVA
                 try{
-                    quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
+                    quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 }catch( Exception ex ){
-                    System.err.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
+                    PortUtil.stderr.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
                 }
-#else
-                if ( QuantizeModeChanged != null ) {
-                    QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );
-                }
-#endif
             }
         }
 
@@ -589,17 +575,11 @@ namespace Boare.Cadencii {
         public void setLengthQuantize( QuantizeMode value ) {
             if ( m_length_quantize != value ) {
                 m_length_quantize = value;
-#if JAVA
                 try{
-                    quantizeModeChangedEvent.raise( new BEventArgs() );
+                    quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 }catch( Exception ex ){
-                    System.err.println( "EditorConfig#setLengthQuantize; ex=" + ex );
+                    PortUtil.stderr.println( "EditorConfig#setLengthQuantize; ex=" + ex );
                 }
-#else
-                if ( QuantizeModeChanged != null ) {
-                    QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );
-                }
-#endif
             }
         }
 
@@ -621,17 +601,11 @@ namespace Boare.Cadencii {
         public void setLengthQuantizeTriplet( boolean value ) {
             if ( m_length_quantize_triplet != value ) {
                 m_length_quantize_triplet = value;
-#if JAVA
                 try{
-                    quantizeModeChangedEvent.raise( new BEventArgs() );
+                    quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 }catch( Exception ex ){
-                    System.err.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
+                    PortUtil.stderr.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
                 }
-#else
-                if ( QuantizeModeChanged != null ) {
-                    QuantizeModeChanged( typeof( EditorConfig ), new EventArgs() );
-                }
-#endif
             }
         }
 
