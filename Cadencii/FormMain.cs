@@ -337,15 +337,7 @@ namespace Boare.Cadencii {
         /// マウスが降りているかどうかを表すフラグ．AppManager.isPointerDownedとは別なので注意
         /// </summary>
         public boolean m_mouse_downed = false;
-        /* /// <summary>
-        /// テンポ変更の位置を、マウスドラッグで移動させているかどうかを表すフラグ
-        /// </summary> */
-        //public boolean m_tempo_dragging = false;
         public int m_tempo_dragging_deltaclock = 0;
-        /* /// <summary>
-        /// 拍子変更の位置を、マウスドラッグで移動させているかどうかを表すフラグ
-        /// </summary>
-        public boolean m_timesig_dragging = false;*/
         public int m_timesig_dragging_deltaclock = 0;
         public boolean m_mouse_downed_trackselector = false;
         private ExtDragXMode m_ext_dragx_trackselector = ExtDragXMode.NONE;
@@ -362,8 +354,6 @@ namespace Boare.Cadencii {
         /// 鉛筆のモード
         /// </summary>
         public PencilMode m_pencil_mode = new PencilMode();
-        //public boolean m_startmark_dragging = false;
-        //public boolean m_endmark_dragging = false;
         /// <summary>
         /// ビブラート範囲を編集中の音符のInternalID
         /// </summary>
