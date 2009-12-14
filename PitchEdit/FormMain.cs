@@ -5,10 +5,10 @@ using System.Text;
 using System.Xml.Serialization;
 using System.Drawing;
 
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree;
 
-namespace Boare.PitchEdit {
+namespace org.PitchEdit {
 
     public partial class FormMain : Form {
         const int _DOT_WID = 2;

@@ -18,7 +18,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

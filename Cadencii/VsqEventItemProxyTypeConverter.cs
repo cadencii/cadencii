@@ -15,7 +15,7 @@
 using System;
 using System.ComponentModel;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     public class VsqEventItemProxyTypeConverter : TypeConverter {

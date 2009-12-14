@@ -2,12 +2,12 @@
  * UstEvent.cs
  * Copyright (c) 2009 kbinani
  *
- * This file is part of Boare.Lib.Vsq.
+ * This file is part of org.kbinani.vsq.
  *
- * Boare.Lib.Vsq is free software; you can redistribute it and/or
+ * org.kbinani.vsq is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * Boare.Lib.Vsq is distributed in the hope that it will be useful,
+ * org.kbinani.vsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -21,7 +21,7 @@ using System;
 using bocoree;
 using bocoree.java.io;
 
-namespace Boare.Lib.Vsq {
+namespace org.kbinani.vsq {
 #endif
 
 #if JAVA

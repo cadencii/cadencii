@@ -25,11 +25,11 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 using bocoree;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
 #endif
@@ -269,11 +269,11 @@ namespace Boare.Cadencii {
             this.groupMetronome = new BGroupBox();
             this.lblDeviceGeneral = new BLabel();
             this.comboDeviceGeneral = new BComboBox();
-            this.numPreUtterance = new Boare.Cadencii.NumericUpDownEx();
-            this.numNoteBell = new Boare.Cadencii.NumericUpDownEx();
-            this.numNoteNormal = new Boare.Cadencii.NumericUpDownEx();
-            this.numProgramBell = new Boare.Cadencii.NumericUpDownEx();
-            this.numProgramNormal = new Boare.Cadencii.NumericUpDownEx();
+            this.numPreUtterance = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numNoteBell = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numNoteNormal = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numProgramBell = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numProgramNormal = new org.kbinani.cadencii.NumericUpDownEx();
             this.groupMetronome.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPreUtterance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numNoteBell)).BeginInit();

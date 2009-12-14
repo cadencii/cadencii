@@ -35,9 +35,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Media;
 using System.Threading;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Media;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.media;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.awt.event_;
@@ -48,7 +48,7 @@ using bocoree.xml;
 using bocoree.javax.swing;
 using bocoree.componentmodel;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     //using EventArgs = System.EventArgs;
@@ -7151,9 +7151,9 @@ namespace Boare.Cadencii {
             String version_str = AppManager.getVersion();
 #else
             String version_str = AppManager.getVersion() + "\n\n" +
-                                 AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.AppUtil.Util ) ) + "\n" +
-                                 AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.Media.Wave ) ) + "\n" +
-                                 AppManager.getAssemblyNameAndFileVersion( typeof( Boare.Lib.Vsq.VsqFile ) ) + "\n" +
+                                 AppManager.getAssemblyNameAndFileVersion( typeof( org.kbinani.apputil.Util ) ) + "\n" +
+                                 AppManager.getAssemblyNameAndFileVersion( typeof( org.kbinani.media.Wave ) ) + "\n" +
+                                 AppManager.getAssemblyNameAndFileVersion( typeof( org.kbinani.vsq.VsqFile ) ) + "\n" +
                                  AppManager.getAssemblyNameAndFileVersion( typeof( bocoree.math ) );
 #endif
             if ( m_versioninfo == null ) {
@@ -14594,7 +14594,7 @@ namespace Boare.Cadencii {
             this.vScroll = new bocoree.windows.forms.BVScrollBar();
             this.hScroll = new bocoree.windows.forms.BHScrollBar();
             this.picturePositionIndicator = new bocoree.windows.forms.BPictureBox();
-            this.pictPianoRoll = new Boare.Cadencii.PictPianoRoll();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.pictureBox3 = new bocoree.windows.forms.BPictureBox();
             this.pictureBox2 = new bocoree.windows.forms.BPictureBox();
             this.toolStripTool = new bocoree.windows.forms.BToolBar();
@@ -14629,10 +14629,10 @@ namespace Boare.Cadencii {
             this.stripDDBtnSpeed100 = new bocoree.windows.forms.BMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new bocoree.windows.forms.BStatusLabel();
-            this.splitContainerProperty = new Boare.Lib.AppUtil.BSplitContainer();
+            this.splitContainerProperty = new org.kbinani.apputil.BSplitContainer();
             this.panel2 = new bocoree.windows.forms.BPanel();
-            this.splitContainer2 = new Boare.Lib.AppUtil.BSplitContainer();
-            this.splitContainer1 = new Boare.Lib.AppUtil.BSplitContainer();
+            this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
+            this.splitContainer1 = new org.kbinani.apputil.BSplitContainer();
             this.toolStripFile = new bocoree.windows.forms.BToolBar();
             this.stripBtnFileNew = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnFileOpen = new bocoree.windows.forms.BToolStripButton();
@@ -17644,7 +17644,7 @@ namespace Boare.Cadencii {
         public BMenuItem cMenuPianoLength128;
         public BMenuItem cMenuPianoFixed128;
         public BMenuItem menuVisualWaveform;
-        public Boare.Lib.AppUtil.BSplitContainer splitContainer2;
+        public org.kbinani.apputil.BSplitContainer splitContainer2;
         public BPanel panel2;
         public BMenuItem cMenuTrackSelectorDeleteBezier;
         public BStatusLabel stripLblMidiIn;
@@ -17695,7 +17695,7 @@ namespace Boare.Cadencii {
         public BMenuItem menuSettingUtauVoiceDB;
         public BToolBar toolStripBottom;
         public BStatusLabel statusLabel;
-        public Boare.Lib.AppUtil.BSplitContainer splitContainerProperty;
+        public org.kbinani.apputil.BSplitContainer splitContainerProperty;
         public BPictureBox pictOverview;
         public BMenuItem menuVisualOverview;
         public BPanel panel3;
@@ -17705,7 +17705,7 @@ namespace Boare.Cadencii {
         public BButton btnMooz;
         public BButton btnLeft2;
         public BButton btnRight1;
-        public Boare.Lib.AppUtil.BSplitContainer splitContainer1;
+        public org.kbinani.apputil.BSplitContainer splitContainer1;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         public BMenuItem menuTrackBgm;
         public BMenuItem menuTrackRendererStraight;

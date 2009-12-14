@@ -5,7 +5,7 @@ using System.IO;
 using System.Security.Cryptography;
 using Microsoft.Win32;
 
-namespace Boare {
+namespace org {
 
     public static class VocaloSysUtil {
         private static bool s_initialized = false;

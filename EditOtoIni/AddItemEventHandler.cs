@@ -11,7 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace Boare.EditOtoIni {
+namespace org.EditOtoIni {
 
     public delegate void AddItemEventHandler( object sender, bool bool_value, string[] stringarr_value );
 

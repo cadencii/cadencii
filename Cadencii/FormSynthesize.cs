@@ -26,15 +26,15 @@ import org.kbinani.componentmodel.*;
 #else
 using System;
 using System.Windows.Forms;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Media;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.media;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.componentmodel;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;

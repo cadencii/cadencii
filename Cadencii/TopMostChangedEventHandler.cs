@@ -26,7 +26,7 @@ public class TopMostChangedEventHandler extends BEventHandler{
     }
 }
 #else
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     public delegate void TopMostChangedEventHandler( object sender, bool top_most );
 

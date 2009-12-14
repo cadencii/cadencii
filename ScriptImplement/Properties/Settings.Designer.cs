@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Boare.CadenciiScript.Properties {
+namespace org.CadenciiScript.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

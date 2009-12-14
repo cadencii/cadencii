@@ -19,7 +19,7 @@ import java.awt.*;
 using System;
 using bocoree.java.awt;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     [Serializable]

@@ -21,8 +21,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Reflection;
 
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
 }

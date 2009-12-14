@@ -2,12 +2,12 @@
  * Wave.cs
  * Copyright (c) 2008-2009 kbinani
  *
- * This file is part of Boare.Lib.Media.
+ * This file is part of org.kbinani.media.
  *
- * Boare.Lib.Media is free software; you can redistribute it and/or
+ * org.kbinani.media is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * Boare.Lib.Media is distributed in the hope that it will be useful,
+ * org.kbinani.media is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using bocoree;
 using bocoree.java.io;
 
-namespace Boare.Lib.Media {
+namespace org.kbinani.media {
     using boolean = System.Boolean;
 #endif
 

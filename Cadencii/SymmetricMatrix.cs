@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using bocoree;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     /// <summary>
     /// 対称行列．格納できるのは値型のみ．

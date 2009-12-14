@@ -29,15 +29,15 @@ import org.kbinani.windows.forms.*;
 //#define MONITOR_FPS
 using System;
 using System.Threading;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.awt.event_;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;

@@ -14,11 +14,11 @@
  */
 using System;
 using System.Collections.Generic;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     [Serializable]
     public class CommandTreeUnit {

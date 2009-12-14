@@ -18,9 +18,9 @@ using System.Text;
 using System.Web;
 using System.Net;
 
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 
-namespace Boare.WebPOEdit {
+namespace org.WebPOEdit {
 
     class Program {
         const string _TEXT_ENC = "utf-8";

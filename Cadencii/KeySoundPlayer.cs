@@ -18,10 +18,10 @@ import org.kbinani.*;
 import org.kbinani.media.*;
 #else
 using System;
-using Boare.Lib.Media;
+using org.kbinani.media;
 using bocoree;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

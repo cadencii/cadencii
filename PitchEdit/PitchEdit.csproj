@@ -8,7 +8,7 @@
     <ProjectGuid>{DE32E1CA-5146-4C0B-953D-657F5A6FF584}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Boare.PitchEdit</RootNamespace>
+    <RootNamespace>org.PitchEdit</RootNamespace>
     <AssemblyName>PitchEdit</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree.java.io;
-using Boare.Cadencii;
+using org.kbinani.cadencii;
 using System.Windows.Forms;
 
-namespace Boare.CadenciiScript {
+namespace org.CadenciiScript {
 
     class UTAU_Plugin_Manager : Form {
         const string TEMPLATE = "";
@@ -17,7 +17,7 @@ namespace Boare.CadenciiScript {
             "using System;" +
             "using System.IO;" +
             "using System.Windows.Forms;" +
-            "using Boare.Cadencii;" +
+            "using org.kbinani.cadencii;" +
             "using Boare.Lib.Vsq;" +
             "" +
             "public class {0}{" +

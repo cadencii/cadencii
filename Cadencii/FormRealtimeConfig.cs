@@ -23,9 +23,9 @@ import org.kbinani.windows.forms.*;
 using System;
 using bocoree;
 using bocoree.windows.forms;
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif

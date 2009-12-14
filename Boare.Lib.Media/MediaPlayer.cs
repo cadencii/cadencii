@@ -2,12 +2,12 @@
  * MediaPlayer.cs
  * Copyright (c) 2007-2009 kbinani
  *
- * This file is part of Boare.Lib.Media.
+ * This file is part of org.kbinani.media.
  *
- * Boare.Lib.Media is free software; you can redistribute it and/or
+ * org.kbinani.media is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * Boare.Lib.Media is distributed in the hope that it will be useful,
+ * org.kbinani.media is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -16,7 +16,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Boare.Lib.Media {
+namespace org.kbinani.media {
 
     /// <summary>
     /// Sound player using mciSendSring command operation

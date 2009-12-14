@@ -15,7 +15,7 @@
 package org.kbinani.cadencii;
 
 #else
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     public struct AmplifyCoefficient {

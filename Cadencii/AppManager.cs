@@ -29,8 +29,8 @@ using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Windows.Forms;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.io;
@@ -39,7 +39,7 @@ using bocoree.windows.forms;
 using bocoree.xml;
 using Microsoft.CSharp;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using Integer = System.Int32;
@@ -846,7 +846,7 @@ namespace Boare.Cadencii {
             foreach ( String s in AppManager.USINGS ) {
                 code += s;
             }
-            code += "namespace Boare.CadenciiScript{";
+            code += "namespace org.kbinani.cadenciiScript{";
             code += script;
             code += "}";
             ret.ErrorMessage = "";

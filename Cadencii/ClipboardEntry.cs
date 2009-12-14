@@ -20,10 +20,10 @@ import org.kbinani.*;
 import org.kbinani.vsq.*;
 #else
 using System;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
 #endif
 

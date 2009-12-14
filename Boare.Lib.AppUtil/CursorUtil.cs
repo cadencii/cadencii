@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using bocoree;
 
-namespace Boare.Lib.AppUtil {
+namespace org.kbinani.apputil {
 
     public static class CursorUtil {
         public static void SaveAsIcon( Bitmap item, Stream stream, Color transp ) {

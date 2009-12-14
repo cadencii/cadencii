@@ -21,11 +21,11 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 using bocoree;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif

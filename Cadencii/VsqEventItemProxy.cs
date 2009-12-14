@@ -15,12 +15,12 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
-using Boare.Lib.Vsq;
-using Boare.Lib.AppUtil;
+using org.kbinani.vsq;
+using org.kbinani.apputil;
 using bocoree;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     [TypeConverter( typeof( VsqEventItemProxyTypeConverter ) )]
     class VsqEventItemProxy {

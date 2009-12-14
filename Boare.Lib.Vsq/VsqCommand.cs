@@ -2,9 +2,9 @@
  * VsqCommand.cs
  * Copyright (c) 2008-2009 kbinani
  *
- * This file is part of Boare.Lib.Vsq.
+ * This file is part of org.kbinani.vsq.
  *
- * Boare.Lib.Vsq is free software; you can redistribute it and/or
+ * org.kbinani.vsq is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
  * Boare.VECapture is distributed in the hope that it will be useful,
@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using bocoree;
 using bocoree.java.util;
 
-namespace Boare.Lib.Vsq {
+namespace org.kbinani.vsq {
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using Long = System.Int64;

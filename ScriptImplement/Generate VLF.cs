@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.vsq;
 public class GenerateVLF{
     public static bool Edit( VsqFile vsq ){
         int track = 1;

@@ -14,9 +14,9 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Boare.Cadencii;
-using Boare.Lib.Media;
-using Boare.Lib.Vsq;
+using org.kbinani.cadencii;
+using org.kbinani.media;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
 

@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using bocoree;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     public delegate Vector<MidiQueue> MidiQueueDoneEventHandler( MidiQueue sender );
 

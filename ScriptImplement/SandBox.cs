@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Windows.Forms;
-using Boare.Cadencii;
-using Boare.Lib.Media;
-using Boare.Lib.Vsq;
+using org.kbinani.cadencii;
+using org.kbinani.media;
+using org.kbinani.vsq;
 using bocoree.java.util;
 
 public class Search {
@@ -56,7 +56,7 @@ public class Search {
 class batch_vsq_gen {
 
     public static void Main( string[] args ){
-        Boare.Cadencii.VSTiProxy.init();
+        VSTiProxy.init();
         using( StreamWriter bat = new StreamWriter( "bat.bat" ) ){
             for ( int length = 0; length <= 100; length += 50 ) {
                 for ( int depth = 0; depth <= 100; depth += 50 ) {
@@ -80,7 +80,7 @@ class batch_vsq_gen {
                     string file = "depth=" + depth + "_length=" + length;
                     vsq.write( file + ".vsq" );
                     using ( WaveWriter w = new WaveWriter( file + ".wav" ) ) {
-                        Boare.Cadencii.VSTiProxy.render( vsq, 1, w, 0.0, vsq.getTotalSec() + 1.0, 500, false, new WaveReader[] { }, 0.0, false, ".\\", false );
+                        VSTiProxy.render( vsq, 1, w, 0.0, vsq.getTotalSec() + 1.0, 500, false, new WaveReader[] { }, 0.0, false, ".\\", false );
                     }
                     bat.WriteLine( "getf0 \"" + file + ".wav\" f" );
                 }
@@ -91,27 +91,27 @@ class batch_vsq_gen {
 }
 
 public static class AutoBRI {
-    public static bool Edit( Boare.Lib.Vsq.VsqFile vsq ) {
+    public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {
         // 選択されているアイテム（のInternalID）をリストアップ
         System.Collections.Generic.List<int> ids = new System.Collections.Generic.List<int>();
         for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ){
-            Boare.Cadencii.SelectedEventEntry entry = (SelectedEventEntry)itr.next();
+            SelectedEventEntry entry = (SelectedEventEntry)itr.next();
             ids.Add( entry.original.InternalID );
         }
 
-        Boare.Lib.Vsq.VsqTrack track = vsq.Track.get( Boare.Cadencii.AppManager.getSelected() );
+        org.kbinani.vsq.VsqTrack track = vsq.Track.get( AppManager.getSelected() );
 
         // コントロールカーブの時間方向の解像度を，Cadenciiの設定値から取得
-        int resol = Boare.Cadencii.AppManager.editorConfig.ControlCurveResolution.getValue();
+        int resol = AppManager.editorConfig.ControlCurveResolution.getValue();
         for ( int i = 0; i < ids.Count; i++ ) {
             int internal_id = ids[i];
 
             for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                Boare.Lib.Vsq.VsqEvent item = (Boare.Lib.Vsq.VsqEvent)itr.next();
+                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
                 // 指定されたInternalIDと同じなら，編集する
                 if ( item.InternalID == internal_id ) {
                     // Brightnessカーブを取得
-                    Boare.Lib.Vsq.VsqBPList bri = track.getCurve( "BRI" );
+                    org.kbinani.vsq.VsqBPList bri = track.getCurve( "BRI" );
 
                     // 音符の最後の位置でのBRIを取得．処理の最後で追加
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
@@ -163,7 +163,7 @@ public static class AutoBRI {
     }
 }
 
-public class AutoBRITool : Boare.Cadencii.IPaletteTool {
+public class AutoBRITool : IPaletteTool {
     /// <summary>
     /// インターフェースIPaletteToolのメンバー
     /// </summary>
@@ -172,18 +172,18 @@ public class AutoBRITool : Boare.Cadencii.IPaletteTool {
     /// <param name="ids">クリックされたイベントのInternalIDが格納された配列</param>
     /// <param name="button">クリックされたときのマウスボタン</param>
     /// <returns></returns>
-    public bool edit( Boare.Lib.Vsq.VsqTrack track, int[] ids, System.Windows.Forms.MouseButtons button ) {
+    public bool edit( org.kbinani.vsq.VsqTrack track, int[] ids, System.Windows.Forms.MouseButtons button ) {
         // コントロールカーブの時間方向の解像度を，Cadenciiの設定値から取得
-        int resol = Boare.Cadencii.AppManager.editorConfig.ControlCurveResolution.getValue();
+        int resol = AppManager.editorConfig.ControlCurveResolution.getValue();
         for ( int i = 0; i < ids.Length; i++ ) {
             int internal_id = ids[i];
             
             for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                Boare.Lib.Vsq.VsqEvent item = (Boare.Lib.Vsq.VsqEvent)itr.next();
+                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
                 // 指定されたInternalIDと同じなら，編集する
                 if ( item.InternalID == internal_id ) {
                     // Brightnessカーブを取得
-                    Boare.Lib.Vsq.VsqBPList bri = track.getCurve( "BRI" );
+                    org.kbinani.vsq.VsqBPList bri = track.getCurve( "BRI" );
                     
                     // 音符の最後の位置でのBRIを取得．処理の最後で追加
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
@@ -287,19 +287,19 @@ public class AutoBRITool : Boare.Cadencii.IPaletteTool {
 
 
 public static class SaveMetaText {
-    public static bool Edit( Boare.Lib.Vsq.VsqFile vsq ) {
+    public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {
         vsq.Track.get( 1 ).printMetaText( @"c:\meta_text.txt" );
         return true;
     }
 }
 
 public static class PrintLyric {
-    public static bool Edit( Boare.Lib.Vsq.VsqFile Vsq ) {
+    public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
         System.IO.StreamWriter sw = null;
         try {
             sw = new System.IO.StreamWriter( @"c:\lyrics.txt" );
             for ( Iterator itr = Vsq.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ) {
-                Boare.Lib.Vsq.VsqEvent item = (Boare.Lib.Vsq.VsqEvent)itr.next();
+                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
                 int clStart = item.Clock;
                 int clEnd = clStart + item.ID.Length;
                 double secStart = Vsq.getSecFromClock( clStart );
@@ -318,10 +318,10 @@ public static class PrintLyric {
 }
 
 public static class UpHalfStep {
-    public static bool Edit( Boare.Lib.Vsq.VsqFile Vsq ) {
+    public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
         for ( int i = 1; i < Vsq.Track.size(); i++ ) {
             for ( Iterator itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
-                Boare.Lib.Vsq.VsqEvent item = (Boare.Lib.Vsq.VsqEvent)itr.next();
+                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
                 if ( item.ID.Note < 127 ) {
                     item.ID.Note++;
                 }
@@ -332,10 +332,10 @@ public static class UpHalfStep {
 }
 
 public static class Trim32 {
-    public static bool Edit( Boare.Lib.Vsq.VsqFile Vsq ) {
+    public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
         for ( int i = 1; i < Vsq.Track.size(); i++ ) {
             for ( Iterator itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
-                Boare.Lib.Vsq.VsqEvent item = (Boare.Lib.Vsq.VsqEvent)itr.next();
+                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
                 // 32分音符の長さは，クロック数に直すと60クロック
                 if ( item.ID.Length > 60 ) {
                     item.ID.Length -= 60;

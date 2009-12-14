@@ -21,13 +21,13 @@ import org.kbinani.vsq.*;
 import org.kbinani.xml.*;
 #else
 using System;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.io;
 using bocoree.java.util;
 using bocoree.xml;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using Integer = Int32;
     using Long = System.Int64;

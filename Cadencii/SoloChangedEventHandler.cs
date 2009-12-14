@@ -27,7 +27,7 @@ public class SoloChangedEventHandler extends BEventHandler{
     }
 }
 #else
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     public delegate void SoloChangedEventHandler( int track, bool solo );
 

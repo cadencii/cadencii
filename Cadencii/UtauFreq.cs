@@ -21,7 +21,7 @@ using System;
 using bocoree;
 using bocoree.java.io;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     public class UtauFreq {

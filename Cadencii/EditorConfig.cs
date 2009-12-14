@@ -23,7 +23,7 @@ import org.kbinani.xml.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.io;
@@ -31,7 +31,7 @@ using bocoree.java.util;
 using bocoree.windows.forms;
 using bocoree.xml;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
 #endif

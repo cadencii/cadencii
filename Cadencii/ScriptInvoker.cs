@@ -13,11 +13,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.vsq;
 using bocoree.xml;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     using boolean = System.Boolean;
 

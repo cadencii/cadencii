@@ -18,7 +18,7 @@ package org.kbinani.cadencii;
 using System;
 using System.Windows.Forms;
 
-namespace Boare.Cadencii{
+namespace org.kbinani.cadencii{
 #endif
 
     public class Program {

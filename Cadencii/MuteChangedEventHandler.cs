@@ -26,7 +26,7 @@ public class MuteChangedEventHandler extends BEventHandler{
     }
 }
 #else
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     public delegate void MuteChangedEventHandler( int track, bool mute );
 

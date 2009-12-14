@@ -22,12 +22,12 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 using bocoree;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = EventArgs;
     using boolean = System.Boolean;
     using Integer = System.Int32;

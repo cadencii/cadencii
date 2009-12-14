@@ -16,8 +16,7 @@ using System.Runtime.InteropServices;
 
 using bocoree;
 
-namespace Boare.Cadencii {
-
+namespace org.kbinani.cadencii {
     using boolean = Boolean;
 
     public unsafe static class winmmhelp {

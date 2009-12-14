@@ -14,7 +14,7 @@
  */
 using System;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
 #if TREECOM
     /// <summary>

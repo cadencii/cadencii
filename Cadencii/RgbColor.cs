@@ -18,7 +18,7 @@ import java.awt.*;
 #else
 using bocoree.java.awt;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     public struct RgbColor {

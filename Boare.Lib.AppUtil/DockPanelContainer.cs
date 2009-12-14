@@ -2,7 +2,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace Boare.Lib.AppUtil {
+namespace org.kbinani.apputil {
 
     public class DockPanelContainer : Panel {
     }

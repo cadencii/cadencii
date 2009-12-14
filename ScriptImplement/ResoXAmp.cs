@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using Boare.Lib.Vsq;
-using Boare.Cadencii;
+using org.kbinani.vsq;
+using org.kbinani.cadencii;
 using System.Drawing;
 
 class ResoXAmp : Form {

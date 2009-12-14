@@ -2,7 +2,7 @@
 * VsqID.cs
 * Copyright (c) 2008-2009 kbinani
 *
-* This file is part of Boare.Lib.Vsq.
+* This file is part of org.kbinani.vsq.
 *
 * Boare.Lib.Vsq is free software; you can redistribute it and/or
 * modify it under the terms of the BSD License.
@@ -21,7 +21,7 @@ using System;
 using bocoree;
 using bocoree.java.io;
 
-namespace Boare.Lib.Vsq {
+namespace org.kbinani.vsq {
     using boolean = System.Boolean;
 #endif
 

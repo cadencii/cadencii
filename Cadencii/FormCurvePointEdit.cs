@@ -23,12 +23,12 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
@@ -307,8 +307,8 @@ namespace Boare.Cadencii {
             this.btnBackward2 = new bocoree.windows.forms.BButton();
             this.btnForward2 = new bocoree.windows.forms.BButton();
             this.btnApply = new bocoree.windows.forms.BButton();
-            this.txtDataPointClock = new Boare.Cadencii.NumberTextBox();
-            this.txtDataPointValue = new Boare.Cadencii.NumberTextBox();
+            this.txtDataPointClock = new org.kbinani.cadencii.NumberTextBox();
+            this.txtDataPointValue = new org.kbinani.cadencii.NumberTextBox();
             this.btnBackward3 = new bocoree.windows.forms.BButton();
             this.btnForward3 = new bocoree.windows.forms.BButton();
             this.btnUndo = new bocoree.windows.forms.BButton();
@@ -396,7 +396,7 @@ namespace Boare.Cadencii {
             this.txtDataPointClock.Name = "txtDataPointClock";
             this.txtDataPointClock.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointClock.TabIndex = 2;
-            this.txtDataPointClock.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointClock.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDataPointValue
             // 
@@ -404,7 +404,7 @@ namespace Boare.Cadencii {
             this.txtDataPointValue.Name = "txtDataPointValue";
             this.txtDataPointValue.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointValue.TabIndex = 1;
-            this.txtDataPointValue.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointValue.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // btnBackward3
             // 

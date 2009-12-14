@@ -25,14 +25,14 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 using bocoree;
 using bocoree.java.awt.event_;
 using bocoree.java.util;
 using bocoree.javax.swing;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;

@@ -13,9 +13,9 @@
  */
 using System;
 using System.Collections.Generic;
-using Boare.Lib.Media;
+using org.kbinani.media;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     using boolean = Boolean;
 

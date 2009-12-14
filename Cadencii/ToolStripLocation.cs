@@ -20,7 +20,7 @@ import org.kbinani.*;
 using bocoree;
 using bocoree.java.awt;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     /// <summary>

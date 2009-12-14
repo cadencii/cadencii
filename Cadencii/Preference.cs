@@ -27,16 +27,16 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Media;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.media;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.io;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using java = bocoree.java;
@@ -1238,10 +1238,10 @@ namespace Boare.Cadencii {
             this.lblWait = new bocoree.windows.forms.BLabel();
             this.lblPreSendTime = new bocoree.windows.forms.BLabel();
             this.lblDefaultSinger = new bocoree.windows.forms.BLabel();
-            this.numPreSendTimeSample = new Boare.Cadencii.NumericUpDownEx();
-            this.numTiming = new Boare.Cadencii.NumericUpDownEx();
-            this.numWait = new Boare.Cadencii.NumericUpDownEx();
-            this.numPreSendTime = new Boare.Cadencii.NumericUpDownEx();
+            this.numPreSendTimeSample = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numTiming = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numWait = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numPreSendTime = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabAppearance = new System.Windows.Forms.TabPage();
             this.groupFont = new BGroupBox();
             this.labelMenu = new bocoree.windows.forms.BLabel();
@@ -1275,20 +1275,20 @@ namespace Boare.Cadencii {
             this.lblTrackHeight = new bocoree.windows.forms.BLabel();
             this.comboLanguage = new bocoree.windows.forms.BComboBox();
             this.lblLanguage = new bocoree.windows.forms.BLabel();
-            this.numTrackHeight = new Boare.Cadencii.NumericUpDownEx();
+            this.numTrackHeight = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabOperation = new System.Windows.Forms.TabPage();
             this.groupMisc = new BGroupBox();
             this.lblMaximumFrameRate = new bocoree.windows.forms.BLabel();
             this.comboMidiInPortNumber = new bocoree.windows.forms.BComboBox();
-            this.numMaximumFrameRate = new Boare.Cadencii.NumericUpDownEx();
+            this.numMaximumFrameRate = new org.kbinani.cadencii.NumericUpDownEx();
             this.lblMidiInPort = new bocoree.windows.forms.BLabel();
             this.lblMouseHoverTime = new bocoree.windows.forms.BLabel();
             this.lblMilliSecond = new bocoree.windows.forms.BLabel();
-            this.numMouseHoverTime = new Boare.Cadencii.NumericUpDownEx();
+            this.numMouseHoverTime = new org.kbinani.cadencii.NumericUpDownEx();
             this.groupPianoroll = new BGroupBox();
             this.chkUseSpaceKeyAsMiddleButtonModifier = new bocoree.windows.forms.BCheckBox();
             this.labelWheelOrder = new bocoree.windows.forms.BLabel();
-            this.numericUpDownEx1 = new Boare.Cadencii.NumericUpDownEx();
+            this.numericUpDownEx1 = new org.kbinani.cadencii.NumericUpDownEx();
             this.chkCursorFix = new bocoree.windows.forms.BCheckBox();
             this.chkCurveSelectingQuantized = new bocoree.windows.forms.BCheckBox();
             this.chkScrollHorizontal = new bocoree.windows.forms.BCheckBox();
@@ -1321,7 +1321,7 @@ namespace Boare.Cadencii {
             this.listSingers = new BListView();
             this.tabFile = new System.Windows.Forms.TabPage();
             this.lblAutoBackupMinutes = new bocoree.windows.forms.BLabel();
-            this.numAutoBackupInterval = new Boare.Cadencii.NumericUpDownEx();
+            this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.lblAutoBackupInterval = new bocoree.windows.forms.BLabel();
             this.chkAutoBackup = new bocoree.windows.forms.BCheckBox();
             this.btnCancel = new bocoree.windows.forms.BButton();

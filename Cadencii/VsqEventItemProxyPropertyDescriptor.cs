@@ -16,9 +16,9 @@ using System;
 using System.Reflection;
 using System.ComponentModel;
 
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     public class VsqEventItemProxyPropertyDescriptor : PropertyDescriptor {

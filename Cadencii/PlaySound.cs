@@ -19,7 +19,7 @@ import javax.sound.sampled.*;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
     public class PlaySound {

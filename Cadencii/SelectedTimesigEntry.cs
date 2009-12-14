@@ -16,9 +16,9 @@ package org.kbinani.cadencii;
 
 import org.kbinani.vsq.*;
 #else
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     public class SelectedTimesigEntry {

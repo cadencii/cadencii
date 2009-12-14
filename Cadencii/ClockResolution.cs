@@ -19,7 +19,7 @@ import java.util.*;
 using System;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

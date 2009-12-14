@@ -19,7 +19,7 @@ import org.kbinani.BEventHandler;
 using System;
 using bocoree;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

@@ -2,9 +2,9 @@
  * AssemblyInfo.cs
  * Copyright (c) 2008-2009 kbinani
  *
- * This file is part of Boare.Lib.AppUtil.
+ * This file is part of org.kbinani.apputil.
  *
- * Boare.Lib.AppUtil is free software; you can redistribute it and/or
+ * org.kbinani.apputil is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
  * Boare.Cadencii is distributed in the hope that it will be useful,

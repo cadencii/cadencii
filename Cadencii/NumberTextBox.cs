@@ -24,7 +24,7 @@ using bocoree;
 using bocoree.java.awt;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA

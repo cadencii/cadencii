@@ -15,7 +15,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     [TypeConverter( typeof( VibratoVariationConverter ) )]
     public class VibratoVariation {

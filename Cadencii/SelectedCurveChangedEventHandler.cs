@@ -28,7 +28,7 @@ public class SelectedCurveChangedEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     public delegate void SelectedCurveChangedEventHandler( Object sender, CurveType curve );
 

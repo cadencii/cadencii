@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-using Boare.Cadencii;
+using org.kbinani.cadencii;
 
 static class Script {
     /*private static EditorManager s_manager;

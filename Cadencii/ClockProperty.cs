@@ -14,10 +14,10 @@
  */
 using System;
 using System.ComponentModel;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using Integer = System.Int32;
 

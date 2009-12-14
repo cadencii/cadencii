@@ -26,13 +26,13 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using boolean = System.Boolean;
@@ -447,7 +447,7 @@ namespace Boare.Cadencii {
             this.menuVisualReturn = new bocoree.windows.forms.BMenuItem();
             this.panel1 = new bocoree.windows.forms.BPanel();
             this.hScroll = new bocoree.windows.forms.BHScrollBar();
-            this.volumeMaster = new Boare.Cadencii.VolumeTracker();
+            this.volumeMaster = new org.kbinani.cadencii.VolumeTracker();
             this.chkTopmost = new bocoree.windows.forms.BCheckBox();
             this.menuMain.SuspendLayout();
             this.panel1.SuspendLayout();

@@ -7,7 +7,7 @@
     <ProjectGuid>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Boare.Lib.Vsq</RootNamespace>
+    <RootNamespace>org.kbinani.vsq</RootNamespace>
     <AssemblyName>Boare.Lib.Vsq</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

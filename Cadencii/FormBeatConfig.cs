@@ -21,11 +21,11 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 using bocoree;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
 #endif
@@ -193,15 +193,15 @@ namespace Boare.Cadencii {
             this.groupPosition = new bocoree.windows.forms.BGroupBox();
             this.lblBar2 = new bocoree.windows.forms.BLabel();
             this.lblBar1 = new bocoree.windows.forms.BLabel();
-            this.numEnd = new Boare.Cadencii.NumericUpDownEx();
-            this.numStart = new Boare.Cadencii.NumericUpDownEx();
+            this.numEnd = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numStart = new org.kbinani.cadencii.NumericUpDownEx();
             this.chkEnd = new bocoree.windows.forms.BCheckBox();
             this.lblStart = new bocoree.windows.forms.BLabel();
             this.groupBeat = new bocoree.windows.forms.BGroupBox();
             this.comboDenominator = new bocoree.windows.forms.BComboBox();
             this.label2 = new bocoree.windows.forms.BLabel();
             this.label1 = new bocoree.windows.forms.BLabel();
-            this.numNumerator = new Boare.Cadencii.NumericUpDownEx();
+            this.numNumerator = new org.kbinani.cadencii.NumericUpDownEx();
             this.btnOK = new bocoree.windows.forms.BButton();
             this.btnCancel = new bocoree.windows.forms.BButton();
             this.groupPosition.SuspendLayout();

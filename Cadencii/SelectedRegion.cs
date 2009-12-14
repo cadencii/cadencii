@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 #else
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     public class SelectedRegion {

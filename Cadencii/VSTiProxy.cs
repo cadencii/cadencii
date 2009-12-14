@@ -25,12 +25,12 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using Boare.Lib.Media;
-using Boare.Lib.Vsq;
+using org.kbinani.media;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 
@@ -39,6 +39,7 @@ namespace Boare.Cadencii {
         public const String RENDERER_DSB3 = "DSB3";
         public const String RENDERER_UTU0 = "UTU0";
         public const String RENDERER_STR0 = "STR0";
+        public const String RENDERER_AQT0 = "AQT0";
         public const int SAMPLE_RATE = 44100;
         public const int BLOCK_SIZE = 4410;
         const float a0 = -17317.563f;
@@ -48,7 +49,10 @@ namespace Boare.Cadencii {
         public static String CurrentUser = "";
         private static String s_working_renderer = "";
 #if ENABLE_VOCALOID
-        private static Vector<VstiRenderer> m_vstidrv = new Vector<VstiRenderer>();
+        private static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
+#endif
+#if ENABLE_AQUESTONE
+        private static AquesToneDriver aquesToneDriver = null;
 #endif
 
         private static RenderingRunner s_rendering_context;
@@ -58,9 +62,6 @@ namespace Boare.Cadencii {
         }
 
         public static void initCor() {
-#if DEBUG
-            AppManager.debugWriteLine( "VSTiProxy..cctor" );
-#endif
             PlaySound.init( SAMPLE_RATE );
 
 #if ENABLE_VOCALOID
@@ -70,20 +71,20 @@ namespace Boare.Cadencii {
                 String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
                 String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
                 if ( vocalo2_dll_path != "" && PortUtil.isFileExists( vocalo2_dll_path ) ) {
-                    VstiRenderer vr = new VstiRenderer();
+                    VocaloidDriver vr = new VocaloidDriver();
                     vr.path = vocalo2_dll_path;
                     vr.loaded = false;
-                    vr.dllInstance = new vstidrv();
+                    //vr.dllInstance = new VocaloidDriver();
                     vr.name = RENDERER_DSB3;
-                    m_vstidrv.add( vr );
+                    vocaloidDriver.add( vr );
                 }
                 if ( vocalo1_dll_path != "" && PortUtil.isFileExists( vocalo1_dll_path ) ) {
-                    VstiRenderer vr = new VstiRenderer();
+                    VocaloidDriver vr = new VocaloidDriver();
                     vr.path = vocalo1_dll_path;
                     vr.loaded = false;
-                    vr.dllInstance = new vstidrv();
+                    //vr.dllInstance = new VocaloidDriver();
                     vr.name = RENDERER_DSB2;
-                    m_vstidrv.add( vr );
+                    vocaloidDriver.add( vr );
                 }
 #if !DEBUG
             } catch ( Exception ex ){
@@ -91,43 +92,30 @@ namespace Boare.Cadencii {
                 bocoree.debug.push_log( "    ex=" + ex );
             }
 #endif
-
-#if TEST
-            bocoree.debug.push_log( "vstidrv.Count=" + m_vstidrv.size() );
-#endif
-            for ( int i = 0; i < m_vstidrv.size(); i++ ) {
-#if TEST
-                bocoree.debug.push_log( "Name=" + m_vstidrv.get( i ).name + "; Path=" + m_vstidrv.get( i ).path );
-#endif
-                String dll_path = m_vstidrv.get( i ).path;
+            for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
+                String dll_path = vocaloidDriver.get( i ).path;
                 boolean loaded = false;
                 try {
-                    char[] str = dll_path.ToCharArray();
                     if ( dll_path != "" ) {
-                        loaded = m_vstidrv.get( i ).dllInstance.Init( str, BLOCK_SIZE, SAMPLE_RATE );
+                        loaded = vocaloidDriver.get( i ).init( dll_path, BLOCK_SIZE, SAMPLE_RATE );
                     } else {
                         loaded = false;
                     }
-                    m_vstidrv.get( i ).loaded = loaded;
-#if TEST && DEBUG
-                    bocoree.debug.push_log( "VSTiProxy..cctor()" );
-                    bocoree.debug.push_log( "    dll_path=" + dll_path );
-                    bocoree.debug.push_log( "    loaded=" + loaded );
-
-#endif
+                    vocaloidDriver.get( i ).loaded = loaded;
                 } catch ( Exception ex ) {
-#if TEST
-                    bocoree.debug.push_log( "    ex=" + ex );
-#endif
                 }
             }
+#endif
+
+#if ENABLE_AQUESTONE
+
 #endif
         }
 
         public static boolean isRendererAvailable( String renderer ) {
 #if ENABLE_VOCALOID
-            for ( int i = 0; i < m_vstidrv.size(); i++ ) {
-                if ( renderer.StartsWith( m_vstidrv.get( i ).name ) && m_vstidrv.get( i ).loaded ) {
+            for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
+                if ( renderer.StartsWith( vocaloidDriver.get( i ).name ) && vocaloidDriver.get( i ).loaded ) {
                     return true;
                 }
             }
@@ -159,9 +147,9 @@ namespace Boare.Cadencii {
 
         public static void terminate() {
 #if ENABLE_VOCALOID
-            for ( int i = 0; i < m_vstidrv.size(); i++ ) {
-                if ( m_vstidrv.get( i ).dllInstance != null ) {
-                    m_vstidrv.get( i ).dllInstance.Terminate();
+            for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
+                if ( vocaloidDriver.get( i ) != null ) {
+                    vocaloidDriver.get( i ).Terminate();
                 }
             }
 #endif
@@ -281,10 +269,10 @@ namespace Boare.Cadencii {
                                                                    reflect_amp_to_wave );
             } else {
 #if ENABLE_VOCALOID
-                VstiRenderer driver = null;
-                for ( int i = 0; i < m_vstidrv.size(); i++ ) {
-                    if ( m_vstidrv.get( i ).name.Equals( s_working_renderer ) ) {
-                        driver = m_vstidrv.get( i );
+                VocaloidDriver driver = null;
+                for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
+                    if ( vocaloidDriver.get( i ).name.Equals( s_working_renderer ) ) {
+                        driver = vocaloidDriver.get( i );
                         break;
                     }
                 }

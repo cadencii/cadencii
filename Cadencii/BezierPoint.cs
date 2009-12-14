@@ -19,7 +19,7 @@ using System.Drawing;
 using System.Xml.Serialization;
 using System.ComponentModel;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

@@ -25,13 +25,13 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif
@@ -492,8 +492,8 @@ namespace Boare.Cadencii {
             this.groupPitchControl = new BGroupBox();
             this.label5 = new BLabel();
             this.label4 = new BLabel();
-            this.txtBendLength = new Boare.Cadencii.NumberTextBox();
-            this.txtBendDepth = new Boare.Cadencii.NumberTextBox();
+            this.txtBendLength = new org.kbinani.cadencii.NumberTextBox();
+            this.txtBendDepth = new org.kbinani.cadencii.NumberTextBox();
             this.trackBendLength = new BSlider();
             this.trackBendDepth = new BSlider();
             this.chkDownPortamento = new BCheckBox();
@@ -503,8 +503,8 @@ namespace Boare.Cadencii {
             this.groupDynamicsControl = new BGroupBox();
             this.label7 = new BLabel();
             this.label6 = new BLabel();
-            this.txtAccent = new Boare.Cadencii.NumberTextBox();
-            this.txtDecay = new Boare.Cadencii.NumberTextBox();
+            this.txtAccent = new org.kbinani.cadencii.NumberTextBox();
+            this.txtDecay = new org.kbinani.cadencii.NumberTextBox();
             this.trackAccent = new BSlider();
             this.trackDecay = new BSlider();
             this.lblAccent = new BLabel();
@@ -516,8 +516,8 @@ namespace Boare.Cadencii {
             this.groupAttack = new BGroupBox();
             this.lblAttackTemplate = new BLabel();
             this.comboAttackTemplate = new BComboBox();
-            this.txtDepth = new Boare.Cadencii.NumberTextBox();
-            this.txtDuration = new Boare.Cadencii.NumberTextBox();
+            this.txtDepth = new org.kbinani.cadencii.NumberTextBox();
+            this.txtDuration = new org.kbinani.cadencii.NumberTextBox();
             this.trackDepth = new BSlider();
             this.trackDuration = new BSlider();
             this.lblDepth = new BLabel();
@@ -586,7 +586,7 @@ namespace Boare.Cadencii {
             this.txtBendLength.TabIndex = 5;
             this.txtBendLength.Text = "0";
             this.txtBendLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtBendLength.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtBendLength.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtBendDepth
             // 
@@ -598,7 +598,7 @@ namespace Boare.Cadencii {
             this.txtBendDepth.TabIndex = 2;
             this.txtBendDepth.Text = "8";
             this.txtBendDepth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtBendDepth.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtBendDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // trackBendLength
             // 
@@ -704,7 +704,7 @@ namespace Boare.Cadencii {
             this.txtAccent.TabIndex = 13;
             this.txtAccent.Text = "50";
             this.txtAccent.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtAccent.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtAccent.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDecay
             // 
@@ -716,7 +716,7 @@ namespace Boare.Cadencii {
             this.txtDecay.TabIndex = 10;
             this.txtDecay.Text = "50";
             this.txtDecay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDecay.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDecay.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // trackAccent
             // 
@@ -849,7 +849,7 @@ namespace Boare.Cadencii {
             this.txtDepth.TabIndex = 13;
             this.txtDepth.Text = "64";
             this.txtDepth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDepth.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDuration
             // 
@@ -861,7 +861,7 @@ namespace Boare.Cadencii {
             this.txtDuration.TabIndex = 10;
             this.txtDuration.Text = "64";
             this.txtDuration.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDuration.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDuration.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // trackDepth
             // 

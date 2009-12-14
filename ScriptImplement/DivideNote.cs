@@ -4,13 +4,13 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using Boare.Cadencii;
-using Boare.Lib.Vsq;
+using org.kbinani.cadencii;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.Cadencii {
 
     public partial class DivideNote : Form, IPaletteTool {
         public static int Numerator = 1;

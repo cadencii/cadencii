@@ -15,13 +15,13 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Boare.Lib.Vsq;
-using Boare.Lib.Media;
+using org.kbinani.vsq;
+using org.kbinani.media;
 using bocoree;
 using bocoree.java.util;
 using bocoree.java.io;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     using boolean = Boolean;
 
@@ -35,7 +35,7 @@ namespace Boare.Cadencii {
         public long total_samples;
         public double wave_read_offset_seconds;
         public boolean mode_infinite;
-        public VstiRenderer driver;
+        public VocaloidDriver driver;
         public boolean direct_play;
         public WaveWriter wave_writer;
 
@@ -61,7 +61,7 @@ namespace Boare.Cadencii {
                                 long total_samples_,
                                 double wave_read_offset_seconds_,
                                 boolean mode_infinite_,
-                                VstiRenderer driver_,
+                                VocaloidDriver driver_,
                                 boolean direct_play_,
                                 WaveWriter wave_writer_,
                                 Vector<WaveReader> reader_,
@@ -92,9 +92,9 @@ namespace Boare.Cadencii {
         public double computeRemainingSeconds() {
             double elapsed = getElapsedSeconds();
             double running_rate = 1;
-            if ( driver != null && driver.dllInstance != null ) {
+            if ( driver != null && driver != null ) {
                 try {
-                    running_rate = driver.dllInstance.GetProgress() / elapsed;
+                    running_rate = driver.GetProgress() / elapsed;
                 } catch ( Exception ex ) {
                 }
             }
@@ -107,9 +107,9 @@ namespace Boare.Cadencii {
         }
 
         public void abortRendering() {
-            if ( driver != null && driver.dllInstance != null ) {
+            if ( driver != null && driver != null ) {
                 try {
-                    driver.dllInstance.AbortRendering();
+                    driver.AbortRendering();
                 } catch {
                 }
             }
@@ -124,7 +124,7 @@ namespace Boare.Cadencii {
         }
 
         public double getProgress() {
-            return driver.dllInstance.GetProgress();
+            return driver.GetProgress();
         }
 
         public boolean isRendering() {
@@ -167,7 +167,7 @@ namespace Boare.Cadencii {
                 masterEventsSrc[count + 1] = b1;
                 masterEventsSrc[count + 2] = b2;
             }
-            driver.dllInstance.SendEvent( masterEventsSrc, masterClocksSrc, 0 );
+            driver.SendEvent( masterEventsSrc, masterClocksSrc, 0 );
 
             int numEvents = nrpn.Length;
             byte[] bodyEventsSrc = new byte[numEvents * 3];
@@ -194,7 +194,7 @@ namespace Boare.Cadencii {
             int trim_remain = VSTiProxy.getErrorSamples( first_tempo ) + (int)(trim_msec / 1000.0 * VSTiProxy.SAMPLE_RATE);
             m_trim_remain = trim_remain;
 
-            driver.dllInstance.SendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
+            driver.SendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
 
             m_rendering = true;
             if ( wave_writer != null ) {
@@ -208,15 +208,15 @@ namespace Boare.Cadencii {
                 }
             }
 
-            driver.dllInstance.WaveIncoming += vstidrv_WaveIncoming;
-            driver.dllInstance.RenderingFinished += vstidrv_RenderingFinished;
-            driver.dllInstance.StartRendering( total_samples, mode_infinite );
+            driver.WaveIncoming += vstidrv_WaveIncoming;
+            driver.RenderingFinished += vstidrv_RenderingFinished;
+            driver.StartRendering( total_samples, mode_infinite );
             while ( m_rendering ) {
                 Application.DoEvents();
             }
             m_rendering = false;
-            driver.dllInstance.WaveIncoming -= vstidrv_WaveIncoming;
-            driver.dllInstance.RenderingFinished -= vstidrv_RenderingFinished;
+            driver.WaveIncoming -= vstidrv_WaveIncoming;
+            driver.RenderingFinished -= vstidrv_RenderingFinished;
             if ( direct_play ) {
                 PlaySound.waitForExit();
             }

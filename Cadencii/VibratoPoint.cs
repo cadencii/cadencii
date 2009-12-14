@@ -13,7 +13,7 @@
  */
 using System;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     public class VibratoPoint : IComparable<VibratoPoint> {
         public float X;

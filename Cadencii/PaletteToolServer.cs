@@ -17,11 +17,11 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     public static class PaletteToolServer {

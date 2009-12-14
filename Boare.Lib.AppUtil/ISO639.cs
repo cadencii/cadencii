@@ -3,18 +3,18 @@
  * ISO639.cs
  * Copyright (c) 2008-2009 kbinani
  *
- * This file is part of Boare.Lib.AppUtil.
+ * This file is part of org.kbinani.apputil.
  *
- * Boare.Lib.AppUtil is free software; you can redistribute it and/or
+ * org.kbinani.apputil is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * Boare.Lib.AppUtil is distributed in the hope that it will be useful,
+ * org.kbinani.apputil is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System.Globalization;
 
-namespace Boare.Lib.AppUtil {
+namespace org.kbinani.apputil {
 
     internal class iso639 {
         public static bool CheckValidity( string code_string ) {

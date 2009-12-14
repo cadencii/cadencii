@@ -17,7 +17,7 @@
 using System.Windows.Forms;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     public class TextBoxEx : BTextBox {

@@ -16,7 +16,7 @@ using System;
 using System.ComponentModel;
 using bocoree;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     [TypeConverter( typeof( CalculatableStringConverter ) )]

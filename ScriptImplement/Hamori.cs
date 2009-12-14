@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Boare.Cadencii;
+using org.kbinani.cadencii;
 
 public class Hamori : System.Windows.Forms.Form {
     private System.Windows.Forms.Button btnExecute;
@@ -14,7 +14,7 @@ public class Hamori : System.Windows.Forms.Form {
         this.cbbSlide.SelectedIndex = 0;
     }
 
-    public static bool Edit( Boare.Lib.Vsq.VsqFile vsq ) {
+    public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {
         using ( Hamori d = new Hamori() ) {
             if ( d.ShowDialog() != System.Windows.Forms.DialogResult.OK ) {
                 return false;
@@ -100,7 +100,7 @@ public class Hamori : System.Windows.Forms.Form {
 
     }
 
-    private static void hamori( Boare.Lib.Vsq.VsqFile vsq, int basecode, int opt ) {
+    private static void hamori( org.kbinani.vsq.VsqFile vsq, int basecode, int opt ) {
         // opt : 0 -> 3度上, 1 -> 5度上, 2 -> 4度下
         //            4(or 3)     7           -5
         // 3度上(Cmaj)
@@ -118,8 +118,8 @@ public class Hamori : System.Windows.Forms.Form {
         int tmp;
         if ( opt == 0 ) {
             for ( int j = 0; j < vsq.Track.get( track ).getEventCount(); j++ ) {
-                Boare.Lib.Vsq.VsqEvent item = vsq.Track.get( track ).getEvent( j );
-                if ( item.ID.type == Boare.Lib.Vsq.VsqIDType.Anote && target_ids.ContainsKey( item.InternalID ) ) {
+                org.kbinani.vsq.VsqEvent item = vsq.Track.get( track ).getEvent( j );
+                if ( item.ID.type == org.kbinani.vsq.VsqIDType.Anote && target_ids.ContainsKey( item.InternalID ) ) {
                     tmp = (item.ID.Note + 12 - basecode) % 12;
                     step = ((1 < tmp && tmp < 5) || 8 < tmp) ? 3 : 4;
                     note = item.ID.Note + step;
@@ -132,8 +132,8 @@ public class Hamori : System.Windows.Forms.Form {
             }
         } else {
             for ( int j = 0; j < vsq.Track.get( track ).getEventCount(); j++ ) {
-                Boare.Lib.Vsq.VsqEvent item = vsq.Track.get( track ).getEvent( j );
-                if ( item.ID.type == Boare.Lib.Vsq.VsqIDType.Anote && target_ids.ContainsKey( item.InternalID ) ) {
+                org.kbinani.vsq.VsqEvent item = vsq.Track.get( track ).getEvent( j );
+                if ( item.ID.type == org.kbinani.vsq.VsqIDType.Anote && target_ids.ContainsKey( item.InternalID ) ) {
                     tmp = (item.ID.Note + 12 - basecode) % 12;
                     tmp = tmp == 11 ? step - 1 : step;
                     note = item.ID.Note + tmp;

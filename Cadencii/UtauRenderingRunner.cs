@@ -22,13 +22,13 @@ import org.kbinani.vsq.*;
 #else
 using System;
 using System.Diagnostics;
-using Boare.Lib.Media;
-using Boare.Lib.Vsq;
+using org.kbinani.media;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.io;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif

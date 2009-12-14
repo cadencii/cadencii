@@ -18,10 +18,10 @@ import org.kbinani.vsq.*;
 import java.awt.*;
 #else
 using System;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree.java.awt;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

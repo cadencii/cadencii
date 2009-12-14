@@ -1,11 +1,11 @@
 ﻿public static class Print_Lyric {
-    public static bool Edit( Boare.Lib.Vsq.VsqFile Vsq ) {
+    public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
         System.IO.StreamWriter sw = null;
         try {
             sw = new System.IO.StreamWriter( @"c:\lyrics.txt" );
             for ( int i = 0; i < Vsq.Track.get( 1 ).getEventCount(); i++ ) {
-                Boare.Lib.Vsq.VsqEvent item = Vsq.Track.get( 1 ).getEvent( i );
-                if ( item.ID.type == Boare.Lib.Vsq.VsqIDType.Anote ) {
+                org.kbinani.vsq.VsqEvent item = Vsq.Track.get( 1 ).getEvent( i );
+                if ( item.ID.type == org.kbinani.vsq.VsqIDType.Anote ) {
                     int clStart = item.Clock;
                     int clEnd = clStart + item.ID.Length;
                     double secStart = Vsq.getSecFromClock( clStart );

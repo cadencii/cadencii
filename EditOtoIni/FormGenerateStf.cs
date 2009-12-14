@@ -30,7 +30,7 @@ using bocoree.java.util;
 using bocoree.windows.forms;
 using bocoree.componentmodel;
 
-namespace Boare.EditOtoIni {
+namespace org.EditOtoIni {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
@@ -74,7 +74,7 @@ namespace Boare.EditOtoIni {
         }
 
         private static String _( String id ) {
-            return Boare.Lib.AppUtil.Messaging.getMessage( id );
+            return org.kbinani.apputil.Messaging.getMessage( id );
         }
 
         private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ){

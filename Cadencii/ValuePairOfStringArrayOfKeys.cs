@@ -19,7 +19,7 @@ import org.kbinani.windows.forms.*;
 using System;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     public class ValuePairOfStringArrayOfKeys {

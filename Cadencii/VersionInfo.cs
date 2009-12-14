@@ -25,13 +25,13 @@ import org.kbinani.apputil.*;
 #else
 using System;
 using System.Windows.Forms;
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.awt.image;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;

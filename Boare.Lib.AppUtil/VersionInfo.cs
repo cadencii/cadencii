@@ -3,12 +3,12 @@
  * VersionInfo.cs
  * Copyright (c) 2008-2009 kbinani
  *
- * This file is part of Boare.Lib.AppUtil.
+ * This file is part of org.kbinani.apputil.
  *
- * Boare.Lib.AppUtil is free software; you can redistribute it and/or
+ * org.kbinani.apputil is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * Boare.Lib.AppUtil is distributed in the hope that it will be useful,
+ * org.kbinani.apputil is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -20,7 +20,7 @@ using bocoree;
 using bocoree.java.awt;
 using bocoree.java.awt.image;
 
-namespace Boare.Lib.AppUtil {
+namespace org.kbinani.apputil {
     using java = bocoree.java;
     using javax = bocoree.javax;
     using Graphics = bocoree.java.awt.Graphics2D;
@@ -126,7 +126,7 @@ namespace Boare.Lib.AppUtil {
             const string font_name = "Arial";
             const int font_size = 10;
             Font font = new Font( font_name, java.awt.Font.PLAIN, font_size );
-            Dimension size = Boare.Lib.AppUtil.Util.measureString( "Qjqp", font );
+            Dimension size = org.kbinani.apputil.Util.measureString( "Qjqp", font );
             float width = this.Width;
             float height = size.height;
             //StringFormat sf = new StringFormat();

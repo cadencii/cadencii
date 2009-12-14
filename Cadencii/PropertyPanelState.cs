@@ -25,7 +25,7 @@ using bocoree.java.util;
 using bocoree.java.io;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

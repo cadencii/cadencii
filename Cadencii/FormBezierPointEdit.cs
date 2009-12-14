@@ -23,13 +23,13 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using Boare.Lib.AppUtil;
+using org.kbinani.apputil;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
@@ -376,12 +376,12 @@ namespace Boare.Cadencii {
             this.lblRightClock = new BLabel();
             this.btnBackward = new BButton();
             this.btnForward = new BButton();
-            this.txtRightClock = new Boare.Cadencii.NumberTextBox();
-            this.txtRightValue = new Boare.Cadencii.NumberTextBox();
-            this.txtDataPointClock = new Boare.Cadencii.NumberTextBox();
-            this.txtDataPointValue = new Boare.Cadencii.NumberTextBox();
-            this.txtLeftClock = new Boare.Cadencii.NumberTextBox();
-            this.txtLeftValue = new Boare.Cadencii.NumberTextBox();
+            this.txtRightClock = new org.kbinani.cadencii.NumberTextBox();
+            this.txtRightValue = new org.kbinani.cadencii.NumberTextBox();
+            this.txtDataPointClock = new org.kbinani.cadencii.NumberTextBox();
+            this.txtDataPointValue = new org.kbinani.cadencii.NumberTextBox();
+            this.txtLeftClock = new org.kbinani.cadencii.NumberTextBox();
+            this.txtLeftValue = new org.kbinani.cadencii.NumberTextBox();
             this.groupLeft.SuspendLayout();
             this.groupDataPoint.SuspendLayout();
             this.groupRight.SuspendLayout();
@@ -566,7 +566,7 @@ namespace Boare.Cadencii {
             this.txtRightClock.Name = "txtRightClock";
             this.txtRightClock.Size = new System.Drawing.Size( 71, 19 );
             this.txtRightClock.TabIndex = 6;
-            this.txtRightClock.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtRightClock.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtRightValue
             // 
@@ -575,7 +575,7 @@ namespace Boare.Cadencii {
             this.txtRightValue.Name = "txtRightValue";
             this.txtRightValue.Size = new System.Drawing.Size( 71, 19 );
             this.txtRightValue.TabIndex = 7;
-            this.txtRightValue.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtRightValue.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDataPointClock
             // 
@@ -583,7 +583,7 @@ namespace Boare.Cadencii {
             this.txtDataPointClock.Name = "txtDataPointClock";
             this.txtDataPointClock.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointClock.TabIndex = 1;
-            this.txtDataPointClock.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointClock.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDataPointValue
             // 
@@ -591,7 +591,7 @@ namespace Boare.Cadencii {
             this.txtDataPointValue.Name = "txtDataPointValue";
             this.txtDataPointValue.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointValue.TabIndex = 2;
-            this.txtDataPointValue.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointValue.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtLeftClock
             // 
@@ -603,7 +603,7 @@ namespace Boare.Cadencii {
             this.txtLeftClock.Size = new System.Drawing.Size( 71, 19 );
             this.txtLeftClock.TabIndex = 4;
             this.txtLeftClock.Text = "0";
-            this.txtLeftClock.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtLeftClock.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtLeftValue
             // 
@@ -615,7 +615,7 @@ namespace Boare.Cadencii {
             this.txtLeftValue.Size = new System.Drawing.Size( 71, 19 );
             this.txtLeftValue.TabIndex = 5;
             this.txtLeftValue.Text = "0";
-            this.txtLeftValue.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtLeftValue.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // FormBezierPointEdit
             // 

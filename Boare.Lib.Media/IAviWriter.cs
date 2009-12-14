@@ -14,7 +14,7 @@
 using System;
 using System.Drawing;
 
-namespace Boare.Lib.Media {
+namespace org.kbinani.media {
 
     public interface IAviWriter {
         void AddFrame( Bitmap frame );

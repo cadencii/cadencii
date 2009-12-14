@@ -8,7 +8,7 @@
     <ProjectGuid>{1EFB4BE2-BE19-4D0C-866D-1617F982CDD1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Boare.WebPOEdit</RootNamespace>
+    <RootNamespace>org.WebPOEdit</RootNamespace>
     <AssemblyName>WebPOEdit</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -23,13 +23,13 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Vsq;
+using org.kbinani.apputil;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif
@@ -243,7 +243,7 @@ namespace Boare.Cadencii {
         private void InitializeComponent() {
             this.lblVibratoLength = new BLabel();
             this.lblVibratoType = new BLabel();
-            this.txtVibratoLength = new Boare.Cadencii.NumberTextBox();
+            this.txtVibratoLength = new org.kbinani.cadencii.NumberTextBox();
             this.label3 = new BLabel();
             this.comboVibratoType = new BComboBox();
             this.btnCancel = new BButton();
@@ -275,7 +275,7 @@ namespace Boare.Cadencii {
             this.txtVibratoLength.Name = "txtVibratoLength";
             this.txtVibratoLength.Size = new System.Drawing.Size( 61, 19 );
             this.txtVibratoLength.TabIndex = 2;
-            this.txtVibratoLength.Type = Boare.Cadencii.NumberTextBox.ValueType.Integer;
+            this.txtVibratoLength.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // label3
             // 

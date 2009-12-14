@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using Boare.Lib.Vsq;
-using Boare.Lib.AppUtil;
+using org.kbinani.vsq;
+using org.kbinani.apputil;
 using bocoree;
 using bocoree.java.util;
+using org.kbinani.cadencii;
 
 public class RenderAsUtau : Form {
     private System.ComponentModel.IContainer components = null;
@@ -204,7 +205,7 @@ public class RenderAsUtau : Form {
                     }
                 }
 
-                int track = Boare.Cadencii.AppManager.getSelected();
+                int track = AppManager.getSelected();
                 List<Phon> phons = new List<Phon>();
                 if ( !Directory.Exists( temp_dir ) ) {
                     Directory.CreateDirectory( temp_dir );

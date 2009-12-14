@@ -20,7 +20,7 @@ using System;
 using System.Windows.Forms;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     /// <summary>

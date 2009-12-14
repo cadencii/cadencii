@@ -12,7 +12,7 @@ using System.IO;
 using bocoree;
 using bocoree.java.awt;
 
-namespace Boare.Cadencii{
+namespace org.kbinani.cadencii{
 #endif
 
     public class Resources{

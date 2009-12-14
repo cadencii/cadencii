@@ -103,7 +103,7 @@ public class BSoundPlayer{
     }
 }
 #else
-namespace Boare.Lib.Media {
+namespace org.kbinani.media {
 
     public class BSoundPlayer : System.Media.SoundPlayer {
         public BSoundPlayer( string sound_location )

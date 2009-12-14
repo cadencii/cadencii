@@ -28,7 +28,7 @@ public class StateChangeRequiredEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     public delegate void StateChangeRequiredEventHandler( Object sender, PanelState state );
 

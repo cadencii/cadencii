@@ -22,7 +22,7 @@ using System.Windows.Forms;
 using bocoree;
 using bocoree.windows.forms;
 
-namespace Boare.EditOtoIni {
+namespace org.EditOtoIni {
 #endif
 
     public class FormConfigUtauVoiceConfig {

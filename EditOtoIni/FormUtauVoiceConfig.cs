@@ -20,9 +20,9 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows.Forms;
-using Boare.Cadencii;
-using Boare.Lib.AppUtil;
-using Boare.Lib.Media;
+using org.kbinani.cadencii;
+using org.kbinani.apputil;
+using org.kbinani.media;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.io;
@@ -30,7 +30,7 @@ using bocoree.java.util;
 using bocoree.windows.forms;
 using bocoree.xml;
 
-namespace Boare.EditOtoIni {
+namespace org.EditOtoIni {
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -417,7 +417,7 @@ namespace Boare.EditOtoIni {
                     line = line.Substring( eq + 1 );
                     String[] spl = line.Split( ',' );
                     String file = PortUtil.combinePath( dir, f );
-                    Boare.Cadencii.WaveDrawContext wdc = new Boare.Cadencii.WaveDrawContext( file );
+                    WaveDrawContext wdc = new WaveDrawContext( file );
                     wdc.setName( f + spl[0] );
                     String wave_name = PortUtil.getFileNameWithoutExtension( f );
                     String ext = PortUtil.getExtension( file ).Replace( ".", "" );
@@ -425,7 +425,7 @@ namespace Boare.EditOtoIni {
                     String freq = PortUtil.combinePath( dir, f2 );
                     boolean freq_exists = PortUtil.isFileExists( freq );
                     if ( freq_exists ) {
-                        wdc.Freq = Boare.Cadencii.UtauFreq.FromFrq( freq );
+                        wdc.Freq = UtauFreq.FromFrq( freq );
                     }
                     m_drawer.add( wdc );
                     Vector<String> columns = new Vector<String>( Arrays.asList( spl ) );
@@ -1109,7 +1109,7 @@ namespace Boare.EditOtoIni {
             if ( !PortUtil.isFileExists( path_config_cadencii ) ) {
                 return;
             }
-            Boare.Cadencii.EditorConfig cadencii_config = null;
+            EditorConfig cadencii_config = null;
             FileInputStream fin = null;
             try {
                 fin = new FileInputStream( path_config_cadencii );
@@ -1117,8 +1117,8 @@ namespace Boare.EditOtoIni {
                 XmlSerializer xs = new XmlSerializer( com.boare.cadencii.EditorConfig.class );
                 cadencii_config = (com.boare.cadencii.EditorConfig)xs.deserialize( fin );
 #else
-                XmlSerializer xs = new XmlSerializer( typeof( Boare.Cadencii.EditorConfig ) );
-                cadencii_config = (Boare.Cadencii.EditorConfig)xs.deserialize( fin );
+                XmlSerializer xs = new XmlSerializer( typeof( EditorConfig ) );
+                cadencii_config = (EditorConfig)xs.deserialize( fin );
 #endif
                 String lang = cadencii_config.Language;
                 Messaging.setLanguage( lang );
@@ -1467,19 +1467,19 @@ namespace Boare.EditOtoIni {
             this.btnRefreshFrq = new BButton();
             this.btnRefreshStf = new BButton();
             this.label9 = new BLabel();
-            this.txtOverlap = new Boare.Cadencii.NumberTextBox();
+            this.txtOverlap = new org.kbinani.cadencii.NumberTextBox();
             this.lblOverlap = new BLabel();
             this.label7 = new BLabel();
-            this.txtPreUtterance = new Boare.Cadencii.NumberTextBox();
+            this.txtPreUtterance = new org.kbinani.cadencii.NumberTextBox();
             this.lblPreUtterance = new BLabel();
             this.label5 = new BLabel();
-            this.txtBlank = new Boare.Cadencii.NumberTextBox();
+            this.txtBlank = new org.kbinani.cadencii.NumberTextBox();
             this.lblBlank = new BLabel();
             this.label3 = new BLabel();
-            this.txtConsonant = new Boare.Cadencii.NumberTextBox();
+            this.txtConsonant = new org.kbinani.cadencii.NumberTextBox();
             this.lblConsonant = new BLabel();
             this.label2 = new BLabel();
-            this.txtOffset = new Boare.Cadencii.NumberTextBox();
+            this.txtOffset = new org.kbinani.cadencii.NumberTextBox();
             this.lblOffset = new BLabel();
             this.txtAlias = new BTextBox();
             this.lblAlias = new BLabel();
@@ -1493,8 +1493,8 @@ namespace Boare.EditOtoIni {
             this.bgWorkRead = new System.ComponentModel.BackgroundWorker();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLblTootip = new BStatusLabel();
-            this.splitContainerIn = new Boare.Lib.AppUtil.BSplitContainer();
-            this.splitContainerOut = new Boare.Lib.AppUtil.BSplitContainer();
+            this.splitContainerIn = new org.kbinani.apputil.BSplitContainer();
+            this.splitContainerOut = new org.kbinani.apputil.BSplitContainer();
             this.cmenuListFiles = new BPopupMenu( this.components );
             this.generateSTRAIGHTFileToolStripMenuItem = new BMenuItem();
             this.panelLeft = new System.Windows.Forms.Panel();
@@ -1704,7 +1704,7 @@ namespace Boare.EditOtoIni {
             this.txtOverlap.TabIndex = 18;
             this.txtOverlap.Text = "0";
             this.txtOverlap.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtOverlap.Type = Boare.Cadencii.NumberTextBox.ValueType.Float;
+            this.txtOverlap.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
             this.txtOverlap.TextChanged += new System.EventHandler( this.txtOverlap_TextChanged );
             // 
             // lblOverlap
@@ -1735,7 +1735,7 @@ namespace Boare.EditOtoIni {
             this.txtPreUtterance.TabIndex = 15;
             this.txtPreUtterance.Text = "0";
             this.txtPreUtterance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtPreUtterance.Type = Boare.Cadencii.NumberTextBox.ValueType.Float;
+            this.txtPreUtterance.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
             this.txtPreUtterance.TextChanged += new System.EventHandler( this.txtPreUtterance_TextChanged );
             // 
             // lblPreUtterance
@@ -1766,7 +1766,7 @@ namespace Boare.EditOtoIni {
             this.txtBlank.TabIndex = 12;
             this.txtBlank.Text = "0";
             this.txtBlank.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtBlank.Type = Boare.Cadencii.NumberTextBox.ValueType.Float;
+            this.txtBlank.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
             this.txtBlank.TextChanged += new System.EventHandler( this.txtBlank_TextChanged );
             // 
             // lblBlank
@@ -1797,7 +1797,7 @@ namespace Boare.EditOtoIni {
             this.txtConsonant.TabIndex = 9;
             this.txtConsonant.Text = "0";
             this.txtConsonant.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtConsonant.Type = Boare.Cadencii.NumberTextBox.ValueType.Float;
+            this.txtConsonant.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
             this.txtConsonant.TextChanged += new System.EventHandler( this.txtConsonant_TextChanged );
             // 
             // lblConsonant
@@ -1828,7 +1828,7 @@ namespace Boare.EditOtoIni {
             this.txtOffset.TabIndex = 6;
             this.txtOffset.Text = "0";
             this.txtOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtOffset.Type = Boare.Cadencii.NumberTextBox.ValueType.Float;
+            this.txtOffset.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
             this.txtOffset.TextChanged += new System.EventHandler( this.txtOffset_TextChanged );
             // 
             // lblOffset
@@ -2160,7 +2160,7 @@ namespace Boare.EditOtoIni {
 
         private BListView listFiles;
         private BPictureBox pictWave;
-        private Boare.Lib.AppUtil.BSplitContainer splitContainerOut;
+        private org.kbinani.apputil.BSplitContainer splitContainerOut;
         private BMenuBar menuStrip;
         private System.Windows.Forms.Panel panelRight;
         private BMenuItem menuFile;
@@ -2168,7 +2168,7 @@ namespace Boare.EditOtoIni {
         private System.Windows.Forms.HScrollBar hScroll;
         private System.ComponentModel.BackgroundWorker bgWorkRead;
         private System.Windows.Forms.StatusStrip statusStrip;
-        private Boare.Lib.AppUtil.BSplitContainer splitContainerIn;
+        private org.kbinani.apputil.BSplitContainer splitContainerIn;
         private BLabel lblFileName;
         private BTextBox txtAlias;
         private BLabel lblAlias;

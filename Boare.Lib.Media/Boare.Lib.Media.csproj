@@ -7,7 +7,7 @@
     <ProjectGuid>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Boare.Lib.Media</RootNamespace>
+    <RootNamespace>org.kbinani.media</RootNamespace>
     <AssemblyName>Boare.Lib.Media</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

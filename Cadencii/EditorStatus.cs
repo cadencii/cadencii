@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 #else
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

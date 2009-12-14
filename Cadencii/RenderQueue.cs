@@ -17,7 +17,7 @@ package org.kbinani.cadencii;
 #else
 using System;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

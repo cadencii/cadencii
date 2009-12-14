@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using bocoree;
 using bocoree.java.util;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     public interface ICommand {

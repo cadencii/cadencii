@@ -16,7 +16,7 @@ package org.kbinani.editotoini;
 #else
 using System;
 
-namespace Boare.EditOtoIni {
+namespace org.EditOtoIni {
 #endif
 
     public struct StfQueueArgs {

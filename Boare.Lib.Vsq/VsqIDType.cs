@@ -2,7 +2,7 @@
 * VsqIDType.cs
 * Copyright (c) 2008-2009 kbinani
 *
-* This file is part of Boare.Lib.Vsq.
+* This file is part of org.kbinani.vsq.
 *
 * Boare.Lib.Vsq is free software; you can redistribute it and/or
 * modify it under the terms of the BSD License.
@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace Boare.Lib.Vsq {
+namespace org.kbinani.vsq {
 #endif
 
     public enum VsqIDType {

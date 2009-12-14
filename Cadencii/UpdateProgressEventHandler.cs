@@ -11,7 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     public delegate void UpdateProgressEventHandler( object sender, int value );
 

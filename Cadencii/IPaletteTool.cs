@@ -16,9 +16,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     using boolean = Boolean;
 

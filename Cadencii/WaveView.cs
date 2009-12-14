@@ -24,13 +24,13 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using Boare.Lib.Media;
+using org.kbinani.media;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.awt.image;
 using bocoree.windows.forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
 #endif
 

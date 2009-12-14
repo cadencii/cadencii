@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle( "Cadencii" )]
 [assembly: AssemblyDescription( "" )]
-[assembly: AssemblyConfiguration( Boare.Cadencii.BAssemblyInfo.id )]
+[assembly: AssemblyConfiguration( org.kbinani.cadencii.BAssemblyInfo.id )]
 [assembly: AssemblyCompany( "Boare" )]
 [assembly: AssemblyProduct( "Cadencii" )]
 [assembly: AssemblyCopyright( "Copyright (C) 2008-2009 kbinani. All Rights Reserved." )]
@@ -31,9 +31,9 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible( false )]
 [assembly: Guid( "5028b296-d7be-4278-a799-ffaf50026128" )]
 [assembly: AssemblyVersion( "1.0.0.0" )]
-[assembly: AssemblyFileVersion( Boare.Cadencii.BAssemblyInfo.fileVersion )]
+[assembly: AssemblyFileVersion( org.kbinani.cadencii.BAssemblyInfo.fileVersion )]
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 #endif
 
     public class BAssemblyInfo {

@@ -18,7 +18,7 @@ import java.io.*;
 #else
 using System;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = Boolean;
 #endif
 

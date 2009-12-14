@@ -26,7 +26,7 @@ public class FederChangedEventHandler extends BEventHandler{
     }
 }
 #else
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     public delegate void FederChangedEventHandler( int track, int feder );
 

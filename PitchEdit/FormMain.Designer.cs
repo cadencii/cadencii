@@ -1,4 +1,4 @@
-﻿namespace Boare.PitchEdit {
+﻿namespace org.PitchEdit {
     partial class FormMain {
         /// <summary>
         /// 必要なデザイナ変数です。

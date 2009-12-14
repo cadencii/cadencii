@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using Boare.Cadencii;
+using org.kbinani.cadencii;
 using System.Collections.Generic;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 using bocoree.java.util;
 
 public class Utau_Plugin_Invoker {

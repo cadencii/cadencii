@@ -14,7 +14,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     public class PropertyPanelContainer : UserControl {

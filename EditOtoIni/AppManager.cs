@@ -16,9 +16,9 @@ package org.kbinani.editotoini;
 
 import org.kbinani.cadencii.*;
 #else
-using Boare.Cadencii;
+using org.kbinani.cadencii;
 
-namespace Boare.EditOtoIni {
+namespace org.EditOtoIni {
 #endif
 
     public class AppManager {

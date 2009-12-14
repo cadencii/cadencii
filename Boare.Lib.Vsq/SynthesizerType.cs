@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace Boare.Lib.Vsq {
+namespace org.kbinani.vsq {
 #endif
 
     public enum SynthesizerType {

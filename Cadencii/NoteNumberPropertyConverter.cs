@@ -16,9 +16,9 @@ using System.ComponentModel;
 using System.Globalization;
 
 using bocoree;
-using Boare.Lib.Vsq;
+using org.kbinani.vsq;
 
-namespace Boare.Cadencii {
+namespace org.kbinani.cadencii {
 
     using boolean = Boolean;
 
