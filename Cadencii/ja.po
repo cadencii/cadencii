@@ -915,7 +915,7 @@ msgid "Ring Bell"
 msgstr "ベルを鳴らす"
 
 msgid "Up-Portamento"
-msgstr "上方形でポルタメント"
+msgstr "上行形でポルタメント"
 
 msgid "Velocity"
 msgstr "ベロシティ"

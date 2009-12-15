@@ -397,7 +397,11 @@ namespace bocoree.windows.forms {
         }
 
         public void setAccelerator( KeyStroke stroke ) {
-            base.ShortcutKeys = stroke.keys;
+            try {
+                base.ShortcutKeys = stroke.keys;
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "BMenuItem#setAccelerator; ex=" + ex );
+            }
         }
 
         public void add( ToolStripItem item ) {
