@@ -41,6 +41,7 @@ public class BButton extends JButton
     // root impl of Paint event is in BButton
     public BEvent<BPaintEventHandler> paintEvent = new BEvent<BPaintEventHandler>();
     public void paint( Graphics g ){
+        super.paint( g );
         BPaintEventArgs e = new BPaintEventArgs( g );
         try{
             paintEvent.raise( this, e );

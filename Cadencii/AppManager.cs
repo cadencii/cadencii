@@ -1008,15 +1008,20 @@ namespace org.kbinani.cadencii {
         }
 
         public static String getTempWaveDir() {
-            String temp = PortUtil.combinePath( PortUtil.getTempPath(), TEMPDIR_NAME );
+            String temp = getCadenciiTempDir();
             String dir = PortUtil.combinePath( temp, getID() );
-            if ( !PortUtil.isDirectoryExists( temp ) ) {
-                PortUtil.createDirectory( temp );
-            }
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
             return dir;
+        }
+
+        public static String getCadenciiTempDir() {
+            String temp = PortUtil.combinePath( PortUtil.getTempPath(), TEMPDIR_NAME );
+            if ( !PortUtil.isDirectoryExists( temp ) ) {
+                PortUtil.createDirectory( temp );
+            }
+            return temp;
         }
 
         public static boolean isCurveMode() {

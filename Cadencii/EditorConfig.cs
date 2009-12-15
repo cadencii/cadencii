@@ -23,17 +23,17 @@ import org.kbinani.xml.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.io;
 using bocoree.java.util;
 using bocoree.windows.forms;
 using bocoree.xml;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
-    using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -292,6 +292,10 @@ namespace org.kbinani.cadencii {
         /// スペースキーを押しながら左クリックで、中ボタンクリックとみなす動作をさせるかどうか。
         /// </summary>
         public boolean UseSpaceKeyAsMiddleButtonModifier = false;
+        /// <summary>
+        /// AquesToneのVSTi dllへのパス
+        /// </summary>
+        public String PathAquesTone = "";
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(

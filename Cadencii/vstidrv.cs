@@ -68,8 +68,14 @@ namespace org.kbinani.cadencii {
         /// 読込んだdllのハンドル
         /// </summary>
         protected IntPtr dllHandle;
-        protected int g_block_size;              // 波形バッファのサイズ。
-        protected int g_sample_rate;             // サンプリングレート。VOCALOID2 VSTiは限られたサンプリングレートしか受け付けない。たいてい44100Hzにする
+        /// <summary>
+        /// 波形バッファのサイズ。
+        /// </summary>
+        protected int blockSize;
+        /// <summary>
+        /// サンプリングレート。VOCALOID2 VSTiは限られたサンプリングレートしか受け付けない。たいてい44100Hzにする
+        /// </summary>
+        protected int sampleRate;
 
         protected virtual VstIntPtr AudioMaster( AEffect* effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt ) {
             VstIntPtr result = 0;
@@ -81,7 +87,7 @@ namespace org.kbinani.cadencii {
             return result;
         }
 
-        public virtual bool init( string dll_path, int block_size, int sample_rate ) {
+        public virtual bool open( string dll_path, int block_size, int sample_rate ) {
             dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
             System.Threading.Thread.Sleep( 250 );
 
@@ -103,13 +109,25 @@ namespace org.kbinani.cadencii {
             if ( ptr_aeffect == IntPtr.Zero ) {
                 return false;
             }
-            g_block_size = block_size;
-            g_sample_rate = sample_rate;
+            blockSize = block_size;
+            sampleRate = sample_rate;
             aEffect = (AEffect)Marshal.PtrToStructure( ptr_aeffect, typeof( AEffect ) );
             aEffect.Dispatch( ref aEffect, AEffectOpcodes.effOpen, 0, 0, (void*)0, 0 );
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)g_sample_rate );
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, g_block_size, (void*)0, 0 );
+            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)sampleRate );
+            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, blockSize, (void*)0, 0 );
             return true;
+        }
+
+        public virtual void close() {
+            try {
+                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effClose, 0, 0, (void*)0, 0.0f );
+                win32.FreeLibrary( dllHandle );
+            } catch( Exception ex ){
+            }
+            aEffect = new AEffect();
+            dllHandle = IntPtr.Zero;
+            mainDelegate = null;
+            audioMaster = null;
         }
     }
 

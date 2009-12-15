@@ -97,7 +97,7 @@ namespace org.kbinani.cadencii {
                 boolean loaded = false;
                 try {
                     if ( dll_path != "" ) {
-                        loaded = vocaloidDriver.get( i ).init( dll_path, BLOCK_SIZE, SAMPLE_RATE );
+                        loaded = vocaloidDriver.get( i ).open( dll_path, BLOCK_SIZE, SAMPLE_RATE );
                     } else {
                         loaded = false;
                     }
@@ -108,9 +108,37 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if ENABLE_AQUESTONE
-
+            reloadAquesTone();
 #endif
         }
+
+#if ENABLE_AQUESTONE
+        public static void reloadAquesTone() {
+            String aques_tone = AppManager.editorConfig.PathAquesTone;
+            if ( aquesToneDriver == null ) {
+                aquesToneDriver = new AquesToneDriver();
+                aquesToneDriver.loaded = false;
+                aquesToneDriver.name = RENDERER_AQT0;
+            }
+            if ( aquesToneDriver.loaded ) {
+                aquesToneDriver.close();
+                aquesToneDriver.loaded = false;
+            }
+            aquesToneDriver.path = aques_tone;
+            if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) ) {
+                boolean loaded = false;
+                try {
+                    loaded = aquesToneDriver.open( aques_tone, BLOCK_SIZE, SAMPLE_RATE );
+                } catch ( Exception ex ) {
+                    loaded = false;
+                }
+                aquesToneDriver.loaded = loaded;
+            }
+#if DEBUG
+            PortUtil.println( "VSTiProxy#initCor; aquesToneDriver.loaded=" + aquesToneDriver.loaded );
+#endif
+        }
+#endif
 
         public static boolean isRendererAvailable( String renderer ) {
 #if ENABLE_VOCALOID
@@ -120,9 +148,16 @@ namespace org.kbinani.cadencii {
                 }
             }
 #endif
+
+#if ENABLE_AQUESTONE
+            if ( renderer.StartsWith( RENDERER_AQT0 ) && aquesToneDriver != null && aquesToneDriver.loaded ) {
+                return true;
+            }
+#endif
+
             if ( renderer.StartsWith( RENDERER_UTU0 ) ) {
-                if ( AppManager.editorConfig.PathResampler != "" && PortUtil.isFileExists( AppManager.editorConfig.PathResampler ) &&
-                     AppManager.editorConfig.PathWavtool != "" && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) ) {
+                if ( !AppManager.editorConfig.PathResampler.Equals( "" ) && PortUtil.isFileExists( AppManager.editorConfig.PathResampler ) &&
+                     !AppManager.editorConfig.PathWavtool.Equals( "" ) && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) ) {
                     if ( AppManager.editorConfig.UtauSingers.size() > 0 ) {
                         return true;
                     }
@@ -149,7 +184,19 @@ namespace org.kbinani.cadencii {
 #if ENABLE_VOCALOID
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
                 if ( vocaloidDriver.get( i ) != null ) {
-                    vocaloidDriver.get( i ).Terminate();
+                    vocaloidDriver.get( i ).close();
+                }
+            }
+#endif
+
+#if ENABLE_AQUESTONE
+            if ( aquesToneDriver != null ) {
+                try {
+                    aquesToneDriver.close();
+                } catch ( Exception ex ) {
+#if DEBUG
+                    PortUtil.stderr.println( "VSTiProxy#terminate; ex=" + ex );
+#endif
                 }
             }
 #endif

@@ -13,6 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace bocoree {
@@ -44,6 +45,12 @@ namespace bocoree {
 
         [DllImport( "kernel32.dll" )]
         public static extern bool FreeLibrary( IntPtr hModule );
+
+        [DllImport( "kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "WriteProfileStringA", ExactSpelling = true )]
+        public static extern bool WriteProfileString( string section, string keyName, string value );
+
+        [DllImport( "kernel32.dll" )]
+        public static extern uint GetProfileString( string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize );
         #endregion
 
         #region winerror.h

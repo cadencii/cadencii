@@ -22,6 +22,15 @@ using bocoree.java.awt;
 namespace bocoree.windows.forms {
 
     public class BListView : System.Windows.Forms.ListView {
+        #region event impl SelectedIndexChanged
+        // root impl of SelectedIndexChanged event is in BComboBox
+        public BEvent<BEventHandler> selectedIndexChangedEvent = new BEvent<BEventHandler>();
+        protected override void OnSelectedIndexChanged( EventArgs e ) {
+            base.OnSelectedIndexChanged( e );
+            selectedIndexChangedEvent.raise( this, e );
+        }
+        #endregion
+
         private List<ColumnHeader> m_headers = new List<ColumnHeader>();
 
         public BListView() {

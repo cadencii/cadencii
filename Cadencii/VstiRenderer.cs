@@ -101,8 +101,8 @@ namespace org.kbinani.cadencii {
             s_instance.s_first_buffer_written_callback();
         }
 
-        public override boolean init( string dll_path, int block_size, int sample_rate ) {
-            base.init( dll_path, block_size, sample_rate );
+        public override boolean open( string dll_path, int block_size, int sample_rate ) {
+            base.open( dll_path, block_size, sample_rate );
             g_pEvents = new Vector<MIDI_EVENT>();
             g_midiPrepared0 = false;
             g_midiPrepared1 = false;
@@ -211,8 +211,8 @@ namespace org.kbinani.cadencii {
             int current_count = -1;
             MIDI_EVENT current = new MIDI_EVENT();// = lpEvents;
 
-            IntPtr ptr_left_ch = Marshal.AllocHGlobal( sizeof( float ) * g_sample_rate );
-            IntPtr ptr_right_ch = Marshal.AllocHGlobal( sizeof( float ) * g_sample_rate );
+            IntPtr ptr_left_ch = Marshal.AllocHGlobal( sizeof( float ) * sampleRate );
+            IntPtr ptr_right_ch = Marshal.AllocHGlobal( sizeof( float ) * sampleRate );
             float* left_ch = (float*)ptr_left_ch.ToPointer();
             float* right_ch = (float*)ptr_right_ch.ToPointer();
             IntPtr ptr_outbuffer = Marshal.AllocHGlobal( sizeof( float* ) * 2 );
@@ -223,10 +223,10 @@ namespace org.kbinani.cadencii {
 #if TEST
             bocoree.debug.push_log( "    calling initial dispatch..." );
 #endif
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)g_sample_rate );//dispatch_VST_command(effSetSampleRate, 0, 0, 0, kSampleRate);
+            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)sampleRate );//dispatch_VST_command(effSetSampleRate, 0, 0, 0, kSampleRate);
             aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 1, (void*)0, 0 );// dispatch_VST_command(effMainsChanged, 0, 1, 0, 0);
             // ここではブロックサイズ＝サンプリングレートということにする
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, g_sample_rate, (void*)0, 0 );// dispatch_VST_command(effSetBlockSize, 0, sampleFrames, 0, 0);
+            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, sampleRate, (void*)0, 0 );// dispatch_VST_command(effSetBlockSize, 0, sampleFrames, 0, 0);
 #if TEST
             bocoree.debug.push_log( "    ...done" );
 #endif
@@ -350,7 +350,7 @@ namespace org.kbinani.cadencii {
                 bocoree.debug.push_log( "nEvents=" + nEvents );
 #endif
                 double msNow = msec_from_clock( dwNow );
-                dwDelta = (int)(msNow / 1000.0 * g_sample_rate) - total_processed;
+                dwDelta = (int)(msNow / 1000.0 * sampleRate) - total_processed;
 #if TEST
                 bocoree.debug.push_log( "dwNow=" + dwNow );
                 bocoree.debug.push_log( "dwPrev=" + dwPrev );
@@ -410,7 +410,7 @@ namespace org.kbinani.cadencii {
                         exit_start_rendering();
                         return FALSE;
                     }
-                    int dwFrames = dwDelta > g_sample_rate ? g_sample_rate : dwDelta;
+                    int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
                     bocoree.debug.push_log( "calling ProcessReplacing..." );
 #endif
@@ -447,7 +447,7 @@ namespace org.kbinani.cadencii {
             }
 
             double msLast = msec_from_clock( dwNow );
-            dwDelta = (int)(g_sample_rate * ((double)duration + (double)delay) / 1000.0 + dwDeltaDelay);
+            dwDelta = (int)(sampleRate * ((double)duration + (double)delay) / 1000.0 + dwDeltaDelay);
             if ( total_samples - total_processed > dwDelta ) {
                 dwDelta = (int)total_samples - total_processed;
             }
@@ -457,7 +457,7 @@ namespace org.kbinani.cadencii {
                     exit_start_rendering();
                     return FALSE;
                 }
-                int dwFrames = dwDelta > g_sample_rate ? g_sample_rate : dwDelta;
+                int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
                 bocoree.debug.push_log( "calling ProcessReplacing..." );
 #endif
@@ -485,8 +485,8 @@ namespace org.kbinani.cadencii {
 #endif
 
             if ( mode_infinite ) {
-                double[] silence_l = new double[g_block_size];
-                double[] silence_r = new double[g_block_size];
+                double[] silence_l = new double[blockSize];
+                double[] silence_r = new double[blockSize];
                 while ( !g_cancelRequired ) {
                     /*s_aeffect.ProcessReplacing( ref s_aeffect, (float**)0, out_buffer, g_block_size );
                     for ( int i = 0; i < g_block_size; i++ ) {
@@ -512,13 +512,6 @@ namespace org.kbinani.cadencii {
 
         public double GetProgress() {
             return g_progress;
-        }
-
-        public void Terminate() {
-            try {
-                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effClose, 0, 0, (void*)0, 0.0f );
-            } catch {
-            }
         }
 
         private Vector<MIDI_EVENT> merge_events( Vector<MIDI_EVENT> x0, Vector<MIDI_EVENT> y0 ) {

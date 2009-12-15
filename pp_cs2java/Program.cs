@@ -99,6 +99,11 @@ class pp_cs2java {
     }
 
     static void Main( string[] args ) {
+#if DEBUG
+        StringBuilder sb = new StringBuilder( 250 );
+        win32.GetProfileString( "AquesTone", "FileKoe_00", "", sb, 250 );
+        Console.WriteLine( "value=" + sb.ToString() );
+#endif
         String current_parse = "";
         bool print_usage = false;
         if ( args.Length <= 0 ) {

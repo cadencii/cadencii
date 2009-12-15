@@ -27,20 +27,20 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using org.kbinani.apputil;
-using org.kbinani.media;
-using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.awt;
 using bocoree.java.io;
 using bocoree.java.util;
 using bocoree.windows.forms;
+using org.kbinani.apputil;
+using org.kbinani.media;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
+    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using boolean = System.Boolean;
     using java = bocoree.java;
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
 #endif
 
 #if JAVA
@@ -59,6 +59,9 @@ namespace org.kbinani.cadencii {
         private static int columnWidthHeaderName = 100;
         private static int columnWidthHeaderPath = 250;
         private BFontChooser fontDialog;
+        private BTextBox txtAquesTone;
+        private BLabel lblAquesTone;
+        private BButton btnAquesTone;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -910,18 +913,18 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnChangeMenuFont_Click( Object sender, BEventArgs e ) {
+        public void btnChangeMenuFont_Click( Object sender, BEventArgs e ) {
             fontDialog.setSelectedFont( getBaseFont() );
             if ( fontDialog.showDialog() == BDialogResult.OK ) {
                 m_base_font = fontDialog.getSelectedFont();
             }
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 
-        private void btnChangeScreenFont_Click( Object sender, BEventArgs e ) {
+        public void btnChangeScreenFont_Click( Object sender, BEventArgs e ) {
             fontDialog.setSelectedFont( m_screen_font );
             if ( fontDialog.showDialog() == BDialogResult.OK ) {
                 m_screen_font = fontDialog.getSelectedFont();
@@ -936,7 +939,7 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, font );
         }
 
-        private void comboPlatform_SelectedIndexChanged( Object sender, BEventArgs e ) {
+        public void comboPlatform_SelectedIndexChanged( Object sender, BEventArgs e ) {
             String title = (String)comboPlatform.getSelectedItem();
 #if JAVA
             for( PlatformEnum p : PlatformEnum.values() )
@@ -960,7 +963,7 @@ namespace org.kbinani.cadencii {
             chkCommandKeyAsControl.setSelected( value );
         }
 
-        private void btnResampler_Click( Object sender, BEventArgs e ) {
+        public void btnResampler_Click( Object sender, BEventArgs e ) {
             if ( !txtResampler.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtResampler.getText() ) ) ) {
                 openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtResampler.getText() ) );
             }
@@ -978,7 +981,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnWavtool_Click( Object sender, BEventArgs e ) {
+        public void btnWavtool_Click( Object sender, BEventArgs e ) {
             if ( !txtWavtool.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.getText() ) ) ) {
                 openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtWavtool.getText() ) );
             }
@@ -996,6 +999,19 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        public void btnAquesTone_Click( Object sender, BEventArgs e ) {
+            BFileChooser dialog = new BFileChooser( "" );
+            if ( !txtAquesTone.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtAquesTone.getText() ) ) ) {
+                dialog.setInitialDirectory( PortUtil.getDirectoryName( txtAquesTone.getText() ) );
+            }
+            dialog.setSelectedFile( "AquesTone.dll" );
+            int dr = dialog.showOpenDialog( this );
+            if ( dr == BFileChooser.APPROVE_OPTION ) {
+                String path = dialog.getSelectedFile();
+                txtAquesTone.setText( path );
+            }
+        }
+
         public String getPathResampler() {
             return txtResampler.getText();
         }
@@ -1010,6 +1026,14 @@ namespace org.kbinani.cadencii {
 
         public void setPathWavtool( String value ) {
             txtWavtool.setText( value );
+        }
+
+        public String getPathAquesTone() {
+            return txtAquesTone.getText();
+        }
+
+        public void setPathAquesTone( String value ) {
+            txtAquesTone.setText( value );
         }
 
         public Vector<SingerConfig> getUtauSingers() {
@@ -1034,7 +1058,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnAdd_Click( Object sender, BEventArgs e ) {
+        public void btnAdd_Click( Object sender, BEventArgs e ) {
             if ( folderBrowserSingers.showDialog() == BDialogResult.OK ) {
                 String dir = folderBrowserSingers.getSelectedPath();
                 SingerConfig sc = new SingerConfig();
@@ -1078,7 +1102,7 @@ namespace org.kbinani.cadencii {
             return listSingers.getSelectedIndex( "" );
         }
 
-        private void listSingers_SelectedIndexChanged( Object sender, BEventArgs e ) {
+        public void listSingers_SelectedIndexChanged( Object sender, BEventArgs e ) {
             int index = getUtauSingersSelectedIndex();
             if ( index < 0 ) {
                 btnRemove.setEnabled( false );
@@ -1091,7 +1115,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnRemove_Click( Object sender, BEventArgs e ) {
+        public void btnRemove_Click( Object sender, BEventArgs e ) {
             int index = getUtauSingersSelectedIndex();
             if ( 0 <= index && index < m_utau_singers.size() ) {
                 m_utau_singers.removeElementAt( index );
@@ -1099,7 +1123,7 @@ namespace org.kbinani.cadencii {
             UpdateUtauSingerList();
         }
 
-        private void btnDown_Click( Object sender, BEventArgs e ) {
+        public void btnDown_Click( Object sender, BEventArgs e ) {
             int index = getUtauSingersSelectedIndex();
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnDown_Click; index=" + index );
@@ -1113,7 +1137,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnUp_Click( Object sender, BEventArgs e ) {
+        public void btnUp_Click( Object sender, BEventArgs e ) {
             int index = getUtauSingersSelectedIndex();
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnUp_Click; index=" + index );
@@ -1127,38 +1151,36 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void chkAutoBackup_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkAutoBackup_CheckedChanged( Object sender, BEventArgs e ) {
             numAutoBackupInterval.setEnabled( chkAutoBackup.isSelected() );
         }
 
-        private void Preference_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void Preference_FormClosing( Object sender, BFormClosingEventArgs e ) {
             columnWidthHeaderProgramChange = listSingers.getColumnWidth( 0 );
             columnWidthHeaderName = listSingers.getColumnWidth( 1 );
             columnWidthHeaderPath = listSingers.getColumnWidth( 2 );
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
 
         private void registerEventHandlers() {
-#if JAVA
-#else
-            this.btnChangeScreenFont.Click += new System.EventHandler( this.btnChangeScreenFont_Click );
-            this.btnChangeMenuFont.Click += new System.EventHandler( this.btnChangeMenuFont_Click );
-            this.btnWavtool.Click += new System.EventHandler( this.btnWavtool_Click );
-            this.btnResampler.Click += new System.EventHandler( this.btnResampler_Click );
-            this.comboPlatform.SelectedIndexChanged += new System.EventHandler( this.comboPlatform_SelectedIndexChanged );
-            this.btnRemove.Click += new System.EventHandler( this.btnRemove_Click );
-            this.btnAdd.Click += new System.EventHandler( this.btnAdd_Click );
-            this.btnUp.Click += new System.EventHandler( this.btnUp_Click );
-            this.btnDown.Click += new System.EventHandler( this.btnDown_Click );
-            this.listSingers.SelectedIndexChanged += new System.EventHandler( this.listSingers_SelectedIndexChanged );
-            this.chkAutoBackup.CheckedChanged += new System.EventHandler( this.chkAutoBackup_CheckedChanged );
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            this.FormClosing += new FormClosingEventHandler( Preference_FormClosing );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
+            btnChangeScreenFont.clickEvent.add( new BEventHandler( this, "btnChangeScreenFont_Click" ) );
+            btnChangeMenuFont.clickEvent.add( new BEventHandler( this, "btnChangeMenuFont_Click" ) );
+            btnWavtool.clickEvent.add( new BEventHandler( this, "btnWavtool_Click" ) );
+            btnResampler.clickEvent.add( new BEventHandler( this, "btnResampler_Click" ) );
+            btnAquesTone.clickEvent.add( new BEventHandler( this, "btnAquesTone_Click" ) );
+            comboPlatform.selectedIndexChangedEvent.add( new BEventHandler( this, "comboPlatform_SelectedIndexChanged" ) );
+            btnRemove.clickEvent.add( new BEventHandler( this, "btnRemove_Click" ) );
+            btnAdd.clickEvent.add( new BEventHandler( this, "btnAdd_Click" ) );
+            btnUp.clickEvent.add( new BEventHandler( this, "btnUp_Click" ) );
+            btnDown.clickEvent.add( new BEventHandler( this, "btnDown_Click" ) );
+            listSingers.selectedIndexChangedEvent.add( new BEventHandler( this, "listSingers_SelectedIndexChanged" ) );
+            chkAutoBackup.checkedChangedEvent.add( new BEventHandler( this, "chkAutoBackup_CheckedChanged" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            formClosingEvent.add( new BFormClosingEventHandler( this, "Preference_FormClosing" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
         }
 
         private void setResources() {
@@ -1194,6 +1216,7 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.label5 = new bocoree.windows.forms.BLabel();
@@ -1208,7 +1231,7 @@ namespace org.kbinani.cadencii {
             this.label1 = new bocoree.windows.forms.BLabel();
             this.lblResolution = new bocoree.windows.forms.BLabel();
             this.label7 = new bocoree.windows.forms.BLabel();
-            this.groupAutoVibratoConfig = new BGroupBox();
+            this.groupAutoVibratoConfig = new bocoree.windows.forms.BGroupBox();
             this.comboAutoVibratoType2 = new bocoree.windows.forms.BComboBox();
             this.lblAutoVibratoType2 = new bocoree.windows.forms.BLabel();
             this.label6 = new bocoree.windows.forms.BLabel();
@@ -1243,14 +1266,14 @@ namespace org.kbinani.cadencii {
             this.numWait = new org.kbinani.cadencii.NumericUpDownEx();
             this.numPreSendTime = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabAppearance = new System.Windows.Forms.TabPage();
-            this.groupFont = new BGroupBox();
+            this.groupFont = new bocoree.windows.forms.BGroupBox();
             this.labelMenu = new bocoree.windows.forms.BLabel();
             this.labelScreenFontName = new bocoree.windows.forms.BLabel();
             this.btnChangeScreenFont = new bocoree.windows.forms.BButton();
             this.labelScreen = new bocoree.windows.forms.BLabel();
             this.labelMenuFontName = new bocoree.windows.forms.BLabel();
             this.btnChangeMenuFont = new bocoree.windows.forms.BButton();
-            this.groupVisibleCurve = new BGroupBox();
+            this.groupVisibleCurve = new bocoree.windows.forms.BGroupBox();
             this.chkEnvelope = new bocoree.windows.forms.BCheckBox();
             this.chkPbs = new bocoree.windows.forms.BCheckBox();
             this.chkReso4 = new bocoree.windows.forms.BCheckBox();
@@ -1277,7 +1300,7 @@ namespace org.kbinani.cadencii {
             this.lblLanguage = new bocoree.windows.forms.BLabel();
             this.numTrackHeight = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabOperation = new System.Windows.Forms.TabPage();
-            this.groupMisc = new BGroupBox();
+            this.groupMisc = new bocoree.windows.forms.BGroupBox();
             this.lblMaximumFrameRate = new bocoree.windows.forms.BLabel();
             this.comboMidiInPortNumber = new bocoree.windows.forms.BComboBox();
             this.numMaximumFrameRate = new org.kbinani.cadencii.NumericUpDownEx();
@@ -1285,7 +1308,7 @@ namespace org.kbinani.cadencii {
             this.lblMouseHoverTime = new bocoree.windows.forms.BLabel();
             this.lblMilliSecond = new bocoree.windows.forms.BLabel();
             this.numMouseHoverTime = new org.kbinani.cadencii.NumericUpDownEx();
-            this.groupPianoroll = new BGroupBox();
+            this.groupPianoroll = new bocoree.windows.forms.BGroupBox();
             this.chkUseSpaceKeyAsMiddleButtonModifier = new bocoree.windows.forms.BCheckBox();
             this.labelWheelOrder = new bocoree.windows.forms.BLabel();
             this.numericUpDownEx1 = new org.kbinani.cadencii.NumericUpDownEx();
@@ -1295,7 +1318,7 @@ namespace org.kbinani.cadencii {
             this.chkPlayPreviewWhenRightClick = new bocoree.windows.forms.BCheckBox();
             this.chkKeepLyricInputMode = new bocoree.windows.forms.BCheckBox();
             this.tabPlatform = new System.Windows.Forms.TabPage();
-            this.groupUtauCores = new BGroupBox();
+            this.groupUtauCores = new bocoree.windows.forms.BGroupBox();
             this.lblResampler = new bocoree.windows.forms.BLabel();
             this.chkInvokeWithWine = new bocoree.windows.forms.BCheckBox();
             this.btnWavtool = new bocoree.windows.forms.BButton();
@@ -1303,12 +1326,12 @@ namespace org.kbinani.cadencii {
             this.lblWavtool = new bocoree.windows.forms.BLabel();
             this.btnResampler = new bocoree.windows.forms.BButton();
             this.txtWavtool = new bocoree.windows.forms.BTextBox();
-            this.groupVsti = new BGroupBox();
+            this.groupVsti = new bocoree.windows.forms.BGroupBox();
             this.txtVOCALOID2 = new bocoree.windows.forms.BTextBox();
             this.txtVOCALOID1 = new bocoree.windows.forms.BTextBox();
             this.lblVOCALOID2 = new bocoree.windows.forms.BLabel();
             this.lblVOCALOID1 = new bocoree.windows.forms.BLabel();
-            this.groupPlatform = new BGroupBox();
+            this.groupPlatform = new bocoree.windows.forms.BGroupBox();
             this.chkTranslateRoman = new bocoree.windows.forms.BCheckBox();
             this.comboPlatform = new bocoree.windows.forms.BComboBox();
             this.lblPlatform = new bocoree.windows.forms.BLabel();
@@ -1318,7 +1341,7 @@ namespace org.kbinani.cadencii {
             this.btnAdd = new bocoree.windows.forms.BButton();
             this.btnUp = new bocoree.windows.forms.BButton();
             this.btnDown = new bocoree.windows.forms.BButton();
-            this.listSingers = new BListView();
+            this.listSingers = new bocoree.windows.forms.BListView();
             this.tabFile = new System.Windows.Forms.TabPage();
             this.lblAutoBackupMinutes = new bocoree.windows.forms.BLabel();
             this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
@@ -1326,6 +1349,9 @@ namespace org.kbinani.cadencii {
             this.chkAutoBackup = new bocoree.windows.forms.BCheckBox();
             this.btnCancel = new bocoree.windows.forms.BButton();
             this.btnOK = new bocoree.windows.forms.BButton();
+            this.lblAquesTone = new bocoree.windows.forms.BLabel();
+            this.txtAquesTone = new bocoree.windows.forms.BTextBox();
+            this.btnAquesTone = new bocoree.windows.forms.BButton();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupAutoVibratoConfig.SuspendLayout();
@@ -1370,7 +1396,7 @@ namespace org.kbinani.cadencii {
             this.tabPreference.Multiline = true;
             this.tabPreference.Name = "tabPreference";
             this.tabPreference.SelectedIndex = 0;
-            this.tabPreference.Size = new System.Drawing.Size( 462, 393 );
+            this.tabPreference.Size = new System.Drawing.Size( 462, 402 );
             this.tabPreference.TabIndex = 0;
             // 
             // tabSequence
@@ -1392,10 +1418,10 @@ namespace org.kbinani.cadencii {
             this.tabSequence.Controls.Add( this.comboVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoConfig );
-            this.tabSequence.Location = new System.Drawing.Point( 4, 38 );
+            this.tabSequence.Location = new System.Drawing.Point( 4, 40 );
             this.tabSequence.Name = "tabSequence";
             this.tabSequence.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSequence.Size = new System.Drawing.Size( 454, 351 );
+            this.tabSequence.Size = new System.Drawing.Size( 454, 398 );
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
@@ -1693,10 +1719,10 @@ namespace org.kbinani.cadencii {
             this.tabAnother.Controls.Add( this.numTiming );
             this.tabAnother.Controls.Add( this.numWait );
             this.tabAnother.Controls.Add( this.numPreSendTime );
-            this.tabAnother.Location = new System.Drawing.Point( 4, 38 );
+            this.tabAnother.Location = new System.Drawing.Point( 4, 40 );
             this.tabAnother.Name = "tabAnother";
             this.tabAnother.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAnother.Size = new System.Drawing.Size( 454, 351 );
+            this.tabAnother.Size = new System.Drawing.Size( 454, 398 );
             this.tabAnother.TabIndex = 2;
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
@@ -1955,10 +1981,10 @@ namespace org.kbinani.cadencii {
             this.tabAppearance.Controls.Add( this.comboLanguage );
             this.tabAppearance.Controls.Add( this.lblLanguage );
             this.tabAppearance.Controls.Add( this.numTrackHeight );
-            this.tabAppearance.Location = new System.Drawing.Point( 4, 38 );
+            this.tabAppearance.Location = new System.Drawing.Point( 4, 40 );
             this.tabAppearance.Name = "tabAppearance";
             this.tabAppearance.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAppearance.Size = new System.Drawing.Size( 454, 351 );
+            this.tabAppearance.Size = new System.Drawing.Size( 454, 398 );
             this.tabAppearance.TabIndex = 3;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -2324,10 +2350,10 @@ namespace org.kbinani.cadencii {
             // 
             this.tabOperation.Controls.Add( this.groupMisc );
             this.tabOperation.Controls.Add( this.groupPianoroll );
-            this.tabOperation.Location = new System.Drawing.Point( 4, 38 );
+            this.tabOperation.Location = new System.Drawing.Point( 4, 40 );
             this.tabOperation.Name = "tabOperation";
             this.tabOperation.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabOperation.Size = new System.Drawing.Size( 454, 351 );
+            this.tabOperation.Size = new System.Drawing.Size( 454, 398 );
             this.tabOperation.TabIndex = 5;
             this.tabOperation.Text = "Operation";
             this.tabOperation.UseVisualStyleBackColor = true;
@@ -2544,10 +2570,10 @@ namespace org.kbinani.cadencii {
             this.tabPlatform.Controls.Add( this.groupUtauCores );
             this.tabPlatform.Controls.Add( this.groupVsti );
             this.tabPlatform.Controls.Add( this.groupPlatform );
-            this.tabPlatform.Location = new System.Drawing.Point( 4, 38 );
+            this.tabPlatform.Location = new System.Drawing.Point( 4, 40 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 351 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 358 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
@@ -2561,7 +2587,7 @@ namespace org.kbinani.cadencii {
             this.groupUtauCores.Controls.Add( this.lblWavtool );
             this.groupUtauCores.Controls.Add( this.btnResampler );
             this.groupUtauCores.Controls.Add( this.txtWavtool );
-            this.groupUtauCores.Location = new System.Drawing.Point( 6, 207 );
+            this.groupUtauCores.Location = new System.Drawing.Point( 6, 228 );
             this.groupUtauCores.Name = "groupUtauCores";
             this.groupUtauCores.Size = new System.Drawing.Size( 442, 114 );
             this.groupUtauCores.TabIndex = 108;
@@ -2630,13 +2656,16 @@ namespace org.kbinani.cadencii {
             // 
             // groupVsti
             // 
+            this.groupVsti.Controls.Add( this.btnAquesTone );
+            this.groupVsti.Controls.Add( this.txtAquesTone );
+            this.groupVsti.Controls.Add( this.lblAquesTone );
             this.groupVsti.Controls.Add( this.txtVOCALOID2 );
             this.groupVsti.Controls.Add( this.txtVOCALOID1 );
             this.groupVsti.Controls.Add( this.lblVOCALOID2 );
             this.groupVsti.Controls.Add( this.lblVOCALOID1 );
             this.groupVsti.Location = new System.Drawing.Point( 6, 120 );
             this.groupVsti.Name = "groupVsti";
-            this.groupVsti.Size = new System.Drawing.Size( 442, 81 );
+            this.groupVsti.Size = new System.Drawing.Size( 442, 102 );
             this.groupVsti.TabIndex = 105;
             this.groupVsti.TabStop = false;
             this.groupVsti.Text = "VST Instruments";
@@ -2646,7 +2675,7 @@ namespace org.kbinani.cadencii {
             this.txtVOCALOID2.Location = new System.Drawing.Point( 99, 46 );
             this.txtVOCALOID2.Name = "txtVOCALOID2";
             this.txtVOCALOID2.ReadOnly = true;
-            this.txtVOCALOID2.Size = new System.Drawing.Size( 290, 19 );
+            this.txtVOCALOID2.Size = new System.Drawing.Size( 281, 19 );
             this.txtVOCALOID2.TabIndex = 107;
             // 
             // txtVOCALOID1
@@ -2654,7 +2683,7 @@ namespace org.kbinani.cadencii {
             this.txtVOCALOID1.Location = new System.Drawing.Point( 99, 21 );
             this.txtVOCALOID1.Name = "txtVOCALOID1";
             this.txtVOCALOID1.ReadOnly = true;
-            this.txtVOCALOID1.Size = new System.Drawing.Size( 290, 19 );
+            this.txtVOCALOID1.Size = new System.Drawing.Size( 281, 19 );
             this.txtVOCALOID1.TabIndex = 106;
             // 
             // lblVOCALOID2
@@ -2734,10 +2763,10 @@ namespace org.kbinani.cadencii {
             this.tabUtauSingers.Controls.Add( this.btnUp );
             this.tabUtauSingers.Controls.Add( this.btnDown );
             this.tabUtauSingers.Controls.Add( this.listSingers );
-            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 38 );
+            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 40 );
             this.tabUtauSingers.Name = "tabUtauSingers";
             this.tabUtauSingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 351 );
+            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 398 );
             this.tabUtauSingers.TabIndex = 6;
             this.tabUtauSingers.Text = "UTAU Singers";
             this.tabUtauSingers.UseVisualStyleBackColor = true;
@@ -2745,7 +2774,7 @@ namespace org.kbinani.cadencii {
             // btnRemove
             // 
             this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRemove.Location = new System.Drawing.Point( 98, 307 );
+            this.btnRemove.Location = new System.Drawing.Point( 98, 356 );
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size( 75, 23 );
             this.btnRemove.TabIndex = 122;
@@ -2755,7 +2784,7 @@ namespace org.kbinani.cadencii {
             // btnAdd
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Location = new System.Drawing.Point( 17, 307 );
+            this.btnAdd.Location = new System.Drawing.Point( 17, 356 );
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size( 75, 23 );
             this.btnAdd.TabIndex = 121;
@@ -2765,7 +2794,7 @@ namespace org.kbinani.cadencii {
             // btnUp
             // 
             this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUp.Location = new System.Drawing.Point( 279, 307 );
+            this.btnUp.Location = new System.Drawing.Point( 279, 356 );
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size( 75, 23 );
             this.btnUp.TabIndex = 123;
@@ -2775,7 +2804,7 @@ namespace org.kbinani.cadencii {
             // btnDown
             // 
             this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDown.Location = new System.Drawing.Point( 360, 307 );
+            this.btnDown.Location = new System.Drawing.Point( 360, 356 );
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size( 75, 23 );
             this.btnDown.TabIndex = 124;
@@ -2788,11 +2817,14 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listSingers.FullRowSelect = true;
+            listViewGroup1.Header = "ListViewGroup";
+            this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
             this.listSingers.Name = "listSingers";
-            this.listSingers.Size = new System.Drawing.Size( 418, 277 );
+            this.listSingers.Size = new System.Drawing.Size( 418, 326 );
             this.listSingers.TabIndex = 120;
             this.listSingers.UseCompatibleStateImageBehavior = false;
             this.listSingers.View = System.Windows.Forms.View.Details;
@@ -2803,10 +2835,10 @@ namespace org.kbinani.cadencii {
             this.tabFile.Controls.Add( this.numAutoBackupInterval );
             this.tabFile.Controls.Add( this.lblAutoBackupInterval );
             this.tabFile.Controls.Add( this.chkAutoBackup );
-            this.tabFile.Location = new System.Drawing.Point( 4, 38 );
+            this.tabFile.Location = new System.Drawing.Point( 4, 40 );
             this.tabFile.Name = "tabFile";
             this.tabFile.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabFile.Size = new System.Drawing.Size( 454, 351 );
+            this.tabFile.Size = new System.Drawing.Size( 454, 398 );
             this.tabFile.TabIndex = 7;
             this.tabFile.Text = "File";
             this.tabFile.UseVisualStyleBackColor = true;
@@ -2861,7 +2893,7 @@ namespace org.kbinani.cadencii {
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 374, 416 );
+            this.btnCancel.Location = new System.Drawing.Point( 374, 425 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 88, 23 );
             this.btnCancel.TabIndex = 201;
@@ -2871,12 +2903,37 @@ namespace org.kbinani.cadencii {
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point( 280, 416 );
+            this.btnOK.Location = new System.Drawing.Point( 280, 425 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 88, 23 );
             this.btnOK.TabIndex = 200;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
+            // 
+            // lblAquesTone
+            // 
+            this.lblAquesTone.AutoSize = true;
+            this.lblAquesTone.Location = new System.Drawing.Point( 16, 74 );
+            this.lblAquesTone.Name = "lblAquesTone";
+            this.lblAquesTone.Size = new System.Drawing.Size( 62, 12 );
+            this.lblAquesTone.TabIndex = 108;
+            this.lblAquesTone.Text = "AquesTone";
+            // 
+            // txtAquesTone
+            // 
+            this.txtAquesTone.Location = new System.Drawing.Point( 99, 71 );
+            this.txtAquesTone.Name = "txtAquesTone";
+            this.txtAquesTone.Size = new System.Drawing.Size( 281, 19 );
+            this.txtAquesTone.TabIndex = 109;
+            // 
+            // btnAquesTone
+            // 
+            this.btnAquesTone.Location = new System.Drawing.Point( 386, 69 );
+            this.btnAquesTone.Name = "btnAquesTone";
+            this.btnAquesTone.Size = new System.Drawing.Size( 41, 23 );
+            this.btnAquesTone.TabIndex = 111;
+            this.btnAquesTone.Text = "...";
+            this.btnAquesTone.UseVisualStyleBackColor = true;
             // 
             // Preference
             // 
@@ -2884,7 +2941,7 @@ namespace org.kbinani.cadencii {
             this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 475, 455 );
+            this.ClientSize = new System.Drawing.Size( 475, 464 );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnCancel );
             this.Controls.Add( this.tabPreference );

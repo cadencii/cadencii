@@ -8,9 +8,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
@@ -23,10 +25,7 @@ import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BTextBox;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
+import javax.swing.JButton;
 
 //SECTION-END-IMPORT
 public class Preference extends JFrame {
@@ -127,7 +126,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown numMouseHoverTime = null;
 	private BLabel lblMidiInPort = null;
 	private BComboBox comboMidiInPortNumber = null;
-	private BPanel tabPlatform = null;
+	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-37,518"
 	private BGroupBox groupPlatform = null;
 	private BLabel lblPlatform = null;
 	private BComboBox comboPlatform = null;
@@ -176,6 +175,9 @@ public class Preference extends JFrame {
     private BNumericUpDown numPreSendTimeSample = null;
     private JLabel label15 = null;
     private JPanel jPanel = null;
+    private BLabel lblAquesTone = null;
+    private BTextBox txtAquesTone = null;
+    private BButton btnAquesTone = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -1796,6 +1798,7 @@ public class Preference extends JFrame {
 			gridBagConstraints93.gridy = 0;
 			tabPlatform = new BPanel();
 			tabPlatform.setLayout(new GridBagLayout());
+			tabPlatform.setSize(new Dimension(394, 356));
 			tabPlatform.add(getGroupPlatform(), gridBagConstraints93);
 			tabPlatform.add(getGroupVsti(), gridBagConstraints98);
 			tabPlatform.add(getGroupUtauCores(), gridBagConstraints106);
@@ -1893,6 +1896,24 @@ public class Preference extends JFrame {
 	 */
 	private BGroupBox getGroupVsti() {
 		if (groupVsti == null) {
+			GridBagConstraints gridBagConstraints133 = new GridBagConstraints();
+			gridBagConstraints133.gridx = 2;
+			gridBagConstraints133.insets = new Insets(3, 3, 3, 3);
+			gridBagConstraints133.gridy = 2;
+			GridBagConstraints gridBagConstraints132 = new GridBagConstraints();
+			gridBagConstraints132.gridx = 0;
+			gridBagConstraints132.insets = new Insets(0, 12, 0, 0);
+			gridBagConstraints132.anchor = GridBagConstraints.WEST;
+			gridBagConstraints132.gridy = 2;
+			GridBagConstraints gridBagConstraints131 = new GridBagConstraints();
+			gridBagConstraints131.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints131.gridx = 1;
+			gridBagConstraints131.gridy = 2;
+			gridBagConstraints131.insets = new Insets(3, 12, 3, 12);
+			gridBagConstraints131.weightx = 1.0;
+			lblAquesTone = new BLabel();
+			lblAquesTone.setText("AquesTone");
+			lblAquesTone.setPreferredSize(new Dimension(72, 16));
 			GridBagConstraints gridBagConstraints97 = new GridBagConstraints();
 			gridBagConstraints97.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints97.gridy = 1;
@@ -1907,6 +1928,7 @@ public class Preference extends JFrame {
 			gridBagConstraints96.gridy = 1;
 			lblVOCALOID2 = new BLabel();
 			lblVOCALOID2.setText("VOCALOID2");
+			lblVOCALOID2.setPreferredSize(new Dimension(72, 16));
 			GridBagConstraints gridBagConstraints95 = new GridBagConstraints();
 			gridBagConstraints95.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints95.gridy = 0;
@@ -1921,6 +1943,7 @@ public class Preference extends JFrame {
 			gridBagConstraints94.gridy = 0;
 			lblVOCALOID1 = new BLabel();
 			lblVOCALOID1.setText("VOCALOID1");
+			lblVOCALOID1.setPreferredSize(new Dimension(72, 16));
 			groupVsti = new BGroupBox();
 			groupVsti.setLayout(new GridBagLayout());
 			groupVsti.setBorder(BorderFactory.createTitledBorder(null, "VST Instruments", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
@@ -1928,6 +1951,9 @@ public class Preference extends JFrame {
 			groupVsti.add(getTxtVOCALOID1(), gridBagConstraints95);
 			groupVsti.add(lblVOCALOID2, gridBagConstraints96);
 			groupVsti.add(getTxtVOCALOID2(), gridBagConstraints97);
+			groupVsti.add(lblAquesTone, gridBagConstraints132);
+			groupVsti.add(getTxtAquesTone(), gridBagConstraints131);
+			groupVsti.add(getBtnAquesTone(), gridBagConstraints133);
 		}
 		return groupVsti;
 	}
@@ -1970,7 +1996,7 @@ public class Preference extends JFrame {
 			gridBagConstraints105.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints105.gridy = 2;
 			GridBagConstraints gridBagConstraints104 = new GridBagConstraints();
-			gridBagConstraints104.gridx = 2;
+			gridBagConstraints104.gridx = 3;
 			gridBagConstraints104.insets = new Insets(3, 3, 3, 3);
 			gridBagConstraints104.gridy = 1;
 			GridBagConstraints gridBagConstraints103 = new GridBagConstraints();
@@ -1985,7 +2011,7 @@ public class Preference extends JFrame {
 			lblWavtool = new BLabel();
 			lblWavtool.setText("wavtool");
 			GridBagConstraints gridBagConstraints101 = new GridBagConstraints();
-			gridBagConstraints101.gridx = 2;
+			gridBagConstraints101.gridx = 3;
 			gridBagConstraints101.insets = new Insets(3, 3, 3, 3);
 			gridBagConstraints101.gridy = 0;
 			GridBagConstraints gridBagConstraints100 = new GridBagConstraints();
@@ -2480,6 +2506,32 @@ public class Preference extends JFrame {
             jPanel.add(label15, gridBagConstraints129);
         }
         return jPanel;
+    }
+
+    /**
+     * This method initializes txtAquesTone	
+     * 	
+     * @return org.kbinani.windows.forms.BTextBox	
+     */
+    private BTextBox getTxtAquesTone() {
+        if (txtAquesTone == null) {
+            txtAquesTone = new BTextBox();
+        }
+        return txtAquesTone;
+    }
+
+    /**
+     * This method initializes btnAquesTone	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private BButton getBtnAquesTone() {
+        if (btnAquesTone == null) {
+            btnAquesTone = new BButton();
+            btnAquesTone.setPreferredSize(new Dimension(41, 23));
+            btnAquesTone.setText("...");
+        }
+        return btnAquesTone;
     }
 
 	//SECTION-END-METHOD

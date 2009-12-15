@@ -8,6 +8,7 @@ namespace VstSdk {
     #region VST SDK 2.4 declarations
     using VstInt32 = System.Int32;
     using VstIntPtr = System.Int32;
+    using VstInt16 = System.Int16;
 
     public static class Constants {
         public const int kVstVersion = 2400;
@@ -649,6 +650,18 @@ namespace VstSdk {
         public byte noteOffVelocity;	///< Note Off Velocity [0, 127]
         public byte reserved1;			///< zero (Reserved for future use)
         public byte reserved2;			///< zero (Reserved for future use)
+    }
+
+    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
+    public struct ERect {
+        public VstInt16 top;		///< top coordinate
+        public VstInt16 left;		///< left coordinate
+        public VstInt16 bottom;	///< bottom coordinate
+        public VstInt16 right;		///< right coordinate
+                                    ///
+        public override string ToString() {
+            return "{top=" + top + ", left=" + left + ", bottom=" + bottom + ", right=" + right + "}";
+        }
     }
     #endregion
 
