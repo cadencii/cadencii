@@ -6430,9 +6430,9 @@ namespace org.kbinani.cadencii {
         }
 
         public void picturePositionIndicator_MouseUp( Object sender, BMouseEventArgs e ) {
-            if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
+            /*if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
                 return;
-            }
+            }*/
 
             int modifiers = PortUtil.getCurrentModifierKey();
 #if DEBUG
@@ -6657,7 +6657,6 @@ namespace org.kbinani.cadencii {
                             }
                             #endregion
                         }
-                        m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
                         #endregion
                     }
                 } else if( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TEMPO ){
@@ -6689,7 +6688,6 @@ namespace org.kbinani.cadencii {
                         AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                         setEdited( true );
                     }
-                    m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
                 } else if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
                     int count = AppManager.getSelectedTimesigCount();
                     int[] barcounts = new int[count];
@@ -6722,9 +6720,9 @@ namespace org.kbinani.cadencii {
                         AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                         setEdited( true );
                     }
-                    m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
                 }
             }
+            m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
             pictPianoRoll.repaint();
             picturePositionIndicator.repaint();
         }
@@ -6798,10 +6796,6 @@ namespace org.kbinani.cadencii {
                 }
                 refreshScreen();
             }
-        }
-
-        public void picturePositionIndicator_MouseLeave( Object sender, EventArgs e ) {
-            m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
         }
 
         public void picturePositionIndicator_Paint( Object sender, BPaintEventArgs e ) {
@@ -13901,7 +13895,7 @@ namespace org.kbinani.cadencii {
             hScroll.valueChangedEvent.add( new BEventHandler( this, "hScroll_ValueChanged" ) );
             hScroll.resizeEvent.add( new BEventHandler( this, "hScroll_Resize" ) );
             hScroll.enterEvent.add( new BEventHandler( this, "hScroll_Enter" ) );
-            picturePositionIndicator.mouseLeaveEvent.add( new BEventHandler( this, "picturePositionIndicator_MouseLeave" ) );
+            //picturePositionIndicator.mouseLeaveEvent.add( new BEventHandler( this, "picturePositionIndicator_MouseLeave" ) );
             picturePositionIndicator.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "picturePositionIndicator_PreviewKeyDown" ) );
             picturePositionIndicator.mouseMoveEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseMove" ) );
             picturePositionIndicator.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseDoubleClick" ) );
