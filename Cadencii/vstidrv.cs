@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using bocoree;
 using bocoree.java.util;
+using org.kbinani.vsq;
 using VstSdk;
 
 namespace org.kbinani.cadencii {
@@ -52,6 +53,27 @@ namespace org.kbinani.cadencii {
         }
     }
 
+    public class GlobalMemoryContext {
+        private Vector<IntPtr> list = new Vector<IntPtr>();
+
+        public IntPtr malloc( int bytes ) {
+            IntPtr ret = Marshal.AllocHGlobal( bytes );
+            list.add( ret );
+            return ret;
+        }
+
+        public void dispose() {
+            for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
+                IntPtr v = (IntPtr)itr.next();
+                Marshal.FreeHGlobal( v );
+            }
+        }
+
+        ~GlobalMemoryContext() {
+            dispose();
+        }
+    }
+
     public unsafe class vstidrv {
         protected delegate IntPtr PVSTMAIN( [MarshalAs( UnmanagedType.FunctionPtr )]audioMasterCallback audioMaster );
 
@@ -76,6 +98,126 @@ namespace org.kbinani.cadencii {
         /// サンプリングレート。VOCALOID2 VSTiは限られたサンプリングレートしか受け付けない。たいてい44100Hzにする
         /// </summary>
         protected int sampleRate;
+        /// <summary>
+        /// バッファ(bufferLeft, bufferRight)の長さ
+        /// </summary>
+        const int BUFLEN = 44100;
+        /// <summary>
+        /// 左チャンネル用バッファ
+        /// </summary>
+        IntPtr bufferLeft = IntPtr.Zero;
+        /// <summary>
+        /// 右チャンネル用バッファ
+        /// </summary>
+        IntPtr bufferRight = IntPtr.Zero;
+        /// <summary>
+        /// 左右チャンネルバッファの配列(buffers={bufferLeft, bufferRight})
+        /// </summary>
+        IntPtr buffers = IntPtr.Zero;
+
+        private void initBuffer() {
+            if ( bufferLeft == IntPtr.Zero ) {
+                bufferLeft = Marshal.AllocHGlobal( sizeof( float ) * BUFLEN );
+            }
+            if ( bufferRight == IntPtr.Zero ) {
+                bufferRight = Marshal.AllocHGlobal( sizeof( float ) * BUFLEN );
+            }
+            if ( buffers == IntPtr.Zero ) {
+                buffers = Marshal.AllocHGlobal( sizeof( float* ) * 2 );
+            }
+        }
+
+        private void releaseBuffer() {
+            if ( bufferLeft != IntPtr.Zero ) {
+                Marshal.FreeHGlobal( bufferLeft );
+                bufferLeft = IntPtr.Zero;
+            }
+            if ( bufferRight != IntPtr.Zero ) {
+                Marshal.FreeHGlobal( bufferRight );
+                bufferRight = IntPtr.Zero;
+            }
+            if ( buffers != IntPtr.Zero ) {
+                Marshal.FreeHGlobal( buffers );
+                buffers = IntPtr.Zero;
+            }
+        }
+
+        public void process( double[] left, double[] right ) {
+            if ( left == null || right == null ){
+                return;
+            }
+            int length = Math.Min( left.Length, right.Length );
+            try {
+                initBuffer();
+                int remain = length;
+                int offset = 0;
+                float* left_ch = (float*)bufferLeft.ToPointer();
+                float* right_ch = (float*)bufferRight.ToPointer();
+                float** out_buffer = (float**)buffers.ToPointer();
+                out_buffer[0] = left_ch;
+                out_buffer[1] = right_ch;
+                while ( remain > 0 ) {
+                    int proc = (remain > BUFLEN) ? BUFLEN : remain;
+                    aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, proc );
+                    for ( int i = 0; i < proc; i++ ) {
+                        left[i + offset] = left_ch[i];
+                        right[i + offset] = right_ch[i];
+                    }
+                    remain -= proc;
+                    offset += proc;
+                }
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "vstidrv#process; ex=" + ex );
+            }
+        }
+
+        public void send( MidiEvent[] events ) {
+            unsafe {
+                GlobalMemoryContext mem_context = null;
+                try {
+                    mem_context = new GlobalMemoryContext();
+                    int nEvents = events.Length;
+                    IntPtr ptr_pvst_events = mem_context.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
+                    VstEvents* pVSTEvents = (VstEvents*)ptr_pvst_events.ToPointer();
+                    pVSTEvents->numEvents = 0;
+                    pVSTEvents->reserved = (VstIntPtr)0;
+
+                    for ( int i = 0; i < nEvents; i++ ) {
+                        MidiEvent pProcessEvent = events[i];
+                        byte event_code = pProcessEvent.firstByte;
+                        VstEvent* pVSTEvent = (VstEvent*)0;
+                        VstMidiEvent* pMidiEvent;
+                        pMidiEvent = (VstMidiEvent*)mem_context.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();
+                        pMidiEvent->byteSize = sizeof( VstMidiEvent );
+                        pMidiEvent->deltaFrames = 0;
+                        pMidiEvent->detune = 0;
+                        pMidiEvent->flags = 1;
+                        pMidiEvent->noteLength = 0;
+                        pMidiEvent->noteOffset = 0;
+                        pMidiEvent->noteOffVelocity = 0;
+                        pMidiEvent->reserved1 = 0;
+                        pMidiEvent->reserved2 = 0;
+                        pMidiEvent->type = VstEventTypes.kVstMidiType;
+                        pMidiEvent->midiData[0] = pProcessEvent.firstByte;
+                        for ( int j = 0; j < pProcessEvent.data.Length; j++ ) {
+                            pMidiEvent->midiData[j + 1] = pProcessEvent.data[j];
+                        }
+                        pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
+                    }
+                    aEffect.Dispatch( ref aEffect, AEffectXOpcodes.effProcessEvents, 0, 0, pVSTEvents, 0 );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "vstidrv#send; ex=" + ex );
+                } finally {
+                    if ( mem_context != null ) {
+                        try {
+                            mem_context.dispose();
+                        } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "vstidrv#send; ex2=" + ex2 );
+                        }
+                    }
+                }
+            }
+        }
 
         protected virtual VstIntPtr AudioMaster( AEffect* effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt ) {
             VstIntPtr result = 0;
@@ -124,6 +266,7 @@ namespace org.kbinani.cadencii {
                 win32.FreeLibrary( dllHandle );
             } catch( Exception ex ){
             }
+            releaseBuffer();
             aEffect = new AEffect();
             dllHandle = IntPtr.Zero;
             mainDelegate = null;

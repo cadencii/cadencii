@@ -310,6 +310,7 @@
     <Compile Include="VibratoPoint.cs" />
     <Compile Include="VibratoVariation.cs" />
     <Compile Include="VibratoVariationConverter.cs" />
+    <Compile Include="VocaloidDriver.cs" />
     <Compile Include="VocaloRenderingRunner.cs" />
     <Compile Include="VolumeTracker.cs">
       <SubType>UserControl</SubType>
@@ -320,7 +321,6 @@
     <Compile Include="VsqFileEx.cs" />
     <Compile Include="vstidrv.cs" />
     <Compile Include="VSTiProxy.cs" />
-    <Compile Include="VstiRenderer.cs" />
     <Compile Include="VstSdk.cs" />
     <Compile Include="WaveDrawContext.cs" />
     <Compile Include="WaveView.cs">

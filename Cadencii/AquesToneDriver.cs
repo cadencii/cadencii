@@ -80,26 +80,24 @@ namespace org.kbinani.cadencii {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
 #endif
             }
-#if DEBUG
-            PortUtil.println( "AquesToneDriver#open; try opening UI Window..." );
+
             try {
                 pluginUi = new System.Windows.Forms.Form();
                 pluginUi.Text = "AquesToneWindow";
-                unsafe {
-                    ERect rect = new ERect();
-                    aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, pluginUi.Handle.ToPointer(), 0.0f );
-                }
-                pluginUi.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
                 pluginUi.ClientSize = new System.Drawing.Size( 373, 158 );
+                pluginUi.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
                 pluginUi.Location = new System.Drawing.Point( int.MinValue, int.MinValue );
                 pluginUi.Show();
                 pluginUi.Refresh();
                 pluginUi.Hide();
+                pluginUi.Location = new System.Drawing.Point( 0, 0 );
+                unsafe {
+                    aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)pluginUi.Handle.ToPointer(), 0.0f );
+                }
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
             }
-            PortUtil.println( "AquesToneDriver#open; ...done (try opening UI Window)" );
-#endif
+
             if ( refresh_winini ) {
 #if DEBUG
                 PortUtil.println( "AquesToneDriver#open; refresh_winini; koe_old=" + koe_old );
@@ -132,6 +130,7 @@ namespace org.kbinani.cadencii {
                         try {
                             bw.close();
                         } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex2 );
                         }
                     }
                 }

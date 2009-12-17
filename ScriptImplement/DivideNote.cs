@@ -10,7 +10,7 @@ using bocoree;
 using bocoree.java.util;
 using bocoree.windows.forms;
 
-namespace org.Cadencii {
+namespace org.kbinani.cadencii {
 
     public partial class DivideNote : Form, IPaletteTool {
         public static int Numerator = 1;

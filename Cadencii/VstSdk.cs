@@ -628,10 +628,19 @@ namespace VstSdk {
     [StructLayout( LayoutKind.Sequential, Pack = 1 )]
     public unsafe struct VstEvents {
         const int MAX_VST_EVENTS = 1024;
-        public VstInt32 numEvents;		///< number of Events in array
-        public VstIntPtr reserved;		///< zero (Reserved for future use)
+        /// <summary>
+        /// number of Events in array
+        /// </summary>
+        public VstInt32 numEvents;
+        /// <summary>
+        /// zero (Reserved for future use)
+        /// </summary>
+        public VstIntPtr reserved;
         //[MarshalAs( UnmanagedType.ByValArray, SizeConst = MAX_VST_EVENTS )]
-        public fixed int events[MAX_VST_EVENTS];// VstEvent** events/*[MAX_VST_EVENTS]*/;	///< event pointer array, variable size
+        /// <summary>
+        /// event pointer array, variable size
+        /// </summary>
+        public fixed int events[MAX_VST_EVENTS];
     }
 
     /// <summary>
@@ -639,26 +648,71 @@ namespace VstSdk {
     /// </summary>
     [StructLayout( LayoutKind.Sequential, Pack = 1 )]
     public unsafe struct VstMidiEvent {
-        public VstInt32 type;			///< #kVstMidiType
-        public VstInt32 byteSize;		///< sizeof (VstMidiEvent)
-        public VstInt32 deltaFrames;	///< sample frames related to the current block start sample position
-        public VstInt32 flags;			///< @see VstMidiEventFlags
-        public VstInt32 noteLength;	///< (in sample frames) of entire note, if available, else 0
-        public VstInt32 noteOffset;	///< offset (in sample frames) into note from note start if available, else 0
-        public fixed byte midiData[4];		///< 1 to 3 MIDI bytes; midiData[3] is reserved (zero)
-        public byte detune;			///< -64 to +63 cents; for scales other than 'well-tempered' ('microtuning')
-        public byte noteOffVelocity;	///< Note Off Velocity [0, 127]
-        public byte reserved1;			///< zero (Reserved for future use)
-        public byte reserved2;			///< zero (Reserved for future use)
+        /// <summary>
+        /// #kVstMidiType
+        /// </summary>
+        public VstInt32 type;
+        /// <summary>
+        /// sizeof (VstMidiEvent)
+        /// </summary>
+        public VstInt32 byteSize;
+        /// <summary>
+        /// sample frames related to the current block start sample position
+        /// </summary>
+        public VstInt32 deltaFrames;
+        /// <summary>
+        /// @see VstMidiEventFlags
+        /// </summary>
+        public VstInt32 flags;
+        /// <summary>
+        /// (in sample frames) of entire note, if available, else 0
+        /// </summary>
+        public VstInt32 noteLength;
+        /// <summary>
+        /// offset (in sample frames) into note from note start if available, else 0
+        /// </summary>
+        public VstInt32 noteOffset;
+        /// <summary>
+        /// 1 to 3 MIDI bytes; midiData[3] is reserved (zero)
+        /// </summary>
+        public fixed byte midiData[4];
+        /// <summary>
+        /// -64 to +63 cents; for scales other than 'well-tempered' ('microtuning')
+        /// </summary>
+        public byte detune;
+        /// <summary>
+        /// Note Off Velocity [0, 127]
+        /// </summary>
+        public byte noteOffVelocity;
+        /// <summary>
+        /// zero (Reserved for future use)
+        /// </summary>
+        public byte reserved1;
+        /// <summary>
+        /// zero (Reserved for future use)
+        /// </summary>
+        public byte reserved2;
     }
 
     [StructLayout( LayoutKind.Sequential, Pack = 1 )]
     public struct ERect {
-        public VstInt16 top;		///< top coordinate
-        public VstInt16 left;		///< left coordinate
-        public VstInt16 bottom;	///< bottom coordinate
-        public VstInt16 right;		///< right coordinate
-                                    ///
+        /// <summary>
+        /// top coordinate
+        /// </summary>
+        public VstInt16 top;
+        /// <summary>
+        /// left coordinate
+        /// </summary>
+        public VstInt16 left;
+        /// <summary>
+        /// bottom coordinate
+        /// </summary>
+        public VstInt16 bottom;
+        /// <summary>
+        /// right coordinate
+        /// </summary>
+        public VstInt16 right;
+
         public override string ToString() {
             return "{top=" + top + ", left=" + left + ", bottom=" + bottom + ", right=" + right + "}";
         }

@@ -25,6 +25,256 @@ namespace org.kbinani.cadencii {
 
     public class KanaDeRomanization {
         const int _MAX_MATCH = 4;
+
+        /// <summary>
+        /// ひらがなをカタカナに変換する
+        /// </summary>
+        /// <param name="maybe_katakana"></param>
+        /// <returns></returns>
+        public static String hiragana2katakana( String maybe_hiragana ) {
+            char[] arr = maybe_hiragana.ToCharArray();
+            String ret = "";
+            int i = -1;
+            while ( i + 1 < arr.Length ) {
+                i++;
+                char transformed = hiragana2katakanaCor( arr[i] );
+                if ( i + 1 < arr.Length ) {
+                    if ( arr[i + 1] == 'ﾞ' ) {
+                        if ( transformed == 'カ' ) {
+                            transformed = 'ガ';
+                        } else if ( transformed == 'キ' ) {
+                            transformed = 'ギ';
+                        } else if ( transformed == 'ク' ) {
+                            transformed = 'グ';
+                        } else if ( transformed == 'ケ' ) {
+                            transformed = 'ゲ';
+                        } else if ( transformed == 'コ' ) {
+                            transformed = 'ゴ';
+                        } else if ( transformed == 'サ' ) {
+                            transformed = 'ザ';
+                        } else if ( transformed == 'シ' ) {
+                            transformed = 'ジ';
+                        } else if ( transformed == 'ス' ) {
+                            transformed = 'ズ';
+                        } else if ( transformed == 'セ' ) {
+                            transformed = 'ゼ';
+                        } else if ( transformed == 'ソ' ) {
+                            transformed = 'ゾ';
+                        } else if ( transformed == 'タ' ) {
+                            transformed = 'ダ';
+                        } else if ( transformed == 'チ' ) {
+                            transformed = 'ヂ';
+                        } else if ( transformed == 'ツ' ) {
+                            transformed = 'ヅ';
+                        } else if ( transformed == 'テ' ) {
+                            transformed = 'デ';
+                        } else if ( transformed == 'ト' ) {
+                            transformed = 'ド';
+                        } else if ( transformed == 'ハ' ) {
+                            transformed = 'バ';
+                        } else if ( transformed == 'ヒ' ) {
+                            transformed = 'ビ';
+                        } else if ( transformed == 'フ' ) {
+                            transformed = 'ブ';
+                        } else if ( transformed == 'ヘ' ) {
+                            transformed = 'ベ';
+                        } else if ( transformed == 'ホ' ) {
+                            transformed = 'ボ';
+                        } else if ( transformed == 'ウ' ) {
+                            transformed = 'ヴ';
+                        }
+                        i++;
+                    } else if ( arr[i + 1] == 'ﾟ' ) {
+                        if ( transformed == 'ハ' ) {
+                            transformed = 'パ';
+                        } else if ( transformed == 'ヒ' ) {
+                            transformed = 'ピ';
+                        } else if ( transformed == 'フ' ) {
+                            transformed = 'プ';
+                        } else if ( transformed == 'ヘ' ) {
+                            transformed = 'ペ';
+                        } else if ( transformed == 'ホ' ) {
+                            transformed = 'ポ';
+                        }
+                        i++;
+                    }
+                }
+                ret = ret + transformed;
+            }
+            return ret;
+        }
+
+        private static char hiragana2katakanaCor( char maybe_hiragana ) {
+            if ( maybe_hiragana == 'あ' || maybe_hiragana == 'ｱ' ) {
+                return 'ア';
+            } else if ( maybe_hiragana == 'い' || maybe_hiragana == 'ｲ' ) {
+                return 'イ';
+            } else if ( maybe_hiragana == 'う' || maybe_hiragana == 'ｳ' ) {
+                return 'ウ';
+            } else if ( maybe_hiragana == 'え' || maybe_hiragana == 'ｴ' ) {
+                return 'エ';
+            } else if ( maybe_hiragana == 'お' || maybe_hiragana == 'ｵ' ) {
+                return 'オ';
+            } else if ( maybe_hiragana == 'か' || maybe_hiragana == 'ｶ' ) {
+                return 'カ';
+            } else if ( maybe_hiragana == 'き' || maybe_hiragana == 'ｷ' ) {
+                return 'キ';
+            } else if ( maybe_hiragana == 'く' || maybe_hiragana == 'ｸ' ) {
+                return 'ク';
+            } else if ( maybe_hiragana == 'け' || maybe_hiragana == 'ｹ' ) {
+                return 'ケ';
+            } else if ( maybe_hiragana == 'こ' || maybe_hiragana == 'ｺ' ) {
+                return 'コ';
+            } else if ( maybe_hiragana == 'さ' || maybe_hiragana == 'ｻ' ) {
+                return 'サ';
+            } else if ( maybe_hiragana == 'し' || maybe_hiragana == 'ｼ' ) {
+                return 'シ';
+            } else if ( maybe_hiragana == 'す' || maybe_hiragana == 'ｽ' ) {
+                return 'ス';
+            } else if ( maybe_hiragana == 'せ' || maybe_hiragana == 'ｾ' ) {
+                return 'セ';
+            } else if ( maybe_hiragana == 'そ' || maybe_hiragana == 'ｿ' ) {
+                return 'ソ';
+            } else if ( maybe_hiragana == 'た' || maybe_hiragana == 'ﾀ' ) {
+                return 'タ';
+            } else if ( maybe_hiragana == 'ち' || maybe_hiragana == 'ﾁ' ) {
+                return 'チ';
+            } else if ( maybe_hiragana == 'つ' || maybe_hiragana == 'ﾂ' ) {
+                return 'ツ';
+            } else if ( maybe_hiragana == 'て' || maybe_hiragana == 'ﾃ' ) {
+                return 'テ';
+            } else if ( maybe_hiragana == 'と' || maybe_hiragana == 'ﾄ' ) {
+                return 'ト';
+            } else if ( maybe_hiragana == 'な' || maybe_hiragana == 'ﾅ' ) {
+                return 'ナ';
+            } else if ( maybe_hiragana == 'に' || maybe_hiragana == 'ﾆ' ) {
+                return 'ニ';
+            } else if ( maybe_hiragana == 'ぬ' || maybe_hiragana == 'ﾇ' ) {
+                return 'ヌ';
+            } else if ( maybe_hiragana == 'ね' || maybe_hiragana == 'ﾈ' ) {
+                return 'ネ';
+            } else if ( maybe_hiragana == 'の' || maybe_hiragana == 'ﾉ' ) {
+                return 'ノ';
+            } else if ( maybe_hiragana == 'は' || maybe_hiragana == 'ﾊ' ) {
+                return 'ハ';
+            } else if ( maybe_hiragana == 'ひ' || maybe_hiragana == 'ﾋ' ) {
+                return 'ヒ';
+            } else if ( maybe_hiragana == 'ふ' || maybe_hiragana == 'ﾌ' ) {
+                return 'フ';
+            } else if ( maybe_hiragana == 'へ' || maybe_hiragana == 'ﾍ' ) {
+                return 'ヘ';
+            } else if ( maybe_hiragana == 'ほ' || maybe_hiragana == 'ﾎ' ) {
+                return 'ホ';
+            } else if ( maybe_hiragana == 'ま' || maybe_hiragana == 'ﾏ' ) {
+                return 'マ';
+            } else if ( maybe_hiragana == 'み' || maybe_hiragana == 'ﾐ' ) {
+                return 'ミ';
+            } else if ( maybe_hiragana == 'む' || maybe_hiragana == 'ﾑ' ) {
+                return 'ム';
+            } else if ( maybe_hiragana == 'め' || maybe_hiragana == 'ﾒ' ) {
+                return 'メ';
+            } else if ( maybe_hiragana == 'も' || maybe_hiragana == 'ﾓ' ) {
+                return 'モ';
+            } else if ( maybe_hiragana == 'や' || maybe_hiragana == 'ﾔ' ) {
+                return 'ヤ';
+            } else if ( maybe_hiragana == 'ゆ' || maybe_hiragana == 'ﾕ' ) {
+                return 'ユ';
+            } else if ( maybe_hiragana == 'よ' || maybe_hiragana == 'ﾖ' ) {
+                return 'ヨ';
+            } else if ( maybe_hiragana == 'ら' || maybe_hiragana == 'ﾗ' ) {
+                return 'ラ';
+            } else if ( maybe_hiragana == 'り' || maybe_hiragana == 'ﾘ' ) {
+                return 'リ';
+            } else if ( maybe_hiragana == 'る' || maybe_hiragana == 'ﾙ' ) {
+                return 'ル';
+            } else if ( maybe_hiragana == 'れ' || maybe_hiragana == 'ﾚ' ) {
+                return 'レ';
+            } else if ( maybe_hiragana == 'ろ' || maybe_hiragana == 'ﾛ' ) {
+                return 'ロ';
+            } else if ( maybe_hiragana == 'わ' || maybe_hiragana == 'ﾜ' ) {
+                return 'ワ';
+            } else if ( maybe_hiragana == 'ん' || maybe_hiragana == 'ﾝ' ) {
+                return 'ン';
+            } else if ( maybe_hiragana == 'が' ) {
+                return 'ガ';
+            } else if ( maybe_hiragana == 'ぱ' ) {
+                return 'パ';
+            } else if ( maybe_hiragana == 'ぁ' || maybe_hiragana == 'ｧ' ) {
+                return 'ァ';
+            } else if ( maybe_hiragana == 'ぃ' || maybe_hiragana == 'ｨ' ) {
+                return 'ィ';
+            } else if ( maybe_hiragana == 'ぅ' || maybe_hiragana == 'ｩ' ) {
+                return 'ゥ';
+            } else if ( maybe_hiragana == 'ぇ' || maybe_hiragana == 'ｪ' ) {
+                return 'ェ';
+            } else if ( maybe_hiragana == 'ぉ' || maybe_hiragana == 'ｫ' ) {
+                return 'ォ';
+            } else if ( maybe_hiragana == 'ゃ' || maybe_hiragana == 'ｬ' ) {
+                return 'ャ';
+            } else if ( maybe_hiragana == 'ゅ' || maybe_hiragana == 'ｭ' ) {
+                return 'ュ';
+            } else if ( maybe_hiragana == 'ょ' || maybe_hiragana == 'ｮ' ) {
+                return 'ョ';
+            } else if ( maybe_hiragana == 'っ' || maybe_hiragana == 'ｯ' ) {
+                return 'ッ';
+            } else if ( maybe_hiragana == 'ゐ' ) {
+                return 'ヰ';
+            } else if ( maybe_hiragana == 'ゑ' ) {
+                return 'ヱ';
+            } else if ( maybe_hiragana == 'ぎ' ) {
+                return 'ギ';
+            } else if ( maybe_hiragana == 'ぐ' ) {
+                return 'グ';
+            } else if ( maybe_hiragana == 'げ' ) {
+                return 'ゲ';
+            } else if ( maybe_hiragana == 'ご' ) {
+                return 'ゴ';
+            } else if ( maybe_hiragana == 'ざ' ) {
+                return 'ザ';
+            } else if ( maybe_hiragana == 'じ' ) {
+                return 'ジ';
+            } else if ( maybe_hiragana == 'ず' ) {
+                return 'ズ';
+            } else if ( maybe_hiragana == 'ぜ' ) {
+                return 'ゼ';
+            } else if ( maybe_hiragana == 'ぞ' ) {
+                return 'ゾ';
+            } else if ( maybe_hiragana == 'だ' ) {
+                return 'ダ';
+            } else if ( maybe_hiragana == 'ぢ' ) {
+                return 'ヂ';
+            } else if ( maybe_hiragana == 'づ' ) {
+                return 'ヅ';
+            } else if ( maybe_hiragana == 'で' ) {
+                return 'デ';
+            } else if ( maybe_hiragana == 'ど' ) {
+                return 'ド';
+            } else if ( maybe_hiragana == 'ば' ) {
+                return 'バ';
+            } else if ( maybe_hiragana == 'び' ) {
+                return 'ビ';
+            } else if ( maybe_hiragana == 'ぶ' ) {
+                return 'ブ';
+            } else if ( maybe_hiragana == 'べ' ) {
+                return 'ベ';
+            } else if ( maybe_hiragana == 'ぼ' ) {
+                return 'ボ';
+            } else if ( maybe_hiragana == 'ぴ' ) {
+                return 'ピ';
+            } else if ( maybe_hiragana == 'ぷ' ) {
+                return 'プ';
+            } else if ( maybe_hiragana == 'ぺ' ) {
+                return 'ペ';
+            } else if ( maybe_hiragana == 'ぽ' ) {
+                return 'ポ';
+            } else if ( maybe_hiragana == 'ゎ' ) {
+                return 'ワ';
+            } else if ( maybe_hiragana == 'ヴ' ) {
+                return 'ヴ';
+            }
+            return maybe_hiragana;
+        }
+
         public static String Attach( String roman ) {
             char[] arr = roman.ToCharArray();
             String ret = "";
