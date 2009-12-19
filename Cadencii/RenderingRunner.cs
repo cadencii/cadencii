@@ -25,21 +25,10 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public interface RenderingRunner extends Runnable {
+    public abstract class RenderingRunner extends Runnable {
 #else
-    public interface RenderingRunner_OBSOLUTE : Runnable {
-#endif
-        //void run();
-        double getProgress();
-        void abortRendering();
-        boolean isRendering();
-        double getElapsedSeconds();
-        double computeRemainingSeconds();
-    }
-
-#if !JAVA
-
     public abstract class RenderingRunner : Runnable {
+#endif
         protected Object m_locker = null;
         protected boolean m_rendering = false;
         protected long m_total_samples = 0;
@@ -211,5 +200,7 @@ namespace org.kbinani.cadencii {
             }
         }
     }
+
+#if !JAVA
 }
 #endif

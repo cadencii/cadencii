@@ -20,19 +20,19 @@ using org.kbinani.media;
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
-    public class AquesToneRenderingRunner : RenderingRunner_OBSOLUTE {
+    public class AquesToneRenderingRunner : RenderingRunner {
         private AquesToneDriver driver = null;
         private int track;
         private String tempDir;
-        private int sampleRate;
+        private boolean modeInfinite;
+        /*private int sampleRate;
         private int trimMilliSec;
         private long totalSamples;
-        private boolean modeInfinite;
         private WaveWriter waveWriter;
         private double waveReadOffsetSeconds;
         private Vector<WaveReader> readers;
         private boolean directPlay;
-        private boolean reflectAmp2Wave;
+        private boolean reflectAmp2Wave;*/
 
         public AquesToneRenderingRunner( AquesToneDriver driver,
                                          VsqFileEx vsq,
@@ -46,40 +46,31 @@ namespace org.kbinani.cadencii {
                                          double wave_read_offset_seconds,
                                          Vector<WaveReader> readers,
                                          boolean direct_play,
-                                         boolean reflect_amp_to_wave ) {
+                                         boolean reflect_amp_to_wave ) : base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, readers, direct_play, trim_msec, sample_rate ){
             this.driver = driver;
-            this.track = track;
             tempDir = temp_dir;
-            sampleRate = sample_rate;
-            trimMilliSec = trim_msec;
-            totalSamples = total_samples;
             modeInfinite = mode_infinite;
-            waveWriter = wave_writer;
-            waveReadOffsetSeconds = wave_read_offset_seconds;
-            this.readers = readers;
-            directPlay = direct_play;
-            reflectAmp2Wave = reflect_amp_to_wave;
         }
 
-        public void run() {
+        public override void run() {
         }
 
-        public double getElapsedSeconds() {
+        public override double getElapsedSeconds() {
             return 0.0;
         }
 
-        public bool isRendering() {
+        public override bool isRendering() {
             return false;
         }
 
-        public double computeRemainingSeconds() {
+        public override double computeRemainingSeconds() {
             return 0.0;
         }
 
-        public void abortRendering() {
+        public override void abortRendering() {
         }
 
-        public double getProgress() {
+        public override double getProgress() {
             return 0.0;
         }
     }

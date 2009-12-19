@@ -162,12 +162,14 @@
     <Compile Include="SoloChangedEventHandler.cs" />
     <Compile Include="StateChangeRequiredEventHandler.cs" />
     <Compile Include="StraightRenderingQueue.cs" />
-    <Compile Include="StraightRenderingRunner_DRAFT.cs" />
-    <Compile Include="StraightRenderingRunner_OBSOLUTE.cs" />
+    <Compile Include="StraightRenderingRunner.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TopMostChangedEventHandler.cs" />
     <Compile Include="UpdateProgressEventHandler.cs" />
-    <Compile Include="UtauRenderingRunner_DRAFT.cs" />
-    <Compile Include="UtauRenderingRunner_OBSOLUTE.cs" />
+    <Compile Include="UtauRenderingRunner.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UtauVoiceDB.cs" />
     <Compile Include="ValuePairOfStringArrayOfKeys.cs" />
     <Compile Include="CommandTree.cs" />

@@ -164,7 +164,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             if ( renderer.StartsWith( RENDERER_STR0 ) ) {
-                if ( PortUtil.isFileExists( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner_OBSOLUTE.STRAIGHT_SYNTH ) ) ) {
+                if ( PortUtil.isFileExists( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner.STRAIGHT_SYNTH ) ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
                     for ( int i = 0; i < count; i++ ) {
                         String analyzed = PortUtil.combinePath( AppManager.editorConfig.UtauSingers.get( i ).VOICEIDSTR, "analyzed" );
