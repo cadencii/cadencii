@@ -36,7 +36,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class StraightRenderingRunner implements RenderingRunner{
 #else
-    public class StraightRenderingRunner : RenderingRunner {
+    public class StraightRenderingRunner_OBSOLUTE : RenderingRunner_OBSOLUTE {
 #endif
         public static String STRAIGHT_SYNTH = "vConnect.exe";
         private const int MAX_CACHE = 512;
@@ -73,7 +73,7 @@ namespace org.kbinani.cadencii {
         double m_running_rate;
         Object m_locker = null;
 
-        public StraightRenderingRunner( VsqFileEx vsq,
+        public StraightRenderingRunner_OBSOLUTE( VsqFileEx vsq,
                                         int track,
                                         Vector<SingerConfig> singer_config_sys,
                                         int sample_rate,

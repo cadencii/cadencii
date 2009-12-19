@@ -43,7 +43,7 @@ namespace org.kbinani.cadencii {
         private static TreeMap<String, ValuePair<String, Double>> s_cache = new TreeMap<String, ValuePair<String, Double>>();
         
         private Vector<RenderQueue> m_resampler_queue = new Vector<RenderQueue>();
-        private boolean m_abort_required = false;
+        //private boolean m_abort_required = false;
         private double[] m_left;
         private double[] m_right;
         private double m_progress = 0.0;
@@ -57,8 +57,8 @@ namespace org.kbinani.cadencii {
         String m_wavtool;
         String m_temp_dir;
         boolean m_invoke_with_wine;
-        int m_sample_rate;
-        int m_trim_msec;
+        //int m_sample_rate;
+        //int m_trim_msec;
         boolean m_mode_infinite;
         //WaveWriter m_wave_writer;
         //double m_wave_read_offset_seconds;
@@ -85,25 +85,25 @@ namespace org.kbinani.cadencii {
                                     double wave_read_offset_seconds,
                                     Vector<WaveReader> reader,
                                     boolean direct_play,
-                                    boolean reflect_amp_to_wave ): base( track_, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, reader, direct_play ){
-            m_locker = new Object();
+                                    boolean reflect_amp_to_wave ): base( track_, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, reader, direct_play, trim_msec, sample_rate ){
+            //m_locker = new Object();
             m_vsq = vsq;
-            m_rendering_track = track_;
+            //m_rendering_track = track_;
             m_singer_config_sys = singer_config_sys;
             m_resampler = resampler;
             m_wavtool = wavtool;
             m_temp_dir = temp_dir;
             m_invoke_with_wine = invoke_with_wine;
-            m_sample_rate = sample_rate;
-            m_trim_msec = trim_msec;
+            //m_sample_rate = sample_rate;
+            //m_trim_msec = trim_msec;
             m_total_samples = total_samples;
             m_mode_infinite = mode_infinite;
-            m_wave_writer = wave_writer;
-            m_wave_read_offset_seconds = wave_read_offset_seconds;
-            m_reader = reader;
-            m_direct_play = direct_play;
-            m_total_append = 0;
-            m_reflect_amp_to_wave = reflect_amp_to_wave;
+            //m_wave_writer = wave_writer;
+            //m_wave_read_offset_seconds = wave_read_offset_seconds;
+            //m_reader = reader;
+            //m_direct_play = direct_play;
+            //m_total_append = 0;
+            //m_reflect_amp_to_wave = reflect_amp_to_wave;
         }
 
         public override boolean isRendering() {
@@ -140,7 +140,6 @@ namespace org.kbinani.cadencii {
                 System.Windows.Forms.Application.DoEvents();
 #endif
             }
-            m_rendering = false;
             int count = m_reader.size();
             for ( int i = 0; i < count; i++ ) {
                 try {
@@ -397,6 +396,7 @@ namespace org.kbinani.cadencii {
 #endif
                                 PortUtil.deleteFile( delfile );
                             } catch ( Exception ex ) {
+                                PortUtil.stderr.println( "UtauRenderingRunner#run; ex=" + ex );
                             }
                             s_cache.remove( delkey );
                         }
@@ -586,11 +586,13 @@ namespace org.kbinani.cadencii {
                             int total_samples = size / (channel * byte_per_sample);
                             #endregion
                         } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "UtauRenderingRunner#run; ex=" + ex );
                         } finally {
                             if ( whd != null ) {
                                 try {
                                     whd.close();
                                 } catch ( Exception ex2 ) {
+                                    PortUtil.stderr.println( "UtauRenderingRunner#run; ex2=" + ex2 );
                                 }
                             }
                         }
@@ -637,11 +639,6 @@ namespace org.kbinani.cadencii {
                                             }
                                             len -= 1;
                                             remain--;
-                                            if ( trim_remain > 0 ) {
-                                                c++;
-                                                trim_remain--;
-                                                continue;
-                                            }
                                             double gtime_dyn = sec_start + pos * sec_per_sa;
                                             int clock = (int)m_vsq.getClockFromSec( gtime_dyn );
                                             int dyn = dyn_curve.getValue( clock, index );
@@ -673,11 +670,6 @@ namespace org.kbinani.cadencii {
                                             }
                                             len -= 2;
                                             remain--;
-                                            if ( trim_remain > 0 ) {
-                                                c += 2;
-                                                trim_remain--;
-                                                continue;
-                                            }
                                             double gtime_dyn = sec_start + pos * sec_per_sa;
                                             int clock = (int)m_vsq.getClockFromSec( gtime_dyn );
                                             int dyn = dyn_curve.getValue( clock, index );
@@ -712,11 +704,6 @@ namespace org.kbinani.cadencii {
                                             }
                                             len -= 2;
                                             remain--;
-                                            if ( trim_remain > 0 ) {
-                                                c += 2;
-                                                trim_remain--;
-                                                continue;
-                                            }
                                             double gtime_dyn = sec_start + pos * sec_per_sa;
                                             int clock = (int)m_vsq.getClockFromSec( gtime_dyn );
                                             int dyn = dyn_curve.getValue( clock, index );
@@ -748,11 +735,6 @@ namespace org.kbinani.cadencii {
                                             }
                                             len -= 4;
                                             remain--;
-                                            if ( trim_remain > 0 ) {
-                                                c += 4;
-                                                trim_remain--;
-                                                continue;
-                                            }
                                             double gtime_dyn = sec_start + pos * sec_per_sa;
                                             int clock = (int)m_vsq.getClockFromSec( gtime_dyn );
                                             int dyn = dyn_curve.getValue( clock, index );
@@ -773,14 +755,13 @@ namespace org.kbinani.cadencii {
                             }
                             #endregion
                         } catch ( Exception ex ) {
-#if DEBUG
-                            AppManager.debugWriteLine( "RenderUtau.StartRendering; ex=" + ex );
-#endif
+                            PortUtil.stderr.println( "UtauRenderingRunner#run; ex=" + ex );
                         } finally {
                             if ( dat != null ) {
                                 try {
                                     dat.close();
                                 } catch ( Exception ex2 ) {
+                                    PortUtil.stderr.println( "UtauRenderingRunner#run; ex2=" + ex2 );
                                 }
                                 dat = null;
                             }
@@ -837,6 +818,7 @@ namespace org.kbinani.cadencii {
                     silence_r = null;
                 }
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "UtauRenderingRunner#run; ex=" + ex );
             } finally {
 #if MAKEBAT_SP
                 if ( bat != null ) {

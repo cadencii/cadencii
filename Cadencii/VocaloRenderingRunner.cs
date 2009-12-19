@@ -25,7 +25,7 @@ namespace org.kbinani.cadencii {
 
     using boolean = Boolean;
 
-    public class VocaloRenderingRunner : RenderingRunner {
+    public class VocaloRenderingRunner_OBSOLUTE : RenderingRunner_OBSOLUTE {
         public String renderer;
         public NrpnData[] nrpn;
         public TempoTableEntry[] tempo;
@@ -52,7 +52,7 @@ namespace org.kbinani.cadencii {
         private bool m_reflect_amp_to_wave = false;
         private double m_started_date;
 
-        public VocaloRenderingRunner( String renderer_,
+        public VocaloRenderingRunner_OBSOLUTE( String renderer_,
                                 NrpnData[] nrpn_,
                                 TempoTableEntry[] tempo_,
                                 //double amplify_left_,

@@ -57,13 +57,13 @@ namespace org.kbinani.cadencii {
         /// WaveIncomingで追加されたサンプル数
         /// </summary>
         //long m_total_append = 0;
-        boolean m_abort_required = false;
+        //boolean m_abort_required = false;
         boolean m_mode_infinite;
-        double m_trim_msec;
-        int m_sample_rate;
+        //double m_trim_msec;
+        //int m_sample_rate;
         //long m_total_samples;
 
-        int m_trim_remain = 0;
+        //int m_trim_remain = 0;
         TreeMap<String, UtauVoiceDB> m_voicedb_configs = new TreeMap<String, UtauVoiceDB>();
         long m_vsq_length_samples;
         double m_started_date;
@@ -84,7 +84,7 @@ namespace org.kbinani.cadencii {
                                         double wave_read_offset_seconds,
                                         Vector<WaveReader> wave_reader,
                                         boolean direct_play,
-                                        boolean reflect_amp_to_wave ) : base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, wave_reader, direct_play ) {
+                                        boolean reflect_amp_to_wave ) : base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, wave_reader, direct_play, trim_msec, sample_rate ) {
             m_locker = new Object();
             m_queue = new Vector<StraightRenderingQueue>();
             m_singer_config_sys = singer_config_sys;
@@ -576,6 +576,13 @@ namespace org.kbinani.cadencii {
                         long pos = 0;
                         double[] left = null, right = null;
                         while ( remain > 0 ) {
+                            if ( m_abort_required ) {
+                                m_rendering = false;
+#if DEBUG
+                                log.close();
+#endif
+                                return;
+                            }
                             int len = (remain > BUF_LEN) ? BUF_LEN : remain;
                             if ( left == null || right == null ) {
                                 left = new double[len];
@@ -926,7 +933,30 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "StraightRenderingRunner#abortRendering; m_rendering=" + m_rendering );
 #endif
-            if ( m_rendering ) {
+            m_abort_required = true;
+            while ( m_rendering ) {
+#if JAVA
+                try{
+                    Thread.sleep( 0 ); //ここいけてる？
+                }catch( InterruptedException ex ){
+                    break;
+                }
+#else
+                System.Windows.Forms.Application.DoEvents();
+#endif
+            }
+            int count = m_reader.size();
+            for ( int i = 0; i < count; i++ ) {
+                try {
+                    m_reader.get( i ).close();
+                } catch ( Exception ex ) {
+                }
+                m_reader.set( i, null );
+            }
+            m_reader.clear();
+
+
+            /*if ( m_rendering ) {
                 if ( m_direct_play ) {
                     PlaySound.reset();
                 }
@@ -957,7 +987,7 @@ namespace org.kbinani.cadencii {
                 }
                 m_reader.set( i, null );
             }
-            m_reader.clear();
+            m_reader.clear();*/
         }
     }
 

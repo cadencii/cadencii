@@ -55,7 +55,7 @@ namespace org.kbinani.cadencii {
         private static AquesToneDriver aquesToneDriver = null;
 #endif
 
-        private static RenderingRunner s_rendering_context;
+        private static RenderingRunner_DRAFT s_rendering_context;
 
         public static void init() {
             initCor();
@@ -164,7 +164,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             if ( renderer.StartsWith( RENDERER_STR0 ) ) {
-                if ( PortUtil.isFileExists( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner.STRAIGHT_SYNTH ) ) ) {
+                if ( PortUtil.isFileExists( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner_OBSOLUTE.STRAIGHT_SYNTH ) ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
                     for ( int i = 0; i < count; i++ ) {
                         String analyzed = PortUtil.combinePath( AppManager.editorConfig.UtauSingers.get( i ).VOICEIDSTR, "analyzed" );
@@ -285,7 +285,7 @@ namespace org.kbinani.cadencii {
 
             s_rendering_context = null;
             if ( s_working_renderer.Equals( VSTiProxy.RENDERER_UTU0 ) ) {
-                s_rendering_context = new UtauRenderingRunner( split,
+                s_rendering_context = new UtauRenderingRunner_DRAFT( split,
                                                                track,
                                                                AppManager.editorConfig.UtauSingers,
                                                                AppManager.editorConfig.PathResampler,
@@ -302,7 +302,7 @@ namespace org.kbinani.cadencii {
                                                                direct_play,
                                                                reflect_amp_to_wave );
             } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_STR0 ) ){
-                s_rendering_context = new StraightRenderingRunner( split,
+                s_rendering_context = new StraightRenderingRunner_DRAFT( split,
                                                                    track,
                                                                    AppManager.editorConfig.UtauSingers,
                                                                    SAMPLE_RATE,
@@ -325,7 +325,7 @@ namespace org.kbinani.cadencii {
                 }
                 VsqNrpn[] nrpn = VsqFile.generateNRPN( split, track, ms_presend );
                 NrpnData[] nrpn_data = VsqNrpn.convert( nrpn );
-                s_rendering_context = new VocaloRenderingRunner( s_working_renderer,
+                s_rendering_context = new VocaloidRenderingRunner_DRAFT( s_working_renderer,
                                                                  nrpn_data,
                                                                  split.TempoTable.toArray( new TempoTableEntry[]{} ),
                                                                  /*amplify_left,
@@ -339,7 +339,8 @@ namespace org.kbinani.cadencii {
                                                                  wave_writer,
                                                                  reader,
                                                                  track,
-                                                                 reflect_amp_to_wave );
+                                                                 reflect_amp_to_wave,
+                                                                 SAMPLE_RATE );
 #else
                 return;
 #endif
@@ -366,16 +367,16 @@ namespace org.kbinani.cadencii {
         private static void renderWithDirectPlay( Object argument ) {
 #endif
 #if ENABLE_VOCALOID
-            if ( argument is VocaloRenderingRunner ) {
-                VocaloRenderingRunner sra = (VocaloRenderingRunner)argument;
+            if ( argument is VocaloidRenderingRunner_DRAFT ) {
+                VocaloidRenderingRunner_DRAFT sra = (VocaloidRenderingRunner_DRAFT)argument;
                 sra.run();
             } else
 #endif
-            if ( argument is UtauRenderingRunner ) {
-                UtauRenderingRunner arg = (UtauRenderingRunner)argument;
+            if ( argument is UtauRenderingRunner_DRAFT ) {
+                UtauRenderingRunner_DRAFT arg = (UtauRenderingRunner_DRAFT)argument;
                 arg.run();
-            } else if ( argument is StraightRenderingRunner ) {
-                StraightRenderingRunner arg = (StraightRenderingRunner)argument;
+            } else if ( argument is StraightRenderingRunner_DRAFT ) {
+                StraightRenderingRunner_DRAFT arg = (StraightRenderingRunner_DRAFT)argument;
                 arg.run();
             }
         }

@@ -20,7 +20,7 @@ using org.kbinani.media;
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
-    public class AquesToneRenderingRunner : RenderingRunner {
+    public class AquesToneRenderingRunner : RenderingRunner_OBSOLUTE {
         private AquesToneDriver driver = null;
         private int track;
         private String tempDir;

@@ -30,17 +30,17 @@ namespace org.kbinani.cadencii {
         public TempoTableEntry[] tempo;
         //public double amplify_left;
         //public double amplify_right;
-        public int trim_msec;
-        public long total_samples;
-        public double wave_read_offset_seconds;
+        //public int trim_msec;
+        //public long total_samples;
+        //public double wave_read_offset_seconds;
         public boolean mode_infinite;
         public VocaloidDriver driver;
-        public boolean direct_play;
-        public WaveWriter wave_writer;
+        //public boolean m_direct_play;
+        //public WaveWriter wave_writer;
 
         //private Vector<WaveReader> m_reader = new Vector<WaveReader>();
         //private Object m_locker;
-        private int m_trim_remain;
+        //private int m_trim_remain;
         //private boolean m_rendering;
         //private long m_total_append = 0;
         //private int m_rendering_track = 1;
@@ -65,23 +65,31 @@ namespace org.kbinani.cadencii {
                                 WaveWriter wave_writer_,
                                 Vector<WaveReader> reader_,
                                 int rendering_track,
-                                boolean reflect_amp_to_wave ) : base( rendering_track, reflect_amp_to_wave, wave_writer_, wave_read_offset_seconds_, reader_, direct_play_ ) {
-            m_locker = new Object();
+                                boolean reflect_amp_to_wave,
+                                int sample_rate ) : base( rendering_track, reflect_amp_to_wave, wave_writer_, wave_read_offset_seconds_, reader_, direct_play_, trim_msec_, sample_rate ) {
+            //m_locker = new Object();
             renderer = renderer_;
             nrpn = nrpn_;
             tempo = tempo_;
             //amplify_left = amplify_left_;
             //amplify_right = amplify_right_;
-            trim_msec = trim_msec_;
-            total_samples = total_samples_;
-            wave_read_offset_seconds = wave_read_offset_seconds_;
+            //trim_msec = trim_msec_;
+            m_total_samples = total_samples_;
+            //wave_read_offset_seconds = wave_read_offset_seconds_;
             mode_infinite = mode_infinite_;
             driver = driver_;
-            direct_play = direct_play_;
-            wave_writer = wave_writer_;
-            m_reader = reader_;
-            m_rendering_track = rendering_track;
-            m_reflect_amp_to_wave = reflect_amp_to_wave;
+            //m_direct_play = direct_play_;
+            //wave_writer = wave_writer_;
+            //m_reader = reader_;
+            //m_rendering_track = rendering_track;
+            //m_reflect_amp_to_wave = reflect_amp_to_wave;
+
+            float first_tempo = 125.0f;
+            if ( tempo.Length > 0 ) {
+                first_tempo = (float)(60e6 / (double)tempo[0].Tempo);
+            }
+            int trim_remain = VSTiProxy.getErrorSamples( first_tempo ) + (int)(trim_msec_ / 1000.0 * VSTiProxy.SAMPLE_RATE);
+            m_trim_remain = trim_remain;        
         }
 
         public override double getElapsedSeconds() {
@@ -190,33 +198,33 @@ namespace org.kbinani.cadencii {
                 }
             }
             int last_tempo = tempo[index].Tempo;
-            int trim_remain = VSTiProxy.getErrorSamples( first_tempo ) + (int)(trim_msec / 1000.0 * VSTiProxy.SAMPLE_RATE);
+            int trim_remain = VSTiProxy.getErrorSamples( first_tempo ) + (int)(m_trim_msec / 1000.0 * VSTiProxy.SAMPLE_RATE);
             m_trim_remain = trim_remain;
 
             driver.SendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
 
             m_rendering = true;
-            if ( wave_writer != null ) {
+            if ( m_wave_writer != null ) {
                 if ( m_trim_remain < 0 ) {
                     double[] d = new double[-m_trim_remain];
                     for ( int i = 0; i < -m_trim_remain; i++ ) {
                         d[i] = 0.0;
                     }
-                    wave_writer.append( d, d );
+                    m_wave_writer.append( d, d );
                     m_trim_remain = 0;
                 }
             }
 
             driver.WaveIncoming += waveIncoming;
             driver.RenderingFinished += vstidrv_RenderingFinished;
-            driver.StartRendering( total_samples, mode_infinite );
+            driver.StartRendering( m_total_samples, mode_infinite );
             while ( m_rendering ) {
                 Application.DoEvents();
             }
             m_rendering = false;
             driver.WaveIncoming -= waveIncoming;
             driver.RenderingFinished -= vstidrv_RenderingFinished;
-            if ( direct_play ) {
+            if ( m_direct_play ) {
                 PlaySound.waitForExit();
             }
         }

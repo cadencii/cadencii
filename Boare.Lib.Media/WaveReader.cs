@@ -203,6 +203,10 @@ namespace org.kbinani.media {
             throws IOException
 #endif
         {
+            for ( int i = 0; i < left.Length; i++ ) {
+                left[i] = 0.0;
+                right[i] = 0.0;
+            }
             //left = new double[length];
             //right = new double[length];
             if ( !m_opened ) {

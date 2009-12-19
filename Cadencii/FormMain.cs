@@ -3477,8 +3477,8 @@ namespace org.kbinani.cadencii {
             }
             AppManager.editorConfig.WindowMaximized = (getExtendedState() == BForm.MAXIMIZED_BOTH);
             AppManager.saveConfig();
-            UtauRenderingRunner.clearCache();
-            StraightRenderingRunner.clearCache();
+            UtauRenderingRunner_OBSOLUTE.clearCache();
+            StraightRenderingRunner_OBSOLUTE.clearCache();
 #if ENABLE_MIDI
             if ( m_midi_in != null ) {
                 m_midi_in.Dispose();
@@ -11153,14 +11153,14 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
-            String whd = PortUtil.combinePath( tmppath, UtauRenderingRunner.FILEBASE + ".whd" );
+            String whd = PortUtil.combinePath( tmppath, UtauRenderingRunner_OBSOLUTE.FILEBASE + ".whd" );
             if ( PortUtil.isFileExists( whd ) ) {
                 try {
                     PortUtil.deleteFile( whd );
                 } catch ( Exception ex ) {
                 }
             }
-            String dat = PortUtil.combinePath( tmppath, UtauRenderingRunner.FILEBASE + ".dat" );
+            String dat = PortUtil.combinePath( tmppath, UtauRenderingRunner_OBSOLUTE.FILEBASE + ".dat" );
             if ( PortUtil.isFileExists( dat ) ) {
                 try {
                     PortUtil.deleteFile( dat );
