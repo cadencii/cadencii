@@ -463,6 +463,8 @@ namespace org.kbinani.cadencii {
         public BFileChooser openWaveDialog;
         public BTimer timer;
         public BBackgroundWorker bgWorkScreen;
+        private BMenuItem menuTrackRendererAquesTone;
+        private BMenuItem cMenuTrackTabRendererAquesTone;
         public WaveView waveView;
         #endregion
 
@@ -8210,10 +8212,12 @@ namespace org.kbinani.cadencii {
                 cMenuTrackTabRendererVOCALOID2.setSelected( false );
                 cMenuTrackTabRendererUtau.setSelected( false );
                 cMenuTrackTabRendererStraight.setSelected( false );
+                cMenuTrackTabRendererAquesTone.setSelected( false );
                 menuTrackRendererVOCALOID1.setSelected( true );
                 menuTrackRendererVOCALOID2.setSelected( false );
                 menuTrackRendererUtau.setSelected( false );
                 menuTrackRendererStraight.setSelected( false );
+                menuTrackRendererAquesTone.setSelected( false );
                 setEdited( true );
                 refreshScreen();
             }
@@ -8240,10 +8244,12 @@ namespace org.kbinani.cadencii {
                 cMenuTrackTabRendererVOCALOID2.setSelected( true );
                 cMenuTrackTabRendererUtau.setSelected( false );
                 cMenuTrackTabRendererStraight.setSelected( false );
+                cMenuTrackTabRendererAquesTone.setSelected( false );
                 menuTrackRendererVOCALOID1.setSelected( false );
                 menuTrackRendererVOCALOID2.setSelected( true );
                 menuTrackRendererUtau.setSelected( false );
                 menuTrackRendererStraight.setSelected( false );
+                menuTrackRendererAquesTone.setSelected( false );
                 setEdited( true );
                 refreshScreen();
             }
@@ -8270,10 +8276,12 @@ namespace org.kbinani.cadencii {
                 cMenuTrackTabRendererVOCALOID2.setSelected( false );
                 cMenuTrackTabRendererUtau.setSelected( true );
                 cMenuTrackTabRendererStraight.setSelected( false );
+                cMenuTrackTabRendererAquesTone.setSelected( false );
                 menuTrackRendererVOCALOID1.setSelected( false );
                 menuTrackRendererVOCALOID2.setSelected( false );
                 menuTrackRendererUtau.setSelected( true );
                 menuTrackRendererStraight.setSelected( false );
+                menuTrackRendererAquesTone.setSelected( false );
                 setEdited( true );
                 refreshScreen();
             }
@@ -8304,6 +8312,38 @@ namespace org.kbinani.cadencii {
                 menuTrackRendererVOCALOID2.setSelected( false );
                 menuTrackRendererUtau.setSelected( false );
                 menuTrackRendererStraight.setSelected( true );
+                setEdited( true );
+                refreshScreen();
+            }
+        }
+
+        public void commonRendererAquesTone_Click( Object sender, EventArgs e ) {
+            String old = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
+            if ( !old.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
+                SingerConfig[] list = AquesToneDriver.SINGERS;
+                Vector<VsqID> singers = new Vector<VsqID>();
+                for ( int i = 0; i < list.Length; i++ ) {
+                    SingerConfig sc = list[i];
+                    singers.add( AppManager.getSingerIDAquesTone( sc.VOICENAME ) );
+                }
+                item.changeRenderer( "AQT000", singers );
+                CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( AppManager.getSelected(),
+                                                                             item,
+                                                                             AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                AppManager.getVsqFile().Track.get( AppManager.getSelected() ).setEditedStart( 0 );
+                AppManager.getVsqFile().Track.get( AppManager.getSelected() ).setEditedEnd( AppManager.getVsqFile().TotalClocks );
+                cMenuTrackTabRendererVOCALOID1.setSelected( false );
+                cMenuTrackTabRendererVOCALOID2.setSelected( false );
+                cMenuTrackTabRendererUtau.setSelected( false );
+                cMenuTrackTabRendererStraight.setSelected( false );
+                cMenuTrackTabRendererAquesTone.setSelected( true );
+                menuTrackRendererVOCALOID1.setSelected( false );
+                menuTrackRendererVOCALOID2.setSelected( false );
+                menuTrackRendererUtau.setSelected( false );
+                menuTrackRendererStraight.setSelected( false );
+                menuTrackRendererAquesTone.setSelected( true );
                 setEdited( true );
                 refreshScreen();
             }
@@ -13744,6 +13784,7 @@ namespace org.kbinani.cadencii {
             menuTrackRendererUtau.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererUtau_MouseEnter" ) );
             menuTrackRendererUtau.clickEvent.add( new BEventHandler( this, "commonRendererUtau_Click" ) );
             menuTrackRendererStraight.clickEvent.add( new BEventHandler( this, "commonRendererStraight_Click" ) );
+            menuTrackRendererAquesTone.clickEvent.add( new BEventHandler( this, "commonRendererAquesTone_Click" ) );
             menuTrackManager.clickEvent.add( new BEventHandler( this, "menuTrackManager_Click" ) );
             menuLyricExpressionProperty.clickEvent.add( new BEventHandler( this, "menuLyricExpressionProperty_Click" ) );
             menuLyricVibratoProperty.clickEvent.add( new BEventHandler( this, "menuLyricVibratoProperty_Click" ) );
@@ -14108,6 +14149,7 @@ namespace org.kbinani.cadencii {
             this.menuTrackRendererVOCALOID2 = new bocoree.windows.forms.BMenuItem();
             this.menuTrackRendererUtau = new bocoree.windows.forms.BMenuItem();
             this.menuTrackRendererStraight = new bocoree.windows.forms.BMenuItem();
+            this.menuTrackRendererAquesTone = new BMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuTrackBgm = new bocoree.windows.forms.BMenuItem();
             this.menuTrackManager = new bocoree.windows.forms.BMenuItem();
@@ -14362,6 +14404,7 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new bocoree.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new bocoree.windows.forms.BToolStripButton();
+            this.cMenuTrackTabRendererAquesTone = new BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -14910,7 +14953,8 @@ namespace org.kbinani.cadencii {
             this.menuTrackRendererVOCALOID1,
             this.menuTrackRendererVOCALOID2,
             this.menuTrackRendererUtau,
-            this.menuTrackRendererStraight} );
+            this.menuTrackRendererStraight,
+            this.menuTrackRendererAquesTone} );
             this.menuTrackRenderer.Name = "menuTrackRenderer";
             this.menuTrackRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderer.Text = "Renderer";
@@ -14938,6 +14982,12 @@ namespace org.kbinani.cadencii {
             this.menuTrackRendererStraight.Name = "menuTrackRendererStraight";
             this.menuTrackRendererStraight.Size = new System.Drawing.Size( 156, 22 );
             this.menuTrackRendererStraight.Text = "Straight X UTAU";
+            // 
+            // menuTrackRendererAquesTone
+            // 
+            this.menuTrackRendererAquesTone.Name = "menuTrackRendererAquesTone";
+            this.menuTrackRendererAquesTone.Size = new System.Drawing.Size( 156, 22 );
+            this.menuTrackRendererAquesTone.Text = "AquesTone";
             // 
             // toolStripMenuItem4
             // 
@@ -15776,7 +15826,7 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackTabOverlay,
             this.cMenuTrackTabRenderer} );
             this.cMenuTrackTab.Name = "cMenuTrackTab";
-            this.cMenuTrackTab.Size = new System.Drawing.Size( 197, 220 );
+            this.cMenuTrackTab.Size = new System.Drawing.Size( 197, 242 );
             // 
             // cMenuTrackTabTrackOn
             // 
@@ -15847,7 +15897,8 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackTabRendererVOCALOID1,
             this.cMenuTrackTabRendererVOCALOID2,
             this.cMenuTrackTabRendererUtau,
-            this.cMenuTrackTabRendererStraight} );
+            this.cMenuTrackTabRendererStraight,
+            this.cMenuTrackTabRendererAquesTone} );
             this.cMenuTrackTabRenderer.Name = "cMenuTrackTabRenderer";
             this.cMenuTrackTabRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderer.Text = "Renderer";
@@ -17011,6 +17062,12 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
+            // cMenuTrackTabRendererAquesTone
+            // 
+            this.cMenuTrackTabRendererAquesTone.Name = "cMenuTrackTabRendererAquesTone";
+            this.cMenuTrackTabRendererAquesTone.Size = new System.Drawing.Size( 160, 22 );
+            this.cMenuTrackTabRendererAquesTone.Text = "AquesTone";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
@@ -17062,10 +17119,8 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
-        /// <summary>
-        /// 必要なデザイナ変数です。
-        /// </summary>
-        public System.ComponentModel.IContainer components = null;
+        private System.ComponentModel.IContainer components;
+
         public BMenuBar menuStripMain;
         public BMenuItem menuFile;
         public BMenuItem menuEdit;

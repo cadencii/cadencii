@@ -14,7 +14,9 @@
  */
 using System;
 using System.Text;
+using org.kbinani.vsq;
 using bocoree;
+using bocoree.java.awt;
 using bocoree.java.io;
 using VstSdk;
 
@@ -22,9 +24,7 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     public class AquesToneDriver : vstidrv {
-        public System.Windows.Forms.Form pluginUi = null;
-
-        private static String[] phones = new String[] { 
+        public static readonly String[] PHONES = new String[] { 
             "ア", "イ", "ウ", "エ", "オ",
             "カ", "キ", "ク", "ケ", "コ",
             "サ", "シ", "ス", "セ", "ソ",
@@ -58,6 +58,16 @@ namespace org.kbinani.cadencii {
             "スィ", "ティ", "ズィ", "ディ",
             "トゥ", "ドゥ", "デュ", "テュ",
         };
+        private static readonly SingerConfig female_f1 = new SingerConfig() { VOICENAME = "Female_F1", Program = 0, Original = 0 };
+        private static readonly SingerConfig male_hk = new SingerConfig() { VOICENAME = "Male_HK", Program = 1, Original = 1 };
+        private static readonly SingerConfig auto_f1 = new SingerConfig() { VOICENAME = "Auto_F1", Program = 2, Original = 2 };
+        private static readonly SingerConfig auto_hk = new SingerConfig() { VOICENAME = "Auto_HK", Program = 3, Original = 3 };
+
+        public static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, male_hk, auto_f1, auto_hk };
+
+        private Dimension uiWindowRect = new Dimension( 373, 158 );
+
+        public System.Windows.Forms.Form pluginUi = null;
 
         public override boolean open( string dll_path, int block_size, int sample_rate ) {
             int strlen = 260;
@@ -76,16 +86,12 @@ namespace org.kbinani.cadencii {
                 ret = base.open( dll_path, block_size, sample_rate );
             } catch ( Exception ex ) {
                 ret = false;
-#if DEBUG
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
-#endif
             }
 
             try {
                 pluginUi = new System.Windows.Forms.Form();
                 pluginUi.Text = "AquesToneWindow";
-                pluginUi.ClientSize = new System.Drawing.Size( 373, 158 );
-                pluginUi.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
                 pluginUi.Location = new System.Drawing.Point( int.MinValue, int.MinValue );
                 pluginUi.Show();
                 pluginUi.Refresh();
@@ -94,6 +100,9 @@ namespace org.kbinani.cadencii {
                 unsafe {
                     aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)pluginUi.Handle.ToPointer(), 0.0f );
                 }
+                updatePluginUiRect();
+                pluginUi.ClientSize = new System.Drawing.Size( uiWindowRect.width, uiWindowRect.height );
+                pluginUi.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 #if DEBUG
                 for ( int i = 0; i < aEffect.numParams; i++ ) {
                     PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) );
@@ -104,12 +113,22 @@ namespace org.kbinani.cadencii {
             }
 
             if ( refresh_winini ) {
-#if DEBUG
-                PortUtil.println( "AquesToneDriver#open; refresh_winini; koe_old=" + koe_old );
-#endif
                 win32.WriteProfileString( "AquesTone", "FileKoe_00", koe_old );
             }
             return ret;
+        }
+
+        private void updatePluginUiRect() {
+            if ( pluginUi != null ) {
+                win32.EnumChildWindows( pluginUi.Handle, enumChildProc, 0 );
+            }
+        }
+
+        private bool enumChildProc( IntPtr hwnd, int lParam ) {
+            RECT rc = new RECT();
+            win32.GetWindowRect( hwnd, ref rc );
+            uiWindowRect = new Dimension( rc.right - rc.left, rc.bottom - rc.top );
+            return false; //最初のやつだけ検出できればおｋなので
         }
 
         public override void close() {
@@ -125,7 +144,7 @@ namespace org.kbinani.cadencii {
                 BufferedWriter bw = null;
                 try {
                     bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ret ), "Shift_JIS" ) );
-                    foreach ( String s in phones ) {
+                    foreach ( String s in PHONES ) {
                         bw.write( s ); bw.newLine();
                     }
                 } catch ( Exception ex ) {

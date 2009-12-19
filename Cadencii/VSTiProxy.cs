@@ -194,9 +194,7 @@ namespace org.kbinani.cadencii {
                 try {
                     aquesToneDriver.close();
                 } catch ( Exception ex ) {
-#if DEBUG
                     PortUtil.stderr.println( "VSTiProxy#terminate; ex=" + ex );
-#endif
                 }
             }
 #endif
@@ -246,6 +244,8 @@ namespace org.kbinani.cadencii {
                 s_working_renderer = VSTiProxy.RENDERER_UTU0;
             } else if ( version.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
                 s_working_renderer = VSTiProxy.RENDERER_STR0;
+            } else if ( version.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                s_working_renderer = VSTiProxy.RENDERER_AQT0;
             }
 #if DEBUG
             bocoree.debug.push_log( "s_working_renderer=" + s_working_renderer );
@@ -314,6 +314,20 @@ namespace org.kbinani.cadencii {
                                                                    reader,
                                                                    direct_play,
                                                                    reflect_amp_to_wave );
+            } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_AQT0 ) ){
+                s_rendering_context = new AquesToneRenderingRunner( aquesToneDriver,
+                                                                    split,
+                                                                    track,
+                                                                    temp_dir,
+                                                                    SAMPLE_RATE,
+                                                                    trim_msec,
+                                                                    total_samples,
+                                                                    mode_infinite,
+                                                                    wave_writer,
+                                                                    wave_read_offset_seconds,
+                                                                    reader,
+                                                                    direct_play,
+                                                                    reflect_amp_to_wave );
             } else {
 #if ENABLE_VOCALOID
                 VocaloidDriver driver = null;
@@ -379,6 +393,12 @@ namespace org.kbinani.cadencii {
                 StraightRenderingRunner arg = (StraightRenderingRunner)argument;
                 arg.run();
             }
+#if ENABLE_AQUESTONE
+            else if ( argument is AquesToneRenderingRunner ) {
+                AquesToneRenderingRunner arg = (AquesToneRenderingRunner)argument;
+                arg.run();
+            }
+#endif
         }
 #if JAVA
         }

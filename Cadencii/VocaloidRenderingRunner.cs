@@ -66,7 +66,7 @@ namespace org.kbinani.cadencii {
                                 Vector<WaveReader> reader_,
                                 int rendering_track,
                                 boolean reflect_amp_to_wave,
-                                int sample_rate ) : base( rendering_track, reflect_amp_to_wave, wave_writer_, wave_read_offset_seconds_, reader_, direct_play_, trim_msec_, sample_rate ) {
+                                int sample_rate ) : base( rendering_track, reflect_amp_to_wave, wave_writer_, wave_read_offset_seconds_, reader_, direct_play_, trim_msec_, total_samples_, sample_rate ) {
             //m_locker = new Object();
             renderer = renderer_;
             nrpn = nrpn_;
@@ -74,7 +74,7 @@ namespace org.kbinani.cadencii {
             //amplify_left = amplify_left_;
             //amplify_right = amplify_right_;
             //trim_msec = trim_msec_;
-            m_total_samples = total_samples_;
+            //totalSamples = total_samples_;
             //wave_read_offset_seconds = wave_read_offset_seconds_;
             mode_infinite = mode_infinite_;
             driver = driver_;
@@ -121,12 +121,12 @@ namespace org.kbinani.cadencii {
                 }
             }
             m_rendering = false;
-            if ( m_reader != null && m_reader.size() > 0 ) {
-                for ( int i = 0; i < m_reader.size(); i++ ) {
-                    m_reader.get( i ).close();
-                    m_reader.set( i, null );
+            if ( readers != null && readers.size() > 0 ) {
+                for ( int i = 0; i < readers.size(); i++ ) {
+                    readers.get( i ).close();
+                    readers.set( i, null );
                 }
-                m_reader.clear();
+                readers.clear();
             }
         }
 
@@ -198,33 +198,33 @@ namespace org.kbinani.cadencii {
                 }
             }
             int last_tempo = tempo[index].Tempo;
-            int trim_remain = VSTiProxy.getErrorSamples( first_tempo ) + (int)(m_trim_msec / 1000.0 * VSTiProxy.SAMPLE_RATE);
+            int trim_remain = VSTiProxy.getErrorSamples( first_tempo ) + (int)(trimMillisec / 1000.0 * VSTiProxy.SAMPLE_RATE);
             m_trim_remain = trim_remain;
 
             driver.SendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
 
             m_rendering = true;
-            if ( m_wave_writer != null ) {
+            if ( waveWriter != null ) {
                 if ( m_trim_remain < 0 ) {
                     double[] d = new double[-m_trim_remain];
                     for ( int i = 0; i < -m_trim_remain; i++ ) {
                         d[i] = 0.0;
                     }
-                    m_wave_writer.append( d, d );
+                    waveWriter.append( d, d );
                     m_trim_remain = 0;
                 }
             }
 
             driver.WaveIncoming += waveIncoming;
             driver.RenderingFinished += vstidrv_RenderingFinished;
-            driver.StartRendering( m_total_samples, mode_infinite );
+            driver.StartRendering( totalSamples, mode_infinite );
             while ( m_rendering ) {
                 Application.DoEvents();
             }
             m_rendering = false;
             driver.WaveIncoming -= waveIncoming;
             driver.RenderingFinished -= vstidrv_RenderingFinished;
-            if ( m_direct_play ) {
+            if ( directPlay ) {
                 PlaySound.waitForExit();
             }
         }

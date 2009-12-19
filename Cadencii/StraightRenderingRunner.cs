@@ -84,24 +84,24 @@ namespace org.kbinani.cadencii {
                                         double wave_read_offset_seconds,
                                         Vector<WaveReader> wave_reader,
                                         boolean direct_play,
-                                        boolean reflect_amp_to_wave ) : base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, wave_reader, direct_play, trim_msec, sample_rate ) {
+                                        boolean reflect_amp_to_wave ) : base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, wave_reader, direct_play, trim_msec, total_samples, sample_rate ) {
             m_locker = new Object();
             m_queue = new Vector<StraightRenderingQueue>();
             m_singer_config_sys = singer_config_sys;
-            m_rendering_track = track;
-            m_reflect_amp_to_wave = reflect_amp_to_wave;
-            m_wave_writer = wave_writer;
+            renderingTrack = track;
+            reflectAmp2Wave = reflect_amp_to_wave;
+            waveWriter = wave_writer;
             if ( wave_reader == null ) {
-                m_reader = new Vector<WaveReader>();
+                readers = new Vector<WaveReader>();
             } else {
-                m_reader = wave_reader;
+                readers = wave_reader;
             }
-            m_direct_play = direct_play;
-            m_wave_read_offset_seconds = wave_read_offset_seconds;
+            directPlay = direct_play;
+            waveReadOffsetSeconds = wave_read_offset_seconds;
             m_mode_infinite = mode_infinite;
-            m_trim_msec = trim_msec;
-            m_total_samples = total_samples;
-            m_sample_rate = sample_rate;
+            trimMillisec = trim_msec;
+            //totalSamples = total_samples;
+            sampleRate = sample_rate;
             int midi_tempo = 60000000 / TEMPO;
             VsqFileEx work = (VsqFileEx)vsq.clone();
             VsqFile tempo = new VsqFile( "Miku", 1, 4, 4, midi_tempo );
@@ -397,7 +397,7 @@ namespace org.kbinani.cadencii {
             PortUtil.println( "StraightRenderingRunner#run; total_samples=" + total_samples );
 #endif
 
-            m_trim_remain = (int)(m_trim_msec / 1000.0 * m_sample_rate); //先頭から省かなければならないサンプル数の残り
+            m_trim_remain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
 #if DEBUG
             PortUtil.println( "StraightRenderingRunner#run; m_trim_remain=" + m_trim_remain );
 #endif
@@ -945,15 +945,15 @@ namespace org.kbinani.cadencii {
                 System.Windows.Forms.Application.DoEvents();
 #endif
             }
-            int count = m_reader.size();
+            int count = readers.size();
             for ( int i = 0; i < count; i++ ) {
                 try {
-                    m_reader.get( i ).close();
+                    readers.get( i ).close();
                 } catch ( Exception ex ) {
                 }
-                m_reader.set( i, null );
+                readers.set( i, null );
             }
-            m_reader.clear();
+            readers.clear();
 
 
             /*if ( m_rendering ) {

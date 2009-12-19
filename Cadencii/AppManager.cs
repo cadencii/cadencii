@@ -2403,6 +2403,50 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        public static SingerConfig getSingerInfoAquesTone( int program_change ) {
+            for ( int i = 0; i < AquesToneDriver.SINGERS.Length; i++ ) {
+                if ( program_change == AquesToneDriver.SINGERS[i].Program ) {
+                    return AquesToneDriver.SINGERS[i];
+                }
+            }
+            return null;
+        }
+
+        public static VsqID getSingerIDAquesTone( String name ) {
+            VsqID ret = new VsqID( 0 );
+            ret.type = VsqIDType.Singer;
+            int index = -1;
+            int c = AquesToneDriver.SINGERS.Length;
+            for ( int i = 0; i < c; i++ ) {
+                if ( AquesToneDriver.SINGERS[i].VOICENAME.Equals( name ) ) {
+                    index = i;
+                    break;
+                }
+            }
+            if ( index >= 0 ) {
+                SingerConfig sc = AquesToneDriver.SINGERS[index];
+                int lang = 0;
+                ret.IconHandle = new IconHandle();
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( index, 4 );
+                ret.IconHandle.IDS = sc.VOICENAME;
+                ret.IconHandle.Index = 0;
+                ret.IconHandle.Language = lang;
+                ret.IconHandle.setLength( 1 );
+                ret.IconHandle.Original = sc.Original;
+                ret.IconHandle.Program = sc.Program;
+                ret.IconHandle.Caption = "";
+                return ret;
+            } else {
+                ret.IconHandle = new IconHandle();
+                ret.IconHandle.Program = 0;
+                ret.IconHandle.Language = 0;
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( 0, 4 );
+                ret.IconHandle.IDS = "Unknown";
+                ret.type = VsqIDType.Singer;
+                return ret;
+            }
+        }
+
         public static String getVersion() {
             String prefix = "";
             String rev = "";

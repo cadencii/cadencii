@@ -37,20 +37,6 @@ namespace bocoree {
         public const int LOAD_LIBRARY_AS_IMAGE_RESOURCE = 0x00000020;
         public const int LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE = 0x00000040;
 
-        [DllImport( "kernel32.dll" )]
-        public static extern IntPtr LoadLibraryExW( [MarshalAs( UnmanagedType.LPWStr )]string lpFileName, IntPtr hFile, uint dwFlags );
-
-        [DllImport( "kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "GetProcAddress", ExactSpelling = true )]
-        public static extern IntPtr GetProcAddress( IntPtr hModule, string lpProcName );
-
-        [DllImport( "kernel32.dll" )]
-        public static extern bool FreeLibrary( IntPtr hModule );
-
-        [DllImport( "kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "WriteProfileStringA", ExactSpelling = true )]
-        public static extern bool WriteProfileString( string section, string keyName, string value );
-
-        [DllImport( "kernel32.dll" )]
-        public static extern uint GetProfileString( string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize );
         #endregion
 
         #region winerror.h
@@ -185,15 +171,54 @@ namespace bocoree {
         public const uint SHGFI_LARGEICON = 0x0; // 'Large icon
         public const uint SHGFI_SMALLICON = 0x1; // 'Small icon
 
+        #region kernel32.dll
+        [DllImport( "kernel32.dll" )]
+        public static extern IntPtr LoadLibraryExW( [MarshalAs( UnmanagedType.LPWStr )]string lpFileName, IntPtr hFile, uint dwFlags );
+
+        [DllImport( "kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "GetProcAddress", ExactSpelling = true )]
+        public static extern IntPtr GetProcAddress( IntPtr hModule, string lpProcName );
+
+        [DllImport( "kernel32.dll" )]
+        public static extern bool FreeLibrary( IntPtr hModule );
+
+        [DllImport( "kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "WriteProfileStringA", ExactSpelling = true )]
+        public static extern bool WriteProfileString( string section, string keyName, string value );
+
+        [DllImport( "kernel32.dll" )]
+        public static extern uint GetProfileString( string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize );
+        #endregion
+
+        #region shell32.dll
         [DllImport( "shell32.dll" )]
         public static extern IntPtr SHGetFileInfo( string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags );
+        #endregion
 
+        #region user32.dll
+        [DllImport( "user32.dll" )]
+        public static extern bool GetWindowRect( IntPtr hWnd, ref RECT lpRect );
+
+        [DllImport( "user32.dll" )]
+        public static extern bool GetClientRect( IntPtr hWnd, ref RECT lpRect );
+
+        [DllImport( "user32.dll" )]
+        public static extern bool EnumChildWindows( IntPtr hWndParent, [MarshalAs( UnmanagedType.FunctionPtr )]EnumChildProc lpEnumFunc, int lParam );
+        #endregion
     }
+
+    public delegate bool EnumChildProc( IntPtr hwnd, int lParam );
 
     #region windef.h
     public struct FILETIME {
         public uint dwLowDateTime;
         public uint dwHighDateTime;
+    }
+
+    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
+    public struct RECT {
+        public int left;
+        public int top;
+	    public int right;
+	    public int bottom;
     }
     #endregion
 

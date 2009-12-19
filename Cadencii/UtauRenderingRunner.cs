@@ -85,7 +85,7 @@ namespace org.kbinani.cadencii {
                                     double wave_read_offset_seconds,
                                     Vector<WaveReader> reader,
                                     boolean direct_play,
-                                    boolean reflect_amp_to_wave ): base( track_, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, reader, direct_play, trim_msec, sample_rate ){
+                                    boolean reflect_amp_to_wave ): base( track_, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, reader, direct_play, trim_msec, total_samples, sample_rate ){
             //m_locker = new Object();
             m_vsq = vsq;
             //m_rendering_track = track_;
@@ -96,7 +96,7 @@ namespace org.kbinani.cadencii {
             m_invoke_with_wine = invoke_with_wine;
             //m_sample_rate = sample_rate;
             //m_trim_msec = trim_msec;
-            m_total_samples = total_samples;
+            //totalSamples = total_samples;
             m_mode_infinite = mode_infinite;
             //m_wave_writer = wave_writer;
             //m_wave_read_offset_seconds = wave_read_offset_seconds;
@@ -140,15 +140,15 @@ namespace org.kbinani.cadencii {
                 System.Windows.Forms.Application.DoEvents();
 #endif
             }
-            int count = m_reader.size();
+            int count = readers.size();
             for ( int i = 0; i < count; i++ ) {
                 try {
-                    m_reader.get( i ).close();
+                    readers.get( i ).close();
                 } catch ( Exception ex ) {
                 }
-                m_reader.set( i, null );
+                readers.set( i, null );
             }
-            m_reader.clear();
+            readers.clear();
         }
 
         public override double getElapsedSeconds() {
@@ -166,7 +166,7 @@ namespace org.kbinani.cadencii {
             StreamWriter log = null;
 #endif
             try {
-                double sample_length = m_vsq.getSecFromClock( m_vsq.TotalClocks ) * m_sample_rate;
+                double sample_length = m_vsq.getSecFromClock( m_vsq.TotalClocks ) * sampleRate;
                 m_abort_required = false;
                 m_progress = 0.0;
                 if ( !PortUtil.isDirectoryExists( m_temp_dir ) ) {
@@ -179,7 +179,7 @@ namespace org.kbinani.cadencii {
                 // 原音設定を読み込み
                 TreeMap<Integer, UtauVoiceDB> config = new TreeMap<Integer, UtauVoiceDB>();
                 Vector<SingerConfig> singers = m_singer_config_sys;
-                VsqTrack target = m_vsq.Track.get( m_rendering_track );
+                VsqTrack target = m_vsq.Track.get( renderingTrack );
 #if MAKEBAT_SP
                 log.WriteLine( "reading voice db. configs..." );
 #endif
@@ -441,11 +441,11 @@ namespace org.kbinani.cadencii {
                 int byte_per_sample = 0;
                 // 引き続き、wavtoolを呼ぶ作業に移行
                 boolean first = true;
-                int trim_remain = (int)(m_trim_msec / 1000.0 * m_sample_rate); //先頭から省かなければならないサンプル数の残り
+                int trim_remain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
 #if DEBUG
                 bocoree.debug.push_log( "trim_remain=" + trim_remain );
 #endif
-                VsqBPList dyn_curve = m_vsq.Track.get( m_rendering_track ).getCurve( "dyn" );
+                VsqBPList dyn_curve = m_vsq.Track.get( renderingTrack ).getCurve( "dyn" );
 #if MAKEBAT_SP
                 bat = new StreamWriter( Path.Combine( m_temp_dir, "utau.bat" ), false, Encoding.GetEncoding( "Shift_JIS" ) );
 #endif
@@ -505,7 +505,7 @@ namespace org.kbinani.cadencii {
                     ProcessWavtool( arg_wavtool, file, m_temp_dir, m_wavtool, m_invoke_with_wine );
 
                     // できたwavを読み取ってWaveIncomingイベントを発生させる
-                    int sample_end = (int)(sec_fin * m_sample_rate);
+                    int sample_end = (int)(sec_fin * sampleRate);
 #if DEBUG
                     AppManager.debugWriteLine( "RenderUtau.StartRendering; sample_end=" + sample_end );
 #endif
@@ -605,7 +605,7 @@ namespace org.kbinani.cadencii {
                     AppManager.debugWriteLine( "RenderUtau.StartRendering; sampleFrames=" + sampleFrames + "; channel=" + channel + "; byte_per_sample=" + byte_per_sample );
 #endif
                     if ( channel > 0 && byte_per_sample > 0 && sampleFrames > 0 ) {
-                        int length = (sampleFrames > m_sample_rate ? m_sample_rate : sampleFrames);
+                        int length = (sampleFrames > sampleRate ? sampleRate : sampleFrames);
                         int remain = sampleFrames;
                         m_left = new double[length];
                         m_right = new double[length];
@@ -618,8 +618,8 @@ namespace org.kbinani.cadencii {
                         try {
                             dat = new RandomAccessFile( file_dat, "r" );
                             dat.seek( processed_sample * channel * byte_per_sample );
-                            double sec_start = processed_sample / (double)m_sample_rate;
-                            double sec_per_sa = 1.0 / (double)m_sample_rate;
+                            double sec_start = processed_sample / (double)sampleRate;
+                            double sec_per_sa = 1.0 / (double)sampleRate;
                             ByRef<Integer> index = new ByRef<Integer>( 0 );
                             #region チャンネル数／ビット深度ごとの読み取り操作
                             if ( byte_per_sample == 1 ) {
