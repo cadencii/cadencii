@@ -36,7 +36,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class UtauRenderingRunner implements RenderingRunner{
 #else
-    public class UtauRenderingRunner_DRAFT : RenderingRunner_DRAFT {
+    public class UtauRenderingRunner : RenderingRunner {
 #endif
         public const String FILEBASE = "temp.wav";
         private const int MAX_CACHE = 512;
@@ -70,7 +70,7 @@ namespace org.kbinani.cadencii {
         double m_running_rate;
         //long m_total_samples;
 
-        public UtauRenderingRunner_DRAFT( VsqFileEx vsq,
+        public UtauRenderingRunner( VsqFileEx vsq,
                                     int track_,
                                     Vector<SingerConfig> singer_config_sys,
                                     String resampler,

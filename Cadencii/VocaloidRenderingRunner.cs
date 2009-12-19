@@ -24,7 +24,7 @@ using bocoree.java.io;
 namespace org.kbinani.cadencii {
     using boolean = Boolean;
 
-    public class VocaloidRenderingRunner_DRAFT : RenderingRunner_DRAFT {
+    public class VocaloidRenderingRunner : RenderingRunner {
         public String renderer;
         public NrpnData[] nrpn;
         public TempoTableEntry[] tempo;
@@ -51,7 +51,7 @@ namespace org.kbinani.cadencii {
         //private bool m_reflect_amp_to_wave = false;
         private double m_started_date;
 
-        public VocaloidRenderingRunner_DRAFT( String renderer_,
+        public VocaloidRenderingRunner( String renderer_,
                                 NrpnData[] nrpn_,
                                 TempoTableEntry[] tempo_,
                                 //double amplify_left_,

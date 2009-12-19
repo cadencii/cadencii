@@ -55,7 +55,7 @@ namespace org.kbinani.cadencii {
         private static AquesToneDriver aquesToneDriver = null;
 #endif
 
-        private static RenderingRunner_DRAFT s_rendering_context;
+        private static RenderingRunner s_rendering_context;
 
         public static void init() {
             initCor();
@@ -285,7 +285,7 @@ namespace org.kbinani.cadencii {
 
             s_rendering_context = null;
             if ( s_working_renderer.Equals( VSTiProxy.RENDERER_UTU0 ) ) {
-                s_rendering_context = new UtauRenderingRunner_DRAFT( split,
+                s_rendering_context = new UtauRenderingRunner( split,
                                                                track,
                                                                AppManager.editorConfig.UtauSingers,
                                                                AppManager.editorConfig.PathResampler,
@@ -302,7 +302,7 @@ namespace org.kbinani.cadencii {
                                                                direct_play,
                                                                reflect_amp_to_wave );
             } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_STR0 ) ){
-                s_rendering_context = new StraightRenderingRunner_DRAFT( split,
+                s_rendering_context = new StraightRenderingRunner( split,
                                                                    track,
                                                                    AppManager.editorConfig.UtauSingers,
                                                                    SAMPLE_RATE,
@@ -325,7 +325,7 @@ namespace org.kbinani.cadencii {
                 }
                 VsqNrpn[] nrpn = VsqFile.generateNRPN( split, track, ms_presend );
                 NrpnData[] nrpn_data = VsqNrpn.convert( nrpn );
-                s_rendering_context = new VocaloidRenderingRunner_DRAFT( s_working_renderer,
+                s_rendering_context = new VocaloidRenderingRunner( s_working_renderer,
                                                                  nrpn_data,
                                                                  split.TempoTable.toArray( new TempoTableEntry[]{} ),
                                                                  /*amplify_left,
@@ -367,16 +367,16 @@ namespace org.kbinani.cadencii {
         private static void renderWithDirectPlay( Object argument ) {
 #endif
 #if ENABLE_VOCALOID
-            if ( argument is VocaloidRenderingRunner_DRAFT ) {
-                VocaloidRenderingRunner_DRAFT sra = (VocaloidRenderingRunner_DRAFT)argument;
+            if ( argument is VocaloidRenderingRunner ) {
+                VocaloidRenderingRunner sra = (VocaloidRenderingRunner)argument;
                 sra.run();
             } else
 #endif
-            if ( argument is UtauRenderingRunner_DRAFT ) {
-                UtauRenderingRunner_DRAFT arg = (UtauRenderingRunner_DRAFT)argument;
+            if ( argument is UtauRenderingRunner ) {
+                UtauRenderingRunner arg = (UtauRenderingRunner)argument;
                 arg.run();
-            } else if ( argument is StraightRenderingRunner_DRAFT ) {
-                StraightRenderingRunner_DRAFT arg = (StraightRenderingRunner_DRAFT)argument;
+            } else if ( argument is StraightRenderingRunner ) {
+                StraightRenderingRunner arg = (StraightRenderingRunner)argument;
                 arg.run();
             }
         }

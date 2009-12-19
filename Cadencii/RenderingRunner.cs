@@ -39,7 +39,7 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
 
-    public abstract class RenderingRunner_DRAFT : Runnable {
+    public abstract class RenderingRunner : Runnable {
         protected Object m_locker = null;
         protected boolean m_rendering = false;
         protected long m_total_samples = 0;
@@ -63,7 +63,7 @@ namespace org.kbinani.cadencii {
         public abstract double getElapsedSeconds();
         public abstract double computeRemainingSeconds();
 
-        protected RenderingRunner_DRAFT( 
+        protected RenderingRunner( 
             int track,
             boolean reflect_amp_to_wave,
             WaveWriter wave_writer,
