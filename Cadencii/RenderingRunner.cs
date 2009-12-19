@@ -15,9 +15,12 @@
 package org.kbinani.cadencii;
 #else
 using System;
+using org.kbinani.media;
+using bocoree.java.util;
 
 namespace org.kbinani.cadencii {
-    using boolean = Boolean;
+    using boolean = System.Boolean;
+    using Integer = System.Int32;
 #endif
 
 #if JAVA
@@ -34,5 +37,137 @@ namespace org.kbinani.cadencii {
     }
 
 #if !JAVA
+
+    public abstract class RenderingRunner_DRAFT : Runnable {
+        protected Object m_locker = null;
+        protected boolean m_rendering = false;
+        protected long m_total_samples = 0;
+        protected long m_total_append = 0;
+
+        protected int m_rendering_track = 0;
+        protected boolean m_reflect_amp_to_wave;
+        protected WaveWriter m_wave_writer;
+        protected double m_wave_read_offset_seconds;
+        protected Vector<WaveReader> m_reader;
+        protected boolean m_direct_play;
+
+        public abstract void run();
+        public abstract double getProgress();
+        public abstract void abortRendering();
+        public abstract boolean isRendering();
+        public abstract double getElapsedSeconds();
+        public abstract double computeRemainingSeconds();
+
+        protected RenderingRunner_DRAFT( 
+            int track,
+            boolean reflect_amp_to_wave,
+            WaveWriter wave_writer,
+            double wave_read_offset_seconds,
+            Vector<WaveReader> readers,
+            boolean direct_play
+        ) {
+            m_rendering_track = track;
+            m_reflect_amp_to_wave = reflect_amp_to_wave;
+            m_wave_writer = wave_writer;
+            m_wave_read_offset_seconds = wave_read_offset_seconds;
+            m_reader = readers;
+            m_direct_play = direct_play;
+
+            m_locker = new Object();
+            m_rendering = false;
+            m_total_samples = 0;
+            m_total_append = 0;
+        }
+
+        protected void waveIncoming( double[] t_L, double[] t_R ) {
+            if ( !m_rendering ) {
+                return;
+            }
+            AmplifyCoefficient amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
+            lock ( m_locker ) {
+                double[] L = t_L;
+                double[] R = t_R;
+                int length = L.Length;
+
+                if ( length > m_total_samples - m_total_append ) {
+                    length = (int)(m_total_samples - m_total_append);
+                    if ( length <= 0 ) {
+                        return;
+                    }
+                    double[] br = R;
+                    double[] bl = L;
+                    L = new double[length];
+                    R = new double[length];
+                    for ( int i = 0; i < length; i++ ) {
+                        L[i] = bl[i];
+                        R[i] = br[i];
+                    }
+                    br = null;
+                    bl = null;
+                }
+
+                if ( m_reflect_amp_to_wave ) {
+                    for ( int i = 0; i < length; i++ ) {
+                        if ( i % 100 == 0 ) {
+                            amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
+                        }
+                        L[i] = L[i] * amplify.left;
+                        R[i] = R[i] * amplify.right;
+                    }
+                    if ( m_wave_writer != null ) {
+                        try {
+                            m_wave_writer.append( L, R );
+                        } catch ( Exception ex ) {
+                        }
+                    }
+                } else {
+                    if ( m_wave_writer != null ) {
+                        try {
+                            m_wave_writer.append( L, R );
+                        } catch ( Exception ex ) {
+                        }
+                    }
+                    for ( int i = 0; i < length; i++ ) {
+                        if ( i % 100 == 0 ) {
+                            amplify = AppManager.getAmplifyCoeffNormalTrack( m_rendering_track );
+                        }
+                        L[i] = L[i] * amplify.left;
+                        R[i] = R[i] * amplify.right;
+                    }
+                }
+                long start = m_total_append + (long)(m_wave_read_offset_seconds * VSTiProxy.SAMPLE_RATE);
+                int count = m_reader.size();
+                double[] reader_r = new double[length];
+                double[] reader_l = new double[length];
+                for ( int i = 0; i < count; i++ ) {
+                    try {
+                        WaveReader wr = m_reader.get( i );
+                        amplify.left = 1.0;
+                        amplify.right = 1.0;
+                        if ( wr.getTag() != null && wr.getTag() is Integer ) {
+                            int track = (Integer)wr.getTag();
+                            if ( 0 < track ) {
+                                amplify = AppManager.getAmplifyCoeffNormalTrack( track );
+                            } else if ( 0 > track ) {
+                                amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
+                            }
+                        }
+                        wr.read( start, length, reader_l, reader_r );
+                        for ( int j = 0; j < length; j++ ) {
+                            L[j] += reader_l[j] * amplify.left;
+                            R[j] += reader_r[j] * amplify.right;
+                        }
+                    } catch ( Exception ex ) {
+                    }
+                }
+                reader_l = null;
+                reader_r = null;
+                if ( m_direct_play ) {
+                    PlaySound.append( L, R, L.Length );
+                }
+                m_total_append += length;
+            }
+        }
+    }
 }
 #endif

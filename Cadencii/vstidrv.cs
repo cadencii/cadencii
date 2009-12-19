@@ -14,7 +14,7 @@
  */
 using System;
 using System.Runtime.InteropServices;
-using System.Threading;
+using System.Text;
 using bocoree;
 using bocoree.java.util;
 using org.kbinani.vsq;
@@ -42,24 +42,13 @@ namespace org.kbinani.cadencii {
         public double TotalSec;
     }
 
-    public struct MIDI_EVENT : IComparable<MIDI_EVENT> {
-        public uint clock;
-        public uint dwDataSize;
-        public byte dwOffset;
-        public byte[] pMidiEvent;
-
-        public int CompareTo( MIDI_EVENT item ) {
-            return (int)clock - (int)item.clock;
-        }
-    }
-
-    public class GlobalMemoryContext {
+    public unsafe class MemoryManager {
         private Vector<IntPtr> list = new Vector<IntPtr>();
 
-        public IntPtr malloc( int bytes ) {
+        public void* malloc( int bytes ) {
             IntPtr ret = Marshal.AllocHGlobal( bytes );
             list.add( ret );
-            return ret;
+            return ret.ToPointer();
         }
 
         public void dispose() {
@@ -67,9 +56,10 @@ namespace org.kbinani.cadencii {
                 IntPtr v = (IntPtr)itr.next();
                 Marshal.FreeHGlobal( v );
             }
+            list.clear();
         }
 
-        ~GlobalMemoryContext() {
+        ~MemoryManager() {
             dispose();
         }
     }
@@ -114,6 +104,51 @@ namespace org.kbinani.cadencii {
         /// 左右チャンネルバッファの配列(buffers={bufferLeft, bufferRight})
         /// </summary>
         IntPtr buffers = IntPtr.Zero;
+
+        public float getParameter( int index ) {
+            return aEffect.GetParameter( ref aEffect, index );
+        }
+
+        public void setParameter( int index, float value ) {
+            aEffect.SetParameter( ref aEffect, index, value );
+        }
+
+        private String getStringCore( int opcode, int index, int str_capacity ) {
+            byte[] arr = new byte[] { };
+            IntPtr ptr = IntPtr.Zero;
+            try {
+                ptr = Marshal.AllocHGlobal( str_capacity );
+                byte* bptr = (byte*)ptr.ToPointer();
+                for ( int i = 0; i < str_capacity; i++ ) {
+                    bptr[i] = 0;
+                }
+                aEffect.Dispatch( ref aEffect, opcode, index, 0, bptr, 0.0f );
+                arr = new byte[str_capacity];
+                for ( int i = 0; i < str_capacity; i++ ) {
+                    arr[i] = bptr[i];
+                }
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "vstidrv#getStringCore; ex=" + ex );
+            } finally {
+                if ( ptr != IntPtr.Zero ) {
+                    Marshal.FreeHGlobal( ptr );
+                }
+            }
+            String ret = Encoding.ASCII.GetString( arr );
+            return ret;
+        }
+
+        public String getParameterDisplay( int index ) {
+            return getStringCore( AEffectOpcodes.effGetParamDisplay, index, VstStringConstants.kVstMaxParamStrLen );
+        }
+
+        public String getParameterLabel( int index ) {
+            return getStringCore( AEffectOpcodes.effGetParamLabel, index, VstStringConstants.kVstMaxParamStrLen );
+        }
+
+        public String getParameterName( int index ) {
+            return getStringCore( AEffectOpcodes.effGetParamName, index, VstStringConstants.kVstMaxParamStrLen );
+        }
 
         private void initBuffer() {
             if ( bufferLeft == IntPtr.Zero ) {
@@ -173,12 +208,11 @@ namespace org.kbinani.cadencii {
 
         public void send( MidiEvent[] events ) {
             unsafe {
-                GlobalMemoryContext mem_context = null;
+                MemoryManager mman = null;
                 try {
-                    mem_context = new GlobalMemoryContext();
+                    mman = new MemoryManager();
                     int nEvents = events.Length;
-                    IntPtr ptr_pvst_events = mem_context.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
-                    VstEvents* pVSTEvents = (VstEvents*)ptr_pvst_events.ToPointer();
+                    VstEvents* pVSTEvents = (VstEvents*)mman.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
                     pVSTEvents->numEvents = 0;
                     pVSTEvents->reserved = (VstIntPtr)0;
 
@@ -187,7 +221,7 @@ namespace org.kbinani.cadencii {
                         byte event_code = pProcessEvent.firstByte;
                         VstEvent* pVSTEvent = (VstEvent*)0;
                         VstMidiEvent* pMidiEvent;
-                        pMidiEvent = (VstMidiEvent*)mem_context.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();
+                        pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) );
                         pMidiEvent->byteSize = sizeof( VstMidiEvent );
                         pMidiEvent->deltaFrames = 0;
                         pMidiEvent->detune = 0;
@@ -208,9 +242,9 @@ namespace org.kbinani.cadencii {
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "vstidrv#send; ex=" + ex );
                 } finally {
-                    if ( mem_context != null ) {
+                    if ( mman != null ) {
                         try {
-                            mem_context.dispose();
+                            mman.dispose();
                         } catch ( Exception ex2 ) {
                             PortUtil.stderr.println( "vstidrv#send; ex2=" + ex2 );
                         }
@@ -231,22 +265,24 @@ namespace org.kbinani.cadencii {
 
         public virtual bool open( string dll_path, int block_size, int sample_rate ) {
             dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
-            System.Threading.Thread.Sleep( 250 );
+            if ( dllHandle == IntPtr.Zero ) {
+                return false;
+            }
 
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( win32.GetProcAddress( dllHandle, "main" ),
-                                                                               typeof( PVSTMAIN ) );
-            Thread.Sleep( 250 );
+                                                                            typeof( PVSTMAIN ) );
             if ( mainDelegate == null ) {
                 return false;
             }
 
             audioMaster = new audioMasterCallback( AudioMaster );
-            Thread.Sleep( 250 );
 
             IntPtr ptr_aeffect = IntPtr.Zero;
             try {
                 ptr_aeffect = mainDelegate( audioMaster );
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "vstidrv#open; ex=" + ex );
+                return false;
             }
             if ( ptr_aeffect == IntPtr.Zero ) {
                 return false;

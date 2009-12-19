@@ -14,6 +14,32 @@ namespace VstSdk {
         public const int kVstVersion = 2400;
     }
 
+    /// <summary>
+    /// String length limits (in characters excl. 0 byte)
+    /// </summary>
+    public static class VstStringConstants {
+        /// <summary>
+        /// used for #effGetProgramName, #effSetProgramName, #effGetProgramNameIndexed
+        /// </summary>
+        public const int kVstMaxProgNameLen = 24;
+        /// <summary>
+        /// used for #effGetParamLabel, #effGetParamDisplay, #effGetParamName
+        /// </summary>
+        public const int kVstMaxParamStrLen = 8;
+        /// <summary>
+        /// used for #effGetVendorString, #audioMasterGetVendorString
+        /// </summary>
+        public const int kVstMaxVendorStrLen = 64;
+        /// <summary>
+        /// used for #effGetProductString, #audioMasterGetProductString
+        /// </summary>
+        public const int kVstMaxProductStrLen = 64;
+        /// <summary>
+        /// used for #effGetEffectName
+        /// </summary>
+        public const int kVstMaxEffectNameLen = 32;
+    }
+
     public static class AudioMasterOpcodes {
         /// <summary>
         /// [index]: parameter index [opt]: parameter value  @see AudioEffect::setParameterAutomated

@@ -94,6 +94,11 @@ namespace org.kbinani.cadencii {
                 unsafe {
                     aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)pluginUi.Handle.ToPointer(), 0.0f );
                 }
+#if DEBUG
+                for ( int i = 0; i < aEffect.numParams; i++ ) {
+                    PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) );
+                }
+#endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
             }

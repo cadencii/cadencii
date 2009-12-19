@@ -15,6 +15,7 @@
 using System;
 using System.Runtime.InteropServices;
 using VstSdk;
+using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
 
@@ -30,8 +31,8 @@ namespace org.kbinani.cadencii {
         const int DEF_TEMPO = 500000;           // デフォルトのテンポ．
 
         static VocaloidDriver s_instance;
-        Vector<Vector<MIDI_EVENT>> s_track_events;
-        Vector<MIDI_EVENT> g_pEvents;
+        Vector<Vector<MidiEvent>> s_track_events;
+        Vector<MidiEvent> g_pEvents;
         int g_pCurrentEvent;
         /// <summary>
         /// s_track_events[0]のmidiイベントを受信済みかどうかを表すフラグ
@@ -103,7 +104,7 @@ namespace org.kbinani.cadencii {
 
         public override boolean open( string dll_path, int block_size, int sample_rate ) {
             base.open( dll_path, block_size, sample_rate );
-            g_pEvents = new Vector<MIDI_EVENT>();
+            g_pEvents = new Vector<MidiEvent>();
             g_midiPrepared0 = false;
             g_midiPrepared1 = false;
             g_tcCurrent = 0;
@@ -114,9 +115,9 @@ namespace org.kbinani.cadencii {
             g_numTempoList = 0;
             g_cancelRequired = false;
             g_progress = 0.0;
-            s_track_events = new Vector<Vector<MIDI_EVENT>>();
-            s_track_events.add( new Vector<MIDI_EVENT>() );
-            s_track_events.add( new Vector<MIDI_EVENT>() );
+            s_track_events = new Vector<Vector<MidiEvent>>();
+            s_track_events.add( new Vector<MidiEvent>() );
+            s_track_events.add( new Vector<MidiEvent>() );
             return true;
         }
 
@@ -172,27 +173,25 @@ namespace org.kbinani.cadencii {
             s_track_events.get( targetTrack ).clear();
             for ( int i = 0; i < numEvents; i++ ) {
                 count += 3;
-                MIDI_EVENT pEvent = new MIDI_EVENT();
+                MidiEvent pEvent = new MidiEvent();
                 //pEvent = &(new MIDI_EVENT());
                 //pEvent->pNext = NULL;
                 pEvent.clock = (uint)deltaFrames[i];
-                pEvent.dwOffset = 0;
+                //pEvent.dwOffset = 0;
                 if ( targetTrack == 0 ) {
-                    pEvent.dwDataSize = 6;
-                    pEvent.pMidiEvent = new byte[6];
-                    pEvent.pMidiEvent[0] = 0xff;
-                    pEvent.pMidiEvent[1] = 0x51;
-                    pEvent.pMidiEvent[2] = 0x03;
-                    pEvent.pMidiEvent[3] = src[count];
-                    pEvent.pMidiEvent[4] = src[count + 1];
-                    pEvent.pMidiEvent[5] = src[count + 2];
+                    pEvent.firstByte = 0xff;
+                    pEvent.data = new byte[5];
+                    pEvent.data[0] = 0x51;
+                    pEvent.data[1] = 0x03;
+                    pEvent.data[2] = src[count];
+                    pEvent.data[3] = src[count + 1];
+                    pEvent.data[4] = src[count + 2];
                 } else {
-                    pEvent.dwDataSize = 4;
-                    pEvent.pMidiEvent = new byte[4];
-                    pEvent.pMidiEvent[0] = src[count];
-                    pEvent.pMidiEvent[1] = src[count + 1];
-                    pEvent.pMidiEvent[2] = src[count + 2];
-                    pEvent.pMidiEvent[3] = 0x00;
+                    pEvent.firstByte = src[count];
+                    pEvent.data = new byte[3];
+                    pEvent.data[0] = src[count + 1];
+                    pEvent.data[1] = src[count + 2];
+                    pEvent.data[2] = 0x00;
                 }
                 s_track_events.get( targetTrack ).add( pEvent );
             }
@@ -207,205 +206,244 @@ namespace org.kbinani.cadencii {
             g_cancelRequired = false;
             g_progress = 0.0;
 
-            Vector<MIDI_EVENT> lpEvents = merge_events( s_track_events.get( 0 ), s_track_events.get( 1 ) );
+            Vector<MidiEvent> lpEvents = merge_events( s_track_events.get( 0 ), s_track_events.get( 1 ) );
             int current_count = -1;
-            MIDI_EVENT current = new MIDI_EVENT();// = lpEvents;
+            MidiEvent current = new MidiEvent();// = lpEvents;
 
-            IntPtr ptr_left_ch = Marshal.AllocHGlobal( sizeof( float ) * sampleRate );
-            IntPtr ptr_right_ch = Marshal.AllocHGlobal( sizeof( float ) * sampleRate );
-            float* left_ch = (float*)ptr_left_ch.ToPointer();
-            float* right_ch = (float*)ptr_right_ch.ToPointer();
-            IntPtr ptr_outbuffer = Marshal.AllocHGlobal( sizeof( float* ) * 2 );
-            float** out_buffer = (float**)ptr_outbuffer.ToPointer();
-            out_buffer[0] = left_ch;
-            out_buffer[1] = right_ch;
-
-#if TEST
-            bocoree.debug.push_log( "    calling initial dispatch..." );
-#endif
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)sampleRate );//dispatch_VST_command(effSetSampleRate, 0, 0, 0, kSampleRate);
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 1, (void*)0, 0 );// dispatch_VST_command(effMainsChanged, 0, 1, 0, 0);
-            // ここではブロックサイズ＝サンプリングレートということにする
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, sampleRate, (void*)0, 0 );// dispatch_VST_command(effSetBlockSize, 0, sampleFrames, 0, 0);
-#if TEST
-            bocoree.debug.push_log( "    ...done" );
-#endif
-
-            int delay = 0;
-            int duration = 0;
-            int dwNow = 0;
-            int dwPrev = 0;
-            int dwDelta;
-            int dwDelay = 0;
-            int dwDeltaDelay = 0;
-
-            int addr_msb = 0, addr_lsb = 0;
-            int data_msb = 0, data_lsb = 0;
-
-            int total_processed = 0;
-#if TEST
-            bocoree.debug.push_log( "    getting dwDelay..." );
-#endif
-            dwDelay = 0;
-            Vector<MIDI_EVENT> list = s_track_events.get( 1 );
-            int list_size = list.size();
-            for ( int i = 0; i < list_size; i++ ) {
-                MIDI_EVENT work = list.get( i );
-                if ( (work.pMidiEvent[0] & 0xf0) == 0xb0 ) {
-                    switch ( work.pMidiEvent[1] ) {
-                        case 0x63:
-                            addr_msb = work.pMidiEvent[2];
-                            addr_lsb = 0;
-                            break;
-                        case 0x62:
-                            addr_lsb = work.pMidiEvent[2];
-                            break;
-                        case 0x06:
-                            data_msb = work.pMidiEvent[2];
-                            break;
-                        case 0x26:
-                            data_lsb = work.pMidiEvent[2];
-                            if ( addr_msb == 0x50 && addr_lsb == 0x01 ) {
-                                dwDelay = (data_msb & 0xff) << 7 | (data_lsb & 0x7f);
-                            }
-                            break;
-                    }
-                }
-                if ( dwDelay > 0 ) {
-                    break;
-                }
-            }
-#if TEST
-            bocoree.debug.push_log( "    ...done; dwDelay=" + dwDelay );
-#endif
-
-            while ( true ) {
-#if TEST
-                bocoree.debug.push_log( "g_cancelRequired=" + g_cancelRequired );
-#endif
-                if ( g_cancelRequired ) {
-                    Marshal.FreeHGlobal( ptr_left_ch );
-                    Marshal.FreeHGlobal( ptr_right_ch );
-                    Marshal.FreeHGlobal( ptr_outbuffer );
-                    lpEvents.clear();
-                    exit_start_rendering();
-                    return FALSE;
-                }
-#if TEST
-                bocoree.debug.push_log( "-----------------------------------------------------------------------" );
-#endif
-                //MIDI_EVENT pProcessEvent = current;
-                int process_event_count = current_count;
-                int nEvents = 0;
+            MemoryManager mman = null;
+            try {
+                mman = new MemoryManager();
+                float* left_ch = (float*)mman.malloc( sizeof( float ) * sampleRate );
+                float* right_ch = (float*)mman.malloc( sizeof( float ) * sampleRate );
+                float** out_buffer = (float**)mman.malloc( sizeof( float* ) * 2 );
+                out_buffer[0] = left_ch;
+                out_buffer[1] = right_ch;
 
 #if TEST
-                bocoree.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
+                bocoree.debug.push_log( "    calling initial dispatch..." );
 #endif
-                if ( current_count < 0 ) {
-                    current_count = 0;
-                    current = lpEvents.get( current_count );
-                    process_event_count = current_count;
-                }
-                while ( current.clock == dwNow ) {
-                    // durationを取得
-                    if ( (current.pMidiEvent[0] & 0xf0) == 0xb0 ) {
-                        switch ( current.pMidiEvent[1] ) {
+                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)sampleRate );//dispatch_VST_command(effSetSampleRate, 0, 0, 0, kSampleRate);
+                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 1, (void*)0, 0 );// dispatch_VST_command(effMainsChanged, 0, 1, 0, 0);
+                // ここではブロックサイズ＝サンプリングレートということにする
+                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, sampleRate, (void*)0, 0 );// dispatch_VST_command(effSetBlockSize, 0, sampleFrames, 0, 0);
+#if TEST
+                bocoree.debug.push_log( "    ...done" );
+#endif
+
+                int delay = 0;
+                int duration = 0;
+                int dwNow = 0;
+                int dwPrev = 0;
+                int dwDelta;
+                int dwDelay = 0;
+                int dwDeltaDelay = 0;
+
+                int addr_msb = 0, addr_lsb = 0;
+                int data_msb = 0, data_lsb = 0;
+
+                int total_processed = 0;
+#if TEST
+                bocoree.debug.push_log( "    getting dwDelay..." );
+#endif
+                dwDelay = 0;
+                Vector<MidiEvent> list = s_track_events.get( 1 );
+                int list_size = list.size();
+                for ( int i = 0; i < list_size; i++ ) {
+                    MidiEvent work = list.get( i );
+                    if ( (work.firstByte & 0xf0) == 0xb0 ) {
+                        switch ( work.data[0] ) {
                             case 0x63:
-                                addr_msb = current.pMidiEvent[2];
+                                addr_msb = work.data[1];
                                 addr_lsb = 0;
                                 break;
                             case 0x62:
-                                addr_lsb = current.pMidiEvent[2];
+                                addr_lsb = work.data[1];
                                 break;
                             case 0x06:
-                                data_msb = current.pMidiEvent[2];
+                                data_msb = work.data[1];
                                 break;
                             case 0x26:
-                                data_lsb = current.pMidiEvent[2];
-                                // Note Duration in millisec
-                                if ( addr_msb == 0x50 && addr_lsb == 0x4 ) {
-                                    duration = data_msb << 7 | data_lsb;
-#if TEST
-                                    bocoree.debug.push_log( "duration=" + duration );
-#endif
+                                data_lsb = work.data[1];
+                                if ( addr_msb == 0x50 && addr_lsb == 0x01 ) {
+                                    dwDelay = (data_msb & 0xff) << 7 | (data_lsb & 0x7f);
                                 }
                                 break;
                         }
                     }
-
-                    nEvents++;
-                    if ( current_count + 1 < lpEvents.size() ) {
-                        current_count++;
-                        current = lpEvents.get( current_count );
-                    } else {
+                    if ( dwDelay > 0 ) {
                         break;
                     }
                 }
-
-                if ( current_count + 1 >= lpEvents.size() ) {
-                    break;
-                }
-
 #if TEST
-                bocoree.debug.push_log( "nEvents=" + nEvents );
+                bocoree.debug.push_log( "    ...done; dwDelay=" + dwDelay );
 #endif
-                double msNow = msec_from_clock( dwNow );
-                dwDelta = (int)(msNow / 1000.0 * sampleRate) - total_processed;
+
+                while ( true ) {
 #if TEST
-                bocoree.debug.push_log( "dwNow=" + dwNow );
-                bocoree.debug.push_log( "dwPrev=" + dwPrev );
-                bocoree.debug.push_log( "dwDelta=" + dwDelta );
+                    bocoree.debug.push_log( "g_cancelRequired=" + g_cancelRequired );
 #endif
-                IntPtr ptr_pvst_events = Marshal.AllocHGlobal( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
-                VstEvents* pVSTEvents = (VstEvents*)ptr_pvst_events.ToPointer();
-                pVSTEvents->numEvents = 0;
-                pVSTEvents->reserved = (VstIntPtr)0;
-
-                for ( int i = 0; i < nEvents; i++ ) {
-                    MIDI_EVENT pProcessEvent = lpEvents.get( process_event_count );
-                    byte event_code = pProcessEvent.pMidiEvent[0];
-                    VstEvent* pVSTEvent = (VstEvent*)0;
-                    VstMidiEvent* pMidiEvent;
-
-                    switch ( event_code ) {
-                        case 0xff:
-                        case 0xf0:
-                        case 0xf7:
-                            break;
-                        default:
-                            pMidiEvent = (VstMidiEvent*)Marshal.AllocHGlobal( (int)(sizeof( VstMidiEvent ) + pProcessEvent.dwDataSize * sizeof( byte )) ).ToPointer();
-                            pMidiEvent->byteSize = sizeof( VstMidiEvent );
-                            pMidiEvent->deltaFrames = dwDelta;
-                            pMidiEvent->detune = 0;
-                            pMidiEvent->flags = 1;
-                            pMidiEvent->noteLength = 0;
-                            pMidiEvent->noteOffset = 0;
-                            pMidiEvent->noteOffVelocity = 0;
-                            pMidiEvent->reserved1 = 0;
-                            pMidiEvent->reserved2 = 0;
-                            pMidiEvent->type = VstEventTypes.kVstMidiType;
-                            for ( int j = 0; j < pProcessEvent.dwDataSize; j++ ) {
-                                pMidiEvent->midiData[j] = pProcessEvent.pMidiEvent[pProcessEvent.dwOffset + j];
-                            }
-                            pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
-                            break;
+                    if ( g_cancelRequired ) {
+                        lpEvents.clear();
+                        exit_start_rendering();
+                        return FALSE;
                     }
-                    process_event_count++;
-                    //pProcessEvent = lpEvents[process_event_count];
-                }
 #if TEST
-                bocoree.debug.push_log( "calling Dispatch with effProcessEvents..." );
+                    bocoree.debug.push_log( "-----------------------------------------------------------------------" );
 #endif
-                aEffect.Dispatch( ref aEffect, AEffectXOpcodes.effProcessEvents, 0, 0, pVSTEvents, 0 );
+                    //MIDI_EVENT pProcessEvent = current;
+                    int process_event_count = current_count;
+                    int nEvents = 0;
+
 #if TEST
-                bocoree.debug.push_log( "...done" );
+                    bocoree.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
+#endif
+                    if ( current_count < 0 ) {
+                        current_count = 0;
+                        current = lpEvents.get( current_count );
+                        process_event_count = current_count;
+                    }
+                    while ( current.clock == dwNow ) {
+                        // durationを取得
+                        if ( (current.firstByte & 0xf0) == 0xb0 ) {
+                            switch ( current.data[0] ) {
+                                case 0x63:
+                                    addr_msb = current.data[1];
+                                    addr_lsb = 0;
+                                    break;
+                                case 0x62:
+                                    addr_lsb = current.data[1];
+                                    break;
+                                case 0x06:
+                                    data_msb = current.data[1];
+                                    break;
+                                case 0x26:
+                                    data_lsb = current.data[1];
+                                    // Note Duration in millisec
+                                    if ( addr_msb == 0x50 && addr_lsb == 0x4 ) {
+                                        duration = data_msb << 7 | data_lsb;
+#if TEST
+                                        bocoree.debug.push_log( "duration=" + duration );
+#endif
+                                    }
+                                    break;
+                            }
+                        }
+
+                        nEvents++;
+                        if ( current_count + 1 < lpEvents.size() ) {
+                            current_count++;
+                            current = lpEvents.get( current_count );
+                        } else {
+                            break;
+                        }
+                    }
+
+                    if ( current_count + 1 >= lpEvents.size() ) {
+                        break;
+                    }
+
+#if TEST
+                    bocoree.debug.push_log( "nEvents=" + nEvents );
+#endif
+                    double msNow = msec_from_clock( dwNow );
+                    dwDelta = (int)(msNow / 1000.0 * sampleRate) - total_processed;
+#if TEST
+                    bocoree.debug.push_log( "dwNow=" + dwNow );
+                    bocoree.debug.push_log( "dwPrev=" + dwPrev );
+                    bocoree.debug.push_log( "dwDelta=" + dwDelta );
+#endif
+                    VstEvents* pVSTEvents = (VstEvents*)mman.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
+                    pVSTEvents->numEvents = 0;
+                    pVSTEvents->reserved = (VstIntPtr)0;
+
+                    for ( int i = 0; i < nEvents; i++ ) {
+                        MidiEvent pProcessEvent = lpEvents.get( process_event_count );
+                        byte event_code = pProcessEvent.firstByte;
+                        VstEvent* pVSTEvent = (VstEvent*)0;
+                        VstMidiEvent* pMidiEvent;
+
+                        switch ( event_code ) {
+                            case 0xff:
+                            case 0xf0:
+                            case 0xf7:
+                                break;
+                            default:
+                                pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) );
+                                pMidiEvent->byteSize = sizeof( VstMidiEvent );
+                                pMidiEvent->deltaFrames = dwDelta;
+                                pMidiEvent->detune = 0;
+                                pMidiEvent->flags = 1;
+                                pMidiEvent->noteLength = 0;
+                                pMidiEvent->noteOffset = 0;
+                                pMidiEvent->noteOffVelocity = 0;
+                                pMidiEvent->reserved1 = 0;
+                                pMidiEvent->reserved2 = 0;
+                                pMidiEvent->type = VstEventTypes.kVstMidiType;
+                                pMidiEvent->midiData[0] = pProcessEvent.firstByte;
+                                for ( int j = 0; j < pProcessEvent.data.Length; j++ ) {
+                                    pMidiEvent->midiData[j + 1] = pProcessEvent.data[j];
+                                }
+                                pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
+                                break;
+                        }
+                        process_event_count++;
+                        //pProcessEvent = lpEvents[process_event_count];
+                    }
+#if TEST
+                    bocoree.debug.push_log( "calling Dispatch with effProcessEvents..." );
+#endif
+                    aEffect.Dispatch( ref aEffect, AEffectXOpcodes.effProcessEvents, 0, 0, pVSTEvents, 0 );
+#if TEST
+                    bocoree.debug.push_log( "...done" );
 #endif
 
+                    while ( dwDelta > 0 ) {
+                        if ( g_cancelRequired ) {
+                            lpEvents.clear();
+                            exit_start_rendering();
+                            return FALSE;
+                        }
+                        int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
+#if TEST
+                        bocoree.debug.push_log( "calling ProcessReplacing..." );
+#endif
+                        aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, dwFrames );
+#if TEST
+                        bocoree.debug.push_log( "...done" );
+#endif
+
+                        int iOffset = dwDelay - dwDeltaDelay;
+                        if ( iOffset > (int)dwFrames ) {
+                            iOffset = (int)dwFrames;
+                        }
+
+                        if ( iOffset == 0 ) {
+                            double[] send_data_l = new double[dwFrames];
+                            double[] send_data_r = new double[dwFrames];
+                            for ( int i = 0; i < (int)dwFrames; i++ ) {
+                                send_data_l[i] = out_buffer[0][i];
+                                send_data_r[i] = out_buffer[1][i];
+                            }
+                            WaveIncoming( send_data_l, send_data_r );
+                        } else {
+                            dwDeltaDelay += iOffset;
+                        }
+                        dwDelta -= dwFrames;
+                        total_processed += dwFrames;
+                    }
+
+                    dwPrev = dwNow;
+                    dwNow = (int)current.clock;
+                    g_progress = total_processed / (double)total_samples * 100.0;
+                }
+
+                double msLast = msec_from_clock( dwNow );
+                dwDelta = (int)(sampleRate * ((double)duration + (double)delay) / 1000.0 + dwDeltaDelay);
+                if ( total_samples - total_processed > dwDelta ) {
+                    dwDelta = (int)total_samples - total_processed;
+                }
                 while ( dwDelta > 0 ) {
                     if ( g_cancelRequired ) {
-                        Marshal.FreeHGlobal( ptr_left_ch );
-                        Marshal.FreeHGlobal( ptr_right_ch );
-                        Marshal.FreeHGlobal( ptr_outbuffer );
                         lpEvents.clear();
                         exit_start_rendering();
                         return FALSE;
@@ -419,90 +457,53 @@ namespace org.kbinani.cadencii {
                     bocoree.debug.push_log( "...done" );
 #endif
 
-                    int iOffset = dwDelay - dwDeltaDelay;
-                    if ( iOffset > (int)dwFrames ) {
-                        iOffset = (int)dwFrames;
+                    double[] send_data_l = new double[dwFrames];
+                    double[] send_data_r = new double[dwFrames];
+                    for ( int i = 0; i < (int)dwFrames; i++ ) {
+                        send_data_l[i] = out_buffer[0][i];
+                        send_data_r[i] = out_buffer[1][i];
                     }
+                    WaveIncoming( send_data_l, send_data_r );
+                    send_data_l = null;
+                    send_data_r = null;
 
-                    if ( iOffset == 0 ) {
-                        double[] send_data_l = new double[dwFrames];
-                        double[] send_data_r = new double[dwFrames];
-                        for ( int i = 0; i < (int)dwFrames; i++ ) {
-                            send_data_l[i] = out_buffer[0][i];
-                            send_data_r[i] = out_buffer[1][i];
-                        }
-                        WaveIncoming( send_data_l, send_data_r );
-                    } else {
-                        dwDeltaDelay += iOffset;
-                    }
                     dwDelta -= dwFrames;
                     total_processed += dwFrames;
                 }
 
-                Marshal.FreeHGlobal( ptr_pvst_events );
-
-                dwPrev = dwNow;
-                dwNow = (int)current.clock;
-                g_progress = total_processed / (double)total_samples * 100.0;
-            }
-
-            double msLast = msec_from_clock( dwNow );
-            dwDelta = (int)(sampleRate * ((double)duration + (double)delay) / 1000.0 + dwDeltaDelay);
-            if ( total_samples - total_processed > dwDelta ) {
-                dwDelta = (int)total_samples - total_processed;
-            }
-            while ( dwDelta > 0 ) {
-                if ( g_cancelRequired ) {
-                    lpEvents.clear();
-                    exit_start_rendering();
-                    return FALSE;
-                }
-                int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
-                bocoree.debug.push_log( "calling ProcessReplacing..." );
-#endif
-                aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, dwFrames );
-#if TEST
-                bocoree.debug.push_log( "...done" );
+                PortUtil.println( "vstidrv::StartRendering; total_processed=" + total_processed );
 #endif
 
-                double[] send_data_l = new double[dwFrames];
-                double[] send_data_r = new double[dwFrames];
-                for ( int i = 0; i < (int)dwFrames; i++ ) {
-                    send_data_l[i] = out_buffer[0][i];
-                    send_data_r[i] = out_buffer[1][i];
+                if ( mode_infinite ) {
+                    double[] silence_l = new double[blockSize];
+                    double[] silence_r = new double[blockSize];
+                    while ( !g_cancelRequired ) {
+                        /*s_aeffect.ProcessReplacing( ref s_aeffect, (float**)0, out_buffer, g_block_size );
+                        for ( int i = 0; i < g_block_size; i++ ) {
+                            silence_l[i] = out_buffer[0][i];
+                            silence_r[i] = out_buffer[1][i];
+                        }*/
+                        WaveIncoming( silence_l, silence_r );
+                    }
+                    silence_l = null;
+                    silence_r = null;
                 }
-                WaveIncoming( send_data_l, send_data_r );
-                send_data_l = null;
-                send_data_r = null;
 
-                dwDelta -= dwFrames;
-                total_processed += dwFrames;
-            }
-
-#if TEST
-            PortUtil.println( "vstidrv::StartRendering; total_processed=" + total_processed );
-#endif
-
-            if ( mode_infinite ) {
-                double[] silence_l = new double[blockSize];
-                double[] silence_r = new double[blockSize];
-                while ( !g_cancelRequired ) {
-                    /*s_aeffect.ProcessReplacing( ref s_aeffect, (float**)0, out_buffer, g_block_size );
-                    for ( int i = 0; i < g_block_size; i++ ) {
-                        silence_l[i] = out_buffer[0][i];
-                        silence_r[i] = out_buffer[1][i];
-                    }*/
-                    WaveIncoming( silence_l, silence_r );
+                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 0, (void*)0, 0 );
+                lpEvents.clear();
+                RenderingFinished( this, null );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VocaloidDriver#StartRendering; ex=" + ex );
+            } finally {
+                if ( mman != null ) {
+                    try {
+                        mman.dispose();
+                    } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "VocaloidDriver#StartRendering; ex2=" + ex2 );
+                    }
                 }
-                silence_l = null;
-                silence_r = null;
             }
-
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 0, (void*)0, 0 );
-            lpEvents.clear();
-            RenderingFinished( this, null );
-
             return 1;
         }
 
@@ -514,8 +515,8 @@ namespace org.kbinani.cadencii {
             return g_progress;
         }
 
-        private Vector<MIDI_EVENT> merge_events( Vector<MIDI_EVENT> x0, Vector<MIDI_EVENT> y0 ) {
-            Vector<MIDI_EVENT> ret = new Vector<MIDI_EVENT>();
+        private Vector<MidiEvent> merge_events( Vector<MidiEvent> x0, Vector<MidiEvent> y0 ) {
+            Vector<MidiEvent> ret = new Vector<MidiEvent>();
             for ( int i = 0; i < x0.size(); i++ ) {
                 ret.add( x0.get( i ) );
             }
@@ -527,7 +528,7 @@ namespace org.kbinani.cadencii {
                 changed = false;
                 for ( int i = 0; i < ret.size() - 1; i++ ) {
                     if ( ret.get( i ).CompareTo( ret.get( i + 1 ) ) > 0 ) {
-                        MIDI_EVENT m = ret.get( i );
+                        MidiEvent m = ret.get( i );
                         ret.set( i, ret.get( i + 1 ) );
                         ret.set( i + 1, m );
                         changed = true;
@@ -537,17 +538,6 @@ namespace org.kbinani.cadencii {
             }
             return ret;
         }
-
-        /*protected override VstIntPtr AudioMaster( AEffect* effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt ) {
-            VstIntPtr result = 0;
-
-            switch ( opcode ) {
-                case AudioMasterOpcodes.audioMasterVersion:
-                    result = Constants.kVstVersion;
-                    break;
-            }
-            return result;
-        }*/
     }
 
 }
