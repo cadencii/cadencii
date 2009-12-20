@@ -34,7 +34,7 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class UtauRenderingRunner implements RenderingRunner{
+    public class UtauRenderingRunner extends RenderingRunner{
 #else
     public class UtauRenderingRunner : RenderingRunner {
 #endif
@@ -43,32 +43,19 @@ namespace org.kbinani.cadencii {
         private static TreeMap<String, ValuePair<String, Double>> s_cache = new TreeMap<String, ValuePair<String, Double>>();
         
         private Vector<RenderQueue> m_resampler_queue = new Vector<RenderQueue>();
-        //private boolean m_abort_required = false;
         private double[] m_left;
         private double[] m_right;
         private double m_progress = 0.0;
-        //private boolean m_rendering = false;
-        //private Object m_locker;
 
         VsqFileEx m_vsq;
-        //int m_rendering_track;
         Vector<SingerConfig> m_singer_config_sys;
         String m_resampler;
         String m_wavtool;
         String m_temp_dir;
         boolean m_invoke_with_wine;
-        //int m_sample_rate;
-        //int m_trim_msec;
         boolean m_mode_infinite;
-        //WaveWriter m_wave_writer;
-        //double m_wave_read_offset_seconds;
-        //long m_total_append;
-        //Vector<WaveReader> m_reader;
-        //boolean m_direct_play;
-        //boolean m_reflect_amp_to_wave = false;
         double m_started_date;
         double m_running_rate;
-        //long m_total_samples;
 
         public UtauRenderingRunner( VsqFileEx vsq,
                                     int track_,
@@ -85,25 +72,25 @@ namespace org.kbinani.cadencii {
                                     double wave_read_offset_seconds,
                                     Vector<WaveReader> reader,
                                     boolean direct_play,
-                                    boolean reflect_amp_to_wave ): base( track_, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, reader, direct_play, trim_msec, total_samples, sample_rate ){
-            //m_locker = new Object();
+                                    boolean reflect_amp_to_wave )
+#if JAVA
+        {
+#else
+            :
+#endif
+            base( track_, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, reader, direct_play, trim_msec, total_samples, sample_rate )
+#if JAVA
+            ;
+#else
+        {
+#endif
             m_vsq = vsq;
-            //m_rendering_track = track_;
             m_singer_config_sys = singer_config_sys;
             m_resampler = resampler;
             m_wavtool = wavtool;
             m_temp_dir = temp_dir;
             m_invoke_with_wine = invoke_with_wine;
-            //m_sample_rate = sample_rate;
-            //m_trim_msec = trim_msec;
-            //totalSamples = total_samples;
             m_mode_infinite = mode_infinite;
-            //m_wave_writer = wave_writer;
-            //m_wave_read_offset_seconds = wave_read_offset_seconds;
-            //m_reader = reader;
-            //m_direct_play = direct_play;
-            //m_total_append = 0;
-            //m_reflect_amp_to_wave = reflect_amp_to_wave;
         }
 
         public override boolean isRendering() {
@@ -118,6 +105,7 @@ namespace org.kbinani.cadencii {
                 try {
                     PortUtil.deleteFile( file );
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "UtauRenderingRunner#clearCache; ex=" + ex );
                 }
             }
             s_cache.clear();
@@ -145,6 +133,7 @@ namespace org.kbinani.cadencii {
                 try {
                     readers.get( i ).close();
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "UtauRenderingRunner#abortRendering; ex=" + ex );
                 }
                 readers.set( i, null );
             }

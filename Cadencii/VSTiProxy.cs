@@ -22,13 +22,11 @@ import org.kbinani.vsq.*;
 #else
 //#define TEST
 using System;
-using System.IO;
 using System.Threading;
-using System.Windows.Forms;
-using org.kbinani.media;
-using org.kbinani.vsq;
 using bocoree;
 using bocoree.java.util;
+using org.kbinani.media;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -314,6 +312,7 @@ namespace org.kbinani.cadencii {
                                                                    reader,
                                                                    direct_play,
                                                                    reflect_amp_to_wave );
+#if ENABLE_AQUESTONE
             } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_AQT0 ) ){
                 s_rendering_context = new AquesToneRenderingRunner( aquesToneDriver,
                                                                     split,
@@ -328,6 +327,7 @@ namespace org.kbinani.cadencii {
                                                                     reader,
                                                                     direct_play,
                                                                     reflect_amp_to_wave );
+#endif
             } else {
 #if ENABLE_VOCALOID
                 VocaloidDriver driver = null;

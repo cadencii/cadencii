@@ -617,12 +617,17 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 最初のトラック以外の一般のメタテキストを構築。(Masterが作られない)
         /// </summary>
-#if JAVA
-        public VsqMetaText( String name, String singer ){
-            this( name, 0, singer, false );
-#else
         public VsqMetaText( String name, String singer )
-            : this( name, 0, singer, false ) {
+#if JAVA
+        {
+#else
+            :
+#endif
+            this( name, 0, singer, false )
+#if JAVA
+            ;
+#else
+        {
 #endif
         }
 
@@ -630,85 +635,45 @@ namespace org.kbinani.vsq {
         /// 最初のトラックのメタテキストを構築。(Masterが作られる)
         /// </summary>
         /// <param name="pre_measure"></param>
-#if JAVA
-        public VsqMetaText( String name, String singer, int pre_measure ){
-            this( name, pre_measure, singer, true );
-#else
         public VsqMetaText( String name, String singer, int pre_measure )
-            : this( name, pre_measure, singer, true ) {
+#if JAVA
+        {
+#else
+            :
+#endif
+            this( name, pre_measure, singer, true )
+#if JAVA
+            ;
+#else
+        {
 #endif
         }
 
         private VsqMetaText( String name, int pre_measure, String singer, boolean is_first_track ) {
             Common = new VsqCommon( name, 179, 181, 123, 1, 1 );
-            PIT = new VsqBPList( 0, -8192, 8191 );
-            //PIT.add( 0, PIT.getDefault() );
-
-            PBS = new VsqBPList( 2, 0, 24 );
-            //PBS.add( 0, PBS.getDefault() );
-
-            DYN = new VsqBPList( 64, 0, 127 );
-            //DYN.add( 0, DYN.getDefault() );
-
-            BRE = new VsqBPList( 0, 0, 127 );
-            //BRE.add( 0, BRE.getDefault() );
-
-            BRI = new VsqBPList( 64, 0, 127 );
-            //BRI.add( 0, BRI.getDefault() );
-
-            CLE = new VsqBPList( 0, 0, 127 );
-            //CLE.add( 0, CLE.getDefault() );
-
-            reso1FreqBPList = new VsqBPList( 64, 0, 127 );
-            //reso1FreqBPList.add( 0, reso1FreqBPList.getDefault() );
-
-            reso2FreqBPList = new VsqBPList( 64, 0, 127 );
-            //reso2FreqBPList.add( 0, reso2FreqBPList.getDefault() );
-
-            reso3FreqBPList = new VsqBPList( 64, 0, 127 );
-            //reso3FreqBPList.add( 0, reso3FreqBPList.getDefault() );
-
-            reso4FreqBPList = new VsqBPList( 64, 0, 127 );
-            //reso4FreqBPList.add( 0, reso4FreqBPList.getDefault() );
-
-            reso1BWBPList = new VsqBPList( 64, 0, 127 );
-            //reso1BWBPList.add( 0, reso1BWBPList.getDefault() );
-
-            reso2BWBPList = new VsqBPList( 64, 0, 127 );
-            //reso2BWBPList.add( 0, reso2BWBPList.getDefault() );
-
-            reso3BWBPList = new VsqBPList( 64, 0, 127 );
-            //reso3BWBPList.add( 0, reso3BWBPList.getDefault() );
-
-            reso4BWBPList = new VsqBPList( 64, 0, 127 );
-            //reso4BWBPList.add( 0, reso4BWBPList.getDefault() );
-
-            reso1AmpBPList = new VsqBPList( 64, 0, 127 );
-            //reso1AmpBPList.add( 0, reso1AmpBPList.getDefault() );
-
-            reso2AmpBPList = new VsqBPList( 64, 0, 127 );
-            //reso2AmpBPList.add( 0, reso2AmpBPList.getDefault() );
-
-            reso3AmpBPList = new VsqBPList( 64, 0, 127 );
-            //reso3AmpBPList.add( 0, reso3AmpBPList.getDefault() );
-
-            reso4AmpBPList = new VsqBPList( 64, 0, 127 );
-            //reso4AmpBPList.add( 0, reso4AmpBPList.getDefault() );
-
-            harmonics = new VsqBPList( 64, 0, 127 );
-            //harmonics.add( 0, harmonics.getDefault() );
-
-            fx2depth = new VsqBPList( 64, 0, 127 );
-
-            GEN = new VsqBPList( 64, 0, 127 );
-            //GEN.add( 0, GEN.getDefault() );
-
-            POR = new VsqBPList( 64, 0, 127 );
-            //POR.add( 0, POR.getDefault() );
-
-            OPE = new VsqBPList( 127, 0, 127 );
-            //OPE.add( 0, OPE.getDefault() );
-
+            PIT = new VsqBPList( "pit", 0, -8192, 8191 );
+            PBS = new VsqBPList( "pbs", 2, 0, 24 );
+            DYN = new VsqBPList( "dyn", 64, 0, 127 );
+            BRE = new VsqBPList( "bre", 0, 0, 127 );
+            BRI = new VsqBPList( "bri", 64, 0, 127 );
+            CLE = new VsqBPList( "cle", 0, 0, 127 );
+            reso1FreqBPList = new VsqBPList( "reso1freq", 64, 0, 127 );
+            reso2FreqBPList = new VsqBPList( "reso2freq", 64, 0, 127 );
+            reso3FreqBPList = new VsqBPList( "reso3freq", 64, 0, 127 );
+            reso4FreqBPList = new VsqBPList( "reso4freq", 64, 0, 127 );
+            reso1BWBPList = new VsqBPList( "reso1bw", 64, 0, 127 );
+            reso2BWBPList = new VsqBPList( "reso2bw", 64, 0, 127 );
+            reso3BWBPList = new VsqBPList( "reso3bw", 64, 0, 127 );
+            reso4BWBPList = new VsqBPList( "reso4bw", 64, 0, 127 );
+            reso1AmpBPList = new VsqBPList( "reso1amp", 64, 0, 127 );
+            reso2AmpBPList = new VsqBPList( "reso2amp", 64, 0, 127 );
+            reso3AmpBPList = new VsqBPList( "reso3amp", 64, 0, 127 );
+            reso4AmpBPList = new VsqBPList( "reso4amp", 64, 0, 127 );
+            harmonics = new VsqBPList( "harmonics", 64, 0, 127 );
+            fx2depth = new VsqBPList( "fx2depth", 64, 0, 127 );
+            GEN = new VsqBPList( "gen", 64, 0, 127 );
+            POR = new VsqBPList( "por", 64, 0, 127 );
+            OPE = new VsqBPList( "ope", 127, 0, 127 );
             if ( is_first_track ) {
                 master = new VsqMaster( pre_measure );
             } else {
@@ -732,29 +697,29 @@ namespace org.kbinani.vsq {
             Vector<ValuePair<Integer, Integer>> t_event_list = new Vector<ValuePair<Integer, Integer>>();
             TreeMap<Integer, VsqID> __id = new TreeMap<Integer, VsqID>();
             TreeMap<Integer, VsqHandle> __handle = new TreeMap<Integer, VsqHandle>();
-            PIT = new VsqBPList( 0, -8192, 8191 );
-            PBS = new VsqBPList( 2, 0, 24 );
-            DYN = new VsqBPList( 64, 0, 127 );
-            BRE = new VsqBPList( 0, 0, 127 );
-            BRI = new VsqBPList( 64, 0, 127 );
-            CLE = new VsqBPList( 0, 0, 127 );
-            reso1FreqBPList = new VsqBPList( 64, 0, 127 );
-            reso2FreqBPList = new VsqBPList( 64, 0, 127 );
-            reso3FreqBPList = new VsqBPList( 64, 0, 127 );
-            reso4FreqBPList = new VsqBPList( 64, 0, 127 );
-            reso1BWBPList = new VsqBPList( 64, 0, 127 );
-            reso2BWBPList = new VsqBPList( 64, 0, 127 );
-            reso3BWBPList = new VsqBPList( 64, 0, 127 );
-            reso4BWBPList = new VsqBPList( 64, 0, 127 );
-            reso1AmpBPList = new VsqBPList( 64, 0, 127 );
-            reso2AmpBPList = new VsqBPList( 64, 0, 127 );
-            reso3AmpBPList = new VsqBPList( 64, 0, 127 );
-            reso4AmpBPList = new VsqBPList( 64, 0, 127 );
-            harmonics = new VsqBPList( 64, 0, 127 );
-            fx2depth = new VsqBPList( 64, 0, 127 );
-            GEN = new VsqBPList( 64, 0, 127 );
-            POR = new VsqBPList( 64, 0, 127 );
-            OPE = new VsqBPList( 127, 0, 127 );
+            PIT = new VsqBPList( "pit", 0, -8192, 8191 );
+            PBS = new VsqBPList( "pbs", 2, 0, 24 );
+            DYN = new VsqBPList( "dyn", 64, 0, 127 );
+            BRE = new VsqBPList( "bre", 0, 0, 127 );
+            BRI = new VsqBPList( "bri", 64, 0, 127 );
+            CLE = new VsqBPList( "cle", 0, 0, 127 );
+            reso1FreqBPList = new VsqBPList( "reso1freq", 64, 0, 127 );
+            reso2FreqBPList = new VsqBPList( "reso2freq", 64, 0, 127 );
+            reso3FreqBPList = new VsqBPList( "reso3freq", 64, 0, 127 );
+            reso4FreqBPList = new VsqBPList( "reso4freq", 64, 0, 127 );
+            reso1BWBPList = new VsqBPList( "reso1bw", 64, 0, 127 );
+            reso2BWBPList = new VsqBPList( "reso2bw", 64, 0, 127 );
+            reso3BWBPList = new VsqBPList( "reso3bw", 64, 0, 127 );
+            reso4BWBPList = new VsqBPList( "reso4bw", 64, 0, 127 );
+            reso1AmpBPList = new VsqBPList( "reso1amp", 64, 0, 127 );
+            reso2AmpBPList = new VsqBPList( "reso2amp", 64, 0, 127 );
+            reso3AmpBPList = new VsqBPList( "reso3amp", 64, 0, 127 );
+            reso4AmpBPList = new VsqBPList( "reso4amp", 64, 0, 127 );
+            harmonics = new VsqBPList( "harmonics", 64, 0, 127 );
+            fx2depth = new VsqBPList( "fx2depth", 64, 0, 127 );
+            GEN = new VsqBPList( "gen", 64, 0, 127 );
+            POR = new VsqBPList( "por", 64, 0, 127 );
+            OPE = new VsqBPList( "ope", 127, 0, 127 );
 
             ByRef<String> last_line = new ByRef<String>( sr.readLine() );
             while ( true ) {

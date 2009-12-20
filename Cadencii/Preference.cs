@@ -59,9 +59,6 @@ namespace org.kbinani.cadencii {
         private static int columnWidthHeaderName = 100;
         private static int columnWidthHeaderPath = 250;
         private BFontChooser fontDialog;
-        private BTextBox txtAquesTone;
-        private BLabel lblAquesTone;
-        private BButton btnAquesTone;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -3128,6 +3125,9 @@ namespace org.kbinani.cadencii {
         private BComboBox comboAutoVibratoType2;
         private BLabel lblAutoVibratoType2;
         private BCheckBox chkUseSpaceKeyAsMiddleButtonModifier;
+        private BTextBox txtAquesTone;
+        private BLabel lblAquesTone;
+        private BButton btnAquesTone;
         #endregion
 #endif
     }

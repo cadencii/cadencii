@@ -1,5 +1,4 @@
-﻿#if ENABLE_AQUESTONE
-/*
+﻿/*
  * AquesToneDriver.cs
  * Copyright (c) 2009 kbinani
  *
@@ -12,6 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+import org.kbinani.vsq.*;
+#else
 using System;
 using System.Text;
 using org.kbinani.vsq;
@@ -22,8 +26,13 @@ using VstSdk;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class AquesToneDriver{
+#else
     public class AquesToneDriver : vstidrv {
+#endif
         public static readonly String[] PHONES = new String[] { 
             "ア", "イ", "ウ", "エ", "オ",
             "カ", "キ", "ク", "ケ", "コ",
@@ -58,16 +67,18 @@ namespace org.kbinani.cadencii {
             "スィ", "ティ", "ズィ", "ディ",
             "トゥ", "ドゥ", "デュ", "テュ",
         };
-        private static readonly SingerConfig female_f1 = new SingerConfig() { VOICENAME = "Female_F1", Program = 0, Original = 0 };
-        private static readonly SingerConfig male_hk = new SingerConfig() { VOICENAME = "Male_HK", Program = 1, Original = 1 };
-        private static readonly SingerConfig auto_f1 = new SingerConfig() { VOICENAME = "Auto_F1", Program = 2, Original = 2 };
-        private static readonly SingerConfig auto_hk = new SingerConfig() { VOICENAME = "Auto_HK", Program = 3, Original = 3 };
+        private static readonly SingerConfig female_f1 = new SingerConfig( "Female_F1", 0, 0 );
+        private static readonly SingerConfig auto_f1 = new SingerConfig( "Auto_F1", 1, 1 );
+        private static readonly SingerConfig male_hk = new SingerConfig( "Male_HK", 2, 2 );
+        private static readonly SingerConfig auto_hk = new SingerConfig( "Auto_HK", 3, 3 );
 
-        public static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, male_hk, auto_f1, auto_hk };
+        public static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, auto_f1, male_hk, auto_hk };
 
+#if ENABLE_AQUESTONE
         private Dimension uiWindowRect = new Dimension( 373, 158 );
 
         public System.Windows.Forms.Form pluginUi = null;
+        public int phontParameterIndex = 0;
 
         public override boolean open( string dll_path, int block_size, int sample_rate ) {
             int strlen = 260;
@@ -103,10 +114,22 @@ namespace org.kbinani.cadencii {
                 updatePluginUiRect();
                 pluginUi.ClientSize = new System.Drawing.Size( uiWindowRect.width, uiWindowRect.height );
                 pluginUi.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-#if DEBUG
                 for ( int i = 0; i < aEffect.numParams; i++ ) {
-                    PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) );
+                    String name = getParameterName( i ).Trim();
+                    if ( name.ToLower().StartsWith( "phont" ) ) {
+                        phontParameterIndex = i;
+#if !DEBUG
+                        break;
+#endif
+                    }
+#if DEBUG
+                    PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) + "; value=" + getParameter( i ) );
+#endif
                 }
+#if DEBUG
+                pluginUi.Show();
+                PortUtil.stdout.println( "AquesToneDriver#open; phontParameterIndex=" + phontParameterIndex );
+                pluginUi.SizeChanged += new EventHandler( pluginUi_SizeChanged );
 #endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
@@ -117,6 +140,14 @@ namespace org.kbinani.cadencii {
             }
             return ret;
         }
+
+#if DEBUG
+        void pluginUi_SizeChanged( object sender, EventArgs e ) {
+            for ( int i = 0; i < aEffect.numParams; i++ ) {
+                PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) + "; value=" + getParameter( i ) );
+            }
+        }
+#endif
 
         private void updatePluginUiRect() {
             if ( pluginUi != null ) {
@@ -161,7 +192,9 @@ namespace org.kbinani.cadencii {
             }
             return ret;
         }
+#endif
     }
 
+#if !JAVA
 }
 #endif

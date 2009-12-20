@@ -71,7 +71,7 @@ namespace org.kbinani.vsq {
             : this( "Miku", 1, 4, 4, ust.getBaseTempo() ) {
 #endif
             int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
-            VsqBPList pitch = new VsqBPList( 0, -2400, 2400 ); // ノートナンバー×100
+            VsqBPList pitch = new VsqBPList( "", 0, -2400, 2400 ); // ノートナンバー×100
             for ( Iterator itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent ue = (UstEvent)itr.next();
                 if ( ue.Lyric != "R" ) {
@@ -116,8 +116,8 @@ namespace org.kbinani.vsq {
             //double offset = AttachedCurves[track - 1].MasterTuningInCent * 100;
             //Vector<Integer> keyclocks = new Vector<Integer>( pitch.getKeys() );
             int keyclock_size = pitch.size();
-            VsqBPList pit = new VsqBPList( 0, -8192, 8191 );
-            VsqBPList pbs = new VsqBPList( 2, 0, 24 );
+            VsqBPList pit = new VsqBPList( "pit", 0, -8192, 8191 );
+            VsqBPList pbs = new VsqBPList( "pbs", 2, 0, 24 );
             int premeasure_clock = vsq.getPreMeasureClocks();
             int lastpit = pit.getDefault();
             int lastpbs = pbs.getDefault();
@@ -1429,7 +1429,7 @@ namespace org.kbinani.vsq {
                     }
                     // 順番に+=dclockしていくとVsqBPList内部のSortedListの値がかぶる可能性がある．
                     VsqBPList edit = vsq.Track.get( track ).getCurve( curve );
-                    VsqBPList new_one = new VsqBPList( edit.getDefault(), edit.getMinimum(), edit.getMaximum() );
+                    VsqBPList new_one = new VsqBPList( edit.getName(), edit.getDefault(), edit.getMinimum(), edit.getMaximum() );
                     for ( Iterator itr2 = edit.keyClockIterator(); itr2.hasNext(); ) {
                         int key = (Integer)itr2.next();
                         new_one.add( key + dclock, edit.getValue( key ) );
@@ -2893,7 +2893,7 @@ namespace org.kbinani.vsq {
             return res.toArray( new VsqNrpn[] { } );
         }
 
-        private static ValuePair<Byte, Byte> getMsbAndLsb( int value ) {
+        public static ValuePair<Byte, Byte> getMsbAndLsb( int value ) {
             ValuePair<Byte, Byte> ret = new ValuePair<Byte, Byte>();
             if ( 0x3fff < value ) {
                 ret.setKey( (byte)0x7f );

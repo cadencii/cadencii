@@ -40,6 +40,7 @@ namespace org.kbinani.vsq {
         private int m_maximum = 127;
         private int m_minimum = 0;
         private long m_max_id = 0;
+        private String name = "";
 
         class KeyClockIterator : Iterator {
             private VsqBPList m_list;
@@ -72,24 +73,29 @@ namespace org.kbinani.vsq {
             }
         }
 
-
         /// <summary>
         /// コンストラクタ。デフォルト値はココで指定する。
         /// </summary>
         /// <param name="default_value"></param>
-        public VsqBPList( int default_value, int minimum, int maximum ) {
+        public VsqBPList( String name, int default_value, int minimum, int maximum ) {
+            this.name = name;
             m_default = default_value;
             m_maximum = maximum;
             m_minimum = minimum;
             m_max_id = 0;
         }
 
-#if JAVA
-        public VsqBPList(){
-            this( 0, 0, 64 );
-#else
         public VsqBPList()
-            : this( 0, 0, 64 ) {
+#if JAVA
+        {
+#else
+            :
+#endif
+            this( "", 0, 0, 64 )
+#if JAVA
+            ;
+#else
+        {
 #endif
         }
 
@@ -100,6 +106,32 @@ namespace org.kbinani.vsq {
             }
             set {
                 setDefault( value );
+            }
+        }
+#endif
+
+        public String getName() {
+            if ( name == null ) {
+                name = "";
+            }
+            return name;
+        }
+
+        public void setName( String value ) {
+            if ( value == null ) {
+                name = "";
+            } else {
+                name = value;
+            }
+        }
+
+#if !JAVA
+        public String Name{
+            get{
+                return getName();
+            }
+            set{
+                setName( value );
             }
         }
 #endif
@@ -188,7 +220,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <returns></returns>
         public Object clone() {
-            VsqBPList res = new VsqBPList( m_default, m_minimum, m_maximum );
+            VsqBPList res = new VsqBPList( name, m_default, m_minimum, m_maximum );
             int count = m_clock.size();
             for ( int i = 0; i < count; i++ ) {
                 res.m_clock.add( m_clock.get( i ) );
@@ -401,7 +433,7 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             writer.writeLine( header );
             int c = m_clock.size();
             for ( int i = 0; i < c; i++ ) {
@@ -421,7 +453,7 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             printCor( new WrappedStreamWriter( writer ), start, header );
         }
 
@@ -433,7 +465,7 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             printCor( writer, start, header );
         }
 

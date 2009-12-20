@@ -5398,6 +5398,12 @@ namespace org.kbinani.cadencii {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) ) );
             } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) ) );
+            } else if ( renderer.StartsWith( VSTiProxy.RENDERER_AQT0 ) ){
+                items = new Vector<SingerConfig>();
+                int c = AquesToneDriver.SINGERS.Length;
+                for( int i = 0; i < c; i++ ){
+                    items.add( AppManager.getSingerInfoAquesTone( i ) );
+                }
             } else {
                 return;
             }
@@ -5406,13 +5412,11 @@ namespace org.kbinani.cadencii {
                 SingerConfig sc = (SingerConfig)itr.next();
                 String tip = "";
                 if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) || renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
-                    //sc = AppManager.getSingerInfoUtau( i );
                     if ( sc != null ) {
                         tip = "Name: " + sc.VOICENAME +
                               "\nDirectory: " + sc.VOICEIDSTR;
                     }
                 } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
-                    //sc = VocaloSysUtil.getSingerInfo1( i );
                     if ( sc != null ) {
                         tip = "Original: " + VocaloSysUtil.getOriginalSinger( sc.VOICENAME, SynthesizerType.VOCALOID1 ) +
                               "\nHarmonics: " + sc.Harmonics +
@@ -5426,7 +5430,6 @@ namespace org.kbinani.cadencii {
                               "\nReso4(Freq,BandWidth,Amp): " + sc.Resonance4Frequency + ", " + sc.Resonance4BandWidth + ", " + sc.Resonance4Amplitude;
                     }
                 } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
-                    //sc = VocaloSysUtil.getSingerInfo2( i );
                     if ( sc != null ) {
                         tip = "Original: " + VocaloSysUtil.getOriginalSinger( sc.VOICENAME, SynthesizerType.VOCALOID2 ) +
                               "\nBreathiness: " + sc.Breathiness +
@@ -5434,6 +5437,10 @@ namespace org.kbinani.cadencii {
                               "\nClearness: " + sc.Clearness +
                               "\nGender Factor: " + sc.GenderFactor +
                               "\nOpening: " + sc.Opening;
+                    }
+                } else if ( renderer.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                    if ( sc != null ) {
+                        tip = "Name: " + sc.VOICENAME;
                     }
                 }
                 if ( sc != null ) {
@@ -5552,6 +5559,8 @@ namespace org.kbinani.cadencii {
                     item = VocaloSysUtil.getSingerID( singer, SynthesizerType.VOCALOID2 );
                 } else if ( m_cmenu_singer_prepared.StartsWith( VSTiProxy.RENDERER_UTU0 ) || m_cmenu_singer_prepared.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
                     item = AppManager.getSingerIDUtau( singer );
+                } else if ( m_cmenu_singer_prepared.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                    item = AppManager.getSingerIDAquesTone( singer );
                 }
                 if ( item != null ) {
                     if ( tag.SingerChangeExists ) {

@@ -1,6 +1,6 @@
 ﻿#if ENABLE_VOCALOID
 /*
- * VocaloRenderingRunner.cs
+ * VocaloidRenderingRunner.cs
  * Copyright (c) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -28,34 +28,14 @@ namespace org.kbinani.cadencii {
         public String renderer;
         public NrpnData[] nrpn;
         public TempoTableEntry[] tempo;
-        //public double amplify_left;
-        //public double amplify_right;
-        //public int trim_msec;
-        //public long total_samples;
-        //public double wave_read_offset_seconds;
         public boolean mode_infinite;
         public VocaloidDriver driver;
-        //public boolean m_direct_play;
-        //public WaveWriter wave_writer;
 
-        //private Vector<WaveReader> m_reader = new Vector<WaveReader>();
-        //private Object m_locker;
-        //private int m_trim_remain;
-        //private boolean m_rendering;
-        //private long m_total_append = 0;
-        //private int m_rendering_track = 1;
-        /// <summary>
-        /// wave_writerに，Feder値を反映させた波形を出力するかどうか．
-        /// menuFileExportWaveで出力した場合はtrue，そのほかの場合はキャッシュに書き込むので，falseにしておく．
-        /// </summary>
-        //private bool m_reflect_amp_to_wave = false;
         private double m_started_date;
 
         public VocaloidRenderingRunner( String renderer_,
                                 NrpnData[] nrpn_,
                                 TempoTableEntry[] tempo_,
-                                //double amplify_left_,
-                                //double amplify_right_,
                                 int trim_msec_,
                                 long total_samples_,
                                 double wave_read_offset_seconds_,
@@ -66,23 +46,23 @@ namespace org.kbinani.cadencii {
                                 Vector<WaveReader> reader_,
                                 int rendering_track,
                                 boolean reflect_amp_to_wave,
-                                int sample_rate ) : base( rendering_track, reflect_amp_to_wave, wave_writer_, wave_read_offset_seconds_, reader_, direct_play_, trim_msec_, total_samples_, sample_rate ) {
-            //m_locker = new Object();
+                                int sample_rate )
+#if JAVA
+        {
+#else
+            :
+#endif
+            base( rendering_track, reflect_amp_to_wave, wave_writer_, wave_read_offset_seconds_, reader_, direct_play_, trim_msec_, total_samples_, sample_rate )
+#if JAVA
+            ;
+#else
+        {
+#endif
             renderer = renderer_;
             nrpn = nrpn_;
             tempo = tempo_;
-            //amplify_left = amplify_left_;
-            //amplify_right = amplify_right_;
-            //trim_msec = trim_msec_;
-            //totalSamples = total_samples_;
-            //wave_read_offset_seconds = wave_read_offset_seconds_;
             mode_infinite = mode_infinite_;
             driver = driver_;
-            //m_direct_play = direct_play_;
-            //wave_writer = wave_writer_;
-            //m_reader = reader_;
-            //m_rendering_track = rendering_track;
-            //m_reflect_amp_to_wave = reflect_amp_to_wave;
 
             float first_tempo = 125.0f;
             if ( tempo.Length > 0 ) {

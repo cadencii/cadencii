@@ -13,6 +13,10 @@
  */
 #if JAVA
 package org.kbinani.cadencii;
+
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.media.*;
 #else
 using System;
 using org.kbinani.media;
@@ -25,7 +29,7 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public abstract class RenderingRunner extends Runnable {
+    public abstract class RenderingRunner implements Runnable {
 #else
     public abstract class RenderingRunner : Runnable {
 #endif
@@ -40,11 +44,18 @@ namespace org.kbinani.cadencii {
         protected Object m_locker = null;
         protected boolean m_rendering = false;
         protected long totalSamples = 0;
+        /// <summary>
+        /// WaveIncomingで追加されたサンプル数
+        /// </summary>
         protected long m_total_append = 0;
         protected int m_trim_remain = 0;
         protected boolean m_abort_required = false;
 
         protected int renderingTrack = 0;
+        /// <summary>
+        /// wave_writerに，Feder値を反映させた波形を出力するかどうか．
+        /// menuFileExportWaveで出力した場合はtrue，そのほかの場合はキャッシュに書き込むので，falseにしておく．
+        /// </summary>
         protected boolean reflectAmp2Wave;
         protected WaveWriter waveWriter;
         protected double waveReadOffsetSeconds;

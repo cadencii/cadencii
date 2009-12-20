@@ -34,7 +34,7 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class StraightRenderingRunner implements RenderingRunner{
+    public class StraightRenderingRunner extends RenderingRunner{
 #else
     public class StraightRenderingRunner : RenderingRunner {
 #endif
@@ -43,27 +43,11 @@ namespace org.kbinani.cadencii {
         private static TreeMap<String, Double> s_cache = new TreeMap<String, Double>();
         const int TEMPO = 120;
 
-        //boolean m_rendering = false;
         Vector<StraightRenderingQueue> m_queue;
         Vector<SingerConfig> m_singer_config_sys;
         double m_progress_percent = 0.0;
-        //int m_rendering_track = 1;
-        //boolean m_reflect_amp_to_wave = false;
-        //WaveWriter m_wave_writer = null;
-        //Vector<WaveReader> m_reader;
-        //boolean m_direct_play = false;
-        //double m_wave_read_offset_seconds;
-        /// <summary>
-        /// WaveIncomingで追加されたサンプル数
-        /// </summary>
-        //long m_total_append = 0;
-        //boolean m_abort_required = false;
         boolean m_mode_infinite;
-        //double m_trim_msec;
-        //int m_sample_rate;
-        //long m_total_samples;
 
-        //int m_trim_remain = 0;
         TreeMap<String, UtauVoiceDB> m_voicedb_configs = new TreeMap<String, UtauVoiceDB>();
         long m_vsq_length_samples;
         double m_started_date;
@@ -71,7 +55,6 @@ namespace org.kbinani.cadencii {
         /// 現在の処理速度．progress%/sec
         /// </summary>
         double m_running_rate;
-        //Object m_locker = null;
 
         public StraightRenderingRunner( VsqFileEx vsq,
                                         int track,
@@ -84,24 +67,34 @@ namespace org.kbinani.cadencii {
                                         double wave_read_offset_seconds,
                                         Vector<WaveReader> wave_reader,
                                         boolean direct_play,
-                                        boolean reflect_amp_to_wave ) : base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, wave_reader, direct_play, trim_msec, total_samples, sample_rate ) {
+                                        boolean reflect_amp_to_wave )
+#if JAVA
+        {
+#else
+            :
+#endif
+            base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, wave_reader, direct_play, trim_msec, total_samples, sample_rate )
+#if JAVA
+            ;
+#else
+        {
+#endif
             m_locker = new Object();
             m_queue = new Vector<StraightRenderingQueue>();
             m_singer_config_sys = singer_config_sys;
-            renderingTrack = track;
-            reflectAmp2Wave = reflect_amp_to_wave;
-            waveWriter = wave_writer;
-            if ( wave_reader == null ) {
+            //renderingTrack = track;
+            //reflectAmp2Wave = reflect_amp_to_wave;
+            //waveWriter = wave_writer;
+            /*if ( wave_reader == null ) {
                 readers = new Vector<WaveReader>();
             } else {
                 readers = wave_reader;
-            }
-            directPlay = direct_play;
-            waveReadOffsetSeconds = wave_read_offset_seconds;
+            }*/
+            //directPlay = direct_play;
+            //waveReadOffsetSeconds = wave_read_offset_seconds;
             m_mode_infinite = mode_infinite;
-            trimMillisec = trim_msec;
-            //totalSamples = total_samples;
-            sampleRate = sample_rate;
+            //trimMillisec = trim_msec;
+            //sampleRate = sample_rate;
             int midi_tempo = 60000000 / TEMPO;
             VsqFileEx work = (VsqFileEx)vsq.clone();
             VsqFile tempo = new VsqFile( "Miku", 1, 4, 4, midi_tempo );

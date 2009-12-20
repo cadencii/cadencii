@@ -3118,7 +3118,7 @@ namespace org.kbinani.cadencii {
                     }
 
                     // src_clock_startからsrc_clock_endの範囲にあるデータ点をコピー＆削除
-                    VsqBPList copied = new VsqBPList( bplist.getDefault(), bplist.getMinimum(), bplist.getMaximum() );
+                    VsqBPList copied = new VsqBPList( bplist.getName(), bplist.getDefault(), bplist.getMinimum(), bplist.getMaximum() );
                     int size = bplist.size();
                     for ( int j = size - 1; j >= 0; j-- ) {
                         int clock = bplist.getKeyClock( j );
@@ -4943,7 +4943,7 @@ namespace org.kbinani.cadencii {
                         if ( item == null ) {
                             continue;
                         }
-                        VsqBPList repl = new VsqBPList( item.getDefault(), item.getMinimum(), item.getMaximum() );
+                        VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
                         for ( int i = 0; i < item.size(); i++ ) {
                             int clock = item.getKeyClock( i );
                             int value = item.getElement( i );
@@ -7727,6 +7727,8 @@ namespace org.kbinani.cadencii {
             menuTrackRendererUtau.setSelected( false );
             cMenuTrackTabRendererStraight.setSelected( false );
             menuTrackRendererStraight.setSelected( false );
+            cMenuTrackTabRendererAquesTone.setSelected( false );
+            menuTrackRendererAquesTone.setSelected( false );
 
             String version = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
             if ( version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
@@ -7741,6 +7743,9 @@ namespace org.kbinani.cadencii {
             } else if ( version.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
                 cMenuTrackTabRendererStraight.setSelected( true );
                 menuTrackRendererStraight.setSelected( true );
+            } else if ( version.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                cMenuTrackTabRendererAquesTone.setSelected( true );
+                menuTrackRendererAquesTone.setSelected( true );
             }
         }
 
@@ -9126,7 +9131,7 @@ namespace org.kbinani.cadencii {
                     if ( item == null ) {
                         continue;
                     }
-                    VsqBPList repl = new VsqBPList( item.getDefault(), item.getMinimum(), item.getMaximum() );
+                    VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
                     for ( int i = 0; i < item.size(); i++ ) {
                         int clock = item.getKeyClock( i );
                         int value = item.getElement( i );
@@ -9388,6 +9393,7 @@ namespace org.kbinani.cadencii {
                 cMenuTrackTabRendererVOCALOID1.setIcon( null );
                 menuTrackRendererVOCALOID1.setIcon( null );
             }
+
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_DSB3 ) ) {
                 cMenuTrackTabRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
@@ -9395,6 +9401,7 @@ namespace org.kbinani.cadencii {
                 cMenuTrackTabRendererVOCALOID2.setIcon( null );
                 menuTrackRendererVOCALOID2.setIcon( null );
             }
+
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_UTU0 ) ) {
                 cMenuTrackTabRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
@@ -9402,12 +9409,21 @@ namespace org.kbinani.cadencii {
                 cMenuTrackTabRendererUtau.setIcon( null );
                 menuTrackRendererUtau.setIcon( null );
             }
+
             if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_STR0 ) ) {
                 cMenuTrackTabRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
                 cMenuTrackTabRendererStraight.setIcon( null );
                 menuTrackRendererStraight.setIcon( null );
+            }
+
+            if ( !VSTiProxy.isRendererAvailable( VSTiProxy.RENDERER_AQT0 ) ) {
+                cMenuTrackTabRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
+            } else {
+                cMenuTrackTabRendererAquesTone.setIcon( null );
+                menuTrackRendererAquesTone.setIcon( null );
             }
         }
 
@@ -12208,7 +12224,7 @@ namespace org.kbinani.cadencii {
                                   start_clock,
                                   end_clock,
                                   tmp_bezier );
-                    VsqBPList tmp_bplist = new VsqBPList( list.getDefault(), list.getMinimum(), list.getMaximum() );
+                    VsqBPList tmp_bplist = new VsqBPList( list.getName(), list.getDefault(), list.getMinimum(), list.getMaximum() );
                     int c = list.size();
                     for ( int j = 0; j < c; j++ ) {
                         int clock = list.getKeyClock( j );
@@ -12284,7 +12300,7 @@ namespace org.kbinani.cadencii {
                     CurveType curve = trackSelector.getSelectedCurve();
                     VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
                     if ( list != null ) {
-                        VsqBPList tmp_bplist = new VsqBPList( list.getDefault(), list.getMinimum(), list.getMaximum() );
+                        VsqBPList tmp_bplist = new VsqBPList( list.getName(), list.getDefault(), list.getMinimum(), list.getMaximum() );
                         int c = list.size();
                         for ( int i = 0; i < c; i++ ) {
                             int clock = list.getKeyClock( i );
@@ -12302,7 +12318,7 @@ namespace org.kbinani.cadencii {
                     CurveType curve = trackSelector.getSelectedCurve();
                     VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
                     if ( list != null ) {
-                        VsqBPList tmp_bplist = new VsqBPList( curve.getDefault(), curve.getMinimum(), curve.getMaximum() );
+                        VsqBPList tmp_bplist = new VsqBPList( curve.getName(), curve.getDefault(), curve.getMinimum(), curve.getMaximum() );
                         for ( Iterator itr = AppManager.getSelectedPointIDIterator(); itr.hasNext(); ) {
                             long id = (Long)itr.next();
                             VsqBPPairSearchContext cxt = list.findElement( id );

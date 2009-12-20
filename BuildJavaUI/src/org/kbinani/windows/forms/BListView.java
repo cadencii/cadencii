@@ -16,9 +16,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import org.kbinani.BEvent;
+import org.kbinani.BEventArgs;
+import org.kbinani.BEventHandler;
 
 public class BListView extends JPanel implements MouseMotionListener{
     private static final long serialVersionUID = -8159742081426120737L;
@@ -33,7 +38,8 @@ public class BListView extends JPanel implements MouseMotionListener{
     private JLabel label = null;
     private String[] headers;
 
-    class Group extends JScrollPane{
+    class Group extends JScrollPane implements ListSelectionListener{
+        private static final long serialVersionUID = 1L;
         public JTable table;
         public DefaultTableModel tableModel;
         private boolean isColumnModelUpdated = true;
@@ -45,7 +51,7 @@ public class BListView extends JPanel implements MouseMotionListener{
             super();
             setName( groupTitle );
             tableModel = new DefaultTableModel(){
-                             public boolean isCellEditable(int row, int column) {
+                            public boolean isCellEditable(int row, int column) {
                                  if( isCheckBoxes && column == 0 ){
                                      return true;
                                  }else{
@@ -54,6 +60,7 @@ public class BListView extends JPanel implements MouseMotionListener{
                              }
                          }; 
             table = new JTable();
+            table.getSelectionModel().addListSelectionListener( this );
             table.setModel( tableModel );
             table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
             setPreferredSize( new Dimension( 200, 100 ) );
@@ -172,10 +179,10 @@ public class BListView extends JPanel implements MouseMotionListener{
         public int getColumnHeight( int index ){
             return table.getColumnModel().getColumn( index + 1 ).getWidth();
         }
-        /*public void setColumnHeaderView( Component view ){
-            headerView = view;
-            System.out.println( view );
-        }*/
+
+        public void valueChanged( ListSelectionEvent e ){
+            handleListSelection( this, e );
+        }
     }
     
     private class CheckCellRenderer extends DefaultTableCellRenderer{
@@ -229,7 +236,23 @@ public class BListView extends JPanel implements MouseMotionListener{
         initialize();
         addGroup( "" );   
     }
-
+    
+    public BEvent<BEventHandler> selectedIndexChangedEvent = new BEvent<BEventHandler>();
+    private void handleListSelection( Group g, ListSelectionEvent e ){
+        int c = groups.size();
+        for( int i = 0; i < c; i++ ){
+            Group gr = groups.get( i );
+            if ( gr != g ){
+                gr.table.clearSelection();
+            }
+        }
+        try{
+            selectedIndexChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BListView#handleListSelection; ex=" + ex );
+        }
+    }
+    
     public void ensureRowVisible( String group, int row ){
         Group g = getGroupFromName( group );
         g.table.scrollRectToVisible( g.table.getCellRect( row, 0, true ) );

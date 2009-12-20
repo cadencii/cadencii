@@ -59,6 +59,12 @@ namespace org.kbinani.vsq {
         public SingerConfig() {
         }
 
+        public SingerConfig( String voiceName, int program, int original ) {
+            VOICENAME = voiceName;
+            Program = program;
+            Original = original;
+        }
+
         public Object clone() {
             SingerConfig ret = new SingerConfig();
             ret.ID = ID;

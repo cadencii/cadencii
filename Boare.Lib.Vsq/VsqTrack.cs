@@ -279,11 +279,13 @@ namespace org.kbinani.vsq {
                     sw.newLine();
                 }
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VsqTrack#printMetaText; ex=" + ex );
             } finally {
                 if ( sw != null ) {
                     try {
                         sw.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "VsqTrack#printMetaText; ex2=" + ex2 );
                     }
                 }
             }

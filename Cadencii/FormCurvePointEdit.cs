@@ -130,7 +130,7 @@ namespace org.kbinani.cadencii {
             m_changed = false;
         }
 
-        private void commonTextBox_KeyUp( Object sender, BKeyEventArgs e ) {
+        public void commonTextBox_KeyUp( Object sender, BKeyEventArgs e ) {
 #if JAVA
             if ( (e.KeyValue & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ) {
 #else
@@ -141,7 +141,7 @@ namespace org.kbinani.cadencii {
             applyValue( (sender == txtDataPointClock) );
         }
 
-        private void commonButton_Click( Object sender, BEventArgs e ) {
+        public void commonButton_Click( Object sender, BEventArgs e ) {
             VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() );
             VsqBPPairSearchContext search = list.findElement( m_editing_id );
             int index = search.index;
@@ -198,15 +198,15 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnApply_Click( Object sender, BEventArgs e ) {
+        public void btnApply_Click( Object sender, BEventArgs e ) {
             applyValue( true );
         }
 
-        private void commonTextBox_TextChanged( Object sender, BEventArgs e ) {
+        public void commonTextBox_TextChanged( Object sender, BEventArgs e ) {
             m_changed = true;
         }
 
-        private void handleUndoRedo_Click( Object sender, BEventArgs e ) {
+        public void handleUndoRedo_Click( Object sender, BEventArgs e ) {
             if ( sender == btnUndo ) {
                 AppManager.undo();
             } else if ( sender == btnRedo ) {
@@ -245,7 +245,7 @@ namespace org.kbinani.cadencii {
             btnRedo.setEnabled( AppManager.isRedoAvailable() );
         }
 
-        private void btnExit_Click( Object sender, BEventArgs e ) {
+        public void btnExit_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
 

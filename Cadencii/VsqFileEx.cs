@@ -50,8 +50,7 @@ namespace org.kbinani.cadencii {
         public EditorStatus editorStatus = new EditorStatus();
 
 #if JAVA
-        static
-        {
+        static {
             s_vsq_serializer = new XmlSerializer( VsqFileEx.class );
         }
 #else
@@ -104,7 +103,7 @@ namespace org.kbinani.cadencii {
                     if ( item == null ) {
                         continue;
                     }
-                    VsqBPList repl = new VsqBPList( item.getDefault(), item.getMinimum(), item.getMaximum() );
+                    VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
                     for ( int i = 0; i < item.size(); i++ ) {
                         int clock = item.getKeyClock( i );
                         int value = item.getElement( i );
@@ -283,7 +282,7 @@ namespace org.kbinani.cadencii {
                     if ( item == null ) {
                         continue;
                     }
-                    VsqBPList repl = new VsqBPList( item.getDefault(), item.getMinimum(), item.getMaximum() );
+                    VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
                     int c = item.size();
                     first = true;
                     for ( int j = c - 1; j >= 0; j-- ) {
@@ -341,6 +340,7 @@ namespace org.kbinani.cadencii {
                                     new_chain.id = chain.id;
                                     list.set( j, new_chain );
                                 } catch ( Exception ex ) {
+                                    PortUtil.stderr.println( "VsqFileEx#shift; ex=" + ex );
                                 }
                             } else {
                                 remove_required_event.add( chain.id );
@@ -1006,16 +1006,13 @@ namespace org.kbinani.cadencii {
                     fs = new FileInputStream( xml );
                     tmp = (AttachedCurve)AppManager.xmlSerializerListBezierCurves.deserialize( fs );
                 } catch ( Exception ex ) {
-#if JAVA
-                    System.err.println( "VsqFileEx#.ctor; ex=" + ex );
-#else
-                    bocoree.debug.push_log( "ex=" + ex );
-#endif
+                    PortUtil.stderr.println( "VsqFileEx#.ctor; ex=" + ex );
                 } finally {
                     if ( fs != null ) {
                         try {
                             fs.close();
                         } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "VsqFileEx#.ctor; ex2=" + ex2 );
                         }
                     }
                 }
@@ -1061,11 +1058,13 @@ namespace org.kbinani.cadencii {
                 xw = new FileOutputStream( file );
                 s_vsq_serializer.serialize( xw, this );
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VsqFileEx#writeAsXml; ex=" + ex );
             } finally {
                 if ( xw != null ) {
                     try {
                         xw.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "VsqFileEx#writeAsXml; ex2=" + ex2 );
                     }
                 }
             }
@@ -1078,11 +1077,13 @@ namespace org.kbinani.cadencii {
                 fs = new FileInputStream( file );
                 ret = (VsqFileEx)s_vsq_serializer.deserialize( fs );
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VsqFileEx#readFromXml; ex=" + ex );
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "VsqFileEx#readFromXml; ex2=" + ex2 );
                     }
                 }
             }
@@ -1090,6 +1091,7 @@ namespace org.kbinani.cadencii {
             if ( ret == null ) {
                 return null;
             }
+
             // ベジエ曲線のIDを播番
             if ( ret.AttachedCurves != null ) {
                 for ( Iterator itr = ret.AttachedCurves.getCurves().iterator(); itr.hasNext(); ) {
@@ -1112,6 +1114,18 @@ namespace org.kbinani.cadencii {
                 int count = ret.Track.size();
                 for ( int i = 1; i < count; i++ ) {
                     ret.AttachedCurves.add( new BezierCurves() );
+                }
+            }
+
+            // VsqBPListのNameを更新
+            int c = ret.Track.size();
+            for ( int i = 0; i < c; i++ ) {
+                VsqTrack track = ret.Track.get( i );
+                foreach ( CurveType s in AppManager.CURVE_USAGE ) {
+                    VsqBPList list = track.getCurve( s.getName() );
+                    if ( list != null ) {
+                        list.setName( s.getName().ToLower() );
+                    }
                 }
             }
             return ret;

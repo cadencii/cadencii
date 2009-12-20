@@ -193,6 +193,8 @@ namespace org.kbinani.cadencii {
                 return 'ロ';
             } else if ( maybe_hiragana == 'わ' || maybe_hiragana == 'ﾜ' ) {
                 return 'ワ';
+            } else if ( maybe_hiragana == 'を' || maybe_hiragana == 'ｦ' ) {
+                return 'ヲ';
             } else if ( maybe_hiragana == 'ん' || maybe_hiragana == 'ﾝ' ) {
                 return 'ン';
             } else if ( maybe_hiragana == 'が' ) {

@@ -15,6 +15,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using bocoree;
 using bocoree.java.util;
 using org.kbinani.vsq;
@@ -265,17 +266,20 @@ namespace org.kbinani.cadencii {
 
         public virtual bool open( string dll_path, int block_size, int sample_rate ) {
             dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
+            Thread.Sleep( 100 );
             if ( dllHandle == IntPtr.Zero ) {
                 return false;
             }
 
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( win32.GetProcAddress( dllHandle, "main" ),
                                                                             typeof( PVSTMAIN ) );
+            Thread.Sleep( 100 );
             if ( mainDelegate == null ) {
                 return false;
             }
 
             audioMaster = new audioMasterCallback( AudioMaster );
+            Thread.Sleep( 100 );
 
             IntPtr ptr_aeffect = IntPtr.Zero;
             try {
