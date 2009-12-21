@@ -202,6 +202,17 @@ namespace bocoree {
 
         [DllImport( "user32.dll" )]
         public static extern bool EnumChildWindows( IntPtr hWndParent, [MarshalAs( UnmanagedType.FunctionPtr )]EnumChildProc lpEnumFunc, int lParam );
+
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hWnd">ウィンドウのハンドル</param>
+        /// <param name="lpRect">長方形の座標(CONST RECT *lpRect)</param>
+        /// <param name="bErase">消去するかどうかの状態</param>
+        /// <returns></returns>
+        [DllImport( "user32.dll" )]
+        public static extern bool InvalidateRect( IntPtr hWnd, IntPtr lpRect, bool bErase );
         #endregion
     }
 

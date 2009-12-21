@@ -32,6 +32,13 @@ namespace org.kbinani.cadencii {
         private boolean modeInfinite;
         private VsqFileEx vsq = null;
 
+        private class MidiEventQueue {
+            public Vector<MidiEvent> noteoff;
+            public Vector<MidiEvent> singer;
+            public Vector<MidiEvent> noteon;
+            public Vector<MidiEvent> others;
+        }
+
         public AquesToneRenderingRunner(
             AquesToneDriver driver,
             VsqFileEx vsq,
@@ -76,6 +83,46 @@ namespace org.kbinani.cadencii {
             int saRemain = 0;
             int lastClock = 0; // 最後に処理されたゲートタイム
 
+#if DEBUG
+            /* // この部分はテスト用
+            // ノートオンとpitを同時に送ってみる->NG
+            // noteonののち、pitを送ってみる->NG
+            // pitののち、noteonを送ってみる->NG
+            MidiEvent pit0 = new MidiEvent();
+            pit0.firstByte = 0xE0;
+            int value = (0x3fff & (0 + 0x2000));
+            byte msb = (byte)(value >> 7);
+            byte lsb = (byte)(value - (msb << 7));
+            pit0.data = new byte[] { lsb, msb };
+            MidiEvent noteon = new MidiEvent();
+            noteon.firstByte = 0x90;
+            noteon.data = new byte[] { 0x40, 0x7f };
+            driver.send( new MidiEvent[] { pit0, noteon } );
+            for ( int i = 0; i < 20; i++ ) {
+                driver.process( left, right );
+                waveIncoming( left, right );
+            }
+            MidiEvent pit = new MidiEvent();
+            pit.firstByte = 0xE0;
+            value = (0x3fff & (8191 + 0x2000));
+            msb = (byte)(value >> 7);
+            lsb = (byte)(value - (msb << 7));
+            pit.data = new byte[] { lsb, msb };
+            MidiEvent noteoff = new MidiEvent();
+            noteoff.firstByte = 0x80;
+            noteoff.data = new byte[] { 0x40, 0x7f };
+            driver.send( new MidiEvent[] { noteoff } );
+            driver.send( new MidiEvent[] { noteon } );
+            driver.send( new MidiEvent[] { pit } );
+            for ( int i = 0; i < 20; i++ ) {
+                driver.process( left, right );
+                waveIncoming( left, right );
+            }
+            m_rendering = false;
+            return;*/
+#endif
+
+
             // 最初にダミーの音を鳴らす
             // (最初に入るノイズを回避するためと、前回途中で再生停止した場合に無音から始まるようにするため)
             driver.process( left, right );
@@ -97,7 +144,7 @@ namespace org.kbinani.cadencii {
                 long saNoteStart = (long)(vsq.getSecFromClock( item.Clock ) * sampleRate);
                 long saNoteEnd = (long)(vsq.getSecFromClock( item.Clock + item.ID.getLength() ) * sampleRate);
 
-                TreeMap<Integer, Vector<MidiEvent>> list = generateMidiEvent( vsq, renderingTrack, lastClock, item.Clock + item.ID.getLength() );
+                TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( vsq, renderingTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length;
                 for ( Iterator itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
@@ -126,17 +173,38 @@ namespace org.kbinani.cadencii {
                     }
 
                     // MIDiイベントを送信
-                    Vector<MidiEvent> append = list.get( clock );
-                    // 歌手変更をまず処理してしまう
-                    for ( Iterator itr3 = append.iterator(); itr3.hasNext(); ) {
-                        MidiEvent foo = (MidiEvent)itr3.next();
-                        if ( foo.firstByte == 0xff ) {
-                            driver.setParameter( driver.phontParameterIndex, foo.data[0] + 0.01f );
-                            itr3.remove();
+                    MidiEventQueue queue = list.get( clock );
+                    // まずnoteoff
+                    if ( queue.noteoff != null ) {
+                        driver.send( queue.noteoff.toArray( new MidiEvent[] { } ) );
+                    }
+                    // ついで歌手変更
+                    if ( queue.singer != null ) {
+                        for ( Iterator itr3 = queue.singer.iterator(); itr3.hasNext(); ) {
+                            MidiEvent foo = (MidiEvent)itr3.next();
+                            if ( foo.firstByte == 0xff ) {
+                                driver.setParameter( driver.phontParameterIndex, foo.data[0] + 0.01f );
+                            }
                         }
                     }
-                    // 歌手変更以外のイベントを送信
-                    driver.send( append.toArray( new MidiEvent[] { } ) );
+                    // ついでnoteon
+                    if ( queue.noteon != null ) {
+                        driver.send( queue.noteon.toArray( new MidiEvent[] { } ) );
+                    }
+                    // 最後にその他
+                    if ( queue.others != null ) {
+                        for ( Iterator itr3 = queue.others.iterator(); itr3.hasNext(); ) {
+                            MidiEvent foo = (MidiEvent)itr3.next();
+                            if ( foo.firstByte == 0xFE ) {
+                                driver.setParameter( driver.pbsParameterIndex, foo.data[0] / 13.0f );
+                                itr3.remove();
+                            }
+                        }
+                        driver.send( queue.others.toArray( new MidiEvent[] { } ) );
+                    }
+                    if ( driver.pluginUi != null ) {
+                        driver.pluginUi.invalidateUi();
+                    }
                 }
             }
 
@@ -184,8 +252,8 @@ namespace org.kbinani.cadencii {
         /// <param name="clock_start"></param>
         /// <param name="clock_end"></param>
         /// <returns></returns>
-        private static TreeMap<Integer, Vector<MidiEvent>> generateMidiEvent( VsqFileEx vsq, int track, int clock_start, int clock_end ) {
-            TreeMap<Integer, Vector<MidiEvent>> list = new TreeMap<Integer,Vector<MidiEvent>>();
+        private static TreeMap<Integer, MidiEventQueue> generateMidiEvent( VsqFileEx vsq, int track, int clock_start, int clock_end ) {
+            TreeMap<Integer, MidiEventQueue> list = new TreeMap<Integer, MidiEventQueue>();
             VsqTrack t = vsq.Track.get( track );
 
             // 歌手変更
@@ -204,11 +272,18 @@ namespace org.kbinani.cadencii {
                     MidiEvent singer = new MidiEvent();
                     singer.firstByte = 0xff;
                     singer.data = new byte[] { (byte)program };
+                    Vector<MidiEvent> add = Arrays.asList( new MidiEvent[] { singer } );
+                    MidiEventQueue queue = null;
                     if ( list.containsKey( item.Clock ) ) {
-                        list.get( item.Clock ).add( singer );
+                        queue = list.get( item.Clock );
                     } else {
-                        list.put( item.Clock, Arrays.asList( new MidiEvent[] { singer } ) );
+                        queue = new MidiEventQueue();
                     }
+                    if ( queue.singer == null ) {
+                        queue.singer = new Vector<MidiEvent>();
+                    }
+                    queue.singer.addAll( add );
+                    list.put( item.Clock, queue );
                 } else if ( clock_end < item.Clock ) {
                     break;
                 }
@@ -237,54 +312,68 @@ namespace org.kbinani.cadencii {
                         noteon.firstByte = (byte)0x90;
                         noteon.data = new byte[] { (byte)item.ID.Note, (byte)item.ID.Dynamics };
                         Vector<MidiEvent> add = Arrays.asList( new MidiEvent[] { moveline, noteon } );
+                        MidiEventQueue queue = null;
                         if ( list.containsKey( item.Clock ) ) {
-                            list.get( item.Clock ).addAll( add );
-                        } else {
-                            list.put( item.Clock, add );
+                            queue = list.get( item.Clock );
+                        }else{
+                            queue = new MidiEventQueue();
                         }
+                        if ( queue.noteon == null ) {
+                            queue.noteon = new Vector<MidiEvent>();
+                        }
+                        queue.noteon.addAll( add );
+                        list.put( item.Clock, queue );
                     }
 
                     // noteoff MIDIイベントを作成
                     MidiEvent noteoff = new MidiEvent();
                     noteoff.firstByte = (byte)0x80;
                     noteoff.data = new byte[] { (byte)item.ID.Note, 0x40 };
+                    Vector<MidiEvent> a_noteoff = Arrays.asList( new MidiEvent[] { noteoff } );
                     int endclock = item.Clock + item.ID.getLength();
+                    MidiEventQueue q = null;
                     if ( list.containsKey( endclock ) ) {
-                        list.get( endclock ).add( noteoff );
-                    } else {
-                        list.put( endclock, Arrays.asList( new MidiEvent[] { noteoff } ) );
+                        q = list.get( endclock );
+                    }else{
+                        q = new MidiEventQueue();
                     }
+                    if ( q.noteoff == null ) {
+                        q.noteoff = new Vector<MidiEvent>();
+                    }
+                    q.noteoff.addAll( a_noteoff );
+                    list.put( endclock, q );
                 } else if ( clock_end < item.Clock ) {
                     break;
                 }
             }
 
             // pitch bend sensitivity
+            // RPNで送信するのが上手くいかないので、firstByte=0xfeのダミーMidiEventを作る
             VsqBPList pbs = t.getCurve( "pbs" );
             if ( pbs != null ) {
                 int keycount = pbs.size();
                 for ( int i = 0; i < keycount; i++ ) {
                     int clock = pbs.getKeyClock( i );
                     if ( clock_start <= clock && clock <= clock_end ) {
-                        int value = (int)(pbs.getElementA( i ) * 127.0 / 13.0);
+                        int value = pbs.getElementA( i );
 #if DEBUG
                         PortUtil.println( "AquesToneRenderingRunner#generateMidiEvent; pbs=" + value );
 #endif
                         MidiEvent pbs0 = new MidiEvent();
-                        pbs0.firstByte = 0xB0;
-                        pbs0.data = new byte[] { 0x64, 0x00 };
-                        MidiEvent pbs1 = new MidiEvent();
-                        pbs1.firstByte = 0xB0;
-                        pbs1.data = new byte[] { 0x65, 0x00 };
-                        MidiEvent pbs2 = new MidiEvent();
-                        pbs2.firstByte = 0xB0;
-                        pbs2.data = new byte[] { 0x06, (byte)value };
-                        Vector<MidiEvent> add = Arrays.asList( new MidiEvent[] { pbs0, pbs1, pbs2 } );
+                        pbs0.firstByte = 0xFE;
+                        pbs0.data = new byte[] { (byte)value };
+                        Vector<MidiEvent> add = Arrays.asList( new MidiEvent[] { pbs0 } );
+                        MidiEventQueue queue = null;
                         if ( list.containsKey( clock ) ) {
-                            list.get( clock ).addAll( add );
-                        } else {
-                            list.put( clock, add );
+                            queue = list.get( clock );
+                        }else{
+                            queue = new MidiEventQueue();
                         }
+                        if ( queue.others == null ) {
+                            queue.others = new Vector<MidiEvent>();
+                        }
+                        queue.others.addAll( add );
+                        list.put( clock, queue );
                     } else if ( clock_end < clock ) {
                         break;
                     }
@@ -308,11 +397,17 @@ namespace org.kbinani.cadencii {
                         pbs0.firstByte = 0xE0;
                         pbs0.data = new byte[] { lsb, msb };
                         Vector<MidiEvent> add = Arrays.asList( new MidiEvent[] { pbs0 } );
+                        MidiEventQueue queue = null;
                         if ( list.containsKey( clock ) ) {
-                            list.get( clock ).addAll( add );
-                        } else {
-                            list.put( clock, add );
+                            queue = list.get( clock );
+                        }else{
+                            queue = new MidiEventQueue();
                         }
+                        if ( queue.others == null ) {
+                            queue.others = new Vector<MidiEvent>();
+                        }
+                        queue.others.addAll( add );
+                        list.put( clock, queue );
                     } else if ( clock_end < clock ) {
                         break;
                     }
@@ -326,33 +421,8 @@ namespace org.kbinani.cadencii {
             return 0.0;
         }
 
-        public override bool isRendering() {
-            return m_rendering;
-        }
-
         public override double computeRemainingSeconds() {
             return 0.0;
-        }
-
-        public override void abortRendering() {
-            m_abort_required = true;
-            while ( m_rendering ) {
-#if JAVA
-                Thread.sleep( 0 );
-#else
-                System.Windows.Forms.Application.DoEvents();
-#endif
-            }
-            int count = readers.size();
-            for ( int i = 0; i < count; i++ ) {
-                try {
-                    readers.get( i ).close();
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AquesToneRenderingRunner#abortRendering; ex=" + ex );
-                }
-                readers.set( i, null );
-            }
-            readers.clear();
         }
 
         public override double getProgress() {

@@ -93,10 +93,6 @@ namespace org.kbinani.cadencii {
             m_mode_infinite = mode_infinite;
         }
 
-        public override boolean isRendering() {
-            return m_rendering;
-        }
-
         public static void clearCache() {
             for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
                 String key = (String)itr.next();
@@ -113,31 +109,6 @@ namespace org.kbinani.cadencii {
 
         public override double getProgress() {
             return m_progress;
-        }
-
-        public override void abortRendering() {
-            m_abort_required = true;
-            while ( m_rendering ) {
-#if JAVA
-                try{
-                    Thread.sleep( 0 );
-                }catch( Exception ex ){
-                    break;
-                }
-#else
-                System.Windows.Forms.Application.DoEvents();
-#endif
-            }
-            int count = readers.size();
-            for ( int i = 0; i < count; i++ ) {
-                try {
-                    readers.get( i ).close();
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "UtauRenderingRunner#abortRendering; ex=" + ex );
-                }
-                readers.set( i, null );
-            }
-            readers.clear();
         }
 
         public override double getElapsedSeconds() {

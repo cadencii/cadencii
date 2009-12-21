@@ -857,11 +857,13 @@ namespace org.kbinani.cadencii {
                         }
                     }
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "StraightRenderingRunner#run; ex=" + ex );
                 } finally {
                     if ( wr != null ) {
                         try {
                             wr.close();
                         } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "StraightRenderingRunner#run; ex2=" + ex2 );
                         }
                         wr = null;
                     }
@@ -916,71 +918,6 @@ namespace org.kbinani.cadencii {
 
         public override double getProgress() {
             return m_progress_percent;
-        }
-
-        public override boolean isRendering() {
-            return m_rendering;
-        }
-
-        public override void abortRendering() {
-#if DEBUG
-            PortUtil.println( "StraightRenderingRunner#abortRendering; m_rendering=" + m_rendering );
-#endif
-            m_abort_required = true;
-            while ( m_rendering ) {
-#if JAVA
-                try{
-                    Thread.sleep( 0 ); //ここいけてる？
-                }catch( InterruptedException ex ){
-                    break;
-                }
-#else
-                System.Windows.Forms.Application.DoEvents();
-#endif
-            }
-            int count = readers.size();
-            for ( int i = 0; i < count; i++ ) {
-                try {
-                    readers.get( i ).close();
-                } catch ( Exception ex ) {
-                }
-                readers.set( i, null );
-            }
-            readers.clear();
-
-
-            /*if ( m_rendering ) {
-                if ( m_direct_play ) {
-                    PlaySound.reset();
-                }
-                m_abort_required = true;
-                while ( m_abort_required ) {
-#if DEBUG
-                    //PortUtil.println( "  waiting..." );
-#endif
-#if JAVA
-                    try{
-                        Thread.sleep( 0 ); //ここいけてる？
-                    }catch( InterruptedException ex ){
-                        break;
-                    }
-#else
-                    System.Windows.Forms.Application.DoEvents();
-#endif
-                }
-                m_abort_required = false;
-            }
-            m_rendering = false;
-            m_abort_required = false;
-            int count = m_reader.size();
-            for ( int i = 0; i < count; i++ ) {
-                try {
-                    m_reader.get( i ).close();
-                } catch ( Exception ex ) {
-                }
-                m_reader.set( i, null );
-            }
-            m_reader.clear();*/
         }
     }
 

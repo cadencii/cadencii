@@ -66,8 +66,6 @@ namespace org.kbinani.cadencii {
 
         public abstract void run();
         public abstract double getProgress();
-        public abstract void abortRendering();
-        public abstract boolean isRendering();
         public abstract double getElapsedSeconds();
         public abstract double computeRemainingSeconds();
 
@@ -96,6 +94,31 @@ namespace org.kbinani.cadencii {
             m_rendering = false;
             m_total_append = 0;
             m_trim_remain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
+        }
+
+        public virtual boolean isRendering() {
+            return m_rendering;
+        }
+
+        public virtual void abortRendering() {
+            m_abort_required = true;
+            while ( m_rendering ) {
+#if JAVA
+                Thread.sleep( 0 );
+#else
+                System.Windows.Forms.Application.DoEvents();
+#endif
+            }
+            int count = readers.size();
+            for ( int i = 0; i < count; i++ ) {
+                try {
+                    readers.get( i ).close();
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "AquesToneRenderingRunner#abortRendering; ex=" + ex );
+                }
+                readers.set( i, null );
+            }
+            readers.clear();
         }
 
         protected void waveIncoming( double[] t_L, double[] t_R ) {

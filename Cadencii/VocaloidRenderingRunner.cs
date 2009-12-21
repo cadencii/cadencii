@@ -13,13 +13,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using org.kbinani.vsq;
-using org.kbinani.media;
 using bocoree;
 using bocoree.java.util;
-using bocoree.java.io;
+using org.kbinani.media;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
     using boolean = Boolean;
@@ -97,7 +95,8 @@ namespace org.kbinani.cadencii {
             if ( driver != null && driver != null ) {
                 try {
                     driver.AbortRendering();
-                } catch {
+                } catch( Exception ex ) {
+                    PortUtil.stderr.println( "VocaloidRenderingRunner#run; ex=" + ex );
                 }
             }
             m_rendering = false;
@@ -112,10 +111,6 @@ namespace org.kbinani.cadencii {
 
         public override double getProgress() {
             return driver.GetProgress();
-        }
-
-        public override boolean isRendering() {
-            return m_rendering;
         }
 
         public override void run() {

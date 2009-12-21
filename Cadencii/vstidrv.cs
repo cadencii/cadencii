@@ -106,11 +106,11 @@ namespace org.kbinani.cadencii {
         /// </summary>
         IntPtr buffers = IntPtr.Zero;
 
-        public float getParameter( int index ) {
+        public virtual float getParameter( int index ) {
             return aEffect.GetParameter( ref aEffect, index );
         }
 
-        public void setParameter( int index, float value ) {
+        public virtual void setParameter( int index, float value ) {
             aEffect.SetParameter( ref aEffect, index, value );
         }
 
@@ -207,7 +207,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void send( MidiEvent[] events ) {
+        public virtual void send( MidiEvent[] events ) {
             unsafe {
                 MemoryManager mman = null;
                 try {

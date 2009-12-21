@@ -31,6 +31,50 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class AquesToneDriver{
 #else
+    public class FormPluginUi : System.Windows.Forms.Form {
+        private System.ComponentModel.IContainer components;
+        public IntPtr childWnd = IntPtr.Zero;
+        private double lastDrawn = 0.0;
+    
+        public FormPluginUi() {
+            this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
+            this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
+            InitializeComponent();
+        }
+
+        private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // FormPluginUi
+            // 
+            this.ClientSize = new System.Drawing.Size( 334, 164 );
+            this.Name = "FormPluginUi";
+            this.ResumeLayout( false );
+
+        }
+
+        public void invalidateUi() {
+            double now = PortUtil.getCurrentTime();
+
+            if ( now - lastDrawn > 0.04 ) {
+                if ( childWnd != IntPtr.Zero ) {
+                    bool ret = false;
+                    try {
+                        ret = win32.InvalidateRect( childWnd, IntPtr.Zero, false );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "FormPluginUi#invalidateUi; ex=" + ex );
+                        ret = false;
+                    }
+                    lastDrawn = now;
+#if DEBUG
+                    PortUtil.println( "FormPluginUi#invalidateUi; ret=" + ret );
+#endif
+                }
+            }
+        }
+    }
+
     public class AquesToneDriver : vstidrv {
 #endif
         public static readonly String[] PHONES = new String[] { 
@@ -77,8 +121,9 @@ namespace org.kbinani.cadencii {
 #if ENABLE_AQUESTONE
         private Dimension uiWindowRect = new Dimension( 373, 158 );
 
-        public System.Windows.Forms.Form pluginUi = null;
+        public FormPluginUi pluginUi = null;
         public int phontParameterIndex = 0;
+        public int pbsParameterIndex = 0;
 
         public override boolean open( string dll_path, int block_size, int sample_rate ) {
             int strlen = 260;
@@ -101,7 +146,7 @@ namespace org.kbinani.cadencii {
             }
 
             try {
-                pluginUi = new System.Windows.Forms.Form();
+                pluginUi = new FormPluginUi();
                 pluginUi.Text = "AquesToneWindow";
                 pluginUi.Location = new System.Drawing.Point( int.MinValue, int.MinValue );
                 pluginUi.Show();
@@ -123,6 +168,9 @@ namespace org.kbinani.cadencii {
 #endif
                     }
 #if DEBUG
+                    if ( name.ToLower().StartsWith( "bendlbl" ) ){
+                        pbsParameterIndex = i;
+                    }
                     PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) + "; value=" + getParameter( i ) );
 #endif
                 }
@@ -130,6 +178,21 @@ namespace org.kbinani.cadencii {
                 pluginUi.Show();
                 PortUtil.stdout.println( "AquesToneDriver#open; phontParameterIndex=" + phontParameterIndex );
                 pluginUi.SizeChanged += new EventHandler( pluginUi_SizeChanged );
+
+                for ( int value = 0; value < 14; value++ ) {
+                    MidiEvent pbs0 = new MidiEvent();
+                    pbs0.firstByte = 0xB0;
+                    pbs0.data = new byte[] { 0x64, 0x00 };
+                    MidiEvent pbs1 = new MidiEvent();
+                    pbs1.firstByte = 0xB0;
+                    pbs1.data = new byte[] { 0x65, 0x00 };
+                    MidiEvent pbs2 = new MidiEvent();
+                    pbs2.firstByte = 0xB0;
+                    pbs2.data = new byte[] { 0x06, (byte)value };
+                    //send( new MidiEvent[] { pbs0, pbs1, pbs2 } );
+                    setParameter( pbsParameterIndex, value / 13.0f );
+                    PortUtil.println( "value" + value + "; display=" + getParameterDisplay( pbsParameterIndex ) + "; param=" + getParameter( pbsParameterIndex ) );
+                }
 #endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
@@ -158,6 +221,9 @@ namespace org.kbinani.cadencii {
         private bool enumChildProc( IntPtr hwnd, int lParam ) {
             RECT rc = new RECT();
             win32.GetWindowRect( hwnd, ref rc );
+            if ( pluginUi != null ) {
+                pluginUi.childWnd = hwnd;
+            }
             uiWindowRect = new Dimension( rc.right - rc.left, rc.bottom - rc.top );
             return false; //最初のやつだけ検出できればおｋなので
         }
@@ -171,7 +237,7 @@ namespace org.kbinani.cadencii {
 
         private static String getKoeFilePath() {
             String ret = PortUtil.combinePath( AppManager.getCadenciiTempDir(), "jphonefifty.txt" );
-            if ( !PortUtil.isFileExists( ret ) ) {
+            //if ( !PortUtil.isFileExists( ret ) ) {
                 BufferedWriter bw = null;
                 try {
                     bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ret ), "Shift_JIS" ) );
@@ -189,12 +255,13 @@ namespace org.kbinani.cadencii {
                         }
                     }
                 }
-            }
+            //}
             return ret;
         }
 #endif
     }
 
 #if !JAVA
+
 }
 #endif
