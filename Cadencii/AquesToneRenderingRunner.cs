@@ -36,6 +36,7 @@ namespace org.kbinani.cadencii {
             public Vector<MidiEvent> noteoff;
             public Vector<MidiEvent> singer;
             public Vector<MidiEvent> noteon;
+            public Vector<MidiEvent> pit;
             public Vector<MidiEvent> others;
         }
 
@@ -145,7 +146,7 @@ namespace org.kbinani.cadencii {
                 long saNoteEnd = (long)(vsq.getSecFromClock( item.Clock + item.ID.getLength() ) * sampleRate);
 
                 TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( vsq, renderingTrack, lastClock, item.Clock + item.ID.getLength() );
-                lastClock = item.Clock + item.ID.Length;
+                lastClock = item.Clock + item.ID.Length + 1;
                 for ( Iterator itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
                     Integer clock = (Integer)itr2.next();
@@ -188,8 +189,17 @@ namespace org.kbinani.cadencii {
                         }
                     }
                     // ついでnoteon
-                    if ( queue.noteon != null ) {
+                    if ( queue.noteon != null && queue.noteon.size() > 0 ) {
+                        // 同ゲートタイムにピッチベンドも指定されている場合、同時に送信しないと反映されないようだ！
+                        if ( queue.pit != null && queue.pit.size() > 0 ) {
+                            queue.noteon.addAll( queue.pit );
+                            queue.pit.clear();
+                        }
                         driver.send( queue.noteon.toArray( new MidiEvent[] { } ) );
+                    }
+                    // ついでpit
+                    if ( queue.pit != null && queue.pit.size() > 0 ) {
+                        driver.send( queue.pit.toArray( new MidiEvent[] { } ) );
                     }
                     // 最後にその他
                     if ( queue.others != null ) {
@@ -292,6 +302,7 @@ namespace org.kbinani.cadencii {
             // ノートon, off
             for ( Iterator itr = t.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
+                int endclock = item.Clock + item.ID.getLength();
                 if ( clock_start <= item.Clock && item.Clock <= clock_end ) {
                     // noteon MIDIイベントを作成
                     String lyric = item.ID.LyricHandle.L0.Phrase;
@@ -310,7 +321,7 @@ namespace org.kbinani.cadencii {
                         moveline.data = new byte[] { (byte)0x0a, (byte)index };
                         MidiEvent noteon = new MidiEvent();
                         noteon.firstByte = (byte)0x90;
-                        noteon.data = new byte[] { (byte)item.ID.Note, (byte)item.ID.Dynamics };
+                        noteon.data = new byte[] { (byte)item.ID.Note, 0x40 };
                         Vector<MidiEvent> add = Arrays.asList( new MidiEvent[] { moveline, noteon } );
                         MidiEventQueue queue = null;
                         if ( list.containsKey( item.Clock ) ) {
@@ -324,17 +335,18 @@ namespace org.kbinani.cadencii {
                         queue.noteon.addAll( add );
                         list.put( item.Clock, queue );
                     }
+                }
 
-                    // noteoff MIDIイベントを作成
+                // noteoff MIDIイベントを作成
+                if ( clock_start <= endclock && endclock <= clock_end ) {
                     MidiEvent noteoff = new MidiEvent();
                     noteoff.firstByte = (byte)0x80;
                     noteoff.data = new byte[] { (byte)item.ID.Note, 0x40 };
                     Vector<MidiEvent> a_noteoff = Arrays.asList( new MidiEvent[] { noteoff } );
-                    int endclock = item.Clock + item.ID.getLength();
                     MidiEventQueue q = null;
                     if ( list.containsKey( endclock ) ) {
                         q = list.get( endclock );
-                    }else{
+                    } else {
                         q = new MidiEventQueue();
                     }
                     if ( q.noteoff == null ) {
@@ -342,7 +354,9 @@ namespace org.kbinani.cadencii {
                     }
                     q.noteoff.addAll( a_noteoff );
                     list.put( endclock, q );
-                } else if ( clock_end < item.Clock ) {
+                }
+
+                if ( clock_end < endclock ) {
                     break;
                 }
             }
@@ -403,10 +417,10 @@ namespace org.kbinani.cadencii {
                         }else{
                             queue = new MidiEventQueue();
                         }
-                        if ( queue.others == null ) {
-                            queue.others = new Vector<MidiEvent>();
+                        if ( queue.pit == null ) {
+                            queue.pit = new Vector<MidiEvent>();
                         }
-                        queue.others.addAll( add );
+                        queue.pit.addAll( add );
                         list.put( clock, queue );
                     } else if ( clock_end < clock ) {
                         break;

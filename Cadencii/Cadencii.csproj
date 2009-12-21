@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -27,7 +27,6 @@
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -44,6 +43,7 @@
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -282,9 +282,6 @@
     <Compile Include="TextBoxEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <EmbeddedResource Include="AquesToneDriver.resx">
-      <DependentUpon>AquesToneDriver.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -496,6 +493,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
@@ -509,6 +511,11 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
@@ -538,6 +545,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow-180.png">
@@ -547,6 +555,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow-skip-090.png">
@@ -556,6 +565,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow_circle_double.png">
@@ -565,6 +575,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow_skip.png">
@@ -574,6 +585,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow_skip_180.png">
@@ -583,6 +595,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\author_list.png">
@@ -592,6 +605,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\btn1.png">
@@ -601,6 +615,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\btn2.png">
@@ -610,6 +625,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\btn3.png">
@@ -619,6 +635,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\chevron-small-collapse.png">
@@ -628,6 +645,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\clipboard_paste.png">
@@ -637,6 +655,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\control.png">
@@ -646,6 +665,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\control_pause.png">
@@ -655,6 +675,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\control_stop.png">
@@ -664,6 +685,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\control_stop_180.png">
@@ -673,6 +695,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\cross-small.png">
@@ -682,6 +705,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\cursor.cur">
@@ -691,6 +715,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\disk.png">
@@ -700,6 +725,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\disk__plus.png">
@@ -709,6 +735,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\documents.png">
@@ -718,6 +745,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\drive.png">
@@ -727,6 +755,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\edit-list-order.png">
@@ -736,6 +765,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\end_marker.png">
@@ -745,6 +775,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\folder--plus.png">
@@ -754,6 +785,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\folder.png">
@@ -763,6 +795,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\folder_horizontal_open.png">
@@ -772,6 +805,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\Icon1.ico">
@@ -781,6 +815,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\layer_shape_curve.png">
@@ -790,6 +825,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\layer_shape_line.png">
@@ -799,6 +835,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\pencil.png">
@@ -808,6 +845,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\piano.png">
@@ -817,6 +855,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\scissors.png">
@@ -826,6 +865,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\slash.png">
@@ -835,6 +875,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\start_marker.png">
@@ -844,6 +885,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\target--pencil.png">
@@ -853,6 +895,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\VSTonWht.png">
@@ -862,6 +905,7 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>
