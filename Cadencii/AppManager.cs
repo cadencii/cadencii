@@ -456,6 +456,10 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+        public static void reportException( String message, Exception ex, int level ) {
+            PortUtil.stderr.println( message + ex );
+        }
+
         /// <summary>
         /// クロック数から、画面に描くべきx座標の値を取得します。
         /// </summary>

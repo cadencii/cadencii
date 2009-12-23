@@ -124,6 +124,8 @@ namespace org.kbinani.cadencii {
         public FormPluginUi pluginUi = null;
         public int phontParameterIndex = 0;
         public int pbsParameterIndex = 0;
+        public int volumeParameterIndex = 0;
+        public int haskyParameterIndex = 0;
 
         public override boolean open( string dll_path, int block_size, int sample_rate ) {
             int strlen = 260;
@@ -160,17 +162,26 @@ namespace org.kbinani.cadencii {
                 pluginUi.ClientSize = new System.Drawing.Size( uiWindowRect.width, uiWindowRect.height );
                 pluginUi.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
                 for ( int i = 0; i < aEffect.numParams; i++ ) {
-                    String name = getParameterName( i ).Trim();
-                    if ( name.ToLower().StartsWith( "phont" ) ) {
+                    String name = getParameterName( i ).Trim().ToLower();
+                    if ( name.StartsWith( "phont" ) ) {
                         phontParameterIndex = i;
-#if !DEBUG
-                        break;
-#endif
-                    }
-#if DEBUG
-                    if ( name.ToLower().StartsWith( "bendlbl" ) ){
+                    }else if ( name.StartsWith( "bendlbl" ) ){
                         pbsParameterIndex = i;
+                    } else if ( name.StartsWith( "volume" ) ) {
+                        volumeParameterIndex = i;
+                    } else if ( name.StartsWith( "hasky" ) ) {
+                        haskyParameterIndex = i;
                     }
+                    /*AquesToneDriver#open; #0 Haskey
+                    AquesToneDriver#open; #1 Resonanc
+                    AquesToneDriver#open; #2 YomiLine
+                    AquesToneDriver#open; #3 Volume
+                    AquesToneDriver#open; #4 Release
+                    AquesToneDriver#open; #5 PrtaTime
+                    AquesToneDriver#open; #6 VibFreq
+                    AquesToneDriver#open; #7 BendLbl
+                    er#open; #8 Phont*/
+#if DEBUG
                     PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) + "; value=" + getParameter( i ) );
 #endif
                 }
@@ -237,31 +248,28 @@ namespace org.kbinani.cadencii {
 
         private static String getKoeFilePath() {
             String ret = PortUtil.combinePath( AppManager.getCadenciiTempDir(), "jphonefifty.txt" );
-            //if ( !PortUtil.isFileExists( ret ) ) {
-                BufferedWriter bw = null;
-                try {
-                    bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ret ), "Shift_JIS" ) );
-                    foreach ( String s in PHONES ) {
-                        bw.write( s ); bw.newLine();
-                    }
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex );
-                } finally {
-                    if ( bw != null ) {
-                        try {
-                            bw.close();
-                        } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex2 );
-                        }
+            BufferedWriter bw = null;
+            try {
+                bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ret ), "Shift_JIS" ) );
+                foreach ( String s in PHONES ) {
+                    bw.write( s ); bw.newLine();
+                }
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex );
+            } finally {
+                if ( bw != null ) {
+                    try {
+                        bw.close();
+                    } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex2 );
                     }
                 }
-            //}
+            }
             return ret;
         }
 #endif
     }
 
 #if !JAVA
-
 }
 #endif
