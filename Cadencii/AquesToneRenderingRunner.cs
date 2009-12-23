@@ -334,36 +334,39 @@ namespace org.kbinani.cadencii {
                             noteon.data = new byte[] { (byte)item.ID.Note, (byte)item.ID.Dynamics };
                             Vector<MidiEvent> add = Arrays.asList( new MidiEvent[] { moveline, noteon } );
                             queue.noteon.addAll( add );
+                            pit_send.add( new Point( item.Clock, item.Clock ) );
                         }
                         #endregion
                     }
 
-                    Point pit_send_p = new Point( item.Clock, item.Clock );
+                    //Point pit_send_p = new Point( item.Clock, item.Clock );
 
                     // ビブラート
                     // ビブラートが存在する場合、PBSは勝手に変更する。
                     if ( item.ID.VibratoHandle == null ) {
-                        // 音符頭のPIT, PBSを強制的に指定
-                        int notehead_pit = pit.getValue( item.Clock );
-                        MidiEvent pit0 = getPitMidiEvent( notehead_pit );
-                        if ( !list.containsKey( item.Clock ) ) {
-                            list.put( item.Clock, new MidiEventQueue() );
+                        if ( contains_start ) {
+                            // 音符頭のPIT, PBSを強制的に指定
+                            int notehead_pit = pit.getValue( item.Clock );
+                            MidiEvent pit0 = getPitMidiEvent( notehead_pit );
+                            if ( !list.containsKey( item.Clock ) ) {
+                                list.put( item.Clock, new MidiEventQueue() );
+                            }
+                            MidiEventQueue queue = list.get( item.Clock );
+                            if ( queue.pit == null ) {
+                                queue.pit = new Vector<MidiEvent>();
+                            } else {
+                                queue.pit.clear();
+                            }
+                            queue.pit.add( pit0 );
+                            int notehead_pbs = pbs.getValue( item.Clock );
+                            ParameterEvent pe = new ParameterEvent();
+                            pe.index = driver.bendLblParameterIndex;
+                            pe.value = notehead_pbs / 13.0f;
+                            if ( queue.param == null ) {
+                                queue.param = new Vector<ParameterEvent>();
+                            }
+                            queue.param.add( pe );
                         }
-                        MidiEventQueue queue = list.get( item.Clock );
-                        if ( queue.pit == null ) {
-                            queue.pit = new Vector<MidiEvent>();
-                        } else {
-                            queue.pit.clear();
-                        }
-                        queue.pit.add( pit0 );
-                        int notehead_pbs = pbs.getValue( item.Clock );
-                        ParameterEvent pe = new ParameterEvent();
-                        pe.index = driver.pbsParameterIndex;
-                        pe.value = notehead_pbs / 13.0f;
-                        if ( queue.param == null ) {
-                            queue.param = new Vector<ParameterEvent>();
-                        }
-                        queue.param.add( pe );
                     } else {
                         int delta_clock = 5;  //ピッチを取得するクロック間隔
                         int tempo = 120;
@@ -371,7 +374,15 @@ namespace org.kbinani.cadencii {
                         double sec_end_act = vsq.getSecFromClock( item.Clock + item.ID.getLength() );
                         double delta_sec = delta_clock / (8.0 * tempo); //ピッチを取得する時間間隔
                         float pitmax = 0.0f;
-                        pit_send_p = new Point( item.Clock, item.Clock + item.ID.getLength() );
+                        int st = item.Clock;
+                        if ( st < clock_start ) {
+                            st = clock_start;
+                        }
+                        int end = item.Clock + item.ID.getLength();
+                        if ( clock_end < end ){
+                            end = clock_end;
+                        }
+                        pit_send.add( new Point( st, end ) );
                         // ビブラートが始まるまでのピッチを取得
                         double sec_vibstart = vsq.getSecFromClock( item.Clock + item.ID.VibratoDelay );
                         int pit_count = (int)((sec_vibstart - sec_start_act) / delta_sec);
@@ -414,7 +425,7 @@ namespace org.kbinani.cadencii {
                         }
                         MidiEventQueue queue = list.get( item.Clock );
                         ParameterEvent pe = new ParameterEvent();
-                        pe.index = driver.pbsParameterIndex;
+                        pe.index = driver.bendLblParameterIndex;
                         pe.value = required_pbs / 13.0f;
                         if ( queue.param == null ) {
                             queue.param = new Vector<ParameterEvent>();
@@ -444,7 +455,7 @@ namespace org.kbinani.cadencii {
                         }
                     }
 
-                    pit_send.add( pit_send_p );
+                    //pit_send.add( pit_send_p );
 
                     // noteoff MIDIイベントを作成
                     if ( contains_end ) {
@@ -478,7 +489,7 @@ namespace org.kbinani.cadencii {
                     if ( clock_start <= clock && clock <= clock_end ) {
                         int value = pbs.getElementA( i );
                         ParameterEvent pbse = new ParameterEvent();
-                        pbse.index = driver.pbsParameterIndex;
+                        pbse.index = driver.bendLblParameterIndex;
                         pbse.value = value / 13.0f;
                         MidiEventQueue queue = null;
                         if ( list.containsKey( clock ) ) {
@@ -582,6 +593,34 @@ namespace org.kbinani.cadencii {
                         }
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = driver.haskyParameterIndex;
+                        pe.value = value / 127.0f;
+                        queue.param.add( pe );
+                        list.put( clock, queue );
+                    } else if ( clock_end < clock ) {
+                        break;
+                    }
+                }
+            }
+
+            // cle
+            VsqBPList cle = t.getCurve( "cle" );
+            if ( cle != null ) {
+                int keycount = cle.size();
+                for ( int i = 0; i < keycount; i++ ) {
+                    int clock = cle.getKeyClock( i );
+                    if ( clock_start <= clock && clock <= clock_end ) {
+                        int value = cle.getElementA( i );
+                        MidiEventQueue queue = null;
+                        if ( list.containsKey( clock ) ) {
+                            queue = list.get( clock );
+                        } else {
+                            queue = new MidiEventQueue();
+                        }
+                        if ( queue.param == null ) {
+                            queue.param = new Vector<ParameterEvent>();
+                        }
+                        ParameterEvent pe = new ParameterEvent();
+                        pe.index = driver.resonancParameterIndex;
                         pe.value = value / 127.0f;
                         queue.param.add( pe );
                         list.put( clock, queue );

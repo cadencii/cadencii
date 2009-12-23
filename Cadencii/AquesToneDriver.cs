@@ -122,10 +122,13 @@ namespace org.kbinani.cadencii {
         private Dimension uiWindowRect = new Dimension( 373, 158 );
 
         public FormPluginUi pluginUi = null;
-        public int phontParameterIndex = 0;
-        public int pbsParameterIndex = 0;
-        public int volumeParameterIndex = 0;
         public int haskyParameterIndex = 0;
+        public int resonancParameterIndex = 1;
+        public int volumeParameterIndex = 3;
+        public int releaseParameterIndex = 4;
+        public int portaTimeParameterIndex = 5;
+        public int bendLblParameterIndex = 7;
+        public int phontParameterIndex = 8;
 
         public override boolean open( string dll_path, int block_size, int sample_rate ) {
             int strlen = 260;
@@ -166,11 +169,17 @@ namespace org.kbinani.cadencii {
                     if ( name.StartsWith( "phont" ) ) {
                         phontParameterIndex = i;
                     }else if ( name.StartsWith( "bendlbl" ) ){
-                        pbsParameterIndex = i;
+                        bendLblParameterIndex = i;
                     } else if ( name.StartsWith( "volume" ) ) {
                         volumeParameterIndex = i;
                     } else if ( name.StartsWith( "hasky" ) ) {
                         haskyParameterIndex = i;
+                    } else if ( name.StartsWith( "resonanc" ) ) {
+                        resonancParameterIndex = i;
+                    } else if ( name.StartsWith( "portatime" ) ) {
+                        portaTimeParameterIndex = i;
+                    } else if ( name.StartsWith( "release" ) ) {
+                        releaseParameterIndex = i;
                     }
                     /*AquesToneDriver#open; #0 Haskey
                     AquesToneDriver#open; #1 Resonanc
@@ -201,8 +210,8 @@ namespace org.kbinani.cadencii {
                     pbs2.firstByte = 0xB0;
                     pbs2.data = new byte[] { 0x06, (byte)value };
                     //send( new MidiEvent[] { pbs0, pbs1, pbs2 } );
-                    setParameter( pbsParameterIndex, value / 13.0f );
-                    PortUtil.println( "value" + value + "; display=" + getParameterDisplay( pbsParameterIndex ) + "; param=" + getParameter( pbsParameterIndex ) );
+                    setParameter( bendLblParameterIndex, value / 13.0f );
+                    PortUtil.println( "value" + value + "; display=" + getParameterDisplay( bendLblParameterIndex ) + "; param=" + getParameter( bendLblParameterIndex ) );
                 }
 #endif
             } catch ( Exception ex ) {
