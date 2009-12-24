@@ -810,6 +810,27 @@ namespace org.kbinani.cadencii{
             return s_icon;
         }
 
+#if JAVA
+        private static Image s_switch = null;
+        public static Image get_switch(){
+#else
+        private static System.Drawing.Icon s_switch = null;
+        public static System.Drawing.Icon get_switch(){
+#endif
+            if( s_switch == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "switch.ico" );
+#if JAVA
+                    s_switch = ImageIO.read( new File( res_path ) );
+#else
+                    s_switch = new System.Drawing.Icon( res_path );
+#endif
+                }catch( Exception ex ){
+                }
+            }
+            return s_switch;
+        }
+
     }
 #if !JAVA
 }

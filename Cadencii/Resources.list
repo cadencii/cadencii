@@ -44,4 +44,4 @@ start_marker	Image	.\resources\start_marker.png
 target__pencil	Image	.\resources\target--pencil.png
 VSTonWht	Image	.\resources\VSTonWht.png
 icon	Icon	.\resources\icon.ico
-switch	Image	.\resources\switch.png
+switch	Icon	.\resources\switch.ico

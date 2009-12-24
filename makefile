@@ -1,10 +1,11 @@
 CP=cp
 RM=rm
 
-all: first win linux macosx
+all: makeRes first win linux macosx
 
 first:
 	perl first.pl
+	makeRes -i ".\Cadencii\Resources.list" -o ".\Cadencii\Resources.cs" -p "org.kbinani.cadencii" -n "org.kbinani.cadencii"
 
 win: first build/win/Cadencii.exe
 
@@ -74,3 +75,6 @@ clean:
 	cd Boare.Lib.Vsq && $(MAKE) clean RM=$(RM) CP=$(CP)
 	cd Cadencii && $(MAKE) clean RM=$(RM) CP=$(CP)
 	cd PlaySound && $(MAKE) clean RM=$(RM) CP=$(CP)
+
+makeRes:
+	gmcs makeRes.cs

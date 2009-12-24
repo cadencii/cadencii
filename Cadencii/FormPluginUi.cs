@@ -20,6 +20,7 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.Windows.Forms;
 using org.kbinani.windows.forms;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.cadencii {
 #endif
@@ -38,7 +39,6 @@ namespace org.kbinani.cadencii {
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
             InitializeComponent();
             this.formClosingEvent.add( new BFormClosingEventHandler( this, "FormPluginUi_FormClosing" ) );
-            this.setIconImage( Resources.get_switch() );
         }
 
         public void FormPluginUi_FormClosing( Object sender, FormClosingEventArgs e ) {
@@ -47,11 +47,13 @@ namespace org.kbinani.cadencii {
         }
 
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormPluginUi ) );
             this.SuspendLayout();
             // 
             // FormPluginUi
             // 
             this.ClientSize = new System.Drawing.Size( 334, 164 );
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject( "$this.Icon" )));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormPluginUi";

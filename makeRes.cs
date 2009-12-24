@@ -62,8 +62,8 @@ class makeRes{
             sw.WriteLine( "#" + "else" );
             sw.WriteLine( "using System;" );
             sw.WriteLine( "using System.IO;" );
-            sw.WriteLine( "using bocoree;" );
-            sw.WriteLine( "using bocoree.java.awt;" );
+            sw.WriteLine( "using org.kbinani;" );
+            sw.WriteLine( "using org.kbinani.java.awt;" );
             sw.WriteLine();
             if( name_space != "" ){
                 sw.WriteLine( "namespace " + name_space + "{" );
