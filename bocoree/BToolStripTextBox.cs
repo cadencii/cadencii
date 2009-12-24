@@ -1,4 +1,4 @@
-﻿namespace bocoree.windows.forms {
+﻿namespace org.kbinani.windows.forms {
 
     public class BToolStripTextBox : System.Windows.Forms.ToolStripTextBox {
         #region event impl KeyDown

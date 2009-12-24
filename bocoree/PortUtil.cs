@@ -1,6 +1,6 @@
 ﻿/*
  * PortUtil.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of Boare.Lib.Vsq.
  *
@@ -31,13 +31,13 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.IO;
 using System.Text;
-using bocoree.java.awt;
-using bocoree.java.awt.event_;
-using bocoree.java.util;
-using bocoree.windows.forms;
-using bocoree.javax.swing;
+using org.kbinani.java.awt;
+using org.kbinani.java.awt.event_;
+using org.kbinani.java.util;
+using org.kbinani.windows.forms;
+using org.kbinani.javax.swing;
 
-namespace bocoree {
+namespace org.kbinani {
     using boolean = System.Boolean;
     using Float = System.Single;
     using Integer = System.Int32;
@@ -774,7 +774,7 @@ namespace bocoree {
         }
         #endregion
 
-        #region System.Windows.Forms.Keys and bocoree.windows.forms.BKeys
+        #region System.Windows.Forms.Keys and org.kbinani.windows.forms.BKeys
 #if !JAVA
         public static int getModifierFromKeys( System.Windows.Forms.Keys keys ) {
             int ret = 0;

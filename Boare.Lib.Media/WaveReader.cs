@@ -1,6 +1,6 @@
 ﻿/*
  * WaveReader.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.media.
  *
@@ -19,8 +19,8 @@ import java.util.*;
 import org.kbinani.*;
 #else
 using System;
-using bocoree;
-using bocoree.java.io;
+using org.kbinani;
+using org.kbinani.java.io;
 
 namespace org.kbinani.media {
     using boolean = System.Boolean;

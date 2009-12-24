@@ -1,6 +1,6 @@
 ﻿/*
  * AquesToneDriver.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -19,9 +19,9 @@ import org.kbinani.vsq.*;
 using System;
 using System.Text;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.awt;
-using bocoree.java.io;
+using org.kbinani;
+using org.kbinani.java.awt;
+using org.kbinani.java.io;
 using VstSdk;
 
 namespace org.kbinani.cadencii {
@@ -31,50 +31,6 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class AquesToneDriver{
 #else
-    public class FormPluginUi : System.Windows.Forms.Form {
-        private System.ComponentModel.IContainer components;
-        public IntPtr childWnd = IntPtr.Zero;
-        private double lastDrawn = 0.0;
-    
-        public FormPluginUi() {
-            this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
-            this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
-            InitializeComponent();
-        }
-
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-            this.SuspendLayout();
-            // 
-            // FormPluginUi
-            // 
-            this.ClientSize = new System.Drawing.Size( 334, 164 );
-            this.Name = "FormPluginUi";
-            this.ResumeLayout( false );
-
-        }
-
-        public void invalidateUi() {
-            double now = PortUtil.getCurrentTime();
-
-            if ( now - lastDrawn > 0.04 ) {
-                if ( childWnd != IntPtr.Zero ) {
-                    bool ret = false;
-                    try {
-                        ret = win32.InvalidateRect( childWnd, IntPtr.Zero, false );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "FormPluginUi#invalidateUi; ex=" + ex );
-                        ret = false;
-                    }
-                    lastDrawn = now;
-#if DEBUG
-                    PortUtil.println( "FormPluginUi#invalidateUi; ret=" + ret );
-#endif
-                }
-            }
-        }
-    }
-
     public class AquesToneDriver : vstidrv {
 #endif
         public static readonly String[] PHONES = new String[] { 
@@ -195,7 +151,7 @@ namespace org.kbinani.cadencii {
 #endif
                 }
 #if DEBUG
-                pluginUi.Show();
+                /*pluginUi.Show();
                 PortUtil.stdout.println( "AquesToneDriver#open; phontParameterIndex=" + phontParameterIndex );
                 pluginUi.SizeChanged += new EventHandler( pluginUi_SizeChanged );
 
@@ -212,7 +168,7 @@ namespace org.kbinani.cadencii {
                     //send( new MidiEvent[] { pbs0, pbs1, pbs2 } );
                     setParameter( bendLblParameterIndex, value / 13.0f );
                     PortUtil.println( "value" + value + "; display=" + getParameterDisplay( bendLblParameterIndex ) + "; param=" + getParameter( bendLblParameterIndex ) );
-                }
+                }*/
 #endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );

@@ -1,6 +1,6 @@
 ﻿/*
  * VSTiProxy.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -23,8 +23,8 @@ import org.kbinani.vsq.*;
 //#define TEST
 using System;
 using System.Threading;
-using bocoree;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
@@ -47,10 +47,10 @@ namespace org.kbinani.cadencii {
         public static String CurrentUser = "";
         private static String s_working_renderer = "";
 #if ENABLE_VOCALOID
-        private static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
+        public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
 #endif
 #if ENABLE_AQUESTONE
-        private static AquesToneDriver aquesToneDriver = null;
+        public static AquesToneDriver aquesToneDriver = null;
 #endif
 
         private static RenderingRunner s_rendering_context;
@@ -60,7 +60,7 @@ namespace org.kbinani.cadencii {
         }
 
         public static void initCor() {
-            PlaySound.init( SAMPLE_RATE );
+            PlaySound.init( SAMPLE_RATE, SAMPLE_RATE, 3 );
 
 #if ENABLE_VOCALOID
 #if !DEBUG
@@ -87,7 +87,7 @@ namespace org.kbinani.cadencii {
 #if !DEBUG
             } catch ( Exception ex ){
                 AppManager.debugWriteLine( "    ex=" + ex );
-                bocoree.debug.push_log( "    ex=" + ex );
+                org.kbinani.debug.push_log( "    ex=" + ex );
             }
 #endif
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
@@ -246,7 +246,7 @@ namespace org.kbinani.cadencii {
                 s_working_renderer = VSTiProxy.RENDERER_AQT0;
             }
 #if DEBUG
-            bocoree.debug.push_log( "s_working_renderer=" + s_working_renderer );
+            org.kbinani.debug.push_log( "s_working_renderer=" + s_working_renderer );
 #endif
             VsqFileEx split = (VsqFileEx)vsq.clone();
             split.updateTotalClocks();

@@ -6,8 +6,8 @@ using System.IO;
 using System.Windows.Forms;
 using org.kbinani.vsq;
 using org.kbinani.apputil;
-using bocoree;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.util;
 using org.kbinani.cadencii;
 
 public class RenderAsUtau : Form {

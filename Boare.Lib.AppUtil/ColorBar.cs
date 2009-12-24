@@ -1,7 +1,7 @@
 #if !JAVA
 /*
  * ColorBar.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.apputil.
  *

@@ -1,6 +1,6 @@
 ﻿/*
  * VsqEventList.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.vsq.
  *
@@ -18,8 +18,8 @@ import java.io.*;
 import java.util.*;
 #else
 using System;
-using bocoree;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.util;
 
 namespace org.kbinani.vsq {
     using Integer = System.Int32;

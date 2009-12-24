@@ -1,7 +1,7 @@
 ﻿#if ENABLE_PROPERTY
 /*
  * VsqEventItemProxy.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -17,8 +17,8 @@ using System.ComponentModel;
 using System.Reflection;
 using org.kbinani.vsq;
 using org.kbinani.apputil;
-using bocoree;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
 
@@ -46,6 +46,7 @@ namespace org.kbinani.cadencii {
         private VibratoVariation m_vibrato;
         private int m_attack_depth = 64;
         private int m_attack_duration = 64;
+        private String m_tag;
 
         private static int s_vibrato_percent_last = -1;
 
@@ -88,6 +89,7 @@ namespace org.kbinani.cadencii {
             m_vMeanNoteTransition = item.ID.vMeanNoteTransition;
             m_d4mean = item.ID.d4mean;
             m_pMeanEndingNote = item.ID.pMeanEndingNote;
+            m_tag = item.Tag;
 
             if ( item.ID.NoteHeadHandle != null ) {
                 m_attack_depth = item.ID.NoteHeadHandle.Depth;
@@ -154,6 +156,7 @@ namespace org.kbinani.cadencii {
             VsqEvent item = original;
             VsqEvent ret = new VsqEvent();
             ret.Clock = m_clock.getClock().getIntValue();
+            ret.Tag = m_tag;
             ret.ID = new VsqID();
             ret.ID.DEMaccent = m_accent;
             ret.ID.DEMdecGainRate = m_decay;
@@ -621,6 +624,43 @@ namespace org.kbinani.cadencii {
                     lastVibratoLength = draft;
                     m_vibrato_percent = draft;
                 }
+            }
+        }
+        #endregion
+
+        #region AquesTone
+        [Category( "AquesTone" )]
+        public int Release {
+            get {
+                VsqEvent e = new VsqEvent();
+                e.Tag = m_tag;
+                String v = VsqFileEx.getEventTag( e, VsqFileEx.TAGNAME_AQUESTONE_RELEASE );
+                int value = 64;
+                try {
+                    value = PortUtil.parseInt( v );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VsqEventItemProxy#get_Release" );
+                    value = 64;
+                }
+                if ( 0 > value ) {
+                    value = 0;
+                } else if ( 127 < value ) {
+                    value = 127;
+                }
+                VsqFileEx.setEventTag( e, VsqFileEx.TAGNAME_AQUESTONE_RELEASE, value + "" );
+                m_tag = e.Tag;
+                return value;
+            }
+            set {
+                if ( 0 > value ) {
+                    value = 0;
+                } else if ( 127 < value ) {
+                    value = 127;
+                }
+                VsqEvent e = new VsqEvent();
+                e.Tag = m_tag;
+                VsqFileEx.setEventTag( e, VsqFileEx.TAGNAME_AQUESTONE_RELEASE, value + "" );
+                m_tag = e.Tag;
             }
         }
         #endregion

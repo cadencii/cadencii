@@ -1,20 +1,20 @@
 ﻿/*
  * BFormWindowState.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of bocoree.
+ * This file is part of org.kbinani.
  *
- * bocoree is free software; you can redistribute it and/or
+ * org.kbinani is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * bocoree is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BFormWindowState.java
 #else
-namespace bocoree.windows.forms{
+namespace org.kbinani.windows.forms{
 
     public enum BFormWindowState {
         Normal,

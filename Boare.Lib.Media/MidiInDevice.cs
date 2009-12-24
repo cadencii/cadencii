@@ -1,6 +1,6 @@
 ﻿/*
  * MidiInDevice.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.media.
  *
@@ -21,7 +21,7 @@ public class MidiInDevice{
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using bocoree;
+using org.kbinani;
 
 namespace org.kbinani.media {
 

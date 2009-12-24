@@ -1,6 +1,6 @@
 ﻿/*
  * Misc.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.apputil.
  *
@@ -25,10 +25,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using bocoree;
+using org.kbinani;
 
 namespace org.kbinani.apputil {
-    using java = bocoree.java;
+    using java = org.kbinani.java;
     using boolean = System.Boolean;
 #endif
 
@@ -42,7 +42,7 @@ namespace org.kbinani.apputil {
             applyToolStripFontRecurse( item, font );
         }
 #else
-        public static void applyContextMenuFontRecurse( ContextMenuStrip item, bocoree.java.awt.Font font ) {
+        public static void applyContextMenuFontRecurse( ContextMenuStrip item, org.kbinani.java.awt.Font font ) {
             item.Font = font.font;
             foreach ( ToolStripItem tsi in item.Items ) {
                 applyToolStripFontRecurse( tsi, font );
@@ -60,7 +60,7 @@ namespace org.kbinani.apputil {
             }
         }
 #else
-        public static void applyToolStripFontRecurse( ToolStripItem item, bocoree.java.awt.Font font ) {
+        public static void applyToolStripFontRecurse( ToolStripItem item, org.kbinani.java.awt.Font font ) {
             item.Font = font.font;
             if ( item is ToolStripMenuItem ) {
                 ToolStripMenuItem tsmi = (ToolStripMenuItem)item;
@@ -121,7 +121,7 @@ namespace org.kbinani.apputil {
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
-                        java.awt.Color c = new bocoree.java.awt.Color( b2.GetPixel( x, y ) );
+                        java.awt.Color c = new org.kbinani.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 ) {
                             found = true;
@@ -143,7 +143,7 @@ namespace org.kbinani.apputil {
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
-                        java.awt.Color c = new bocoree.java.awt.Color( b2.GetPixel( x, y ) );
+                        java.awt.Color c = new org.kbinani.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 ) {
                             found = true;

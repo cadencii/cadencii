@@ -1,6 +1,6 @@
 ﻿/*
  * UtauRenderingRunner.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -24,9 +24,9 @@ using System;
 using System.Diagnostics;
 using org.kbinani.media;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.io;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.io;
+using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -352,7 +352,7 @@ namespace org.kbinani.cadencii {
                             }
                             try {
 #if DEBUG
-                                bocoree.debug.push_log( "deleting... \"" + delfile + "\"" );
+                                org.kbinani.debug.push_log( "deleting... \"" + delfile + "\"" );
 #endif
                                 PortUtil.deleteFile( delfile );
                             } catch ( Exception ex ) {
@@ -386,12 +386,12 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if DEBUG
-                bocoree.debug.push_log( "s_cache:" );
+                org.kbinani.debug.push_log( "s_cache:" );
                 for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
                     String key = (String)itr.next();
                     ValuePair<String, Double> value = s_cache.get( key );
-                    bocoree.debug.push_log( "    arg=" + key );
-                    bocoree.debug.push_log( "    file=" + value.getKey() );
+                    org.kbinani.debug.push_log( "    arg=" + key );
+                    org.kbinani.debug.push_log( "    file=" + value.getKey() );
                 }
 #endif
 
@@ -403,7 +403,7 @@ namespace org.kbinani.cadencii {
                 boolean first = true;
                 int trim_remain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
 #if DEBUG
-                bocoree.debug.push_log( "trim_remain=" + trim_remain );
+                org.kbinani.debug.push_log( "trim_remain=" + trim_remain );
 #endif
                 VsqBPList dyn_curve = m_vsq.Track.get( renderingTrack ).getCurve( "dyn" );
 #if MAKEBAT_SP
@@ -414,7 +414,7 @@ namespace org.kbinani.cadencii {
                     if ( !rq.ResamplerFinished ) {
                         String arg = rq.ResamplerArg;
 #if DEBUG
-                        bocoree.debug.push_log( "resampler arg=" + arg );
+                        org.kbinani.debug.push_log( "resampler arg=" + arg );
 #endif
 #if MAKEBAT_SP
                         bat.WriteLine( "\"" + m_resampler + "\" " + arg );
@@ -806,7 +806,7 @@ namespace org.kbinani.cadencii {
 
         private static void ProcessWavtool( String arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine ) {
 #if DEBUG
-            bocoree.debug.push_log( "wavtool arg=" + arg );
+            org.kbinani.debug.push_log( "wavtool arg=" + arg );
 #endif
 
 #if JAVA

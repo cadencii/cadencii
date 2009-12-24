@@ -1,6 +1,6 @@
 ﻿/*
  * StraightRenderingRunner.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -24,9 +24,9 @@ using System;
 using System.Diagnostics;
 using org.kbinani.media;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.io;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.io;
+using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;

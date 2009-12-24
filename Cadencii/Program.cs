@@ -1,6 +1,6 @@
 ﻿/*
  * Program.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -41,7 +41,7 @@ namespace org.kbinani.cadencii{
                 Application.Run( AppManager.mainWindow );
 #if !DEBUG
             } catch ( Exception ex ) {
-                bocoree.debug.push_log( ex.ToString() );
+                org.kbinani.debug.push_log( ex.ToString() );
             }
 #endif
         }

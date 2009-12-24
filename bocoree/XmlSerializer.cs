@@ -1,13 +1,13 @@
 /*
  * XmlSerializer.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of bocoree.
+ * This file is part of org.kbinani.
  *
- * bocoree is free software; you can redistribute it and/or
+ * org.kbinani is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * bocoree is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -377,52 +377,49 @@ public class XmlSerializer{
 #else
 using System;
 using System.IO;
-using bocoree.xml;
+using org.kbinani.xml;
 
-namespace bocoree.xml {
+namespace org.kbinani.xml {
 
     public class XmlSerializer {
         private bool m_serialize_static_mode = false;
         System.Xml.Serialization.XmlSerializer m_serializer;
         XmlStaticMemberSerializer m_static_serializer;
 
-        public XmlSerializer( Type cls ) {
-            m_serializer = new System.Xml.Serialization.XmlSerializer( cls );
+        public XmlSerializer( Type cls )
+            : this( cls, false ) {
         }
 
-        public XmlSerializer( Type cls, bool serialize_static_mode )
-        {
+        public XmlSerializer( Type cls, bool serialize_static_mode ) {
             m_serialize_static_mode = serialize_static_mode;
-            if ( serialize_static_mode )
-            {
+            if ( serialize_static_mode ) {
                 m_static_serializer = new XmlStaticMemberSerializer( cls );
-            }
-            else
-            {
+            } else {
                 m_serializer = new System.Xml.Serialization.XmlSerializer( cls );
             }
         }
 
         public object deserialize( Stream stream ) {
-            if ( m_serialize_static_mode )
-            {
+            if ( m_serialize_static_mode ) {
                 m_static_serializer.Deserialize( stream );
                 return null;
-            }
-            else
-            {
+            } else {
                 return m_serializer.Deserialize( stream );
             }
         }
 
         public void serialize( Stream stream, object obj ) {
-            if ( m_serialize_static_mode )
-            {
+            if ( m_serialize_static_mode ) {
                 m_static_serializer.Serialize( stream );
-            }
-            else
-            {
-                m_serializer.Serialize( stream, obj );
+            } else {
+                System.Xml.XmlTextWriter xw = null;
+                try {
+                    xw = new System.Xml.XmlTextWriter( stream, null );
+                    xw.Formatting = System.Xml.Formatting.None;
+                    m_serializer.Serialize( xw, obj );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "XmlSerializer#serialize; ex=" + ex );
+                }
             }
         }
     }

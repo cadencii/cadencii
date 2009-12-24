@@ -1,24 +1,24 @@
 ﻿/*
  * swing.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of bocoree.
+ * This file is part of org.kbinani.
  *
- * bocoree is free software; you can redistribute it and/or
+ * org.kbinani is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * bocoree is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if !JAVA
 using System;
-using bocoree.java.awt.event_;
-namespace bocoree.javax.swing {
+using org.kbinani.java.awt.event_;
+namespace org.kbinani.javax.swing {
 
     public class KeyStroke {
         public System.Windows.Forms.Keys keys = System.Windows.Forms.Keys.None;
-        private static bocoree.java.util.TreeMap<string, int> keyCodes = null;
+        private static org.kbinani.java.util.TreeMap<string, int> keyCodes = null;
 
         private KeyStroke(){
         }
@@ -67,13 +67,13 @@ namespace bocoree.javax.swing {
             return ret;
         }
 
-        /* private static bocoree.util.TreeMap<string, int> getKeyCodes() {
+        /* private static org.kbinani.util.TreeMap<string, int> getKeyCodes() {
             if ( keyCodes == null ) {
-                keyCodes = new bocoree.util.TreeMap<string, int>();
-                foreach ( System.Reflection.FieldInfo fi in typeof( bocoree.awt.event_.KeyEvent ).GetFields() ) {
+                keyCodes = new org.kbinani.util.TreeMap<string, int>();
+                foreach ( System.Reflection.FieldInfo fi in typeof( org.kbinani.awt.event_.KeyEvent ).GetFields() ) {
                     if ( fi.IsStatic && fi.IsPublic && fi.FieldType == typeof( int ) ) {
                         string name = fi.Name;
-                        int value = fi.GetValue( typeof( bocoree.awt.event_.KeyEvent ) );
+                        int value = fi.GetValue( typeof( org.kbinani.awt.event_.KeyEvent ) );
                         keyCodes.put( name, value );
                     }
                 }

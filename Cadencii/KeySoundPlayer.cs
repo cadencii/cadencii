@@ -1,6 +1,6 @@
 ﻿/*
  * KeySoundPlayer.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -19,7 +19,7 @@ import org.kbinani.media.*;
 #else
 using System;
 using org.kbinani.media;
-using bocoree;
+using org.kbinani;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -29,11 +29,14 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 鍵盤を押した時に音を鳴らすためのプレイヤー
         /// </summary>
-        private static BSoundPlayer[] m_sound_previewer = new BSoundPlayer[48];
-        private static BSoundPlayer m_temp_player = null;
-        private static boolean[] m_prepared = new boolean[127];
+        private static BSoundPlayer[] m_sound_previewer;
+        private static BSoundPlayer m_temp_player;
+        private static boolean[] m_prepared;
         
-        public static void Init() {
+        public static void init() {
+            m_sound_previewer = new BSoundPlayer[48];
+            m_temp_player = null;
+            m_prepared = new boolean[127];
             String cache_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "cache" );
             for ( int i = 0; i <= 126; i++ ) {
                 String path = PortUtil.combinePath( cache_path, i + ".wav" );
@@ -43,9 +46,7 @@ namespace org.kbinani.cadencii {
                         try {
                             m_sound_previewer[i - 36] = new BSoundPlayer( path );
                         } catch( Exception ex ) {
-#if JAVA
-                            System.err.println( "KeySoundPlayer#.ctor; ex=" + ex );
-#endif
+                            PortUtil.stderr.println( "KeySoundPlayer#.ctor; ex=" + ex );
                         }
                     }
                 } else {
@@ -54,7 +55,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void Play( int note ) {
+        public static void play( int note ) {
             if ( note < 0 || 127 <= note ) {
                 return;
             }

@@ -1,6 +1,6 @@
 ﻿/*
  * FormMixer.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -28,9 +28,9 @@ using System.IO;
 using System.Windows.Forms;
 using org.kbinani.apputil;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.util;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -442,13 +442,13 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.menuMain = new bocoree.windows.forms.BMenuBar();
-            this.menuVisual = new bocoree.windows.forms.BMenuItem();
-            this.menuVisualReturn = new bocoree.windows.forms.BMenuItem();
-            this.panel1 = new bocoree.windows.forms.BPanel();
-            this.hScroll = new bocoree.windows.forms.BHScrollBar();
+            this.menuMain = new org.kbinani.windows.forms.BMenuBar();
+            this.menuVisual = new org.kbinani.windows.forms.BMenuItem();
+            this.menuVisualReturn = new org.kbinani.windows.forms.BMenuItem();
+            this.panel1 = new org.kbinani.windows.forms.BPanel();
+            this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
             this.volumeMaster = new org.kbinani.cadencii.VolumeTracker();
-            this.chkTopmost = new bocoree.windows.forms.BCheckBox();
+            this.chkTopmost = new org.kbinani.windows.forms.BCheckBox();
             this.menuMain.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();

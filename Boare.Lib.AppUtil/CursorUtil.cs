@@ -15,7 +15,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Reflection;
-using bocoree;
+using org.kbinani;
 
 namespace org.kbinani.apputil {
 

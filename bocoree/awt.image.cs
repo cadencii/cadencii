@@ -1,20 +1,20 @@
 ﻿/*
  * awt.image.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of bocoree.
+ * This file is part of org.kbinani.
  *
- * bocoree is free software; you can redistribute it and/or
+ * org.kbinani is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * bocoree is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if !JAVA
-namespace bocoree.java.awt.image {
+namespace org.kbinani.java.awt.image {
 
-    public class BufferedImage/* : bocoree.awt.Image*/{
+    public class BufferedImage/* : org.kbinani.awt.Image*/{
         public static int TYPE_INT_BGR = 0;
         public static int TYPE_INT_RGB = 1;
         public static int TYPE_INT_ARGB = 2;

@@ -1,25 +1,25 @@
 ﻿#if !JAVA
 /*
  * fft.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  * 
  * Part of this is derived from 
  * General Purpose FFT (Fast Fourier/Cosine/Sine Transform) Package
  * Copyright(C) 1996-2001 Takuya OOURA
  * (http://momonga.t.u-tokyo.ac.jp/~ooura/fft.html)
  *
- * This file is part of bocoree.
+ * This file is part of org.kbinani.
  *
- * bocoree is free software; you can redistribute it and/or
+ * org.kbinani is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * bocoree is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
 
-namespace bocoree {
+namespace org.kbinani {
 
     public static unsafe class fft_test {
         const int NMAXSQRT = 64;

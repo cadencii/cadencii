@@ -1,22 +1,22 @@
 ﻿#if !JAVA
 /*
  * AssemblyInfo.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
- * This file is part of bocoree.
+ * This file is part of org.kbinani.
  *
- * bocoree is free software; you can redistribute it and/or
+ * org.kbinani is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * bocoree is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-[assembly: System.Reflection.AssemblyTitle( "bocoree" )]
+[assembly: System.Reflection.AssemblyTitle( "org.kbinani" )]
 [assembly: System.Reflection.AssemblyDescription( "" )]
 [assembly: System.Reflection.AssemblyConfiguration( "" )]
 [assembly: System.Reflection.AssemblyCompany( "Boare" )]
-[assembly: System.Reflection.AssemblyProduct( "bocoree" )]
+[assembly: System.Reflection.AssemblyProduct( "org.kbinani" )]
 [assembly: System.Reflection.AssemblyCopyright( "Copyright © 2008-2009" )]
 [assembly: System.Reflection.AssemblyTrademark( "" )]
 [assembly: System.Reflection.AssemblyCulture( "" )]

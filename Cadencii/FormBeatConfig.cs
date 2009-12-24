@@ -1,6 +1,6 @@
 ﻿/*
  * FormBeatConfig.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -22,8 +22,8 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using org.kbinani.apputil;
-using bocoree;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -190,20 +190,20 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.groupPosition = new bocoree.windows.forms.BGroupBox();
-            this.lblBar2 = new bocoree.windows.forms.BLabel();
-            this.lblBar1 = new bocoree.windows.forms.BLabel();
+            this.groupPosition = new org.kbinani.windows.forms.BGroupBox();
+            this.lblBar2 = new org.kbinani.windows.forms.BLabel();
+            this.lblBar1 = new org.kbinani.windows.forms.BLabel();
             this.numEnd = new org.kbinani.cadencii.NumericUpDownEx();
             this.numStart = new org.kbinani.cadencii.NumericUpDownEx();
-            this.chkEnd = new bocoree.windows.forms.BCheckBox();
-            this.lblStart = new bocoree.windows.forms.BLabel();
-            this.groupBeat = new bocoree.windows.forms.BGroupBox();
-            this.comboDenominator = new bocoree.windows.forms.BComboBox();
-            this.label2 = new bocoree.windows.forms.BLabel();
-            this.label1 = new bocoree.windows.forms.BLabel();
+            this.chkEnd = new org.kbinani.windows.forms.BCheckBox();
+            this.lblStart = new org.kbinani.windows.forms.BLabel();
+            this.groupBeat = new org.kbinani.windows.forms.BGroupBox();
+            this.comboDenominator = new org.kbinani.windows.forms.BComboBox();
+            this.label2 = new org.kbinani.windows.forms.BLabel();
+            this.label1 = new org.kbinani.windows.forms.BLabel();
             this.numNumerator = new org.kbinani.cadencii.NumericUpDownEx();
-            this.btnOK = new bocoree.windows.forms.BButton();
-            this.btnCancel = new bocoree.windows.forms.BButton();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.groupPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStart)).BeginInit();

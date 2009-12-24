@@ -1,7 +1,7 @@
 ﻿#if !JAVA
 /*
  * CommandTree.cs
- * Copyright (c)2009 kbinani
+ * Copyright (C)2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -26,7 +26,7 @@ namespace org.kbinani.cadencii {
         public VsqFileEx m_vsq = null;
 
         public EditorManager() {
-            ID = bocoree.misc.getmd5( DateTime.Now.ToBinary().ToString() );
+            ID = org.kbinani.misc.getmd5( DateTime.Now.ToBinary().ToString() );
             s_root = new CadenciiCommand( Boare.Lib.Vsq.VsqCommand.generateCommandRoot() );
         }
 

@@ -1,7 +1,7 @@
 ﻿#if !JAVA
 /*
  * VersionInfo.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.apputil.
  *
@@ -16,14 +16,14 @@ using System;
 //using System.Drawing;
 //using System.Drawing.Drawing2D;
 //using System.Windows.Forms;
-using bocoree;
-using bocoree.java.awt;
-using bocoree.java.awt.image;
+using org.kbinani;
+using org.kbinani.java.awt;
+using org.kbinani.java.awt.image;
 
 namespace org.kbinani.apputil {
-    using java = bocoree.java;
-    using javax = bocoree.javax;
-    using Graphics = bocoree.java.awt.Graphics2D;
+    using java = org.kbinani.java;
+    using javax = org.kbinani.javax;
+    using Graphics = org.kbinani.java.awt.Graphics2D;
 
     public partial class VersionInfo : System.Windows.Forms.Form {
         DateTime m_scroll_started;
@@ -206,7 +206,7 @@ namespace org.kbinani.apputil {
             g.clearRect( 0, 0, this.Width, this.Height );
             if ( m_credit_mode ) {
                 float times = (float)(((DateTime.Now).Subtract( m_scroll_started )).TotalSeconds) - 3f;
-                float speed = (float)((2.0 - bocoree.math.erfcc( times * 0.8 )) / 2.0) * m_speed;
+                float speed = (float)((2.0 - org.kbinani.math.erfcc( times * 0.8 )) / 2.0) * m_speed;
                 float dt = times - m_last_t;
                 m_shift += (speed + m_last_speed) * dt / 2f;
                 m_last_t = times;

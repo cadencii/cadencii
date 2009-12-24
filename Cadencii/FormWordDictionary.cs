@@ -1,6 +1,6 @@
 ﻿/*
  * FormWordDictionary.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -25,9 +25,9 @@ import org.kbinani.windows.forms.*;
 using System;
 using org.kbinani.apputil;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.util;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -178,12 +178,12 @@ namespace org.kbinani.cadencii {
         private void InitializeComponent() {
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem( "DEFAULT_JP" );
-            this.listDictionaries = new bocoree.windows.forms.BListView();
-            this.lblAvailableDictionaries = new bocoree.windows.forms.BLabel();
-            this.btnOK = new bocoree.windows.forms.BButton();
-            this.btnCancel = new bocoree.windows.forms.BButton();
-            this.btnUp = new bocoree.windows.forms.BButton();
-            this.btnDown = new bocoree.windows.forms.BButton();
+            this.listDictionaries = new org.kbinani.windows.forms.BListView();
+            this.lblAvailableDictionaries = new org.kbinani.windows.forms.BLabel();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.btnUp = new org.kbinani.windows.forms.BButton();
+            this.btnDown = new org.kbinani.windows.forms.BButton();
             this.SuspendLayout();
             // 
             // listDictionaries

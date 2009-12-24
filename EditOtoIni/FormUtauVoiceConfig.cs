@@ -1,13 +1,13 @@
 ﻿/*
  * FormUtauVoiceConfig.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of Boare.EditOtoIni.
+ * This file is part of org.kbinani.editotoini.
  *
- * Boare.Cadencii is free software; you can redistribute it and/or
+ * org.kbinani.editotoini is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * Boare.Cadencii is distributed in the hope that it will be useful,
+ * org.kbinani.editotoini is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -20,24 +20,24 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows.Forms;
-using org.kbinani.cadencii;
+using org.kbinani;
 using org.kbinani.apputil;
+using org.kbinani.cadencii;
+using org.kbinani.java.awt;
+using org.kbinani.java.io;
+using org.kbinani.java.util;
 using org.kbinani.media;
-using bocoree;
-using bocoree.java.awt;
-using bocoree.java.io;
-using bocoree.java.util;
-using bocoree.windows.forms;
-using bocoree.xml;
+using org.kbinani.windows.forms;
+using org.kbinani.xml;
 
-namespace org.EditOtoIni {
+namespace org.kbinani.editotoini {
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Float = System.Single;
-    using Graphics = bocoree.java.awt.Graphics2D;
-    using java = bocoree.java;
+    using Graphics = org.kbinani.java.awt.Graphics2D;
+    using java = org.kbinani.java;
 #endif
 
 #if JAVA

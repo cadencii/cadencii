@@ -1,6 +1,6 @@
 ﻿/*
  * FormMidiImExport.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -22,7 +22,7 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using org.kbinani.apputil;
-using bocoree.windows.forms;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -283,19 +283,19 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.btnCancel = new bocoree.windows.forms.BButton();
-            this.btnOK = new bocoree.windows.forms.BButton();
-            this.listTrack = new bocoree.windows.forms.BListView();
-            this.btnCheckAll = new bocoree.windows.forms.BButton();
-            this.btnUncheckAll = new bocoree.windows.forms.BButton();
-            this.chkBeat = new bocoree.windows.forms.BCheckBox();
-            this.chkTempo = new bocoree.windows.forms.BCheckBox();
-            this.chkNote = new bocoree.windows.forms.BCheckBox();
-            this.chkLyric = new bocoree.windows.forms.BCheckBox();
-            this.groupCommonOption = new bocoree.windows.forms.BGroupBox();
-            this.chkMetaText = new bocoree.windows.forms.BCheckBox();
-            this.chkPreMeasure = new bocoree.windows.forms.BCheckBox();
-            this.chkExportVocaloidNrpn = new bocoree.windows.forms.BCheckBox();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.listTrack = new org.kbinani.windows.forms.BListView();
+            this.btnCheckAll = new org.kbinani.windows.forms.BButton();
+            this.btnUncheckAll = new org.kbinani.windows.forms.BButton();
+            this.chkBeat = new org.kbinani.windows.forms.BCheckBox();
+            this.chkTempo = new org.kbinani.windows.forms.BCheckBox();
+            this.chkNote = new org.kbinani.windows.forms.BCheckBox();
+            this.chkLyric = new org.kbinani.windows.forms.BCheckBox();
+            this.groupCommonOption = new org.kbinani.windows.forms.BGroupBox();
+            this.chkMetaText = new org.kbinani.windows.forms.BCheckBox();
+            this.chkPreMeasure = new org.kbinani.windows.forms.BCheckBox();
+            this.chkExportVocaloidNrpn = new org.kbinani.windows.forms.BCheckBox();
             this.groupCommonOption.SuspendLayout();
             this.SuspendLayout();
             // 

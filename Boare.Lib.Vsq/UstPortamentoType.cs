@@ -1,6 +1,6 @@
 ﻿/*
  * UstPortamentoType.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.vsq.
  *

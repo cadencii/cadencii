@@ -1,6 +1,6 @@
 ﻿/*
  * VersionInfo.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -26,10 +26,10 @@ import org.kbinani.apputil.*;
 using System;
 using System.Windows.Forms;
 using org.kbinani.apputil;
-using bocoree;
-using bocoree.java.awt;
-using bocoree.java.awt.image;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.java.awt;
+using org.kbinani.java.awt.image;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -37,8 +37,8 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using Graphics = Graphics2D;
-    using java = bocoree.java;
-    using javax = bocoree.javax;
+    using java = org.kbinani.java;
+    using javax = org.kbinani.javax;
 #endif
 
 #if JAVA
@@ -397,12 +397,12 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.btnFlip = new bocoree.windows.forms.BButton();
-            this.btnOK = new bocoree.windows.forms.BButton();
-            this.btnSaveAuthorList = new bocoree.windows.forms.BButton();
-            this.lblVstLogo = new bocoree.windows.forms.BLabel();
-            this.pictVstLogo = new bocoree.windows.forms.BPictureBox();
-            this.lblStraightAcknowledgement = new bocoree.windows.forms.BLabel();
+            this.btnFlip = new org.kbinani.windows.forms.BButton();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.btnSaveAuthorList = new org.kbinani.windows.forms.BButton();
+            this.lblVstLogo = new org.kbinani.windows.forms.BLabel();
+            this.pictVstLogo = new org.kbinani.windows.forms.BPictureBox();
+            this.lblStraightAcknowledgement = new org.kbinani.windows.forms.BLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
             // 

@@ -1,6 +1,6 @@
 ﻿/*
  * AppManager.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -31,19 +31,19 @@ using System.Reflection;
 using System.Windows.Forms;
 using org.kbinani.apputil;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.awt;
-using bocoree.java.io;
-using bocoree.java.util;
-using bocoree.windows.forms;
-using bocoree.xml;
+using org.kbinani;
+using org.kbinani.java.awt;
+using org.kbinani.java.io;
+using org.kbinani.java.util;
+using org.kbinani.windows.forms;
+using org.kbinani.xml;
 using Microsoft.CSharp;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using Integer = System.Int32;
-    using java = bocoree.java;
+    using java = org.kbinani.java;
     using Long = System.Int64;
 #endif
 
@@ -149,10 +149,10 @@ namespace org.kbinani.cadencii {
                                              "using System.IO;",
                                              "using org.kbinani.vsq;",
                                              "using org.kbinani.cadencii;",
-                                             "using bocoree;",
-                                             "using bocoree.java.io;",
-                                             "using bocoree.java.util;",
-                                             "using bocoree.java.awt;",
+                                             "using org.kbinani;",
+                                             "using org.kbinani.java.io;",
+                                             "using org.kbinani.java.util;",
+                                             "using org.kbinani.java.awt;",
                                              "using org.kbinani.media;",
                                              "using org.kbinani.apputil;",
                                              "using System.Windows.Forms;",
@@ -1913,7 +1913,7 @@ namespace org.kbinani.cadencii {
             Messaging.loadMessages();
             Messaging.setLanguage( editorConfig.Language );
 
-            KeySoundPlayer.Init();
+            KeySoundPlayer.init();
 #if ENABLE_SCRIPT
             PaletteToolServer.Init();
 #endif
@@ -2234,7 +2234,7 @@ namespace org.kbinani.cadencii {
                 PortUtil.combinePath( path, "Cadencii.exe" ),
                 PortUtil.combinePath( path, "Boare.Lib.Media.dll" ),
                 PortUtil.combinePath( path, "Boare.Lib.AppUtil.dll" ),
-                PortUtil.combinePath( path, "bocoree.dll" ) } );
+                PortUtil.combinePath( path, "org.kbinani.dll" ) } );
             parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
             parameters.ReferencedAssemblies.Add( "System.dll" );
             parameters.ReferencedAssemblies.Add( "System.Drawing.dll" );

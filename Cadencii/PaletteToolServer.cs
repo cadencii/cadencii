@@ -1,7 +1,7 @@
 ﻿#if ENABLE_SCRIPT
 /*
  * PaletteToolServer.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -17,9 +17,9 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using org.kbinani.java.util;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.util;
+using org.kbinani.xml;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;

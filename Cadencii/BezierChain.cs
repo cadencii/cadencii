@@ -1,6 +1,6 @@
 ﻿/*
  * BezierChain.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -23,10 +23,10 @@ using System;
 //using System.Collections.Generic;
 //using System.Drawing;
 using System.Runtime.Serialization;
-using bocoree;
-using bocoree.java.util;
-using bocoree.java.io;
-using bocoree.java.awt;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.java.io;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;

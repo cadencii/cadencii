@@ -1,6 +1,6 @@
 ﻿/*
  * NumberTextBox.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -20,9 +20,9 @@ import org.kbinani.windows.forms.*;
 #else
 #define COMPONENT_ENABLE_LOCATION
 using System;
-using bocoree;
-using bocoree.java.awt;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.java.awt;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
 #endif

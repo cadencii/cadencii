@@ -6,9 +6,9 @@ using System.Windows.Forms;
 
 using org.kbinani.cadencii;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.util;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
 

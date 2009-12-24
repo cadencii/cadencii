@@ -1,26 +1,26 @@
 ﻿/*
  * Program.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
- * This file is part of Boare.Cadencii.
+ * This file is part of org.kbinani.generatekeysound.
  *
- * Boare.Cadencii is free software; you can redistribute it and/or
+ * org.kbinani.generatekeysound is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * Boare.Cadencii is distributed in the hope that it will be useful,
+ * org.kbinani.generatekeysound is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using org.kbinani;
 using org.kbinani.cadencii;
+using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.util;
 
-namespace GenerateKeySound {
+namespace org.kbinani.generatekeysound {
 
     class Program : Form {
         const int _SAMPLE_RATE = 44100;
@@ -94,8 +94,8 @@ namespace GenerateKeySound {
             Application.SetCompatibleTextRenderingDefault( false );
             AppManager.init();
 #if DEBUG
-            bocoree.debug.push_log( "resampler=" + AppManager.editorConfig.PathResampler );
-            bocoree.debug.push_log( "wavtool=" + AppManager.editorConfig.PathWavtool );
+            org.kbinani.debug.push_log( "resampler=" + AppManager.editorConfig.PathResampler );
+            org.kbinani.debug.push_log( "wavtool=" + AppManager.editorConfig.PathWavtool );
 #endif
             String singer = "Miku";
             object locker = new object();
@@ -220,12 +220,12 @@ namespace GenerateKeySound {
             int c = singers1.Length;
             String first_found_singer = "";
             String first_found_renderer = "";
-            for ( int i = 0; i < c; i++ ){
+            for ( int i = 0; i < c; i++ ) {
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = singers1[i].VOICENAME;
                     first_found_renderer = VSTiProxy.RENDERER_DSB2;
                 }
-                if ( singers1[i].VOICENAME.Equals( singer ) ){
+                if ( singers1[i].VOICENAME.Equals( singer ) ) {
                     renderer = VSTiProxy.RENDERER_DSB2;
                     break;
                 }
@@ -504,7 +504,7 @@ namespace GenerateKeySound {
             m_cancel_required = false;
         }
 
-        private static void run( PrepareStartArgument arg ){
+        private static void run( PrepareStartArgument arg ) {
             String singer = arg.singer;
             double amp = arg.amplitude;
             String dir = arg.directory;

@@ -1,18 +1,18 @@
 ﻿/*
  * awt.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of bocoree.
+ * This file is part of org.kbinani.
  *
- * bocoree is free software; you can redistribute it and/or
+ * org.kbinani is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * bocoree is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if !JAVA
-namespace bocoree.java.awt {
+namespace org.kbinani.java.awt {
 
     public class Icon {
         public System.Drawing.Image image;
@@ -203,13 +203,13 @@ namespace bocoree.java.awt {
             nativeGraphics.Clip = new System.Drawing.Region( new System.Drawing.Rectangle( x, y, width, height ) );
         }
 
-        public void drawImage( bocoree.java.awt.image.BufferedImage img, int x, int y, object obs ) {
-            if ( img is bocoree.java.awt.image.BufferedImage ) {
-                nativeGraphics.DrawImage( ((bocoree.java.awt.image.BufferedImage)img).m_image, new System.Drawing.Point( x, y ) );
+        public void drawImage( org.kbinani.java.awt.image.BufferedImage img, int x, int y, object obs ) {
+            if ( img is org.kbinani.java.awt.image.BufferedImage ) {
+                nativeGraphics.DrawImage( ((org.kbinani.java.awt.image.BufferedImage)img).m_image, new System.Drawing.Point( x, y ) );
             }
         }
 
-        public void drawImage( bocoree.java.awt.Image img, int x, int y, object obs ) {
+        public void drawImage( org.kbinani.java.awt.Image img, int x, int y, object obs ) {
             if ( img == null ) {
                 return;
             }

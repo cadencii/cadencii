@@ -1,6 +1,6 @@
 ﻿/*
  * VersionInfo.Designer.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.apputil.
  *
@@ -115,8 +115,8 @@ namespace org.kbinani.apputil {
         public void ApplyLanguage() {
             string about = string.Format( _( "About {0}" ), m_app_name );
             string credit = _( "Credit" );
-            bocoree.java.awt.Dimension size1 = Util.measureString( about, new bocoree.java.awt.Font( btnFlip.Font ) );
-            bocoree.java.awt.Dimension size2 = Util.measureString( credit, new bocoree.java.awt.Font( btnFlip.Font ) );
+            org.kbinani.java.awt.Dimension size1 = Util.measureString( about, new org.kbinani.java.awt.Font( btnFlip.Font ) );
+            org.kbinani.java.awt.Dimension size2 = Util.measureString( credit, new org.kbinani.java.awt.Font( btnFlip.Font ) );
             m_button_width_about = Math.Max( 75, (int)(size1.width * 1.3) );
             m_button_width_credit = Math.Max( 75, (int)(size2.width * 1.3) );
             if( m_credit_mode ) {

@@ -1,20 +1,20 @@
 ﻿/*
  * BStatusLabel.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of bocoree.
+ * This file is part of org.kbinani.
  *
- * bocoree is free software; you can redistribute it and/or
+ * org.kbinani is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * bocoree is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BStatusLabel.java
 #else
-namespace bocoree.windows.forms {
+namespace org.kbinani.windows.forms {
 
     public class BStatusLabel : System.Windows.Forms.ToolStripStatusLabel {
         public void setText( string value ) {
@@ -33,11 +33,11 @@ namespace bocoree.windows.forms {
             return base.ToolTipText;
         }
 
-        public bocoree.java.awt.Icon getIcon() {
-            return new bocoree.java.awt.ImageIcon( base.Image );
+        public org.kbinani.java.awt.Icon getIcon() {
+            return new org.kbinani.java.awt.ImageIcon( base.Image );
         }
 
-        public void setIcon( bocoree.java.awt.Icon value ) {
+        public void setIcon( org.kbinani.java.awt.Icon value ) {
             if ( value == null ) {
                 base.Image = null;
             } else {

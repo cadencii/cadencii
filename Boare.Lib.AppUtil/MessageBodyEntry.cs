@@ -1,6 +1,6 @@
 ﻿/*
  * MessageBody.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.apputil.
  *
@@ -17,7 +17,7 @@ package org.kbinani.apputil;
 import java.util.*;
 #else
 using System;
-using bocoree.java.util;
+using org.kbinani.java.util;
 
 namespace org.kbinani.apputil {
 #endif

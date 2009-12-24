@@ -1,6 +1,6 @@
 ﻿/*
  * NoteNumberPropertyConverter.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -15,7 +15,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 
-using bocoree;
+using org.kbinani;
 using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {

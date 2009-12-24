@@ -1,6 +1,6 @@
 ﻿/*
  * AuthorListEntry.cs
- * Copyright (c) 2007-2009 kbinani
+ * Copyright (C) 2007-2009 kbinani
  *
  * This file is part of org.kbinani.apputil.
  *
@@ -17,7 +17,7 @@ package org.kbinani.apputil;
 import java.awt.*;
 #else
 using System;
-using bocoree.java.awt;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.apputil {
 #endif

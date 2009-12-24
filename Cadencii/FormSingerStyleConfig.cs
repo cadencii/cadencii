@@ -1,6 +1,6 @@
 ﻿/*
  * FormSingerStypeConfig.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -24,9 +24,9 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.Windows.Forms;
 using org.kbinani.apputil;
-using bocoree;
-using bocoree.java.awt;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.java.awt;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;

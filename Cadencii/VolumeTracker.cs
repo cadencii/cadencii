@@ -1,6 +1,6 @@
 ﻿/*
  * VolumeTracker.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -22,8 +22,8 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using bocoree;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -491,11 +491,11 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.trackFeder = new bocoree.windows.forms.BSlider();
-            this.trackPanpot = new bocoree.windows.forms.BSlider();
-            this.txtPanpot = new bocoree.windows.forms.BTextBox();
-            this.lblTitle = new bocoree.windows.forms.BLabel();
-            this.txtFeder = new bocoree.windows.forms.BTextBox();
+            this.trackFeder = new org.kbinani.windows.forms.BSlider();
+            this.trackPanpot = new org.kbinani.windows.forms.BSlider();
+            this.txtPanpot = new org.kbinani.windows.forms.BTextBox();
+            this.lblTitle = new org.kbinani.windows.forms.BLabel();
+            this.txtFeder = new org.kbinani.windows.forms.BTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackPanpot)).BeginInit();
             this.SuspendLayout();

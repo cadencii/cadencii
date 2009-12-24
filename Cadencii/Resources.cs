@@ -9,8 +9,8 @@ import org.kbinani.*;
 #else
 using System;
 using System.IO;
-using bocoree;
-using bocoree.java.awt;
+using org.kbinani;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.cadencii{
 #endif

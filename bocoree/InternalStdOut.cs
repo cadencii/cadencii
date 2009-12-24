@@ -4,7 +4,7 @@ package org.kbinani;
 #else
 using System;
 
-namespace bocoree {
+namespace org.kbinani {
 #endif
 
     public class InternalStdOut {

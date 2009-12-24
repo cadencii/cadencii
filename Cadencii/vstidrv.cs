@@ -1,7 +1,7 @@
 ﻿#if ENABLE_VOCALOID
 /*
  * VSTiProxy.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -16,8 +16,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using bocoree;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.util;
 using org.kbinani.vsq;
 using VstSdk;
 
@@ -105,6 +105,19 @@ namespace org.kbinani.cadencii {
         /// 左右チャンネルバッファの配列(buffers={bufferLeft, bufferRight})
         /// </summary>
         IntPtr buffers = IntPtr.Zero;
+        /// <summary>
+        /// パラメータの，ロード時のデフォルト値
+        /// </summary>
+        float[] paramDefaults = null;
+
+        public void resetAllParameters() {
+            if ( paramDefaults == null ) {
+                return;
+            }
+            for ( int i = 0; i < paramDefaults.Length; i++ ) {
+                setParameter( i, paramDefaults[i] );
+            }
+        }
 
         public virtual float getParameter( int index ) {
             return aEffect.GetParameter( ref aEffect, index );
@@ -297,6 +310,13 @@ namespace org.kbinani.cadencii {
             aEffect.Dispatch( ref aEffect, AEffectOpcodes.effOpen, 0, 0, (void*)0, 0 );
             aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)sampleRate );
             aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, blockSize, (void*)0, 0 );
+
+            // デフォルトのパラメータ値を取得
+            int num = aEffect.numParams;
+            paramDefaults = new float[num];
+            for ( int i = 0; i < num; i++ ) {
+                paramDefaults[i] = aEffect.GetParameter( ref aEffect, i );
+            }
             return true;
         }
 

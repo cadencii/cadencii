@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using org.kbinani.cadencii;
 using org.kbinani.media;
 using org.kbinani.vsq;
-using bocoree.java.util;
+using org.kbinani.java.util;
 
 public class Search {
     public static bool Edit( VsqFile vsq ) {

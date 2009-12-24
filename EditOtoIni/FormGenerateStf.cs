@@ -1,13 +1,13 @@
 ﻿/*
  * FormGenerateStf.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of Boare.EditOtoIni.
+ * This file is part of org.kbinani.editotoini.
  *
- * Boare.Cadencii is free software; you can redistribute it and/or
+ * org.kbinani.editotoini is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * Boare.Cadencii is distributed in the hope that it will be useful,
+ * org.kbinani.editotoini is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -25,12 +25,12 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
-using bocoree;
-using bocoree.java.util;
-using bocoree.windows.forms;
-using bocoree.componentmodel;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.windows.forms;
+using org.kbinani.componentmodel;
 
-namespace org.EditOtoIni {
+namespace org.kbinani.editotoini {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;

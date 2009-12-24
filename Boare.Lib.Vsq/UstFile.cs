@@ -1,6 +1,6 @@
 ﻿/*
  * UstFile.cs
- * Copyright (c) 2009 kbinani, PEX
+ * Copyright (C) 2009 kbinani, PEX
  *
  * This file is part of org.kbinani.vsq.
  *
@@ -19,9 +19,9 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
-using bocoree;
-using bocoree.java.util;
-using bocoree.java.io;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.java.io;
 
 namespace org.kbinani.vsq {
     using Float = System.Single;
@@ -58,8 +58,8 @@ namespace org.kbinani.vsq {
             try {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "Shift_JIS" ) );
 #if DEBUG
-                bocoree.debug.push_log( "path=" + path );
-                bocoree.debug.push_log( "(sr==null)=" + (sr == null) );
+                org.kbinani.debug.push_log( "path=" + path );
+                org.kbinani.debug.push_log( "(sr==null)=" + (sr == null) );
 #endif
                 String line = sr.readLine();
                 if ( !line.Equals( "[#SETTING]" ) ) {
@@ -93,7 +93,7 @@ namespace org.kbinani.vsq {
                         }
                     }
 #if DEBUG
-                    bocoree.debug.push_log( "index=" + index );
+                    org.kbinani.debug.push_log( "index=" + index );
 #endif
                     line = sr.readLine(); // "[#" 直下の行
                     if ( line == null ) {
@@ -222,7 +222,7 @@ namespace org.kbinani.vsq {
                         line = sr.readLine();
                     }
 #if DEBUG
-                    bocoree.debug.push_log( "(ue==null)=" + (ue == null) );
+                    org.kbinani.debug.push_log( "(ue==null)=" + (ue == null) );
 #endif
                     if ( type == 0 ) {
                         type = 1;
@@ -235,7 +235,7 @@ namespace org.kbinani.vsq {
                 updateTempoInfo();
             } catch ( Exception ex ) {
 #if DEBUG
-                bocoree.debug.push_log( "ex=" + ex );
+                org.kbinani.debug.push_log( "ex=" + ex );
 #endif
             } finally {
                 if ( sr != null ) {

@@ -1,6 +1,6 @@
 ﻿/*
  * MediaPlayer.cs
- * Copyright (c) 2007-2009 kbinani
+ * Copyright (C) 2007-2009 kbinani
  *
  * This file is part of org.kbinani.media.
  *
@@ -229,7 +229,7 @@ namespace org.kbinani.media {
                 Close();
             }
             this.m_filename = filename;
-            m_alias = bocoree.Misc.getmd5( m_filename );
+            m_alias = org.kbinani.Misc.getmd5( m_filename );
 #if DEBUG
             Console.WriteLine( "    m_alias=" + m_alias );
 #endif

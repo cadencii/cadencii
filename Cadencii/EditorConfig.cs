@@ -1,6 +1,6 @@
 ﻿/*
  * EditorConfig.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -23,12 +23,12 @@ import org.kbinani.xml.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using bocoree;
-using bocoree.java.awt;
-using bocoree.java.io;
-using bocoree.java.util;
-using bocoree.windows.forms;
-using bocoree.xml;
+using org.kbinani;
+using org.kbinani.java.awt;
+using org.kbinani.java.io;
+using org.kbinani.java.util;
+using org.kbinani.windows.forms;
+using org.kbinani.xml;
 using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {

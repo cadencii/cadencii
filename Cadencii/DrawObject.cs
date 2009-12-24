@@ -1,6 +1,6 @@
 ﻿/*
  * DrawObject.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -19,7 +19,7 @@ import java.awt.*;
 #else
 using System;
 using org.kbinani.vsq;
-using bocoree.java.awt;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;

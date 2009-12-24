@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace bocoree.windows.forms {
+namespace org.kbinani.windows.forms {
 
     public class BToolStripDropDownButton : System.Windows.Forms.ToolStripDropDownButton {
         public BToolStripDropDownButton() {

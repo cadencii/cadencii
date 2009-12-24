@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Threading;
 using org.kbinani.vsq;
-using bocoree.java.io;
+using org.kbinani.java.io;
 using org.kbinani.cadencii;
 using System.Windows.Forms;
 

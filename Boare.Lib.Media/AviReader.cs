@@ -1,6 +1,6 @@
 /*
  * AviReader.cs
- * Copyright (c) 2007-2009 kbinani
+ * Copyright (C) 2007-2009 kbinani
  *
  * This file is part of org.kbinani.media.
  *
@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Windows.Forms;
 
-using bocoree;
+using org.kbinani;
 
 namespace org.kbinani.media {
 

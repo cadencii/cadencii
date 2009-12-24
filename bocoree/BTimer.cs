@@ -3,7 +3,7 @@
 #else
 using System;
 
-namespace bocoree.windows.forms {
+namespace org.kbinani.windows.forms {
 
     public class BTimer : System.Windows.Forms.Timer {
         // root impl of Click event

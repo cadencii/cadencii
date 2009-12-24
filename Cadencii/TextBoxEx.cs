@@ -1,6 +1,6 @@
 ﻿/*
  * TextBoxEx.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -15,7 +15,7 @@
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\Cadencii\TextBoxEx.java
 #else
 using System.Windows.Forms;
-using bocoree.windows.forms;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;

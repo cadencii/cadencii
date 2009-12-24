@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using org.kbinani.cadencii;
 using System.Collections.Generic;
 using org.kbinani.vsq;
-using bocoree.java.util;
+using org.kbinani.java.util;
 
 public class Utau_Plugin_Invoker {
     private static bool s_finished = false;

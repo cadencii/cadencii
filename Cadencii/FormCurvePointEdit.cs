@@ -1,6 +1,6 @@
 ﻿/*
  * FormCurvePointEdit.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -25,8 +25,8 @@ import org.kbinani.windows.forms.*;
 using System;
 using org.kbinani.apputil;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -299,20 +299,20 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.btnForward = new bocoree.windows.forms.BButton();
-            this.btnBackward = new bocoree.windows.forms.BButton();
-            this.lblDataPointValue = new bocoree.windows.forms.BLabel();
-            this.lblDataPointClock = new bocoree.windows.forms.BLabel();
-            this.btnExit = new bocoree.windows.forms.BButton();
-            this.btnBackward2 = new bocoree.windows.forms.BButton();
-            this.btnForward2 = new bocoree.windows.forms.BButton();
-            this.btnApply = new bocoree.windows.forms.BButton();
+            this.btnForward = new org.kbinani.windows.forms.BButton();
+            this.btnBackward = new org.kbinani.windows.forms.BButton();
+            this.lblDataPointValue = new org.kbinani.windows.forms.BLabel();
+            this.lblDataPointClock = new org.kbinani.windows.forms.BLabel();
+            this.btnExit = new org.kbinani.windows.forms.BButton();
+            this.btnBackward2 = new org.kbinani.windows.forms.BButton();
+            this.btnForward2 = new org.kbinani.windows.forms.BButton();
+            this.btnApply = new org.kbinani.windows.forms.BButton();
             this.txtDataPointClock = new org.kbinani.cadencii.NumberTextBox();
             this.txtDataPointValue = new org.kbinani.cadencii.NumberTextBox();
-            this.btnBackward3 = new bocoree.windows.forms.BButton();
-            this.btnForward3 = new bocoree.windows.forms.BButton();
-            this.btnUndo = new bocoree.windows.forms.BButton();
-            this.btnRedo = new bocoree.windows.forms.BButton();
+            this.btnBackward3 = new org.kbinani.windows.forms.BButton();
+            this.btnForward3 = new org.kbinani.windows.forms.BButton();
+            this.btnUndo = new org.kbinani.windows.forms.BButton();
+            this.btnRedo = new org.kbinani.windows.forms.BButton();
             this.SuspendLayout();
             // 
             // btnForward

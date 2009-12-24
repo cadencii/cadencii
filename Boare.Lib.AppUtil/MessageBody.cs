@@ -1,6 +1,6 @@
 ﻿/*
  * MessageBody.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.apputil.
  *
@@ -20,9 +20,9 @@ import java.awt.image.*;
 import org.kbinani.*;
 #else
 using System;
-using bocoree;
-using bocoree.java.util;
-using bocoree.java.io;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.java.io;
 
 namespace org.kbinani.apputil {
     using boolean = System.Boolean;

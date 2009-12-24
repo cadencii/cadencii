@@ -1,6 +1,6 @@
 ﻿/*
  * FormShortcutKeys.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -26,11 +26,11 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.Windows.Forms;
 using org.kbinani.apputil;
-using bocoree;
-using bocoree.java.awt.event_;
-using bocoree.java.util;
-using bocoree.javax.swing;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.java.awt.event_;
+using org.kbinani.java.util;
+using org.kbinani.javax.swing;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -38,7 +38,7 @@ namespace org.kbinani.cadencii {
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
-    using java = bocoree.java;
+    using java = org.kbinani.java;
 #endif
 
 #if JAVA
@@ -404,11 +404,11 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.btnCancel = new bocoree.windows.forms.BButton();
-            this.btnOK = new bocoree.windows.forms.BButton();
-            this.list = new bocoree.windows.forms.BListView();
-            this.btnLoadDefault = new bocoree.windows.forms.BButton();
-            this.btnRevert = new bocoree.windows.forms.BButton();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.list = new org.kbinani.windows.forms.BListView();
+            this.btnLoadDefault = new org.kbinani.windows.forms.BButton();
+            this.btnRevert = new org.kbinani.windows.forms.BButton();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
             this.SuspendLayout();
             // 

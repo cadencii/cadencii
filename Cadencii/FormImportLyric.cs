@@ -1,6 +1,6 @@
 ﻿/*
  * FormImportLyric.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -23,9 +23,9 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using org.kbinani.apputil;
-using bocoree;
-using bocoree.java.util;
-using bocoree.windows.forms;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -164,10 +164,10 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.txtLyrics = new bocoree.windows.forms.BTextArea();
-            this.btnCancel = new bocoree.windows.forms.BButton();
-            this.btnOK = new bocoree.windows.forms.BButton();
-            this.lblNotes = new bocoree.windows.forms.BLabel();
+            this.txtLyrics = new org.kbinani.windows.forms.BTextArea();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.lblNotes = new org.kbinani.windows.forms.BLabel();
             this.SuspendLayout();
             // 
             // txtLyrics

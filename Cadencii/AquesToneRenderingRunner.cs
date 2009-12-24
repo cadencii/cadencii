@@ -1,7 +1,7 @@
 ﻿#if ENABLE_AQUESTONE
 /*
  * AquesToneRenderingRunner.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using bocoree;
-using bocoree.java.awt;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.awt;
+using org.kbinani.java.util;
 using org.kbinani.vsq;
 using org.kbinani.media;
 
@@ -137,6 +137,7 @@ namespace org.kbinani.cadencii {
 
             // 最初にダミーの音を鳴らす
             // (最初に入るノイズを回避するためと、前回途中で再生停止した場合に無音から始まるようにするため)
+            driver.resetAllParameters();
             driver.process( left, right );
             MidiEvent f_noteon = new MidiEvent();
             f_noteon.firstByte = 0x90;
@@ -336,10 +337,30 @@ namespace org.kbinani.cadencii {
                             queue.noteon.addAll( add );
                             pit_send.add( new Point( item.Clock, item.Clock ) );
                         }
+
+                        // Release
+                        String strRelease = VsqFileEx.getEventTag( item, VsqFileEx.TAGNAME_AQUESTONE_RELEASE );
+                        int release = 64;
+                        try {
+                            release = PortUtil.parseInt( strRelease );
+                        } catch ( Exception ex ) {
+                            release = 64;
+                        }
+                        ParameterEvent pe = new ParameterEvent();
+                        pe.index = driver.releaseParameterIndex;
+                        pe.value = release / 127.0f;
+                        MidiEventQueue q = null;
+                        if ( !list.containsKey( item.Clock ) ) {
+                            q = new MidiEventQueue();
+                        } else {
+                            q = list.get( item.Clock );
+                        }
+                        if ( q.param == null ) {
+                            q.param = new Vector<ParameterEvent>();
+                        }
+                        q.param.add( pe );
                         #endregion
                     }
-
-                    //Point pit_send_p = new Point( item.Clock, item.Clock );
 
                     // ビブラート
                     // ビブラートが存在する場合、PBSは勝手に変更する。
@@ -546,64 +567,18 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            // DYN
-            VsqBPList dyn = t.getCurve( "dyn" );
-            if ( dyn != null ) {
-                int keycount = dyn.size();
-                for ( int i = 0; i < keycount; i++ ) {
-                    int clock = dyn.getKeyClock( i );
-                    if ( clock_start <= clock && clock <= clock_end ) {
-                        int value = dyn.getElementA( i );
-                        MidiEventQueue queue = null;
-                        if ( list.containsKey( clock ) ) {
-                            queue = list.get( clock );
-                        } else {
-                            queue = new MidiEventQueue();
-                        }
-                        if ( queue.param == null ) {
-                            queue.param = new Vector<ParameterEvent>();
-                        }
-                        ParameterEvent pe = new ParameterEvent();
-                        pe.index = driver.volumeParameterIndex;
-                        pe.value = value / 127.0f;
-                        queue.param.add( pe );
-                        list.put( clock, queue );
-                    } else if ( clock_end < clock ) {
-                        break;
-                    }
-                }
-            }
+            appendParameterEvents( list, t.getCurve( "dyn" ), driver.volumeParameterIndex, clock_start, clock_end );
+            appendParameterEvents( list, t.getCurve( "bre" ), driver.haskyParameterIndex, clock_start, clock_end );
+            appendParameterEvents( list, t.getCurve( "cle" ), driver.resonancParameterIndex, clock_start, clock_end );
+            appendParameterEvents( list, t.getCurve( "por" ), driver.portaTimeParameterIndex, clock_start, clock_end );
 
-            // BRE
-            VsqBPList bre = t.getCurve( "bre" );
-            if ( bre != null ) {
-                int keycount = bre.size();
-                for ( int i = 0; i < keycount; i++ ) {
-                    int clock = bre.getKeyClock( i );
-                    if ( clock_start <= clock && clock <= clock_end ) {
-                        int value = bre.getElementA( i );
-                        MidiEventQueue queue = null;
-                        if ( list.containsKey( clock ) ) {
-                            queue = list.get( clock );
-                        } else {
-                            queue = new MidiEventQueue();
-                        }
-                        if ( queue.param == null ) {
-                            queue.param = new Vector<ParameterEvent>();
-                        }
-                        ParameterEvent pe = new ParameterEvent();
-                        pe.index = driver.haskyParameterIndex;
-                        pe.value = value / 127.0f;
-                        queue.param.add( pe );
-                        list.put( clock, queue );
-                    } else if ( clock_end < clock ) {
-                        break;
-                    }
-                }
-            }
+            return list;
+        }
 
-            // cle
-            VsqBPList cle = t.getCurve( "cle" );
+        private static void appendParameterEvents( TreeMap<Integer, MidiEventQueue> list, VsqBPList cle, int parameter_index, int clock_start, int clock_end ) {
+            int max = cle.getMaximum();
+            int min = cle.getMinimum();
+            float order = 1.0f / (float)(max - min);
             if ( cle != null ) {
                 int keycount = cle.size();
                 for ( int i = 0; i < keycount; i++ ) {
@@ -620,8 +595,8 @@ namespace org.kbinani.cadencii {
                             queue.param = new Vector<ParameterEvent>();
                         }
                         ParameterEvent pe = new ParameterEvent();
-                        pe.index = driver.resonancParameterIndex;
-                        pe.value = value / 127.0f;
+                        pe.index = parameter_index;
+                        pe.value = (value - min) * order;
                         queue.param.add( pe );
                         list.put( clock, queue );
                     } else if ( clock_end < clock ) {
@@ -629,8 +604,6 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
-
-            return list;
         }
 
         private static MidiEvent getPitMidiEvent( int pitch_bend ) {

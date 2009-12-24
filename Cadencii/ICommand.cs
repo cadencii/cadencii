@@ -1,6 +1,6 @@
 ﻿/*
  * ICommand.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -17,8 +17,8 @@ package org.kbinani.cadencii;
 import java.util.*;
 #else
 using System.Collections.Generic;
-using bocoree;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
 #endif

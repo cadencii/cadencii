@@ -1,7 +1,7 @@
 ﻿#if ENABLE_VOCALOID
 /*
  * VocaloidDriver.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -16,8 +16,8 @@ using System;
 using System.Runtime.InteropServices;
 using VstSdk;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.util;
+using org.kbinani;
+using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -201,7 +201,7 @@ namespace org.kbinani.cadencii {
 
         public int StartRendering( long total_samples, boolean mode_infinite ) {
 #if TEST
-            bocoree.debug.push_log( "vstidrv.StartRendering" );
+            org.kbinani.debug.push_log( "vstidrv.StartRendering" );
 #endif
             g_cancelRequired = false;
             g_progress = 0.0;
@@ -220,14 +220,14 @@ namespace org.kbinani.cadencii {
                 out_buffer[1] = right_ch;
 
 #if TEST
-                bocoree.debug.push_log( "    calling initial dispatch..." );
+                org.kbinani.debug.push_log( "    calling initial dispatch..." );
 #endif
                 aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)sampleRate );//dispatch_VST_command(effSetSampleRate, 0, 0, 0, kSampleRate);
                 aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 1, (void*)0, 0 );// dispatch_VST_command(effMainsChanged, 0, 1, 0, 0);
                 // ここではブロックサイズ＝サンプリングレートということにする
                 aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, sampleRate, (void*)0, 0 );// dispatch_VST_command(effSetBlockSize, 0, sampleFrames, 0, 0);
 #if TEST
-                bocoree.debug.push_log( "    ...done" );
+                org.kbinani.debug.push_log( "    ...done" );
 #endif
 
                 int delay = 0;
@@ -243,7 +243,7 @@ namespace org.kbinani.cadencii {
 
                 int total_processed = 0;
 #if TEST
-                bocoree.debug.push_log( "    getting dwDelay..." );
+                org.kbinani.debug.push_log( "    getting dwDelay..." );
 #endif
                 dwDelay = 0;
                 Vector<MidiEvent> list = s_track_events.get( 1 );
@@ -275,12 +275,12 @@ namespace org.kbinani.cadencii {
                     }
                 }
 #if TEST
-                bocoree.debug.push_log( "    ...done; dwDelay=" + dwDelay );
+                org.kbinani.debug.push_log( "    ...done; dwDelay=" + dwDelay );
 #endif
 
                 while ( true ) {
 #if TEST
-                    bocoree.debug.push_log( "g_cancelRequired=" + g_cancelRequired );
+                    org.kbinani.debug.push_log( "g_cancelRequired=" + g_cancelRequired );
 #endif
                     if ( g_cancelRequired ) {
                         lpEvents.clear();
@@ -288,14 +288,14 @@ namespace org.kbinani.cadencii {
                         return FALSE;
                     }
 #if TEST
-                    bocoree.debug.push_log( "-----------------------------------------------------------------------" );
+                    org.kbinani.debug.push_log( "-----------------------------------------------------------------------" );
 #endif
                     //MIDI_EVENT pProcessEvent = current;
                     int process_event_count = current_count;
                     int nEvents = 0;
 
 #if TEST
-                    bocoree.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
+                    org.kbinani.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
 #endif
                     if ( current_count < 0 ) {
                         current_count = 0;
@@ -322,7 +322,7 @@ namespace org.kbinani.cadencii {
                                     if ( addr_msb == 0x50 && addr_lsb == 0x4 ) {
                                         duration = data_msb << 7 | data_lsb;
 #if TEST
-                                        bocoree.debug.push_log( "duration=" + duration );
+                                        org.kbinani.debug.push_log( "duration=" + duration );
 #endif
                                     }
                                     break;
@@ -343,14 +343,14 @@ namespace org.kbinani.cadencii {
                     }
 
 #if TEST
-                    bocoree.debug.push_log( "nEvents=" + nEvents );
+                    org.kbinani.debug.push_log( "nEvents=" + nEvents );
 #endif
                     double msNow = msec_from_clock( dwNow );
                     dwDelta = (int)(msNow / 1000.0 * sampleRate) - total_processed;
 #if TEST
-                    bocoree.debug.push_log( "dwNow=" + dwNow );
-                    bocoree.debug.push_log( "dwPrev=" + dwPrev );
-                    bocoree.debug.push_log( "dwDelta=" + dwDelta );
+                    org.kbinani.debug.push_log( "dwNow=" + dwNow );
+                    org.kbinani.debug.push_log( "dwPrev=" + dwPrev );
+                    org.kbinani.debug.push_log( "dwDelta=" + dwDelta );
 #endif
                     VstEvents* pVSTEvents = (VstEvents*)mman.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
                     pVSTEvents->numEvents = 0;
@@ -390,11 +390,11 @@ namespace org.kbinani.cadencii {
                         //pProcessEvent = lpEvents[process_event_count];
                     }
 #if TEST
-                    bocoree.debug.push_log( "calling Dispatch with effProcessEvents..." );
+                    org.kbinani.debug.push_log( "calling Dispatch with effProcessEvents..." );
 #endif
                     aEffect.Dispatch( ref aEffect, AEffectXOpcodes.effProcessEvents, 0, 0, pVSTEvents, 0 );
 #if TEST
-                    bocoree.debug.push_log( "...done" );
+                    org.kbinani.debug.push_log( "...done" );
 #endif
 
                     while ( dwDelta > 0 ) {
@@ -405,11 +405,11 @@ namespace org.kbinani.cadencii {
                         }
                         int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
-                        bocoree.debug.push_log( "calling ProcessReplacing..." );
+                        org.kbinani.debug.push_log( "calling ProcessReplacing..." );
 #endif
                         aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, dwFrames );
 #if TEST
-                        bocoree.debug.push_log( "...done" );
+                        org.kbinani.debug.push_log( "...done" );
 #endif
 
                         int iOffset = dwDelay - dwDeltaDelay;
@@ -450,11 +450,11 @@ namespace org.kbinani.cadencii {
                     }
                     int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
-                    bocoree.debug.push_log( "calling ProcessReplacing..." );
+                    org.kbinani.debug.push_log( "calling ProcessReplacing..." );
 #endif
                     aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, dwFrames );
 #if TEST
-                    bocoree.debug.push_log( "...done" );
+                    org.kbinani.debug.push_log( "...done" );
 #endif
 
                     double[] send_data_l = new double[dwFrames];

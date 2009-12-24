@@ -1,6 +1,6 @@
 ﻿/*
  * PlaySound.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -18,6 +18,7 @@ import javax.sound.sampled.*;
 #else
 using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -62,6 +63,63 @@ namespace org.kbinani.cadencii {
         private static extern void SoundSetResolution( int resolution );
 #endif
 
+        private static Object synchronizer = new Object();
+        private static int capacity;
+        private static int numBuffer = 2;
+        private static double[][] left;
+        private static double[][] right;
+        private static boolean locked = false;
+        private static int index = 0;
+        private static int loc = 0;
+        private static Thread listener = null;
+
+        private static void listenerProc() {
+            while ( true ) {
+                try {
+                    Thread.Sleep( 100 );
+
+                } catch ( ThreadInterruptedException ex ) {
+                    PortUtil.stderr.println( "WaveBufferAdapter#listenerProc; ex=" + ex );
+                    break;
+                }
+            }
+        }
+
+        public static void append( double[] l, double[] r, int len ) {
+            int remain = capacity - loc;
+            int offset = 0;
+            int appended = 0;
+            //int len = Math.Min( l.Length, r.Length );
+            while ( appended < len ) {
+                if ( offset + remain >= len ) {
+                    remain = len - offset;
+                }
+                // l, rのoffset -> offset + remainまでを，index[*]のloc -> loc + remainまでに転送する
+                lock ( synchronizer ) {
+                    for ( int i = offset; i < offset + remain; i++ ) {
+                        left[index][i - offset + loc] = l[i];
+                        right[index][i - offset + loc] = r[i];
+                    }
+                    loc += remain;
+                }
+
+                appended += remain;
+                offset += remain;
+                if ( loc == capacity ) {
+                    loc = 0;
+                    appendCor( left[index], right[index], capacity );
+                    index++;
+                    if ( index == numBuffer ) {
+                        index = 0;
+                    }
+                }
+                remain = capacity - loc;
+                if ( offset + remain >= len ) {
+                    remain = len - offset;
+                }
+            }
+        }
+
         public static void waitForExit() {
 #if JAVA
             if( m_line == null ){
@@ -76,7 +134,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public static void init( int sample_rate ) {
+        public static void init( int sample_rate, int capacity_samples, int num_buffer ) {
 #if JAVA
             m_format = new AudioFormat( sample_rate, 16, 2, true, false );
             m_info = new DataLine.Info( SourceDataLine.class, m_format );
@@ -97,12 +155,23 @@ namespace org.kbinani.cadencii {
                 SoundSetResolution( VSTiProxy.BLOCK_SIZE );
                 s_initialized = true;
             } catch ( Exception ex ) {
-                bocoree.debug.push_log( "PlaySound.Init; ex=" + ex );
+                org.kbinani.debug.push_log( "PlaySound.Init; ex=" + ex );
             }
+            capacity = capacity_samples;
+            numBuffer = num_buffer;
+            left = new double[numBuffer][];
+            right = new double[numBuffer][];
+            for ( int i = 0; i < numBuffer; i++ ) {
+                left[i] = new double[capacity];
+                right[i] = new double[capacity];
+            }
+            listener = new Thread( new ThreadStart( listenerProc ) );
+            listener.IsBackground = true;
+            listener.Start();
 #endif
         }
 
-        public static void append( double[] left, double[] right, int length ) {
+        private static void appendCor( double[] left, double[] right, int length ) {
 #if JAVA
             if( m_line == null ){
                 return;
@@ -137,7 +206,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
             } catch ( Exception ex ) {
-                bocoree.debug.push_log( "PlaySound#Append; ex=" + ex );
+                org.kbinani.debug.push_log( "PlaySound#Append; ex=" + ex );
             }
 #endif
         }
@@ -151,7 +220,7 @@ namespace org.kbinani.cadencii {
                 ret = SoundGetPosition();
             } catch ( Exception ex ) {
 #if DEBUG
-                bocoree.debug.push_log( "PlaySound.GetPosition; ex=" + ex );
+                org.kbinani.debug.push_log( "PlaySound.GetPosition; ex=" + ex );
 #endif
             }
             return ret;
@@ -176,7 +245,7 @@ namespace org.kbinani.cadencii {
                 SoundReset();
             } catch ( Exception ex ) {
 #if DEBUG
-                bocoree.debug.push_log( "PlaySound.Reset; ex=" + ex );
+                org.kbinani.debug.push_log( "PlaySound.Reset; ex=" + ex );
 #endif
             }
 #endif

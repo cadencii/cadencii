@@ -1,13 +1,13 @@
 ﻿/*
  * AppManager.cs
- * Copyright (c) 2009 kbinani
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of Boare.EditOtoIni.
+ * This file is part of org.kbinani.editotoini.
  *
- * Boare.Cadencii is free software; you can redistribute it and/or
+ * org.kbinani.editotoini is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * Boare.Cadencii is distributed in the hope that it will be useful,
+ * org.kbinani.editotoini is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -18,7 +18,7 @@ import org.kbinani.cadencii.*;
 #else
 using org.kbinani.cadencii;
 
-namespace org.EditOtoIni {
+namespace org.kbinani.editotoini {
 #endif
 
     public class AppManager {

@@ -1,6 +1,6 @@
 ﻿/*
  * VsqFileEx.cs
- * Copyright (c) 2008-2009 kbinani
+ * Copyright (C) 2008-2009 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -22,10 +22,10 @@ import org.kbinani.xml.*;
 #else
 using System;
 using org.kbinani.vsq;
-using bocoree;
-using bocoree.java.io;
-using bocoree.java.util;
-using bocoree.xml;
+using org.kbinani;
+using org.kbinani.java.io;
+using org.kbinani.java.util;
+using org.kbinani.xml;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -49,6 +49,7 @@ namespace org.kbinani.cadencii {
 #endif
         public EditorStatus editorStatus = new EditorStatus();
 
+        public const String TAGNAME_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
 #if JAVA
         static {
             s_vsq_serializer = new XmlSerializer( VsqFileEx.class );
@@ -58,6 +59,55 @@ namespace org.kbinani.cadencii {
             s_vsq_serializer = new XmlSerializer( typeof( VsqFileEx ) );
         }
 #endif
+
+        public static String getEventTag( VsqEvent item, String name ) {
+            if ( name == null || (name != null && name.Equals( "" ) ) ){
+                return "";
+            }
+            if ( item.Tag != null ) {
+                String[] spl = PortUtil.splitString( item.Tag, ';' );
+                foreach ( String s in spl ) {
+                    String[] spl2 = PortUtil.splitString( s, ':' );
+                    if ( spl2.Length == 2 ) {
+                        if ( name.Equals( spl2[0] ) ) {
+                            return spl2[1];
+                        }
+                    }
+                }
+            }
+            return "";
+        }
+
+        public static void setEventTag( VsqEvent item, String name, String value ) {
+            if ( name == null ){
+                return;
+            }
+            if ( name.Equals( "" ) ){
+                return;
+            }
+            String v = value.Replace( ":", "" ).Replace( ";", "" );
+            if ( item.Tag == null ) {
+                item.Tag = name + ":" + value;
+            } else {
+                String newtag = "";
+                String[] spl = PortUtil.splitString( item.Tag, ';' );
+                boolean is_first = true;
+                foreach ( String s in spl ) {
+                    String[] spl2 = PortUtil.splitString( s, ':' );
+                    if ( spl2.Length == 2 ) {
+                        String add = "";
+                        if ( name.Equals( spl2[0] ) ) {
+                            add = name + ":" + v;
+                        } else {
+                            add = spl2[0] + ":" + spl2[1];
+                        }
+                        newtag += add + (is_first ? "" : ";");
+                        is_first = false;
+                    }
+                }
+                item.Tag = newtag;
+            }
+        }
 
         /// <summary>
         /// VsqEvent, VsqBPList, BezierCurvesの全てのクロックを、tempoに格納されているテンポテーブルに
