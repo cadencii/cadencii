@@ -2234,7 +2234,7 @@ namespace org.kbinani.cadencii {
                 PortUtil.combinePath( path, "Cadencii.exe" ),
                 PortUtil.combinePath( path, "Boare.Lib.Media.dll" ),
                 PortUtil.combinePath( path, "Boare.Lib.AppUtil.dll" ),
-                PortUtil.combinePath( path, "org.kbinani.dll" ) } );
+                PortUtil.combinePath( path, "bocoree.dll" ) } );
             parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
             parameters.ReferencedAssemblies.Add( "System.dll" );
             parameters.ReferencedAssemblies.Add( "System.Drawing.dll" );
@@ -2245,9 +2245,7 @@ namespace org.kbinani.cadencii {
             try {
                 ret = provider.CompileAssemblyFromSource( parameters, code );
             } catch ( Exception ex ) {
-#if DEBUG
-                AppManager.debugWriteLine( "AppManager#compileScript; ex=" + ex );
-#endif
+                PortUtil.stderr.println( "AppManager#compileScript; ex=" + ex );
             }
             return ret;
         }

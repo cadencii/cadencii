@@ -38,6 +38,7 @@ namespace org.kbinani.cadencii {
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
             InitializeComponent();
             this.formClosingEvent.add( new BFormClosingEventHandler( this, "FormPluginUi_FormClosing" ) );
+            this.setIconImage( Resources.get_switch() );
         }
 
         public void FormPluginUi_FormClosing( Object sender, FormClosingEventArgs e ) {
@@ -46,12 +47,13 @@ namespace org.kbinani.cadencii {
         }
 
         private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
             this.SuspendLayout();
             // 
             // FormPluginUi
             // 
             this.ClientSize = new System.Drawing.Size( 334, 164 );
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FormPluginUi";
             this.ResumeLayout( false );
 

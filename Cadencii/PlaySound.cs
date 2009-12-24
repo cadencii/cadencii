@@ -85,7 +85,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void append( double[] l, double[] r, int len ) {
+        private static void append_( double[] l, double[] r, int len ) {
             int remain = capacity - loc;
             int offset = 0;
             int appended = 0;
@@ -107,7 +107,7 @@ namespace org.kbinani.cadencii {
                 offset += remain;
                 if ( loc == capacity ) {
                     loc = 0;
-                    appendCor( left[index], right[index], capacity );
+                    append( left[index], right[index], capacity );
                     index++;
                     if ( index == numBuffer ) {
                         index = 0;
@@ -171,7 +171,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private static void appendCor( double[] left, double[] right, int length ) {
+        public static void append( double[] left, double[] right, int length ) {
 #if JAVA
             if( m_line == null ){
                 return;

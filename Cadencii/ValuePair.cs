@@ -1,53 +1,91 @@
 ﻿/*
- * KeyValueType.cs
- * Copyright (c) 2009 kbinani
+ * ValuePair.cs
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of Boare.Cadencii.
+ * This file is part of org.kbinani.
  *
- * Boare.Cadencii is free software; you can redistribute it and/or
- * modify it under the terms of the GPLv3 License.
+ * org.kbinani is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
  *
- * Boare.Cadencii is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani;
+#else
 using System;
 
-namespace Boare.Cadencii {
+namespace org.kbinani {
+#endif
 
+#if JAVA
+    public class ValuePair<K extends Comparable<K>, V> implements Comparable<ValuePair<K, V>>{
+#else
     public class ValuePair<K, V> : IComparable<ValuePair<K, V>> where K : IComparable {
+#endif
         private K m_key;
         private V m_value;
 
         public ValuePair() {
         }
 
-        public ValuePair( K key, V value ) {
-            m_key = key;
-            m_value = value;
+        public ValuePair( K key_, V value_ ) {
+            m_key = key_;
+            m_value = value_;
         }
 
-        public int CompareTo( ValuePair<K, V> item ) {
+        public int compareTo( ValuePair<K, V> item ) {
+#if JAVA
+            return m_key.compareTo( item.m_key );
+#else
             return m_key.CompareTo( item.m_key );
+#endif
         }
 
+#if !JAVA
+        public int CompareTo( ValuePair<K, V> item ){
+            return compareTo( item );
+        }
+#endif
+
+        public K getKey() {
+            return m_key;
+        }
+
+        public void setKey( K value ) {
+            m_key = value;
+        }
+
+        public V getValue() {
+            return m_value;
+        }
+
+        public void setValue( V v ) {
+            m_value = v;
+        }
+
+#if !JAVA
         public K Key {
             get {
-                return m_key;
+                return getKey();
             }
             set {
-                m_key = value;
+                setKey( value );
             }
         }
 
         public V Value {
             get {
-                return m_value;
+                return getValue();
             }
             set {
-                m_value = value;
+                setValue( value );
             }
         }
+#endif
     }
 
+#if !JAVA
 }
+#endif

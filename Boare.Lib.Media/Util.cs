@@ -1,222 +1,369 @@
-﻿/*
- * Util.cs
- * Copyright (C) 2007-2009 kbinani
+﻿#if !JAVA
+/*
+ * TreeMap.cs
+ * Copyright (C) 2009 kbinani
  *
- * This file is part of org.kbinani.media.
+ * This file is part of org.kbinani.
  *
- * org.kbinani.media is free software; you can redistribute it and/or
+ * org.kbinani is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * org.kbinani.media is distributed in the hope that it will be useful,
+ * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+//#define DICTIONARY_TEST
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
-using org.kbinani;
+namespace org.kbinani.java.util {
+    using boolean = Boolean;
 
-namespace org.kbinani.media {
+    public interface Entry<K, V> {
+    }
 
-    internal static class Util {
-        public const byte AVI_INDEX_OF_INDEXES = 0x00; //when each entry in aIndex
-        // array points to an index chunk
-        public const byte AVI_INDEX_OF_CHUNKS = 0x01;  // when each entry in aIndex
-        // array points to a chunk in the file
-        public const byte AVI_INDEX_IS_DATA = 0x80;    // when each entry is aIndex is
-        // really the data
-        public const byte AVI_INDEX_2FIELD = 0x01;     // when fields within frames
-        // are also indexed
-
-        public const int AVIF_HASINDEX = 16;           // Indicates the AVI file has an “idx1” chunk.
-        public const int AVIF_MUSTUSEINDEX = 32;       // Indicates the index should be used to determine the order of presentation of the data.
-        public const int AVIF_ISINTERLEAVED = 256;     // Indicates the AVI file is interleaved.
-        public const int AVIF_WASCAPTUREFILE = 65536;  // Indicates the AVI file is a specially allocated file used for capturing real-time video.
-        public const int AVIF_COPYRIGHTED = 131072;    // Indicates the AVI file contains copyrighted data.
-        public const int AVIF_TRUSTCKTYPE = 2048;      // Use CKType to find key frames
-        public const int BMP_MAGIC_COOKIE = 19778; //ascii string "BM"
-
-        /*// <summary>
-        /// 指定されたBITMAP型変数の情報ヘッダーをファイルに書き込みます．
-        /// </summary>
-        /// <param name="bmp"></param>
-        /// <param name="fp"></param>
-        public static void bmpWriteInfoHeader( BITMAPINFOHEADER infoHeader, BinaryWriter stream ) {
-            //type(INFO_HEADER), intent(in) :: infoHeader
-            //type(FILE), intent(inout) :: fp
-            Util.WriteDWORD( (uint)infoHeader.biSize, stream );
-            Util.WriteDWORD( (uint)infoHeader.biWidth, stream );
-            Util.WriteDWORD( (uint)infoHeader.biHeight, stream );
-            Util.WriteWORD( (ushort)infoHeader.biPlanes, stream );
-            Util.WriteWORD( (ushort)(infoHeader.biBitCount), stream );
-            Util.WriteDWORD( (uint)infoHeader.biCompression, stream );
-            Util.WriteDWORD( (uint)infoHeader.biSizeImage, stream );
-            Util.WriteDWORD( (uint)infoHeader.biXPelsPerMeter, stream );
-            Util.WriteDWORD( (uint)infoHeader.biYPelsPerMeter, stream );
-            Util.WriteDWORD( (uint)infoHeader.biClrUsed, stream );
-            Util.WriteDWORD( (uint)infoHeader.biClrImportant, stream );
-        }*/
-
-
+    public interface Map<K, V> {
         /// <summary>
-        /// ファイルにAVIStreamHeader構造体の値を書き込みます
+        /// マップからマッピングをすべて削除します (任意のオペレーション)。
         /// </summary>
-        public static void aviWriteStreamHeader( AVIStreamHeader streamHeader, MainAVIHeader mainHeader, BinaryWriter stream ) {
-            //type(AVI_CONTAINER), intent(inout) :: avi
-            Util.fwrite( "strh", stream );
-            Util.WriteDWORD( 56, stream );// call bmpQWordWrite( 56, avi%fp )    !// AVIStreamHeaderのサイズ
-            //fwrite( streamHeader.fccType, fp );// i = fwrite( avi%streamHeader%fccType, 1, 4, avi%fp )
-            Util.WriteDWORD( (uint)streamHeader.fccType, stream );
-            //fwrite( streamHeader.fccHandler, fp );//            i = fwrite( streamHeader.fccHandler, 1, 4, fp );
-            Util.WriteDWORD( (uint)streamHeader.fccHandler, stream );
-            //WriteDWORD( 0, fp );
-            Util.WriteDWORD( streamHeader.dwFlags, stream );
-            //WriteDWORD( streamHeader.dwReserved1, fp );
-            Util.WriteWORD( 0, stream );//wPriority
-            Util.WriteWORD( 0, stream );//wLanghage
-            Util.WriteDWORD( streamHeader.dwInitialFrames, stream );
-            Util.WriteDWORD( streamHeader.dwScale, stream );
-            Util.WriteDWORD( streamHeader.dwRate, stream );
-            Util.WriteDWORD( streamHeader.dwStart, stream );
-            Util.WriteDWORD( streamHeader.dwLength, stream );
-            Util.WriteDWORD( streamHeader.dwSuggestedBufferSize, stream );
-            Util.WriteDWORD( streamHeader.dwQuality, stream );
-            Util.WriteDWORD( streamHeader.dwSampleSize, stream );
-            Util.WriteWORD( 0, stream );//left
-            Util.WriteWORD( 0, stream );//top
-            Util.WriteWORD( (ushort)mainHeader.dwWidth, stream );//right
-            Util.WriteWORD( (ushort)mainHeader.dwHeight, stream );//bottom
-        }
-
-
+        void clear();
         /// <summary>
-        /// ファイルにMainAviHeader構造体の値を書き込みます
+        /// マップが指定のキーのマッピングを保持する場合に true を返します。
         /// </summary>
-        public static void aviWriteMainHeader( MainAVIHeader mainHeader, BinaryWriter stream ) {
-            //type(AVI_CONTAINER), intent(inout) :: avi
-            Util.fwrite( "avih", stream );//    i = fwrite( 'avih', 1, 4, avi%fp )
-            Util.WriteDWORD( 56, stream );    // MainAVIHeaderのサイズ
-            Util.WriteDWORD( mainHeader.dwMicroSecPerFrame, stream );
-            Util.WriteDWORD( 0/*this.mainHeader.dwMaxBytesPerSec*/, stream );
-            Util.WriteDWORD( mainHeader.dwReserved1, stream );
-            Util.WriteDWORD( mainHeader.dwFlags, stream );
-            Util.WriteDWORD( mainHeader.dwTotalFrames, stream );
-            Util.WriteDWORD( mainHeader.dwInitialFrames, stream );
-            Util.WriteDWORD( mainHeader.dwStreams, stream );
-            Util.WriteDWORD( 0/*this.mainHeader.dwSuggestedBufferSize*/, stream );
-            Util.WriteDWORD( mainHeader.dwWidth, stream );
-            Util.WriteDWORD( mainHeader.dwHeight, stream );
-            Util.WriteDWORD( mainHeader.dwScale, stream );
-            Util.WriteDWORD( mainHeader.dwRate, stream );
-            Util.WriteDWORD( mainHeader.dwStart, stream );
-            Util.WriteDWORD( mainHeader.dwLength, stream );
-        }//end subroutine
-
-
-        public static void fwrite( string str, BinaryWriter fp ) {
-            int length = str.Length;
-            if ( length <= 0 ) {
-                return;
-            }
-            foreach ( char ch in str ) {
-                fp.Write( (byte)ch );
-            }
-        }
-
-
+        /// <param name="key"></param>
+        /// <returns></returns>
+        boolean containsKey( Object key );
         /// <summary>
-        /// BYTE値を1byte分ファイルに書き込みます．
+        /// マップが 1 つまたは複数のキーと指定された値をマッピングしている場合に true を返します。
         /// </summary>
-        /// <param name="number"></param>
-        /// <param name="fp"></param>
-        public static void WriteBYTE( byte number, BinaryWriter fp ) {
-            fp.Write( number );
-        }
-
-
+        /// <param name="value"></param>
+        /// <returns></returns>
+        boolean containsValue( Object value );
         /// <summary>
-        /// integer(2)のDWORD値を2byte分ファイルに書き込みます．
+        /// このマップに含まれるマップの Set ビューを返します。
         /// </summary>
-        /// <param name="number"></param>
-        /// <param name="fp"></param>
-        public static void WriteWORD( ushort number, BinaryWriter fp ) {
-            byte k1, k2;
-            k1 = (byte)(number >> 8);
-            k2 = (byte)(number - (k1 << 8));
-            fp.Write( k2 );
-            fp.Write( k1 );
-        }
-
-
+        /// <returns></returns>
+        Set<Entry<K, V>> entrySet();
         /// <summary>
-        /// integer(4)のDWORD値を4byte分ファイルに書き込みます
+        /// 指定されたオブジェクトがこのマップと等しいかどうかを比較します。
         /// </summary>
-        /// <param name="number"></param>
-        /// <param name="fp"></param>
-        public static void WriteDWORD( uint number, BinaryWriter fp ) {
-            uint tmp;
-            byte k1, k2, k3, k4;
-            k1 = (byte)(number >> 24);
-            number -= (uint)(k1 << 24);
-            k2 = (byte)(number >> 16);
-            number -= (uint)(k2 << 16);
-            k3 = (byte)(number >> 8);
-            k4 = (byte)(number - (k3 << 8));
-            fp.Write( k4 );
-            fp.Write( k3 );
-            fp.Write( k2 );
-            fp.Write( k1 );
-        }
-
-
+        /// <param name="o"></param>
+        /// <returns></returns>
+        boolean equals( Object o );
         /// <summary>
-        /// integer(8)のQWORD値を8byte分ファイルに書き込みます
+        /// 指定されたキーがマップされている値を返します。
         /// </summary>
-        /// <param name="number"></param>
-        /// <param name="fp"></param>
-        public static void WriteQWORD( ulong number, BinaryWriter fp ) {
-            byte k1, k2, k3, k4, k5, k6, k7, k8;
-            k1 = (byte)(number >> 56);
-            number -= (ulong)k1 << 56;
-            k2 = (byte)(number >> 48);
-            number -= (ulong)k2 << 48;
-            k3 = (byte)(number >> 40);
-            number -= (ulong)k3 << 40;
-            k4 = (byte)(number >> 32);
-            number -= (ulong)k4 << 32;
-            k5 = (byte)(number >> 24);
-            number -= (ulong)k5 << 24;
-            k6 = (byte)(number >> 16);
-            number -= (ulong)k6 << 16;
-            k7 = (byte)(number >> 8);
-            k8 = (byte)(number - (ulong)(k7 << 8));
-            fp.Write( k8 );
-            fp.Write( k7 );
-            fp.Write( k6 );
-            fp.Write( k5 );
-            fp.Write( k4 );
-            fp.Write( k3 );
-            fp.Write( k2 );
-            fp.Write( k1 );
-        }
+        /// <param name="key"></param>
+        /// <returns></returns>
+        V get( Object key );
+        /// <summary>
+        /// マップのハッシュコード値を返します。
+        /// </summary>
+        /// <returns></returns>
+        int hashCode();
+        /// <summary>
+        /// マップがキーと値のマッピングを保持しない場合に true を返します。    }
+        /// </summary>
+        /// <returns></returns>
+        boolean isEmpty();
+    }
 
+    public interface Set<E> {
+        /// <summary>
+        /// 指定された要素がセット内になかった場合、セットに追加します (任意のオペレーション)。
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        boolean add( E e );
+        /// <summary>
+        /// 指定されたコレクションのすべての要素について、その要素がこのセット内にない場合、セットに追加します (任意のオペレーション)。
+        /// </summary>
+        /// <param name="extends"></param>
+        /// <returns></returns>
+        boolean addAll( Collection<E> c );
+        /// <summary>
+        /// セットからすべての要素を削除します (任意のオペレーション)。
+        /// </summary>
+        void clear();
+        /// <summary>
+        /// セットが、指定された要素を保持している場合に true を返します。
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        boolean contains( Object o );
+        /// <summary>
+        /// 指定されたコレクションのすべての要素がセット内にある場合に true を返します。
+        /// </summary>
+        /// <param name="?"></param>
+        /// <returns></returns>
+        boolean containsAll( Collection<E> c );
+        /// <summary>
+        /// 指定されたオブジェクトがセットと同じかどうかを比較します。
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        boolean equals( Object o );
+        /// <summary>
+        /// セットのハッシュコード値を返します。
+        /// </summary>
+        /// <returns></returns>
+        int hashCode();
+        /// <summary>
+        /// セットが要素を 1 つも保持していない場合に true を返します。
+        /// </summary>
+        /// <returns></returns>
+        boolean isEmpty();
+        /// <summary>
+        /// セット内の各要素についての反復子を返します。
+        /// </summary>
+        /// <returns></returns>
+        Iterator iterator();
+        /// <summary>
+        /// 指定された要素がセット内にあった場合、セットから削除します (任意のオペレーション)。
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        boolean remove( Object o );
+        /// <summary>
+        /// このセットから、指定されたコレクションに含まれる要素をすべて削除します (任意のオペレーション)。
+        /// </summary>
+        /// <param name="?"></param>
+        /// <returns></returns>
+        boolean removeAll( Collection<E> c );
+        /// <summary>
+        /// セット内の要素のうち、指定されたコレクション内にある要素だけを保持します (任意のオペレーション)。
+        /// </summary>
+        /// <param name="?"></param>
+        /// <returns></returns>
+        boolean retainAll( Collection<E> c );
+        /// <summary>
+        /// セット内の要素数 (そのカーディナリティ) を返します。
+        /// </summary>
+        /// <returns></returns>
+        int size();
+        /// <summary>
+        /// セット内のすべての要素が格納されている配列を返します。
+        /// </summary>
+        /// <returns></returns>
+        Object[] toArray();
+        /// <summary>
+        /// セット内のすべての要素を格納している配列を返します。
+        /// </summary>
+        /// <param name="a"></param>
+        T[] toArray<T>( T[] a );
+    }
 
-        public static uint mmioFOURCC( string fcc ) {
-            char[] str = new char[4];
-            for ( int i = 0; i < 4; i++ ) {
-                if ( i < fcc.Length ) {
-                    str[i] = fcc[i];
-                } else {
-                    str[i] = ' ';
-                }
-            }
-            return mmioFOURCC( str[0], str[1], str[2], str[3] );
-        }
+    public interface Collection<E> {
+    }
 
+    /*class TreeMapItem<K, V> : Entry<K, V> {
+        public K key;
+        public V value;
 
-        public static uint mmioFOURCC( char ch0, char ch1, char ch2, char ch3 ) {
-            return (uint)((byte)(ch0) | ((byte)(ch1) << 8) | ((byte)(ch2) << 16) | ((byte)(ch3) << 24));
+        public TreeMapItem( K k, V v ) {
+            key = k;
+            value = v;
         }
     }
 
+    class TreeMapItemSet<K, V> : Set<Entry<K, V>> {
+        private TreeMap<K, V> m_dict;
+
+        public TreeMapItemSet( TreeMap<K, V> item ) {
+            m_dict = item;
+        }
+
+        public T[] toArray<T>( T[] arr ) {
+            if ( typeof( T ) == typeof( Entry<K, V> ) ) {
+                int c = size();
+                TreeMapItem<K, V>[] items = new TreeMapItem<K, V>[c];
+                int i = 0;
+                foreach ( K key in m_dict.Keys ) {
+                    items[i] = new TreeMapItem<K, V>( key, m_dict[key] );
+                    i++;
+                }
+                return (T[])(object)items;
+            } else {
+                return null;
+            }
+        }
+
+        public Object[] toArray() {
+        }
+
+        public int size() {
+            return m_dict.Count;
+        }
+
+        public bool retainAll( Collection<Entry<K, V>> v ) {
+        }
+
+        public bool removeAll( Collection<Entry<K, V>> v ) {
+        }
+
+        public bool remove( Object obj ) {
+        }
+
+        public Iterator iterator() {
+        }
+
+        public bool isEmpty() {
+            return m_dict.Count <= 0;
+        }
+
+        public int hashCode() {
+            return m_dict.hashCode();
+        }
+
+        public bool equals( Object obj ) {
+            return m_dict.equals( obj );
+        }
+
+        public bool contains( Object obj ) {
+        }
+
+        public void clear() {
+            m_dict.clear();
+        }
+
+        public bool containsAll( Collection<Entry<K, V>> v ) {
+        }
+
+        public bool addAll( Collection<Entry<K, V>> v ) {
+        }
+
+        public bool add( Entry<K, V> v ) {
+        }
+    }*/
+
+    [Serializable]
+#if DICTIONARY_TEST
+    public class TreeMap<K, V> {
+        public V remove( Object key ) {
+            return default( V );
+        }
+
+        public Vector<K> keySet() {
+            return null;
+        }
+
+        public V get( K key ) {
+            return default( V );
+        }
+
+        public V put( K key, V value ) {
+            return default( V );
+        }
+
+        public bool containsKey( Object key ) {
+            return false;
+        }
+
+        public void clear() {
+        }
+
+        public int size() {
+            return 0;
+        }
+    }
+#else
+    public class TreeMap<K, V> : SortedDictionary<K, V>/*, Map<K, V>*/ {
+        public TreeMap()
+            : base() {
+        }
+
+        /*protected TreeMap( SerializationInfo info, StreamingContext context )
+            : base( info, context ) {
+        }*/
+
+        public K lastKey() {
+            if ( base.Count <= 0 ) {
+                throw new ApplicationException( "NoSuchElementException" );
+            } else {
+                K v = default( K );
+                foreach ( K key in base.Keys ) {
+                    v = key;
+                }
+                return v;
+            }
+        }
+
+        public K firstKey() {
+            if ( base.Count <= 0 ) {
+                throw new ApplicationException( "NoSuchElementException" );
+            } else {
+                foreach ( K key in base.Keys ) {
+                    return key;
+                }
+                throw new ApplicationException( "NoSuchElementException" );
+            }
+        }
+
+        public V remove( Object key ) {
+            K k = (K)key;
+            if ( base.ContainsKey( k ) ) {
+                V old = base[k];
+                base.Remove( k );
+                return old;
+            } else {
+                base.Remove( k );
+                return default( V );
+            }
+        }
+
+        public Vector<K> keySet() {
+            return new Vector<K>( base.Keys );
+        }
+
+        public V get( Object key ) {
+            return base[(K)key];
+        }
+
+        public int size() {
+            return base.Count;
+        }
+
+        public bool containsKey( Object key ) {
+            return base.ContainsKey( (K)key );
+        }
+
+        public bool containsValue( Object value ) {
+            return base.ContainsValue( (V)value );
+        }
+
+        public bool equals( Object obj ) {
+            return base.Equals( obj );
+        }
+
+        public void clear() {
+            base.Clear();
+        }
+
+        /*public Set<Entry<K, V>> entrySet() {
+            return new TreeMapItemSet<K, V>( this );
+        }*/
+
+        public bool isEmpty() {
+            return base.Count <= 0;
+        }
+
+        public int hashCode() {
+            return base.GetHashCode();
+        }
+
+        public V put( K key, V value ) {
+            if ( base.ContainsKey( key ) ) {
+                V old = base[key];
+                base[key] = value;
+                return old;
+            } else {
+                base.Add( key, value );
+                return default( V );
+            }
+        }
+    }
+#endif
+
 }
+#endif
