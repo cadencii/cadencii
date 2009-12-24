@@ -317,6 +317,48 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < num; i++ ) {
                 paramDefaults[i] = aEffect.GetParameter( ref aEffect, i );
             }
+
+            // TODO: Editorを持っているかどうかを確認
+            /*const char* plugCanDos [] =
+{
+	"sendVstEvents",
+	"sendVstMidiEvent",
+	"sendVstTimeInfo",
+	"receiveVstEvents",
+	"receiveVstMidiEvent",
+	"receiveVstTimeInfo",
+	"offline",
+	"plugAsChannelInsert",
+	"plugAsSend",
+	"mixDryWet",
+	"noRealTime",
+	"multipass",
+	"metapass",
+	"1in1out",
+	"1in2out",
+	"2in1out",
+	"2in2out",
+	"2in4out",
+	"4in2out",
+	"4in4out",
+	"4in8out",	// 4:2 matrix to surround bus
+	"8in4out",	// surround bus to 4:2 matrix
+	"8in8out"
+#if VST_2_1_EXTENSIONS
+	,
+	"midiProgramNames",
+	"conformsToWindowRules"		// mac: doesn't mess with grafport. general: may want
+								// to call sizeWindow (). if you want to use sizeWindow (),
+								// you must return true (1) in canDo ("conformsToWindowRules")
+#endif // VST_2_1_EXTENSIONS
+
+#if VST_2_3_EXTENSIONS
+	,
+	"bypass"
+#endif // VST_2_3_EXTENSIONS
+};
+*/
+            //aEffect.Dispatch( ref aEffect, AEffectXOpcodes.effCanDo,
             return true;
         }
 
@@ -325,12 +367,17 @@ namespace org.kbinani.cadencii {
                 aEffect.Dispatch( ref aEffect, AEffectOpcodes.effClose, 0, 0, (void*)0, 0.0f );
                 win32.FreeLibrary( dllHandle );
             } catch( Exception ex ){
+                PortUtil.stderr.println( "vstidrv#close; ex=" + ex );
             }
             releaseBuffer();
             aEffect = new AEffect();
             dllHandle = IntPtr.Zero;
             mainDelegate = null;
             audioMaster = null;
+        }
+
+        ~vstidrv() {
+            close();
         }
     }
 

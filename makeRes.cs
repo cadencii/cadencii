@@ -108,6 +108,7 @@ class makeRes{
                     sw.WriteLine( cs_space + "                " + instance + ".image = new System.Drawing.Bitmap( res_path );" );
                     sw.WriteLine( "#endif" );
                     sw.WriteLine( cs_space + "            }catch( Exception ex ){" );
+                    sw.WriteLine( cs_space + "                PortUtil.stderr.println( \"Resources#get_" + name + "; ex=\" + ex );" );
                     sw.WriteLine( cs_space + "            }" );
                     sw.WriteLine( cs_space + "        }" );
                     sw.WriteLine( cs_space + "        return " + instance + ";" );
@@ -132,6 +133,7 @@ class makeRes{
                     sw.WriteLine( cs_space + "                " + instance + " = new System.Drawing.Icon( res_path );" );
                     sw.WriteLine( "#endif" );
                     sw.WriteLine( cs_space + "            }catch( Exception ex ){" );
+                    sw.WriteLine( cs_space + "                PortUtil.stderr.println( \"Resources#get_" + name + "; ex=\" + ex );" );
                     sw.WriteLine( cs_space + "            }" );
                     sw.WriteLine( cs_space + "        }" );
                     sw.WriteLine( cs_space + "        return " + instance + ";" );
@@ -154,16 +156,19 @@ class makeRes{
                     sw.WriteLine( cs_space + "                    fs = new FileStream( res_path, FileMode.Open, FileAccess.Read );" );
                     sw.WriteLine( cs_space + "                    " + instance + " = new Cursor( fs );" );
                     sw.WriteLine( cs_space + "                }catch( Exception ex0 ){" );
+                    sw.WriteLine( cs_space + "                    PortUtil.stderr.println( \"Resources#get_" + name + "; ex0=\" + ex0 );" );
                     sw.WriteLine( cs_space + "                }finally{" );
                     sw.WriteLine( cs_space + "                    if( fs != null ){" );
                     sw.WriteLine( cs_space + "                        try{" );
                     sw.WriteLine( cs_space + "                            fs.Close();" );
                     sw.WriteLine( cs_space + "                        }catch( Exception ex2 ){" );
+                    sw.WriteLine( cs_space + "                            PortUtil.stderr.println( \"Resources#get_" + name + "; ex2=\" + ex2 );" );
                     sw.WriteLine( cs_space + "                        }" );
                     sw.WriteLine( cs_space + "                    }" );
                     sw.WriteLine( cs_space + "                }" );
                     sw.WriteLine( "#endif" );
                     sw.WriteLine( cs_space + "            }catch( Exception ex ){" );
+                    sw.WriteLine( cs_space + "                PortUtil.stderr.println( \"Resources#get_" + name + "; ex=\" + ex );" );
                     sw.WriteLine( cs_space + "            }" );
                     sw.WriteLine( cs_space + "        }" );
                     sw.WriteLine( cs_space + "        return " + instance + ";" );

@@ -6930,6 +6930,13 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "menuHelpDebug_Click" );
 #if DEBUG
+            try {
+                foreach ( VocaloidDriver vd in VSTiProxy.vocaloidDriver ) {
+                    //vd.
+                }
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
+            }
             /*InputBox ib = new InputBox( "input shift seconds" );
             if ( ib.ShowDialog() == DialogResult.OK ) {
                 VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();

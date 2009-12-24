@@ -36,6 +36,7 @@ namespace org.kbinani.cadencii{
                     s_alarm_clock.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_alarm_clock; ex=" + ex );
                 }
             }
             return s_alarm_clock;
@@ -53,6 +54,7 @@ namespace org.kbinani.cadencii{
                     s_arrow_090.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_arrow_090; ex=" + ex );
                 }
             }
             return s_arrow_090;
@@ -70,6 +72,7 @@ namespace org.kbinani.cadencii{
                     s_arrow_180.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_arrow_180; ex=" + ex );
                 }
             }
             return s_arrow_180;
@@ -87,6 +90,7 @@ namespace org.kbinani.cadencii{
                     s_arrow_270.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_arrow_270; ex=" + ex );
                 }
             }
             return s_arrow_270;
@@ -104,6 +108,7 @@ namespace org.kbinani.cadencii{
                     s_arrow_skip_090.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_arrow_skip_090; ex=" + ex );
                 }
             }
             return s_arrow_skip_090;
@@ -121,6 +126,7 @@ namespace org.kbinani.cadencii{
                     s_arrow_135.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_arrow_135; ex=" + ex );
                 }
             }
             return s_arrow_135;
@@ -138,6 +144,7 @@ namespace org.kbinani.cadencii{
                     s_arrow_circle_double.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_arrow_circle_double; ex=" + ex );
                 }
             }
             return s_arrow_circle_double;
@@ -155,6 +162,7 @@ namespace org.kbinani.cadencii{
                     s_arrow_return.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_arrow_return; ex=" + ex );
                 }
             }
             return s_arrow_return;
@@ -172,6 +180,7 @@ namespace org.kbinani.cadencii{
                     s_arrow_skip.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_arrow_skip; ex=" + ex );
                 }
             }
             return s_arrow_skip;
@@ -189,6 +198,7 @@ namespace org.kbinani.cadencii{
                     s_arrow_skip_180.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_arrow_skip_180; ex=" + ex );
                 }
             }
             return s_arrow_skip_180;
@@ -206,6 +216,7 @@ namespace org.kbinani.cadencii{
                     s_btn1.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_btn1; ex=" + ex );
                 }
             }
             return s_btn1;
@@ -223,6 +234,7 @@ namespace org.kbinani.cadencii{
                     s_btn2.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_btn2; ex=" + ex );
                 }
             }
             return s_btn2;
@@ -240,6 +252,7 @@ namespace org.kbinani.cadencii{
                     s_btn3.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_btn3; ex=" + ex );
                 }
             }
             return s_btn3;
@@ -257,6 +270,7 @@ namespace org.kbinani.cadencii{
                     s_chevron_small_collapse.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_chevron_small_collapse; ex=" + ex );
                 }
             }
             return s_chevron_small_collapse;
@@ -274,6 +288,7 @@ namespace org.kbinani.cadencii{
                     s_clipboard_paste.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_clipboard_paste; ex=" + ex );
                 }
             }
             return s_clipboard_paste;
@@ -291,6 +306,7 @@ namespace org.kbinani.cadencii{
                     s_control.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_control; ex=" + ex );
                 }
             }
             return s_control;
@@ -308,6 +324,7 @@ namespace org.kbinani.cadencii{
                     s_control_double.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_control_double; ex=" + ex );
                 }
             }
             return s_control_double;
@@ -325,6 +342,7 @@ namespace org.kbinani.cadencii{
                     s_control_double_180.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_control_double_180; ex=" + ex );
                 }
             }
             return s_control_double_180;
@@ -342,6 +360,7 @@ namespace org.kbinani.cadencii{
                     s_control_pause.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_control_pause; ex=" + ex );
                 }
             }
             return s_control_pause;
@@ -359,6 +378,7 @@ namespace org.kbinani.cadencii{
                     s_control_skip.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_control_skip; ex=" + ex );
                 }
             }
             return s_control_skip;
@@ -376,6 +396,7 @@ namespace org.kbinani.cadencii{
                     s_control_stop.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_control_stop; ex=" + ex );
                 }
             }
             return s_control_stop;
@@ -393,6 +414,7 @@ namespace org.kbinani.cadencii{
                     s_control_stop_180.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_control_stop_180; ex=" + ex );
                 }
             }
             return s_control_stop_180;
@@ -410,6 +432,7 @@ namespace org.kbinani.cadencii{
                     s_cross_small.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_cross_small; ex=" + ex );
                 }
             }
             return s_cross_small;
@@ -427,6 +450,7 @@ namespace org.kbinani.cadencii{
                     s_disk.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_disk; ex=" + ex );
                 }
             }
             return s_disk;
@@ -444,6 +468,7 @@ namespace org.kbinani.cadencii{
                     s_disk__plus.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_disk__plus; ex=" + ex );
                 }
             }
             return s_disk__plus;
@@ -461,6 +486,7 @@ namespace org.kbinani.cadencii{
                     s_documents.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_documents; ex=" + ex );
                 }
             }
             return s_documents;
@@ -478,6 +504,7 @@ namespace org.kbinani.cadencii{
                     s_drive.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_drive; ex=" + ex );
                 }
             }
             return s_drive;
@@ -495,6 +522,7 @@ namespace org.kbinani.cadencii{
                     s_edit_list_order.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_edit_list_order; ex=" + ex );
                 }
             }
             return s_edit_list_order;
@@ -512,6 +540,7 @@ namespace org.kbinani.cadencii{
                     s_end_marker.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_end_marker; ex=" + ex );
                 }
             }
             return s_end_marker;
@@ -529,6 +558,7 @@ namespace org.kbinani.cadencii{
                     s_eraser.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_eraser; ex=" + ex );
                 }
             }
             return s_eraser;
@@ -546,6 +576,7 @@ namespace org.kbinani.cadencii{
                     s_folder__plus.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_folder__plus; ex=" + ex );
                 }
             }
             return s_folder__plus;
@@ -563,6 +594,7 @@ namespace org.kbinani.cadencii{
                     s_folder.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_folder; ex=" + ex );
                 }
             }
             return s_folder;
@@ -580,6 +612,7 @@ namespace org.kbinani.cadencii{
                     s_folder_horizontal_open.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_folder_horizontal_open; ex=" + ex );
                 }
             }
             return s_folder_horizontal_open;
@@ -597,6 +630,7 @@ namespace org.kbinani.cadencii{
                     s_layer_shape_curve.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_layer_shape_curve; ex=" + ex );
                 }
             }
             return s_layer_shape_curve;
@@ -614,6 +648,7 @@ namespace org.kbinani.cadencii{
                     s_layer_shape_line.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_layer_shape_line; ex=" + ex );
                 }
             }
             return s_layer_shape_line;
@@ -631,6 +666,7 @@ namespace org.kbinani.cadencii{
                     s_pencil.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_pencil; ex=" + ex );
                 }
             }
             return s_pencil;
@@ -648,6 +684,7 @@ namespace org.kbinani.cadencii{
                     s_piano.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_piano; ex=" + ex );
                 }
             }
             return s_piano;
@@ -665,6 +702,7 @@ namespace org.kbinani.cadencii{
                     s_pin__arrow.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_pin__arrow; ex=" + ex );
                 }
             }
             return s_pin__arrow;
@@ -682,6 +720,7 @@ namespace org.kbinani.cadencii{
                     s_pin__arrow_inv.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_pin__arrow_inv; ex=" + ex );
                 }
             }
             return s_pin__arrow_inv;
@@ -699,6 +738,7 @@ namespace org.kbinani.cadencii{
                     s_ruler_crop.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_ruler_crop; ex=" + ex );
                 }
             }
             return s_ruler_crop;
@@ -716,6 +756,7 @@ namespace org.kbinani.cadencii{
                     s_scissors.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_scissors; ex=" + ex );
                 }
             }
             return s_scissors;
@@ -733,6 +774,7 @@ namespace org.kbinani.cadencii{
                     s_slash.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_slash; ex=" + ex );
                 }
             }
             return s_slash;
@@ -750,6 +792,7 @@ namespace org.kbinani.cadencii{
                     s_start_marker.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_start_marker; ex=" + ex );
                 }
             }
             return s_start_marker;
@@ -767,6 +810,7 @@ namespace org.kbinani.cadencii{
                     s_target__pencil.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_target__pencil; ex=" + ex );
                 }
             }
             return s_target__pencil;
@@ -784,6 +828,7 @@ namespace org.kbinani.cadencii{
                     s_VSTonWht.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_VSTonWht; ex=" + ex );
                 }
             }
             return s_VSTonWht;
@@ -805,6 +850,7 @@ namespace org.kbinani.cadencii{
                     s_icon = new System.Drawing.Icon( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_icon; ex=" + ex );
                 }
             }
             return s_icon;
@@ -826,6 +872,7 @@ namespace org.kbinani.cadencii{
                     s_switch = new System.Drawing.Icon( res_path );
 #endif
                 }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_switch; ex=" + ex );
                 }
             }
             return s_switch;

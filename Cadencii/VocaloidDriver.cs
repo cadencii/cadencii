@@ -13,11 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Runtime.InteropServices;
-using VstSdk;
-using org.kbinani.vsq;
-using org.kbinani;
 using org.kbinani.java.util;
+using org.kbinani.vsq;
+using VstSdk;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -83,13 +81,6 @@ namespace org.kbinani.cadencii {
         public VocaloidDriver() {
             s_instance = this;
         }
-
-        /*public static VocaloidDriver GetInstance() {
-            if ( s_instance == null ) {
-                s_instance = new VocaloidDriver();
-            }
-            return s_instance;
-        }*/
 
         public event WaveIncomingEventHandler WaveIncoming;
         public event EventHandler RenderingFinished;
