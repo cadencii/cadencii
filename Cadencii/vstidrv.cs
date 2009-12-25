@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using org.kbinani;
+using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
 using VstSdk;
@@ -71,6 +72,11 @@ namespace org.kbinani.cadencii {
         public boolean loaded = false;
         public String path = "";
         public String name = "";
+        /// <summary>
+        /// プラグインのUI
+        /// </summary>
+        public FormPluginUi ui = null;
+
         protected PVSTMAIN mainDelegate;
         protected audioMasterCallback audioMaster;
         /// <summary>
@@ -109,6 +115,10 @@ namespace org.kbinani.cadencii {
         /// パラメータの，ロード時のデフォルト値
         /// </summary>
         float[] paramDefaults = null;
+        /// <summary>
+        /// UIウィンドウのサイズ
+        /// </summary>
+        Dimension uiWindowRect = new Dimension( 373, 158 );
 
         public void resetAllParameters() {
             if ( paramDefaults == null ) {
@@ -318,51 +328,54 @@ namespace org.kbinani.cadencii {
                 paramDefaults[i] = aEffect.GetParameter( ref aEffect, i );
             }
 
-            // TODO: Editorを持っているかどうかを確認
-            /*const char* plugCanDos [] =
-{
-	"sendVstEvents",
-	"sendVstMidiEvent",
-	"sendVstTimeInfo",
-	"receiveVstEvents",
-	"receiveVstMidiEvent",
-	"receiveVstTimeInfo",
-	"offline",
-	"plugAsChannelInsert",
-	"plugAsSend",
-	"mixDryWet",
-	"noRealTime",
-	"multipass",
-	"metapass",
-	"1in1out",
-	"1in2out",
-	"2in1out",
-	"2in2out",
-	"2in4out",
-	"4in2out",
-	"4in4out",
-	"4in8out",	// 4:2 matrix to surround bus
-	"8in4out",	// surround bus to 4:2 matrix
-	"8in8out"
-#if VST_2_1_EXTENSIONS
-	,
-	"midiProgramNames",
-	"conformsToWindowRules"		// mac: doesn't mess with grafport. general: may want
-								// to call sizeWindow (). if you want to use sizeWindow (),
-								// you must return true (1) in canDo ("conformsToWindowRules")
-#endif // VST_2_1_EXTENSIONS
+            // プラグインの名前を取得
+            String effname = getStringCore( AEffectXOpcodes.effGetEffectName, 0, VstStringConstants.kVstMaxEffectNameLen );
+            String product = getStringCore( AEffectXOpcodes.effGetProductString, 0, VstStringConstants.kVstMaxProductStrLen );
 
-#if VST_2_3_EXTENSIONS
-	,
-	"bypass"
-#endif // VST_2_3_EXTENSIONS
-};
-*/
-            //aEffect.Dispatch( ref aEffect, AEffectXOpcodes.effCanDo,
+            // Editorを持っているかどうかを確認
+            if ( (aEffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor ) {
+                try {
+                    ui = new FormPluginUi();
+                    ui.Text = product;
+                    ui.Location = new System.Drawing.Point( int.MinValue, int.MinValue );
+                    ui.Show();
+                    ui.Refresh();
+                    ui.Hide();
+                    ui.Location = new System.Drawing.Point( 0, 0 );
+                    unsafe {
+                        aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)ui.Handle.ToPointer(), 0.0f );
+                    }
+                    Thread.Sleep( 100 );
+                    updatePluginUiRect();
+                    ui.ClientSize = new System.Drawing.Size( uiWindowRect.width, uiWindowRect.height );
+                    ui.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "vstidrv#open; ex=" + ex );
+                }
+            }
             return true;
         }
 
+        private void updatePluginUiRect() {
+            if ( ui != null ) {
+                win32.EnumChildWindows( ui.Handle, enumChildProc, 0 );
+            }
+        }
+
+        private bool enumChildProc( IntPtr hwnd, int lParam ) {
+            RECT rc = new RECT();
+            win32.GetWindowRect( hwnd, ref rc );
+            if ( ui != null ) {
+                ui.childWnd = hwnd;
+            }
+            uiWindowRect = new Dimension( rc.right - rc.left, rc.bottom - rc.top );
+            return false; //最初のやつだけ検出できればおｋなので
+        }
+
         public virtual void close() {
+            if ( ui != null && !ui.IsDisposed ) {
+                ui.close();
+            }
             try {
                 aEffect.Dispatch( ref aEffect, AEffectOpcodes.effClose, 0, 0, (void*)0, 0.0f );
                 win32.FreeLibrary( dllHandle );

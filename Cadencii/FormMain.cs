@@ -3362,20 +3362,86 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuVisualPluginUi_DropDownOpening( Object sender, EventArgs e ) {
+            // VOCALOID1, 2
+            int c = VSTiProxy.vocaloidDriver.size();
+            for( int i = 0; i < c; i++ ){
+                VocaloidDriver vd = VSTiProxy.vocaloidDriver.get( i );
+                boolean chkv = true;
+                if ( vd == null ){
+                    chkv = false;
+                } else if ( !vd.loaded ){
+                    chkv = false;
+                } else if ( vd.ui == null ){
+                    chkv = false;
+                } else if ( vd.ui.IsDisposed ){
+                    chkv = false;
+                } else if ( !vd.ui.isVisible() ){
+                    chkv = false;
+                }
+                String name = vd.name;
+                if ( name.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                    menuVisualPluginUiVocaloid1.setSelected( chkv );
+                } else if ( name.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
+                    menuVisualPluginUiVocaloid2.setSelected( chkv );
+                }
+            }
+
+            // AquesTone
             AquesToneDriver drv = VSTiProxy.aquesToneDriver;
             boolean chk = true;
             if ( drv == null ) {
                 chk = false;
             } else if( !drv.loaded ){
                 chk = false;
-            } else if ( drv.pluginUi == null ) {
+            } else if ( drv.ui == null ) {
                 chk = false;
-            } else if ( drv.pluginUi.IsDisposed ) {
+            } else if ( drv.ui.IsDisposed ) {
                 chk = false;
-            } else if ( !drv.pluginUi.isVisible() ) {
+            } else if ( !drv.ui.isVisible() ) {
                 chk = false;
             }
             menuVisualPluginUiAquesTone.setSelected( chk );
+        }
+
+        public void menuVisualPluginUiVocaloidCommon_Click( Object sender, EventArgs e ) {
+            String search = "";
+            if ( sender == menuVisualPluginUiVocaloid1 ) {
+                search = VSTiProxy.RENDERER_DSB2;
+            } else if ( sender == menuVisualPluginUiVocaloid2 ) {
+                search = VSTiProxy.RENDERER_DSB3;
+            } else {
+                return;
+            }
+            int c = VSTiProxy.vocaloidDriver.size();
+            for ( int i = 0; i < c; i++ ) {
+                VocaloidDriver vd = VSTiProxy.vocaloidDriver.get( i );
+                boolean chk = true;
+                if ( vd == null ) {
+                    chk = false;
+                } else if ( !vd.loaded ) {
+                    chk = false;
+                } else if ( vd.ui == null ) {
+                    chk = false;
+                } else if ( vd.ui.IsDisposed ) {
+                    chk = false;
+                }
+                if ( !chk ) {
+                    continue;
+                }
+                String name = vd.name;
+                boolean v = true;
+                if ( name.StartsWith( search ) ) {
+                    v = !menuVisualPluginUiVocaloid1.isSelected();
+                    menuVisualPluginUiVocaloid1.setSelected( v );
+                    vd.ui.setVisible( v );
+                    break;
+                } else if ( name.StartsWith( search ) ) {
+                    v = !menuVisualPluginUiVocaloid2.isSelected();
+                    menuVisualPluginUiVocaloid2.setSelected( v );
+                    vd.ui.setVisible( v );
+                    break;
+                }
+            }
         }
 
         public void menuVisualPluginUiAquesTone_Click( Object sender, EventArgs e ) {
@@ -3388,16 +3454,16 @@ namespace org.kbinani.cadencii {
                 chk = false;
             } else if ( !drv.loaded ) {
                 chk = false;
-            } else if ( drv.pluginUi == null ) {
+            } else if ( drv.ui == null ) {
                 chk = false;
-            } else if ( drv.pluginUi.IsDisposed ) {
+            } else if ( drv.ui.IsDisposed ) {
                 chk = false;
             }
             if ( !chk ) {
                 menuVisualPluginUiAquesTone.setSelected( false );
                 return;
             }
-            drv.pluginUi.setVisible( visible );
+            drv.ui.setVisible( visible );
         }
         #endregion
 
@@ -6932,7 +6998,9 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             try {
                 foreach ( VocaloidDriver vd in VSTiProxy.vocaloidDriver ) {
-                    //vd.
+                    if ( vd.ui != null ) {
+                        vd.ui.Show();
+                    }
                 }
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
@@ -13802,6 +13870,8 @@ namespace org.kbinani.cadencii {
             menuVisualPitchLine.checkedChangedEvent.add( new BEventHandler( this, "menuVisualPitchLine_CheckedChanged" ) );
             menuVisualPitchLine.mouseEnterEvent.add( new BEventHandler( this, "menuVisualPitchLine_MouseEnter" ) );
             menuVisualPluginUi.dropDownOpeningEvent.add( new BEventHandler( this, "menuVisualPluginUi_DropDownOpening" ) );
+            menuVisualPluginUiVocaloid1.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
+            menuVisualPluginUiVocaloid2.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
             menuVisualPluginUiAquesTone.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiAquesTone_Click" ) );
             menuJob.dropDownOpeningEvent.add( new BEventHandler( this, "menuJob_DropDownOpening" ) );
             menuJobNormalize.mouseEnterEvent.add( new BEventHandler( this, "menuJobNormalize_MouseEnter" ) );
@@ -14175,6 +14245,8 @@ namespace org.kbinani.cadencii {
             this.menuVisualWaveform = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualProperty = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualOverview = new org.kbinani.windows.forms.BMenuItem();
+            this.menuVisualPluginUi = new org.kbinani.windows.forms.BMenuItem();
+            this.menuVisualPluginUiAquesTone = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuVisualGridline = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
@@ -14380,6 +14452,7 @@ namespace org.kbinani.cadencii {
             this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
             this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
             this.toolStripTool = new org.kbinani.windows.forms.BToolBar();
@@ -14466,9 +14539,8 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
-            this.menuVisualPluginUi = new BMenuItem();
-            this.menuVisualPluginUiAquesTone = new BMenuItem();
+            this.menuVisualPluginUiVocaloid2 = new BMenuItem();
+            this.menuVisualPluginUiVocaloid1 = new BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -14479,6 +14551,7 @@ namespace org.kbinani.cadencii {
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.toolStripTool.SuspendLayout();
@@ -14491,7 +14564,6 @@ namespace org.kbinani.cadencii {
             this.toolStripFile.SuspendLayout();
             this.toolStripPosition.SuspendLayout();
             this.toolStripMeasure.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -14788,6 +14860,22 @@ namespace org.kbinani.cadencii {
             this.menuVisualOverview.Name = "menuVisualOverview";
             this.menuVisualOverview.Size = new System.Drawing.Size( 237, 22 );
             this.menuVisualOverview.Text = "Overview(&O)";
+            // 
+            // menuVisualPluginUi
+            // 
+            this.menuVisualPluginUi.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
+            this.menuVisualPluginUiVocaloid1,
+            this.menuVisualPluginUiVocaloid2,
+            this.menuVisualPluginUiAquesTone} );
+            this.menuVisualPluginUi.Name = "menuVisualPluginUi";
+            this.menuVisualPluginUi.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualPluginUi.Text = "VSTi Plugin UI(&U)";
+            // 
+            // menuVisualPluginUiAquesTone
+            // 
+            this.menuVisualPluginUiAquesTone.Name = "menuVisualPluginUiAquesTone";
+            this.menuVisualPluginUiAquesTone.Size = new System.Drawing.Size( 157, 22 );
+            this.menuVisualPluginUiAquesTone.Text = "AquesTone(&A)";
             // 
             // toolStripMenuItem1
             // 
@@ -16295,6 +16383,20 @@ namespace org.kbinani.cadencii {
             this.picturePositionIndicator.TabIndex = 10;
             this.picturePositionIndicator.TabStop = false;
             // 
+            // pictPianoRoll
+            // 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.MinimumSize = new System.Drawing.Size( 0, 100 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
+            // 
             // pictureBox3
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -17119,33 +17221,17 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
-            // pictPianoRoll
+            // menuVisualPluginUiVocaloid2
             // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.MinimumSize = new System.Drawing.Size( 0, 100 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
+            this.menuVisualPluginUiVocaloid2.Name = "menuVisualPluginUiVocaloid2";
+            this.menuVisualPluginUiVocaloid2.Size = new System.Drawing.Size( 157, 22 );
+            this.menuVisualPluginUiVocaloid2.Text = "VOCALOID2";
             // 
-            // menuVisualPluginUi
+            // menuVisualPluginUiVocaloid1
             // 
-            this.menuVisualPluginUi.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.menuVisualPluginUiAquesTone} );
-            this.menuVisualPluginUi.Name = "menuVisualPluginUi";
-            this.menuVisualPluginUi.Size = new System.Drawing.Size( 237, 22 );
-            this.menuVisualPluginUi.Text = "VSTi Plugin UI(&V)";
-            // 
-            // menuVisualPluginUiAquesTone
-            // 
-            this.menuVisualPluginUiAquesTone.Name = "menuVisualPluginUiAquesTone";
-            this.menuVisualPluginUiAquesTone.Size = new System.Drawing.Size( 157, 22 );
-            this.menuVisualPluginUiAquesTone.Text = "AquesTone(&A)";
+            this.menuVisualPluginUiVocaloid1.Name = "menuVisualPluginUiVocaloid1";
+            this.menuVisualPluginUiVocaloid1.Size = new System.Drawing.Size( 157, 22 );
+            this.menuVisualPluginUiVocaloid1.Text = "VOCALOID1";
             // 
             // FormMain
             // 
@@ -17170,6 +17256,7 @@ namespace org.kbinani.cadencii {
             this.panel3.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.toolStripTool.ResumeLayout( false );
@@ -17191,7 +17278,6 @@ namespace org.kbinani.cadencii {
             this.toolStripPosition.PerformLayout();
             this.toolStripMeasure.ResumeLayout( false );
             this.toolStripMeasure.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -17533,6 +17619,8 @@ namespace org.kbinani.cadencii {
         private BMenuItem cMenuTrackTabRendererAquesTone;
         private BMenuItem menuVisualPluginUi;
         private BMenuItem menuVisualPluginUiAquesTone;
+        private BMenuItem menuVisualPluginUiVocaloid1;
+        private BMenuItem menuVisualPluginUiVocaloid2;
         #endregion
 #endif
 

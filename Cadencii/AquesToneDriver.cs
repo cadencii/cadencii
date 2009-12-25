@@ -75,9 +75,8 @@ namespace org.kbinani.cadencii {
         public static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, auto_f1, male_hk, auto_hk };
 
 #if ENABLE_AQUESTONE
-        private Dimension uiWindowRect = new Dimension( 373, 158 );
 
-        public FormPluginUi pluginUi = null;
+//        public FormPluginUi pluginUi = null;
         public int haskyParameterIndex = 0;
         public int resonancParameterIndex = 1;
         public int volumeParameterIndex = 3;
@@ -107,19 +106,6 @@ namespace org.kbinani.cadencii {
             }
 
             try {
-                pluginUi = new FormPluginUi();
-                pluginUi.Text = "AquesToneWindow";
-                pluginUi.Location = new System.Drawing.Point( int.MinValue, int.MinValue );
-                pluginUi.Show();
-                pluginUi.Refresh();
-                pluginUi.Hide();
-                pluginUi.Location = new System.Drawing.Point( 0, 0 );
-                unsafe {
-                    aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)pluginUi.Handle.ToPointer(), 0.0f );
-                }
-                updatePluginUiRect();
-                pluginUi.ClientSize = new System.Drawing.Size( uiWindowRect.width, uiWindowRect.height );
-                pluginUi.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
                 for ( int i = 0; i < aEffect.numParams; i++ ) {
                     String name = getParameterName( i ).Trim().ToLower();
                     if ( name.StartsWith( "phont" ) ) {
@@ -150,26 +136,6 @@ namespace org.kbinani.cadencii {
                     PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) + "; value=" + getParameter( i ) );
 #endif
                 }
-#if DEBUG
-                /*pluginUi.Show();
-                PortUtil.stdout.println( "AquesToneDriver#open; phontParameterIndex=" + phontParameterIndex );
-                pluginUi.SizeChanged += new EventHandler( pluginUi_SizeChanged );
-
-                for ( int value = 0; value < 14; value++ ) {
-                    MidiEvent pbs0 = new MidiEvent();
-                    pbs0.firstByte = 0xB0;
-                    pbs0.data = new byte[] { 0x64, 0x00 };
-                    MidiEvent pbs1 = new MidiEvent();
-                    pbs1.firstByte = 0xB0;
-                    pbs1.data = new byte[] { 0x65, 0x00 };
-                    MidiEvent pbs2 = new MidiEvent();
-                    pbs2.firstByte = 0xB0;
-                    pbs2.data = new byte[] { 0x06, (byte)value };
-                    //send( new MidiEvent[] { pbs0, pbs1, pbs2 } );
-                    setParameter( bendLblParameterIndex, value / 13.0f );
-                    PortUtil.println( "value" + value + "; display=" + getParameterDisplay( bendLblParameterIndex ) + "; param=" + getParameter( bendLblParameterIndex ) );
-                }*/
-#endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
             }
@@ -187,29 +153,6 @@ namespace org.kbinani.cadencii {
             }
         }
 #endif
-
-        private void updatePluginUiRect() {
-            if ( pluginUi != null ) {
-                win32.EnumChildWindows( pluginUi.Handle, enumChildProc, 0 );
-            }
-        }
-
-        private bool enumChildProc( IntPtr hwnd, int lParam ) {
-            RECT rc = new RECT();
-            win32.GetWindowRect( hwnd, ref rc );
-            if ( pluginUi != null ) {
-                pluginUi.childWnd = hwnd;
-            }
-            uiWindowRect = new Dimension( rc.right - rc.left, rc.bottom - rc.top );
-            return false; //最初のやつだけ検出できればおｋなので
-        }
-
-        public override void close() {
-            if ( pluginUi != null ) {
-                pluginUi.Close();
-            }
-            base.close();
-        }
 
         private static String getKoeFilePath() {
             String ret = PortUtil.combinePath( AppManager.getCadenciiTempDir(), "jphonefifty.txt" );

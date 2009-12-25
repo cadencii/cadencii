@@ -213,8 +213,8 @@ namespace org.kbinani.cadencii {
                     if ( queue.pit != null && queue.pit.size() > 0 && !noteoff_send ) {
                         driver.send( queue.pit.toArray( new MidiEvent[] { } ) );
                     }
-                    if ( driver.pluginUi != null ) {
-                        driver.pluginUi.invalidateUi();
+                    if ( driver.ui != null ) {
+                        driver.ui.invalidateUi();
                     }
                 }
             }

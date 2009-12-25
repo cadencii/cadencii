@@ -4,7 +4,6 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace VstSdk {
-
     #region VST SDK 2.4 declarations
     using VstInt32 = System.Int32;
     using VstIntPtr = System.Int32;
@@ -429,6 +428,55 @@ namespace VstSdk {
         /// [return value]: number of used MIDI output channels (1-15)  @see AudioEffectX::getNumMidiOutputChannels
         /// </summary>
         public const int effGetNumMidiOutputChannels = 79;
+    }
+
+    public static class VstAEffectFlags {
+        /// <summary>
+        /// set if the plug-in provides a custom editor
+        /// </summary>
+        public const int effFlagsHasEditor = 1 << 0;
+        /// <summary>
+        /// supports replacing process mode (which should the default mode in VST 2.4)
+        /// </summary>
+        public const int effFlagsCanReplacing = 1 << 4;
+        /// <summary>
+        /// program data is handled in formatless chunks
+        /// </summary>
+        public const int effFlagsProgramChunks = 1 << 5;
+        /// <summary>
+        /// plug-in is a synth (VSTi), Host may assign mixer channels for its outputs
+        /// </summary>
+        public const int effFlagsIsSynth = 1 << 8;
+        /// <summary>
+        /// plug-in does not produce sound when input is all silence
+        /// </summary>
+        public const int effFlagsNoSoundInStop = 1 << 9;
+#if VST_2_4_EXTENSIONS
+        /// <summary>
+        /// plug-in supports double precision processing
+        /// </summary>
+        public const int effFlagsCanDoubleReplacing = 1 << 12;
+#endif
+        /// <summary>
+        /// \deprecated deprecated in VST 2.4
+        /// </summary>
+        public const int __effFlagsHasClipDeprecated = 1 << 1;
+        /// <summary>
+        /// \deprecated deprecated in VST 2.4
+        /// </summary>
+        public const int __effFlagsHasVuDeprecated = 1 << 2;
+        /// <summary>
+        /// \deprecated deprecated in VST 2.4
+        /// </summary>
+        public const int __effFlagsCanMonoDeprecated = 1 << 3;
+        /// <summary>
+        /// \deprecated deprecated in VST 2.4
+        /// </summary>
+        public const int __effFlagsExtIsAsyncDeprecated = 1 << 10;
+        /// <summary>
+        /// \deprecated deprecated in VST 2.4
+        /// </summary>
+        public const int __effFlagsExtHasBufferDeprecated = 1 << 11;
     }
 
     public unsafe delegate VstIntPtr AEffectDispatcherProc( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt );
