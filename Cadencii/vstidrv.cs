@@ -289,20 +289,20 @@ namespace org.kbinani.cadencii {
 
         public virtual bool open( string dll_path, int block_size, int sample_rate ) {
             dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
-            Thread.Sleep( 100 );
+            Thread.Sleep( 250 );
             if ( dllHandle == IntPtr.Zero ) {
                 return false;
             }
 
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( win32.GetProcAddress( dllHandle, "main" ),
                                                                             typeof( PVSTMAIN ) );
-            Thread.Sleep( 100 );
+            Thread.Sleep( 250 );
             if ( mainDelegate == null ) {
                 return false;
             }
 
             audioMaster = new audioMasterCallback( AudioMaster );
-            Thread.Sleep( 100 );
+            Thread.Sleep( 250 );
 
             IntPtr ptr_aeffect = IntPtr.Zero;
             try {
@@ -345,7 +345,7 @@ namespace org.kbinani.cadencii {
                     unsafe {
                         aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)ui.Handle.ToPointer(), 0.0f );
                     }
-                    Thread.Sleep( 100 );
+                    Thread.Sleep( 250 );
                     updatePluginUiRect();
                     ui.ClientSize = new System.Drawing.Size( uiWindowRect.width, uiWindowRect.height );
                     ui.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

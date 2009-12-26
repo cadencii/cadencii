@@ -27,7 +27,7 @@ namespace org.kbinani.cadencii {
     public static class PaletteToolServer {
         public static TreeMap<String, object> LoadedTools = new TreeMap<String, object>();
 
-        public static void Init() {
+        public static void init() {
             String path = Path.Combine( Application.StartupPath, "tool" );
             if ( !Directory.Exists( path ) ) {
                 return;
@@ -77,7 +77,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static boolean InvokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
+        public static boolean invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( LoadedTools.containsKey( id ) ) {
                 VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( track ).clone();
                 boolean edited = false;

@@ -1479,7 +1479,7 @@ namespace org.kbinani.cadencii {
                         if ( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier && m_spacekey_downed && e.Button == System.Windows.Forms.MouseButtons.Left ) {
                             btn = BMouseButtons.Middle;
                         }
-                        boolean result = PaletteToolServer.InvokePaletteTool( AppManager.selectedPaletteTool,
+                        boolean result = PaletteToolServer.invokePaletteTool( AppManager.selectedPaletteTool,
                                                                            AppManager.getSelected(),
                                                                            internal_ids.toArray( new Integer[] { } ),
                                                                            btn );
@@ -1633,7 +1633,7 @@ namespace org.kbinani.cadencii {
                             SelectedEventEntry see = (SelectedEventEntry)itr.next();
                             internal_ids.add( see.original.InternalID );
                         }
-                        boolean result = PaletteToolServer.InvokePaletteTool( AppManager.selectedPaletteTool,
+                        boolean result = PaletteToolServer.invokePaletteTool( AppManager.selectedPaletteTool,
                                                                            AppManager.getSelected(),
                                                                            internal_ids.toArray( new Integer[] { } ),
                                                                            e.Button );
@@ -6996,15 +6996,6 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "menuHelpDebug_Click" );
 #if DEBUG
-            try {
-                foreach ( VocaloidDriver vd in VSTiProxy.vocaloidDriver ) {
-                    if ( vd.ui != null ) {
-                        vd.ui.Show();
-                    }
-                }
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
-            }
             /*InputBox ib = new InputBox( "input shift seconds" );
             if ( ib.ShowDialog() == DialogResult.OK ) {
                 VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();

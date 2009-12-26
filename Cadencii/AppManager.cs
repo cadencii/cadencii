@@ -1915,7 +1915,7 @@ namespace org.kbinani.cadencii {
 
             KeySoundPlayer.init();
 #if ENABLE_SCRIPT
-            PaletteToolServer.Init();
+            PaletteToolServer.init();
 #endif
 
 #if !TREECOM
