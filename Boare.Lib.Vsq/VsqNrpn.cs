@@ -27,7 +27,7 @@ namespace org.kbinani.vsq {
 #if JAVA
     public class VsqNrpn implements Comparable<VsqNrpn> {
 #else
-    public struct VsqNrpn : IComparable<VsqNrpn> {
+    public class VsqNrpn : IComparable<VsqNrpn> {
 #endif
         public int Clock;
         public int Nrpn;

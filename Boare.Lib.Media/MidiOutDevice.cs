@@ -58,9 +58,10 @@ namespace org.kbinani.media {
             win32.midiOutShortMsg( m_handle, message );
         }
 
-        private void SendLong( byte[] data ) {
+#if !MONO
+        /*private void SendLong_old( byte[] data ) {
             MIDIHDR hdr = new MIDIHDR();
-            GCHandle dataHandle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            GCHandle dataHandle = GCHandle.Alloc( data, GCHandleType.Pinned ); // monoでコンパイルできない
             uint size = (uint)sizeof( MIDIHDR );
             try {
                 hdr.lpData = (byte*)dataHandle.AddrOfPinnedObject().ToPointer();
@@ -78,6 +79,45 @@ namespace org.kbinani.media {
             } finally {
                 dataHandle.Free();
             }
+        }*/
+#endif
+
+        private void SendLong( byte[] data ) {
+#if !MONO
+            IntPtr ptr = IntPtr.Zero;
+            IntPtr ptrData = IntPtr.Zero;
+            try {
+                uint size = (uint)sizeof( MIDIHDR );
+                ptr = Marshal.AllocHGlobal( (int)size );
+                MIDIHDR hdr = (MIDIHDR)Marshal.PtrToStructure( ptr, typeof( MIDIHDR ) );
+                ptrData = Marshal.AllocHGlobal( data.Length );
+                byte* pData = (byte*)ptrData.ToPointer();
+                for ( int i = 0; i < data.Length; i++ ) {
+                    pData[i] = data[i];
+                }
+                hdr.lpData = pData;
+                hdr.dwBufferLength = (uint)data.Length;
+                hdr.dwFlags = 0;
+                win32.midiOutPrepareHeader( m_handle, ref hdr, size );
+                while ( (hdr.dwFlags & win32.WHDR_PREPARED) != win32.WHDR_PREPARED ) {
+                    Application.DoEvents();
+                }
+                win32.midiOutLongMsg( m_handle, ref hdr, size );
+                while ( (hdr.dwFlags & win32.WHDR_DONE) != win32.WHDR_DONE ) {
+                    Application.DoEvents();
+                }
+                win32.midiOutUnprepareHeader( m_handle, ref hdr, size );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "MidiOutDevice#SendLong; ex=" + ex );
+            } finally {
+                if ( ptrData != IntPtr.Zero ) {
+                    Marshal.FreeHGlobal( ptrData );
+                }
+                if ( ptr != IntPtr.Zero ){
+                    Marshal.FreeHGlobal( ptr );
+                }
+            }
+#endif
         }
     }
 
