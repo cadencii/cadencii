@@ -1,10 +1,37 @@
-target = 2;
-for n = 1 to 100
+dim quant[] = "1(small)", "2", "3(medium)", "4", "5(large)";
+ret = slctbox( SLCT_BTN, 0, "音符のシフト量", quant );
+target = 1;
+ifb ret = -1 then
+    exit;
+elseif ret = SLCT_1 then
+    target = 1;
+elseif ret = SLCT_2 then
+    target = 2;
+elseif ret = SLCT_3 then
+    target = 3;
+elseif ret = SLCT_4 then
+    target = 4;
+elseif ret = SLCT_5 then
+    target = 5;
+endif
+
+start = 1;
+end = 100;
+
+strStart = input( "開始インデクス" );
+start = val( strStart, 1 );
+strEnd = input( "終了インデクス" );
+end = val( strEnd, 100 );
+
+for n = start to end
     hwnd = getid( "VOCALOID Editor" );
     acw( hwnd );
     clkitem( hwnd, "ファイル", CLK_MENU );
     clkitem( hwnd, "開く", CLK_MENU );
     hwnd_open = getid( "ファイルを開く" );
+    acw( hwnd_open );
+    sleep( 0.5 );
+    sckey( hwnd_open, VK_N, VK_ALT );
     sendstr( hwnd_open, "base.vsq", 0, TRUE );
     clkitem( hwnd_open, "開く", CLK_BTN );
     sleep( 2 );
@@ -24,12 +51,22 @@ for n = 1 to 100
     clkitem( hdlg, "ピッチの揺らぎ", CLK_BTN, FALSE );
     sendstr( hdlg, "1", 1, TRUE );
     sendstr( hdlg, "1", 2, TRUE );
-    sendstr( hdlg, "193", 3, TRUE );
+    sendstr( hdlg, "385", 3, TRUE );
     sendstr( hdlg, "1", 4, TRUE );
     clkitem( hdlg, "1(small)" );
     for i = 2 to target
         kbd( VK_DOWN, CLICK, 100 );
     next
+
+    str = getstr( hdlg );
+    while TRUE
+        ifb str = " " + quant[target - 1] then
+            break;
+        endif
+        str = getstr( hdlg );
+        sleep( 1 );
+    wend
+
     clkitem( hdlg, "OK", CLK_BTN );
     acw( hwnd );
     clkitem( hwnd, "ファイル", CLK_MENU );

@@ -7,6 +7,7 @@ using org.kbinani.java.util;
 class randomizeAnalysis{
     [STAThread]
     public static void Main( string[] args ){
+        int unit = int.Parse( args[0] );
         System.Windows.Forms.OpenFileDialog d = new System.Windows.Forms.OpenFileDialog();
         if ( d.ShowDialog() == System.Windows.Forms.DialogResult.OK ) {
             string f = d.FileName;
@@ -36,7 +37,7 @@ class randomizeAnalysis{
                     if ( i == 0 ){
                         continue;
                     }
-                    int ideal_start = b + i * 480;
+                    int ideal_start = b + i * unit;
                     int shift = item.Clock - ideal_start;
                     if( dict.ContainsKey( shift ) ){
                         dict[shift] = dict[shift] + 1;
