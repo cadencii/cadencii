@@ -139,15 +139,15 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        private void chkEnd_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkEnd_CheckedChanged( Object sender, BEventArgs e ) {
             numEnd.setEnabled( chkEnd.isSelected() );
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
 

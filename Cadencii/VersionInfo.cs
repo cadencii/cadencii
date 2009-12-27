@@ -296,7 +296,7 @@ namespace org.kbinani.cadencii {
             g.clearRect( 0, 0, getWidth(), getHeight() );
             if ( m_credit_mode ) {
                 float times = (float)(PortUtil.getCurrentTime() - m_scroll_started) - 3f;
-                float speed = (float)((2.0 - math.erfcc( times * 0.8 )) / 2.0) * m_speed;
+                float speed = (float)((2.0 - math.erfc( times * 0.8 )) / 2.0) * m_speed;
                 float dt = times - m_last_t;
                 m_shift += (speed + m_last_speed) * dt / 2f;
                 m_last_t = times;

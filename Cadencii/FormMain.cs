@@ -6142,6 +6142,106 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuJobRandomize_Click( Object sender, EventArgs e ) {
+            FormRandomize dlg = null;
+            try {
+                dlg = new FormRandomize();
+                dlg.setLocation( getFormPreferedLocation( dlg ) );
+                if ( dlg.showDialog() == BDialogResult.OK ) {
+                    VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
+                    int preMeasure = vsq.getPreMeasure();
+                    int startBar = dlg.getStartBar() - (preMeasure - 1);
+                    int startBeat = dlg.getStartBeat() - 1;
+                    int endBar = dlg.getEndBar() - (preMeasure - 1);
+                    int endBeat = dlg.getEndBeat() - 1;
+                    int startBarClock = vsq.getClockFromBarCount( startBar );
+                    int endBarClock = vsq.getClockFromBarCount( endBar );
+                    Timesig startTimesig = vsq.getTimesigAt( startBarClock );
+                    Timesig endTimesig = vsq.getTimesigAt( endBarClock );
+                    int startClock = startBarClock + startBeat * 480 * 4 / startTimesig.denominator;
+                    int endClock = endBarClock + endBeat * 480 * 4 / endTimesig.denominator;
+
+                    VsqTrack track = vsq.Track.get( AppManager.getSelected() );
+                    Random r = new Random();
+                    int[] sigmaPreset = new int[] { 10, 20, 30, 60, 120 };
+                    int sigma = sigmaPreset[dlg.getPositionRandomizeValue() - 1];
+
+                    // 音符位置のシフト
+                    if ( dlg.isPositionRandomizeEnabled() ) {
+                        VsqEvent lastItem = null;
+                        int lastItemClock = 0;
+                        int lastItemLength = 0;
+                        double sqrt2 = Math.Sqrt( 2.0 );
+                        int clockPreMeasure = vsq.getClockFromBarCount( preMeasure - 1 );
+                        for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                            VsqEvent item = (VsqEvent)itr.next();
+                            int clock = item.Clock;
+                            int length = item.ID.getLength();
+                            if ( startClock <= item.Clock && item.Clock + item.ID.getLength() <= endClock ) {
+                                int draftClock = 0;
+                                int draftLength = 0;
+                                int draftLastItemLength = lastItemLength;
+                                while ( true ) {
+                                    int x = 3 * sigma;
+                                    while ( Math.Abs( x ) > 2 * sigma ) {
+                                        double y = (r.NextDouble() - 0.5) * 2.0;
+                                        x = (int)(sigma * sqrt2 * math.erfinv( y ));
+                                    }
+                                    draftClock = clock + x;
+                                    draftLength = clock + length - draftClock;
+                                    if ( lastItem != null ) {
+                                        if ( clock == lastItemClock + lastItemLength ) {
+                                            // 音符が連続していた場合
+                                            draftLastItemLength = lastItem.ID.getLength() + x;
+                                        }
+                                    }
+                                    // 音符がめり込んだりしてないかどうかをチェック
+                                    if ( draftClock < clockPreMeasure ) {
+                                        continue;
+                                    }
+                                    if ( lastItem != null ) {
+                                        if ( clock != lastItemClock + lastItemLength ) {
+                                            // 音符が連続していなかった場合に、直前の音符にめり込んでいないかどうか
+                                            if ( draftClock + draftLength < lastItem.Clock + lastItem.ID.getLength() ) {
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                                item.Clock = draftClock;
+                                item.ID.setLength( draftLength );
+                                if ( lastItem != null ) {
+                                    lastItem.ID.setLength( draftLastItemLength );
+                                }
+                            } else if ( endClock < item.Clock ) {
+                                break;
+                            }
+                            lastItem = item;
+                            lastItemClock = clock;
+                            lastItemLength = length;
+                        }
+                    }
+
+                    // ピッチベンドのランダマイズ
+                    if ( dlg.isPitRandomizeEnabled() ) {
+
+                    }
+
+                    CadenciiCommand run = VsqFileEx.generateCommandReplace( vsq );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                    setEdited( true );
+                }
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#menuJobRandomize_Click; ex=" + ex );
+            } finally {
+                if ( dlg != null ) {
+                    try {
+                        dlg.close();
+                    } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "FormMain#menuJobRandomize; ex2=" + ex2 );
+                    }
+                }
+            }
         }
 
         public void menuJobConnect_MouseEnter( Object sender, EventArgs e ) {
@@ -11495,6 +11595,7 @@ namespace org.kbinani.cadencii {
             menuVisualLyrics.setText( _( "Lyrics/Phoneme" ) + "(&L)" );
             menuVisualNoteProperty.setText( _( "Note Expression/Vibrato" ) + "(&N)" );
             menuVisualPitchLine.setText( _( "Pitch Line" ) + "(&P)" );
+            menuVisualPluginUi.setText( _( "VSTi Plugin UI" ) + "(&U)" );
 
             menuJob.setText( _( "Job" ) + "(&J)" );
             menuJobNormalize.setText( _( "Normalize Notes" ) + "(&N)" );

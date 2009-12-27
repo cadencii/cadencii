@@ -125,45 +125,45 @@ namespace org.kbinani.cadencii {
             btnCancel.setText( _( "Cancel" ) );
         }
 
-        private void numProgramNormal_ValueChanged( object sender, EventArgs e ) {
+        public void numProgramNormal_ValueChanged( object sender, EventArgs e ) {
             MidiPlayer.ProgramNormal = (byte)numProgramNormal.Value;
         }
 
-        private void numProgramBell_ValueChanged( object sender, EventArgs e ) {
+        public void numProgramBell_ValueChanged( object sender, EventArgs e ) {
             MidiPlayer.ProgramBell = (byte)numProgramBell.Value;
         }
 
-        private void numNoteNormal_ValueChanged( object sender, EventArgs e ) {
+        public void numNoteNormal_ValueChanged( object sender, EventArgs e ) {
             MidiPlayer.NoteNormal = (byte)numNoteNormal.Value;
         }
 
-        private void numNoteBell_ValueChanged( object sender, EventArgs e ) {
+        public void numNoteBell_ValueChanged( object sender, EventArgs e ) {
             MidiPlayer.NoteBell = (byte)numNoteBell.Value;
         }
 
-        private void numPreUtterance_ValueChanged( object sender, EventArgs e ) {
+        public void numPreUtterance_ValueChanged( object sender, EventArgs e ) {
             MidiPlayer.PreUtterance = (int)numPreUtterance.Value;
         }
 
-        private void comboDeviceMetronome_SelectedIndexChanged( object sender, EventArgs e ) {
+        public void comboDeviceMetronome_SelectedIndexChanged( object sender, EventArgs e ) {
             int index = comboDeviceMetronome.getSelectedIndex();
             if ( 0 <= index ) {
                 MidiPlayer.DeviceMetronome = (uint)index;
             }
         }
 
-        private void comboDeviceGeneral_SelectedIndexChanged( object sender, EventArgs e ) {
+        public void comboDeviceGeneral_SelectedIndexChanged( object sender, EventArgs e ) {
             int index = comboDeviceGeneral.getSelectedIndex();
             if ( 0 <= index ) {
                 MidiPlayer.DeviceGeneral = (uint)index;
             }
         }
 
-        private void chkRingBell_CheckedChanged( object sender, EventArgs e ) {
+        public void chkRingBell_CheckedChanged( object sender, EventArgs e ) {
             MidiPlayer.RingBell = chkRingBell.isSelected();
         }
 
-        private void chkPreview_CheckedChanged( object sender, EventArgs e ) {
+        public void chkPreview_CheckedChanged( object sender, EventArgs e ) {
             if ( chkPreview.isSelected() ) {
                 m_preview_started = PortUtil.getCurrentTime();
                 MidiPlayer.Start( new VsqFileEx( "Miku", 2, 4, 4, 500000 ), 0, m_preview_started );
@@ -172,7 +172,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void FormMidiConfig_FormClosing( object sender, FormClosingEventArgs e ) {
+        public void FormMidiConfig_FormClosing( object sender, FormClosingEventArgs e ) {
             MidiPlayer.Stop();
             MidiPlayer.SetSpeed( m_speed, PortUtil.getCurrentTime() );
             if ( getDialogResult() == BDialogResult.OK ) {
@@ -198,11 +198,11 @@ namespace org.kbinani.cadencii {
             AppManager.editorConfig.MetronomeEnabled = m_metronome_enabled_init_stat;
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 

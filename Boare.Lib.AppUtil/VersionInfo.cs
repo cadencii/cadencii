@@ -206,7 +206,7 @@ namespace org.kbinani.apputil {
             g.clearRect( 0, 0, this.Width, this.Height );
             if ( m_credit_mode ) {
                 float times = (float)(((DateTime.Now).Subtract( m_scroll_started )).TotalSeconds) - 3f;
-                float speed = (float)((2.0 - org.kbinani.math.erfcc( times * 0.8 )) / 2.0) * m_speed;
+                float speed = (float)((2.0 - org.kbinani.math.erfc( times * 0.8 )) / 2.0) * m_speed;
                 float dt = times - m_last_t;
                 m_shift += (speed + m_last_speed) * dt / 2f;
                 m_last_t = times;

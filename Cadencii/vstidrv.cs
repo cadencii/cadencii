@@ -16,7 +16,6 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using org.kbinani;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
@@ -337,10 +336,6 @@ namespace org.kbinani.cadencii {
                 try {
                     ui = new FormPluginUi();
                     ui.Text = product;
-                    ui.Location = new System.Drawing.Point( int.MinValue, int.MinValue );
-                    ui.Show();
-                    ui.Refresh();
-                    ui.Hide();
                     ui.Location = new System.Drawing.Point( 0, 0 );
                     unsafe {
                         aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)ui.Handle.ToPointer(), 0.0f );
@@ -358,13 +353,21 @@ namespace org.kbinani.cadencii {
 
         private void updatePluginUiRect() {
             if ( ui != null ) {
-                win32.EnumChildWindows( ui.Handle, enumChildProc, 0 );
+                try {
+                    win32.EnumChildWindows( ui.Handle, enumChildProc, 0 );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "vstidrv#updatePluginUiRect; ex=" + ex );
+                }
             }
         }
 
         private bool enumChildProc( IntPtr hwnd, int lParam ) {
             RECT rc = new RECT();
-            win32.GetWindowRect( hwnd, ref rc );
+            try {
+                win32.GetWindowRect( hwnd, ref rc );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "vstidrv#enumChildProc; ex=" + ex );
+            }
             if ( ui != null ) {
                 ui.childWnd = hwnd;
             }

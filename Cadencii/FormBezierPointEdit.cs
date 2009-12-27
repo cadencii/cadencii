@@ -133,7 +133,7 @@ namespace org.kbinani.cadencii {
             chkEnableSmooth.setText( _( "Smooth" ) );
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             try {
                 int x, y;
                 x = PortUtil.parseInt( txtDataPointClock.getText() );
@@ -155,7 +155,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void chkEnableSmooth_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkEnableSmooth_CheckedChanged( Object sender, BEventArgs e ) {
             boolean value = chkEnableSmooth.isSelected();
             txtLeftClock.setEnabled( value );
             txtLeftValue.setEnabled( value );
@@ -179,7 +179,7 @@ namespace org.kbinani.cadencii {
             m_parent.invalidate();
         }
 
-        private void btnDataPoint_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void btnDataPoint_MouseDown( Object sender, BMouseEventArgs e ) {
 #if !JAVA
             this.Opacity = m_min_opacity;
 #endif
@@ -195,7 +195,7 @@ namespace org.kbinani.cadencii {
             m_btn_datapoint_downed = true;
         }
 
-        private void btnLeft_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void btnLeft_MouseDown( Object sender, BMouseEventArgs e ) {
 #if JAVA
             setVisible( false );
 #else
@@ -213,7 +213,7 @@ namespace org.kbinani.cadencii {
             m_btn_datapoint_downed = true;
         }
 
-        private void btnRight_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void btnRight_MouseDown( Object sender, BMouseEventArgs e ) {
 #if JAVA
             setVisible( false );
 #else
@@ -231,7 +231,7 @@ namespace org.kbinani.cadencii {
             m_btn_datapoint_downed = true;
         }
 
-        private void common_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void common_MouseUp( Object sender, BMouseEventArgs e ) {
             m_btn_datapoint_downed = false;
 #if JAVA
             setVisible( true );
@@ -247,7 +247,7 @@ namespace org.kbinani.cadencii {
             m_parent.invalidate();
         }
 
-        private void common_MouseMove( Object sender, BMouseEventArgs e ) {
+        public void common_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( m_btn_datapoint_downed ) {
                 Point loc_on_screen = PortUtil.getMousePosition();
                 Point loc_trackselector = m_parent.getLocationOnScreen();
@@ -266,7 +266,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnBackward_Click( Object sender, BEventArgs e ) {
+        public void btnBackward_Click( Object sender, BEventArgs e ) {
             BezierChain target = AppManager.getVsqFile().AttachedCurves.get( m_track - 1 ).getBezierChain( m_curve_type, m_chain_id );
             int index = -1;
             for ( int i = 0; i < target.size(); i++ ) {
@@ -284,7 +284,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnForward_Click( Object sender, BEventArgs e ) {
+        public void btnForward_Click( Object sender, BEventArgs e ) {
             BezierChain target = AppManager.getVsqFile().AttachedCurves.get( m_track - 1 ).getBezierChain( m_curve_type, m_chain_id );
             int index = -2;
             for ( int i = 0; i < target.size(); i++ ) {
@@ -302,7 +302,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
 

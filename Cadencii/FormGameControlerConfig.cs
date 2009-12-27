@@ -104,7 +104,7 @@ namespace org.kbinani.cadencii {
             btnSkip.setText( _( "Skip" ) );
         }
 
-        private void timer_Tick( Object sender, BEventArgs e ) {
+        public void timer_Tick( Object sender, BEventArgs e ) {
             //int num_btn = vstidrv.JoyGetNumButtons( 0 );
             byte[] btn;
             int pov;
@@ -221,7 +221,7 @@ namespace org.kbinani.cadencii {
             return Messaging.getMessage( id );
         }
 
-        private void btnSkip_Click( Object sender, BEventArgs e ) {
+        public void btnSkip_Click( Object sender, BEventArgs e ) {
             if ( index <= 4 ) {
                 m_povs.set( index - 1, int.MinValue );
             } else {
@@ -252,7 +252,7 @@ namespace org.kbinani.cadencii {
             index++;
         }
 
-        private void btnReset_Click( Object sender, BEventArgs e ) {
+        public void btnReset_Click( Object sender, BEventArgs e ) {
             m_list.set( 0, 3 ); // □
             m_list.set( 1, 0 ); // △
             m_list.set( 2, 1 ); // ○
@@ -270,11 +270,11 @@ namespace org.kbinani.cadencii {
             setDialogResult( BDialogResult.OK );
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 

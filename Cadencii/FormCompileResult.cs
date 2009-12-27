@@ -57,7 +57,7 @@ namespace org.kbinani.cadencii {
             return Messaging.getMessage( id );
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 
