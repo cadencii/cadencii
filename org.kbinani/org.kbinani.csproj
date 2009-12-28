@@ -8,8 +8,8 @@
     <ProjectGuid>{C8AAE632-9C6C-4372-8175-811528A66742}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>bocoree</RootNamespace>
-    <AssemblyName>bocoree</AssemblyName>
+    <RootNamespace>org.kbinani</RootNamespace>
+    <AssemblyName>org.kbinani</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>false</SignAssembly>
@@ -40,13 +40,13 @@
     <OutputPath>bin\x86\Debug\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>DEBUG</DefineConstants>
-    <DocumentationFile>bin\x86\Debug\bocoree.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Debug\org.kbinani.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Release\bocoree.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\org.kbinani.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

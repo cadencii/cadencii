@@ -97,10 +97,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bocoree\bocoree.csproj">
-      <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>bocoree</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cadencii\Cadencii.csproj">
       <Project>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</Project>
       <Name>Cadencii</Name>
@@ -116,6 +112,10 @@
     <ProjectReference Include="..\org.kbinani.vsq\org.kbinani.vsq.csproj">
       <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
       <Name>org.kbinani.vsq</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
+      <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
+      <Name>org.kbinani</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

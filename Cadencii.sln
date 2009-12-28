@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadencii", "Cadencii\Cadenc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateKeySound", "GenerateKeySound\GenerateKeySound.csproj", "{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bocoree", "bocoree\bocoree.csproj", "{C8AAE632-9C6C-4372-8175-811528A66742}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPOEdit", "WebPOEdit\WebPOEdit.csproj", "{1EFB4BE2-BE19-4D0C-866D-1617F982CDD1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptImplement", "ScriptImplement\ScriptImplement.csproj", "{A0B35F11-5790-4473-A508-5868FFA67D70}"
@@ -42,6 +40,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.media", "org.kb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.vsq", "org.kbinani.vsq\org.kbinani.vsq.csproj", "{673347F3-6FC2-4F82-9273-BF158E0F8CB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani", "org.kbinani\org.kbinani.csproj", "{C8AAE632-9C6C-4372-8175-811528A66742}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,14 +66,6 @@ Global
 		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.Release|x86.ActiveCfg = Release|x86
 		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.Release|x86.Build.0 = Release|x86
-		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|x86.ActiveCfg = Debug|x86
-		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|x86.Build.0 = Debug|x86
-		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|x86.ActiveCfg = Release|x86
-		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|x86.Build.0 = Release|x86
 		{1EFB4BE2-BE19-4D0C-866D-1617F982CDD1}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{1EFB4BE2-BE19-4D0C-866D-1617F982CDD1}.Debug|x86.ActiveCfg = Debug|x86
 		{1EFB4BE2-BE19-4D0C-866D-1617F982CDD1}.Release|Any CPU.ActiveCfg = Release|x86
@@ -143,6 +135,14 @@ Global
 		{673347F3-6FC2-4F82-9273-BF158E0F8CB1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{673347F3-6FC2-4F82-9273-BF158E0F8CB1}.Release|x86.ActiveCfg = Release|x86
 		{673347F3-6FC2-4F82-9273-BF158E0F8CB1}.Release|x86.Build.0 = Release|x86
+		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|x86.ActiveCfg = Debug|x86
+		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|x86.Build.0 = Debug|x86
+		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|x86.ActiveCfg = Release|x86
+		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

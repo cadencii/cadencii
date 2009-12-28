@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>org.kbinani.media</RootNamespace>
-    <AssemblyName>Boare.Lib.Media</AssemblyName>
+    <AssemblyName>org.kbinani.media</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -45,13 +45,13 @@
     <OutputPath>bin\x86\Debug\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>DEBUG</DefineConstants>
-    <DocumentationFile>bin\x86\Debug\Boare.Lib.Media.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Debug\org.kbinani.media.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Release\Boare.Lib.Media.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\org.kbinani.media.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -83,9 +83,9 @@
     <Compile Include="WaveWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bocoree\bocoree.csproj">
+    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>bocoree</Name>
+      <Name>org.kbinani</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

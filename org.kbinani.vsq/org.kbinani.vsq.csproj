@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>org.kbinani.vsq</RootNamespace>
-    <AssemblyName>Boare.Lib.Vsq</AssemblyName>
+    <AssemblyName>org.kbinani.vsq</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -44,12 +44,12 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
-    <DocumentationFile>bin\x86\Debug\Boare.Lib.Vsq.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Debug\org.kbinani.vsq.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>bin\x86\Release\Boare.Lib.Vsq.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\org.kbinani.vsq.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -121,9 +121,9 @@
     <Compile Include="WrappedStreamWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bocoree\bocoree.csproj">
+    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>bocoree</Name>
+      <Name>org.kbinani</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

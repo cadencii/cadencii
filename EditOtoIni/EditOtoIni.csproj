@@ -83,13 +83,21 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bocoree\bocoree.csproj">
-      <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>bocoree</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cadencii\Cadencii.csproj">
       <Project>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</Project>
       <Name>Cadencii</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.apputil\org.kbinani.apputil.csproj">
+      <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
+      <Name>org.kbinani.apputil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.media\org.kbinani.media.csproj">
+      <Project>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</Project>
+      <Name>org.kbinani.media</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
+      <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
+      <Name>org.kbinani</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
