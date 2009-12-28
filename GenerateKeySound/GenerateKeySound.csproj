@@ -66,14 +66,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Boare.Lib.Media\Boare.Lib.Media.csproj">
-      <Project>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</Project>
-      <Name>Boare.Lib.Media</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Boare.Lib.Vsq\Boare.Lib.Vsq.csproj">
-      <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
-      <Name>Boare.Lib.Vsq</Name>
-    </ProjectReference>
     <ProjectReference Include="..\bocoree\bocoree.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
       <Name>bocoree</Name>
@@ -81,6 +73,14 @@
     <ProjectReference Include="..\Cadencii\Cadencii.csproj">
       <Project>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</Project>
       <Name>Cadencii</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.media\org.kbinani.media.csproj">
+      <Project>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</Project>
+      <Name>org.kbinani.media</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.vsq\org.kbinani.vsq.csproj">
+      <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
+      <Name>org.kbinani.vsq</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

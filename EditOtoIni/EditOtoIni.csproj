@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D9E9BE68-1790-4DBE-B556-44057B6B6AB7}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -83,18 +83,6 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Boare.Lib.AppUtil\Boare.Lib.AppUtil.csproj">
-      <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
-      <Name>Boare.Lib.AppUtil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Boare.Lib.Media\Boare.Lib.Media.csproj">
-      <Project>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</Project>
-      <Name>Boare.Lib.Media</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Boare.Lib.Vsq\Boare.Lib.Vsq.csproj">
-      <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
-      <Name>Boare.Lib.Vsq</Name>
-    </ProjectReference>
     <ProjectReference Include="..\bocoree\bocoree.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
       <Name>bocoree</Name>

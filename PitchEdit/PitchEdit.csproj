@@ -63,10 +63,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Boare.Lib.Vsq\Boare.Lib.Vsq.csproj">
-      <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
-      <Name>Boare.Lib.Vsq</Name>
-    </ProjectReference>
     <ProjectReference Include="..\bocoree\bocoree.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
       <Name>bocoree</Name>

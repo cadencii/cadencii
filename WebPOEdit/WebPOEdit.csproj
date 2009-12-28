@@ -47,13 +47,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Boare.Lib.AppUtil\Boare.Lib.AppUtil.csproj">
-      <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
-      <Name>Boare.Lib.AppUtil</Name>
-    </ProjectReference>
     <ProjectReference Include="..\bocoree\bocoree.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
       <Name>bocoree</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.apputil\org.kbinani.apputil.csproj">
+      <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
+      <Name>org.kbinani.apputil</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
