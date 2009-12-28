@@ -59,6 +59,7 @@ namespace VstSdk {
         /// <summary>
         /// deprecated in VST 2.4 r2
         /// </summary>
+        [Obsolete]
         public const int __audioMasterPinConnectedDeprecated = 4;
     }
 
@@ -204,6 +205,7 @@ namespace VstSdk {
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effGetNumProgramCategoriesDeprecated = 28;
 
         /// <summary>
@@ -214,14 +216,17 @@ namespace VstSdk {
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effCopyProgramDeprecated = 30;
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effConnectInputDeprecated = 31;
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effConnectOutputDeprecated = 32;
 
         /// <summary>
@@ -240,10 +245,12 @@ namespace VstSdk {
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effGetCurrentPositionDeprecated = 36;
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effGetDestinationBufferDeprecated = 37;
 
         /// <summary>
@@ -271,6 +278,7 @@ namespace VstSdk {
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effSetBlockSizeAndSampleRateDeprecated = 43;
 
         /// <summary>
@@ -285,6 +293,7 @@ namespace VstSdk {
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effGetErrorTextDeprecated = 46;
 
         /// <summary>
@@ -315,14 +324,17 @@ namespace VstSdk {
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effIdleDeprecated = 53;
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effGetIconDeprecated = 54;
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effSetViewPositionDeprecated = 55;
 
         /// <summary>
@@ -333,6 +345,7 @@ namespace VstSdk {
         /// <summary>
         /// deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effKeysRequiredDeprecated = 57;
 
         /// <summary>
@@ -460,22 +473,27 @@ namespace VstSdk {
         /// <summary>
         /// \deprecated deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effFlagsHasClipDeprecated = 1 << 1;
         /// <summary>
         /// \deprecated deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effFlagsHasVuDeprecated = 1 << 2;
         /// <summary>
         /// \deprecated deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effFlagsCanMonoDeprecated = 1 << 3;
         /// <summary>
         /// \deprecated deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effFlagsExtIsAsyncDeprecated = 1 << 10;
         /// <summary>
         /// \deprecated deprecated in VST 2.4
         /// </summary>
+        [Obsolete]
         public const int __effFlagsExtHasBufferDeprecated = 1 << 11;
     }
 
@@ -501,18 +519,32 @@ namespace VstSdk {
         /// Host to Plug-in dispatcher @see AudioEffect::dispatcher
         /// </summary>
         public VstIntPtr Dispatch( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt ) {
-            AEffectDispatcherProc adp = (AEffectDispatcherProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( dispatcher ), typeof( AEffectDispatcherProc ) );
-            return adp( ref effect, opcode, index, value, ptr, opt );
+            AEffectDispatcherProc adp = null;
+            VstIntPtr ret = 0;
+            try {
+                adp = (AEffectDispatcherProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( dispatcher ), typeof( AEffectDispatcherProc ) );
+                ret = adp( ref effect, opcode, index, value, ptr, opt );
+            } catch ( Exception ex ) {
+                Console.Error.WriteLine( "AEffect#Dispatch; ex=" + ex );
+            }
+            return ret;
         }
 
+        [Obsolete]
         private void* __processDeprecated;
 
         /// <summary>
         /// deprecated Accumulating process mode is deprecated in VST 2.4! Use AEffect::processReplacing instead!
         /// </summary>
+        [Obsolete]
         public void __ProcessDeprecated( ref AEffect effect, float** inputs, float** outputs, VstInt32 sampleFrames ) {
-            AEffectProcessProc app = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( __processDeprecated ), typeof( AEffectProcessProc ) );
-            app( ref effect, inputs, outputs, sampleFrames );
+            AEffectProcessProc app = null;
+            try {
+                app = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( __processDeprecated ), typeof( AEffectProcessProc ) );
+                app( ref effect, inputs, outputs, sampleFrames );
+            } catch ( Exception ex ) {
+                Console.Error.WriteLine( "AEffect#__ProcessDeprecated; ex=" + ex );
+            }
         }
 
         private void* setParameter;
@@ -521,8 +553,13 @@ namespace VstSdk {
         /// Set new value of automatable parameter @see AudioEffect::setParameter
         /// </summary>
         public void SetParameter( ref AEffect effect, VstInt32 index, float parameter ) {
-            AEffectSetParameterProc aspp = (AEffectSetParameterProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( setParameter ), typeof( AEffectSetParameterProc ) );
-            aspp( ref effect, index, parameter );
+            AEffectSetParameterProc aspp = null;
+            try {
+                aspp = (AEffectSetParameterProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( setParameter ), typeof( AEffectSetParameterProc ) );
+                aspp( ref effect, index, parameter );
+            } catch ( Exception ex ) {
+                Console.Error.WriteLine( "AEffect#SetParameter; ex=" + ex );
+            }
         }
 
         private void* getParameter;
@@ -531,8 +568,15 @@ namespace VstSdk {
         /// Returns current value of automatable parameter @see AudioEffect::getParameter
         /// </summary>
         public float GetParameter( ref AEffect effect, VstInt32 index ) {
-            AEffectGetParameterProc agpp = (AEffectGetParameterProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( getParameter ), typeof( AEffectGetParameterProc ) );
-            return agpp( ref effect, index );
+            AEffectGetParameterProc agpp = null;
+            float ret = 0.0f;
+            try {
+                agpp = (AEffectGetParameterProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( getParameter ), typeof( AEffectGetParameterProc ) );
+                ret = agpp( ref effect, index );
+            } catch ( Exception ex ) {
+                Console.Error.WriteLine( "AEffect#GetParameter; ex=" + ex );
+            }
+            return ret;
         }
 
         /// <summary>
@@ -611,8 +655,13 @@ namespace VstSdk {
         /// Process audio samples in replacing mode @see AudioEffect::processReplacing
         /// </summary>
         public void ProcessReplacing( ref AEffect effect, float** inputs, float** outputs, VstInt32 sampleFrames ) {
-            AEffectProcessProc app = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( processReplacing ), typeof( AEffectProcessProc ) );
-            app( ref effect, inputs, outputs, sampleFrames );
+            AEffectProcessProc app = null;
+            try {
+                app = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( processReplacing ), typeof( AEffectProcessProc ) );
+                app( ref effect, inputs, outputs, sampleFrames );
+            } catch ( Exception ex ) {
+                Console.Error.WriteLine( "AEffect#ProcessReplacing; ex=" + ex );
+            }
         }
 
 #if VST_2_4_EXTENSIONS
@@ -626,8 +675,13 @@ namespace VstSdk {
         /// <param name="outputs"></param>
         /// <param name="sampleFrames"></param>
         public void ProcessDoubleReplacing( ref AEffect effect, double** inputs, double** outputs, VstInt32 sampleFrames ) {
-            AEffectProcessDoubleProc apdp = (AEffectProcessDoubleProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( processDoubleReplacing ), typeof( AEffectProcessDoubleProc ) );
-            apdp( ref effect, inputs, outputs, sampleFrames );
+            AEffectProcessDoubleProc apdp = null;
+            try {
+                apdp = (AEffectProcessDoubleProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( processDoubleReplacing ), typeof( AEffectProcessDoubleProc ) );
+                apdp( ref effect, inputs, outputs, sampleFrames );
+            } catch ( Exception ex ) {
+                Console.Error.WriteLine( "AEffect#ProcessDoubleReplacing; ex=" + ex );
+            }
         }
 
         /// <summary>
@@ -677,18 +731,22 @@ namespace VstSdk {
         /// <summary>
         /// unused event type
         /// </summary>
+        [Obsolete]
         public const int __kVstAudioTypeDeprecated = 2;
         /// <summary>
         /// unused event type
         /// </summary>
+        [Obsolete]
         public const int __kVstVideoTypeDeprecated = 3;
         /// <summary>
         /// unused event type
         /// </summary>
+        [Obsolete]
         public const int __kVstParameterTypeDeprecated = 4;
         /// <summary>
         /// unused event type
         /// </summary>
+        [Obsolete]
         public const int __kVstTriggerTypeDeprecated = 5;
         /// <summary>
         /// MIDI system exclusive  @see VstMidiSysexEvent

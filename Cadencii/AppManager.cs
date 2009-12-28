@@ -2371,12 +2371,25 @@ namespace org.kbinani.cadencii {
             SymbolTable.changeOrder( common );
             #endregion
 
-            Messaging.loadMessages();
-            Messaging.setLanguage( editorConfig.Language );
+            try {
+                Messaging.loadMessages();
+                Messaging.setLanguage( editorConfig.Language );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+            }
 
-            KeySoundPlayer.init();
+            try {
+                KeySoundPlayer.init();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+            }
+
 #if ENABLE_SCRIPT
-            PaletteToolServer.init();
+            try {
+                PaletteToolServer.init();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+            }
 #endif
 
 #if !TREECOM

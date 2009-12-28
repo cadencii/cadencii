@@ -555,13 +555,13 @@ namespace org.WebPOEdit {
 
         static string dec_b64( string s ) {
             s = s.Replace( '_', '=' );
-            byte[] b = bocoree.Base64.decode( s );
+            byte[] b = org.kbinani.Base64.decode( s );
             return Encoding.UTF8.GetString( b );
         }
 
         static string enc_b64( string s ) {
             byte[] b = Encoding.UTF8.GetBytes( s );
-            string ret = bocoree.Base64.encode( b );
+            string ret = org.kbinani.Base64.encode( b );
             return ret.Replace( '=', '_' );
         }
 

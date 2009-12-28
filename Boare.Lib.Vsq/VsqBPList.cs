@@ -570,5 +570,64 @@ namespace org.kbinani.vsq {
     }
 
 #if !JAVA
+    /*public class VsqBPList : ICloneable {
+        private System.Collections.Generic.SortedList<int, VsqBPPair> m_items = new System.Collections.Generic.SortedList<int, VsqBPPair>();
+        private int m_default = 0;
+        private int m_maximum = 127;
+        private int m_minimum = 0;
+        private long m_max_id = 0;
+        private String name = "";
+
+        public VsqBPList( String name, int default_value, int minimum, int maximum ) {
+            this.name = name;
+            m_default = default_value;
+            m_maximum = maximum;
+            m_minimum = minimum;
+        }
+
+        public int getKeyClock( int index ) {
+#if JAVA
+            return m_items.keySet().get( index );
+#else
+#endif
+        }
+
+        public int getDefault() {
+            return m_default;
+        }
+
+        public Object clone() {
+            VsqBPList ret = new VsqBPList( name, m_default, m_minimum, m_maximum );
+            for ( Iterator itr = m_items.keySet().iterator(); itr.hasNext(); ) {
+                int clock = (Integer)itr.next();
+                ret.m_items.put( clock, m_items.get( clock ) );
+            }
+            return ret;
+        }
+
+#if !JAVA
+        public Object Clone() {
+            return clone();
+        }
+#endif
+
+        public int size() {
+            return m_items.size();
+        }
+
+        public void add( int clock, int value ) {
+            if ( m_items.containsKey( clock ) ) {
+                VsqBPPair v = m_items.get( clock );
+                v.value = value;
+                m_items.put( clock, v );
+            } else {
+                m_max_id++;
+                m_items.put( clock, new VsqBPPair( value, m_max_id ) );
+            }
+        }
+
+
+    }*/
+
 }
 #endif

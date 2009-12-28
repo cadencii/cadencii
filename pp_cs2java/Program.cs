@@ -4,10 +4,10 @@ using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
-using bocoree;
-using bocoree.windows.forms;
-using bocoree.java.awt.event_;
-using bocoree.javax.swing;
+using org.kbinani;
+using org.kbinani.windows.forms;
+using org.kbinani.java.awt.event_;
+using org.kbinani.javax.swing;
 
 class pp_cs2java {
     static String s_base_dir = "";     // 出力先

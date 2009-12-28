@@ -6149,10 +6149,10 @@ namespace org.kbinani.cadencii {
                 if ( dlg.showDialog() == BDialogResult.OK ) {
                     VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
                     int preMeasure = vsq.getPreMeasure();
-                    int startBar = dlg.getStartBar() - (preMeasure - 1);
+                    int startBar = dlg.getStartBar() + (preMeasure - 1);
                     int startBeat = dlg.getStartBeat() - 1;
-                    int endBar = dlg.getEndBar() - (preMeasure - 1);
-                    int endBeat = dlg.getEndBeat() - 1;
+                    int endBar = dlg.getEndBar() + (preMeasure - 1);
+                    int endBeat = dlg.getEndBeat();
                     int startBarClock = vsq.getClockFromBarCount( startBar );
                     int endBarClock = vsq.getClockFromBarCount( endBar );
                     Timesig startTimesig = vsq.getTimesigAt( startBarClock );
@@ -6160,74 +6160,176 @@ namespace org.kbinani.cadencii {
                     int startClock = startBarClock + startBeat * 480 * 4 / startTimesig.denominator;
                     int endClock = endBarClock + endBeat * 480 * 4 / endTimesig.denominator;
 
-                    VsqTrack track = vsq.Track.get( AppManager.getSelected() );
+                    int iTrack = AppManager.getSelected();
+                    VsqTrack track = vsq.Track.get( iTrack );
                     Random r = new Random();
-                    int[] sigmaPreset = new int[] { 10, 20, 30, 60, 120 };
-                    int sigma = sigmaPreset[dlg.getPositionRandomizeValue() - 1];
 
                     // 音符位置のシフト
+                    #region 音符位置のシフト
                     if ( dlg.isPositionRandomizeEnabled() ) {
-                        VsqEvent lastItem = null;
-                        int lastItemClock = 0;
-                        int lastItemLength = 0;
+                        int[] sigmaPreset = new int[] { 10, 20, 30, 60, 120 };
+                        int sigma = sigmaPreset[dlg.getPositionRandomizeValue() - 1]; // 標準偏差
+
+                        int count = track.getEventCount(); // イベントの個数
+                        int lastItemIndex = -1;  // 直前に処理した音符イベントのインデクス
+                        int thisItemIndex = -1;  // 処理中の音符イベントのインデクス
+                        int nextItemIndex = -1;  // 処理中の音符イベントの次の音符イベントのインデクス
                         double sqrt2 = Math.Sqrt( 2.0 );
-                        int clockPreMeasure = vsq.getClockFromBarCount( preMeasure - 1 );
-                        for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                            VsqEvent item = (VsqEvent)itr.next();
-                            int clock = item.Clock;
-                            int length = item.ID.getLength();
-                            if ( startClock <= item.Clock && item.Clock + item.ID.getLength() <= endClock ) {
-                                int draftClock = 0;
-                                int draftLength = 0;
-                                int draftLastItemLength = lastItemLength;
-                                while ( true ) {
-                                    int x = 3 * sigma;
-                                    while ( Math.Abs( x ) > 2 * sigma ) {
-                                        double y = (r.NextDouble() - 0.5) * 2.0;
-                                        x = (int)(sigma * sqrt2 * math.erfinv( y ));
+                        int clockPreMeasure = vsq.getPreMeasureClocks(); // プリメジャーいちでのゲートタイム
+                        
+                        while ( true ) {
+                            // nextItemIndexを決定
+                            if ( nextItemIndex != -2 ) {
+                                int start = nextItemIndex + 1;
+                                nextItemIndex = -2;  // -2は、トラックの最後まで走査し終わった、という意味
+                                for ( int i = start; i < count; i++ ) {
+                                    if ( track.getEvent( i ).ID.type == VsqIDType.Anote ) {
+                                        nextItemIndex = i;
+                                        break;
                                     }
-                                    draftClock = clock + x;
-                                    draftLength = clock + length - draftClock;
-                                    if ( lastItem != null ) {
-                                        if ( clock == lastItemClock + lastItemLength ) {
-                                            // 音符が連続していた場合
-                                            draftLastItemLength = lastItem.ID.getLength() + x;
+                                }
+                            }
+
+                            if ( thisItemIndex >= 0 ) {
+                                // ここにメインの処理
+                                VsqEvent lastItem = lastItemIndex >= 0 ? track.getEvent( lastItemIndex ) : null;
+                                VsqEvent thisItem = track.getEvent( thisItemIndex );
+                                VsqEvent nextItem = nextItemIndex >= 0 ? track.getEvent( nextItemIndex ) : null;
+                                int lastItemClock = lastItem == null ? 0 : lastItem.Clock;
+                                int lastItemLength = lastItem == null ? 0 : lastItem.ID.getLength();
+
+                                int clock = thisItem.Clock;
+                                int length = thisItem.ID.getLength();
+                                if ( startClock <= thisItem.Clock && thisItem.Clock + thisItem.ID.getLength() <= endClock ) {
+                                    int draftClock = 0;
+                                    int draftLength = 0;
+                                    int draftLastItemLength = lastItemLength;
+                                    // 音符のめり込み等のチェックをクリアするまで、draft(Clock|Length|LastItemLength)をトライ＆エラーで決定する
+                                    while ( true ) {
+                                        int x = 3 * sigma;
+                                        while ( Math.Abs( x ) > 2 * sigma ) {
+                                            double y = (r.NextDouble() - 0.5) * 2.0;
+                                            x = (int)(sigma * sqrt2 * math.erfinv( y ));
                                         }
-                                    }
-                                    // 音符がめり込んだりしてないかどうかをチェック
-                                    if ( draftClock < clockPreMeasure ) {
-                                        continue;
-                                    }
-                                    if ( lastItem != null ) {
-                                        if ( clock != lastItemClock + lastItemLength ) {
-                                            // 音符が連続していなかった場合に、直前の音符にめり込んでいないかどうか
-                                            if ( draftClock + draftLength < lastItem.Clock + lastItem.ID.getLength() ) {
-                                                continue;
+                                        draftClock = clock + x;
+                                        draftLength = clock + length - draftClock;
+                                        if ( lastItem != null ) {
+                                            if ( clock == lastItemClock + lastItemLength ) {
+                                                // 音符が連続していた場合
+                                                draftLastItemLength = lastItem.ID.getLength() + x;
                                             }
                                         }
+                                        // 音符がめり込んだりしてないかどうかをチェック
+                                        if ( draftClock < clockPreMeasure ) {
+                                            continue;
+                                        }
+                                        if ( lastItem != null ) {
+                                            if ( clock != lastItemClock + lastItemLength ) {
+                                                // 音符が連続していなかった場合に、直前の音符にめり込んでいないかどうか
+                                                if ( draftClock + draftLength < lastItem.Clock + lastItem.ID.getLength() ) {
+                                                    continue;
+                                                }
+                                            }
+                                        }
+                                        // チェックにクリアしたのでループを抜ける
+                                        break;
                                     }
+                                    // draft*の値を適用
+                                    thisItem.Clock = draftClock;
+                                    thisItem.ID.setLength( draftLength );
+                                    if ( lastItem != null ) {
+                                        lastItem.ID.setLength( draftLastItemLength );
+                                    }
+                                } else if ( endClock < thisItem.Clock ) {
                                     break;
                                 }
-                                item.Clock = draftClock;
-                                item.ID.setLength( draftLength );
-                                if ( lastItem != null ) {
-                                    lastItem.ID.setLength( draftLastItemLength );
-                                }
-                            } else if ( endClock < item.Clock ) {
+                            }
+
+                            // インデクスを移す
+                            lastItemIndex = thisItemIndex;
+                            thisItemIndex = nextItemIndex;
+
+                            if ( lastItemIndex == -2 && thisItemIndex == -2 && nextItemIndex == -2 ) {
+                                // トラックの最後まで走査し終わったので抜ける
                                 break;
                             }
-                            lastItem = item;
-                            lastItemClock = clock;
-                            lastItemLength = length;
                         }
                     }
+                    #endregion
 
                     // ピッチベンドのランダマイズ
+                    #region ピッチベンドのランダマイズ
                     if ( dlg.isPitRandomizeEnabled() ) {
+                        int pattern = dlg.getPitRandomizePattern();
+                        int value = dlg.getPitRandomizeValue();
+                        double order = 1.0 / Math.Pow( 2.0, 5.0 - value );
+                        int[] patternPreset = pattern == 1 ? AppManager.RANDOMIZE_PIT_PATTERN1 : pattern == 2 ? AppManager.RANDOMIZE_PIT_PATTERN2 : AppManager.RANDOMIZE_PIT_PATTERN3;
+                        int resolution = dlg.getResolution();
+                        VsqBPList pit = track.getCurve( "pit" );
+                        VsqBPList pbs = track.getCurve( "pbs" );
+                        int pbsAtStart = pbs.getValue( startClock );
+                        int pbsAtEnd = pbs.getValue( endClock );
 
+                        // startClockからendClock - 1までのpit, pbsをクリアする
+                        int count = pit.size();
+                        for ( int i = count - 1; i >= 0; i-- ) {
+                            int keyClock = pit.getKeyClock( i );
+                            if ( startClock <= keyClock && keyClock < endClock ) {
+                                pit.removeElementAt( i );
+                            }
+                        }
+                        count = pbs.size();
+                        for ( int i = count - 1; i >= 0; i-- ) {
+                            int keyClock = pbs.getKeyClock( i );
+                            if ( startClock <= keyClock && keyClock < endClock ) {
+                                pbs.removeElementAt( i );
+                            }
+                        }
+
+                        // pbsをデフォルト値にする
+                        if ( pbsAtStart != 2 ) {
+                            pbs.add( startClock, 2 );
+                        }
+                        if ( pbsAtEnd != 2 ) {
+                            pbs.add( endClock, pbsAtEnd );
+                        }
+
+                        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                        count = pit.size();
+                        boolean first = true;
+                        for ( int i = 0; i < count; i++ ) {
+                            int clock = pit.getKeyClock( i );
+                            if ( clock < startClock ) {
+                                int v = pit.getElementA( i );
+                                sb.Append( (first ? "" : ",") + (clock + "=" + v) );
+                                first = false;
+                            } else if ( clock <= endClock ) {
+                                break;
+                            }
+                        }
+                        int start = (int)(r.NextDouble() * (patternPreset.Length - 1));
+                        for ( int clock = startClock; clock < endClock; clock += resolution ) {
+                            int copyIndex = start + (clock - startClock);
+                            int odd = copyIndex / patternPreset.Length;
+                            copyIndex = copyIndex - patternPreset.Length * odd;
+                            int v = (int)(patternPreset[copyIndex] * order);
+                            sb.Append( (first ? "" : ",") + (clock + "=" + v) );
+                            first = false;
+                            //pit.add( clock, v );
+                        }
+                        for ( int i = 0; i < count; i++ ) {
+                            int clock = pit.getKeyClock( i );
+                            if ( endClock <= clock ) {
+                                int v = pit.getElementA( i );
+                                sb.Append( (first ? "" : ",") + (clock + "=" + v) );
+                                first = false;
+                            }
+                        }
+                        pit.setData( sb.ToString() );
                     }
+                    #endregion
 
-                    CadenciiCommand run = VsqFileEx.generateCommandReplace( vsq );
+                    CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( iTrack, track, vsq.AttachedCurves.get( iTrack - 1 ) );
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
                 }
@@ -11471,7 +11573,7 @@ namespace org.kbinani.cadencii {
             if ( AppManager.editorConfig.MouseHoverTime > 0 ) {
                 Thread.Sleep( AppManager.editorConfig.MouseHoverTime );
             }
-            KeySoundPlayer.Play( note );
+            KeySoundPlayer.play( note );
         }
 #endif
 

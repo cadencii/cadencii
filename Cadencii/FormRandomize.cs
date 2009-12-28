@@ -317,17 +317,13 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.numStartBar = new NumericUpDownEx();
             this.lblStart = new org.kbinani.windows.forms.BLabel();
             this.lblStartBar = new org.kbinani.windows.forms.BLabel();
-            this.numStartBeat = new NumericUpDownEx();
             this.lblStartBeat = new org.kbinani.windows.forms.BLabel();
             this.bLabel1 = new org.kbinani.windows.forms.BLabel();
             this.lblEndBeat = new org.kbinani.windows.forms.BLabel();
-            this.numEndBeat = new NumericUpDownEx();
             this.lblEndBar = new org.kbinani.windows.forms.BLabel();
             this.lblEnd = new org.kbinani.windows.forms.BLabel();
-            this.numEndBar = new NumericUpDownEx();
             this.chkShift = new org.kbinani.windows.forms.BCheckBox();
             this.lblShiftValue = new org.kbinani.windows.forms.BLabel();
             this.comboShiftValue = new org.kbinani.windows.forms.BComboBox();
@@ -337,27 +333,19 @@ namespace org.kbinani.cadencii {
             this.comboPitValue = new org.kbinani.windows.forms.BComboBox();
             this.lblPitValue = new org.kbinani.windows.forms.BLabel();
             this.lblResolution = new org.kbinani.windows.forms.BLabel();
-            this.numResolution = new NumericUpDownEx();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
-            ((System.ComponentModel.ISupportInitialize)(this.numStartBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numStartBeat)).BeginInit();
+            this.numResolution = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numEndBeat = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numEndBar = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numStartBeat = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numStartBar = new org.kbinani.cadencii.NumericUpDownEx();
+            ((System.ComponentModel.ISupportInitialize)(this.numResolution)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEndBeat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEndBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numResolution)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numStartBeat)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numStartBar)).BeginInit();
             this.SuspendLayout();
-            // 
-            // numStartBar
-            // 
-            this.numStartBar.Location = new System.Drawing.Point( 53, 24 );
-            this.numStartBar.Name = "numStartBar";
-            this.numStartBar.Size = new System.Drawing.Size( 54, 19 );
-            this.numStartBar.TabIndex = 1;
-            this.numStartBar.Value = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
             // 
             // lblStart
             // 
@@ -376,18 +364,6 @@ namespace org.kbinani.cadencii {
             this.lblStartBar.Size = new System.Drawing.Size( 21, 12 );
             this.lblStartBar.TabIndex = 3;
             this.lblStartBar.Text = "bar";
-            // 
-            // numStartBeat
-            // 
-            this.numStartBeat.Location = new System.Drawing.Point( 113, 24 );
-            this.numStartBeat.Name = "numStartBeat";
-            this.numStartBeat.Size = new System.Drawing.Size( 54, 19 );
-            this.numStartBeat.TabIndex = 4;
-            this.numStartBeat.Value = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
             // 
             // lblStartBeat
             // 
@@ -416,18 +392,6 @@ namespace org.kbinani.cadencii {
             this.lblEndBeat.TabIndex = 11;
             this.lblEndBeat.Text = "beat";
             // 
-            // numEndBeat
-            // 
-            this.numEndBeat.Location = new System.Drawing.Point( 282, 24 );
-            this.numEndBeat.Name = "numEndBeat";
-            this.numEndBeat.Size = new System.Drawing.Size( 54, 19 );
-            this.numEndBeat.TabIndex = 10;
-            this.numEndBeat.Value = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
-            // 
             // lblEndBar
             // 
             this.lblEndBar.AutoSize = true;
@@ -445,18 +409,6 @@ namespace org.kbinani.cadencii {
             this.lblEnd.TabIndex = 8;
             this.lblEnd.Text = "end";
             this.lblEnd.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // numEndBar
-            // 
-            this.numEndBar.Location = new System.Drawing.Point( 222, 24 );
-            this.numEndBar.Name = "numEndBar";
-            this.numEndBar.Size = new System.Drawing.Size( 54, 19 );
-            this.numEndBar.TabIndex = 7;
-            this.numEndBar.Value = new decimal( new int[] {
-            2,
-            0,
-            0,
-            0} );
             // 
             // chkShift
             // 
@@ -560,6 +512,25 @@ namespace org.kbinani.cadencii {
             this.lblResolution.Text = "Resolution";
             this.lblResolution.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point( 246, 246 );
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
+            this.btnCancel.TabIndex = 23;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point( 165, 246 );
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size( 75, 23 );
+            this.btnOK.TabIndex = 22;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            // 
             // numResolution
             // 
             this.numResolution.Location = new System.Drawing.Point( 267, 147 );
@@ -582,24 +553,58 @@ namespace org.kbinani.cadencii {
             0,
             0} );
             // 
-            // btnCancel
+            // numEndBeat
             // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 246, 246 );
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
-            this.btnCancel.TabIndex = 23;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.numEndBeat.Location = new System.Drawing.Point( 282, 24 );
+            this.numEndBeat.Name = "numEndBeat";
+            this.numEndBeat.Size = new System.Drawing.Size( 54, 19 );
+            this.numEndBeat.TabIndex = 10;
+            this.numEndBeat.Value = new decimal( new int[] {
+            1,
+            0,
+            0,
+            0} );
             // 
-            // btnOK
+            // numEndBar
             // 
-            this.btnOK.Location = new System.Drawing.Point( 165, 246 );
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size( 75, 23 );
-            this.btnOK.TabIndex = 22;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
+            this.numEndBar.Location = new System.Drawing.Point( 222, 24 );
+            this.numEndBar.Maximum = new decimal( new int[] {
+            2147483647,
+            0,
+            0,
+            0} );
+            this.numEndBar.Name = "numEndBar";
+            this.numEndBar.Size = new System.Drawing.Size( 54, 19 );
+            this.numEndBar.TabIndex = 7;
+            this.numEndBar.Value = new decimal( new int[] {
+            2,
+            0,
+            0,
+            0} );
+            // 
+            // numStartBeat
+            // 
+            this.numStartBeat.Location = new System.Drawing.Point( 113, 24 );
+            this.numStartBeat.Name = "numStartBeat";
+            this.numStartBeat.Size = new System.Drawing.Size( 54, 19 );
+            this.numStartBeat.TabIndex = 4;
+            this.numStartBeat.Value = new decimal( new int[] {
+            1,
+            0,
+            0,
+            0} );
+            // 
+            // numStartBar
+            // 
+            this.numStartBar.Location = new System.Drawing.Point( 53, 24 );
+            this.numStartBar.Name = "numStartBar";
+            this.numStartBar.Size = new System.Drawing.Size( 54, 19 );
+            this.numStartBar.TabIndex = 1;
+            this.numStartBar.Value = new decimal( new int[] {
+            1,
+            0,
+            0,
+            0} );
             // 
             // FormRandomize
             // 
@@ -639,11 +644,11 @@ namespace org.kbinani.cadencii {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Randomize";
-            ((System.ComponentModel.ISupportInitialize)(this.numStartBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numStartBeat)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numResolution)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEndBeat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEndBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numResolution)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numStartBeat)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numStartBar)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 

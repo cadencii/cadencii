@@ -2254,9 +2254,6 @@ namespace org.kbinani.cadencii {
                     int x = AppManager.xCoordFromClocks( clock );
                     VsqBPPair v = list.getElementB( i );
                     int y = oy - (int)((v.value - min) * order);
-#if DEBUG
-                    g.drawString( v.id + "", x, y );
-#endif
 
                     pointsx.add( x ); pointsy.add( last_y );
                     pointsx.add( x ); pointsy.add( y );
