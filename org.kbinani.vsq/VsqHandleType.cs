@@ -22,6 +22,7 @@ namespace org.kbinani.vsq {
         Vibrato,
         Singer,
         NoteHeadHandle,
+        DynamicsHandle,
     }
 
 #if !JAVA

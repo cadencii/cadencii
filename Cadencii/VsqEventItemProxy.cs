@@ -180,9 +180,9 @@ namespace org.kbinani.cadencii {
                 } else {
                     String description = m_attack.description;
                     for ( Iterator itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                        AttackConfig aconfig = (AttackConfig)itr.next();
-                        if ( description.Equals( aconfig.contents.getDisplayString() ) ) {
-                            ret.ID.NoteHeadHandle = (NoteHeadHandle)aconfig.contents.clone();
+                        NoteHeadHandle aconfig = (NoteHeadHandle)itr.next();
+                        if ( description.Equals( aconfig.getDisplayString() ) ) {
+                            ret.ID.NoteHeadHandle = (NoteHeadHandle)aconfig.clone();
                             ret.ID.NoteHeadHandle.Depth = m_attack_depth;
                             ret.ID.NoteHeadHandle.Duration = m_attack_duration;
                             break;
@@ -195,9 +195,9 @@ namespace org.kbinani.cadencii {
                 } else {
                     String description = m_vibrato.description;
                     for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                        VibratoConfig vconfig = (VibratoConfig)itr.next();
-                        if ( description.Equals( vconfig.contents.getDisplayString() ) ) {
-                            ret.ID.VibratoHandle = (VibratoHandle)vconfig.contents.clone();
+                        VibratoHandle vconfig = (VibratoHandle)itr.next();
+                        if ( description.Equals( vconfig.getDisplayString() ) ) {
+                            ret.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
                             break;
                         }
                     }

@@ -482,6 +482,51 @@ namespace org.kbinani.cadencii {
                                     getWidth() - AppManager.keyWidth, getHeight() );
                         int j_start = AppManager.drawStartIndex[selected - 1];
 
+                        // DynamicsHandleの描画
+                        VsqTrack track = vsq.Track.get( selected );
+                        g.setFont( AppManager.baseFont10 );
+                        g.setColor( Color.black );
+                        for ( Iterator itr = track.getDynamicsEventIterator(); itr.hasNext(); ) {
+                            VsqEvent item = (VsqEvent)itr.next();
+                            IconDynamicsHandle handle = item.ID.IconDynamicsHandle;
+                            if ( handle == null ) {
+                                continue;
+                            }
+                            y = item.ID.Note * track_height - start_draw_y;
+                            int x = AppManager.xCoordFromClocks( item.Clock );
+                            int startDyn = handle.getStartDyn();
+                            int endDyn = handle.getEndDyn();
+                            if ( startDyn == endDyn ) {
+                                String str = "";
+                                if ( startDyn == 120 ) {
+                                    str = "fff";
+                                } else if ( startDyn == 104 ) {
+                                    str = "ff";
+                                } else if ( startDyn == 88 ) {
+                                    str = "f";
+                                } else if ( startDyn == 72 ) {
+                                    str = "mf";
+                                } else if ( startDyn == 56 ) {
+                                    str = "mp";
+                                } else if ( startDyn == 40 ) {
+                                    str = "p";
+                                } else if ( startDyn == 24 ) {
+                                    str = "pp";
+                                } else if ( startDyn == 8 ) {
+                                    str = "ppp";
+                                }
+                                g.setColor( Color.pink );
+                                g.fillRect( x, y + 1, 40, track_height - 1 );
+                                g.setColor( s_pen_125_123_124 );
+                                g.drawRect( x, y + 1, 40, track_height - 1 );
+                                g.setColor( Color.black );
+                                g.drawString( str, x, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+#if DEBUG
+                                PortUtil.stdout.println( "PictPianoRoll#paint; drawing dynamics handle; str=" + str );
+#endif
+                            }
+                        }
+
                         boolean first = true;
                         lock ( AppManager.drawObjects ) { //ここでロックを取得しないと、描画中にUpdateDrawObjectのサイズが0になる可能性がある
                             if ( selected - 1 < AppManager.drawObjects.size() ) {

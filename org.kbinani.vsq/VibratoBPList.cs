@@ -37,11 +37,45 @@ namespace org.kbinani.vsq {
             m_list = new Vector<VibratoBPPair>();
         }
 
+        public VibratoBPList( String strNum, String strBPX, String strBPY ) {
+            int num = 0;
+            try {
+                num = PortUtil.parseInt( strNum );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "org.kbinani.vsq.VibratoBPList#.ctor; ex=" + ex );
+                num = 0;
+            }
+            String[] bpx = PortUtil.splitString( strBPX, ',' );
+            String[] bpy= PortUtil.splitString( strBPY, ',' );
+            int actNum = Math.Min( num, Math.Min( strBPX.Length, strBPY.Length ) );
+            if ( actNum > 0 ) {
+                float[] x = new float[actNum];
+                int[] y = new int[actNum];
+                for ( int i = 0; i < actNum; i++ ) {
+                    try {
+                        x[i] = PortUtil.parseFloat( bpx[i] );
+                        y[i] = PortUtil.parseInt( bpy[i] );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                    }
+                }
+
+                int len = Math.Min( x.Length, y.Length );
+                m_list = new Vector<VibratoBPPair>( len );
+                for ( int i = 0; i < len; i++ ) {
+                    m_list.add( new VibratoBPPair( x[i], y[i] ) );
+                }
+                Collections.sort( m_list );
+            } else {
+                m_list = new Vector<VibratoBPPair>();
+            }
+        }
+
         public VibratoBPList( float[] x, int[] y )
 #if JAVA
             throws NullPointerException
 #endif
- {
+        {
             if ( x == null ) {
 #if JAVA
                 throw new NullPointerException( "x" );

@@ -70,18 +70,18 @@ namespace org.kbinani.cadencii {
             ApplyLanguage();
 
             comboVibratoType.removeAllItems();
-            VibratoConfig empty = new VibratoConfig();
-            empty.contents.Caption = "[Non Vibrato]";
-            empty.contents.IconID = "$04040000";
+            VibratoHandle empty = new VibratoHandle();
+            empty.setCaption( "[Non Vibrato]" );
+            empty.IconID = "$04040000";
             comboVibratoType.addItem( empty );
             comboVibratoType.setSelectedItem( empty );
             int count = 0;
             for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
-                VibratoConfig vconfig = (VibratoConfig)itr.next();
+                VibratoHandle vconfig = (VibratoHandle)itr.next();
                 comboVibratoType.addItem( vconfig );
                 count++;
                 if ( vibrato_handle != null ) {
-                    if ( vibrato_handle.IconID.Equals( vconfig.contents.IconID ) ) {
+                    if ( vibrato_handle.IconID.Equals( vconfig.IconID ) ) {
                         comboVibratoType.setSelectedItem( vconfig );
                     }
                 }
@@ -142,7 +142,7 @@ namespace org.kbinani.cadencii {
         private void comboVibratoType_SelectedIndexChanged( Object sender, BEventArgs e ) {
             int index = comboVibratoType.getSelectedIndex();
             if ( index >= 0 ) {
-                String s = ((VibratoConfig)comboVibratoType.getItemAt( index )).contents.IconID;
+                String s = ((VibratoHandle)comboVibratoType.getItemAt( index )).IconID;
                 if ( s.Equals( "$04040000" ) ) {
                     m_vibrato = null;
                     txtVibratoLength.setEnabled( false );
@@ -150,15 +150,15 @@ namespace org.kbinani.cadencii {
                 } else {
                     txtVibratoLength.setEnabled( true );
                     for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
-                        VibratoConfig vconfig = (VibratoConfig)itr.next();
-                        if ( s.Equals( vconfig.contents.IconID ) ) {
+                        VibratoHandle vconfig = (VibratoHandle)itr.next();
+                        if ( s.Equals( vconfig.IconID ) ) {
                             int percent;
                             try {
                                 percent = PortUtil.parseInt( txtVibratoLength.getText() );
                             } catch ( Exception ex ) {
                                 return;
                             }
-                            m_vibrato = (VibratoHandle)vconfig.contents.clone();
+                            m_vibrato = (VibratoHandle)vconfig.clone();
                             m_vibrato.setLength( (int)(m_note_length * percent / 100.0f) );
                             return;
                         }

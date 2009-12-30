@@ -20,6 +20,7 @@ namespace org.kbinani.vsq {
     public enum VsqIDType {
         Singer,
         Anote,
+        Aicon,
         Unknown
     }
 

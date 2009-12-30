@@ -74,7 +74,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// プラグインのUI
         /// </summary>
-        public FormPluginUi ui = null;
+        protected FormPluginUi ui = null;
+        private boolean isUiOpened = false;
 
         protected PVSTMAIN mainDelegate;
         protected audioMasterCallback audioMaster;
@@ -129,11 +130,21 @@ namespace org.kbinani.cadencii {
         }
 
         public virtual float getParameter( int index ) {
-            return aEffect.GetParameter( ref aEffect, index );
+            float ret = 0.0f;
+            try {
+                ret = aEffect.GetParameter( ref aEffect, index );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "vstidrv#getParameter; ex=" + ex );
+            }
+            return ret;
         }
 
         public virtual void setParameter( int index, float value ) {
-            aEffect.SetParameter( ref aEffect, index, value );
+            try {
+                aEffect.SetParameter( ref aEffect, index, value );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "vstidrv#setParameter; ex=" + ex );
+            }
         }
 
         private String getStringCore( int opcode, int index, int str_capacity ) {
@@ -286,6 +297,40 @@ namespace org.kbinani.cadencii {
             return result;
         }
 
+        public FormPluginUi getUi() {
+            boolean hasUi = (aEffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor;
+            if ( !hasUi ) {
+                return null;
+            }
+            if ( ui == null ) {
+                ui = new FormPluginUi();
+            }
+            if ( !isUiOpened ) {
+                // Editorを持っているかどうかを確認
+                if ( (aEffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor ) {
+                    try {
+                        // プラグインの名前を取得
+                        String effname = getStringCore( AEffectXOpcodes.effGetEffectName, 0, VstStringConstants.kVstMaxEffectNameLen );
+                        String product = getStringCore( AEffectXOpcodes.effGetProductString, 0, VstStringConstants.kVstMaxProductStrLen );
+                        ui.Text = product;
+                        ui.Location = new System.Drawing.Point( 0, 0 );
+                        unsafe {
+                            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)ui.Handle.ToPointer(), 0.0f );
+                        }
+                        Thread.Sleep( 250 );
+                        updatePluginUiRect();
+                        ui.ClientSize = new System.Drawing.Size( uiWindowRect.width, uiWindowRect.height );
+                        ui.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+                        isUiOpened = true;
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "vstidrv#open; ex=" + ex );
+                        isUiOpened = false;
+                    }
+                }
+            }
+            return ui;
+        }
+
         public virtual bool open( string dll_path, int block_size, int sample_rate ) {
             dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
             Thread.Sleep( 250 );
@@ -327,27 +372,6 @@ namespace org.kbinani.cadencii {
                 paramDefaults[i] = aEffect.GetParameter( ref aEffect, i );
             }
 
-            // プラグインの名前を取得
-            String effname = getStringCore( AEffectXOpcodes.effGetEffectName, 0, VstStringConstants.kVstMaxEffectNameLen );
-            String product = getStringCore( AEffectXOpcodes.effGetProductString, 0, VstStringConstants.kVstMaxProductStrLen );
-
-            // Editorを持っているかどうかを確認
-            if ( (aEffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor ) {
-                try {
-                    ui = new FormPluginUi();
-                    ui.Text = product;
-                    ui.Location = new System.Drawing.Point( 0, 0 );
-                    unsafe {
-                        aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)ui.Handle.ToPointer(), 0.0f );
-                    }
-                    Thread.Sleep( 250 );
-                    updatePluginUiRect();
-                    ui.ClientSize = new System.Drawing.Size( uiWindowRect.width, uiWindowRect.height );
-                    ui.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "vstidrv#open; ex=" + ex );
-                }
-            }
             return true;
         }
 

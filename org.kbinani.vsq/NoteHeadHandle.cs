@@ -25,32 +25,125 @@ namespace org.kbinani.vsq {
     public class NoteHeadHandle implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class NoteHeadHandle : ICloneable {
+    public class NoteHeadHandle : IconParameter, ICloneable {
 #endif
         public int Index;
         public String IconID = "";
         public String IDS = "";
         public int Original;
-        public String Caption = "";
-        public int Length;
-        public int Duration;
-        public int Depth;
 
         public NoteHeadHandle() {
         }
 
+        public NoteHeadHandle( String aic_file, String ids, String icon_id, int index )
+            : base( aic_file ) {
+            IDS = ids;
+            IconID = icon_id;
+            Index = index;
+        }
+
+        public String toString() {
+            return getDisplayString();
+        }
+
+#if !JAVA
+        public override String ToString(){
+            return toString();
+        }
+#endif
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public int Depth{
+            get{
+                return getDepth();
+            }
+            set{
+                setDepth( value );
+            }
+        }
+#endif
+
+        public int getDepth() {
+            return depth;
+        }
+
+        public void setDepth( int value ) {
+            depth = value;
+        }
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public int Duration {
+            get {
+                return getDuration();
+            }
+            set {
+                setDuration( value );
+            }
+        }
+#endif
+
+        public int getDuration() {
+            return duration;
+        }
+
+        public void setDuration( int value ) {
+            duration = value;
+        }
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public String Caption {
+            get {
+                return getCaption();
+            }
+            set {
+                setCaption( value );
+            }
+        }
+#endif
+
+        public String getCaption() {
+            return caption;
+        }
+
+        public void setCaption( String value ) {
+            caption = value;
+        }
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public int Length {
+            get {
+                return getLength();
+            }
+            set {
+                setLength( value );
+            }
+        }
+#endif
+
         public int getLength() {
-            return Length;
+            return length;
         }
 
         public void setLength( int value ) {
-            Length = value;
+            length = value;
         }
 
         public String getDisplayString() {
             String s = IDS;
-            if ( !Caption.Equals( "" ) ) {
-                s += " (" + Caption + ")";
+            if ( !caption.Equals( "" ) ) {
+                s += " (" + caption + ")";
             }
             return s;
         }
@@ -67,10 +160,10 @@ namespace org.kbinani.vsq {
             result.IconID = IconID;
             result.IDS = IDS;
             result.Original = Original;
-            result.Caption = Caption;
-            result.setLength( Length );
-            result.Duration = Duration;
-            result.Depth = Depth;
+            result.setCaption( getCaption() );
+            result.setLength( getLength() );
+            result.setDuration( getDuration() );
+            result.setDepth( getDepth() );
             return result;
         }
 
@@ -81,10 +174,10 @@ namespace org.kbinani.vsq {
             ret.IconID = IconID;
             ret.IDS = IDS;
             ret.Original = Original;
-            ret.Caption = Caption;
-            ret.setLength( Length );
-            ret.Duration = Duration;
-            ret.Depth = Depth;
+            ret.Caption = getCaption();
+            ret.setLength( getLength() );
+            ret.Duration = getDuration();
+            ret.Depth = getDepth();
             return ret;
         }
     }

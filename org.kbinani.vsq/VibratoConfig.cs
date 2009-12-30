@@ -24,23 +24,88 @@ using org.kbinani.java.io;
 namespace org.kbinani.vsq {
 #endif
 
-    public class VibratoConfig {
+    /*public class VibratoConfig : IconParameter {
         public int number;
         public String file;
         public String author;
         public String vendor;
-        public VibratoHandle contents;
+        public String IconID = "";
+        public String IDS = "";
+        public int Original;
 
         public override String ToString() {
-            if ( contents == null ) {
-                return base.ToString();
-            } else {
-                return contents.Caption;
-            }
+            return caption;
         }
 
-        public VibratoConfig() {
-            contents = new VibratoHandle();
+        public VibratoConfig()
+            : base( "" ) {
+        }
+
+        public VibratoConfig( String aic_file )
+            : base( aic_file ) {
+        }
+
+        public VibratoHandle toHandle() {
+            VibratoHandle ret = new VibratoHandle();
+            ret.StartDepth = startDepth;
+            ret.DepthBP = depthBP;
+            ret.StartRate = startRate;
+            ret.RateBP = rateBP;
+            ret.Index = number;
+            ret.IconID = IconID;
+            ret.IDS = IDS;
+            ret.Original = Original;
+            ret.Caption = caption;
+            ret.setLength( length );
+            return ret;
+        }
+
+        public int getLength() {
+            return length;
+        }
+
+        public void setLength( int value ) {
+            length = value;
+        }
+
+        public String getCaption() {
+            return caption;
+        }
+
+        public void setCaption( String value ) {
+            caption = value;
+        }
+
+        public VibratoBPList getRateBP() {
+            return rateBP;
+        }
+
+        public void setRateBP( VibratoBPList value ) {
+            rateBP = value;
+        }
+
+        public int getStartRate() {
+            return startRate;
+        }
+
+        public void setStartRate( int value ) {
+            startRate = value;
+        }
+
+        public VibratoBPList getDepthBP() {
+            return depthBP;
+        }
+
+        public void setDepthBP( VibratoBPList value ) {
+            depthBP = value;
+        }
+
+        public int getStartDepth() {
+            return startDepth;
+        }
+
+        public void setStartDepth( int value ) {
+            startDepth = value;
         }
 
         public void parseAic( String aic_file ) {
@@ -160,7 +225,7 @@ namespace org.kbinani.vsq {
                 }
             }
         }
-    }
+    }*/
 
 #if !JAVA
 }

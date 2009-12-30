@@ -956,6 +956,7 @@ namespace org.kbinani.cadencii {
                         VsqEvent ve = draw_target.getEvent( i );
                         if ( ve.ID.type == VsqIDType.Singer ) {
                             int clock = ve.Clock;
+                            IconHandle singer_handle = (IconHandle)ve.ID.IconHandle;
                             int x = AppManager.xCoordFromClocks( clock );
                             Rectangle rc = new Rectangle( x, size.height - 2 * OFFSET_TRACK_TAB + 1, SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 5 );
                             g.setColor( Color.white );
@@ -964,12 +965,12 @@ namespace org.kbinani.cadencii {
                                 g.setColor( AppManager.getHilightColor() );
                                 g.drawRect( rc.x, rc.y, rc.width, rc.height );
                                 g.setColor( brs_string );
-                                g.drawString( ve.ID.IconHandle.IDS, rc.x, rc.y ); // sf );
+                                g.drawString( singer_handle.IDS, rc.x, rc.y ); // sf );
                             } else {
                                 g.setColor( new Color( 182, 182, 182 ) );
                                 g.drawRect( rc.x, rc.y, rc.width, rc.height );
                                 g.setColor( brs_string );
-                                g.drawString( ve.ID.IconHandle.IDS, rc.x, rc.y ); // sf );
+                                g.drawString( singer_handle.IDS, rc.x, rc.y ); // sf );
                             }
                         }
                     }
@@ -5347,7 +5348,7 @@ namespace org.kbinani.cadencii {
                         for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                             BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
                             TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)tsmi.getTag();
-                            if ( tag2.SingerName.Equals( ve.ID.IconHandle.IDS ) ) {
+                            if ( tag2.SingerName.Equals( ((IconHandle)ve.ID.IconHandle).IDS ) ) {
                                 tsmi.setSelected( true );
                             } else {
                                 tsmi.setSelected( false );
@@ -5364,7 +5365,7 @@ namespace org.kbinani.cadencii {
                         for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getSingerEventIterator(); itr.hasNext(); ) {
                             VsqEvent ve2 = (VsqEvent)itr.next();
                             if ( last_clock <= clock && clock < ve2.Clock ) {
-                                singer = ve2.ID.IconHandle.IDS;
+                                singer = ((IconHandle)ve2.ID.IconHandle).IDS;
                                 break;
                             }
                             last_clock = ve2.Clock;

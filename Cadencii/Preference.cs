@@ -103,7 +103,7 @@ namespace org.kbinani.cadencii {
 
             comboAutoVibratoType1.removeAllItems();
             for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                VibratoConfig vconfig = (VibratoConfig)itr.next();
+                VibratoHandle vconfig = (VibratoHandle)itr.next();
                 comboAutoVibratoType1.addItem( vconfig );
             }
             if ( comboAutoVibratoType1.getItemCount() > 0 ) {
@@ -112,7 +112,7 @@ namespace org.kbinani.cadencii {
 
             comboAutoVibratoType2.removeAllItems();
             for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID2 ); itr.hasNext(); ) {
-                VibratoConfig vconfig = (VibratoConfig)itr.next();
+                VibratoHandle vconfig = (VibratoHandle)itr.next();
                 comboAutoVibratoType2.addItem( vconfig );
             }
             if ( comboAutoVibratoType2.getItemCount() > 0 ) {
@@ -736,8 +736,8 @@ namespace org.kbinani.cadencii {
             int count = -1;
             int index = comboAutoVibratoType1.getSelectedIndex();
             if ( 0 <= index ) {
-                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.getSelectedItem();
-                return vconfig.contents.IconID;
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.getSelectedItem();
+                return vconfig.IconID;
             } else {
                 return "$04040001";
             }
@@ -745,8 +745,8 @@ namespace org.kbinani.cadencii {
 
         public void setAutoVibratoType1( String value ) {
             for ( int i = 0; i < comboAutoVibratoType1.getItemCount(); i++ ) {
-                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType1.getItemAt( i );
-                if ( vconfig.contents.IconID.Equals( value ) ) {
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.getItemAt( i );
+                if ( vconfig.IconID.Equals( value ) ) {
                     comboAutoVibratoType1.setSelectedIndex( i );
                     return;
                 }
@@ -760,8 +760,8 @@ namespace org.kbinani.cadencii {
             int count = -1;
             int index = comboAutoVibratoType2.getSelectedIndex();
             if ( 0 <= index ) {
-                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.getSelectedItem();
-                return vconfig.contents.IconID;
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.getSelectedItem();
+                return vconfig.IconID;
             } else {
                 return "$04040001";
             }
@@ -769,8 +769,8 @@ namespace org.kbinani.cadencii {
 
         public void setAutoVibratoType2( String value ) {
             for ( int i = 0; i < comboAutoVibratoType2.getItemCount(); i++ ) {
-                VibratoConfig vconfig = (VibratoConfig)comboAutoVibratoType2.getItemAt( i );
-                if ( vconfig.contents.IconID.Equals( value ) ) {
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.getItemAt( i );
+                if ( vconfig.IconID.Equals( value ) ) {
                     comboAutoVibratoType2.setSelectedIndex( i );
                     return;
                 }

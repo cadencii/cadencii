@@ -164,9 +164,9 @@ namespace org.kbinani.vsq {
         public static VibratoHandle getDefaultVibratoHandle( String icon_id, int vibrato_length, SynthesizerType type ) {
             if ( s_exp_config_sys.containsKey( type ) ) {
                 for ( Iterator itr = s_exp_config_sys.get( type ).vibratoConfigIterator(); itr.hasNext(); ) {
-                    VibratoConfig vconfig = (VibratoConfig)itr.next();
-                    if ( vconfig.contents.IconID.Equals( icon_id ) ) {
-                        VibratoHandle ret = (VibratoHandle)vconfig.contents.clone();
+                    VibratoHandle vconfig = (VibratoHandle)itr.next();
+                    if ( vconfig.IconID.Equals( icon_id ) ) {
+                        VibratoHandle ret = (VibratoHandle)vconfig.clone();
                         ret.setLength( vibrato_length );
                         return ret;
                     }
@@ -325,7 +325,7 @@ namespace org.kbinani.vsq {
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).attackConfigIterator();
             } else {
-                return (new Vector<AttackConfig>()).iterator();
+                return (new Vector<NoteHeadHandle>()).iterator();
             }
         }
 
@@ -333,7 +333,7 @@ namespace org.kbinani.vsq {
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).vibratoConfigIterator();
             } else {
-                return (new Vector<AttackConfig>()).iterator();
+                return (new Vector<NoteHeadHandle>()).iterator();
             }
         }
 

@@ -24,15 +24,66 @@ using org.kbinani.java.io;
 namespace org.kbinani.vsq {
 #endif
 
-    public class AttackConfig {
+    /*public class AttackConfig : IconParameter {
         public int number;
         public String file;
         public String author;
         public String vendor;
-        public NoteHeadHandle contents;
+        public String IconID = "";
+        public String IDS = "";
+        public int Original;
 
-        public AttackConfig() {
-            contents = new NoteHeadHandle();
+        public AttackConfig()
+            : base( "" ) {
+        }
+
+        public AttackConfig( String aic_file )
+            : base( aic_file ) {
+        }
+
+        public NoteHeadHandle toHandle() {
+            NoteHeadHandle ret = new NoteHeadHandle();
+            ret.Caption = caption;
+            ret.Depth = depth;
+            ret.Duration = duration;
+            ret.IconID = IconID;
+            ret.IDS = IDS;
+            ret.Index = number;
+            ret.Length = length;
+            ret.Original = Original;
+            return ret;
+        }
+
+        public int getDepth() {
+            return depth;
+        }
+
+        public void setDepth( int value ) {
+            depth = value;
+        }
+
+        public int getDuration() {
+            return duration;
+        }
+
+        public void setDuration( int value ) {
+            duration = value;
+        }
+
+        public int getLength() {
+            return length;
+        }
+
+        public void setLength( int value ) {
+            length = value;
+        }
+
+        public String getCaption() {
+            return caption;
+        }
+
+        public void setCaption( String value ) {
+            caption = value;
         }
 
 #if JAVA
@@ -40,15 +91,7 @@ namespace org.kbinani.vsq {
 #else
         public override string ToString() {
 #endif
-            if ( contents != null ) {
-                return contents.Caption;
-            } else {
-#if JAVA
-                return super.toString();
-#else
-                return base.ToString();
-#endif
-            }
+            return getCaption();
         }
 
         public void parseAic( String aic_file ) {
@@ -79,33 +122,39 @@ namespace org.kbinani.vsq {
                     } else if ( current_entry.Equals( "[Parameter]" ) ) {
                         if ( spl[0].Equals( "Length" ) ) {
                             try {
-                                this.contents.setLength( PortUtil.parseInt( spl[1] ) );
+                                setLength( PortUtil.parseInt( spl[1] ) );
                             } catch ( Exception ex ) {
+                                PortUtil.stderr.println( "org.kbinani.vsq.AttackConfig#parseAic; ex=" + ex );
                             }
                         } else if ( spl[0].Equals( "Duration" ) ) {
                             try {
                                 this.contents.Duration = PortUtil.parseInt( spl[1] );
                             } catch ( Exception ex ) {
+                                PortUtil.stderr.println( "org.kbinani.vsq.AttackConfig#parseAic; ex=" + ex );
                             }
                         } else if ( spl[0].Equals( "Depth" ) ) {
                             try {
                                 this.contents.Depth = PortUtil.parseInt( spl[1] );
                             } catch ( Exception ex ) {
+                                PortUtil.stderr.println( "org.kbinani.vsq.AttackConfig#parseAic; ex=" + ex );
                             }
                         }
                     }
                 }
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "org.kbinani.vsq.AttackConfig#parseAic; ex=" + ex );
             } finally {
                 if ( sr != null ) {
                     try {
                         sr.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "org.kbinani.vsq.AttackConfig#parseAic; ex2=" + ex2 );
                     }
                 }
             }
         }
-    }
+    }*/
+
 #if !JAVA
 }
 #endif

@@ -1816,7 +1816,7 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws FileNotFoundException
 #endif
- {
+        {
             TempoTable = new Vector<TempoTableEntry>();
             TimesigTable = new Vector<TimeSigTableEntry>();
             m_tpq = 480;
@@ -2387,6 +2387,13 @@ namespace org.kbinani.vsq {
         /// <returns></returns>
         public static VsqNrpn[] generateSingerNRPN( VsqFile vsq, VsqEvent ve, int msPreSend ) {
             int clock = ve.Clock;
+            IconHandle singer_handle = null;
+            if ( ve.ID.IconHandle != null && ve.ID.IconHandle is IconHandle ) {
+                singer_handle = (IconHandle)ve.ID.IconHandle;
+            }
+            if ( singer_handle == null ) {
+                return new VsqNrpn[] { };
+            }
 
             double clock_msec = vsq.getSecFromClock( clock ) * 1000.0;
 
@@ -2410,8 +2417,8 @@ namespace org.kbinani.vsq {
             int i = clock - vsq.getPresendClockAt( clock, msPreSend );
             VsqNrpn add = new VsqNrpn( i, NRPN.CC_BS_VERSION_AND_DEVICE, (byte)0x00, (byte)0x00 );
             add.append( NRPN.CC_BS_DELAY, delay0, delay1, true );
-            add.append( NRPN.CC_BS_LANGUAGE_TYPE, (byte)ve.ID.IconHandle.Language, true );
-            add.append( NRPN.PC_VOICE_TYPE, (byte)ve.ID.IconHandle.Program );
+            add.append( NRPN.CC_BS_LANGUAGE_TYPE, (byte)singer_handle.Language, true );
+            add.append( NRPN.PC_VOICE_TYPE, (byte)singer_handle.Program );
             return new VsqNrpn[] { add };
         }
 

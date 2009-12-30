@@ -1094,7 +1094,7 @@ namespace org.kbinani.cadencii {
                 VsqTrack track = Track.get( i );
                 for ( Iterator itr = track.getSingerEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
-                    if ( ve.ID.IconHandle.IDS.ToLower().Equals( "utau" ) ) {
+                    if ( ((IconHandle)ve.ID.IconHandle).IDS.ToLower().Equals( "utau" ) ) {
                         track.getCommon().Version = "UTU000";
                         break;
                     }

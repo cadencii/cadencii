@@ -386,7 +386,7 @@ namespace org.kbinani.vsq {
             for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 if ( item.ID.type == VsqIDType.Singer ) {
-                    item.ID.IconHandle.IDS = value;
+                    ((IconHandle)item.ID.IconHandle).IDS = value;
                     break;
                 }
             }
@@ -421,11 +421,14 @@ namespace org.kbinani.vsq {
                 item.ID.value = current_id;
                 // IconHandle
                 if ( item.ID.IconHandle != null ) {
-                    current_handle++;
-                    VsqHandle handle_item = item.ID.IconHandle.castToVsqHandle();
-                    handle_item.Index = current_handle;
-                    handle.add( handle_item );
-                    item.ID.IconHandle_index = current_handle;
+                    if ( item.ID.IconHandle is IconHandle ) {
+                        IconHandle ish = (IconHandle)item.ID.IconHandle;
+                        current_handle++;
+                        VsqHandle handle_item = ish.castToVsqHandle();
+                        handle_item.Index = current_handle;
+                        handle.add( handle_item );
+                        item.ID.IconHandle_index = current_handle;
+                    }
                 }
                 // LyricHandle
                 if ( item.ID.LyricHandle != null ) {
@@ -450,6 +453,14 @@ namespace org.kbinani.vsq {
                     handle_item.Index = current_handle;
                     handle.add( handle_item );
                     item.ID.NoteHeadHandle_index = current_handle;
+                }
+                // IconDynamicsHandle
+                if ( item.ID.IconDynamicsHandle != null ) {
+                    current_handle++;
+                    VsqHandle handle_item = item.ID.IconDynamicsHandle.castToVsqHandle();
+                    handle_item.Index = current_handle;
+                    handle.add( handle_item );
+                    item.ID.IconHandle_index = current_handle;
                 }
             }
             return handle;
@@ -682,14 +693,15 @@ namespace org.kbinani.vsq {
             Events = new VsqEventList();
             VsqID id = new VsqID( 0 );
             id.type = VsqIDType.Singer;
-            id.IconHandle = new IconHandle();
-            id.IconHandle.IconID = "$07010000";
-            id.IconHandle.IDS = singer;
-            id.IconHandle.Original = 0;
-            id.IconHandle.Caption = "";
-            id.IconHandle.setLength( 1 );
-            id.IconHandle.Language = 0;
-            id.IconHandle.Program = 0;
+            IconHandle ish = new IconHandle();
+            ish.IconID = "$07010000";
+            ish.IDS = singer;
+            ish.Original = 0;
+            ish.Caption = "";
+            ish.setLength( 1 );
+            ish.Language = 0;
+            ish.Program = 0;
+            id.IconHandle = ish;
             Events.add( new VsqEvent( 0, id ) );
         }
 
@@ -826,18 +838,27 @@ namespace org.kbinani.vsq {
             }
 
             // まずhandleをidに埋め込み
-            for ( int i = 0; i < __id.size(); i++ ) {
-                if ( __handle.containsKey( __id.get( i ).IconHandle_index ) ) {
-                    __id.get( i ).IconHandle = __handle.get( __id.get( i ).IconHandle_index ).castToIconHandle();
+            int c = __id.size();
+            for ( int i = 0; i < c; i++ ) {
+                VsqID id = __id.get( i );
+                if ( __handle.containsKey( id.IconHandle_index ) ) {
+#if DEBUG
+                    Console.WriteLine( "VsqMetaText#.ctor; id.type=" + id.type + "; id.IconHandle_index=" + id.IconHandle_index );
+#endif
+                    if ( id.type == VsqIDType.Singer ) {
+                        id.IconHandle = __handle.get( id.IconHandle_index ).castToIconHandle();
+                    } else if ( id.type == VsqIDType.Aicon ) {
+                        id.IconDynamicsHandle = __handle.get( id.IconHandle_index ).castToIconDynamicsHandle();
+                    }
                 }
-                if ( __handle.containsKey( __id.get( i ).LyricHandle_index ) ) {
-                    __id.get( i ).LyricHandle = __handle.get( __id.get( i ).LyricHandle_index ).castToLyricHandle();
+                if ( __handle.containsKey( id.LyricHandle_index ) ) {
+                    id.LyricHandle = __handle.get( id.LyricHandle_index ).castToLyricHandle();
                 }
-                if ( __handle.containsKey( __id.get( i ).VibratoHandle_index ) ) {
-                    __id.get( i ).VibratoHandle = __handle.get( __id.get( i ).VibratoHandle_index ).castToVibratoHandle();
+                if ( __handle.containsKey( id.VibratoHandle_index ) ) {
+                    id.VibratoHandle = __handle.get( id.VibratoHandle_index ).castToVibratoHandle();
                 }
-                if ( __handle.containsKey( __id.get( i ).NoteHeadHandle_index ) ) {
-                    __id.get( i ).NoteHeadHandle = __handle.get( __id.get( i ).NoteHeadHandle_index ).castToNoteHeadHandle();
+                if ( __handle.containsKey( id.NoteHeadHandle_index ) ) {
+                    id.NoteHeadHandle = __handle.get( id.NoteHeadHandle_index ).castToNoteHeadHandle();
                 }
             }
 

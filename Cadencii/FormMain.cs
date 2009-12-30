@@ -60,7 +60,7 @@ namespace org.kbinani.cadencii {
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
     using Integer = System.Int32;
-    using java = org.kbinani.java;
+//    using java = org.kbinani.java;
     using Long = System.Int64;
 
 #endif
@@ -3371,11 +3371,11 @@ namespace org.kbinani.cadencii {
                     chkv = false;
                 } else if ( !vd.loaded ){
                     chkv = false;
-                } else if ( vd.ui == null ){
+                } else if ( vd.getUi() == null ){
                     chkv = false;
-                } else if ( vd.ui.IsDisposed ){
+                } else if ( vd.getUi().IsDisposed ){
                     chkv = false;
-                } else if ( !vd.ui.isVisible() ){
+                } else if ( !vd.getUi().isVisible() ){
                     chkv = false;
                 }
                 String name = vd.name;
@@ -3393,11 +3393,11 @@ namespace org.kbinani.cadencii {
                 chk = false;
             } else if( !drv.loaded ){
                 chk = false;
-            } else if ( drv.ui == null ) {
+            } else if ( drv.getUi() == null ) {
                 chk = false;
-            } else if ( drv.ui.IsDisposed ) {
+            } else if ( drv.getUi().IsDisposed ) {
                 chk = false;
-            } else if ( !drv.ui.isVisible() ) {
+            } else if ( !drv.getUi().isVisible() ) {
                 chk = false;
             }
             menuVisualPluginUiAquesTone.setSelected( chk );
@@ -3420,9 +3420,9 @@ namespace org.kbinani.cadencii {
                     chk = false;
                 } else if ( !vd.loaded ) {
                     chk = false;
-                } else if ( vd.ui == null ) {
+                } else if ( vd.getUi() == null ) {
                     chk = false;
-                } else if ( vd.ui.IsDisposed ) {
+                } else if ( vd.getUi().IsDisposed ) {
                     chk = false;
                 }
                 if ( !chk ) {
@@ -3433,12 +3433,12 @@ namespace org.kbinani.cadencii {
                 if ( name.StartsWith( search ) ) {
                     v = !menuVisualPluginUiVocaloid1.isSelected();
                     menuVisualPluginUiVocaloid1.setSelected( v );
-                    vd.ui.setVisible( v );
+                    vd.getUi().setVisible( v );
                     break;
                 } else if ( name.StartsWith( search ) ) {
                     v = !menuVisualPluginUiVocaloid2.isSelected();
                     menuVisualPluginUiVocaloid2.setSelected( v );
-                    vd.ui.setVisible( v );
+                    vd.getUi().setVisible( v );
                     break;
                 }
             }
@@ -3454,16 +3454,17 @@ namespace org.kbinani.cadencii {
                 chk = false;
             } else if ( !drv.loaded ) {
                 chk = false;
-            } else if ( drv.ui == null ) {
+            } else if ( drv.getUi() == null ) {
                 chk = false;
-            } else if ( drv.ui.IsDisposed ) {
+
+            } else if ( drv.getUi().IsDisposed ) {
                 chk = false;
             }
             if ( !chk ) {
                 menuVisualPluginUiAquesTone.setSelected( false );
                 return;
             }
-            drv.ui.setVisible( visible );
+            drv.getUi().setVisible( visible );
         }
         #endregion
 

@@ -54,6 +54,9 @@ namespace org.kbinani.vsq {
         public int Program;
         public int Duration;
         public int Depth;
+        public int StartDyn;
+        public int EndDyn;
+        public VibratoBPList DynBP;
 
         public VsqHandle() {
         }
@@ -116,6 +119,19 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
+        public IconDynamicsHandle castToIconDynamicsHandle() {
+            IconDynamicsHandle ret = new IconDynamicsHandle();
+            ret.IDS = IDS;
+            ret.IconID = IconID;
+            ret.Original = Original;
+            ret.setCaption( Caption );
+            ret.setDynBP( DynBP );
+            ret.setEndDyn( EndDyn );
+            ret.setLength( Length );
+            ret.setStartDyn( StartDyn );
+            return ret;
+        }
+
         /// <summary>
         /// インスタンスをストリームに書き込みます。
         /// encode=trueの場合、2バイト文字をエンコードして出力します。
@@ -164,10 +180,8 @@ namespace org.kbinani.vsq {
             Length = 0;
             StartDepth = 0;
             DepthBP = null;
-            int depth_bp_num = 0;
             StartRate = 0;
             RateBP = null;
-            int rate_bp_num = 0;
             Language = 0;
             Program = 0;
             Duration = 0;
@@ -175,8 +189,15 @@ namespace org.kbinani.vsq {
 
             String tmpDepthBPX = "";
             String tmpDepthBPY = "";
+            String tmpDepthBPNum = "";
+            
             String tmpRateBPX = "";
             String tmpRateBPY = "";
+            String tmpRateBPNum = "";
+            
+            String tmpDynBPX = "";
+            String tmpDynBPY = "";
+            String tmpDynBPNum = "";
 
             // "["にぶち当たるまで読込む
             last_line.value = sr.readLine();
@@ -204,7 +225,7 @@ namespace org.kbinani.vsq {
                 } else if ( search.Equals( "StartDepth" ) ) {
                     StartDepth = PortUtil.parseInt( spl[1] );
                 } else if ( search.Equals( "DepthBPNum" ) ) {
-                    depth_bp_num = PortUtil.parseInt( spl[1] );
+                    tmpDepthBPNum = spl[1];
                 } else if ( search.Equals( "DepthBPX" ) ) {
                     tmpDepthBPX = spl[1];
                 } else if ( search.Equals( "DepthBPY" ) ) {
@@ -213,7 +234,7 @@ namespace org.kbinani.vsq {
                     m_type = VsqHandleType.Vibrato;
                     StartRate = PortUtil.parseInt( spl[1] );
                 } else if ( search.Equals( "RateBPNum" ) ) {
-                    rate_bp_num = PortUtil.parseInt( spl[1] );
+                    tmpRateBPNum = spl[1];
                 } else if ( search.Equals( "RateBPX" ) ) {
                     tmpRateBPX = spl[1];
                 } else if ( search.Equals( "RateBPY" ) ) {
@@ -223,6 +244,18 @@ namespace org.kbinani.vsq {
                     Duration = PortUtil.parseInt( spl[1] );
                 } else if ( search.Equals( "Depth" ) ) {
                     Duration = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "StartDyn" ) ){
+                    m_type = VsqHandleType.DynamicsHandle;
+                    StartDyn = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "EndDyn" ) ){
+                    m_type = VsqHandleType.DynamicsHandle;
+                    EndDyn = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "DynBPNum" ) ){
+                    tmpDynBPNum = spl[1];
+                } else if ( search.Equals( "DynBPX" ) ){
+                    tmpDynBPX = spl[1];
+                } else if ( search.Equals( "DynBPY" ) ){
+                    tmpDynBPY = spl[1];
                 } else if ( search.StartsWith( "L" ) && PortUtil.getStringLength( search ) >= 2 ){
                     String num = search.Substring( 1 );
                     ByRef<Integer> vals = new ByRef<Integer>( 0 );
@@ -242,57 +275,30 @@ namespace org.kbinani.vsq {
                 }
                 last_line.value = sr.readLine();
             }
-            /*if ( IDS != "normal" ) {
-                m_type = VsqHandleType.Singer;
-            } else if ( IconID != "" ) {
-                m_type = VsqHandleType.Vibrato;
-            } else {
-                m_type = VsqHandleType.Lyric;
-            }*/
 
             // RateBPX, RateBPYの設定
             if ( m_type == VsqHandleType.Vibrato ) {
-                if ( rate_bp_num > 0 ) {
-                    float[] rate_bp_x = new float[rate_bp_num];
-                    spl2 = PortUtil.splitString( tmpRateBPX, new char[] { ',' } );
-                    for ( int i = 0; i < rate_bp_num; i++ ) {
-                        rate_bp_x[i] = PortUtil.parseFloat( spl2[i] );
-                    }
-
-                    int[] rate_bp_y = new int[rate_bp_num];
-                    spl2 = PortUtil.splitString( tmpRateBPY, new char[] { ',' } );
-                    for ( int i = 0; i < rate_bp_num; i++ ) {
-                        rate_bp_y[i] = PortUtil.parseInt( spl2[i] );
-                    }
-                    RateBP = new VibratoBPList( rate_bp_x, rate_bp_y );
+                if ( !tmpRateBPNum.Equals( "" ) ) {
+                    RateBP = new VibratoBPList( tmpRateBPNum, tmpRateBPX, tmpRateBPY );
                 } else {
-                    //m_rate_bp_x = null;
-                    //m_rate_bp_y = null;
                     RateBP = new VibratoBPList();
                 }
 
                 // DepthBPX, DepthBPYの設定
-                if ( depth_bp_num > 0 ) {
-                    float[] depth_bp_x = new float[depth_bp_num];
-                    spl2 = PortUtil.splitString( tmpDepthBPX, new char[] { ',' } );
-                    for ( int i = 0; i < depth_bp_num; i++ ) {
-                        depth_bp_x[i] = PortUtil.parseFloat( spl2[i] );
-                    }
-
-                    int[] depth_bp_y = new int[depth_bp_num];
-                    spl2 = PortUtil.splitString( tmpDepthBPY, new char[] { ',' } );
-                    for ( int i = 0; i < depth_bp_num; i++ ) {
-                        depth_bp_y[i] = PortUtil.parseInt( spl2[i] );
-                    }
-                    DepthBP = new VibratoBPList( depth_bp_x, depth_bp_y );
+                if ( !tmpDepthBPNum.Equals( "" ) ) {
+                    DepthBP = new VibratoBPList( tmpDepthBPNum, tmpDepthBPX, tmpDepthBPY );
                 } else {
                     DepthBP = new VibratoBPList();
-                    //m_depth_bp_x = null;
-                    //m_depth_bp_y = null;
                 }
             } else {
                 DepthBP = new VibratoBPList();
                 RateBP = new VibratoBPList();
+            }
+
+            if ( !tmpDynBPNum.Equals( "" ) ) {
+                DynBP = new VibratoBPList( tmpDynBPNum, tmpDynBPX, tmpDynBPY );
+            } else {
+                DynBP = new VibratoBPList();
             }
         }
 
@@ -389,6 +395,30 @@ namespace org.kbinani.vsq {
                 result += "Length=" + Length + "\n";
                 result += "Duration=" + Duration + "\n";
                 result += "Depth=" + Depth;
+            } else if ( m_type == VsqHandleType.DynamicsHandle ) {
+                result += "\n" + "IconID=" + IconID +"\n";
+                result += "IDS=" + IDS + "\n";
+                result += "Original=" + Original + "\n";
+                result += "Caption=" + Caption + "\n";
+                result += "StartDyn=" + StartDyn + "\n";
+                result += "EndDyn=" + EndDyn + "\n";
+                if ( DynBP != null ) {
+                    if ( DynBP.getCount() <= 0 ) {
+                        result += "DynBPNum=0";
+                    } else {
+                        result += "DynBPX=" + PortUtil.formatDecimal( "0.000000", DynBP.getElement( 0 ).X );
+                        int c = DynBP.getCount();
+                        for ( int i = 1; i < c; i++ ) {
+                            result += "," + PortUtil.formatDecimal( "0.000000", DynBP.getElement( i ).X );
+                        }
+                        result += "\n" + "DynBPY=" + DynBP.getElement( 0 ).Y;
+                        for ( int i = 1; i < c; i++ ) {
+                            result += "," + DynBP.getElement( i ).Y;
+                        }
+                    }
+                } else {
+                    result += "DynBPNum=0";
+                }
             }
             return result;
         }

@@ -169,10 +169,10 @@ namespace org.kbinani.cadencii {
             }
 
             //comboAttackTemplateを更新
-            AttackConfig empty = new AttackConfig();
+            NoteHeadHandle empty = new NoteHeadHandle();
             comboAttackTemplate.removeAllItems();
-            empty.contents.IconID = "$01010000";
-            empty.contents.Caption = "[Non Attack]";
+            empty.IconID = "$01010000";
+            empty.setCaption( "[Non Attack]" );
             comboAttackTemplate.addItem( empty );
             comboAttackTemplate.setSelectedItem( empty );
             String icon_id = "";
@@ -187,9 +187,9 @@ namespace org.kbinani.cadencii {
                 trackDepth.setEnabled( false );
             }
             for ( Iterator itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                AttackConfig item = (AttackConfig)itr.next();
+                NoteHeadHandle item = (NoteHeadHandle)itr.next();
                 comboAttackTemplate.addItem( item );
-                if ( item.contents.IconID.Equals( icon_id ) ) {
+                if ( item.IconID.Equals( icon_id ) ) {
                     comboAttackTemplate.setSelectedItem( comboAttackTemplate.getItemAt( comboAttackTemplate.getItemCount() - 1 ) );
                 }
             }
@@ -223,12 +223,12 @@ namespace org.kbinani.cadencii {
             trackDuration.setEnabled( true );
             txtDepth.setEnabled( true );
             trackDepth.setEnabled( true );
-            AttackConfig aconfig = (AttackConfig)comboAttackTemplate.getSelectedItem();
+            NoteHeadHandle aconfig = (NoteHeadHandle)comboAttackTemplate.getSelectedItem();
             if ( m_note_head_handle == null ) {
-                txtDuration.setText( aconfig.contents.Duration + "" );
-                txtDepth.setText( aconfig.contents.Depth + "" );
+                txtDuration.setText( aconfig.getDuration() + "" );
+                txtDepth.setText( aconfig.getDepth() + "" );
             }
-            m_note_head_handle = (NoteHeadHandle)aconfig.contents.clone();
+            m_note_head_handle = (NoteHeadHandle)aconfig.clone();
             m_note_head_handle.Duration = trackDuration.getValue();
             m_note_head_handle.Depth = trackDepth.getValue();
         }

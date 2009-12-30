@@ -40,8 +40,8 @@ namespace org.kbinani.cadencii {
             Vector<AttackVariation> list = new Vector<AttackVariation>();
             list.add( new AttackVariation() );
             for ( Iterator itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                AttackConfig aconfig = (AttackConfig)itr.next();
-                list.add( new AttackVariation( aconfig.contents.getDisplayString() ) );
+                NoteHeadHandle aconfig = (NoteHeadHandle)itr.next();
+                list.add( new AttackVariation( aconfig.getDisplayString() ) );
             }
             return new StandardValuesCollection( list.toArray( new AttackVariation[] { } ) );
         }
@@ -75,8 +75,8 @@ namespace org.kbinani.cadencii {
                         }
                         String svalue = (String)value;
                         for ( Iterator itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                            AttackConfig aconfig = (AttackConfig)itr.next();
-                            String display_string = aconfig.contents.getDisplayString();
+                            NoteHeadHandle aconfig = (NoteHeadHandle)itr.next();
+                            String display_string = aconfig.getDisplayString();
                             if ( svalue.Equals( display_string ) ) {
                                 return new AttackVariation( display_string );
                             }

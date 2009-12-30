@@ -66,6 +66,7 @@ namespace org.kbinani.vsq {
         public int vMeanNoteTransition = 0x0c;
         public int d4mean = 0x18;
         public int pMeanEndingNote = 0x0c;
+        public IconDynamicsHandle IconDynamicsHandle;
 
         public static VsqID EOS = new VsqID( -1 );
 
@@ -106,7 +107,7 @@ namespace org.kbinani.vsq {
             VsqID result = new VsqID( this.value );
             result.type = this.type;
             if ( this.IconHandle != null ) {
-                result.IconHandle = (IconHandle)this.IconHandle.clone();
+                    result.IconHandle = (IconHandle)IconHandle.clone();
             }
             result.setLength( Length );
             result.Note = this.Note;
@@ -129,6 +130,9 @@ namespace org.kbinani.vsq {
             result.VibratoDelay = this.VibratoDelay;
             if ( NoteHeadHandle != null ) {
                 result.NoteHeadHandle = (NoteHeadHandle)NoteHeadHandle.clone();
+            }
+            if ( IconDynamicsHandle != null ) {
+                result.IconDynamicsHandle = (IconDynamicsHandle)IconDynamicsHandle.clone();
             }
             return result;
         }
@@ -190,6 +194,8 @@ namespace org.kbinani.vsq {
                         type = VsqIDType.Anote;
                     } else if ( spl[1].Equals( "Singer" ) ) {
                         type = VsqIDType.Singer;
+                    } else if ( spl[1].Equals( "Aicon" ) ){
+                        type = VsqIDType.Aicon;
                     } else {
                         type = VsqIDType.Unknown;
                     }

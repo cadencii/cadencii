@@ -2340,35 +2340,39 @@ namespace org.kbinani.cadencii {
             VSTiProxy.CurrentUser = "";
 
             #region Apply User Dictionary Configuration
-            Vector<ValuePair<String, Boolean>> current = new Vector<ValuePair<String, Boolean>>();
-            for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
-                current.add( new ValuePair<String, Boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
-            }
-            Vector<ValuePair<String, Boolean>> config_data = new Vector<ValuePair<String, Boolean>>();
-            int count = editorConfig.UserDictionaries.size();
-            for ( int i = 0; i < count; i++ ) {
-                String[] spl = PortUtil.splitString( editorConfig.UserDictionaries.get( i ), new char[] { '\t' }, 2 );
-                config_data.add( new ValuePair<String, Boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
+            try {
+                Vector<ValuePair<String, Boolean>> current = new Vector<ValuePair<String, Boolean>>();
+                for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
+                    current.add( new ValuePair<String, Boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
+                }
+                Vector<ValuePair<String, Boolean>> config_data = new Vector<ValuePair<String, Boolean>>();
+                int count = editorConfig.UserDictionaries.size();
+                for ( int i = 0; i < count; i++ ) {
+                    String[] spl = PortUtil.splitString( editorConfig.UserDictionaries.get( i ), new char[] { '\t' }, 2 );
+                    config_data.add( new ValuePair<String, Boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
 #if DEBUG
-                AppManager.debugWriteLine( "    " + spl[0] + "," + spl[1] );
+                    AppManager.debugWriteLine( "    " + spl[0] + "," + spl[1] );
 #endif
-            }
-            Vector<ValuePair<String, Boolean>> common = new Vector<ValuePair<String, Boolean>>();
-            for ( int i = 0; i < config_data.size(); i++ ) {
-                for ( int j = 0; j < current.size(); j++ ) {
-                    if ( config_data.get( i ).getKey().Equals( current.get( j ).getKey() ) ) {
-                        current.get( j ).setValue( true ); //こっちのbooleanは、AppManager.EditorConfigのUserDictionariesにもKeyが含まれているかどうかを表すので注意
-                        common.add( new ValuePair<String, Boolean>( config_data.get( i ).getKey(), config_data.get( i ).getValue() ) );
-                        break;
+                }
+                Vector<ValuePair<String, Boolean>> common = new Vector<ValuePair<String, Boolean>>();
+                for ( int i = 0; i < config_data.size(); i++ ) {
+                    for ( int j = 0; j < current.size(); j++ ) {
+                        if ( config_data.get( i ).getKey().Equals( current.get( j ).getKey() ) ) {
+                            current.get( j ).setValue( true ); //こっちのbooleanは、AppManager.EditorConfigのUserDictionariesにもKeyが含まれているかどうかを表すので注意
+                            common.add( new ValuePair<String, Boolean>( config_data.get( i ).getKey(), config_data.get( i ).getValue() ) );
+                            break;
+                        }
                     }
                 }
-            }
-            for ( int i = 0; i < current.size(); i++ ) {
-                if ( !current.get( i ).getValue() ) {
-                    common.add( new ValuePair<String, Boolean>( current.get( i ).getKey(), false ) );
+                for ( int i = 0; i < current.size(); i++ ) {
+                    if ( !current.get( i ).getValue() ) {
+                        common.add( new ValuePair<String, Boolean>( current.get( i ).getKey(), false ) );
+                    }
                 }
+                SymbolTable.changeOrder( common );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
             }
-            SymbolTable.changeOrder( common );
             #endregion
 
             try {

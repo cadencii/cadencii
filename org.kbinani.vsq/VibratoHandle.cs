@@ -25,38 +25,179 @@ namespace org.kbinani.vsq {
     public class VibratoHandle implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VibratoHandle : ICloneable {
+    public class VibratoHandle : IconParameter, ICloneable {
 #endif
-        public int StartDepth;
+        /*public int StartDepth;
         public VibratoBPList DepthBP;
         public int StartRate;
-        public VibratoBPList RateBP;
+        public VibratoBPList RateBP;*/
         public int Index;
         public String IconID = "";
         public String IDS = "";
         public int Original;
-        public String Caption = "";
-        public int Length;
+        /*public String Caption = "";
+        public int Length;*/
 
         public VibratoHandle() {
-            StartRate = 64;
-            StartDepth = 64;
-            RateBP = new VibratoBPList();
-            DepthBP = new VibratoBPList();
+            startRate = 64;
+            startDepth = 64;
+            rateBP = new VibratoBPList();
+            depthBP = new VibratoBPList();
         }
 
+        public VibratoHandle( String aic_file, String ids, String icon_id, int index )
+            : base( aic_file ) {
+            IDS = ids;
+            IconID = icon_id;
+            Index = index;
+        }
+
+        public String toString() {
+            return getDisplayString();
+        }
+
+#if !JAVA
+        public override string ToString() {
+            return toString();
+        }
+#endif
+
+        public VibratoBPList getRateBP() {
+            return rateBP;
+        }
+
+        public void setRateBP( VibratoBPList value ) {
+            rateBP = value;
+        }
+
+        public String getCaption() {
+            return caption;
+        }
+
+        public void setCaption( String value ) {
+            caption = value;
+        }
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public String Caption{
+            get{
+                return getCaption();
+            }
+            set{
+                setCaption( value );
+            }
+        }
+#endif
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public VibratoBPList RateBP{
+            get{
+                return getRateBP();
+            }
+            set{
+                setRateBP( value );
+            }
+        }
+#endif
+
+        public int getStartRate() {
+            return startRate;
+        }
+
+        public void setStartRate( int value ) {
+            startRate = value;
+        }
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public int StartRate{
+            get{
+                return getStartRate();
+            }
+            set{
+                setStartRate( value );
+            }
+        }
+#endif
+
+        public VibratoBPList getDepthBP() {
+            return depthBP;
+        }
+
+        public void setDepthBP( VibratoBPList value ) {
+            depthBP = value;
+        }
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public VibratoBPList DepthBP{
+            get{
+                return getDepthBP();
+            }
+            set{
+                setDepthBP( value );
+            }
+        }
+#endif
+
+        public int getStartDepth() {
+            return startDepth;
+        }
+
+        public void setStartDepth( int value ) {
+            startDepth = value;
+        }
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public int StartDepth{
+            get{
+                return getStartDepth();
+            }
+            set{
+                setStartDepth( value );
+            }
+        }
+#endif
+
         public int getLength() {
-            return Length;
+            return length;
         }
 
         public void setLength( int value ) {
-            Length = value;
+            length = value;
         }
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public int Length{
+            get{
+                return getLength();
+            }
+            set{
+                setLength( value );
+            }
+        }
+#endif
 
         public String getDisplayString() {
             String s = IDS;
-            if ( !Caption.Equals( "" ) ) {
-                s += " (" + Caption + ")";
+            if ( !caption.Equals( "" ) ) {
+                s += " (" + caption + ")";
             }
             return s;
         }

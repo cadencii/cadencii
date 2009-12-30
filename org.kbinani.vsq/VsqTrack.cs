@@ -128,6 +128,48 @@ namespace org.kbinani.vsq {
         }
 
 #if JAVA
+        private class DynamicsEventIterator implements Iterator{
+#else
+        private class DynamicsEventIterator : Iterator {
+#endif
+            VsqEventList m_list;
+            int m_pos;
+
+            public DynamicsEventIterator( VsqEventList list ) {
+                m_list = list;
+                m_pos = -1;
+            }
+
+            public boolean hasNext() {
+                int c = m_list.getCount();
+                for ( int i = m_pos + 1; i < c; i++ ) {
+                    if ( m_list.getElement( i ).ID.type == VsqIDType.Aicon ) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            public Object next() {
+                int c = m_list.getCount();
+                for ( int i = m_pos + 1; i < c; i++ ) {
+                    VsqEvent item = m_list.getElement( i );
+                    if ( item.ID.type == VsqIDType.Aicon ) {
+                        m_pos = i;
+                        return item;
+                    }
+                }
+                return null;
+            }
+
+            public void remove() {
+                if ( 0 <= m_pos && m_pos < m_list.getCount() ) {
+                    m_list.removeAt( m_pos );
+                }
+            }
+        }
+
+#if JAVA
         private class EventIterator implements Iterator{
 #else
         private class EventIterator : Iterator {
@@ -241,6 +283,14 @@ namespace org.kbinani.vsq {
             }
         }
 
+        public Iterator getDynamicsEventIterator() {
+            if ( MetaText == null ) {
+                return new DynamicsEventIterator( new VsqEventList() );
+            } else {
+                return new DynamicsEventIterator( MetaText.getEventList() );
+            }
+        }
+
         /// <summary>
         /// メタテキストを，メモリー上のストリームに出力します
         /// </summary>
@@ -333,26 +383,28 @@ namespace org.kbinani.vsq {
             if ( singers_size <= 0 ) {
                 default_id = new VsqID();
                 default_id.type = VsqIDType.Singer;
-                default_id.IconHandle = new IconHandle();
-                default_id.IconHandle.IconID = "$0701" + PortUtil.toHexString( 0, 4 );
-                default_id.IconHandle.IDS = "Unknown";
-                default_id.IconHandle.Index = 0;
-                default_id.IconHandle.Language = 0;
-                default_id.IconHandle.setLength( 1 );
-                default_id.IconHandle.Original = 0;
-                default_id.IconHandle.Program = 0;
-                default_id.IconHandle.Caption = "";
+                IconHandle singer_handle = new IconHandle();
+                singer_handle.IconID = "$0701" + PortUtil.toHexString( 0, 4 );
+                singer_handle.IDS = "Unknown";
+                singer_handle.Index = 0;
+                singer_handle.Language = 0;
+                singer_handle.setLength( 1 );
+                singer_handle.Original = 0;
+                singer_handle.Program = 0;
+                singer_handle.Caption = "";
+                default_id.IconHandle = singer_handle;
             } else {
                 default_id = singers.get( 0 );
             }
 
             for ( Iterator itr = getSingerEventIterator(); itr.hasNext(); ) {
                 VsqEvent ve = (VsqEvent)itr.next();
-                int program = ve.ID.IconHandle.Program;
+                IconHandle singer_handle = (IconHandle)ve.ID.IconHandle;
+                int program = singer_handle.Program;
                 boolean found = false;
                 for ( int i = 0; i < singers_size; i++ ) {
                     VsqID id = singers.get( i );
-                    if ( program == id.IconHandle.Program ) {
+                    if ( program == singer_handle.Program ) {
                         ve.ID = (VsqID)id.clone();
                         found = true;
                         break;
@@ -551,6 +603,9 @@ namespace org.kbinani.vsq {
 
                                     String line = PortUtil.getDecodedString( encoding, cpy );
                                     sw.writeLine( line );
+#if DEBUG
+                                    org.kbinani.debug.push_log( line );
+#endif
                                     buffer.removeElementAt( 0 );
                                     index_0x0a = buffer.indexOf( 0x0a );
                                 }
@@ -576,18 +631,22 @@ namespace org.kbinani.vsq {
                     }
                     String line = PortUtil.getDecodedString( encoding, cpy );
                     sw.writeLine( line );
+#if DEBUG
+                    org.kbinani.debug.push_log( line );
+#endif
                 }
                 // <=
                 sw.rewind();
                 MetaText = new VsqMetaText( sw );
                 setName( track_name );
             } catch ( Exception ex ) {
-                PortUtil.println( "com.boare.vsq.VsqTrack#.ctor; ex=" + ex );
+                PortUtil.stderr.println( "org.kbinani.vsq.VsqTrack#.ctor; ex=" + ex );
             } finally {
                 if ( sw != null ) {
                     try {
                         sw.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "org.kbinani.vsq.VsqTrack#.ctor; ex2=" + ex2 );
                     }
                 }
             }

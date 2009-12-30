@@ -39,8 +39,8 @@ namespace org.kbinani.cadencii {
             Vector<VibratoVariation> list = new Vector<VibratoVariation>();
             list.add( new VibratoVariation( VibratoVariation.empty.description ) );
             for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                VibratoConfig vconfig = (VibratoConfig)itr.next();
-                list.add( new VibratoVariation( vconfig.contents.getDisplayString() ) );
+                VibratoHandle vconfig = (VibratoHandle)itr.next();
+                list.add( new VibratoVariation( vconfig.getDisplayString() ) );
             }
             return new StandardValuesCollection( list.toArray( new VibratoVariation[] { } ) );
         }
@@ -74,8 +74,8 @@ namespace org.kbinani.cadencii {
                         }
                         String svalue = (String)value;
                         for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                            VibratoConfig vconfig = (VibratoConfig)itr.next();
-                            String display_string = vconfig.contents.getDisplayString();
+                            VibratoHandle vconfig = (VibratoHandle)itr.next();
+                            String display_string = vconfig.getDisplayString();
                             if ( svalue.Equals( display_string ) ) {
                                 return new VibratoVariation( display_string );
                             }
