@@ -35,6 +35,7 @@ namespace org.kbinani.vsq {
 #endif
         private Vector<VibratoHandle> m_vibrato_configs;
         private Vector<NoteHeadHandle> m_attack_configs;
+        private Vector<IconDynamicsHandle> m_dynamics_configs;
 
         /*private void printTo( String file ) {
             BufferedWriter sw = null;
@@ -141,6 +142,7 @@ namespace org.kbinani.vsq {
             ExpressionConfigSys ret = new ExpressionConfigSys();
             ret.m_vibrato_configs = new Vector<VibratoHandle>();
             ret.m_attack_configs = new Vector<NoteHeadHandle>();
+            ret.m_dynamics_configs = new Vector<IconDynamicsHandle>();
             VibratoHandle v1 = new VibratoHandle();
             /*v1.author = "Taro";
             v1.file = "normal.aic";
@@ -393,6 +395,190 @@ namespace org.kbinani.vsq {
             a10.setDepth( 64 );
             ret.m_attack_configs.add( a10 );
 
+            IconDynamicsHandle d0 = new IconDynamicsHandle();
+            d0.IDS = "Dynaff11";
+            d0.IconID = "$05010000";
+            d0.Original = 0;
+            d0.setCaption( "Fortississimo" );
+            d0.setStartDyn( 120 );
+            d0.setEndDyn( 120 );
+            d0.setLength( 0 );
+            ret.m_dynamics_configs.add( d0 );
+
+            IconDynamicsHandle d1 = new IconDynamicsHandle();
+            d1.IDS = "Dynaff12";
+            d1.IconID = "$05010001";
+            d1.Original = 1;
+            d1.setCaption( "Fortissimo" );
+            d1.setStartDyn( 104 );
+            d1.setEndDyn( 104 );
+            d1.setLength( 0 );
+            ret.m_dynamics_configs.add( d1 );
+
+            IconDynamicsHandle d2 = new IconDynamicsHandle();
+            d2.IDS = "Dynaff13";
+            d2.IconID = "$05010002";
+            d2.Original = 2;
+            d2.setCaption( "Forte" );
+            d2.setStartDyn( 88 );
+            d2.setEndDyn( 88 );
+            d2.setLength( 0 );
+            ret.m_dynamics_configs.add( d2 );
+
+            IconDynamicsHandle d3 = new IconDynamicsHandle();
+            d3.IDS = "Dynaff21";
+            d3.IconID = "$05010003";
+            d3.Original = 3;
+            d3.setCaption( "MesoForte" );
+            d3.setStartDyn( 72 );
+            d3.setEndDyn( 72 );
+            d3.setLength( 0 );
+            ret.m_dynamics_configs.add( d3 );
+
+            IconDynamicsHandle d4 = new IconDynamicsHandle();
+            d4.IDS = "Dynaff22";
+            d4.IconID = "$05010004";
+            d4.Original = 4;
+            d4.setCaption( "MesoPiano" );
+            d4.setStartDyn( 56 );
+            d4.setEndDyn( 56 );
+            d4.setLength( 0 );
+            ret.m_dynamics_configs.add( d4 );
+
+            IconDynamicsHandle d5 = new IconDynamicsHandle();
+            d5.IDS = "Dynaff31";
+            d5.IconID = "$05010005";
+            d5.Original = 5;
+            d5.setCaption( "Piano" );
+            d5.setStartDyn( 40 );
+            d5.setEndDyn( 40 );
+            d5.setLength( 0 );
+            ret.m_dynamics_configs.add( d5 );
+
+            IconDynamicsHandle d6 = new IconDynamicsHandle();
+            d6.IDS = "Dynaff32";
+            d6.IconID = "$05010006";
+            d6.Original = 6;
+            d6.setCaption( "Pianissimo" );
+            d6.setStartDyn( 24 );
+            d6.setEndDyn( 24 );
+            d6.setLength( 0 );
+            ret.m_dynamics_configs.add( d6 );
+
+            IconDynamicsHandle d7 = new IconDynamicsHandle();
+            d7.IDS = "Dynaff33";
+            d7.IconID = "$05010007";
+            d7.Original = 7;
+            d7.setCaption( "Pianississimo" );
+            d7.setStartDyn( 8 );
+            d7.setEndDyn( 8 );
+            d7.setLength( 0 );
+            ret.m_dynamics_configs.add( d7 );
+
+            IconDynamicsHandle d8 = new IconDynamicsHandle();
+            d8.IDS = "cresc_1";
+            d8.IconID = "$05020000";
+            d8.Original = 0;
+            d8.setCaption( "Zero Crescendo" );
+            d8.setStartDyn( 0 );
+            d8.setEndDyn( 38 );
+            d8.setLength( 960 );
+            ret.m_dynamics_configs.add( d8 );
+
+            IconDynamicsHandle d9 = new IconDynamicsHandle();
+            d9.IDS = "cresc_2";
+            d9.IconID = "$05020001";
+            d9.Original = 1;
+            d9.setCaption( "Zero Crescendo" );
+            d9.setStartDyn( 0 );
+            d9.setEndDyn( 64 );
+            d9.setLength( 960 );
+            ret.m_dynamics_configs.add( d9 );
+
+            IconDynamicsHandle d10 = new IconDynamicsHandle();
+            d10.IDS = "cresc_3";
+            d10.IconID = "$05020002";
+            d10.Original = 2;
+            d10.setCaption( "Zero Crescendo" );
+            d10.setStartDyn( 0 );
+            d10.setEndDyn( 127 );
+            d10.setLength( 960 );
+            ret.m_dynamics_configs.add( d10 );
+
+            IconDynamicsHandle d11 = new IconDynamicsHandle();
+            d11.IDS = "cresc_4";
+            d11.IconID = "$05020003";
+            d11.Original = 3;
+            d11.setCaption( "Zero Crescendo Curve" );
+            d11.setStartDyn( 0 );
+            d11.setEndDyn( 38 );
+            d11.setLength( 960 );
+            d11.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { 11 } ) );
+            ret.m_dynamics_configs.add( d11 );
+
+            IconDynamicsHandle d12 = new IconDynamicsHandle();
+            d12.IDS = "cresc_5";
+            d12.IconID = "$05020004";
+            d12.Original = 4;
+            d12.setCaption( "Zero Crescendo Curve" );
+            d12.setStartDyn( 0 );
+            d12.setEndDyn( 102 );
+            d12.setLength( 960 );
+            d12.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { 40 } ) );
+            ret.m_dynamics_configs.add( d12 );
+
+            IconDynamicsHandle d13 = new IconDynamicsHandle();
+            d13.IDS = "dim_1";
+            d13.IconID = "$05030000";
+            d13.Original = 0;
+            d13.setCaption( "Zero Decrescendo" );
+            d13.setStartDyn( 0 );
+            d13.setEndDyn( -38 );
+            d13.setLength( 960 );
+            ret.m_dynamics_configs.add( d13 );
+
+            IconDynamicsHandle d14 = new IconDynamicsHandle();
+            d14.IDS = "dim_2";
+            d14.IconID = "$05030001";
+            d14.Original = 1;
+            d14.setCaption( "Zero Decrescendo" );
+            d14.setStartDyn( 0 );
+            d14.setEndDyn( -64 );
+            d14.setLength( 960 );
+            ret.m_dynamics_configs.add( d14 );
+
+            IconDynamicsHandle d15 = new IconDynamicsHandle();
+            d15.IDS = "dim_3";
+            d15.IconID = "$05030002";
+            d15.Original = 2;
+            d15.setCaption( "Zero Decrescendo" );
+            d15.setStartDyn( 0 );
+            d15.setEndDyn( -127 );
+            d15.setLength( 960 );
+            ret.m_dynamics_configs.add( d15 );
+
+            IconDynamicsHandle d16 = new IconDynamicsHandle();
+            d16.IDS = "dim_4";
+            d16.IconID = "$05030003";
+            d16.Original = 3;
+            d16.setCaption( "Zero Decrescendo Curve" );
+            d16.setStartDyn( 0 );
+            d16.setEndDyn( -38 );
+            d16.setLength( 960 );
+            d16.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { -11 } ) );
+            ret.m_dynamics_configs.add( d16 );
+
+            IconDynamicsHandle d17 = new IconDynamicsHandle();
+            d17.IDS = "dim_5";
+            d17.IconID = "$05030004";
+            d17.Original = 4;
+            d17.setCaption( "Zero Decrescendo Curve" );
+            d17.setStartDyn( 0 );
+            d17.setEndDyn( -102 );
+            d17.setLength( 960 );
+            d17.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { -40 } ) );
+            ret.m_dynamics_configs.add( d17 );
+
             return ret;
         }
 
@@ -400,6 +586,7 @@ namespace org.kbinani.vsq {
             ExpressionConfigSys ret = new ExpressionConfigSys();
             ret.m_vibrato_configs = new Vector<VibratoHandle>();
             ret.m_attack_configs = new Vector<NoteHeadHandle>();
+            ret.m_dynamics_configs = new Vector<IconDynamicsHandle>();
             VibratoHandle v1 = new VibratoHandle();
             /*v1.author = "Standard";
             v1.file = "normal2_type1.aic";
@@ -683,6 +870,10 @@ namespace org.kbinani.vsq {
             return m_attack_configs.size();
         }
 
+        public int getDynamicsConfigCount() {
+            return m_dynamics_configs.size();
+        }
+
         public Iterator vibratoConfigIterator() {
             return m_vibrato_configs.iterator();
         }
@@ -691,12 +882,141 @@ namespace org.kbinani.vsq {
             return m_attack_configs.iterator();
         }
 
+        public Iterator dynamicsConfigIterator() {
+            return m_dynamics_configs.iterator();
+        }
+
         private ExpressionConfigSys() {
         }
 
-        public ExpressionConfigSys( String path_expdb ) {
+        public ExpressionConfigSys( String path_editor, String path_expdb ) {
             m_vibrato_configs = new Vector<VibratoHandle>();
             m_attack_configs = new Vector<NoteHeadHandle>();
+            m_dynamics_configs = new Vector<IconDynamicsHandle>();
+            String base_path = PortUtil.getDirectoryName( path_editor );
+            String aiconDB_def = PortUtil.combinePath( base_path, "AiconDB.def" );
+#if DEBUG
+            PortUtil.stdout.println( "ExpressionConfigSys#.ctor; aiconDB_def=" + aiconDB_def + "; exists=" + PortUtil.isFileExists( aiconDB_def ) );
+#endif
+            if ( PortUtil.isFileExists( aiconDB_def ) ) {
+                String folder_name = "";
+                TreeMap<String, Vector<String>> list = new TreeMap<String, Vector<String>>();
+                BufferedReader sr = null;
+                try {
+                    sr = new BufferedReader( new InputStreamReader( new FileInputStream( aiconDB_def ), "Shift_JIS" ) );
+                    String line = "";
+                    String current = "";
+                    while ( (line = sr.readLine()) != null ) {
+                        int index_semicollon = line.IndexOf( ';' );
+                        if ( index_semicollon >= 0 ) {
+                            line = line.Substring( 0, index_semicollon );
+                        }
+                        line = line.Trim();
+                        if ( line.StartsWith( "[" ) ) {
+                            current = line;
+                        } else {
+                            int index_eq = line.IndexOf( '=' );
+                            if ( index_eq > 0 ) {
+                                String[] spl = PortUtil.splitString( line, '=' );
+                                if ( spl.Length != 2 ) {
+                                    continue;
+                                }
+                                if ( current.Equals( "[Common]" ) ) {
+                                    if ( spl[0].Equals( "FolderName" ) ) {
+                                        folder_name = spl[1];
+                                    }
+                                } else {
+                                    Vector<String> add = null;
+                                    if ( list.containsKey( current ) ) {
+                                        add = list.get( current );
+                                        list.remove( current );
+                                    } else {
+                                        add = new Vector<String>();
+                                    }
+                                    add.add( line );
+                                    list.put( current, add );
+                                }
+                            }
+                        }
+                    }
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
+                } finally {
+                    if ( sr != null ) {
+                        try {
+                            sr.close();
+                        } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
+                        }
+                    }
+                }
+
+#if DEBUG
+                PortUtil.stdout.println( "ExpressionConfigSys#.ctor; folder_name=" + folder_name );
+#endif
+                if ( !folder_name.Equals( "" ) ) {
+                    String aiconDB_path = PortUtil.combinePath( base_path, folder_name );
+#if DEBUG
+                    PortUtil.stdout.println( "ExpressionConfigSys#.ctor; aiconDB_path=" + aiconDB_path );
+#endif
+                    if ( PortUtil.isDirectoryExists( aiconDB_path ) ) {
+                        for ( Iterator itr = list.keySet().iterator(); itr.hasNext(); ) {
+                            String key = (String)itr.next();
+                            String section_name = key.Replace( "[", "" ).Replace( "]", "" );
+                            String section_path = PortUtil.combinePath( aiconDB_path, section_name );
+#if DEBUG
+                            PortUtil.stdout.println( "ExpressionConfigSys#.ctor; section_path=" + section_path );
+#endif
+                            if ( PortUtil.isDirectoryExists( section_path ) ) {
+                                for ( Iterator itr2 = list.get( key ).iterator(); itr2.hasNext(); ) {
+                                    String line = (String)itr2.next();
+#if DEBUG
+                                    PortUtil.stdout.println( "ExpressionConfigSys#.ctor; line=" + line );
+                                    debug.push_log( "ExpressionConfigSys#.ctor; line=" + line );
+#endif
+                                    String[] spl = PortUtil.splitString( line, '=' );
+                                    if ( spl.Length != 2 ) {
+#if DEBUG
+                                        PortUtil.stdout.println( "ExpressionConfigSys#.ctor; spl.Length=" + spl.Length );
+#endif
+                                        continue;
+                                    }
+                                    String name = spl[0];
+                                    String[] spl2 = PortUtil.splitString( spl[1], ',' );
+                                    /*Dynaff=Dynaff11,Dynaff12,Dynaff13,Dynaff21,Dynaff22,Dynaff31,Dynaff32,Dynaff33
+Crescendo=cresc_1,cresc_2,cresc_3,cresc_4,cresc_5
+Decrescendo=dim_1,dim_2,dim_3,dim_4,dim_5
+*/
+                                    String preset = "";
+                                    if ( name.Equals( "Dynaff" ) ) {
+                                        preset = "$0501";
+                                    } else if ( name.Equals( "Crescendo" ) ) {
+                                        preset = "$0502";
+                                    } else if ( name.Equals( "Decrescendo" ) ) {
+                                        preset = "$0503";
+                                    }
+                                    for ( int i = 0; i < spl2.Length; i++ ) {
+                                        String aic_name = spl2[i];
+                                        if ( !aic_name.EndsWith( ".aic" ) ) {
+                                            aic_name += ".aic";
+                                        }
+                                        String aic_path = PortUtil.combinePath( section_path, aic_name );
+#if DEBUG
+                                        PortUtil.stdout.println( "ExpressionConfigSys#.ctor; aic_path=" + aic_path + "; isFileExists( aic_path )=" + PortUtil.isFileExists( aic_path ) );
+#endif
+                                        String ids = spl2[i];
+                                        String icon_id = preset + PortUtil.formatDecimal( "0000", i );
+                                        if ( PortUtil.isFileExists( aic_path ) ){
+                                            IconDynamicsHandle handle = new IconDynamicsHandle( aic_path, ids, icon_id, i );
+                                            m_dynamics_configs.add( handle );
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             String expression = PortUtil.combinePath( path_expdb, "expression.map" );
             if ( !PortUtil.isFileExists( expression ) ) {
 #if DEBUG

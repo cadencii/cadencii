@@ -2379,25 +2379,23 @@ namespace org.kbinani.cadencii {
                 m_ext_dragy = ExtDragYMode.NONE;
             }
 
+            double now = 0, dt = 0;
+            if ( m_ext_dragx != ExtDragXMode.NONE || m_ext_dragy != ExtDragYMode.NONE ) {
+                now = PortUtil.getCurrentTime();
+                dt = now - m_timer_drag_last_ignitted;
+            }
             if ( m_ext_dragx == ExtDragXMode.RIGHT || m_ext_dragx == ExtDragXMode.LEFT ) {
-                double now = PortUtil.getCurrentTime();
-                double dt = now - m_timer_drag_last_ignitted;
-                m_timer_drag_last_ignitted = now;
                 int px_move = AppManager.editorConfig.MouseDragIncrement;
                 if ( px_move / dt > AppManager.editorConfig.MouseDragMaximumRate ) {
                     px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
                 }
                 double d_draft;
-                if ( m_ext_dragx == ExtDragXMode.RIGHT ) {
-                    int right_clock = AppManager.clockFromXCoord( pictPianoRoll.getWidth() );
-                    int dclock = (int)(px_move / AppManager.scaleX);
-                    d_draft = (73 - pictPianoRoll.getWidth()) / AppManager.scaleX + right_clock + dclock;
-                } else {
+                if ( m_ext_dragx == ExtDragXMode.LEFT ) {
                     px_move *= -1;
-                    int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
-                    int dclock = (int)(px_move / AppManager.scaleX);
-                    d_draft = (73 - AppManager.keyWidth) / AppManager.scaleX + left_clock + dclock;
                 }
+                int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
+                int dclock = (int)(px_move / AppManager.scaleX);
+                d_draft = 5 / AppManager.scaleX + left_clock + dclock;
                 if ( d_draft < 0.0 ) {
                     d_draft = 0.0;
                 }
@@ -2415,9 +2413,6 @@ namespace org.kbinani.cadencii {
                 hScroll.setValue( draft );
             }
             if ( m_ext_dragy == ExtDragYMode.UP || m_ext_dragy == ExtDragYMode.DOWN ) {
-                double now = PortUtil.getCurrentTime();
-                double dt = now - m_timer_drag_last_ignitted;
-                m_timer_drag_last_ignitted = now;
                 int px_move = AppManager.editorConfig.MouseDragIncrement;
                 if ( px_move / dt > AppManager.editorConfig.MouseDragMaximumRate ) {
                     px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
@@ -2438,6 +2433,10 @@ namespace org.kbinani.cadencii {
                 }
                 vScroll.setValue( df );
             }
+            if ( m_ext_dragx != ExtDragXMode.NONE || m_ext_dragy != ExtDragYMode.NONE ) {
+                m_timer_drag_last_ignitted = now;
+            }
+
 
             // 選択範囲にあるイベントを選択．
             int stdy = getStartToDrawY();
@@ -2721,29 +2720,32 @@ namespace org.kbinani.cadencii {
 #if USE_DOBJ
                 for ( Iterator itr = AppManager.drawObjects.get( AppManager.getSelected() - 1 ).iterator(); itr.hasNext(); ) {
                     DrawObject dobj = (DrawObject)itr.next();
-                    // 音符左側の編集領域
+                    Rectangle rc;
+                    if ( dobj.type != DrawObjectType.Dynaff ) {
+                        // 音符左側の編集領域
 #else
                 for ( Iterator itr = AppManager.VsqFile.getTrack( AppManager.Selected ).getNoteEventIterator(); itr.hasNext(); ){
 
 #endif
-                    Rectangle rc = new Rectangle(
-                                        dobj.pxRectangle.x + AppManager.keyWidth - stdx,
-                                        dobj.pxRectangle.y - stdy,
-                                        _EDIT_HANDLE_WIDTH,
-                                        AppManager.editorConfig.PxTrackHeight );
-                    if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
-                        split_cursor = true;
-                        break;
-                    }
+                        rc = new Rectangle(
+                                            dobj.pxRectangle.x + AppManager.keyWidth - stdx,
+                                            dobj.pxRectangle.y - stdy,
+                                            _EDIT_HANDLE_WIDTH,
+                                            AppManager.editorConfig.PxTrackHeight );
+                        if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
+                            split_cursor = true;
+                            break;
+                        }
 
-                    // 音符右側の編集領域
-                    rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx - _EDIT_HANDLE_WIDTH,
-                                        dobj.pxRectangle.y - stdy,
-                                        _EDIT_HANDLE_WIDTH,
-                                        AppManager.editorConfig.PxTrackHeight );
-                    if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
-                        split_cursor = true;
-                        break;
+                        // 音符右側の編集領域
+                        rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx - _EDIT_HANDLE_WIDTH,
+                                            dobj.pxRectangle.y - stdy,
+                                            _EDIT_HANDLE_WIDTH,
+                                            AppManager.editorConfig.PxTrackHeight );
+                        if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
+                            split_cursor = true;
+                            break;
+                        }
                     }
 
                     // 音符本体
@@ -2751,18 +2753,25 @@ namespace org.kbinani.cadencii {
                                         dobj.pxRectangle.y - stdy,
                                         dobj.pxRectangle.width,
                                         dobj.pxRectangle.height );
-                    if ( AppManager.editorConfig.ShowExpLine && !dobj.overlappe ) {
-                        rc.height *= 2;
-                        if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
-                            // ビブラートの開始位置
-                            rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxVibratoDelay - stdx - _EDIT_HANDLE_WIDTH / 2,
-                                                dobj.pxRectangle.y + AppManager.editorConfig.PxTrackHeight - stdy,
-                                                _EDIT_HANDLE_WIDTH,
-                                                AppManager.editorConfig.PxTrackHeight );
+                    if ( dobj.type == DrawObjectType.Note ) {
+                        if ( AppManager.editorConfig.ShowExpLine && !dobj.overlappe ) {
+                            rc.height *= 2;
                             if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
-                                split_cursor = true;
-                                break;
-                            } else {
+                                // ビブラートの開始位置
+                                rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxVibratoDelay - stdx - _EDIT_HANDLE_WIDTH / 2,
+                                                    dobj.pxRectangle.y + AppManager.editorConfig.PxTrackHeight - stdy,
+                                                    _EDIT_HANDLE_WIDTH,
+                                                    AppManager.editorConfig.PxTrackHeight );
+                                if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
+                                    split_cursor = true;
+                                    break;
+                                } else {
+                                    hand_cursor = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 hand_cursor = true;
                                 break;
                             }
@@ -7202,6 +7211,49 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "menuHelpDebug_Click" );
 #if DEBUG
+            int i = 4;
+            for ( Iterator itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
+                IconDynamicsHandle item = (IconDynamicsHandle)((IconDynamicsHandle)itr.next()).clone();
+                VsqEvent ve = new VsqEvent( i * 480, new VsqID() );
+                ve.ID.type = VsqIDType.Aicon;
+                ve.ID.IconDynamicsHandle = item;
+                if ( item.IconID.StartsWith( "$0501" ) ) {
+                    ve.ID.setLength( 1 );
+                } else {
+                    ve.ID.setLength( 480 );
+                }
+                ve.ID.Note = 64;
+                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( AppManager.getSelected(), ve ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                i++;
+            }
+            AppManager.getVsqFile().Track.get( AppManager.getSelected() ).reflectDynamics();
+            /*int i = -1;
+            for ( Iterator itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
+                IconDynamicsHandle handle = (IconDynamicsHandle)itr.next();
+                i++;
+                String valname = "d" + i;
+                debug.push_log( "IconDynamicsHandle " + valname + " = new IconDynamicsHandle();" );
+                debug.push_log( valname + ".IDS = \"" + handle.IDS + "\";" );
+                debug.push_log( valname + ".IconID = \"" + handle.IconID + "\";" );
+                debug.push_log( valname + ".Original = " + handle.Original + ";" );
+                debug.push_log( valname + ".setCaption( \"" + handle.getCaption() + "\" );" );
+                debug.push_log( valname + ".setStartDyn( " + handle.getStartDyn() + " );" );
+                debug.push_log( valname + ".setEndDyn( " + handle.getEndDyn() + " );" );
+                debug.push_log( valname + ".setLength( " + handle.getLength() + " );" );
+                VibratoBPList dynbp = handle.getDynBP();
+                if ( dynbp != null ) {
+                    String x = "";
+                    String y = "";
+                    for ( int j = 0; j < dynbp.getCount(); j++ ) {
+                        x += (j == 0 ? "" : ", ") + dynbp.getElement( j ).X + "f";
+                        y += (j == 0 ? "" : ", ") + dynbp.getElement( j ).Y;
+                    }
+                    debug.push_log( valname + ".setDynBP( new VibratoBPList( new float[]{ " + x + " }, new int[]{ " + y + " } ) );" );
+                }
+                debug.push_log( "ret.m_dynamics_configs.add( " + valname + " );" );
+                debug.push_log( "" );
+            }*/
             /*InputBox ib = new InputBox( "input shift seconds" );
             if ( ib.ShowDialog() == DialogResult.OK ) {
                 VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
@@ -13276,16 +13328,22 @@ namespace org.kbinani.cadencii {
                 Font SMALL_FONT = null;
                 try {
                     SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
-                    for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
+                    int track_height = AppManager.editorConfig.PxTrackHeight;
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    int track_count = vsq.Track.size();
+                    for ( int track = 1; track < track_count; track++ ) {
+                        VsqTrack vsq_track = vsq.Track.get( track );
                         Vector<DrawObject> tmp = new Vector<DrawObject>();
-                        for ( Iterator itr = AppManager.getVsqFile().Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+
+                        // 音符イベント
+                        for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                             VsqEvent ev = (VsqEvent)itr.next();
                             int timesig = ev.Clock;
                             if ( ev.ID.LyricHandle != null ) {
                                 int length = ev.ID.getLength();
                                 int note = ev.ID.Note;
                                 int x = (int)(timesig * scalex + xoffset);
-                                int y = -note * AppManager.editorConfig.PxTrackHeight + yoffset;
+                                int y = -note * track_height + yoffset;
                                 int lyric_width = (int)(length * scalex);
                                 String lyric_jp = ev.ID.LyricHandle.L0.Phrase;
                                 String lyric_en = ev.ID.LyricHandle.L0.getPhoneticSymbol();
@@ -13308,7 +13366,8 @@ namespace org.kbinani.cadencii {
                                     rate_start = ev.ID.VibratoHandle.StartRate;
                                     depth_start = ev.ID.VibratoHandle.StartDepth;
                                 }
-                                tmp.add( new DrawObject( new Rectangle( x, y, lyric_width, AppManager.editorConfig.PxTrackHeight ),
+                                tmp.add( new DrawObject( DrawObjectType.Note,
+                                                         new Rectangle( x, y, lyric_width, track_height ),
                                                          title,
                                                          accent,
                                                          ev.InternalID,
@@ -13325,30 +13384,111 @@ namespace org.kbinani.cadencii {
                             }
                         }
 
+                        // Dynaff, Crescendイベント
+                        for ( Iterator itr = vsq_track.getDynamicsEventIterator(); itr.hasNext(); ) {
+                            VsqEvent item = (VsqEvent)itr.next();
+                            IconDynamicsHandle handle = item.ID.IconDynamicsHandle;
+                            if ( handle == null ) {
+                                continue;
+                            }
+                            int clock = item.Clock;
+                            int length = item.ID.getLength();
+                            DrawObjectType type = DrawObjectType.Note;
+                            int width = 0;
+                            String str = "";
+                            if ( handle.IconID.StartsWith( "$0501" ) ) {
+                                // 強弱記号
+                                type = DrawObjectType.Dynaff;
+                                width = 40;
+                                int startDyn = handle.getStartDyn();
+                                if ( startDyn == 120 ) {
+                                    str = "fff";
+                                } else if ( startDyn == 104 ) {
+                                    str = "ff";
+                                } else if ( startDyn == 88 ) {
+                                    str = "f";
+                                } else if ( startDyn == 72 ) {
+                                    str = "mf";
+                                } else if ( startDyn == 56 ) {
+                                    str = "mp";
+                                } else if ( startDyn == 40 ) {
+                                    str = "p";
+                                } else if ( startDyn == 24 ) {
+                                    str = "pp";
+                                } else if ( startDyn == 8 ) {
+                                    str = "ppp";
+                                } else {
+                                    str = "?";
+                                }
+                            } else if ( handle.IconID.StartsWith( "$0502" ) ) {
+                                // クレッシェンド
+                                type = DrawObjectType.Crescend;
+                                width = (int)(length * scalex);
+                                str = handle.IDS;
+                            } else if ( handle.IconID.StartsWith( "$0503" ) ) {
+                                // デクレッシェンド
+                                type = DrawObjectType.Decrescend;
+                                width = (int)(length * scalex);
+                                str = handle.IDS;
+                            }
+                            if ( type == DrawObjectType.Note ) {
+                                continue;
+                            }
+                            int note = item.ID.Note;
+                            int x = (int)(clock * scalex + xoffset);
+                            int y = -note * AppManager.editorConfig.PxTrackHeight + yoffset;
+                            tmp.add( new DrawObject( type,
+                                                     new Rectangle( x, y, width, track_height ),
+                                                     str,
+                                                     0,
+                                                     item.InternalID,
+                                                     0,
+                                                     false,
+                                                     false,
+                                                     null,
+                                                     null,
+                                                     0,
+                                                     0,
+                                                     item.ID.Note,
+                                                     null,
+                                                     length ) );
+                        }
+
                         // 重複部分があるかどうかを判定
-                        for ( int i = 0; i < tmp.size() - 1; i++ ) {
+                        int count = tmp.size();
+                        for ( int i = 0; i < count - 1; i++ ) {
+                            DrawObject itemi = tmp.get( i );
+                            if ( itemi.type != DrawObjectType.Note ) {
+                                continue;
+                            }
                             boolean overwrapped = false;
-                            for ( int j = i + 1; j < tmp.size(); j++ ) {
-                                int startx = tmp.get( j ).pxRectangle.x;
-                                int endx = tmp.get( j ).pxRectangle.x + tmp.get( j ).pxRectangle.width;
-                                if ( startx < tmp.get( i ).pxRectangle.x ) {
-                                    if ( tmp.get( i ).pxRectangle.x < endx ) {
+                            for ( int j = i + 1; j < count; j++ ) {
+                                DrawObject itemj = tmp.get( j );
+                                if ( itemj.type != DrawObjectType.Note ) {
+                                    continue;
+                                }
+                                int startx = itemj.pxRectangle.x;
+                                int endx = itemj.pxRectangle.x + itemj.pxRectangle.width;
+                                if ( startx < itemi.pxRectangle.x ) {
+                                    if ( itemi.pxRectangle.x < endx ) {
                                         overwrapped = true;
-                                        tmp.get( j ).overlappe = true;
+                                        itemj.overlappe = true;
                                         // breakできない．2個以上の重複を検出する必要があるので．
                                     }
-                                } else if ( tmp.get( i ).pxRectangle.x <= startx && startx < tmp.get( i ).pxRectangle.x + tmp.get( i ).pxRectangle.width ) {
+                                } else if ( itemi.pxRectangle.x <= startx && startx < itemi.pxRectangle.x + itemi.pxRectangle.width ) {
                                     overwrapped = true;
-                                    tmp.get( j ).overlappe = true;
+                                    itemj.overlappe = true;
                                 }
                             }
                             if ( overwrapped ) {
-                                tmp.get( i ).overlappe = true;
+                                itemi.overlappe = true;
                             }
                         }
+                        Collections.sort( tmp );
                         AppManager.drawObjects.add( tmp );
                     }
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#updateDrawObjectList; ex=" + ex );
                 } finally {
 #if !JAVA
                     if ( SMALL_FONT != null ) {

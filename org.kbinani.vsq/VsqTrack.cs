@@ -243,6 +243,59 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
+        /// クレッシェンド，デクレッシェンド，強弱記号をダイナミクスカーブに反映させる
+        /// </summary>
+        public void reflectDynamics() {
+            VsqBPList dyn = getCurve( "dyn" );
+            for ( Iterator itr = getDynamicsEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = (VsqEvent)itr.next();
+                IconDynamicsHandle handle = item.ID.IconDynamicsHandle;
+                if ( handle == null ) {
+                    continue;
+                }
+                int clock = item.Clock;
+                int length = item.ID.getLength();
+
+                if ( handle.IconID.StartsWith( "$0501" ) ) {
+                    // 強弱記号
+                    dyn.add( clock, handle.getStartDyn() );
+                } else {
+                    // クレッシェンド，デクレッシェンド
+                    int start_dyn = dyn.getValue( clock );
+
+                    // 範囲内のアイテムを削除
+                    int count = dyn.size();
+                    for ( int i = count - 1; i >= 0; i-- ) {
+                        int c = dyn.getKeyClock( i );
+                        if ( clock <= c && c <= clock + length ) {
+                            dyn.removeElementAt( i );
+                        } else if ( c < clock ) {
+                            break;
+                        }
+                    }
+
+                    double a = 0.0;
+                    if ( length > 0 ) {
+                        a = (handle.getEndDyn() - handle.getStartDyn()) / (double)length;
+                    }
+                    int last_val = start_dyn;
+                    for ( int i = clock; i < clock + length; i++ ) {
+                        int val = start_dyn + (int)(a * (i - clock));
+                        if ( val < dyn.getMinimum() ) {
+                            val = dyn.getMinimum();
+                        } else if ( dyn.getMaximum() < val ) {
+                            val = dyn.getMaximum();
+                        }
+                        if ( last_val != val ) {
+                            dyn.add( i, val );
+                            last_val = val;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// 指定したクロック位置において、歌唱を担当している歌手のVsqEventを返します。
         /// </summary>
         /// <param name="clock"></param>

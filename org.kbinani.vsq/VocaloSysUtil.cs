@@ -59,6 +59,7 @@ namespace org.kbinani.vsq {
                         sw.newLine();
                     }
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
                 } finally {
                     if ( sw != null ) {
                         try {
@@ -80,12 +81,17 @@ namespace org.kbinani.vsq {
                 s_path_vsti.put( SynthesizerType.VOCALOID1, path_vsti.value );
                 s_path_editor.put( SynthesizerType.VOCALOID1, path_editor.value );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( path_voicedb1.value, installed_singers1.toArray( new String[] { } ) );
-                if ( PortUtil.isFileExists( PortUtil.combinePath( path_expdb1.value, "expression.map" ) ) ) {
-                    exp_config_sys1 = new ExpressionConfigSys( path_expdb1.value );
+#if DEBUG
+                String expression_map = PortUtil.combinePath( path_expdb1.value, "expression.map" );
+                PortUtil.stdout.println( "VocaloSysUtil#.ctor; expression_map=" + expression_map );
+                PortUtil.stdout.println( "VocaloSysUtil#.ctor; isFileExists( expression_map )=" + PortUtil.isFileExists( expression_map ) );
+#endif
+                if ( PortUtil.isFileExists( expression_map ) ) {
+                    exp_config_sys1 = new ExpressionConfigSys( path_editor.value, path_expdb1.value );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
             } catch ( Exception ex ) {
-                PortUtil.println( "VocaloSysUtil..cctor; ex=" + ex );
+                PortUtil.println( "VocaloSysUtil#.cctor; ex=" + ex );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys1 = null;
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
@@ -134,7 +140,7 @@ namespace org.kbinani.vsq {
                 s_path_editor.put( SynthesizerType.VOCALOID2, path_editor.value );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( path_voicedb2.value, installed_singers2.toArray( new String[] { } ) );
                 if ( PortUtil.isFileExists( PortUtil.combinePath( path_expdb2.value, "expression.map" ) ) ) {
-                    exp_config_sys2 = new ExpressionConfigSys( path_expdb2.value );
+                    exp_config_sys2 = new ExpressionConfigSys( path_editor.value, path_expdb2.value );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
             } catch ( Exception ex ) {
@@ -263,9 +269,12 @@ namespace org.kbinani.vsq {
                 PortUtil.println( "VocaloSysUtil#extract; s=" + s );
 #endif
                 String[] spl = PortUtil.splitString( s, new char[] { '\t' }, true );
-                if ( spl.Length >= 2 ) {
-                    if ( spl[0].Equals( "EXPRESSIONDIR" ) ) {
-                        path_expdb.value = spl[1];
+                if ( spl.Length >= 3 ) {
+#if DEBUG
+                    PortUtil.println( "VocaloSysUtil#extract; spl[0]=" + spl[0] + "; spl[1]=" + spl[1] + "; spl[2]=" + spl[2] );
+#endif
+                    if ( spl[1].Equals( "EXPRESSIONDIR" ) ) {
+                        path_expdb.value = spl[2];
                     } else if ( spl.Length >= 3 ) {
                         String[] spl2 = PortUtil.splitString( spl[0], '\\' );
                         if ( spl2.Length == 1 ) {
@@ -333,7 +342,15 @@ namespace org.kbinani.vsq {
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).vibratoConfigIterator();
             } else {
-                return (new Vector<NoteHeadHandle>()).iterator();
+                return (new Vector<VibratoHandle>()).iterator();
+            }
+        }
+
+        public static Iterator dynamicsConfigIterator( SynthesizerType type ) {
+            if ( s_exp_config_sys.containsKey( type ) ) {
+                return s_exp_config_sys.get( type ).dynamicsConfigIterator();
+            } else {
+                return (new Vector<IconDynamicsHandle>()).iterator();
             }
         }
 

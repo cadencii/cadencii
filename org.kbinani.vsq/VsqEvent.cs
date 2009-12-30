@@ -110,6 +110,9 @@ namespace org.kbinani.vsq {
                 }
             } else if ( ID.type == VsqIDType.Singer ) {
                 writer.writeLine( "IconHandle=h#" + PortUtil.formatDecimal( "0000", ID.IconHandle_index ) );
+            } else if ( ID.type == VsqIDType.Aicon ) {
+                writer.writeLine( "IconHandle=h#" + PortUtil.formatDecimal( "0000", ID.IconHandle_index ) );
+                writer.writeLine( "Note#" + ID.Note );
             }
         }
 

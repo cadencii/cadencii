@@ -202,11 +202,14 @@ namespace org.kbinani.cadencii {
             MidiEvent current = new MidiEvent();// = lpEvents;
 
             MemoryManager mman = null;
+            float* left_ch;
+            float* right_ch;
+            float** out_buffer;
             try {
                 mman = new MemoryManager();
-                float* left_ch = (float*)mman.malloc( sizeof( float ) * sampleRate );
-                float* right_ch = (float*)mman.malloc( sizeof( float ) * sampleRate );
-                float** out_buffer = (float**)mman.malloc( sizeof( float* ) * 2 );
+                left_ch = (float*)mman.malloc( sizeof( float ) * sampleRate );
+                right_ch = (float*)mman.malloc( sizeof( float ) * sampleRate );
+                out_buffer = (float**)mman.malloc( sizeof( float* ) * 2 );
                 out_buffer[0] = left_ch;
                 out_buffer[1] = right_ch;
 
@@ -215,8 +218,14 @@ namespace org.kbinani.cadencii {
 #endif
                 aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)sampleRate );//dispatch_VST_command(effSetSampleRate, 0, 0, 0, kSampleRate);
                 aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 1, (void*)0, 0 );// dispatch_VST_command(effMainsChanged, 0, 1, 0, 0);
+                
                 // ここではブロックサイズ＝サンプリングレートということにする
                 aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, sampleRate, (void*)0, 0 );// dispatch_VST_command(effSetBlockSize, 0, sampleFrames, 0, 0);
+                
+                // レンダリングの途中で停止した場合，ここでProcessする部分が無音でない場合がある
+                for ( int i = 0; i < 3; i++ ) {
+                    aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, sampleRate );
+                }
 #if TEST
                 org.kbinani.debug.push_log( "    ...done" );
 #endif
@@ -275,7 +284,6 @@ namespace org.kbinani.cadencii {
 #endif
                     if ( g_cancelRequired ) {
                         lpEvents.clear();
-                        exit_start_rendering();
                         return FALSE;
                     }
 #if TEST
@@ -312,9 +320,6 @@ namespace org.kbinani.cadencii {
                                     // Note Duration in millisec
                                     if ( addr_msb == 0x50 && addr_lsb == 0x4 ) {
                                         duration = data_msb << 7 | data_lsb;
-#if TEST
-                                        org.kbinani.debug.push_log( "duration=" + duration );
-#endif
                                     }
                                     break;
                             }
@@ -333,9 +338,6 @@ namespace org.kbinani.cadencii {
                         break;
                     }
 
-#if TEST
-                    org.kbinani.debug.push_log( "nEvents=" + nEvents );
-#endif
                     double msNow = msec_from_clock( dwNow );
                     dwDelta = (int)(msNow / 1000.0 * sampleRate) - total_processed;
 #if TEST
@@ -391,7 +393,6 @@ namespace org.kbinani.cadencii {
                     while ( dwDelta > 0 ) {
                         if ( g_cancelRequired ) {
                             lpEvents.clear();
-                            exit_start_rendering();
                             return FALSE;
                         }
                         int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
@@ -436,7 +437,6 @@ namespace org.kbinani.cadencii {
                 while ( dwDelta > 0 ) {
                     if ( g_cancelRequired ) {
                         lpEvents.clear();
-                        exit_start_rendering();
                         return FALSE;
                     }
                     int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
@@ -494,6 +494,7 @@ namespace org.kbinani.cadencii {
                         PortUtil.stderr.println( "VocaloidDriver#StartRendering; ex2=" + ex2 );
                     }
                 }
+                exit_start_rendering();
             }
             return 1;
         }

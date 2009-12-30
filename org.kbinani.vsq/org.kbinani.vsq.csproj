@@ -59,8 +59,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AIconHandle.cs" />
-    <Compile Include="AttackConfig.cs" />
     <Compile Include="BPPair.cs" />
     <Compile Include="IconDynamicsHandle.cs" />
     <Compile Include="IconHandle.cs" />
@@ -90,7 +88,6 @@
     <Compile Include="VibratoBPList.cs" />
     <Compile Include="VibratoBPPair.cs" />
     <Compile Include="ExpressionConfigSys.cs" />
-    <Compile Include="VibratoConfig.cs" />
     <Compile Include="VibratoHandle.cs" />
     <Compile Include="VocaloSysUtil.cs" />
     <Compile Include="VsqBPPair.cs" />

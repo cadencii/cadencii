@@ -120,6 +120,7 @@
     <Compile Include="ClockResolution.cs" />
     <Compile Include="DefaultVibratoLengthEnum.cs" />
     <Compile Include="DefaultVibratoLengthUtil.cs" />
+    <Compile Include="DrawObjectType.cs" />
     <Compile Include="EditorStatus.cs" />
     <Compile Include="FederChangedEventHandler.cs" />
     <Compile Include="FormCurvePointEdit.cs">

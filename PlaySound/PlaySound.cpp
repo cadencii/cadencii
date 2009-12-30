@@ -94,22 +94,22 @@ void waveplay::set_first_buffer_written_callback( FirstBufferWrittenCallback pro
 void waveplay::reset(){
     s_playing = false;
     s_abort_required = true;
-    if( s_hwave_out ){
+    if( s_hwave_out != NULL ){
         for( int k = 0; k < _NUM_BUF; k++ ){
             s_wave_header[k].dwUser = 1;
         }
         waveOutReset( s_hwave_out );
-        unsigned long zero = MAKELONG( 0, 0 );
-        for( int k = 0; k < _NUM_BUF; k++ ){
-            for( int i = 0; i < s_block_size; i++ ){
-                s_wave[k][i] = zero;
-            }
+    }
+    unsigned long zero = MAKELONG( 0, 0 );
+    for( int k = 0; k < _NUM_BUF; k++ ){
+        for( int i = 0; i < s_block_size; i++ ){
+            s_wave[k][i] = zero;
         }
-        if( s_wave_buffer_l && s_wave_buffer_r ){
-            for( int i = 0; i < s_block_size; i++ ){
-                s_wave_buffer_l[i] = 0.0;
-                s_wave_buffer_r[i] = 0.0;
-            }
+    }
+    if( s_wave_buffer_l != NULL && s_wave_buffer_r != NULL ){
+        for( int i = 0; i < s_block_size; i++ ){
+            s_wave_buffer_l[i] = 0.0;
+            s_wave_buffer_r[i] = 0.0;
         }
     }
 }

@@ -482,51 +482,6 @@ namespace org.kbinani.cadencii {
                                     getWidth() - AppManager.keyWidth, getHeight() );
                         int j_start = AppManager.drawStartIndex[selected - 1];
 
-                        // DynamicsHandleの描画
-                        VsqTrack track = vsq.Track.get( selected );
-                        g.setFont( AppManager.baseFont10 );
-                        g.setColor( Color.black );
-                        for ( Iterator itr = track.getDynamicsEventIterator(); itr.hasNext(); ) {
-                            VsqEvent item = (VsqEvent)itr.next();
-                            IconDynamicsHandle handle = item.ID.IconDynamicsHandle;
-                            if ( handle == null ) {
-                                continue;
-                            }
-                            y = item.ID.Note * track_height - start_draw_y;
-                            int x = AppManager.xCoordFromClocks( item.Clock );
-                            int startDyn = handle.getStartDyn();
-                            int endDyn = handle.getEndDyn();
-                            if ( startDyn == endDyn ) {
-                                String str = "";
-                                if ( startDyn == 120 ) {
-                                    str = "fff";
-                                } else if ( startDyn == 104 ) {
-                                    str = "ff";
-                                } else if ( startDyn == 88 ) {
-                                    str = "f";
-                                } else if ( startDyn == 72 ) {
-                                    str = "mf";
-                                } else if ( startDyn == 56 ) {
-                                    str = "mp";
-                                } else if ( startDyn == 40 ) {
-                                    str = "p";
-                                } else if ( startDyn == 24 ) {
-                                    str = "pp";
-                                } else if ( startDyn == 8 ) {
-                                    str = "ppp";
-                                }
-                                g.setColor( Color.pink );
-                                g.fillRect( x, y + 1, 40, track_height - 1 );
-                                g.setColor( s_pen_125_123_124 );
-                                g.drawRect( x, y + 1, 40, track_height - 1 );
-                                g.setColor( Color.black );
-                                g.drawString( str, x, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
-#if DEBUG
-                                PortUtil.stdout.println( "PictPianoRoll#paint; drawing dynamics handle; str=" + str );
-#endif
-                            }
-                        }
-
                         boolean first = true;
                         lock ( AppManager.drawObjects ) { //ここでロックを取得しないと、描画中にUpdateDrawObjectのサイズが0になる可能性がある
                             if ( selected - 1 < AppManager.drawObjects.size() ) {
@@ -549,88 +504,128 @@ namespace org.kbinani.cadencii {
                                     if ( y + 2 * track_height < 0 || y > height ) {
                                         continue;
                                     }
-                                    Color id_fill;
-                                    if ( AppManager.getSelectedEventCount() > 0 ) {
-                                        boolean found = AppManager.isSelectedEventContains( AppManager.getSelected(), dobj.internalID );
-                                        if ( found ) {
-                                            id_fill = AppManager.getHilightColor();
+
+                                    if ( dobj.type == DrawObjectType.Note ) {
+                                        #region Note
+                                        Color id_fill;
+                                        if ( AppManager.getSelectedEventCount() > 0 ) {
+                                            boolean found = AppManager.isSelectedEventContains( AppManager.getSelected(), dobj.internalID );
+                                            if ( found ) {
+                                                id_fill = AppManager.getHilightColor();
+                                            } else {
+                                                id_fill = s_note_fill;
+                                            }
                                         } else {
                                             id_fill = s_note_fill;
                                         }
-                                    } else {
-                                        id_fill = s_note_fill;
-                                    }
-                                    g.setColor( id_fill );
-                                    g.fillRect( x, y + 1, lyric_width, track_height - 1 );
-                                    Font lyric_font = dobj.symbolProtected ? AppManager.baseFont10Bold : AppManager.baseFont10;
-                                    if ( dobj.overlappe ) {
-                                        g.setColor( s_pen_125_123_124 );
-                                        g.drawRect( x, y + 1, lyric_width, track_height - 1 );
-                                        if ( show_lyrics ) {
-                                            g.setFont( lyric_font );
-                                            g.setColor( s_brs_147_147_147 );
-                                            g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
-                                        }
-                                    } else {
-                                        g.setColor( s_pen_125_123_124 );
-                                        g.drawRect( x, y + 1, lyric_width, track_height - 1 );
-                                        if ( show_lyrics ) {
+                                        g.setColor( id_fill );
+                                        g.fillRect( x, y + 1, lyric_width, track_height - 1 );
+                                        Font lyric_font = dobj.symbolProtected ? AppManager.baseFont10Bold : AppManager.baseFont10;
+                                        if ( dobj.overlappe ) {
+                                            g.setColor( s_pen_125_123_124 );
+                                            g.drawRect( x, y + 1, lyric_width, track_height - 1 );
+                                            if ( show_lyrics ) {
+                                                g.setFont( lyric_font );
+                                                g.setColor( s_brs_147_147_147 );
+                                                g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+                                            }
+                                        } else {
+                                            g.setColor( s_pen_125_123_124 );
+                                            g.drawRect( x, y + 1, lyric_width, track_height - 1 );
+                                            if ( show_lyrics ) {
 #if DEBUG
-                                            g.setFont( lyric_font );
-                                            g.setColor( Color.black );
-                                            g.drawString( dobj.text + "(ID:" + dobj.internalID + ")", x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+                                                g.setFont( lyric_font );
+                                                g.setColor( Color.black );
+                                                g.drawString( dobj.text + "(ID:" + dobj.internalID + ")", x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
 #else
                                         g.setFont( lyric_font );
                                         g.setColor( Color.black );
                                         g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
 #endif
-                                        }
-                                        if ( show_exp_line && lyric_width > 21 ) {
-                                            #region 表情線
-                                            DrawAccentLine( g, new Point( x, y + track_height + 1 ), dobj.accent );
-                                            int vibrato_start = x + lyric_width;
-                                            int vibrato_end = x;
-                                            if ( dobj.pxVibratoDelay <= lyric_width ) {
-                                                int vibrato_delay = dobj.pxVibratoDelay;
-                                                int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
-                                                vibrato_start = x + vibrato_delay;
-                                                vibrato_end = x + vibrato_delay + vibrato_width;
-                                                if ( vibrato_start - x < 21 ) {
-                                                    vibrato_start = x + 21;
+                                            }
+                                            if ( show_exp_line && lyric_width > 21 ) {
+                                                #region 表情線
+                                                DrawAccentLine( g, new Point( x, y + track_height + 1 ), dobj.accent );
+                                                int vibrato_start = x + lyric_width;
+                                                int vibrato_end = x;
+                                                if ( dobj.pxVibratoDelay <= lyric_width ) {
+                                                    int vibrato_delay = dobj.pxVibratoDelay;
+                                                    int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
+                                                    vibrato_start = x + vibrato_delay;
+                                                    vibrato_end = x + vibrato_delay + vibrato_width;
+                                                    if ( vibrato_start - x < 21 ) {
+                                                        vibrato_start = x + 21;
+                                                    }
+                                                }
+                                                g.setColor( s_pen_051_051_000 );
+                                                g.drawLine( x + 21, y + track_height + 7,
+                                                            vibrato_start, y + track_height + 7 );
+                                                if ( dobj.pxVibratoDelay <= lyric_width ) {
+                                                    int next_draw = vibrato_start;
+                                                    if ( vibrato_start < vibrato_end ) {
+                                                        drawVibratoLine( g,
+                                                                         new Point( vibrato_start, y + track_height + 1 ),
+                                                                         vibrato_end - vibrato_start );
+                                                    }
+                                                }
+                                                #endregion
+                                            }
+                                            // ビブラートがあれば
+                                            if ( AppManager.editorConfig.ViewAtcualPitch ) {
+                                                if ( dobj.vibRate != null ) {
+                                                    int vibrato_delay = dobj.pxVibratoDelay;
+                                                    int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
+                                                    int vibrato_start = x + vibrato_delay;
+                                                    int vibrato_end = x + vibrato_delay + vibrato_width;
+                                                    int cl_sx = AppManager.clockFromXCoord( vibrato_start );
+                                                    int cl_ex = AppManager.clockFromXCoord( vibrato_end );
+                                                    drawVibratoPitchbend( g,
+                                                                          dobj.vibRate,
+                                                                          dobj.vibStartRate,
+                                                                          dobj.vibDepth,
+                                                                          dobj.vibStartDepth,
+                                                                          dobj.note,
+                                                                          vibrato_start,
+                                                                          vibrato_width );
                                                 }
                                             }
-                                            g.setColor( s_pen_051_051_000 );
-                                            g.drawLine( x + 21, y + track_height + 7,
-                                                        vibrato_start, y + track_height + 7 );
-                                            if ( dobj.pxVibratoDelay <= lyric_width ) {
-                                                int next_draw = vibrato_start;
-                                                if ( vibrato_start < vibrato_end ) {
-                                                    drawVibratoLine( g,
-                                                                     new Point( vibrato_start, y + track_height + 1 ),
-                                                                     vibrato_end - vibrato_start );
-                                                }
-                                            }
-                                            #endregion
                                         }
-                                        // ビブラートがあれば
-                                        if ( AppManager.editorConfig.ViewAtcualPitch ) {
-                                            if ( dobj.vibRate != null ) {
-                                                int vibrato_delay = dobj.pxVibratoDelay;
-                                                int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
-                                                int vibrato_start = x + vibrato_delay;
-                                                int vibrato_end = x + vibrato_delay + vibrato_width;
-                                                int cl_sx = AppManager.clockFromXCoord( vibrato_start );
-                                                int cl_ex = AppManager.clockFromXCoord( vibrato_end );
-                                                drawVibratoPitchbend( g,
-                                                                      dobj.vibRate,
-                                                                      dobj.vibStartRate,
-                                                                      dobj.vibDepth,
-                                                                      dobj.vibStartDepth,
-                                                                      dobj.note,
-                                                                      vibrato_start,
-                                                                      vibrato_width );
-                                            }
+                                        #endregion
+                                    } else if ( dobj.type == DrawObjectType.Dynaff ) {
+                                        #region Dynaff
+                                        g.setColor( Color.pink );
+                                        g.fillRect( x, y, 40, track_height );
+                                        g.setColor( s_pen_125_123_124 );
+                                        g.drawRect( x, y, 40, track_height );
+                                        g.setColor( Color.black );
+                                        g.setFont( AppManager.baseFont10 );
+                                        g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+                                        #endregion
+                                    } else {
+                                        #region Crescend and Descrescend
+                                        int xend = x + lyric_width;
+                                        g.setColor( Color.pink );
+                                        g.fillRect( x, y, xend - x, track_height );
+                                        g.setColor( s_pen_125_123_124 );
+                                        g.drawRect( x, y, xend - x, track_height );
+                                        g.setColor( Color.black );
+                                        g.setFont( AppManager.baseFont10 );
+                                        g.drawString( dobj.text, x + 1, y + track_height + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+#if !JAVA
+                                        System.Drawing.Drawing2D.SmoothingMode old = g.nativeGraphics.SmoothingMode;
+                                        g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+#endif
+                                        if ( dobj.type == DrawObjectType.Crescend ) {
+                                            g.drawLine( xend - 2, y + 4, x + 3, y + half_track_height );
+                                            g.drawLine( x + 3, y + half_track_height, xend - 2, y + track_height - 3 );
+                                        } else if ( dobj.type == DrawObjectType.Decrescend ) {
+                                            g.drawLine( x + 3, y + 4, xend - 2, y + half_track_height );
+                                            g.drawLine( xend - 2, y + half_track_height, x + 3, y + track_height - 3 );
                                         }
+#if !JAVA
+                                        g.nativeGraphics.SmoothingMode = old;
+#endif
+                                        #endregion
                                     }
                                 }
                             }

@@ -107,7 +107,7 @@ namespace org.kbinani.vsq {
             VsqID result = new VsqID( this.value );
             result.type = this.type;
             if ( this.IconHandle != null ) {
-                    result.IconHandle = (IconHandle)IconHandle.clone();
+                result.IconHandle = (IconHandle)IconHandle.clone();
             }
             result.setLength( Length );
             result.Note = this.Note;

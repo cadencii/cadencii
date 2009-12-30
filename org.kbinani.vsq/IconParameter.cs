@@ -85,8 +85,8 @@ namespace org.kbinani.vsq{
                     if ( spl.Length != 2 ) {
                         continue;
                     }
-                    String name = spl[0];
-                    String value = spl[1];
+                    String name = spl[0].Trim( new char[]{ ' ', '\t' } );
+                    String value = spl[1].Trim( new char[]{ ' ', '\t' } );
                     if ( name.Equals( "Articulation" ) ) {
                         if ( value.Equals( "Vibrato" ) ) {
                             articulation = ArticulationType.Vibrato;

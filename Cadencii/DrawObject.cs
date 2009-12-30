@@ -56,8 +56,10 @@ namespace org.kbinani.cadencii {
         /// 音符の長さ（クロック）
         /// </summary>
         public int length;
+        public DrawObjectType type;
 
-        public DrawObject( Rectangle rect, 
+        public DrawObject( DrawObjectType type,
+                           Rectangle rect, 
                            String text_,
                            int accent_,
                            int internal_id,
@@ -71,6 +73,7 @@ namespace org.kbinani.cadencii {
                            int note_,
                            UstEnvelope ust_envelope,
                            int length_ ) {
+            this.type = type;
             pxRectangle = rect;
             text = text_;
             accent = accent_;
