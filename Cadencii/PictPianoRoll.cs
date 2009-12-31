@@ -1,6 +1,6 @@
 ﻿/*
  * PictPianoRoll.cs
- * Copyright (C) 2009 kbinani
+ * Copyright (C) 2009-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -86,6 +86,8 @@ namespace org.kbinani.cadencii {
             new Color( 181, 140, 123 ),
             new Color( 181, 126, 123 ) };
         private readonly Color s_note_fill = new Color( 181, 220, 86 );
+        private readonly Color s_dynaff_fill = PortUtil.Pink;
+        private readonly Color s_dynaff_fill_highlight = new Color( 66, 193, 169 );
         private readonly BasicStroke s_pen_dashed_171_171_171 = new BasicStroke( 1.0f, 0, 0, 10.0f, new float[] { 3.0f }, 0.0f );
         private readonly Font s_F9PT = new Font( "SansSerif", java.awt.Font.PLAIN, 9 );
         /// <summary>
@@ -509,7 +511,7 @@ namespace org.kbinani.cadencii {
                                         #region Note
                                         Color id_fill;
                                         if ( AppManager.getSelectedEventCount() > 0 ) {
-                                            boolean found = AppManager.isSelectedEventContains( AppManager.getSelected(), dobj.internalID );
+                                            boolean found = AppManager.isSelectedEventContains( selected, dobj.internalID );
                                             if ( found ) {
                                                 id_fill = AppManager.getHilightColor();
                                             } else {
@@ -593,7 +595,11 @@ namespace org.kbinani.cadencii {
                                         #endregion
                                     } else if ( dobj.type == DrawObjectType.Dynaff ) {
                                         #region Dynaff
-                                        g.setColor( Color.pink );
+                                        Color fill = s_dynaff_fill;
+                                        if ( AppManager.isSelectedEventContains( selected, dobj.internalID ) ) {
+                                            fill = s_dynaff_fill_highlight;
+                                        }
+                                        g.setColor( fill );
                                         g.fillRect( x, y, 40, track_height );
                                         g.setColor( s_pen_125_123_124 );
                                         g.drawRect( x, y, 40, track_height );
@@ -604,7 +610,11 @@ namespace org.kbinani.cadencii {
                                     } else {
                                         #region Crescend and Descrescend
                                         int xend = x + lyric_width;
-                                        g.setColor( Color.pink );
+                                        Color fill = s_dynaff_fill;
+                                        if ( AppManager.isSelectedEventContains( selected, dobj.internalID ) ) {
+                                            fill = s_dynaff_fill_highlight;
+                                        }
+                                        g.setColor( fill );
                                         g.fillRect( x, y, xend - x, track_height );
                                         g.setColor( s_pen_125_123_124 );
                                         g.drawRect( x, y, xend - x, track_height );

@@ -1,6 +1,6 @@
 ﻿/*
  * FormSingerStypeConfig.cs
- * Copyright (C) 2008-2009 kbinani
+ * Copyright (C) 2008-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *

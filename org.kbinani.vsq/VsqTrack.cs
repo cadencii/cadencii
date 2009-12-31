@@ -1,6 +1,6 @@
 ﻿/*
  * VsqTrack.cs
- * Copyright (C) 2008-2009 kbinani
+ * Copyright (C) 2008-2010 kbinani
  *
  * This file is part of org.kbinani.vsq.
  *
@@ -247,6 +247,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         public void reflectDynamics() {
             VsqBPList dyn = getCurve( "dyn" );
+            dyn.clear();
             for ( Iterator itr = getDynamicsEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 IconDynamicsHandle handle = item.ID.IconDynamicsHandle;

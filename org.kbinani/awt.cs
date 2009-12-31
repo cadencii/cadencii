@@ -1,6 +1,6 @@
 ﻿/*
  * awt.cs
- * Copyright (C) 2009 kbinani
+ * Copyright (C) 2009-2010 kbinani
  *
  * This file is part of org.kbinani.
  *
@@ -387,6 +387,12 @@ namespace org.kbinani.java.awt {
             width = r.width;
             height = r.height;
         }
+
+#if !JAVA
+        public override string ToString() {
+            return "{x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "}";
+        }
+#endif
     }
 
     public struct Point {

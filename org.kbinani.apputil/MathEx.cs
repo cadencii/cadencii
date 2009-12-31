@@ -1,6 +1,6 @@
 ﻿/*
  * MathEx.cs
- * Copyright (c) 2008 kbinani
+ * Copyright (C) 2008-2010 kbinani
  *
  * This file is part of Boare.Lib.AppUtil.
  *

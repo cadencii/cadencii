@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "GenerateKeySound" )]
-[assembly: AssemblyCopyright( "Copyright (C) 2008-2009 kbinani. All Rights Reserved." )]
+[assembly: AssemblyCopyright( "Copyright (C) 2008-2010 kbinani. All Rights Reserved." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 

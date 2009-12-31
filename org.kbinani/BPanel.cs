@@ -1,6 +1,6 @@
 ﻿/*
  * BPanel.cs
- * Copyright (C) 2009 kbinani
+ * Copyright (C) 2009-2010 kbinani
  *
  * This file is part of org.kbinani.
  *
@@ -16,6 +16,15 @@
 #else
 namespace org.kbinani.windows.forms {
     public class BPanel : System.Windows.Forms.UserControl {
+        #region event impl Enter
+        // root impl of Enter event is in BButton
+        public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
+        protected override void OnEnter( System.EventArgs e ) {
+            base.OnEnter( e );
+            enterEvent.raise( this, e );
+        }
+        #endregion
+
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {

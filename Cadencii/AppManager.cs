@@ -1,6 +1,6 @@
 ﻿/*
  * AppManager.cs
- * Copyright (C) 2009 kbinani
+ * Copyright (C) 2009-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -737,10 +737,6 @@ namespace org.kbinani.cadencii {
         private static BTimer s_auto_backup_timer;
         #endregion
 
-        /// <summary>
-        /// 現在表示されているピアノロール画面の右上の、仮想スクリーン上座標で見たときのy座標(pixel)
-        /// </summary>
-        public static int startToDrawY = 0;
 #if !TREECOM
         private static VsqFileEx s_vsq;
 #endif
