@@ -1008,6 +1008,11 @@ Decrescendo=dim_1,dim_2,dim_3,dim_4,dim_5
                                         String icon_id = preset + PortUtil.formatDecimal( "0000", i );
                                         if ( PortUtil.isFileExists( aic_path ) ){
                                             IconDynamicsHandle handle = new IconDynamicsHandle( aic_path, ids, icon_id, i );
+                                            handle.setButtonImageFullPath( PortUtil.combinePath( section_path, handle.getButton() ) );
+#if DEBUG
+                                            String btn = handle.getButtonImageFullPath();
+                                            PortUtil.println( "ExpressionConfigSys#.ctor; handle.getButtonImageFullPath()=" + btn + "; exists=" + PortUtil.isFileExists( btn ) );
+#endif
                                             m_dynamics_configs.add( handle );
                                         }
                                     }

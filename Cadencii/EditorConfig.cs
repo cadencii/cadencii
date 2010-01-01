@@ -337,6 +337,7 @@ namespace org.kbinani.cadencii {
             new ValuePairOfStringArrayOfKeys( "menuVisualLyrics", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuVisualNoteProperty", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuVisualPitchLine", new BKeys[]{} ),
+            new ValuePairOfStringArrayOfKeys( "menuVisualIconPalette", new BKeys[]{ BKeys.F2 } ),
             new ValuePairOfStringArrayOfKeys( "menuJobNormalize", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuJobInsertBar", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuJobDeleteBar", new BKeys[]{} ),

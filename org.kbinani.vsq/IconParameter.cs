@@ -47,6 +47,8 @@ namespace org.kbinani.vsq{
         protected VibratoBPList depthBP;
         protected VibratoBPList rateBP;
 
+        protected String buttonImageFullPath = "";
+
         protected IconParameter() {
         }
 
@@ -205,6 +207,18 @@ namespace org.kbinani.vsq{
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
             }
+        }
+
+        public String getButton() {
+            return button;
+        }
+        
+        public String getButtonImageFullPath() {
+            return buttonImageFullPath;
+        }
+
+        public void setButtonImageFullPath( String value ) {
+            buttonImageFullPath = value;
         }
     }
 

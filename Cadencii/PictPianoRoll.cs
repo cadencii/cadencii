@@ -675,15 +675,29 @@ namespace org.kbinani.cadencii {
                             SelectedEventEntry ev = (SelectedEventEntry)itr.next();
                             int x = (int)(ev.editing.Clock * scalex + xoffset);
                             y = -ev.editing.ID.Note * track_height + yoffset + 1;
-                            if ( ev.editing.ID.getLength() == 0 ) {
-                                g.setColor( new Color( 171, 171, 171 ) );
-                                g.setStroke( s_pen_dashed_171_171_171 );
-                                g.drawRect( x, y, 10, track_height - 1 );
-                                g.setStroke( new BasicStroke() );
-                            } else {
-                                int length = (int)(ev.editing.ID.getLength() * scalex);
+                            if ( ev.editing.ID.type == VsqIDType.Aicon ) {
+                                if ( ev.editing.ID.IconDynamicsHandle == null ) {
+                                    continue;
+                                }
+                                int length = 0;
+                                if ( ev.editing.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                                    length = AppManager.DYNAFF_ITEM_WIDTH;
+                                } else {
+                                    length = (int)(ev.editing.ID.getLength() * scalex);
+                                }
                                 g.setColor( s_pen_a136_000_000_000 );
                                 g.drawRect( x, y, length, track_height - 1 );
+                            } else {
+                                if ( ev.editing.ID.getLength() == 0 ) {
+                                    g.setColor( new Color( 171, 171, 171 ) );
+                                    g.setStroke( s_pen_dashed_171_171_171 );
+                                    g.drawRect( x, y, 10, track_height - 1 );
+                                    g.setStroke( new BasicStroke() );
+                                } else {
+                                    int length = (int)(ev.editing.ID.getLength() * scalex);
+                                    g.setColor( s_pen_a136_000_000_000 );
+                                    g.drawRect( x, y, length, track_height - 1 );
+                                }
                             }
                         }
 

@@ -32,6 +32,16 @@ namespace org.kbinani.vsq {
         public int Tempo;
         public double Time;
 
+        public String toString() {
+            return "{Clock=" + Clock + ", Tempo=" + Tempo + ", Time=" + Time + "}";
+        }
+
+#if !JAVA
+        public override string ToString() {
+            return toString();
+        }
+#endif
+
         public Object clone() {
             return new TempoTableEntry( Clock, Tempo, Time );
         }

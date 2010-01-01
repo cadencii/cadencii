@@ -30,6 +30,7 @@ using org.kbinani.apputil;
 using org.kbinani.vsq;
 using org.kbinani;
 using org.kbinani.java.util;
+using org.kbinani.javax.swing;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
@@ -60,6 +61,10 @@ namespace org.kbinani.cadencii {
         public event MuteChangedEventHandler MuteChanged;
         public event TopMostChangedEventHandler TopMostChanged;
 #endif
+
+        public void applyShortcut( KeyStroke shortcut ) {
+            menuVisualReturn.setAccelerator( shortcut );
+        }
 
         public void applyLanguage() {
             setTitle( _( "Mixer" ) );

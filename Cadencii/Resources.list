@@ -45,3 +45,13 @@ target__pencil	Image	.\resources\target--pencil.png
 VSTonWht	Image	.\resources\VSTonWht.png
 icon	Icon	.\resources\icon.ico
 switch	Icon	.\resources\switch.ico
+cresc1	Image	.\resources\cresc1.png
+cresc2	Image	.\resources\cresc2.png
+cresc3	Image	.\resources\cresc3.png
+cresc4	Image	.\resources\cresc4.png
+cresc5	Image	.\resources\cresc5.png
+dim1	Image	.\resources\dim1.png
+dim2	Image	.\resources\dim2.png
+dim3	Image	.\resources\dim3.png
+dim4	Image	.\resources\dim4.png
+dim5	Image	.\resources\dim5.png

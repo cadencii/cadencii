@@ -550,6 +550,10 @@ extern "C" {
         }
         waveplay::reset();
     }
+
+    void SoundTerminate(){
+        waveplay::terminate();
+    }
 }
 
 int main(){

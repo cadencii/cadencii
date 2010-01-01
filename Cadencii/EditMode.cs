@@ -71,6 +71,10 @@ namespace org.kbinani.cadencii {
         /// リアルタイム音符入力
         /// </summary>
         REALTIME,
+        /// <summary>
+        /// アイコンパレットのアイテムをドラッグ＆ドロップ中
+        /// </summary>
+        DRAG_DROP,
     }
 
 #if !JAVA

@@ -89,6 +89,15 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        #region event impl MouseMove
+        // root impl of MouseMove event is in BButton
+        public BEvent<BMouseEventHandler> mouseMoveEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseMove( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseMove( mevent );
+            mouseMoveEvent.raise( this, mevent );
+        }
+        #endregion
+
         public BForm()
             : base() {
         }
@@ -420,6 +429,10 @@ namespace org.kbinani.windows.forms {
         // root implementation of java.awt.Window
         #region java.awt.Window
         // root implementation of java.awt.Window is in BForm.cs
+        public void toFront() {
+            base.BringToFront();
+        }
+        
         public void setAlwaysOnTop( boolean alwaysOnTop ) {
             base.TopMost = alwaysOnTop;
         }

@@ -61,6 +61,9 @@ namespace org.kbinani.cadencii {
 
         [DllImport( "PlaySound" )]
         private static extern void SoundSetResolution( int resolution );
+
+        [DllImport( "PlaySound" )]
+        private static extern void SoundTerminate();
 #endif
 
         private static Object synchronizer = new Object();
@@ -73,11 +76,18 @@ namespace org.kbinani.cadencii {
         private static int loc = 0;
         private static Thread listener = null;
 
+        public static void terminate() {
+            try {
+                SoundTerminate();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "PlaySound#terminate; ex=" + ex );
+            }
+        }
+
         private static void listenerProc() {
             while ( true ) {
                 try {
                     Thread.Sleep( 100 );
-
                 } catch ( ThreadInterruptedException ex ) {
                     PortUtil.stderr.println( "WaveBufferAdapter#listenerProc; ex=" + ex );
                     break;
@@ -129,7 +139,8 @@ namespace org.kbinani.cadencii {
 #else
             try {
                 SoundWaitForExit();
-            } catch {
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "PlaySound#waitForExit; ex=" + ex );
             }
 #endif
         }
@@ -155,9 +166,9 @@ namespace org.kbinani.cadencii {
                 SoundSetResolution( VSTiProxy.BLOCK_SIZE );
                 s_initialized = true;
             } catch ( Exception ex ) {
-                org.kbinani.debug.push_log( "PlaySound.Init; ex=" + ex );
+                PortUtil.stderr.println( "PlaySound.Init; ex=" + ex );
             }
-            capacity = capacity_samples;
+            /*capacity = capacity_samples;
             numBuffer = num_buffer;
             left = new double[numBuffer][];
             right = new double[numBuffer][];
@@ -167,7 +178,7 @@ namespace org.kbinani.cadencii {
             }
             listener = new Thread( new ThreadStart( listenerProc ) );
             listener.IsBackground = true;
-            listener.Start();
+            listener.Start();*/
 #endif
         }
 
@@ -206,7 +217,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
             } catch ( Exception ex ) {
-                org.kbinani.debug.push_log( "PlaySound#Append; ex=" + ex );
+                PortUtil.stderr.println( "PlaySound#Append; ex=" + ex );
             }
 #endif
         }
@@ -219,9 +230,7 @@ namespace org.kbinani.cadencii {
             try {
                 ret = SoundGetPosition();
             } catch ( Exception ex ) {
-#if DEBUG
-                org.kbinani.debug.push_log( "PlaySound.GetPosition; ex=" + ex );
-#endif
+                PortUtil.stderr.println( "PlaySound.GetPosition; ex=" + ex );
             }
             return ret;
 #endif
@@ -238,15 +247,14 @@ namespace org.kbinani.cadencii {
                 m_line.open( m_format );
                 m_line.start();
             }catch( Exception ex ){
+                PortUtil.stderr.println( "PlaySound#reset; ex=" + ex );
                 m_line = null;
             }
 #else
             try {
                 SoundReset();
             } catch ( Exception ex ) {
-#if DEBUG
-                org.kbinani.debug.push_log( "PlaySound.Reset; ex=" + ex );
-#endif
+                PortUtil.stderr.println( "PlaySound.Reset; ex=" + ex );
             }
 #endif
         }

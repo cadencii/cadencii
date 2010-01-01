@@ -4,11 +4,11 @@ CP=cp
 
 #Cadencii.exe: bocoree.dll Boare.Lib.Media.dll vstildr.dll vstidrv.dll Boare.Lib.AppUtil.dll Boare.Lib.Vsq.dll
 
-Cadencii.exe: bocoree.dll Boare.Lib.Media.dll Boare.Lib.Vsq.dll Boare.Lib.AppUtil.dll
+Cadencii.exe: org.kbinani.dll org.kbinani.media.dll org.kbinani.vsq.dll org.kbinani.apputil.dll
 	gmcs $(OPT) -unsafe+ -recurse:*.cs -target:exe -out:Cadencii.exe -warn:0 -define:MONO -define:USE_DOBJ -codepage:utf8 \
 	     -define:ENABLE_VOCALOID;ENABLE_AQUESTONE;ENABLE_MIDI \
 	     -r:System.Windows.Forms,System.Drawing \
-	     -r:Boare.Lib.Media.dll,Boare.Lib.Vsq.dll,Boare.Lib.AppUtil.dll,bocoree.dll
+	     -r:org.kbinani.media.dll,org.kbinani.vsq.dll,org.kbinani.apputil.dll,org.kbinani.dll
 
 FormMain.resources: FormMain.resx EditResx.pl
 	perl EditResx.pl FormMain.resx

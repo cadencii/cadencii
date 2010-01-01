@@ -878,6 +878,186 @@ namespace org.kbinani.cadencii{
             return s_switch;
         }
 
+        private static Image s_cresc1 = null;
+        public static Image get_cresc1(){
+            if( s_cresc1 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "cresc1.png" );
+#if JAVA
+                    s_cresc1 = ImageIO.read( new File( res_path ) );
+#else
+                    s_cresc1 = new Image();
+                    s_cresc1.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_cresc1; ex=" + ex );
+                }
+            }
+            return s_cresc1;
+        }
+
+        private static Image s_cresc2 = null;
+        public static Image get_cresc2(){
+            if( s_cresc2 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "cresc2.png" );
+#if JAVA
+                    s_cresc2 = ImageIO.read( new File( res_path ) );
+#else
+                    s_cresc2 = new Image();
+                    s_cresc2.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_cresc2; ex=" + ex );
+                }
+            }
+            return s_cresc2;
+        }
+
+        private static Image s_cresc3 = null;
+        public static Image get_cresc3(){
+            if( s_cresc3 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "cresc3.png" );
+#if JAVA
+                    s_cresc3 = ImageIO.read( new File( res_path ) );
+#else
+                    s_cresc3 = new Image();
+                    s_cresc3.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_cresc3; ex=" + ex );
+                }
+            }
+            return s_cresc3;
+        }
+
+        private static Image s_cresc4 = null;
+        public static Image get_cresc4(){
+            if( s_cresc4 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "cresc4.png" );
+#if JAVA
+                    s_cresc4 = ImageIO.read( new File( res_path ) );
+#else
+                    s_cresc4 = new Image();
+                    s_cresc4.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_cresc4; ex=" + ex );
+                }
+            }
+            return s_cresc4;
+        }
+
+        private static Image s_cresc5 = null;
+        public static Image get_cresc5(){
+            if( s_cresc5 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "cresc5.png" );
+#if JAVA
+                    s_cresc5 = ImageIO.read( new File( res_path ) );
+#else
+                    s_cresc5 = new Image();
+                    s_cresc5.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_cresc5; ex=" + ex );
+                }
+            }
+            return s_cresc5;
+        }
+
+        private static Image s_dim1 = null;
+        public static Image get_dim1(){
+            if( s_dim1 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "dim1.png" );
+#if JAVA
+                    s_dim1 = ImageIO.read( new File( res_path ) );
+#else
+                    s_dim1 = new Image();
+                    s_dim1.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_dim1; ex=" + ex );
+                }
+            }
+            return s_dim1;
+        }
+
+        private static Image s_dim2 = null;
+        public static Image get_dim2(){
+            if( s_dim2 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "dim2.png" );
+#if JAVA
+                    s_dim2 = ImageIO.read( new File( res_path ) );
+#else
+                    s_dim2 = new Image();
+                    s_dim2.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_dim2; ex=" + ex );
+                }
+            }
+            return s_dim2;
+        }
+
+        private static Image s_dim3 = null;
+        public static Image get_dim3(){
+            if( s_dim3 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "dim3.png" );
+#if JAVA
+                    s_dim3 = ImageIO.read( new File( res_path ) );
+#else
+                    s_dim3 = new Image();
+                    s_dim3.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_dim3; ex=" + ex );
+                }
+            }
+            return s_dim3;
+        }
+
+        private static Image s_dim4 = null;
+        public static Image get_dim4(){
+            if( s_dim4 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "dim4.png" );
+#if JAVA
+                    s_dim4 = ImageIO.read( new File( res_path ) );
+#else
+                    s_dim4 = new Image();
+                    s_dim4.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_dim4; ex=" + ex );
+                }
+            }
+            return s_dim4;
+        }
+
+        private static Image s_dim5 = null;
+        public static Image get_dim5(){
+            if( s_dim5 == null ){
+                try{
+                    String res_path = PortUtil.combinePath( getBasePath(), "dim5.png" );
+#if JAVA
+                    s_dim5 = ImageIO.read( new File( res_path ) );
+#else
+                    s_dim5 = new Image();
+                    s_dim5.image = new System.Drawing.Bitmap( res_path );
+#endif
+                }catch( Exception ex ){
+                    PortUtil.stderr.println( "Resources#get_dim5; ex=" + ex );
+                }
+            }
+            return s_dim5;
+        }
+
     }
 #if !JAVA
 }

@@ -72,6 +72,10 @@ namespace org.kbinani.cadencii {
         public const int CANCEL_OPTION = 2;
         public const int OK_OPTION = 0;
         public const int CLOSED_OPTION = -1;
+        /// <summary>
+        /// 強弱記号の，ピアノロール画面上の表示幅（ピクセル）
+        /// </summary>
+        public const int DYNAFF_ITEM_WIDTH = 40;
 
         /// <summary>
         /// 鍵盤の表示幅(pixel)
@@ -109,6 +113,7 @@ namespace org.kbinani.cadencii {
         public static PropertyPanel propertyPanel;
         public static FormNoteProperty propertyWindow;
 #endif
+        public static FormIconPalette iconPalette = null;
 
         #region Static Readonly Fields
         public static readonly Color[] HILIGHT = new Color[] { 

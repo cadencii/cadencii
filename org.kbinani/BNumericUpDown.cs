@@ -57,7 +57,7 @@ namespace org.kbinani.windows.forms {
 
         public float getValue() {
             float v = (float)base.Value;
-            return v + (float)minimumStep * 0.1f;
+            return v;// +(float)minimumStep;
         }
 
         public void setValue( float value ) {

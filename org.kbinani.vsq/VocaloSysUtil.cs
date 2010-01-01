@@ -81,17 +81,13 @@ namespace org.kbinani.vsq {
                 s_path_vsti.put( SynthesizerType.VOCALOID1, path_vsti.value );
                 s_path_editor.put( SynthesizerType.VOCALOID1, path_editor.value );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( path_voicedb1.value, installed_singers1.toArray( new String[] { } ) );
-#if DEBUG
                 String expression_map = PortUtil.combinePath( path_expdb1.value, "expression.map" );
-                PortUtil.stdout.println( "VocaloSysUtil#.ctor; expression_map=" + expression_map );
-                PortUtil.stdout.println( "VocaloSysUtil#.ctor; isFileExists( expression_map )=" + PortUtil.isFileExists( expression_map ) );
-#endif
                 if ( PortUtil.isFileExists( expression_map ) ) {
                     exp_config_sys1 = new ExpressionConfigSys( path_editor.value, path_expdb1.value );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
             } catch ( Exception ex ) {
-                PortUtil.println( "VocaloSysUtil#.cctor; ex=" + ex );
+                PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys1 = null;
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
@@ -118,11 +114,13 @@ namespace org.kbinani.vsq {
                         sw.newLine();
                     }
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
                 } finally {
                     if ( sw != null ) {
                         try {
                             sw.close();
                         } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex2=" + ex2 );
                         }
                     }
                 }
@@ -144,7 +142,7 @@ namespace org.kbinani.vsq {
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
             } catch ( Exception ex ) {
-                PortUtil.println( "VocaloSysUtil..cctor; ex=" + ex );
+                PortUtil.stderr.println( "VocaloSysUtil..cctor; ex=" + ex );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys2 = null;
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );

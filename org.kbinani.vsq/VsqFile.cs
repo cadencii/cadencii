@@ -1299,34 +1299,29 @@ namespace org.kbinani.vsq {
             int dclock = clock_end - clock_start;
 
             // テンポ情報の削除、シフト
+            int tempoAtClockEnd = getTempoAt( clock_end );
             boolean changed = true;
-            Vector<TempoTableEntry> buf = new Vector<TempoTableEntry>( TempoTable );
-            int tempo_at_clock_start = getTempoAt( clock_start );
-            int tempo_at_clock_end = getTempoAt( clock_end );
-            TempoTable.clear();
-            boolean just_on_clock_end_added = false;
-            for ( int i = 0; i < buf.size(); i++ ) {
-                if ( buf.get( i ).Clock < clock_start ) {
-                    TempoTable.add( (TempoTableEntry)buf.get( i ).clone() );
-                } else if ( clock_end <= buf.get( i ).Clock ) {
-                    TempoTableEntry tte = (TempoTableEntry)buf.get( i ).clone();
-                    tte.Clock = tte.Clock - dclock;
-                    if ( clock_end == buf.get( i ).Clock ) {
-                        TempoTable.add( tte );
-                        just_on_clock_end_added = true;
-                    } else {
-                        if ( tempo_at_clock_start != tempo_at_clock_end ) {
-                            if ( !just_on_clock_end_added ) {
-                                TempoTable.add( new TempoTableEntry( clock_start, tempo_at_clock_end, 0.0 ) );
-                                just_on_clock_end_added = true;
-                            }
-                        }
-                        TempoTable.add( tte );
-                    }
+            for( int i = 0; i < TempoTable.size() ; ){
+                TempoTableEntry itemi = TempoTable.get( i );
+                if ( clock_start <= itemi.Clock && itemi.Clock < clock_end ) {
+                    TempoTable.removeElementAt( i );
+                } else {
+                    i++;
                 }
             }
-            if ( tempo_at_clock_start != tempo_at_clock_end && !just_on_clock_end_added ) {
-                TempoTable.add( new TempoTableEntry( clock_start, tempo_at_clock_end, 0.0 ) );
+            // clock_end => clock_startに変わるので，この位置におけるテンポ変更が欠けてないかどうかを検査
+            int count = TempoTable.size();
+            boolean contains_clock_start_tempo = false;
+            for ( int i = 0; i < count; i++ ) {
+                TempoTableEntry itemi = TempoTable.get( i );
+                if ( itemi.Clock == clock_start ) {
+                    itemi.Tempo = tempoAtClockEnd;
+                    contains_clock_start_tempo = true;
+                    break;
+                }
+            }
+            if ( !contains_clock_start_tempo ) {
+                TempoTable.add( new TempoTableEntry( clock_start, tempoAtClockEnd, 0.0 ) );
             }
             updateTempoInfo();
 

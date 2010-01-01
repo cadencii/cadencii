@@ -464,6 +464,10 @@ namespace org.kbinani.cadencii {
         public BTimer timer;
         public BBackgroundWorker bgWorkScreen;
         public WaveView waveView;
+        /// <summary>
+        /// アイコンパレットのドラッグ＆ドロップ処理中，一度でもpictPianoRoll内にマウスが入ったかどうか
+        /// </summary>
+        private boolean iconPaletteOnceDragEntered = false;
         #endregion
 
         public FormMain() {
@@ -2301,6 +2305,9 @@ namespace org.kbinani.cadencii {
         }
 
         public void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e ) {
+#if DEBUG
+            PortUtil.println( "FormMain#pictPianoRoll_MouseMove; edit_mode=" + AppManager.getEditMode() );
+#endif
             if ( m_form_activated ) {
 #if ENABLE_PROPERTY
 #if JAVA
@@ -2407,7 +2414,10 @@ namespace org.kbinani.cadencii {
                 }
                 int draft = (int)d_draft;
                 if ( hScroll.getMaximum() < draft ) {
-                    if ( edit_mode == EditMode.ADD_ENTRY || edit_mode == EditMode.MOVE_ENTRY || edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
+                    if ( edit_mode == EditMode.ADD_ENTRY || 
+                         edit_mode == EditMode.MOVE_ENTRY || 
+                         edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
+                         edit_mode == EditMode.DRAG_DROP ) {
                         hScroll.setMaximum( draft );
                     } else {
                         draft = hScroll.getMaximum();
@@ -3305,6 +3315,18 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
+        public void menuVisualIconPalette_CheckedChanged( Object sender, EventArgs e ) {
+            if ( AppManager.iconPalette == null ) {
+                AppManager.iconPalette = new FormIconPalette();
+                AppManager.iconPalette.formClosingEvent.add( new BFormClosingEventHandler( this, "IconPalette_FormClosing" ) );
+            }
+            AppManager.iconPalette.setVisible( menuVisualIconPalette.isSelected() );
+        }
+
+        public void IconPalette_FormClosing( Object sender, BFormClosingEventArgs e ) {
+            menuVisualIconPalette.setSelected( false );
+        }
+
         public void menuVisualLyrics_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.editorConfig.ShowLyric = menuVisualLyrics.isSelected();
         }
@@ -3574,6 +3596,7 @@ namespace org.kbinani.cadencii {
 #if ENABLE_MIDI
             MidiPlayer.Stop();
 #endif
+            PlaySound.terminate();
         }
 
         public void FormMain_FormClosing( Object sender, BFormClosingEventArgs e ) {
@@ -3973,18 +3996,27 @@ namespace org.kbinani.cadencii {
                 AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
 #endif
                 AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
+                if ( AppManager.iconPalette != null ) {
+                    AppManager.iconPalette.setVisible( true );
+                }
                 updateLayout();
             } else if ( getExtendedState() == BForm.ICONIFIED ) {
 #if ENABLE_PROPERTY
                 AppManager.propertyWindow.setVisible( false );
 #endif
                 AppManager.mixerWindow.setVisible( false );
+                if ( AppManager.iconPalette != null ) {
+                    AppManager.iconPalette.setVisible( false );
+                }
             } else if ( getExtendedState() == BForm.MAXIMIZED_BOTH ) {
 #if ENABLE_PROPERTY
                 AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
                 AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
 #endif
                 AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
+                if ( AppManager.iconPalette != null ) {
+                    AppManager.iconPalette.setVisible( true );
+                }
             }
         }
 
@@ -6469,132 +6501,304 @@ namespace org.kbinani.cadencii {
             if ( e.Button == BMouseButtons.Left ) {
                 if ( 18 < e.Y && e.Y <= 32 ) {
                     #region テンポの変更
-                    int index = -1;
-                    for ( int i = 0; i < AppManager.getVsqFile().TempoTable.size(); i++ ) {
-                        int clock = AppManager.getVsqFile().TempoTable.get( i ).Clock;
-                        int x = AppManager.xCoordFromClocks( clock );
-                        if ( x < 0 ) {
-                            continue;
-                        } else if ( getWidth() < x ) {
-                            break;
-                        }
-                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
-                        Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 ) );
-                        if ( isInRect( new Point( e.X, e.Y ), new Rectangle( x, 14, (int)size.width, 14 ) ) ) {
-                            index = i;
-                            break;
-                        }
-                    }
-
-                    if ( index < 0 ) {
-                        return;
-                    }
-
-                    TempoTableEntry tte = AppManager.getVsqFile().TempoTable.get( index );
-                    AppManager.clearSelectedTempo();
-                    AppManager.addSelectedTempo( tte.Clock );
-                    int bar_count = AppManager.getVsqFile().getBarCountFromClock( tte.Clock );
-                    int bar_top_clock = AppManager.getVsqFile().getClockFromBarCount( bar_count );
-                    //int local_denominator, local_numerator;
-                    Timesig timesig = AppManager.getVsqFile().getTimesigAt( tte.Clock );
-                    int clock_per_beat = 480 * 4 / timesig.denominator;
-                    int clocks_in_bar = tte.Clock - bar_top_clock;
-                    int beat_in_bar = clocks_in_bar / clock_per_beat + 1;
-                    int clocks_in_beat = clocks_in_bar - (beat_in_bar - 1) * clock_per_beat;
-                    FormTempoConfig dlg = null;
-                    try {
-                        dlg = new FormTempoConfig( bar_count, beat_in_bar, timesig.numerator, clocks_in_beat, clock_per_beat, (float)(6e7 / tte.Tempo), AppManager.getVsqFile().getPreMeasure() );
-                        dlg.setLocation( getFormPreferedLocation( dlg ) );
-                        if ( dlg.showDialog() == BDialogResult.OK ) {
-                            int new_beat = dlg.getBeatCount();
-                            int new_clocks_in_beat = dlg.getClock();
-                            int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
-                            CadenciiCommand run = new CadenciiCommand(
-                                VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                            setEdited( true );
-                            refreshScreen();
-                        }
-                    } catch ( Exception ex ) {
-                    } finally {
-                        if ( dlg != null ) {
-                            try {
-                                dlg.close();
-                            } catch ( Exception ex2 ) {
+#if DEBUG
+                    AppManager.debugWriteLine( "TempoChange" );
+#endif
+                    AppManager.clearSelectedEvent();
+                    AppManager.clearSelectedTimesig();
+                    if ( AppManager.getSelectedTempoCount() > 0 ) {
+                        #region テンポ変更があった場合
+                        int index = -1;
+                        int clock = AppManager.getLastSelectedTempoClock();
+                        for ( int i = 0; i < AppManager.getVsqFile().TempoTable.size(); i++ ) {
+                            if ( clock == AppManager.getVsqFile().TempoTable.get( i ).Clock ) {
+                                index = i;
+                                break;
                             }
                         }
+                        if ( index >= 0 ) {
+                            if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
+                                #region ツールがEraser
+                                if ( AppManager.getVsqFile().TempoTable.get( index ).Clock == 0 ) {
+                                    statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
+                                    SystemSounds.Asterisk.Play();
+#endif
+                                    return;
+                                }
+                                CadenciiCommand run = new CadenciiCommand(
+                                    VsqCommand.generateCommandUpdateTempo( AppManager.getVsqFile().TempoTable.get( index ).Clock,
+                                                                 AppManager.getVsqFile().TempoTable.get( index ).Clock,
+                                                                 -1 ) );
+                                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                setEdited( true );
+                                #endregion
+                            } else {
+                                #region ツールがEraser以外
+                                TempoTableEntry tte = AppManager.getVsqFile().TempoTable.get( index );
+                                AppManager.clearSelectedTempo();
+                                AppManager.addSelectedTempo( tte.Clock );
+                                int bar_count = AppManager.getVsqFile().getBarCountFromClock( tte.Clock );
+                                int bar_top_clock = AppManager.getVsqFile().getClockFromBarCount( bar_count );
+                                //int local_denominator, local_numerator;
+                                Timesig timesig = AppManager.getVsqFile().getTimesigAt( tte.Clock );
+                                int clock_per_beat = 480 * 4 / timesig.denominator;
+                                int clocks_in_bar = tte.Clock - bar_top_clock;
+                                int beat_in_bar = clocks_in_bar / clock_per_beat + 1;
+                                int clocks_in_beat = clocks_in_bar - (beat_in_bar - 1) * clock_per_beat;
+                                FormTempoConfig dlg = null;
+                                try {
+                                    dlg = new FormTempoConfig( bar_count, beat_in_bar, timesig.numerator, clocks_in_beat, clock_per_beat, (float)(6e7 / tte.Tempo), AppManager.getVsqFile().getPreMeasure() );
+                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
+                                    if ( dlg.showDialog() == BDialogResult.OK ) {
+                                        int new_beat = dlg.getBeatCount();
+                                        int new_clocks_in_beat = dlg.getClock();
+                                        int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
+                                        CadenciiCommand run = new CadenciiCommand(
+                                            VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                        setEdited( true );
+                                        refreshScreen();
+                                    }
+                                } catch ( Exception ex ) {
+                                    PortUtil.stderr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex=" + ex );
+                                } finally {
+                                    if ( dlg != null ) {
+                                        try {
+                                            dlg.close();
+                                        } catch ( Exception ex2 ) {
+                                            PortUtil.stderr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex2=" + ex2 );
+                                        }
+                                    }
+                                }
+                                #endregion
+                            }
+                        }
+                        #endregion
+                    } else {
+                        #region テンポ変更がなかった場合
+                        AppManager.clearSelectedEvent();
+                        AppManager.clearSelectedTempo();
+                        AppManager.clearSelectedTimesig();
+                        EditTool selected = AppManager.getSelectedTool();
+                        if ( selected == EditTool.PENCIL ||
+                            selected == EditTool.LINE ) {
+                            int changing_clock = AppManager.clockFromXCoord( e.X );
+                            int changing_tempo = AppManager.getVsqFile().getTempoAt( changing_clock );
+                            int bar_count;
+                            int bar_top_clock;
+                            int local_denominator, local_numerator;
+                            bar_count = AppManager.getVsqFile().getBarCountFromClock( changing_clock );
+                            bar_top_clock = AppManager.getVsqFile().getClockFromBarCount( bar_count );
+                            int index2 = -1;
+                            for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
+                                if ( AppManager.getVsqFile().TimesigTable.get( i ).BarCount > bar_count ) {
+                                    index2 = i;
+                                    break;
+                                }
+                            }
+                            if ( index2 >= 1 ) {
+                                local_denominator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Denominator;
+                                local_numerator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Numerator;
+                            } else {
+                                local_denominator = AppManager.getVsqFile().TimesigTable.get( 0 ).Denominator;
+                                local_numerator = AppManager.getVsqFile().TimesigTable.get( 0 ).Numerator;
+                            }
+                            int clock_per_beat = 480 * 4 / local_denominator;
+                            int clocks_in_bar = changing_clock - bar_top_clock;
+                            int beat_in_bar = clocks_in_bar / clock_per_beat + 1;
+                            int clocks_in_beat = clocks_in_bar - (beat_in_bar - 1) * clock_per_beat;
+                            FormTempoConfig dlg = null;
+                            try {
+                                dlg = new FormTempoConfig( bar_count - AppManager.getVsqFile().getPreMeasure() + 1,
+                                                           beat_in_bar,
+                                                           local_numerator,
+                                                           clocks_in_beat,
+                                                           clock_per_beat,
+                                                           (float)(6e7 / changing_tempo),
+                                                           AppManager.getVsqFile().getPreMeasure() );
+                                dlg.setLocation( getFormPreferedLocation( dlg ) );
+                                if ( dlg.showDialog() == BDialogResult.OK ) {
+                                    int new_beat = dlg.getBeatCount();
+                                    int new_clocks_in_beat = dlg.getClock();
+                                    int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
+#if DEBUG
+                                    AppManager.debugWriteLine( "    new_beat=" + new_beat );
+                                    AppManager.debugWriteLine( "    new_clocks_in_beat=" + new_clocks_in_beat );
+                                    AppManager.debugWriteLine( "    changing_clock=" + changing_clock );
+                                    AppManager.debugWriteLine( "    new_clock=" + new_clock );
+#endif
+                                    CadenciiCommand run = new CadenciiCommand(
+                                        VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
+                                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                    setEdited( true );
+                                    refreshScreen();
+                                }
+                            } catch ( Exception ex ) {
+                            } finally {
+                                if ( dlg != null ) {
+                                    try {
+                                        dlg.close();
+                                    } catch ( Exception ex2 ) {
+                                    }
+                                }
+                            }
+                        }
+                        #endregion
                     }
-
+                    m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
                     #endregion
                 } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
                     #region 拍子の変更
-                    int index = -1;
-                    // クリック位置に拍子が表示されているかどうか検査
-                    for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
-                        String s = AppManager.getVsqFile().TimesigTable.get( i ).Numerator + "/" + AppManager.getVsqFile().TimesigTable.get( i ).Denominator;
-                        int x = AppManager.xCoordFromClocks( AppManager.getVsqFile().TimesigTable.get( i ).Clock );
-                        Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 ) );
-                        if ( isInRect( new Point( e.X, e.Y ), new Rectangle( x, 28, (int)size.width, 14 ) ) ) {
-                            index = i;
-                            break;
+                    AppManager.clearSelectedEvent();
+                    AppManager.clearSelectedTempo();
+                    if ( AppManager.getSelectedTimesigCount() > 0 ) {
+                        #region 拍子変更があった場合
+                        int index = 0;
+                        int last_barcount = AppManager.getLastSelectedTimesigBarcount();
+                        for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
+                            if ( AppManager.getVsqFile().TimesigTable.get( i ).BarCount == last_barcount ) {
+                                index = i;
+                                break;
+                            }
                         }
-                    }
-
-                    if ( index < 0 ) {
-                        return;
-                    }
-
-                    int pre_measure = AppManager.getVsqFile().getPreMeasure();
-                    int clock = AppManager.clockFromXCoord( e.X );
-                    int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
-                    //int numerator, denominator;
-                    int total_clock = AppManager.getVsqFile().TotalClocks;
-                    //int max_barcount = AppManager.VsqFile.getBarCountFromClock( total_clock );
-                    //int min_barcount = 1 - pre_measure;
-                    Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
-                    boolean num_enabled = !(bar_count == 0);
-                    FormBeatConfig dlg = null;
-                    try {
-                        dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, num_enabled, pre_measure );
-                        dlg.setLocation( getFormPreferedLocation( dlg ) );
-                        if ( dlg.showDialog() == BDialogResult.OK ) {
-                            if ( dlg.isEndSpecified() ) {
-                                int[] new_barcounts = new int[2];
-                                int[] numerators = new int[2];
-                                int[] denominators = new int[2];
-                                int[] barcounts = new int[2];
-                                new_barcounts[0] = dlg.getStart() + pre_measure - 1;
-                                new_barcounts[1] = dlg.getEnd() + pre_measure - 1;
-                                numerators[0] = dlg.getNumerator();
-                                denominators[0] = dlg.getDenominator();
-                                numerators[1] = timesig.numerator;
-                                denominators[1] = timesig.denominator;
-                                barcounts[0] = bar_count;
-                                barcounts[1] = dlg.getEnd() + pre_measure - 1;
-                                CadenciiCommand run = new CadenciiCommand(
-                                    VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
-                                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                                setEdited( true );
-                            } else {
-#if DEBUG
-                                PortUtil.println( "picturePositionIndicator_MouseDoubleClick" );
-                                PortUtil.println( "    bar_count=" + bar_count );
-                                PortUtil.println( "    dlg.Start+pre_measure-1=" + (dlg.getStart() + pre_measure - 1) );
+                        if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
+                            #region ツールがEraser
+                            if ( AppManager.getVsqFile().TimesigTable.get( index ).Clock == 0 ) {
+                                statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
+                                SystemSounds.Asterisk.Play();
 #endif
-                                CadenciiCommand run = new CadenciiCommand(
-                                    VsqCommand.generateCommandUpdateTimesig( bar_count, dlg.getStart() + pre_measure - 1, dlg.getNumerator(), dlg.getDenominator() ) );
-                                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                                setEdited( true );
+                                return;
                             }
-                        }
-                    } catch ( Exception ex ) {
-                    } finally {
-                        if ( dlg != null ) {
+                            int barcount = AppManager.getVsqFile().TimesigTable.get( index ).BarCount;
+                            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTimesig( barcount, barcount, -1, -1 ) );
+                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                            setEdited( true );
+                            #endregion
+                        } else {
+                            #region ツールがEraser以外
+                            int pre_measure = AppManager.getVsqFile().getPreMeasure();
+                            int clock = AppManager.clockFromXCoord( e.X );
+                            int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
+                            //int numerator, denominator;
+                            int total_clock = AppManager.getVsqFile().TotalClocks;
+                            //int max_barcount = AppManager.VsqFile.getBarCountFromClock( total_clock );
+                            //int min_barcount = 1 - pre_measure;
+                            Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
+                            boolean num_enabled = !(bar_count == 0);
+                            FormBeatConfig dlg = null;
                             try {
-                                dlg.close();
-                            } catch ( Exception ex2 ) {
+                                dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, num_enabled, pre_measure );
+                                dlg.setLocation( getFormPreferedLocation( dlg ) );
+                                if ( dlg.showDialog() == BDialogResult.OK ) {
+                                    if ( dlg.isEndSpecified() ) {
+                                        int[] new_barcounts = new int[2];
+                                        int[] numerators = new int[2];
+                                        int[] denominators = new int[2];
+                                        int[] barcounts = new int[2];
+                                        new_barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                        new_barcounts[1] = dlg.getEnd() + pre_measure - 1;
+                                        numerators[0] = dlg.getNumerator();
+                                        denominators[0] = dlg.getDenominator();
+                                        numerators[1] = timesig.numerator;
+                                        denominators[1] = timesig.denominator;
+                                        barcounts[0] = bar_count;
+                                        barcounts[1] = dlg.getEnd() + pre_measure - 1;
+                                        CadenciiCommand run = new CadenciiCommand(
+                                            VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                        setEdited( true );
+                                    } else {
+#if DEBUG
+                                        PortUtil.println( "picturePositionIndicator_MouseDoubleClick" );
+                                        PortUtil.println( "    bar_count=" + bar_count );
+                                        PortUtil.println( "    dlg.Start+pre_measure-1=" + (dlg.getStart() + pre_measure - 1) );
+#endif
+                                        CadenciiCommand run = new CadenciiCommand(
+                                            VsqCommand.generateCommandUpdateTimesig( bar_count, dlg.getStart() + pre_measure - 1, dlg.getNumerator(), dlg.getDenominator() ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                        setEdited( true );
+                                    }
+                                }
+                            } catch ( Exception ex ) {
+                                PortUtil.stderr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex=" + ex );
+                            } finally {
+                                if ( dlg != null ) {
+                                    try {
+                                        dlg.close();
+                                    } catch ( Exception ex2 ) {
+                                        PortUtil.stderr.println( "FormMain#picturePositionIndicator_MouseDoubleClic; ex2=" + ex2 );
+                                    }
+                                }
+                            }
+                            #endregion
+                        }
+                        #endregion
+                    } else {
+                        #region 拍子変更がなかった場合
+                        AppManager.clearSelectedEvent();
+                        AppManager.clearSelectedTempo();
+                        AppManager.clearSelectedTimesig();
+                        EditTool selected = AppManager.getSelectedTool();
+                        if ( selected == EditTool.PENCIL ||
+                            selected == EditTool.LINE ) {
+                            int pre_measure = AppManager.getVsqFile().getPreMeasure();
+                            int clock = AppManager.clockFromXCoord( e.X );
+                            int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
+                            int numerator, denominator;
+                            Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
+                            int total_clock = AppManager.getVsqFile().TotalClocks;
+                            //int max_barcount = AppManager.VsqFile.getBarCountFromClock( total_clock ) - pre_measure + 1;
+                            //int min_barcount = 1;
+#if DEBUG
+                            AppManager.debugWriteLine( "FormMain.picturePositionIndicator_MouseClick; bar_count=" + (bar_count - pre_measure + 1) );
+#endif
+                            FormBeatConfig dlg = null;
+                            try {
+                                dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
+                                dlg.setLocation( getFormPreferedLocation( dlg ) );
+                                if ( dlg.showDialog() == BDialogResult.OK ) {
+                                    if ( dlg.isEndSpecified() ) {
+                                        int[] new_barcounts = new int[2];
+                                        int[] numerators = new int[2];
+                                        int[] denominators = new int[2];
+                                        int[] barcounts = new int[2];
+                                        new_barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                        new_barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
+                                        numerators[0] = dlg.getNumerator();
+                                        numerators[1] = timesig.numerator;
+
+                                        denominators[0] = dlg.getDenominator();
+                                        denominators[1] = timesig.denominator;
+
+                                        barcounts[0] = dlg.getStart() + pre_measure - 1;
+                                        barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
+                                        CadenciiCommand run = new CadenciiCommand(
+                                            VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                        setEdited( true );
+                                    } else {
+                                        CadenciiCommand run = new CadenciiCommand(
+                                            VsqCommand.generateCommandUpdateTimesig( bar_count,
+                                                                           dlg.getStart() + pre_measure - 1,
+                                                                           dlg.getNumerator(),
+                                                                           dlg.getDenominator() ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                        setEdited( true );
+                                    }
+                                }
+                            } catch ( Exception ex ) {
+                            } finally {
+                                if ( dlg != null ) {
+                                    try {
+                                        dlg.close();
+                                    } catch ( Exception ex2 ) {
+                                    }
+                                }
                             }
                         }
+                        #endregion
                     }
                     #endregion
                 }
@@ -6766,10 +6970,6 @@ namespace org.kbinani.cadencii {
         }
 
         public void picturePositionIndicator_MouseUp( Object sender, BMouseEventArgs e ) {
-            /*if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
-                return;
-            }*/
-
             int modifiers = PortUtil.getCurrentModifierKey();
 #if DEBUG
             AppManager.debugWriteLine( "picturePositionIndicator_MouseClick" );
@@ -6825,76 +7025,6 @@ namespace org.kbinani.cadencii {
                                 #endregion
                             }
                             #endregion
-                        } else {
-                            #region テンポ変更がなかった場合
-                            AppManager.clearSelectedEvent();
-                            AppManager.clearSelectedTempo();
-                            AppManager.clearSelectedTimesig();
-                            EditTool selected = AppManager.getSelectedTool();
-                            if ( selected == EditTool.PENCIL ||
-                                selected == EditTool.LINE ) {
-                                int changing_clock = AppManager.clockFromXCoord( e.X );
-                                int changing_tempo = AppManager.getVsqFile().getTempoAt( changing_clock );
-                                int bar_count;
-                                int bar_top_clock;
-                                int local_denominator, local_numerator;
-                                bar_count = AppManager.getVsqFile().getBarCountFromClock( changing_clock );
-                                bar_top_clock = AppManager.getVsqFile().getClockFromBarCount( bar_count );
-                                int index2 = -1;
-                                for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
-                                    if ( AppManager.getVsqFile().TimesigTable.get( i ).BarCount > bar_count ) {
-                                        index2 = i;
-                                        break;
-                                    }
-                                }
-                                if ( index2 >= 1 ) {
-                                    local_denominator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Denominator;
-                                    local_numerator = AppManager.getVsqFile().TimesigTable.get( index2 - 1 ).Numerator;
-                                } else {
-                                    local_denominator = AppManager.getVsqFile().TimesigTable.get( 0 ).Denominator;
-                                    local_numerator = AppManager.getVsqFile().TimesigTable.get( 0 ).Numerator;
-                                }
-                                int clock_per_beat = 480 * 4 / local_denominator;
-                                int clocks_in_bar = changing_clock - bar_top_clock;
-                                int beat_in_bar = clocks_in_bar / clock_per_beat + 1;
-                                int clocks_in_beat = clocks_in_bar - (beat_in_bar - 1) * clock_per_beat;
-                                FormTempoConfig dlg = null;
-                                try {
-                                    dlg = new FormTempoConfig( bar_count - AppManager.getVsqFile().getPreMeasure() + 1,
-                                                               beat_in_bar,
-                                                               local_numerator,
-                                                               clocks_in_beat,
-                                                               clock_per_beat,
-                                                               (float)(6e7 / changing_tempo),
-                                                               AppManager.getVsqFile().getPreMeasure() );
-                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                    if ( dlg.showDialog() == BDialogResult.OK ) {
-                                        int new_beat = dlg.getBeatCount();
-                                        int new_clocks_in_beat = dlg.getClock();
-                                        int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
-#if DEBUG
-                                        AppManager.debugWriteLine( "    new_beat=" + new_beat );
-                                        AppManager.debugWriteLine( "    new_clocks_in_beat=" + new_clocks_in_beat );
-                                        AppManager.debugWriteLine( "    changing_clock=" + changing_clock );
-                                        AppManager.debugWriteLine( "    new_clock=" + new_clock );
-#endif
-                                        CadenciiCommand run = new CadenciiCommand(
-                                            VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
-                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                                        setEdited( true );
-                                        refreshScreen();
-                                    }
-                                } catch ( Exception ex ) {
-                                } finally {
-                                    if ( dlg != null ) {
-                                        try {
-                                            dlg.close();
-                                        } catch ( Exception ex2 ) {
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
                         }
                         m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
                         #endregion
@@ -6926,70 +7056,6 @@ namespace org.kbinani.cadencii {
                                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                 setEdited( true );
                                 #endregion
-                            }
-                            #endregion
-                        } else {
-                            #region 拍子変更がなかった場合
-                            AppManager.clearSelectedEvent();
-                            AppManager.clearSelectedTempo();
-                            AppManager.clearSelectedTimesig();
-                            EditTool selected = AppManager.getSelectedTool();
-                            if ( selected == EditTool.PENCIL ||
-                                selected == EditTool.LINE ) {
-                                int pre_measure = AppManager.getVsqFile().getPreMeasure();
-                                int clock = AppManager.clockFromXCoord( e.X );
-                                int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
-                                int numerator, denominator;
-                                Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
-                                int total_clock = AppManager.getVsqFile().TotalClocks;
-                                //int max_barcount = AppManager.VsqFile.getBarCountFromClock( total_clock ) - pre_measure + 1;
-                                //int min_barcount = 1;
-#if DEBUG
-                                AppManager.debugWriteLine( "FormMain.picturePositionIndicator_MouseClick; bar_count=" + (bar_count - pre_measure + 1) );
-#endif
-                                FormBeatConfig dlg = null;
-                                try {
-                                    dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
-                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                    if ( dlg.showDialog() == BDialogResult.OK ) {
-                                        if ( dlg.isEndSpecified() ) {
-                                            int[] new_barcounts = new int[2];
-                                            int[] numerators = new int[2];
-                                            int[] denominators = new int[2];
-                                            int[] barcounts = new int[2];
-                                            new_barcounts[0] = dlg.getStart() + pre_measure - 1;
-                                            new_barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
-                                            numerators[0] = dlg.getNumerator();
-                                            numerators[1] = timesig.numerator;
-
-                                            denominators[0] = dlg.getDenominator();
-                                            denominators[1] = timesig.denominator;
-
-                                            barcounts[0] = dlg.getStart() + pre_measure - 1;
-                                            barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
-                                            CadenciiCommand run = new CadenciiCommand(
-                                                VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
-                                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                                            setEdited( true );
-                                        } else {
-                                            CadenciiCommand run = new CadenciiCommand(
-                                                VsqCommand.generateCommandUpdateTimesig( bar_count,
-                                                                               dlg.getStart() + pre_measure - 1,
-                                                                               dlg.getNumerator(),
-                                                                               dlg.getDenominator() ) );
-                                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                                            setEdited( true );
-                                        }
-                                    }
-                                } catch ( Exception ex ) {
-                                } finally {
-                                    if ( dlg != null ) {
-                                        try {
-                                            dlg.close();
-                                        } catch ( Exception ex2 ) {
-                                        }
-                                    }
-                                }
                             }
                             #endregion
                         }
@@ -8399,6 +8465,7 @@ namespace org.kbinani.cadencii {
                 this.Invoke( new EventHandler( this.refreshScreenCore ) );
 #endif
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#bgWorkScreen_DoWork; ex=" + ex );
             }
         }
 
@@ -8822,6 +8889,7 @@ namespace org.kbinani.cadencii {
 #endif
                     updateStripDDBtnSpeed();
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#stripDDBtnSpeedTextBox_KeyDown; ex=" + ex );
                 }
             }
         }
@@ -8965,7 +9033,6 @@ namespace org.kbinani.cadencii {
             BasicStroke pen = new java.awt.BasicStroke( _OVERVIEW_DOT_DIAM );
             g.setStroke( pen );
             g.setColor( s_note_fill );
-            //using ( Pen pen = new Pen( s_note_fill, _OVERVIEW_DOT_DIAM ) ) {
             for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 int x = getOverviewXCoordFromClock( item.Clock );
@@ -9105,6 +9172,7 @@ namespace org.kbinani.cadencii {
                     }
 #endif
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#btnLeft_MouseDown; ex=" + ex );
                 }
                 m_overview_update_thread = null;
             }
@@ -9137,6 +9205,7 @@ namespace org.kbinani.cadencii {
                     }
 #endif
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#btnRight_MouseDown; ex=" + ex );
                 }
                 m_overview_update_thread = null;
             }
@@ -11410,6 +11479,22 @@ namespace org.kbinani.cadencii {
                     }
                 }
 
+                // ミキサーウィンドウ
+                if ( AppManager.mixerWindow != null ) {
+                    if ( dict.containsKey( "menuVisualProperty" ) ) {
+                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualProperty" ) );
+                        AppManager.mixerWindow.applyShortcut( shortcut );
+                    }
+                }
+
+                // アイコンパレット
+                if ( AppManager.iconPalette != null ) {
+                    if ( dict.containsKey( "menuVisualIconPalette" ) ) {
+                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualIconPalette" ) );
+                        AppManager.iconPalette.applyShortcut( shortcut );
+                    }
+                }
+
                 // スクリプトにショートカットを適用
 #if JAVA
                 MenuElement[] sub_menu_script = menuScript.getSubElements();
@@ -13415,7 +13500,7 @@ namespace org.kbinani.cadencii {
                             if ( handle.IconID.StartsWith( "$0501" ) ) {
                                 // 強弱記号
                                 type = DrawObjectType.Dynaff;
-                                width = 40;
+                                width = AppManager.DYNAFF_ITEM_WIDTH;
                                 int startDyn = handle.getStartDyn();
                                 if ( startDyn == 120 ) {
                                     str = "fff";
@@ -14227,6 +14312,14 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        public void FormMain_MouseMove( Object sender, BMouseEventArgs e ) {
+            if ( AppManager.getEditMode() != EditMode.DRAG_DROP ){
+#if DEBUG
+                PortUtil.println( "FormMain_MouseMove; drag_drop" );
+#endif
+            }
+        }
+
         public void registerEventHandlers() {
             loadEvent.add( new BEventHandler( this, "FormMain_Load" ) );
             menuStripMain.mouseDownEvent.add( new BMouseEventHandler( this, "menuStrip1_MouseDown" ) );
@@ -14284,6 +14377,7 @@ namespace org.kbinani.cadencii {
             menuVisualProperty.clickEvent.add( new BEventHandler( this, "menuVisualProperty_Click" ) );
             menuVisualGridline.checkedChangedEvent.add( new BEventHandler( this, "menuVisualGridline_CheckedChanged" ) );
             menuVisualGridline.mouseEnterEvent.add( new BEventHandler( this, "menuVisualGridline_MouseEnter" ) );
+            menuVisualIconPalette.checkedChangedEvent.add( new BEventHandler( this, "menuVisualIconPalette_CheckedChanged" ) );
             menuVisualStartMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualStartMarker_MouseEnter" ) );
             menuVisualStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
             menuVisualEndMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualEndMarker_MouseEnter" ) );
@@ -14515,6 +14609,11 @@ namespace org.kbinani.cadencii {
             pictPianoRoll.mouseDownEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDown" ) );
             pictPianoRoll.mouseUpEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseUp" ) );
             pictPianoRoll.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
+#if !JAVA
+            this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
+            this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
+            this.DragOver += new System.Windows.Forms.DragEventHandler( FormMain_DragOver );
+#endif
             pictureBox3.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox3_MouseDown" ) );
             pictureBox2.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseDown" ) );
             stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
@@ -14571,7 +14670,129 @@ namespace org.kbinani.cadencii {
             formClosingEvent.add( new BFormClosingEventHandler( this, "FormMain_FormClosing" ) );
             previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "FormMain_PreviewKeyDown" ) );
             panelOverview.enterEvent.add( new BEventHandler( this, "panelOverview_Enter" ) );
+            mouseMoveEvent.add( new BMouseEventHandler( this, "FormMain_MouseMove" ) );
         }
+
+        private void FormMain_DragOver( object sender, System.Windows.Forms.DragEventArgs e ) {
+            if ( AppManager.getEditMode() != EditMode.DRAG_DROP ) {
+                return;
+            }
+            Point pt = pictPianoRoll.getLocationOnScreen();
+            if ( !iconPaletteOnceDragEntered ) {
+                int keywidth = AppManager.keyWidth;
+                Rectangle rc = new Rectangle( pt.x + keywidth, pt.y, pictPianoRoll.getWidth() - keywidth, pictPianoRoll.getHeight() );
+                if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
+                    iconPaletteOnceDragEntered = true;
+                } else {
+                    return;
+                }
+            }
+            BMouseEventArgs e0 = new BMouseEventArgs( BMouseButtons.Left,
+                                                      1,
+                                                      e.X - pt.x,
+                                                      e.Y - pt.y,
+                                                      0 );
+            pictPianoRoll_MouseMove( this, e0 );
+        }
+
+#if !JAVA
+        private void FormMain_DragDrop( object sender, System.Windows.Forms.DragEventArgs e ) {
+            AppManager.setEditMode( EditMode.NONE );
+            iconPaletteOnceDragEntered = false;
+            if ( !e.Data.GetDataPresent( System.Windows.Forms.DataFormats.UnicodeText ) ) {
+                return;
+            }
+            String icon_id = (String)e.Data.GetData( System.Windows.Forms.DataFormats.UnicodeText );
+            if ( !icon_id.StartsWith( "$05" ) ) {
+                return;
+            }
+            Point locPianoroll = pictPianoRoll.getLocationOnScreen();
+            int keywidth = AppManager.keyWidth;
+            Rectangle rcPianoroll = new Rectangle( locPianoroll.x + keywidth, locPianoroll.y, pictPianoRoll.getWidth() - keywidth, pictPianoRoll.getHeight() );
+            if ( !isInRect( new Point( e.X, e.Y ), rcPianoroll ) ) {
+                return;
+            }
+
+            // dynaff, crescend, decrescend のどれがドロップされたのか検査
+            IconDynamicsHandle this_is_it = null;
+            for ( Iterator itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
+                IconDynamicsHandle handle = (IconDynamicsHandle)itr.next();
+                if ( handle.IconID.Equals( icon_id ) ) {
+                    this_is_it = handle;
+                    break;
+                }
+            }
+            if ( this_is_it == null ) {
+                return;
+            }
+
+            // ドロップ位置を特定して，アイテムを追加する
+            int x = e.X - locPianoroll.x;
+            int y = e.Y - locPianoroll.y;
+            int clock1 = AppManager.clockFromXCoord( x );
+
+            // クオンタイズの処理
+            int unit = AppManager.getPositionQuantizeClock();
+            int odd = clock1 % unit;
+            int clock = clock1;
+            clock -= odd;
+            if ( odd > unit / 2 ) {
+                clock += unit;
+            }
+
+            int note = noteFromYCoord( y );
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int clockAtPremeasure = vsq.getPreMeasureClocks();
+            if ( clock < clockAtPremeasure ) {
+                return;
+            }
+            if ( note < 0 || 128 < note ) {
+                return;
+            }
+            
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = (VsqTrack)vsq.Track.get( selected ).clone();
+
+            VsqEvent item = new VsqEvent();
+            item.Clock = clock;
+            item.ID.Note = note;
+            item.ID.type = VsqIDType.Aicon;
+            item.ID.IconDynamicsHandle = (IconDynamicsHandle)this_is_it.clone();
+            int length = this_is_it.getLength();
+            if ( length <= 0 ) {
+                length = 1;
+            }
+            item.ID.setLength( length );
+            vsq_track.addEvent( item );
+            vsq_track.reflectDynamics();
+            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, vsq_track, vsq.AttachedCurves.get( selected - 1 ) );
+            AppManager.register( vsq.executeCommand( run ) );
+            setEdited( true );
+        }
+#endif
+
+#if !JAVA
+        private void FormMain_DragEnter( object sender, System.Windows.Forms.DragEventArgs e ) {
+            if ( e.Data.GetDataPresent( System.Windows.Forms.DataFormats.UnicodeText ) ) {
+                String str = (String)e.Data.GetData( System.Windows.Forms.DataFormats.UnicodeText );
+#if DEBUG
+                PortUtil.println( "FormMain#FormMain_DragEnter; str=" + str );
+#endif
+                if ( str.StartsWith( "$05" ) ) {
+                    // ドロップ可能
+                    e.Effect = System.Windows.Forms.DragDropEffects.All;
+                    AppManager.setEditMode( EditMode.DRAG_DROP );
+                    m_mouse_downed = true;
+                } else {
+                    e.Effect = System.Windows.Forms.DragDropEffects.None;
+                    AppManager.setEditMode( EditMode.NONE );
+                }
+            } else {
+                e.Effect = System.Windows.Forms.DragDropEffects.None;
+                AppManager.setEditMode( EditMode.NONE );
+            }
+        }
+#endif
 
         public void setResources() {
             try {
@@ -14676,6 +14897,7 @@ namespace org.kbinani.cadencii {
             this.menuVisualControlTrack = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualMixer = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualWaveform = new org.kbinani.windows.forms.BMenuItem();
+            this.menuVisualIconPalette = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualProperty = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualOverview = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualPluginUi = new org.kbinani.windows.forms.BMenuItem();
@@ -15240,6 +15462,7 @@ namespace org.kbinani.cadencii {
             this.menuVisualControlTrack,
             this.menuVisualMixer,
             this.menuVisualWaveform,
+            this.menuVisualIconPalette,
             this.menuVisualProperty,
             this.menuVisualOverview,
             this.menuVisualPluginUi,
@@ -15279,6 +15502,13 @@ namespace org.kbinani.cadencii {
             this.menuVisualWaveform.Name = "menuVisualWaveform";
             this.menuVisualWaveform.Size = new System.Drawing.Size( 237, 22 );
             this.menuVisualWaveform.Text = "Waveform(&W)";
+            // 
+            // menuVisualIconPalette
+            // 
+            this.menuVisualIconPalette.CheckOnClick = true;
+            this.menuVisualIconPalette.Name = "menuVisualIconPalette";
+            this.menuVisualIconPalette.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualIconPalette.Text = "Icon Palette(&I)";
             // 
             // menuVisualProperty
             // 
@@ -16703,7 +16933,7 @@ namespace org.kbinani.cadencii {
             this.pictKeyLengthSplitter.TabIndex = 20;
             this.pictKeyLengthSplitter.TabStop = false;
             // 
-            // panel3
+            // panelOverview
             // 
             this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
@@ -16716,7 +16946,7 @@ namespace org.kbinani.cadencii {
             this.panelOverview.Controls.Add( this.pictOverview );
             this.panelOverview.Location = new System.Drawing.Point( 0, 0 );
             this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
-            this.panelOverview.Name = "panel3";
+            this.panelOverview.Name = "panelOverview";
             this.panelOverview.Size = new System.Drawing.Size( 421, 45 );
             this.panelOverview.TabIndex = 19;
             this.panelOverview.TabStop = false;
@@ -17674,6 +17904,7 @@ namespace org.kbinani.cadencii {
             // 
             // FormMain
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
@@ -18060,6 +18291,7 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuVisualPluginUiAquesTone;
         private BMenuItem menuVisualPluginUiVocaloid1;
         private BMenuItem menuVisualPluginUiVocaloid2;
+        private BMenuItem menuVisualIconPalette;
         #endregion
 #endif
 
