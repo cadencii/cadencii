@@ -56,6 +56,10 @@ namespace org.kbinani.cadencii {
         /// 音符の長さ（クロック）
         /// </summary>
         public int length;
+        /// <summary>
+        /// アイテムの位置
+        /// </summary>
+        public int clock;
         public DrawObjectType type;
 
         public DrawObject( DrawObjectType type,
@@ -72,7 +76,8 @@ namespace org.kbinani.cadencii {
                            int vib_start_depth,
                            int note_,
                            UstEnvelope ust_envelope,
-                           int length_ ) {
+                           int length,
+                           int clock ) {
             this.type = type;
             pxRectangle = rect;
             text = text_;
@@ -87,7 +92,8 @@ namespace org.kbinani.cadencii {
             vibStartDepth = vib_start_depth;
             note = note_;
             ustEnvelope = ust_envelope;
-            length = length_;
+            this.length = length;
+            this.clock = clock;
         }
 
         public int compareTo( DrawObject item ) {

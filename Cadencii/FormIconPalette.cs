@@ -78,6 +78,7 @@ namespace org.kbinani.cadencii {
                 String icon_id = handle.IconID;
                 BButton btn = new BButton();
                 btn.setName( icon_id );
+                btn.setTag( handle );
                 String buttonIconPath = handle.getButtonImageFullPath();
 
                 boolean setimg = PortUtil.isFileExists( buttonIconPath );
@@ -198,7 +199,21 @@ namespace org.kbinani.cadencii {
             if ( AppManager.mainWindow != null ) {
                 AppManager.mainWindow.toFront();
             }
-            btn.DoDragDrop( btn.getName(), System.Windows.Forms.DragDropEffects.All );
+
+            IconDynamicsHandle handle = (IconDynamicsHandle)btn.getTag();
+            VsqEvent item = new VsqEvent();
+            item.Clock = 0;
+            item.ID.Note = 60;
+            item.ID.type = VsqIDType.Aicon;
+            item.ID.IconDynamicsHandle = (IconDynamicsHandle)handle.clone();
+            int length = handle.getLength();
+            if ( length <= 0 ) {
+                length = 1;
+            }
+            item.ID.setLength( length );
+            AppManager.addingEvent = item;
+
+            btn.DoDragDrop( handle, System.Windows.Forms.DragDropEffects.All );
         }
 
         private void InitializeComponent() {

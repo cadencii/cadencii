@@ -15,6 +15,8 @@
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BButton.java
 #else
 #define COMPONENT_ENABLE_FOCUS
+#define COMPONENT_ENABLE_LOCATION
+using System;
 
 namespace org.kbinani.windows.forms {
 
@@ -393,6 +395,38 @@ namespace org.kbinani.windows.forms {
         public void setIcon( org.kbinani.java.awt.Icon value ) {
             base.Image = value.image;
         }
+        #endregion
+
+        #region common APIs of org.kbinani.*
+        // root implementation is in BForm.cs
+        public java.awt.Point pointToScreen( java.awt.Point point_on_client ) {
+            java.awt.Point p = getLocationOnScreen();
+            return new java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
+        }
+
+        public java.awt.Point pointToClient( java.awt.Point point_on_screen ) {
+            java.awt.Point p = getLocationOnScreen();
+            return new java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
+        }
+
+#if JAVA
+        Object tag = null;
+        public Object getTag(){
+            return tag;
+        }
+
+        public void setTag( Object value ){
+            tag = value;
+        }
+#else
+        public Object getTag() {
+            return base.Tag;
+        }
+
+        public void setTag( Object value ) {
+            base.Tag = value;
+        }
+#endif
         #endregion
     }
 

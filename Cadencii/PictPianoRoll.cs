@@ -540,9 +540,9 @@ namespace org.kbinani.cadencii {
                                                 g.setColor( Color.black );
                                                 g.drawString( dobj.text + "(ID:" + dobj.internalID + ")", x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
 #else
-                                        g.setFont( lyric_font );
-                                        g.setColor( Color.black );
-                                        g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+                                                g.setFont( lyric_font );
+                                                g.setColor( Color.black );
+                                                g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
 #endif
                                             }
                                             if ( show_exp_line && lyric_width > 21 ) {
@@ -605,7 +605,11 @@ namespace org.kbinani.cadencii {
                                         g.drawRect( x, y, 40, track_height );
                                         g.setColor( Color.black );
                                         g.setFont( AppManager.baseFont10 );
-                                        g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+                                        if ( dobj.overlappe ) {
+                                            g.setColor( s_brs_147_147_147 );
+                                        }
+                                        String str = dobj.text;
+                                        g.drawString( str, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
                                         #endregion
                                     } else {
                                         #region Crescend and Descrescend
@@ -618,9 +622,14 @@ namespace org.kbinani.cadencii {
                                         g.fillRect( x, y, xend - x, track_height );
                                         g.setColor( s_pen_125_123_124 );
                                         g.drawRect( x, y, xend - x, track_height );
-                                        g.setColor( Color.black );
+                                        if ( dobj.overlappe ) {
+                                            g.setColor( s_brs_147_147_147 );
+                                        } else {
+                                            g.setColor( Color.black );
+                                        }
                                         g.setFont( AppManager.baseFont10 );
-                                        g.drawString( dobj.text, x + 1, y + track_height + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+                                        String str = dobj.text;
+                                        g.drawString( str, x + 1, y + track_height + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
 #if !JAVA
                                         System.Drawing.Drawing2D.SmoothingMode old = g.nativeGraphics.SmoothingMode;
                                         g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
@@ -646,17 +655,21 @@ namespace org.kbinani.cadencii {
                     // 編集中のエントリを表示
                     if ( edit_mode == EditMode.ADD_ENTRY ||
                          edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
-                         edit_mode == EditMode.REALTIME ) {
+                         edit_mode == EditMode.REALTIME ||
+                         edit_mode == EditMode.DRAG_DROP ) {
                         if ( AppManager.addingEvent != null ) {
                             int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
                             y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
+                            int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
+                            if ( AppManager.addingEvent.ID.type == VsqIDType.Aicon ) {
+                                if ( AppManager.addingEvent.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                                    length = AppManager.DYNAFF_ITEM_WIDTH;
+                                }
+                            }
                             if ( AppManager.addingEvent.ID.getLength() <= 0 ) {
-                                //g.setStroke( s_pen_dashed_171_171_171 );
                                 g.setColor( new Color( 171, 171, 171 ) );
                                 g.drawRect( x, y, 10, track_height - 1 );
-                                //g.setStroke( new BasicStroke() );
                             } else {
-                                int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
                                 g.setColor( s_pen_a136_000_000_000 );
                                 g.drawRect( x, y, length, track_height - 1 );
                             }
@@ -744,6 +757,13 @@ namespace org.kbinani.cadencii {
                         int x = (int)(last.Clock * scalex + xoffset);
                         y = -last.ID.Note * track_height + yoffset + 1;
                         int length = (int)(last.ID.getLength() * scalex);
+
+                        if ( last.ID.type == VsqIDType.Aicon ) {
+                            if ( last.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                                length = AppManager.DYNAFF_ITEM_WIDTH;
+                            }
+                        }
+
                         // 縦線
                         g.setColor( s_pen_LU );
                         g.drawLine( x, 0, x, y - 1 );
@@ -765,11 +785,18 @@ namespace org.kbinani.cadencii {
                                     width, y + track_height / 2 - 1 );
                     }
                     #endregion
-                } else if ( edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
-                    #region EditMode.MoveEntry
+                } else if ( edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY || edit_mode == EditMode.DRAG_DROP ) {
+                    #region ADD_FIXED_LENGTH_ENTRY | DRAG_DROP
                     int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
                     y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
                     int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
+
+                    if ( AppManager.addingEvent.ID.type == VsqIDType.Aicon ) {
+                        if ( AppManager.addingEvent.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                            length = AppManager.DYNAFF_ITEM_WIDTH;
+                        }
+                    }
+
                     // 縦線
                     g.setColor( s_pen_LU );
                     g.drawLine( x, 0, x, y - 1 );
