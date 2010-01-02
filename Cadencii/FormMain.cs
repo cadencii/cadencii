@@ -1663,7 +1663,7 @@ namespace org.kbinani.cadencii {
             ByRef<Rectangle> out_rect = new ByRef<Rectangle>();
             VsqEvent item = getItemAtClickedPosition( new Point( e.X, e.Y ), out_rect );
             Rectangle rect = out_rect.value;
-            if ( item != null ) {
+            if ( item != null && item.ID.type == VsqIDType.Anote ) {
 #if ENABLE_SCRIPT
                 if ( AppManager.getSelectedTool() != EditTool.PALETTE_TOOL )
 #endif
@@ -2681,6 +2681,9 @@ namespace org.kbinani.cadencii {
                         new_length = unit;
                     }
                     item.editing.ID.setLength( new_length );
+#if DEBUG
+                    PortUtil.println( "FormMain#pictPianoRoll_MouseMove; length(before,after)=(" + item.original.ID.getLength() + "," + item.editing.ID.getLength() + ")" );
+#endif
                 }
                 #endregion
             } else if ( edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
@@ -2965,7 +2968,7 @@ namespace org.kbinani.cadencii {
                                 VsqEvent item = (VsqEvent)itr2.next();
                                 if ( item.InternalID == internal_id ) {
                                     item.Clock = ev.editing.Clock;
-                                    item.ID = ev.editing.ID;
+                                    item.ID = (VsqID)ev.editing.ID.clone();
                                     break;
                                 }
                             }
@@ -3002,7 +3005,7 @@ namespace org.kbinani.cadencii {
                 }
                 #endregion
             } else if ( edit_mode == EditMode.EDIT_LEFT_EDGE || edit_mode == EditMode.EDIT_RIGHT_EDGE ) {
-                #region EDIT_LEFT_EDGE | EDIT_RUGHT_EDGE
+                #region EDIT_LEFT_EDGE | EDIT_RIGHT_EDGE
                 if ( m_mouse_moved ) {
                     VsqEvent original = AppManager.getLastSelectedEvent().original;
                     int count = AppManager.getSelectedEventCount();
@@ -3021,6 +3024,11 @@ namespace org.kbinani.cadencii {
                             ids[i] = ev.original.InternalID;
                             clocks[i] = ev.editing.Clock;
                             values[i] = ev.editing.ID;
+                            if ( ev.original.ID.type == VsqIDType.Aicon ) {
+                                if ( ev.original.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                                    values[i].setLength( 1 );
+                                }
+                            }
                         } else {
                             int draft_vibrato_length = ev.editing.ID.getLength() - ev.editing.ID.VibratoDelay;
                             if ( draft_vibrato_length <= 0 ) {
@@ -3034,40 +3042,35 @@ namespace org.kbinani.cadencii {
                             ids[i] = ev.original.InternalID;
                             clocks[i] = ev.editing.Clock;
                             values[i] = ev.editing.ID;
+                            if ( ev.original.ID.type == VsqIDType.Aicon ) {
+                                if ( ev.original.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                                    values[i].setLength( 1 );
+                                }
+                            }
                         }
                     }
 
                     CadenciiCommand run = null;
                     if ( contains_aicon ) {
-                        VsqTrack copied = (VsqTrack)vsq_track.clone();
-                        int total = 0;
-                        for ( Iterator itr = copied.getEventIterator(); itr.hasNext(); ) {
-                            VsqEvent item = (VsqEvent)itr.next();
-                            int search_id = item.InternalID;
-                            for ( int j = 0; j < ids.Length; j++ ) {
-                                if ( search_id == ids[j] ) {
-                                    item.Clock = clocks[j];
-                                    item.ID = values[j];
-                                    total++;
-                                    break;
-                                }
-                            }
-                            if ( total == count ) {
-                                break;
-                            }
-                        }
+                        VsqFileEx copied_vsq = (VsqFileEx)vsq.clone();
+                        VsqCommand vsq_command = VsqCommand.generateCommandEventChangeClockAndIDContaintsRange( selected,
+                                                                                                                ids,
+                                                                                                                clocks,
+                                                                                                                values );
+                        copied_vsq.executeCommand( vsq_command );
+                        VsqTrack copied = (VsqTrack)copied_vsq.Track.get( selected ).clone();
                         copied.reflectDynamics();
                         run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                      copied,
                                                                      vsq.AttachedCurves.get( selected - 1 ) );
                     } else {
                         run = new CadenciiCommand(
-                            VsqCommand.generateCommandEventChangeClockAndIDContaintsRange( AppManager.getSelected(),
+                            VsqCommand.generateCommandEventChangeClockAndIDContaintsRange( selected,
                                                                                  ids,
                                                                                  clocks,
                                                                                  values ) );
                     }
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                    AppManager.register( vsq.executeCommand( run ) );
                     setEdited( true );
                 }
                 #endregion
@@ -3318,8 +3321,19 @@ namespace org.kbinani.cadencii {
             if ( AppManager.iconPalette == null ) {
                 AppManager.iconPalette = new FormIconPalette();
                 AppManager.iconPalette.formClosingEvent.add( new BFormClosingEventHandler( this, "IconPalette_FormClosing" ) );
+                Point p = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
+                if( !PortUtil.isPointInScreens( p ) ){
+                    Rectangle workingArea = PortUtil.getWorkingArea( this );
+                    p = new Point( workingArea.x, workingArea.y );
+                }
+                AppManager.iconPalette.setLocation( p );
+                AppManager.iconPalette.locationChangedEvent.add( new BEventHandler( this, "IconPalette_LocationChanged" ) );
             }
             AppManager.iconPalette.setVisible( menuVisualIconPalette.isSelected() );
+        }
+
+        public void IconPalette_LocationChanged( Object sender, EventArgs e ) {
+            AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint( AppManager.iconPalette.getLocation() );
         }
 
         public void IconPalette_FormClosing( Object sender, BFormClosingEventArgs e ) {
@@ -4922,6 +4936,31 @@ namespace org.kbinani.cadencii {
                             } catch ( Exception ex2 ) {
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        public void menuFileExportMusicXml_Click( Object sender, EventArgs e ) {
+            BFileChooser dialog = null;
+            try {
+                dialog = new BFileChooser( "" );
+                int result = dialog.showSaveDialog( this );
+                if ( result != BFileChooser.APPROVE_OPTION ) {
+                    return;
+                }
+                String file = dialog.getSelectedFile();
+                AppManager.getVsqFile().printAsMusicXml( file );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
+            } finally {
+                if ( dialog != null ) {
+                    try {
+#if !JAVA
+                        dialog.Dispose();
+#endif
+                    } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex2=" + ex2 );
                     }
                 }
             }
@@ -12304,17 +12343,21 @@ namespace org.kbinani.cadencii {
             }
 
             int selected = AppManager.getSelected();
-
+            VsqFileEx vsq = AppManager.getVsqFile();
 
             if ( AppManager.getSelectedEventCount() > 0 ) {
                 Vector<Integer> ids = new Vector<Integer>();
+                boolean contains_aicon = false;
                 for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry ev = (SelectedEventEntry)itr.next();
                     ids.add( ev.original.InternalID );
+                    if ( ev.original.ID.type == VsqIDType.Aicon ) {
+                        contains_aicon = true;
+                    }
                 }
                 VsqCommand run = VsqCommand.generateCommandEventDeleteRange( selected, ids );
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                    VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().clone();
+                    VsqFileEx work = (VsqFileEx)vsq.clone();
                     work.executeCommand( run );
                     int stdx = AppManager.startToDrawX;
                     int start_clock = AppManager.wholeSelectedInterval.getStart();
@@ -12339,12 +12382,26 @@ namespace org.kbinani.cadencii {
                                                                                                                        strs,
                                                                                                                        curves ) );
                     work.executeCommand( delete_curve );
+                    if ( contains_aicon ) {
+                        work.Track.get( selected ).reflectDynamics();
+                    }
                     CadenciiCommand run2 = new CadenciiCommand( VsqCommand.generateCommandReplace( work ) );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run2 ) );
+                    AppManager.register( vsq.executeCommand( run2 ) );
                     setEdited( true );
                 } else {
-                    CadenciiCommand run2 = new CadenciiCommand( run );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run2 ) );
+                    CadenciiCommand run2 = null;
+                    if ( contains_aicon ) {
+                        VsqFileEx work = (VsqFileEx)vsq.clone();
+                        work.executeCommand( run );
+                        VsqTrack vsq_track_copied = work.Track.get( selected );
+                        vsq_track_copied.reflectDynamics();
+                        run2 = VsqFileEx.generateCommandTrackReplace( selected,
+                                                                      vsq_track_copied,
+                                                                      work.AttachedCurves.get( selected - 1 ) );
+                    } else {
+                        run2 = new CadenciiCommand( run );
+                    }
+                    AppManager.register( vsq.executeCommand( run2 ) );
                     setEdited( true );
                     AppManager.clearSelectedEvent();
                 }
@@ -14365,6 +14422,7 @@ namespace org.kbinani.cadencii {
             menuFileExportWave.clickEvent.add( new BEventHandler( this, "menuFileExportWave_Click" ) );
             menuFileExportMidi.mouseEnterEvent.add( new BEventHandler( this, "menuFileExportMidi_MouseEnter" ) );
             menuFileExportMidi.clickEvent.add( new BEventHandler( this, "menuFileExportMidi_Click" ) );
+            menuFileExportMusicXml.clickEvent.add( new BEventHandler( this, "menuFileExportMusicXml_Click" ) );
             menuFileRecent.mouseEnterEvent.add( new BEventHandler( this, "menuFileRecent_MouseEnter" ) );
             menuFileQuit.mouseEnterEvent.add( new BEventHandler( this, "menuFileQuit_MouseEnter" ) );
             menuFileQuit.clickEvent.add( new BEventHandler( this, "menuFileQuit_Click" ) );
@@ -15211,6 +15269,7 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
+            this.menuFileExportMusicXml = new BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -15342,7 +15401,8 @@ namespace org.kbinani.cadencii {
             // 
             this.menuFileExport.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuFileExportWave,
-            this.menuFileExportMidi} );
+            this.menuFileExportMidi,
+            this.menuFileExportMusicXml} );
             this.menuFileExport.Name = "menuFileExport";
             this.menuFileExport.Size = new System.Drawing.Size( 232, 22 );
             this.menuFileExport.Text = "Export(&E)";
@@ -15350,13 +15410,13 @@ namespace org.kbinani.cadencii {
             // menuFileExportWave
             // 
             this.menuFileExportWave.Name = "menuFileExportWave";
-            this.menuFileExportWave.Size = new System.Drawing.Size( 108, 22 );
+            this.menuFileExportWave.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileExportWave.Text = "Wave";
             // 
             // menuFileExportMidi
             // 
             this.menuFileExportMidi.Name = "menuFileExportMidi";
-            this.menuFileExportMidi.Size = new System.Drawing.Size( 108, 22 );
+            this.menuFileExportMidi.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileExportMidi.Text = "MIDI";
             // 
             // toolStripMenuItem11
@@ -17917,6 +17977,12 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
+            // menuFileExportMusicXml
+            // 
+            this.menuFileExportMusicXml.Name = "menuFileExportMusicXml";
+            this.menuFileExportMusicXml.Size = new System.Drawing.Size( 152, 22 );
+            this.menuFileExportMusicXml.Text = "MusicXML";
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -18307,6 +18373,7 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuVisualPluginUiVocaloid1;
         private BMenuItem menuVisualPluginUiVocaloid2;
         private BMenuItem menuVisualIconPalette;
+        private BMenuItem menuFileExportMusicXml;
         #endregion
 #endif
 

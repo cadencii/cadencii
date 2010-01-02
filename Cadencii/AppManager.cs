@@ -2709,11 +2709,11 @@ namespace org.kbinani.cadencii {
             CSharpCodeProvider provider = new CSharpCodeProvider();
             String path = Application.StartupPath;
             CompilerParameters parameters = new CompilerParameters( new String[] {
-                PortUtil.combinePath( path, "Boare.Lib.Vsq.dll" ),
+                PortUtil.combinePath( path, "org.kbinani.vsq.dll" ),
                 PortUtil.combinePath( path, "Cadencii.exe" ),
-                PortUtil.combinePath( path, "Boare.Lib.Media.dll" ),
-                PortUtil.combinePath( path, "Boare.Lib.AppUtil.dll" ),
-                PortUtil.combinePath( path, "bocoree.dll" ) } );
+                PortUtil.combinePath( path, "org.kbinani.media.dll" ),
+                PortUtil.combinePath( path, "org.kbinani.apputil.dll" ),
+                PortUtil.combinePath( path, "org.kbinani.dll" ) } );
             parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
             parameters.ReferencedAssemblies.Add( "System.dll" );
             parameters.ReferencedAssemblies.Add( "System.Drawing.dll" );

@@ -20,6 +20,7 @@ using System;
 namespace org.kbinani.vsq {
 #endif
 
+    [Serializable]
     public class IconDynamicsHandle : IconParameter, ICloneable {
         public String IconID = "";
         public String IDS = "";

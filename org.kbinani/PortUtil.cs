@@ -1574,6 +1574,38 @@ namespace org.kbinani {
 #endif
         }
 
+        /// <summary>
+        /// 指定した点が，コンピュータの画面のいずれかに含まれているかどうかを調べます
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static boolean isPointInScreens( Point p ) {
+#if JAVA
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice[] gs = ge.getScreenDevices();
+            for (int j = 0; j < gs.length; j++) { 
+                GraphicsDevice gd = gs[j];
+                Rectangle rc = gd.getDefaultConfiguration().getBounds();
+                if( rc.x <= p.x && p.x <= rc.x + rc.width ){
+                    if( rc.y <= p.y && p.y <= rc.y + rc.height ){
+                        return true;
+                    }
+                }
+            }
+            return false;
+#else
+            foreach ( System.Windows.Forms.Screen screen in System.Windows.Forms.Screen.AllScreens ) {
+                System.Drawing.Rectangle rc = screen.WorkingArea;
+                if ( rc.X <= p.x && p.x <= rc.X + rc.Width ) {
+                    if ( rc.Y <= p.y && p.y <= rc.Y + rc.Height ) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+#endif
+        }
+
 #if JAVA
         public static Rectangle getWorkingArea( Window w ){
             return w.getGraphicsConfiguration().getBounds();

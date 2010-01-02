@@ -141,6 +141,16 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        // root implf of PreviewKeyDown
+        #region event impl LocationChanged
+        // root implf of PreviewKeyDown is in BButton
+        public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
+        protected override void OnLocationChanged( EventArgs e ) {
+            base.OnLocationChanged( e );
+            locationChangedEvent.raise( this, e );
+        }
+        #endregion
+
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {

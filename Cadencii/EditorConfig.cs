@@ -296,6 +296,10 @@ namespace org.kbinani.cadencii {
         /// AquesToneのVSTi dllへのパス
         /// </summary>
         public String PathAquesTone = "";
+        /// <summary>
+        /// アイコンパレット・ウィンドウの位置
+        /// </summary>
+        public XmlPoint FormIconPaletteLocation = new XmlPoint( 0, 0 );
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(

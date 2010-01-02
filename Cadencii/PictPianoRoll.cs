@@ -609,6 +609,9 @@ namespace org.kbinani.cadencii {
                                             g.setColor( s_brs_147_147_147 );
                                         }
                                         String str = dobj.text;
+#if DEBUG
+                                        str += "(" + dobj.internalID + ")";
+#endif
                                         g.drawString( str, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
                                         #endregion
                                     } else {
@@ -629,6 +632,9 @@ namespace org.kbinani.cadencii {
                                         }
                                         g.setFont( AppManager.baseFont10 );
                                         String str = dobj.text;
+#if DEBUG
+                                        str += "(" + dobj.internalID + ")";
+#endif
                                         g.drawString( str, x + 1, y + track_height + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
 #if !JAVA
                                         System.Drawing.Drawing2D.SmoothingMode old = g.nativeGraphics.SmoothingMode;

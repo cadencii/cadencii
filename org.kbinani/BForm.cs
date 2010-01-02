@@ -98,6 +98,15 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        #region event impl LocationChanged
+        // root implf of PreviewKeyDown is in BButton
+        public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
+        protected override void OnLocationChanged( EventArgs e ) {
+            base.OnLocationChanged( e );
+            locationChangedEvent.raise( this, e );
+        }
+        #endregion
+
         public BForm()
             : base() {
         }

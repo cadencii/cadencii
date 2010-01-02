@@ -50,7 +50,7 @@ namespace org.kbinani.vsq {
 #endif
         public VsqIDType type;
         public IconHandle IconHandle;
-        public int Length;
+        private int length;
         public int Note;
         public int Dynamics;
         public int PMBendDepth;
@@ -71,12 +71,23 @@ namespace org.kbinani.vsq {
         public static VsqID EOS = new VsqID( -1 );
 
         public int getLength() {
-            return Length;
+            return length;
         }
 
         public void setLength( int value ) {
-            Length = value;
+            length = value;
         }
+
+#if !JAVA
+        public int Length {
+            get {
+                return getLength();
+            }
+            set {
+                setLength( value );
+            }
+        }
+#endif
 
 #if JAVA
         public static boolean isXmlIgnored( String name ){

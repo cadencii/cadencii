@@ -531,7 +531,7 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region VOCALOID1
-        [TypeConverter( typeof( AttackVariationConverter ) ), Category( "VOALOID1" )]
+        [TypeConverter( typeof( AttackVariationConverter ) ), Category( "VOCALOID1" )]
         public AttackVariation Attack {
             get {
                 return m_attack;
@@ -541,7 +541,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        [Category( "VOALOID1" )]
+        [Category( "VOCALOID1" )]
         public int AttackDepth {
             get {
                 return m_attack_depth;
@@ -557,7 +557,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        [Category( "VOALOID1" )]
+        [Category( "VOCALOID1" )]
         public int AttackDuration {
             get {
                 return m_attack_duration;

@@ -275,21 +275,74 @@ namespace org.kbinani.vsq {
                         }
                     }
 
-                    double a = 0.0;
-                    if ( length > 0 ) {
-                        a = (handle.getEndDyn() - handle.getStartDyn()) / (double)length;
-                    }
-                    int last_val = start_dyn;
-                    for ( int i = clock; i < clock + length; i++ ) {
-                        int val = start_dyn + (int)(a * (i - clock));
-                        if ( val < dyn.getMinimum() ) {
-                            val = dyn.getMinimum();
-                        } else if ( dyn.getMaximum() < val ) {
-                            val = dyn.getMaximum();
+                    VibratoBPList bplist = handle.getDynBP();
+                    if ( bplist == null || (bplist != null && bplist.getCount() <= 0) ) {
+                        // カーブデータが無い場合
+                        double a = 0.0;
+                        if ( length > 0 ) {
+                            a = (handle.getEndDyn() - handle.getStartDyn()) / (double)length;
                         }
-                        if ( last_val != val ) {
-                            dyn.add( i, val );
-                            last_val = val;
+                        int last_val = start_dyn;
+                        for ( int i = clock; i < clock + length; i++ ) {
+                            int val = start_dyn + (int)(a * (i - clock));
+                            if ( val < dyn.getMinimum() ) {
+                                val = dyn.getMinimum();
+                            } else if ( dyn.getMaximum() < val ) {
+                                val = dyn.getMaximum();
+                            }
+                            if ( last_val != val ) {
+                                dyn.add( i, val );
+                                last_val = val;
+                            }
+                        }
+                    } else {
+                        // カーブデータがある場合
+                        int last_val = handle.getStartDyn();
+                        int last_clock = clock;
+                        int bpnum = bplist.getCount();
+                        int last = start_dyn;
+
+                        // bplistに指定されている分のデータ点を追加
+                        for ( int i = 0; i < bpnum; i++ ) {
+                            VibratoBPPair point = bplist.getElement( i );
+                            int pointClock = clock + (int)(length * point.X);
+                            if ( pointClock <= last_clock ) {
+                                continue;
+                            }
+                            int pointValue = point.Y;
+                            double a = (pointValue - last_val) / (double)(pointClock - last_clock);
+                            for ( int j = last_clock; j <= pointClock; j++ ) {
+                                int val = start_dyn + (int)((j - last_clock) * a);
+                                if ( val < dyn.getMinimum() ) {
+                                    val = dyn.getMinimum();
+                                } else if ( dyn.getMaximum() < val ) {
+                                    val = dyn.getMaximum();
+                                }
+                                if ( val != last ) {
+                                    dyn.add( j, val );
+                                    last = val;
+                                }
+                            }
+                            last_val = point.Y;
+                            last_clock = pointClock;
+                        }
+
+                        // bplistの末尾から，clock => clock + lengthまでのデータ点を追加
+                        int last2 = last;
+                        if ( last_clock < clock + length ) {
+                            double a = (handle.getEndDyn() - last_val) / (double)(clock + length - last_clock);
+                            for ( int j = last_clock; j < clock + length; j++ ) {
+                                int val = last2 + (int)((j - last_clock) * a);
+                                if ( val < dyn.getMinimum() ) {
+                                    val = dyn.getMinimum();
+                                } else if ( dyn.getMaximum() < val ) {
+                                    val = dyn.getMaximum();
+                                }
+                                if ( val != last ) {
+                                    dyn.add( j, val );
+                                    last = val;
+                                }
+                            }
                         }
                     }
                 }

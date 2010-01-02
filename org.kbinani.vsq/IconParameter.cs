@@ -21,6 +21,7 @@ using org.kbinani.java.io;
 namespace org.kbinani.vsq{
 #endif
 
+    [Serializable]
     public class IconParameter {
         public enum ArticulationType {
             Vibrato,

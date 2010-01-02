@@ -112,7 +112,7 @@ namespace org.kbinani.vsq {
                 writer.writeLine( "IconHandle=h#" + PortUtil.formatDecimal( "0000", ID.IconHandle_index ) );
             } else if ( ID.type == VsqIDType.Aicon ) {
                 writer.writeLine( "IconHandle=h#" + PortUtil.formatDecimal( "0000", ID.IconHandle_index ) );
-                writer.writeLine( "Note#" + ID.Note );
+                writer.writeLine( "Note#=" + ID.Note );
             }
         }
 

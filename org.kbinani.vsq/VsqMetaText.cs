@@ -459,6 +459,7 @@ namespace org.kbinani.vsq {
                     current_handle++;
                     VsqHandle handle_item = item.ID.IconDynamicsHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
+                    handle_item.setLength( item.ID.getLength() );
                     handle.add( handle_item );
                     item.ID.IconHandle_index = current_handle;
                 }

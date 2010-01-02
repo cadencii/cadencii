@@ -402,6 +402,7 @@ namespace org.kbinani.vsq {
                 result += "Caption=" + Caption + "\n";
                 result += "StartDyn=" + StartDyn + "\n";
                 result += "EndDyn=" + EndDyn + "\n";
+                result += "Length=" + Length + "\n";
                 if ( DynBP != null ) {
                     if ( DynBP.getCount() <= 0 ) {
                         result += "DynBPNum=0";

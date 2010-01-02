@@ -109,6 +109,157 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="file"></param>
+        public void printAsMusicXml( String file ) {
+            BufferedWriter sw = null;
+            try {
+                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "UTF-8" ) );
+
+                // ヘッダ
+                sw.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" ); sw.newLine();
+                sw.write( "<!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 2.0 Partwise//EN\"" ); sw.newLine();
+                sw.write( "                                \"http://www.musicxml.org/dtds/partwise.dtd\">" ); sw.newLine();
+                sw.write( "<score-partwise version=\"2.0\">" ); sw.newLine();
+                sw.write( "  <part-list>" ); sw.newLine();
+                int track_count = Track.size();
+                for ( int i = 1; i < track_count; i++ ) {
+                    VsqTrack vsq_track = Track.get( i );
+                    sw.write( "    <score-part id=\"P" + i + "\">" ); sw.newLine();
+                    sw.write( "      <part-name>" + vsq_track.getName() + "</part-name>" ); sw.newLine();
+                    sw.write( "    </score-part>" ); sw.newLine();
+                }
+                sw.write( "  </part-list>" ); sw.newLine();
+                int clockPerMeasure = 480 * 4;
+                for ( int i = 1; i < track_count; i++ ) {
+                    VsqTrack vsq_track = Track.get( i );
+                    sw.write( "  <part id=\"P" + i + "\">" ); sw.newLine();
+                    //TODO: この辺から
+                    // とりあえず，全部4/4拍子設定で出力
+                    int num_measure = TotalClocks / clockPerMeasure + 1;
+                    int startIndex = 0;
+                    int numEvents = vsq_track.getEventCount();
+                    for ( int j = 0; j < num_measure; j++ ) {
+                        sw.write( "    <measure number=\"" + (j + 1) + "\">" ); sw.newLine();
+                        if ( j == 0 ) {
+                            sw.write( "      <attributes>" ); sw.newLine();
+                            sw.write( "        <divisions>480</divisions>" ); sw.newLine();
+                            sw.write( "        <time symbol=\"common\">" ); sw.newLine();
+                            sw.write( "          <beats>4</beats>" ); sw.newLine();
+                            sw.write( "          <beat-type>4</beat-type>" ); sw.newLine();
+                            sw.write( "        </time>" ); sw.newLine();
+                            sw.write( "      </attributes>" ); sw.newLine();
+                            sw.write( "      <sound tempo=\"" + getBaseTempo() + "\"/>" ); sw.newLine();
+                        }
+                        int clockStart = j * clockPerMeasure;
+                        int clockEnd = clockStart + clockPerMeasure;
+                        int clockLast = clockStart; // 出力済みのクロック
+                        for ( int k = startIndex; k < numEvents; k++ ) {
+                            VsqEvent itemk = vsq_track.getEvent( k );
+                            if ( itemk.ID.type != VsqIDType.Anote ) {
+                                if ( clockEnd <= itemk.Clock ) {
+                                    startIndex = k;
+                                    break;
+                                }
+                                continue;
+                            }
+                            if ( (clockStart <= itemk.Clock && itemk.Clock < clockEnd) ||
+                                 (clockStart <= itemk.Clock + itemk.ID.getLength() && itemk.Clock + itemk.ID.getLength() < clockEnd) ||
+                                 (itemk.Clock <= clockStart && clockEnd <= itemk.Clock + itemk.ID.getLength()) ) {
+                                // 出力する必要がある
+                                if ( clockLast < itemk.Clock ) {
+                                    // 音符の前に休符が必要
+                                    sw.write( "      <note>" ); sw.newLine();
+                                    sw.write( "        <rest/>" ); sw.newLine();
+                                    sw.write( "        <duration>" + (itemk.Clock - clockLast) + "</duration>" ); sw.newLine();
+                                    sw.write( "        <voice>1</voice>" ); sw.newLine();
+                                    sw.write( "      </note>" ); sw.newLine();
+                                    clockLast = itemk.Clock;
+                                }
+
+                                boolean tieStopRequired = false;
+                                int start = itemk.Clock;
+                                if ( start < clockStart ) {
+                                    // 前の小節からタイで接続されている場合
+                                    start = clockStart;
+                                    tieStopRequired = true;
+                                }
+                                int end = itemk.Clock + itemk.ID.getLength();
+                                boolean tieStartRequired = false;
+                                if ( clockEnd < end ) {
+                                    // 次の小節にタイで接続しなければならない場合
+                                    end = clockEnd;
+                                    tieStartRequired = true;
+                                }
+                                int actualLength = end - start;
+                                sw.write( "      <note>" ); sw.newLine();
+                                int note = itemk.ID.Note;
+                                sw.write( "        <pitch>" ); sw.newLine();
+                                sw.write( "          <step>" + VsqNote.getNoteStringBase( note ) + "</step>" ); sw.newLine();
+                                int alter = VsqNote.getNoteAlter( note );
+                                if ( alter != 0 ) {
+                                    sw.write( "          <alter>" + alter + "</alter>" ); sw.newLine();
+                                }
+                                sw.write( "          <octave>" + (VsqNote.getNoteOctave( note ) + 1) + "</octave>" ); sw.newLine();
+                                sw.write( "        </pitch>" ); sw.newLine();
+                                sw.write( "        <duration>" + actualLength + "</duration>" ); sw.newLine();
+                                sw.write( "        <voice>1</voice>" ); sw.newLine();
+                                //if ( !(tieStartRequired && tieStopRequired) ) {
+                                    if ( tieStartRequired ) {
+                                        sw.write( "        <tie type=\"start\"/>" ); sw.newLine();
+                                        sw.write( "        <notations>" ); sw.newLine();
+                                        sw.write( "          <tied type=\"start\"/>" ); sw.newLine();
+                                        sw.write( "        </notations>" ); sw.newLine();
+                                    }
+                                    if ( tieStopRequired ) {
+                                        sw.write( "        <tie type=\"stop\"/>" ); sw.newLine();
+                                        sw.write( "        <notations>" ); sw.newLine();
+                                        sw.write( "          <tied type=\"stop\"/>" ); sw.newLine();
+                                        sw.write( "        </notations>" ); sw.newLine();
+                                    }
+                                //}
+                                sw.write( "        <lyric>" ); sw.newLine();
+                                sw.write( "          <text>" + itemk.ID.LyricHandle.L0.Phrase + "</text>" ); sw.newLine();
+                                sw.write( "        </lyric>" ); sw.newLine();
+                                sw.write( "      </note>" ); sw.newLine();
+                                clockLast = end;
+                                if ( tieStartRequired ) {
+                                    startIndex = k;
+                                } else {
+                                    startIndex = k + 1;
+                                }
+                            }
+                        }
+                        if ( clockLast < clockEnd ) {
+                            // 小節の最後に休符を入れる必要がある
+                            sw.write( "      <note>" ); sw.newLine();
+                            sw.write( "        <rest/>" ); sw.newLine();
+                            sw.write( "        <duration>" + (clockEnd - clockLast) + "</duration>" ); sw.newLine();
+                            sw.write( "        <voice>1</voice>" ); sw.newLine();
+                            sw.write( "      </note>" ); sw.newLine();
+                            clockLast = clockEnd;
+                        }
+                        sw.write( "    </measure>" ); sw.newLine();
+                    }
+                    sw.write( "  </part>" ); sw.newLine();
+                }
+                sw.write( "</score-partwise>" ); sw.newLine();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VsqFile#printAsMusicXml; ex=" + ex );
+            } finally {
+                if ( sw != null ) {
+                    try {
+                        sw.close();
+                    } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "VsqFile#printAsMusicXml; ex2=" + ex2 );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// master==MasterPitchControl.Pitchの場合、m_pitchからPITとPBSを再構成。
         /// master==MasterPitchControl.PITandPBSの場合、PITとPBSからm_pitchを再構成
         /// </summary>
