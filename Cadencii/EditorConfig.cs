@@ -300,6 +300,14 @@ namespace org.kbinani.cadencii {
         /// アイコンパレット・ウィンドウの位置
         /// </summary>
         public XmlPoint FormIconPaletteLocation = new XmlPoint( 0, 0 );
+        /// <summary>
+        /// アイコンパレット・ウィンドウを常に手前に表示するかどうか
+        /// </summary>
+        public boolean FormIconTopMost = true;
+        /// <summary>
+        /// 前回エクスポートしたMusicXmlのパス
+        /// </summary>
+        public String LastMusicXmlPath = "";
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(

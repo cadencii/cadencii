@@ -3317,7 +3317,7 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuVisualIconPalette_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuVisualIconPalette_Click( Object sender, EventArgs e ) {
             if ( AppManager.iconPalette == null ) {
                 AppManager.iconPalette = new FormIconPalette();
                 AppManager.iconPalette.formClosingEvent.add( new BFormClosingEventHandler( this, "IconPalette_FormClosing" ) );
@@ -3328,8 +3328,11 @@ namespace org.kbinani.cadencii {
                 }
                 AppManager.iconPalette.setLocation( p );
                 AppManager.iconPalette.locationChangedEvent.add( new BEventHandler( this, "IconPalette_LocationChanged" ) );
+                AppManager.iconPalette.setTopMost( AppManager.editorConfig.FormIconTopMost );
             }
-            AppManager.iconPalette.setVisible( menuVisualIconPalette.isSelected() );
+            boolean old = menuVisualIconPalette.isSelected();
+            menuVisualIconPalette.setSelected( !old );
+            AppManager.iconPalette.setVisible( !old );
         }
 
         public void IconPalette_LocationChanged( Object sender, EventArgs e ) {
@@ -3643,6 +3646,9 @@ namespace org.kbinani.cadencii {
                 }
             }
             AppManager.editorConfig.WindowMaximized = (getExtendedState() == BForm.MAXIMIZED_BOTH);
+            if ( AppManager.iconPalette != null ) {
+                AppManager.editorConfig.FormIconTopMost = AppManager.iconPalette.isAlwaysOnTop();
+            }
             AppManager.saveConfig();
             UtauRenderingRunner.clearCache();
             StraightRenderingRunner.clearCache();
@@ -4944,13 +4950,58 @@ namespace org.kbinani.cadencii {
         public void menuFileExportMusicXml_Click( Object sender, EventArgs e ) {
             BFileChooser dialog = null;
             try {
-                dialog = new BFileChooser( "" );
+                boolean convertTempo = false;
+                VsqFileEx vsq = AppManager.getVsqFile();
+                if ( vsq == null ) {
+                    return;
+                }
+                int tempo = (int)(60e6 / vsq.getTempoAt( 0 ));
+                FormExportMusicXml optionDialog = null;
+                try {
+                    optionDialog = new FormExportMusicXml();
+                    optionDialog.setLocation( getFormPreferedLocation( optionDialog ) );
+                    if ( optionDialog.showDialog() == BDialogResult.OK ) {
+                        convertTempo = optionDialog.isTempoConversionRequired();
+                    } else {
+                        return;
+                    }
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
+                } finally {
+                    if ( optionDialog != null ) {
+                        try {
+                            optionDialog.close();
+                        } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex2=" + ex2 );
+                        }
+                    }
+                }
+
+                String dir = "";
+                String lastFile = "";
+                if ( AppManager.editorConfig.LastMusicXmlPath != null && !AppManager.editorConfig.LastMusicXmlPath.Equals( "" ) ) {
+                    dir = PortUtil.getDirectoryName( AppManager.editorConfig.LastMusicXmlPath );
+                    lastFile = PortUtil.getFileName( AppManager.editorConfig.LastMusicXmlPath );
+                }
+                dialog = new BFileChooser( dir );
+                dialog.addFileFilter( _( "MusicXML(*.xml)|*.xml" ) );
+                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                dialog.setSelectedFile( lastFile );
                 int result = dialog.showSaveDialog( this );
                 if ( result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
                 String file = dialog.getSelectedFile();
-                AppManager.getVsqFile().printAsMusicXml( file );
+                String software = "Cadencii version " + BAssemblyInfo.fileVersion;
+#if DEBUG
+                PortUtil.println( "FormMain#menuFileExportMusicXml_Click; convertTempo=" + convertTempo + "; tempo=" + tempo );
+#endif
+                if ( convertTempo ) {
+                    vsq.printAsMusicXml( file, "UTF-8", software, tempo );
+                } else {
+                    vsq.printAsMusicXml( file, "UTF-8", software );
+                }
+                AppManager.editorConfig.LastMusicXmlPath = file;
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
             } finally {
@@ -14455,7 +14506,7 @@ namespace org.kbinani.cadencii {
             menuVisualProperty.clickEvent.add( new BEventHandler( this, "menuVisualProperty_Click" ) );
             menuVisualGridline.checkedChangedEvent.add( new BEventHandler( this, "menuVisualGridline_CheckedChanged" ) );
             menuVisualGridline.mouseEnterEvent.add( new BEventHandler( this, "menuVisualGridline_MouseEnter" ) );
-            menuVisualIconPalette.checkedChangedEvent.add( new BEventHandler( this, "menuVisualIconPalette_CheckedChanged" ) );
+            menuVisualIconPalette.clickEvent.add( new BEventHandler( this, "menuVisualIconPalette_Click" ) );
             menuVisualStartMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualStartMarker_MouseEnter" ) );
             menuVisualStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
             menuVisualEndMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualEndMarker_MouseEnter" ) );
@@ -14949,6 +15000,7 @@ namespace org.kbinani.cadencii {
             this.menuFileExport = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExportWave = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExportMidi = new org.kbinani.windows.forms.BMenuItem();
+            this.menuFileExportMusicXml = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
             this.menuFileRecent = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripSeparator();
@@ -15269,7 +15321,6 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.menuFileExportMusicXml = new BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -15418,6 +15469,12 @@ namespace org.kbinani.cadencii {
             this.menuFileExportMidi.Name = "menuFileExportMidi";
             this.menuFileExportMidi.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileExportMidi.Text = "MIDI";
+            // 
+            // menuFileExportMusicXml
+            // 
+            this.menuFileExportMusicXml.Name = "menuFileExportMusicXml";
+            this.menuFileExportMusicXml.Size = new System.Drawing.Size( 152, 22 );
+            this.menuFileExportMusicXml.Text = "MusicXML";
             // 
             // toolStripMenuItem11
             // 
@@ -15580,7 +15637,6 @@ namespace org.kbinani.cadencii {
             // 
             // menuVisualIconPalette
             // 
-            this.menuVisualIconPalette.CheckOnClick = true;
             this.menuVisualIconPalette.Name = "menuVisualIconPalette";
             this.menuVisualIconPalette.Size = new System.Drawing.Size( 237, 22 );
             this.menuVisualIconPalette.Text = "Icon Palette(&I)";
@@ -17976,12 +18032,6 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Name = "stripBtnEndMarker";
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
-            // 
-            // menuFileExportMusicXml
-            // 
-            this.menuFileExportMusicXml.Name = "menuFileExportMusicXml";
-            this.menuFileExportMusicXml.Size = new System.Drawing.Size( 152, 22 );
-            this.menuFileExportMusicXml.Text = "MusicXML";
             // 
             // FormMain
             // 

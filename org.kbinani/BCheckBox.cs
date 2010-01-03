@@ -15,6 +15,7 @@
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BCheckBox.java
 #else
 #define ABSTRACT_BUTTON_ENABLE_IS_SELECTED
+#define COMPONENT_ENABLE_LOCATION
 namespace org.kbinani.windows.forms {
     public class BCheckBox : System.Windows.Forms.CheckBox{
         // root impl of CheckedChanged event

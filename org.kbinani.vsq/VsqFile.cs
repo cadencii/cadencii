@@ -108,12 +108,376 @@ namespace org.kbinani.vsq {
             reflectPitch( this, 1, pitch );
         }
 
+        public virtual void adjustClockToMatchWith( double tempo ) {
+            int numTrack = Track.size();
+            for ( int track = 1; track < numTrack; track++ ) {
+                VsqTrack vsq_track = Track.get( track );
+                // ノート・歌手イベントをシフト
+                for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = (VsqEvent)itr.next();
+                    if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
+                        continue;
+                    }
+                    int clock = item.Clock;
+                    double sec_start = getSecFromClock( clock );
+                    double sec_end = getSecFromClock( clock + item.ID.getLength() );
+                    int clock_start = (int)(sec_start * 8.0 * tempo);
+                    int clock_end = (int)(sec_end * 8.0 * tempo);
+                    item.Clock = clock_start;
+                    item.ID.setLength( clock_end - clock_start );
+                    if ( item.ID.VibratoHandle != null ) {
+                        double sec_vib_start = getSecFromClock( clock + item.ID.VibratoDelay );
+                        int clock_vib_start = (int)(sec_vib_start * 8.0 * tempo);
+                        item.ID.VibratoDelay = clock_vib_start - clock_start;
+                        item.ID.VibratoHandle.setLength( clock_end - clock_vib_start );
+                    }
+                }
+
+                // コントロールカーブをシフト
+                for ( int j = 0; j < _CURVES.Length; j++ ) {
+                    String ct = _CURVES[j];
+                    VsqBPList item = vsq_track.getCurve( ct );
+                    if ( item == null ) {
+                        continue;
+                    }
+                    VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
+                    int numPoints = item.size();
+                    for ( int i = 0; i < numPoints; i++ ) {
+                        int clock = item.getKeyClock( i );
+                        int value = item.getElement( i );
+                        double sec = getSecFromClock( clock );
+                        if ( sec >= 0.0 ) {
+                            int clock_new = (int)(sec * 8.0 * tempo);
+                            repl.add( clock_new, value );
+                        }
+                    }
+                    vsq_track.setCurve( ct, repl );
+                }
+            }
+
+            // テンポテーブルを刷新
+            TempoTable.clear();
+            TempoTable.add( new TempoTableEntry( 0, (int)(60e6 / tempo), 0.0 ) );
+            updateTempoInfo();
+            updateTimesigInfo();
+            updateTotalClocks();
+        }
+
         /// <summary>
-        /// 
+        /// VsqEvent, VsqBPList, BezierCurvesの全てのクロックを、tempoに格納されているテンポテーブルに
+        /// 合致するようにシフトします
         /// </summary>
-        /// <param name="track"></param>
+        /// <param name="work"></param>
+        /// <param name="tempo"></param>
+        public virtual void adjustClockToMatchWith( VsqFile tempo ) {
+            //double premeasure_sec_target = getSecFromClock( getPreMeasureClocks() );
+            double premeasure_sec_tempo = 0;// premeasure_sec_target;
+
+            // テンポをリプレースする場合。
+            // まずクロック値を、リプレース後のモノに置き換え
+            for ( int track = 1; track < this.Track.size(); track++ ) {
+                // ノート・歌手イベントをシフト
+                for ( Iterator itr = this.Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = (VsqEvent)itr.next();
+                    if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
+                        continue;
+                    }
+                    int clock = item.Clock;
+                    double sec_start = this.getSecFromClock( clock );// -premeasure_sec_target + premeasure_sec_tempo;
+                    double sec_end = this.getSecFromClock( clock + item.ID.getLength() );// -premeasure_sec_target + premeasure_sec_tempo;
+                    int clock_start = (int)tempo.getClockFromSec( sec_start );
+                    int clock_end = (int)tempo.getClockFromSec( sec_end );
+                    item.Clock = clock_start;
+                    item.ID.setLength( clock_end - clock_start );
+                    if ( item.ID.VibratoHandle != null ) {
+                        double sec_vib_start = this.getSecFromClock( clock + item.ID.VibratoDelay );// -premeasure_sec_target + premeasure_sec_tempo;
+                        int clock_vib_start = (int)tempo.getClockFromSec( sec_vib_start );
+                        item.ID.VibratoDelay = clock_vib_start - clock_start;
+                        item.ID.VibratoHandle.setLength( clock_end - clock_vib_start );
+                    }
+                }
+
+                // コントロールカーブをシフト
+                for ( int j = 0; j < _CURVES.Length; j++ ) {
+                    String ct = _CURVES[j];
+                    VsqBPList item = this.Track.get( track ).getCurve( ct );
+                    if ( item == null ) {
+                        continue;
+                    }
+                    VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
+                    for ( int i = 0; i < item.size(); i++ ) {
+                        int clock = item.getKeyClock( i );
+                        int value = item.getElement( i );
+                        double sec = this.getSecFromClock( clock );// -premeasure_sec_target + premeasure_sec_tempo;
+                        if ( sec >= premeasure_sec_tempo ) {
+                            int clock_new = (int)tempo.getClockFromSec( sec );
+                            repl.add( clock_new, value );
+                        }
+                    }
+                    this.Track.get( track ).setCurve( ct, repl );
+                }
+            }
+        }
+
+        public void printAsMusicXml( String file, String encoding ) {
+            printAsMusicXmlCore( file, encoding, "", (int)(60e6 / getTempoAt( 0 )), false );
+        }
+
+        public void printAsMusicXml( String file, String encoding, int tempo ) {
+            printAsMusicXmlCore( file, encoding, "", tempo, true );
+        }
+
+        public void printAsMusicXml( String file, String encoding, String software ) {
+            printAsMusicXmlCore( file, encoding, software, (int)(60e6 / getTempoAt( 0 )), false );
+        }
+
+        /// <summary>
+        /// このインスタンスの内容を，MusicXML形式のファイルに出力します
+        /// </summary>
+        /// <param name="file">出力するファイルのパス</param>
+        /// <param name="encoding">MusicXMLのテキストエンコーディング</param>
+        /// <param name="software">出力を行ったソフトウェアの名称</param>
+        /// <param name="tempo">このインスタンスの中身を，このテンポ値の場合の再生秒時に合致するように音符などを移動する</param>
+        public void printAsMusicXml( String file, String encoding, String software, int tempo ) {
+            printAsMusicXmlCore( file, encoding, software, tempo, true );
+        }
+
+        private void printAsMusicXmlCore( String file, String encoding, String software, int tempo, boolean change_tempo ) {
+            BufferedWriter sw = null;
+            VsqFile vsq = (VsqFile)clone();
+            int intTempo = (int)(60e6 / tempo);
+            if ( !change_tempo ) {
+                intTempo = vsq.getTempoAt( 0 );
+            }
+#if DEBUG
+            PortUtil.println( "VsqFile#printAsMusicXmlCore; change_tempo=" + change_tempo );
+            PortUtil.println( "VsqFile#printAsMusicXmlCore; tempo=" + tempo );
+            PortUtil.println( "VsqFile#printAsMusicXmlCore; intTempo=" + intTempo + "; tempo=" + tempo );
+#endif
+            if ( change_tempo ) {
+                //VsqFile tempoVsq = new VsqFile( "", getPreMeasure(), 4, 4, intTempo );
+                //vsq.adjustClockToMatchWith( tempoVsq );
+                vsq.adjustClockToMatchWith( tempo );
+            }
+            Timesig timesig = vsq.getTimesigAt( 0 );
+            int removeClock = timesig.numerator * 480 * 4 / timesig.denominator;
+
+            try {
+                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), encoding ) );
+
+                // ヘッダ
+                sw.write( "<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>" ); sw.newLine();
+                sw.write( "<!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 2.0 Partwise//EN\"" ); sw.newLine();
+                sw.write( "                                \"http://www.musicxml.org/dtds/partwise.dtd\">" ); sw.newLine();
+                sw.write( "<score-partwise version=\"2.0\">" ); sw.newLine();
+                sw.write( "  <identification>" ); sw.newLine();
+                sw.write( "    <encoding>" ); sw.newLine();
+                if ( PortUtil.getStringLength( software ) > 0 ) {
+                    sw.write( "      <software>" + software + "</software>" ); sw.newLine();
+                }
+                sw.write( "      <software>org.kbinani.vsq</software>" ); sw.newLine();
+                sw.write( "    </encoding>" ); sw.newLine();
+                sw.write( "  </identification>" ); sw.newLine();
+                sw.write( "  <part-list>" ); sw.newLine();
+
+                int track_count = vsq.Track.size();
+                Timesig timesigStart = vsq.getTimesigAt( 0 );
+                int clockPerMeasure = timesigStart.numerator * 480 * 4 / timesigStart.denominator;
+                for ( int i = 1; i < track_count; i++ ) {
+                    VsqTrack vsq_track = vsq.Track.get( i );
+                    sw.write( "    <score-part id=\"P" + i + "\">" ); sw.newLine();
+                    sw.write( "      <part-name>" + vsq_track.getName() + "</part-name>" ); sw.newLine();
+                    sw.write( "    </score-part>" ); sw.newLine();
+                }
+                sw.write( "  </part-list>" ); sw.newLine();
+                int measureStart = 0; // 出力開始する小節
+
+                for ( int i = 1; i < track_count; i++ ) {
+                    VsqTrack vsq_track = vsq.Track.get( i );
+                    int numEvents = vsq_track.getEventCount();
+                    sw.write( "  <part id=\"P" + i + "\">" ); sw.newLine();
+
+                    // 拍子変更毎に出力していく
+                    int countTimesig = vsq.TimesigTable.size();
+                    int totalMeasure = measureStart; // 出力してきた小節の数
+                    int clockLastBase = measureStart * clockPerMeasure; // 前回の拍子ブロックで出力し終わったクロック
+                    int startIndex = 0;
+                    for ( int n = 0; n < countTimesig; n++ ) {
+                        TimeSigTableEntry timesigEntryThis = vsq.TimesigTable.get( n );
+                        clockPerMeasure = timesigEntryThis.Numerator * 480 * 4 / timesigEntryThis.Denominator;
+                        
+                        // この拍子が曲の終まで続くとしたら，あと何小節出力する必要があるのか？
+                        int remainingMeasures = 0;
+                        if ( n + 1 < countTimesig ) {
+                            TimeSigTableEntry timesigEntryNext = vsq.TimesigTable.get( n + 1 );
+                            remainingMeasures = timesigEntryNext.BarCount - timesigEntryThis.BarCount;
+                        } else {
+                            int remainingClocks = vsq.TotalClocks - clockLastBase;
+                            remainingMeasures = remainingClocks / clockPerMeasure;
+                            if ( remainingClocks % clockPerMeasure != 0 ) {
+                                remainingMeasures++;
+                            }
+                        }
+
+                        // remainingMeasures小節を順次出力
+                        for ( int j = totalMeasure; j < totalMeasure + remainingMeasures; j++ ) {
+                            sw.write( "    <measure number=\"" + (j + 1 - measureStart) + "\">" ); sw.newLine();
+                            if ( j == totalMeasure ) {
+                                sw.write( "      <attributes>" ); sw.newLine();
+                                sw.write( "        <divisions>480</divisions>" ); sw.newLine();
+                                sw.write( "        <time symbol=\"common\">" ); sw.newLine();
+                                sw.write( "          <beats>" + timesigEntryThis.Numerator + "</beats>" ); sw.newLine();
+                                sw.write( "          <beat-type>" + timesigEntryThis.Denominator + "</beat-type>" ); sw.newLine();
+                                sw.write( "        </time>" ); sw.newLine();
+                                sw.write( "      </attributes>" ); sw.newLine();
+                                sw.write( "      <direction>" ); sw.newLine();
+                                sw.write( "        <sound tempo=\"" + tempo + "\"/>" ); sw.newLine();
+                                sw.write( "      </direction>" ); sw.newLine();
+                            }
+
+                            // 臨時記号のON/OFFを制御するために
+                            TreeMap<String, Boolean> altered = new TreeMap<String, Boolean>();
+                            String[] basic = new String[] { "C", "D", "E", "F", "G", "A", "B" };
+                            for ( int m = 0; m < basic.Length; m++ ) {
+                                altered.put( basic[m], false );
+                            }
+
+                            int clockStart = clockLastBase + (j - totalMeasure) * clockPerMeasure;
+                            int clockEnd = clockStart + clockPerMeasure;
+                            int clockLast = clockStart; // 出力済みのクロック
+                            for ( int k = startIndex; k < numEvents; k++ ) {
+                                VsqEvent itemk = vsq_track.getEvent( k );
+                                if ( itemk.ID.type != VsqIDType.Anote ) {
+                                    if ( clockEnd <= itemk.Clock ) {
+                                        startIndex = k;
+                                        break;
+                                    }
+                                    continue;
+                                }
+                                if ( (clockStart <= itemk.Clock && itemk.Clock < clockEnd) ||
+                                     (clockStart <= itemk.Clock + itemk.ID.getLength() && itemk.Clock + itemk.ID.getLength() < clockEnd) ||
+                                     (itemk.Clock <= clockStart && clockEnd <= itemk.Clock + itemk.ID.getLength()) ) {
+                                    // 出力する必要がある
+                                    if ( clockLast < itemk.Clock ) {
+                                        // 音符の前に休符が必要
+                                        sw.write( "      <note>" ); sw.newLine();
+                                        sw.write( "        <rest/>" ); sw.newLine();
+                                        sw.write( "        <duration>" + (itemk.Clock - clockLast) + "</duration>" ); sw.newLine();
+                                        sw.write( "        <voice>1</voice>" ); sw.newLine();
+                                        sw.write( "      </note>" ); sw.newLine();
+                                        clockLast = itemk.Clock;
+                                    }
+
+                                    boolean tieStopRequired = false;
+                                    int start = itemk.Clock;
+                                    if ( start < clockStart ) {
+                                        // 前の小節からタイで接続されている場合
+                                        start = clockStart;
+                                        tieStopRequired = true;
+                                    }
+                                    int end = itemk.Clock + itemk.ID.getLength();
+                                    boolean tieStartRequired = false;
+                                    if ( clockEnd < end ) {
+                                        // 次の小節にタイで接続しなければならない場合
+                                        end = clockEnd;
+                                        tieStartRequired = true;
+                                    }
+                                    int actualLength = end - start;
+                                    sw.write( "      <note>" ); sw.newLine();
+                                    int note = itemk.ID.Note;
+                                    String noteStringBase = VsqNote.getNoteStringBase( note ); // "C"など
+                                    int octave = VsqNote.getNoteOctave( note );
+                                    sw.write( "        <pitch>" ); sw.newLine();
+                                    sw.write( "          <step>" + noteStringBase + "</step>" ); sw.newLine();
+                                    int alter = VsqNote.getNoteAlter( note );
+                                    if ( alter != 0 ) {
+                                        sw.write( "          <alter>" + alter + "</alter>" ); sw.newLine();
+                                    }
+                                    sw.write( "          <octave>" + (octave + 1) + "</octave>" ); sw.newLine();
+                                    sw.write( "        </pitch>" ); sw.newLine();
+                                    sw.write( "        <duration>" + actualLength + "</duration>" ); sw.newLine();
+                                    String stem = note >= 70 ? "down" : "up";
+                                    sw.write( "        <stem>" + stem + "</stem>" ); sw.newLine();
+                                    String accidental = "";
+                                    String checkAltered = noteStringBase;
+                                    if ( !tieStopRequired && altered.containsKey( checkAltered ) ) {
+                                        if ( alter == 0 ) {
+                                            if ( altered.get( checkAltered ) ) {
+                                                accidental = "natural";
+                                                altered.put( checkAltered, false );
+                                            }
+                                        } else {
+                                            if ( !altered.get( checkAltered ) ) {
+                                                accidental = alter == 1 ? "sharp" : "flat";
+                                                altered.put( checkAltered, true );
+                                            }
+                                        }
+                                    }
+                                    if ( PortUtil.getStringLength( accidental ) > 0 ) {
+                                        sw.write( "        <accidental>" + accidental + "</accidental>" ); sw.newLine();
+                                    }
+                                    sw.write( "        <voice>1</voice>" ); sw.newLine();
+                                    //if ( !(tieStartRequired && tieStopRequired) ) {
+                                    if ( tieStartRequired ) {
+                                        sw.write( "        <tie type=\"start\"/>" ); sw.newLine();
+                                        sw.write( "        <notations>" ); sw.newLine();
+                                        sw.write( "          <tied type=\"start\"/>" ); sw.newLine();
+                                        sw.write( "        </notations>" ); sw.newLine();
+                                    }
+                                    if ( tieStopRequired ) {
+                                        sw.write( "        <tie type=\"stop\"/>" ); sw.newLine();
+                                        sw.write( "        <notations>" ); sw.newLine();
+                                        sw.write( "          <tied type=\"stop\"/>" ); sw.newLine();
+                                        sw.write( "        </notations>" ); sw.newLine();
+                                    }
+                                    //}
+                                    sw.write( "        <lyric>" ); sw.newLine();
+                                    sw.write( "          <text>" + itemk.ID.LyricHandle.L0.Phrase + "</text>" ); sw.newLine();
+                                    sw.write( "        </lyric>" ); sw.newLine();
+                                    sw.write( "      </note>" ); sw.newLine();
+                                    clockLast = end;
+                                    if ( tieStartRequired ) {
+                                        startIndex = k;
+                                    } else {
+                                        startIndex = k + 1;
+                                    }
+                                }
+                            }
+                            if ( clockLast < clockEnd ) {
+                                // 小節の最後に休符を入れる必要がある
+                                sw.write( "      <note>" ); sw.newLine();
+                                sw.write( "        <rest/>" ); sw.newLine();
+                                sw.write( "        <duration>" + (clockEnd - clockLast) + "</duration>" ); sw.newLine();
+                                sw.write( "        <voice>1</voice>" ); sw.newLine();
+                                sw.write( "      </note>" ); sw.newLine();
+                                clockLast = clockEnd;
+                            }
+                            sw.write( "    </measure>" ); sw.newLine();
+                        }
+                        clockLastBase += remainingMeasures * clockPerMeasure;
+                        totalMeasure += remainingMeasures;
+                    }
+                    sw.write( "  </part>" ); sw.newLine();
+                }
+                sw.write( "</score-partwise>" ); sw.newLine();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VsqFile#printAsMusicXml; ex=" + ex );
+            } finally {
+                if ( sw != null ) {
+                    try {
+                        sw.close();
+                    } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "VsqFile#printAsMusicXml; ex2=" + ex2 );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// このインスタンスの内容を，MusicXML形式のファイルに出力します
+        /// </summary>
         /// <param name="file"></param>
-        public void printAsMusicXml( String file ) {
+        public void printAsMusicXml_OLD( String file ) {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "UTF-8" ) );
@@ -1519,10 +1883,11 @@ namespace org.kbinani.vsq {
 
                 for ( int i = 0; i < _CURVES.Length; i++ ) {
                     String curve = _CURVES[i];
-                    if ( curve.Equals( "VEL" ) ) {
+                    VsqBPList bplist = Track.get( track ).getCurve( curve );
+                    if ( bplist == null ){
                         continue;
                     }
-                    VsqBPList buf_bplist = (VsqBPList)Track.get( track ).getCurve( curve ).clone();
+                    VsqBPList buf_bplist = (VsqBPList)bplist.clone();
                     Track.get( track ).getCurve( curve ).clear();
                     int value_at_end = buf_bplist.getValue( clock_end );
                     boolean at_end_added = false;
@@ -1569,12 +1934,11 @@ namespace org.kbinani.vsq {
                 }
                 for ( int i = 0; i < _CURVES.Length; i++ ) {
                     String curve = _CURVES[i];
-                    if ( curve.Equals( "VEL" ) ) {
+                    VsqBPList edit = vsq.Track.get( track ).getCurve( curve );
+                    if ( edit == null ) {
                         continue;
-
                     }
                     // 順番に+=dclockしていくとVsqBPList内部のSortedListの値がかぶる可能性がある．
-                    VsqBPList edit = vsq.Track.get( track ).getCurve( curve );
                     VsqBPList new_one = new VsqBPList( edit.getName(), edit.getDefault(), edit.getMinimum(), edit.getMaximum() );
                     for ( Iterator itr2 = edit.keyClockIterator(); itr2.hasNext(); ) {
                         int key = (Integer)itr2.next();
@@ -2155,11 +2519,11 @@ namespace org.kbinani.vsq {
                 }
                 for ( int j = 0; j < _CURVES.Length; j++ ) {
                     String vct = _CURVES[j];
-                    if ( vct.Equals( "VEL" ) ) {
+                    VsqBPList list = track.getCurve( vct );
+                    if ( list == null ) {
                         continue;
                     }
-                    VsqBPList list = track.getCurve( vct );
-                    if ( list != null && list.size() > 0 ) {
+                    if ( list.size() > 0 ) {
                         int keys = list.size();
                         int last_key = list.getKeyClock( keys - 1 );
                         max = Math.Max( max, last_key );

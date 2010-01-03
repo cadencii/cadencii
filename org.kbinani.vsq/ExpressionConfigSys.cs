@@ -895,9 +895,6 @@ namespace org.kbinani.vsq {
             m_dynamics_configs = new Vector<IconDynamicsHandle>();
             String base_path = PortUtil.getDirectoryName( path_editor );
             String aiconDB_def = PortUtil.combinePath( base_path, "AiconDB.def" );
-#if DEBUG
-            PortUtil.stdout.println( "ExpressionConfigSys#.ctor; aiconDB_def=" + aiconDB_def + "; exists=" + PortUtil.isFileExists( aiconDB_def ) );
-#endif
             if ( PortUtil.isFileExists( aiconDB_def ) ) {
                 String folder_name = "";
                 TreeMap<String, Vector<String>> list = new TreeMap<String, Vector<String>>();
@@ -951,42 +948,22 @@ namespace org.kbinani.vsq {
                     }
                 }
 
-#if DEBUG
-                PortUtil.stdout.println( "ExpressionConfigSys#.ctor; folder_name=" + folder_name );
-#endif
                 if ( !folder_name.Equals( "" ) ) {
                     String aiconDB_path = PortUtil.combinePath( base_path, folder_name );
-#if DEBUG
-                    PortUtil.stdout.println( "ExpressionConfigSys#.ctor; aiconDB_path=" + aiconDB_path );
-#endif
                     if ( PortUtil.isDirectoryExists( aiconDB_path ) ) {
                         for ( Iterator itr = list.keySet().iterator(); itr.hasNext(); ) {
                             String key = (String)itr.next();
                             String section_name = key.Replace( "[", "" ).Replace( "]", "" );
                             String section_path = PortUtil.combinePath( aiconDB_path, section_name );
-#if DEBUG
-                            PortUtil.stdout.println( "ExpressionConfigSys#.ctor; section_path=" + section_path );
-#endif
                             if ( PortUtil.isDirectoryExists( section_path ) ) {
                                 for ( Iterator itr2 = list.get( key ).iterator(); itr2.hasNext(); ) {
                                     String line = (String)itr2.next();
-#if DEBUG
-                                    PortUtil.stdout.println( "ExpressionConfigSys#.ctor; line=" + line );
-                                    debug.push_log( "ExpressionConfigSys#.ctor; line=" + line );
-#endif
                                     String[] spl = PortUtil.splitString( line, '=' );
                                     if ( spl.Length != 2 ) {
-#if DEBUG
-                                        PortUtil.stdout.println( "ExpressionConfigSys#.ctor; spl.Length=" + spl.Length );
-#endif
                                         continue;
                                     }
                                     String name = spl[0];
                                     String[] spl2 = PortUtil.splitString( spl[1], ',' );
-                                    /*Dynaff=Dynaff11,Dynaff12,Dynaff13,Dynaff21,Dynaff22,Dynaff31,Dynaff32,Dynaff33
-Crescendo=cresc_1,cresc_2,cresc_3,cresc_4,cresc_5
-Decrescendo=dim_1,dim_2,dim_3,dim_4,dim_5
-*/
                                     String preset = "";
                                     if ( name.Equals( "Dynaff" ) ) {
                                         preset = "$0501";
@@ -1001,18 +978,11 @@ Decrescendo=dim_1,dim_2,dim_3,dim_4,dim_5
                                             aic_name += ".aic";
                                         }
                                         String aic_path = PortUtil.combinePath( section_path, aic_name );
-#if DEBUG
-                                        PortUtil.stdout.println( "ExpressionConfigSys#.ctor; aic_path=" + aic_path + "; isFileExists( aic_path )=" + PortUtil.isFileExists( aic_path ) );
-#endif
                                         String ids = spl2[i];
                                         String icon_id = preset + PortUtil.formatDecimal( "0000", i );
                                         if ( PortUtil.isFileExists( aic_path ) ){
                                             IconDynamicsHandle handle = new IconDynamicsHandle( aic_path, ids, icon_id, i );
                                             handle.setButtonImageFullPath( PortUtil.combinePath( section_path, handle.getButton() ) );
-#if DEBUG
-                                            String btn = handle.getButtonImageFullPath();
-                                            PortUtil.println( "ExpressionConfigSys#.ctor; handle.getButtonImageFullPath()=" + btn + "; exists=" + PortUtil.isFileExists( btn ) );
-#endif
                                             m_dynamics_configs.add( handle );
                                         }
                                     }
@@ -1024,9 +994,6 @@ Decrescendo=dim_1,dim_2,dim_3,dim_4,dim_5
             }
             String expression = PortUtil.combinePath( path_expdb, "expression.map" );
             if ( !PortUtil.isFileExists( expression ) ) {
-#if DEBUG
-                PortUtil.println( "ExpressionConfigSys#.ctor; expression.map does not exist" );
-#endif
                 return;
             }
 
@@ -1051,9 +1018,6 @@ Decrescendo=dim_1,dim_2,dim_3,dim_4,dim_5
                         continue;
                     }
 
-#if DEBUG
-                    PortUtil.println( "ExpresionConfigSys#.ctor; ved=" + ved + "; vexp_dir=" + vexp_dir );
-#endif
                     String NL = (char)0x0D + "" + (char)0x0A;
                     RandomAccessFile fs_ved = null;
                     try {
@@ -1062,18 +1026,9 @@ Decrescendo=dim_1,dim_2,dim_3,dim_4,dim_5
                         fs_ved.read( byte_ved, 0, byte_ved.Length );
                         TransCodeUtil.decodeBytes( byte_ved );
                         String str = PortUtil.getDecodedString( "ASCII", byte_ved );
-#if DEBUG
-                        String txt_file = PortUtil.combinePath( path_expdb, "vexp" + value + ".txt" );
-                        using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( txt_file ) ) {
-                            sw.Write( str );
-                        }
-#endif
                         String[] spl = PortUtil.splitString( str, new String[] { NL }, true );
                         String current_entry = "";
                         for ( int j = 0; j < spl.Length; j++ ) {
-#if DEBUG
-                            //PortUtil.println( "ExpressionConfigSys#.ctor; line=" + spl[j] );
-#endif
                             if ( spl[j].StartsWith( "[" ) ) {
                                 current_entry = spl[j];
                                 continue;
@@ -1112,33 +1067,25 @@ Decrescendo=dim_1,dim_2,dim_3,dim_4,dim_5
                             }
                         }
                     } catch ( Exception ex ) {
-#if DEBUG
-                        PortUtil.println( "ExpressionConfigSys#.ctor; ex=" + ex );
-#endif
+                        PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
                     } finally {
                         if ( fs_ved != null ) {
                             try {
                                 fs_ved.close();
                             } catch ( Exception ex2 ) {
-#if DEBUG
-                                PortUtil.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
-#endif
+                                PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
                             }
                         }
                     }
                 }
             } catch ( Exception ex ) {
-#if DEBUG
-                PortUtil.println( "ExpressionConfigSys#.ctor; ex=" + ex );
-#endif
+                PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
-#if DEBUG
-                        PortUtil.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
-#endif
+                        PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
                     }
                 }
             }
