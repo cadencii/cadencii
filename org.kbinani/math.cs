@@ -47,6 +47,32 @@ namespace org.kbinani {
             Kaiser,
         }
 
+        /// <summary>
+        /// 2つの整数の最大公約数を返します。
+        /// </summary>
+        /// <param name="m"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static long gcd( long m, long n ) {
+            if ( n > m ) {
+                long a = n;
+                n = m;
+                m = a;
+            }
+            while ( true ) {
+                if ( n == 0 ) {
+                    return m;
+                }
+                long quotient = m / n;
+                long odd = m - n * quotient;
+                if ( odd == 0 ) {
+                    return n;
+                }
+                m = n;
+                n = odd;
+            }
+        }
+
         public static double window_func( WindowFunctionType type, double x )
 #if JAVA
             throws Exception

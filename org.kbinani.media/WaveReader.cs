@@ -46,6 +46,21 @@ namespace org.kbinani.media {
         private double m_offset_seconds = 0.0;
         private int m_sample_per_sec;
 
+        /*
+         * 192000
+         * 96000
+         * 88200
+         * 48000
+         * 44100
+         * 32000
+         * 24000
+         * 22050
+         * 16000
+         * 12000
+         * 11025
+         * 8000
+         */
+
         public WaveReader() {
             m_opened = false;
         }
@@ -59,6 +74,10 @@ namespace org.kbinani.media {
 #if DEBUG
             Console.WriteLine( "WaveReader#.ctor; file=" + file + "; ret=" + ret );
 #endif
+        }
+
+        public int getSampleRate() {
+            return m_sample_per_sec;
         }
 
         public double getOffsetSeconds() {

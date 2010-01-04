@@ -58,6 +58,7 @@
     <Compile Include="AviWriterVfw.cs" />
     <Compile Include="Wave.cs" />
     <Compile Include="WavePlay.cs" />
+    <Compile Include="WaveRateConverter.cs" />
     <Compile Include="WaveReader.cs" />
     <Compile Include="WaveWriter.cs" />
   </ItemGroup>
