@@ -477,10 +477,31 @@ namespace org.kbinani.vsq {
         public String appendFromText( TextMemoryStream reader ) {
             String last_line = reader.readLine();
             while ( !last_line.StartsWith( "[" ) ) {
-                String[] spl = PortUtil.splitString( last_line, new char[] { '=' } );
-                int clock = PortUtil.parseInt( spl[0] );
-                int value = PortUtil.parseInt( spl[1] );
-                this.add( clock, value );
+                boolean exitRequired = false;
+                String line = last_line;
+                int index = last_line.IndexOf( '[' );
+                if ( index > 0 ) {
+                    line = last_line.Substring( 0, index );
+                    last_line = last_line.Substring( index );
+#if DEBUG
+                    PortUtil.println( "VsqBPList#appendFromText; line=" + line + "; last_line=" + last_line );
+#endif
+                    exitRequired = true;
+                }
+                String[] spl = PortUtil.splitString( line, new char[] { '=' } );
+                try {
+                    int clock = PortUtil.parseInt( spl[0] );
+                    int value = PortUtil.parseInt( spl[1] );
+                    this.add( clock, value );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VsqBPList#appendFromText; ex=" + ex );
+#if DEBUG
+                    PortUtil.stderr.println( "VsqBPList#appendFromText; last_line=" + last_line );
+#endif
+                }
+                if ( exitRequired ) {
+                    break;
+                }
                 if ( reader.peek() < 0 ) {
                     break;
                 } else {
@@ -570,64 +591,144 @@ namespace org.kbinani.vsq {
     }
 
 #if !JAVA
-    /*public class VsqBPList : ICloneable {
-        private System.Collections.Generic.SortedList<int, VsqBPPair> m_items = new System.Collections.Generic.SortedList<int, VsqBPPair>();
-        private int m_default = 0;
-        private int m_maximum = 127;
-        private int m_minimum = 0;
-        private long m_max_id = 0;
+}
+
+namespace org.kbinani.vsq.impl {
+    /// <summary>
+    /// 高速なVsqBPListのテスト実装。方針は、clocksとitemsを配列とし、足りなくなったらArray.Resizeする。
+    /// </summary>
+    public class VsqBPList {
+        private int[] clocks;
+        private VsqBPPair[] items;
+        private int length = 0; // clocks, itemsの現在の長さ
+        private int defaultValue = 0;
+        private int maxValue = 127;
+        private int minValue = 0;
+        private long maxId = 0;
         private String name = "";
 
-        public VsqBPList( String name, int default_value, int minimum, int maximum ) {
-            this.name = name;
-            m_default = default_value;
-            m_maximum = maximum;
-            m_minimum = minimum;
-        }
-
-        public int getKeyClock( int index ) {
+        public VsqBPList()
 #if JAVA
-            return m_items.keySet().get( index );
+        {
 #else
+            :
+#endif
+            this( "", 0, 0, 64 )
+#if JAVA
+            ;
+#else
+        {
 #endif
         }
 
-        public int getDefault() {
-            return m_default;
+        /// <summary>
+        /// コンストラクタ。デフォルト値はココで指定する。
+        /// </summary>
+        /// <param name="default_value"></param>
+        public VsqBPList( String name, int default_value, int minimum, int maximum ) {
+            this.name = name;
+            defaultValue = default_value;
+            maxValue = maximum;
+            minValue = minimum;
+            maxId = 0;
         }
 
-        public Object clone() {
-            VsqBPList ret = new VsqBPList( name, m_default, m_minimum, m_maximum );
-            for ( Iterator itr = m_items.keySet().iterator(); itr.hasNext(); ) {
-                int clock = (Integer)itr.next();
-                ret.m_items.put( clock, m_items.get( clock ) );
-            }
-            return ret;
+        /// <summary>
+        /// このBPListのデフォルト値を取得します
+        /// </summary>
+        public int getDefault() {
+            return defaultValue;
+        }
+
+        public void setDefault( int value ) {
+            defaultValue = value;
         }
 
 #if !JAVA
-        public Object Clone() {
-            return clone();
+        public int Default {
+            get {
+                return getDefault();
+            }
+            set {
+                setDefault( value );
+            }
         }
 #endif
 
-        public int size() {
-            return m_items.size();
+        public String getName() {
+            if ( name == null ) {
+                name = "";
+            }
+            return name;
         }
 
-        public void add( int clock, int value ) {
-            if ( m_items.containsKey( clock ) ) {
-                VsqBPPair v = m_items.get( clock );
-                v.value = value;
-                m_items.put( clock, v );
+        public void setName( String value ) {
+            if ( value == null ) {
+                name = "";
             } else {
-                m_max_id++;
-                m_items.put( clock, new VsqBPPair( value, m_max_id ) );
+                name = value;
             }
         }
 
+#if !JAVA
+        public String Name {
+            get {
+                return getName();
+            }
+            set {
+                setName( value );
+            }
+        }
+#endif
 
-    }*/
+        public long getMaxID() {
+            return maxId;
+        }
+
+#if !JAVA
+        public int Maximum {
+            get {
+                return getMaximum();
+            }
+            set {
+                setMaximum( value );
+            }
+        }
+#endif
+
+        /// <summary>
+        /// このリストに設定された最大値を取得します。
+        /// </summary>
+        public int getMaximum() {
+            return maxValue;
+        }
+
+        public void setMaximum( int value ) {
+            maxValue = value;
+        }
+
+#if !JAVA
+        public int Minimum {
+            get {
+                return getMinimum();
+            }
+            set {
+                setMinimum( value );
+            }
+        }
+#endif
+
+        /// <summary>
+        /// このリストに設定された最小値を取得します
+        /// </summary>
+        public int getMinimum() {
+            return minValue;
+        }
+
+        public void setMinimum( int value ) {
+            minValue = value;
+        }
+    }
 
 }
 #endif

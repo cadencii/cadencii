@@ -19,9 +19,8 @@ import org.kbinani.*;
 import org.kbinani.media.*;
 #else
 using System;
-using org.kbinani.media;
-using org.kbinani;
 using org.kbinani.java.util;
+using org.kbinani.media;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -33,14 +32,6 @@ namespace org.kbinani.cadencii {
 #else
     public abstract class RenderingRunner : Runnable {
 #endif
-        /*private int sampleRate;
-        private int trimMilliSec;
-        private long totalSamples;
-        private WaveWriter waveWriter;
-        private double waveReadOffsetSeconds;
-        private Vector<WaveReader> readers;
-        private boolean directPlay;
-        private boolean reflectAmp2Wave;*/
         protected Object m_locker = null;
         protected boolean m_rendering = false;
         protected long totalSamples = 0;
@@ -59,7 +50,7 @@ namespace org.kbinani.cadencii {
         protected boolean reflectAmp2Wave;
         protected WaveWriter waveWriter;
         protected double waveReadOffsetSeconds;
-        protected Vector<WaveReader> readers;
+        protected Vector<WaveRateConverter> readers;
         protected boolean directPlay;
         protected int trimMillisec;
         protected int sampleRate;
@@ -84,7 +75,11 @@ namespace org.kbinani.cadencii {
             reflectAmp2Wave = reflect_amp_to_wave;
             waveWriter = wave_writer;
             waveReadOffsetSeconds = wave_read_offset_seconds;
-            this.readers = readers;
+            int numReaders = (readers != null) ? readers.size() : 0;
+            this.readers = new Vector<WaveRateConverter>();
+            for ( int i = 0; i < numReaders; i++ ) {
+                this.readers.add( new WaveRateConverter( readers.get( i ), sample_rate ) );
+            }
             directPlay = direct_play;
             trimMillisec = trim_msec;
             totalSamples = total_samples;
@@ -114,7 +109,7 @@ namespace org.kbinani.cadencii {
                 try {
                     readers.get( i ).close();
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AquesToneRenderingRunner#abortRendering; ex=" + ex );
+                    PortUtil.stderr.println( "RenderingRunner#abortRendering; ex=" + ex );
                 }
                 readers.set( i, null );
             }
@@ -126,9 +121,6 @@ namespace org.kbinani.cadencii {
                 return;
             }
             lock ( m_locker ) {
-#if DEBUG
-                //PortUtil.println( "RenderingRunner_DRAFT#waveIncoming; length=" + t_L.Length );
-#endif
 
                 double[] L = t_L;
                 double[] R = t_R;
@@ -180,7 +172,7 @@ namespace org.kbinani.cadencii {
                         try {
                             waveWriter.append( L, R );
                         } catch ( Exception ex ) {
-                            PortUtil.println( "RenderingRunner_DRAFT#waveIncoming; ex=" + ex );
+                            PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );
                         }
                     }
                 } else {
@@ -188,7 +180,7 @@ namespace org.kbinani.cadencii {
                         try {
                             waveWriter.append( L, R );
                         } catch ( Exception ex ) {
-                            PortUtil.println( "RenderingRunner_DRAFT#waveIncoming; ex=" + ex );
+                            PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );
                         }
                     }
                     for ( int i = 0; i < length; i++ ) {
@@ -209,7 +201,7 @@ namespace org.kbinani.cadencii {
                 double[] reader_l = new double[length];
                 for ( int i = 0; i < count; i++ ) {
                     try {
-                        WaveReader wr = readers.get( i );
+                        WaveRateConverter wr = readers.get( i );
                         amplify.left = 1.0;
                         amplify.right = 1.0;
                         if ( wr.getTag() != null && wr.getTag() is Integer ) {
@@ -227,7 +219,7 @@ namespace org.kbinani.cadencii {
                             R[j] += reader_r[j] * amplify.right;
                         }
                     } catch ( Exception ex ) {
-                        PortUtil.println( "RenderingRunner_DRAFT#waveIncoming; ex=" + ex );
+                        PortUtil.stderr.println( "RenderingRunner_DRAFT#waveIncoming; ex=" + ex );
                     }
                 }
                 reader_l = null;

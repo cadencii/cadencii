@@ -27,6 +27,7 @@ namespace org.kbinani.cadencii {
     using VstIntPtr = Int32;
 
     public delegate void WaveIncomingEventHandler( double[] L, double[] R );
+    delegate void VoidDelegate();
 
     public struct TempoInfo {
         /// <summary>
@@ -298,9 +299,22 @@ namespace org.kbinani.cadencii {
         }
 
         public FormPluginUi getUi() {
+            if ( ui == null ) {
+                if ( AppManager.mainWindow != null ) {
+                    VoidDelegate temp = new VoidDelegate( this.createPluginUi );
+                    if ( temp != null ) {
+                        // mainWindowのスレッドで、uiが作成されるようにする
+                        AppManager.mainWindow.Invoke( temp );
+                    }
+                }
+            }
+            return ui;
+        }
+
+        private void createPluginUi() {
             boolean hasUi = (aEffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor;
             if ( !hasUi ) {
-                return null;
+                return;
             }
             if ( ui == null ) {
                 ui = new FormPluginUi();
@@ -328,7 +342,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
-            return ui;
+            return;
         }
 
         public virtual bool open( string dll_path, int block_size, int sample_rate ) {

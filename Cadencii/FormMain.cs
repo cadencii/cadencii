@@ -34,18 +34,17 @@ using System;
 using System.Diagnostics;
 using System.Media;
 using System.Threading;
-using org.kbinani;
+using org.kbinani.apputil;
 using org.kbinani.componentmodel;
 using org.kbinani.java.awt;
 using org.kbinani.java.awt.event_;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 using org.kbinani.javax.swing;
-using org.kbinani.windows.forms;
-using org.kbinani.xml;
-using org.kbinani.apputil;
 using org.kbinani.media;
 using org.kbinani.vsq;
+using org.kbinani.windows.forms;
+using org.kbinani.xml;
 
 namespace org.kbinani.cadencii {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
@@ -60,7 +59,6 @@ namespace org.kbinani.cadencii {
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
     using Integer = System.Int32;
-//    using java = org.kbinani.java;
     using Long = System.Int64;
 
 #endif
@@ -2853,7 +2851,7 @@ namespace org.kbinani.cadencii {
                 if ( AppManager.getSelected() >= 0 ) {
                     if ( (AppManager.getEditMode() == EditMode.ADD_FIXED_LENGTH_ENTRY) ||
                          (AppManager.getEditMode() == EditMode.ADD_ENTRY && (m_button_initial.x != e.X || m_button_initial.y != e.Y) && AppManager.addingEvent.ID.getLength() > 0) ) {
-                        LyricHandle lyric = new LyricHandle( "a", "a" );
+                        LyricHandle lyric = new LyricHandle( "あ", "a" );
                         VibratoHandle vibrato = null;
                         int vibrato_delay = 0;
                         if ( AppManager.editorConfig.EnableAutoVibrato ) {
@@ -3468,13 +3466,19 @@ namespace org.kbinani.cadencii {
 
         public void menuVisualPluginUiVocaloidCommon_Click( Object sender, EventArgs e ) {
             String search = "";
+            int vocaloid = 0;
             if ( sender == menuVisualPluginUiVocaloid1 ) {
                 search = VSTiProxy.RENDERER_DSB2;
+                vocaloid = 1;
             } else if ( sender == menuVisualPluginUiVocaloid2 ) {
                 search = VSTiProxy.RENDERER_DSB3;
+                vocaloid = 2;
             } else {
                 return;
             }
+#if DEBUG
+            PortUtil.println( "FormMain#menuVisualPluginVocaloidCommon_Click; search=" + search );
+#endif
             int c = VSTiProxy.vocaloidDriver.size();
             for ( int i = 0; i < c; i++ ) {
                 VocaloidDriver vd = VSTiProxy.vocaloidDriver.get( i );
@@ -3494,14 +3498,15 @@ namespace org.kbinani.cadencii {
                 String name = vd.name;
                 boolean v = true;
                 if ( name.StartsWith( search ) ) {
-                    v = !menuVisualPluginUiVocaloid1.isSelected();
-                    menuVisualPluginUiVocaloid1.setSelected( v );
-                    vd.getUi().setVisible( v );
-                    break;
-                } else if ( name.StartsWith( search ) ) {
-                    v = !menuVisualPluginUiVocaloid2.isSelected();
-                    menuVisualPluginUiVocaloid2.setSelected( v );
-                    vd.getUi().setVisible( v );
+                    if ( vocaloid == 1 ) {
+                        v = !menuVisualPluginUiVocaloid1.isSelected();
+                        menuVisualPluginUiVocaloid1.setSelected( v );
+                        vd.getUi().setVisible( v );
+                    } else if ( vocaloid == 2 ) {
+                        v = !menuVisualPluginUiVocaloid2.isSelected();
+                        menuVisualPluginUiVocaloid2.setSelected( v );
+                        vd.getUi().setVisible( v );
+                    }
                     break;
                 }
             }
@@ -4015,7 +4020,7 @@ namespace org.kbinani.cadencii {
                 AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
 #endif
                 AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
-                if ( AppManager.iconPalette != null ) {
+                if ( AppManager.iconPalette != null && menuVisualIconPalette.isSelected() ) {
                     AppManager.iconPalette.setVisible( true );
                 }
                 updateLayout();
@@ -4033,7 +4038,7 @@ namespace org.kbinani.cadencii {
                 AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
 #endif
                 AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
-                if ( AppManager.iconPalette != null ) {
+                if ( AppManager.iconPalette != null && menuVisualIconPalette.isSelected() ) {
                     AppManager.iconPalette.setVisible( true );
                 }
             }
@@ -7382,7 +7387,32 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "menuHelpDebug_Click" );
 #if DEBUG
-            int i = 4;
+            try {
+                BFileChooser dialog = new BFileChooser( "" );
+                if ( dialog.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                    String file = dialog.getSelectedFile();
+                    WaveRateConverter converter = new WaveRateConverter( new WaveReader( file ), 44100 );
+                    String dir = PortUtil.getDirectoryName( file );
+                    WaveWriter writer = new WaveWriter( PortUtil.combinePath( dir, PortUtil.getFileNameWithoutExtension( file ) + "_.wav" ), 2, 16, 44100 );
+                    long remain = converter.getTotalSamples();
+                    long procesed = 0;
+                    int buflen = 1024;
+                    double[] left = new double[buflen];
+                    double[] right = new double[buflen];
+                    while ( remain > 0 ) {
+                        int read = remain > buflen ? buflen : (int)remain;
+                        converter.read( procesed, read, left, right );
+                        writer.append( left, right );
+                        procesed += read;
+                        remain -= read;
+                    }
+                    writer.close();
+                    converter.close();
+                }
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
+            }
+            /*int i = 4;
             for ( Iterator itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 IconDynamicsHandle item = (IconDynamicsHandle)((IconDynamicsHandle)itr.next()).clone();
                 VsqEvent ve = new VsqEvent( i * 480, new VsqID() );
@@ -7398,7 +7428,7 @@ namespace org.kbinani.cadencii {
                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 i++;
             }
-            AppManager.getVsqFile().Track.get( AppManager.getSelected() ).reflectDynamics();
+            AppManager.getVsqFile().Track.get( AppManager.getSelected() ).reflectDynamics();*/
             /*int i = -1;
             for ( Iterator itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 IconDynamicsHandle handle = (IconDynamicsHandle)itr.next();

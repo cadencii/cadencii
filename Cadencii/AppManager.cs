@@ -43,7 +43,6 @@ namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using Integer = System.Int32;
-    using java = org.kbinani.java;
     using Long = System.Int64;
 #endif
 
@@ -756,7 +755,6 @@ namespace org.kbinani.cadencii {
         /// トラックのオーバーレイ表示
         /// </summary>
         private static boolean s_overlay = true;
-        //private static SelectedEventList s_selected_event = new SelectedEventList();
         /// <summary>
         /// 選択されているイベントのリスト
         /// </summary>
@@ -1236,7 +1234,7 @@ namespace org.kbinani.cadencii {
             String edited = item;
             int delete_count = PortUtil.getStringLength( item );
             boolean д = true;
-            for(;д;){
+            for (;д;) {
                 Dimension measured = Util.measureString( edited, font );
                 if ( measured.width <= width ) {
                     return edited;
@@ -1293,14 +1291,13 @@ namespace org.kbinani.cadencii {
                     script += line + "\n";
                 }
             } catch ( Exception ex ) {
-#if DEBUG
-                PortUtil.println( "AppManager#loadScript; ex=" + ex );
-#endif
+                PortUtil.stderr.println( "AppManager#loadScript; ex=" + ex );
             } finally {
                 if ( sr != null ) {
                     try {
                         sr.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "AppManager#loadScript; ex2=" + ex2 );
                     }
                 }
             }
@@ -1323,6 +1320,7 @@ namespace org.kbinani.cadencii {
                 try {
                     testAssembly = results.CompiledAssembly;
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "AppManager#loadScript; ex=" + ex );
                     testAssembly = null;
                 }
             }
@@ -1418,24 +1416,8 @@ namespace org.kbinani.cadencii {
                     if ( ret == ScriptReturnStatus.ERROR ) {
                         AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", MSGBOX_DEFAULT_OPTION, MSGBOX_INFORMATION_MESSAGE );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
-#if DEBUG
-                        PortUtil.println( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso1amp\" ).getCount()=" + work.Track[1].getCurve( "reso1amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso2amp\" ).getCount()=" + work.Track[1].getCurve( "reso2amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso3amp\" ).getCount()=" + work.Track[1].getCurve( "reso3amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; BEFORE: work.Track[1].getCurve( \"reso4amp\" ).getCount()=" + work.Track[1].getCurve( "reso4amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso1amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso1amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso2amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso2amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso3amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso3amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; BEFORE: s_vsq.Track[1].getCurve( \"reso4amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso4amp" ).size() );
-#endif
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
                         register( s_vsq.executeCommand( run ) );
-#if DEBUG
-                        PortUtil.println( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso1amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso1amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso2amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso2amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso3amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso3amp" ).size() );
-                        PortUtil.println( "AppManager#invokeScript; AFTER:  s_vsq.Track[1].getCurve( \"reso4amp\" ).getCount()=" + s_vsq.Track[1].getCurve( "reso4amp" ).size() );
-#endif
                     }
                     String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
                     FileOutputStream fs = null;
@@ -1443,20 +1425,20 @@ namespace org.kbinani.cadencii {
                         fs = new FileOutputStream( config_file );
                         script_invoker.Serializer.serialize( fs, null );
                     } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "AppManager#invokeScript; ex=" + ex );
                     } finally {
                         if ( fs != null ) {
                             try {
                                 fs.close();
                             } catch ( Exception ex2 ) {
+                                PortUtil.stderr.println( "AppManager#invokeScript; ex2=" + ex2 );
                             }
                         }
                     }
                     return (ret == ScriptReturnStatus.EDITED);
                 } catch ( Exception ex ) {
                     AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), MSGBOX_DEFAULT_OPTION, MSGBOX_INFORMATION_MESSAGE );
-#if DEBUG
-                    AppManager.debugWriteLine( "    " + ex );
-#endif
+                    PortUtil.stderr.println( "AppManager#invokeScript; ex=" + ex );
                 }
             } else {
                 AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), MSGBOX_DEFAULT_OPTION, MSGBOX_WARNING_MESSAGE );
@@ -1824,17 +1806,6 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region SelectedEvent
-        /*public static SelectedEventList getSelectedEvent() {
-            return s_selected_event;
-        }
-
-        [Obsolete]
-        public static SelectedEventList SelectedEvent {
-            get {
-                return getSelectedEvent();
-            }
-        }*/
-
         public static void removeSelectedEvent( int id ) {
             removeSelectedEventCor( id, false );
             checkSelectedItemExistence();
@@ -2172,6 +2143,7 @@ namespace org.kbinani.cadencii {
                         System.IO.File.SetAttributes( file, System.IO.FileAttributes.Hidden );
                         System.IO.File.SetAttributes( file2, System.IO.FileAttributes.Hidden );
                     } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "AppManager#saveToCor; ex=" + ex );
                     }
                 }
 #endif
@@ -2207,8 +2179,6 @@ namespace org.kbinani.cadencii {
             s_current_clock = value;
             int barcount = s_vsq.getBarCountFromClock( s_current_clock );
             int bar_top_clock = s_vsq.getClockFromBarCount( barcount );
-            //int numerator = 4;
-            //int denominator = 4;
             Timesig timesig = s_vsq.getTimesigAt( s_current_clock );
             int clock_per_beat = 480 / 4 * timesig.denominator;
             int beat = (s_current_clock - bar_top_clock) / clock_per_beat;
@@ -2269,9 +2239,7 @@ namespace org.kbinani.cadencii {
             try {
                 newvsq = VsqFileEx.readFromXml( file );
             } catch ( Exception ex ) {
-#if DEBUG
-                AppManager.debugWriteLine( "EditorManager.ReadVsq; ex=" + ex );
-#endif
+                PortUtil.stderr.println( "AppManager#readVsq; ex=" + ex );
                 return;
             }
             if ( newvsq == null ) {
@@ -2431,9 +2399,6 @@ namespace org.kbinani.cadencii {
             }
             Vector<BKeys> list2 = new Vector<BKeys>();
             foreach ( BKeys key in keys ) {
-#if DEBUG
-                //AppManager.debugWriteLine( "    " + key );
-#endif
                 if ( key != BKeys.Control && key != BKeys.Shift && key != BKeys.Alt ) {
                     list2.add( key );
                 }
@@ -2480,7 +2445,6 @@ namespace org.kbinani.cadencii {
                 return key.ToString();
             }
         }
-
 
         #region クリップボードの管理
         /// <summary>
@@ -2780,6 +2744,7 @@ namespace org.kbinani.cadencii {
             try {
                 EditorConfig.serialize( editorConfig, file );
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#saveConfig; ex=" + ex );
             }
         }
 
@@ -2790,6 +2755,7 @@ namespace org.kbinani.cadencii {
                 try {
                     ret = EditorConfig.deserialize( editorConfig, config_file );
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "AppManager#loadConfig; ex=" + ex );
                     ret = null;
                 }
             } else {
@@ -2798,6 +2764,7 @@ namespace org.kbinani.cadencii {
                     try {
                         ret = EditorConfig.deserialize( editorConfig, config_file );
                     } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "AppManager#locdConfig; ex=" + ex );
                         ret = null;
                     }
                 }

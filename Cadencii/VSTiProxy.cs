@@ -407,6 +407,7 @@ namespace org.kbinani.cadencii {
                 arg.run();
             }
 #endif
+            AppManager.setPlaying( false );
         }
 #if JAVA
         }

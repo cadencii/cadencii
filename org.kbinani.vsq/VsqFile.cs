@@ -1840,10 +1840,12 @@ namespace org.kbinani.vsq {
             }
             updateTempoInfo();
 
-            for ( int track = 1; track < Track.size(); track++ ) {
+            int numTrack = Track.size();
+            for ( int track = 1; track < numTrack; track++ ) {
+                VsqTrack vsqTrack = Track.get( track );
                 // 削除する範囲に歌手変更イベントが存在するかどうかを検査。
                 VsqEvent t_last_singer = null;
-                for ( Iterator itr = Track.get( track ).getSingerEventIterator(); itr.hasNext(); ) {
+                for ( Iterator itr = vsqTrack.getSingerEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
                     if ( clock_start <= ve.Clock && ve.Clock < clock_end ) {
                         t_last_singer = ve;
@@ -1862,9 +1864,11 @@ namespace org.kbinani.vsq {
                 // イベントの削除
                 while ( changed ) {
                     changed = false;
-                    for ( int i = 0; i < Track.get( track ).getEventCount(); i++ ) {
-                        if ( clock_start <= Track.get( track ).getEvent( i ).Clock && Track.get( track ).getEvent( i ).Clock < clock_end ) {
-                            Track.get( track ).removeEvent( i );
+                    int numEvents = vsqTrack.getEventCount();
+                    for ( int i = 0; i < numEvents; i++ ) {
+                        VsqEvent itemi = vsqTrack.getEvent( i );
+                        if ( clock_start <= itemi.Clock && itemi.Clock < clock_end ) {
+                            vsqTrack.removeEvent( i );
                             changed = true;
                             break;
                         }
@@ -1873,37 +1877,39 @@ namespace org.kbinani.vsq {
 
                 // クロックのシフト
                 if ( last_singer != null ) {
-                    Track.get( track ).addEvent( last_singer ); //歌手変更イベントを補う
+                    vsqTrack.addEvent( last_singer ); //歌手変更イベントを補う
                 }
-                for ( int i = 0; i < Track.get( track ).getEventCount(); i++ ) {
-                    if ( clock_end <= Track.get( track ).getEvent( i ).Clock ) {
-                        Track.get( track ).getEvent( i ).Clock -= dclock;
+                int num_events = vsqTrack.getEventCount();
+                for ( int i = 0; i < num_events; i++ ) {
+                    VsqEvent itemi = vsqTrack.getEvent( i );
+                    if ( clock_end <= itemi.Clock ) {
+                        itemi.Clock -= dclock;
                     }
                 }
 
                 for ( int i = 0; i < _CURVES.Length; i++ ) {
                     String curve = _CURVES[i];
-                    VsqBPList bplist = Track.get( track ).getCurve( curve );
+                    VsqBPList bplist = vsqTrack.getCurve( curve );
                     if ( bplist == null ){
                         continue;
                     }
                     VsqBPList buf_bplist = (VsqBPList)bplist.clone();
-                    Track.get( track ).getCurve( curve ).clear();
+                    bplist.clear();
                     int value_at_end = buf_bplist.getValue( clock_end );
                     boolean at_end_added = false;
                     for ( Iterator itr = buf_bplist.keyClockIterator(); itr.hasNext(); ) {
                         int key = (Integer)itr.next();
                         if ( key < clock_start ) {
-                            Track.get( track ).getCurve( curve ).add( key, buf_bplist.getValue( key ) );
+                            bplist.add( key, buf_bplist.getValue( key ) );
                         } else if ( clock_end <= key ) {
                             if ( key == clock_end ) {
                                 at_end_added = true;
                             }
-                            Track.get( track ).getCurve( curve ).add( key - dclock, buf_bplist.getValue( key ) );
+                            bplist.add( key - dclock, buf_bplist.getValue( key ) );
                         }
                     }
                     if ( !at_end_added ) {
-                        Track.get( track ).getCurve( curve ).add( clock_end - dclock, value_at_end );
+                        bplist.add( clock_end - dclock, value_at_end );
                     }
                 }
             }
@@ -1926,15 +1932,19 @@ namespace org.kbinani.vsq {
                 }
             }
             vsq.updateTempoInfo();
-            for ( int track = 1; track < vsq.Track.size(); track++ ) {
-                for ( int i = 0; i < vsq.Track.get( track ).getEventCount(); i++ ) {
-                    if ( vsq.Track.get( track ).getEvent( i ).Clock > 0 ) {
-                        vsq.Track.get( track ).getEvent( i ).Clock += dclock;
+            int numTrack = vsq.Track.size();
+            for ( int track = 1; track < numTrack; track++ ) {
+                VsqTrack vsqTrack = vsq.Track.get( track );
+                int numEvents = vsqTrack.getEventCount();
+                for ( int i = 0; i < numEvents; i++ ) {
+                    VsqEvent itemi = vsqTrack.getEvent( i );
+                    if ( itemi.Clock > 0 ) {
+                        itemi.Clock += dclock;
                     }
                 }
                 for ( int i = 0; i < _CURVES.Length; i++ ) {
                     String curve = _CURVES[i];
-                    VsqBPList edit = vsq.Track.get( track ).getCurve( curve );
+                    VsqBPList edit = vsqTrack.getCurve( curve );
                     if ( edit == null ) {
                         continue;
                     }
@@ -1944,7 +1954,7 @@ namespace org.kbinani.vsq {
                         int key = (Integer)itr2.next();
                         new_one.add( key + dclock, edit.getValue( key ) );
                     }
-                    vsq.Track.get( track ).setCurve( curve, new_one );
+                    vsqTrack.setCurve( curve, new_one );
                 }
             }
             vsq.updateTotalClocks();
@@ -2513,9 +2523,10 @@ namespace org.kbinani.vsq {
             int max = getPreMeasureClocks();
             for ( int i = 1; i < Track.size(); i++ ) {
                 VsqTrack track = Track.get( i );
-                for ( Iterator itr = track.getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = (VsqEvent)itr.next();
-                    max = Math.Max( max, ve.Clock + ve.ID.getLength() );
+                int numEvents = track.getEventCount();
+                if ( numEvents > 0 ) {
+                    VsqEvent lastItem = track.getEvent( numEvents - 1 );
+                    max = Math.Max( max, lastItem.Clock + lastItem.ID.getLength() );
                 }
                 for ( int j = 0; j < _CURVES.Length; j++ ) {
                     String vct = _CURVES[j];
@@ -2523,8 +2534,8 @@ namespace org.kbinani.vsq {
                     if ( list == null ) {
                         continue;
                     }
-                    if ( list.size() > 0 ) {
-                        int keys = list.size();
+                    int keys = list.size();
+                    if ( keys > 0 ) {
                         int last_key = list.getKeyClock( keys - 1 );
                         max = Math.Max( max, last_key );
                     }
