@@ -196,7 +196,7 @@ namespace org.kbinani.vsq {
             //this.LyricHandle_index = -2;
             //this.VibratoHandle_index = -2;
             this.VibratoDelay = 0;
-            last_line.value = sr.readLine();
+            last_line.value = sr.readLine().ToString();
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
                 String search = spl[0];
@@ -240,7 +240,7 @@ namespace org.kbinani.vsq {
                 if ( sr.peek() < 0 ) {
                     break;
                 }
-                last_line.value = sr.readLine();
+                last_line.value = sr.readLine().ToString();
             }
         }
 

@@ -260,6 +260,7 @@ namespace org.kbinani.vsq {
                 res.items[i] = items[i];
 #endif
             }
+            res.length = length;
             res.maxId = maxId;
             return res;
         }
@@ -505,8 +506,13 @@ namespace org.kbinani.vsq {
         /// <param name="reader"></param>
         /// <returns></returns>
         public String appendFromText( TextMemoryStream reader ) {
+#if DEBUG
+            PortUtil.println( "VsqBPList#appendFromText; start" );
+            double started = PortUtil.getCurrentTime();
+            int count = 0;
+#endif
             String last_line = reader.readLine();
-            while ( !last_line.StartsWith( "[" ) ) {
+            while ( last_line.Length <= 0 || (last_line.Length > 0 && last_line[0] != '[') ) {
                 boolean exitRequired = false;
                 String line = last_line;
                 int index = last_line.IndexOf( '[' );
@@ -518,16 +524,24 @@ namespace org.kbinani.vsq {
 #endif
                     exitRequired = true;
                 }
-                String[] spl = PortUtil.splitString( line, new char[] { '=' } );
-                try {
-                    int clock = PortUtil.parseInt( spl[0] );
-                    int value = PortUtil.parseInt( spl[1] );
-                    this.add( clock, value );
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VsqBPList#appendFromText; ex=" + ex );
+                int indxEq = line.IndexOf( '=' );
+                if ( indxEq >= 0 ) {
+                    String strClock = line.Substring( 0, indxEq );
+                    String strValue = line.Substring( indxEq + 1 );
+                    //String[] spl = PortUtil.splitString( line, new char[] { '=' } );
+                    try {
+                        int clock = PortUtil.parseInt( strClock );
+                        int value = PortUtil.parseInt( strValue );
+                        add( clock, value );
 #if DEBUG
-                    PortUtil.stderr.println( "VsqBPList#appendFromText; last_line=" + last_line );
+                        count++;
 #endif
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "VsqBPList#appendFromText; ex=" + ex );
+#if DEBUG
+                        PortUtil.stderr.println( "VsqBPList#appendFromText; last_line=" + last_line );
+#endif
+                    }
                 }
                 if ( exitRequired ) {
                     break;
@@ -538,7 +552,10 @@ namespace org.kbinani.vsq {
                     last_line = reader.readLine();
                 }
             }
-            return last_line;
+#if DEBUG
+            PortUtil.println( "VsqBPList#appendFromText; end; count=" + count + "; elapsed=" + (PortUtil.getCurrentTime() - started) + " sec" );
+#endif
+            return last_line.ToString();
         }
 
         public int size() {

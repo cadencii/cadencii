@@ -431,7 +431,7 @@ namespace org.kbinani.vsq {
                 sw = new BufferedWriter( new FileWriter( file ) );
                 tms.rewind();
                 while ( tms.peek() >= 0 ) {
-                    String line = tms.readLine();
+                    String line = tms.readLine().ToString();
                     sw.write( line );
                     sw.newLine();
                 }

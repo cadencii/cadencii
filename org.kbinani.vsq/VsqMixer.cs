@@ -98,7 +98,7 @@ namespace org.kbinani.vsq {
             int tracks = 0;
             String[] spl;
             String buffer = "";
-            last_line.value = sr.readLine();
+            last_line.value = sr.readLine().ToString();
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
                 if ( spl[0].Equals( "MasterFeder" ) ) {
@@ -122,7 +122,7 @@ namespace org.kbinani.vsq {
                 if ( sr.peek() < 0 ) {
                     break;
                 }
-                last_line.value = sr.readLine();
+                last_line.value = sr.readLine().ToString();
             }
 
             Slave = new Vector<VsqMixerEntry>();

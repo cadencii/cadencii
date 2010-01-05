@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C8AAE632-9C6C-4372-8175-811528A66742}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -44,6 +44,7 @@
     <Compile Include="awt.event.cs" />
     <Compile Include="awt.geom.cs" />
     <Compile Include="awt.image.cs" />
+    <Compile Include="BArray.cs" />
     <Compile Include="Base64.cs" />
     <Compile Include="BBackgroundWorker.cs">
       <SubType>Component</SubType>

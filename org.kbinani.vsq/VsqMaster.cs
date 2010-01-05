@@ -18,6 +18,7 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
+using System.Text;
 using org.kbinani;
 using org.kbinani.java.io;
 
@@ -72,7 +73,7 @@ namespace org.kbinani.vsq {
         public VsqMaster( TextMemoryStream sr, ByRef<String> last_line ) {
             PreMeasure = 0;
             String[] spl;
-            last_line.value = sr.readLine();
+            last_line.value = sr.readLine().ToString();
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
                 if ( spl[0].Equals( "PreMeasure" ) ) {
@@ -81,7 +82,7 @@ namespace org.kbinani.vsq {
                 if ( sr.peek() < 0 ) {
                     break;
                 }
-                last_line.value = sr.readLine();
+                last_line.value = sr.readLine().ToString();
             }
         }
 

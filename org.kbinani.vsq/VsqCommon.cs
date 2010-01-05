@@ -92,7 +92,7 @@ namespace org.kbinani.vsq {
             Color = "0,0,0";
             DynamicsMode = 0;
             PlayMode = 1;
-            last_line.value = sr.readLine();
+            last_line.value = sr.readLine().ToString();
             String[] spl;
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
@@ -111,7 +111,7 @@ namespace org.kbinani.vsq {
                 if ( sr.peek() < 0 ) {
                     break;
                 }
-                last_line.value = sr.readLine();
+                last_line.value = sr.readLine().ToString();
             }
         }
 
