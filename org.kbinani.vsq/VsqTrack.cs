@@ -711,7 +711,7 @@ namespace org.kbinani.vsq {
                                     String line = PortUtil.getDecodedString( encoding, cpy );
                                     sw.writeLine( line );
 #if DEBUG
-                                    org.kbinani.debug.push_log( line );
+                                    //org.kbinani.debug.push_log( line );
 #endif
                                     buffer.removeElementAt( 0 );
                                     index_0x0a = buffer.indexOf( 0x0a );
@@ -739,7 +739,7 @@ namespace org.kbinani.vsq {
                     String line = PortUtil.getDecodedString( encoding, cpy );
                     sw.writeLine( line );
 #if DEBUG
-                    org.kbinani.debug.push_log( line );
+                    //org.kbinani.debug.push_log( line );
 #endif
                 }
                 // <=

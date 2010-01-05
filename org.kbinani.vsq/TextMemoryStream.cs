@@ -55,11 +55,13 @@ namespace org.kbinani.vsq {
                         m_index++;
                     }
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "TextMemoryStream#.ctor; ex=" + ex );
                 } finally {
                     if ( sr != null ) {
                         try {
                             sr.close();
                         } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "TextMemoryStream#.ctor; ex2=" + ex2 );
                         }
                     }
                 }
