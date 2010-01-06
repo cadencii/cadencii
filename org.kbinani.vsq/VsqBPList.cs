@@ -317,7 +317,7 @@ namespace org.kbinani.vsq {
 
         public void remove( int clock ) {
             ensureBufferLength( length );
-            int index = Array.IndexOf( clocks, clock, 0, length );
+            int index = find( clock );
             removeElementAt( index );
         }
 
@@ -333,7 +333,7 @@ namespace org.kbinani.vsq {
 
         public boolean isContainsKey( int clock ) {
             ensureBufferLength( length );
-            return (Array.IndexOf( clocks, clock, 0, length ) >= 0);
+            return (find( clock ) >= 0);
         }
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace org.kbinani.vsq {
         /// <param name="new_clock"></param>
         public void move( int clock, int new_clock, int new_value ) {
             ensureBufferLength( length );
-            int index = Array.IndexOf( clocks, clock, 0, length );
+            int index = find( clock );
             if ( index < 0 ) {
                 return;
             }
@@ -355,7 +355,7 @@ namespace org.kbinani.vsq {
                 items[i] = items[i + 1];
             }
             length--;
-            int index_new = Array.IndexOf( clocks, new_clock, 0, length );
+            int index_new = find( new_clock );
             if ( index_new >= 0 ) {
                 item.value = new_value;
                 items[index_new] = item;
@@ -365,7 +365,7 @@ namespace org.kbinani.vsq {
                 ensureBufferLength( length );
                 clocks[length - 1] = new_clock;
                 Array.Sort( clocks, 0, length );
-                index_new = Array.IndexOf( clocks, new_clock, 0, length );
+                index_new = find( new_clock );
                 item.value = new_value;
                 for ( int i = length - 1; i > index_new; i-- ){
                     items[i] = items[i - 1];
@@ -558,6 +558,141 @@ namespace org.kbinani.vsq {
             return last_line.ToString();
         }
 
+        /// <summary>
+        /// テキストファイルからデータ点を読込み、現在のリストに追加します
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public String appendFromText_old( TextStream reader ) {
+#if DEBUG
+            PortUtil.println( "VsqBPList#appendFromText; start" );
+            double started = PortUtil.getCurrentTime();
+            int count = 0;
+#endif
+            String last_line = reader.readLine();
+            while ( last_line.Length <= 0 || (last_line.Length > 0 && last_line[0] != '[') ) {
+                boolean exitRequired = false;
+                String line = last_line;
+                int index = last_line.IndexOf( '[' );
+                if ( index > 0 ) {
+                    line = last_line.Substring( 0, index );
+                    last_line = last_line.Substring( index );
+#if DEBUG
+                    PortUtil.println( "VsqBPList#appendFromText; line=" + line + "; last_line=" + last_line );
+#endif
+                    exitRequired = true;
+                }
+                int indxEq = line.IndexOf( '=' );
+                if ( indxEq >= 0 ) {
+                    String strClock = line.Substring( 0, indxEq );
+                    String strValue = line.Substring( indxEq + 1 );
+                    //String[] spl = PortUtil.splitString( line, new char[] { '=' } );
+                    try {
+                        int clock = PortUtil.parseInt( strClock );
+                        int value = PortUtil.parseInt( strValue );
+                        add( clock, value );
+#if DEBUG
+                        count++;
+#endif
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "VsqBPList#appendFromText; ex=" + ex );
+#if DEBUG
+                        PortUtil.stderr.println( "VsqBPList#appendFromText; last_line=" + last_line );
+#endif
+                    }
+                }
+                if ( exitRequired ) {
+                    break;
+                }
+                if ( !reader.ready() ) {
+                    break;
+                } else {
+                    last_line = reader.readLine();
+                }
+            }
+#if DEBUG
+            PortUtil.println( "VsqBPList#appendFromText; end; count=" + count + "; elapsed=" + (PortUtil.getCurrentTime() - started) + " sec" );
+#endif
+            return last_line.ToString();
+        }
+
+        /// <summary>
+        /// テキストファイルからデータ点を読込み、現在のリストに追加します
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public String appendFromText( TextStream reader ) {
+#if DEBUG
+            PortUtil.println( "VsqBPList#appendFromText; start" );
+            double started = PortUtil.getCurrentTime();
+            int count = 0;
+#endif
+            int clock = 0;
+            int value = 0;
+            int minus = 1;
+            int mode = 0; // 0: clockを読んでいる, 1: valueを読んでいる
+            while ( reader.ready() ) {
+                char ch = reader.get();
+                if ( ch == '\n' ) {
+                    if ( mode == 1 ) {
+                        addWithoutSort( clock, value * minus );
+                        mode = 0;
+                        clock = 0;
+                        value = 0;
+                        minus = 1;
+                    }
+                    continue;
+                }
+                if ( ch == '[' ) {
+                    if ( mode == 1 ) {
+                        addWithoutSort( clock, value * minus );
+                        mode = 0;
+                        clock = 0;
+                        value = 0;
+                        minus = 1;
+                    }
+                    reader.setPointer( reader.getPointer() - 1 );
+                    break;
+                }
+                if ( ch == '=' ) {
+                    mode = 1;
+                    continue;
+                }
+                if ( ch == '-' ) {
+                    minus = -1;
+                    continue;
+                }
+                if ( Char.IsNumber( ch ) ) {
+                    int num = 0;
+                    if ( ch == '1' ) {
+                        num = 1;
+                    } else if ( ch == '2' ) {
+                        num = 2;
+                    } else if ( ch == '3' ) {
+                        num = 3;
+                    } else if ( ch == '4' ) {
+                        num = 4;
+                    } else if ( ch == '5' ) {
+                        num = 5;
+                    } else if ( ch == '6' ) {
+                        num = 6;
+                    } else if ( ch == '7' ) {
+                        num = 7;
+                    } else if ( ch == '8' ) {
+                        num = 8;
+                    } else if ( ch == '9' ) {
+                        num = 9;
+                    }
+                    if ( mode == 0 ) {
+                        clock = clock * 10 + num;
+                    } else {
+                        value = value * 10 + num;
+                    }
+                }
+            }
+            return reader.readLine();
+        }
+
         public int size() {
             return length;
         }
@@ -566,9 +701,33 @@ namespace org.kbinani.vsq {
             return new KeyClockIterator( this );
         }
 
+        private int find( int value ) {
+            return Array.BinarySearch( clocks, 0, length, value );
+            //return Array.IndexOf( clocks, value, 0, length );
+        }
+
+        /// <summary>
+        /// 並べ替え，既存の値との重複チェックを行わず，リストの末尾にデータ点を追加する
+        /// </summary>
+        /// <param name="clock"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private void addWithoutSort( int clock, int value ) {
+            ensureBufferLength( length + 1 );
+            clocks[length] = clock;
+            maxId++;
+#if JAVA
+            items[length] = new VsqBPPair( value, maxId );
+#else
+            items[length].value = value;
+            items[length].id = maxId;
+#endif
+            length++;
+        }
+
         public long add( int clock, int value ) {
             ensureBufferLength( length );
-            int index = Array.IndexOf( clocks, clock, 0, length );
+            int index = find( clock );
             if ( index >= 0 ) {
                 VsqBPPair v = items[index];
                 v.value = value;
@@ -579,7 +738,7 @@ namespace org.kbinani.vsq {
                 ensureBufferLength( length );
                 clocks[length - 1] = clock;
                 Array.Sort( clocks, 0, length );
-                index = Array.IndexOf( clocks, clock, 0, length );
+                index = find( clock );
                 maxId++;
                 for ( int i = length - 1; i > index; i-- ) {
                     items[i] = items[i - 1];
@@ -591,7 +750,7 @@ namespace org.kbinani.vsq {
 
         public void addWithID( int clock, int value, long id ) {
             ensureBufferLength( length );
-            int index = Array.IndexOf( clocks, clock, 0, length );
+            int index = find( clock );
             if ( index >= 0 ) {
                 VsqBPPair v = items[index];
                 v.value = value;
@@ -602,7 +761,7 @@ namespace org.kbinani.vsq {
                 ensureBufferLength( length );
                 clocks[length - 1] = clock;
                 Array.Sort( clocks, 0, length );
-                index = Array.IndexOf( clocks, clock, 0, length );
+                index = find( clock );
                 for ( int i = length - 1; i > index; i-- ) {
                     items[i] = items[i - 1];
                 }
@@ -626,7 +785,7 @@ namespace org.kbinani.vsq {
 
         public int getValue( int clock ) {
             ensureBufferLength( length );
-            int index = Array.IndexOf( clocks, clock, 0, length );
+            int index = find( clock );
             if ( index >= 0 ) {
                 return items[index].value;
             } else {

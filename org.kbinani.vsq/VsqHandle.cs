@@ -303,6 +303,147 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
+        /// FileStreamから読み込みながらコンストラクト
+        /// </summary>
+        /// <param name="sr">読み込み対象</param>
+        public VsqHandle( TextStream sr, int value, ByRef<String> last_line ) {
+            this.Index = value;
+            String[] spl;
+            String[] spl2;
+
+            // default値で梅
+            m_type = VsqHandleType.Vibrato;
+            IconID = "";
+            IDS = "normal";
+            L0 = new Lyric( "" );
+            Original = 0;
+            Caption = "";
+            Length = 0;
+            StartDepth = 0;
+            DepthBP = null;
+            StartRate = 0;
+            RateBP = null;
+            Language = 0;
+            Program = 0;
+            Duration = 0;
+            Depth = 64;
+
+            String tmpDepthBPX = "";
+            String tmpDepthBPY = "";
+            String tmpDepthBPNum = "";
+
+            String tmpRateBPX = "";
+            String tmpRateBPY = "";
+            String tmpRateBPNum = "";
+
+            String tmpDynBPX = "";
+            String tmpDynBPY = "";
+            String tmpDynBPNum = "";
+
+            // "["にぶち当たるまで読込む
+            last_line.value = sr.readLine().ToString();
+            while ( !last_line.value.StartsWith( "[" ) ) {
+                spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
+                String search = spl[0];
+                if ( search.Equals( "Language" ) ) {
+                    m_type = VsqHandleType.Singer;
+                    Language = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "Program" ) ) {
+                    Program = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "IconID" ) ) {
+                    IconID = spl[1];
+                } else if ( search.Equals( "IDS" ) ) {
+                    IDS = spl[1];
+                } else if ( search.Equals( "Original" ) ) {
+                    Original = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "Caption" ) ) {
+                    Caption = spl[1];
+                    for ( int i = 2; i < spl.Length; i++ ) {
+                        Caption += "=" + spl[i];
+                    }
+                } else if ( search.Equals( "Length" ) ) {
+                    Length = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "StartDepth" ) ) {
+                    StartDepth = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "DepthBPNum" ) ) {
+                    tmpDepthBPNum = spl[1];
+                } else if ( search.Equals( "DepthBPX" ) ) {
+                    tmpDepthBPX = spl[1];
+                } else if ( search.Equals( "DepthBPY" ) ) {
+                    tmpDepthBPY = spl[1];
+                } else if ( search.Equals( "StartRate" ) ) {
+                    m_type = VsqHandleType.Vibrato;
+                    StartRate = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "RateBPNum" ) ) {
+                    tmpRateBPNum = spl[1];
+                } else if ( search.Equals( "RateBPX" ) ) {
+                    tmpRateBPX = spl[1];
+                } else if ( search.Equals( "RateBPY" ) ) {
+                    tmpRateBPY = spl[1];
+                } else if ( search.Equals( "Duration" ) ) {
+                    m_type = VsqHandleType.NoteHeadHandle;
+                    Duration = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "Depth" ) ) {
+                    Duration = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "StartDyn" ) ) {
+                    m_type = VsqHandleType.DynamicsHandle;
+                    StartDyn = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "EndDyn" ) ) {
+                    m_type = VsqHandleType.DynamicsHandle;
+                    EndDyn = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "DynBPNum" ) ) {
+                    tmpDynBPNum = spl[1];
+                } else if ( search.Equals( "DynBPX" ) ) {
+                    tmpDynBPX = spl[1];
+                } else if ( search.Equals( "DynBPY" ) ) {
+                    tmpDynBPY = spl[1];
+                } else if ( search.StartsWith( "L" ) && PortUtil.getStringLength( search ) >= 2 ) {
+                    String num = search.Substring( 1 );
+                    ByRef<Integer> vals = new ByRef<Integer>( 0 );
+                    if ( PortUtil.tryParseInt( num, vals ) ) {
+                        Lyric lyric = new Lyric( spl[1] );
+                        m_type = VsqHandleType.Lyric;
+                        int index = vals.value;
+                        if ( index == 0 ) {
+                            L0 = lyric;
+                        } else {
+                            Trailing.set( index - 1, lyric );
+                        }
+                    }
+                }
+                if ( !sr.ready() ) {
+                    break;
+                }
+                last_line.value = sr.readLine().ToString();
+            }
+
+            // RateBPX, RateBPYの設定
+            if ( m_type == VsqHandleType.Vibrato ) {
+                if ( !tmpRateBPNum.Equals( "" ) ) {
+                    RateBP = new VibratoBPList( tmpRateBPNum, tmpRateBPX, tmpRateBPY );
+                } else {
+                    RateBP = new VibratoBPList();
+                }
+
+                // DepthBPX, DepthBPYの設定
+                if ( !tmpDepthBPNum.Equals( "" ) ) {
+                    DepthBP = new VibratoBPList( tmpDepthBPNum, tmpDepthBPX, tmpDepthBPY );
+                } else {
+                    DepthBP = new VibratoBPList();
+                }
+            } else {
+                DepthBP = new VibratoBPList();
+                RateBP = new VibratoBPList();
+            }
+
+            if ( !tmpDynBPNum.Equals( "" ) ) {
+                DynBP = new VibratoBPList( tmpDynBPNum, tmpDynBPX, tmpDynBPY );
+            } else {
+                DynBP = new VibratoBPList();
+            }
+        }
+
+        /// <summary>
         /// ハンドル指定子（例えば"h#0123"という文字列）からハンドル番号を取得します
         /// </summary>
         /// <param name="_string">ハンドル指定子</param>

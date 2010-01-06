@@ -673,9 +673,9 @@ namespace org.kbinani.vsq {
 #endif
             String track_name = "";
 
-            TextMemoryStream sw = null;
+            TextStream sw = null;
             try {
-                sw = new TextMemoryStream();
+                sw = new TextStream();
                 int count = midi_event.size();
                 Vector<Byte> buffer = new Vector<Byte>();
                 for ( int i = 0; i < count; i++ ) {
@@ -743,7 +743,7 @@ namespace org.kbinani.vsq {
 #endif
                 }
                 // <=
-                sw.rewind();
+                //sw.rewind();
                 MetaText = new VsqMetaText( sw );
                 setName( track_name );
             } catch ( Exception ex ) {

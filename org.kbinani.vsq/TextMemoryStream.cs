@@ -26,11 +26,105 @@ using org.kbinani.java.io;
 
 // old: Vector<String>
 namespace org.kbinani.vsq {
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class TextMemoryStream implements ITextWriter {
 #else
+    public class TextStream : ITextWriter, IDisposable {
+        const int INIT_BUFLEN = 512;
+
+        private char[] array = new char[INIT_BUFLEN];
+        private int length = 0;
+        private int position = -1;
+
+        public int getPointer() {
+            return position;
+        }
+
+        public void setPointer( int value ) {
+            position = value;
+        }
+
+        public char get() {
+            position++;
+            return array[position];
+        }
+
+        public String readLine() {
+            StringBuilder sb = new StringBuilder();
+            // '\n'が来るまで読み込み
+            for ( int i = position + 1; i < length; i++ ) {
+                char c = array[i];
+                position = i;
+                if ( c == '\n' ) {
+                    break;
+                }
+                sb.Append( c );
+            }
+            return sb.ToString();
+        }
+
+        public boolean ready() {
+            if ( 0 <= position + 1 && position + 1 < length ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private void ensureCapacity( int length ) {
+            if ( length > array.Length ) {
+                int newLength = length;
+                if ( this.length <= 0 ) {
+                    newLength = (int)(length * 1.2);
+                } else {
+                    int order = length / array.Length;
+                    if ( order <= 1 ) {
+                        order = 2;
+                    }
+                    newLength = array.Length * order;
+                }
+                Array.Resize( ref array, newLength );
+            }
+        }
+
+        public void write( String str ) {
+            int len = PortUtil.getStringLength( str );
+            int newSize = length + len;
+            int offset = length;
+            ensureCapacity( newSize );
+            for ( int i = 0; i < len; i++ ) {
+                array[offset + i] = str[i];
+            }
+            length = newSize;
+        }
+
+        public void writeLine( String str ) {
+            int len = PortUtil.getStringLength( str );
+            int newSize = length + len + 1;
+            int offset = length;
+            ensureCapacity( newSize );
+            for ( int i = 0; i < len; i++ ) {
+                array[offset + i] = str[i];
+            }
+            array[offset + len] = '\n';
+            length = newSize;
+        }
+
+        public void close() {
+            array = null;
+            length = 0;
+        }
+
+#if !JAVA
+        public void Dispose() {
+            close();
+        }
+#endif
+    }
+
     public class TextMemoryStream : IDisposable, ITextWriter {
 #endif
         private static readonly String NL = (char)0x0d + "" + (char)0x0a;

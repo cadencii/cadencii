@@ -116,6 +116,40 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
+        /// MetaTextのテキストファイルからのコンストラクタ
+        /// </summary>
+        /// <param name="sr">読み込むテキストファイル</param>
+        /// <param name="last_line">読み込んだ最後の行が返される</param>
+        public VsqCommon( TextStream sr, ByRef<String> last_line ) {
+            Version = "";
+            Name = "";
+            Color = "0,0,0";
+            DynamicsMode = 0;
+            PlayMode = 1;
+            last_line.value = sr.readLine();
+            String[] spl;
+            while ( !last_line.value.StartsWith( "[" ) ) {
+                spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
+                String search = spl[0];
+                if ( search.Equals( "Version" ) ) {
+                    this.Version = spl[1];
+                } else if ( search.Equals( "Name" ) ) {
+                    this.Name = spl[1];
+                } else if ( search.Equals( "Color" ) ) {
+                    this.Color = spl[1];
+                } else if ( search.Equals( "DynamicsMode" ) ) {
+                    this.DynamicsMode = PortUtil.parseInt( spl[1] );
+                } else if ( search.Equals( "PlayMode" ) ) {
+                    this.PlayMode = PortUtil.parseInt( spl[1] );
+                }
+                if ( !sr.ready() ) {
+                    break;
+                }
+                last_line.value = sr.readLine();
+            }
+        }
+
+        /// <summary>
         /// インスタンスの内容をテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力先</param>
