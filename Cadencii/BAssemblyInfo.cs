@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle( "Cadencii" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( org.kbinani.cadencii.BAssemblyInfo.id )]
-[assembly: AssemblyCompany( "Boare" )]
+[assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "Cadencii" )]
 [assembly: AssemblyCopyright( "Copyright (C) 2008-2010 kbinani. All Rights Reserved." )]
 [assembly: AssemblyTrademark( "" )]
@@ -38,7 +38,7 @@ namespace org.kbinani.cadencii {
 
     public class BAssemblyInfo {
         public const String id = "$Id$";
-        public const String fileVersion = "3.1.0_DRAFT_4Jan2010";
+        public const String fileVersion = "3.1.0_DRAFT_7Jan2010";
     }
 
 #if !JAVA

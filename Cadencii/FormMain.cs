@@ -12685,6 +12685,7 @@ namespace org.kbinani.cadencii {
 #endif
                         int min = list.getKeyClock( 0 ) + dclock;
                         int max = list.getKeyClock( count - 1 ) + dclock;
+                        int valueAtEnd = target.getValue( max );
                         for ( int i = 0; i < target.size(); i++ ) {
                             int cl = target.getKeyClock( i );
                             if ( min <= cl && cl <= max ) {
@@ -12692,9 +12693,16 @@ namespace org.kbinani.cadencii {
                                 i--;
                             }
                         }
-                        for ( int i = 0; i < count; i++ ) {
-                            target.add( list.getKeyClock( i ) + dclock, list.getElementA( i ) );
+                        int lastClock = min;
+                        for ( int i = 0; i < count - 1; i++ ) {
+                            lastClock = list.getKeyClock( i ) + dclock;
+                            target.add( lastClock, list.getElementA( i ) );
                         }
+                        // 最後のやつ
+                        if ( lastClock < max - 1 ) {
+                            target.add( max - 1, list.getElementA( count - 1 ) );
+                        }
+                        target.add( max, valueAtEnd );
                         if ( copied_curve.size() == 1 ) {
                             work.put( trackSelector.getSelectedCurve().getName(), target );
                         } else {
@@ -12775,6 +12783,7 @@ namespace org.kbinani.cadencii {
                 } else if ( edit_bezier != null ) {
                     AppManager.register( AppManager.getVsqFile().executeCommand( edit_bezier ) );
                 }
+                AppManager.getVsqFile().updateTotalClocks();
                 setEdited( true );
                 refreshScreen();
             } else if ( commands > 1 ) {
@@ -12791,6 +12800,7 @@ namespace org.kbinani.cadencii {
                 }
                 CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                AppManager.getVsqFile().updateTotalClocks();
                 setEdited( true );
                 refreshScreen();
             }

@@ -12,6 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if !JAVA
+using System;
+
 namespace org.kbinani.java.awt {
 
     public class Icon {
@@ -228,6 +230,7 @@ namespace org.kbinani.java.awt {
         int getWidth( object observer );
     }*/
 
+    [Serializable]
     public struct Color {
         /// <summary>
         /// 黒を表します。
@@ -361,6 +364,7 @@ namespace org.kbinani.java.awt {
         }
     }
 
+    [Serializable]
     public struct Rectangle {
         public int height;
         public int width;
@@ -395,6 +399,7 @@ namespace org.kbinani.java.awt {
 #endif
     }
 
+    [Serializable]
     public struct Point {
         public int x;
         public int y;

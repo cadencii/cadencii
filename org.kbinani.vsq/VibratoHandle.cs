@@ -195,11 +195,7 @@ namespace org.kbinani.vsq {
 #endif
 
         public String getDisplayString() {
-            String s = IDS;
-            if ( !caption.Equals( "" ) ) {
-                s += " (" + caption + ")";
-            }
-            return s;
+            return IDS + caption;
         }
 
 #if !JAVA
@@ -214,12 +210,16 @@ namespace org.kbinani.vsq {
             result.IconID = IconID;
             result.IDS = this.IDS;
             result.Original = this.Original;
-            result.Caption = this.Caption;
-            result.setLength( Length );
-            result.StartDepth = this.StartDepth;
-            result.DepthBP = (VibratoBPList)DepthBP.clone();
-            result.StartRate = this.StartRate;
-            result.RateBP = (VibratoBPList)RateBP.clone();
+            result.setCaption( getCaption() );
+            result.setLength( getLength() );
+            result.setStartDepth( getStartDepth() );
+            if ( depthBP != null ) {
+                result.setDepthBP( (VibratoBPList)depthBP.clone() );
+            }
+            result.setStartRate( getStartRate() );
+            if ( rateBP != null ) {
+                result.setRateBP( (VibratoBPList)rateBP.clone() );
+            }
             return result;
         }
 

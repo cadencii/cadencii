@@ -151,12 +151,6 @@ namespace org.kbinani.vsq {
                 exp_config_sys2 = ExpressionConfigSys.getVocaloid2Default();
             }
             s_exp_config_sys.put( SynthesizerType.VOCALOID2, exp_config_sys2 );
-#if DEBUG
-            SingerConfigSys scs2 = s_singer_config_sys.get( SynthesizerType.VOCALOID2 );
-            foreach( SingerConfig sc in scs2.getInstalledSingers() ){
-                PortUtil.println( "VocaloSysUtil#.ctor; sc=" + sc.toString() );
-            }
-#endif
         }
 
         /// <summary>
@@ -180,7 +174,6 @@ namespace org.kbinani.vsq {
             empty.IconID = "$04040000";
             return empty;
         }
-
 
         private static void extract( Vector<String> dir,
                                      String header,
@@ -263,14 +256,8 @@ namespace org.kbinani.vsq {
             // 最初はpath_expdbの取得と、id（BHXXXXXXXXXXXXXXXX）のようなシリアルを取得
             for ( Iterator itr = expression.iterator(); itr.hasNext(); ) {
                 String s = (String)itr.next();
-#if DEBUG
-                PortUtil.println( "VocaloSysUtil#extract; s=" + s );
-#endif
                 String[] spl = PortUtil.splitString( s, new char[] { '\t' }, true );
                 if ( spl.Length >= 3 ) {
-#if DEBUG
-                    PortUtil.println( "VocaloSysUtil#extract; spl[0]=" + spl[0] + "; spl[1]=" + spl[1] + "; spl[2]=" + spl[2] );
-#endif
                     if ( spl[1].Equals( "EXPRESSIONDIR" ) ) {
                         path_expdb.value = spl[2];
                     } else if ( spl.Length >= 3 ) {
@@ -288,10 +275,6 @@ namespace org.kbinani.vsq {
             PortUtil.println( "path_voicedb=" + path_voicedb.value );
             PortUtil.println( "path_expdb=" + path_expdb.value );
             PortUtil.println( "installed_singers=" );
-            for ( Iterator itr = installed_singers.iterator(); itr.hasNext(); ) {
-                String s = (String)itr.next();
-                PortUtil.println( "    " + s );
-            }
 #endif
         }
 

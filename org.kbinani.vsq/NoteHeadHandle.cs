@@ -141,11 +141,7 @@ namespace org.kbinani.vsq {
         }
 
         public String getDisplayString() {
-            String s = IDS;
-            if ( !caption.Equals( "" ) ) {
-                s += " (" + caption + ")";
-            }
-            return s;
+            return IDS + caption;
         }
 
 #if !JAVA

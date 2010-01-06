@@ -4638,6 +4638,18 @@ namespace org.kbinani.cadencii {
                                         index++;
                                         add.put( clock, new VsqBPPair( value, maxid + index ) );
                                     }
+
+                                    // clock_endでの値
+                                    int valueAtEnd = list.getValue( clock_end );
+                                    if ( add.containsKey( clock_end ) ) {
+                                        VsqBPPair v = add.get( clock_end );
+                                        v.value = valueAtEnd;
+                                        add.put( clock_end, v );
+                                    } else {
+                                        index++;
+                                        add.put( clock_end, new VsqBPPair( valueAtEnd, maxid + index ) );
+                                    }
+
                                     CadenciiCommand pen_run = new CadenciiCommand(
                                         VsqCommand.generateCommandTrackCurveEdit2( track, m_selected_curve.getName(), delete, add ) );
                                     executeCommand( pen_run, true );
