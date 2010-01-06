@@ -405,7 +405,7 @@ namespace org.kbinani.vsq {
         /// <param name="encode"></param>
         /// <param name="eos"></param>
         /// <param name="start"></param>
-        public void printMetaText( TextMemoryStream sw, int eos, int start )
+        public void printMetaText( ITextWriter sw, int eos, int start )
 #if JAVA
             throws IOException
 #endif
@@ -421,16 +421,16 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws IOException
 #endif
- {
-            TextMemoryStream tms = new TextMemoryStream();
+        {
+            TextStream tms = new TextStream();
             int count = MetaText.getEventList().getCount();
             int clLast = MetaText.getEventList().getElement( count - 1 ).Clock + 480;
             MetaText.print( tms, clLast, 0 );
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new FileWriter( file ) );
-                tms.rewind();
-                while ( tms.peek() >= 0 ) {
+                tms.setPointer( -1 );
+                while ( tms.ready() ) {
                     String line = tms.readLine().ToString();
                     sw.write( line );
                     sw.newLine();

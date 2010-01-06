@@ -48,7 +48,7 @@ namespace org.kbinani.vsq {
         /// インスタンスをテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力先</param>
-        public void write( TextMemoryStream sw )
+        public void write( ITextWriter sw )
 #if JAVA
             throws IOException
 #endif
@@ -64,7 +64,7 @@ namespace org.kbinani.vsq {
             write( sw, def );
         }
 
-        public void write( TextMemoryStream writer, Vector<String> print_targets )
+        public void write( ITextWriter writer, Vector<String> print_targets )
 #if JAVA
             throws IOException
 #endif

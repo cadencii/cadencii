@@ -2609,18 +2609,18 @@ namespace org.kbinani.vsq {
         public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding ) {
             String _NL = "" + (char)(byte)0x0a;
             Vector<MidiEvent> ret = new Vector<MidiEvent>();
-            TextMemoryStream sr = null;
+            TextStream sr = null;
             try {
-                sr = new TextMemoryStream();
+                sr = new TextStream();
                 Track.get( track ).printMetaText( sr, TotalClocks + 120, calculatePreMeasureInClock() );
-                sr.rewind();
+                sr.setPointer( -1 );
                 int line_count = -1;
                 String tmp = "";
-                if ( sr.peek() >= 0 ) {
+                if ( sr.ready() ) {
 #if NEW_IMPL
                     Vector<Byte> buffer = new Vector<Byte>();
                     boolean first = true;
-                    while ( sr.peek() >= 0 ) {
+                    while ( sr.ready() ) {
                         if ( first ) {
                             tmp = sr.readLine();
                             first = false;
@@ -2740,11 +2740,13 @@ namespace org.kbinani.vsq {
 #endif
                 }
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VsqFile#generateMetaTextEvent; ex=" + ex );
             } finally {
                 if ( sr != null ) {
                     try {
                         sr.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "VsqFile#generateMetaTextEvent; ex2=" + ex2 );
                     }
                 }
             }

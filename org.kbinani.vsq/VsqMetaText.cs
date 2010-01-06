@@ -472,7 +472,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="sw"></param>
         /// <param name="encode"></param>
-        public void print( TextMemoryStream sw, int eos, int start )
+        public void print( ITextWriter sw, int eos, int start )
 #if JAVA
             throws IOException
 #endif
@@ -604,7 +604,7 @@ namespace org.kbinani.vsq {
             return handles;
         }
 
-        public Vector<VsqHandle> writeEventList( TextMemoryStream sw, int eos )
+        public Vector<VsqHandle> writeEventList( ITextWriter sw, int eos )
 #if JAVA
             throws IOException
 #endif
@@ -706,7 +706,7 @@ namespace org.kbinani.vsq {
             Events.add( new VsqEvent( 0, id ) );
         }
 
-        public VsqMetaText( TextMemoryStream sr ) {
+        /* public VsqMetaText( TextMemoryStream sr ) {
             Vector<ValuePair<Integer, Integer>> t_event_list = new Vector<ValuePair<Integer, Integer>>();
             TreeMap<Integer, VsqID> __id = new TreeMap<Integer, VsqID>();
             TreeMap<Integer, VsqHandle> __handle = new TreeMap<Integer, VsqHandle>();
@@ -876,7 +876,7 @@ namespace org.kbinani.vsq {
             if ( Common == null ) {
                 Common = new VsqCommon();
             }
-        }
+        } */
 
         public VsqMetaText( TextStream sr ) {
             Vector<ValuePair<Integer, Integer>> t_event_list = new Vector<ValuePair<Integer, Integer>>();

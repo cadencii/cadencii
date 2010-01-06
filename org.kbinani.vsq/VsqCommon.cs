@@ -81,7 +81,7 @@ namespace org.kbinani.vsq {
 #endif
         }
 
-        /// <summary>
+        /* /// <summary>
         /// MetaTextのテキストファイルからのコンストラクタ
         /// </summary>
         /// <param name="sr">読み込むテキストファイル</param>
@@ -113,7 +113,7 @@ namespace org.kbinani.vsq {
                 }
                 last_line.value = sr.readLine().ToString();
             }
-        }
+        } */
 
         /// <summary>
         /// MetaTextのテキストファイルからのコンストラクタ
@@ -153,73 +153,13 @@ namespace org.kbinani.vsq {
         /// インスタンスの内容をテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力先</param>
-        public void write( TextMemoryStream sw ) {
+        public void write( ITextWriter sw ) {
             sw.writeLine( "[Common]" );
             sw.writeLine( "Version=" + Version );
             sw.writeLine( "Name=" + Name );
             sw.writeLine( "Color=" + Color );
             sw.writeLine( "DynamicsMode=" + DynamicsMode );
             sw.writeLine( "PlayMode=" + PlayMode );
-        }
-
-        /// <summary>
-        /// VsqCommon構造体を構築するテストを行います
-        /// </summary>
-        /// <returns>テストに成功すればtrue、そうでなければfalse</returns>
-        public static boolean test()
-#if JAVA
-            throws IOException
-#endif
-        {
-            String fpath = PortUtil.createTempFile();
-            BufferedWriter sw = new BufferedWriter( new FileWriter( fpath ) );
-            sw.write( "Version=DSB301" );
-            sw.newLine();
-            sw.write( "Name=Voice1" );
-            sw.newLine();
-            sw.write( "Color=181,162,123" );
-            sw.newLine();
-            sw.write( "DynamicsMode=1" );
-            sw.newLine();
-            sw.write( "PlayMode=1" );
-            sw.newLine();
-            sw.write( "[Master]" );
-            sw.newLine();
-            sw.close();
-
-            VsqCommon vsqCommon = null;
-            ByRef<String> last_line = new ByRef<String>( "" );
-            TextMemoryStream sr = null;
-            try {
-                sr = new TextMemoryStream( fpath, "UTF8" );
-                vsqCommon = new VsqCommon( sr, last_line );
-            } catch ( Exception ex ) {
-            } finally {
-                if ( sr != null ) {
-                    try {
-                        sr.close();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-            }
-            if ( vsqCommon == null ) {
-                vsqCommon = new VsqCommon();
-            }
-
-            boolean result;
-            if ( vsqCommon.Version.Equals( "DSB301" ) &&
-                vsqCommon.Name.Equals( "Voice1" ) &&
-                vsqCommon.Color.Equals( "181,162,123" ) &&
-                vsqCommon.DynamicsMode == 1 &&
-                vsqCommon.PlayMode == 1 &&
-                last_line.value.Equals( "[Master]" ) ) {
-                result = true;
-            } else {
-                result = false;
-            }
-
-            PortUtil.deleteFile( fpath );
-            return result;
         }
     }
 

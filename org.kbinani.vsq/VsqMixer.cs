@@ -84,7 +84,7 @@ namespace org.kbinani.vsq {
 #endif
         }
 
-        /// <summary>
+        /* /// <summary>
         /// テキストファイルからのコンストラクタ
         /// </summary>
         /// <param name="sr">読み込み対象</param>
@@ -154,7 +154,7 @@ namespace org.kbinani.vsq {
                 }
 
             }
-        }
+        } */
 
         /// <summary>
         /// テキストファイルからのコンストラクタ
@@ -232,7 +232,7 @@ namespace org.kbinani.vsq {
         /// このインスタンスをテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力対象</param>
-        public void write( TextMemoryStream sw ) {
+        public void write( ITextWriter sw ) {
             sw.writeLine( "[Mixer]" );
             sw.writeLine( "MasterFeder=" + MasterFeder );
             sw.writeLine( "MasterPanpot=" + MasterPanpot );

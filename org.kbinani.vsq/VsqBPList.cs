@@ -492,128 +492,12 @@ namespace org.kbinani.vsq {
         /// このBPListの内容をテキストファイルに書き出します
         /// </summary>
         /// <param name="writer"></param>
-        public void print( TextMemoryStream writer, int start, String header )
+        public void print( ITextWriter writer, int start, String header )
 #if JAVA
             throws IOException
 #endif
         {
             printCor( writer, start, header );
-        }
-
-        /// <summary>
-        /// テキストファイルからデータ点を読込み、現在のリストに追加します
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
-        public String appendFromText( TextMemoryStream reader ) {
-#if DEBUG
-            PortUtil.println( "VsqBPList#appendFromText; start" );
-            double started = PortUtil.getCurrentTime();
-            int count = 0;
-#endif
-            String last_line = reader.readLine();
-            while ( last_line.Length <= 0 || (last_line.Length > 0 && last_line[0] != '[') ) {
-                boolean exitRequired = false;
-                String line = last_line;
-                int index = last_line.IndexOf( '[' );
-                if ( index > 0 ) {
-                    line = last_line.Substring( 0, index );
-                    last_line = last_line.Substring( index );
-#if DEBUG
-                    PortUtil.println( "VsqBPList#appendFromText; line=" + line + "; last_line=" + last_line );
-#endif
-                    exitRequired = true;
-                }
-                int indxEq = line.IndexOf( '=' );
-                if ( indxEq >= 0 ) {
-                    String strClock = line.Substring( 0, indxEq );
-                    String strValue = line.Substring( indxEq + 1 );
-                    //String[] spl = PortUtil.splitString( line, new char[] { '=' } );
-                    try {
-                        int clock = PortUtil.parseInt( strClock );
-                        int value = PortUtil.parseInt( strValue );
-                        add( clock, value );
-#if DEBUG
-                        count++;
-#endif
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "VsqBPList#appendFromText; ex=" + ex );
-#if DEBUG
-                        PortUtil.stderr.println( "VsqBPList#appendFromText; last_line=" + last_line );
-#endif
-                    }
-                }
-                if ( exitRequired ) {
-                    break;
-                }
-                if ( reader.peek() < 0 ) {
-                    break;
-                } else {
-                    last_line = reader.readLine();
-                }
-            }
-#if DEBUG
-            PortUtil.println( "VsqBPList#appendFromText; end; count=" + count + "; elapsed=" + (PortUtil.getCurrentTime() - started) + " sec" );
-#endif
-            return last_line.ToString();
-        }
-
-        /// <summary>
-        /// テキストファイルからデータ点を読込み、現在のリストに追加します
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
-        public String appendFromText_old( TextStream reader ) {
-#if DEBUG
-            PortUtil.println( "VsqBPList#appendFromText; start" );
-            double started = PortUtil.getCurrentTime();
-            int count = 0;
-#endif
-            String last_line = reader.readLine();
-            while ( last_line.Length <= 0 || (last_line.Length > 0 && last_line[0] != '[') ) {
-                boolean exitRequired = false;
-                String line = last_line;
-                int index = last_line.IndexOf( '[' );
-                if ( index > 0 ) {
-                    line = last_line.Substring( 0, index );
-                    last_line = last_line.Substring( index );
-#if DEBUG
-                    PortUtil.println( "VsqBPList#appendFromText; line=" + line + "; last_line=" + last_line );
-#endif
-                    exitRequired = true;
-                }
-                int indxEq = line.IndexOf( '=' );
-                if ( indxEq >= 0 ) {
-                    String strClock = line.Substring( 0, indxEq );
-                    String strValue = line.Substring( indxEq + 1 );
-                    //String[] spl = PortUtil.splitString( line, new char[] { '=' } );
-                    try {
-                        int clock = PortUtil.parseInt( strClock );
-                        int value = PortUtil.parseInt( strValue );
-                        add( clock, value );
-#if DEBUG
-                        count++;
-#endif
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "VsqBPList#appendFromText; ex=" + ex );
-#if DEBUG
-                        PortUtil.stderr.println( "VsqBPList#appendFromText; last_line=" + last_line );
-#endif
-                    }
-                }
-                if ( exitRequired ) {
-                    break;
-                }
-                if ( !reader.ready() ) {
-                    break;
-                } else {
-                    last_line = reader.readLine();
-                }
-            }
-#if DEBUG
-            PortUtil.println( "VsqBPList#appendFromText; end; count=" + count + "; elapsed=" + (PortUtil.getCurrentTime() - started) + " sec" );
-#endif
-            return last_line.ToString();
         }
 
         /// <summary>

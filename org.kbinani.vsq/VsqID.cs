@@ -171,7 +171,7 @@ namespace org.kbinani.vsq {
 #endif
         }
 
-        /// <summary>
+        /* /// <summary>
         /// テキストファイルからのコンストラクタ
         /// </summary>
         /// <param name="sr">読み込み対象</param>
@@ -242,7 +242,7 @@ namespace org.kbinani.vsq {
                 }
                 last_line.value = sr.readLine().ToString();
             }
-        }
+        } */
 
         /// <summary>
         /// テキストファイルからのコンストラクタ
@@ -341,82 +341,6 @@ namespace org.kbinani.vsq {
             ret += "}";
             return ret;
         }
-
-        /// <summary>
-        /// VsqIDを構築するテストを行います。
-        /// </summary>
-        /// <returns>テストに成功すればtrue、そうでなければfalseを返します</returns>
-        public static boolean test() {
-            String fpath = PortUtil.createTempFile();
-            BufferedWriter sw = null;
-            try {
-                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( fpath ), "UTF-8" ) );
-                sw.write( "Type=Anote" );
-                sw.newLine();
-                sw.write( "Length=320" );
-                sw.newLine();
-                sw.write( "Note#=67" );
-                sw.newLine();
-                sw.write( "Dynamics=64" );
-                sw.newLine();
-                sw.write( "PMBendDepth=8" );
-                sw.newLine();
-                sw.write( "PMBendLength=1" );
-                sw.newLine();
-                sw.write( "PMbPortamentoUse=1" );
-                sw.newLine();
-                sw.write( "DEMdecGainRate=50" );
-                sw.newLine();
-                sw.write( "DEMaccent=50" );
-                sw.newLine();
-                sw.write( "LyricHandle=h#0111" );
-                sw.newLine();
-                sw.write( "[ID#0104]" );
-                sw.newLine();
-            } catch ( Exception ex ) {
-            } finally {
-                if ( sw != null ) {
-                    try {
-                        sw.close();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-            }
-
-            ByRef<String> last_line = new ByRef<String>( "" );
-            boolean result = false;
-            TextMemoryStream sr = null;
-            try {
-                sr = new TextMemoryStream( fpath, "UTF8" );
-                VsqID vsqID = new VsqID( sr, 103, last_line );
-                if ( vsqID.type == VsqIDType.Anote &&
-                    vsqID.getLength() == 320 &&
-                    vsqID.Note == 67 &&
-                    vsqID.Dynamics == 64 &&
-                    vsqID.PMBendDepth == 8 &&
-                    vsqID.PMBendLength == 1 &&
-                    vsqID.PMbPortamentoUse == 1 &&
-                    vsqID.DEMdecGainRate == 50 &&
-                    vsqID.DEMaccent == 50 &&
-                    vsqID.LyricHandle_index == 111 &&
-                    last_line.Equals( "[ID#0104]" ) ) {
-                    result = true;
-                } else {
-                    result = false;
-                }
-            } catch ( Exception ex ) {
-            } finally {
-                if ( sr != null ) {
-                    try {
-                        sr.close();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-            }
-            PortUtil.deleteFile( fpath );
-            return result;
-        }
-
     }
 
 #if !JAVA
