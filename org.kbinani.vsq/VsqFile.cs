@@ -242,6 +242,130 @@ namespace org.kbinani.vsq {
             printAsMusicXmlCore( file, encoding, software, tempo, true );
         }
 
+        private static void printStyledNoteCor(
+            BufferedWriter writer,
+            int clock_length,
+            int note,
+            String lyric,
+            TreeMap<String, Boolean> altered_context,
+            boolean tie_start_required,
+            boolean tie_stop_required,
+            String type ) 
+        {
+            writer.write( "      <note>" ); writer.newLine();
+            if ( note < 0 ) {
+                writer.write( "        <rest/>" ); writer.newLine();
+            } else {
+                String noteStringBase = VsqNote.getNoteStringBase( note ); // "C"など
+                int octave = VsqNote.getNoteOctave( note );
+                writer.write( "        <pitch>" ); writer.newLine();
+                writer.write( "          <step>" + noteStringBase + "</step>" ); writer.newLine();
+                int alter = VsqNote.getNoteAlter( note );
+                if ( alter != 0 ) {
+                    writer.write( "          <alter>" + alter + "</alter>" ); writer.newLine();
+                }
+                writer.write( "          <octave>" + (octave + 1) + "</octave>" ); writer.newLine();
+                writer.write( "        </pitch>" ); writer.newLine();
+                String stem = note >= 70 ? "down" : "up";
+                writer.write( "        <stem>" + stem + "</stem>" ); writer.newLine();
+                String accidental = "";
+                String checkAltered = noteStringBase;
+                if ( !tie_stop_required && altered_context.containsKey( checkAltered ) ) {
+                    if ( alter == 0 ) {
+                        if ( altered_context.get( checkAltered ) ) {
+                            accidental = "natural";
+                            altered_context.put( checkAltered, false );
+                        }
+                    } else {
+                        if ( !altered_context.get( checkAltered ) ) {
+                            accidental = alter == 1 ? "sharp" : "flat";
+                            altered_context.put( checkAltered, true );
+                        }
+                    }
+                }
+
+                if ( PortUtil.getStringLength( accidental ) > 0 ) {
+                    writer.write( "        <accidental>" + accidental + "</accidental>" ); writer.newLine();
+                }
+                if ( tie_start_required ) {
+                    writer.write( "        <tie type=\"start\"/>" ); writer.newLine();
+                    writer.write( "        <notations>" ); writer.newLine();
+                    writer.write( "          <tied type=\"start\"/>" ); writer.newLine();
+                    writer.write( "        </notations>" ); writer.newLine();
+                }
+                if ( tie_stop_required ) {
+                    writer.write( "        <tie type=\"stop\"/>" ); writer.newLine();
+                    writer.write( "        <notations>" ); writer.newLine();
+                    writer.write( "          <tied type=\"stop\"/>" ); writer.newLine();
+                    writer.write( "        </notations>" ); writer.newLine();
+                }
+                if ( !tie_stop_required ) {
+                    writer.write( "        <lyric>" ); writer.newLine();
+                    writer.write( "          <text>" + lyric + "</text>" ); writer.newLine();
+                    writer.write( "        </lyric>" ); writer.newLine();
+                }
+            }
+
+            writer.write( "        <voice>1</voice>" ); writer.newLine();
+            writer.write( "        <duration>" + clock_length + "</duration>" ); writer.newLine();
+            if ( PortUtil.getStringLength( type ) > 0 ) {
+                writer.write( "        <type>" + type + "</type>" ); writer.newLine();
+            }
+            writer.write( "      </note>" ); writer.newLine();
+        }
+
+        private static void printStyledNote( 
+            BufferedWriter writer, 
+            int clock_length,
+            int note,
+            String lyric,
+            TreeMap<String, Boolean> altered_context,
+            boolean tie_start_required, 
+            boolean tie_stop_required )
+        {
+            int[] ret = new int[9];
+            int[] len = new int[] { 1920, 960, 480, 240, 120, 60, 30, 15 };
+            String[] name = new String[] { "whole", "half", "quarter", "eighth", "16th", "32nd", "64th", "128th", "" };
+            int remain = clock_length;
+            for ( int i = 0; i < 8; i++ ) {
+                ret[i] = remain / len[i];
+                if ( ret[i] > 0 ) {
+                    remain -= len[i] * ret[i];
+                }
+            }
+            ret[8] = remain;
+
+            int firstContainedIndex = -1;
+            int lastContainedIndex = -1;
+            int numSeparated = 0;
+            for ( int i = 0; i < 8; i++ ) {
+                if ( ret[i] > 0 ) {
+                    if ( firstContainedIndex < 0 ) {
+                        firstContainedIndex = i;
+                    }
+                    lastContainedIndex = i;
+                    numSeparated += ret[i];
+                }
+            }
+            for ( int i = 0; i < 8; i++ ) {
+                int count = ret[i];
+                if ( count <= 0 ) {
+                    continue;
+                }
+                for ( int j = 0; j < count; j++ ) {
+                    boolean local_tie_start_required = numSeparated > 0 ? true : false;
+                    boolean local_tie_stop_required = numSeparated > 0 ? true : false;
+                    if ( i == firstContainedIndex && j == 0 ) {
+                        local_tie_stop_required = tie_stop_required;
+                    }
+                    if ( i == lastContainedIndex && j == count - 1 ) {
+                        local_tie_start_required = tie_start_required;
+                    }
+                    printStyledNoteCor( writer, len[i], note, lyric, altered_context, local_tie_start_required, local_tie_stop_required, name[i] );
+                }
+            }
+        }
+
         private void printAsMusicXmlCore( String file, String encoding, String software, int tempo, boolean change_tempo ) {
             BufferedWriter sw = null;
             VsqFile vsq = (VsqFile)clone();
@@ -330,7 +454,13 @@ namespace org.kbinani.vsq {
                                 sw.write( "          <beat-type>" + timesigEntryThis.Denominator + "</beat-type>" ); sw.newLine();
                                 sw.write( "        </time>" ); sw.newLine();
                                 sw.write( "      </attributes>" ); sw.newLine();
-                                sw.write( "      <direction>" ); sw.newLine();
+                                sw.write( "      <direction placement=\"above\">" ); sw.newLine();
+                                sw.write( "        <direction-type>" ); sw.newLine();
+                                sw.write( "          <metronome>" ); sw.newLine();
+                                sw.write( "            <beat-unit>quarter</beat-unit>" ); sw.newLine();
+                                sw.write( "            <per-minute>" + tempo + "</per-minute>" ); sw.newLine();
+                                sw.write( "          </metronome>" ); sw.newLine();
+                                sw.write( "        </direction-type>" ); sw.newLine();
                                 sw.write( "        <sound tempo=\"" + tempo + "\"/>" ); sw.newLine();
                                 sw.write( "      </direction>" ); sw.newLine();
                             }
@@ -360,11 +490,12 @@ namespace org.kbinani.vsq {
                                     // 出力する必要がある
                                     if ( clockLast < itemk.Clock ) {
                                         // 音符の前に休符が必要
-                                        sw.write( "      <note>" ); sw.newLine();
+                                        printStyledNote( sw, itemk.Clock - clockLast, -1, "", altered, false, false );
+                                        /*sw.write( "      <note>" ); sw.newLine();
                                         sw.write( "        <rest/>" ); sw.newLine();
                                         sw.write( "        <duration>" + (itemk.Clock - clockLast) + "</duration>" ); sw.newLine();
                                         sw.write( "        <voice>1</voice>" ); sw.newLine();
-                                        sw.write( "      </note>" ); sw.newLine();
+                                        sw.write( "      </note>" ); sw.newLine();*/
                                         clockLast = itemk.Clock;
                                     }
 
@@ -383,7 +514,8 @@ namespace org.kbinani.vsq {
                                         tieStartRequired = true;
                                     }
                                     int actualLength = end - start;
-                                    sw.write( "      <note>" ); sw.newLine();
+                                    printStyledNote( sw, actualLength, itemk.ID.Note, itemk.ID.LyricHandle.L0.Phrase, altered, tieStartRequired, tieStopRequired );
+                                    /*sw.write( "      <note>" ); sw.newLine();
                                     int note = itemk.ID.Note;
                                     String noteStringBase = VsqNote.getNoteStringBase( note ); // "C"など
                                     int octave = VsqNote.getNoteOctave( note );
@@ -434,7 +566,7 @@ namespace org.kbinani.vsq {
                                     sw.write( "        <lyric>" ); sw.newLine();
                                     sw.write( "          <text>" + itemk.ID.LyricHandle.L0.Phrase + "</text>" ); sw.newLine();
                                     sw.write( "        </lyric>" ); sw.newLine();
-                                    sw.write( "      </note>" ); sw.newLine();
+                                    sw.write( "      </note>" ); sw.newLine();*/
                                     clockLast = end;
                                     if ( tieStartRequired ) {
                                         startIndex = k;
@@ -445,11 +577,12 @@ namespace org.kbinani.vsq {
                             }
                             if ( clockLast < clockEnd ) {
                                 // 小節の最後に休符を入れる必要がある
-                                sw.write( "      <note>" ); sw.newLine();
+                                printStyledNote( sw, (clockEnd - clockLast), -1, "", altered, false, false );
+                                /*sw.write( "      <note>" ); sw.newLine();
                                 sw.write( "        <rest/>" ); sw.newLine();
                                 sw.write( "        <duration>" + (clockEnd - clockLast) + "</duration>" ); sw.newLine();
                                 sw.write( "        <voice>1</voice>" ); sw.newLine();
-                                sw.write( "      </note>" ); sw.newLine();
+                                sw.write( "      </note>" ); sw.newLine();*/
                                 clockLast = clockEnd;
                             }
                             sw.write( "    </measure>" ); sw.newLine();

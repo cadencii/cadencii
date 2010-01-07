@@ -152,6 +152,9 @@ namespace org.kbinani.cadencii {
                 driver.process( left, right );
             }
 
+            // レンダリング開始位置での、パラメータの値をセットしておく
+
+
             for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 long saNoteStart = (long)(vsq.getSecFromClock( item.Clock ) * sampleRate);
@@ -298,6 +301,10 @@ namespace org.kbinani.cadencii {
             Vector<Point> pit_send = new Vector<Point>(); // PITが追加されたゲートタイム。音符先頭の分を重複して送信するのを回避するために必要。
             VsqBPList pit = t.getCurve( "pit" );
             VsqBPList pbs = t.getCurve( "pbs" );
+            VsqBPList dyn = t.getCurve( "dyn" );
+            VsqBPList bre = t.getCurve( "bre" );
+            VsqBPList cle = t.getCurve( "cle" );
+            VsqBPList por = t.getCurve( "por" );
             for ( Iterator itr = t.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 int endclock = item.Clock + item.ID.getLength();
@@ -338,7 +345,18 @@ namespace org.kbinani.cadencii {
                             pit_send.add( new Point( item.Clock, item.Clock ) );
                         }
 
+                        /* 音符頭で設定するパラメータ */
                         // Release
+                        MidiEventQueue q = null;
+                        if ( !list.containsKey( item.Clock ) ) {
+                            q = new MidiEventQueue();
+                        } else {
+                            q = list.get( item.Clock );
+                        }
+                        if ( q.param == null ) {
+                            q.param = new Vector<ParameterEvent>();
+                        }
+
                         String strRelease = VsqFileEx.getEventTag( item, VsqFileEx.TAGNAME_AQUESTONE_RELEASE );
                         int release = 64;
                         try {
@@ -349,16 +367,35 @@ namespace org.kbinani.cadencii {
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = driver.releaseParameterIndex;
                         pe.value = release / 127.0f;
-                        MidiEventQueue q = null;
-                        if ( !list.containsKey( item.Clock ) ) {
-                            q = new MidiEventQueue();
-                        } else {
-                            q = list.get( item.Clock );
-                        }
-                        if ( q.param == null ) {
-                            q.param = new Vector<ParameterEvent>();
-                        }
                         q.param.add( pe );
+
+                        // dyn
+                        int dynAtStart = dyn.getValue( item.Clock );
+                        ParameterEvent peDyn = new ParameterEvent();
+                        peDyn.index = driver.volumeParameterIndex;
+                        peDyn.value = (float)(dynAtStart - dyn.getMinimum()) / (float)(dyn.getMaximum() - dyn.getMinimum());
+                        q.param.add( peDyn );
+
+                        // bre
+                        int breAtStart = bre.getValue( item.Clock );
+                        ParameterEvent peBre = new ParameterEvent();
+                        peBre.index = driver.haskyParameterIndex;
+                        peBre.value = (float)(breAtStart - bre.getMinimum()) / (float)(bre.getMaximum() - bre.getMinimum());
+                        q.param.add( peBre );
+
+                        // cle
+                        int cleAtStart = cle.getValue( item.Clock );
+                        ParameterEvent peCle = new ParameterEvent();
+                        peCle.index = driver.resonancParameterIndex;
+                        peCle.value = (float)(cleAtStart - cle.getMinimum()) / (float)(cle.getMaximum() - cle.getMinimum());
+                        q.param.add( peCle );
+
+                        // por
+                        int porAtStart = por.getValue( item.Clock );
+                        ParameterEvent pePor = new ParameterEvent();
+                        pePor.index = driver.portaTimeParameterIndex;
+                        pePor.value = (float)(porAtStart - por.getMinimum()) / (float)(por.getMaximum() - por.getMinimum());
+                        q.param.add( pePor );
                         #endregion
                     }
 
@@ -567,10 +604,10 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            appendParameterEvents( list, t.getCurve( "dyn" ), driver.volumeParameterIndex, clock_start, clock_end );
-            appendParameterEvents( list, t.getCurve( "bre" ), driver.haskyParameterIndex, clock_start, clock_end );
-            appendParameterEvents( list, t.getCurve( "cle" ), driver.resonancParameterIndex, clock_start, clock_end );
-            appendParameterEvents( list, t.getCurve( "por" ), driver.portaTimeParameterIndex, clock_start, clock_end );
+            appendParameterEvents( list, dyn, driver.volumeParameterIndex, clock_start, clock_end );
+            appendParameterEvents( list, bre, driver.haskyParameterIndex, clock_start, clock_end );
+            appendParameterEvents( list, cle, driver.resonancParameterIndex, clock_start, clock_end );
+            appendParameterEvents( list, por, driver.portaTimeParameterIndex, clock_start, clock_end );
 
             return list;
         }

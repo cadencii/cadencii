@@ -1,3 +1,5 @@
+#!/usr/bin/perl -w
+
 use Encode;
 
 package POFile;
@@ -33,7 +35,7 @@ sub new{
 				}
 			}
 		}
-		close IN;
+		close $in;
 	}
 	$self = {
 		file => $argFile,
@@ -86,11 +88,82 @@ sub printTo{
 		print OUT "msgid \"" . $id . "\"\n";
 		print OUT "msgstr \"" . $str . "\"\n\n";
 	}
-	close $out;
+	close OUT;
 }
 
 package main;
 
 my $ja = new POFile( "ja.po" );
-my $zhTW = new POFile( "zh-TW.po" );
+#my $zhTW = new POFile( "zh-TW.po" );
+#$ja->printTo( "../htdocs/foo.po" );
+my $textEncode = "Shift_JIS";
+my $project_name = "Cadencii";
 
+print "Content-type: text/html" . "\n\n";
+
+$app_name = "webpoedit";
+$cgi_name = "webpoedit.cgi";
+print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
+
+print "<html>\n";
+print "<head>\n";
+print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=" . $textEncode . "\">\n";
+print "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\">\n";
+print "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">\n";
+
+$stdin = "";
+while( $line = <STDIN> ){
+	$stdin = $stdin . $line;
+}
+print "stdin=" . $stdin . "\n";
+$get_res = $ENV{"QUERY_STRING"};
+print "get_res=" . $get_res . "\n";
+$command0 = "";
+$author = "";
+@commands;
+if( !($get_res eq "") ){
+	my @spl = split( /\&/, $stdin );
+	foreach my $s ( @spl ){
+		my @spl2 = split( /\=/, $s );
+		push( @commands, $s );
+		if( $spl2[0] eq "author" ){
+			$author = $spl2[1];
+		}else{
+			if( $command0 eq "" ){
+				$command0 = $spl2[0];
+			}
+		}
+		
+	}
+}
+if( !($stdin eq "") ){
+	my @spl = split( /\&/, $stdin );
+	foreach my $s ( @spl ){
+		my @spl2 = split( /\=/, $s );
+		push( @commands, $s );
+		if( $spl2[0] eq "author" ){
+			$author = $spl2[1];
+		}
+		if( $spl2[0] eq "rauthor" ){
+			#$author = 
+		}
+	}
+}
+#Messaging::loadMessages
+if( $author eq "" ){
+	print "<title>" . $project_name . " localization</title>\n";
+	print "</head>\n";
+	print "<body>\n";
+	print "<div class=\"top\"><br>&nbsp;&nbsp;<a href=\"" . $cgi_name . "\">" . $project_name . "</a></div>\n";
+	print "enter your nickname<br>\n";
+	print "<form method=\"post\" action=\"" . $cgi_name . "?start=0\">\n";
+	print "<input type=\"text\" name=\"rauthor\" size=30 value=\"\">\n";
+	print "<input type=\"submit\" value=\"start\"></form>\n";
+	print "</body>\n";
+	print "</html>\n";
+}elsif( $command0 eq "start" ){
+}
+print "</head>\n";
+print "<body>\n";
+print "</body>\n";
+print "</html>\n";

@@ -1009,7 +1009,7 @@ namespace org.kbinani.cadencii {
             AttachedCurves = new AttachedCurve();
 
             String xml = PortUtil.combinePath( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
-            if ( PortUtil.isFileExists( xml ) ) {
+            /*if ( PortUtil.isFileExists( xml ) ) {
                 AttachedCurve tmp = null;
                 FileInputStream fs = null;
                 try {
@@ -1042,11 +1042,11 @@ namespace org.kbinani.cadencii {
                     }
                     AttachedCurves = tmp;
                 }
-            } else {
+            } else {*/
                 for ( int i = 1; i < Track.size(); i++ ) {
                     AttachedCurves.add( new BezierCurves() );
                 }
-            }
+            //}
 
             // UTAUでエクスポートしたIconHandleは、IDS=UTAUとなっているので探知する
             int count = Track.size();
@@ -1104,18 +1104,27 @@ namespace org.kbinani.cadencii {
 
             // ベジエ曲線のIDを播番
             if ( ret.AttachedCurves != null ) {
-                for ( Iterator itr = ret.AttachedCurves.getCurves().iterator(); itr.hasNext(); ) {
-                    BezierCurves bc = (BezierCurves)itr.next();
-                    for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
-                        CurveType ct = AppManager.CURVE_USAGE[k];
-                        Vector<BezierChain> list = bc.get( ct );
-                        int list_size = list.size();
-                        for ( int i = 0; i < list_size; i++ ) {
-                            BezierChain chain = list.get( i );
-                            chain.id = i + 1;
-                            int points_size = chain.points.size();
-                            for ( int j = 0; j < points_size; j++ ) {
-                                chain.points.get( j ).setID( j + 1 );
+                int numTrack = ret.Track.size();
+                if ( ret.AttachedCurves.getCurves().size() + 1 != numTrack ) {
+                    // ベジエ曲線のデータコンテナの個数と、トラックの個数が一致しなかった場合
+                    ret.AttachedCurves.getCurves().clear();
+                    for ( int i = 1; i < numTrack; i++ ) {
+                        ret.AttachedCurves.add( new BezierCurves() );
+                    }
+                } else {
+                    for ( Iterator itr = ret.AttachedCurves.getCurves().iterator(); itr.hasNext(); ) {
+                        BezierCurves bc = (BezierCurves)itr.next();
+                        for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
+                            CurveType ct = AppManager.CURVE_USAGE[k];
+                            Vector<BezierChain> list = bc.get( ct );
+                            int list_size = list.size();
+                            for ( int i = 0; i < list_size; i++ ) {
+                                BezierChain chain = list.get( i );
+                                chain.id = i + 1;
+                                int points_size = chain.points.size();
+                                for ( int j = 0; j < points_size; j++ ) {
+                                    chain.points.get( j ).setID( j + 1 );
+                                }
                             }
                         }
                     }
