@@ -54,6 +54,7 @@
     <Compile Include="SingerConfigSys.cs" />
     <Compile Include="SymbolTable.cs" />
     <Compile Include="SynthesizerType.cs" />
+    <Compile Include="TextStream.cs" />
     <Compile Include="Timesig.cs" />
     <Compile Include="TransCodeUtil.cs" />
     <Compile Include="UstEnvelope.cs" />
@@ -86,7 +87,6 @@
     <Compile Include="VsqCommandType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TempoTableEntry.cs" />
-    <Compile Include="TextMemoryStream.cs" />
     <Compile Include="TimeSigTableEntry.cs" />
     <Compile Include="VsqBarLineType.cs" />
     <Compile Include="VsqBPList.cs" />
