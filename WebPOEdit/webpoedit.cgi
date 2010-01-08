@@ -113,6 +113,13 @@ sub getKey{
 	return \@key;
 }
 
+sub containsKey{
+	my $self = shift;
+	my $id = shift;
+	my %hash = %{ $self->{dictionary} };
+	return exists( $hash{$id} );
+}
+
 package Messaging;
 
 sub new{
@@ -157,7 +164,7 @@ package main;
 
 my $textEncode = "Shift_JIS";
 my $project_name = "Cadencii";
-my $LANGS = (
+my @LANGS = (
 	["Afar", "aa"],
 	["Abkhazian", "ab"],
 	["Afrikaans", "af"],
@@ -323,9 +330,11 @@ my $get_res = $ENV{"QUERY_STRING"};
 my $command0 = "";
 my $author = "";
 my @commands;
-if( !($get_res eq "") ){
-	my @spl = split( /\&/, $stdin );
+print "get_res=\"" . $get_res . "\"\n";
+if( $get_res ne "" ){
+	my @spl = split( /\&/, $get_res );
 	foreach my $s ( @spl ){
+		print "s=\"" . $s . "\"\n";
 		my @spl2 = split( /\=/, $s );
 		push( @commands, $s );
 		if( $spl2[0] eq "author" ){
@@ -338,7 +347,8 @@ if( !($get_res eq "") ){
 		
 	}
 }
-if( !($stdin eq "") ){
+print "stdin=\"" . $stdin . "\"\n";
+if( $stdin ne "" ){
 	my @spl = split( /\&/, $stdin );
 	foreach my $s ( @spl ){
 		my @spl2 = split( /\=/, $s );
@@ -347,10 +357,11 @@ if( !($stdin eq "") ){
 			$author = $spl2[1];
 		}
 		if( $spl2[0] eq "rauthor" ){
-			$author = encode_base64( url_decode( $spl2[1] ) );
+			$author = enc_b64( url_decode( $spl2[1] ) );
 		}
 	}
 }
+print "command0=", $command0;
 my $messaging = new Messaging( "./" );
 if( $author eq "" ){
 	print "<title>" . $project_name . " localization</title>\n";
@@ -395,13 +406,134 @@ if( $author eq "" ){
 				last;
 			}
 		}
+		
+		# progress percentage
 		my $mb = $messaging->getMessageBody( $lang );
 		my $en_count = $mben->size();
 		my $lang_count = 0;
 		foreach my $id ( @{ $mben->getKey() } ){
-			
+			if( $mb->containsKey( $id ) ){
+				if( !($mb->getMessage( $id ) eq $id ) ){
+					$lang_count++;
+				}
+			}
+		}
+		my $prog = $lang_count / $en_count * 100.0;
+		print "      <td class=" . $class_kind . ">" . $desc . "&nbsp;[" . $lang . "]&nbsp;&nbsp;<a href=\"" . $cgi_name . "?target=" . $lang . "&author=" . $author . "\">edit</a></td>\n";
+		my $strProg = sprintf "%3.2f", $prog;
+		print "      <td class=" . $class_kind . ">" . $strProg . "% translated</td>\n";
+		print "      <td class=" . $class_kind . "><a href=\"" . $project_name . "/" . $lang . ".po\">Download</a></td>\n";
+		print "    </tr>\n";
+	}
+	print "  </table>\n";
+	print "  <br>\n";
+	print "<h4>If you want to create new language configuration, select language and press \"create\" button.</h4>\n";
+	print "  <div class=\"padleft\">\n";
+	print "  <form method=\"post\" action=\"" . $cgi_name . "?create=0&author=" . $author . "\">\n";
+	
+	# get browser UI language
+	my $http_accept_language = $ENV{"HTTP_ACCEPT_LANGUAGE"};
+	my @spl = split( /\,/, $http_accept_language );
+	my %accept_language_list = ();
+	foreach my $s ( @spl ){
+		# ja,fr;q=0.7,de;q=0.3
+		if( $s =~ /\;/ ){
+			my @spl2 = split( /\;/, $s ); #spl2 = { "fr", "q=0.7" }
+			if( $#spl2 + 1 >= 2 ){
+				my @spl3 = split( /\=/, $spl2[1] ); #spl3 = { "q", "0.7" }
+				if( $#spl3 + 1 >= 2 ){
+					my $value = $spl3[1] + 0.0;
+					$accept_language_list{$spl2[0]} = $value;
+				}
+			}
+		} else {
+			$accept_language_list{$s} = 1.0;
 		}
 	}
+
+	# detect most highest q value
+	my $most_used = "en";
+	my $most_used_q = 0.0;
+	foreach my $key ( keys %accept_language_list ){
+		if( $most_used_q < $accept_language_list{$key} ){
+			$most_used = $key;
+			$most_used_q = $accept_language_list{$key};
+		}
+	}
+
+	# list of languages which has not been genearted
+	print "  <select name=\"lang\">\n";
+	my $len = $#LANGS + 1;
+	for( $i = 0; $i < $len; $i++ ){
+		my $found = 0;
+		foreach my $lang ( @languages ){
+			if( $lang eq $LANGS[$i][1] ){
+				$found = 1;
+				last;
+			}
+		}
+		if( $found == 1 ){
+			print "    <option value=\"" . $LANGS[$i][1] . "\" disabled>" . $LANGS[$i][0] . "\n";
+		}elsif( $most_used eq $LANGS[$i, 1] ){
+			print "    <option value=\"" . $LANGS[$i][1] . "\" selected>" . $LANGS[$i][0] . "\n";
+		}else{
+			print "    <option value=\"" . $LANGS[$i][1] . "\">" . $LANGS[$i][0] . "\n";
+		}
+	}
+	print "  <input type=\"submit\" value=\"create\">\n";
+	print "  </form>\n";
+	print "  </div>\n";
+	print "</body>\n";
+	print "</html>\n";
+}elsif( $command0 eq "target" || $command0 eq "upate" || $command0 eq "create" ){
+	my @splLang = split( /\=/, $commands[0] );
+	my $lang = $splLang[1];
+
+	my $en = $messaging->getMessageBody( "en" );
+	my @keys_ = @{ $en->getKeys() };
+	sort @keys_;
+
+	if( $command0 eq "create" ){
+		foreach my $v ( @commands ){
+			my @splV = split( /\=/, $v );
+			if( $splV[0] eq "lang" ){
+				$lang = $splV[1];
+				last;
+			}
+		}
+		my $newpo = $lang . ".po";
+		my $mb0;
+		if( -e $newpo ){
+			$mb0 = new MessageBody( $newpo );
+		}else{
+			$mb0 = new MessageBody( "" );
+			$mb0->{language} = $lang;
+		}
+		foreach my $id ( @keys_ ){
+			if( !($mb0->containsKey( $id ) ){
+				$mb0->put( $id, $en->getMessage( $id ) );
+			}
+		}
+		$mb0->printTo( $newpo );
+	}
+
+	$is_rtl = 0;
+
+	print "<title>" . $project_name . "&nbsp;&gt;&gt;&nbsp;" . $lang . "</title>\n";
+	print "</head>\n";
+	if( $is_rtl != 0 ){
+		print "<body dir=\"rtl\">\n";
+	}else{
+		print "<body>\n";
+	}
+	print "<form method=\"post\" action=\"" + cgi_name + "?update=" + lang + "&author=" + author + "\">" );
+	print "<div class=\"top\"><br>&nbsp;&nbsp;<a href=\"" + cgi_name + "?start=0&author=" + author + "\">" + project_name + "</a>&gt;&gt;" + lang + "</div>" );
+	print "<div align=\"center\">" );
+	print "<table border=0 cellspacing=0 width=\"100%\">" );
+	print "  <tr>" );
+	print "    <td class=\"header\">English</td>" );
+	print "    <td class=\"header\">translation</td>" );
+	print "  </tr>" );
 }
 print "</head>\n";
 print "<body>\n";
@@ -409,6 +541,19 @@ print "</body>\n";
 print "</html>\n";
 
 exit;
+
+sub dec_b64{
+	my $str = shift;
+	$str =~ s/\_/\=/g;
+	return decode_base64( $str );
+}
+
+sub enc_b64{
+	my $str = shift;
+	$str = encode_base64( $str );
+	$str =~ s/\=/\_/g;
+	return $str;
+}
 
 sub url_encode($) {
 	my $str = shift;
