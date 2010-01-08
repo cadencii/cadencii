@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 
 use Encode;
+use MIME::Base64;
 
 package POFile;
 
@@ -91,6 +92,13 @@ sub printTo{
 	close OUT;
 }
 
+package Messaging;
+
+sub loadMessages{
+	my $class = shift;
+	my $dir = shift;
+}
+
 package main;
 
 my $ja = new POFile( "ja.po" );
@@ -109,15 +117,13 @@ print "<html>\n";
 print "<head>\n";
 print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=" . $textEncode . "\">\n";
 print "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\">\n";
-print "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">\n";
+print "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style.css\">\n";
 
 $stdin = "";
 while( $line = <STDIN> ){
 	$stdin = $stdin . $line;
 }
-print "stdin=" . $stdin . "\n";
 $get_res = $ENV{"QUERY_STRING"};
-print "get_res=" . $get_res . "\n";
 $command0 = "";
 $author = "";
 @commands;
@@ -145,7 +151,7 @@ if( !($stdin eq "") ){
 			$author = $spl2[1];
 		}
 		if( $spl2[0] eq "rauthor" ){
-			#$author = 
+			$author = encode_base64( $url_decode( $spl2[1] ) );
 		}
 	}
 }
@@ -162,8 +168,35 @@ if( $author eq "" ){
 	print "</body>\n";
 	print "</html>\n";
 }elsif( $command0 eq "start" ){
+	print "<title>" . $project_name . " localization</title>\n";
+	print "</head>\n";
+	print "<body>\n";
+	print "<div class=\"top\"><br>&nbsp;&nbsp;<a href=\"" . $cgi_name . "?start=0&author=" . $author . "\">" . $project_name . "</a></div>\n";
+	print "<h4>List of language configuration</h4>\n";
+	print "  <table class=\"padleft\" border=0 cellspacing=0 width=\"100%\">\n";
+	print "    <tr>\n";
+	print "      <td class=\"header\">Language</td>\n";
+	print "      <td class=\"header\">Progress</td>\n";
+	print "      <td class=\"header\">Download language config</td>\n";
+	print "    </tr>\n";
 }
 print "</head>\n";
 print "<body>\n";
 print "</body>\n";
 print "</html>\n";
+
+exit;
+
+sub url_encode($) {
+	my $str = shift;
+	$str =~ s/([^\w ])/'%'.unpack('H2', $1)/eg;
+	$str =~ tr/ /+/;
+	return $str;
+}
+
+sub url_decode($) {
+	my $str = shift;
+	$str =~ tr/+/ /;
+	$str =~ s/%([0-9A-Fa-f][0-9A-Fa-f])/pack('H2', $1)/eg;
+	return $str;
+}
