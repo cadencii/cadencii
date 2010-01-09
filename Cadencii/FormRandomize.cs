@@ -259,10 +259,10 @@ namespace org.kbinani.cadencii {
         }
 
         private void applyLanguage() {
-            lblStart.setText( _( "start" ) );
+            lblStart.setText( _( "Start" ) );
             lblStartBar.setText( _( "bar" ) );
             lblStartBeat.setText( _( "beat" ) );
-            lblEnd.setText( _( "end" ) );
+            lblEnd.setText( _( "End" ) );
             lblEndBar.setText( _( "bar" ) );
             lblEndBeat.setText( _( "beat" ) );
 

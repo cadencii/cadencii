@@ -615,9 +615,13 @@ if( $author eq "" ){
 		$utfMsg = $msg;
 		Encode::from_to( $utfMsg, "shift_jis", "utf8" );
 		if( $msg eq $key ){
-			print "      <input type=\"text\" name=\"" . $id . "\" class=\"highlight\" size=60 value=\"" . $utfMsg . "\">\n";
+			print "      <input type=\"text\" name=\"";
+			print $id;
+			print "\" class=\"highlight\" size=60 value=\"" . $utfMsg . "\">\n";
 		}else{
-			print "      <input type=\"text\" name=\"" . $id . "\" size=60 value=\"" . $utfMsg . "\">\n";
+			print "      <input type=\"text\" name=\"";
+			print $id;
+			print "\" size=60 value=\"" . $utfMsg . "\">\n";
 		}
 		print "      <input type=\"submit\" value=\"submit\">\n";
 		print "    </td>\n";
@@ -640,7 +644,7 @@ sub dec_b64{
 
 sub enc_b64{
 	my $str = shift;
-	$str = encode_base64( $str );
+	$str = encode_base64( $str, '' );
 	$str =~ s/\=/\_/g;
 	return $str;
 }

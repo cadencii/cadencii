@@ -45,6 +45,9 @@ namespace org.kbinani.cadencii {
         private VsqFileEx m_vsq;
         private static int columnWidthTrack = 54;
         private static int columnWidthName = 122;
+        private BLabel lblOffset;
+        private NumberTextBox txtOffset;
+        private BLabel lblOffsetUnit;
         private static int columnWidthNotes = 126;
 
         public FormMidiImExport() {
@@ -53,10 +56,10 @@ namespace org.kbinani.cadencii {
             initialize();
 #else
             InitializeComponent();
+#endif
             ApplyLanguage();
             setMode( FormMidiMode.EXPORT );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
-#endif
             listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
             listTrack.setColumnWidth( 0, columnWidthTrack );
             listTrack.setColumnWidth( 1, columnWidthName );
@@ -74,6 +77,9 @@ namespace org.kbinani.cadencii {
             } else {
                 setTitle( _( "VSQ/Vocaloid Midi Import" ) );
             }
+            groupMode.setTitle( _( "Import Basis" ) );
+            radioGateTime.setText( _( "gate-time" ) );
+            radioPlayTime.setText( _( "play-time" ) );
             listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
             btnCheckAll.setText( _( "Check All" ) );
             btnUncheckAll.setText( _( "Uncheck All" ) );
@@ -85,6 +91,36 @@ namespace org.kbinani.cadencii {
             chkNote.setText( _( "Note" ) );
             chkLyric.setText( _( "Lyrics" ) );
             chkExportVocaloidNrpn.setText( _( "vocaloid NRPN" ) );
+            lblOffset.setText( _( "offset" ) );
+            if ( radioGateTime.isSelected() ) {
+                lblOffsetUnit.setText( _( "clocks" ) );
+            } else {
+                lblOffsetUnit.setText( _( "seconds" ) );
+            }
+        }
+
+        public double getOffsetSeconds() {
+            double v = 0.0;
+            try {
+                v = PortUtil.parseDouble( txtOffset.getText() );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );
+            }
+            return v;
+        }
+
+        public int getOffsetClocks() {
+            int v = 0;
+            try {
+                v = PortUtil.parseInt( txtOffset.getText() );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );
+            }
+            return v;
+        }
+
+        public boolean isSecondBasis() {
+            return radioPlayTime.isSelected();
         }
 
         public FormMidiMode getMode() {
@@ -114,18 +150,21 @@ namespace org.kbinani.cadencii {
                 } else {
                     chkMetaText.setSelected( AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus );
                 }
+                groupMode.setEnabled( false );
             } else if ( m_mode == FormMidiMode.IMPORT ) {
                 setTitle( _( "Midi Import" ) );
                 chkPreMeasure.setText( _( "Inserting start at pre-measure" ) );
                 chkMetaText.setEnabled( false );
                 AppManager.editorConfig.MidiImExportConfigImport.LastMetatextCheckStatus = chkMetaText.isSelected();
                 chkMetaText.setSelected( false );
+                groupMode.setEnabled( true );
             } else {
                 setTitle( _( "VSQ/Vocaloid Midi Import" ) );
                 chkPreMeasure.setText( _( "Inserting start at pre-measure" ) );
                 chkPreMeasure.setSelected( false );
                 AppManager.editorConfig.MidiImExportConfigImportVsq.LastMetatextCheckStatus = chkMetaText.isSelected();
                 chkMetaText.setSelected( true );
+                groupMode.setEnabled( false );
             }
         }
 
@@ -231,6 +270,20 @@ namespace org.kbinani.cadencii {
             setDialogResult( BDialogResult.OK );
         }
 
+        public void radioGateTime_CheckedChanged( Object sender, EventArgs e ) {
+            if ( radioGateTime.isSelected() ) {
+                lblOffsetUnit.setText( _( "clocks" ) );
+                txtOffset.setType( NumberTextBox.ValueType.Integer );
+            }
+        }
+
+        public void radioPlayTime_CheckedChanged( Object sender, EventArgs e ) {
+            if ( radioPlayTime.isSelected() ) {
+                lblOffsetUnit.setText( _( "seconds" ) );
+                txtOffset.setType( NumberTextBox.ValueType.Double );
+            }
+        }
+
         private void registerEventHandlers() {
 #if JAVA
             this.btnCheckAll.clickEvent.add( new BEventHandler( this, "btnCheckAll_Click" ) );
@@ -248,6 +301,8 @@ namespace org.kbinani.cadencii {
             btnOK.Click += new EventHandler( btnOK_Click );
             btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
+            radioGateTime.checkedChangedEvent.add( new BEventHandler( this, "radioGateTime_CheckedChanged" ) );
+            radioPlayTime.checkedChangedEvent.add( new BEventHandler( this, "radioPlayTime_CheckedChanged" ) );
         }
 
         private void setResources() {
@@ -283,6 +338,9 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
             this.listTrack = new org.kbinani.windows.forms.BListView();
@@ -296,14 +354,21 @@ namespace org.kbinani.cadencii {
             this.chkMetaText = new org.kbinani.windows.forms.BCheckBox();
             this.chkPreMeasure = new org.kbinani.windows.forms.BCheckBox();
             this.chkExportVocaloidNrpn = new org.kbinani.windows.forms.BCheckBox();
+            this.groupMode = new org.kbinani.windows.forms.BGroupBox();
+            this.radioPlayTime = new org.kbinani.windows.forms.BRadioButton();
+            this.radioGateTime = new org.kbinani.windows.forms.BRadioButton();
+            this.lblOffset = new org.kbinani.windows.forms.BLabel();
+            this.txtOffset = new org.kbinani.cadencii.NumberTextBox();
+            this.lblOffsetUnit = new org.kbinani.windows.forms.BLabel();
             this.groupCommonOption.SuspendLayout();
+            this.groupMode.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 261, 423 );
+            this.btnCancel.Location = new System.Drawing.Point( 261, 435 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
             this.btnCancel.TabIndex = 5;
@@ -314,7 +379,7 @@ namespace org.kbinani.cadencii {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point( 180, 423 );
+            this.btnOK.Location = new System.Drawing.Point( 180, 435 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 75, 23 );
             this.btnOK.TabIndex = 4;
@@ -328,9 +393,18 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listTrack.CheckBoxes = true;
             this.listTrack.FullRowSelect = true;
+            listViewGroup7.Header = "ListViewGroup";
+            listViewGroup8.Header = "ListViewGroup";
+            listViewGroup8.Name = null;
+            listViewGroup9.Header = "ListViewGroup";
+            listViewGroup9.Name = null;
+            this.listTrack.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9} );
             this.listTrack.Location = new System.Drawing.Point( 12, 41 );
             this.listTrack.Name = "listTrack";
-            this.listTrack.Size = new System.Drawing.Size( 324, 282 );
+            this.listTrack.Size = new System.Drawing.Size( 324, 216 );
             this.listTrack.TabIndex = 6;
             this.listTrack.UseCompatibleStateImageBehavior = false;
             this.listTrack.View = System.Windows.Forms.View.Details;
@@ -345,11 +419,11 @@ namespace org.kbinani.cadencii {
             this.btnCheckAll.Text = "Check All";
             this.btnCheckAll.UseVisualStyleBackColor = true;
             // 
-            // btnUnckeckAll
+            // btnUncheckAll
             // 
             this.btnUncheckAll.AutoSize = true;
             this.btnUncheckAll.Location = new System.Drawing.Point( 93, 12 );
-            this.btnUncheckAll.Name = "btnUnckeckAll";
+            this.btnUncheckAll.Name = "btnUncheckAll";
             this.btnUncheckAll.Size = new System.Drawing.Size( 77, 23 );
             this.btnUncheckAll.TabIndex = 8;
             this.btnUncheckAll.Text = "Uncheck All";
@@ -418,7 +492,7 @@ namespace org.kbinani.cadencii {
             this.groupCommonOption.Controls.Add( this.chkNote );
             this.groupCommonOption.Controls.Add( this.chkBeat );
             this.groupCommonOption.Controls.Add( this.chkTempo );
-            this.groupCommonOption.Location = new System.Drawing.Point( 12, 329 );
+            this.groupCommonOption.Location = new System.Drawing.Point( 12, 263 );
             this.groupCommonOption.Name = "groupCommonOption";
             this.groupCommonOption.Size = new System.Drawing.Size( 324, 88 );
             this.groupCommonOption.TabIndex = 13;
@@ -464,13 +538,83 @@ namespace org.kbinani.cadencii {
             this.chkExportVocaloidNrpn.Text = "vocaloid NRPN";
             this.chkExportVocaloidNrpn.UseVisualStyleBackColor = true;
             // 
+            // groupMode
+            // 
+            this.groupMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupMode.Controls.Add( this.lblOffsetUnit );
+            this.groupMode.Controls.Add( this.txtOffset );
+            this.groupMode.Controls.Add( this.lblOffset );
+            this.groupMode.Controls.Add( this.radioPlayTime );
+            this.groupMode.Controls.Add( this.radioGateTime );
+            this.groupMode.Location = new System.Drawing.Point( 12, 357 );
+            this.groupMode.Name = "groupMode";
+            this.groupMode.Size = new System.Drawing.Size( 324, 72 );
+            this.groupMode.TabIndex = 14;
+            this.groupMode.TabStop = false;
+            this.groupMode.Text = "Import Basis";
+            // 
+            // radioPlayTime
+            // 
+            this.radioPlayTime.AutoSize = true;
+            this.radioPlayTime.Location = new System.Drawing.Point( 168, 18 );
+            this.radioPlayTime.Name = "radioPlayTime";
+            this.radioPlayTime.Size = new System.Drawing.Size( 72, 16 );
+            this.radioPlayTime.TabIndex = 1;
+            this.radioPlayTime.TabStop = true;
+            this.radioPlayTime.Text = "play-time";
+            this.radioPlayTime.UseVisualStyleBackColor = true;
+            // 
+            // radioGateTime
+            // 
+            this.radioGateTime.AutoSize = true;
+            this.radioGateTime.Checked = true;
+            this.radioGateTime.Location = new System.Drawing.Point( 10, 18 );
+            this.radioGateTime.Name = "radioGateTime";
+            this.radioGateTime.Size = new System.Drawing.Size( 73, 16 );
+            this.radioGateTime.TabIndex = 0;
+            this.radioGateTime.TabStop = true;
+            this.radioGateTime.Text = "gate-time";
+            this.radioGateTime.UseVisualStyleBackColor = true;
+            // 
+            // lblOffset
+            // 
+            this.lblOffset.AutoSize = true;
+            this.lblOffset.Location = new System.Drawing.Point( 14, 45 );
+            this.lblOffset.Name = "lblOffset";
+            this.lblOffset.Size = new System.Drawing.Size( 35, 12 );
+            this.lblOffset.TabIndex = 2;
+            this.lblOffset.Text = "offset";
+            // 
+            // txtOffset
+            // 
+            this.txtOffset.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))) );
+            this.txtOffset.ForeColor = System.Drawing.Color.Black;
+            this.txtOffset.Location = new System.Drawing.Point( 81, 42 );
+            this.txtOffset.Name = "txtOffset";
+            this.txtOffset.Size = new System.Drawing.Size( 100, 19 );
+            this.txtOffset.TabIndex = 3;
+            this.txtOffset.Text = "0";
+            this.txtOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtOffset.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            // 
+            // lblOffsetUnit
+            // 
+            this.lblOffsetUnit.AutoSize = true;
+            this.lblOffsetUnit.Location = new System.Drawing.Point( 187, 45 );
+            this.lblOffsetUnit.Name = "lblOffsetUnit";
+            this.lblOffsetUnit.Size = new System.Drawing.Size( 38, 12 );
+            this.lblOffsetUnit.TabIndex = 4;
+            this.lblOffsetUnit.Text = "clocks";
+            // 
             // FormMidiImExport
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 348, 458 );
+            this.ClientSize = new System.Drawing.Size( 348, 470 );
+            this.Controls.Add( this.groupMode );
             this.Controls.Add( this.groupCommonOption );
             this.Controls.Add( this.btnUncheckAll );
             this.Controls.Add( this.btnCheckAll );
@@ -486,6 +630,8 @@ namespace org.kbinani.cadencii {
             this.Text = "FormMidiInExport";
             this.groupCommonOption.ResumeLayout( false );
             this.groupCommonOption.PerformLayout();
+            this.groupMode.ResumeLayout( false );
+            this.groupMode.PerformLayout();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -506,6 +652,9 @@ namespace org.kbinani.cadencii {
         public BListView listTrack;
         private BCheckBox chkPreMeasure;
         private BCheckBox chkMetaText;
+        private BGroupBox groupMode;
+        private BRadioButton radioPlayTime;
+        private BRadioButton radioGateTime;
 
         #endregion
 #endif

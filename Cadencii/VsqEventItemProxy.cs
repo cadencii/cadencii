@@ -47,6 +47,8 @@ namespace org.kbinani.cadencii {
         private int m_attack_depth = 64;
         private int m_attack_duration = 64;
         private String m_tag;
+        private String m_consonant_adjustment = "";
+        private BooleanEnum m_symbol_protected = BooleanEnum.Off;
 
         private static int s_vibrato_percent_last = -1;
 
@@ -83,6 +85,12 @@ namespace org.kbinani.cadencii {
             if ( item.ID.LyricHandle != null ) {
                 m_phrase = item.ID.LyricHandle.L0.Phrase;
                 m_phonetic_symbol = item.ID.LyricHandle.L0.getPhoneticSymbol();
+                m_consonant_adjustment = "";
+                int[] adjustment = item.ID.LyricHandle.L0.getConsonantAdjustmentList();
+                for ( int i = 0; i < adjustment.Length; i++ ) {
+                    m_consonant_adjustment += (i == 0 ? "" : " ") + adjustment[i];
+                }
+                m_symbol_protected = item.ID.LyricHandle.L0.PhoneticSymbolProtected ? BooleanEnum.On : BooleanEnum.Off;
             }
             m_ust_event = item.UstEvent;
             m_pMeanOnsetFirstNote = item.ID.pMeanOnsetFirstNote;
@@ -224,6 +232,20 @@ namespace org.kbinani.cadencii {
                 }
             }
             ret.ID.LyricHandle = new LyricHandle( m_phrase, m_phonetic_symbol );
+            m_consonant_adjustment = m_consonant_adjustment.Trim( new char[] { ' ', ',' } );
+            String[] spl = PortUtil.splitString( m_consonant_adjustment, new char[] { ' ', ',' }, true );
+            int[] adjustment = new int[spl.Length];
+            for ( int i = 0; i < spl.Length; i++ ) {
+                int v = 64;
+                try {
+                    v = PortUtil.parseInt( spl[i] );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VsqEventItemProxy#GetItemDifference; ex=" + ex );
+                }
+                adjustment[i] = v;
+            }
+            ret.ID.LyricHandle.L0.PhoneticSymbolProtected = (m_symbol_protected == BooleanEnum.On);
+            ret.ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
             ret.InternalID = original.InternalID;
             ret.UstEvent = (UstEvent)m_ust_event.clone();
 
@@ -246,9 +268,14 @@ namespace org.kbinani.cadencii {
                 if ( !old.Equals( m_phrase ) ) {
                     if ( AppManager.editorConfig.SelfDeRomanization ) {
                         m_phrase = KanaDeRomanization.Attach( m_phrase );
-                        ByRef<String> phonetic_symbol = new ByRef<String>( "" );
-                        SymbolTable.attatch( m_phrase, phonetic_symbol );
-                        m_phonetic_symbol = phonetic_symbol.value;
+                    }
+                    ByRef<String> phonetic_symbol = new ByRef<String>( "" );
+                    SymbolTable.attatch( m_phrase, phonetic_symbol );
+                    m_phonetic_symbol = phonetic_symbol.value;
+                    String[] spl = PortUtil.splitString( m_phonetic_symbol, new char[] { ' ', ',' }, true );
+                    m_consonant_adjustment = "";
+                    for ( int i = 0; i < spl.Length; i++ ) {
+                        m_consonant_adjustment += (i == 0 ? "" : " ") + (VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0);
                     }
                 }
             }
@@ -261,6 +288,52 @@ namespace org.kbinani.cadencii {
             }
             set {
                 m_phonetic_symbol = value;
+            }
+        }
+
+        [Category( "Lyric" )]
+        public String CosonantAdjustment {
+            get {
+                return m_consonant_adjustment;
+            }
+            set {
+                String[] symbol = PortUtil.splitString( m_phonetic_symbol, new char[] { ' ' }, true );
+                String[] adjustment = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
+                if ( adjustment.Length < symbol.Length ) {
+                    Array.Resize( ref adjustment, symbol.Length );
+                }
+                int[] iadj = new int[symbol.Length];
+                for ( int i = 0; i < iadj.Length; i++ ) {
+                    if ( VsqPhoneticSymbol.isConsonant( symbol[i] ) ) {
+                        int v = 64;
+                        try {
+                            v = PortUtil.parseInt( adjustment[i] );
+                        } catch ( Exception ex ) {
+                        }
+                        if ( v < 0 ) {
+                            v = 0;
+                        } else if ( 127 < v ) {
+                            v = 127;
+                        }
+                        iadj[i] = v;
+                    } else {
+                        iadj[i] = 0;
+                    }
+                }
+                m_consonant_adjustment = "";
+                for ( int i = 0; i < iadj.Length; i++ ) {
+                    m_consonant_adjustment += (i == 0 ? "" : " ") + iadj[i];
+                }
+            }
+        }
+
+        [Category( "Lyric" )]
+        public BooleanEnum Protect {
+            get {
+                return m_symbol_protected;
+            }
+            set {
+                m_symbol_protected = value;
             }
         }
         #endregion

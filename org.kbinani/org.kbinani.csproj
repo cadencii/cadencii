@@ -127,6 +127,9 @@
     </Compile>
     <Compile Include="BProgressChangedEventArgs.cs" />
     <Compile Include="BProgressChangedEventHandler.cs" />
+    <Compile Include="BRadioButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BRunWorkerCompletedEventHandler.cs" />
     <Compile Include="BRunWorkerCompletedEventArgs.cs" />
     <Compile Include="BHScrollBar.cs">

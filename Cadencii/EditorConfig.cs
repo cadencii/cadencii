@@ -308,6 +308,10 @@ namespace org.kbinani.cadencii {
         /// 前回エクスポートしたMusicXmlのパス
         /// </summary>
         public String LastMusicXmlPath = "";
+        /// <summary>
+        /// 最初に戻る、のショートカットキー
+        /// </summary>
+        public BKeys[] SpecialShortcutGoToFirst = new BKeys[] { BKeys.Home };
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
@@ -334,6 +338,7 @@ namespace org.kbinani.cadencii {
             new ValuePairOfStringArrayOfKeys( "menuHiddenVisualBackwardParameter", new BKeys[]{ BKeys.Control, BKeys.Alt, BKeys.PageUp } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenTrackNext", new BKeys[]{ BKeys.Control, BKeys.PageDown } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenTrackBack", new BKeys[]{ BKeys.Control, BKeys.PageUp } ),
+            new ValuePairOfStringArrayOfKeys( "menuHiddenBackToTheFirst", new BKeys[]{ BKeys.Home } ),
             new ValuePairOfStringArrayOfKeys( "menuFileSaveNamed", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuFileImportVsq", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuFileOpenUst", new BKeys[]{} ),
@@ -349,7 +354,7 @@ namespace org.kbinani.cadencii {
             new ValuePairOfStringArrayOfKeys( "menuVisualLyrics", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuVisualNoteProperty", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuVisualPitchLine", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualIconPalette", new BKeys[]{ BKeys.F2 } ),
+            new ValuePairOfStringArrayOfKeys( "menuVisualIconPalette", new BKeys[]{ BKeys.F4 } ),
             new ValuePairOfStringArrayOfKeys( "menuJobNormalize", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuJobInsertBar", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuJobDeleteBar", new BKeys[]{} ),

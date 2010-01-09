@@ -316,13 +316,31 @@ namespace org.kbinani.vsq {
 
         private static void printStyledNote( 
             BufferedWriter writer, 
+            int clock_start,
             int clock_length,
             int note,
+            Vector<TempoTableEntry> tempoInsert,
             String lyric,
             TreeMap<String, Boolean> altered_context,
             boolean tie_start_required, 
             boolean tie_stop_required )
         {
+            int numInsert = tempoInsert.size();
+            for ( int i = 0; i < numInsert; i++ ) {
+                TempoTableEntry itemi = tempoInsert.get( i );
+                int tempo = (int)(60e6 / (double)itemi.Tempo);
+                writer.write( "      <direction placement=\"above\">" ); writer.newLine();
+                writer.write( "        <direction-type>" ); writer.newLine();
+                writer.write( "          <metronome>" ); writer.newLine();
+                writer.write( "            <beat-unit>quarter</beat-unit>" ); writer.newLine();
+                writer.write( "            <per-minute>" + tempo + "</per-minute>" ); writer.newLine();
+                writer.write( "          </metronome>" ); writer.newLine();
+                writer.write( "          <words>Tempo " + tempo + "</words>" ); writer.newLine();
+                writer.write( "        </direction-type>" ); writer.newLine();
+                writer.write( "        <sound tempo=\"" + tempo + "\"/>" ); writer.newLine();
+                writer.write( "        <offset>" + (itemi.Clock - clock_start) + "</offset>" ); writer.newLine();
+                writer.write( "      </direction>" ); writer.newLine();
+            }
             int[] ret = new int[9];
             int[] len = new int[] { 1920, 960, 480, 240, 120, 60, 30, 15 };
             String[] name = new String[] { "whole", "half", "quarter", "eighth", "16th", "32nd", "64th", "128th", "" };
@@ -445,6 +463,19 @@ namespace org.kbinani.vsq {
 
                         // remainingMeasures小節を順次出力
                         for ( int j = totalMeasure; j < totalMeasure + remainingMeasures; j++ ) {
+                            int clockStart = clockLastBase + (j - totalMeasure) * clockPerMeasure;
+                            int clockEnd = clockStart + clockPerMeasure;
+
+                            // 今出力している小節内に、テンポ変更が挿入されているかどうか
+                            int numTempo = TempoTable.size();
+                            Vector<TempoTableEntry> tempoInsert = new Vector<TempoTableEntry>(); // 挿入するテンポ情報のリスト
+                            for ( int k = 0; k < numTempo; k++ ) {
+                                TempoTableEntry itemk = TempoTable.get( k );
+                                if ( clockStart <= itemk.Clock && itemk.Clock < clockEnd ) {
+                                    tempoInsert.add( (TempoTableEntry)itemk.clone() );
+                                }
+                            }
+
                             sw.write( "    <measure number=\"" + (j + 1 - measureStart) + "\">" ); sw.newLine();
                             if ( j == totalMeasure ) {
                                 sw.write( "      <attributes>" ); sw.newLine();
@@ -472,8 +503,6 @@ namespace org.kbinani.vsq {
                                 altered.put( basic[m], false );
                             }
 
-                            int clockStart = clockLastBase + (j - totalMeasure) * clockPerMeasure;
-                            int clockEnd = clockStart + clockPerMeasure;
                             int clockLast = clockStart; // 出力済みのクロック
                             for ( int k = startIndex; k < numEvents; k++ ) {
                                 VsqEvent itemk = vsq_track.getEvent( k );
@@ -490,12 +519,17 @@ namespace org.kbinani.vsq {
                                     // 出力する必要がある
                                     if ( clockLast < itemk.Clock ) {
                                         // 音符の前に休符が必要
-                                        printStyledNote( sw, itemk.Clock - clockLast, -1, "", altered, false, false );
-                                        /*sw.write( "      <note>" ); sw.newLine();
-                                        sw.write( "        <rest/>" ); sw.newLine();
-                                        sw.write( "        <duration>" + (itemk.Clock - clockLast) + "</duration>" ); sw.newLine();
-                                        sw.write( "        <voice>1</voice>" ); sw.newLine();
-                                        sw.write( "      </note>" ); sw.newLine();*/
+                                        // clockLast <= * < itemk.Clockの間にテンポ変更を挿入する必要があるかどうか
+                                        Vector<TempoTableEntry> insert = new Vector<TempoTableEntry>();
+                                        if ( !change_tempo ) {
+                                            for ( int m = 0; m < tempoInsert.size(); m++ ) {
+                                                TempoTableEntry itemm = tempoInsert.get( m );
+                                                if ( clockLast <= itemm.Clock && itemm.Clock < itemk.Clock ) {
+                                                    insert.add( itemm );
+                                                }
+                                            }
+                                        }
+                                        printStyledNote( sw, clockLast, itemk.Clock - clockLast, -1, insert, "", altered, false, false );
                                         clockLast = itemk.Clock;
                                     }
 
@@ -514,59 +548,16 @@ namespace org.kbinani.vsq {
                                         tieStartRequired = true;
                                     }
                                     int actualLength = end - start;
-                                    printStyledNote( sw, actualLength, itemk.ID.Note, itemk.ID.LyricHandle.L0.Phrase, altered, tieStartRequired, tieStopRequired );
-                                    /*sw.write( "      <note>" ); sw.newLine();
-                                    int note = itemk.ID.Note;
-                                    String noteStringBase = VsqNote.getNoteStringBase( note ); // "C"など
-                                    int octave = VsqNote.getNoteOctave( note );
-                                    sw.write( "        <pitch>" ); sw.newLine();
-                                    sw.write( "          <step>" + noteStringBase + "</step>" ); sw.newLine();
-                                    int alter = VsqNote.getNoteAlter( note );
-                                    if ( alter != 0 ) {
-                                        sw.write( "          <alter>" + alter + "</alter>" ); sw.newLine();
-                                    }
-                                    sw.write( "          <octave>" + (octave + 1) + "</octave>" ); sw.newLine();
-                                    sw.write( "        </pitch>" ); sw.newLine();
-                                    sw.write( "        <duration>" + actualLength + "</duration>" ); sw.newLine();
-                                    String stem = note >= 70 ? "down" : "up";
-                                    sw.write( "        <stem>" + stem + "</stem>" ); sw.newLine();
-                                    String accidental = "";
-                                    String checkAltered = noteStringBase;
-                                    if ( !tieStopRequired && altered.containsKey( checkAltered ) ) {
-                                        if ( alter == 0 ) {
-                                            if ( altered.get( checkAltered ) ) {
-                                                accidental = "natural";
-                                                altered.put( checkAltered, false );
-                                            }
-                                        } else {
-                                            if ( !altered.get( checkAltered ) ) {
-                                                accidental = alter == 1 ? "sharp" : "flat";
-                                                altered.put( checkAltered, true );
+                                    Vector<TempoTableEntry> insert2 = new Vector<TempoTableEntry>();
+                                    if ( !change_tempo ) {
+                                        for ( int m = 0; m < tempoInsert.size(); m++ ) {
+                                            TempoTableEntry itemm = tempoInsert.get( m );
+                                            if ( start <= itemm.Clock && itemm.Clock < end ) {
+                                                insert2.add( itemm );
                                             }
                                         }
                                     }
-                                    if ( PortUtil.getStringLength( accidental ) > 0 ) {
-                                        sw.write( "        <accidental>" + accidental + "</accidental>" ); sw.newLine();
-                                    }
-                                    sw.write( "        <voice>1</voice>" ); sw.newLine();
-                                    //if ( !(tieStartRequired && tieStopRequired) ) {
-                                    if ( tieStartRequired ) {
-                                        sw.write( "        <tie type=\"start\"/>" ); sw.newLine();
-                                        sw.write( "        <notations>" ); sw.newLine();
-                                        sw.write( "          <tied type=\"start\"/>" ); sw.newLine();
-                                        sw.write( "        </notations>" ); sw.newLine();
-                                    }
-                                    if ( tieStopRequired ) {
-                                        sw.write( "        <tie type=\"stop\"/>" ); sw.newLine();
-                                        sw.write( "        <notations>" ); sw.newLine();
-                                        sw.write( "          <tied type=\"stop\"/>" ); sw.newLine();
-                                        sw.write( "        </notations>" ); sw.newLine();
-                                    }
-                                    //}
-                                    sw.write( "        <lyric>" ); sw.newLine();
-                                    sw.write( "          <text>" + itemk.ID.LyricHandle.L0.Phrase + "</text>" ); sw.newLine();
-                                    sw.write( "        </lyric>" ); sw.newLine();
-                                    sw.write( "      </note>" ); sw.newLine();*/
+                                    printStyledNote( sw, start, actualLength, itemk.ID.Note, insert2, itemk.ID.LyricHandle.L0.Phrase, altered, tieStartRequired, tieStopRequired );
                                     clockLast = end;
                                     if ( tieStartRequired ) {
                                         startIndex = k;
@@ -577,12 +568,16 @@ namespace org.kbinani.vsq {
                             }
                             if ( clockLast < clockEnd ) {
                                 // 小節の最後に休符を入れる必要がある
-                                printStyledNote( sw, (clockEnd - clockLast), -1, "", altered, false, false );
-                                /*sw.write( "      <note>" ); sw.newLine();
-                                sw.write( "        <rest/>" ); sw.newLine();
-                                sw.write( "        <duration>" + (clockEnd - clockLast) + "</duration>" ); sw.newLine();
-                                sw.write( "        <voice>1</voice>" ); sw.newLine();
-                                sw.write( "      </note>" ); sw.newLine();*/
+                                Vector<TempoTableEntry> insert3 = new Vector<TempoTableEntry>();
+                                if ( !change_tempo ) {
+                                    for ( int m = 0; m < tempoInsert.size(); m++ ) {
+                                        TempoTableEntry itemm = tempoInsert.get( m );
+                                        if ( clockEnd <= itemm.Clock && itemm.Clock < clockLast ) {
+                                            insert3.add( itemm );
+                                        }
+                                    }
+                                }
+                                printStyledNote( sw, clockLast, (clockEnd - clockLast), -1, insert3, "", altered, false, false );
                                 clockLast = clockEnd;
                             }
                             sw.write( "    </measure>" ); sw.newLine();
@@ -3138,12 +3133,13 @@ namespace org.kbinani.vsq {
             }
             add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_BYTES, (byte)symbols.Length, true );// (byte)0x12(Number of phonetic symbols in bytes)
             int count = -1;
+            int[] consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
             for ( int j = 0; j < spl.Length; j++ ) {
                 char[] chars = spl[j].ToCharArray();
                 for ( int k = 0; k < chars.Length; k++ ) {
                     count++;
                     if ( k == 0 ) {
-                        add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], (byte)ve.ID.LyricHandle.L0.getConsonantAdjustment()[j], true ); // Phonetic symbol j
+                        add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], (byte)consonantAdjustment[j], true ); // Phonetic symbol j
                     } else {
                         add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], true ); // Phonetic symbol j
                     }

@@ -903,19 +903,6 @@ namespace org.kbinani.cadencii {
 
         private const String TEMPDIR_NAME = "cadencii";
 
-#if JAVA
-        static{
-#else
-        static AppManager() {
-#endif
-            s_auto_backup_timer = new BTimer();
-#if JAVA
-            s_auto_backup_timer.tickEvent.add( new BEventHandler( AppManager.class, "handleAutoBackupTimerTick" ) );
-#else
-            s_auto_backup_timer.Tick += handleAutoBackupTimerTick;
-#endif
-        }
-
         public static void reportException( String message, Exception ex, int level ) {
             PortUtil.stderr.println( message + ex );
         }
@@ -2303,10 +2290,10 @@ namespace org.kbinani.cadencii {
 
         public static void init() {
             loadConfig();
-            VSTiProxy.init();
+            //VSTiProxy.init();
             s_locker = new Object();
             SymbolTable.loadDictionary();
-            VSTiProxy.CurrentUser = "";
+            //VSTiProxy.CurrentUser = "";
 
             #region Apply User Dictionary Configuration
             try {
@@ -2375,6 +2362,13 @@ namespace org.kbinani.cadencii {
             propertyWindow = new FormNoteProperty();
             propertyWindow.Controls.Add( propertyPanel );
             propertyPanel.Dock = DockStyle.Fill;
+#endif
+
+            s_auto_backup_timer = new BTimer();
+#if JAVA
+            s_auto_backup_timer.tickEvent.add( new BEventHandler( AppManager.class, "handleAutoBackupTimerTick" ) );
+#else
+            s_auto_backup_timer.Tick += handleAutoBackupTimerTick;
 #endif
         }
 

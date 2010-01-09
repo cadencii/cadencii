@@ -42,8 +42,66 @@ namespace org.kbinani.vsq {
         private int[] m_consonant_adjustment;
         public boolean PhoneticSymbolProtected;
 
-        public int[] getConsonantAdjustment() {
+        public String getConsonantAdjustment() {
+            String ret = "";
+            int[] arr = getConsonantAdjustmentList();
+            for ( int i = 0; i < arr.Length; i++ ) {
+                ret += (i == 0 ? "" : " ") + arr[i];
+            }
+            return ret;
+        }
+
+        public void setConsonantAdjustment( String value ) {
+            String[] spl = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
+            int[] arr = new int[spl.Length];
+            for ( int i = 0; i < spl.Length; i++ ) {
+                int v = 64;
+                try {
+                    v = PortUtil.parseInt( spl[i] );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "Lyric#setCosonantAdjustment; ex=" + ex );
+                }
+                arr[i] = v;
+            }
+            setConsonantAdjustmentList( arr );
+        }
+
+#if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用
+        /// </summary>
+        public String ConsonantAdjustment {
+            get {
+                return getConsonantAdjustment();
+            }
+            set {
+                setConsonantAdjustment( value );
+            }
+        }
+#endif
+
+        public int[] getConsonantAdjustmentList() {
+            if ( m_consonant_adjustment == null ) {
+                if ( m_phonetic_symbol == null ) {
+                    m_consonant_adjustment = new int[] { };
+                } else {
+                    m_consonant_adjustment = new int[m_phonetic_symbol.Length];
+                    for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
+                        m_consonant_adjustment[i] = VsqPhoneticSymbol.isConsonant( m_phonetic_symbol[i] ) ? 64 : 0;
+                    }
+                }
+            }
             return m_consonant_adjustment;
+        }
+
+        public void setConsonantAdjustmentList( int[] value ) {
+            if ( value == null ) {
+                return;
+            }
+            m_consonant_adjustment = new int[value.Length];
+            for ( int i = 0; i < value.Length; i++ ) {
+                m_consonant_adjustment[i] = value[i];
+            }
         }
 
         /// <summary>
@@ -58,9 +116,11 @@ namespace org.kbinani.vsq {
                 result.m_phonetic_symbol[i] = m_phonetic_symbol[i];
             }
             result.UnknownFloat = this.UnknownFloat;
-            result.m_consonant_adjustment = new int[m_consonant_adjustment.Length];
-            for ( int i = 0; i < m_consonant_adjustment.Length; i++ ) {
-                result.m_consonant_adjustment[i] = m_consonant_adjustment[i];
+            if ( m_consonant_adjustment != null ) {
+                result.m_consonant_adjustment = new int[m_consonant_adjustment.Length];
+                for ( int i = 0; i < m_consonant_adjustment.Length; i++ ) {
+                    result.m_consonant_adjustment[i] = m_consonant_adjustment[i];
+                }
             }
             result.PhoneticSymbolProtected = PhoneticSymbolProtected;
             return result;
@@ -90,9 +150,10 @@ namespace org.kbinani.vsq {
         /// この歌詞の発音記号を取得します。
         /// </summary>
         public String getPhoneticSymbol() {
-            String ret = m_phonetic_symbol[0];
-            for ( int i = 1; i < m_phonetic_symbol.Length; i++ ) {
-                ret += " " + m_phonetic_symbol[i];
+            String[] symbol = getPhoneticSymbolList();
+            String ret = "";
+            for ( int i = 0; i < symbol.Length; i++ ) {
+                ret += (i == 0 ? "" : " ") + symbol[i];
             }
             return ret;
         }
@@ -102,17 +163,9 @@ namespace org.kbinani.vsq {
         /// </summary>
         public void setPhoneticSymbol( String value ) {
             String s = value.Replace( "  ", " " );
-            m_phonetic_symbol = PortUtil.splitString( s, new char[] { ' ' }, 16 );
+            m_phonetic_symbol = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
             for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
                 m_phonetic_symbol[i] = m_phonetic_symbol[i].Replace( "\\" + "\\", "\\" );
-            }
-            m_consonant_adjustment = new int[m_phonetic_symbol.Length];
-            for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
-                if ( VsqPhoneticSymbol.isConsonant( m_phonetic_symbol[i] ) ) {
-                    m_consonant_adjustment[i] = 64;
-                } else {
-                    m_consonant_adjustment[i] = 0;
-                }
             }
         }
 

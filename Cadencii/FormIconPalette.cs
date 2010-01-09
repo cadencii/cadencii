@@ -45,6 +45,7 @@ namespace org.kbinani.cadencii {
 
         public FormIconPalette() {
             InitializeComponent();
+            applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             initialize();
             registerEventHandlers();
@@ -54,6 +55,15 @@ namespace org.kbinani.cadencii {
                 KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( keys );
                 menuWindowHide.setAccelerator( shortcut );
             }
+        }
+
+        private void applyLanguage() {
+            setTitle( _( "Icon Palette" ) );
+            chkTopMost.setText( _( "Top Most" ) );
+        }
+
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
         public void applyShortcut( KeyStroke shortcut ) {

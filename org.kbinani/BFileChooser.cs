@@ -86,11 +86,11 @@ namespace org.kbinani.windows.forms {
             }
             m_open.Filter = filter;
             if ( selected >= 0 ) {
-                m_open.FilterIndex = selected;
+                m_open.FilterIndex = selected + 1;
             }
             DialogResult dr = m_open.ShowDialog();
             m_selected_file = m_open.FileName;
-            int filter_index = m_open.FilterIndex;
+            int filter_index = m_open.FilterIndex - 1;
             if ( 0 <= filter_index && filter_index < m_filters.Count ) {
                 m_current_filter = m_filters[filter_index];
             }
@@ -120,11 +120,11 @@ namespace org.kbinani.windows.forms {
             }
             m_save.Filter = filter;
             if ( selected >= 0 ) {
-                m_save.FilterIndex = selected;
+                m_save.FilterIndex = selected + 1;
             }
             DialogResult dr = m_save.ShowDialog();
             m_selected_file = m_save.FileName;
-            int filter_index = m_save.FilterIndex;
+            int filter_index = m_save.FilterIndex - 1;
             if ( 0 <= filter_index && filter_index < m_filters.Count ) {
                 m_current_filter = m_filters[filter_index];
             }

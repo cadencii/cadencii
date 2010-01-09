@@ -101,6 +101,7 @@ namespace org.kbinani.cadencii {
                     }
                     vocaloidDriver.get( i ).loaded = loaded;
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VSTiProxy#initCor; ex=" + ex );
                 }
             }
 #endif
@@ -128,6 +129,7 @@ namespace org.kbinani.cadencii {
                 try {
                     loaded = aquesToneDriver.open( aques_tone, BLOCK_SIZE, SAMPLE_RATE );
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
                     loaded = false;
                 }
                 aquesToneDriver.loaded = loaded;

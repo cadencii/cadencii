@@ -174,6 +174,9 @@ namespace org.kbinani.cadencii {
                 item.setName( name );
                 //item.Tag = a;
                 String group = "";
+#if DEBUG
+                PortUtil.println( "FormShortcutKeys#UpdateList; name=" + name );
+#endif
                 if ( name.StartsWith( "menuFile" ) ) {
                     group = "listGroupFile";
                 } else if ( name.StartsWith( "menuEdit" ) ) {
