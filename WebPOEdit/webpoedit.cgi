@@ -140,14 +140,15 @@ sub new{
 	my $dir = shift;
 	my %dict = ();
 	# read *.po file in the directory "$dir"
-	opendir DH, $dir;
-	while( my $file = readdir DH ){
-		next if $file =~ /^.{1,2}$/;
-		next if !($file =~ /.*\.po$/);
+	open my $list, "<list.txt";
+	while( $lang = <$list> ){
+		chomp $lang;
+		my $file = $lang . ".po";
 		my $po = new MessageBody( $dir . $file );
-		my $lang = $po->getLanguage();
+		$po->{language} = $lang;
 		$dict{$lang} = $po;
 	}
+	close $list;
 	my $self = {
 		list => \%dict,
 	};
@@ -325,6 +326,12 @@ my @LANGS = (
 
 #binmode( STDOUT, ":encoding($textEncode)" );
 
+for( $i = 0; $i <= $#LANGS; $i++ ){
+	my $f = "./cache/" . $LANGS[$i][1] . ".po";
+	open FH, ">$f";
+	close FH;
+}
+
 print "Content-type: text/html" . "\n\n";
 
 $app_name = "webpoedit";
@@ -441,7 +448,7 @@ if( $author eq "" ){
 	}
 	print "  </table>\n";
 	print "  <br>\n";
-	my $create_enabled = 0;
+	my $create_enabled = 1;
 	if( $create_enabled != 0 ){
 		print "<h4>If you want to create new language configuration, select language and press \"create\" button.</h4>\n";
 		print "  <div class=\"padleft\">\n";
@@ -531,6 +538,12 @@ if( $author eq "" ){
 			}
 		}
 		$mb0->printTo( "../htdocs/" . $newpo );
+		open LIST, ">>list.txt";
+		print LIST "$lang\n";
+		close LIST;
+		my %hash = %{ $messaging->{list} };
+		$hash{$lang} = $mb0;
+		$messaging->{list} = \%hash;
 	}
 
 	my $is_rtl = 0;
