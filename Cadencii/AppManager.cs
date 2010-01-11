@@ -890,6 +890,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static Point mouseDownLocation = new Point();
         public static int lastTrackSelectorHeight;
+        public static TreeMap<String, UtauVoiceDB> utauVoiceDB = new TreeMap<String, UtauVoiceDB>();
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
@@ -2290,10 +2291,10 @@ namespace org.kbinani.cadencii {
 
         public static void init() {
             loadConfig();
-            //VSTiProxy.init();
+            VSTiProxy.init();
             s_locker = new Object();
             SymbolTable.loadDictionary();
-            //VSTiProxy.CurrentUser = "";
+            VSTiProxy.CurrentUser = "";
 
             #region Apply User Dictionary Configuration
             try {
@@ -2331,38 +2332,25 @@ namespace org.kbinani.cadencii {
             }
             #endregion
 
-            try {
-                Messaging.loadMessages();
-                Messaging.setLanguage( editorConfig.Language );
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
-            }
-
-            try {
-                KeySoundPlayer.init();
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
-            }
-
-#if ENABLE_SCRIPT
-            try {
-                PaletteToolServer.init();
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
-            }
-#endif
-
 #if !TREECOM
             s_id = PortUtil.getMD5FromString( (long)PortUtil.getCurrentTime() + "" ).Replace( "_", "" );
             String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
 #endif
 
-#if ENABLE_PROPERTY
-            propertyPanel = new PropertyPanel();
-            propertyWindow = new FormNoteProperty();
-            propertyWindow.Controls.Add( propertyPanel );
-            propertyPanel.Dock = DockStyle.Fill;
-#endif
+            for ( Iterator itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
+                SingerConfig config = (SingerConfig)itr.next();
+                UtauVoiceDB db = null;
+                String dir = PortUtil.combinePath( config.VOICEIDSTR, "oto.ini" );
+                try {
+                    db = new UtauVoiceDB( dir );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                    db = null;
+                }
+                if ( db != null ) {
+                    utauVoiceDB.put( config.VOICEIDSTR, db );
+                }
+            }
 
             s_auto_backup_timer = new BTimer();
 #if JAVA

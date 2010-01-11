@@ -224,6 +224,9 @@ namespace org.kbinani.cadencii {
 
             // totalSamplesに足りなかったら、追加してレンダリング
             saRemain = (int)(totalSamples - saProcessed);
+#if DEBUG
+            PortUtil.println( "AquesToneRenderingRunner#run; totalSamples=" + totalSamples + "; saProcessed=" + saProcessed + "; saRemain=" + saRemain );
+#endif
             while ( saRemain > 0 ) {
                 if ( m_abort_required ) {
                     m_rendering = false;
@@ -246,6 +249,9 @@ namespace org.kbinani.cadencii {
             }
 
             // modeInfiniteなら、中止要求が来るまで無音を追加
+#if DEBUG
+            PortUtil.println( "AquesToneRenderingRunner#run; modeInfinite=" + modeInfinite );
+#endif
             if ( modeInfinite ) {
                 for ( int i = 0; i < BUFLEN; i++ ) {
                     left[i] = 0.0;

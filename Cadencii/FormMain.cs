@@ -473,6 +473,34 @@ namespace org.kbinani.cadencii {
 		    super();
 #endif
 
+            try {
+                Messaging.loadMessages();
+                Messaging.setLanguage( AppManager.editorConfig.Language );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+            }
+
+#if ENABLE_SCRIPT
+            try {
+                PaletteToolServer.init();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+            }
+#endif
+
+            try {
+                KeySoundPlayer.init();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+            }
+
+#if ENABLE_PROPERTY
+            AppManager.propertyPanel = new PropertyPanel();
+            AppManager.propertyWindow = new FormNoteProperty();
+            AppManager.propertyWindow.Controls.Add( AppManager.propertyPanel );
+            AppManager.propertyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+#endif
+
 #if DEBUG
             org.kbinani.debug.push_log( "FormMain..ctor()" );
             org.kbinani.debug.push_log( "    " + Environment.OSVersion.ToString() );
@@ -1345,6 +1373,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
 
+                boolean mode_infinite = AppManager.getEditMode() == EditMode.REALTIME;
                 if ( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().PlayMode >= 0 && count > 0 ) {
                     int ms_presend = AppManager.editorConfig.PreSendTime;
                     if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
@@ -1362,7 +1391,7 @@ namespace org.kbinani.cadencii {
                                       true,
                                       sounds.toArray( new WaveReader[] { } ),
                                       m_direct_play_shift,
-                                      true,
+                                      mode_infinite,
                                       AppManager.getTempWaveDir(),
                                       false );
 
@@ -1381,7 +1410,7 @@ namespace org.kbinani.cadencii {
                                       true,
                                       sounds.toArray( new WaveReader[] { } ),
                                       m_direct_play_shift,
-                                      true,
+                                      mode_infinite,
                                       AppManager.getTempWaveDir(),
                                       false );
                 }
@@ -2885,6 +2914,27 @@ namespace org.kbinani.cadencii {
                             }
                         }
 
+                        // oto.iniの設定を反映
+#if DEBUG
+                        PortUtil.println( "FormMain#pictPianoRoll_MosueUp; vsq_track.getCommon().Version=" + vsq_track.getCommon().Version );
+#endif
+                        //if ( vsq_track.getCommon().Version.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
+                            VsqEvent item = vsq_track.getSingerEventAt( AppManager.addingEvent.Clock );
+                            SingerConfig singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Program );
+#if DEBUG
+                            PortUtil.println( "FormMain#pictPianoRoll_MouseUp; AppManager.utauVoiceDB.containsKey(singerConfig.VOICEIDSTR)=" + AppManager.utauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) );
+#endif
+                            if ( AppManager.utauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
+                                UtauVoiceDB utauVoiceDb = AppManager.utauVoiceDB.get( singerConfig.VOICEIDSTR );
+                                OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
+#if DEBUG
+                                PortUtil.println( "FormMain#pictPianoRoll_MouseUp; PreUtterance=" + otoArgs.msPreUtterance + "; VoiceOverlap=" + otoArgs.msOverlap );
+#endif
+                                AppManager.addingEvent.UstEvent.PreUtterance = otoArgs.msPreUtterance;
+                                AppManager.addingEvent.UstEvent.VoiceOverlap = otoArgs.msOverlap;
+                            }
+                        //}
+
                         // 自動ノーマライズのモードで、処理を分岐
                         if ( AppManager.autoNormalize ) {
                             VsqTrack work = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
@@ -2893,7 +2943,6 @@ namespace org.kbinani.cadencii {
                             AppManager.addingEvent.ID.VibratoHandle = vibrato;
                             AppManager.addingEvent.ID.LyricHandle = lyric;
                             AppManager.addingEvent.ID.VibratoDelay = vibrato_delay;
-                            //AppManager.addingEvent.InternalID = work.GetNextId( 0 );
 
                             boolean changed = true;
                             while ( changed ) {
@@ -2924,14 +2973,12 @@ namespace org.kbinani.cadencii {
                             VsqEvent[] items = new VsqEvent[1];
                             AppManager.addingEvent.ID.type = VsqIDType.Anote;
                             AppManager.addingEvent.ID.Dynamics = 64;
-                            items[0] = new VsqEvent( 0, AppManager.addingEvent.ID );
+                            items[0] = (VsqEvent)AppManager.addingEvent.clone();// new VsqEvent( 0, AppManager.addingEvent.ID );
                             items[0].Clock = AppManager.addingEvent.Clock;
                             items[0].ID.LyricHandle = lyric;
                             items[0].ID.VibratoDelay = vibrato_delay;
                             items[0].ID.VibratoHandle = vibrato;
-#if DEBUG
-                            AppManager.debugWriteLine( "        items[0].ID.ToString()=" + items[0].ID.ToString() );
-#endif
+
                             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAddRange( AppManager.getSelected(), items ) );
                             AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                             setEdited( true );
@@ -5585,9 +5632,16 @@ namespace org.kbinani.cadencii {
                 AppManager.editorConfig.PathResampler = m_preference_dlg.getPathResampler();
                 AppManager.editorConfig.PathWavtool = m_preference_dlg.getPathWavtool();
                 AppManager.editorConfig.UtauSingers.clear();
+                AppManager.utauVoiceDB.clear();
                 for ( Iterator itr = m_preference_dlg.getUtauSingers().iterator(); itr.hasNext(); ) {
                     SingerConfig sc = (SingerConfig)itr.next();
                     AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
+                    try {
+                        UtauVoiceDB db = new UtauVoiceDB( PortUtil.combinePath( sc.VOICEIDSTR, "oto.ini" ) );
+                        AppManager.utauVoiceDB.put( sc.VOICEIDSTR, db );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                    }
                 }
                 AppManager.editorConfig.SelfDeRomanization = m_preference_dlg.isSelfDeRomantization();
                 AppManager.editorConfig.AutoBackupIntervalMinutes = m_preference_dlg.getAutoBackupIntervalMinutes();
@@ -10714,6 +10768,17 @@ namespace org.kbinani.cadencii {
                 } else {
                     item.ID.LyricHandle.L0.Phrase = phrase;
                     item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
+                    VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
+                    //if ( vsq_track.getCommon().Version.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
+                        VsqEvent singer = vsq_track.getSingerEventAt( item.Clock );
+                        SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Program );
+                        if ( AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                            UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
+                            OtoArgs oa = db.attachFileNameFromLyric( phrase );
+                            item.UstEvent.PreUtterance = oa.msPreUtterance;
+                            item.UstEvent.VoiceOverlap = oa.msOverlap;
+                        }
+                    //}
                 }
                 if ( !original_symbol.Equals( phonetic_symbol.value ) ) {
                     String[] spl = item.ID.LyricHandle.L0.getPhoneticSymbolList();
@@ -14514,9 +14579,6 @@ namespace org.kbinani.cadencii {
         }
 
         public void overviewCommon_MouseLeave( Object sender, EventArgs e ) {
-#if DEBUG
-            PortUtil.println( "FormMain#overviewCommon_MouseLeave" );
-#endif
             overviewStopThread();
         }
 

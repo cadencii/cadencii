@@ -3222,7 +3222,7 @@ namespace org.kbinani.vsq {
 
                     // 先行発声
                     if ( ve.UstEvent.PreUtterance != 0 ) {
-                        m = getMsbAndLsb( ve.UstEvent.PreUtterance + 8192 );
+                        m = getMsbAndLsb( (int)(ve.UstEvent.PreUtterance + 8192) );
                         add.append( NRPN.CVM_EXNM_PRE_UTTERANCE, m.getKey(), m.getValue() );
                     }
 
@@ -3239,7 +3239,7 @@ namespace org.kbinani.vsq {
 
                     // オーバーラップ
                     if ( ve.UstEvent.VoiceOverlap != 0 ) {
-                        m = getMsbAndLsb( ve.UstEvent.VoiceOverlap + 8192 );
+                        m = getMsbAndLsb( (int)(ve.UstEvent.VoiceOverlap + 8192) );
                         add.append( NRPN.CVM_EXNM_VOICE_OVERLAP, m.getKey(), m.getValue() );
                     }
                 }

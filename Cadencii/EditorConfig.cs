@@ -226,18 +226,27 @@ namespace org.kbinani.cadencii {
         public RgbColor PianorollColorVocalo2White = new RgbColor( 240, 240, 240 );
         public RgbColor PianorollColorVocalo1Black = new RgbColor( 210, 205, 172 );
         public RgbColor PianorollColorVocalo1White = new RgbColor( 240, 235, 214 );
-        public RgbColor PianorollColorUtauBlack = new RgbColor( 212, 212, 212 );
-        public RgbColor PianorollColorUtauWhite = new RgbColor( 240, 240, 240 );
+
         public RgbColor PianorollColorVocalo1Bar = new RgbColor( 161, 157, 136 );
         public RgbColor PianorollColorVocalo1Beat = new RgbColor( 209, 204, 172 );
         public RgbColor PianorollColorVocalo2Bar = new RgbColor( 161, 157, 136 );
         public RgbColor PianorollColorVocalo2Beat = new RgbColor( 209, 204, 172 );
+        
+        public RgbColor PianorollColorUtauBlack = new RgbColor( 212, 212, 212 );
+        public RgbColor PianorollColorUtauWhite = new RgbColor( 240, 240, 240 );
         public RgbColor PianorollColorUtauBar = new RgbColor( 255, 64, 255 );
         public RgbColor PianorollColorUtauBeat = new RgbColor( 128, 128, 255 );
+        
         public RgbColor PianorollColorStraightBlack = new RgbColor( 212, 212, 212 );
         public RgbColor PianorollColorStraightWhite = new RgbColor( 240, 240, 240 );
         public RgbColor PianorollColorStraightBar = new RgbColor( 255, 153, 0 );
         public RgbColor PianorollColorStraightBeat = new RgbColor( 128, 128, 255 );
+
+        public RgbColor PianorollColorAquesToneBlack = new RgbColor( 212, 212, 212 );
+        public RgbColor PianorollColorAquesToneWhite = new RgbColor( 240, 240, 240 );
+        public RgbColor PianorollColorAquesToneBar = new RgbColor( 7, 107, 175 );
+        public RgbColor PianorollColorAquesToneBeat = new RgbColor( 234, 190, 62 );
+
         public boolean ViewAtcualPitch = false;
         public boolean InvokeUtauCoreWithWine = false;
         public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();

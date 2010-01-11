@@ -76,12 +76,13 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_AQUESTONE
 
-//        public FormPluginUi pluginUi = null;
         public int haskyParameterIndex = 0;
         public int resonancParameterIndex = 1;
+        public int yomiLineParameterIndex = 2;
         public int volumeParameterIndex = 3;
         public int releaseParameterIndex = 4;
         public int portaTimeParameterIndex = 5;
+        public int vibFreqParameterIndex = 6;
         public int bendLblParameterIndex = 7;
         public int phontParameterIndex = 8;
 
@@ -105,10 +106,10 @@ namespace org.kbinani.cadencii {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
             }
 
-            try {
-                for ( int i = 0; i < aEffect.numParams; i++ ) {
-                    String name = getParameterName( i ).Trim().ToLower();
-                    if ( name.StartsWith( "phont" ) ) {
+            /*try {
+                for ( int i = 0; i < aEffect.aeffect.numParams; i++ ) {
+                    //String name = getParameterName( i ).Trim().ToLower();
+                     ( name.StartsWith( "phont" ) ) {
                         phontParameterIndex = i;
                     }else if ( name.StartsWith( "bendlbl" ) ){
                         bendLblParameterIndex = i;
@@ -123,36 +124,28 @@ namespace org.kbinani.cadencii {
                     } else if ( name.StartsWith( "release" ) ) {
                         releaseParameterIndex = i;
                     }
-                    /*AquesToneDriver#open; #0 Haskey
-                    AquesToneDriver#open; #1 Resonanc
-                    AquesToneDriver#open; #2 YomiLine
-                    AquesToneDriver#open; #3 Volume
-                    AquesToneDriver#open; #4 Release
-                    AquesToneDriver#open; #5 PrtaTime
-                    AquesToneDriver#open; #6 VibFreq
-                    AquesToneDriver#open; #7 BendLbl
-                    er#open; #8 Phont*/
+                    //AquesToneDriver#open; #0 Haskey
+                    //AquesToneDriver#open; #1 Resonanc
+                    //AquesToneDriver#open; #2 YomiLine
+                    //AquesToneDriver#open; #3 Volume
+                    //AquesToneDriver#open; #4 Release
+                    //AquesToneDriver#open; #5 PrtaTime
+                    //AquesToneDriver#open; #6 VibFreq
+                    //AquesToneDriver#open; #7 BendLbl
+                    //er#open; #8 Phont
 #if DEBUG
                     PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) + "; value=" + getParameter( i ) );
 #endif
                 }
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
-            }
+            }*/
 
             if ( refresh_winini ) {
                 win32.WriteProfileString( "AquesTone", "FileKoe_00", koe_old );
             }
             return ret;
         }
-
-#if DEBUG
-        void pluginUi_SizeChanged( object sender, EventArgs e ) {
-            for ( int i = 0; i < aEffect.numParams; i++ ) {
-                PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) + "; value=" + getParameter( i ) );
-            }
-        }
-#endif
 
         private static String getKoeFilePath() {
             String ret = PortUtil.combinePath( AppManager.getCadenciiTempDir(), "jphonefifty.txt" );

@@ -497,88 +497,135 @@ namespace VstSdk {
         public const int __effFlagsExtHasBufferDeprecated = 1 << 11;
     }
 
-    public unsafe delegate VstIntPtr AEffectDispatcherProc( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt );
-    public unsafe delegate void AEffectProcessProc( ref AEffect effect, float** inputs, float** outputs, VstInt32 sampleFrames );
-    public unsafe delegate void AEffectProcessDoubleProc( ref AEffect effect, double** inputs, double** outputs, VstInt32 sampleFrames );
-    public unsafe delegate void AEffectSetParameterProc( ref AEffect effect, VstInt32 index, float parameter );
-    public unsafe delegate float AEffectGetParameterProc( ref AEffect effect, VstInt32 index );
+    public delegate VstIntPtr AEffectDispatcherProc( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt );
+    public delegate void AEffectProcessProc( ref AEffect effect, IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames );
+    public delegate void AEffectProcessDoubleProc( ref AEffect effect, IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames );
+    public delegate void AEffectSetParameterProc( ref AEffect effect, VstInt32 index, float parameter );
+    public delegate float AEffectGetParameterProc( ref AEffect effect, VstInt32 index );
 
     [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
-    public unsafe delegate VstIntPtr audioMasterCallback( AEffect* effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt );
+    public delegate VstIntPtr audioMasterCallback( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt );
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public unsafe struct AEffect {
-        /// <summary>
-        /// must be #kEffectMagic ('VstP')
-        /// </summary>
-        public VstInt32 magic;
+    public class AEffectWrapper {
+        public AEffect aeffect;
 
-        private void* dispatcher;
+        private AEffectDispatcherProc dispatcherProc = null;
+        private AEffectProcessProc processProc = null;
+        private AEffectSetParameterProc setParameterProc = null;
+        private AEffectGetParameterProc getParameterProc = null;
+        private AEffectProcessProc processReplacingProc = null;
+        private AEffectProcessDoubleProc processDoubleReplacingProc = null;
 
         /// <summary>
         /// Host to Plug-in dispatcher @see AudioEffect::dispatcher
         /// </summary>
-        public VstIntPtr Dispatch( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt ) {
-            AEffectDispatcherProc adp = null;
+        public VstIntPtr Dispatch( VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt ) {
+            if ( dispatcherProc == null ) {
+                dispatcherProc = (AEffectDispatcherProc)Marshal.GetDelegateForFunctionPointer( aeffect.dispatcher, typeof( AEffectDispatcherProc ) );
+            }
             VstIntPtr ret = 0;
             try {
-                adp = (AEffectDispatcherProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( dispatcher ), typeof( AEffectDispatcherProc ) );
-                ret = adp( ref effect, opcode, index, value, ptr, opt );
+                ret = dispatcherProc( ref aeffect, opcode, index, value, ptr, opt );
+                //GC.KeepAlive( dispatcherProc );
             } catch ( Exception ex ) {
-                Console.Error.WriteLine( "AEffect#Dispatch; ex=" + ex );
+                Console.Error.WriteLine( "AEffectWrapper#Dispatch; ex=" + ex );
             }
             return ret;
         }
 
-        [Obsolete]
-        private void* __processDeprecated;
-
         /// <summary>
         /// deprecated Accumulating process mode is deprecated in VST 2.4! Use AEffect::processReplacing instead!
         /// </summary>
-        [Obsolete]
-        public void __ProcessDeprecated( ref AEffect effect, float** inputs, float** outputs, VstInt32 sampleFrames ) {
-            AEffectProcessProc app = null;
+        public void __ProcessDeprecated( IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames ) {
+            if ( processProc == null ) {
+                processProc = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( aeffect.__processDeprecated, typeof( AEffectProcessProc ) );
+            }
             try {
-                app = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( __processDeprecated ), typeof( AEffectProcessProc ) );
-                app( ref effect, inputs, outputs, sampleFrames );
+                processProc( ref aeffect, inputs, outputs, sampleFrames );
+                //GC.KeepAlive( processProc );
             } catch ( Exception ex ) {
                 Console.Error.WriteLine( "AEffect#__ProcessDeprecated; ex=" + ex );
             }
         }
 
-        private void* setParameter;
-
         /// <summary>
         /// Set new value of automatable parameter @see AudioEffect::setParameter
         /// </summary>
-        public void SetParameter( ref AEffect effect, VstInt32 index, float parameter ) {
-            AEffectSetParameterProc aspp = null;
+        public void SetParameter( VstInt32 index, float parameter ) {
+            if ( setParameterProc == null ) {
+                setParameterProc = (AEffectSetParameterProc)Marshal.GetDelegateForFunctionPointer( aeffect.setParameter, typeof( AEffectSetParameterProc ) );
+            }
             try {
-                aspp = (AEffectSetParameterProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( setParameter ), typeof( AEffectSetParameterProc ) );
-                aspp( ref effect, index, parameter );
+                setParameterProc( ref aeffect, index, parameter );
+                //GC.KeepAlive( setParameterProc );
             } catch ( Exception ex ) {
                 Console.Error.WriteLine( "AEffect#SetParameter; ex=" + ex );
             }
         }
 
-        private void* getParameter;
-
         /// <summary>
         /// Returns current value of automatable parameter @see AudioEffect::getParameter
         /// </summary>
-        public float GetParameter( ref AEffect effect, VstInt32 index ) {
-            AEffectGetParameterProc agpp = null;
+        public float GetParameter( VstInt32 index ) {
+            if ( getParameterProc == null ) {
+                getParameterProc = (AEffectGetParameterProc)Marshal.GetDelegateForFunctionPointer( aeffect.getParameter, typeof( AEffectGetParameterProc ) );
+            }
             float ret = 0.0f;
             try {
-                agpp = (AEffectGetParameterProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( getParameter ), typeof( AEffectGetParameterProc ) );
-                ret = agpp( ref effect, index );
+                ret = getParameterProc( ref aeffect, index );
+                //GC.KeepAlive( getParameterProc );
             } catch ( Exception ex ) {
                 Console.Error.WriteLine( "AEffect#GetParameter; ex=" + ex );
             }
             return ret;
         }
 
+        /// <summary>
+        /// Process audio samples in replacing mode @see AudioEffect::processReplacing
+        /// </summary>
+        public void ProcessReplacing( IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames ) {
+            if ( processReplacingProc == null ) {
+                processReplacingProc = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( aeffect.processReplacing, typeof( AEffectProcessProc ) );
+            }
+            try {
+                processReplacingProc( ref aeffect, inputs, outputs, sampleFrames );
+                //GC.KeepAlive( processReplacingProc );
+            } catch ( Exception ex ) {
+                Console.Error.WriteLine( "AEffect#ProcessReplacing; ex=" + ex );
+            }
+        }
+
+#if VST_2_4_EXTENSIONS
+        /// <summary>
+        /// Process double-precision audio samples in replacing mode @see AudioEffect::processDoubleReplacing
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <param name="outputs"></param>
+        /// <param name="sampleFrames"></param>
+        public void ProcessDoubleReplacing( IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames ) {
+            if ( processDoubleReplacingProc == null ) {
+                processDoubleReplacingProc = (AEffectProcessDoubleProc)Marshal.GetDelegateForFunctionPointer( aeffect.processDoubleReplacing, typeof( AEffectProcessDoubleProc ) );
+            }
+            try {
+                processDoubleReplacingProc( ref aeffect, inputs, outputs, sampleFrames );
+                //GC.KeepAlive( processDoubleReplacingProc );
+            } catch ( Exception ex ) {
+                Console.Error.WriteLine( "AEffect#ProcessDoubleReplacing; ex=" + ex );
+            }
+        }
+#endif
+    }
+
+    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
+    public struct AEffect {
+        /// <summary>
+        /// must be #kEffectMagic ('VstP')
+        /// </summary>
+        public VstInt32 magic;
+        public IntPtr dispatcher;
+        public IntPtr __processDeprecated;
+        public IntPtr setParameter;
+        public IntPtr getParameter;
         /// <summary>
         /// number of programs
         /// </summary>
@@ -634,11 +681,11 @@ namespace VstSdk {
         /// <summary>
         /// #AudioEffect class pointer
         /// </summary>
-        public void* obj;
+        public IntPtr obj;
         /// <summary>
         /// user-defined pointer
         /// </summary>
-        public void* user;
+        public IntPtr user;
 
         /// <summary>
         /// registered unique identifier (register it at Steinberg 3rd party support Web). This is used to identify a plug-in during save+load of preset and project.
@@ -649,50 +696,136 @@ namespace VstSdk {
         /// </summary>
         public VstInt32 version;
 
-        private void* processReplacing;
-
-        /// <summary>
-        /// Process audio samples in replacing mode @see AudioEffect::processReplacing
-        /// </summary>
-        public void ProcessReplacing( ref AEffect effect, float** inputs, float** outputs, VstInt32 sampleFrames ) {
-            AEffectProcessProc app = null;
-            try {
-                app = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( processReplacing ), typeof( AEffectProcessProc ) );
-                app( ref effect, inputs, outputs, sampleFrames );
-            } catch ( Exception ex ) {
-                Console.Error.WriteLine( "AEffect#ProcessReplacing; ex=" + ex );
-            }
-        }
+        public IntPtr processReplacing;
 
 #if VST_2_4_EXTENSIONS
-        private void* processDoubleReplacing;
-
-        /// <summary>
-        /// Process double-precision audio samples in replacing mode @see AudioEffect::processDoubleReplacing
-        /// </summary>
-        /// <param name="effect"></param>
-        /// <param name="inputs"></param>
-        /// <param name="outputs"></param>
-        /// <param name="sampleFrames"></param>
-        public void ProcessDoubleReplacing( ref AEffect effect, double** inputs, double** outputs, VstInt32 sampleFrames ) {
-            AEffectProcessDoubleProc apdp = null;
-            try {
-                apdp = (AEffectProcessDoubleProc)Marshal.GetDelegateForFunctionPointer( new IntPtr( processDoubleReplacing ), typeof( AEffectProcessDoubleProc ) );
-                apdp( ref effect, inputs, outputs, sampleFrames );
-            } catch ( Exception ex ) {
-                Console.Error.WriteLine( "AEffect#ProcessDoubleReplacing; ex=" + ex );
-            }
-        }
+        public IntPtr processDoubleReplacing;
 
         /// <summary>
         /// reserved for future use (please zero)
         /// </summary>
-        public fixed byte future[56];
+        //public fixed byte future[56];
+        public byte future01;
+        public byte future02;
+        public byte future03;
+        public byte future04;
+        public byte future05;
+        public byte future06;
+        public byte future07;
+        public byte future08;
+        public byte future09;
+        public byte future10;
+        public byte future11;
+        public byte future12;
+        public byte future13;
+        public byte future14;
+        public byte future15;
+        public byte future16;
+        public byte future17;
+        public byte future18;
+        public byte future19;
+        public byte future20;
+        public byte future21;
+        public byte future22;
+        public byte future23;
+        public byte future24;
+        public byte future25;
+        public byte future26;
+        public byte future27;
+        public byte future28;
+        public byte future29;
+        public byte future30;
+        public byte future31;
+        public byte future32;
+        public byte future33;
+        public byte future34;
+        public byte future35;
+        public byte future36;
+        public byte future37;
+        public byte future38;
+        public byte future39;
+        public byte future40;
+        public byte future41;
+        public byte future42;
+        public byte future43;
+        public byte future44;
+        public byte future45;
+        public byte future46;
+        public byte future47;
+        public byte future48;
+        public byte future49;
+        public byte future50;
+        public byte future51;
+        public byte future52;
+        public byte future53;
+        public byte future54;
+        public byte future55;
+        public byte future56;
 #else
         /// <summary>
         /// reserved for future use (please zero)
         /// </summary>
-        public fixed byte future[60];
+        //public fixed byte future[60];
+        public byte future01;
+        public byte future02;
+        public byte future03;
+        public byte future04;
+        public byte future05;
+        public byte future06;
+        public byte future07;
+        public byte future08;
+        public byte future09;
+        public byte future10;
+        public byte future11;
+        public byte future12;
+        public byte future13;
+        public byte future14;
+        public byte future15;
+        public byte future16;
+        public byte future17;
+        public byte future18;
+        public byte future19;
+        public byte future20;
+        public byte future21;
+        public byte future22;
+        public byte future23;
+        public byte future24;
+        public byte future25;
+        public byte future26;
+        public byte future27;
+        public byte future28;
+        public byte future29;
+        public byte future30;
+        public byte future31;
+        public byte future32;
+        public byte future33;
+        public byte future34;
+        public byte future35;
+        public byte future36;
+        public byte future37;
+        public byte future38;
+        public byte future39;
+        public byte future40;
+        public byte future41;
+        public byte future42;
+        public byte future43;
+        public byte future44;
+        public byte future45;
+        public byte future46;
+        public byte future47;
+        public byte future48;
+        public byte future49;
+        public byte future50;
+        public byte future51;
+        public byte future52;
+        public byte future53;
+        public byte future54;
+        public byte future55;
+        public byte future56;
+        public byte future57;
+        public byte future58;
+        public byte future59;
+        public byte future60;
 #endif
     }
 

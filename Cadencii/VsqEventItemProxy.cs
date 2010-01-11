@@ -272,10 +272,31 @@ namespace org.kbinani.cadencii {
                     ByRef<String> phonetic_symbol = new ByRef<String>( "" );
                     SymbolTable.attatch( m_phrase, phonetic_symbol );
                     m_phonetic_symbol = phonetic_symbol.value;
+                    
+                    // consonant adjustment
                     String[] spl = PortUtil.splitString( m_phonetic_symbol, new char[] { ' ', ',' }, true );
                     m_consonant_adjustment = "";
                     for ( int i = 0; i < spl.Length; i++ ) {
                         m_consonant_adjustment += (i == 0 ? "" : " ") + (VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0);
+                    }
+
+                    // overlap, preUtterancec
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    if ( vsq != null ) {
+                        int selected = AppManager.getSelected();
+                        VsqTrack vsq_track = vsq.Track.get( selected );
+                        String renderer = vsq_track.getCommon().Version;
+                        //if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) ||
+                        //     renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+                            VsqEvent singer = vsq_track.getSingerEventAt( m_clock.getClock().getIntValue() );
+                            SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Program );
+                            if ( AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                                UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
+                                OtoArgs oa = db.attachFileNameFromLyric( m_phrase );
+                                m_ust_event.VoiceOverlap = oa.msOverlap;
+                                m_ust_event.PreUtterance = oa.msPreUtterance;
+                            }
+                        //}
                     }
                 }
             }
@@ -407,7 +428,7 @@ namespace org.kbinani.cadencii {
 
         #region UTAU
         [Category( "UTAU" )]
-        public int PreUtterance {
+        public float PreUtterance {
             get {
                 return m_ust_event.PreUtterance;
             }
@@ -417,7 +438,7 @@ namespace org.kbinani.cadencii {
         }
 
         [Category( "UTAU" )]
-        public int Overlap {
+        public float Overlap {
             get {
                 return m_ust_event.VoiceOverlap;
             }

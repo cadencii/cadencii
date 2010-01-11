@@ -266,8 +266,21 @@ namespace org.kbinani.cadencii {
                     }
                     oa.msPreUtterance = item.UstEvent.PreUtterance;
                     oa.msOverlap = item.UstEvent.VoiceOverlap;
+#if DEBUG
+                    PortUtil.println( "UtauRenderingRunner#run; oa.fileName=" + oa.fileName );
+                    PortUtil.println( "UtauRenderingRunner#run; lyric=" + lyric );
+#endif
                     RenderQueue rq2 = new RenderQueue();
-                    String resampler_arg_prefix = "\"" + PortUtil.combinePath( singer2, lyric + ".wav" ) + "\"";
+                    String wavPath = "";
+                    if ( PortUtil.getStringLength( oa.fileName ) > 0 ) {
+                        wavPath = PortUtil.combinePath( singer2, oa.fileName );
+                    } else {
+                        wavPath = PortUtil.combinePath( singer2, lyric + ".wav" );
+                    }
+#if DEBUG
+                    PortUtil.println( "UtauRenderingRunner#run; wavPath=" + wavPath );
+#endif
+                    String resampler_arg_prefix = "\"" + wavPath + "\" ";
                     String resampler_arg_suffix = "\"" + note + "\" 100 " + item.UstEvent.Flags + "L" + " " + oa.msOffset + " " + millisec + " " + oa.msConsonant + " " + oa.msBlank + " 100 " + item.UstEvent.Moduration;
 
                     // ピッチを取得

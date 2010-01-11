@@ -73,7 +73,7 @@ namespace org.kbinani.cadencii {
         }
 
         void exit_start_rendering() {
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 0, (void*)0, 0 );
+            aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );
         }
 
         org.kbinani.media.FirstBufferWrittenCallback s_first_buffer_written_callback;
@@ -207,24 +207,24 @@ namespace org.kbinani.cadencii {
             float** out_buffer;
             try {
                 mman = new MemoryManager();
-                left_ch = (float*)mman.malloc( sizeof( float ) * sampleRate );
-                right_ch = (float*)mman.malloc( sizeof( float ) * sampleRate );
-                out_buffer = (float**)mman.malloc( sizeof( float* ) * 2 );
+                left_ch = (float*)mman.malloc( sizeof( float ) * sampleRate ).ToPointer();
+                right_ch = (float*)mman.malloc( sizeof( float ) * sampleRate ).ToPointer();
+                out_buffer = (float**)mman.malloc( sizeof( float* ) * 2 ).ToPointer();
                 out_buffer[0] = left_ch;
                 out_buffer[1] = right_ch;
 
 #if TEST
                 org.kbinani.debug.push_log( "    calling initial dispatch..." );
 #endif
-                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)sampleRate );//dispatch_VST_command(effSetSampleRate, 0, 0, 0, kSampleRate);
-                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 1, (void*)0, 0 );// dispatch_VST_command(effMainsChanged, 0, 1, 0, 0);
+                aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );//dispatch_VST_command(effSetSampleRate, 0, 0, 0, kSampleRate);
+                aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0 );// dispatch_VST_command(effMainsChanged, 0, 1, 0, 0);
                 
                 // ここではブロックサイズ＝サンプリングレートということにする
-                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, sampleRate, (void*)0, 0 );// dispatch_VST_command(effSetBlockSize, 0, sampleFrames, 0, 0);
+                aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, sampleRate, IntPtr.Zero, 0 );// dispatch_VST_command(effSetBlockSize, 0, sampleFrames, 0, 0);
                 
                 // レンダリングの途中で停止した場合，ここでProcessする部分が無音でない場合がある
                 for ( int i = 0; i < 3; i++ ) {
-                    aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, sampleRate );
+                    aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), sampleRate );
                 }
 #if TEST
                 org.kbinani.debug.push_log( "    ...done" );
@@ -345,7 +345,7 @@ namespace org.kbinani.cadencii {
                     org.kbinani.debug.push_log( "dwPrev=" + dwPrev );
                     org.kbinani.debug.push_log( "dwDelta=" + dwDelta );
 #endif
-                    VstEvents* pVSTEvents = (VstEvents*)mman.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
+                    VstEvents* pVSTEvents = (VstEvents*)mman.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) ).ToPointer();
                     pVSTEvents->numEvents = 0;
                     pVSTEvents->reserved = (VstIntPtr)0;
 
@@ -361,7 +361,7 @@ namespace org.kbinani.cadencii {
                             case 0xf7:
                                 break;
                             default:
-                                pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) );
+                                pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();
                                 pMidiEvent->byteSize = sizeof( VstMidiEvent );
                                 pMidiEvent->deltaFrames = dwDelta;
                                 pMidiEvent->detune = 0;
@@ -385,7 +385,7 @@ namespace org.kbinani.cadencii {
 #if TEST
                     org.kbinani.debug.push_log( "calling Dispatch with effProcessEvents..." );
 #endif
-                    aEffect.Dispatch( ref aEffect, AEffectXOpcodes.effProcessEvents, 0, 0, pVSTEvents, 0 );
+                    aEffect.Dispatch( AEffectXOpcodes.effProcessEvents, 0, 0, new IntPtr( pVSTEvents ), 0 );
 #if TEST
                     org.kbinani.debug.push_log( "...done" );
 #endif
@@ -399,7 +399,7 @@ namespace org.kbinani.cadencii {
 #if TEST
                         org.kbinani.debug.push_log( "calling ProcessReplacing..." );
 #endif
-                        aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, dwFrames );
+                        aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), dwFrames );
 #if TEST
                         org.kbinani.debug.push_log( "...done" );
 #endif
@@ -443,7 +443,7 @@ namespace org.kbinani.cadencii {
 #if TEST
                     org.kbinani.debug.push_log( "calling ProcessReplacing..." );
 #endif
-                    aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, dwFrames );
+                    aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), dwFrames );
 #if TEST
                     org.kbinani.debug.push_log( "...done" );
 #endif
@@ -481,7 +481,7 @@ namespace org.kbinani.cadencii {
                     silence_r = null;
                 }
 
-                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effMainsChanged, 0, 0, (void*)0, 0 );
+                aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );
                 lpEvents.clear();
                 RenderingFinished( this, null );
             } catch ( Exception ex ) {

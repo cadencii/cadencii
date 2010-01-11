@@ -47,10 +47,21 @@ namespace org.kbinani.cadencii {
     public unsafe class MemoryManager {
         private Vector<IntPtr> list = new Vector<IntPtr>();
 
-        public void* malloc( int bytes ) {
+        public IntPtr malloc( int bytes ) {
             IntPtr ret = Marshal.AllocHGlobal( bytes );
             list.add( ret );
-            return ret.ToPointer();
+            return ret;
+        }
+
+        public void free( IntPtr p ) {
+            for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
+                IntPtr v = (IntPtr)itr.next();
+                if ( v.Equals( p ) ) {
+                    Marshal.FreeHGlobal( p );
+                    itr.remove();
+                    break;
+                }
+            }
         }
 
         public void dispose() {
@@ -78,16 +89,18 @@ namespace org.kbinani.cadencii {
         protected FormPluginUi ui = null;
         private boolean isUiOpened = false;
 
-        protected PVSTMAIN mainDelegate;
-        protected audioMasterCallback audioMaster;
+        protected volatile PVSTMAIN mainDelegate;
+        private IntPtr mainProcPointer;
+        protected volatile audioMasterCallback audioMaster;
         /// <summary>
         /// 読込んだdllから作成したVOCALOID2の本体。VOCALOID2への操作はs_aeffect->dispatcherで行う
         /// </summary>
-        protected AEffect aEffect;
+        protected AEffectWrapper aEffect;
+        protected volatile IntPtr aEffectPointer;
         /// <summary>
         /// 読込んだdllのハンドル
         /// </summary>
-        protected IntPtr dllHandle;
+        protected volatile IntPtr dllHandle;
         /// <summary>
         /// 波形バッファのサイズ。
         /// </summary>
@@ -120,6 +133,7 @@ namespace org.kbinani.cadencii {
         /// UIウィンドウのサイズ
         /// </summary>
         Dimension uiWindowRect = new Dimension( 373, 158 );
+        protected MemoryManager memoryManager = new MemoryManager();
 
         public void resetAllParameters() {
             if ( paramDefaults == null ) {
@@ -133,7 +147,7 @@ namespace org.kbinani.cadencii {
         public virtual float getParameter( int index ) {
             float ret = 0.0f;
             try {
-                ret = aEffect.GetParameter( ref aEffect, index );
+                ret = aEffect.GetParameter( index );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "vstidrv#getParameter; ex=" + ex );
             }
@@ -142,31 +156,29 @@ namespace org.kbinani.cadencii {
 
         public virtual void setParameter( int index, float value ) {
             try {
-                aEffect.SetParameter( ref aEffect, index, value );
+                aEffect.SetParameter( index, value );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "vstidrv#setParameter; ex=" + ex );
             }
         }
 
         private String getStringCore( int opcode, int index, int str_capacity ) {
-            byte[] arr = new byte[] { };
+            //return "";
+            byte[] arr = new byte[str_capacity];
+            for ( int i = 0; i < str_capacity; i++ ) {
+                arr[i] = 0;
+            }
             IntPtr ptr = IntPtr.Zero;
             try {
-                ptr = Marshal.AllocHGlobal( str_capacity );
-                byte* bptr = (byte*)ptr.ToPointer();
-                for ( int i = 0; i < str_capacity; i++ ) {
-                    bptr[i] = 0;
-                }
-                aEffect.Dispatch( ref aEffect, opcode, index, 0, bptr, 0.0f );
-                arr = new byte[str_capacity];
-                for ( int i = 0; i < str_capacity; i++ ) {
-                    arr[i] = bptr[i];
-                }
+                ptr = memoryManager.malloc( str_capacity );
+                Marshal.Copy( arr, 0, ptr, str_capacity );
+                aEffect.Dispatch( opcode, index, 0, ptr, 0.0f );
+                Marshal.Copy( ptr, arr, 0, str_capacity );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "vstidrv#getStringCore; ex=" + ex );
             } finally {
                 if ( ptr != IntPtr.Zero ) {
-                    Marshal.FreeHGlobal( ptr );
+                    memoryManager.free( ptr );
                 }
             }
             String ret = Encoding.ASCII.GetString( arr );
@@ -228,7 +240,7 @@ namespace org.kbinani.cadencii {
                 out_buffer[1] = right_ch;
                 while ( remain > 0 ) {
                     int proc = (remain > BUFLEN) ? BUFLEN : remain;
-                    aEffect.ProcessReplacing( ref aEffect, (float**)0, out_buffer, proc );
+                    aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), proc );
                     for ( int i = 0; i < proc; i++ ) {
                         left[i + offset] = left_ch[i];
                         right[i + offset] = right_ch[i];
@@ -247,7 +259,7 @@ namespace org.kbinani.cadencii {
                 try {
                     mman = new MemoryManager();
                     int nEvents = events.Length;
-                    VstEvents* pVSTEvents = (VstEvents*)mman.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
+                    VstEvents* pVSTEvents = (VstEvents*)mman.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) ).ToPointer();
                     pVSTEvents->numEvents = 0;
                     pVSTEvents->reserved = (VstIntPtr)0;
 
@@ -256,7 +268,7 @@ namespace org.kbinani.cadencii {
                         byte event_code = pProcessEvent.firstByte;
                         VstEvent* pVSTEvent = (VstEvent*)0;
                         VstMidiEvent* pMidiEvent;
-                        pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) );
+                        pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();
                         pMidiEvent->byteSize = sizeof( VstMidiEvent );
                         pMidiEvent->deltaFrames = 0;
                         pMidiEvent->detune = 0;
@@ -273,7 +285,7 @@ namespace org.kbinani.cadencii {
                         }
                         pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
                     }
-                    aEffect.Dispatch( ref aEffect, AEffectXOpcodes.effProcessEvents, 0, 0, pVSTEvents, 0 );
+                    aEffect.Dispatch( AEffectXOpcodes.effProcessEvents, 0, 0, new IntPtr( pVSTEvents ), 0 );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "vstidrv#send; ex=" + ex );
                 } finally {
@@ -288,7 +300,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        protected virtual VstIntPtr AudioMaster( AEffect* effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt ) {
+        protected virtual VstIntPtr AudioMaster( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt ) {
             VstIntPtr result = 0;
             switch ( opcode ) {
                 case AudioMasterOpcodes.audioMasterVersion:
@@ -312,7 +324,7 @@ namespace org.kbinani.cadencii {
         }
 
         private void createPluginUi() {
-            boolean hasUi = (aEffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor;
+            boolean hasUi = (aEffect.aeffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor;
             if ( !hasUi ) {
                 return;
             }
@@ -321,17 +333,16 @@ namespace org.kbinani.cadencii {
             }
             if ( !isUiOpened ) {
                 // Editorを持っているかどうかを確認
-                if ( (aEffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor ) {
+                if ( (aEffect.aeffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor ) {
                     try {
                         // プラグインの名前を取得
-                        String effname = getStringCore( AEffectXOpcodes.effGetEffectName, 0, VstStringConstants.kVstMaxEffectNameLen );
                         String product = getStringCore( AEffectXOpcodes.effGetProductString, 0, VstStringConstants.kVstMaxProductStrLen );
                         ui.Text = product;
                         ui.Location = new System.Drawing.Point( 0, 0 );
                         unsafe {
-                            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effEditOpen, 0, 0, (void*)ui.Handle.ToPointer(), 0.0f );
+                            aEffect.Dispatch( AEffectOpcodes.effEditOpen, 0, 0, ui.Handle, 0.0f );
                         }
-                        Thread.Sleep( 250 );
+                        //Thread.Sleep( 250 );
                         updatePluginUiRect();
                         ui.ClientSize = new System.Drawing.Size( uiWindowRect.width, uiWindowRect.height );
                         ui.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -347,43 +358,50 @@ namespace org.kbinani.cadencii {
 
         public virtual bool open( string dll_path, int block_size, int sample_rate ) {
             dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
-            Thread.Sleep( 250 );
+            //Thread.Sleep( 250 );
             if ( dllHandle == IntPtr.Zero ) {
                 return false;
             }
 
-            mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( win32.GetProcAddress( dllHandle, "main" ),
+            mainProcPointer = win32.GetProcAddress( dllHandle, "main" );
+            mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( mainProcPointer,
                                                                             typeof( PVSTMAIN ) );
-            Thread.Sleep( 250 );
+            //Thread.Sleep( 250 );
             if ( mainDelegate == null ) {
                 return false;
             }
 
             audioMaster = new audioMasterCallback( AudioMaster );
-            Thread.Sleep( 250 );
+            //Thread.Sleep( 250 );
 
-            IntPtr ptr_aeffect = IntPtr.Zero;
+            aEffectPointer = IntPtr.Zero;
             try {
-                ptr_aeffect = mainDelegate( audioMaster );
+                aEffectPointer = mainDelegate( audioMaster );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "vstidrv#open; ex=" + ex );
                 return false;
             }
-            if ( ptr_aeffect == IntPtr.Zero ) {
+            if ( aEffectPointer == IntPtr.Zero ) {
                 return false;
             }
             blockSize = block_size;
             sampleRate = sample_rate;
-            aEffect = (AEffect)Marshal.PtrToStructure( ptr_aeffect, typeof( AEffect ) );
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effOpen, 0, 0, (void*)0, 0 );
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetSampleRate, 0, 0, (void*)0, (float)sampleRate );
-            aEffect.Dispatch( ref aEffect, AEffectOpcodes.effSetBlockSize, 0, blockSize, (void*)0, 0 );
+            //Thread.Sleep( 100 );
+            aEffect = new AEffectWrapper();
+            aEffect.aeffect = (AEffect)Marshal.PtrToStructure( aEffectPointer, typeof( AEffect ) );
+            //Thread.Sleep( 100 );
+            aEffect.Dispatch( AEffectOpcodes.effOpen, 0, 0, IntPtr.Zero, 0 );
+            //Thread.Sleep( 100 );
+            aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
+            //Thread.Sleep( 100 );
+            aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, blockSize, IntPtr.Zero, 0 );
+            //Thread.Sleep( 100 );
 
             // デフォルトのパラメータ値を取得
-            int num = aEffect.numParams;
+            int num = aEffect.aeffect.numParams;
             paramDefaults = new float[num];
             for ( int i = 0; i < num; i++ ) {
-                paramDefaults[i] = aEffect.GetParameter( ref aEffect, i );
+                paramDefaults[i] = aEffect.GetParameter( i );
             }
 
             return true;
@@ -418,13 +436,13 @@ namespace org.kbinani.cadencii {
                 ui.close();
             }
             try {
-                aEffect.Dispatch( ref aEffect, AEffectOpcodes.effClose, 0, 0, (void*)0, 0.0f );
+                aEffect.Dispatch( AEffectOpcodes.effClose, 0, 0, IntPtr.Zero, 0.0f );
                 win32.FreeLibrary( dllHandle );
             } catch( Exception ex ){
                 PortUtil.stderr.println( "vstidrv#close; ex=" + ex );
             }
             releaseBuffer();
-            aEffect = new AEffect();
+            aEffect = null;
             dllHandle = IntPtr.Zero;
             mainDelegate = null;
             audioMaster = null;

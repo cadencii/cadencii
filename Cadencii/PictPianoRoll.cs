@@ -238,6 +238,11 @@ namespace org.kbinani.cadencii {
                     white = AppManager.editorConfig.PianorollColorStraightWhite.getColor();
                     bar = AppManager.editorConfig.PianorollColorStraightBar.getColor();
                     beat = AppManager.editorConfig.PianorollColorStraightBeat.getColor();
+                } else if ( renderer.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                    black = AppManager.editorConfig.PianorollColorAquesToneBlack.getColor();
+                    white = AppManager.editorConfig.PianorollColorAquesToneWhite.getColor();
+                    bar = AppManager.editorConfig.PianorollColorAquesToneBar.getColor();
+                    beat = AppManager.editorConfig.PianorollColorAquesToneBeat.getColor();
                 }
 
                 #region ピアノロール周りのスクロールバーなど

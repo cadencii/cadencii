@@ -40,8 +40,8 @@ namespace org.kbinani.vsq {
         public float Tempo = -1;
         public UstVibrato Vibrato = null;
         public UstPortamento Portamento = null;
-        public int PreUtterance = 0;
-        public int VoiceOverlap = 0;
+        public float PreUtterance = 0;
+        public float VoiceOverlap = 0;
         public UstEnvelope Envelope = null;
         public String Flags = "";
         public int Moduration = 100;

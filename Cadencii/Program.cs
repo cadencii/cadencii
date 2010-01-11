@@ -38,7 +38,6 @@ namespace org.kbinani.cadencii{
 #endif
                 AppManager.init();
                 AppManager.mainWindow = new FormMain();
-                VSTiProxy.init();
                 Application.Run( AppManager.mainWindow );
 #if !DEBUG
             } catch ( Exception ex ) {

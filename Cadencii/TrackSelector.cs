@@ -1440,8 +1440,8 @@ namespace org.kbinani.cadencii {
             int px_overlap = int.MinValue;
             int drawn_id = -1;
             int distance = int.MaxValue;
-            int drawn_preutterance = 0;
-            int drawn_overlap = 0;
+            float drawn_preutterance = 0;
+            float drawn_overlap = 0;
 
             Color brs = fill_color;
             Point selected_point = new Point();
@@ -1592,7 +1592,7 @@ namespace org.kbinani.cadencii {
             m_preutterance_viewing = drawn_id;
         }
 
-        private void drawPreutteranceAndOverlap( Graphics2D g, int px_preutterance, int px_overlap, int preutterance, int overlap ) {
+        private void drawPreutteranceAndOverlap( Graphics2D g, int px_preutterance, int px_overlap, float preutterance, float overlap ) {
             int OFFSET_PRE = 15;
             int OFFSET_OVL = 40;
             g.setColor( PortUtil.Orange );
@@ -1737,8 +1737,8 @@ namespace org.kbinani.cadencii {
             if ( draw_target == null ) {
                 draw_target = new UstEnvelope();
             }
-            int pre_utterance = ust_event.PreUtterance;
-            int overlap = ust_event.VoiceOverlap;
+            float pre_utterance = ust_event.PreUtterance;
+            float overlap = ust_event.VoiceOverlap;
 
             UstEvent ust_event_next = null;
             double sec_start_next = double.MaxValue;
@@ -2998,13 +2998,13 @@ namespace org.kbinani.cadencii {
                 int clock_at_downed = AppManager.clockFromXCoord( m_mouse_down_location.x - AppManager.startToDrawX );
                 VsqFileEx vsq = AppManager.getVsqFile();
                 double dsec = vsq.getSecFromClock( clock ) - vsq.getSecFromClock( clock_at_downed );
-                int draft_preutterance = m_pre_ovl_original.UstEvent.PreUtterance - (int)(dsec * 1000);
+                float draft_preutterance = m_pre_ovl_original.UstEvent.PreUtterance - (float)(dsec * 1000);
                 m_pre_ovl_editing.UstEvent.PreUtterance = draft_preutterance;
             } else if ( m_mouse_down_mode == MouseDownMode.OVERLAP_MOVE ) {
                 int clock_at_downed = AppManager.clockFromXCoord( m_mouse_down_location.x - AppManager.startToDrawX );
                 VsqFileEx vsq = AppManager.getVsqFile();
                 double dsec = vsq.getSecFromClock( clock ) - vsq.getSecFromClock( clock_at_downed );
-                int draft_overlap = m_pre_ovl_original.UstEvent.VoiceOverlap + (int)(dsec * 1000);
+                float draft_overlap = m_pre_ovl_original.UstEvent.VoiceOverlap + (float)(dsec * 1000);
                 m_pre_ovl_editing.UstEvent.VoiceOverlap = draft_overlap;
             }
         }

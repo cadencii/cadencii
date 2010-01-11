@@ -41,31 +41,56 @@ namespace org.kbinani.cadencii {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( oto_ini ), "Shift_JIS" ) );
                 String line;
                 while ( sr.ready() ) {
-                    try {
-                        line = sr.readLine();
-                        String[] spl = PortUtil.splitString( line, '=' );
-                        String file_name = spl[0]; // あ.wav
-                        String a2 = spl[1]; // ,0,36,64,0,0
-                        String a1 = PortUtil.getFileNameWithoutExtension( file_name );
-                        spl = PortUtil.splitString( a2, ',' );
-                        OtoArgs oa = new OtoArgs();
-                        oa.fileName = file_name;
-                        oa.Alias = spl[0];
-                        oa.msOffset = PortUtil.parseFloat( spl[1] );
-                        oa.msConsonant = PortUtil.parseFloat( spl[2] );
-                        oa.msBlank = PortUtil.parseFloat( spl[3] );
-                        oa.msPreUtterance = PortUtil.parseFloat( spl[4] );
-                        oa.msOverlap = PortUtil.parseFloat( spl[5] );
-                        m_configs.add( oa );
-                    } catch ( Exception ex3 ) {
+                    line = sr.readLine();
+                    String[] spl = PortUtil.splitString( line, '=' );
+                    if ( spl.Length < 2 ) {
+                        continue;
                     }
+                    String file_name = spl[0]; // あ.wav
+                    String a2 = spl[1]; // ,0,36,64,0,0
+                    String a1 = PortUtil.getFileNameWithoutExtension( file_name );
+                    spl = PortUtil.splitString( a2, ',' );
+                    if ( spl.Length < 6 ) {
+                        continue;
+                    }
+                    OtoArgs oa = new OtoArgs();
+                    oa.fileName = file_name;
+                    oa.Alias = spl[0];
+                    try {
+                        oa.msOffset = PortUtil.parseFloat( spl[1] );
+                    } catch ( Exception ex ) {
+                        oa.msOffset = 0;
+                    }
+                    try {
+                        oa.msConsonant = PortUtil.parseFloat( spl[2] );
+                    } catch ( Exception ex ) {
+                        oa.msConsonant = 0;
+                    }
+                    try {
+                        oa.msBlank = PortUtil.parseFloat( spl[3] );
+                    } catch ( Exception ex ) {
+                        oa.msBlank = 0;
+                    }
+                    try {
+                        oa.msPreUtterance = PortUtil.parseFloat( spl[4] );
+                    } catch ( Exception ex ) {
+                        oa.msPreUtterance = 0;
+                    }
+                    try {
+                        oa.msOverlap = PortUtil.parseFloat( spl[5] );
+                    } catch ( Exception ex ) {
+                        oa.msOverlap = 0;
+                    }
+                    m_configs.add( oa );
                 }
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex=" + ex );
             } finally {
                 if ( sr != null ) {
                     try {
                         sr.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex2=" + ex2 );
                     }
                 }
             }
@@ -86,11 +111,13 @@ namespace org.kbinani.cadencii {
                         }
                     }
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex=" + ex );
                 } finally {
                     if ( sr2 != null ) {
                         try {
                             sr2.close();
                         } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex2=" + ex2 );
                         }
                     }
                 }
