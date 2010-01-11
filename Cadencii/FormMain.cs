@@ -134,6 +134,8 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "ちょむ" ),
             new AuthorListEntry( "whimsoft" ),
             new AuthorListEntry( "okokta" ),
+            new AuthorListEntry( "カプチ２" ),
+            new AuthorListEntry( "あにぃ" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -7470,10 +7472,70 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        class SimpleWaveReceiver : IWaveReceiver {
+            WaveWriter writer = null;
+            int sampleRate;
+
+            public SimpleWaveReceiver( String file, int sample_rate ) {
+                writer = new WaveWriter( file, 2, 16, sample_rate );
+                sampleRate = sample_rate;
+            }
+
+            public void append( double[] left, double[] right ) {
+                writer.append( left, right );
+            }
+
+            public void close() {
+                writer.close();
+            }
+
+            public int getSampleRate() {
+                return sampleRate;
+            }
+        }
+
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "menuHelpDebug_Click" );
 #if DEBUG
-            try {
+            BFileChooser dialog = new BFileChooser( "" );
+            if ( dialog.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                String fileIn = dialog.getSelectedFile();
+                if ( dialog.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                    String fileOut = dialog.getSelectedFile();
+                    SimpleWaveReceiver receiver = new SimpleWaveReceiver( fileOut, 44100 );
+                    WaveReader wr = new WaveReader( fileIn );
+                    WaveRateConvertAdapter adapter = new WaveRateConvertAdapter( receiver, wr.getSampleRate() );
+                    long total = wr.getTotalSamples();
+                    try {
+                        long proc = 0;
+                        int BUFLEN = 1024;
+                        double[] l = new double[BUFLEN];
+                        double[] r = new double[BUFLEN];
+                        int remain = 1;
+                        while ( remain > 0 ) {
+                            remain = (int)(total - proc);
+                            remain = (remain > BUFLEN) ? BUFLEN : remain;
+                            double[] left = null;
+                            double[] right = null;
+                            if ( remain == BUFLEN ) {
+                                left = l;
+                                right = r;
+                            } else {
+                                left = new double[remain];
+                                right = new double[remain];
+                            }
+                            wr.read( proc, remain, l, r );
+                            adapter.append( left, right );
+                            proc += remain;
+                        }
+                    } catch ( Exception ex ) {
+                        PortUtil.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
+                    }
+                    wr.close();
+                    receiver.close();
+                }
+            }
+            /*try {
                 BFileChooser dialog = new BFileChooser( "" );
                 if ( dialog.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
                     String file = dialog.getSelectedFile();
@@ -7497,7 +7559,7 @@ namespace org.kbinani.cadencii {
                 }
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
-            }
+            }*/
             /*int i = 4;
             for ( Iterator itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 IconDynamicsHandle item = (IconDynamicsHandle)((IconDynamicsHandle)itr.next()).clone();

@@ -44,7 +44,7 @@ namespace org.kbinani.cadencii {
         public double TotalSec;
     }
 
-    public unsafe class MemoryManager {
+    public class MemoryManager {
         private Vector<IntPtr> list = new Vector<IntPtr>();
 
         public IntPtr malloc( int bytes ) {
@@ -77,7 +77,7 @@ namespace org.kbinani.cadencii {
         }
     }
 
-    public unsafe class vstidrv {
+    public class vstidrv {
         protected delegate IntPtr PVSTMAIN( [MarshalAs( UnmanagedType.FunctionPtr )]audioMasterCallback audioMaster );
 
         public boolean loaded = false;
@@ -89,18 +89,18 @@ namespace org.kbinani.cadencii {
         protected FormPluginUi ui = null;
         private boolean isUiOpened = false;
 
-        protected volatile PVSTMAIN mainDelegate;
+        protected PVSTMAIN mainDelegate;
         private IntPtr mainProcPointer;
-        protected volatile audioMasterCallback audioMaster;
+        protected audioMasterCallback audioMaster;
         /// <summary>
         /// 読込んだdllから作成したVOCALOID2の本体。VOCALOID2への操作はs_aeffect->dispatcherで行う
         /// </summary>
         protected AEffectWrapper aEffect;
-        protected volatile IntPtr aEffectPointer;
+        protected IntPtr aEffectPointer;
         /// <summary>
         /// 読込んだdllのハンドル
         /// </summary>
-        protected volatile IntPtr dllHandle;
+        protected IntPtr dllHandle;
         /// <summary>
         /// 波形バッファのサイズ。
         /// </summary>
@@ -163,7 +163,6 @@ namespace org.kbinani.cadencii {
         }
 
         private String getStringCore( int opcode, int index, int str_capacity ) {
-            //return "";
             byte[] arr = new byte[str_capacity];
             for ( int i = 0; i < str_capacity; i++ ) {
                 arr[i] = 0;
@@ -205,7 +204,9 @@ namespace org.kbinani.cadencii {
                 bufferRight = Marshal.AllocHGlobal( sizeof( float ) * BUFLEN );
             }
             if ( buffers == IntPtr.Zero ) {
-                buffers = Marshal.AllocHGlobal( sizeof( float* ) * 2 );
+                unsafe {
+                    buffers = Marshal.AllocHGlobal( sizeof( float* ) * 2 );
+                }
             }
         }
 
@@ -224,7 +225,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void process( double[] left, double[] right ) {
+        public unsafe void process( double[] left, double[] right ) {
             if ( left == null || right == null ){
                 return;
             }
@@ -358,7 +359,6 @@ namespace org.kbinani.cadencii {
 
         public virtual bool open( string dll_path, int block_size, int sample_rate ) {
             dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
-            //Thread.Sleep( 250 );
             if ( dllHandle == IntPtr.Zero ) {
                 return false;
             }
@@ -366,13 +366,11 @@ namespace org.kbinani.cadencii {
             mainProcPointer = win32.GetProcAddress( dllHandle, "main" );
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( mainProcPointer,
                                                                             typeof( PVSTMAIN ) );
-            //Thread.Sleep( 250 );
             if ( mainDelegate == null ) {
                 return false;
             }
 
             audioMaster = new audioMasterCallback( AudioMaster );
-            //Thread.Sleep( 250 );
 
             aEffectPointer = IntPtr.Zero;
             try {
@@ -386,16 +384,11 @@ namespace org.kbinani.cadencii {
             }
             blockSize = block_size;
             sampleRate = sample_rate;
-            //Thread.Sleep( 100 );
             aEffect = new AEffectWrapper();
             aEffect.aeffect = (AEffect)Marshal.PtrToStructure( aEffectPointer, typeof( AEffect ) );
-            //Thread.Sleep( 100 );
             aEffect.Dispatch( AEffectOpcodes.effOpen, 0, 0, IntPtr.Zero, 0 );
-            //Thread.Sleep( 100 );
             aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
-            //Thread.Sleep( 100 );
             aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, blockSize, IntPtr.Zero, 0 );
-            //Thread.Sleep( 100 );
 
             // デフォルトのパラメータ値を取得
             int num = aEffect.aeffect.numParams;

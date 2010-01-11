@@ -520,13 +520,14 @@ namespace VstSdk {
         /// Host to Plug-in dispatcher @see AudioEffect::dispatcher
         /// </summary>
         public VstIntPtr Dispatch( VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt ) {
-            if ( dispatcherProc == null ) {
+            if ( dispatcherProc == null && aeffect.dispatcher != IntPtr.Zero ) {
                 dispatcherProc = (AEffectDispatcherProc)Marshal.GetDelegateForFunctionPointer( aeffect.dispatcher, typeof( AEffectDispatcherProc ) );
             }
             VstIntPtr ret = 0;
             try {
-                ret = dispatcherProc( ref aeffect, opcode, index, value, ptr, opt );
-                //GC.KeepAlive( dispatcherProc );
+                if ( dispatcherProc != null ) {
+                    ret = dispatcherProc( ref aeffect, opcode, index, value, ptr, opt );
+                }
             } catch ( Exception ex ) {
                 Console.Error.WriteLine( "AEffectWrapper#Dispatch; ex=" + ex );
             }
@@ -537,12 +538,13 @@ namespace VstSdk {
         /// deprecated Accumulating process mode is deprecated in VST 2.4! Use AEffect::processReplacing instead!
         /// </summary>
         public void __ProcessDeprecated( IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames ) {
-            if ( processProc == null ) {
+            if ( processProc == null && aeffect.__processDeprecated != IntPtr.Zero ) {
                 processProc = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( aeffect.__processDeprecated, typeof( AEffectProcessProc ) );
             }
             try {
-                processProc( ref aeffect, inputs, outputs, sampleFrames );
-                //GC.KeepAlive( processProc );
+                if ( processProc != null ) {
+                    processProc( ref aeffect, inputs, outputs, sampleFrames );
+                }
             } catch ( Exception ex ) {
                 Console.Error.WriteLine( "AEffect#__ProcessDeprecated; ex=" + ex );
             }
@@ -552,12 +554,13 @@ namespace VstSdk {
         /// Set new value of automatable parameter @see AudioEffect::setParameter
         /// </summary>
         public void SetParameter( VstInt32 index, float parameter ) {
-            if ( setParameterProc == null ) {
+            if ( setParameterProc == null && aeffect.setParameter != IntPtr.Zero ) {
                 setParameterProc = (AEffectSetParameterProc)Marshal.GetDelegateForFunctionPointer( aeffect.setParameter, typeof( AEffectSetParameterProc ) );
             }
             try {
-                setParameterProc( ref aeffect, index, parameter );
-                //GC.KeepAlive( setParameterProc );
+                if ( setParameterProc != null ) {
+                    setParameterProc( ref aeffect, index, parameter );
+                }
             } catch ( Exception ex ) {
                 Console.Error.WriteLine( "AEffect#SetParameter; ex=" + ex );
             }
@@ -567,13 +570,14 @@ namespace VstSdk {
         /// Returns current value of automatable parameter @see AudioEffect::getParameter
         /// </summary>
         public float GetParameter( VstInt32 index ) {
-            if ( getParameterProc == null ) {
+            if ( getParameterProc == null && aeffect.getParameter != IntPtr.Zero ) {
                 getParameterProc = (AEffectGetParameterProc)Marshal.GetDelegateForFunctionPointer( aeffect.getParameter, typeof( AEffectGetParameterProc ) );
             }
             float ret = 0.0f;
             try {
-                ret = getParameterProc( ref aeffect, index );
-                //GC.KeepAlive( getParameterProc );
+                if ( getParameterProc != null ) {
+                    ret = getParameterProc( ref aeffect, index );
+                }
             } catch ( Exception ex ) {
                 Console.Error.WriteLine( "AEffect#GetParameter; ex=" + ex );
             }
@@ -584,12 +588,13 @@ namespace VstSdk {
         /// Process audio samples in replacing mode @see AudioEffect::processReplacing
         /// </summary>
         public void ProcessReplacing( IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames ) {
-            if ( processReplacingProc == null ) {
+            if ( processReplacingProc == null && aeffect.processReplacing != IntPtr.Zero ) {
                 processReplacingProc = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( aeffect.processReplacing, typeof( AEffectProcessProc ) );
             }
             try {
-                processReplacingProc( ref aeffect, inputs, outputs, sampleFrames );
-                //GC.KeepAlive( processReplacingProc );
+                if ( processReplacingProc != null ) {
+                    processReplacingProc( ref aeffect, inputs, outputs, sampleFrames );
+                }
             } catch ( Exception ex ) {
                 Console.Error.WriteLine( "AEffect#ProcessReplacing; ex=" + ex );
             }
@@ -603,12 +608,13 @@ namespace VstSdk {
         /// <param name="outputs"></param>
         /// <param name="sampleFrames"></param>
         public void ProcessDoubleReplacing( IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames ) {
-            if ( processDoubleReplacingProc == null ) {
+            if ( processDoubleReplacingProc == null && aeffect.processDoubleReplacing != IntPtr.Zero ) {
                 processDoubleReplacingProc = (AEffectProcessDoubleProc)Marshal.GetDelegateForFunctionPointer( aeffect.processDoubleReplacing, typeof( AEffectProcessDoubleProc ) );
             }
             try {
-                processDoubleReplacingProc( ref aeffect, inputs, outputs, sampleFrames );
-                //GC.KeepAlive( processDoubleReplacingProc );
+                if ( processDoubleReplacingProc != null ) {
+                    processDoubleReplacingProc( ref aeffect, inputs, outputs, sampleFrames );
+                }
             } catch ( Exception ex ) {
                 Console.Error.WriteLine( "AEffect#ProcessDoubleReplacing; ex=" + ex );
             }
@@ -704,7 +710,6 @@ namespace VstSdk {
         /// <summary>
         /// reserved for future use (please zero)
         /// </summary>
-        //public fixed byte future[56];
         public byte future01;
         public byte future02;
         public byte future03;
@@ -765,7 +770,6 @@ namespace VstSdk {
         /// <summary>
         /// reserved for future use (please zero)
         /// </summary>
-        //public fixed byte future[60];
         public byte future01;
         public byte future02;
         public byte future03;

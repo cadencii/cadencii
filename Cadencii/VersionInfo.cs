@@ -36,9 +36,7 @@ namespace org.kbinani.cadencii {
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using Graphics = Graphics2D;
-    using java = org.kbinani.java;
-    using javax = org.kbinani.javax;
+    using Graphics = org.kbinani.java.awt.Graphics2D;
 #endif
 
 #if JAVA
