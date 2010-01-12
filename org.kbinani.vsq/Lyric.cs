@@ -233,8 +233,15 @@ namespace org.kbinani.vsq {
             String result;
             result = "\"";
             result += this.Phrase;
+            String[] symbol = getPhoneticSymbolList();
             result += "\",\"" + this.getPhoneticSymbol() + "\"," + PortUtil.formatDecimal( "0.000000", UnknownFloat );
             result = result.Replace( "\\" + "\\", "\\" );
+            if ( m_consonant_adjustment == null ) {
+                m_consonant_adjustment = new int[symbol.Length];
+                for ( int i = 0; i < symbol.Length; i++ ) {
+                    m_consonant_adjustment[i] = VsqPhoneticSymbol.isConsonant( symbol[i] ) ? 64 : 0;
+                }
+            }
             for ( int i = 0; i < m_consonant_adjustment.Length; i++ ) {
                 result += "," + m_consonant_adjustment[i];
             }

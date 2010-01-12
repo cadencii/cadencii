@@ -59,6 +59,11 @@ namespace org.kbinani.cadencii {
         private static int columnWidthHeaderName = 100;
         private static int columnWidthHeaderPath = 250;
         private BFontChooser fontDialog;
+        private BLabel lblChannel;
+        private BComboBox comboChannel;
+        private BGroupBox groupWaveFileOutput;
+        private BRadioButton radioCurrentTrack;
+        private BRadioButton radioMasterTrack;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -605,10 +610,6 @@ namespace org.kbinani.cadencii {
             lblWait.setText( _( "Waiting Time" ) + "(&W)" );
             lblDefaultPremeasure.setText( _( "Default Pre-measure" ) + "(&M)" );
             chkChasePastEvent.setText( _( "Chase Event" ) + "(&C)" );
-            lblSampleOutput.setText( _( "Playback Sample Sound" ) );
-            chkEnableSampleOutput.setText( _( "Enable" ) + "(&E)" );
-            lblTiming.setText( _( "Timing" ) );
-            lblPreSendTimeSample.setText( _( "Pre-Send Time for sample sound" ) + "(&G)" );
             #endregion
 
             #region tabAppearance
@@ -666,6 +667,31 @@ namespace org.kbinani.cadencii {
 
         public static String _( String id ) {
             return Messaging.getMessage( id );
+        }
+
+        public boolean isWaveFileOutputFromMasterTrack() {
+            return radioMasterTrack.isSelected();
+        }
+
+        public void setWaveFileOutputFromMasterTrack( boolean value ) {
+            radioMasterTrack.setSelected( value );
+            radioCurrentTrack.setSelected( !value );
+        }
+
+        public int getWaveFileOutputChannel() {
+            if ( comboChannel.getSelectedIndex() <= 0 ) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+
+        public void setWaveFileOutputChannel( int value ) {
+            if ( value == 1 ) {
+                comboChannel.setSelectedIndex( 0 );
+            } else {
+                comboChannel.setSelectedIndex( 1 );
+            }
         }
 
         public String getLanguage() {
@@ -1214,6 +1240,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private void InitializeComponent() {
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.label5 = new org.kbinani.windows.forms.BLabel();
@@ -1242,24 +1272,20 @@ namespace org.kbinani.cadencii {
             this.lblVibratoLength = new org.kbinani.windows.forms.BLabel();
             this.lblVibratoConfig = new org.kbinani.windows.forms.BLabel();
             this.tabAnother = new System.Windows.Forms.TabPage();
-            this.label15 = new org.kbinani.windows.forms.BLabel();
-            this.label14 = new org.kbinani.windows.forms.BLabel();
+            this.groupWaveFileOutput = new org.kbinani.windows.forms.BGroupBox();
+            this.radioCurrentTrack = new org.kbinani.windows.forms.BRadioButton();
+            this.radioMasterTrack = new org.kbinani.windows.forms.BRadioButton();
+            this.lblChannel = new org.kbinani.windows.forms.BLabel();
+            this.comboChannel = new org.kbinani.windows.forms.BComboBox();
             this.label13 = new org.kbinani.windows.forms.BLabel();
             this.label12 = new org.kbinani.windows.forms.BLabel();
             this.comboDefaultPremeasure = new org.kbinani.windows.forms.BComboBox();
             this.comboDefualtSinger = new org.kbinani.windows.forms.BComboBox();
-            this.label11 = new org.kbinani.windows.forms.BLabel();
-            this.lblPreSendTimeSample = new org.kbinani.windows.forms.BLabel();
-            this.lblTiming = new org.kbinani.windows.forms.BLabel();
-            this.chkEnableSampleOutput = new org.kbinani.windows.forms.BCheckBox();
-            this.lblSampleOutput = new org.kbinani.windows.forms.BLabel();
             this.chkChasePastEvent = new org.kbinani.windows.forms.BCheckBox();
             this.lblDefaultPremeasure = new org.kbinani.windows.forms.BLabel();
             this.lblWait = new org.kbinani.windows.forms.BLabel();
             this.lblPreSendTime = new org.kbinani.windows.forms.BLabel();
             this.lblDefaultSinger = new org.kbinani.windows.forms.BLabel();
-            this.numPreSendTimeSample = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numTiming = new org.kbinani.cadencii.NumericUpDownEx();
             this.numWait = new org.kbinani.cadencii.NumericUpDownEx();
             this.numPreSendTime = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabAppearance = new System.Windows.Forms.TabPage();
@@ -1324,6 +1350,9 @@ namespace org.kbinani.cadencii {
             this.btnResampler = new org.kbinani.windows.forms.BButton();
             this.txtWavtool = new org.kbinani.windows.forms.BTextBox();
             this.groupVsti = new org.kbinani.windows.forms.BGroupBox();
+            this.btnAquesTone = new org.kbinani.windows.forms.BButton();
+            this.txtAquesTone = new org.kbinani.windows.forms.BTextBox();
+            this.lblAquesTone = new org.kbinani.windows.forms.BLabel();
             this.txtVOCALOID2 = new org.kbinani.windows.forms.BTextBox();
             this.txtVOCALOID1 = new org.kbinani.windows.forms.BTextBox();
             this.lblVOCALOID2 = new org.kbinani.windows.forms.BLabel();
@@ -1341,20 +1370,16 @@ namespace org.kbinani.cadencii {
             this.listSingers = new org.kbinani.windows.forms.BListView();
             this.tabFile = new System.Windows.Forms.TabPage();
             this.lblAutoBackupMinutes = new org.kbinani.windows.forms.BLabel();
-            this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.lblAutoBackupInterval = new org.kbinani.windows.forms.BLabel();
             this.chkAutoBackup = new org.kbinani.windows.forms.BCheckBox();
+            this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.lblAquesTone = new org.kbinani.windows.forms.BLabel();
-            this.txtAquesTone = new org.kbinani.windows.forms.BTextBox();
-            this.btnAquesTone = new org.kbinani.windows.forms.BButton();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupAutoVibratoConfig.SuspendLayout();
             this.tabAnother.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTimeSample)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numTiming)).BeginInit();
+            this.groupWaveFileOutput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWait)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).BeginInit();
             this.tabAppearance.SuspendLayout();
@@ -1415,10 +1440,10 @@ namespace org.kbinani.cadencii {
             this.tabSequence.Controls.Add( this.comboVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoConfig );
-            this.tabSequence.Location = new System.Drawing.Point( 4, 40 );
+            this.tabSequence.Location = new System.Drawing.Point( 4, 38 );
             this.tabSequence.Name = "tabSequence";
             this.tabSequence.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSequence.Size = new System.Drawing.Size( 454, 398 );
+            this.tabSequence.Size = new System.Drawing.Size( 454, 360 );
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
@@ -1696,51 +1721,80 @@ namespace org.kbinani.cadencii {
             // 
             // tabAnother
             // 
-            this.tabAnother.Controls.Add( this.label15 );
-            this.tabAnother.Controls.Add( this.label14 );
+            this.tabAnother.Controls.Add( this.groupWaveFileOutput );
             this.tabAnother.Controls.Add( this.label13 );
             this.tabAnother.Controls.Add( this.label12 );
             this.tabAnother.Controls.Add( this.comboDefaultPremeasure );
             this.tabAnother.Controls.Add( this.comboDefualtSinger );
-            this.tabAnother.Controls.Add( this.label11 );
-            this.tabAnother.Controls.Add( this.lblPreSendTimeSample );
-            this.tabAnother.Controls.Add( this.lblTiming );
-            this.tabAnother.Controls.Add( this.chkEnableSampleOutput );
-            this.tabAnother.Controls.Add( this.lblSampleOutput );
             this.tabAnother.Controls.Add( this.chkChasePastEvent );
             this.tabAnother.Controls.Add( this.lblDefaultPremeasure );
             this.tabAnother.Controls.Add( this.lblWait );
             this.tabAnother.Controls.Add( this.lblPreSendTime );
             this.tabAnother.Controls.Add( this.lblDefaultSinger );
-            this.tabAnother.Controls.Add( this.numPreSendTimeSample );
-            this.tabAnother.Controls.Add( this.numTiming );
             this.tabAnother.Controls.Add( this.numWait );
             this.tabAnother.Controls.Add( this.numPreSendTime );
-            this.tabAnother.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAnother.Location = new System.Drawing.Point( 4, 38 );
             this.tabAnother.Name = "tabAnother";
             this.tabAnother.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAnother.Size = new System.Drawing.Size( 454, 398 );
+            this.tabAnother.Size = new System.Drawing.Size( 454, 360 );
             this.tabAnother.TabIndex = 2;
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
             // 
-            // label15
+            // groupWaveFileOutput
             // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point( 372, 292 );
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size( 76, 12 );
-            this.label15.TabIndex = 21;
-            this.label15.Text = "msec(50-500)";
+            this.groupWaveFileOutput.Controls.Add( this.radioCurrentTrack );
+            this.groupWaveFileOutput.Controls.Add( this.radioMasterTrack );
+            this.groupWaveFileOutput.Controls.Add( this.lblChannel );
+            this.groupWaveFileOutput.Controls.Add( this.comboChannel );
+            this.groupWaveFileOutput.Location = new System.Drawing.Point( 18, 190 );
+            this.groupWaveFileOutput.Name = "groupWaveFileOutput";
+            this.groupWaveFileOutput.Size = new System.Drawing.Size( 420, 100 );
+            this.groupWaveFileOutput.TabIndex = 28;
+            this.groupWaveFileOutput.TabStop = false;
+            this.groupWaveFileOutput.Text = "Wave File Output";
             // 
-            // label14
+            // radioCurrentTrack
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point( 305, 261 );
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size( 88, 12 );
-            this.label14.TabIndex = 19;
-            this.label14.Text = "msec(500-1500)";
+            this.radioCurrentTrack.AutoSize = true;
+            this.radioCurrentTrack.Checked = true;
+            this.radioCurrentTrack.Location = new System.Drawing.Point( 155, 64 );
+            this.radioCurrentTrack.Name = "radioCurrentTrack";
+            this.radioCurrentTrack.Size = new System.Drawing.Size( 61, 16 );
+            this.radioCurrentTrack.TabIndex = 29;
+            this.radioCurrentTrack.TabStop = true;
+            this.radioCurrentTrack.Text = "Current";
+            this.radioCurrentTrack.UseVisualStyleBackColor = true;
+            // 
+            // radioMasterTrack
+            // 
+            this.radioMasterTrack.AutoSize = true;
+            this.radioMasterTrack.Location = new System.Drawing.Point( 24, 64 );
+            this.radioMasterTrack.Name = "radioMasterTrack";
+            this.radioMasterTrack.Size = new System.Drawing.Size( 91, 16 );
+            this.radioMasterTrack.TabIndex = 28;
+            this.radioMasterTrack.Text = "Master Track";
+            this.radioMasterTrack.UseVisualStyleBackColor = true;
+            // 
+            // lblChannel
+            // 
+            this.lblChannel.AutoSize = true;
+            this.lblChannel.Location = new System.Drawing.Point( 22, 27 );
+            this.lblChannel.Name = "lblChannel";
+            this.lblChannel.Size = new System.Drawing.Size( 66, 12 );
+            this.lblChannel.TabIndex = 25;
+            this.lblChannel.Text = "Channel (&C)";
+            // 
+            // comboChannel
+            // 
+            this.comboChannel.FormattingEnabled = true;
+            this.comboChannel.Items.AddRange( new object[] {
+            "Mono",
+            "Stereo"} );
+            this.comboChannel.Location = new System.Drawing.Point( 113, 24 );
+            this.comboChannel.Name = "comboChannel";
+            this.comboChannel.Size = new System.Drawing.Size( 97, 20 );
+            this.comboChannel.TabIndex = 27;
             // 
             // label13
             // 
@@ -1785,52 +1839,6 @@ namespace org.kbinani.cadencii {
             this.comboDefualtSinger.Name = "comboDefualtSinger";
             this.comboDefualtSinger.Size = new System.Drawing.Size( 222, 20 );
             this.comboDefualtSinger.TabIndex = 20;
-            // 
-            // label11
-            // 
-            this.label11.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.label11.Location = new System.Drawing.Point( 147, 199 );
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size( 291, 1 );
-            this.label11.TabIndex = 9;
-            // 
-            // lblPreSendTimeSample
-            // 
-            this.lblPreSendTimeSample.AutoSize = true;
-            this.lblPreSendTimeSample.Location = new System.Drawing.Point( 55, 292 );
-            this.lblPreSendTimeSample.Name = "lblPreSendTimeSample";
-            this.lblPreSendTimeSample.Size = new System.Drawing.Size( 190, 12 );
-            this.lblPreSendTimeSample.TabIndex = 8;
-            this.lblPreSendTimeSample.Text = "Pre-Send Time for sample sound(&G)";
-            // 
-            // lblTiming
-            // 
-            this.lblTiming.AutoSize = true;
-            this.lblTiming.Location = new System.Drawing.Point( 55, 261 );
-            this.lblTiming.Name = "lblTiming";
-            this.lblTiming.Size = new System.Drawing.Size( 39, 12 );
-            this.lblTiming.TabIndex = 7;
-            this.lblTiming.Text = "Timing";
-            // 
-            // chkEnableSampleOutput
-            // 
-            this.chkEnableSampleOutput.AutoSize = true;
-            this.chkEnableSampleOutput.Enabled = false;
-            this.chkEnableSampleOutput.Location = new System.Drawing.Point( 31, 226 );
-            this.chkEnableSampleOutput.Name = "chkEnableSampleOutput";
-            this.chkEnableSampleOutput.Size = new System.Drawing.Size( 73, 16 );
-            this.chkEnableSampleOutput.TabIndex = 25;
-            this.chkEnableSampleOutput.Text = "Enable(&E)";
-            this.chkEnableSampleOutput.UseVisualStyleBackColor = true;
-            // 
-            // lblSampleOutput
-            // 
-            this.lblSampleOutput.AutoSize = true;
-            this.lblSampleOutput.Location = new System.Drawing.Point( 16, 195 );
-            this.lblSampleOutput.Name = "lblSampleOutput";
-            this.lblSampleOutput.Size = new System.Drawing.Size( 127, 12 );
-            this.lblSampleOutput.TabIndex = 5;
-            this.lblSampleOutput.Text = "Playback Sample Sound";
             // 
             // chkChasePastEvent
             // 
@@ -1878,52 +1886,6 @@ namespace org.kbinani.cadencii {
             this.lblDefaultSinger.Size = new System.Drawing.Size( 93, 12 );
             this.lblDefaultSinger.TabIndex = 0;
             this.lblDefaultSinger.Text = "Default Singer(&S)";
-            // 
-            // numPreSendTimeSample
-            // 
-            this.numPreSendTimeSample.Enabled = false;
-            this.numPreSendTimeSample.Location = new System.Drawing.Point( 289, 290 );
-            this.numPreSendTimeSample.Maximum = new decimal( new int[] {
-            500,
-            0,
-            0,
-            0} );
-            this.numPreSendTimeSample.Minimum = new decimal( new int[] {
-            50,
-            0,
-            0,
-            0} );
-            this.numPreSendTimeSample.Name = "numPreSendTimeSample";
-            this.numPreSendTimeSample.Size = new System.Drawing.Size( 68, 19 );
-            this.numPreSendTimeSample.TabIndex = 27;
-            this.numPreSendTimeSample.Value = new decimal( new int[] {
-            50,
-            0,
-            0,
-            0} );
-            // 
-            // numTiming
-            // 
-            this.numTiming.Enabled = false;
-            this.numTiming.Location = new System.Drawing.Point( 216, 259 );
-            this.numTiming.Maximum = new decimal( new int[] {
-            1500,
-            0,
-            0,
-            0} );
-            this.numTiming.Minimum = new decimal( new int[] {
-            500,
-            0,
-            0,
-            0} );
-            this.numTiming.Name = "numTiming";
-            this.numTiming.Size = new System.Drawing.Size( 68, 19 );
-            this.numTiming.TabIndex = 26;
-            this.numTiming.Value = new decimal( new int[] {
-            500,
-            0,
-            0,
-            0} );
             // 
             // numWait
             // 
@@ -1978,10 +1940,10 @@ namespace org.kbinani.cadencii {
             this.tabAppearance.Controls.Add( this.comboLanguage );
             this.tabAppearance.Controls.Add( this.lblLanguage );
             this.tabAppearance.Controls.Add( this.numTrackHeight );
-            this.tabAppearance.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAppearance.Location = new System.Drawing.Point( 4, 38 );
             this.tabAppearance.Name = "tabAppearance";
             this.tabAppearance.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAppearance.Size = new System.Drawing.Size( 454, 398 );
+            this.tabAppearance.Size = new System.Drawing.Size( 454, 360 );
             this.tabAppearance.TabIndex = 3;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -2347,10 +2309,10 @@ namespace org.kbinani.cadencii {
             // 
             this.tabOperation.Controls.Add( this.groupMisc );
             this.tabOperation.Controls.Add( this.groupPianoroll );
-            this.tabOperation.Location = new System.Drawing.Point( 4, 40 );
+            this.tabOperation.Location = new System.Drawing.Point( 4, 38 );
             this.tabOperation.Name = "tabOperation";
             this.tabOperation.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabOperation.Size = new System.Drawing.Size( 454, 398 );
+            this.tabOperation.Size = new System.Drawing.Size( 454, 360 );
             this.tabOperation.TabIndex = 5;
             this.tabOperation.Text = "Operation";
             this.tabOperation.UseVisualStyleBackColor = true;
@@ -2567,10 +2529,10 @@ namespace org.kbinani.cadencii {
             this.tabPlatform.Controls.Add( this.groupUtauCores );
             this.tabPlatform.Controls.Add( this.groupVsti );
             this.tabPlatform.Controls.Add( this.groupPlatform );
-            this.tabPlatform.Location = new System.Drawing.Point( 4, 40 );
+            this.tabPlatform.Location = new System.Drawing.Point( 4, 38 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 358 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 360 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
@@ -2667,6 +2629,31 @@ namespace org.kbinani.cadencii {
             this.groupVsti.TabStop = false;
             this.groupVsti.Text = "VST Instruments";
             // 
+            // btnAquesTone
+            // 
+            this.btnAquesTone.Location = new System.Drawing.Point( 386, 69 );
+            this.btnAquesTone.Name = "btnAquesTone";
+            this.btnAquesTone.Size = new System.Drawing.Size( 41, 23 );
+            this.btnAquesTone.TabIndex = 111;
+            this.btnAquesTone.Text = "...";
+            this.btnAquesTone.UseVisualStyleBackColor = true;
+            // 
+            // txtAquesTone
+            // 
+            this.txtAquesTone.Location = new System.Drawing.Point( 99, 71 );
+            this.txtAquesTone.Name = "txtAquesTone";
+            this.txtAquesTone.Size = new System.Drawing.Size( 281, 19 );
+            this.txtAquesTone.TabIndex = 109;
+            // 
+            // lblAquesTone
+            // 
+            this.lblAquesTone.AutoSize = true;
+            this.lblAquesTone.Location = new System.Drawing.Point( 16, 74 );
+            this.lblAquesTone.Name = "lblAquesTone";
+            this.lblAquesTone.Size = new System.Drawing.Size( 62, 12 );
+            this.lblAquesTone.TabIndex = 108;
+            this.lblAquesTone.Text = "AquesTone";
+            // 
             // txtVOCALOID2
             // 
             this.txtVOCALOID2.Location = new System.Drawing.Point( 99, 46 );
@@ -2760,10 +2747,10 @@ namespace org.kbinani.cadencii {
             this.tabUtauSingers.Controls.Add( this.btnUp );
             this.tabUtauSingers.Controls.Add( this.btnDown );
             this.tabUtauSingers.Controls.Add( this.listSingers );
-            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 40 );
+            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 38 );
             this.tabUtauSingers.Name = "tabUtauSingers";
             this.tabUtauSingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 398 );
+            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 360 );
             this.tabUtauSingers.TabIndex = 6;
             this.tabUtauSingers.Text = "UTAU Singers";
             this.tabUtauSingers.UseVisualStyleBackColor = true;
@@ -2771,7 +2758,7 @@ namespace org.kbinani.cadencii {
             // btnRemove
             // 
             this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRemove.Location = new System.Drawing.Point( 98, 356 );
+            this.btnRemove.Location = new System.Drawing.Point( 98, 390 );
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size( 75, 23 );
             this.btnRemove.TabIndex = 122;
@@ -2781,7 +2768,7 @@ namespace org.kbinani.cadencii {
             // btnAdd
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Location = new System.Drawing.Point( 17, 356 );
+            this.btnAdd.Location = new System.Drawing.Point( 17, 390 );
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size( 75, 23 );
             this.btnAdd.TabIndex = 121;
@@ -2791,7 +2778,7 @@ namespace org.kbinani.cadencii {
             // btnUp
             // 
             this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUp.Location = new System.Drawing.Point( 279, 356 );
+            this.btnUp.Location = new System.Drawing.Point( 279, 390 );
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size( 75, 23 );
             this.btnUp.TabIndex = 123;
@@ -2801,7 +2788,7 @@ namespace org.kbinani.cadencii {
             // btnDown
             // 
             this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDown.Location = new System.Drawing.Point( 360, 356 );
+            this.btnDown.Location = new System.Drawing.Point( 360, 390 );
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size( 75, 23 );
             this.btnDown.TabIndex = 124;
@@ -2815,13 +2802,25 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listSingers.FullRowSelect = true;
             listViewGroup1.Header = "ListViewGroup";
+            listViewGroup2.Header = "ListViewGroup";
+            listViewGroup2.Name = null;
+            listViewGroup3.Header = "ListViewGroup";
+            listViewGroup3.Name = null;
+            listViewGroup4.Header = "ListViewGroup";
+            listViewGroup4.Name = null;
+            listViewGroup5.Header = "ListViewGroup";
+            listViewGroup5.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1} );
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
             this.listSingers.Name = "listSingers";
-            this.listSingers.Size = new System.Drawing.Size( 418, 326 );
+            this.listSingers.Size = new System.Drawing.Size( 418, 360 );
             this.listSingers.TabIndex = 120;
             this.listSingers.UseCompatibleStateImageBehavior = false;
             this.listSingers.View = System.Windows.Forms.View.Details;
@@ -2829,13 +2828,13 @@ namespace org.kbinani.cadencii {
             // tabFile
             // 
             this.tabFile.Controls.Add( this.lblAutoBackupMinutes );
-            this.tabFile.Controls.Add( this.numAutoBackupInterval );
             this.tabFile.Controls.Add( this.lblAutoBackupInterval );
             this.tabFile.Controls.Add( this.chkAutoBackup );
-            this.tabFile.Location = new System.Drawing.Point( 4, 40 );
+            this.tabFile.Controls.Add( this.numAutoBackupInterval );
+            this.tabFile.Location = new System.Drawing.Point( 4, 38 );
             this.tabFile.Name = "tabFile";
             this.tabFile.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabFile.Size = new System.Drawing.Size( 454, 398 );
+            this.tabFile.Size = new System.Drawing.Size( 454, 360 );
             this.tabFile.TabIndex = 7;
             this.tabFile.Text = "File";
             this.tabFile.UseVisualStyleBackColor = true;
@@ -2848,24 +2847,6 @@ namespace org.kbinani.cadencii {
             this.lblAutoBackupMinutes.Size = new System.Drawing.Size( 53, 12 );
             this.lblAutoBackupMinutes.TabIndex = 3;
             this.lblAutoBackupMinutes.Text = "minute(s)";
-            // 
-            // numAutoBackupInterval
-            // 
-            this.numAutoBackupInterval.Location = new System.Drawing.Point( 243, 18 );
-            this.numAutoBackupInterval.Minimum = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
-            this.numAutoBackupInterval.Name = "numAutoBackupInterval";
-            this.numAutoBackupInterval.Size = new System.Drawing.Size( 69, 19 );
-            this.numAutoBackupInterval.TabIndex = 2;
-            this.numAutoBackupInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numAutoBackupInterval.Value = new decimal( new int[] {
-            10,
-            0,
-            0,
-            0} );
             // 
             // lblAutoBackupInterval
             // 
@@ -2885,6 +2866,24 @@ namespace org.kbinani.cadencii {
             this.chkAutoBackup.TabIndex = 0;
             this.chkAutoBackup.Text = "Automatical Backup";
             this.chkAutoBackup.UseVisualStyleBackColor = true;
+            // 
+            // numAutoBackupInterval
+            // 
+            this.numAutoBackupInterval.Location = new System.Drawing.Point( 243, 18 );
+            this.numAutoBackupInterval.Minimum = new decimal( new int[] {
+            1,
+            0,
+            0,
+            0} );
+            this.numAutoBackupInterval.Name = "numAutoBackupInterval";
+            this.numAutoBackupInterval.Size = new System.Drawing.Size( 69, 19 );
+            this.numAutoBackupInterval.TabIndex = 2;
+            this.numAutoBackupInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numAutoBackupInterval.Value = new decimal( new int[] {
+            10,
+            0,
+            0,
+            0} );
             // 
             // btnCancel
             // 
@@ -2906,31 +2905,6 @@ namespace org.kbinani.cadencii {
             this.btnOK.TabIndex = 200;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
-            // lblAquesTone
-            // 
-            this.lblAquesTone.AutoSize = true;
-            this.lblAquesTone.Location = new System.Drawing.Point( 16, 74 );
-            this.lblAquesTone.Name = "lblAquesTone";
-            this.lblAquesTone.Size = new System.Drawing.Size( 62, 12 );
-            this.lblAquesTone.TabIndex = 108;
-            this.lblAquesTone.Text = "AquesTone";
-            // 
-            // txtAquesTone
-            // 
-            this.txtAquesTone.Location = new System.Drawing.Point( 99, 71 );
-            this.txtAquesTone.Name = "txtAquesTone";
-            this.txtAquesTone.Size = new System.Drawing.Size( 281, 19 );
-            this.txtAquesTone.TabIndex = 109;
-            // 
-            // btnAquesTone
-            // 
-            this.btnAquesTone.Location = new System.Drawing.Point( 386, 69 );
-            this.btnAquesTone.Name = "btnAquesTone";
-            this.btnAquesTone.Size = new System.Drawing.Size( 41, 23 );
-            this.btnAquesTone.TabIndex = 111;
-            this.btnAquesTone.Text = "...";
-            this.btnAquesTone.UseVisualStyleBackColor = true;
             // 
             // Preference
             // 
@@ -2957,8 +2931,8 @@ namespace org.kbinani.cadencii {
             this.groupAutoVibratoConfig.PerformLayout();
             this.tabAnother.ResumeLayout( false );
             this.tabAnother.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTimeSample)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numTiming)).EndInit();
+            this.groupWaveFileOutput.ResumeLayout( false );
+            this.groupWaveFileOutput.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWait)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).EndInit();
             this.tabAppearance.ResumeLayout( false );
@@ -3022,20 +2996,11 @@ namespace org.kbinani.cadencii {
         private BLabel lblWait;
         private BLabel lblPreSendTime;
         private BLabel lblDefaultSinger;
-        private BLabel lblPreSendTimeSample;
-        private BLabel lblTiming;
-        private BCheckBox chkEnableSampleOutput;
-        private BLabel lblSampleOutput;
-        private BLabel label11;
         private BComboBox comboDefualtSinger;
         private BLabel label12;
         private BComboBox comboDefaultPremeasure;
         private NumericUpDownEx numWait;
         private NumericUpDownEx numPreSendTime;
-        private BLabel label15;
-        private NumericUpDownEx numPreSendTimeSample;
-        private BLabel label14;
-        private NumericUpDownEx numTiming;
         private BLabel label13;
         private BLabel lblPeriod;
         private BLabel lblAmplitude;

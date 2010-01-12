@@ -192,7 +192,7 @@ namespace org.kbinani.cadencii {
 
             driver.WaveIncoming += waveIncoming;
             driver.RenderingFinished += vstidrv_RenderingFinished;
-            driver.StartRendering( totalSamples, mode_infinite );
+            driver.StartRendering( totalSamples, mode_infinite, sampleRate );
             while ( m_rendering ) {
                 Application.DoEvents();
             }

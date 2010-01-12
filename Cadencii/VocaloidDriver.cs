@@ -190,12 +190,13 @@ namespace org.kbinani.cadencii {
             return TRUE;
         }
 
-        public int StartRendering( long total_samples, boolean mode_infinite ) {
+        public int StartRendering( long total_samples, boolean mode_infinite, int sample_rate ) {
 #if TEST
             org.kbinani.debug.push_log( "vstidrv.StartRendering" );
 #endif
             g_cancelRequired = false;
             g_progress = 0.0;
+            sampleRate = sample_rate;
 
             Vector<MidiEvent> lpEvents = merge_events( s_track_events.get( 0 ), s_track_events.get( 1 ) );
             int current_count = -1;

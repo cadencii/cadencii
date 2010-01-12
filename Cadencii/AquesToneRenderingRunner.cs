@@ -262,6 +262,9 @@ namespace org.kbinani.cadencii {
                 }
             }
             m_rendering = false;
+            if ( directPlay ) {
+                PlaySound.waitForExit();
+            }
         }
 
         /// <summary>

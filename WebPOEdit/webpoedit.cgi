@@ -18,7 +18,6 @@ sub new{
 		$mode = 0; #0: reading id, 1: reding str
 		while( $line = <$in> ){
 			chomp $line;
-			Encode::from_to( $line, "utf8", "shift_jis" );
 			if( $line =~ /^msgid \"(.*)\"/ ){
 				if( !($id eq "") ){
 					$dict{$id} = $str;
@@ -96,8 +95,6 @@ sub printTo{
 	foreach $key ( keys %hash ){
 		$id = $key;
 		$str = $hash{$key};
-		Encode::from_to( $id, "shift_jis", "utf8" );
-		Encode::from_to( $str, "shift_jis", "utf8" );
 		print $out "msgid \"" . $id . "\"\n";
 		print $out "msgstr \"" . $str . "\"\n\n";
 	}
@@ -575,7 +572,6 @@ if( $author eq "" ){
             my $value = "";
             if( $#spl2 + 1 >= 2 ){
 	            $value = url_decode( $spl2[1] );
-	            Encode::from_to( $value, "utf8", "shift_jis" );
 	        }
             $value =~ s/\\n/\n/g;
             if( $mb->containsKey( $id ) ){
@@ -626,7 +622,6 @@ if( $author eq "" ){
 		print "    <td nowrap class=" . $class_kind . ">\n";
 		$msg =~ s/\n/\\n/g;
 		$utfMsg = $msg;
-		Encode::from_to( $utfMsg, "shift_jis", "utf8" );
 		if( $msg eq $key ){
 			print "      <input type=\"text\" name=\"";
 			print $id;

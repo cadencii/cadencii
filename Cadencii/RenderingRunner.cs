@@ -121,6 +121,7 @@ namespace org.kbinani.cadencii {
                 return;
             }
             lock ( m_locker ) {
+                boolean mixall = AppManager.editorConfig.WaveFileOutputFromMasterTrack;
 
                 double[] L = t_L;
                 double[] R = t_R;
@@ -168,7 +169,7 @@ namespace org.kbinani.cadencii {
                         L[i] = L[i] * amplify.left;
                         R[i] = R[i] * amplify.right;
                     }
-                    if ( waveWriter != null ) {
+                    if ( !mixall && waveWriter != null ) {
                         try {
                             waveWriter.append( L, R );
                         } catch ( Exception ex ) {
@@ -176,7 +177,7 @@ namespace org.kbinani.cadencii {
                         }
                     }
                 } else {
-                    if ( waveWriter != null ) {
+                    if ( !mixall && waveWriter != null ) {
                         try {
                             waveWriter.append( L, R );
                         } catch ( Exception ex ) {
@@ -193,9 +194,6 @@ namespace org.kbinani.cadencii {
                     }
                 }
                 long start = m_total_append + (long)(waveReadOffsetSeconds * VSTiProxy.SAMPLE_RATE);
-#if DEBUG
-                //PortUtil.println( "RenderingRunner_DRAFT#waveIncoming; start=" + start );
-#endif
                 int count = readers.size();
                 double[] reader_r = new double[length];
                 double[] reader_l = new double[length];
@@ -204,13 +202,22 @@ namespace org.kbinani.cadencii {
                         WaveRateConverter wr = readers.get( i );
                         amplify.left = 1.0;
                         amplify.right = 1.0;
-                        if ( wr.getTag() != null && wr.getTag() is Integer ) {
-                            int track = (Integer)wr.getTag();
-                            if ( 0 < track ) {
-                                amplify = AppManager.getAmplifyCoeffNormalTrack( track );
-                            } else if ( 0 > track ) {
-                                amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
-                            }
+                        Object tag = wr.getTag();
+                        if ( tag == null ) {
+                            continue;
+                        }
+                        if ( !(tag is Integer) ){
+                            continue;
+                        }
+                        int track = (Integer)tag;
+                        if ( mixall && 0 > track ) {
+                            // 全部mixするモードの時は、最初に他のトラックだけ読み込むので
+                            continue;
+                        }
+                        if ( 0 < track ) {
+                            amplify = AppManager.getAmplifyCoeffNormalTrack( track );
+                        } else if ( 0 > track ) {
+                            amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
                         }
                         wr.read( start, length, reader_l, reader_r );
                         for ( int j = 0; j < length; j++ ) {
@@ -222,6 +229,40 @@ namespace org.kbinani.cadencii {
                         PortUtil.stderr.println( "RenderingRunner_DRAFT#waveIncoming; ex=" + ex );
                     }
                 }
+
+                if ( mixall && waveWriter != null ) {
+                    waveWriter.append( L, R );
+                }
+
+                if ( mixall ) {
+                    for ( int i = 0; i < count; i++ ) {
+                        try {
+                            WaveRateConverter wr = readers.get( i );
+                            Object tag = wr.getTag();
+                            if ( tag == null ) {
+                                continue;
+                            }
+                            if ( !(tag is Integer) ) {
+                                continue;
+                            }
+                            int track = (Integer)tag;
+                            if ( 0 < track ) {
+                                // 全部mixするモードの時は、すでに他のトラックのはmix済みなので
+                                continue;
+                            }
+                            amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
+                            wr.read( start, length, reader_l, reader_r );
+                            for ( int j = 0; j < length; j++ ) {
+                                if ( m_abort_required ) return;
+                                L[j] += reader_l[j] * amplify.left;
+                                R[j] += reader_r[j] * amplify.right;
+                            }
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );
+                        }
+                    }
+                }
+
                 reader_l = null;
                 reader_r = null;
                 if ( directPlay ) {

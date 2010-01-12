@@ -32,7 +32,7 @@ namespace org.kbinani.cadencii {
         private static DataLine.Info m_info;
         private static byte[] m_buffer;
 #else
-        private static bool s_initialized = false;
+        //private static bool s_initialized = false;
         private static int s_sample_rate = 44100;
 #endif
 
@@ -42,7 +42,7 @@ namespace org.kbinani.cadencii {
         }
 #else
         [DllImport( "PlaySound" )]
-        private static extern void SoundInit( int block_size, int sample_rate );
+        private static extern void SoundInit( int sample_rate );
 
         [DllImport( "PlaySound" )]
         private static extern unsafe void SoundAppend( double* left, double* right, int length );
@@ -145,7 +145,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public static void init( int sample_rate, int capacity_samples, int num_buffer ) {
+        public static void init( int sample_rate ) {
 #if JAVA
             m_format = new AudioFormat( sample_rate, 16, 2, true, false );
             m_info = new DataLine.Info( SourceDataLine.class, m_format );
@@ -157,14 +157,14 @@ namespace org.kbinani.cadencii {
                 m_line = null;
             }
 #else
-            if ( s_initialized ) {
-                return;
-            }
+#if DEBUG
+            PortUtil.println( "PlaySound#init; sample_rate=" + sample_rate );
+#endif
             s_sample_rate = sample_rate;
             try {
-                SoundInit( VSTiProxy.BLOCK_SIZE, sample_rate );
-                SoundSetResolution( VSTiProxy.BLOCK_SIZE );
-                s_initialized = true;
+                SoundInit( sample_rate );
+                SoundSetResolution( VSTiProxy.SAMPLE_RATE );
+                //s_initialized = true;
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "PlaySound.Init; ex=" + ex );
             }

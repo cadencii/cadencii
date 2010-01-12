@@ -805,6 +805,9 @@ namespace org.kbinani.cadencii {
 #endif
                 m_rendering = false;
             }
+            if ( directPlay ) {
+                PlaySound.waitForExit();
+            }
         }
 
         public override double computeRemainingSeconds() {

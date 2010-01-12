@@ -321,6 +321,14 @@ namespace org.kbinani.cadencii {
         /// 最初に戻る、のショートカットキー
         /// </summary>
         public BKeys[] SpecialShortcutGoToFirst = new BKeys[] { BKeys.Home };
+        /// <summary>
+        /// waveファイル出力時のチャンネル数（1または2）
+        /// </summary>
+        public int WaveFileOutputChannel = 2;
+        /// <summary>
+        /// waveファイル出力時に、全トラックをmixして出力するかどうか
+        /// </summary>
+        public boolean WaveFileOutputFromMasterTrack = false;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(

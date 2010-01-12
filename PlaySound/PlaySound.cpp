@@ -16,7 +16,7 @@
 
 int          waveplay::s_block_size  = 44100;
 int          waveplay::s_sample_rate = 44100;
-HWAVEOUT     waveplay::s_hwave_out;
+HWAVEOUT     waveplay::s_hwave_out = 0;
 WAVEFORMATEX   waveplay::s_wave_formatx;
 WAVEHDR        waveplay::s_wave_header[waveplay::_NUM_BUF];
 unsigned long* waveplay::s_wave[waveplay::_NUM_BUF];
@@ -34,29 +34,6 @@ double        *waveplay::s_wave_buffer_r;
 #ifdef TEST
 ofstream       waveplay::logger;
 #endif
-
-bool waveplay::change_block_size( int block_size ){
-    if ( s_playing ){
-        return false;
-    }
-    if( block_size <= 0 ){
-        return false;
-    }
-
-    for( int k = 0; k < _NUM_BUF; k++ ){
-        if( s_wave[k] ) delete [] s_wave[k];
-        s_wave[k] = (unsigned long*)calloc( sizeof( unsigned long ), block_size );
-        s_wave_header[k].lpData = (char*)s_wave[k];
-        s_wave_header[k].dwBufferLength = sizeof( unsigned long ) * block_size;
-    }
-
-    // s_wave_buffer_l, s_wave_buffer_rは、NULLならばon_your_markで初期化されるので、開放だけやっておけばOK
-    if( s_wave_buffer_l ) delete [] s_wave_buffer_l;
-    if( s_wave_buffer_r ) delete [] s_wave_buffer_r;
-    // s_another_wave_l, s_another_wave_rは、on_your_markで全自動で初期化されるので特に操作の必要なし
-    s_block_size = block_size;
-    return true;
-}
 
 void waveplay::terminate(){
     if( s_hwave_out ){
@@ -92,26 +69,43 @@ void waveplay::set_first_buffer_written_callback( FirstBufferWrittenCallback pro
 };
 
 void waveplay::reset(){
+#ifdef TEST
+	waveplay::logger << "waveplay::reset; s_hwave_out=" << (int)s_hwave_out << endl;
+#endif
     s_playing = false;
     s_abort_required = true;
-    if( s_hwave_out != NULL ){
+    if( 0 != s_hwave_out ){
         for( int k = 0; k < _NUM_BUF; k++ ){
             s_wave_header[k].dwUser = 1;
         }
         waveOutReset( s_hwave_out );
+
+	    for( int k = 0; k < _NUM_BUF; k++ ){
+	        waveOutUnprepareHeader( s_hwave_out, &s_wave_header[k], sizeof( WAVEHDR ) );
+	    }
+	    waveOutClose( s_hwave_out );
+	    s_hwave_out = 0;
     }
-    unsigned long zero = MAKELONG( 0, 0 );
-    for( int k = 0; k < _NUM_BUF; k++ ){
-        for( int i = 0; i < s_block_size; i++ ){
-            s_wave[k][i] = zero;
-        }
-    }
-    if( s_wave_buffer_l != NULL && s_wave_buffer_r != NULL ){
-        for( int i = 0; i < s_block_size; i++ ){
-            s_wave_buffer_l[i] = 0.0;
-            s_wave_buffer_r[i] = 0.0;
-        }
-    }
+
+	for( int k = 0; k < _NUM_BUF; k++ ){
+		if( NULL != s_wave[k] ){
+			unsigned long *addr = s_wave[k];
+			delete [] addr;
+			s_wave[k] = NULL;
+		}
+	}
+
+	if( NULL != s_wave_buffer_l ){
+		delete [] s_wave_buffer_l;
+		s_wave_buffer_l = NULL;
+	}
+	if( NULL != s_wave_buffer_r ){
+		delete [] s_wave_buffer_r;
+		s_wave_buffer_r = NULL;
+	}
+#ifdef TEST
+	waveplay::logger << "waveplay::reset; done" << endl;
+#endif
 }
 
 void waveplay::append( double** data, unsigned int length, double amp_left, double amp_right ){
@@ -184,12 +178,6 @@ void waveplay::append_cor( double** a_data, unsigned int length, double amp_left
     double aright = amp_right;
     double aleft = amp_left;
 
-    /*while( (s_wave_header[s_current_buffer].dwFlags & WHDR_INQUEUE) == WHDR_INQUEUE ){
-        if( s_abort_required ){
-            s_abort_required = false;
-            goto clean_and_exit;
-        }
-    }*/
     for( int j = 0; j < jmax; j++ ){
         s_wave_buffer_l[j + s_buffer_loc] = data[1][j];
         s_wave_buffer_r[j + s_buffer_loc] = data[0][j];
@@ -207,7 +195,6 @@ void waveplay::append_cor( double** a_data, unsigned int length, double amp_left
                 s_abort_required = false;
                 goto clean_and_exit;
             }
-            //if( (s_wave_header[s_current_buffer].dwFlags & WHDR_INQUEUE) != WHDR_INQUEUE ){
             if( s_done[s_current_buffer] ){
                 break;
             }
@@ -246,24 +233,6 @@ void waveplay::append_cor( double** a_data, unsigned int length, double amp_left
     }
 
     if( remain > 0 ){
-#ifdef TEST
-        //debug::push_log( "append_cor; waiting(2) " + s_current_buffer + "..." );
-#endif
-        //while( (s_wave_header[s_current_buffer].dwFlags & WHDR_INQUEUE) == WHDR_INQUEUE ){
-        /*while( !s_done[s_current_buffer] ){
-#ifdef TEST
-            for( int k = 0; k < _NUM_BUF; k++ ){
-                //debug::push_log( "append_cor; " + s_done[k] );
-            }
-#endif
-            if( s_abort_required ){
-                s_abort_required = false;
-                goto clean_and_exit;
-            }
-        }*/
-#ifdef TEST
-        //debug::push_log( "append_cor; ...exit" );
-#endif
         for( int j = jmax; j < length; j++ ){
             s_wave_buffer_l[j - jmax] = data[1][j];
             s_wave_buffer_r[j - jmax] = data[0][j];
@@ -316,7 +285,6 @@ void waveplay::append_cor( double** a_data, unsigned int length, double amp_left
         logger << "append_cor; waiting(3) " << s_current_buffer << "..." << endl;
 #endif
         while( !s_done[s_current_buffer] ){
-        //while( (s_wave_header[s_current_buffer].dwFlags & WHDR_INQUEUE) == WHDR_INQUEUE ){
         	Sleep( 0 );
             if( s_abort_required ){
                 s_abort_required = false;
@@ -363,10 +331,10 @@ void waveplay::on_your_mark(){
     s_playing = true;
     s_last_buffer = -1;
 
-    if( !s_wave_buffer_l ){
+    if( NULL == s_wave_buffer_l ){
         s_wave_buffer_l = new double[s_block_size];
     }
-    if( !s_wave_buffer_r ){
+    if( NULL == s_wave_buffer_r ){
         s_wave_buffer_r = new double[s_block_size];
     }
     for( int i = 0; i < s_block_size; i++ ){
@@ -404,8 +372,15 @@ double waveplay::get_play_time(){
     }
 }
 
-void waveplay::init( int block_size, int sample_rate ){
-    s_block_size = block_size;
+void waveplay::init( int sample_rate ){
+#ifdef TEST
+	waveplay::logger << "waveplay::init; sample_rate=" << sample_rate << "; s_hwave_out=" << (int)s_hwave_out << endl;
+#endif
+	if( s_hwave_out != 0 ){
+		reset();
+	}
+
+    s_block_size = sample_rate;
     s_sample_rate = sample_rate;
 
     s_wave_formatx.wFormatTag = WAVE_FORMAT_PCM;
@@ -417,8 +392,10 @@ void waveplay::init( int block_size, int sample_rate ){
 
     waveOutOpen( &s_hwave_out, WAVE_MAPPER, &s_wave_formatx, (unsigned long)wave_callback, 0, CALLBACK_FUNCTION );
     
+    unsigned long zero = MAKELONG( 0, 0 );
     for( int k = 0; k < _NUM_BUF; k++ ){
-        s_wave[k] = (unsigned long*)calloc( sizeof( unsigned long ), s_block_size );
+        s_wave[k] = (unsigned long*)malloc( sizeof( unsigned long ) * s_block_size );
+        memset( s_wave[k], zero, s_block_size * sizeof( unsigned long ) );
         s_wave_header[k].lpData = (char*)s_wave[k];
         s_wave_header[k].dwBufferLength = sizeof( unsigned long ) * s_block_size;
         s_wave_header[k].dwFlags = WHDR_BEGINLOOP | WHDR_ENDLOOP;
@@ -430,16 +407,16 @@ void waveplay::init( int block_size, int sample_rate ){
 }
 
 void waveplay::abort(){
+#ifdef TEST
+	waveplay::logger << "waveplay::abort" << endl;
+#endif
     s_abort_required = true;
-    reset();
-    for( int k = 0; k < _NUM_BUF; k++ ){
-        if( s_wave[k] ){
-            memset( s_wave[k], 0, s_block_size * sizeof( unsigned long ) );
-        }
-    }
     s_buffer_loc = 0;
     s_current_buffer = 0;
     s_processed_count = 0;
+#ifdef TEST
+	waveplay::logger << "waveplay::abort; done" << endl;
+#endif
 }
 
 void CALLBACK waveplay::wave_callback( HWAVEOUT hwo, unsigned int uMsg, unsigned long dwInstance, unsigned long dwParam1, unsigned long dwParam2 ){
@@ -508,16 +485,20 @@ extern "C" {
 		// do nothing
 	}
 
-    void SoundInit( int block_size, int sample_rate ){
+    void SoundInit( int sample_rate ){
 #ifdef TEST
-        waveplay::logger.open( "test.log", ios::out );
+        waveplay::logger.open( "test.log", ios::out | ios::app );
+		waveplay::logger << "SoundInit" << endl;
 #endif
-        waveplay::init( block_size, sample_rate );
+        waveplay::init( sample_rate );
     }
 
     void SoundAppend( double *left, double *right, int length ){
+#ifdef TEST
+		waveplay::logger << "SoundAppend" << endl;
+#endif
         if( !waveplay::is_alive() ){
-            waveplay::reset();
+            //waveplay::reset();
             waveplay::on_your_mark();
         }
         double *out[] = { left, right };
@@ -525,11 +506,17 @@ extern "C" {
     }
 
     void SoundReset(){
+#ifdef TEST
+		waveplay::logger << "SoundReset" << endl;
+#endif
         waveplay::abort();
         waveplay::reset();
     }
 
     double SoundGetPosition(){
+#ifdef TEST
+		waveplay::logger << "SoundGetPosition" << endl;
+#endif
         if( waveplay::is_alive() ){
             return waveplay::get_play_time();
         }else{
@@ -538,20 +525,29 @@ extern "C" {
     }
 
     bool SoundIsBusy(){
+#ifdef TEST
+		waveplay::logger << "SoundIsBusy" << endl;
+#endif
         return waveplay::is_alive();
     }
 
     void SoundWaitForExit(){
+#ifdef TEST
+		waveplay::logger << "SoundWaitForExit" << endl;
+#endif
         if( waveplay::is_alive() ){
             waveplay::flush_and_exit( 1.0, 1.0 );
         }
         while( waveplay::is_alive() ){
             Sleep( 0 );
         }
-        waveplay::reset();
+        //waveplay::reset();
     }
 
     void SoundTerminate(){
+#ifdef TEST
+		waveplay::logger << "SoundTerminate" << endl;
+#endif
         waveplay::terminate();
     }
 }
@@ -578,7 +574,7 @@ int main(){
 
     std::cout << "is_alive=" << (waveplay::is_alive() ? "True" : "False") << endl;
 
-    SoundInit( sample_rate, sample_rate );
+    SoundInit( sample_rate );
     for( int i = 0; i < 5; i++ ){
         SoundAppend( left, right, sample_rate );
     }

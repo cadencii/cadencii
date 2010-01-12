@@ -38,8 +38,8 @@ namespace org.kbinani.cadencii {
         public const String RENDERER_UTU0 = "UTU0";
         public const String RENDERER_STR0 = "STR0";
         public const String RENDERER_AQT0 = "AQT0";
-        public const int SAMPLE_RATE = 44100;
-        public const int BLOCK_SIZE = 4410;
+        public static int SAMPLE_RATE = 44100;
+        //public const int BLOCK_SIZE = 4410;
         const float a0 = -17317.563f;
         const float a1 = 86.7312112f;
         const float a2 = -0.237323499f;
@@ -60,7 +60,7 @@ namespace org.kbinani.cadencii {
         }
 
         public static void initCor() {
-            PlaySound.init( SAMPLE_RATE, SAMPLE_RATE, 3 );
+            //PlaySound.init( SAMPLE_RATE );
 
 #if ENABLE_VOCALOID
 #if !DEBUG
@@ -95,7 +95,7 @@ namespace org.kbinani.cadencii {
                 boolean loaded = false;
                 try {
                     if ( dll_path != "" ) {
-                        loaded = vocaloidDriver.get( i ).open( dll_path, BLOCK_SIZE, SAMPLE_RATE );
+                        loaded = vocaloidDriver.get( i ).open( dll_path, SAMPLE_RATE, SAMPLE_RATE );
                     } else {
                         loaded = false;
                     }
@@ -127,7 +127,7 @@ namespace org.kbinani.cadencii {
             if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) ) {
                 boolean loaded = false;
                 try {
-                    loaded = aquesToneDriver.open( aques_tone, BLOCK_SIZE, SAMPLE_RATE );
+                    loaded = aquesToneDriver.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
                     loaded = false;
@@ -230,7 +230,7 @@ namespace org.kbinani.cadencii {
         ) {
             s_working_renderer = VSTiProxy.RENDERER_DSB3;
             if ( direct_play ) {
-                PlaySound.reset();
+                //PlaySound.reset();
             }
             Vector<WaveReader> reader = new Vector<WaveReader>();
             for ( int i = 0; i < files.Length; i++ ) {

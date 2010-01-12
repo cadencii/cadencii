@@ -61,7 +61,7 @@ public:
 #endif
     static void on_your_mark();
     /// 初期化関数
-    static void init( int block_size, int sample_rate );
+    static void init( int sample_rate );
     /// 波形データをバッファに追加する。バッファが再生中などの理由で即座に書き込めない場合、バッファが書き込み可能となるまで待機させられる
 	static void append( double** data, unsigned int length, double amp_left, double amp_right );
     static void flush_and_exit( double amp_left, double amp_right );
@@ -82,7 +82,7 @@ public:
 
 extern "C" {
 
-    void SoundInit( int block_size, int sample_rate );
+    void SoundInit( int sample_rate );
     void SoundAppend( double *left, double *right, int length );
     void SoundReset();
     double SoundGetPosition();

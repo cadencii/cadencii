@@ -182,6 +182,7 @@ namespace org.kbinani.cadencii {
 
         private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
             try {
+                int channel = AppManager.editorConfig.WaveFileOutputChannel == 1 ? 1 : 2;
                 double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
                 double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.MasterPanpot );
                 double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.MasterPanpot );
@@ -198,7 +199,7 @@ namespace org.kbinani.cadencii {
                     double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
                     WaveWriter ww = null;
                     try {
-                        ww = new WaveWriter( m_files[0] );
+                        ww = new WaveWriter( m_files[0], channel, 16, VSTiProxy.SAMPLE_RATE );
                         VSTiProxy.render( m_vsq,
                                           m_tracks[0],
                                           ww,
@@ -244,7 +245,7 @@ namespace org.kbinani.cadencii {
                             double total_sec = m_vsq.getSecFromClock( total_clocks );
                             WaveWriter ww = null;
                             try {
-                                ww = new WaveWriter( m_files[i] );
+                                ww = new WaveWriter( m_files[i], channel, 16, VSTiProxy.SAMPLE_RATE );
                                 VSTiProxy.render( m_vsq,
                                                   m_tracks[i],
                                                   ww,

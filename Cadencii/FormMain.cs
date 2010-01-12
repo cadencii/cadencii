@@ -1175,7 +1175,11 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "m_config_PreviewStarted" );
 #endif
-            PlaySound.reset();
+            PlaySound.init( VSTiProxy.SAMPLE_RATE );
+#if DEBUG
+            PortUtil.println( "FormMain#AppManager_PreviewStarted; VSTiProxy.SAMPLE_RATE=" + VSTiProxy.SAMPLE_RATE );
+#endif
+
             VsqFileEx vsq = AppManager.getVsqFile();
             String renderer = vsq.Track.get( AppManager.getSelected() ).getCommon().Version;
             int clock = AppManager.getCurrentClock();
@@ -5537,6 +5541,8 @@ namespace org.kbinani.cadencii {
             m_preference_dlg.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
             m_preference_dlg.setUseSpaceKeyAsMiddleButtonModifier( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier );
             m_preference_dlg.setPathAquesTone( AppManager.editorConfig.PathAquesTone );
+            m_preference_dlg.setWaveFileOutputFromMasterTrack( AppManager.editorConfig.WaveFileOutputFromMasterTrack );
+            m_preference_dlg.setWaveFileOutputChannel( AppManager.editorConfig.WaveFileOutputChannel );
 
             m_preference_dlg.setLocation( getFormPreferedLocation( m_preference_dlg ) );
 
@@ -5656,6 +5662,8 @@ namespace org.kbinani.cadencii {
                     VSTiProxy.reloadAquesTone();
                 }
 #endif
+                AppManager.editorConfig.WaveFileOutputFromMasterTrack = m_preference_dlg.isWaveFileOutputFromMasterTrack();
+                AppManager.editorConfig.WaveFileOutputChannel = m_preference_dlg.getWaveFileOutputChannel();
 
                 Vector<CurveType> visible_curves = new Vector<CurveType>();
                 trackSelector.clearViewingCurve();
@@ -7497,7 +7505,17 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "menuHelpDebug_Click" );
 #if DEBUG
-            BFileChooser dialog = new BFileChooser( "" );
+            InputBox box = new InputBox( "input sample rate" );
+            if ( box.showDialog() == BDialogResult.OK ) {
+                String ret = box.getResult();
+                try {
+                    int v = PortUtil.parseInt( ret );
+                    VSTiProxy.SAMPLE_RATE = v;
+                    PortUtil.println( "menuHelpDebug_Click; VSTiProxy.SAMPLE_RATE=" + VSTiProxy.SAMPLE_RATE );
+                } catch ( Exception ex ) {
+                }
+            }
+            /*BFileChooser dialog = new BFileChooser( "" );
             if ( dialog.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
                 String fileIn = dialog.getSelectedFile();
                 if ( dialog.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
@@ -7534,7 +7552,7 @@ namespace org.kbinani.cadencii {
                     wr.close();
                     receiver.close();
                 }
-            }
+            }*/
             /*try {
                 BFileChooser dialog = new BFileChooser( "" );
                 if ( dialog.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {

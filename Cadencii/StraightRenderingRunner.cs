@@ -892,6 +892,9 @@ namespace org.kbinani.cadencii {
 
             m_abort_required = false;
             m_rendering = false;
+            if ( directPlay ) {
+                PlaySound.waitForExit();
+            }
         }
 
         public override double computeRemainingSeconds() {
