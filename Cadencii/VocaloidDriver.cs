@@ -216,11 +216,11 @@ namespace org.kbinani.cadencii {
 #if TEST
                 org.kbinani.debug.push_log( "    calling initial dispatch..." );
 #endif
-                aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );//dispatch_VST_command(effSetSampleRate, 0, 0, 0, kSampleRate);
-                aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0 );// dispatch_VST_command(effMainsChanged, 0, 1, 0, 0);
+                aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
+                aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0 );
                 
                 // ここではブロックサイズ＝サンプリングレートということにする
-                aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, sampleRate, IntPtr.Zero, 0 );// dispatch_VST_command(effSetBlockSize, 0, sampleFrames, 0, 0);
+                aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, sampleRate, IntPtr.Zero, 0 );
                 
                 // レンダリングの途中で停止した場合，ここでProcessする部分が無音でない場合がある
                 for ( int i = 0; i < 3; i++ ) {
