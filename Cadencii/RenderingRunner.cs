@@ -197,9 +197,15 @@ namespace org.kbinani.cadencii {
                 int count = readers.size();
                 double[] reader_r = new double[length];
                 double[] reader_l = new double[length];
+#if DEBUG
+                PortUtil.println( "RenderingRunner#waveIncoming; readers.size()=" + count );
+#endif
                 for ( int i = 0; i < count; i++ ) {
                     try {
                         WaveRateConverter wr = readers.get( i );
+#if DEBUG
+                        PortUtil.println( "RenderingRunner#waveIncoming; wr.getFilePath(" + i + ")=" + wr.getFilePath() );
+#endif
                         amplify.left = 1.0;
                         amplify.right = 1.0;
                         Object tag = wr.getTag();

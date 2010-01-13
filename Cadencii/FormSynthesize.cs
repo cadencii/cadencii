@@ -58,7 +58,7 @@ namespace org.kbinani.cadencii {
         private int m_clock_start;
         private int m_clock_end;
         private boolean m_partial_mode = false;
-        private int m_temp_premeasure = 0;
+        //private int m_temp_premeasure = 0;
         private int m_finished = -1;
         private boolean m_rendering_started = false;
         private boolean m_reflect_amp_to_wave = false;
@@ -71,13 +71,12 @@ namespace org.kbinani.cadencii {
                                String file,
                                int clock_start,
                                int clock_end,
-                               int temp_premeasure,
                                boolean reflect_amp_to_wave )
 #if JAVA
         {
             this( vsq, presend, new int[] { track }, new String[]{ file }, clock_start, clock_end, temp_premeasure, reflect_amp_to_wave, false );
 #else
-            : this( vsq, presend, new int[] { track }, new String[] { file }, clock_start, clock_end, temp_premeasure, reflect_amp_to_wave, false ) {
+            : this( vsq, presend, new int[] { track }, new String[] { file }, clock_start, clock_end, reflect_amp_to_wave, false ) {
 
 #endif
         }
@@ -92,7 +91,7 @@ namespace org.kbinani.cadencii {
         {
             this( vsq, presend, tracks, files, 0, end, 0, reflect_amp_to_wave, true );
 #else
-            : this( vsq, presend, tracks, files, 0, end, 0, reflect_amp_to_wave, true ) {
+            : this( vsq, presend, tracks, files, 0, end, reflect_amp_to_wave, true ) {
 #endif
         }
 
@@ -102,7 +101,6 @@ namespace org.kbinani.cadencii {
                                 String[] files,
                                 int start,
                                 int end,
-                                int temp_premeasure,
                                 boolean reflect_amp_to_wave,
                                 boolean partial_mode ) {
 #if JAVA
@@ -130,7 +128,6 @@ namespace org.kbinani.cadencii {
             m_partial_mode = partial_mode;
             m_clock_start = start;
             m_clock_end = end;
-            m_temp_premeasure = temp_premeasure;
             m_reflect_amp_to_wave = reflect_amp_to_wave;
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -222,49 +219,71 @@ namespace org.kbinani.cadencii {
                         }
                     }
                 } else {
-                    for ( int i = 0; i < m_tracks.Length; i++ ) {
+                    // partialモードのときは、常にm_tracks.Length=1である。
+                    int track = m_tracks[0];
 #if JAVA
-                    UpdateProgress( this, i + 1 );
+                    UpdateProgress( this, 1 );
 #else
-                        this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (Object)(i + 1) );
+                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, 1 );
 #endif
-                        Vector<VsqNrpn> nrpn = new Vector<VsqNrpn>( Arrays.asList( VsqFile.generateNRPN( m_vsq, m_tracks[i], m_presend ) ) );
-                        int count = m_vsq.Track.get( m_tracks[i] ).getEventCount();
-                        if ( count > 0 ) {
+                    Vector<VsqNrpn> nrpn = new Vector<VsqNrpn>( Arrays.asList( VsqFile.generateNRPN( m_vsq, track, m_presend ) ) );
+                    int count = m_vsq.Track.get( track ).getEventCount();
+                    if ( count > 0 ) {
 #if DEBUG
-                            AppManager.debugWriteLine( "FormSynthesize+bgWork_DoWork" );
-                            AppManager.debugWriteLine( "    System.IO.Directory.GetCurrentDirectory()=" + System.IO.Directory.GetCurrentDirectory() );
-                            AppManager.debugWriteLine( "    VsqUtil.VstiDllPath=" + VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
+                        AppManager.debugWriteLine( "FormSynthesize+bgWork_DoWork" );
+                        AppManager.debugWriteLine( "    System.IO.Directory.GetCurrentDirectory()=" + System.IO.Directory.GetCurrentDirectory() );
+                        AppManager.debugWriteLine( "    VsqUtil.VstiDllPath=" + VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
 #endif
-                            double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( m_tracks[i] - 1 ).Feder );
-                            double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( m_tracks[i] - 1 ).Panpot );
-                            double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( m_tracks[i] - 1 ).Panpot );
-                            double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
-                            double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
-                            int total_clocks = m_vsq.TotalClocks;
-                            double total_sec = m_vsq.getSecFromClock( total_clocks );
-                            WaveWriter ww = null;
-                            try {
-                                ww = new WaveWriter( m_files[i], channel, 16, VSTiProxy.SAMPLE_RATE );
-                                VSTiProxy.render( m_vsq,
-                                                  m_tracks[i],
-                                                  ww,
-                                                  m_vsq.getSecFromClock( m_clock_start ),
-                                                  m_vsq.getSecFromClock( m_clock_end ),
-                                                  m_presend,
-                                                  false,
-                                                  new WaveReader[] { },
-                                                  0.0,
-                                                  false,
-                                                  AppManager.getTempWaveDir(),
-                                                  m_reflect_amp_to_wave );
-                            } catch ( Exception ex ) {
-                            } finally {
-                                if ( ww != null ) {
-                                    try {
-                                        ww.close();
-                                    } catch ( Exception ex2 ) {
+                        double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( track - 1 ).Feder );
+                        double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( track - 1 ).Panpot );
+                        double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( track - 1 ).Panpot );
+                        double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
+                        double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
+                        int total_clocks = m_vsq.TotalClocks;
+                        double total_sec = m_vsq.getSecFromClock( total_clocks );
+                        WaveWriter ww = null;
+                        WaveReader[] readers = new WaveReader[] { };
+
+                        if ( AppManager.editorConfig.WaveFileOutputFromMasterTrack ) {
+                            int numTrack = m_vsq.Track.size();
+                            if ( numTrack > 2 ) {
+                                // track以外にもトラックがあるので。
+                                Array.Resize( ref readers, numTrack - 2 );
+                                int j = 0;
+                                for ( int i = 1; i < numTrack; i++ ) {
+                                    if ( i == track ) {
+                                        continue;
                                     }
+                                    String tmppath = AppManager.getTempWaveDir();
+                                    String file = PortUtil.combinePath( tmppath, i + ".wav" );
+                                    WaveReader r = new WaveReader( file );
+                                    r.setTag( i );
+                                    readers[j] = r;
+                                    j++;
+                                }
+                            }
+                        }
+
+                        try {
+                            ww = new WaveWriter( m_files[0], channel, 16, VSTiProxy.SAMPLE_RATE );
+                            VSTiProxy.render( m_vsq,
+                                              track,
+                                              ww,
+                                              m_vsq.getSecFromClock( m_clock_start ),
+                                              m_vsq.getSecFromClock( m_clock_end ),
+                                              m_presend,
+                                              false,
+                                              readers,
+                                              0.0,
+                                              false,
+                                              AppManager.getTempWaveDir(),
+                                              m_reflect_amp_to_wave );
+                        } catch ( Exception ex ) {
+                        } finally {
+                            if ( ww != null ) {
+                                try {
+                                    ww.close();
+                                } catch ( Exception ex2 ) {
                                 }
                             }
                         }

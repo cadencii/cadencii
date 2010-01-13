@@ -45,6 +45,7 @@ namespace org.kbinani.media {
         private Object m_tag = null;
         private double m_offset_seconds = 0.0;
         private int m_sample_per_sec;
+        private String m_file = "";
 
         /*
          * 192000
@@ -71,9 +72,14 @@ namespace org.kbinani.media {
 #endif
  {
             boolean ret = open( file );
+            m_file = file;
 #if DEBUG
             Console.WriteLine( "WaveReader#.ctor; file=" + file + "; ret=" + ret );
 #endif
+        }
+
+        public String getFilePath() {
+            return m_file;
         }
 
         public int getSampleRate() {

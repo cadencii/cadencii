@@ -88,6 +88,10 @@ namespace org.kbinani.media {
             bufRight = new double[bBuflen];
         }
 
+        public String getFilePath() {
+            return reader.getFilePath();
+        }
+
         public Object getTag() {
             if ( reader == null ) {
                 return null;

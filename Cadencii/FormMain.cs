@@ -1288,7 +1288,6 @@ namespace org.kbinani.cadencii {
                                                       tmpfile,
                                                       start,
                                                       end,
-                                                      temp_premeasure,
                                                       false );
                             if ( dlg.showDialog() == BDialogResult.OK ) {
                                 successed = true;
@@ -4434,14 +4433,17 @@ namespace org.kbinani.cadencii {
             if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                 FormSynthesize fs = null;
                 try {
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    int clockStart = 0;
+                    int clockEnd = vsq.TotalClocks + 240;
                     fs = new FormSynthesize(
-                        AppManager.getVsqFile(),
+                        vsq,
                         AppManager.editorConfig.PreSendTime,
-                        new int[] { AppManager.getSelected() },
-                        new String[] { filename },
-                        AppManager.getVsqFile().TotalClocks + 240,
+                        AppManager.getSelected(),
+                        filename,
+                        clockStart,
+                        clockEnd,
                         true );
-
                     double started = PortUtil.getCurrentTime();
                     fs.showDialog();
 #if DEBUG
