@@ -35,6 +35,7 @@ namespace org.kbinani.vsq {
         /// このインスタンスが表す音階のノート値
         /// </summary>
         public int Value;
+        private static readonly int[] ALTER = new int[]{ 0, 1, 0, -1, 0, 0, 1, 0, 1, 0, -1, 0, 0 };
         private static readonly boolean[] _KEY_TYPE = new boolean[] { 
             true,
             false,
@@ -210,35 +211,7 @@ namespace org.kbinani.vsq {
         /// <param name="note"></param>
         /// <returns></returns>
         public static int getNoteAlter( int note ) {
-            int odd = note % 12;
-            switch ( odd ) {
-                case 0:
-                    return 0;
-                case 1:
-                    return 1;
-                case 2:
-                    return 0;
-                case 3:
-                    return -1;
-                case 4:
-                    return 0;
-                case 5:
-                    return 0;
-                case 6:
-                    return 1;
-                case 7:
-                    return 0;
-                case 8:
-                    return 1;
-                case 9:
-                    return 0;
-                case 10:
-                    return -1;
-                case 11:
-                    return 0;
-                default:
-                    return 0;
-            }
+            return ALTER[note % 12];
         }
 
         /// <summary>

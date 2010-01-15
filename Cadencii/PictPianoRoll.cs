@@ -212,6 +212,7 @@ namespace org.kbinani.cadencii {
 
                 VsqFileEx vsq = AppManager.getVsqFile();
                 EditMode edit_mode = AppManager.getEditMode();
+                int key_width = AppManager.keyWidth;
 
 #if JAVA
                 System.out.println( "PictPianoRoll#paint; (vsq==null)=" + (vsq == null) );
@@ -251,7 +252,7 @@ namespace org.kbinani.cadencii {
                     g.setColor( Color.white );
                     g.fillRect( 3, 0, width, height );
                     g.setColor( s_brs_240_240_240 );
-                    g.fillRect( 3, 0, AppManager.keyWidth, height );
+                    g.fillRect( 3, 0, key_width, height );
                 }
                 // ピアノロールとカーブエディタの境界
                 g.setColor( s_pen_112_112_112 );
@@ -306,22 +307,22 @@ namespace org.kbinani.cadencii {
                         }
                         if ( paint_required ) {
                             g.setColor( b );
-                            g.fillRect( AppManager.keyWidth, y, width - AppManager.keyWidth, track_height + 1 );
+                            g.fillRect( key_width, y, width - key_width, track_height + 1 );
                         }
                         if ( odd == 0 || odd == 5 ) {
                             g.setColor( border );
-                            g.drawLine( AppManager.keyWidth, y + track_height,
+                            g.drawLine( key_width, y + track_height,
                                         width, y + track_height );
                         }
                         #endregion
 
                         #region プリメジャー部分のピアノロール背景
                         int premeasure_start_x = xoffset;
-                        if ( premeasure_start_x < AppManager.keyWidth ) {
-                            premeasure_start_x = AppManager.keyWidth;
+                        if ( premeasure_start_x < key_width ) {
+                            premeasure_start_x = key_width;
                         }
-                        int premeasure_end_x = (int)(AppManager.getVsqFile().getPreMeasureClocks() * scalex + xoffset);
-                        if ( premeasure_start_x >= AppManager.keyWidth ) {
+                        int premeasure_end_x = (int)(vsq.getPreMeasureClocks() * scalex + xoffset);
+                        if ( premeasure_start_x >= key_width ) {
                             if ( note_is_whitekey ) {
                                 g.setColor( s_brs_153_153_153 );
                                 g.fillRect( premeasure_start_x, y,
@@ -345,8 +346,8 @@ namespace org.kbinani.cadencii {
                 //ピアノロールと鍵盤部分の縦線
                 int hilighted_note = -1;
                 g.setColor( s_pen_212_212_212 );
-                g.drawLine( AppManager.keyWidth, 0,
-                            AppManager.keyWidth, height );
+                g.drawLine( key_width, 0,
+                            key_width, height );
                 int odd2 = -1;
                 y = 128 * track_height - start_draw_y;
                 dy = -track_height;
@@ -364,7 +365,7 @@ namespace org.kbinani.cadencii {
 
                     #region 鍵盤部分
                     g.setColor( s_pen_212_212_212 );
-                    g.drawLine( 3, y, AppManager.keyWidth, y );
+                    g.drawLine( 3, y, key_width, y );
                     boolean hilighted = false;
                     if ( edit_mode == EditMode.ADD_ENTRY ) {
                         if ( AppManager.addingEvent.ID.Note == i ) {
@@ -391,7 +392,7 @@ namespace org.kbinani.cadencii {
                     }
                     if ( hilighted ) {
                         g.setColor( AppManager.getHilightColor() );
-                        g.fillRect( 35, y, AppManager.keyWidth - 35, track_height );
+                        g.fillRect( 35, y, key_width - 35, track_height );
                     }
                     if ( odd2 == 0 || hilighted ) {
                         g.setColor( s_brs_072_077_098 );
@@ -406,7 +407,7 @@ namespace org.kbinani.cadencii {
                 }
                 g.setClip( null );
 
-                g.clipRect( AppManager.keyWidth, 0, width - AppManager.keyWidth, height );
+                g.clipRect( key_width, 0, width - key_width, height );
                 #region 小節ごとの線
                 if ( vsq != null ) {
                     int dashed_line_step = AppManager.getPositionQuantizeClock();
@@ -452,7 +453,7 @@ namespace org.kbinani.cadencii {
                                 int target_list_count = target_list.size();
                                 for ( int j = j_start; j < target_list_count; j++ ) {
                                     DrawObject dobj = target_list.get( j );
-                                    int x = dobj.pxRectangle.x + AppManager.keyWidth - start_draw_x;
+                                    int x = dobj.pxRectangle.x + key_width - start_draw_x;
                                     y = dobj.pxRectangle.y - start_draw_y;
                                     int lyric_width = dobj.pxRectangle.width;
                                     if ( x + lyric_width < 0 ) {
@@ -485,8 +486,8 @@ namespace org.kbinani.cadencii {
                     boolean show_exp_line = AppManager.editorConfig.ShowExpLine;
                     if ( selected >= 1 ) {
                         Shape r = g.getClip();
-                        g.clipRect( AppManager.keyWidth, 0,
-                                    getWidth() - AppManager.keyWidth, getHeight() );
+                        g.clipRect( key_width, 0,
+                                    getWidth() - key_width, getHeight() );
                         int j_start = AppManager.drawStartIndex[selected - 1];
 
                         boolean first = true;
@@ -496,7 +497,7 @@ namespace org.kbinani.cadencii {
                                 int c = target_list.size();
                                 for ( int j = j_start; j < c; j++ ) {
                                     DrawObject dobj = target_list.get( j );
-                                    int x = dobj.pxRectangle.x + AppManager.keyWidth - start_draw_x;
+                                    int x = dobj.pxRectangle.x + key_width - start_draw_x;
                                     y = dobj.pxRectangle.y - start_draw_y;
                                     int lyric_width = dobj.pxRectangle.width;
                                     if ( x + lyric_width < 0 ) {
@@ -780,7 +781,7 @@ namespace org.kbinani.cadencii {
                         g.drawLine( x, 0, x, y - 1 );
                         g.drawLine( x, y + track_height, x, height );
                         // 横線
-                        g.drawLine( AppManager.keyWidth, y + track_height / 2 - 2,
+                        g.drawLine( key_width, y + track_height / 2 - 2,
                                     x - 1, y + track_height / 2 - 2 );
                         g.drawLine( x + length + 1, y + track_height / 2 - 2,
                                     width, y + track_height / 2 - 2 );
@@ -790,7 +791,7 @@ namespace org.kbinani.cadencii {
                         g.drawLine( x + 1, y + track_height,
                                     x + 1, height );
                         // 横線
-                        g.drawLine( AppManager.keyWidth, y + track_height / 2 - 1,
+                        g.drawLine( key_width, y + track_height / 2 - 1,
                                     x - 1, y + track_height / 2 - 1 );
                         g.drawLine( x + length + 1, y + track_height / 2 - 1,
                                     width, y + track_height / 2 - 1 );
@@ -813,7 +814,7 @@ namespace org.kbinani.cadencii {
                     g.drawLine( x, 0, x, y - 1 );
                     g.drawLine( x, y + track_height, x, height );
                     // 横線
-                    g.drawLine( AppManager.keyWidth, y + track_height / 2 - 2,
+                    g.drawLine( key_width, y + track_height / 2 - 2,
                                 x - 1, y + track_height / 2 - 2 );
                     g.drawLine( x + length + 1, y + track_height / 2 - 2,
                                 width, y + track_height / 2 - 2 );
@@ -822,7 +823,7 @@ namespace org.kbinani.cadencii {
                     g.drawLine( x + 1, 0, x + 1, y - 1 );
                     g.drawLine( x + 1, y + track_height, x + 1, height );
                     // 横線
-                    g.drawLine( AppManager.keyWidth, y + track_height / 2 - 1,
+                    g.drawLine( key_width, y + track_height / 2 - 1,
                                 x - 1, y + track_height / 2 - 1 );
                     g.drawLine( x + length + 1, y + track_height / 2 - 1,
                                 width, y + track_height / 2 - 1 );
@@ -913,8 +914,8 @@ namespace org.kbinani.cadencii {
 
                 #region pictPianoRoll_Paintより
                 // マーカー
-                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + 6 + AppManager.keyWidth - AppManager.startToDrawX);
-                if ( AppManager.keyWidth <= marker_x && marker_x <= getWidth() ) {
+                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + 6 + key_width - AppManager.startToDrawX);
+                if ( key_width <= marker_x && marker_x <= getWidth() ) {
                     g.setColor( Color.white );
                     g.setStroke( new BasicStroke( 2f ) );
                     g.drawLine( marker_x, 0, marker_x, getHeight() );
@@ -939,8 +940,8 @@ namespace org.kbinani.cadencii {
                     //int start = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.Start );
                     //int end = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.End );
                     int start = (int)(AppManager.wholeSelectedInterval.getStart() * scalex) + xoffset + 2;
-                    if ( start < AppManager.keyWidth ) {
-                        start = AppManager.keyWidth;
+                    if ( start < key_width ) {
+                        start = key_width;
                     }
                     int end = (int)(AppManager.wholeSelectedInterval.getEnd() * scalex) + xoffset + 2;
                     if ( start < end ) {
@@ -967,9 +968,9 @@ namespace org.kbinani.cadencii {
                         ty = mouse.y;
                         theight = ly - mouse.y;
                     }
-                    if ( tx < AppManager.keyWidth ) {
+                    if ( tx < key_width ) {
                         int txold = tx;
-                        tx = AppManager.keyWidth;
+                        tx = key_width;
                         twidth -= (tx - txold);
                     }
                     Rectangle rc = new Rectangle( tx, ty, twidth, theight );
