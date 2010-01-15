@@ -96,8 +96,8 @@ namespace org.kbinani.cadencii {
             boolean refresh_winini = false;
             if ( !required.Equals( koe_old ) && !koe_old.Equals( "" ) ) {
                 refresh_winini = true;
-                win32.WriteProfileString( "AquesTone", "FileKoe_00", required );
             }
+            win32.WriteProfileString( "AquesTone", "FileKoe_00", required );
             boolean ret = false;
             try {
                 ret = base.open( dll_path, block_size, sample_rate );
