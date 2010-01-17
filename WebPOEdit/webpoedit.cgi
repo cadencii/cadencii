@@ -500,6 +500,7 @@ if( $author eq "" ){
 				print "    <option value=\"" . $LANGS[$i][1] . "\">" . $LANGS[$i][0] . "\n";
 			}
 		}
+		print "  </select>\n";
 		print "  <input type=\"submit\" value=\"create\">\n";
 		print "  </form>\n";
 		print "  </div>\n";
