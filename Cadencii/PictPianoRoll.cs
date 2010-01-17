@@ -188,6 +188,8 @@ namespace org.kbinani.cadencii {
                 int y, dy;
                 float scalex = AppManager.scaleX;
                 float inv_scalex = 1f / scalex;
+                BasicStroke defaultStroke = new BasicStroke();
+                BasicStroke dashedStroke = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f );
 
 #if JAVA
                 System.out.println( "PictPianoRoll#paint; (AppManager.inputTextBox==null)=" + (AppManager.inputTextBox == null) );
@@ -415,6 +417,7 @@ namespace org.kbinani.cadencii {
                         VsqBarLineType blt = (VsqBarLineType)itr.next();
                         int local_clock_step = 1920 / blt.getLocalDenominator();
                         int x = (int)(blt.clock() * scalex + xoffset);
+                        g.setStroke( defaultStroke );
                         if ( blt.isSeparator() ) {
                             //ピアノロール上
                             g.setColor( bar );
@@ -429,6 +432,7 @@ namespace org.kbinani.cadencii {
                             g.setColor( beat );
                             for ( int i = 1; i < numDashedLine; i++ ) {
                                 int x2 = (int)((blt.clock() + i * dashed_line_step) * scalex + xoffset);
+                                g.setStroke( dashedStroke );
                                 g.drawLine( x2, 0, x2, height );
                             }
                         }
@@ -717,7 +721,7 @@ namespace org.kbinani.cadencii {
                                     g.setColor( new Color( 171, 171, 171 ) );
                                     g.setStroke( s_pen_dashed_171_171_171 );
                                     g.drawRect( x, y, 10, track_height - 1 );
-                                    g.setStroke( new BasicStroke() );
+                                    g.setStroke( defaultStroke );
                                 } else {
                                     int length = (int)(ev.editing.ID.getLength() * scalex);
                                     g.setColor( s_pen_a136_000_000_000 );
@@ -919,7 +923,7 @@ namespace org.kbinani.cadencii {
                     g.setColor( Color.white );
                     g.setStroke( new BasicStroke( 2f ) );
                     g.drawLine( marker_x, 0, marker_x, getHeight() );
-                    g.setStroke( new BasicStroke() );
+                    g.setStroke( defaultStroke );
                 }
 
                 /*DateTime dnow = DateTime.Now;

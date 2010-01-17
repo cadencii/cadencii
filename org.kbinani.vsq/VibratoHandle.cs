@@ -195,7 +195,7 @@ namespace org.kbinani.vsq {
 #endif
 
         public String getDisplayString() {
-            return IDS + caption;
+            return caption;
         }
 
 #if !JAVA

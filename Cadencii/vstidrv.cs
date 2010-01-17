@@ -429,8 +429,12 @@ namespace org.kbinani.cadencii {
                 ui.close();
             }
             try {
-                aEffect.Dispatch( AEffectOpcodes.effClose, 0, 0, IntPtr.Zero, 0.0f );
-                win32.FreeLibrary( dllHandle );
+                if ( aEffect != null ) {
+                    aEffect.Dispatch( AEffectOpcodes.effClose, 0, 0, IntPtr.Zero, 0.0f );
+                }
+                if ( dllHandle != IntPtr.Zero ) {
+                    win32.FreeLibrary( dllHandle );
+                }
             } catch( Exception ex ){
                 PortUtil.stderr.println( "vstidrv#close; ex=" + ex );
             }

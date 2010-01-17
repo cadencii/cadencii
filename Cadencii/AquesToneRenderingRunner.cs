@@ -84,6 +84,14 @@ namespace org.kbinani.cadencii {
         }
 
         public override void run() {
+            if ( driver == null ) {
+                return;
+            }
+
+            if ( !driver.loaded ) {
+                return;
+            }
+
             m_rendering = true;
             m_abort_required = false;
 

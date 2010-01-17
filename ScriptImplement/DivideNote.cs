@@ -51,7 +51,7 @@ namespace org.kbinani.cadencii {
                 String item = MODIFIER[i];
                 comboKeys.Items.Add( item );
                 count++;
-                if ( item.Equals( Modifier ) ) {
+                if ( item.Equals( getModifier() ) ) {
                     selected = count;
                 }
             }
@@ -64,6 +64,13 @@ namespace org.kbinani.cadencii {
             using ( MemoryStream ms = new MemoryStream( b ) ) {
                 m_icon = new Bitmap( ms );
             }
+        }
+
+        private static string getModifier() {
+            if ( Modifier == null ) {
+                Modifier = "Control";
+            }
+            return Modifier;
         }
 
         public void applyLanguage( string language ) {
@@ -92,18 +99,15 @@ namespace org.kbinani.cadencii {
                 Console.WriteLine( "s_divide_threshold=" + divide_threshold );
                 Keys modifier = Control.ModifierKeys;
                 bool middle_mode = button == MouseButtons.Middle;
-                if ( Modifier == null ) {
-                    Modifier = "Control";
-                }
-                if ( Modifier.Equals( "Alt" ) ) {
+                if ( getModifier().Equals( "Alt" ) ) {
                     if ( (modifier & Keys.Alt) == Keys.Alt ) {
                         middle_mode = true;
                     }
-                } else if ( Modifier.Equals( "Control" ) ) {
+                } else if ( getModifier().Equals( "Control" ) ) {
                     if ( (modifier & Keys.Control) == Keys.Control ) {
                         middle_mode = true;
                     }
-                } else if ( Modifier.Equals( "Shift" ) ) {
+                } else if ( getModifier().Equals( "Shift" ) ) {
                     if ( (modifier & Keys.Shift) == Keys.Shift ) {
                         middle_mode = true;
                     }
@@ -186,7 +190,7 @@ namespace org.kbinani.cadencii {
         public DialogResult openDialog() {
             int num = Numerator;
             int den = Denominator;
-            String key = Modifier;
+            String key = getModifier();
             DialogResult ret = this.ShowDialog();
             if ( ret != DialogResult.OK ) {
                 // 元に戻す

@@ -2883,8 +2883,8 @@ namespace org.kbinani.cadencii {
             } else if ( edit_mode == EditMode.ADD_ENTRY || edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
                 #region AddEntry || AddFixedLengthEntry
                 if ( AppManager.getSelected() >= 0 ) {
-                    if ( (AppManager.getEditMode() == EditMode.ADD_FIXED_LENGTH_ENTRY) ||
-                         (AppManager.getEditMode() == EditMode.ADD_ENTRY && (m_button_initial.x != e.X || m_button_initial.y != e.Y) && AppManager.addingEvent.ID.getLength() > 0) ) {
+                    if ( (edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY) ||
+                         (edit_mode == EditMode.ADD_ENTRY && (m_button_initial.x != e.X || m_button_initial.y != e.Y) && AppManager.addingEvent.ID.getLength() > 0) ) {
                         LyricHandle lyric = new LyricHandle( "あ", "a" );
                         VibratoHandle vibrato = null;
                         int vibrato_delay = 0;
@@ -2892,7 +2892,7 @@ namespace org.kbinani.cadencii {
                             int note_length = AppManager.addingEvent.ID.getLength();
                             // 音符位置での拍子を調べる
                             //int denom, numer;
-                            Timesig timesig = AppManager.getVsqFile().getTimesigAt( AppManager.addingEvent.Clock );
+                            Timesig timesig = vsq.getTimesigAt( AppManager.addingEvent.Clock );
 
                             // ビブラートを自動追加するかどうかを決める閾値
                             int autovib = AutoVibratoMinLengthUtil.getValue( AppManager.editorConfig.AutoVibratoMinimumLength );
@@ -2910,7 +2910,7 @@ namespace org.kbinani.cadencii {
                                 }
                                 SynthesizerType type = SynthesizerType.VOCALOID2;
                                 String default_icon_id = AppManager.editorConfig.AutoVibratoType2;
-                                if ( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version.Equals( VSTiProxy.RENDERER_DSB2 ) ) {
+                                if ( vsq.Track.get( AppManager.getSelected() ).getCommon().Version.Equals( VSTiProxy.RENDERER_DSB2 ) ) {
                                     type = SynthesizerType.VOCALOID1;
                                     default_icon_id = AppManager.editorConfig.AutoVibratoType1;
                                 }
@@ -2923,26 +2923,26 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                         PortUtil.println( "FormMain#pictPianoRoll_MosueUp; vsq_track.getCommon().Version=" + vsq_track.getCommon().Version );
 #endif
-                        //if ( vsq_track.getCommon().Version.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
-                            VsqEvent item = vsq_track.getSingerEventAt( AppManager.addingEvent.Clock );
-                            SingerConfig singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Program );
+                        VsqEvent item = vsq_track.getSingerEventAt( AppManager.addingEvent.Clock );
+                        SingerConfig singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Program );
+
 #if DEBUG
-                            PortUtil.println( "FormMain#pictPianoRoll_MouseUp; AppManager.utauVoiceDB.containsKey(singerConfig.VOICEIDSTR)=" + AppManager.utauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) );
+                        PortUtil.println( "FormMain#pictPianoRoll_MouseUp; (singerConfig==null)=" + (singerConfig == null) );
 #endif
-                            if ( AppManager.utauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
-                                UtauVoiceDB utauVoiceDb = AppManager.utauVoiceDB.get( singerConfig.VOICEIDSTR );
-                                OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
+
+                        if ( singerConfig != null && AppManager.utauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
+                            UtauVoiceDB utauVoiceDb = AppManager.utauVoiceDB.get( singerConfig.VOICEIDSTR );
+                            OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
 #if DEBUG
-                                PortUtil.println( "FormMain#pictPianoRoll_MouseUp; PreUtterance=" + otoArgs.msPreUtterance + "; VoiceOverlap=" + otoArgs.msOverlap );
+                            PortUtil.println( "FormMain#pictPianoRoll_MouseUp; PreUtterance=" + otoArgs.msPreUtterance + "; VoiceOverlap=" + otoArgs.msOverlap );
 #endif
-                                AppManager.addingEvent.UstEvent.PreUtterance = otoArgs.msPreUtterance;
-                                AppManager.addingEvent.UstEvent.VoiceOverlap = otoArgs.msOverlap;
-                            }
-                        //}
+                            AppManager.addingEvent.UstEvent.PreUtterance = otoArgs.msPreUtterance;
+                            AppManager.addingEvent.UstEvent.VoiceOverlap = otoArgs.msOverlap;
+                        }
 
                         // 自動ノーマライズのモードで、処理を分岐
                         if ( AppManager.autoNormalize ) {
-                            VsqTrack work = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
+                            VsqTrack work = (VsqTrack)vsq_track.clone();
                             AppManager.addingEvent.ID.type = VsqIDType.Anote;
                             AppManager.addingEvent.ID.Dynamics = 64;
                             AppManager.addingEvent.ID.VibratoHandle = vibrato;
@@ -3006,11 +3006,11 @@ namespace org.kbinani.cadencii {
                         for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                             SelectedEventEntry ev = (SelectedEventEntry)itr.next();
                             int internal_id = ev.original.InternalID;
-                            if ( ev.editing.Clock < clockAtPremeasure ){
+                            if ( ev.editing.Clock < clockAtPremeasure ) {
                                 out_of_range = true;
                                 break;
                             }
-                            if ( ev.editing.ID.Note < 0 || 128 < ev.editing.ID.Note ){
+                            if ( ev.editing.ID.Note < 0 || 128 < ev.editing.ID.Note ) {
                                 out_of_range = true;
                                 break;
                             }

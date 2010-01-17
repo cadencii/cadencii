@@ -87,6 +87,9 @@ namespace org.kbinani.cadencii {
         public int phontParameterIndex = 8;
 
         public override boolean open( string dll_path, int block_size, int sample_rate ) {
+#if DEBUG
+            PortUtil.println( "AquesToneDriver#open" );
+#endif
             int strlen = 260;
             StringBuilder sb = new StringBuilder( strlen );
             win32.GetProfileString( "AquesTone", "FileKoe_00", "", sb, (uint)strlen );
@@ -144,6 +147,9 @@ namespace org.kbinani.cadencii {
             if ( refresh_winini ) {
                 win32.WriteProfileString( "AquesTone", "FileKoe_00", koe_old );
             }
+#if DEBUG
+            PortUtil.println( "AquesToneDriver#open; done; ret=" + ret );
+#endif
             return ret;
         }
 

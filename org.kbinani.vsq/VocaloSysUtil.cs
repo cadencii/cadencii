@@ -148,6 +148,9 @@ namespace org.kbinani.vsq {
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
             }
             if ( exp_config_sys2 == null ) {
+#if DEBUG
+                PortUtil.println( "VocaloSysUtil#.ctor; loading default ExpressionConfigSys..." );
+#endif
                 exp_config_sys2 = ExpressionConfigSys.getVocaloid2Default();
             }
             s_exp_config_sys.put( SynthesizerType.VOCALOID2, exp_config_sys2 );
