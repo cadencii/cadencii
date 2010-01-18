@@ -753,14 +753,26 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        [Obsolete]
+        private void executeCommand( CadenciiCommand command, boolean register ) {
+            TreeMap<Integer, EditedZoneCommand> com = new TreeMap<int, EditedZoneCommand>();
+            executeCommand( command, com, register );
+        }
+
+        private void executeCommand( CadenciiCommand command, int track, EditedZoneCommand zoneCommand, boolean register ) {
+            TreeMap<Integer, EditedZoneCommand> com = new TreeMap<Integer, EditedZoneCommand>();
+            com.put( track, zoneCommand );
+            executeCommand( command, com, register );
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="command"></param>
         /// <param name="register">Undo/Redo用バッファにExecuteの結果を格納するかどうかを指定するフラグ</param>
-        private void executeCommand( CadenciiCommand command, boolean register ) {
+        private void executeCommand( CadenciiCommand command, TreeMap<Integer, EditedZoneCommand> zoneCommand, boolean register ) {
             if ( register ) {
-                AppManager.register( AppManager.getVsqFile().executeCommand( command ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( command ), zoneCommand );
             } else {
                 AppManager.getVsqFile().executeCommand( command );
             }
@@ -3109,6 +3121,7 @@ namespace org.kbinani.cadencii {
             VsqFileEx vsq = AppManager.getVsqFile();
             m_mouse_down_location = new Point( e.X + AppManager.startToDrawX, e.Y );
             int clock = AppManager.clockFromXCoord( e.X );
+            int selected = AppManager.getSelected();
             m_mouse_moved = false;
             m_mouse_downed = true;
             if ( AppManager.keyWidth < e.X && clock < vsq.getPreMeasure() ) {
@@ -3185,8 +3198,12 @@ namespace org.kbinani.cadencii {
                 if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                     #region EditTool.Eraser
                     if ( ve != null && ve.Clock > 0 ) {
-                        CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventDelete( AppManager.getSelected(), ve.InternalID ) );
-                        executeCommand( run, true );
+                        CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventDelete( selected, ve.InternalID ) );
+                        executeCommand( run, 
+                                        selected, 
+                                        new EditedZoneCommand( new EditedZoneUnit[] { new EditedZoneUnit( ve.Clock, ve.Clock + ve.ID.getLength() ) }, 
+                                                               new EditedZoneUnit[] { } ),
+                                        true );
                     }
                     #endregion
                 } else {
@@ -3565,9 +3582,13 @@ namespace org.kbinani.cadencii {
                             VsqEvent ve3 = findItemAt( e.X, e.Y );
                             if ( ve3 != null ) {
                                 AppManager.clearSelectedEvent();
-                                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventDelete( AppManager.getSelected(),
+                                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventDelete( selected,
                                                                                                                   ve3.InternalID ) );
-                                executeCommand( run, true );
+                                executeCommand( run, 
+                                                selected,
+                                                new EditedZoneCommand( new EditedZoneUnit[]{ new EditedZoneUnit( ve3.Clock, ve3.Clock + ve3.ID.getLength() ) },
+                                                                       new EditedZoneUnit[]{} ),
+                                                true );
                             } else {
                                 if ( AppManager.isCurveMode() ) {
                                     Vector<BezierChain> list = vsq.AttachedCurves.get( AppManager.getSelected() - 1 ).get( m_selected_curve );
@@ -3590,7 +3611,7 @@ namespace org.kbinani.cadencii {
                                                             break;
                                                         }
                                                     }
-                                                    CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( AppManager.getSelected(),
+                                                    CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( selected,
                                                                                                                        m_selected_curve,
                                                                                                                        chain.value.id,
                                                                                                                        work,

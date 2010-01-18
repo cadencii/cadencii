@@ -18,14 +18,12 @@ import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani;
-using org.kbinani.vsq;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.image;
-using org.kbinani.java.util;
-using org.kbinani.windows.forms;
-using org.kbinani.javax.swing;
 using org.kbinani.apputil;
+using org.kbinani.java.awt;
+using org.kbinani.java.util;
+using org.kbinani.javax.swing;
+using org.kbinani.vsq;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;

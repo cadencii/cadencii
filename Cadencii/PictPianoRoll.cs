@@ -215,6 +215,7 @@ namespace org.kbinani.cadencii {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 EditMode edit_mode = AppManager.getEditMode();
                 int key_width = AppManager.keyWidth;
+                int selected = AppManager.getSelected();
 
 #if JAVA
                 System.out.println( "PictPianoRoll#paint; (vsq==null)=" + (vsq == null) );
@@ -485,7 +486,6 @@ namespace org.kbinani.cadencii {
                     }
 
                     // 選択されているトラックの表示を行う
-                    int selected = AppManager.getSelected();
                     boolean show_lyrics = AppManager.editorConfig.ShowLyric;
                     boolean show_exp_line = AppManager.editorConfig.ShowExpLine;
                     if ( selected >= 1 ) {
@@ -996,6 +996,21 @@ namespace org.kbinani.cadencii {
                 new PointF( 0, 0 ) );
 #endif
                 #endregion
+
+#if DEBUG
+                EditedZone zone = AppManager.editedZone[selected - 1];
+                g.setColor( new Color( 0, 0, 0, 128 ) );
+                int count = 0;
+                for ( Iterator itr = zone.iterator(); itr.hasNext(); ) {
+                    EditedZoneUnit unit = (EditedZoneUnit)itr.next();
+                    int x0 = (int)(unit.start * scalex) + xoffset;
+                    int x1 = (int)(unit.end * scalex) + xoffset;
+                    g.fillRect( x0, 0, x1 - x0, track_height );
+                    //PortUtil.println( "PictPianoRoll#paint; " + x0 + "-" + x1 );
+                    count++;
+                }
+                //PortUtil.println( "PictPianoRoll#paint; count=" + count );
+#endif
             } catch ( Exception ex ) {
 #if JAVA
                 System.err.println( "PictPianoRoll#paint; ex=" + ex );

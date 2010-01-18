@@ -2968,11 +2968,14 @@ namespace org.kbinani.cadencii {
                                     }
                                 }
                             }
-                            work.addEvent( (VsqEvent)AppManager.addingEvent.clone() );
-                            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( AppManager.getSelected(),
+                            VsqEvent add = (VsqEvent)AppManager.addingEvent.clone();
+                            work.addEvent( add );
+                            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                                          work,
-                                                                                         AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                                                                         AppManager.getVsqFile().AttachedCurves.get( selected - 1 ) );
+                            AppManager.register( AppManager.getVsqFile().executeCommand( run ),
+                                                 selected,
+                                                 AppManager.editedZone[selected - 1].add( add.Clock, add.Clock + add.ID.getLength() ) );
                             setEdited( true );
                         } else {
                             VsqEvent[] items = new VsqEvent[1];
@@ -2985,7 +2988,9 @@ namespace org.kbinani.cadencii {
                             items[0].ID.VibratoHandle = vibrato;
 
                             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAddRange( AppManager.getSelected(), items ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                            AppManager.register( AppManager.getVsqFile().executeCommand( run ), 
+                                                 selected, 
+                                                 AppManager.editedZone[selected - 1].add( items[0].Clock, items[0].Clock + items[0].ID.getLength() ) );
                             setEdited( true );
                         }
                     }

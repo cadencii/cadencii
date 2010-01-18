@@ -47,14 +47,26 @@ namespace org.kbinani.cadencii {
 #endif
 
     public class AppManager {
+        class CommandContainer {
+            public ICommand command;
+            public TreeMap<Integer, EditedZoneCommand> editedZoneCommand;
+            
+            public CommandContainer( ICommand command, TreeMap<Integer, EditedZoneCommand> editedZoneCommand ) {
+                this.command = command;
+                this.editedZoneCommand = editedZoneCommand;
+            }
+        }
+
         public const int MIN_KEY_WIDTH = 68;
         public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
         private const String CONFIG_FILE_NAME = "config.xml";
         private const String CONFIG_DIR_NAME = "Cadencii";
+#if CLIPBOARD_AS_TEXT
         /// <summary>
         /// OSのクリップボードに貼り付ける文字列の接頭辞．これがついていた場合，クリップボードの文字列をCadenciiが使用できると判断する．
         /// </summary>
         private const String CLIP_PREFIX = "CADENCIIOBJ";
+#endif
         public const int MSGBOX_DEFAULT_OPTION = -1;
         public const int MSGBOX_YES_NO_OPTION = 0;
         public const int MSGBOX_YES_NO_CANCEL_OPTION = 1;
@@ -771,9 +783,10 @@ namespace org.kbinani.cadencii {
         private static int s_last_selected_timesig = -1;
         private static EditTool s_selected_tool = EditTool.PENCIL;
 #if !TREECOM
-        private static Vector<ICommand> s_commands = new Vector<ICommand>();
+        private static Vector<CommandContainer> s_commands = new Vector<CommandContainer>();
         private static int s_command_position = -1;
 #endif
+        public static EditedZone[] editedZone = new EditedZone[16];
         /// <summary>
         /// 選択されているベジエ点のリスト
         /// </summary>
@@ -1483,6 +1496,10 @@ namespace org.kbinani.cadencii {
         public static void clearCommandBuffer() {
             s_commands.clear();
             s_command_position = -1;
+
+            for ( int i = 0; i < editedZone.Length; i++ ) {
+                editedZone[i].clear();
+            }
         }
 
         /// <summary>
@@ -1493,7 +1510,8 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "CommonConfig.Undo()" );
 #endif
             if ( isUndoAvailable() ) {
-                ICommand run_src = s_commands.get( s_command_position );
+                CommandContainer container = s_commands.get( s_command_position );
+                ICommand run_src = container.command;
                 CadenciiCommand run = (CadenciiCommand)run_src;
 #if DEBUG
                 AppManager.debugWriteLine( "    command type=" + run.type );
@@ -1512,7 +1530,14 @@ namespace org.kbinani.cadencii {
                         mainWindow.updateBgmMenuState();
                     }
                 }
-                s_commands.set( s_command_position, inv );
+                TreeMap<Integer, EditedZoneCommand> invZone = new TreeMap<Integer, EditedZoneCommand>();
+                TreeMap<Integer, EditedZoneCommand> zoneCommand = container.editedZoneCommand;
+                for ( Iterator itr = zoneCommand.keySet().iterator(); itr.hasNext(); ) {
+                    int track = (Integer)itr.next();
+                    EditedZoneCommand runContainer = zoneCommand.get( track );
+                    invZone.put( track, editedZone[track - 1].executeCommand( runContainer ) );
+                }
+                s_commands.set( s_command_position, new CommandContainer( inv, invZone ) );
                 s_command_position--;
             }
         }
@@ -1525,7 +1550,8 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "CommonConfig.Redo()" );
 #endif
             if ( isRedoAvailable() ) {
-                ICommand run_src = s_commands.get( s_command_position + 1 );
+                CommandContainer runContainer = s_commands.get( s_command_position + 1 );
+                ICommand run_src = runContainer.command;
                 CadenciiCommand run = (CadenciiCommand)run_src;
                 if ( run.vsqCommand != null ) {
                     if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
@@ -1541,27 +1567,46 @@ namespace org.kbinani.cadencii {
                         mainWindow.updateBgmMenuState();
                     }
                 }
-                s_commands.set( s_command_position + 1, inv );
+                TreeMap<Integer, EditedZoneCommand> invZone = new TreeMap<Integer, EditedZoneCommand>();
+                for ( Iterator itr = runContainer.editedZoneCommand.keySet().iterator(); itr.hasNext(); ) {
+                    int track = (Integer)itr.next();
+                    EditedZoneCommand zoneCommand = runContainer.editedZoneCommand.get( track );
+                    invZone.put( track, editedZone[track - 1].executeCommand( zoneCommand ) );
+                }
+                s_commands.set( s_command_position + 1, new CommandContainer( inv, invZone ) );
                 s_command_position++;
             }
+        }
+
+        [Obsolete]
+        public static void register( ICommand command ) {
+            TreeMap<Integer, EditedZoneCommand> com = new TreeMap<Integer, EditedZoneCommand>();
+            register( command, com );
+        }
+
+        public static void register( ICommand command, int track1, EditedZoneCommand zoneCommand1 ) {
+            TreeMap<Integer, EditedZoneCommand> com = new TreeMap<Integer, EditedZoneCommand>();
+            com.put( track1, zoneCommand1 );
+            register( command, com );
         }
 
         /// <summary>
         /// コマンドバッファに指定されたコマンドを登録します
         /// </summary>
         /// <param name="command"></param>
-        public static void register( ICommand command ) {
+        public static void register( ICommand command, TreeMap<Integer, EditedZoneCommand> zoneCommand ) {
 #if DEBUG
             AppManager.debugWriteLine( "EditorManager.Register; command=" + command );
             AppManager.debugWriteLine( "    m_commands.Count=" + s_commands.size() );
 #endif
+            CommandContainer runContainer = new CommandContainer( command, zoneCommand );
             if ( s_command_position == s_commands.size() - 1 ) {
                 // 新しいコマンドバッファを追加する場合
-                s_commands.add( command );
+                s_commands.add( runContainer );
                 s_command_position = s_commands.size() - 1;
             } else {
                 // 既にあるコマンドバッファを上書きする場合
-                s_commands.set( s_command_position + 1, command );
+                s_commands.set( s_command_position + 1, runContainer );
                 for ( int i = s_commands.size() - 1; i >= s_command_position + 2; i-- ) {
                     s_commands.removeElementAt( i );
                 }
@@ -2295,6 +2340,9 @@ namespace org.kbinani.cadencii {
             s_locker = new Object();
             SymbolTable.loadDictionary();
             VSTiProxy.CurrentUser = "";
+            for ( int i = 0; i < editedZone.Length; i++ ) {
+                editedZone[i] = new EditedZone();
+            }
 
             #region Apply User Dictionary Configuration
             try {
@@ -2429,6 +2477,7 @@ namespace org.kbinani.cadencii {
         }
 
         #region クリップボードの管理
+#if CLIPBOARD_AS_TEXT
         /// <summary>
         /// オブジェクトをシリアライズし，クリップボードに格納するための文字列を作成します
         /// </summary>
@@ -2475,36 +2524,42 @@ namespace org.kbinani.cadencii {
                 return null;
             }
         }
+#endif
 
         public static void clearClipBoard() {
+#if CLIPBOARD_AS_TEXT
             if ( PortUtil.isClipboardContainsText() ) {
                 String clip = PortUtil.getClipboardText();
                 if ( clip != null && clip.StartsWith( CLIP_PREFIX ) ) {
                     PortUtil.clearClipboard();
                 }
             }
+#else
+            if ( Clipboard.ContainsData( typeof( ClipboardEntry ) + "" ) ) {
+                Clipboard.Clear();
+            }
+#endif
         }
 
         public static void setClipboard( ClipboardEntry item ) {
+#if CLIPBOARD_AS_TEXT
             String clip = "";
             try {
                 clip = getSerializedText( item );
             } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "AppManager#setClipboard; ex=" + ex );
-#else
-#if DEBUG
-                PortUtil.println( "AppManager#setClipboard; ex=" + ex );
-#endif
-#endif
+                PortUtil.stderr.println( "AppManager#setClipboard; ex=" + ex );
                 return;
             }
             PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
+#else
+            Clipboard.SetDataObject( item, false );
+#endif
         }
 
         public static ClipboardEntry getCopiedItems() {
             ClipboardEntry ce = null;
+#if CLIPBOARD_AS_TEXT
             if ( PortUtil.isClipboardContainsText() ) {
                 String clip = PortUtil.getClipboardText();
                 if ( clip.StartsWith( CLIP_PREFIX ) ) {
@@ -2523,6 +2578,15 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
+#else
+            IDataObject dobj = Clipboard.GetDataObject();
+            if ( dobj != null ) {
+                Object obj = dobj.GetData( typeof( ClipboardEntry ) );
+                if ( obj != null && obj is ClipboardEntry ) {
+                    ce = (ClipboardEntry)obj;
+                }
+            }
+#endif
             if ( ce == null ) {
                 ce = new ClipboardEntry();
             }
@@ -2544,10 +2608,22 @@ namespace org.kbinani.cadencii {
             return ce;
         }
 
-        public static void setCopiedEvent( Vector<VsqEvent> item, int copy_started_clock ) {
+        private static void setClipboard( 
+            Vector<VsqEvent> events, 
+            Vector<TempoTableEntry> tempo, 
+            Vector<TimeSigTableEntry> timesig, 
+            TreeMap<CurveType, VsqBPList> curve,
+            TreeMap<CurveType, Vector<BezierChain>> bezier, 
+            int copy_started_clock ) 
+        {
             ClipboardEntry ce = new ClipboardEntry();
-            ce.events = item;
+            ce.events = events;
+            ce.tempo = tempo;
+            ce.timesig = timesig;
+            ce.points = curve;
+            ce.beziers = bezier;
             ce.copyStartedClock = copy_started_clock;
+#if CLIPBOARD_AS_TEXT
             String clip = "";
             try {
                 clip = getSerializedText( ce );
@@ -2563,86 +2639,29 @@ namespace org.kbinani.cadencii {
             }
             PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
+#else
+            Clipboard.SetDataObject( ce, false );
+#endif
+        }
+
+        public static void setCopiedEvent( Vector<VsqEvent> item, int copy_started_clock ) {
+            setClipboard( item, null, null, null, null, copy_started_clock );
         }
 
         public static void setCopiedTempo( Vector<TempoTableEntry> item, int copy_started_clock ) {
-            ClipboardEntry ce = new ClipboardEntry();
-            ce.tempo = item;
-            String clip = "";
-            try {
-                getSerializedText( ce );
-            } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "AppManager#setCopiedTempo; ex=" + ex );
-#else
-#if DEBUG
-                PortUtil.println( "AppManager#setCopiedTempo; ex=" + ex );
-#endif
-#endif
-                return;
-            }
-            PortUtil.clearClipboard();
-            PortUtil.setClipboardText( clip );
+            setClipboard( null, item, null, null, null, copy_started_clock );
         }
 
         public static void setCopiedTimesig( Vector<TimeSigTableEntry> item, int copy_started_clock ) {
-            ClipboardEntry ce = new ClipboardEntry();
-            ce.timesig = item;
-            String clip = "";
-            try {
-                getSerializedText( ce );
-            } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "AppManager#setCopiedTimesig; ex=" + ex );
-#else
-#if DEBUG
-                PortUtil.println( "AppManager#setCopiedTimesig; ex=" + ex );
-#endif
-#endif
-                return;
-            }
-            PortUtil.clearClipboard();
-            PortUtil.setClipboardText( clip );
+            setClipboard( null, null, item, null, null, copy_started_clock );
         }
 
         public static void setCopiedCurve( TreeMap<CurveType, VsqBPList> item, int copy_started_clock ) {
-            ClipboardEntry ce = new ClipboardEntry();
-            ce.points = item;
-            String clip = "";
-            try {
-                getSerializedText( ce );
-            } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "AppManager#setCopiedCurve; ex=" + ex );
-#else
-#if DEBUG
-                PortUtil.println( "AppManager#setCopiedCurve; ex=" + ex );
-#endif
-#endif
-                return;
-            }
-            PortUtil.clearClipboard();
-            PortUtil.setClipboardText( clip );
+            setClipboard( null, null, null, item, null, copy_started_clock );
         }
 
         public static void setCopiedBezier( TreeMap<CurveType, Vector<BezierChain>> item, int copy_started_clock ) {
-            ClipboardEntry ce = new ClipboardEntry();
-            ce.beziers = item;
-            String clip = "";
-            try {
-                getSerializedText( ce );
-            }catch( Exception ex ){
-#if JAVA
-                System.err.println( "AppManager#setCopiedBezier; ex=" + ex );
-#else
-#if DEBUG
-                PortUtil.println( "AppManager#setCopiedBezier; ex=" + ex );
-#endif
-#endif
-                return;
-            }
-            PortUtil.clearClipboard();
-            PortUtil.setClipboardText( clip );
+            setClipboard( null, null, null, null, item, copy_started_clock );
         }
         #endregion
 
