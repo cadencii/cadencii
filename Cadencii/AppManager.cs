@@ -11,6 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#define ENABLE_OBSOLUTE_COMMAND
 #if JAVA
 package org.kbinani.cadencii;
 
@@ -29,15 +30,14 @@ using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Windows.Forms;
+using Microsoft.CSharp;
 using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani;
 using org.kbinani.java.awt;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
+using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 using org.kbinani.xml;
-using Microsoft.CSharp;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -917,6 +917,125 @@ namespace org.kbinani.cadencii {
 
         private const String TEMPDIR_NAME = "cadencii";
 
+        /// <summary>
+        /// 2つのトラック情報を比較し、違う部分を検出します
+        /// </summary>
+        /// <param name="track1"></param>
+        /// <param name="track2"></param>
+        /// <returns></returns>
+        public static EditedZoneUnit[] detectTrackDifference( VsqTrack track1, VsqTrack track2 ) {
+            Vector<EditedZoneUnit> ret = new Vector<EditedZoneUnit>();
+
+            int numEvent1 = track1.getEventCount();
+            int numEvent2 = track2.getEventCount();
+
+            #region track1にあってtrack2に無い音符イベント、クレッシェンドイベントを検出
+            for ( int i = 0; i < numEvent1; i++ ) {
+                VsqEvent item1 = track1.getEvent( i );
+                if ( item1.ID.type == VsqIDType.Singer ) {
+                    continue;
+                }
+                if ( item1.ID.type == VsqIDType.Unknown ) {
+                    continue;
+                }
+                if ( item1.ID.type == VsqIDType.Aicon ) {
+                    if ( item1.ID.IconDynamicsHandle == null ) {
+                        continue;
+                    }
+                    if ( item1.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                        // 強弱記号はパス
+                        continue;
+                    }
+                }
+
+                boolean found = false;
+                for ( int j = 0; j < numEvent2; j++ ) {
+                    VsqEvent item2 = track2.getEvent( j );
+                    if ( item2.ID.type == VsqIDType.Singer ) {
+                        continue;
+                    }
+                    if ( item2.ID.type == VsqIDType.Unknown ) {
+                        continue;
+                    }
+                    if ( item2.ID.type == VsqIDType.Aicon ) {
+                        if ( item2.ID.IconDynamicsHandle == null ) {
+                            continue;
+                        }
+                        if ( item2.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                            // 強弱記号はパス
+                            continue;
+                        }
+                    }
+
+                    // item1とitem2が同じかどうか判定する
+                    if ( item1.equals( item2 ) ) {
+                        continue;
+                    }
+
+                    ret.add( new EditedZoneUnit( item1.Clock, item1.Clock + item1.ID.getLength() ) );
+                }
+            }
+            #endregion
+
+            #region track2にあってtrack1に無い音符イベント、クレッシェンドイベントを検出
+            for ( int i = 0; i < numEvent2; i++ ) {
+                VsqEvent item2 = track2.getEvent( i );
+                if ( item2.ID.type == VsqIDType.Singer ) {
+                    continue;
+                }
+                if ( item2.ID.type == VsqIDType.Unknown ) {
+                    continue;
+                }
+                if ( item2.ID.type == VsqIDType.Aicon ) {
+                    if ( item2.ID.IconDynamicsHandle == null ) {
+                        continue;
+                    }
+                    if ( item2.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                        // 強弱記号はパス
+                        continue;
+                    }
+                }
+
+                boolean found = false;
+                for ( int j = 0; j < numEvent1; j++ ) {
+                    VsqEvent item1 = track1.getEvent( j );
+                    if ( item1.ID.type == VsqIDType.Singer ) {
+                        continue;
+                    }
+                    if ( item1.ID.type == VsqIDType.Unknown ) {
+                        continue;
+                    }
+                    if ( item1.ID.type == VsqIDType.Aicon ) {
+                        if ( item1.ID.IconDynamicsHandle == null ) {
+                            continue;
+                        }
+                        if ( item1.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                            // 強弱記号はパス
+                            continue;
+                        }
+                    }
+
+                    // item1とitem2が同じかどうか判定する
+                    if ( item2.equals( item1 ) ) {
+                        continue;
+                    }
+
+                    ret.add( new EditedZoneUnit( item2.Clock, item2.Clock + item2.ID.getLength() ) );
+                }
+            }
+            #endregion
+
+            #error AppManager#detectTrackDifference; not implemented
+
+            //TODO:
+            // 効果範囲のあるイベント（歌手変更・強弱記号）の違いを検出
+
+            //TODO:
+            // VsqBPListの違いを検出
+
+            return ret.toArray( new EditedZoneUnit[] { } );
+        }
+
         public static void reportException( String message, Exception ex, int level ) {
             PortUtil.stderr.println( message + ex );
         }
@@ -1578,11 +1697,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
+#if ENABLE_OBSOLUTE_COMMAND
         [Obsolete]
         public static void register( ICommand command ) {
             TreeMap<Integer, EditedZoneCommand> com = new TreeMap<Integer, EditedZoneCommand>();
             register( command, com );
         }
+#endif
 
         public static void register( ICommand command, int track1, EditedZoneCommand zoneCommand1 ) {
             TreeMap<Integer, EditedZoneCommand> com = new TreeMap<Integer, EditedZoneCommand>();

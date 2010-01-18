@@ -25,7 +25,7 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     public static class PaletteToolServer {
-        public static TreeMap<String, object> LoadedTools = new TreeMap<String, object>();
+        public static TreeMap<String, Object> loadedTools = new TreeMap<String, Object>();
 
         public static void init() {
             String path = Path.Combine( Application.StartupPath, "tool" );
@@ -47,6 +47,7 @@ namespace org.kbinani.cadencii {
                 try {
                     asm = results.CompiledAssembly;
                 } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "PaletteToolServer#init; ex=" + ex );
                     continue;
                 }
                 foreach ( Type t in asm.GetTypes() ) {
@@ -66,11 +67,12 @@ namespace org.kbinani.cadencii {
                                 }
                             }
                             String id = Path.GetFileNameWithoutExtension( file.FullName );
-                            LoadedTools.put( id, instance );
+                            loadedTools.put( id, instance );
 #if DEBUG
-                            AppManager.debugWriteLine( "PaletteToolServer.Init; id=" + id );
+                            AppManager.debugWriteLine( "PaletteToolServer#init; id=" + id );
 #endif
-                        } catch {
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "PlaetteToolServer#init; ex=" + ex );
                         }
                     }
                 }
@@ -78,20 +80,19 @@ namespace org.kbinani.cadencii {
         }
 
         public static boolean invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
-            if ( LoadedTools.containsKey( id ) ) {
-                VsqTrack item = (VsqTrack)AppManager.getVsqFile().Track.get( track ).clone();
+            if ( loadedTools.containsKey( id ) ) {
+                VsqFileEx vsq = AppManager.getVsqFile();
+                VsqTrack item = (VsqTrack)vsq.Track.get( track ).clone();
                 boolean edited = false;
                 try {
-                    edited = ((IPaletteTool)LoadedTools.get( id )).edit( item, vsq_event_intrenal_ids, button );
+                    edited = ((IPaletteTool)loadedTools.get( id )).edit( item, vsq_event_intrenal_ids, button );
                 } catch ( Exception ex ) {
-#if DEBUG
-                    PortUtil.println( "PaletteToolServer#InvokePaletteTool; ex=" + ex );
-#endif
+                    PortUtil.stderr.println( "PaletteToolServer#InvokePaletteTool; ex=" + ex );
                     edited = false;
                 }
                 if ( edited ) {
-                    CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( track, item, AppManager.getVsqFile().AttachedCurves.get( track - 1 ) );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                    CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( track, item, vsq.AttachedCurves.get( track - 1 ) );
+                    AppManager.register( vsq.executeCommand( run ) );
                 }
                 return edited;
             } else {

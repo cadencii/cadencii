@@ -42,6 +42,36 @@ namespace org.kbinani.vsq {
         private int[] m_consonant_adjustment;
         public boolean PhoneticSymbolProtected;
 
+        /// <summary>
+        /// このオブジェクトのインスタンスと、指定されたアイテムが同じかどうかを調べます。
+        /// 音声合成したときに影響のある範囲のフィールドしか比較されません。
+        /// たとえば、PhoneticSymbolProtectedがthisとitemで違っていても、他が同一であればtrueが返る。
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public boolean equalsForSynth( Lyric item ) {
+            if ( this.PhoneticSymbolProtected != item.PhoneticSymbolProtected ) return false;
+            if ( !this.getPhoneticSymbol().Equals( item.getPhoneticSymbol() ) ) return false;
+            if ( !this.getConsonantAdjustment().Equals( item.getConsonantAdjustment() ) ) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// このオブジェクトのインスタンスと、指定されたオブジェクトが同じかどうかを調べます。
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public boolean equals( Lyric item ) {
+            if ( !equalsForSynth( item ) ) return false;
+            if ( !this.Phrase.Equals( item.Phrase ) ) return false;
+            if ( this.UnknownFloat != item.UnknownFloat ) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Consonant Adjustmentの文字列形式を取得します。
+        /// </summary>
+        /// <returns></returns>
         public String getConsonantAdjustment() {
             String ret = "";
             int[] arr = getConsonantAdjustmentList();
@@ -51,6 +81,10 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
+        /// <summary>
+        /// Consonant Adjustmentを文字列形式で設定します。
+        /// </summary>
+        /// <param name="value"></param>
         public void setConsonantAdjustment( String value ) {
             String[] spl = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
             int[] arr = new int[spl.Length];
@@ -80,6 +114,10 @@ namespace org.kbinani.vsq {
         }
 #endif
 
+        /// <summary>
+        /// Consonant Adjustmentを、整数配列で取得します。
+        /// </summary>
+        /// <returns></returns>
         public int[] getConsonantAdjustmentList() {
             if ( m_consonant_adjustment == null ) {
                 if ( m_phonetic_symbol == null ) {
@@ -94,6 +132,10 @@ namespace org.kbinani.vsq {
             return m_consonant_adjustment;
         }
 
+        /// <summary>
+        /// Consonant Adjustmentを、整数配列形式で設定します。
+        /// </summary>
+        /// <param name="value"></param>
         public void setConsonantAdjustmentList( int[] value ) {
             if ( value == null ) {
                 return;

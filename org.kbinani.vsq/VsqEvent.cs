@@ -24,6 +24,7 @@ using org.kbinani.java.util;
 using org.kbinani.java.io;
 
 namespace org.kbinani.vsq {
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -43,6 +44,101 @@ namespace org.kbinani.vsq {
         public int Clock;
         public VsqID ID;
         public UstEvent UstEvent = new UstEvent();
+
+        public boolean equals( VsqEvent item ) {
+            if ( this.Clock != item.Clock ) {
+                return false;
+            }
+            if ( this.ID.type != item.ID.type ) {
+                return false;
+            }
+            if ( this.ID.type == VsqIDType.Anote ) {
+                #region 音符の比較
+                if ( this.ID.Note != item.ID.Note ) return false;
+                if ( this.ID.getLength() != item.ID.getLength() ) return false;
+                if ( this.ID.d4mean != item.ID.d4mean ) return false;
+                if ( this.ID.DEMaccent != item.ID.DEMaccent ) return false;
+                if ( this.ID.DEMdecGainRate != item.ID.DEMdecGainRate ) return false;
+                if ( this.ID.Dynamics != item.ID.Dynamics ) return false;
+                if ( this.ID.LyricHandle == null && item.ID.LyricHandle != null ) return false;
+                if ( this.ID.LyricHandle != null && item.ID.LyricHandle == null ) return false;
+                if ( this.ID.LyricHandle != null && item.ID.LyricHandle != null ) {
+                    if ( !this.ID.LyricHandle.L0.equalsForSynth( item.ID.LyricHandle.L0 ) ) return false;
+                    int count = this.ID.LyricHandle.Trailing.size();
+                    if ( count != item.ID.LyricHandle.Trailing.size() ) return false;
+                    for ( int k = 0; k < count; k++ ) {
+                        if ( !this.ID.LyricHandle.Trailing.get( k ).equalsForSynth( item.ID.LyricHandle.Trailing.get( k ) ) ) return false;
+                    }
+                }
+                if ( this.ID.NoteHeadHandle == null && item.ID.NoteHeadHandle != null ) return false;
+                if ( this.ID.NoteHeadHandle != null && item.ID.NoteHeadHandle == null ) return false;
+                if ( this.ID.NoteHeadHandle != null && item.ID.NoteHeadHandle != null ) {
+                    if ( !this.ID.NoteHeadHandle.IconID.Equals( item.ID.NoteHeadHandle.IconID ) ) return false;
+                    if ( this.ID.NoteHeadHandle.getDepth() != item.ID.NoteHeadHandle.getDepth() ) return false;
+                    if ( this.ID.NoteHeadHandle.getDuration() != item.ID.NoteHeadHandle.getDuration() ) return false;
+                    if ( this.ID.NoteHeadHandle.getLength() != item.ID.NoteHeadHandle.getLength() ) return false;
+                }
+                if ( this.ID.PMBendDepth != item.ID.PMBendDepth ) return false;
+                if ( this.ID.PMBendLength != item.ID.PMBendLength ) return false;
+                if ( this.ID.PMbPortamentoUse != item.ID.PMbPortamentoUse ) return false;
+                if ( this.ID.pMeanEndingNote != item.ID.pMeanEndingNote ) return false;
+                if ( this.ID.pMeanOnsetFirstNote != item.ID.pMeanOnsetFirstNote ) return false;
+                VibratoHandle hVibratoThis = this.ID.VibratoHandle;
+                VibratoHandle hVibratoItem = item.ID.VibratoHandle;
+                if ( hVibratoThis == null && hVibratoItem != null ) return false;
+                if ( hVibratoThis != null && hVibratoItem == null ) return false;
+                if ( hVibratoThis != null && hVibratoItem != null ) {
+                    if ( this.ID.VibratoDelay != item.ID.VibratoDelay ) return false;
+                    if ( !hVibratoThis.IconID.Equals( hVibratoItem.IconID ) ) return false;
+                    if ( hVibratoThis.getStartDepth() != hVibratoItem.getStartDepth() ) return false;
+                    if ( hVibratoThis.getStartRate() != hVibratoItem.getStartRate() ) return false;
+                    VibratoBPList vibRateThis = hVibratoThis.getRateBP();
+                    VibratoBPList vibRateItem = hVibratoItem.getRateBP();
+                    if ( vibRateThis == null && vibRateItem != null ) return false;
+                    if ( vibRateThis != null && vibRateItem == null ) return false;
+                    if ( vibRateThis != null && vibRateItem != null ) {
+                        int numRateCount = vibRateThis.getCount();
+                        if ( numRateCount != vibRateItem.getCount() ) return false;
+                        for ( int k = 0; k < numRateCount; k++ ) {
+                            VibratoBPPair pThis = vibRateThis.getElement( k );
+                            VibratoBPPair pItem = vibRateItem.getElement( k );
+                            if ( pThis.X != pItem.X ) return false;
+                            if ( pThis.Y != pItem.Y ) return false;
+                        }
+                    }
+                    VibratoBPList vibDepthThis = hVibratoThis.getDepthBP();
+                    VibratoBPList vibDepthItem = hVibratoItem.getDepthBP();
+                    if ( vibDepthThis == null && vibDepthItem != null ) return false;
+                    if ( vibDepthThis != null && vibDepthItem == null ) return false;
+                    if ( vibDepthThis != null && vibDepthItem != null ) {
+                        int numDepthCount = vibDepthThis.getCount();
+                        if ( numDepthCount != vibDepthItem.getCount() ) return false;
+                        for ( int k = 0; k < numDepthCount; k++ ) {
+                            VibratoBPPair pThis = vibDepthThis.getElement( k );
+                            VibratoBPPair pItem = vibDepthItem.getElement( k );
+                            if ( pThis.X != pItem.X ) return false;
+                            if ( pThis.Y != pItem.Y ) return false;
+                        }
+                    }
+                }
+                if ( this.ID.vMeanNoteTransition != item.ID.vMeanNoteTransition ) return false;
+                #endregion
+            } else if ( this.ID.type == VsqIDType.Singer ) {
+                #region シンガーイベントの比較
+                if ( this.ID.IconHandle.Program != item.ID.IconHandle.Program ) return false;
+                #endregion
+            } else if ( this.ID.type == VsqIDType.Aicon ) {
+                if ( !this.ID.IconDynamicsHandle.IconID.Equals( item.ID.IconDynamicsHandle.IconID ) ) return false;
+                if ( this.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                    // 強弱記号
+                } else {
+                    // クレッシェンド・デクレッシェンド
+                    if ( this.ID.getLength() != item.ID.getLength() ) return false;
+                }
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// インスタンスをテキストファイルに出力します

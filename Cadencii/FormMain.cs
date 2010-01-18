@@ -10382,10 +10382,10 @@ namespace org.kbinani.cadencii {
             }
             String lang = Messaging.getLanguage();
             boolean first = true;
-            for ( Iterator itr = PaletteToolServer.LoadedTools.keySet().iterator(); itr.hasNext(); ) {
+            for ( Iterator itr = PaletteToolServer.loadedTools.keySet().iterator(); itr.hasNext(); ) {
                 String id = (String)itr.next();
                 count++;
-                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
+                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
 #if !JAVA
                 System.Drawing.Bitmap icon = ipt.getIcon();
 #endif
@@ -10470,8 +10470,8 @@ namespace org.kbinani.cadencii {
                 BMenuItem tsmi = (BMenuItem)sender;
                 if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
                     String id = (String)tsmi.getTag();
-                    if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
-                        Object instance = PaletteToolServer.LoadedTools.get( id );
+                    if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
+                        Object instance = PaletteToolServer.loadedTools.get( id );
                         IPaletteTool ipt = (IPaletteTool)instance;
                         if ( ipt.openDialog() == System.Windows.Forms.DialogResult.OK ) {
                             XmlSerializer xsms = new XmlSerializer( instance.GetType(), true );
@@ -12326,8 +12326,8 @@ namespace org.kbinani.cadencii {
                     BToolStripButton tsb = (BToolStripButton)tsi;
                     if ( tsb.getTag() != null && tsb.getTag() is String ) {
                         String id = (String)tsb.getTag();
-                        if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
+                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
                             tsb.setText( ipt.getName( Messaging.getLanguage() ) );
                             tsb.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
                         }
@@ -12340,8 +12340,8 @@ namespace org.kbinani.cadencii {
                     BMenuItem tsmi = (BMenuItem)tsi;
                     if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
                         String id = (String)tsmi.getTag();
-                        if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
+                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
                             tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
                             tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
                         }
@@ -12354,8 +12354,8 @@ namespace org.kbinani.cadencii {
                     BMenuItem tsmi = (BMenuItem)tsi;
                     if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
                         String id = (String)tsmi.getTag();
-                        if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
+                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
                             tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
                             tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
                         }
@@ -12368,17 +12368,17 @@ namespace org.kbinani.cadencii {
                     BMenuItem tsmi = (BMenuItem)tsi;
                     if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
                         String id = (String)tsmi.getTag();
-                        if ( PaletteToolServer.LoadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
+                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
                             tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
                         }
                     }
                 }
             }
 
-            for ( Iterator itr = PaletteToolServer.LoadedTools.keySet().iterator(); itr.hasNext(); ) {
+            for ( Iterator itr = PaletteToolServer.loadedTools.keySet().iterator(); itr.hasNext(); ) {
                 String id = (String)itr.next();
-                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.LoadedTools.get( id );
+                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
                 ipt.applyLanguage( Messaging.getLanguage() );
             }
 #endif

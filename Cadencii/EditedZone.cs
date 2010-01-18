@@ -76,7 +76,7 @@ namespace org.kbinani.cadencii {
             return new EditedZoneCommand( run.remove, run.add );
         }
 
-        public EditedZoneCommand generateCommandClear() {
+        private EditedZoneCommand generateCommandClear() {
             Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
             for ( Iterator itr = series.iterator(); itr.hasNext(); ) {
                 EditedZoneUnit item = (EditedZoneUnit)itr.next();
@@ -86,7 +86,60 @@ namespace org.kbinani.cadencii {
             return new EditedZoneCommand( new Vector<EditedZoneUnit>(), remove );
         }
 
-        public EditedZoneCommand generateCommandAdd( int start, int end ) {
+        private EditedZoneCommand generateCommandAdd( EditedZoneUnit[] areas ) {
+            EditedZone work = (EditedZone)clone();
+            for ( int i = 0; i < areas.Length; i++ ) {
+                EditedZoneUnit item = areas[i];
+                if ( item == null ) {
+                    continue;
+                }
+                work.series.add( new EditedZoneUnit( item.start, item.end ) );
+            }
+            work.normalize();
+
+            // thisに存在していて、workに存在しないものをremoveに登録
+            Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
+            for ( Iterator itrThis = iterator(); itrThis.hasNext(); ) {
+                boolean found = false;
+                EditedZoneUnit itemThis = (EditedZoneUnit)itrThis.next();
+                for ( Iterator itrWork = work.iterator(); itrWork.hasNext(); ) {
+                    EditedZoneUnit itemWork = (EditedZoneUnit)itrWork.next();
+                    if ( itemThis.start == itemWork.start && itemThis.end == itemWork.end ) {
+                        found = true;
+                        break;
+                    }
+                }
+                if ( !found ) {
+                    remove.add( new EditedZoneUnit( itemThis.start, itemThis.end ) );
+                }
+            }
+
+            // workに存在していて、thisに存在しないものをaddに登録
+            Vector<EditedZoneUnit> add = new Vector<EditedZoneUnit>();
+            for ( Iterator itrWork = work.iterator(); itrWork.hasNext(); ) {
+                boolean found = false;
+                EditedZoneUnit itemWork = (EditedZoneUnit)itrWork.next();
+                for ( Iterator itrThis = iterator(); itrThis.hasNext(); ) {
+                    EditedZoneUnit itemThis = (EditedZoneUnit)itrThis.next();
+                    if ( itemThis.start == itemWork.start && itemThis.end == itemWork.end ) {
+                        found = true;
+                        break;
+                    }
+                }
+                if ( !found ) {
+                    add.add( new EditedZoneUnit( itemWork.start, itemWork.end ) );
+                }
+            }
+
+            work = null;
+            return new EditedZoneCommand( add, remove );
+        }
+
+        private EditedZoneCommand generateCommandAdd( int start, int end ) {
+            return generateCommandAdd( new EditedZoneUnit[] { new EditedZoneUnit( start, end ) } );
+        }
+
+        private EditedZoneCommand generateCommandAdd_( int start, int end ) {
             Vector<EditedZoneUnit> add = new Vector<EditedZoneUnit>();
             Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
 
@@ -152,8 +205,9 @@ namespace org.kbinani.cadencii {
             Collections.sort( series );
         }
 
-        public void clear() {
-            series.clear();
+        public EditedZoneCommand clear() {
+            EditedZoneCommand com = generateCommandClear();
+            return executeCommand( com );
         }
 
 #if !JAVA
