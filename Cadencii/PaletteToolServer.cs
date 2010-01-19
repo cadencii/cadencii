@@ -82,7 +82,8 @@ namespace org.kbinani.cadencii {
         public static boolean invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( loadedTools.containsKey( id ) ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
-                VsqTrack item = (VsqTrack)vsq.Track.get( track ).clone();
+                VsqTrack vsq_track = vsq.Track.get( track );
+                VsqTrack item = (VsqTrack)vsq_track.clone();
                 boolean edited = false;
                 try {
                     edited = ((IPaletteTool)loadedTools.get( id )).edit( item, vsq_event_intrenal_ids, button );
@@ -92,7 +93,9 @@ namespace org.kbinani.cadencii {
                 }
                 if ( edited ) {
                     CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( track, item, vsq.AttachedCurves.get( track - 1 ) );
-                    AppManager.register( vsq.executeCommand( run ) );
+                    AppManager.register( vsq.executeCommand( run ),
+                                         track,
+                                         AppManager.editedZone[track - 1].add( AppManager.detectTrackDifference( vsq_track, item ) ) );
                 }
                 return edited;
             } else {

@@ -11,7 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#define ENABLE_OBSOLUTE_COMMAND
+//#define ENABLE_OBSOLUTE_COMMAND
 #if JAVA
 package org.kbinani.cadencii;
 
@@ -926,6 +926,10 @@ namespace org.kbinani.cadencii {
         public static EditedZoneUnit[] detectTrackDifference( VsqTrack track1, VsqTrack track2 ) {
             EditedZone ret = new EditedZone();
 
+            if ( !track1.getCommon().Version.Equals( track2.getCommon().Version ) ) {
+                return new EditedZoneUnit[] { new EditedZoneUnit( 0, int.MaxValue ) };
+            }
+
             int numEvent1 = track1.getEventCount();
             int numEvent2 = track2.getEventCount();
 
@@ -993,6 +997,21 @@ namespace org.kbinani.cadencii {
                 vec.add( (EditedZoneUnit)itr.next() );
             }
             return vec.toArray( new EditedZoneUnit[] { } );
+        }
+
+        /// <summary>
+        /// 指定された比較用コンテキストを用いて2つのタイムラインを比較し，相違点を調べます．
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static EditedZoneUnit[] compareList( IComparisonContext context ) {
+            EditedZone zone = new EditedZone();
+            compareList( zone, context );
+            Vector<EditedZoneUnit> ret = new Vector<EditedZoneUnit>();
+            for ( Iterator itr = zone.iterator(); itr.hasNext(); ) {
+                ret.add( (EditedZoneUnit)itr.next() );
+            }
+            return ret.toArray( new EditedZoneUnit[] { } );
         }
 
         /// <summary>
@@ -1262,7 +1281,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            register( s_vsq.executeCommand( run ) );
+            register( s_vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
             mainWindow.setEdited( true );
             mixerWindow.updateStatus();
         }
@@ -1273,7 +1292,7 @@ namespace org.kbinani.cadencii {
             }
             Vector<BgmFile> list = new Vector<BgmFile>();
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            register( s_vsq.executeCommand( run ) );
+            register( s_vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
             mainWindow.setEdited( true );
             mixerWindow.updateStatus();
         }
@@ -1293,7 +1312,7 @@ namespace org.kbinani.cadencii {
             item.panpot = 0;
             list.add( item );
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            register( s_vsq.executeCommand( run ) );
+            register( s_vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
             mainWindow.setEdited( true );
             mixerWindow.updateStatus();
         }
@@ -1597,7 +1616,7 @@ namespace org.kbinani.cadencii {
                         AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", MSGBOX_DEFAULT_OPTION, MSGBOX_INFORMATION_MESSAGE );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
-                        register( s_vsq.executeCommand( run ) );
+                        execute( run );
                     }
                     String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
                     FileOutputStream fs = null;

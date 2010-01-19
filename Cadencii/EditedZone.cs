@@ -172,12 +172,6 @@ namespace org.kbinani.cadencii {
         /// 重複している部分を統合する
         /// </summary>
         private void normalize() {
-#if DEBUG
-            PortUtil.println( "EditedZone#normalize; before" );
-            for ( int i = 0; i < series.size(); i++ ) {
-                PortUtil.println( "    " + series.get( i ).start + ", " + series.get( i ).end );
-            }
-#endif
             boolean changed = true;
             while ( changed ) {
                 changed = false;
@@ -222,12 +216,6 @@ namespace org.kbinani.cadencii {
                 }
             }
             Collections.sort( series );
-#if DEBUG
-            PortUtil.println( "EditedZone#normalize; after" );
-            for ( int i = 0; i < series.size(); i++ ) {
-                PortUtil.println( "    " + series.get( i ).start + ", " + series.get( i ).end );
-            }
-#endif
         }
 
         public EditedZoneCommand clear() {
