@@ -117,9 +117,7 @@ namespace org.kbinani.cadencii {
             for ( Iterator itr = zone.iterator(); itr.hasNext(); ){
                 zoneUnits.add( (EditedZoneUnit)itr.next() );
             }
-            AppManager.register( AppManager.getVsqFile().executeCommand( run ),
-                                 selected,
-                                 AppManager.editedZone[selected - 1].add( zoneUnits.toArray( new EditedZoneUnit[] { } ) ) );
+            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
 
             txtDataPointClock.setText( clock + "" );
             txtDataPointValue.setText( value + "" );

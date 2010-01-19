@@ -93,9 +93,7 @@ namespace org.kbinani.cadencii {
                 }
                 if ( edited ) {
                     CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( track, item, vsq.AttachedCurves.get( track - 1 ) );
-                    AppManager.register( vsq.executeCommand( run ),
-                                         track,
-                                         AppManager.editedZone[track - 1].add( AppManager.detectTrackDifference( vsq_track, item ) ) );
+                    AppManager.register( vsq.executeCommand( run ) );
                 }
                 return edited;
             } else {

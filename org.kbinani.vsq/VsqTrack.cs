@@ -38,13 +38,7 @@ namespace org.kbinani.vsq {
     public class VsqTrack : ICloneable {
 #endif
         public String Tag;
-        /// <summary>
-        /// トラックの名前。
-        /// </summary>
-        //public String Name;
         public VsqMetaText MetaText;
-        private int m_edited_start = int.MaxValue;
-        private int m_edited_end = int.MinValue;
 
         private class IndexIterator : Iterator<Integer> {
             VsqEventList list;
@@ -700,40 +694,6 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// このトラックの，最後に編集が加えられた範囲の，開始位置（クロック）を取得します．
-        /// </summary>
-        public int getEditedStart() {
-            return m_edited_start;
-        }
-
-        public void setEditedStart( int value ) {
-            if ( value < m_edited_start ) {
-                m_edited_start = value;
-            }
-        }
-
-        /// <summary>
-        /// このトラックの，最後に編集が加えられた範囲の，終了位置（クロック）を取得します．
-        /// </summary>
-        public int getEditedEnd() {
-            return m_edited_end;
-        }
-
-        public void setEditedEnd( int value ) {
-            if ( m_edited_end < value ) {
-                m_edited_end = value;
-            }
-        }
-
-        /// <summary>
-        /// このトラックの，編集範囲（EditedStart, EditedEnd）をリセットします．
-        /// </summary>
-        public void resetEditedArea() {
-            m_edited_start = int.MaxValue;
-            m_edited_end = int.MinValue;
-        }
-
-        /// <summary>
         /// このインスタンスのコピーを作成します
         /// </summary>
         /// <returns></returns>
@@ -743,8 +703,6 @@ namespace org.kbinani.vsq {
             if ( MetaText != null ) {
                 res.MetaText = (VsqMetaText)MetaText.clone();
             }
-            res.m_edited_start = m_edited_start;
-            res.m_edited_end = m_edited_end;
             res.Tag = Tag;
             return res;
         }

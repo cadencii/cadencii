@@ -948,16 +948,6 @@ namespace org.kbinani.vsq {
                 }
                 updateTempoInfo();
                 updateTotalClocks();
-
-                // 編集領域を更新
-                int affected_clock = Math.Min( clock, new_clock );
-                c = Track.size();
-                for ( int i = 1; i < c; i++ ) {
-                    if ( affected_clock < Track.get( i ).getEditedStart() ) {
-                        Track.get( i ).setEditedStart( affected_clock );
-                    }
-                    Track.get( i ).setEditedEnd( (int)TotalClocks );
-                }
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.UPDATE_TEMPO_RANGE ) {
@@ -993,13 +983,6 @@ namespace org.kbinani.vsq {
                 }
                 updateTempoInfo();
                 updateTotalClocks();
-                int track_count = Track.size();
-                for ( int i = 1; i < track_count; i++ ) {
-                    if ( affected_clock < Track.get( i ).getEditedStart() ) {
-                        Track.get( i ).setEditedStart( affected_clock );
-                    }
-                    Track.get( i ).setEditedEnd( (int)TotalClocks );
-                }
                 return VsqCommand.generateCommandUpdateTempoRange( new_clocks, clocks, new_tempos );
                 #endregion
             } else if ( type == VsqCommandType.UPDATE_TIMESIG ) {
@@ -1111,12 +1094,6 @@ namespace org.kbinani.vsq {
                 Track.get( track ).addEvent( item );
                 VsqCommand ret = VsqCommand.generateCommandEventDelete( track, item.InternalID );
                 updateTotalClocks();
-                if ( item.Clock < Track.get( track ).getEditedStart() ) {
-                    Track.get( track ).setEditedStart( item.Clock );
-                }
-                if ( Track.get( track ).getEditedEnd() < item.Clock + item.ID.getLength() ) {
-                    Track.get( track ).setEditedEnd( item.Clock + item.ID.getLength() );
-                }
                 Track.get( track ).sortEvent();
                 return ret;
                 #endregion
@@ -1145,12 +1122,6 @@ namespace org.kbinani.vsq {
 #endif
                 }
                 updateTotalClocks();
-                if ( min_clock < target.getEditedStart() ) {
-                    target.setEditedStart( min_clock );
-                }
-                if ( target.getEditedEnd() < max_clock ) {
-                    target.setEditedEnd( max_clock );
-                }
                 target.sortEvent();
                 return VsqCommand.generateCommandEventDeleteRange( track, inv_ids );
                 #endregion
@@ -1166,12 +1137,6 @@ namespace org.kbinani.vsq {
                         original[0] = (VsqEvent)item.clone();
                         break;
                     }
-                }
-                if ( original[0].Clock < target.getEditedStart() ) {
-                    target.setEditedStart( original[0].Clock );
-                }
-                if ( target.getEditedEnd() < original[0].Clock + original[0].ID.getLength() ) {
-                    target.setEditedEnd( original[0].Clock + original[0].ID.getLength() );
                 }
                 VsqCommand ret = VsqCommand.generateCommandEventAddRange( track, original );
                 int count = target.getEventCount();
@@ -1206,8 +1171,6 @@ namespace org.kbinani.vsq {
                     }
                 }
                 updateTotalClocks();
-                target.setEditedStart( min_clock );
-                target.setEditedEnd( max_clock );
                 return VsqCommand.generateCommandEventAddRange( track, inv.toArray( new VsqEvent[] { } ) );
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK ) {
@@ -1222,8 +1185,6 @@ namespace org.kbinani.vsq {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeClock( track, internal_id, item.Clock );
                         int min = Math.Min( item.Clock, value );
                         int max = Math.Max( item.Clock + item.ID.getLength(), value + item.ID.getLength() );
-                        target.setEditedStart( min );
-                        target.setEditedEnd( max );
                         item.Clock = value;
                         updateTotalClocks();
                         target.sortEvent();
@@ -1248,8 +1209,6 @@ namespace org.kbinani.vsq {
                             item.ID.LyricHandle.L0.Phrase = phrase;
                             item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol );
                             item.ID.LyricHandle.L0.PhoneticSymbolProtected = protect_symbol;
-                            target.setEditedStart( item.Clock );
-                            target.setEditedEnd( item.Clock + item.ID.getLength() );
                             updateTotalClocks();
                             return ret;
                         }
@@ -1269,8 +1228,6 @@ namespace org.kbinani.vsq {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeNote( track, internal_id, item.ID.Note );
                         item.ID.Note = note;
                         updateTotalClocks();
-                        target.setEditedStart( item.Clock );
-                        target.setEditedEnd( item.Clock + item.ID.getLength() );
                         return ret;
                     }
                 }
@@ -1289,8 +1246,6 @@ namespace org.kbinani.vsq {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeClockAndNote( track, internal_id, item.Clock, item.ID.Note );
                         int min = Math.Min( item.Clock, clock );
                         int max = Math.Max( item.Clock + item.ID.getLength(), clock + item.ID.getLength() );
-                        target.setEditedStart( min );
-                        target.setEditedEnd( max );
                         item.Clock = clock;
                         item.ID.Note = note;
                         target.sortEvent();
@@ -1317,8 +1272,6 @@ namespace org.kbinani.vsq {
                             start_clock = Math.Min( start_clock, item.Clock );
                             end_clock = Math.Max( end_clock, item.Clock );
                         }
-                        Track.get( track ).setEditedStart( start_clock );
-                        Track.get( track ).setEditedEnd( end_clock );
                         int start_value = target_list.getValue( start_clock );
                         int end_value = target_list.getValue( end_clock );
                         for ( Iterator i = target_list.keyClockIterator(); i.hasNext(); ) {
@@ -1482,8 +1435,6 @@ namespace org.kbinani.vsq {
                                 start_clock = Math.Min( start_clock, item.Clock );
                                 end_clock = Math.Max( end_clock, item.Clock );
                             }
-                            Track.get( track ).setEditedStart( start_clock );
-                            Track.get( track ).setEditedEnd( end_clock );
                             int start_value = Track.get( track ).getCurve( curve ).getValue( start_clock );
                             int end_value = Track.get( track ).getCurve( curve ).getValue( end_clock );
                             for ( Iterator itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
@@ -1578,8 +1529,6 @@ namespace org.kbinani.vsq {
                         if ( ev.InternalID == add.getKey() ) {
                             inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.Dynamics ) );
                             ev.ID.Dynamics = add.getValue();
-                            Track.get( track ).setEditedStart( ev.Clock );
-                            Track.get( track ).setEditedEnd( ev.Clock + ev.ID.getLength() );
                             break;
                         }
                     }
@@ -1598,8 +1547,6 @@ namespace org.kbinani.vsq {
                         if ( ev.InternalID == add.getKey() ) {
                             inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMaccent ) );
                             ev.ID.DEMaccent = add.getValue();
-                            Track.get( track ).setEditedStart( ev.Clock );
-                            Track.get( track ).setEditedEnd( ev.Clock + ev.ID.getLength() );
                             break;
                         }
                     }
@@ -1618,8 +1565,6 @@ namespace org.kbinani.vsq {
                         if ( ev.InternalID == add.getKey() ) {
                             inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMdecGainRate ) );
                             ev.ID.DEMdecGainRate = add.getValue();
-                            Track.get( track ).setEditedStart( ev.Clock );
-                            Track.get( track ).setEditedEnd( ev.Clock + ev.ID.getLength() );
                             break;
                         }
                     }
@@ -1635,9 +1580,6 @@ namespace org.kbinani.vsq {
                     VsqEvent item = (VsqEvent)itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeLength( track, internal_id, item.ID.getLength() );
-                        Track.get( track ).setEditedStart( item.Clock );
-                        int max = Math.Max( item.Clock + item.ID.getLength(), item.Clock + new_length );
-                        Track.get( track ).setEditedEnd( max );
                         item.ID.setLength( new_length );
                         updateTotalClocks();
                         return ret;
@@ -1658,8 +1600,6 @@ namespace org.kbinani.vsq {
                         int min = Math.Min( item.Clock, new_clock );
                         int max_length = Math.Max( item.ID.getLength(), new_length );
                         int max = Math.Max( item.Clock + max_length, new_clock + max_length );
-                        Track.get( track ).setEditedStart( min );
-                        Track.get( track ).setEditedEnd( max );
                         item.ID.setLength( new_length );
                         item.Clock = new_clock;
                         Track.get( track ).sortEvent();
@@ -1679,34 +1619,7 @@ namespace org.kbinani.vsq {
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeIDContaints( track, internal_id, item.ID );
                         int max_length = Math.Max( item.ID.getLength(), value.getLength() );
-                        Track.get( track ).setEditedStart( item.Clock );
-                        Track.get( track ).setEditedEnd( item.Clock + max_length );
                         item.ID = (VsqID)value.clone();
-                        if ( item.ID.type == VsqIDType.Singer ) {
-#if DEBUG
-                            PortUtil.println( "    EventChangeIDContaints" );
-#endif
-                            // 歌手変更の場合、次に現れる歌手変更の位置まで編集の影響が及ぶ
-                            boolean found = false;
-                            for ( Iterator itr2 = Track.get( track ).getSingerEventIterator(); itr2.hasNext(); ) {
-                                VsqEvent item2 = (VsqEvent)itr2.next();
-                                if ( item.Clock < item2.Clock ) {
-                                    Track.get( track ).setEditedEnd( item2.Clock );
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if ( !found ) {
-                                // 変更対象が、該当トラック最後の歌手変更イベントだった場合
-                                if ( Track.get( track ).getEventCount() >= 1 ) {
-                                    VsqEvent last_event = Track.get( track ).getEvent( Track.get( track ).getEventCount() - 1 );
-                                    Track.get( track ).setEditedEnd( last_event.Clock + last_event.ID.getLength() );
-                                }
-                            }
-#if DEBUG
-                            PortUtil.println( "        EditedStart,EditedEnd=" + Track.get( track ).getEditedStart() + "," + Track.get( track ).getEditedEnd() );
-#endif
-                        }
                         updateTotalClocks();
                         return ret;
                     }
@@ -1725,28 +1638,7 @@ namespace org.kbinani.vsq {
                         if ( item.InternalID == internal_ids[i] ) {
                             inv_values[i] = (VsqID)item.ID.clone();
                             int max_length = Math.Max( item.ID.getLength(), values[i].getLength() );
-                            Track.get( track ).setEditedStart( item.Clock );
-                            Track.get( track ).setEditedEnd( item.Clock + max_length );
                             item.ID = (VsqID)values[i].clone();
-                            if ( item.ID.type == VsqIDType.Singer ) {
-                                // 歌手変更の場合、次に現れる歌手変更の位置まで編集の影響が及ぶ
-                                boolean found = false;
-                                for ( Iterator itr2 = Track.get( track ).getSingerEventIterator(); itr2.hasNext(); ) {
-                                    VsqEvent item2 = (VsqEvent)itr2.next();
-                                    if ( item.Clock < item2.Clock ) {
-                                        Track.get( track ).setEditedEnd( item2.Clock );
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if ( !found ) {
-                                    // 変更対象が、該当トラック最後の歌手変更イベントだった場合
-                                    if ( Track.get( track ).getEventCount() >= 1 ) {
-                                        VsqEvent last_event = Track.get( track ).getEvent( Track.get( track ).getEventCount() - 1 );
-                                        Track.get( track ).setEditedEnd( last_event.Clock + last_event.ID.getLength() );
-                                    }
-                                }
-                            }
                             break;
                         }
                     }
@@ -1770,8 +1662,6 @@ namespace org.kbinani.vsq {
                         int max = Math.Max( item.Clock + max_length, new_clock + max_length );
                         item.ID = (VsqID)value.clone();
                         item.Clock = new_clock;
-                        target.setEditedStart( min );
-                        target.setEditedEnd( max );
                         target.sortEvent();
                         updateTotalClocks();
                         return ret;
@@ -1796,8 +1686,6 @@ namespace org.kbinani.vsq {
                             int max_length = Math.Max( item.ID.getLength(), values[i].getLength() );
                             int min = Math.Min( item.Clock, clocks[i] );
                             int max = Math.Max( item.Clock + max_length, clocks[i] + max_length );
-                            Track.get( track ).setEditedStart( min );
-                            Track.get( track ).setEditedEnd( max );
                             item.ID = (VsqID)values[i].clone();
                             item.Clock = clocks[i];
                             break;
@@ -1896,10 +1784,6 @@ namespace org.kbinani.vsq {
                                             TreeMap<Integer, VsqBPPair> inv_add ){
             VsqBPList list = Track.get( track ).getCurve( curve );
 
-            // 現在の編集範囲を取得
-            int edited_start = Track.get( track ).getEditedStart();
-            int edited_end = Track.get( track ).getEditedEnd();
-
             // 逆コマンド発行用
             inv_delete.clear();
             inv_add.clear();
@@ -1912,8 +1796,6 @@ namespace org.kbinani.vsq {
                     int clock = item.clock;
                     list.removeElementAt( item.index );
                     inv_add.put( clock, new VsqBPPair( item.point.value, item.point.id ) );
-                    edited_start = Math.Min( edited_start, clock );
-                    edited_end = Math.Max( edited_end, clock );
                 }
             }
 
@@ -1923,13 +1805,7 @@ namespace org.kbinani.vsq {
                 VsqBPPair item = add.get( clock );
                 list.addWithID( clock, item.value, item.id );
                 inv_delete.add( item.id );
-                edited_start = Math.Min( edited_start, clock );
-                edited_end = Math.Max( edited_end, clock );
             }
-
-            // 編集範囲の更新
-            Track.get( track ).setEditedStart( edited_start );
-            Track.get( track ).setEditedEnd( edited_end );
         }
 
         /// <summary>

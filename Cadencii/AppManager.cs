@@ -47,16 +47,6 @@ namespace org.kbinani.cadencii {
 #endif
 
     public class AppManager {
-        class CommandContainer {
-            public ICommand command;
-            public TreeMap<Integer, EditedZoneCommand> editedZoneCommand;
-            
-            public CommandContainer( ICommand command, TreeMap<Integer, EditedZoneCommand> editedZoneCommand ) {
-                this.command = command;
-                this.editedZoneCommand = editedZoneCommand;
-            }
-        }
-
         public const int MIN_KEY_WIDTH = 68;
         public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
         private const String CONFIG_FILE_NAME = "config.xml";
@@ -783,10 +773,9 @@ namespace org.kbinani.cadencii {
         private static int s_last_selected_timesig = -1;
         private static EditTool s_selected_tool = EditTool.PENCIL;
 #if !TREECOM
-        private static Vector<CommandContainer> s_commands = new Vector<CommandContainer>();
+        private static Vector<ICommand> s_commands = new Vector<ICommand>();
         private static int s_command_position = -1;
 #endif
-        public static EditedZone[] editedZone = new EditedZone[16];
         /// <summary>
         /// 選択されているベジエ点のリスト
         /// </summary>
@@ -903,7 +892,14 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static Point mouseDownLocation = new Point();
         public static int lastTrackSelectorHeight;
+        /// <summary>
+        /// UTAUの原音設定のリスト。TreeMapのキーは、oto.iniのあるディレクトリ名になっている。
+        /// </summary>
         public static TreeMap<String, UtauVoiceDB> utauVoiceDB = new TreeMap<String, UtauVoiceDB>();
+        /// <summary>
+        /// 最後にレンダリングが行われた時の、トラックの情報が格納されている。
+        /// </summary>
+        public static VsqTrack[] lastRendererdStatus = new VsqTrack[16];
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
@@ -1281,7 +1277,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            register( s_vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+            register( s_vsq.executeCommand( run ) );
             mainWindow.setEdited( true );
             mixerWindow.updateStatus();
         }
@@ -1292,7 +1288,7 @@ namespace org.kbinani.cadencii {
             }
             Vector<BgmFile> list = new Vector<BgmFile>();
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            register( s_vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+            register( s_vsq.executeCommand( run ) );
             mainWindow.setEdited( true );
             mixerWindow.updateStatus();
         }
@@ -1312,7 +1308,7 @@ namespace org.kbinani.cadencii {
             item.panpot = 0;
             list.add( item );
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            register( s_vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+            register( s_vsq.executeCommand( run ) );
             mainWindow.setEdited( true );
             mixerWindow.updateStatus();
         }
@@ -1616,7 +1612,7 @@ namespace org.kbinani.cadencii {
                         AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", MSGBOX_DEFAULT_OPTION, MSGBOX_INFORMATION_MESSAGE );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
-                        execute( run );
+                        register( s_vsq.executeCommand( run ) );
                     }
                     String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
                     FileOutputStream fs = null;
@@ -1694,10 +1690,6 @@ namespace org.kbinani.cadencii {
         public static void clearCommandBuffer() {
             s_commands.clear();
             s_command_position = -1;
-
-            for ( int i = 0; i < editedZone.Length; i++ ) {
-                editedZone[i].clear();
-            }
         }
 
         /// <summary>
@@ -1708,8 +1700,7 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "CommonConfig.Undo()" );
 #endif
             if ( isUndoAvailable() ) {
-                CommandContainer container = s_commands.get( s_command_position );
-                ICommand run_src = container.command;
+                ICommand run_src = s_commands.get( s_command_position );
                 CadenciiCommand run = (CadenciiCommand)run_src;
 #if DEBUG
                 AppManager.debugWriteLine( "    command type=" + run.type );
@@ -1728,14 +1719,7 @@ namespace org.kbinani.cadencii {
                         mainWindow.updateBgmMenuState();
                     }
                 }
-                TreeMap<Integer, EditedZoneCommand> invZone = new TreeMap<Integer, EditedZoneCommand>();
-                TreeMap<Integer, EditedZoneCommand> zoneCommand = container.editedZoneCommand;
-                for ( Iterator itr = zoneCommand.keySet().iterator(); itr.hasNext(); ) {
-                    int track = (Integer)itr.next();
-                    EditedZoneCommand runContainer = zoneCommand.get( track );
-                    invZone.put( track, editedZone[track - 1].executeCommand( runContainer ) );
-                }
-                s_commands.set( s_command_position, new CommandContainer( inv, invZone ) );
+                s_commands.set( s_command_position, inv );
                 s_command_position--;
             }
         }
@@ -1748,8 +1732,7 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "CommonConfig.Redo()" );
 #endif
             if ( isRedoAvailable() ) {
-                CommandContainer runContainer = s_commands.get( s_command_position + 1 );
-                ICommand run_src = runContainer.command;
+                ICommand run_src = s_commands.get( s_command_position + 1 );
                 CadenciiCommand run = (CadenciiCommand)run_src;
                 if ( run.vsqCommand != null ) {
                     if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
@@ -1765,74 +1748,27 @@ namespace org.kbinani.cadencii {
                         mainWindow.updateBgmMenuState();
                     }
                 }
-                TreeMap<Integer, EditedZoneCommand> invZone = new TreeMap<Integer, EditedZoneCommand>();
-                for ( Iterator itr = runContainer.editedZoneCommand.keySet().iterator(); itr.hasNext(); ) {
-                    int track = (Integer)itr.next();
-                    EditedZoneCommand zoneCommand = runContainer.editedZoneCommand.get( track );
-                    invZone.put( track, editedZone[track - 1].executeCommand( zoneCommand ) );
-                }
-                s_commands.set( s_command_position + 1, new CommandContainer( inv, invZone ) );
+                s_commands.set( s_command_position + 1, inv );
                 s_command_position++;
             }
-        }
-
-#if ENABLE_OBSOLUTE_COMMAND
-        [Obsolete]
-        public static void register( ICommand command ) {
-            TreeMap<Integer, EditedZoneCommand> com = new TreeMap<Integer, EditedZoneCommand>();
-            register( command, com );
-        }
-#endif
-
-        public static void register( ICommand command, int track1, EditedZoneCommand zoneCommand1 ) {
-            TreeMap<Integer, EditedZoneCommand> com = new TreeMap<Integer, EditedZoneCommand>();
-            com.put( track1, zoneCommand1 );
-            register( command, com );
-        }
-
-        public static void execute( ICommand command ) {
-            VsqFileEx copy = (VsqFileEx)s_vsq.clone();
-            ICommand inv = s_vsq.executeCommand( command );
-            TreeMap<Integer, EditedZoneCommand> zoneCommand = new TreeMap<Integer, EditedZoneCommand>();
-            int numTrackEdited = s_vsq.Track.size();
-            int numTrackOriginal = copy.Track.size();
-            int numTrack = Math.Min( numTrackEdited, numTrackOriginal );
-            for ( int i = 1; i < numTrack; i++ ) {
-                VsqTrack track1 = s_vsq.Track.get( i );
-                VsqTrack track2 = copy.Track.get( i );
-                EditedZoneUnit[] areas = detectTrackDifference( track1, track2 );
-                if ( areas.Length <= 0 ) {
-                    continue;
-                }
-                zoneCommand.put( i, editedZone[i - 1].add( areas ) );
-            }
-
-            if ( numTrackEdited != numTrackOriginal ) {
-                for ( int i = numTrack; i < Math.Max( numTrackEdited, numTrackOriginal ); i++ ) {
-                    zoneCommand.put( i, editedZone[i - 1].add( 0, int.MaxValue ) );
-                }
-            }
-
-            register( inv, zoneCommand );
         }
 
         /// <summary>
         /// コマンドバッファに指定されたコマンドを登録します
         /// </summary>
         /// <param name="command"></param>
-        public static void register( ICommand command, TreeMap<Integer, EditedZoneCommand> zoneCommand ) {
+        public static void register( ICommand command ) {
 #if DEBUG
             AppManager.debugWriteLine( "EditorManager.Register; command=" + command );
             AppManager.debugWriteLine( "    m_commands.Count=" + s_commands.size() );
 #endif
-            CommandContainer runContainer = new CommandContainer( command, zoneCommand );
             if ( s_command_position == s_commands.size() - 1 ) {
                 // 新しいコマンドバッファを追加する場合
-                s_commands.add( runContainer );
+                s_commands.add( command );
                 s_command_position = s_commands.size() - 1;
             } else {
                 // 既にあるコマンドバッファを上書きする場合
-                s_commands.set( s_command_position + 1, runContainer );
+                s_commands.set( s_command_position + 1, command );
                 for ( int i = s_commands.size() - 1; i >= s_command_position + 2; i-- ) {
                     s_commands.removeElementAt( i );
                 }
@@ -2566,9 +2502,6 @@ namespace org.kbinani.cadencii {
             s_locker = new Object();
             SymbolTable.loadDictionary();
             VSTiProxy.CurrentUser = "";
-            for ( int i = 0; i < editedZone.Length; i++ ) {
-                editedZone[i] = new EditedZone();
-            }
 
             #region Apply User Dictionary Configuration
             try {

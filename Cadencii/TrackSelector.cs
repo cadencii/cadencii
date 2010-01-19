@@ -753,35 +753,14 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void executeCommand( CadenciiCommand command ) {
-            AppManager.execute( command );
-#if JAVA
-            try{
-                commandExecutedEvent.raise( this, new BEventArgs() );
-            }catch( Exception ex ){
-                System.err.println( "TrackSelector#executeCommand; ex=" + ex );
-            }
-#else
-            if ( CommandExecuted != null ) {
-                CommandExecuted( this, new BEventArgs() );
-            }
-#endif
-        }
-
-        private void executeCommand( CadenciiCommand command, int track, EditedZoneCommand zoneCommand, boolean register ) {
-            TreeMap<Integer, EditedZoneCommand> com = new TreeMap<Integer, EditedZoneCommand>();
-            com.put( track, zoneCommand );
-            executeCommand( command, com, register );
-        }
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="command"></param>
         /// <param name="register">Undo/Redo用バッファにExecuteの結果を格納するかどうかを指定するフラグ</param>
-        private void executeCommand( CadenciiCommand command, TreeMap<Integer, EditedZoneCommand> zoneCommand, boolean register ) {
+        private void executeCommand( CadenciiCommand command, boolean register ) {
             if ( register ) {
-                AppManager.register( AppManager.getVsqFile().executeCommand( command ), zoneCommand );
+                AppManager.register( AppManager.getVsqFile().executeCommand( command ) );
             } else {
                 AppManager.getVsqFile().executeCommand( command );
             }
@@ -3208,11 +3187,7 @@ namespace org.kbinani.cadencii {
                     #region EditTool.Eraser
                     if ( ve != null && ve.Clock > 0 ) {
                         CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventDelete( selected, ve.InternalID ) );
-                        executeCommand( run, 
-                                        selected, 
-                                        new EditedZoneCommand( new EditedZoneUnit[] { new EditedZoneUnit( ve.Clock, ve.Clock + ve.ID.getLength() ) }, 
-                                                               new EditedZoneUnit[] { } ),
-                                        true );
+                        executeCommand( run, true );
                     }
                     #endregion
                 } else {
@@ -3593,11 +3568,7 @@ namespace org.kbinani.cadencii {
                                 AppManager.clearSelectedEvent();
                                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventDelete( selected,
                                                                                                                   ve3.InternalID ) );
-                                executeCommand( run, 
-                                                selected,
-                                                new EditedZoneCommand( new EditedZoneUnit[]{ new EditedZoneUnit( ve3.Clock, ve3.Clock + ve3.ID.getLength() ) },
-                                                                       new EditedZoneUnit[]{} ),
-                                                true );
+                                executeCommand( run, true );
                             } else {
                                 if ( AppManager.isCurveMode() ) {
                                     Vector<BezierChain> list = vsq.AttachedCurves.get( AppManager.getSelected() - 1 ).get( m_selected_curve );
@@ -3625,7 +3596,7 @@ namespace org.kbinani.cadencii {
                                                                                                                        chain.value.id,
                                                                                                                        work,
                                                                                                                        AppManager.editorConfig.ControlCurveResolution.getValue() );
-                                                    executeCommand( run );
+                                                    executeCommand( run, true );
                                                     m_mouse_down_mode = MouseDownMode.NONE;
                                                     invalidate();
                                                     return;
@@ -3635,7 +3606,7 @@ namespace org.kbinani.cadencii {
                                                                                                                       m_selected_curve,
                                                                                                                       chain.value.id,
                                                                                                                       AppManager.editorConfig.ControlCurveResolution.getValue() );
-                                                    executeCommand( run );
+                                                    executeCommand( run, true );
                                                     m_mouse_down_mode = MouseDownMode.NONE;
                                                     invalidate();
                                                     return;
@@ -3657,7 +3628,7 @@ namespace org.kbinani.cadencii {
                                                                                                                    chain.value.id,
                                                                                                                    work,
                                                                                                                    AppManager.editorConfig.ControlCurveResolution.getValue() );
-                                                executeCommand( run );
+                                                executeCommand( run, true );
                                                 m_mouse_down_mode = MouseDownMode.NONE;
                                                 invalidate();
                                                 return;
@@ -3677,10 +3648,7 @@ namespace org.kbinani.cadencii {
                                                     VsqCommand.generateCommandTrackCurveReplace( selected,
                                                                                                  m_selected_curve.getName(),
                                                                                                  work ) );
-                                                executeCommand( run, 
-                                                                selected, 
-                                                                AppManager.editedZone[selected - 1].add( AppManager.compareList( new VsqBPListComparisonContext( item, work ) ) ),
-                                                                true );
+                                                executeCommand( run, true );
                                                 m_mouse_down_mode = MouseDownMode.NONE;
                                                 invalidate();
                                                 return;
@@ -3830,7 +3798,7 @@ namespace org.kbinani.cadencii {
                                                                                 chain_id,
                                                                                 AppManager.editorConfig.ControlCurveResolution.getValue(),
                                                                                 adding );
-                        executeCommand( run, new TreeMap<Integer, EditedZoneCommand>(), false );
+                        executeCommand( run, false );
                         m_mouse_down_mode = MouseDownMode.BEZIER_ADD_NEW;
                     } else {
                         m_editing_bezier_original = (BezierChain)target_chain.clone();
@@ -3845,7 +3813,7 @@ namespace org.kbinani.cadencii {
                                                                                     target_chain.id,
                                                                                     target_chain,
                                                                                     AppManager.editorConfig.ControlCurveResolution.getValue() );
-                        executeCommand( run, new TreeMap<Integer, EditedZoneCommand>(), false );
+                        executeCommand( run, false );
                         m_mouse_down_mode = MouseDownMode.BEZIER_EDIT;
                     }
                     AppManager.clearSelectedBezier();
@@ -4073,26 +4041,26 @@ namespace org.kbinani.cadencii {
                                                                                           m_selected_curve,
                                                                                           chain_id,
                                                                                           AppManager.editorConfig.ControlCurveResolution.getValue() );
-                        executeCommand( pre, new TreeMap<Integer, EditedZoneCommand>(), false );
+                        executeCommand( pre, false );
                         CadenciiCommand run = VsqFileEx.generateCommandAddBezierChain( selected,
                                                                                        m_selected_curve,
                                                                                        chain_id,
                                                                                        AppManager.editorConfig.ControlCurveResolution.getValue(),
                                                                                        edited );
-                        executeCommand( run );
+                        executeCommand( run, true );
                     } else if ( m_mouse_down_mode == MouseDownMode.BEZIER_EDIT ) {
                         CadenciiCommand pre = VsqFileEx.generateCommandReplaceBezierChain( selected,
                                                                                            m_selected_curve,
                                                                                            chain_id,
                                                                                            m_editing_bezier_original,
                                                                                            AppManager.editorConfig.ControlCurveResolution.getValue() );
-                        executeCommand( pre, new TreeMap<Integer, EditedZoneCommand>(), false );
+                        executeCommand( pre, false );
                         CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( selected,
                                                                                            m_selected_curve,
                                                                                            chain_id,
                                                                                            edited,
                                                                                            AppManager.editorConfig.ControlCurveResolution.getValue() );
-                        executeCommand( run );
+                        executeCommand( run, true );
                     } else if ( m_mouse_down_mode == MouseDownMode.BEZIER_MODE && m_mouse_moved ) {
                         vsq.AttachedCurves.get( selected - 1 ).setBezierChain( m_selected_curve, chain_id, m_editing_bezier_original );
                         CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( selected,
@@ -4100,7 +4068,7 @@ namespace org.kbinani.cadencii {
                                                                                            chain_id,
                                                                                            edited,
                                                                                            AppManager.editorConfig.ControlCurveResolution.getValue() );
-                        executeCommand( run );
+                        executeCommand( run, true );
 #if DEBUG
                         AppManager.debugWriteLine( "    m_mouse_down_mode=" + m_mouse_down_mode );
                         AppManager.debugWriteLine( "    chain_id=" + chain_id );
@@ -4225,7 +4193,7 @@ namespace org.kbinani.cadencii {
                                     TreeMap<CurveType, Vector<BezierChain>> comm = new TreeMap<CurveType, Vector<BezierChain>>();
                                     comm.put( m_selected_curve, work );
                                     CadenciiCommand run = VsqFileEx.generateCommandReplaceAttachedCurveRange( selected, comm );
-                                    executeCommand( run );
+                                    executeCommand( run, true );
                                 }
                             }
                         } else {
@@ -4248,7 +4216,7 @@ namespace org.kbinani.cadencii {
                                 if ( deleting.size() > 0 ) {
                                     CadenciiCommand er_run = new CadenciiCommand(
                                         VsqCommand.generateCommandEventDeleteRange( selected, deleting ) );
-                                    executeCommand( er_run );
+                                    executeCommand( er_run, true );
                                 }
                                 #endregion
                             } else if ( m_selected_curve.equals( CurveType.VibratoRate ) || m_selected_curve.equals( CurveType.VibratoDepth ) ) {
@@ -4345,7 +4313,7 @@ namespace org.kbinani.cadencii {
                                     VsqCommand.generateCommandEventChangeIDContaintsRange( selected,
                                                                                            PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
                                                                                            items.toArray( new VsqID[] { } ) ) );
-                                executeCommand( run );
+                                executeCommand( run, true );
                                 #endregion
                             } else if ( m_selected_curve.equals( CurveType.Env ) ) {
 
@@ -4370,7 +4338,7 @@ namespace org.kbinani.cadencii {
                                 if ( delete.size() > 0 ) {
                                     CadenciiCommand run_eraser = new CadenciiCommand(
                                         VsqCommand.generateCommandTrackCurveEdit2( selected, m_selected_curve.getName(), delete, new TreeMap<Integer, VsqBPPair>() ) );
-                                    executeCommand( run_eraser );
+                                    executeCommand( run_eraser, true );
                                 }
                                 #endregion
                             }
@@ -4447,7 +4415,7 @@ namespace org.kbinani.cadencii {
                                     } else if ( m_selected_curve.equals( CurveType.Decay ) ) {
                                         run = new CadenciiCommand( VsqCommand.generateCommandEventChangeDecay( selected, cpy ) );
                                     }
-                                    executeCommand( run );
+                                    executeCommand( run, true );
                                 }
                                 #endregion
                             } else if ( m_selected_curve.equals( CurveType.VibratoRate ) || m_selected_curve.equals( CurveType.VibratoDepth ) ) {
@@ -4570,7 +4538,7 @@ namespace org.kbinani.cadencii {
                                         VsqCommand.generateCommandEventChangeIDContaintsRange( selected,
                                                                                                PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
                                                                                                items.toArray( new VsqID[] { } ) ) );
-                                    executeCommand( run );
+                                    executeCommand( run, true );
                                 }
                                 #endregion
                             } else if ( m_selected_curve.equals( CurveType.Env ) ) {
@@ -4694,7 +4662,7 @@ namespace org.kbinani.cadencii {
 
                                 CadenciiCommand pen_run = new CadenciiCommand(
                                     VsqCommand.generateCommandTrackCurveEdit2( track, m_selected_curve.getName(), delete, add ) );
-                                executeCommand( pen_run );
+                                executeCommand( pen_run, true );
                                 #endregion
                             }
                         }
@@ -4742,7 +4710,7 @@ namespace org.kbinani.cadencii {
                                     }
                                 }
                                 if ( run != null ) {
-                                    executeCommand( run );
+                                    executeCommand( run, true );
                                 }
                             } else if ( m_selected_curve.equals( CurveType.VibratoDepth ) || m_selected_curve.equals( CurveType.VibratoRate ) ) {
                                 int stdx = AppManager.startToDrawX;
@@ -4818,7 +4786,7 @@ namespace org.kbinani.cadencii {
                                         VsqCommand.generateCommandEventChangeIDContaintsRange( selected,
                                                                                                PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
                                                                                                items.toArray( new VsqID[] { } ) ) );
-                                    executeCommand( run );
+                                    executeCommand( run, true );
                                 }
                             } else if ( m_selected_curve.equals( CurveType.Env ) ) {
                                 // todo:
@@ -4853,7 +4821,7 @@ namespace org.kbinani.cadencii {
                                                                                    m_selected_curve.getName(),
                                                                                    delete,
                                                                                    add ) );
-                                    executeCommand( run );
+                                    executeCommand( run, true );
                                 }
                             }
                         }
@@ -4921,7 +4889,7 @@ namespace org.kbinani.cadencii {
                             if ( changed ) {
                                 CadenciiCommand run = new CadenciiCommand(
                                     VsqCommand.generateCommandEventChangeClockAndIDContaintsRange( selected, ids, clocks, values ) );
-                                executeCommand( run );
+                                executeCommand( run, true );
                             }
                         }
                     }
@@ -4938,7 +4906,7 @@ namespace org.kbinani.cadencii {
                     values[i] = (VsqID)m_veledit_selected.get( id ).editing.ID.clone();
                 }
                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, values ) );
-                executeCommand( run );
+                executeCommand( run, true );
                 if ( m_veledit_selected.size() == 1 ) {
                     AppManager.clearSelectedEvent();
                     AppManager.addSelectedEvent( m_veledit_last_selectedid );
@@ -4963,7 +4931,7 @@ namespace org.kbinani.cadencii {
                     // コマンドを発行
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplace( selected,
                                                                                                        edited ) );
-                    executeCommand( run );
+                    executeCommand( run, true );
                 }
             } else if ( m_mouse_down_mode == MouseDownMode.PRE_UTTERANCE_MOVE ) {
                 m_mouse_down_mode = MouseDownMode.NONE;
@@ -4984,7 +4952,7 @@ namespace org.kbinani.cadencii {
                     // コマンドを発行
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplace( selected,
                                                                                                        edited ) );
-                    executeCommand( run );
+                    executeCommand( run, true );
                 }
             } else if ( m_mouse_down_mode == MouseDownMode.OVERLAP_MOVE ) {
                 m_mouse_down_mode = MouseDownMode.NONE;
@@ -5005,7 +4973,7 @@ namespace org.kbinani.cadencii {
                     // コマンドを発行
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplace( selected,
                                                                                                        edited ) );
-                    executeCommand( run );
+                    executeCommand( run, true );
                 }
             } else if ( m_mouse_down_mode == MouseDownMode.POINT_MOVE ) {
                 if ( m_mouse_moved ) {
@@ -5042,10 +5010,7 @@ namespace org.kbinani.cadencii {
                     work.setCurve( curve, work_list );
                     BezierCurves beziers = vsq.AttachedCurves.get( selected - 1 );
                     CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, work, beziers );
-                    executeCommand( run,
-                                    selected, 
-                                    AppManager.editedZone[selected - 1].add( AppManager.detectTrackDifference( vsq_track, work ) ),
-                                    true );
+                    executeCommand( run, true );
                 }
                 m_moving_points.clear();
             }
@@ -5176,7 +5141,7 @@ namespace org.kbinani.cadencii {
                         CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(),
                                                                                                               event_id,
                                                                                                               edited ) );
-                        executeCommand( run );
+                        executeCommand( run, true );
                     }
                 } else {
                     VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_selected_curve.getName() );
@@ -5200,7 +5165,7 @@ namespace org.kbinani.cadencii {
                                                                        m_selected_curve.getName(),
                                                                        delete,
                                                                        add ) );
-                        executeCommand( run );
+                        executeCommand( run, true );
                     }
                 }
             } else if ( m_mouse_down_mode == MouseDownMode.VEL_WAIT_HOVER ) {
@@ -5320,7 +5285,7 @@ namespace org.kbinani.cadencii {
                                                                                                chain_id,
                                                                                                before,
                                                                                                AppManager.editorConfig.ControlCurveResolution.getValue() );
-                                executeCommand( revert, new TreeMap<Integer, EditedZoneCommand>(), false );
+                                executeCommand( revert, false );
                                 if ( ret == BDialogResult.OK ) {
                                     // ダイアログの結果がOKで、かつベジエ曲線が単調増加なら編集を適用
                                     if ( BezierChain.isBezierImplicit( target_chain ) ) {
@@ -5329,7 +5294,7 @@ namespace org.kbinani.cadencii {
                                                                                                     chain_id,
                                                                                                     after,
                                                                                                     AppManager.editorConfig.ControlCurveResolution.getValue() );
-                                        executeCommand( run );
+                                        executeCommand( run, true );
                                     }
                                 }
                             } catch ( Exception ex ) {
@@ -5625,15 +5590,12 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                         AppManager.debugWriteLine( "tsmi_Click; item.IconHandle.Program" + item.IconHandle.Program );
 #endif
-                        executeCommand( run );
+                        executeCommand( run, true );
                     } else {
                         int clock = tag.Clock;
                         VsqEvent ve = new VsqEvent( clock, item );
                         CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( selected, ve ) );
-                        executeCommand( run,
-                                        selected,
-                                        AppManager.editedZone[selected - 1].add( ve.Clock, ve.Clock + ve.ID.getLength() ),
-                                        true );
+                        executeCommand( run, true );
                     }
                 }
             }

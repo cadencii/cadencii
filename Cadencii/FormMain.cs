@@ -1218,8 +1218,9 @@ namespace org.kbinani.cadencii {
 
                     String file = PortUtil.combinePath( tmppath, track + ".wav" );
                     String tmpfile = PortUtil.combinePath( tmppath, "temp.wav" );
-                    int t_start = vsq_track.getEditedStart();
-                    int t_end = vsq_track.getEditedEnd();
+#error FormMain#AppManager_PreviewStarted; patchWorkToFreezeを使うコードに書き換えること！
+                    int t_start = 0;// vsq_track.getEditedStart();
+                    int t_end = 0;// vsq_track.getEditedEnd();
                     int start = t_start;
                     int end = t_end;
 
@@ -1302,7 +1303,6 @@ namespace org.kbinani.cadencii {
                             }
                         }
                         if ( successed ) {
-                            vsq_track.resetEditedArea();
                             Wave main = null;
                             Wave temp = null;
                             try {
@@ -1461,6 +1461,35 @@ namespace org.kbinani.cadencii {
             stripBtnCut.setEnabled( !selected_event_is_null );
             stripBtnCopy.setEnabled( !selected_event_is_null );
         }
+
+        /// <summary>
+        /// 指定したトラックの、レンダリングが必要な部分を再レンダリングし、ツギハギすることでトラックのキャッシュをフリーズさせます。
+        /// </summary>
+        /// <param name="track"></param>
+        private void patchWorkToFreeze( int track ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            VsqTrack vsq_track = vsq.Track.get( track );
+
+            String temppath = AppManager.getTempWaveDir();
+            int presend = AppManager.editorConfig.PreSendTime;
+            String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
+
+            if ( AppManager.lastRendererdStatus[track - 1] == null ) {
+                // この場合は全部レンダリングする必要がある
+                FormSynthesize dialog = null;
+                try {
+                    dialog = new FormSynthesize( vsq, presend, track, wavePath, 0, vsq.TotalClocks + 240, false );
+                    if ( dialog.showDialog() == BDialogResult.OK ) {
+                        AppManager.lastRendererdStatus[track - 1] = (VsqTrack)vsq_track.clone();
+                    }
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                }
+            } else {
+                // 部分レンダリング
+                EditedZoneUnit[] areas = AppManager.detectTrackDifference( AppManager.lastRendererdStatus[track - 1], vsq_track );
+            }
+        }
         #endregion
 
         #region pictPianoRoll
@@ -1504,7 +1533,7 @@ namespace org.kbinani.cadencii {
                     hideInputTextBox();
                     if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                         CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventDelete( selected, internal_id ) );
-                        AppManager.execute( run );
+                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                         setEdited( true );
                         AppManager.clearSelectedEvent();
                         return;
@@ -1599,9 +1628,7 @@ namespace org.kbinani.cadencii {
                                         VsqCommand.generateCommandEventChangeIDContaints( selected,
                                                                                           internal_id,
                                                                                           item2 ) );
-                                    AppManager.register( AppManager.getVsqFile().executeCommand( run ),
-                                                         selected, 
-                                                         AppManager.editedZone[selected - 1].add( item3.Clock, item3.Clock + item3.ID.getLength() ) );
+                                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                     setEdited( true );
                                 }
                                 break;
@@ -1789,9 +1816,7 @@ namespace org.kbinani.cadencii {
                                         id.NoteHeadHandle = dlg.getEditedNoteHeadHandle();
                                         CadenciiCommand run = new CadenciiCommand(
                                             VsqCommand.generateCommandEventChangeIDContaints( selected, selectedEvent.InternalID, id ) );
-                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ), 
-                                                             selected,
-                                                             AppManager.editedZone[selected - 1].add( selectedEvent.Clock, selectedEvent.Clock + selectedEvent.ID.getLength() ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                         setEdited( true );
                                         refreshScreen();
                                     }
@@ -1868,9 +1893,7 @@ namespace org.kbinani.cadencii {
                                             VsqCommand.generateCommandEventChangeIDContaints( selected,
                                                                                     selectedEvent.InternalID,
                                                                                     t ) );
-                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ), 
-                                                             selected,
-                                                             AppManager.editedZone[selected - 1].add( selectedEvent.Clock, selectedEvent.Clock + selectedEvent.ID.getLength() ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                         setEdited( true );
                                         refreshScreen();
                                     }
@@ -2984,9 +3007,7 @@ namespace org.kbinani.cadencii {
                             CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                                          work,
                                                                                          AppManager.getVsqFile().AttachedCurves.get( selected - 1 ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ),
-                                                 selected,
-                                                 AppManager.editedZone[selected - 1].add( add.Clock, add.Clock + add.ID.getLength() ) );
+                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                             setEdited( true );
                         } else {
                             VsqEvent[] items = new VsqEvent[1];
@@ -2999,9 +3020,7 @@ namespace org.kbinani.cadencii {
                             items[0].ID.VibratoHandle = vibrato;
 
                             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAddRange( AppManager.getSelected(), items ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ), 
-                                                 selected, 
-                                                 AppManager.editedZone[selected - 1].add( items[0].Clock, items[0].Clock + items[0].ID.getLength() ) );
+                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                             setEdited( true );
                         }
                     }
@@ -3053,7 +3072,7 @@ namespace org.kbinani.cadencii {
                             CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                                          copied,
                                                                                          vsq.AttachedCurves.get( selected - 1 ) );
-                            AppManager.execute( run );
+                            AppManager.register( vsq.executeCommand( run ) );
                             setEdited( true );
                         }
                     } else {
@@ -3136,7 +3155,7 @@ namespace org.kbinani.cadencii {
                                                                                  clocks,
                                                                                  values ) );
                     }
-                    AppManager.execute( run );
+                    AppManager.register( vsq.executeCommand( run ) );
                     setEdited( true );
                 }
                 #endregion
@@ -3167,9 +3186,7 @@ namespace org.kbinani.cadencii {
                         }
                         CadenciiCommand run = new CadenciiCommand(
                             VsqCommand.generateCommandEventChangeIDContaints( selected, m_vibrato_editing_id, item.ID ) );
-                        AppManager.register( vsq.executeCommand( run ),
-                                             selected,
-                                             AppManager.editedZone[selected - 1].add( item.Clock, item.Clock + item.ID.getLength() ) );
+                        AppManager.register( vsq.executeCommand( run ) );
                         setEdited( true );
                     }
                 }
@@ -3254,9 +3271,7 @@ namespace org.kbinani.cadencii {
                 CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                              work,
                                                                              vsq.AttachedCurves.get( selected - 1 ) );
-                AppManager.register( vsq.executeCommand( run ), 
-                                     selected,
-                                     AppManager.editedZone[selected - 1].add( AppManager.detectTrackDifference( work, vsq_track ) ) );
+                AppManager.register( vsq.executeCommand( run ) );
 
                 // 選択範囲を更新
                 AppManager.wholeSelectedInterval = new SelectedRegion( dst_clock_start );
@@ -4041,7 +4056,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "m_note_property_dlg_CommandExecuteRequired" );
 #endif
-            AppManager.execute( command );
+            AppManager.register( AppManager.getVsqFile().executeCommand( command ) );
             updateDrawObjectList();
             refreshScreen();
             setEdited( true );
@@ -4324,9 +4339,7 @@ namespace org.kbinani.cadencii {
                                 AppManager.addingEvent.ID.setLength( clock - AppManager.addingEvent.Clock );
                                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( selected,
                                                                                                                AppManager.addingEvent ) );
-                                AppManager.register( AppManager.getVsqFile().executeCommand( run ), 
-                                                     selected,
-                                                     AppManager.editedZone[selected - 1].add( AppManager.addingEvent.Clock, clock ) );
+                                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                 if ( !isEdited() ) {
                                     setEdited( true );
                                 }
@@ -4802,7 +4815,7 @@ namespace org.kbinani.cadencii {
             }
 
             CadenciiCommand lastrun = VsqFileEx.generateCommandReplace( work );
-            AppManager.execute( lastrun );
+            AppManager.register( AppManager.getVsqFile().executeCommand( lastrun ) );
             setEdited( true );
             refreshScreen();
         }
@@ -5339,7 +5352,7 @@ namespace org.kbinani.cadencii {
 
             // コマンドを発行し、実行
             CadenciiCommand run = VsqFileEx.generateCommandReplace( replace );
-            AppManager.execute( run );
+            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
             setEdited( true );
         }
 
@@ -5466,9 +5479,7 @@ namespace org.kbinani.cadencii {
                             CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                                          copy,
                                                                                          vsq.AttachedCurves.get( selected - 1 ) );
-                            AppManager.register( vsq.executeCommand( run ),
-                                                 selected,
-                                                 AppManager.editedZone[selected - 1].add( AppManager.detectTrackDifference( vsq_track, copy ) ) );
+                            AppManager.register( vsq.executeCommand( run ) );
 #if USE_DOBJ
                             updateDrawObjectList();
 #endif
@@ -5595,7 +5606,7 @@ namespace org.kbinani.cadencii {
                 AppManager.editorConfig.DefaultPreMeasure = m_preference_dlg.getPreMeasure();
                 if ( m_preference_dlg.getPreMeasure() != AppManager.getVsqFile().getPreMeasure() ) {
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandChangePreMeasure( m_preference_dlg.getPreMeasure() ) );
-                    AppManager.execute( run );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
                 }
                 AppManager.editorConfig.Language = m_preference_dlg.getLanguage();
@@ -6109,7 +6120,7 @@ namespace org.kbinani.cadencii {
             }
             CadenciiCommand run = new CadenciiCommand(
                 VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(), internalids, ids ) );
-            AppManager.execute( run );
+            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
             setEdited( true );
             repaint();
         }
@@ -6227,7 +6238,7 @@ namespace org.kbinani.cadencii {
                     temp.updateTimesigInfo();
 
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
-                    AppManager.execute( run );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
                     repaint();
                 }
@@ -6332,7 +6343,7 @@ namespace org.kbinani.cadencii {
 
                     temp.removePart( clock_start, clock_end );
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
-                    AppManager.execute( run );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
                     repaint();
                 }
@@ -6396,7 +6407,7 @@ namespace org.kbinani.cadencii {
 
             if ( total_changed ) {
                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandReplace( work ) );
-                AppManager.execute( run );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
                 refreshScreen();
             }
@@ -6608,9 +6619,7 @@ namespace org.kbinani.cadencii {
                     #endregion
 
                     CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, work, vsq.AttachedCurves.get( selected - 1 ) );
-                    AppManager.register( vsq.executeCommand( run ),
-                                         selected,
-                                         AppManager.editedZone[selected - 1].add( AppManager.detectTrackDifference( vsq_track, work ) ) );
+                    AppManager.register( vsq.executeCommand( run ) );
                     setEdited( true );
                 }
             } catch ( Exception ex ) {
@@ -6754,7 +6763,7 @@ namespace org.kbinani.cadencii {
                                     VsqCommand.generateCommandUpdateTempo( vsq.TempoTable.get( index ).Clock,
                                                                            vsq.TempoTable.get( index ).Clock,
                                                                            -1 ) );
-                                AppManager.execute( run );
+                                AppManager.register( vsq.executeCommand( run ) );
                                 setEdited( true );
                                 #endregion
                             } else {
@@ -6780,7 +6789,7 @@ namespace org.kbinani.cadencii {
                                         int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
                                         CadenciiCommand run = new CadenciiCommand(
                                             VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
-                                        AppManager.execute( run );
+                                        AppManager.register( vsq.executeCommand( run ) );
                                         setEdited( true );
                                         refreshScreen();
                                     }
@@ -6854,7 +6863,7 @@ namespace org.kbinani.cadencii {
 #endif
                                     CadenciiCommand run = new CadenciiCommand(
                                         VsqCommand.generateCommandUpdateTempo( new_clock, new_clock, (int)(6e7 / (double)dlg.getTempo()) ) );
-                                    AppManager.execute( run );
+                                    AppManager.register( vsq.executeCommand( run ) );
                                     setEdited( true );
                                     refreshScreen();
                                 }
@@ -6897,7 +6906,7 @@ namespace org.kbinani.cadencii {
                             }
                             int barcount = vsq.TimesigTable.get( index ).BarCount;
                             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTimesig( barcount, barcount, -1, -1 ) );
-                            AppManager.execute( run );
+                            AppManager.register( vsq.executeCommand( run ) );
                             setEdited( true );
                             #endregion
                         } else {
@@ -6928,7 +6937,7 @@ namespace org.kbinani.cadencii {
                                         barcounts[1] = dlg.getEnd() + pre_measure - 1;
                                         CadenciiCommand run = new CadenciiCommand(
                                             VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
-                                        AppManager.execute( run );
+                                        AppManager.register( vsq.executeCommand( run ) );
                                         setEdited( true );
                                     } else {
 #if DEBUG
@@ -6941,7 +6950,7 @@ namespace org.kbinani.cadencii {
                                                                                      dlg.getStart() + pre_measure - 1,
                                                                                      dlg.getNumerator(),
                                                                                      dlg.getDenominator() ) );
-                                        AppManager.register( vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                                        AppManager.register( vsq.executeCommand( run ) );
                                         setEdited( true );
                                     }
                                 }
@@ -7000,7 +7009,7 @@ namespace org.kbinani.cadencii {
                                         barcounts[1] = dlg.getEnd() + pre_measure - 1 + 1;
                                         CadenciiCommand run = new CadenciiCommand(
                                             VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
-                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                         setEdited( true );
                                     } else {
                                         CadenciiCommand run = new CadenciiCommand(
@@ -7008,7 +7017,7 @@ namespace org.kbinani.cadencii {
                                                                            dlg.getStart() + pre_measure - 1,
                                                                            dlg.getNumerator(),
                                                                            dlg.getDenominator() ) );
-                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                         setEdited( true );
                                     }
                                 }
@@ -7245,7 +7254,7 @@ namespace org.kbinani.cadencii {
                                     VsqCommand.generateCommandUpdateTempo( vsq.TempoTable.get( index ).Clock,
                                                                            vsq.TempoTable.get( index ).Clock,
                                                                            -1 ) );
-                                AppManager.execute( run );
+                                AppManager.register( vsq.executeCommand( run ) );
                                 setEdited( true );
                                 #endregion
                             }
@@ -7278,7 +7287,7 @@ namespace org.kbinani.cadencii {
                                 }
                                 int barcount = vsq.TimesigTable.get( index ).BarCount;
                                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTimesig( barcount, barcount, -1, -1 ) );
-                                AppManager.register( vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                                AppManager.register( vsq.executeCommand( run ) );
                                 setEdited( true );
                                 #endregion
                             }
@@ -7312,7 +7321,7 @@ namespace org.kbinani.cadencii {
 #endif
                     } else {
                         CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, new_clocks, tempos ) );
-                        AppManager.execute( run );
+                        AppManager.register( vsq.executeCommand( run ) );
                         setEdited( true );
                     }
                 } else if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
@@ -7344,7 +7353,7 @@ namespace org.kbinani.cadencii {
                     } else {
                         CadenciiCommand run = new CadenciiCommand(
                             VsqCommand.generateCommandUpdateTimesigRange( barcounts, new_barcounts, numerators, denominators ) );
-                        AppManager.register( vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                        AppManager.register( vsq.executeCommand( run ) );
                         setEdited( true );
                     }
                 }
@@ -8052,9 +8061,7 @@ namespace org.kbinani.cadencii {
                         copy.NoteHeadHandle = dlg.getEditedNoteHeadHandle();
                         CadenciiCommand run = new CadenciiCommand(
                             VsqCommand.generateCommandEventChangeIDContaints( selected, id, copy ) );
-                        AppManager.register( vsq.executeCommand( run ), 
-                                             selected,
-                                             AppManager.editedZone[selected - 1].add( original.Clock, original.Clock + original.ID.getLength() ) );
+                        AppManager.register( vsq.executeCommand( run ) );
                         setEdited( true );
                     }
                 } catch ( Exception ex ) {
@@ -8283,7 +8290,7 @@ namespace org.kbinani.cadencii {
             menuTrackOn.setSelected( !menuTrackOn.isSelected() );
             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackChangePlayMode( AppManager.getSelected(),
                                                                                                       menuTrackOn.isSelected() ? 1 : -1 ) );
-            AppManager.register( AppManager.getVsqFile().executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
             setEdited( true );
             refreshScreen();
         }
@@ -8452,7 +8459,7 @@ namespace org.kbinani.cadencii {
             cMenuTrackTabTrackOn.setSelected( !cMenuTrackTabTrackOn.isSelected() );
             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackChangePlayMode( AppManager.getSelected(),
                                                                                                       cMenuTrackTabTrackOn.isSelected() ? 1 : -1 ) );
-            AppManager.register( AppManager.getVsqFile().executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
             setEdited( true );
             refreshScreen();
         }
@@ -8548,7 +8555,7 @@ namespace org.kbinani.cadencii {
 #endif
                 CadenciiCommand run = new CadenciiCommand(
                     VsqCommand.generateCommandTrackChangeName( AppManager.getSelected(), m_txtbox_track_name.getText() ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
 #if !JAVA
                 m_txtbox_track_name.Dispose();
@@ -8649,14 +8656,14 @@ namespace org.kbinani.cadencii {
                                                                                    trackSelector.getSelectedCurve(),
                                                                                    chain_id,
                                                                                    AppManager.editorConfig.ControlCurveResolution.getValue() );
-                        AppManager.execute( run );
+                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     } else {
                         CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( AppManager.getSelected(),
                                                                                     trackSelector.getSelectedCurve(),
                                                                                     chain_id,
                                                                                     chain,
                                                                                     AppManager.editorConfig.ControlCurveResolution.getValue() );
-                        AppManager.execute( run );
+                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     }
                     setEdited( true );
                     refreshScreen();
@@ -8990,9 +8997,7 @@ namespace org.kbinani.cadencii {
                 CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                              item,
                                                                              vsq.AttachedCurves.get( selected - 1 ) );
-                AppManager.register( vsq.executeCommand( run ), selected, AppManager.editedZone[selected - 1].add( 0, int.MaxValue ) );
-                vsq_track.setEditedStart( 0 );
-                vsq_track.setEditedEnd( vsq.TotalClocks );
+                AppManager.register( vsq.executeCommand( run ) );
                 cMenuTrackTabRendererVOCALOID1.setSelected( true );
                 cMenuTrackTabRendererVOCALOID2.setSelected( false );
                 cMenuTrackTabRendererUtau.setSelected( false );
@@ -9025,9 +9030,7 @@ namespace org.kbinani.cadencii {
                 CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                              item,
                                                                              vsq.AttachedCurves.get( selected - 1 ) );
-                AppManager.register( vsq.executeCommand( run ), selected, AppManager.editedZone[selected - 1].add( 0, int.MaxValue ) );
-                vsq_track.setEditedStart( 0 );
-                vsq_track.setEditedEnd( vsq.TotalClocks );
+                AppManager.register( vsq.executeCommand( run ) );
                 cMenuTrackTabRendererVOCALOID1.setSelected( false );
                 cMenuTrackTabRendererVOCALOID2.setSelected( true );
                 cMenuTrackTabRendererUtau.setSelected( false );
@@ -9060,9 +9063,7 @@ namespace org.kbinani.cadencii {
                 CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                              item,
                                                                              vsq.AttachedCurves.get( selected - 1 ) );
-                AppManager.register( vsq.executeCommand( run ), selected, AppManager.editedZone[selected - 1].add( 0, int.MaxValue ) );
-                vsq_track.setEditedStart( 0 );
-                vsq_track.setEditedEnd( vsq.TotalClocks );
+                AppManager.register( vsq.executeCommand( run ) );
                 cMenuTrackTabRendererVOCALOID1.setSelected( false );
                 cMenuTrackTabRendererVOCALOID2.setSelected( false );
                 cMenuTrackTabRendererUtau.setSelected( true );
@@ -9095,9 +9096,7 @@ namespace org.kbinani.cadencii {
                 CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                              item,
                                                                              vsq.AttachedCurves.get( selected - 1 ) );
-                AppManager.register( vsq.executeCommand( run ), selected, AppManager.editedZone[selected - 1].add( 0, int.MaxValue ) );
-                vsq_track.setEditedStart( 0 );
-                vsq_track.setEditedEnd( vsq.TotalClocks );
+                AppManager.register( vsq.executeCommand( run ) );
                 cMenuTrackTabRendererVOCALOID1.setSelected( false );
                 cMenuTrackTabRendererVOCALOID2.setSelected( false );
                 cMenuTrackTabRendererUtau.setSelected( false );
@@ -9128,9 +9127,7 @@ namespace org.kbinani.cadencii {
                 CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                              item,
                                                                              vsq.AttachedCurves.get( selected - 1 ) );
-                AppManager.register( vsq.executeCommand( run ), selected, AppManager.editedZone[selected - 1].add( 0, int.MaxValue ) );
-                vsq_track.setEditedStart( 0 );
-                vsq_track.setEditedEnd( vsq.TotalClocks );
+                AppManager.register( vsq.executeCommand( run ) );
                 cMenuTrackTabRendererVOCALOID1.setSelected( false );
                 cMenuTrackTabRendererVOCALOID2.setSelected( false );
                 cMenuTrackTabRendererUtau.setSelected( false );
@@ -9743,7 +9740,7 @@ namespace org.kbinani.cadencii {
                 } catch ( Exception ex3 ) {
                 }
                 CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
             } catch ( Exception ex ) {
             } finally {
@@ -9782,7 +9779,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            AppManager.register( AppManager.getVsqFile().executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
             setEdited( true );
         }
 
@@ -10931,9 +10928,7 @@ namespace org.kbinani.cadencii {
                 }
 
                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplace( selected, item ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ),
-                                     selected,
-                                     AppManager.editedZone[selected - 1].add( item.Clock, item.Clock + item.ID.getLength() ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
             }
         }
@@ -11051,9 +11046,7 @@ namespace org.kbinani.cadencii {
                     int selected = AppManager.getSelected();
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( selected,
                                                                                                    AppManager.addingEvent ) );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ), 
-                                         selected, 
-                                         AppManager.editedZone[selected - 1].add( AppManager.addingEvent.Clock, AppManager.addingEvent.Clock + len ) );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     if ( !isEdited() ) {
                         setEdited( true );
                     }
@@ -12084,13 +12077,13 @@ namespace org.kbinani.cadencii {
             }
             FormSynthesize dlg = null;
             try {
-                dlg = new FormSynthesize( AppManager.getVsqFile(), AppManager.editorConfig.PreSendTime, tracks, files, AppManager.getVsqFile().TotalClocks + 240, false );
-                if ( dlg.showDialog() == BDialogResult.OK ) {
-                    AppManager.getVsqFile().Track.get( AppManager.getSelected() ).resetEditedArea();
-                }
+                VsqFileEx vsq = AppManager.getVsqFile();
+                dlg = new FormSynthesize( vsq, AppManager.editorConfig.PreSendTime, tracks, files, vsq.TotalClocks + 240, false );
+                dlg.showDialog();
                 int[] finished = dlg.getFinished();
                 for ( int i = 0; i < finished.Length; i++ ) {
                     AppManager.setRenderRequired( finished[i], false );
+                    AppManager.lastRendererdStatus[finished[i] - 1] = (VsqTrack)vsq.Track.get( finished[i] ).clone();
                 }
             } catch ( Exception ex ) {
             } finally {
@@ -12498,7 +12491,7 @@ namespace org.kbinani.cadencii {
                     }
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, new_ids ) );
-                    AppManager.execute( run );
+                    AppManager.register( vsq.executeCommand( run ) );
                     setEdited( true );
                     repaint();
                 }
@@ -12540,9 +12533,7 @@ namespace org.kbinani.cadencii {
                     }
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandEventChangeIDContaints( selected, ev.InternalID, edited.ID ) );
-                    AppManager.register( vsq.executeCommand( run ), 
-                                         selected, 
-                                         AppManager.editedZone[selected - 1].add( ev.Clock, ev.Clock + ev.ID.getLength() ) );
+                    AppManager.register( vsq.executeCommand( run ) );
                     setEdited( true );
                     refreshScreen();
                 }
@@ -12591,9 +12582,7 @@ namespace org.kbinani.cadencii {
                     edited.ID.NoteHeadHandle = dlg.getEditedNoteHeadHandle();
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandEventChangeIDContaints( selected, ev.InternalID, edited.ID ) );
-                    AppManager.register( vsq.executeCommand( run ),
-                                         selected,
-                                         AppManager.editedZone[selected - 1].add( ev.Clock, ev.Clock + ev.ID.getLength() ) );
+                    AppManager.register( vsq.executeCommand( run ) );
                     setEdited( true );
                     refreshScreen();
                 }
@@ -12752,7 +12741,7 @@ namespace org.kbinani.cadencii {
                         work.Track.get( selected ).reflectDynamics();
                     }
                     CadenciiCommand run2 = new CadenciiCommand( VsqCommand.generateCommandReplace( work ) );
-                    AppManager.execute( run2 );
+                    AppManager.register( vsq.executeCommand( run2 ) );
                     setEdited( true );
                 } else {
                     CadenciiCommand run2 = null;
@@ -12767,7 +12756,7 @@ namespace org.kbinani.cadencii {
                     } else {
                         run2 = new CadenciiCommand( run );
                     }
-                    AppManager.execute( run2 );
+                    AppManager.register( vsq.executeCommand( run2 ) );
                     setEdited( true );
                     AppManager.clearSelectedEvent();
                 }
@@ -12792,7 +12781,7 @@ namespace org.kbinani.cadencii {
                 }
                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
                                                                                                        PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ), dum ) );
-                AppManager.execute( run );
+                AppManager.register( vsq.executeCommand( run ) );
                 setEdited( true );
                 AppManager.clearSelectedTempo();
                 repaint();
@@ -12822,7 +12811,7 @@ namespace org.kbinani.cadencii {
                 }
                 CadenciiCommand run = new CadenciiCommand(
                     VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
-                AppManager.register( vsq.executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                AppManager.register( vsq.executeCommand( run )  );
                 setEdited( true );
                 AppManager.clearSelectedTimesig();
                 repaint();
@@ -12851,9 +12840,7 @@ namespace org.kbinani.cadencii {
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackCurveReplace( selected,
                                                                                                             trackSelector.getSelectedCurve().getName(),
                                                                                                             list ) );
-                    AppManager.register( vsq.executeCommand( run ),
-                                         selected,
-                                         AppManager.editedZone[selected - 1].add( AppManager.compareList( new VsqBPListComparisonContext( src, list ) ) ) );
+                    AppManager.register( vsq.executeCommand( run ) );
                     setEdited( true );
                 } else {
                     //todo: FormMain+DeleteEvent; VibratoDepth, VibratoRateの場合
@@ -12908,7 +12895,7 @@ namespace org.kbinani.cadencii {
                     tempos[i] = item.Tempo;
                 }
                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, clocks, tempos ) );
-                AppManager.execute( run );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
                 refreshScreen();
                 return;
@@ -12935,7 +12922,7 @@ namespace org.kbinani.cadencii {
                 }
                 CadenciiCommand run = new CadenciiCommand(
                     VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
                 refreshScreen();
                 return;
@@ -13064,12 +13051,12 @@ namespace org.kbinani.cadencii {
             if ( commands == 1 ) {
                 if ( add_event != null ) {
                     CadenciiCommand run = new CadenciiCommand( add_event );
-                    AppManager.execute( run );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 } else if ( edit_bpcurve != null ) {
                     CadenciiCommand run = new CadenciiCommand( edit_bpcurve );
-                    AppManager.execute( run );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 } else if ( edit_bezier != null ) {
-                    AppManager.execute( edit_bezier );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( edit_bezier ) );
                 }
                 AppManager.getVsqFile().updateTotalClocks();
                 setEdited( true );
@@ -13087,7 +13074,7 @@ namespace org.kbinani.cadencii {
                     work.executeCommand( edit_bpcurve );
                 }
                 CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
-                AppManager.execute( run );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 AppManager.getVsqFile().updateTotalClocks();
                 setEdited( true );
                 refreshScreen();
@@ -13325,7 +13312,7 @@ namespace org.kbinani.cadencii {
 
                 // コマンドを発行し、実行
                 CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
-                AppManager.execute( run );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 this.setEdited( true );
 
                 other_command_executed = true;
@@ -13343,7 +13330,7 @@ namespace org.kbinani.cadencii {
                     clocks[count] = value.original.Clock;
                 }
                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, clocks, dum ) );
-                AppManager.execute( run );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
                 other_command_executed = true;
             } else if ( AppManager.getSelectedTimesigCount() > 0 ) {
@@ -13363,7 +13350,7 @@ namespace org.kbinani.cadencii {
                 }
                 CadenciiCommand run = new CadenciiCommand(
                     VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ), new TreeMap<Integer, EditedZoneCommand>() );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
                 other_command_executed = true;
             }
@@ -13371,7 +13358,7 @@ namespace org.kbinani.cadencii {
             // 冒頭で作成した音符イベント削除以外に、コマンドが実行されなかった場合
             if ( delete_event != null && !other_command_executed ) {
                 CadenciiCommand run = new CadenciiCommand( delete_event );
-                AppManager.execute( run );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
             }
 
@@ -13436,9 +13423,7 @@ namespace org.kbinani.cadencii {
                                                                      vsq.Mixer.Slave.get( selected - 1 ),
                                                                      vsq.Track.size(),
                                                                      vsq.AttachedCurves.get( selected - 1 ) ); ;
-            AppManager.register( vsq.executeCommand( run ),
-                                 vsq.Track.size(),
-                                 AppManager.editedZone[vsq.Track.size() - 1].add( 0, int.MaxValue ) );
+            AppManager.register( vsq.executeCommand( run ) );
             setEdited( true );
             AppManager.mixerWindow.updateStatus();
             refreshScreen();
@@ -13488,9 +13473,7 @@ namespace org.kbinani.cadencii {
                 if ( selected >= 2 ) {
                     AppManager.setSelected( selected - 1 );
                 }
-                AppManager.register( vsq.executeCommand( run ), 
-                                     selected,
-                                     AppManager.editedZone[selected - 1].clear() );
+                AppManager.register( vsq.executeCommand( run ) );
 #if USE_DOBJ
                 updateDrawObjectList();
 #endif
@@ -13509,9 +13492,7 @@ namespace org.kbinani.cadencii {
                                                                      new VsqMixerEntry( 0, 0, 0, 0 ),
                                                                      i,
                                                                      new BezierCurves() );
-            AppManager.register( vsq.executeCommand( run ),
-                                 i,
-                                 AppManager.editedZone[i - 1].add( 0, int.MaxValue ) );
+            AppManager.register( vsq.executeCommand( run ) );
 #if USE_DOBJ
             updateDrawObjectList();
 #endif
@@ -15221,23 +15202,13 @@ namespace org.kbinani.cadencii {
             work.addEvent( item );
             work.reflectDynamics();
             CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, work, vsq.AttachedCurves.get( selected - 1 ) );
-            AppManager.register( vsq.executeCommand( run ),
-                                 selected,
-                                 AppManager.editedZone[selected - 1].add( AppManager.detectTrackDifference( vsq_track, work ) ) );
+            AppManager.register( vsq.executeCommand( run ) );
             setEdited( true );
         }
 #endif
 
 #if !JAVA
         private void FormMain_DragEnter( object sender, System.Windows.Forms.DragEventArgs e ) {
-#if DEBUG
-            PortUtil.println( "FormMain_DragEnter; e.Data.ToString()=" + e.Data.ToString() );
-            string[] fmts = e.Data.GetFormats( false );
-            PortUtil.println( "FormMain_DragEnter; e.Data.GetFormats:" );
-            foreach ( string s in fmts ) {
-                PortUtil.println( "FormMain_DragEnter;     " + s );
-            }
-#endif
             if ( e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
                 // ドロップ可能
                 e.Effect = System.Windows.Forms.DragDropEffects.All;
