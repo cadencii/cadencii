@@ -1472,6 +1472,7 @@ namespace org.kbinani.cadencii {
             EditMode edit_mode = AppManager.getEditMode();
 
             boolean is_button_left = e.Button == BMouseButtons.Left;
+            int selected = AppManager.getSelected();
 
             if ( e.Button == BMouseButtons.Left ) {
 #if ENABLE_MOUSEHOVER
@@ -1499,12 +1500,11 @@ namespace org.kbinani.cadencii {
                         AppManager.clearSelectedEvent();
                     }
                     AppManager.addSelectedEvent( item.InternalID );
-                    int selected = AppManager.getSelected();
                     int internal_id = item.InternalID;
                     hideInputTextBox();
                     if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                         CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventDelete( selected, internal_id ) );
-                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                        AppManager.execute( run );
                         setEdited( true );
                         AppManager.clearSelectedEvent();
                         return;
@@ -1520,9 +1520,9 @@ namespace org.kbinani.cadencii {
                             btn = BMouseButtons.Middle;
                         }
                         boolean result = PaletteToolServer.invokePaletteTool( AppManager.selectedPaletteTool,
-                                                                           AppManager.getSelected(),
-                                                                           internal_ids.toArray( new Integer[] { } ),
-                                                                           btn );
+                                                                              selected,
+                                                                              internal_ids.toArray( new Integer[] { } ),
+                                                                              btn );
                         if ( result ) {
                             setEdited( true );
                             AppManager.clearSelectedEvent();
@@ -1547,8 +1547,8 @@ namespace org.kbinani.cadencii {
                         int stdx = AppManager.startToDrawX;
                         int stdy = getStartToDrawY();
 #if USE_DOBJ
-                        for ( int i = 0; i < AppManager.drawObjects.get( AppManager.getSelected() - 1 ).size(); i++ ) {
-                            DrawObject dobj = AppManager.drawObjects.get( AppManager.getSelected() - 1 ).get( i );
+                        for ( int i = 0; i < AppManager.drawObjects.get( selected - 1 ).size(); i++ ) {
+                            DrawObject dobj = AppManager.drawObjects.get( selected - 1 ).get( i );
                             if ( dobj.pxRectangle.x + AppManager.startToDrawX + dobj.pxRectangle.width - stdx < 0 ) {
                                 continue;
                             } else if ( pictPianoRoll.getWidth() < dobj.pxRectangle.x + AppManager.keyWidth - stdx ) {
@@ -1576,14 +1576,16 @@ namespace org.kbinani.cadencii {
 #endif
                             if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 //ビブラートの範囲なのでビブラートを消す
+                                VsqEvent item3 = null;
                                 VsqID item2 = null;
                                 int internal_id = -1;
 #if USE_DOBJ
                                 internal_id = dobj.internalID;
-                                for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+                                for ( Iterator itr = AppManager.getVsqFile().Track.get( selected ).getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ve = (VsqEvent)itr.next();
                                     if ( ve.InternalID == dobj.internalID ) {
                                         item2 = (VsqID)ve.ID.clone();
+                                        item3 = ve;
                                         break;
                                     }
                                 }
@@ -1594,10 +1596,12 @@ namespace org.kbinani.cadencii {
                                 if ( item2 != null ) {
                                     item2.VibratoHandle = null;
                                     CadenciiCommand run = new CadenciiCommand(
-                                        VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(),
+                                        VsqCommand.generateCommandEventChangeIDContaints( selected,
                                                                                           internal_id,
                                                                                           item2 ) );
-                                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                    AppManager.register( AppManager.getVsqFile().executeCommand( run ),
+                                                         selected, 
+                                                         AppManager.editedZone[selected - 1].add( item3.Clock, item3.Clock + item3.ID.getLength() ) );
                                     setEdited( true );
                                 }
                                 break;
@@ -1695,6 +1699,7 @@ namespace org.kbinani.cadencii {
             ByRef<Rectangle> out_rect = new ByRef<Rectangle>();
             VsqEvent item = getItemAtClickedPosition( new Point( e.X, e.Y ), out_rect );
             Rectangle rect = out_rect.value;
+            int selected = AppManager.getSelected();
             if ( item != null && item.ID.type == VsqIDType.Anote ) {
 #if ENABLE_SCRIPT
                 if ( AppManager.getSelectedTool() != EditTool.PALETTE_TOOL )
@@ -1719,7 +1724,7 @@ namespace org.kbinani.cadencii {
                     int stdx = AppManager.startToDrawX;
                     int stdy = getStartToDrawY();
 #if USE_DOBJ
-                    for ( Iterator itr = AppManager.drawObjects.get( AppManager.getSelected() - 1 ).iterator(); itr.hasNext(); ) {
+                    for ( Iterator itr = AppManager.drawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                         DrawObject dobj = (DrawObject)itr.next();
                         // 表情コントロールプロパティを表示するかどうかを決める
                         rect = new Rectangle(
@@ -1743,39 +1748,39 @@ namespace org.kbinani.cadencii {
                         rect = new Rectangle( event_sx, event_sy, 21, AppManager.EditorConfig.PxTrackHeight );
 #endif
                         if ( isInRect( new Point( e.X, e.Y ), rect ) ) {
-                            VsqEvent selected = null;
+                            VsqEvent selectedEvent = null;
 #if USE_DOBJ
-                            for ( Iterator itr2 = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr2.hasNext(); ) {
+                            for ( Iterator itr2 = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr2.hasNext(); ) {
                                 VsqEvent ev = (VsqEvent)itr2.next();
                                 if ( ev.InternalID == dobj.internalID ) {
-                                    selected = ev;
+                                    selectedEvent = ev;
                                     break;
                                 }
                             }
 #else
                             selected = evnt;
 #endif
-                            if ( selected != null ) {
+                            if ( selectedEvent != null ) {
 #if ENABLE_MOUSEHOVER
                                 if ( m_mouse_hover_thread != null ) {
                                     m_mouse_hover_thread.Abort();
                                 }
 #endif
                                 SynthesizerType type = SynthesizerType.VOCALOID2;
-                                if ( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                                if ( AppManager.getVsqFile().Track.get( selected ).getCommon().Version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
                                     type = SynthesizerType.VOCALOID1;
                                 }
                                 FormNoteExpressionConfig dlg = null;
                                 try {
-                                    dlg = new FormNoteExpressionConfig( type, selected.ID.NoteHeadHandle );
-                                    dlg.setPMBendDepth( selected.ID.PMBendDepth );
-                                    dlg.setPMBendLength( selected.ID.PMBendLength );
-                                    dlg.setPMbPortamentoUse( selected.ID.PMbPortamentoUse );
-                                    dlg.setDEMdecGainRate( selected.ID.DEMdecGainRate );
-                                    dlg.setDEMaccent( selected.ID.DEMaccent );
+                                    dlg = new FormNoteExpressionConfig( type, selectedEvent.ID.NoteHeadHandle );
+                                    dlg.setPMBendDepth( selectedEvent.ID.PMBendDepth );
+                                    dlg.setPMBendLength( selectedEvent.ID.PMBendLength );
+                                    dlg.setPMbPortamentoUse( selectedEvent.ID.PMbPortamentoUse );
+                                    dlg.setDEMdecGainRate( selectedEvent.ID.DEMdecGainRate );
+                                    dlg.setDEMaccent( selectedEvent.ID.DEMaccent );
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
                                     if ( dlg.showDialog() == BDialogResult.OK ) {
-                                        VsqID id = (VsqID)selected.ID.clone();
+                                        VsqID id = (VsqID)selectedEvent.ID.clone();
                                         id.PMBendDepth = dlg.getPMBendDepth();
                                         id.PMBendLength = dlg.getPMBendLength();
                                         id.PMbPortamentoUse = dlg.getPMbPortamentoUse();
@@ -1783,17 +1788,21 @@ namespace org.kbinani.cadencii {
                                         id.DEMaccent = dlg.getDEMaccent();
                                         id.NoteHeadHandle = dlg.getEditedNoteHeadHandle();
                                         CadenciiCommand run = new CadenciiCommand(
-                                            VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(), selected.InternalID, id ) );
-                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                            VsqCommand.generateCommandEventChangeIDContaints( selected, selectedEvent.InternalID, id ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ), 
+                                                             selected,
+                                                             AppManager.editedZone[selected - 1].add( selectedEvent.Clock, selectedEvent.Clock + selectedEvent.ID.getLength() ) );
                                         setEdited( true );
                                         refreshScreen();
                                     }
                                 } catch ( Exception ex ) {
+                                    AppManager.reportException( "FormMain#pictPianoRoll_MouseDoubleClick", ex, 0 );
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
                                             dlg.close();
                                         } catch ( Exception ex2 ) {
+                                            AppManager.reportException( "FormMain#pictPianoRoll_MouseDoubleClick", ex2, 0 );
                                         }
                                     }
                                 }
@@ -1818,19 +1827,19 @@ namespace org.kbinani.cadencii {
                                               AppManager.EditorConfig.PxTrackHeight );
 #endif
                         if ( isInRect( new Point( e.X, e.Y ), rect ) ) {
-                            VsqEvent selected = null;
+                            VsqEvent selectedEvent = null;
 #if USE_DOBJ
                             for ( Iterator itr2 = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr2.hasNext(); ) {
                                 VsqEvent ev = (VsqEvent)itr2.next();
                                 if ( ev.InternalID == dobj.internalID ) {
-                                    selected = ev;
+                                    selectedEvent = ev;
                                     break;
                                 }
                             }
 #else
                             selected = evnt;
 #endif
-                            if ( selected != null ) {
+                            if ( selectedEvent != null ) {
 #if ENABLE_MOUSEHOVER
                                 if ( m_mouse_hover_thread != null ) {
                                     m_mouse_hover_thread.Abort();
@@ -1845,21 +1854,23 @@ namespace org.kbinani.cadencii {
                                 }
                                 FormVibratoConfig dlg = null;
                                 try {
-                                    dlg = new FormVibratoConfig( selected.ID.VibratoHandle, selected.ID.getLength(), AppManager.editorConfig.DefaultVibratoLength, type );
+                                    dlg = new FormVibratoConfig( selectedEvent.ID.VibratoHandle, selectedEvent.ID.getLength(), AppManager.editorConfig.DefaultVibratoLength, type );
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
                                     if ( dlg.showDialog() == BDialogResult.OK ) {
-                                        VsqID t = (VsqID)selected.ID.clone();
+                                        VsqID t = (VsqID)selectedEvent.ID.clone();
                                         t.VibratoHandle = dlg.getVibratoHandle();
                                         if ( t.VibratoHandle != null ) {
                                             int vibrato_length = t.VibratoHandle.getLength();
-                                            int note_length = selected.ID.getLength();
+                                            int note_length = selectedEvent.ID.getLength();
                                             t.VibratoDelay = note_length - vibrato_length;
                                         }
                                         CadenciiCommand run = new CadenciiCommand(
-                                            VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(),
-                                                                                    selected.InternalID,
+                                            VsqCommand.generateCommandEventChangeIDContaints( selected,
+                                                                                    selectedEvent.InternalID,
                                                                                     t ) );
-                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                        AppManager.register( AppManager.getVsqFile().executeCommand( run ), 
+                                                             selected,
+                                                             AppManager.editedZone[selected - 1].add( selectedEvent.Clock, selectedEvent.Clock + selectedEvent.ID.getLength() ) );
                                         setEdited( true );
                                         refreshScreen();
                                     }
@@ -3042,7 +3053,7 @@ namespace org.kbinani.cadencii {
                             CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                                          copied,
                                                                                          vsq.AttachedCurves.get( selected - 1 ) );
-                            AppManager.register( vsq.executeCommand( run ) );
+                            AppManager.execute( run );
                             setEdited( true );
                         }
                     } else {
@@ -3055,7 +3066,7 @@ namespace org.kbinani.cadencii {
                         }*/
                     }
                     lock ( AppManager.drawObjects ) {
-                        Collections.sort( AppManager.drawObjects.get( AppManager.getSelected() - 1 ) );
+                        Collections.sort( AppManager.drawObjects.get( selected - 1 ) );
                     }
                 }
                 #endregion
@@ -3125,7 +3136,7 @@ namespace org.kbinani.cadencii {
                                                                                  clocks,
                                                                                  values ) );
                     }
-                    AppManager.register( vsq.executeCommand( run ) );
+                    AppManager.execute( run );
                     setEdited( true );
                 }
                 #endregion
@@ -3139,7 +3150,7 @@ namespace org.kbinani.cadencii {
                     }
                     int vibrato_length = (int)(AppManager.addingEventLength * rate);
                     VsqEvent item = null;
-                    for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+                    for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                         VsqEvent ve = (VsqEvent)itr.next();
                         if ( ve.InternalID == m_vibrato_editing_id ) {
                             item = (VsqEvent)ve.clone();
@@ -3155,8 +3166,10 @@ namespace org.kbinani.cadencii {
                             item.ID.VibratoDelay = item.ID.getLength() - vibrato_length;
                         }
                         CadenciiCommand run = new CadenciiCommand(
-                            VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(), m_vibrato_editing_id, item.ID ) );
-                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                            VsqCommand.generateCommandEventChangeIDContaints( selected, m_vibrato_editing_id, item.ID ) );
+                        AppManager.register( vsq.executeCommand( run ),
+                                             selected,
+                                             AppManager.editedZone[selected - 1].add( item.Clock, item.Clock + item.ID.getLength() ) );
                         setEdited( true );
                     }
                 }
@@ -3177,7 +3190,7 @@ namespace org.kbinani.cadencii {
                 int last_selected_id = AppManager.getLastSelectedEvent().original.InternalID;
 
                 // 音符イベントを移動
-                VsqTrack work = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
+                VsqTrack work = (VsqTrack)vsq_track.clone();
                 int k = 0;
                 for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = (SelectedEventEntry)itr.next();
@@ -3238,11 +3251,12 @@ namespace org.kbinani.cadencii {
                 }
 
                 // コマンドを作成＆実行
-                int track_num = AppManager.getSelected();
-                CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( track_num,
+                CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                              work,
-                                                                             AppManager.getVsqFile().AttachedCurves.get( track_num - 1 ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                                                             vsq.AttachedCurves.get( selected - 1 ) );
+                AppManager.register( vsq.executeCommand( run ), 
+                                     selected,
+                                     AppManager.editedZone[selected - 1].add( AppManager.detectTrackDifference( work, vsq_track ) ) );
 
                 // 選択範囲を更新
                 AppManager.wholeSelectedInterval = new SelectedRegion( dst_clock_start );
@@ -4027,7 +4041,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "m_note_property_dlg_CommandExecuteRequired" );
 #endif
-            AppManager.register( AppManager.getVsqFile().executeCommand( command ) );
+            AppManager.execute( command );
             updateDrawObjectList();
             refreshScreen();
             setEdited( true );
@@ -4305,11 +4319,14 @@ namespace org.kbinani.cadencii {
 #endif
                         if ( AppManager.isPlaying() ) {
                             int clock = AppManager.getCurrentClock();
+                            int selected = AppManager.getSelected();
                             if ( AppManager.addingEvent != null ) {
                                 AppManager.addingEvent.ID.setLength( clock - AppManager.addingEvent.Clock );
-                                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( AppManager.getSelected(),
-                                                                                                        AppManager.addingEvent ) );
-                                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( selected,
+                                                                                                               AppManager.addingEvent ) );
+                                AppManager.register( AppManager.getVsqFile().executeCommand( run ), 
+                                                     selected,
+                                                     AppManager.editedZone[selected - 1].add( AppManager.addingEvent.Clock, clock ) );
                                 if ( !isEdited() ) {
                                     setEdited( true );
                                 }
@@ -4785,7 +4802,7 @@ namespace org.kbinani.cadencii {
             }
 
             CadenciiCommand lastrun = VsqFileEx.generateCommandReplace( work );
-            AppManager.register( AppManager.getVsqFile().executeCommand( lastrun ) );
+            AppManager.execute( lastrun );
             setEdited( true );
             refreshScreen();
         }
@@ -5322,7 +5339,7 @@ namespace org.kbinani.cadencii {
 
             // コマンドを発行し、実行
             CadenciiCommand run = VsqFileEx.generateCommandReplace( replace );
-            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+            AppManager.execute( run );
             setEdited( true );
         }
 
@@ -5427,10 +5444,13 @@ namespace org.kbinani.cadencii {
                 dlg.setDEMdecGainRate( AppManager.editorConfig.DefaultDEMdecGainRate );
                 dlg.setDEMaccent( AppManager.editorConfig.DefaultDEMaccent );
 
+                int selected = AppManager.getSelected();
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 if ( dlg.showDialog() == BDialogResult.OK ) {
                     if ( dlg.getApplyCurrentTrack() ) {
-                        VsqTrack copy = (VsqTrack)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).clone();
+                        VsqFileEx vsq = AppManager.getVsqFile();
+                        VsqTrack vsq_track = vsq.Track.get( selected );
+                        VsqTrack copy = (VsqTrack)vsq_track.clone();
                         boolean changed = false;
                         for ( int i = 0; i < copy.getEventCount(); i++ ) {
                             if ( copy.getEvent( i ).ID.type == VsqIDType.Anote ) {
@@ -5443,10 +5463,12 @@ namespace org.kbinani.cadencii {
                             }
                         }
                         if ( changed ) {
-                            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( AppManager.getSelected(),
+                            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                                          copy,
-                                                                                         AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                                                                                         vsq.AttachedCurves.get( selected - 1 ) );
+                            AppManager.register( vsq.executeCommand( run ),
+                                                 selected,
+                                                 AppManager.editedZone[selected - 1].add( AppManager.detectTrackDifference( vsq_track, copy ) ) );
 #if USE_DOBJ
                             updateDrawObjectList();
 #endif
@@ -5573,7 +5595,7 @@ namespace org.kbinani.cadencii {
                 AppManager.editorConfig.DefaultPreMeasure = m_preference_dlg.getPreMeasure();
                 if ( m_preference_dlg.getPreMeasure() != AppManager.getVsqFile().getPreMeasure() ) {
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandChangePreMeasure( m_preference_dlg.getPreMeasure() ) );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                    AppManager.execute( run );
                     setEdited( true );
                 }
                 AppManager.editorConfig.Language = m_preference_dlg.getLanguage();
@@ -6087,7 +6109,7 @@ namespace org.kbinani.cadencii {
             }
             CadenciiCommand run = new CadenciiCommand(
                 VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(), internalids, ids ) );
-            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+            AppManager.execute( run );
             setEdited( true );
             repaint();
         }
@@ -6205,7 +6227,7 @@ namespace org.kbinani.cadencii {
                     temp.updateTimesigInfo();
 
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                    AppManager.execute( run );
                     setEdited( true );
                     repaint();
                 }
@@ -6310,7 +6332,7 @@ namespace org.kbinani.cadencii {
 
                     temp.removePart( clock_start, clock_end );
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                    AppManager.execute( run );
                     setEdited( true );
                     repaint();
                 }
@@ -6374,7 +6396,7 @@ namespace org.kbinani.cadencii {
 
             if ( total_changed ) {
                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandReplace( work ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                AppManager.execute( run );
                 setEdited( true );
                 refreshScreen();
             }
@@ -6402,7 +6424,7 @@ namespace org.kbinani.cadencii {
                 dlg = new FormRandomize();
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 if ( dlg.showDialog() == BDialogResult.OK ) {
-                    VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
+                    VsqFileEx vsq = AppManager.getVsqFile();
                     int preMeasure = vsq.getPreMeasure();
                     int startBar = dlg.getStartBar() + (preMeasure - 1);
                     int startBeat = dlg.getStartBeat() - 1;
@@ -6415,8 +6437,9 @@ namespace org.kbinani.cadencii {
                     int startClock = startBarClock + startBeat * 480 * 4 / startTimesig.denominator;
                     int endClock = endBarClock + endBeat * 480 * 4 / endTimesig.denominator;
 
-                    int iTrack = AppManager.getSelected();
-                    VsqTrack track = vsq.Track.get( iTrack );
+                    int selected = AppManager.getSelected();
+                    VsqTrack vsq_track = vsq.Track.get( selected );
+                    VsqTrack work = (VsqTrack)vsq_track.clone();
                     Random r = new Random();
 
                     // 音符位置のシフト
@@ -6425,7 +6448,7 @@ namespace org.kbinani.cadencii {
                         int[] sigmaPreset = new int[] { 10, 20, 30, 60, 120 };
                         int sigma = sigmaPreset[dlg.getPositionRandomizeValue() - 1]; // 標準偏差
 
-                        int count = track.getEventCount(); // イベントの個数
+                        int count = work.getEventCount(); // イベントの個数
                         int lastItemIndex = -1;  // 直前に処理した音符イベントのインデクス
                         int thisItemIndex = -1;  // 処理中の音符イベントのインデクス
                         int nextItemIndex = -1;  // 処理中の音符イベントの次の音符イベントのインデクス
@@ -6438,7 +6461,7 @@ namespace org.kbinani.cadencii {
                                 int start = nextItemIndex + 1;
                                 nextItemIndex = -2;  // -2は、トラックの最後まで走査し終わった、という意味
                                 for ( int i = start; i < count; i++ ) {
-                                    if ( track.getEvent( i ).ID.type == VsqIDType.Anote ) {
+                                    if ( work.getEvent( i ).ID.type == VsqIDType.Anote ) {
                                         nextItemIndex = i;
                                         break;
                                     }
@@ -6447,9 +6470,9 @@ namespace org.kbinani.cadencii {
 
                             if ( thisItemIndex >= 0 ) {
                                 // ここにメインの処理
-                                VsqEvent lastItem = lastItemIndex >= 0 ? track.getEvent( lastItemIndex ) : null;
-                                VsqEvent thisItem = track.getEvent( thisItemIndex );
-                                VsqEvent nextItem = nextItemIndex >= 0 ? track.getEvent( nextItemIndex ) : null;
+                                VsqEvent lastItem = lastItemIndex >= 0 ? work.getEvent( lastItemIndex ) : null;
+                                VsqEvent thisItem = work.getEvent( thisItemIndex );
+                                VsqEvent nextItem = nextItemIndex >= 0 ? work.getEvent( nextItemIndex ) : null;
                                 int lastItemClock = lastItem == null ? 0 : lastItem.Clock;
                                 int lastItemLength = lastItem == null ? 0 : lastItem.ID.getLength();
 
@@ -6520,8 +6543,8 @@ namespace org.kbinani.cadencii {
                         double order = 1.0 / Math.Pow( 2.0, 5.0 - value );
                         int[] patternPreset = pattern == 1 ? AppManager.RANDOMIZE_PIT_PATTERN1 : pattern == 2 ? AppManager.RANDOMIZE_PIT_PATTERN2 : AppManager.RANDOMIZE_PIT_PATTERN3;
                         int resolution = dlg.getResolution();
-                        VsqBPList pit = track.getCurve( "pit" );
-                        VsqBPList pbs = track.getCurve( "pbs" );
+                        VsqBPList pit = work.getCurve( "pit" );
+                        VsqBPList pbs = work.getCurve( "pbs" );
                         int pbsAtStart = pbs.getValue( startClock );
                         int pbsAtEnd = pbs.getValue( endClock );
 
@@ -6584,8 +6607,10 @@ namespace org.kbinani.cadencii {
                     }
                     #endregion
 
-                    CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( iTrack, track, vsq.AttachedCurves.get( iTrack - 1 ) );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                    CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, work, vsq.AttachedCurves.get( selected - 1 ) );
+                    AppManager.register( vsq.executeCommand( run ),
+                                         selected,
+                                         AppManager.editedZone[selected - 1].add( AppManager.detectTrackDifference( vsq_track, work ) ) );
                     setEdited( true );
                 }
             } catch ( Exception ex ) {
@@ -7510,9 +7535,18 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
-            PortUtil.println( "menuHelpDebug_Click" );
+            PortUtil.println( "FormMain#menuHelpDebug_Click" );
 #if DEBUG
-            InputBox box = new InputBox( "input sample rate" );
+            if ( AppManager.getVsqFile().Track.size() >= 3 ) {
+                EditedZoneUnit[] ret = AppManager.detectTrackDifference( AppManager.getVsqFile().Track.get( 1 ), AppManager.getVsqFile().Track.get( 2 ) );
+                PortUtil.println( "FormMain#menuHelpDebug_Click; ret.Length=" + ret.Length );
+                using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( PortUtil.combinePath( System.Windows.Forms.Application.StartupPath, "track_difference.txt" ) ) ) {
+                    for ( int i = 0; i < ret.Length; i++ ) {
+                        sw.WriteLine( ret[i].start + "\t" + ret[i].end );
+                    }
+                }
+            }
+            /*InputBox box = new InputBox( "input sample rate" );
             if ( box.showDialog() == BDialogResult.OK ) {
                 String ret = box.getResult();
                 try {
@@ -7521,7 +7555,7 @@ namespace org.kbinani.cadencii {
                     PortUtil.println( "menuHelpDebug_Click; VSTiProxy.SAMPLE_RATE=" + VSTiProxy.SAMPLE_RATE );
                 } catch ( Exception ex ) {
                 }
-            }
+            }*/
             /*BFileChooser dialog = new BFileChooser( "" );
             if ( dialog.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
                 String fileIn = dialog.getSelectedFile();

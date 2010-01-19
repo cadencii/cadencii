@@ -27,6 +27,7 @@ using org.kbinani.apputil;
 using org.kbinani.vsq;
 using org.kbinani;
 using org.kbinani.windows.forms;
+using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -100,15 +101,25 @@ namespace org.kbinani.cadencii {
                 return;
             }
 
-            int track_num = AppManager.getSelected();
-            VsqBPList list = (VsqBPList)AppManager.getVsqFile().Track.get( track_num ).getCurve( m_curve.getName() ).clone();
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
+            VsqBPList src = vsq_track.getCurve( m_curve.getName() );
+            VsqBPList list = (VsqBPList)src.clone();
 
             VsqBPPairSearchContext context = list.findElement( m_editing_id );
             list.move( context.clock, clock, value );
-            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackCurveReplace( track_num,
+            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackCurveReplace( selected,
                                                                                                     m_curve.getName(),
                                                                                                     list ) );
-            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+            EditedZone zone = new EditedZone();
+            AppManager.compareList( zone, new VsqBPListComparisonContext( list, src ) );
+            Vector<EditedZoneUnit> zoneUnits = new Vector<EditedZoneUnit>();
+            for ( Iterator itr = zone.iterator(); itr.hasNext(); ){
+                zoneUnits.add( (EditedZoneUnit)itr.next() );
+            }
+            AppManager.register( AppManager.getVsqFile().executeCommand( run ),
+                                 selected,
+                                 AppManager.editedZone[selected - 1].add( zoneUnits.toArray( new EditedZoneUnit[] { } ) ) );
 
             txtDataPointClock.setText( clock + "" );
             txtDataPointValue.setText( value + "" );

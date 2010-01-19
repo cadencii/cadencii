@@ -25,6 +25,7 @@ using org.kbinani.java.io;
 
 namespace org.kbinani.vsq {
     using boolean = System.Boolean;
+    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -44,6 +45,124 @@ namespace org.kbinani.vsq {
         public VsqMetaText MetaText;
         private int m_edited_start = int.MaxValue;
         private int m_edited_end = int.MinValue;
+
+        private class IndexIterator : Iterator<Integer> {
+            VsqEventList list;
+            int pos;
+            boolean kindSinger = false;
+            boolean kindNote = false;
+            boolean kindCrescend = false;
+            boolean kindDecrescend = false;
+            boolean kindDynaff = false;
+
+            public IndexIterator( VsqEventList list, int iterator_kind ) {
+                this.list = list;
+                pos = -1;
+                kindSinger = (iterator_kind & IndexIteratorKind.SINGER) == IndexIteratorKind.SINGER;
+                kindNote = (iterator_kind & IndexIteratorKind.NOTE) == IndexIteratorKind.NOTE;
+                kindCrescend = (iterator_kind & IndexIteratorKind.CRESCEND) == IndexIteratorKind.CRESCEND;
+                kindDecrescend = (iterator_kind & IndexIteratorKind.DECRESCEND) == IndexIteratorKind.DECRESCEND;
+                kindDynaff = (iterator_kind & IndexIteratorKind.DYNAFF) == IndexIteratorKind.DYNAFF;
+#if DEBUG
+                /*PortUtil.println( "IndexIterator#.ctor; SINGER    =" + IndexIteratorKind.SINGER );
+                PortUtil.println( "                   ; NOTE      =" + IndexIteratorKind.NOTE );
+                PortUtil.println( "                   ; CRESCEND  =" + IndexIteratorKind.CRESCEND );
+                PortUtil.println( "                   ; DECRESCEND=" + IndexIteratorKind.DECRESCEND );
+                PortUtil.println( "                   ; DYNAFF    =" + IndexIteratorKind.DYNAFF );*/
+                PortUtil.println( "IndexIterator#.ctor; iterator_kind=" + iterator_kind );
+                PortUtil.println( "                   ; kindSinger=" + kindSinger );
+                PortUtil.println( "                   ; kindNote=" + kindNote );
+                PortUtil.println( "                   ; kindCrescend=" + kindCrescend );
+                PortUtil.println( "                   ; kindDecrescend=" + kindDecrescend );
+                PortUtil.println( "                   ; kindDynaff=" + kindDynaff );
+#endif
+            }
+
+            public boolean hasNext() {
+                int count = list.getCount();
+                for ( int i = pos + 1; i < count; i++ ) {
+                    VsqEvent item = list.getElement( i );
+                    if ( kindSinger ){
+                        if ( item.ID.type == VsqIDType.Singer ) {
+                            return true;
+                        }
+                    }
+                    if ( kindNote ) {
+                        if ( item.ID.type == VsqIDType.Anote ) {
+                            return true;
+                        }
+                    }
+                    if ( item.ID.type == VsqIDType.Aicon && item.ID.IconDynamicsHandle != null && item.ID.IconDynamicsHandle.IconID != null ) {
+                        String iconid = item.ID.IconDynamicsHandle.IconID;
+                        if ( kindDynaff ) {
+                            if ( iconid.StartsWith( "$0501" ) ) {
+                                return true;
+                            }
+                        }
+                        if ( kindCrescend ) {
+                            if ( iconid.StartsWith( "$0502" ) ) {
+                                return true;
+                            }
+                        }
+                        if ( kindDecrescend ) {
+                            if ( iconid.StartsWith( "$0503" ) ) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            public Integer next() {
+                int count = list.getCount();
+                for ( int i = pos + 1; i < count; i++ ) {
+                    VsqEvent item = list.getElement( i );
+                    if ( kindSinger ) {
+                        if ( item.ID.type == VsqIDType.Singer ) {
+                            pos = i;
+                            return i;
+                        }
+                    }
+                    if ( kindNote ) {
+                        if ( item.ID.type == VsqIDType.Anote ) {
+                            pos = i;
+                            return i;
+                        }
+                    }
+                    if ( kindDynaff || kindCrescend || kindDecrescend ) {
+                        if ( item.ID.type == VsqIDType.Aicon && item.ID.IconDynamicsHandle != null && item.ID.IconDynamicsHandle.IconID != null ) {
+                            String iconid = item.ID.IconDynamicsHandle.IconID;
+                            if ( kindDynaff ) {
+                                if ( iconid.StartsWith( "$0501" ) ) {
+                                    pos = i;
+                                    return i;
+                                }
+                            }
+                            if ( kindCrescend ) {
+                                if ( iconid.StartsWith( "$0502" ) ) {
+                                    pos = i;
+                                    return i;
+                                }
+                            }
+                            if ( kindDecrescend ) {
+                                if ( iconid.StartsWith( "$0503" ) ) {
+                                    pos = i;
+                                    return i;
+                                }
+                            }
+                        }
+                    }
+                }
+                return -1;
+            }
+
+            public void remove() {
+                if ( 0 <= pos && pos < list.getCount() ) {
+                    list.removeAt( pos );
+                }
+            }
+        }
 
 #if JAVA
         private class SingerEventIterator implements Iterator{
@@ -198,6 +317,19 @@ namespace org.kbinani.vsq {
                 if ( 0 <= m_pos && m_pos < m_list.getCount() ) {
                     m_list.removeAt( m_pos );
                 }
+            }
+        }
+
+        /// <summary>
+        /// 指定された種類のイベントのインデクスを順に返すイテレータを取得します．
+        /// </summary>
+        /// <param name="iterator_kind"></param>
+        /// <returns></returns>
+        public Iterator<Integer> indexIterator( int iterator_kind ) {
+            if ( MetaText == null ) {
+                return new IndexIterator( new VsqEventList(), iterator_kind );
+            } else {
+                return new IndexIterator( MetaText.getEventList(), iterator_kind );
             }
         }
 

@@ -20,5 +20,11 @@ namespace org.kbinani.java.util {
         void remove();
     }
 
+    public interface Iterator<T> {
+        bool hasNext();
+        T next();
+        void remove();
+    }
+
 }
 #endif

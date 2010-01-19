@@ -1244,6 +1244,7 @@ namespace org.kbinani.cadencii {
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.label5 = new org.kbinani.windows.forms.BLabel();
@@ -1440,10 +1441,10 @@ namespace org.kbinani.cadencii {
             this.tabSequence.Controls.Add( this.comboVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoConfig );
-            this.tabSequence.Location = new System.Drawing.Point( 4, 38 );
+            this.tabSequence.Location = new System.Drawing.Point( 4, 40 );
             this.tabSequence.Name = "tabSequence";
             this.tabSequence.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSequence.Size = new System.Drawing.Size( 454, 360 );
+            this.tabSequence.Size = new System.Drawing.Size( 454, 358 );
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
@@ -1733,10 +1734,10 @@ namespace org.kbinani.cadencii {
             this.tabAnother.Controls.Add( this.lblDefaultSinger );
             this.tabAnother.Controls.Add( this.numWait );
             this.tabAnother.Controls.Add( this.numPreSendTime );
-            this.tabAnother.Location = new System.Drawing.Point( 4, 38 );
+            this.tabAnother.Location = new System.Drawing.Point( 4, 40 );
             this.tabAnother.Name = "tabAnother";
             this.tabAnother.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAnother.Size = new System.Drawing.Size( 454, 360 );
+            this.tabAnother.Size = new System.Drawing.Size( 454, 358 );
             this.tabAnother.TabIndex = 2;
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
@@ -1940,10 +1941,10 @@ namespace org.kbinani.cadencii {
             this.tabAppearance.Controls.Add( this.comboLanguage );
             this.tabAppearance.Controls.Add( this.lblLanguage );
             this.tabAppearance.Controls.Add( this.numTrackHeight );
-            this.tabAppearance.Location = new System.Drawing.Point( 4, 38 );
+            this.tabAppearance.Location = new System.Drawing.Point( 4, 40 );
             this.tabAppearance.Name = "tabAppearance";
             this.tabAppearance.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAppearance.Size = new System.Drawing.Size( 454, 360 );
+            this.tabAppearance.Size = new System.Drawing.Size( 454, 358 );
             this.tabAppearance.TabIndex = 3;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -2309,10 +2310,10 @@ namespace org.kbinani.cadencii {
             // 
             this.tabOperation.Controls.Add( this.groupMisc );
             this.tabOperation.Controls.Add( this.groupPianoroll );
-            this.tabOperation.Location = new System.Drawing.Point( 4, 38 );
+            this.tabOperation.Location = new System.Drawing.Point( 4, 40 );
             this.tabOperation.Name = "tabOperation";
             this.tabOperation.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabOperation.Size = new System.Drawing.Size( 454, 360 );
+            this.tabOperation.Size = new System.Drawing.Size( 454, 358 );
             this.tabOperation.TabIndex = 5;
             this.tabOperation.Text = "Operation";
             this.tabOperation.UseVisualStyleBackColor = true;
@@ -2529,10 +2530,10 @@ namespace org.kbinani.cadencii {
             this.tabPlatform.Controls.Add( this.groupUtauCores );
             this.tabPlatform.Controls.Add( this.groupVsti );
             this.tabPlatform.Controls.Add( this.groupPlatform );
-            this.tabPlatform.Location = new System.Drawing.Point( 4, 38 );
+            this.tabPlatform.Location = new System.Drawing.Point( 4, 40 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 360 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 358 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
@@ -2747,10 +2748,10 @@ namespace org.kbinani.cadencii {
             this.tabUtauSingers.Controls.Add( this.btnUp );
             this.tabUtauSingers.Controls.Add( this.btnDown );
             this.tabUtauSingers.Controls.Add( this.listSingers );
-            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 38 );
+            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 40 );
             this.tabUtauSingers.Name = "tabUtauSingers";
             this.tabUtauSingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 360 );
+            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 358 );
             this.tabUtauSingers.TabIndex = 6;
             this.tabUtauSingers.Text = "UTAU Singers";
             this.tabUtauSingers.UseVisualStyleBackColor = true;
@@ -2758,7 +2759,7 @@ namespace org.kbinani.cadencii {
             // btnRemove
             // 
             this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRemove.Location = new System.Drawing.Point( 98, 390 );
+            this.btnRemove.Location = new System.Drawing.Point( 98, 319 );
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size( 75, 23 );
             this.btnRemove.TabIndex = 122;
@@ -2768,7 +2769,7 @@ namespace org.kbinani.cadencii {
             // btnAdd
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Location = new System.Drawing.Point( 17, 390 );
+            this.btnAdd.Location = new System.Drawing.Point( 17, 319 );
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size( 75, 23 );
             this.btnAdd.TabIndex = 121;
@@ -2778,7 +2779,7 @@ namespace org.kbinani.cadencii {
             // btnUp
             // 
             this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUp.Location = new System.Drawing.Point( 279, 390 );
+            this.btnUp.Location = new System.Drawing.Point( 279, 319 );
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size( 75, 23 );
             this.btnUp.TabIndex = 123;
@@ -2788,7 +2789,7 @@ namespace org.kbinani.cadencii {
             // btnDown
             // 
             this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDown.Location = new System.Drawing.Point( 360, 390 );
+            this.btnDown.Location = new System.Drawing.Point( 360, 319 );
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size( 75, 23 );
             this.btnDown.TabIndex = 124;
@@ -2810,17 +2811,20 @@ namespace org.kbinani.cadencii {
             listViewGroup4.Name = null;
             listViewGroup5.Header = "ListViewGroup";
             listViewGroup5.Name = null;
+            listViewGroup6.Header = "ListViewGroup";
+            listViewGroup6.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
             listViewGroup3,
             listViewGroup4,
-            listViewGroup5} );
+            listViewGroup5,
+            listViewGroup6} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
             this.listSingers.Name = "listSingers";
-            this.listSingers.Size = new System.Drawing.Size( 418, 360 );
+            this.listSingers.Size = new System.Drawing.Size( 418, 281 );
             this.listSingers.TabIndex = 120;
             this.listSingers.UseCompatibleStateImageBehavior = false;
             this.listSingers.View = System.Windows.Forms.View.Details;
@@ -2831,10 +2835,10 @@ namespace org.kbinani.cadencii {
             this.tabFile.Controls.Add( this.lblAutoBackupInterval );
             this.tabFile.Controls.Add( this.chkAutoBackup );
             this.tabFile.Controls.Add( this.numAutoBackupInterval );
-            this.tabFile.Location = new System.Drawing.Point( 4, 38 );
+            this.tabFile.Location = new System.Drawing.Point( 4, 40 );
             this.tabFile.Name = "tabFile";
             this.tabFile.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabFile.Size = new System.Drawing.Size( 454, 360 );
+            this.tabFile.Size = new System.Drawing.Size( 454, 358 );
             this.tabFile.TabIndex = 7;
             this.tabFile.Text = "File";
             this.tabFile.UseVisualStyleBackColor = true;

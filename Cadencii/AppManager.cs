@@ -924,116 +924,176 @@ namespace org.kbinani.cadencii {
         /// <param name="track2"></param>
         /// <returns></returns>
         public static EditedZoneUnit[] detectTrackDifference( VsqTrack track1, VsqTrack track2 ) {
-            Vector<EditedZoneUnit> ret = new Vector<EditedZoneUnit>();
+            EditedZone ret = new EditedZone();
 
             int numEvent1 = track1.getEventCount();
             int numEvent2 = track2.getEventCount();
 
             #region track1にあってtrack2に無い音符イベント、クレッシェンドイベントを検出
-            for ( int i = 0; i < numEvent1; i++ ) {
+            for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ){
+                int i = itr1.next();
                 VsqEvent item1 = track1.getEvent( i );
-                if ( item1.ID.type == VsqIDType.Singer ) {
-                    continue;
-                }
-                if ( item1.ID.type == VsqIDType.Unknown ) {
-                    continue;
-                }
-                if ( item1.ID.type == VsqIDType.Aicon ) {
-                    if ( item1.ID.IconDynamicsHandle == null ) {
-                        continue;
-                    }
-                    if ( item1.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
-                        // 強弱記号はパス
-                        continue;
-                    }
-                }
-
                 boolean found = false;
-                for ( int j = 0; j < numEvent2; j++ ) {
+                for ( Iterator<Integer> itr2 = track2.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr2.hasNext(); ){
+                    int j = itr2.next();
                     VsqEvent item2 = track2.getEvent( j );
-                    if ( item2.ID.type == VsqIDType.Singer ) {
-                        continue;
-                    }
-                    if ( item2.ID.type == VsqIDType.Unknown ) {
-                        continue;
-                    }
-                    if ( item2.ID.type == VsqIDType.Aicon ) {
-                        if ( item2.ID.IconDynamicsHandle == null ) {
-                            continue;
-                        }
-                        if ( item2.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
-                            // 強弱記号はパス
-                            continue;
-                        }
-                    }
-
                     // item1とitem2が同じかどうか判定する
                     if ( item1.equals( item2 ) ) {
-                        continue;
+                        found = true;
+                        break;
                     }
-
-                    ret.add( new EditedZoneUnit( item1.Clock, item1.Clock + item1.ID.getLength() ) );
+                }
+                if ( !found ) {
+                    ret.add( item1.Clock, item1.Clock + item1.ID.getLength() );
                 }
             }
             #endregion
 
             #region track2にあってtrack1に無い音符イベント、クレッシェンドイベントを検出
-            for ( int i = 0; i < numEvent2; i++ ) {
+            for ( Iterator<Integer> itr2 = track2.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr2.hasNext(); ){
+                int i = itr2.next();
                 VsqEvent item2 = track2.getEvent( i );
-                if ( item2.ID.type == VsqIDType.Singer ) {
-                    continue;
-                }
-                if ( item2.ID.type == VsqIDType.Unknown ) {
-                    continue;
-                }
-                if ( item2.ID.type == VsqIDType.Aicon ) {
-                    if ( item2.ID.IconDynamicsHandle == null ) {
-                        continue;
-                    }
-                    if ( item2.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
-                        // 強弱記号はパス
-                        continue;
-                    }
-                }
-
                 boolean found = false;
-                for ( int j = 0; j < numEvent1; j++ ) {
+                for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ){
+                    int j = itr1.next();
                     VsqEvent item1 = track1.getEvent( j );
-                    if ( item1.ID.type == VsqIDType.Singer ) {
-                        continue;
-                    }
-                    if ( item1.ID.type == VsqIDType.Unknown ) {
-                        continue;
-                    }
-                    if ( item1.ID.type == VsqIDType.Aicon ) {
-                        if ( item1.ID.IconDynamicsHandle == null ) {
-                            continue;
-                        }
-                        if ( item1.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
-                            // 強弱記号はパス
-                            continue;
-                        }
-                    }
-
                     // item1とitem2が同じかどうか判定する
                     if ( item2.equals( item1 ) ) {
-                        continue;
+                        found = true;
+                        break;
                     }
-
-                    ret.add( new EditedZoneUnit( item2.Clock, item2.Clock + item2.ID.getLength() ) );
+                }
+                if ( !found ) {
+                    ret.add( item2.Clock, item2.Clock + item2.ID.getLength() );
                 }
             }
             #endregion
 
-            #error AppManager#detectTrackDifference; not implemented
+            // 歌手変更の違いを検出
+            compareList( ret, new SingerEventComparisonContext( track1, track2 ) );
 
-            //TODO:
-            // 効果範囲のあるイベント（歌手変更・強弱記号）の違いを検出
+            // 強弱記号の違いを検出
+            compareList( ret, new DynaffComparisonContext( track1, track2 ) );
 
-            //TODO:
             // VsqBPListの違いを検出
+            foreach ( CurveType curve in CURVE_USAGE ) {
+                VsqBPList list1 = track1.getCurve( curve.getName() );
+                if ( list1 == null ) {
+                    continue;
+                }
+                VsqBPList list2 = track2.getCurve( curve.getName() );
+                if ( list2 == null ) {
+                    continue;
+                }
+                compareList( ret, new VsqBPListComparisonContext( list1, list2 ) );
+            }
 
-            return ret.toArray( new EditedZoneUnit[] { } );
+            Vector<EditedZoneUnit> vec = new Vector<EditedZoneUnit>();
+            for ( Iterator itr = ret.iterator(); itr.hasNext(); ) {
+                vec.add( (EditedZoneUnit)itr.next() );
+            }
+            return vec.toArray( new EditedZoneUnit[] { } );
+        }
+
+        /// <summary>
+        /// 指定された比較用コンテキストを用いて2つのタイムラインを比較し，相違点を調べます．
+        /// </summary>
+        /// <param name="zone"></param>
+        /// <param name="context"></param>
+        public static void compareList( EditedZone zone, IComparisonContext context ) {
+            if ( context.hasNext1() && context.hasNext2() ) {
+                int i1 = context.getNextIndex1();
+                int i2 = context.getNextIndex2();
+                Object last1 = context.getElementAt1( i1 );
+                Object last2 = context.getElementAt2( i2 );
+                int clock = 0; // 評価区間の開始ゲートタイム
+                while ( true ) {
+                    Object item1 = context.getElementAt1( i1 );
+                    Object item2 = context.getElementAt2( i2 );
+                    int clock1 = context.getClockFrom( item1 );
+                    int clock2 = context.getClockFrom( item2 );
+
+                    if ( clock1 == clock2 ) {
+                        // 検査中のゲートタイムが同じ場合
+                        if ( clock < clock1 ){
+                            if ( !context.equals( last1, last2 ) ) {
+                                zone.add( clock, clock1 );
+                            }
+                        }
+
+                        // 次のイベントをどう決めるか？
+                        if ( context.hasNext1() ) {
+                            i1 = context.getNextIndex1();
+                            last1 = item1;
+                        } else if ( context.hasNext2() ) {
+                            i2 = context.getNextIndex2();
+                            last2 = item2;
+                        } else {
+                            if ( !context.equals( item1, item2 ) ) {
+                                zone.add( clock1, int.MaxValue );
+                            }
+                            break;
+                        }
+                        clock = clock1;
+                    } else if ( clock1 < clock2 ) {
+                        if ( clock < clock1 ) {
+                            if ( !context.equals( last1, last2 ) ) {
+                                zone.add( clock, clock1 );
+                            }
+                        }
+                        last1 = item1;
+                        if ( context.hasNext1() ) {
+                            i1 = context.getNextIndex1();
+                        } else {
+                            if ( !context.equals( item1, last2 ) ) {
+                                zone.add( clock1, clock2 );
+                            }
+                            last2 = item2;
+                            while ( context.hasNext2() ) {
+                                i2 = context.getNextIndex2();
+                                item2 = context.getElementAt2( i2 );
+                                if ( !context.equals( last1, last2 ) ) {
+                                    zone.add( context.getClockFrom( last2 ), context.getClockFrom( item2 ) );
+                                }
+                                last2 = item2;
+                            }
+                            if ( !context.equals( last1, item2 ) ) {
+                                zone.add( context.getClockFrom( item2 ), int.MaxValue );
+                            }
+                            break;
+                        }
+                        clock = clock1;
+                    } else if ( clock2 < clock1 ) {
+                        if ( clock < clock2 ) {
+                            if ( !context.equals( last1, last2 ) ) {
+                                zone.add( clock, clock2 );
+                            }
+                        }
+                        last2 = item2;
+                        if ( context.hasNext2() ) {
+                            i2 = context.getNextIndex2();
+                        } else {
+                            if ( !context.equals( last1, item2 ) ) {
+                                zone.add( clock2, clock1 );
+                            }
+                            last1 = item1;
+                            while ( context.hasNext1() ) {
+                                i1 = context.getNextIndex1();
+                                item1 = context.getElementAt1( i1 );
+                                if ( !context.equals( last1, last2 ) ) {
+                                    zone.add( context.getClockFrom( last1 ), context.getClockFrom( item1 ) );
+                                }
+                                last1 = item1;
+                            }
+                            if ( !context.equals( last2, item1 ) ) {
+                                zone.add( context.getClockFrom( item1 ), int.MaxValue );
+                            }
+                            break;
+                        }
+                        clock = clock2;
+                    }
+                }
+            }
         }
 
         public static void reportException( String message, Exception ex, int level ) {
@@ -1709,6 +1769,32 @@ namespace org.kbinani.cadencii {
             TreeMap<Integer, EditedZoneCommand> com = new TreeMap<Integer, EditedZoneCommand>();
             com.put( track1, zoneCommand1 );
             register( command, com );
+        }
+
+        public static void execute( ICommand command ) {
+            VsqFileEx copy = (VsqFileEx)s_vsq.clone();
+            ICommand inv = s_vsq.executeCommand( command );
+            TreeMap<Integer, EditedZoneCommand> zoneCommand = new TreeMap<Integer, EditedZoneCommand>();
+            int numTrackEdited = s_vsq.Track.size();
+            int numTrackOriginal = copy.Track.size();
+            int numTrack = Math.Min( numTrackEdited, numTrackOriginal );
+            for ( int i = 1; i < numTrack; i++ ) {
+                VsqTrack track1 = s_vsq.Track.get( i );
+                VsqTrack track2 = copy.Track.get( i );
+                EditedZoneUnit[] areas = detectTrackDifference( track1, track2 );
+                if ( areas.Length <= 0 ) {
+                    continue;
+                }
+                zoneCommand.put( i, editedZone[i - 1].add( areas ) );
+            }
+
+            if ( numTrackEdited != numTrackOriginal ) {
+                for ( int i = numTrack; i < Math.Max( numTrackEdited, numTrackOriginal ); i++ ) {
+                    zoneCommand.put( i, editedZone[i - 1].add( 0, int.MaxValue ) );
+                }
+            }
+
+            register( inv, zoneCommand );
         }
 
         /// <summary>

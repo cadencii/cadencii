@@ -47,10 +47,12 @@ namespace org.kbinani.cadencii {
             return executeCommand( com );
         }
 
+        public EditedZoneCommand add( EditedZoneUnit[] items ) {
+            EditedZoneCommand com = generateCommandAdd( items );
+            return executeCommand( com );
+        }
+
         public EditedZoneCommand executeCommand( EditedZoneCommand run ) {
-#if DEBUG
-            PortUtil.println( "EditedZone#executeCommand; run.add.size()=" + run.add.size() + "; run.remove.size()=" + run.remove.size() );
-#endif
             for ( Iterator itr = run.remove.iterator(); itr.hasNext(); ) {
                 EditedZoneUnit item = (EditedZoneUnit)itr.next();
                 int count = series.size();
@@ -58,9 +60,6 @@ namespace org.kbinani.cadencii {
                     EditedZoneUnit item2 = series.get( i );
                     if ( item.start == item2.start && item.end == item2.end ) {
                         series.removeElementAt( i );
-#if DEBUG
-                        PortUtil.println( "EditedZone#executeCommand; removed(" + item.start + "," + item.end + ")" );
-#endif
                         break;
                     }
                 }
@@ -68,7 +67,7 @@ namespace org.kbinani.cadencii {
 
             for ( Iterator itr = run.add.iterator(); itr.hasNext(); ) {
                 EditedZoneUnit item = (EditedZoneUnit)itr.next();
-                series.add( item );
+                series.add( (EditedZoneUnit)item.clone() );
             }
 
             Collections.sort( series );
@@ -173,26 +172,46 @@ namespace org.kbinani.cadencii {
         /// 重複している部分を統合する
         /// </summary>
         private void normalize() {
+#if DEBUG
+            PortUtil.println( "EditedZone#normalize; before" );
+            for ( int i = 0; i < series.size(); i++ ) {
+                PortUtil.println( "    " + series.get( i ).start + ", " + series.get( i ).end );
+            }
+#endif
             boolean changed = true;
             while ( changed ) {
                 changed = false;
                 int count = series.size();
                 for ( int i = 0; i < count - 1; i++ ) {
                     EditedZoneUnit itemi = series.get( i );
+                    if ( itemi.end < itemi.start ) {
+                        int d = itemi.start;
+                        itemi.start = itemi.end;
+                        itemi.end = d;
+                    }
                     for ( int j = i + 1; j < count; j++ ) {
                         EditedZoneUnit itemj = series.get( j );
-                        if ( itemi.start <= itemj.end && itemj.end < itemi.end ) {
+                        if ( itemj.end < itemj.start ) {
+                            int d = itemj.start;
+                            itemj.start = itemj.end;
+                            itemj.end = d;
+                        }
+                        if ( itemj.start <= itemi.start && itemi.end <= itemj.end ) {
+                            series.removeElementAt( i );
+                            changed = true;
+                            break;
+                        } else if ( itemi.start <= itemj.start && itemj.end <= itemi.end ) {
+                            series.removeElementAt( j );
+                            changed = true;
+                            break;
+                        } else if ( itemi.start <= itemj.end && itemj.end < itemi.end ) {
                             itemj.end = itemi.end;
                             series.removeElementAt( i );
                             changed = true;
                             break;
-                        } else if ( itemi.start <= itemj.start && itemj.start < itemi.end ) {
+                        } else if ( itemi.start <= itemj.start && itemj.start <= itemi.end ) {
                             itemi.end = itemj.end;
                             series.removeElementAt( j );
-                            changed = true;
-                            break;
-                        } else if ( itemj.start <= itemi.start && itemi.end <= itemi.end ) {
-                            series.removeElementAt( i );
                             changed = true;
                             break;
                         }
@@ -203,6 +222,12 @@ namespace org.kbinani.cadencii {
                 }
             }
             Collections.sort( series );
+#if DEBUG
+            PortUtil.println( "EditedZone#normalize; after" );
+            for ( int i = 0; i < series.size(); i++ ) {
+                PortUtil.println( "    " + series.get( i ).start + ", " + series.get( i ).end );
+            }
+#endif
         }
 
         public EditedZoneCommand clear() {

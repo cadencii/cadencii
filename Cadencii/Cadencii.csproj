@@ -100,6 +100,7 @@
     <Compile Include="DefaultVibratoLengthEnum.cs" />
     <Compile Include="DefaultVibratoLengthUtil.cs" />
     <Compile Include="DrawObjectType.cs" />
+    <Compile Include="DynaffComparisonContext.cs" />
     <Compile Include="EditedZone.cs" />
     <Compile Include="EditedZoneCommand.cs" />
     <Compile Include="EditedZoneUnit.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="FormWordDictionary.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="IComparisonContext.cs" />
     <Compile Include="MuteChangedEventHandler.cs" />
     <Compile Include="NumberTextBox.cs">
       <SubType>Component</SubType>
@@ -156,6 +158,7 @@
     <Compile Include="SelectedCurveChangedEventHandler.cs" />
     <Compile Include="SelectedEventChangedEventHandler.cs" />
     <Compile Include="SelectedTrackChangedEventHandler.cs" />
+    <Compile Include="SingerEventComparisonContext.cs" />
     <Compile Include="SoloChangedEventHandler.cs" />
     <Compile Include="StateChangeRequiredEventHandler.cs" />
     <Compile Include="StraightRenderingQueue.cs" />
@@ -277,6 +280,9 @@
     <Compile Include="TextBoxEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <EmbeddedResource Include="Preference.resx">
+      <DependentUpon>Preference.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -312,6 +318,7 @@
     <Compile Include="VolumeTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="VsqBPListComparisonContext.cs" />
     <Compile Include="VsqEventItemProxy.cs" />
     <Compile Include="VsqEventItemProxyPropertyDescriptor.cs" />
     <Compile Include="VsqEventItemProxyTypeConverter.cs" />
