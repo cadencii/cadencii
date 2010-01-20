@@ -55,8 +55,8 @@ namespace org.kbinani.cadencii {
         private int m_presend = 500;
         private int[] m_tracks;
         private String[] m_files;
-        private int m_clock_start;
-        private int m_clock_end;
+        private int[] m_clock_start;
+        private int[] m_clock_end;
         private boolean m_partial_mode = false;
         //private int m_temp_premeasure = 0;
         private int m_finished = -1;
@@ -76,7 +76,7 @@ namespace org.kbinani.cadencii {
         {
             this( vsq, presend, new int[] { track }, new String[]{ file }, clock_start, clock_end, temp_premeasure, reflect_amp_to_wave, false );
 #else
-            : this( vsq, presend, new int[] { track }, new String[] { file }, clock_start, clock_end, reflect_amp_to_wave, false ) {
+            : this( vsq, presend, new int[] { track }, new String[] { file }, new int[] { clock_start }, new int[] { clock_end }, reflect_amp_to_wave, false ) {
 
 #endif
         }
@@ -85,13 +85,14 @@ namespace org.kbinani.cadencii {
                                int presend,
                                int[] tracks,
                                String[] files,
-                               int end,
+                               int[] start,
+                               int[] end,
                                boolean reflect_amp_to_wave )
 #if JAVA
         {
             this( vsq, presend, tracks, files, 0, end, 0, reflect_amp_to_wave, true );
 #else
-            : this( vsq, presend, tracks, files, 0, end, reflect_amp_to_wave, true ) {
+            : this( vsq, presend, tracks, files, start, end, reflect_amp_to_wave, true ) {
 #endif
         }
 
@@ -99,8 +100,8 @@ namespace org.kbinani.cadencii {
                                 int presend, 
                                 int[] tracks,
                                 String[] files,
-                                int start,
-                                int end,
+                                int[] start,
+                                int[] end,
                                 boolean reflect_amp_to_wave,
                                 boolean partial_mode ) {
 #if JAVA
@@ -126,8 +127,12 @@ namespace org.kbinani.cadencii {
             lblProgress.setText( "1/" + m_tracks.Length );
             progressWhole.setMaximum( m_tracks.Length );
             m_partial_mode = partial_mode;
-            m_clock_start = start;
-            m_clock_end = end;
+            m_clock_start = new int[start.Length];
+            m_clock_end = new int[end.Length];
+            for( int i = 0; i < start.Length; i++ ){
+                m_clock_start[i] = start[i];
+                m_clock_end[i] = end[i];
+            }
             m_reflect_amp_to_wave = reflect_amp_to_wave;
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -144,14 +149,10 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// レンダリングが完了したトラックのリストを取得します
+        /// レンダリングが完了したトラックの個数を取得します
         /// </summary>
-        public int[] getFinished() {
-            Vector<Integer> list = new Vector<Integer>();
-            for ( int i = 0; i <= m_finished; i++ ) {
-                list.add( m_tracks[i] );
-            }
-            return PortUtil.convertIntArray( list.toArray( new Integer[] { } ) );
+        public int getFinished() {
+            return m_finished;
         }
 
         public void FormSynthesize_Load( Object sender, BEventArgs e ) {
@@ -183,7 +184,7 @@ namespace org.kbinani.cadencii {
                 double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
                 double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.MasterPanpot );
                 double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.MasterPanpot );
-                if ( m_partial_mode ) {
+                /*if ( m_partial_mode ) {
 #if JAVA
                     UpdateProgress( this, 1 );
 #else
@@ -219,8 +220,9 @@ namespace org.kbinani.cadencii {
                         }
                     }
                 } else {
-                    // partialモードのときは、常にm_tracks.Length=1である。
-                    int track = m_tracks[0];
+                    // partialモードのときは、常にm_tracks.Length=1である。*/
+                for( int k = 0; k < m_tracks.Length; k++ ){
+                    int track = m_tracks[k];
 #if JAVA
                     UpdateProgress( this, 1 );
 #else
@@ -265,12 +267,12 @@ namespace org.kbinani.cadencii {
                         }
 
                         try {
-                            ww = new WaveWriter( m_files[0], channel, 16, VSTiProxy.SAMPLE_RATE );
+                            ww = new WaveWriter( m_files[k], channel, 16, VSTiProxy.SAMPLE_RATE );
                             VSTiProxy.render( m_vsq,
                                               track,
                                               ww,
-                                              m_vsq.getSecFromClock( m_clock_start ),
-                                              m_vsq.getSecFromClock( m_clock_end ),
+                                              m_vsq.getSecFromClock( m_clock_start[k] ),
+                                              m_vsq.getSecFromClock( m_clock_end[k] ),
                                               m_presend,
                                               false,
                                               readers,

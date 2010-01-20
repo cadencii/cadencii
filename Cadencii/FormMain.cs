@@ -28,6 +28,7 @@ import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
+//#define USE_PATCHWORKTOFREEZE
 //#define MONITOR_FPS
 #define AUTHOR_LIST_SAVE_BUTTON_VISIBLE
 using System;
@@ -1217,10 +1218,13 @@ namespace org.kbinani.cadencii {
                     }
 
                     String file = PortUtil.combinePath( tmppath, track + ".wav" );
+#if USE_PATCHWORKTOFREEZE
+                    patchWorkToFreeze( track );
+#else
                     String tmpfile = PortUtil.combinePath( tmppath, "temp.wav" );
-#error FormMain#AppManager_PreviewStarted; patchWorkToFreezeを使うコードに書き換えること！
+
                     int t_start = 0;// vsq_track.getEditedStart();
-                    int t_end = 0;// vsq_track.getEditedEnd();
+                    int t_end = vsq.TotalClocks;// vsq_track.getEditedEnd();
                     int start = t_start;
                     int end = t_end;
 
@@ -1337,6 +1341,7 @@ namespace org.kbinani.cadencii {
                             }
                         }
                     }
+#endif
 
                     WaveReader wr = null;
                     try {
@@ -1488,6 +1493,121 @@ namespace org.kbinani.cadencii {
             } else {
                 // 部分レンダリング
                 EditedZoneUnit[] areas = AppManager.detectTrackDifference( AppManager.lastRendererdStatus[track - 1], vsq_track );
+
+                // areasとかぶっている音符がどれかを判定する
+                TreeMap<Integer, Integer> ids = new TreeMap<Integer, Integer>();
+                EditedZone zone = new EditedZone();
+                for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
+                    int indx = itr.next();
+                    VsqEvent item = vsq_track.getEvent( indx );
+                    int clockStart = item.Clock;
+                    int clockEnd = clockStart + item.ID.getLength();
+                    for ( int i = 0; i < areas.Length; i++ ) {
+                        EditedZoneUnit area = areas[i];
+                        if ( clockStart < area.end && area.end <= clockEnd ) {
+                            if ( !ids.containsKey( item.InternalID ) ) {
+                                ids.put( item.InternalID, indx );
+                                zone.add( clockStart, clockEnd );
+                            }
+                        } else if ( clockStart <= area.start && area.start < clockEnd ) {
+                            if ( !ids.containsKey( item.InternalID ) ) {
+                                ids.put( item.InternalID, indx );
+                                zone.add( clockStart, clockEnd );
+                            }
+                        } else if ( area.start <= clockStart && clockEnd < area.end ) {
+                            if ( !ids.containsKey( item.InternalID ) ) {
+                                ids.put( item.InternalID, indx );
+                                zone.add( clockStart, clockEnd );
+                            }
+                        } else if ( clockStart <= area.start && area.end < clockEnd ) {
+                            if ( !ids.containsKey( item.InternalID ) ) {
+                                ids.put( item.InternalID, indx );
+                                zone.add( clockStart, clockEnd );
+                            }
+                        }
+                    }
+                }
+
+                // idsに登録された音符のうち、前後がつながっているものを列挙する。
+                boolean changed = true;
+                int numEvents = vsq_track.getEventCount();
+                while ( changed ) {
+                    changed = false;
+                    for ( Iterator itr = ids.keySet().iterator(); itr.hasNext(); ) {
+                        int id = (Integer)itr.next();
+                        int indx = ids.get( id ); // InternalIDがidのアイテムの禁書目録
+                        VsqEvent item = vsq_track.getEvent( indx );
+                        
+                        // アイテムを遡り、連続していれば追加する
+                        int clock = item.Clock;
+                        for ( int i = indx - 1; i >= 0; i-- ) {
+                            VsqEvent search = vsq_track.getEvent( i );
+                            if ( search.ID.type != VsqIDType.Anote ) {
+                                continue;
+                            }
+                            int searchClock = search.Clock;
+                            int searchLength = search.ID.getLength();
+                            if ( searchClock + searchLength == clock ) {
+                                if ( !ids.containsKey( search.InternalID ) ) {
+                                    ids.put( search.InternalID, i );
+                                    zone.add( searchClock, searchClock + searchLength );
+                                    changed = true;
+                                }
+                                clock = searchClock;
+                            } else {
+                                break;
+                            }
+                        }
+
+                        // アイテムを辿り、連続していれば追加する
+                        clock = item.Clock + item.ID.getLength();
+                        for ( int i = indx + 1; i < numEvents; i++ ) {
+                            VsqEvent search = vsq_track.getEvent( i );
+                            if ( search.ID.type != VsqIDType.Anote ) {
+                                continue;
+                            }
+                            int searchClock = search.Clock;
+                            int searchLength = search.ID.getLength();
+                            if ( clock == searchClock ) {
+                                if ( !ids.containsKey( search.InternalID ) ) {
+                                    ids.put( search.InternalID, i );
+                                    zone.add( searchClock, searchClock + searchLength );
+                                    changed = true;
+                                }
+                                clock = searchClock + searchLength;
+                            } else {
+                                break;
+                            }
+                        }
+
+                        if ( changed ) {
+                            break;
+                        }
+                    }
+                }
+
+                // zoneに、レンダリングが必要なアイテムの範囲が格納されているので。
+                FormSynthesize dialog = null;
+                int numZones = zone.size();
+                int[] startList = new int[numZones];
+                int[] endList = new int[numZones];
+                int[] trackList = new int[numZones];
+                String[] files = new String[numZones];
+                int j = -1;
+                for( Iterator itr = zone.iterator(); itr.hasNext(); ){
+                    EditedZoneUnit unit = (EditedZoneUnit)itr.next();
+                    j++;
+                    trackList[j] = track;
+                    startList[j] = unit.start;
+                    endList[j] = unit.end;
+                    files[j] = PortUtil.combinePath( temppath, track + "_" + j + ".wav" );
+                }
+                try {
+                    dialog = new FormSynthesize( vsq, presend, trackList, files, startList, endList, false );
+                    dialog.showDialog();
+                    int finished = dialog.getFinished();
+                } catch ( Exception ex ) {
+                }
             }
         }
         #endregion
@@ -12067,23 +12187,28 @@ namespace org.kbinani.cadencii {
         }
 
         public void render( int[] tracks ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+
             String tmppath = AppManager.getTempWaveDir();
             if ( !PortUtil.isDirectoryExists( tmppath ) ) {
                 PortUtil.createDirectory( tmppath );
             }
             String[] files = new String[tracks.Length];
+            int[] ends = new int[tracks.Length];
+            int[] starts = new int[tracks.Length];
             for ( int i = 0; i < tracks.Length; i++ ) {
                 files[i] = PortUtil.combinePath( tmppath, tracks[i] + ".wav" );
+                ends[i] = vsq.TotalClocks + 240;
+                starts[i] = 0;
             }
             FormSynthesize dlg = null;
             try {
-                VsqFileEx vsq = AppManager.getVsqFile();
-                dlg = new FormSynthesize( vsq, AppManager.editorConfig.PreSendTime, tracks, files, vsq.TotalClocks + 240, false );
+                dlg = new FormSynthesize( vsq, AppManager.editorConfig.PreSendTime, tracks, files, starts, ends, false );
                 dlg.showDialog();
-                int[] finished = dlg.getFinished();
-                for ( int i = 0; i < finished.Length; i++ ) {
-                    AppManager.setRenderRequired( finished[i], false );
-                    AppManager.lastRendererdStatus[finished[i] - 1] = (VsqTrack)vsq.Track.get( finished[i] ).clone();
+                int finished = dlg.getFinished();
+                for ( int i = 0; i < finished; i++ ) {
+                    AppManager.setRenderRequired( tracks[i], false );
+                    AppManager.lastRendererdStatus[tracks[i] - 1] = (VsqTrack)vsq.Track.get( tracks[i] ).clone();
                 }
             } catch ( Exception ex ) {
             } finally {

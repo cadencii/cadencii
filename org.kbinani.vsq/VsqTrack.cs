@@ -57,19 +57,6 @@ namespace org.kbinani.vsq {
                 kindCrescend = (iterator_kind & IndexIteratorKind.CRESCEND) == IndexIteratorKind.CRESCEND;
                 kindDecrescend = (iterator_kind & IndexIteratorKind.DECRESCEND) == IndexIteratorKind.DECRESCEND;
                 kindDynaff = (iterator_kind & IndexIteratorKind.DYNAFF) == IndexIteratorKind.DYNAFF;
-#if DEBUG
-                /*PortUtil.println( "IndexIterator#.ctor; SINGER    =" + IndexIteratorKind.SINGER );
-                PortUtil.println( "                   ; NOTE      =" + IndexIteratorKind.NOTE );
-                PortUtil.println( "                   ; CRESCEND  =" + IndexIteratorKind.CRESCEND );
-                PortUtil.println( "                   ; DECRESCEND=" + IndexIteratorKind.DECRESCEND );
-                PortUtil.println( "                   ; DYNAFF    =" + IndexIteratorKind.DYNAFF );*/
-                PortUtil.println( "IndexIterator#.ctor; iterator_kind=" + iterator_kind );
-                PortUtil.println( "                   ; kindSinger=" + kindSinger );
-                PortUtil.println( "                   ; kindNote=" + kindNote );
-                PortUtil.println( "                   ; kindCrescend=" + kindCrescend );
-                PortUtil.println( "                   ; kindDecrescend=" + kindDecrescend );
-                PortUtil.println( "                   ; kindDynaff=" + kindDynaff );
-#endif
             }
 
             public boolean hasNext() {

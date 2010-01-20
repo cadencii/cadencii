@@ -28,6 +28,10 @@ namespace org.kbinani.cadencii {
         public EditedZone(){
         }
 
+        public int size() {
+            return series.size();
+        }
+
         public Iterator iterator() {
             return series.iterator();
         }
