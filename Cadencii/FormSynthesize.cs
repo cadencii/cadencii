@@ -62,6 +62,7 @@ namespace org.kbinani.cadencii {
         private boolean m_reflect_amp_to_wave = false;
         private BTimer timer;
         private BBackgroundWorker bgWork;
+        private boolean isPartialMode = false;
 
         public FormSynthesize( VsqFileEx vsq,
                                int presend,
@@ -75,8 +76,8 @@ namespace org.kbinani.cadencii {
             this( vsq, presend, new int[] { track }, new String[]{ file }, clock_start, clock_end, temp_premeasure, reflect_amp_to_wave, false );
 #else
             : this( vsq, presend, new int[] { track }, new String[] { file }, new int[] { clock_start }, new int[] { clock_end }, reflect_amp_to_wave ) {
-
 #endif
+            isPartialMode = true;
         }
 
         public FormSynthesize( VsqFileEx vsq, 
@@ -108,9 +109,17 @@ namespace org.kbinani.cadencii {
             setResources();
             lblProgress.setText( "0/" + m_tracks.Length );
             int totalClocks = 0;
+            int vsqClocks = m_vsq.TotalClocks + 240;
             for ( int i = 0; i < start.Length; i++ ) {
-                totalClocks += end[i] - start[i];
+                int e = end[i];
+                if ( e == int.MaxValue ) {
+                    e = vsqClocks;
+                }
+                totalClocks += e - start[i];
             }
+#if DEBUG
+            PortUtil.println( "FormSynthesize#.ctor; totalClocks=" + totalClocks );
+#endif
             progressWhole.setMaximum( totalClocks );
             progressWhole.setMinimum( 0 );
             progressWhole.setValue( 0 );
@@ -162,7 +171,11 @@ namespace org.kbinani.cadencii {
         private void UpdateProgress( Object sender, int value ) {
             int totalClocks = 0;
             for ( int i = 0; i < value; i++ ) {
-                totalClocks += (m_clock_end[i] - m_clock_start[i]);
+                int end = m_clock_end[i];
+                if ( end == int.MaxValue ) {
+                    end = m_vsq.TotalClocks + 240;
+                }
+                totalClocks += (end - m_clock_start[i]);
             }
             progressWhole.setValue( totalClocks );
             lblProgress.setText( value + "/" + m_tracks.Length );
@@ -204,7 +217,7 @@ namespace org.kbinani.cadencii {
                         WaveWriter ww = null;
                         Vector<WaveReader> readers = new Vector<WaveReader>();
 
-                        if ( AppManager.editorConfig.WaveFileOutputFromMasterTrack ) {
+                        if ( isPartialMode && AppManager.editorConfig.WaveFileOutputFromMasterTrack ) {
                             if ( numTrack > 2 ) {
                                 // track以外にもトラックがあるので。
                                 for ( int i = 1; i < numTrack; i++ ) {
@@ -221,11 +234,15 @@ namespace org.kbinani.cadencii {
 
                         try {
                             ww = new WaveWriter( m_files[k], channel, 16, VSTiProxy.SAMPLE_RATE );
+                            int end = m_clock_end[k];
+                            if ( end == int.MaxValue ) {
+                                end = m_vsq.TotalClocks + 240;
+                            }
                             VSTiProxy.render( m_vsq,
                                               track,
                                               ww,
                                               m_vsq.getSecFromClock( m_clock_start[k] ),
-                                              m_vsq.getSecFromClock( m_clock_end[k] ),
+                                              m_vsq.getSecFromClock( end ),
                                               m_presend,
                                               false,
                                               readers.toArray( new WaveReader[] { } ),

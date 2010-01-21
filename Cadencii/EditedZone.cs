@@ -194,7 +194,11 @@ namespace org.kbinani.cadencii {
                             itemj.start = itemj.end;
                             itemj.end = d;
                         }
-                        if ( itemj.start <= itemi.start && itemi.end <= itemj.end ) {
+                        if ( itemj.start == itemi.start && itemj.end == itemi.end ) {
+                            series.removeElementAt( j );
+                            changed = true;
+                            break;
+                        } else if ( itemj.start <= itemi.start && itemi.end <= itemj.end ) {
                             series.removeElementAt( i );
                             changed = true;
                             break;

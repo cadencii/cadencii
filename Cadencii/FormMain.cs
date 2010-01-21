@@ -1198,8 +1198,14 @@ namespace org.kbinani.cadencii {
 
                 Vector<Integer> tracks = new Vector<Integer>();
                 for ( int track = 1; track < track_count; track++ ) {
-                    if ( track == selected ) {
+                    VsqTrack vsq_track = vsq.Track.get( track );
+                    int playMode = vsq_track.getPlayMode();
+                    if ( playMode == PlayMode.Off ) {
                         continue;
+                    } else if ( playMode == PlayMode.PlayWithSynth ) {
+                        if ( track == selected ) {
+                            continue;
+                        }
                     }
                     tracks.add( track );
                 }
@@ -1255,7 +1261,7 @@ namespace org.kbinani.cadencii {
                 }
 
                 boolean mode_infinite = AppManager.getEditMode() == EditMode.REALTIME;
-                if ( vsq.Track.get( selected ).getCommon().PlayMode >= 0 && count > 0 ) {
+                if ( vsq.Track.get( selected ).getPlayMode() == PlayMode.PlayWithSynth && count > 0 ) {
                     int ms_presend = AppManager.editorConfig.PreSendTime;
                     if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
                         ms_presend = 0;
@@ -1360,7 +1366,7 @@ namespace org.kbinani.cadencii {
                 VsqTrack vsq_track = vsq.Track.get( track );
                 String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
 
-                if ( AppManager.lastRendererdStatus[track - 1] == null ) {
+                if ( AppManager.lastRenderedStatus[track - 1] == null ) {
                     // この場合は全部レンダリングする必要がある
                     trackList.add( track );
                     startList.add( 0 );
@@ -1370,7 +1376,8 @@ namespace org.kbinani.cadencii {
                 }
 
                 // 部分レンダリング
-                EditedZoneUnit[] areas = AppManager.detectTrackDifference( AppManager.lastRendererdStatus[track - 1], vsq_track );
+                EditedZoneUnit[] areas = AppManager.detectRenderedStatusDifference( AppManager.lastRenderedStatus[track - 1],
+                                                                                    new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable ) );
 
                 // areasとかぶっている音符がどれかを判定する
                 TreeMap<Integer, Integer> ids = new TreeMap<Integer, Integer>();
@@ -1479,6 +1486,17 @@ namespace org.kbinani.cadencii {
             }
             startIndex[tracks.Length] = trackList.size();
 
+#if DEBUG
+            for ( int i = 0; i < startList.size(); i++ ) {
+                PortUtil.println( "FormMain#patchWorkToFreeze; #" + i + "; start=" + startList.get( i ) + "; end=" + endList.get( i ) );
+            }
+#endif
+
+            if ( trackList.size() <= 0 ) {
+                // パッチワークする必要なし
+                return;
+            }
+
             FormSynthesize dialog = null;
             String tempWave = PortUtil.combinePath( temppath, "temp.wav" );
             try {
@@ -1503,7 +1521,7 @@ namespace org.kbinani.cadencii {
 #endif
                     if ( wavePath.Equals( files.get( startIndex[k] ) ) && startIndex[k] < finished ) {
                         // このとき，パッチワークを行う必要なし．
-                        AppManager.lastRendererdStatus[track - 1] = (VsqTrack)vsq.Track.get( track ).clone();
+                        AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( track ).clone(), vsq.TempoTable );
                         continue;
                     }
 
@@ -1528,15 +1546,9 @@ namespace org.kbinani.cadencii {
                             if ( totalLength < sampleEnd ) {
                                 sampleEnd = totalLength;
                             }
-#if DEBUG
-                            PortUtil.println( "FormMain#patchWorkToFreeze; secStart=" + secStart + "; secEnd=" + secEnd );
-#endif
 
                             // processedからsampleStartまでをreaderから読み取り，writerに書き込む
                             long remain = sampleStart - processed;
-#if DEBUG
-                            PortUtil.println( "FormMain#patchWorkToFreeze; remain=" + remain );
-#endif
                             while ( remain > 0 ) {
                                 int delta = remain > BUFLEN ? BUFLEN : (int)remain;
                                 reader.read( processed, delta, bufl, bufr );
@@ -1549,9 +1561,6 @@ namespace org.kbinani.cadencii {
                             try {
                                 wr = new WaveReader( files[i] );
                                 long remain2 = sampleEnd - sampleStart;
-#if DEBUG
-                                PortUtil.println( "FormMain#patchWorkToFreeze; remain2=" + remain2 );
-#endif
                                 long proc = 0;
                                 while ( remain2 > 0 ) {
                                     int delta = remain2 > BUFLEN ? BUFLEN : (int)remain2;
@@ -1581,9 +1590,6 @@ namespace org.kbinani.cadencii {
                         }
 
                         long remain3 = totalLength - processed;
-#if DEBUG
-                        PortUtil.println( "FormMain#patchWorkToFreeze; remain3=" + remain3 );
-#endif
                         while ( remain3 > 0 ) {
                             int delta = remain3 > BUFLEN ? BUFLEN : (int)remain3;
                             reader.read( processed, delta, bufl, bufr );
@@ -1592,12 +1598,65 @@ namespace org.kbinani.cadencii {
                             remain3 -= delta;
                         }
 
+                        VsqTrack vsq_track = vsq.Track.get( track );
                         if ( startIndex[k + 1] - 1 < finished ) {
                             // 途中で終了せず，このトラックの全てのパッチワークが完了した．
-                            AppManager.lastRendererdStatus[track - 1] = (VsqTrack)vsq.Track.get( track ).clone();
+                            AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable );
                         } else {
                             // パッチワークの作成途中で，キャンセルされた
-                            // TODO: 
+                            // キャンセルされたやつ以降の範囲に、プログラムチェンジ17の歌手変更イベントを挿入する。→AppManager#detectTrackDifferenceに必ず検出してもらえる。
+                            VsqTrack copied = (VsqTrack)vsq_track.clone();
+                            VsqEvent dumy = new VsqEvent();
+                            dumy.ID.type = VsqIDType.Singer;
+                            dumy.ID.IconHandle = new IconHandle();
+                            dumy.ID.IconHandle.Program = 17;
+                            for ( int i = startIndex[k]; i < startIndex[k + 1]; i++ ) {
+                                if ( i < finished ) {
+                                    continue;
+                                }
+                                int start = startList.get( i );
+                                int end = endList.get( i );
+                                VsqEvent singerAtEnd = vsq_track.getSingerEventAt( end );
+                                
+                                // startの位置に歌手変更が既に指定されていないかどうかを検査
+                                int foundStart = -1;
+                                int foundEnd = -1;
+                                for ( Iterator<Integer> itr = copied.indexIterator( IndexIteratorKind.SINGER ); itr.hasNext(); ) {
+                                    int j = itr.next();
+                                    VsqEvent ve = copied.getEvent( j );
+                                    if ( ve.Clock == start ) {
+                                        foundStart = j;
+                                    }
+                                    if ( ve.Clock == end ) {
+                                        foundEnd = j;
+                                    }
+                                    if ( end < ve.Clock ) {
+                                        break;
+                                    }
+                                }
+
+                                VsqEvent dumyStart = (VsqEvent)dumy.clone();
+                                dumyStart.Clock = start;
+                                if ( foundStart >= 0 ) {
+                                    copied.setEvent( foundStart, dumyStart );
+                                } else {
+                                    copied.addEvent( dumyStart );
+                                }
+
+                                if ( end != int.MaxValue ) {
+                                    VsqEvent dumyEnd = (VsqEvent)singerAtEnd.clone();
+                                    dumyEnd.Clock = end;
+                                    if ( foundEnd >= 0 ) {
+                                        copied.setEvent( foundEnd, dumyEnd );
+                                    } else {
+                                        copied.addEvent( dumyEnd );
+                                    }
+                                }
+
+                                copied.sortEvent();
+                            }
+
+                            AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( copied, vsq.TempoTable );
                         }
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
@@ -8626,17 +8685,20 @@ namespace org.kbinani.cadencii {
         }
 
         public void updateTrackMenuStatus() {
-            int tracks = AppManager.getVsqFile().Track.size();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+            int tracks = vsq.Track.size();
             cMenuTrackTabDelete.setEnabled( tracks >= 3 );
             menuTrackDelete.setEnabled( tracks >= 3 );
             cMenuTrackTabAdd.setEnabled( tracks <= 16 );
             menuTrackAdd.setEnabled( tracks <= 16 );
             cMenuTrackTabCopy.setEnabled( tracks <= 16 );
             menuTrackCopy.setEnabled( tracks <= 16 );
-            boolean on = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().PlayMode >= 0;
+            boolean on = vsq_track.getPlayMode() != PlayMode.Off;
             cMenuTrackTabTrackOn.setSelected( on );
             menuTrackOn.setSelected( on );
-            if ( AppManager.getVsqFile().Track.size() > 2 ) {
+            if ( tracks > 2 ) {
                 cMenuTrackTabOverlay.setEnabled( true );
                 menuTrackOverlay.setEnabled( true );
                 cMenuTrackTabOverlay.setSelected( AppManager.isOverlay() );
@@ -8662,7 +8724,7 @@ namespace org.kbinani.cadencii {
             cMenuTrackTabRendererAquesTone.setSelected( false );
             menuTrackRendererAquesTone.setSelected( false );
 
-            String version = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
+            String version = vsq_track.getCommon().Version;
             if ( version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
                 cMenuTrackTabRendererVOCALOID1.setSelected( true );
                 menuTrackRendererVOCALOID1.setSelected( true );
@@ -12237,7 +12299,7 @@ namespace org.kbinani.cadencii {
                 int finished = dlg.getFinished();
                 for ( int i = 0; i < finished; i++ ) {
                     AppManager.setRenderRequired( tracks[i], false );
-                    AppManager.lastRendererdStatus[tracks[i] - 1] = (VsqTrack)vsq.Track.get( tracks[i] ).clone();
+                    AppManager.lastRenderedStatus[tracks[i] - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( tracks[i] ).clone(), vsq.TempoTable );
                 }
             } catch ( Exception ex ) {
             } finally {

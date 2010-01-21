@@ -7,14 +7,12 @@
 
 -v3.1.0todo------------------------------------------------------------
 -ミキサーダイアログのミュートとソロボタン
--Consonant Adjustmentの編集機能
 -Federの値が本家と違う場合がある（？）
 -makeRes.csの、Cursorのときの処理を追加する
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
 -スタートマーカーとエンドマーカーがある時、wav出力範囲をマーカー範囲に限定する
--Play With SynthとPlay After Synthを切り替えられるようにする。
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
 -13時間31分35.77秒を超える曲をレンダリングするとクラッシュする（たぶん）．要確認．PlaySound.cpp, vstidrv.cs, UtauRenderingRunner.cs, StraightRenderingRunner.cs, VocaloRenderingRunner.csに要修正の可能性
 -VsqHandleのcastTo**はクローンする必要があるのかどうか検討
@@ -23,8 +21,8 @@
 -トラックをFreezする機能（レンダリング結果のwaveをどこかに保存？）
 -異常終了した場合に、一時ディレクトリが消されずに残るので、次回起動したときに自動で消すようにする。ディレクトリ内のファイルの更新日が最も新しいやつの日付＜PCの起動時刻のやつがあれば、そのディレクトリは破棄する。
 -歌手変更イベントを右クリックした時の「削除」コマンドが無い．
--AppManager#detectTrackDifferenceで，テンポ指定の違いが検出できるようにする．
--FormMain#patchWorkToFreezeで，パッチ用waveの作成が途中でキャンセルされたときの処理．
+-TrackSelectorのコンテキストメニューに、PlayAfterSynth, PlayWithSynthを切り替える部分を作る。
+-Mixerのソロボタンとミュートボタンの動作仕様について検討する。
 
 -v3.1.0done------------------------------------------------------------
 -ピアノロールの鍵盤部分とスクロールバーの部分でのホイール操作を、縦方向のスクロールに割り当てる

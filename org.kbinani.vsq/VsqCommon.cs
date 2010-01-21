@@ -38,8 +38,14 @@ namespace org.kbinani.vsq {
         public String Version;
         public String Name;
         public String Color;
-        public int DynamicsMode;
-        public int PlayMode = 1;
+        /// <summary>
+        /// Dynamicsカーブを表示するモード(Expert)なら1、しない(Standard)なら0。
+        /// </summary>
+        public int DynamicsMode = org.kbinani.vsq.DynamicsMode.Expert;
+        /// <summary>
+        /// Play With Synthesisなら1、Play After Synthesiなら0、Offなら-1。
+        /// </summary>
+        public int PlayMode = org.kbinani.vsq.PlayMode.PlayWithSynth;
 
 #if !JAVA
         public object Clone() {

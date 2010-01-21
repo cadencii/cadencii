@@ -899,7 +899,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 最後にレンダリングが行われた時の、トラックの情報が格納されている。
         /// </summary>
-        public static VsqTrack[] lastRendererdStatus = new VsqTrack[16];
+        public static RenderedStatus[] lastRenderedStatus = new RenderedStatus[16];
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
@@ -912,6 +912,47 @@ namespace org.kbinani.cadencii {
         public static BEvent<BEventHandler> currentClockChangedEvent= new BEvent<BEventHandler>();
 
         private const String TEMPDIR_NAME = "cadencii";
+
+        public static EditedZoneUnit[] detectRenderedStatusDifference( RenderedStatus status1, RenderedStatus status2 ) {
+            EditedZoneUnit[] areaTempo = detectTempotableDifference( status1.tempo, status2.tempo );
+            EditedZoneUnit[] areaTrack = detectTrackDifference( status1.track, status2.track );
+            EditedZone zone = new EditedZone();
+            zone.add( areaTempo );
+            zone.add( areaTrack );
+            EditedZoneUnit[] ret = new EditedZoneUnit[zone.size()];
+            int i = -1;
+            for ( Iterator itr = zone.iterator(); itr.hasNext(); ) {
+                i++;
+                ret[i] = (EditedZoneUnit)itr.next();
+            }
+            return ret;
+        }
+
+        public static EditedZoneUnit[] detectTempotableDifference( Vector<TempoTableEntry> tempo1, Vector<TempoTableEntry> tempo2 ) {
+            int len = Math.Min( tempo1.size(), tempo2.size() );
+            int clockDifferenceStarted = int.MaxValue;
+            for ( int i = 0; i < len; i++ ) {
+                TempoTableEntry item1 = tempo1.get( i );
+                TempoTableEntry item2 = tempo2.get( i );
+                if ( item1.Clock != item2.Clock || item1.Tempo != item2.Tempo ) {
+                    clockDifferenceStarted = Math.Min( item1.Clock, item2.Clock );
+                    break;
+                }
+            }
+            if ( clockDifferenceStarted == int.MaxValue ) {
+                if ( len < tempo1.size() ) {
+                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo1.get( len ).Clock ); 
+                }
+                if ( len < tempo2.size() ) {
+                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo2.get( len ).Clock );
+                }
+            }
+            if ( clockDifferenceStarted != int.MaxValue ) {
+                return new EditedZoneUnit[] { new EditedZoneUnit( clockDifferenceStarted, int.MaxValue ) };
+            } else {
+                return new EditedZoneUnit[] { };
+            }
+        }
 
         /// <summary>
         /// 2つのトラック情報を比較し、違う部分を検出します

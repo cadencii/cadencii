@@ -314,6 +314,27 @@ namespace org.kbinani.vsq {
             }
         }
 
+        public int getPlayMode() {
+            if ( MetaText == null ){
+                return PlayMode.PlayWithSynth;
+            }
+            if ( MetaText.Common == null ){
+                return PlayMode.PlayWithSynth;
+            }
+            return MetaText.Common.PlayMode;
+        }
+
+        public void setPlayMode( int value ) {
+            if ( MetaText == null ) {
+                return;
+            }
+            if ( MetaText.Common == null ) {
+                MetaText.Common = new VsqCommon( "Miku", 128, 128, 128, DynamicsMode.Expert, value );
+                return;
+            }
+            MetaText.Common.PlayMode = value;
+        }
+
         public String getName() {
             if ( MetaText == null || (MetaText != null && MetaText.Common == null) ) {
                 return "Master Track";
