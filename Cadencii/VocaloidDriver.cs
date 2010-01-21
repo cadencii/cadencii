@@ -12,6 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+//#define TEST
 using System;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
@@ -191,8 +192,8 @@ namespace org.kbinani.cadencii {
         }
 
         public int StartRendering( long total_samples, boolean mode_infinite, int sample_rate ) {
-#if TEST
-            org.kbinani.debug.push_log( "vstidrv.StartRendering" );
+#if DEBUG
+            PortUtil.println( "VocaloidDriver#StartRendering; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
             g_cancelRequired = false;
             g_progress = 0.0;

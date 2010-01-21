@@ -35,6 +35,7 @@ class pp_cs2java {
         {" struct ", " class " },
         {"base.", "super." },
         {" override ", " " },
+        {" virtual ", " " },
         {" is ", " instanceof "},
         {".Length", ".length" },
         {"int.MaxValue", "Integer.MAX_VALUE" },

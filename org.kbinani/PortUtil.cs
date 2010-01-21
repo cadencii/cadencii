@@ -1235,6 +1235,10 @@ namespace org.kbinani {
 #endif
         }
 
+        public static void moveFile( String pathBefore, String pathAfter ) {
+            System.IO.File.Move( pathBefore, pathAfter );
+        }
+
         public static boolean isDirectoryExists( String path ) {
 #if JAVA
             File f = new File( path );

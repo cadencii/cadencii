@@ -45,7 +45,7 @@ namespace org.kbinani.cadencii {
         private static extern void SoundInit( int sample_rate );
 
         [DllImport( "PlaySound" )]
-        private static extern unsafe void SoundAppend( double* left, double* right, int length );
+        private static extern void SoundAppend( IntPtr leftDoublePointer, IntPtr rightDoublePointer, int length );
 
         [DllImport( "PlaySound" )]
         private static extern void SoundWaitForExit();
@@ -210,12 +210,9 @@ namespace org.kbinani.cadencii {
                 return;
             }
             try {
-                unsafe {
-                    fixed ( double* pl = &left[0] )
-                    fixed ( double* pr = &right[0] ) {
-                        SoundAppend( pl, pr, length );
-                    }
-                }
+                IntPtr pl = Marshal.UnsafeAddrOfPinnedArrayElement( left, 0 );
+                IntPtr pr = Marshal.UnsafeAddrOfPinnedArrayElement( right, 0 );
+                SoundAppend( pl, pr, length );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "PlaySound#Append; ex=" + ex );
             }

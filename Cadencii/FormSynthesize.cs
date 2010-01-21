@@ -57,8 +57,6 @@ namespace org.kbinani.cadencii {
         private String[] m_files;
         private int[] m_clock_start;
         private int[] m_clock_end;
-        private boolean m_partial_mode = false;
-        //private int m_temp_premeasure = 0;
         private int m_finished = -1;
         private boolean m_rendering_started = false;
         private boolean m_reflect_amp_to_wave = false;
@@ -76,34 +74,18 @@ namespace org.kbinani.cadencii {
         {
             this( vsq, presend, new int[] { track }, new String[]{ file }, clock_start, clock_end, temp_premeasure, reflect_amp_to_wave, false );
 #else
-            : this( vsq, presend, new int[] { track }, new String[] { file }, new int[] { clock_start }, new int[] { clock_end }, reflect_amp_to_wave, false ) {
+            : this( vsq, presend, new int[] { track }, new String[] { file }, new int[] { clock_start }, new int[] { clock_end }, reflect_amp_to_wave ) {
 
 #endif
         }
 
-        public FormSynthesize( VsqFileEx vsq,
-                               int presend,
-                               int[] tracks,
-                               String[] files,
-                               int[] start,
-                               int[] end,
-                               boolean reflect_amp_to_wave )
-#if JAVA
-        {
-            this( vsq, presend, tracks, files, 0, end, 0, reflect_amp_to_wave, true );
-#else
-            : this( vsq, presend, tracks, files, start, end, reflect_amp_to_wave, true ) {
-#endif
-        }
-
-        private FormSynthesize( VsqFileEx vsq, 
+        public FormSynthesize( VsqFileEx vsq, 
                                 int presend, 
                                 int[] tracks,
                                 String[] files,
                                 int[] start,
                                 int[] end,
-                                boolean reflect_amp_to_wave,
-                                boolean partial_mode ) {
+                                boolean reflect_amp_to_wave ) {
 #if JAVA
             super();
 #endif
@@ -124,9 +106,14 @@ namespace org.kbinani.cadencii {
             timer.setDelay( 1000 );
             registerEventHandlers();
             setResources();
-            lblProgress.setText( "1/" + m_tracks.Length );
-            progressWhole.setMaximum( m_tracks.Length );
-            m_partial_mode = partial_mode;
+            lblProgress.setText( "0/" + m_tracks.Length );
+            int totalClocks = 0;
+            for ( int i = 0; i < start.Length; i++ ) {
+                totalClocks += end[i] - start[i];
+            }
+            progressWhole.setMaximum( totalClocks );
+            progressWhole.setMinimum( 0 );
+            progressWhole.setValue( 0 );
             m_clock_start = new int[start.Length];
             m_clock_end = new int[end.Length];
             for( int i = 0; i < start.Length; i++ ){
@@ -173,9 +160,12 @@ namespace org.kbinani.cadencii {
         }
 
         private void UpdateProgress( Object sender, int value ) {
-            progressWhole.setValue( value > progressWhole.getMaximum() ? progressWhole.getMaximum() : value );
+            int totalClocks = 0;
+            for ( int i = 0; i < value; i++ ) {
+                totalClocks += (m_clock_end[i] - m_clock_start[i]);
+            }
+            progressWhole.setValue( totalClocks );
             lblProgress.setText( value + "/" + m_tracks.Length );
-            m_finished = value - 1;
         }
 
         private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
@@ -184,49 +174,17 @@ namespace org.kbinani.cadencii {
                 double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
                 double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.MasterPanpot );
                 double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.MasterPanpot );
-                /*if ( m_partial_mode ) {
-#if JAVA
-                    UpdateProgress( this, 1 );
-#else
-                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, (Object)1 );
-#endif
-                    double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Feder );
-                    double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
-                    double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( m_tracks[0] - 1 ).Panpot );
-                    double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
-                    double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
-                    WaveWriter ww = null;
-                    try {
-                        ww = new WaveWriter( m_files[0], channel, 16, VSTiProxy.SAMPLE_RATE );
-                        VSTiProxy.render( m_vsq,
-                                          m_tracks[0],
-                                          ww,
-                                          m_vsq.getSecFromClock( m_clock_start ),
-                                          m_vsq.getSecFromClock( m_clock_end ),
-                                          m_presend,
-                                          false,
-                                          new WaveReader[] { },
-                                          0.0,
-                                          false,
-                                          AppManager.getTempWaveDir(),
-                                          m_reflect_amp_to_wave );
-                    } catch ( Exception ex ) {
-                    } finally {
-                        if ( ww != null ) {
-                            try {
-                                ww.close();
-                            } catch ( Exception ex2 ) {
-                            }
-                        }
-                    }
-                } else {
-                    // partialモードのときは、常にm_tracks.Length=1である。*/
-                for( int k = 0; k < m_tracks.Length; k++ ){
+
+                int numTrack = m_vsq.Track.size();
+                String tmppath = AppManager.getTempWaveDir();
+                m_finished = 0;
+
+                for ( int k = 0; k < m_tracks.Length; k++ ) {
                     int track = m_tracks[k];
 #if JAVA
                     UpdateProgress( this, 1 );
 #else
-                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, 1 );
+                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, k );
 #endif
                     Vector<VsqNrpn> nrpn = new Vector<VsqNrpn>( Arrays.asList( VsqFile.generateNRPN( m_vsq, track, m_presend ) ) );
                     int count = m_vsq.Track.get( track ).getEventCount();
@@ -244,24 +202,19 @@ namespace org.kbinani.cadencii {
                         int total_clocks = m_vsq.TotalClocks;
                         double total_sec = m_vsq.getSecFromClock( total_clocks );
                         WaveWriter ww = null;
-                        WaveReader[] readers = new WaveReader[] { };
+                        Vector<WaveReader> readers = new Vector<WaveReader>();
 
                         if ( AppManager.editorConfig.WaveFileOutputFromMasterTrack ) {
-                            int numTrack = m_vsq.Track.size();
                             if ( numTrack > 2 ) {
                                 // track以外にもトラックがあるので。
-                                Array.Resize( ref readers, numTrack - 2 );
-                                int j = 0;
                                 for ( int i = 1; i < numTrack; i++ ) {
                                     if ( i == track ) {
                                         continue;
                                     }
-                                    String tmppath = AppManager.getTempWaveDir();
                                     String file = PortUtil.combinePath( tmppath, i + ".wav" );
                                     WaveReader r = new WaveReader( file );
                                     r.setTag( i );
-                                    readers[j] = r;
-                                    j++;
+                                    readers.add( r );
                                 }
                             }
                         }
@@ -275,27 +228,32 @@ namespace org.kbinani.cadencii {
                                               m_vsq.getSecFromClock( m_clock_end[k] ),
                                               m_presend,
                                               false,
-                                              readers,
+                                              readers.toArray( new WaveReader[] { } ),
                                               0.0,
                                               false,
-                                              AppManager.getTempWaveDir(),
+                                              tmppath,
                                               m_reflect_amp_to_wave );
+                            m_finished++;
                         } catch ( Exception ex ) {
+                            AppManager.reportException( "FormSynthesize#bgWork_DoWork", ex, 0 );
                         } finally {
                             if ( ww != null ) {
                                 try {
                                     ww.close();
                                 } catch ( Exception ex2 ) {
+                                    PortUtil.stderr.println( "FormSynthesize#bgWork_DoWork; ex2=" + ex2 );
                                 }
                             }
                         }
                     }
                 }
 #if JAVA
-            }catch( Exception ex ){
+                UpdateProgress( this, m_tracks.Length );
 #else
-            } catch ( Exception ex ) {
+                this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, m_tracks.Length );
 #endif
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormSynthesize#bgWork_DoWork; ex=" + ex );
             }
         }
 

@@ -73,9 +73,6 @@ namespace org.kbinani.media {
  {
             boolean ret = open( file );
             m_file = file;
-#if DEBUG
-            Console.WriteLine( "WaveReader#.ctor; file=" + file + "; ret=" + ret );
-#endif
         }
 
         public String getFilePath() {

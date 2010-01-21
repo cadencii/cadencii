@@ -287,19 +287,23 @@ namespace org.kbinani.media {
             m_total_samples += (int)total;
         }
 
-        public void append( double[] L, double[] R )
+        public void append( double[] L, double[] R ) {
+            int length = Math.Min( L.Length, R.Length );
+            append( L, R, length );
+        }
+
+        public void append( double[] L, double[] R, int length )
 #if JAVA
             throws IOException
 #endif
         {
-            int total = Math.Min( L.Length, R.Length );
             if ( m_bit_per_sample == 8 ) {
                 if ( m_channel == 1 ) {
-                    for ( int i = 0; i < total; i++ ) {
+                    for ( int i = 0; i < length; i++ ) {
                         m_stream.writeByte( (int)((L[i] + R[i] + 2.0) * 63.75) );
                     }
                 } else {
-                    for ( int i = 0; i < total; i++ ) {
+                    for ( int i = 0; i < length; i++ ) {
                         m_stream.writeByte( (int)((L[i] + 1.0) * 127.5) );
                         m_stream.writeByte( (int)((R[i] + 1.0) * 127.5) );
                     }
@@ -307,12 +311,12 @@ namespace org.kbinani.media {
             } else {
                 byte[] buf;
                 if ( m_channel == 1 ) {
-                    for ( int i = 0; i < total; i++ ) {
+                    for ( int i = 0; i < length; i++ ) {
                         buf = PortUtil.getbytes_int16_le( (short)((L[i] + R[i]) * 16384.0) );
                         writeByteArray( m_stream, buf, 2 );
                     }
                 } else {
-                    for ( int i = 0; i < total; i++ ) {
+                    for ( int i = 0; i < length; i++ ) {
                         buf = PortUtil.getbytes_int16_le( (short)(L[i] * 32768.0) );
                         writeByteArray( m_stream, buf, 2 );
                         buf = PortUtil.getbytes_int16_le( (short)(R[i] * 32768.0) );
@@ -320,7 +324,7 @@ namespace org.kbinani.media {
                     }
                 }
             }
-            m_total_samples += (int)total;
+            m_total_samples += (int)length;
         }
 
         public void append( byte[] L, byte[] R ) 
