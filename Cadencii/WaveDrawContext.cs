@@ -22,6 +22,8 @@ using System;
 using org.kbinani.media;
 using org.kbinani;
 using org.kbinani.java.awt;
+using org.kbinani.java.util;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -37,6 +39,14 @@ namespace org.kbinani.cadencii {
         private String m_name;
         public UtauFreq Freq;
         private float m_length;
+        /// <summary>
+        /// 第indexSpec[i]からindexSpec[i + 1]サンプルについては，1サンプルあたりのクロック数がclockPerSample[i]であることを表すのに使う．
+        /// </summary>
+        private int[] indexSpec;
+        /// <summary>
+        /// 1サンプルあたりのクロック数
+        /// </summary>
+        private float[] clockPerSample;
 
         public WaveDrawContext( String file ) {
             if ( !PortUtil.isFileExists( file ) ) {
@@ -63,9 +73,7 @@ namespace org.kbinani.cadencii {
             } finally {
                 if ( wr != null ) {
                     try {
-#if !JAVA
-                        wr.Dispose();
-#endif
+                        wr.dispose();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -96,6 +104,38 @@ namespace org.kbinani.cadencii {
 #else
             GC.Collect();
 #endif
+        }
+
+        public void draw( Graphics2D g, 
+                          Color pen,
+                          Rectangle rect,
+                          int clock_start,
+                          int clock_end, 
+                          Vector<TempoTableEntry> tempo_table, 
+                          float pixel_per_clock ) {
+            double secStart = VsqFile.getSecFromClock( clock_start, tempo_table );
+            double secEnd = VsqFile.getSecFromClock( clock_end, tempo_table );
+            int sStart0 = (int)(secStart * m_sample_rate) - 1;
+            int sEnd = (int)(secEnd * m_sample_rate) + 1;
+
+            int c = tempo_table.size();
+            int sStart = 0;
+            double cStart = 0.0;
+            for ( int i = 0; i < c; i++ ) {
+                TempoTableEntry entry = tempo_table.get( i );
+                int sThisEnd = (int)(entry.Time * m_sample_rate);
+                double cEnd = VsqFile.getClockFromSec( entry.Time, tempo_table );
+                
+                // startからendまでを描画する(必要なら!)
+                if ( sThisEnd < sStart0 ) {
+                    continue;
+                }
+
+                // 
+                for ( int j = sStart; j < sThisEnd; j++ ) {
+#error WaveDrawContext#draw; このへんから．
+                }
+            }
         }
 
         public void draw( Graphics2D g, Color pen, Rectangle rect, float sec_start, float sec_end ) {

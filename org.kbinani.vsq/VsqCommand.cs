@@ -170,12 +170,13 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandTrackChangePlayMode( int track, int play_mode ) {
+        public static VsqCommand generateCommandTrackChangePlayMode( int track, int play_mode, int last_play_mode ) {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CHANGE_PLAY_MODE;
-            command.Args = new Object[2];
+            command.Args = new Object[3];
             command.Args[0] = track;
             command.Args[1] = play_mode;
+            command.Args[2] = last_play_mode;
             return command;
         }
 

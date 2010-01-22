@@ -48,7 +48,7 @@ namespace org.kbinani.cadencii {
         private int m_last_w = 0;
         private int m_last_h = 0;
         private int m_shiftx = 0;
-        private int skip = 100;
+        private int skip = 1;
         private float m_last_scalex;
         private int m_last_stdx;
         private Dimension m_last_size;
@@ -109,12 +109,14 @@ namespace org.kbinani.cadencii {
 #endif
 
         private void WaveView_Resize( Object sender, BEventArgs e ) {
-            if ( getWidth() != 0 && getHeight() != 0 ) {
-                if ( getWidth() != m_last_w || getHeight() != m_last_h ) {
+            int width = getWidth();
+            int height = getHeight();
+            if ( width != 0 && height != 0 ) {
+                if ( width != m_last_w || height != m_last_h ) {
                     draw();
                 }
-                m_last_w = getWidth();
-                m_last_h = getHeight();
+                m_last_w = width;
+                m_last_h = height;
             }
 #if !JAVA
             m_pict.Invalidate();
@@ -125,14 +127,16 @@ namespace org.kbinani.cadencii {
             WaveReader reader = null;
             try {
                 reader = new WaveReader( file );
-                m_wave = new float[reader.getTotalSamples() / skip];
-                for ( int i = 0; i < reader.getTotalSamples() / skip; i++ ) {
+                int totalSamples = reader.getTotalSamples();
+                m_wave = new float[totalSamples / skip];
+                for ( int i = 0; i < totalSamples / skip; i++ ) {
                     ByRef<float[]> left = new ByRef<float[]>();
                     ByRef<float[]> right = new ByRef<float[]>();
                     reader.read( i * skip, 1, left, right );
                     m_wave[i] = 0.5f * (left.value[0] + right.value[0]);
                 }
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "WaveView#loadWave; ex=" + ex );
             } finally {
                 try {
                     reader.close();
@@ -165,29 +169,34 @@ namespace org.kbinani.cadencii {
 #endif
             m_bmp = new BufferedImage( getWidth(), getHeight(), BufferedImage.TYPE_INT_BGR );
 
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
             int stdx = (int)(AppManager.startToDrawX / AppManager.scaleX);//            +(int)(AppManager._KEY_LENGTH / AppManager.ScaleX);
-            double stdx_sec = AppManager.getVsqFile().getSecFromClock( stdx );
+            double stdx_sec = vsq.getSecFromClock( stdx );
             int etdx = (int)(stdx + getWidth() / AppManager.scaleX); // end to draw x
-            double etdx_sec = AppManager.getVsqFile().getSecFromClock( etdx );
+            double etdx_sec = vsq.getSecFromClock( etdx );
             int sample_start = (int)(stdx_sec * m_sample_rate / (float)skip);
             int sample_end = (int)(etdx_sec * m_sample_rate / (float)skip);
             if ( sample_start < 0 ) sample_start = 0;
             Graphics2D g = null;
             try {
-                g.setColor( new Color( 50, 50, 50 ) );
                 g = m_bmp.createGraphics();
+                g.setColor( new Color( 50, 50, 50 ) );
                 g.clearRect( 0, 0, m_bmp.getWidth(), m_bmp.getHeight() );
                 int centre = getHeight() / 2;
                 Point last = new Point( 0, centre );
                 for ( int i = sample_start; i < sample_end && i < m_wave.Length; i++ ) {
                     float sec = i * skip / m_sample_rate;
-                    int x = (int)((AppManager.getVsqFile().getClockFromSec( sec ) - stdx) * AppManager.scaleX);
+                    int x = (int)((vsq.getClockFromSec( sec ) - stdx) * AppManager.scaleX);
                     int y = centre - (int)(m_wave[i] * centre);
                     Point p = new Point( x, y );
                     g.drawLine( last.x, last.y, p.x, p.y );
                     last = p;
                 }
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "WaveView#draw; ex=" + ex );
             } finally {
             }
 #if !JAVA

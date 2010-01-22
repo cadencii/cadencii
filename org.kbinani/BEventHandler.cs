@@ -26,9 +26,9 @@ namespace org.kbinani {
         private static System.IO.StreamWriter m_log = null;
 #endif
 
-        private BEventHandler( Type invoker, Object bind, String method_name, Type return_type, Type arg1, Type arg2 ) {
+        private BEventHandler( Type invoker, Object bind, String method_name, Type return_type, Type arg1, Type arg2, bool staticOnly ) {
             try {
-                List<MethodInfo> methods = new List<MethodInfo>( invoker.GetMethods() );
+                List<MethodInfo> methods = staticOnly ? new List<MethodInfo>( invoker.GetMethods( BindingFlags.Static | BindingFlags.Public ) ) : new List<MethodInfo>( invoker.GetMethods() );
                 //methods.AddRange( invoker.GetMethods( BindingFlags.NonPublic ) );
                 foreach ( MethodInfo mi in methods ) {
                     if ( mi.Name != method_name ) {
@@ -64,11 +64,11 @@ namespace org.kbinani {
         }
 
         protected BEventHandler( Type invoker, String method_name, Type return_type, Type arg1, Type arg2 )
-            : this( invoker, null, method_name, return_type, arg1, arg2 ) {
+            : this( invoker, null, method_name, return_type, arg1, arg2, true ) {
         }
 
         protected BEventHandler( Object invoker, String method_name, Type return_type, Type arg1, Type arg2 )
-            : this( invoker.GetType(), invoker, method_name, return_type, arg1, arg2 ) {
+            : this( invoker.GetType(), invoker, method_name, return_type, arg1, arg2, false ) {
         }
 
         public BEventHandler( Object invoker, String method_name )

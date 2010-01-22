@@ -866,7 +866,13 @@ namespace org.kbinani.media {
             }
         }
 
+#if !JAVA
         public void Dispose() {
+            dispose();
+        }
+#endif
+
+        public void dispose() {
             L8 = null;
             R8 = null;
             L16 = null;

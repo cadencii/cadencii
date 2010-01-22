@@ -16,12 +16,17 @@ package org.kbinani.cadencii;
 
 #else
 using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace org.kbinani.cadencii{
 #endif
 
     public class Program {
+        static FormSplash splash = null;
+        static Thread splashThread = null;
+
+        delegate void VoidDelegate();
 #if JAVA
         public static void main( String[] args ){
             AppManager.init();
@@ -36,9 +41,14 @@ namespace org.kbinani.cadencii{
 #if !DEBUG
             try {
 #endif
-                AppManager.init();
-                AppManager.mainWindow = new FormMain();
-                Application.Run( AppManager.mainWindow );
+            splashThread = new Thread( new ThreadStart( showSplash ) );
+            splashThread.ApartmentState = ApartmentState.STA;
+            splashThread.Start();
+
+            AppManager.init();
+            AppManager.mainWindow = new FormMain();
+            AppManager.mainWindow.Load += mainWindow_Load;
+            Application.Run( AppManager.mainWindow );
 #if !DEBUG
             } catch ( Exception ex ) {
                 org.kbinani.debug.push_log( ex.ToString() );
@@ -46,6 +56,26 @@ namespace org.kbinani.cadencii{
 #endif
         }
 #endif
+
+        static void showSplash() {
+            splash = new FormSplash();
+            splash.showDialog();
+        }
+
+        static void closeSplash() {
+            splash.close();
+        }
+
+        public static void mainWindow_Load( Object sender, EventArgs e ) {
+            if ( splash != null ) {
+                VoidDelegate deleg = new VoidDelegate( closeSplash );
+                if ( deleg != null ) {
+                    splash.Invoke( deleg );
+                }
+            }
+            splash = null;
+            AppManager.mainWindow.Load -= mainWindow_Load;
+        }
     }
 
 #if !JAVA

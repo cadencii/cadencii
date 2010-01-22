@@ -46,6 +46,10 @@ namespace org.kbinani.vsq {
         /// Play With Synthesisなら1、Play After Synthesiなら0、Offなら-1。
         /// </summary>
         public int PlayMode = org.kbinani.vsq.PlayMode.PlayWithSynth;
+        /// <summary>
+        /// PlayModeがOff(-1)にされる直前に，PlayAfterSynthかPlayWithSynthのどちらが指定されていたかを記憶しておく．
+        /// </summary>
+        public int LastPlayMode = org.kbinani.vsq.PlayMode.PlayWithSynth;
 
 #if !JAVA
         public object Clone() {
@@ -60,6 +64,7 @@ namespace org.kbinani.vsq {
             int b = PortUtil.parseInt( spl[2] );
             VsqCommon res = new VsqCommon( Name, r, g, b, DynamicsMode, PlayMode );
             res.Version = Version;
+            res.LastPlayMode = LastPlayMode;
             return res;
         }
 

@@ -221,7 +221,7 @@ namespace org.kbinani.cadencii {
                 System.out.println( "PictPianoRoll#paint; (vsq==null)=" + (vsq == null) );
 #endif
                 if ( vsq != null ) {
-                    renderer = vsq.Track.get( AppManager.getSelected() ).getCommon().Version;
+                    renderer = vsq.Track.get( selected ).getCommon().Version;
                 }
 #if JAVA
                 System.out.println( "PictPianoRoll#paint; (renderer == null)=" + (renderer == null) + "; renderer=" + renderer );
@@ -448,7 +448,7 @@ namespace org.kbinani.cadencii {
                         lock ( AppManager.drawObjects ) {
                             int c = AppManager.drawObjects.size();
                             for ( int i = 0; i < c; i++ ) {
-                                if ( i == AppManager.getSelected() - 1 ) {
+                                if ( i == selected - 1 ) {
                                     continue;
                                 }
                                 Vector<DrawObject> target_list = AppManager.drawObjects.get( i );
@@ -458,6 +458,9 @@ namespace org.kbinani.cadencii {
                                 int target_list_count = target_list.size();
                                 for ( int j = j_start; j < target_list_count; j++ ) {
                                     DrawObject dobj = target_list.get( j );
+                                    if ( dobj.type != DrawObjectType.Note ) {
+                                        continue;
+                                    }
                                     int x = dobj.pxRectangle.x + key_width - start_draw_x;
                                     y = dobj.pxRectangle.y - start_draw_y;
                                     int lyric_width = dobj.pxRectangle.width;

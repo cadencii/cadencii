@@ -397,9 +397,9 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < c; i++ ) {
                 ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
             }
-            ret.m_tpq = m_tpq;
+            //ret.m_tpq = m_tpq;
             ret.TotalClocks = TotalClocks;
-            ret.m_base_tempo = m_base_tempo;
+            //ret.m_base_tempo = m_base_tempo;
             ret.Master = (VsqMaster)Master.clone();
             ret.Mixer = (VsqMixer)Mixer.clone();
             //ret.m_premeasure_clocks = m_premeasure_clocks;
@@ -832,9 +832,9 @@ namespace org.kbinani.cadencii {
                     for ( int i = 0; i < c; i++ ) {
                         TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
                     }
-                    m_tpq = vsq.m_tpq;
+                    //m_tpq = vsq.m_tpq;
                     TotalClocks = vsq.TotalClocks;
-                    m_base_tempo = vsq.m_base_tempo;
+                    //m_base_tempo = vsq.m_base_tempo;
                     Master = (VsqMaster)vsq.Master.clone();
                     Mixer = (VsqMixer)vsq.Mixer.clone();
                     AttachedCurves = (AttachedCurve)vsq.AttachedCurves.clone();

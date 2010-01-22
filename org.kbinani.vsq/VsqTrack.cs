@@ -321,18 +321,52 @@ namespace org.kbinani.vsq {
             if ( MetaText.Common == null ){
                 return PlayMode.PlayWithSynth;
             }
-            return MetaText.Common.PlayMode;
+            if ( MetaText.Common.LastPlayMode != PlayMode.PlayAfterSynth && MetaText.Common.LastPlayMode != PlayMode.PlayWithSynth ) {
+                MetaText.Common.LastPlayMode = PlayMode.PlayWithSynth;
+            }
+            return MetaText.Common.LastPlayMode;
         }
 
         public void setPlayMode( int value ) {
-            if ( MetaText == null ) {
-                return;
-            }
+            if ( MetaText == null ) return;
             if ( MetaText.Common == null ) {
                 MetaText.Common = new VsqCommon( "Miku", 128, 128, 128, DynamicsMode.Expert, value );
                 return;
             }
+            if ( value == PlayMode.Off ) {
+                if ( MetaText.Common.PlayMode != PlayMode.Off ) {
+                    MetaText.Common.LastPlayMode = MetaText.Common.PlayMode;
+                }
+            } else {
+                MetaText.Common.LastPlayMode = value;
+            }
             MetaText.Common.PlayMode = value;
+        }
+
+        public boolean isTrackOn() {
+            if ( MetaText == null ) return true;
+            if ( MetaText.Common == null ) return true;
+            return MetaText.Common.PlayMode != PlayMode.Off;
+        }
+
+        public void setTrackOn( boolean value ) {
+            if ( MetaText == null ) return;
+            if ( MetaText.Common == null ) {
+                MetaText.Common = new VsqCommon( "Miku", 128, 128, 128, DynamicsMode.Expert, value ? PlayMode.PlayWithSynth : PlayMode.Off );
+            }
+            if ( value ) {
+                if ( MetaText.Common.LastPlayMode != PlayMode.PlayAfterSynth &&
+                     MetaText.Common.LastPlayMode != PlayMode.PlayWithSynth ) {
+                    MetaText.Common.LastPlayMode = PlayMode.PlayWithSynth;
+                }
+                MetaText.Common.PlayMode = MetaText.Common.LastPlayMode;
+            } else {
+                if ( MetaText.Common.PlayMode == PlayMode.PlayAfterSynth ||
+                     MetaText.Common.PlayMode == PlayMode.PlayWithSynth ) {
+                    MetaText.Common.LastPlayMode = MetaText.Common.PlayMode;
+                }
+                MetaText.Common.PlayMode = PlayMode.Off;
+            }
         }
 
         public String getName() {

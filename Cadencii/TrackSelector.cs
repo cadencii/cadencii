@@ -168,6 +168,10 @@ namespace org.kbinani.cadencii {
         /// TrackSelectorの推奨表示高さは，HEIGHT_WITHOUT_CURVE + UNIT_HEIGHT_PER_CURVE * (カーブの個数)となる
         /// </summary>
         const int HEIGHT_WITHOUT_CURVE = 76;
+        /// <summary>
+        /// トラックの名前表示部分の最大表示幅（ピクセル）
+        /// </summary>
+        const int TRACK_SELECTOR_MAX_WIDTH = 80;
         #endregion
 
         private CurveType m_selected_curve = CurveType.VEL;
@@ -1836,7 +1840,18 @@ namespace org.kbinani.cadencii {
         /// トラック選択部分の、トラック1個分の幅を調べます。pixel
         /// </summary>
         public int getSelectorWidth() {
-            return (int)((getWidth() - vScroll.getWidth()) / 16.0f);
+            int draft = TRACK_SELECTOR_MAX_WIDTH;
+            int maxTotalWidth = getWidth() - vScroll.getWidth() - AppManager.keyWidth; // トラックの一覧を表示するのに利用できる最大の描画幅
+            int numTrack = 1;
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq != null ) {
+                numTrack = vsq.Track.size();
+            }
+            if ( draft * (numTrack - 1) <= maxTotalWidth ) {
+                return draft;
+            } else {
+                return (int)((maxTotalWidth) / (numTrack - 1.0f));
+            }
         }
 
         /// <summary>
@@ -5407,9 +5422,12 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// 指定した歌声合成システムの歌手のリストを作成し，コンテキストメニューを準備します．
+        /// </summary>
+        /// <param name="renderer"></param>
         public void prepareSingerMenu( String renderer ) {
             cmenuSinger.removeAll();
-            //Vector<Integer> list = new Vector<Integer>();
             Vector<SingerConfig> items = null;
             if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) || renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
                 items = AppManager.editorConfig.UtauSingers;

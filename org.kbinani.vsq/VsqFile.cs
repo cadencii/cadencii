@@ -48,12 +48,12 @@ namespace org.kbinani.vsq {
         /// </summary>
         public Vector<TempoTableEntry> TempoTable;
         public Vector<TimeSigTableEntry> TimesigTable;
-        protected int m_tpq;
+        protected const int m_tpq = 480;
         /// <summary>
         /// 曲の長さを取得します。(クロック(4分音符は480クロック))
         /// </summary>
         public int TotalClocks = 0;
-        protected int m_base_tempo;
+        protected const int baseTempo = 500000; 
         public VsqMaster Master;  // VsqMaster, VsqMixerは通常，最初の非Master Trackに記述されるが，可搬性のため，
         public VsqMixer Mixer;    // ここではVsqFileに直属するものとして取り扱う．
         public Object Tag;
@@ -1079,9 +1079,9 @@ namespace org.kbinani.vsq {
                 for ( int i = 0; i < timesig_table_count; i++ ) {
                     TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
                 }
-                m_tpq = vsq.m_tpq;
+                //m_tpq = vsq.m_tpq;
                 TotalClocks = vsq.TotalClocks;
-                m_base_tempo = vsq.m_base_tempo;
+                //m_base_tempo = vsq.m_base_tempo;
                 Master = (VsqMaster)vsq.Master.clone();
                 Mixer = (VsqMixer)vsq.Mixer.clone();
                 updateTotalClocks();
@@ -1728,8 +1728,11 @@ namespace org.kbinani.vsq {
                 #region TRACK_CHANGE_PLAY_MODE
                 int track = (Integer)command.Args[0];
                 int play_mode = (Integer)command.Args[1];
-                VsqCommand ret = VsqCommand.generateCommandTrackChangePlayMode( track, Track.get( track ).getCommon().PlayMode );
-                Track.get( track ).getCommon().PlayMode = play_mode;
+                int last_play_mode = (Integer)command.Args[2];
+                VsqTrack vsqTrack = Track.get( track );
+                VsqCommand ret = VsqCommand.generateCommandTrackChangePlayMode( track, vsqTrack.getCommon().PlayMode, vsqTrack.getCommon().LastPlayMode );
+                vsqTrack.getCommon().PlayMode = play_mode;
+                vsqTrack.getCommon().LastPlayMode = last_play_mode;
                 return ret;
                 #endregion
             } else if ( type == VsqCommandType.EVENT_REPLACE ) {
@@ -1984,9 +1987,9 @@ namespace org.kbinani.vsq {
             for ( int i = 0; i < TimesigTable.size(); i++ ) {
                 ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
             }
-            ret.m_tpq = m_tpq;
+            //ret.m_tpq = m_tpq;
             ret.TotalClocks = TotalClocks;
-            ret.m_base_tempo = m_base_tempo;
+            //ret.m_base_tempo = m_base_tempo;
             ret.Master = (VsqMaster)Master.clone();
             ret.Mixer = (VsqMixer)Mixer.clone();
             //ret.m_premeasure_clocks = m_premeasure_clocks;
@@ -2096,7 +2099,7 @@ namespace org.kbinani.vsq {
         /// 基本テンポ値を取得します
         /// </summary>
         public int getBaseTempo() {
-            return m_base_tempo;
+            return baseTempo;
         }
 
         /// <summary>
@@ -2143,9 +2146,19 @@ namespace org.kbinani.vsq {
         /// <param name="clock"></param>
         /// <returns></returns>
         public double getSecFromClock( double clock ) {
-            int c = TempoTable.size();
+            return getSecFromClock( clock, TempoTable );
+        }
+
+        /// <summary>
+        /// 指定したクロックにおける、clock=0からの演奏経過時間(sec)を取得します
+        /// </summary>
+        /// <param name="clock"></param>
+        /// <param name="tempo_table"></param>
+        /// <returns></returns>
+        public static double getSecFromClock( double clock, Vector<TempoTableEntry> tempo_table ) {
+            int c = tempo_table.size();
             for ( int i = c - 1; i >= 0; i-- ) {
-                TempoTableEntry item = TempoTable.get( i );
+                TempoTableEntry item = tempo_table.get( i );
                 if ( item.Clock < clock ) {
                     double init = item.Time;
                     double dclock = clock - item.Clock;
@@ -2154,7 +2167,7 @@ namespace org.kbinani.vsq {
                 }
             }
 
-            double sec_per_clock = m_base_tempo * 1e-6 / 480.0;
+            double sec_per_clock = baseTempo * 1e-6 / 480.0;
             return clock * sec_per_clock;
         }
 
@@ -2165,12 +2178,12 @@ namespace org.kbinani.vsq {
         /// <returns></returns>
         public double getClockFromSec( double time ) {
             // timeにおけるテンポを取得
-            int tempo = m_base_tempo;
+            int tempo = baseTempo;
             double base_clock = 0;
             double base_time = 0f;
             int c = TempoTable.size();
             if ( c == 0 ) {
-                tempo = m_base_tempo;
+                tempo = baseTempo;
                 base_clock = 0;
                 base_time = 0f;
             } else if ( c == 1 ) {
@@ -2180,6 +2193,32 @@ namespace org.kbinani.vsq {
             } else {
                 for ( int i = c - 1; i >= 0; i-- ) {
                     TempoTableEntry item = TempoTable.get( i );
+                    if ( item.Time < time ) {
+                        return item.Clock + (time - item.Time) * m_tpq * 1000000.0 / item.Tempo;
+                    }
+                }
+            }
+            double dt = time - base_time;
+            return base_clock + dt * m_tpq * 1000000.0 / (double)tempo;
+        }
+
+        public static double getClockFromSec( double time, Vector<TempoTableEntry> tempo_table ) {
+            // timeにおけるテンポを取得
+            int tempo = baseTempo;
+            double base_clock = 0;
+            double base_time = 0f;
+            int c = tempo_table.size();
+            if ( c == 0 ) {
+                tempo = baseTempo;
+                base_clock = 0;
+                base_time = 0f;
+            } else if ( c == 1 ) {
+                tempo = tempo_table.get( 0 ).Tempo;
+                base_clock = tempo_table.get( 0 ).Clock;
+                base_time = tempo_table.get( 0 ).Time;
+            } else {
+                for ( int i = c - 1; i >= 0; i-- ) {
+                    TempoTableEntry item = tempo_table.get( i );
                     if ( item.Time < time ) {
                         return item.Clock + (time - item.Time) * m_tpq * 1000000.0 / item.Tempo;
                     }
@@ -2313,7 +2352,7 @@ namespace org.kbinani.vsq {
         /// <param name="tempo"></param>
         public VsqFile( String singer, int pre_measure, int numerator, int denominator, int tempo ) {
             TotalClocks = pre_measure * 480 * 4 / denominator * numerator;
-            m_tpq = 480;
+            //m_tpq = 480;
 
             Track = new Vector<VsqTrack>();
             Track.add( new VsqTrack( tempo, numerator, denominator ) );
@@ -2328,7 +2367,7 @@ namespace org.kbinani.vsq {
             TimesigTable.add( new TimeSigTableEntry( 0, numerator, denominator, 0 ) );
             TempoTable = new Vector<TempoTableEntry>();
             TempoTable.add( new TempoTableEntry( 0, tempo, 0.0 ) );
-            m_base_tempo = tempo;
+            //m_base_tempo = tempo;
             //m_premeasure_clocks = calculatePreMeasureInClock();
         }
 
@@ -2343,7 +2382,7 @@ namespace org.kbinani.vsq {
         {
             TempoTable = new Vector<TempoTableEntry>();
             TimesigTable = new Vector<TimeSigTableEntry>();
-            m_tpq = 480;
+            //m_tpq = 480;
 
             // SMFをコンバートしたテキストファイルを作成
             MidiFile mf = new MidiFile( _fpath );
@@ -2383,7 +2422,7 @@ namespace org.kbinani.vsq {
                 // MIDI event リストの取得
                 Vector<MidiEvent> midi_event = mf.getMidiEventList( master_track );//.TempoTable;
                 // とりあえずtempo_tableに格納
-                m_base_tempo = 500000;
+                //m_base_tempo = 500000;
                 prev_tempo = 500000;
                 prev_index = 0;
                 double thistime;
@@ -2396,7 +2435,7 @@ namespace org.kbinani.vsq {
                         count++;
                         if ( count == 0 && itemj.clock != 0 ) {
                             TempoTable.add( new TempoTableEntry( 0, 500000, 0.0 ) );
-                            m_base_tempo = 500000;
+                            //m_base_tempo = 500000;
                             prev_tempo = 500000;
                         }
                         int current_tempo = itemj.data[1] << 16 | itemj.data[2] << 8 | itemj.data[3];

@@ -1139,6 +1139,22 @@ namespace org.kbinani {
         #endregion
 
         #region System.IO
+        public static double getFileLastModified( String path ) {
+#if JAVA
+            File f = new File( path );
+            if( f.exists() ){
+                return f.lastModified();
+            }else{
+                return 0.0;
+            }
+#else
+            if ( File.Exists( path ) ) {
+                return new FileInfo( path ).LastWriteTimeUtc.Ticks * 100.0 / 1e9;
+            }
+            return 0;
+#endif
+        }
+
         public static long getFileLength( String fpath ) {
 #if JAVA
             File f = new File( fpath );
