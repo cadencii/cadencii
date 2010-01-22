@@ -180,7 +180,7 @@ namespace org.kbinani.cadencii {
                 //
                 // [screen_x] = [clock] * _scalex + 73 - StartToDrawX
                 // [screen_y] = -[note] * TRACK_HEIGHT + 127 * TRACK_HEIGHT - StartToDrawY
-                int xoffset = 6 + AppManager.keyWidth - start_draw_x;
+                int xoffset = AppManager.keyOffset + AppManager.keyWidth - start_draw_x;
                 int yoffset = 127 * track_height - start_draw_y;
                 //      ↓
                 // [screen_x] = [clock] * _scalex + xoffset
@@ -921,7 +921,7 @@ namespace org.kbinani.cadencii {
 
                 #region pictPianoRoll_Paintより
                 // マーカー
-                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + 6 + key_width - AppManager.startToDrawX);
+                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + AppManager.keyOffset + key_width - AppManager.startToDrawX);
                 if ( key_width <= marker_x && marker_x <= getWidth() ) {
                     g.setColor( Color.white );
                     g.setStroke( new BasicStroke( 2f ) );

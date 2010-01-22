@@ -38,6 +38,51 @@ namespace org.kbinani.cadencii {
     public class WaveView extends BPanel {
 #else
     public class WaveView : BPanel {
+        private WaveDrawContext[] drawer = new WaveDrawContext[16];
+        private int selected = 0;
+
+        public WaveView()
+            : base() {
+            this.SetStyle( ControlStyles.DoubleBuffer, true );
+            this.SetStyle( ControlStyles.UserPaint, true );
+            this.DoubleBuffered = true;
+        }
+
+        private void paint( Graphics2D g ) {
+            WaveDrawContext context = drawer[selected];
+            if ( context == null ) {
+                return;
+            }
+            context.draw( g,
+                          Color.black,
+                          new Rectangle( 0, 0, getWidth(), getHeight() ),
+                          AppManager.clockFromXCoord( AppManager.keyWidth ),
+                          AppManager.clockFromXCoord( getWidth() ),
+                          AppManager.getVsqFile().TempoTable,
+                          AppManager.scaleX );
+        }
+
+        public void setSelected( int value ) {
+            selected = value;
+        }
+
+        public void load( int track, String wave_path ) {
+            if ( track < 0 || drawer.Length <= track ) {
+                return;
+            }
+            if ( drawer[track] == null ) {
+                drawer[track] = new WaveDrawContext();
+            }
+            drawer[track].load( wave_path );
+        }
+
+        protected override void OnPaint( PaintEventArgs e ) {
+            base.OnPaint( e );
+            paint( new Graphics2D( e.Graphics ) );
+        }
+    }
+
+    public class WaveView_ : BPanel {
 #endif
         private float m_sample_rate = 44100;
         private float[] m_wave = new float[0];
@@ -53,7 +98,7 @@ namespace org.kbinani.cadencii {
         private int m_last_stdx;
         private Dimension m_last_size;
 
-        public WaveView() {
+        public WaveView_() {
 #if JAVA
             super();
             //m_pict = new BPictureBox();

@@ -8181,9 +8181,10 @@ namespace org.kbinani.cadencii {
 
         public void trackSelector_RenderRequired( Object sender, int[] tracks ) {
             render( tracks );
+            int selected = AppManager.getSelected();
             Vector<Integer> t = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( tracks ) ) );
-            if ( t.contains( AppManager.getSelected() ) ) {
-                String file = PortUtil.combinePath( AppManager.getTempWaveDir(), AppManager.getSelected() + ".wav" );
+            if ( t.contains( selected) ) {
+                String file = PortUtil.combinePath( AppManager.getTempWaveDir(), selected + ".wav" );
                 if ( PortUtil.isFileExists( file ) ) {
 #if JAVA
                     Thread loadwave_thread = new Thread( new LoadWaveProc( file ) );
@@ -8191,7 +8192,7 @@ namespace org.kbinani.cadencii {
 #else
                     Thread loadwave_thread = new Thread( new ParameterizedThreadStart( this.loadWave ) );
                     loadwave_thread.IsBackground = true;
-                    loadwave_thread.Start( file );
+                    loadwave_thread.Start( new Object[]{ file, selected - 1 } );
 #endif
                 }
             }
@@ -8203,18 +8204,7 @@ namespace org.kbinani.cadencii {
 
         public void trackSelector_SelectedTrackChanged( Object sender, int selected ) {
             if ( menuVisualWaveform.isSelected() ) {
-                waveView.clear();
-                String file = PortUtil.combinePath( AppManager.getTempWaveDir(), selected + ".wav" );
-                if ( PortUtil.isFileExists( file ) ) {
-#if JAVA
-                    Thread load_wave = new LoadWaveProc( file );
-                    load_wave.start();
-#else
-                    Thread load_wave = new Thread( new ParameterizedThreadStart( this.loadWave ) );
-                    load_wave.IsBackground = true;
-                    load_wave.Start( file );
-#endif
-                }
+                waveView.setSelected( selected );
             }
             AppManager.clearSelectedBezier();
             AppManager.clearSelectedEvent();
@@ -10952,8 +10942,10 @@ namespace org.kbinani.cadencii {
         }
 #else
         public void loadWave( Object arg ) {
-            String file = (String)arg;
-            waveView.loadWave( file );
+            Object[] argArr = (Object[])arg;
+            String file = (String)argArr[0];
+            int track = (Integer)argArr[1];
+            waveView.load( track, file );
         }
 #endif
 
@@ -11951,7 +11943,6 @@ namespace org.kbinani.cadencii {
             picturePositionIndicator.repaint();
             trackSelector.repaint();
             if ( menuVisualWaveform.isSelected() ) {
-                waveView.draw();
                 waveView.repaint();
             }
             if ( AppManager.editorConfig.OverviewEnabled ) {

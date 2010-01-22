@@ -83,6 +83,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static int keyWidth = MIN_KEY_WIDTH;
         /// <summary>
+        /// keyWidth+keyOffsetの位置からが、0になってる
+        /// </summary>
+        public const int keyOffset = 6;
+        /// <summary>
         /// エディタの設定
         /// </summary>
         public static EditorConfig editorConfig = new EditorConfig();
@@ -1162,7 +1166,7 @@ namespace org.kbinani.cadencii {
         /// <param name="clocks"></param>
         /// <returns></returns>
         public static int xCoordFromClocks( double clocks ) {
-            return (int)(keyWidth + clocks * scaleX - startToDrawX) + 6;
+            return (int)(keyWidth + clocks * scaleX - startToDrawX) + keyOffset;
         }
 
         /// <summary>
@@ -1171,7 +1175,7 @@ namespace org.kbinani.cadencii {
         /// <param name="x"></param>
         /// <returns></returns>
         public static int clockFromXCoord( int x ) {
-            return (int)((x + startToDrawX - 6 - keyWidth) / scaleX);
+            return (int)((x + startToDrawX - keyOffset - keyWidth) / scaleX);
         }
 
         #region 選択範囲の管理

@@ -101,9 +101,9 @@ namespace org.kbinani.java.awt {
     public class Graphics {
         public System.Drawing.Graphics nativeGraphics;
         public Color color = Color.black;
-        private BasicStroke m_stroke = new BasicStroke();
+        public BasicStroke m_stroke = new BasicStroke();
         public System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush( System.Drawing.Color.Black );
-        private System.Drawing.Font m_font = new System.Drawing.Font( "Arial", 10 );
+        public System.Drawing.Font m_font = new System.Drawing.Font( "Arial", 10 );
 
         public Graphics( System.Drawing.Graphics g ) {
             nativeGraphics = g;

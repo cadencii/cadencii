@@ -11,6 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#define COMPONENT_ENABLE_REPAINT
 #if JAVA
 //INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BPanel.java
 #else

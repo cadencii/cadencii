@@ -49,6 +49,15 @@ namespace org.kbinani.cadencii {
         private float[] clockPerSample;
 
         public WaveDrawContext( String file ) {
+            load( file );
+        }
+
+        public WaveDrawContext() {
+            m_wave = new byte[0];
+            m_length = 0.0f;
+        }
+
+        public void load( String file ) {
             if ( !PortUtil.isFileExists( file ) ) {
                 m_wave = new byte[0];
                 m_length = 0.0f;
@@ -61,9 +70,6 @@ namespace org.kbinani.cadencii {
                 m_wave = new byte[(int)wr.getTotalSamples()];
                 m_sample_rate = (int)wr.getSampleRate();
                 m_length = wr.getTotalSamples() / (float)wr.getSampleRate();
-#if DEBUG
-                //PortUtil.println( "WaveDrawContext..ctor(String); m_length=" + m_length );
-#endif
                 int count = (int)wr.getTotalSamples();
                 for ( int i = 0; i < count; i++ ) {
                     double b = wr.getDouble( (int)i );
@@ -113,16 +119,51 @@ namespace org.kbinani.cadencii {
                           int clock_end, 
                           Vector<TempoTableEntry> tempo_table, 
                           float pixel_per_clock ) {
+            if ( m_wave.Length == 0 ) {
+                return;
+            }
+#if DEBUG
+            PortUtil.println( "WaveDrawContext#draw; gatetime-base" );
+#endif
             double secStart = VsqFile.getSecFromClock( clock_start, tempo_table );
             double secEnd = VsqFile.getSecFromClock( clock_end, tempo_table );
             int sStart0 = (int)(secStart * m_sample_rate) - 1;
             int sEnd = (int)(secEnd * m_sample_rate) + 1;
 
-            int c = tempo_table.size();
+            int count = tempo_table.size();
             int sStart = 0;
             double cStart = 0.0;
-            for ( int i = 0; i < c; i++ ) {
-                TempoTableEntry entry = tempo_table.get( i );
+            float order_y = rect.height / 127.0f;
+            int ox = rect.x;
+            int oy = rect.y + rect.height;
+            byte last = m_wave[0];
+            int lastx = ox;
+            int lasty = oy - (int)(last * order_y);
+            int BUFLEN = 1024;
+#if JAVA
+            int[] xPoints = new int[BUFLEN];
+            int[] yPoints = new int[BUFLEN];
+#else
+            System.Drawing.Point[] points = new System.Drawing.Point[BUFLEN];
+#endif
+            int pos = 0;
+#if JAVA
+            xPoints[pos] = lastx;
+            yPoints[pos] = lasty;
+#else
+            points[pos] = new System.Drawing.Point( lastx, lasty );
+#endif
+            pos++;
+            int xmax = rect.x + rect.width;
+            for ( int i = 0; i <= count; i++ ) {
+                TempoTableEntry entry = null;
+                if ( i < count ) {
+                    entry = tempo_table.get( i );
+                } else {
+                    entry = (TempoTableEntry)tempo_table.get( i - 1 ).clone();
+                    entry.Clock = clock_end;
+                    entry.Time = VsqFile.getSecFromClock( clock_end, tempo_table );
+                }
                 int sThisEnd = (int)(entry.Time * m_sample_rate);
                 double cEnd = VsqFile.getClockFromSec( entry.Time, tempo_table );
                 
@@ -130,11 +171,72 @@ namespace org.kbinani.cadencii {
                 if ( sThisEnd < sStart0 ) {
                     continue;
                 }
+                if ( sStart < sEnd ) {
+                    //break;
+                }
 
                 // 
-                for ( int j = sStart; j < sThisEnd; j++ ) {
-#error WaveDrawContext#draw; このへんから．
+                int xoffset = (int)(cStart * pixel_per_clock) - AppManager.startToDrawX + AppManager.keyOffset;
+                double sec_per_clock = entry.Tempo * 1e-6 / 480.0;
+                int j0 = sStart;
+                if ( j0 < 0 ) {
+                    j0 = 0;
                 }
+                int j1 = sThisEnd;
+                if ( m_wave.Length < j1 ) {
+                    j1 = m_wave.Length;
+                }
+                boolean breakRequired = false;
+                for ( int j = j0; j < j1; j++ ) {
+                    byte v = m_wave[j];
+                    if ( v == last ) {
+                        continue;
+                    }
+                    double secDelta = (j - sStart) / (double)m_sample_rate;
+                    double c = secDelta / sec_per_clock;
+                    int x = xoffset + (int)(c * pixel_per_clock);
+                    if ( xmax < x ) {
+                        breakRequired = true;
+                        break;
+                    }
+                    int y = oy - (int)(v * order_y);
+#if JAVA
+                    xPoints[pos] = x;
+                    yPoints[pos] = y;
+#else
+                    points[pos].X = x;
+                    points[pos].Y = y;
+#endif
+                    pos++;
+                    if ( BUFLEN <= pos ) {
+#if JAVA
+                        g.drawPolyline( xPoints, yPoints, BUFLEN );
+                        xPoints[0] = xPoints[BUFLEN - 1];
+                        yPoints[0] = yPoints[BUFLEN - 1];
+#else
+                        g.nativeGraphics.DrawLines( g.m_stroke.pen, points );
+                        points[0] = points[BUFLEN - 1];
+#endif
+                        pos = 1;
+                    }
+                    lastx = x;
+                    lasty = y;
+                    last = v;
+                }
+                sStart = sEnd;
+                cStart = cEnd;
+                if ( breakRequired ) {
+                    break;
+                }
+            }
+
+            if ( pos > 2 ) {
+#if JAVA
+                g.drawPolyline( xPoints, yPoints, pos );
+#else
+                Array.Resize( ref points, pos );
+                g.nativeGraphics.DrawLines( g.m_stroke.pen, points );
+#endif
             }
         }
 
