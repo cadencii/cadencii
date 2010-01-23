@@ -17,3 +17,7 @@ if( !(-d "build/macosx") ){
 if( !(-d "build/java") ){
 	mkdir "build/java";
 }
+
+if( !(-d "build/doc") ){
+	mkdir "build/doc";
+}

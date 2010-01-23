@@ -26,21 +26,18 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using System.Windows.Forms;
-using org.kbinani;
+using org.kbinani.apputil;
 using org.kbinani.java.awt;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
-using org.kbinani.windows.forms;
-using org.kbinani.apputil;
 using org.kbinani.media;
 using org.kbinani.vsq;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using boolean = System.Boolean;
-    using java = org.kbinani.java;
 #endif
 
 #if JAVA

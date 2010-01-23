@@ -51,5 +51,9 @@ $(TARGET)\org.kbinani.media.dll: $(TARGET)\org.kbinani.dll ./org.kbinani.media/*
 $(TARGET)\org.kbinani.vsq.dll: $(TARGET)\org.kbinani.dll ./org.kbinani.vsq/*.cs
 	gmcs -recurse:.\org.kbinani.vsq\*.cs -target:library -define:MONO -out:$(TARGET)\org.kbinani.vsq.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)\org.kbinani.dll  -codepage:utf8
 
+doc: jcadencii
+	javadoc -sourcepath ".\build\java" org.kbinani.vsq org.kbinani org.kbinani.apputil org.kbinani.media org.kbinani.cadencii -encoding UTF8 -use -public
+
+
 clean:
 	$(RM) $(TARGET)\org.kbinani.dll $(TARGET)\org.kbinani.apputil.dll $(TARGET)\org.kbinani.media.dll $(TARGET)\org.kbinani.vsq.dll $(TARGET)\Cadencii.exe $(TARGET)\PlaySound.dll pp_cs2java.dll org.kbinani.dll

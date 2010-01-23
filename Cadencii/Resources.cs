@@ -1061,9 +1061,8 @@ namespace org.kbinani.cadencii{
         private static Image s_splash = null;
         public static Image get_splash(){
             if( s_splash == null ){
-                String res_path = "";
                 try{
-                    res_path = PortUtil.combinePath( getBasePath(), "splash.png" );
+                    String res_path = PortUtil.combinePath( getBasePath(), "splash.png" );
 #if JAVA
                     s_splash = ImageIO.read( new File( res_path ) );
 #else
@@ -1071,7 +1070,7 @@ namespace org.kbinani.cadencii{
                     s_splash.image = new System.Drawing.Bitmap( res_path );
 #endif
                 }catch( Exception ex ){
-                    PortUtil.stderr.println( "Resources#get_splash; ex=" + ex + "; res_path=" + res_path );
+                    PortUtil.stderr.println( "Resources#get_splash; ex=" + ex );
                 }
             }
             return s_splash;

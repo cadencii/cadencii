@@ -29,6 +29,9 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 
+    /// <summary>
+    /// WAVEファイルのデータをグラフィクスに書き込む操作を行うクラス
+    /// </summary>
 #if JAVA
     public class WaveDrawContext{
 #else
@@ -39,24 +42,30 @@ namespace org.kbinani.cadencii {
         private String m_name;
         public UtauFreq Freq;
         private float m_length;
-        /// <summary>
-        /// 第indexSpec[i]からindexSpec[i + 1]サンプルについては，1サンプルあたりのクロック数がclockPerSample[i]であることを表すのに使う．
-        /// </summary>
-        private int[] indexSpec;
-        /// <summary>
-        /// 1サンプルあたりのクロック数
-        /// </summary>
-        private float[] clockPerSample;
+        private PolylineDrawer drawer = null;
 
+        /// <summary>
+        /// 読み込むWAVEファイルを指定したコンストラクタ。初期化と同時にWAVEファイルの読込みを行います。
+        /// </summary>
+        /// <param name="file">読み込むWAVEファイルのパス</param>
         public WaveDrawContext( String file ) {
             load( file );
+            drawer = new PolylineDrawer( null, 1024 );
         }
 
+        /// <summary>
+        /// デフォルトのコンストラクタ。
+        /// </summary>
         public WaveDrawContext() {
             m_wave = new byte[0];
             m_length = 0.0f;
+            drawer = new PolylineDrawer( null, 1024 );
         }
 
+        /// <summary>
+        /// WAVEファイルを読み込みます。
+        /// </summary>
+        /// <param name="file">読み込むWAVEファイルのパス</param>
         public void load( String file ) {
             if ( !PortUtil.isFileExists( file ) ) {
                 m_wave = new byte[0];
@@ -91,19 +100,50 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// このWAVE描画コンテキストの名前を取得します。
+        /// </summary>
+        /// <returns>この描画コンテキストの名前</returns>
         public String getName() {
             return m_name;
         }
 
+        /// <summary>
+        /// このWAVE描画コンテキストの名前を設定します。
+        /// </summary>
+        /// <param name="value">この描画コンテキストの名前</param>
         public void setName( String value ) {
             m_name = value;
         }
 
+        /// <summary>
+        /// このWAVE描画コンテキストが保持しているWAVEデータの、秒数を取得します。
+        /// </summary>
+        /// <returns>保持しているWAVEデータの長さ(秒)</returns>
         public float getLength() {
             return m_length;
         }
 
-        public void Dispose() {
+        /// <summary>
+        /// デストラクタ。disposeメソッドを呼び出します。
+        /// </summary>
+        ~WaveDrawContext() {
+            dispose();
+        }
+
+#if !JAVA
+        /// <summary>
+        /// このWAVE描画コンテキストが使用しているリソースを開放します。
+        /// </summary>
+        public void Dispose(){
+            dispose();
+        }
+#endif
+
+        /// <summary>
+        /// このWAVE描画コンテキストが使用しているリソースを開放します。
+        /// </summary>
+        public void dispose() {
             m_wave = null;
 #if JAVA
             System.gc();
@@ -112,6 +152,16 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+        /// <summary>
+        /// このWAVE描画コンテキストが保持しているWAVEデータを、ゲートタイム基準でグラフィクスに描画します。
+        /// </summary>
+        /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
+        /// <param name="pen">描画に使用するペン</param>
+        /// <param name="rect">描画範囲</param>
+        /// <param name="clock_start">描画開始位置のゲートタイム</param>
+        /// <param name="clock_end">描画終了位置のゲートタイム</param>
+        /// <param name="tempo_table">ゲートタイムから秒数を調べる際使用するテンポ・テーブル</param>
+        /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
         public void draw( Graphics2D g, 
                           Color pen,
                           Rectangle rect,
@@ -125,10 +175,12 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "WaveDrawContext#draw; gatetime-base" );
 #endif
+            drawer.setGraphics( g );
+            drawer.clear();
             double secStart = tempo_table.getSecFromClock( clock_start );
             double secEnd = tempo_table.getSecFromClock( clock_end );
             int sStart0 = (int)(secStart * m_sample_rate) - 1;
-            int sEnd = (int)(secEnd * m_sample_rate) + 1;
+            int sEnd0 = (int)(secEnd * m_sample_rate) + 1;
 
             int count = tempo_table.size();
             int sStart = 0;
@@ -138,51 +190,43 @@ namespace org.kbinani.cadencii {
             int oy = rect.y + rect.height;
             byte last = m_wave[0];
             int lastx = ox;
-            int lasty = oy - (int)(last * order_y);
-            int BUFLEN = 1024;
-#if JAVA
-            int[] xPoints = new int[BUFLEN];
-            int[] yPoints = new int[BUFLEN];
-#else
-            System.Drawing.Point[] points = new System.Drawing.Point[BUFLEN];
-#endif
-            int pos = 0;
-#if JAVA
-            xPoints[pos] = lastx;
-            yPoints[pos] = lasty;
-#else
-            points[pos] = new System.Drawing.Point( lastx, lasty );
-#endif
-            pos++;
+            int lastYMax = oy - (int)(last * order_y);
+            int lastYMin = lastYMax;
+            int lasty = lastYMin;
+            int lasty2 = lastYMin;
+            boolean skipped = false;
+            drawer.append( ox, lasty );
             int xmax = rect.x + rect.width;
             for ( int i = 0; i <= count; i++ ) {
-                TempoTableEntry entry = null;
+                double time = 0.0;
+                int tempo = 500000;
                 if ( i < count ) {
-                    entry = tempo_table.get( i );
+                    TempoTableEntry entry = tempo_table.get( i );
+                    time = entry.Time;
+                    tempo = entry.Tempo;
                 } else {
-                    entry = (TempoTableEntry)tempo_table.get( i - 1 ).clone();
-                    entry.Clock = clock_end;
-                    entry.Time = tempo_table.getSecFromClock( clock_end );
+                    time = tempo_table.getSecFromClock( clock_end );
+                    tempo = tempo_table.get( i - 1 ).Tempo;
                 }
-                int sThisEnd = (int)(entry.Time * m_sample_rate);
-                double cEnd = tempo_table.getClockFromSec( entry.Time );
+                int sEnd = (int)(time * m_sample_rate);
+                double cEnd = tempo_table.getClockFromSec( time );
                 
-                // startからendまでを描画する(必要なら!)
-                if ( sThisEnd < sStart0 ) {
+                // sStartサンプルからsThisEndサンプルまでを描画する(必要なら!)
+                if ( sEnd < sStart0 ) {
                     continue;
                 }
-                if ( sStart < sEnd ) {
+                if ( sStart < sEnd0 ) {
                     //break;
                 }
 
                 // 
                 int xoffset = (int)(cStart * pixel_per_clock) - AppManager.startToDrawX + AppManager.keyOffset;
-                double sec_per_clock = entry.Tempo * 1e-6 / 480.0;
+                double sec_per_clock = tempo * 1e-6 / 480.0;
                 int j0 = sStart;
                 if ( j0 < 0 ) {
                     j0 = 0;
                 }
-                int j1 = sThisEnd;
+                int j1 = sEnd;
                 if ( m_wave.Length < j1 ) {
                     j1 = m_wave.Length;
                 }
@@ -190,6 +234,7 @@ namespace org.kbinani.cadencii {
                 for ( int j = j0; j < j1; j++ ) {
                     byte v = m_wave[j];
                     if ( v == last ) {
+                        skipped = true;
                         continue;
                     }
                     double secDelta = (j - sStart) / (double)m_sample_rate;
@@ -200,28 +245,35 @@ namespace org.kbinani.cadencii {
                         break;
                     }
                     int y = oy - (int)(v * order_y);
-#if JAVA
-                    xPoints[pos] = x;
-                    yPoints[pos] = y;
-#else
-                    points[pos].X = x;
-                    points[pos].Y = y;
-#endif
-                    pos++;
-                    if ( BUFLEN <= pos ) {
-#if JAVA
-                        g.drawPolyline( xPoints, yPoints, BUFLEN );
-                        xPoints[0] = xPoints[BUFLEN - 1];
-                        yPoints[0] = yPoints[BUFLEN - 1];
-#else
-                        g.nativeGraphics.DrawLines( g.stroke.pen, points );
-                        points[0] = points[BUFLEN - 1];
-#endif
-                        pos = 1;
+                    if ( lastx == x ) {
+                        lastYMax = Math.Max( lastYMax, y );
+                        lastYMin = Math.Min( lastYMin, y );
+                        continue;
                     }
+
+                    if ( skipped ) {
+                        drawer.append( x - 1, lasty );
+                        lastx = x - 1;
+                    }
+                    if ( lastYMax == lastYMin ) {
+                        drawer.append( x, y );
+                    } else {
+                        if ( lasty2 != lastYMin ) {
+                            drawer.append( lastx, lastYMin );
+                        }
+                        drawer.append( lastx, lastYMax );
+                        if ( lastYMax != lasty ) {
+                            drawer.append( lastx, lasty );
+                        }
+                        drawer.append( x, y );
+                    }
+                    lasty2 = lasty;
                     lastx = x;
+                    lastYMin = y;
+                    lastYMax = y;
                     lasty = y;
                     last = v;
+                    skipped = false;
                 }
                 sStart = sEnd;
                 cStart = cEnd;
@@ -230,16 +282,17 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            if ( pos > 2 ) {
-#if JAVA
-                g.drawPolyline( xPoints, yPoints, pos );
-#else
-                Array.Resize( ref points, pos );
-                g.nativeGraphics.DrawLines( g.stroke.pen, points );
-#endif
-            }
+            drawer.flush();
         }
 
+        /// <summary>
+        /// このWAVE描画コンテキストが保持しているWAVEデータを、秒基準でグラフィクスに描画します。
+        /// </summary>
+        /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
+        /// <param name="pen">描画に使用するペン</param>
+        /// <param name="rect">描画範囲</param>
+        /// <param name="sec_start">描画開始位置の秒時</param>
+        /// <param name="sec_end">描画終了位置の秒時</param>
         public void draw( Graphics2D g, Color pen, Rectangle rect, float sec_start, float sec_end ) {
             int start0 = (int)(sec_start * m_sample_rate) - 1;
             int end = (int)(sec_end * m_sample_rate) + 1;
