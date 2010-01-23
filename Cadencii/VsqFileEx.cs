@@ -29,7 +29,7 @@ using org.kbinani.xml;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
-    using Integer = Int32;
+    using Integer = System.Int32;
     using Long = System.Int64;
 #endif
 
@@ -387,7 +387,7 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < c; i++ ) {
                 ret.Track.add( (VsqTrack)Track.get( i ).clone() );
             }
-            ret.TempoTable = new Vector<TempoTableEntry>();
+            ret.TempoTable = new TempoVector();
             c = TempoTable.size();
             for ( int i = 0; i < c; i++ ) {
                 ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).clone() );
@@ -397,17 +397,10 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < c; i++ ) {
                 ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
             }
-            //ret.m_tpq = m_tpq;
             ret.TotalClocks = TotalClocks;
-            //ret.m_base_tempo = m_base_tempo;
             ret.Master = (VsqMaster)Master.clone();
             ret.Mixer = (VsqMixer)Mixer.clone();
-            //ret.m_premeasure_clocks = m_premeasure_clocks;
             ret.AttachedCurves = (AttachedCurve)AttachedCurves.clone();
-            /*ret.m_pitch.Clear();
-            for ( int i = 0; i < m_pitch.Count; i++ ) {
-                ret.m_pitch.Add( (VsqBPList)m_pitch[i].clone() );
-            }*/
             c = BgmFiles.size();
             for ( int i = 0; i < c; i++ ) {
                 ret.BgmFiles.add( (BgmFile)BgmFiles.get( i ).clone() );
@@ -448,14 +441,12 @@ namespace org.kbinani.cadencii {
         }
 
         public static CadenciiCommand generateCommandTrackReplace( int track, VsqTrack item, BezierCurves attached_curve ) {
-            //public static CadenciiCommand generateCommandTrackReplace( int track, VsqTrack item, BezierCurves attached_curve, VsqBPList pitch ) {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.TRACK_REPLACE;
             command.args = new Object[3];
             command.args[0] = track;
             command.args[1] = item.clone();
             command.args[2] = attached_curve.clone();
-            //command.Args[3] = pitch.clone();
             return command;
         }
 
@@ -472,7 +463,6 @@ namespace org.kbinani.cadencii {
             command.args[1] = mixer;
             command.args[2] = position;
             command.args[3] = attached_curve.clone();
-            //command.Args[4] = pitch.clone();
             return command;
         }
 

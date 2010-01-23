@@ -24,16 +24,16 @@ namespace org.kbinani.cadencii {
 
     public class RenderedStatus {
         public VsqTrack track;
-        public Vector<TempoTableEntry> tempo;
+        public TempoVector tempo;
 
         /// <summary>
         /// コンストラクタ。trackはcloneされないが、tempoはcloneされる。
         /// </summary>
         /// <param name="track"></param>
         /// <param name="tempo"></param>
-        public RenderedStatus( VsqTrack track, Vector<TempoTableEntry> tempo ) {
+        public RenderedStatus( VsqTrack track, TempoVector tempo ) {
             this.track = track;
-            this.tempo = new Vector<TempoTableEntry>();
+            this.tempo = new TempoVector();
             for ( Iterator itr = tempo.iterator(); itr.hasNext(); ) {
                 this.tempo.add( (TempoTableEntry)itr.next() );
             }

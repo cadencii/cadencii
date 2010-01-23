@@ -117,7 +117,7 @@ namespace org.kbinani.cadencii {
                           Rectangle rect,
                           int clock_start,
                           int clock_end, 
-                          Vector<TempoTableEntry> tempo_table, 
+                          TempoVector tempo_table, 
                           float pixel_per_clock ) {
             if ( m_wave.Length == 0 ) {
                 return;
@@ -125,8 +125,8 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "WaveDrawContext#draw; gatetime-base" );
 #endif
-            double secStart = VsqFile.getSecFromClock( clock_start, tempo_table );
-            double secEnd = VsqFile.getSecFromClock( clock_end, tempo_table );
+            double secStart = tempo_table.getSecFromClock( clock_start );
+            double secEnd = tempo_table.getSecFromClock( clock_end );
             int sStart0 = (int)(secStart * m_sample_rate) - 1;
             int sEnd = (int)(secEnd * m_sample_rate) + 1;
 
@@ -162,10 +162,10 @@ namespace org.kbinani.cadencii {
                 } else {
                     entry = (TempoTableEntry)tempo_table.get( i - 1 ).clone();
                     entry.Clock = clock_end;
-                    entry.Time = VsqFile.getSecFromClock( clock_end, tempo_table );
+                    entry.Time = tempo_table.getSecFromClock( clock_end );
                 }
                 int sThisEnd = (int)(entry.Time * m_sample_rate);
-                double cEnd = VsqFile.getClockFromSec( entry.Time, tempo_table );
+                double cEnd = tempo_table.getClockFromSec( entry.Time );
                 
                 // startからendまでを描画する(必要なら!)
                 if ( sThisEnd < sStart0 ) {
@@ -214,7 +214,7 @@ namespace org.kbinani.cadencii {
                         xPoints[0] = xPoints[BUFLEN - 1];
                         yPoints[0] = yPoints[BUFLEN - 1];
 #else
-                        g.nativeGraphics.DrawLines( g.m_stroke.pen, points );
+                        g.nativeGraphics.DrawLines( g.stroke.pen, points );
                         points[0] = points[BUFLEN - 1];
 #endif
                         pos = 1;
@@ -235,7 +235,7 @@ namespace org.kbinani.cadencii {
                 g.drawPolyline( xPoints, yPoints, pos );
 #else
                 Array.Resize( ref points, pos );
-                g.nativeGraphics.DrawLines( g.m_stroke.pen, points );
+                g.nativeGraphics.DrawLines( g.stroke.pen, points );
 #endif
             }
         }

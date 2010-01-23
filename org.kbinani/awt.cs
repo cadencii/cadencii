@@ -101,7 +101,7 @@ namespace org.kbinani.java.awt {
     public class Graphics {
         public System.Drawing.Graphics nativeGraphics;
         public Color color = Color.black;
-        public BasicStroke m_stroke = new BasicStroke();
+        public BasicStroke stroke = new BasicStroke();
         public System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush( System.Drawing.Color.Black );
         public System.Drawing.Font m_font = new System.Drawing.Font( "Arial", 10 );
 
@@ -114,11 +114,11 @@ namespace org.kbinani.java.awt {
         }
 
         public void drawLine( int x1, int y1, int x2, int y2 ) {
-            nativeGraphics.DrawLine( m_stroke.pen, x1, y1, x2, y2 );
+            nativeGraphics.DrawLine( stroke.pen, x1, y1, x2, y2 );
         }
 
         public void drawRect( int x, int y, int width, int height ) {
-            nativeGraphics.DrawRectangle( m_stroke.pen, x, y, width, height );
+            nativeGraphics.DrawRectangle( stroke.pen, x, y, width, height );
         }
 
         public void fillRect( int x, int y, int width, int height ) {
@@ -126,7 +126,7 @@ namespace org.kbinani.java.awt {
         }
 
         public void drawOval( int x, int y, int width, int height ) {
-            nativeGraphics.DrawEllipse( m_stroke.pen, x, y, width, height );
+            nativeGraphics.DrawEllipse( stroke.pen, x, y, width, height );
         }
 
         public void fillOval( int x, int y, int width, int height ) {
@@ -135,7 +135,7 @@ namespace org.kbinani.java.awt {
 
         public void setColor( Color c ) {
             color = c;
-            m_stroke.pen.Color = c.color;
+            stroke.pen.Color = c.color;
             brush.Color = c.color;
         }
 
@@ -160,7 +160,7 @@ namespace org.kbinani.java.awt {
             for ( int i = 0; i < nPoints; i++ ) {
                 points[i] = new System.Drawing.Point( xPoints[i], yPoints[i] );
             }
-            nativeGraphics.DrawLines( m_stroke.pen, points );
+            nativeGraphics.DrawLines( stroke.pen, points );
         }
 
         public void fillPolygon( Polygon p ) {
@@ -178,13 +178,13 @@ namespace org.kbinani.java.awt {
         public void setStroke( Stroke stroke ) {
             if ( stroke is BasicStroke ) {
                 BasicStroke bstroke = (BasicStroke)stroke;
-                m_stroke.pen = bstroke.pen;
-                m_stroke.pen.Color = color.color;
+                this.stroke.pen = bstroke.pen;
+                this.stroke.pen.Color = color.color;
             }
         }
 
         public Stroke getStroke() {
-            return m_stroke;
+            return stroke;
         }
 
         public Shape getClip() {

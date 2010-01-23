@@ -26,7 +26,7 @@ using org.kbinani.java.io;
 
 namespace org.kbinani.vsq {
     using boolean = System.Boolean;
-    using Integer = Int32;
+    using Integer = System.Int32;
     using Long = System.Int64;
 #endif
 
@@ -46,7 +46,7 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// テンポ情報を保持したテーブル
         /// </summary>
-        public Vector<TempoTableEntry> TempoTable;
+        public TempoVector TempoTable;
         public Vector<TimeSigTableEntry> TimesigTable;
         protected const int m_tpq = 480;
         /// <summary>
@@ -1978,7 +1978,7 @@ namespace org.kbinani.vsq {
                 ret.Track.add( (VsqTrack)Track.get( i ).clone() );
             }
 
-            ret.TempoTable = new Vector<TempoTableEntry>();
+            ret.TempoTable = new TempoVector();
             for ( int i = 0; i < TempoTable.size(); i++ ) {
                 ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).clone() );
             }
@@ -2146,29 +2146,7 @@ namespace org.kbinani.vsq {
         /// <param name="clock"></param>
         /// <returns></returns>
         public double getSecFromClock( double clock ) {
-            return getSecFromClock( clock, TempoTable );
-        }
-
-        /// <summary>
-        /// 指定したクロックにおける、clock=0からの演奏経過時間(sec)を取得します
-        /// </summary>
-        /// <param name="clock"></param>
-        /// <param name="tempo_table"></param>
-        /// <returns></returns>
-        public static double getSecFromClock( double clock, Vector<TempoTableEntry> tempo_table ) {
-            int c = tempo_table.size();
-            for ( int i = c - 1; i >= 0; i-- ) {
-                TempoTableEntry item = tempo_table.get( i );
-                if ( item.Clock < clock ) {
-                    double init = item.Time;
-                    double dclock = clock - item.Clock;
-                    double sec_per_clock1 = item.Tempo * 1e-6 / 480.0;
-                    return init + dclock * sec_per_clock1;
-                }
-            }
-
-            double sec_per_clock = baseTempo * 1e-6 / 480.0;
-            return clock * sec_per_clock;
+            return TempoTable.getSecFromClock( clock );
         }
 
         /// <summary>
@@ -2177,63 +2155,13 @@ namespace org.kbinani.vsq {
         /// <param name="time"></param>
         /// <returns></returns>
         public double getClockFromSec( double time ) {
-            // timeにおけるテンポを取得
-            int tempo = baseTempo;
-            double base_clock = 0;
-            double base_time = 0f;
-            int c = TempoTable.size();
-            if ( c == 0 ) {
-                tempo = baseTempo;
-                base_clock = 0;
-                base_time = 0f;
-            } else if ( c == 1 ) {
-                tempo = TempoTable.get( 0 ).Tempo;
-                base_clock = TempoTable.get( 0 ).Clock;
-                base_time = TempoTable.get( 0 ).Time;
-            } else {
-                for ( int i = c - 1; i >= 0; i-- ) {
-                    TempoTableEntry item = TempoTable.get( i );
-                    if ( item.Time < time ) {
-                        return item.Clock + (time - item.Time) * m_tpq * 1000000.0 / item.Tempo;
-                    }
-                }
-            }
-            double dt = time - base_time;
-            return base_clock + dt * m_tpq * 1000000.0 / (double)tempo;
-        }
-
-        public static double getClockFromSec( double time, Vector<TempoTableEntry> tempo_table ) {
-            // timeにおけるテンポを取得
-            int tempo = baseTempo;
-            double base_clock = 0;
-            double base_time = 0f;
-            int c = tempo_table.size();
-            if ( c == 0 ) {
-                tempo = baseTempo;
-                base_clock = 0;
-                base_time = 0f;
-            } else if ( c == 1 ) {
-                tempo = tempo_table.get( 0 ).Tempo;
-                base_clock = tempo_table.get( 0 ).Clock;
-                base_time = tempo_table.get( 0 ).Time;
-            } else {
-                for ( int i = c - 1; i >= 0; i-- ) {
-                    TempoTableEntry item = tempo_table.get( i );
-                    if ( item.Time < time ) {
-                        return item.Clock + (time - item.Time) * m_tpq * 1000000.0 / item.Tempo;
-                    }
-                }
-            }
-            double dt = time - base_time;
-            return base_clock + dt * m_tpq * 1000000.0 / (double)tempo;
+            return TempoTable.getClockFromSec( time );
         }
 
         /// <summary>
         /// 指定したクロックにおける拍子を取得します
         /// </summary>
         /// <param name="clock"></param>
-        /// <param name="numerator"></param>
-        /// <param name="denominator"></param>
         public Timesig getTimesigAt( int clock ) {
             Timesig ret = new Timesig();
             ret.numerator = 4;
@@ -2365,7 +2293,7 @@ namespace org.kbinani.vsq {
             Mixer.Slave.add( new VsqMixerEntry( 0, 0, 0, 0 ) );
             TimesigTable = new Vector<TimeSigTableEntry>();
             TimesigTable.add( new TimeSigTableEntry( 0, numerator, denominator, 0 ) );
-            TempoTable = new Vector<TempoTableEntry>();
+            TempoTable = new TempoVector();
             TempoTable.add( new TempoTableEntry( 0, tempo, 0.0 ) );
             //m_base_tempo = tempo;
             //m_premeasure_clocks = calculatePreMeasureInClock();
@@ -2380,9 +2308,8 @@ namespace org.kbinani.vsq {
             throws FileNotFoundException
 #endif
         {
-            TempoTable = new Vector<TempoTableEntry>();
+            TempoTable = new TempoVector();
             TimesigTable = new Vector<TimeSigTableEntry>();
-            //m_tpq = 480;
 
             // SMFをコンバートしたテキストファイルを作成
             MidiFile mf = new MidiFile( _fpath );
@@ -2420,9 +2347,8 @@ namespace org.kbinani.vsq {
             if ( master_track >= 0 ) {
                 #region TempoListの作成
                 // MIDI event リストの取得
-                Vector<MidiEvent> midi_event = mf.getMidiEventList( master_track );//.TempoTable;
+                Vector<MidiEvent> midi_event = mf.getMidiEventList( master_track );
                 // とりあえずtempo_tableに格納
-                //m_base_tempo = 500000;
                 prev_tempo = 500000;
                 prev_index = 0;
                 double thistime;
@@ -2435,7 +2361,6 @@ namespace org.kbinani.vsq {
                         count++;
                         if ( count == 0 && itemj.clock != 0 ) {
                             TempoTable.add( new TempoTableEntry( 0, 500000, 0.0 ) );
-                            //m_base_tempo = 500000;
                             prev_tempo = 500000;
                         }
                         int current_tempo = itemj.data[1] << 16 | itemj.data[2] << 8 | itemj.data[3];
@@ -2451,13 +2376,8 @@ namespace org.kbinani.vsq {
                 #endregion
 
                 #region TimeSigTableの作成
-                //Vector<MidiEvent> time_sigs = mf.getMidiEventList( master_track );//].TimesigTable;
-                int dnomi = 4;// time_sigs[0].Data[1];
+                int dnomi = 4;
                 int numer = 4;
-                /*for ( int i = 0; i < time_sigs[0].Data[2]; i++ ) {
-                    numer = numer * 2;
-                }*/
-                //m_timesig_table.Add( new TimeSigTableEntry( 0, numer, dnomi, 0 ) );
                 count = -1;
                 for ( int j = 0; j < midi_event.size(); j++ ) {
                     if ( midi_event.get( j ).firstByte == (byte)0xff && midi_event.get( j ).data.Length >= 5 && midi_event.get( j ).data[0] == (byte)0x58 ) {
@@ -2494,9 +2414,8 @@ namespace org.kbinani.vsq {
             }
 
             // 曲の長さを計算
-            updateTempoInfo();
+            TempoTable.updateTempoInfo();
             updateTimesigInfo();
-            //m_premeasure_clocks = calculatePreMeasureInClock();
             updateTotalClocks();
 #if DEBUG
             System.Diagnostics.Debug.WriteLine( "    m_total_clocks=" + TotalClocks );
@@ -2538,25 +2457,7 @@ namespace org.kbinani.vsq {
         /// TempoTableの[*].Timeの部分を更新します
         /// </summary>
         public void updateTempoInfo() {
-            if ( TempoTable.size() == 0 ) {
-                TempoTable.add( new TempoTableEntry( 0, getBaseTempo(), 0.0 ) );
-            }
-            Collections.sort( TempoTable );
-            if ( TempoTable.get( 0 ).Clock != 0 ) {
-                TempoTable.get( 0 ).Time = (double)getBaseTempo() * (double)TempoTable.get( 0 ).Clock / (getTickPerQuarter() * 1000000.0);
-            } else {
-                TempoTable.get( 0 ).Time = 0.0;
-            }
-            double prev_time = TempoTable.get( 0 ).Time;
-            int prev_clock = TempoTable.get( 0 ).Clock;
-            int prev_tempo = TempoTable.get( 0 ).Tempo;
-            double inv_tpq_sec = 1.0 / (getTickPerQuarter() * 1000000.0);
-            for ( int i = 1; i < TempoTable.size(); i++ ) {
-                TempoTable.get( i ).Time = prev_time + (double)prev_tempo * (double)(TempoTable.get( i ).Clock - prev_clock) * inv_tpq_sec;
-                prev_time = TempoTable.get( i ).Time;
-                prev_tempo = TempoTable.get( i ).Tempo;
-                prev_clock = TempoTable.get( i ).Clock;
-            }
+            TempoTable.updateTempoInfo();
         }
 
         /// <summary>

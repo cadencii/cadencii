@@ -913,7 +913,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// CurrentClockプロパティの値が変更された時発生します
         /// </summary>
-        public static BEvent<BEventHandler> currentClockChangedEvent= new BEvent<BEventHandler>();
+        public static BEvent<BEventHandler> currentClockChangedEvent = new BEvent<BEventHandler>();
 
         private const String TEMPDIR_NAME = "cadencii";
 
@@ -932,7 +932,7 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public static EditedZoneUnit[] detectTempotableDifference( Vector<TempoTableEntry> tempo1, Vector<TempoTableEntry> tempo2 ) {
+        public static EditedZoneUnit[] detectTempotableDifference( TempoVector tempo1, TempoVector tempo2 ) {
             int len = Math.Min( tempo1.size(), tempo2.size() );
             int clockDifferenceStarted = int.MaxValue;
             for ( int i = 0; i < len; i++ ) {
@@ -945,7 +945,7 @@ namespace org.kbinani.cadencii {
             }
             if ( clockDifferenceStarted == int.MaxValue ) {
                 if ( len < tempo1.size() ) {
-                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo1.get( len ).Clock ); 
+                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo1.get( len ).Clock );
                 }
                 if ( len < tempo2.size() ) {
                     clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo2.get( len ).Clock );
@@ -975,11 +975,11 @@ namespace org.kbinani.cadencii {
             int numEvent2 = track2.getEventCount();
 
             #region track1にあってtrack2に無い音符イベント、クレッシェンドイベントを検出
-            for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ){
+            for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ) {
                 int i = itr1.next();
                 VsqEvent item1 = track1.getEvent( i );
                 boolean found = false;
-                for ( Iterator<Integer> itr2 = track2.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr2.hasNext(); ){
+                for ( Iterator<Integer> itr2 = track2.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr2.hasNext(); ) {
                     int j = itr2.next();
                     VsqEvent item2 = track2.getEvent( j );
                     // item1とitem2が同じかどうか判定する
@@ -995,11 +995,11 @@ namespace org.kbinani.cadencii {
             #endregion
 
             #region track2にあってtrack1に無い音符イベント、クレッシェンドイベントを検出
-            for ( Iterator<Integer> itr2 = track2.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr2.hasNext(); ){
+            for ( Iterator<Integer> itr2 = track2.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr2.hasNext(); ) {
                 int i = itr2.next();
                 VsqEvent item2 = track2.getEvent( i );
                 boolean found = false;
-                for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ){
+                for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ) {
                     int j = itr1.next();
                     VsqEvent item1 = track1.getEvent( j );
                     // item1とitem2が同じかどうか判定する
@@ -1075,7 +1075,7 @@ namespace org.kbinani.cadencii {
 
                     if ( clock1 == clock2 ) {
                         // 検査中のゲートタイムが同じ場合
-                        if ( clock < clock1 ){
+                        if ( clock < clock1 ) {
                             if ( !context.equals( last1, last2 ) ) {
                                 zone.add( clock, clock1 );
                             }
@@ -1449,7 +1449,7 @@ namespace org.kbinani.cadencii {
         /// <param name="p"></param>
         /// <param name="rc"></param>
         /// <returns></returns>
-        public static boolean isInRect( java.awt.Point p, java.awt.Rectangle rc ) {
+        public static boolean isInRect( Point p, Rectangle rc ) {
             if ( rc.x <= p.x ) {
                 if ( p.x <= rc.x + rc.width ) {
                     if ( rc.y <= p.y ) {
@@ -1474,7 +1474,7 @@ namespace org.kbinani.cadencii {
             String edited = item;
             int delete_count = PortUtil.getStringLength( item );
             boolean д = true;
-            for (;д;) {
+            for ( ; д; ) {
                 Dimension measured = Util.measureString( edited, font );
                 if ( measured.width <= width ) {
                     return edited;
@@ -1488,7 +1488,6 @@ namespace org.kbinani.cadencii {
             }
             return item;
         }
-
 
         public static void debugWriteLine( String message ) {
 #if DEBUG
@@ -1719,10 +1718,10 @@ namespace org.kbinani.cadencii {
         public static void setCurveMode( boolean value ) {
             boolean old = s_is_curve_mode;
             s_is_curve_mode = value;
-            if ( old != s_is_curve_mode ){
-                try{
+            if ( old != s_is_curve_mode ) {
+                try {
                     selectedToolChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
-                }catch( Exception ex ){
+                } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#setCurveMode; ex=" + ex );
                 }
             }
@@ -1851,10 +1850,10 @@ namespace org.kbinani.cadencii {
         public static void setSelectedTool( EditTool value ) {
             EditTool old = s_selected_tool;
             s_selected_tool = value;
-            if ( old != s_selected_tool ){
-                try{
+            if ( old != s_selected_tool ) {
+                try {
                     selectedToolChangedEvent.raise( typeof( AppManager ), new EventArgs() );
-                }catch( Exception ex ){
+                } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#setSelectedTool; ex=" + ex );
                 }
             }
@@ -2146,10 +2145,10 @@ namespace org.kbinani.cadencii {
                     if ( !isSelectedEventContains( s_selected, id ) ) {
                         // まだ選択されていなかった場合
                         s_selected_events.add( new SelectedEventEntry( s_selected, ev, (VsqEvent)ev.clone() ) );
-                        if ( !silent ){
-                            try{
+                        if ( !silent ) {
+                            try {
                                 selectedEventChangedEvent.raise( typeof( AppManager ), false );
-                            }catch( Exception ex ){
+                            } catch ( Exception ex ) {
                                 PortUtil.stderr.println( "AppManager#addSelectedEventCor; ex=" + ex );
                             }
                         }
@@ -2353,10 +2352,10 @@ namespace org.kbinani.cadencii {
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
                     }
-                } else if ( !s_playing ){
-                    try{
+                } else if ( !s_playing ) {
+                    try {
                         previewAbortedEvent.raise( typeof( AppManager ), new BEventArgs() );
-                    }catch( Exception ex ){
+                    } catch ( Exception ex ) {
                         PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
                     }
                 }
@@ -2812,14 +2811,13 @@ namespace org.kbinani.cadencii {
             return ce;
         }
 
-        private static void setClipboard( 
-            Vector<VsqEvent> events, 
-            Vector<TempoTableEntry> tempo, 
-            Vector<TimeSigTableEntry> timesig, 
+        private static void setClipboard(
+            Vector<VsqEvent> events,
+            Vector<TempoTableEntry> tempo,
+            Vector<TimeSigTableEntry> timesig,
             TreeMap<CurveType, VsqBPList> curve,
-            TreeMap<CurveType, Vector<BezierChain>> bezier, 
-            int copy_started_clock ) 
-        {
+            TreeMap<CurveType, Vector<BezierChain>> bezier,
+            int copy_started_clock ) {
             ClipboardEntry ce = new ClipboardEntry();
             ce.events = events;
             ce.tempo = tempo;
@@ -2978,7 +2976,8 @@ namespace org.kbinani.cadencii {
                 ret = new EditorConfig();
             }
             editorConfig = ret;
-            for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
+            int count = SymbolTable.getCount();
+            for ( int i = 0; i < count; i++ ) {
                 SymbolTable st = SymbolTable.getSymbolTable( i );
                 boolean found = false;
                 for ( Iterator itr = editorConfig.UserDictionaries.iterator(); itr.hasNext(); ) {
@@ -3155,11 +3154,11 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public static java.awt.Color getHilightColor() {
+        public static Color getHilightColor() {
             return s_hilight_brush;
         }
 
-        public static void setHilightColor( java.awt.Color value ) {
+        public static void setHilightColor( Color value ) {
             s_hilight_brush = value;
         }
 
