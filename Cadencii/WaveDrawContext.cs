@@ -63,6 +63,63 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
+        /// 保持しているWAVEデータを破棄します。
+        /// </summary>
+        public void unload() {
+            drawer.clear();
+            m_wave = new byte[0];
+            m_length = 0.0f;
+        }
+
+        public void reloadPartial( String file, double sec_from, double sec_to ) {
+            if ( !PortUtil.isFileExists( file ) ) {
+                return;
+            }
+
+            WaveRateConverter wr = null;
+            try {
+                wr = new WaveRateConverter( new WaveReader( file ), m_sample_rate );
+                int saFrom = (int)(sec_from * m_sample_rate);
+                int saTo = (int)(sec_to * m_sample_rate);
+                int oldLength = m_wave.Length;
+                if ( oldLength < saTo ) {
+                    Array.Resize( ref m_wave, saTo );
+                    saFrom = oldLength;
+                }
+                int buflen = 1024;
+                double[] left = new double[buflen];
+                double[] right = new double[buflen];
+                int remain = saTo - saFrom;
+                int pos = saFrom;
+                while ( remain > 0 ) {
+                    int delta = remain > buflen ? buflen : remain;
+                    wr.read( pos, delta, left, right );
+
+                    for ( int i = 0; i < delta; i++ ) {
+                        double d = (left[i] + right[i]) * 0.5;
+                        byte b = (byte)((d + 1.0) * 0.5 * 127);
+                        m_wave[pos + i] = b;
+                    }
+
+                    pos += delta;
+                    remain -= delta;
+                }
+                left = null;
+                right = null;
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "WaveDrawContext#reloadPartial; ex=" + ex );
+            } finally {
+                if ( wr != null ) {
+                    try {
+                        wr.close();
+                    } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "WaveDrawContext#reloadPartial; ex2=" + ex2 );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// WAVEファイルを読み込みます。
         /// </summary>
         /// <param name="file">読み込むWAVEファイルのパス</param>
@@ -173,7 +230,7 @@ namespace org.kbinani.cadencii {
                 return;
             }
 #if DEBUG
-            PortUtil.println( "WaveDrawContext#draw; gatetime-base" );
+            double startedTime = PortUtil.getCurrentTime();
 #endif
             drawer.setGraphics( g );
             drawer.clear();
@@ -197,31 +254,39 @@ namespace org.kbinani.cadencii {
             boolean skipped = false;
             drawer.append( ox, lasty );
             int xmax = rect.x + rect.width;
+            int lastTempo = 500000;
             for ( int i = 0; i <= count; i++ ) {
                 double time = 0.0;
                 int tempo = 500000;
+                int cEnd = 0;
                 if ( i < count ) {
                     TempoTableEntry entry = tempo_table.get( i );
                     time = entry.Time;
                     tempo = entry.Tempo;
+                    cEnd = entry.Clock;
                 } else {
                     time = tempo_table.getSecFromClock( clock_end );
                     tempo = tempo_table.get( i - 1 ).Tempo;
+                    cEnd = clock_end;
                 }
                 int sEnd = (int)(time * m_sample_rate);
-                double cEnd = tempo_table.getClockFromSec( time );
                 
                 // sStartサンプルからsThisEndサンプルまでを描画する(必要なら!)
                 if ( sEnd < sStart0 ) {
+                    sStart = sEnd;
+                    cStart = cEnd;
+                    lastTempo = tempo;
                     continue;
                 }
-                if ( sStart < sEnd0 ) {
-                    //break;
+                if ( sEnd0 < sStart ) {
+                    break;
                 }
 
                 // 
                 int xoffset = (int)(cStart * pixel_per_clock) - AppManager.startToDrawX + AppManager.keyOffset;
-                double sec_per_clock = tempo * 1e-6 / 480.0;
+                double sec_per_clock = lastTempo * 1e-6 / 480.0;
+                lastTempo = tempo;
+                double pixel_per_sample = 1.0 / m_sample_rate / sec_per_clock * pixel_per_clock;
                 int j0 = sStart;
                 if ( j0 < 0 ) {
                     j0 = 0;
@@ -230,6 +295,18 @@ namespace org.kbinani.cadencii {
                 if ( m_wave.Length < j1 ) {
                     j1 = m_wave.Length;
                 }
+
+                // 第j0サンプルのデータを画面に描画したときのx座標がいくらになるか？
+                int draftStartX = xoffset + (int)((j0 - sStart) * pixel_per_sample);
+                if ( draftStartX < rect.x ) {
+                    j0 = (int)((rect.x - xoffset) / pixel_per_sample) + sStart;
+                }
+                // 第j1サンプルのデータを画面に描画した時のx座標がいくらになるか？
+                int draftEndX = xoffset + (int)((j1 - sStart) * pixel_per_sample);
+                if ( rect.x + rect.width < draftEndX ) {
+                    j1 = (int)((rect.x + rect.width - xoffset) / pixel_per_sample) + sStart;
+                }
+
                 boolean breakRequired = false;
                 for ( int j = j0; j < j1; j++ ) {
                     byte v = m_wave[j];
@@ -237,12 +314,13 @@ namespace org.kbinani.cadencii {
                         skipped = true;
                         continue;
                     }
-                    double secDelta = (j - sStart) / (double)m_sample_rate;
-                    double c = secDelta / sec_per_clock;
-                    int x = xoffset + (int)(c * pixel_per_clock);
+                    int x = xoffset + (int)((j - sStart) * pixel_per_sample);
                     if ( xmax < x ) {
                         breakRequired = true;
                         break;
+                    }
+                    if ( x < rect.x ) {
+                        continue;
                     }
                     int y = oy - (int)(v * order_y);
                     if ( lastx == x ) {
@@ -282,6 +360,7 @@ namespace org.kbinani.cadencii {
                 }
             }
 
+            drawer.append( rect.x + rect.width, lasty );
             drawer.flush();
         }
 

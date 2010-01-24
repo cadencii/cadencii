@@ -1094,6 +1094,9 @@ namespace org.kbinani {
 #endif
         }
 
+        public const int STRING_ALIGN_FAR = 1;
+        public const int STRING_ALIGN_NEAR = -1;
+        public const int STRING_ALIGN_CENTER = 0;
         public static void drawStringEx( Graphics g1, String s, Font font, Rectangle rect, int align, int valign ) {
 #if JAVA
             Graphics2D g = (Graphics2D)g1;

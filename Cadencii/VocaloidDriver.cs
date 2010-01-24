@@ -12,7 +12,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-//#define TEST
+#if DEBUG
+#define TEST
+#endif
 using System;
 using org.kbinani.java.util;
 using org.kbinani.vsq;

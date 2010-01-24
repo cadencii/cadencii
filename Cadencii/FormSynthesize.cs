@@ -27,11 +27,10 @@ import org.kbinani.componentmodel.*;
 using System;
 using System.Windows.Forms;
 using org.kbinani.apputil;
-using org.kbinani.media;
-using org.kbinani.vsq;
-using org.kbinani;
 using org.kbinani.componentmodel;
 using org.kbinani.java.util;
+using org.kbinani.media;
+using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
@@ -40,7 +39,6 @@ namespace org.kbinani.cadencii {
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using boolean = System.Boolean;
     using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
-    using Integer = Int32;
 #endif
 
     /// <summary>
@@ -63,6 +61,7 @@ namespace org.kbinani.cadencii {
         private BTimer timer;
         private BBackgroundWorker bgWork;
         private boolean isPartialMode = false;
+        private boolean isCancelRequired = false;
 
         public FormSynthesize( VsqFileEx vsq,
                                int presend,
@@ -81,12 +80,12 @@ namespace org.kbinani.cadencii {
         }
 
         public FormSynthesize( VsqFileEx vsq, 
-                                int presend, 
-                                int[] tracks,
-                                String[] files,
-                                int[] start,
-                                int[] end,
-                                boolean reflect_amp_to_wave ) {
+                               int presend, 
+                               int[] tracks,
+                               String[] files,
+                               int[] start,
+                               int[] end,
+                               boolean reflect_amp_to_wave ) {
 #if JAVA
             super();
 #endif
@@ -117,9 +116,6 @@ namespace org.kbinani.cadencii {
                 }
                 totalClocks += e - start[i];
             }
-#if DEBUG
-            PortUtil.println( "FormSynthesize#.ctor; totalClocks=" + totalClocks );
-#endif
             progressWhole.setMaximum( totalClocks );
             progressWhole.setMinimum( 0 );
             progressWhole.setValue( 0 );
@@ -250,6 +246,9 @@ namespace org.kbinani.cadencii {
                                               false,
                                               tmppath,
                                               m_reflect_amp_to_wave );
+                            if ( isCancelRequired ) {
+                                break;
+                            }
                             m_finished++;
                         } catch ( Exception ex ) {
                             AppManager.reportException( "FormSynthesize#bgWork_DoWork", ex, 0 );
@@ -281,7 +280,7 @@ namespace org.kbinani.cadencii {
             }
             if ( bgWork.isBusy() ) {
                 VSTiProxy.abortRendering();
-                bgWork.cancelAsync();
+                isCancelRequired = true;
                 while ( bgWork.isBusy() ) {
 #if JAVA
                     try{
@@ -345,6 +344,8 @@ namespace org.kbinani.cadencii {
         }
 
         private void btnCancel_Click( Object sender, BEventArgs e ) {
+            isCancelRequired = true;
+            VSTiProxy.abortRendering();
             setDialogResult( BDialogResult.CANCEL );
         }
 

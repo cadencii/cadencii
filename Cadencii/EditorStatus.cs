@@ -19,6 +19,7 @@ namespace org.kbinani.cadencii {
 #endif
 
     public class EditorStatus {
+
         /// <summary>
         /// トラックのレンダリングが必要かどうかを表すフラグ
         /// </summary>

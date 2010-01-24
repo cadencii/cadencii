@@ -115,7 +115,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="work"></param>
         /// <param name="tempo"></param>
-        public override void adjustClockToMatchWith( VsqFile tempo ) {
+        public override void adjustClockToMatchWith( TempoVector tempo ) {
             base.adjustClockToMatchWith( tempo );
             double premeasure_sec_target = getSecFromClock( getPreMeasureClocks() );
             double premeasure_sec_tempo = premeasure_sec_target;
@@ -999,44 +999,9 @@ namespace org.kbinani.cadencii {
             AttachedCurves = new AttachedCurve();
 
             String xml = PortUtil.combinePath( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
-            /*if ( PortUtil.isFileExists( xml ) ) {
-                AttachedCurve tmp = null;
-                FileInputStream fs = null;
-                try {
-                    fs = new FileInputStream( xml );
-                    tmp = (AttachedCurve)AppManager.xmlSerializerListBezierCurves.deserialize( fs );
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VsqFileEx#.ctor; ex=" + ex );
-                } finally {
-                    if ( fs != null ) {
-                        try {
-                            fs.close();
-                        } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "VsqFileEx#.ctor; ex2=" + ex2 );
-                        }
-                    }
-                }
-                if ( tmp != null ) {
-                    for ( Iterator itr = tmp.getCurves().iterator(); itr.hasNext(); ) {
-                        BezierCurves bc = (BezierCurves)itr.next();
-                        for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
-                            CurveType ct = AppManager.CURVE_USAGE[k];
-                            Vector<BezierChain> list = bc.get( ct );
-                            for ( int i = 0; i < list.size(); i++ ) {
-                                list.get( i ).id = i + 1;
-                                for ( int j = 0; j < list.get( i ).points.size(); j++ ) {
-                                    list.get( i ).points.get( j ).setID( j + 1 );
-                                }
-                            }
-                        }
-                    }
-                    AttachedCurves = tmp;
-                }
-            } else {*/
-                for ( int i = 1; i < Track.size(); i++ ) {
-                    AttachedCurves.add( new BezierCurves() );
-                }
-            //}
+            for ( int i = 1; i < Track.size(); i++ ) {
+                AttachedCurves.add( new BezierCurves() );
+            }
 
             // UTAUでエクスポートしたIconHandleは、IDS=UTAUとなっているので探知する
             int count = Track.size();

@@ -62,8 +62,33 @@ namespace org.kbinani.cadencii {
                             String config = Path.Combine( dir, cfg );
                             if ( PortUtil.isFileExists( config ) ) {
                                 XmlStaticMemberSerializer xsms = new XmlStaticMemberSerializer( instance.GetType() );
-                                using ( FileStream fs = new FileStream( config, FileMode.Open ) ) {
-                                    xsms.Deserialize( fs );
+                                FileStream fs = null;
+                                boolean errorOnDeserialize = false;
+                                try {
+                                    fs = new FileStream( config, FileMode.Open, FileAccess.Read );
+                                    try {
+                                        xsms.Deserialize( fs );
+                                    } catch ( Exception ex ) {
+                                        errorOnDeserialize = true;
+                                        PortUtil.stderr.println( "PaletteToolServer#init; ex=" + ex );
+                                    }
+                                } catch ( Exception ex ) {
+                                    PortUtil.stderr.println( "PaletteToolServer#init; ex=" + ex );
+                                } finally {
+                                    if ( fs != null ) {
+                                        try {
+                                            fs.Close();
+                                        } catch ( Exception ex2 ) {
+                                            PortUtil.stderr.println( "PaletteToolServer#init; ex2=" + ex2 );
+                                        }
+                                    }
+                                }
+                                if ( errorOnDeserialize ) {
+                                    try {
+                                        PortUtil.deleteFile( config );
+                                    } catch ( Exception ex ) {
+                                        PortUtil.stderr.println( "PaletteToolServer#init; ex=" + ex );
+                                    }
                                 }
                             }
                             String id = Path.GetFileNameWithoutExtension( file.FullName );

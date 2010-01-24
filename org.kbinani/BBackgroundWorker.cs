@@ -28,6 +28,10 @@ namespace org.kbinani.componentmodel {
         }
         #endregion
 
+        public bool isCancellationPending() {
+            return base.CancellationPending;
+        }
+
         public bool isBusy() {
             return base.IsBusy;
         }

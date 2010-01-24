@@ -39,7 +39,6 @@ namespace org.kbinani.cadencii {
 #else
     public class WaveView : BPanel {
         private WaveDrawContext[] drawer = new WaveDrawContext[16];
-        private int selected = 0;
 
         public WaveView()
             : base() {
@@ -49,21 +48,51 @@ namespace org.kbinani.cadencii {
         }
 
         private void paint( Graphics2D g ) {
-            WaveDrawContext context = drawer[selected];
+            int width = getWidth();
+            Rectangle rc = new Rectangle( 0, 0, width, getHeight() );
+            if ( AppManager.skipDrawingWaveformWhenPlaying && AppManager.isPlaying() ) {
+                PortUtil.drawStringEx( g, 
+                                       "(hidden for performance)", 
+                                       AppManager.baseFont10,
+                                       rc, 
+                                       PortUtil.STRING_ALIGN_CENTER,
+                                       PortUtil.STRING_ALIGN_CENTER );
+                return;
+            }
+            int selected = AppManager.getSelected();
+            WaveDrawContext context = drawer[selected - 1];
             if ( context == null ) {
                 return;
             }
             context.draw( g,
                           Color.black,
-                          new Rectangle( 0, 0, getWidth(), getHeight() ),
+                          rc,
                           AppManager.clockFromXCoord( AppManager.keyWidth ),
-                          AppManager.clockFromXCoord( getWidth() ),
+                          AppManager.clockFromXCoord( AppManager.keyWidth + width ),
                           AppManager.getVsqFile().TempoTable,
                           AppManager.scaleX );
         }
 
-        public void setSelected( int value ) {
-            selected = value;
+        public void unloadAll() {
+            for ( int i = 0; i < drawer.Length; i++ ) {
+                WaveDrawContext context = drawer[i];
+                if ( context == null ) {
+                    continue;
+                }
+                context.unload();
+            }
+        }
+
+        public void reloadPartial( int track, String file, double sec_from, double sec_to ) {
+            if ( track < 0 || drawer.Length <= track ) {
+                return;
+            }
+            if ( drawer[track] == null ) {
+                drawer[track] = new WaveDrawContext();
+                drawer[track].load( file );
+            } else {
+                drawer[track].reloadPartial( file, sec_from, sec_to );
+            }
         }
 
         public void load( int track, String wave_path ) {

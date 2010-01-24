@@ -164,6 +164,63 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
+        /// VsqEvent, VsqBPListの全てのクロックを、tempoに格納されているテンポテーブルに
+        /// 合致するようにシフトします
+        /// </summary>
+        /// <param name="tempo"></param>
+        public virtual void adjustClockToMatchWith( TempoVector tempo ) {
+            double premeasure_sec_tempo = 0;
+
+            // テンポをリプレースする場合。
+            // まずクロック値を、リプレース後のモノに置き換え
+            int numTrack = Track.size();
+            for ( int track = 1; track < numTrack; track++ ) {
+                VsqTrack vsq_track = Track.get( track );
+                // ノート・歌手イベントをシフト
+                for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = (VsqEvent)itr.next();
+                    if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
+                        continue;
+                    }
+                    int clock = item.Clock;
+                    double sec_start = this.getSecFromClock( clock );
+                    double sec_end = this.getSecFromClock( clock + item.ID.getLength() );
+                    int clock_start = (int)tempo.getClockFromSec( sec_start );
+                    int clock_end = (int)tempo.getClockFromSec( sec_end );
+                    item.Clock = clock_start;
+                    item.ID.setLength( clock_end - clock_start );
+                    if ( item.ID.VibratoHandle != null ) {
+                        double sec_vib_start = this.getSecFromClock( clock + item.ID.VibratoDelay );
+                        int clock_vib_start = (int)tempo.getClockFromSec( sec_vib_start );
+                        item.ID.VibratoDelay = clock_vib_start - clock_start;
+                        item.ID.VibratoHandle.setLength( clock_end - clock_vib_start );
+                    }
+                }
+
+                // コントロールカーブをシフト
+                for ( int j = 0; j < _CURVES.Length; j++ ) {
+                    String ct = _CURVES[j];
+                    VsqBPList item = vsq_track.getCurve( ct );
+                    if ( item == null ) {
+                        continue;
+                    }
+                    VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
+                    int c = item.size();
+                    for ( int i = 0; i < c; i++ ) {
+                        int clock = item.getKeyClock( i );
+                        int value = item.getElement( i );
+                        double sec = this.getSecFromClock( clock );
+                        if ( sec >= premeasure_sec_tempo ) {
+                            int clock_new = (int)tempo.getClockFromSec( sec );
+                            repl.add( clock_new, value );
+                        }
+                    }
+                    vsq_track.setCurve( ct, repl );
+                }
+            }
+        }
+
+        /* /// <summary>
         /// VsqEvent, VsqBPList, BezierCurvesの全てのクロックを、tempoに格納されているテンポテーブルに
         /// 合致するようにシフトします
         /// </summary>
@@ -217,7 +274,7 @@ namespace org.kbinani.vsq {
                     this.Track.get( track ).setCurve( ct, repl );
                 }
             }
-        }
+        }*/
 
         public void printAsMusicXml( String file, String encoding ) {
             printAsMusicXmlCore( file, encoding, "", (int)(60e6 / getTempoAt( 0 )), false );

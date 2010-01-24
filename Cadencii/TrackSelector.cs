@@ -348,6 +348,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private Vector<BPPair> m_moving_points = new Vector<BPPair>();
         private int m_last_preferred_min_height;
+        private PolylineDrawer drawer = new PolylineDrawer( null, 1024 );
 #if JAVA
         public BEvent<SelectedCurveChangedEventHandler> selectedCurveChangedEvent = new BEvent<SelectedCurveChangedEventHandler>();
         public BEvent<SelectedTrackChangedEventHandler> selectedTrackChangedEvent = new BEvent<SelectedTrackChangedEventHandler>();
@@ -933,6 +934,8 @@ namespace org.kbinani.cadencii {
             int numeric_view = m_mouse_value;
             Point p = pointToClient( PortUtil.getMousePosition() );
             Point mouse = new Point( p.x, p.y );
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int selected = AppManager.getSelected();
 
             try {
                 #region SINGER
@@ -947,17 +950,14 @@ namespace org.kbinani.cadencii {
                 g.drawString( "SINGER", 9, size.height - 2 * OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
                 g.clipRect( AppManager.keyWidth, size.height - 2 * OFFSET_TRACK_TAB,
                             size.width - AppManager.keyWidth, OFFSET_TRACK_TAB );
-                VsqTrack draw_target = null;
-                if ( AppManager.getVsqFile() != null ) {
-                    draw_target = AppManager.getVsqFile().Track.get( AppManager.getSelected() );
+                VsqTrack vsq_track = null;
+                if ( vsq != null ) {
+                    vsq_track = vsq.Track.get( selected );
                 }
-                if ( draw_target != null ) {
-                    //StringFormat sf = new StringFormat();
-                    //sf.LineAlignment = StringAlignment.Center;
-                    //sf.Alignment = StringAlignment.Near;
-                    int event_count = draw_target.getEventCount();
+                if ( vsq_track != null ) {
+                    int event_count = vsq_track.getEventCount();
                     for ( int i = 0; i < event_count; i++ ) {
-                        VsqEvent ve = draw_target.getEvent( i );
+                        VsqEvent ve = vsq_track.getEvent( i );
                         if ( ve.ID.type == VsqIDType.Singer ) {
                             int clock = ve.Clock;
                             IconHandle singer_handle = (IconHandle)ve.ID.IconHandle;
@@ -965,7 +965,7 @@ namespace org.kbinani.cadencii {
                             Rectangle rc = new Rectangle( x, size.height - 2 * OFFSET_TRACK_TAB + 1, SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 5 );
                             g.setColor( Color.white );
                             g.fillRect( rc.x, rc.y, rc.width, rc.height );
-                            if ( AppManager.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
+                            if ( AppManager.isSelectedEventContains( selected, ve.InternalID ) ) {
                                 g.setColor( AppManager.getHilightColor() );
                                 g.drawRect( rc.x, rc.y, rc.width, rc.height );
                                 g.setColor( brs_string );
@@ -989,7 +989,7 @@ namespace org.kbinani.cadencii {
                             size.width - 2, size.height - OFFSET_TRACK_TAB );
                 g.setColor( brs_string );
                 g.drawString( "TRACK", 9, size.height - OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
-                if ( AppManager.getVsqFile() != null ) {
+                if ( vsq != null ) {
                     for ( int i = 0; i < 16; i++ ) {
                         int x = AppManager.keyWidth + i * selecter_width;
 #if DEBUG
@@ -997,9 +997,9 @@ namespace org.kbinani.cadencii {
 #endif
                             drawTrackTab( g,
                                           new Rectangle( x, size.height - OFFSET_TRACK_TAB + 1, selecter_width, OFFSET_TRACK_TAB - 1 ),
-                                          (i + 1 < AppManager.getVsqFile().Track.size()) ? (i + 1) + " " + AppManager.getVsqFile().Track.get( i + 1 ).getName() : "",
-                                          (i == AppManager.getSelected() - 1),
-                                          draw_target.getCommon().PlayMode >= 0,
+                                          (i + 1 < vsq.Track.size()) ? (i + 1) + " " + vsq.Track.get( i + 1 ).getName() : "",
+                                          (i == selected - 1),
+                                          vsq_track.getCommon().PlayMode >= 0,
                                           AppManager.getRenderRequired( i + 1 ),
                                           AppManager.HILIGHT[i],
                                           AppManager.RENDER[i] );
@@ -1044,11 +1044,11 @@ namespace org.kbinani.cadencii {
                     System.out.println( "TrackSelector#paint; drawing bar lines..." );
 #endif
                     #region 小節ごとのライン
-                    if ( AppManager.getVsqFile() != null ) {
+                    if ( vsq != null ) {
                         int dashed_line_step = AppManager.getPositionQuantizeClock();
                         g.clipRect( AppManager.keyWidth, HEADER, size.width - AppManager.keyWidth, size.height - 2 * OFFSET_TRACK_TAB );
                         Color white100 = new Color( 0, 0, 0, 100 );
-                        for ( Iterator itr = AppManager.getVsqFile().getBarLineIterator( AppManager.clockFromXCoord( getWidth() ) ); itr.hasNext(); ) {
+                        for ( Iterator itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( getWidth() ) ); itr.hasNext(); ) {
                             VsqBarLineType blt = (VsqBarLineType)itr.next();
                             int x = AppManager.xCoordFromClocks( blt.clock() );
                             int local_clock_step = 480 * 4 / blt.getLocalDenominator();
@@ -1082,7 +1082,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
                     System.out.println( "TrackSelector#paint; (draw_target==null)=" + (draw_target == null) );
 #endif
-                    if ( draw_target != null ) {
+                    if ( vsq_track != null ) {
                         Color color = AppManager.getHilightColor();
                         Color front = new Color( color.getRed(), color.getGreen(), color.getBlue(), 150 );
                         Color back = new Color( 255, 249, 255, 44 );
@@ -1090,11 +1090,11 @@ namespace org.kbinani.cadencii {
 
                         // 後ろに描くカーブ
                         if ( m_last_selected_curve.equals( CurveType.VEL ) || m_last_selected_curve.equals( CurveType.Accent ) || m_last_selected_curve.equals( CurveType.Decay ) ) {
-                            drawVEL( g, draw_target, back, false, m_last_selected_curve );
+                            drawVEL( g, vsq_track, back, false, m_last_selected_curve );
                         } else if ( m_last_selected_curve.equals( CurveType.VibratoRate ) || m_last_selected_curve.equals( CurveType.VibratoDepth ) ) {
-                            drawVibratoControlCurve( g, draw_target, m_last_selected_curve, back, false );
+                            drawVibratoControlCurve( g, vsq_track, m_last_selected_curve, back, false );
                         } else {
-                            VsqBPList list_back = draw_target.getCurve( m_last_selected_curve.getName() );
+                            VsqBPList list_back = vsq_track.getCurve( m_last_selected_curve.getName() );
                             if ( list_back != null ) {
                                 drawVsqBPList( g, list_back, back, false );
                             }
@@ -1102,13 +1102,13 @@ namespace org.kbinani.cadencii {
 
                         // 手前に描くカーブ
                         if ( m_selected_curve.equals( CurveType.VEL ) || m_selected_curve.equals( CurveType.Accent ) || m_selected_curve.equals( CurveType.Decay ) ) {
-                            drawVEL( g, draw_target, vel_color, true, m_selected_curve );
+                            drawVEL( g, vsq_track, vel_color, true, m_selected_curve );
                         } else if ( m_selected_curve.equals( CurveType.VibratoRate ) || m_selected_curve.equals( CurveType.VibratoDepth ) ) {
-                            drawVibratoControlCurve( g, draw_target, m_selected_curve, front, true );
+                            drawVibratoControlCurve( g, vsq_track, m_selected_curve, front, true );
                         } else if ( m_selected_curve.equals( CurveType.Env ) ) {
-                            drawEnvelope( g, draw_target, front );
+                            drawEnvelope( g, vsq_track, front );
                         } else {
-                            VsqBPList list_front = draw_target.getCurve( m_selected_curve.getName() );
+                            VsqBPList list_front = vsq_track.getCurve( m_selected_curve.getName() );
                             if ( list_front != null ) {
                                 drawVsqBPList( g, list_front, front, true );
                             }
@@ -1122,10 +1122,10 @@ namespace org.kbinani.cadencii {
                                 Color dash = new Color( 0, 0, 0, 128 );
                                 Stroke nrml_stroke = new BasicStroke();
                                 Stroke dash_stroke = new BasicStroke( 1.0f, 0, 0, 10.0f, new float[] { 2.0f, 2.0f }, 0.0f );
-                                VsqBPList pbs = draw_target.getCurve( CurveType.PBS.getName() );
+                                VsqBPList pbs = vsq_track.getCurve( CurveType.PBS.getName() );
                                 pbs_at_mouse = pbs.getValue( clock_at_mouse );
                                 int c = pbs.size();
-                                int premeasure = AppManager.getVsqFile().getPreMeasureClocks();
+                                int premeasure = vsq.getPreMeasureClocks();
                                 int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
                                 int clock_end = AppManager.clockFromXCoord( getWidth() );
                                 if ( clock_start < premeasure && premeasure < clock_end ) {
@@ -1193,7 +1193,7 @@ namespace org.kbinani.cadencii {
 #endif
                                 #endregion
                             }
-                            drawAttachedCurve( g, AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( m_selected_curve ) );
+                            drawAttachedCurve( g, vsq.AttachedCurves.get( AppManager.getSelected() - 1 ).get( m_selected_curve ) );
                         }
                     }
 
@@ -1208,8 +1208,8 @@ namespace org.kbinani.cadencii {
                     if ( m_mouse_downed ) {
                         #region 選択されたツールに応じて描画
                         int value = valueFromYCoord( mouse.y );
-                        if ( clock_at_mouse < AppManager.getVsqFile().getPreMeasure() ) {
-                            clock_at_mouse = AppManager.getVsqFile().getPreMeasure();
+                        if ( clock_at_mouse < vsq.getPreMeasure() ) {
+                            clock_at_mouse = vsq.getPreMeasure();
                         }
                         int max = m_selected_curve.getMaximum();
                         int min = m_selected_curve.getMinimum();
@@ -1872,7 +1872,7 @@ namespace org.kbinani.cadencii {
             float order = (type.equals( CurveType.VEL )) ? height / 127f : height / 100f;
             int oy = getHeight() - 42;
             Shape last_clip = g.getClip();
-            int xoffset = 6 + AppManager.keyWidth - AppManager.startToDrawX;
+            int xoffset = AppManager.keyOffset + AppManager.keyWidth - AppManager.startToDrawX;
             g.clipRect( AppManager.keyWidth, HEADER, getWidth() - AppManager.keyWidth - vScroll.getWidth(), height );
             float scale = AppManager.scaleX;
             int count = track.getEventCount();
@@ -2203,7 +2203,7 @@ namespace org.kbinani.cadencii {
         /// <param name="rect"></param>
         /// <param name="list"></param>
         /// <param name="color"></param>
-        public void drawVsqBPList( Graphics2D g, VsqBPList list, Color color, boolean is_front ) {
+        public void drawVsqBPList_impl( Graphics2D g, VsqBPList list, Color color, boolean is_front ) {
 #if JAVA
             System.out.println( "TrackSelector#paint; drawVsqBPList" );
             System.out.println( "TrackSelector#paint; (list==null)=" + (list == null) );
@@ -2366,95 +2366,171 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// VsqBPListを与えられたグラフィックgを用いて、領域rectに描画します。
+        /// Draws VsqBPList using specified Graphics "g", toward rectangular region "rect".
         /// </summary>
         /// <param name="g"></param>
         /// <param name="rect"></param>
         /// <param name="list"></param>
         /// <param name="color"></param>
-        public void NEW_DrawVsqBPList( Graphics2D g, VsqBPList list, Color color, int start_x, int end_x, Point position ) {
+        public void drawVsqBPList( Graphics2D g, VsqBPList list, Color color, boolean is_front ) {
+#if JAVA
+            System.out.println( "TrackSelector#paint; drawVsqBPList" );
+            System.out.println( "TrackSelector#paint; (list==null)=" + (list == null) );
+#endif
             int max = list.getMaximum();
             int min = list.getMinimum();
             int height = getGraphHeight();
             float order = height / (float)(max - min);
             int oy = getHeight() - 42;
             Shape last_clip = g.getClip();
-            g.clipRect( position.x + AppManager.keyWidth, 
-                        position.y + HEADER, 
-                        getWidth() - AppManager.keyWidth - vScroll.getWidth(),
-                        getHeight() - 2 * OFFSET_TRACK_TAB );
-            int count = -1;
-            count++;
-            m_pointsx[count] = position.x + AppManager.keyWidth;
-            m_pointsy[count] = position.y + oy;
-            int first_y = list.getValue( 0 );
-            int last_y = oy - (int)((first_y - min) * order) + position.y;
-            count++;
-            m_pointsx[count] = AppManager.keyWidth;
-            m_pointsy[count] = last_y;
-            count--;
+            g.clipRect( AppManager.keyWidth, HEADER,
+                        getWidth() - AppManager.keyWidth - vScroll.getWidth(), getHeight() - 2 * OFFSET_TRACK_TAB );
 
-            int xoffset = -AppManager.startToDrawX + 73 + position.x;
+            // 選択範囲。この四角の中に入っていたら、選択されているとみなす
+            Rectangle select_window = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
+                                                     Math.Min( AppManager.curveSelectingRectangle.y, AppManager.curveSelectingRectangle.y + AppManager.curveSelectingRectangle.height ),
+                                                     Math.Abs( AppManager.curveSelectingRectangle.width ),
+                                                     Math.Abs( AppManager.curveSelectingRectangle.height ) );
+            EditTool selected_tool = AppManager.getSelectedTool();
+            boolean select_enabled = !m_selected_curve.isScalar() && ((selected_tool == EditTool.ARROW) || (selected_tool == EditTool.ERASER)) && m_mouse_downed;
 
+            int start = AppManager.keyWidth;
+            int start_clock = AppManager.clockFromXCoord( start );
+            int end = getWidth() - vScroll.getWidth();
+            int end_clock = AppManager.clockFromXCoord( end );
+            int hilight_start = AppManager.curveSelectedInterval.getStart();
+            int hilight_end = AppManager.curveSelectedInterval.getEnd();
+            int hilight_start_x = AppManager.xCoordFromClocks( hilight_start );
+            int hilight_end_x = AppManager.xCoordFromClocks( hilight_end );
+
+            Color brush = color;
+            Vector<Integer> pointsx = new Vector<Integer>();
+            Vector<Integer> pointsy = new Vector<Integer>();
+            Vector<Integer> index_selected_in_points = new Vector<Integer>(); // pointsのうち、選択された状態のものが格納されたインデックス
+            pointsx.add( getWidth() - vScroll.getWidth() ); pointsy.add( oy );
+            pointsx.add( AppManager.keyWidth ); pointsy.add( oy );
+            int first_y = list.getValue( start_clock );
+            int last_y = oy - (int)((first_y - min) * order);
+
+            boolean first = true;
             if ( list.size() > 0 ) {
-                //int[] keys = list.getKeys();
                 int first_clock = list.getKeyClock( 0 );
+                int last_x = AppManager.xCoordFromClocks( first_clock );
                 first_y = list.getValue( first_clock );
-                last_y = oy - (int)((first_y - min) * order) + position.y;
-                int last_x = AppManager.xCoordFromClocks( first_clock ) + position.x;
-                boolean first = true;
-                int list_size = list.size();
-                for ( int i = 1; i < list_size; i++ ) {
+                last_y = oy - (int)((first_y - min) * order);
+
+                int c = list.size();
+                for ( int i = 0; i < c; i++ ) {
                     int clock = list.getKeyClock( i );
-                    int x = (int)(clock * AppManager.scaleX) + xoffset;
-                    int y = oy - (int)((list.getValue( clock ) - min) * order) + position.y;
-                    if ( x < start_x ) {
-                        last_y = y;
+                    if ( clock < start_clock ) {
                         continue;
                     }
-                    if ( first ) {
-                        count++;
-                        m_pointsx[count] = position.x + AppManager.keyWidth;
-                        m_pointsy[count] = last_y;
-                        first = false;
-                    }
-                    if ( count == BUF_LEN - 1 ) { //このif文の位置，BUF_LENが偶数であることを利用
-                        m_pointsy[BUF_LEN - 1] = position.y + oy;
-                        g.setColor( color );
-                        g.fillPolygon( m_pointsx, m_pointsy, m_pointsx.Length );
-                        m_pointsx[0] = m_pointsx[BUF_LEN - 1];
-                        m_pointsy[0] = position.y + oy;
-                        m_pointsx[1] = m_pointsx[BUF_LEN - 1];
-                        m_pointsy[1] = m_pointsy[BUF_LEN - 1];
-                        count = 1;
-                    }
-                    count++;
-                    m_pointsx[count] = x;
-                    m_pointsy[count] = last_y;
-                    count++;
-                    m_pointsx[count] = x;
-                    m_pointsy[count] = y;
-                    if ( end_x < last_x ) {
+                    if ( end_clock < clock ) {
                         break;
                     }
+                    if ( first ) {
+                        last_y = yCoordFromValue( list.getValue( AppManager.clockFromXCoord( AppManager.keyWidth ) ),
+                                                  max,
+                                                  min );
+                        pointsx.add( AppManager.keyWidth ); pointsy.add( last_y );
+                        first = false;
+                    }
+
+                    int x = AppManager.xCoordFromClocks( clock );
+                    VsqBPPair v = list.getElementB( i );
+                    int y = oy - (int)((v.value - min) * order);
+
+                    pointsx.add( x ); pointsy.add( last_y );
+                    pointsx.add( x ); pointsy.add( y );
+                    if ( AppManager.isSelectedPointContains( v.id ) ) {
+                        index_selected_in_points.add( pointsx.size() - 1 );
+                    } else if ( select_enabled && isInRect( clock, v.value, select_window ) ) {
+                        index_selected_in_points.add( pointsx.size() - 1 );
+                    }
                     last_y = y;
-                    last_x = x;
                 }
             }
-            count++;
-            m_pointsx[count] = position.x + getWidth() - vScroll.getWidth();
-            m_pointsy[count] = position.y + last_y;
-            count++;
-            m_pointsx[count] = position.x + getWidth() - vScroll.getWidth();
-            m_pointsy[count] = position.y + oy;
-            int[] pbufx = new int[count];
-            int[] pbufy = new int[count];
-            for ( int i = 0; i < count; i++ ) {
-                pbufx[i] = m_pointsx[i];
-                pbufy[i] = m_pointsy[i];
+            if ( first ) {
+                last_y = yCoordFromValue( list.getValue( AppManager.clockFromXCoord( AppManager.keyWidth ) ),
+                                          max,
+                                          min );
+                pointsx.add( AppManager.keyWidth ); pointsy.add( last_y );
             }
-            g.setColor( color );
-            g.fillPolygon( pbufx, pbufy, count );
+            last_y = oy - (int)((list.getValue( end_clock ) - min) * order);
+            pointsx.add( getWidth() - vScroll.getWidth() ); pointsy.add( last_y );
+            g.setColor( brush );
+            g.fillPolygon( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
+                           PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
+                           pointsx.size() );
+
+            if ( is_front ) {
+                // データ点を描画
+                int c_points = pointsx.size();
+                int w = DOT_WID * 2 + 1;
+                Color pen = Color.white;
+                int b1x = pointsx.get( 0 );
+                int b1y = pointsy.get( 0 );
+                int b2x = pointsx.get( 1 );
+                int b2y = pointsy.get( 1 );
+                pointsx.removeElementAt( 0 ); pointsy.removeElementAt( 0 );
+                pointsx.removeElementAt( 0 ); pointsy.removeElementAt( 0 );
+                g.setColor( pen );
+                g.drawPolygon( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
+                               PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
+                               pointsx.size() );
+                pointsx.insertElementAt( b2x, 0 ); pointsy.insertElementAt( b2y, 0 );
+                pointsx.insertElementAt( b1x, 0 ); pointsy.insertElementAt( b1y, 0 );
+
+                boolean draw_dot_near_mouse = true; // マウスの近くのデータ点だけ描画するモード
+                int threshold_near_px = 200;  // マウスに「近い」と判定する距離（ピクセル単位）。
+                Point pmouse = pointToClient( PortUtil.getMousePosition() );
+                Point mouse = new Point( pmouse.x, pmouse.y );
+                Color white5 = new Color( 255, 255, 255, 200 );
+                for ( int i = 4; i < c_points; i += 2 ) {
+                    Point p = new Point( pointsx.get( i ), pointsy.get( i ) );
+                    if ( index_selected_in_points.contains( i ) ) {
+                        g.setColor( CURVE_COLOR_DOT );
+                        g.fillRect( p.x - DOT_WID, p.y - DOT_WID, w, w );
+                    } else {
+                        if ( draw_dot_near_mouse ) {
+                            if ( mouse.y < 0 || getHeight() < mouse.y ) {
+                                continue;
+                            }
+                            double x = Math.Abs( p.x - mouse.x ) / (double)threshold_near_px;
+                            double sigma = 0.3;
+                            int alpha = (int)(255.0 * Math.Exp( -(x * x) / (2.0 * sigma * sigma) ));
+                            if ( alpha <= 0 ) {
+                                continue;
+                            }
+                            Color brs = new Color( 255, 255, 255, alpha );
+                            g.setColor( brs );
+                            g.fillRect( p.x - DOT_WID, p.y - DOT_WID, w, w );
+                        } else {
+                            g.setColor( white5 );
+                            g.fillRect( p.x - DOT_WID, p.y - DOT_WID, w, w );
+                        }
+                    }
+                }
+            }
+
+            // m_mouse_down_modeごとの描画
+            if ( is_front ) {
+                if ( m_mouse_down_mode == MouseDownMode.POINT_MOVE ) {
+                    Point pmouse = pointToClient( PortUtil.getMousePosition() );
+                    Point mouse = new Point( pmouse.x, pmouse.y );
+                    int dx = mouse.x + AppManager.startToDrawX - m_mouse_down_location.x;
+                    int dy = mouse.y - m_mouse_down_location.y;
+                    int w = DOT_WID * 2 + 1;
+                    for ( Iterator itr = m_moving_points.iterator(); itr.hasNext(); ) {
+                        BPPair item = (BPPair)itr.next();
+                        int x = AppManager.xCoordFromClocks( item.Clock ) + dx;
+                        int y = yCoordFromValue( item.Value ) + dy;
+                        g.setColor( CURVE_COLOR_DOT );
+                        g.fillRect( x - DOT_WID, y - DOT_WID, w, w );
+                    }
+                }
+            }
+
             g.setClip( last_clip );
         }
 

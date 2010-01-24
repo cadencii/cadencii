@@ -904,6 +904,10 @@ namespace org.kbinani.cadencii {
         /// 最後にレンダリングが行われた時の、トラックの情報が格納されている。
         /// </summary>
         public static RenderedStatus[] lastRenderedStatus = new RenderedStatus[16];
+        /// <summary>
+        /// 再生中にWAVE波形の描画をスキップするかどうか（デフォルトはtrue）
+        /// </summary>
+        public static boolean skipDrawingWaveformWhenPlaying = true;
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();

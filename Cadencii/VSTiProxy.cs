@@ -341,19 +341,9 @@ namespace org.kbinani.cadencii {
                 }
                 VsqNrpn[] nrpn = VsqFile.generateNRPN( split, track, ms_presend );
                 NrpnData[] nrpn_data = VsqNrpn.convert( nrpn );
-#if DEBUG
-                TempoTableEntry[] tempoinfo = split.TempoTable.toArray( new TempoTableEntry[] { } );
-                PortUtil.println( "VSTiPRoxy#render; tempoinfo.Length=" + tempoinfo.Length );
-                for ( int i = 0; i < tempoinfo.Length; i++ ) {
-                    TempoTableEntry tte = tempoinfo[i];
-                    PortUtil.println( "    #" + i + "; " + tte );
-                }
-#endif
                 s_rendering_context = new VocaloidRenderingRunner( s_working_renderer,
                                                                  nrpn_data,
                                                                  split.TempoTable.toArray( new TempoTableEntry[]{} ),
-                                                                 /*amplify_left,
-                                                                 amplify_right,*/
                                                                  trim_msec,
                                                                  total_samples,
                                                                  wave_read_offset_seconds,

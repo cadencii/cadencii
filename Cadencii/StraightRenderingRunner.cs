@@ -82,22 +82,13 @@ namespace org.kbinani.cadencii {
             m_locker = new Object();
             m_queue = new Vector<StraightRenderingQueue>();
             m_singer_config_sys = singer_config_sys;
-            //renderingTrack = track;
-            //reflectAmp2Wave = reflect_amp_to_wave;
-            //waveWriter = wave_writer;
-            /*if ( wave_reader == null ) {
-                readers = new Vector<WaveReader>();
-            } else {
-                readers = wave_reader;
-            }*/
-            //directPlay = direct_play;
-            //waveReadOffsetSeconds = wave_read_offset_seconds;
             m_mode_infinite = mode_infinite;
-            //trimMillisec = trim_msec;
-            //sampleRate = sample_rate;
             int midi_tempo = 60000000 / TEMPO;
             VsqFileEx work = (VsqFileEx)vsq.clone();
-            VsqFile tempo = new VsqFile( "Miku", 1, 4, 4, midi_tempo );
+            TempoVector tempo = new TempoVector();
+            tempo.clear();
+            tempo.add( new TempoTableEntry( 0, midi_tempo, 0.0 ) );
+            tempo.updateTempoInfo();
             work.adjustClockToMatchWith( tempo );
             // テンポテーブルをクリア
             work.TempoTable.clear();
