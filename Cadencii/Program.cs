@@ -42,7 +42,7 @@ namespace org.kbinani.cadencii{
             try {
 #endif
             splashThread = new Thread( new ThreadStart( showSplash ) );
-            splashThread.ApartmentState = ApartmentState.STA;
+            splashThread.TrySetApartmentState( ApartmentState.STA );
             splashThread.Start();
 
             AppManager.init();

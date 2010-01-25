@@ -82,7 +82,7 @@ namespace org.kbinani.cadencii {
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 167, 94 );
+            this.btnCancel.Location = new System.Drawing.Point( 209, 134 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
             this.btnCancel.TabIndex = 5;
@@ -92,7 +92,7 @@ namespace org.kbinani.cadencii {
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point( 86, 94 );
+            this.btnOK.Location = new System.Drawing.Point( 128, 134 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 75, 23 );
             this.btnOK.TabIndex = 4;
@@ -114,7 +114,7 @@ namespace org.kbinani.cadencii {
             this.lblDescription.AutoEllipsis = true;
             this.lblDescription.Location = new System.Drawing.Point( 27, 42 );
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size( 215, 42 );
+            this.lblDescription.Size = new System.Drawing.Size( 257, 78 );
             this.lblDescription.TabIndex = 7;
             this.lblDescription.Text = "If checked, convert gate-time of notes in order to match the base-tempo";
             // 
@@ -122,7 +122,7 @@ namespace org.kbinani.cadencii {
             // 
             this.AcceptButton = this.btnOK;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 254, 129 );
+            this.ClientSize = new System.Drawing.Size( 296, 169 );
             this.Controls.Add( this.lblDescription );
             this.Controls.Add( this.chkChangeTempo );
             this.Controls.Add( this.btnCancel );

@@ -1201,8 +1201,9 @@ namespace org.kbinani.cadencii {
                 Vector<Integer> tracks = new Vector<Integer>();
                 for ( int track = 1; track < track_count; track++ ) {
                     VsqTrack vsq_track = vsq.Track.get( track );
+                    boolean trackOn = vsq_track.isTrackOn();
                     int playMode = vsq_track.getPlayMode();
-                    if ( playMode == PlayMode.Off ) {
+                    if ( !trackOn ) {
                         continue;
                     } else if ( playMode == PlayMode.PlayWithSynth ) {
                         if ( track == selected ) {
@@ -1387,6 +1388,7 @@ namespace org.kbinani.cadencii {
         /// <param name="track"></param>
         private void patchWorkToFreeze( int[] tracks ) {
             VsqFileEx vsq = AppManager.getVsqFile();
+            vsq.updateTotalClocks();
             String temppath = AppManager.getTempWaveDir();
             int presend = AppManager.editorConfig.PreSendTime;
             int totalClocks = vsq.TotalClocks;
@@ -1482,6 +1484,23 @@ namespace org.kbinani.cadencii {
                     WaveWriter writer = null;
 
                     try {
+                        if ( !PortUtil.isFileExists( wavePath ) ) {
+                            // 読み込みもとのファイルがない場合．
+                            WaveWriter twriter = null;
+                            try {
+                                twriter = new WaveWriter( wavePath, AppManager.editorConfig.WaveFileOutputChannel, 16, VSTiProxy.SAMPLE_RATE );
+                            } catch ( Exception ex ) {
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                            } finally {
+                                if ( twriter != null ) {
+                                    try {
+                                        twriter.close();
+                                    } catch ( Exception ex2 ) {
+                                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                                    }
+                                }
+                            }
+                        }
                         reader = new WaveReader( wavePath );
 
                         int sampleRate = reader.getSampleRate();
@@ -1492,8 +1511,12 @@ namespace org.kbinani.cadencii {
                         double[] bufl = new double[BUFLEN];
                         double[] bufr = new double[BUFLEN];
                         for ( int i = startIndex[k]; i < startIndex[k + 1] && i < finished; i++ ) {
-                            double secStart = vsq.getSecFromClock( startList[i] );
-                            double secEnd = vsq.getSecFromClock( endList[i] );
+                            double secStart = vsq.getSecFromClock( startList.get( i ) );
+                            int clockEnd = endList.get( i );
+                            if ( clockEnd == int.MaxValue ) {
+                                clockEnd = vsq.TotalClocks + 240;
+                            }
+                            double secEnd = vsq.getSecFromClock( clockEnd );
                             long sampleStart = (long)(secStart * sampleRate);
                             long sampleEnd = (long)(secEnd * sampleRate);
                             if ( totalLength < sampleEnd ) {
@@ -1642,7 +1665,11 @@ namespace org.kbinani.cadencii {
                     // 波形表示用のWaveDrawContextの内容を更新する。
                     for ( int i = startIndex[k]; i < startIndex[k + 1] && i < finished; i++ ) {
                         double secStart = vsq.getSecFromClock( startList[i] );
-                        double secEnd = vsq.getSecFromClock( endList[i] );
+                        int clockEnd = endList.get( i );
+                        if ( clockEnd == int.MaxValue ) {
+                            clockEnd = vsq.TotalClocks + 240;
+                        }
+                        double secEnd = vsq.getSecFromClock( clockEnd );
 
                         waveView.reloadPartial( tracks[k] - 1, wavePath, secStart, secEnd );
                     }
@@ -11219,7 +11246,7 @@ namespace org.kbinani.cadencii {
                     VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
                     VsqEvent singer = vsq_track.getSingerEventAt( item.Clock );
                     SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Program );
-                    if ( AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                    if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                         UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
                         OtoArgs oa = db.attachFileNameFromLyric( phrase );
                         item.UstEvent.PreUtterance = oa.msPreUtterance;

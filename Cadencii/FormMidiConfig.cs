@@ -254,26 +254,26 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.lblDeviceMetronome = new BLabel();
-            this.lblProgramNormal = new BLabel();
-            this.lblProgramBell = new BLabel();
-            this.lblNoteNormal = new BLabel();
-            this.lblNoteBell = new BLabel();
-            this.chkRingBell = new BCheckBox();
-            this.lblPreUtterance = new BLabel();
-            this.lblMillisec = new BLabel();
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
-            this.chkPreview = new BCheckBox();
-            this.comboDeviceMetronome = new BComboBox();
-            this.groupMetronome = new BGroupBox();
-            this.lblDeviceGeneral = new BLabel();
-            this.comboDeviceGeneral = new BComboBox();
+            this.lblDeviceMetronome = new org.kbinani.windows.forms.BLabel();
+            this.lblProgramNormal = new org.kbinani.windows.forms.BLabel();
+            this.lblProgramBell = new org.kbinani.windows.forms.BLabel();
+            this.lblNoteNormal = new org.kbinani.windows.forms.BLabel();
+            this.lblNoteBell = new org.kbinani.windows.forms.BLabel();
+            this.chkRingBell = new org.kbinani.windows.forms.BCheckBox();
+            this.lblPreUtterance = new org.kbinani.windows.forms.BLabel();
+            this.lblMillisec = new org.kbinani.windows.forms.BLabel();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.chkPreview = new org.kbinani.windows.forms.BCheckBox();
+            this.comboDeviceMetronome = new org.kbinani.windows.forms.BComboBox();
+            this.groupMetronome = new org.kbinani.windows.forms.BGroupBox();
             this.numPreUtterance = new org.kbinani.cadencii.NumericUpDownEx();
             this.numNoteBell = new org.kbinani.cadencii.NumericUpDownEx();
             this.numNoteNormal = new org.kbinani.cadencii.NumericUpDownEx();
             this.numProgramBell = new org.kbinani.cadencii.NumericUpDownEx();
             this.numProgramNormal = new org.kbinani.cadencii.NumericUpDownEx();
+            this.lblDeviceGeneral = new org.kbinani.windows.forms.BLabel();
+            this.comboDeviceGeneral = new org.kbinani.windows.forms.BComboBox();
             this.groupMetronome.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPreUtterance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numNoteBell)).BeginInit();
@@ -349,7 +349,7 @@ namespace org.kbinani.cadencii {
             // lblMillisec
             // 
             this.lblMillisec.AutoSize = true;
-            this.lblMillisec.Location = new System.Drawing.Point( 260, 169 );
+            this.lblMillisec.Location = new System.Drawing.Point( 287, 169 );
             this.lblMillisec.Name = "lblMillisec";
             this.lblMillisec.Size = new System.Drawing.Size( 44, 12 );
             this.lblMillisec.TabIndex = 14;
@@ -359,7 +359,7 @@ namespace org.kbinani.cadencii {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point( 193, 343 );
+            this.btnOK.Location = new System.Drawing.Point( 222, 343 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 75, 23 );
             this.btnOK.TabIndex = 2;
@@ -370,7 +370,7 @@ namespace org.kbinani.cadencii {
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 274, 343 );
+            this.btnCancel.Location = new System.Drawing.Point( 303, 343 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
             this.btnCancel.TabIndex = 3;
@@ -392,7 +392,7 @@ namespace org.kbinani.cadencii {
             // comboDeviceMetronome
             // 
             this.comboDeviceMetronome.FormattingEnabled = true;
-            this.comboDeviceMetronome.Location = new System.Drawing.Point( 134, 21 );
+            this.comboDeviceMetronome.Location = new System.Drawing.Point( 161, 21 );
             this.comboDeviceMetronome.Name = "comboDeviceMetronome";
             this.comboDeviceMetronome.Size = new System.Drawing.Size( 188, 20 );
             this.comboDeviceMetronome.TabIndex = 1;
@@ -419,31 +419,14 @@ namespace org.kbinani.cadencii {
             this.groupMetronome.Controls.Add( this.lblMillisec );
             this.groupMetronome.Location = new System.Drawing.Point( 12, 58 );
             this.groupMetronome.Name = "groupMetronome";
-            this.groupMetronome.Size = new System.Drawing.Size( 336, 268 );
+            this.groupMetronome.Size = new System.Drawing.Size( 365, 268 );
             this.groupMetronome.TabIndex = 1;
             this.groupMetronome.TabStop = false;
             this.groupMetronome.Text = "Metronome";
             // 
-            // lblDeviceGeneral
-            // 
-            this.lblDeviceGeneral.AutoSize = true;
-            this.lblDeviceGeneral.Location = new System.Drawing.Point( 27, 20 );
-            this.lblDeviceGeneral.Name = "lblDeviceGeneral";
-            this.lblDeviceGeneral.Size = new System.Drawing.Size( 67, 12 );
-            this.lblDeviceGeneral.TabIndex = 25;
-            this.lblDeviceGeneral.Text = "MIDI Device";
-            // 
-            // comboDeviceGeneral
-            // 
-            this.comboDeviceGeneral.FormattingEnabled = true;
-            this.comboDeviceGeneral.Location = new System.Drawing.Point( 146, 17 );
-            this.comboDeviceGeneral.Name = "comboDeviceGeneral";
-            this.comboDeviceGeneral.Size = new System.Drawing.Size( 188, 20 );
-            this.comboDeviceGeneral.TabIndex = 0;
-            // 
             // numPreUtterance
             // 
-            this.numPreUtterance.Location = new System.Drawing.Point( 134, 167 );
+            this.numPreUtterance.Location = new System.Drawing.Point( 161, 167 );
             this.numPreUtterance.Maximum = new decimal( new int[] {
             1000,
             0,
@@ -460,7 +443,7 @@ namespace org.kbinani.cadencii {
             // 
             // numNoteBell
             // 
-            this.numNoteBell.Location = new System.Drawing.Point( 134, 138 );
+            this.numNoteBell.Location = new System.Drawing.Point( 161, 138 );
             this.numNoteBell.Maximum = new decimal( new int[] {
             127,
             0,
@@ -472,7 +455,7 @@ namespace org.kbinani.cadencii {
             // 
             // numNoteNormal
             // 
-            this.numNoteNormal.Location = new System.Drawing.Point( 134, 109 );
+            this.numNoteNormal.Location = new System.Drawing.Point( 161, 109 );
             this.numNoteNormal.Maximum = new decimal( new int[] {
             127,
             0,
@@ -484,7 +467,7 @@ namespace org.kbinani.cadencii {
             // 
             // numProgramBell
             // 
-            this.numProgramBell.Location = new System.Drawing.Point( 134, 80 );
+            this.numProgramBell.Location = new System.Drawing.Point( 161, 80 );
             this.numProgramBell.Maximum = new decimal( new int[] {
             127,
             0,
@@ -496,7 +479,7 @@ namespace org.kbinani.cadencii {
             // 
             // numProgramNormal
             // 
-            this.numProgramNormal.Location = new System.Drawing.Point( 134, 51 );
+            this.numProgramNormal.Location = new System.Drawing.Point( 161, 51 );
             this.numProgramNormal.Maximum = new decimal( new int[] {
             127,
             0,
@@ -506,13 +489,30 @@ namespace org.kbinani.cadencii {
             this.numProgramNormal.Size = new System.Drawing.Size( 100, 19 );
             this.numProgramNormal.TabIndex = 2;
             // 
+            // lblDeviceGeneral
+            // 
+            this.lblDeviceGeneral.AutoSize = true;
+            this.lblDeviceGeneral.Location = new System.Drawing.Point( 27, 20 );
+            this.lblDeviceGeneral.Name = "lblDeviceGeneral";
+            this.lblDeviceGeneral.Size = new System.Drawing.Size( 67, 12 );
+            this.lblDeviceGeneral.TabIndex = 25;
+            this.lblDeviceGeneral.Text = "MIDI Device";
+            // 
+            // comboDeviceGeneral
+            // 
+            this.comboDeviceGeneral.FormattingEnabled = true;
+            this.comboDeviceGeneral.Location = new System.Drawing.Point( 173, 17 );
+            this.comboDeviceGeneral.Name = "comboDeviceGeneral";
+            this.comboDeviceGeneral.Size = new System.Drawing.Size( 188, 20 );
+            this.comboDeviceGeneral.TabIndex = 0;
+            // 
             // FormMidiConfig
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 361, 378 );
+            this.ClientSize = new System.Drawing.Size( 390, 378 );
             this.Controls.Add( this.lblDeviceGeneral );
             this.Controls.Add( this.comboDeviceGeneral );
             this.Controls.Add( this.groupMetronome );

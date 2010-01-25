@@ -32,19 +32,19 @@ namespace org.kbinani.cadencii {
         private double m_started_date;
 
         public VocaloidRenderingRunner( String renderer_,
-                                NrpnData[] nrpn_,
-                                TempoTableEntry[] tempo_,
-                                int trim_msec_,
-                                long total_samples_,
-                                double wave_read_offset_seconds_,
-                                boolean mode_infinite_,
-                                VocaloidDriver driver_,
-                                boolean direct_play_,
-                                WaveWriter wave_writer_,
-                                Vector<WaveReader> reader_,
-                                int rendering_track,
-                                boolean reflect_amp_to_wave,
-                                int sample_rate )
+                                        NrpnData[] nrpn_,
+                                        TempoTableEntry[] tempo_,
+                                        int trim_msec_,
+                                        long total_samples_,
+                                        double wave_read_offset_seconds_,
+                                        boolean mode_infinite_,
+                                        VocaloidDriver driver_,
+                                        boolean direct_play_,
+                                        WaveWriter wave_writer_,
+                                        Vector<WaveReader> reader_,
+                                        int rendering_track,
+                                        boolean reflect_amp_to_wave,
+                                        int sample_rate )
 #if JAVA
         {
 #else

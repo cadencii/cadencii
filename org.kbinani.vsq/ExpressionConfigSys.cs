@@ -19,10 +19,8 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
-using System.Text;
-using org.kbinani;
-using org.kbinani.java.util;
 using org.kbinani.java.io;
+using org.kbinani.java.util;
 
 namespace org.kbinani.vsq {
 #endif
@@ -890,18 +888,12 @@ namespace org.kbinani.vsq {
         }
 
         public ExpressionConfigSys( String path_editor, String path_expdb ) {
-#if DEBUG
-            PortUtil.println( "ExpressionConfigSys#.ctor; path_editor=" + path_editor + "; path_expdb=" + path_expdb );
-#endif
             m_vibrato_configs = new Vector<VibratoHandle>();
             m_attack_configs = new Vector<NoteHeadHandle>();
             m_dynamics_configs = new Vector<IconDynamicsHandle>();
 
             String base_path = PortUtil.getDirectoryName( path_editor );
             String aiconDB_def = PortUtil.combinePath( base_path, "AiconDB.def" );
-#if DEBUG
-            PortUtil.println( "ExpressionConfigSys#.ctor; reading aiconDB; path=" + aiconDB_def );
-#endif
             if ( PortUtil.isFileExists( aiconDB_def ) ) {
                 String folder_name = "";
                 TreeMap<String, Vector<String>> list = new TreeMap<String, Vector<String>>();
@@ -1001,9 +993,6 @@ namespace org.kbinani.vsq {
             }
 
             String expression = PortUtil.combinePath( path_expdb, "expression.map" );
-#if DEBUG
-            PortUtil.println( "ExpressionConfigSys#.ctor; reading expression.map; exists=" + PortUtil.isFileExists( expression ) );
-#endif
             if ( !PortUtil.isFileExists( expression ) ) {
                 return;
             }
@@ -1020,25 +1009,16 @@ namespace org.kbinani.vsq {
                     }
 
                     String ved = PortUtil.combinePath( path_expdb, "vexp" + value + ".ved" );
-#if DEBUG
-                    PortUtil.println( "ExpressionConfigSys#.ctor; ved=" + ved + "; exists=" + PortUtil.isFileExists( ved ) );
-#endif
                     if ( !PortUtil.isFileExists( ved ) ) {
                         continue;
                     }
                     String vexp_dir = PortUtil.combinePath( path_expdb, "vexp" + value );
-#if DEBUG
-                    PortUtil.println( "ExpressionConfigSys#.ctor; vexp_dir=" + vexp_dir + "; fileExists=" + PortUtil.isFileExists( vexp_dir ) + "; dirExists=" + PortUtil.isDirectoryExists( vexp_dir ) );
-#endif
                     if ( !PortUtil.isDirectoryExists( vexp_dir ) ) {
                         continue;
                     }
 
                     String NL = (char)0x0D + "" + (char)0x0A;
                     RandomAccessFile fs_ved = null;
-#if DEBUG
-                    PortUtil.println( "ExpressionConfigSys#.ctor; reading \"" + ved + "\"; exists=" + PortUtil.isFileExists( ved ) );
-#endif
                     try {
                         fs_ved = new RandomAccessFile( ved, "r" );
                         byte[] byte_ved = new byte[(int)fs_ved.length()];
@@ -1048,9 +1028,6 @@ namespace org.kbinani.vsq {
                         String[] spl = PortUtil.splitString( str, new String[] { NL }, true );
                         String current_entry = "";
                         for ( int j = 0; j < spl.Length; j++ ) {
-#if DEBUG
-                            PortUtil.println( "ExpressionConfigSys#.ctor; spl[" + j + "]=" + spl[j] );
-#endif
                             if ( spl[j].StartsWith( "[" ) ) {
                                 current_entry = spl[j];
                                 continue;

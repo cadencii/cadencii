@@ -163,22 +163,20 @@ namespace org.kbinani.cadencii {
         }
 
         private String getStringCore( int opcode, int index, int str_capacity ) {
-            byte[] arr = new byte[str_capacity];
+            byte[] arr = new byte[str_capacity + 1];
             for ( int i = 0; i < str_capacity; i++ ) {
                 arr[i] = 0;
             }
             IntPtr ptr = IntPtr.Zero;
             try {
-                ptr = memoryManager.malloc( str_capacity );
-                Marshal.Copy( arr, 0, ptr, str_capacity );
-                aEffect.Dispatch( opcode, index, 0, ptr, 0.0f );
-                Marshal.Copy( ptr, arr, 0, str_capacity );
+                unsafe {
+                    fixed ( byte* bptr = &arr[0] ) {
+                        ptr = new IntPtr( bptr );
+                        aEffect.Dispatch( opcode, index, 0, ptr, 0.0f );
+                    }
+                }
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "vstidrv#getStringCore; ex=" + ex );
-            } finally {
-                if ( ptr != IntPtr.Zero ) {
-                    memoryManager.free( ptr );
-                }
             }
             String ret = Encoding.ASCII.GetString( arr );
             return ret;
