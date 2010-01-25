@@ -30,6 +30,10 @@ namespace org.kbinani.cadencii {
         public VocaloidDriver driver;
 
         private double m_started_date;
+        /// <summary>
+        /// プリセンドタイム（ミリ秒）。NRPNが作成されたときに指定したのと同じ値である必要がある。
+        /// </summary>
+        private int msPresend = 0;
 
         public VocaloidRenderingRunner( String renderer_,
                                         NrpnData[] nrpn_,
@@ -44,7 +48,8 @@ namespace org.kbinani.cadencii {
                                         Vector<WaveReader> reader_,
                                         int rendering_track,
                                         boolean reflect_amp_to_wave,
-                                        int sample_rate )
+                                        int sample_rate,
+                                        int ms_presend )
 #if JAVA
         {
 #else
@@ -56,6 +61,7 @@ namespace org.kbinani.cadencii {
 #else
         {
 #endif
+            msPresend = ms_presend;
             renderer = renderer_;
             nrpn = nrpn_;
             tempo = tempo_;
@@ -66,8 +72,14 @@ namespace org.kbinani.cadencii {
             if ( tempo.Length > 0 ) {
                 first_tempo = (float)(60e6 / (double)tempo[0].Tempo);
             }
-            int trim_remain = VSTiProxy.getErrorSamples( first_tempo ) + (int)(trim_msec_ / 1000.0 * VSTiProxy.SAMPLE_RATE);
-            m_trim_remain = trim_remain;        
+            int errorSamples = VSTiProxy.getErrorSamples( first_tempo );
+            int trim_remain = errorSamples + (int)(trim_msec_ / 1000.0 * VSTiProxy.SAMPLE_RATE);
+            m_trim_remain = trim_remain;
+            totalSamples = total_samples_ + errorSamples;
+        }
+
+        public void waveIncomingImpl( double[] t_L, double[] t_R ) {
+            waveIncoming( t_L, t_R );
         }
 
         public override double getElapsedSeconds() {
@@ -174,6 +186,9 @@ namespace org.kbinani.cadencii {
             }
             int last_tempo = tempo[index].Tempo;
             int trim_remain = VSTiProxy.getErrorSamples( first_tempo ) + (int)(trimMillisec / 1000.0 * VSTiProxy.SAMPLE_RATE);
+#if DEBUG
+            PortUtil.println( "VocaloidRenderingRunner#run; trim_remain=" + trim_remain + "; m_trim_remain=" + m_trim_remain );
+#endif
             m_trim_remain = trim_remain;
 
             driver.SendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
@@ -190,22 +205,17 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            driver.WaveIncoming += waveIncoming;
-            driver.RenderingFinished += vstidrv_RenderingFinished;
-            driver.StartRendering( totalSamples, mode_infinite, sampleRate );
-            while ( m_rendering ) {
+            driver.StartRendering( totalSamples + m_trim_remain + (int)(msPresend / 1000.0 * sampleRate), mode_infinite, sampleRate , this );
+            /*while ( driver.isRendering() ) {
                 Application.DoEvents();
-            }
+            }*/
             m_rendering = false;
-            driver.WaveIncoming -= waveIncoming;
-            driver.RenderingFinished -= vstidrv_RenderingFinished;
             if ( directPlay ) {
                 PlaySound.waitForExit();
             }
-        }
-
-        private void vstidrv_RenderingFinished( Object sendre, EventArgs e ) {
-            m_rendering = false;
+#if DEBUG
+            PortUtil.println( "VocaloidRenderingRunner#run; m_total_append=" + m_total_append );
+#endif
         }
     }
 

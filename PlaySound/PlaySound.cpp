@@ -82,18 +82,11 @@ void waveplay::reset(){
 
 	    for( int k = 0; k < _NUM_BUF; k++ ){
 	        waveOutUnprepareHeader( s_hwave_out, &s_wave_header[k], sizeof( WAVEHDR ) );
+	        free( s_wave_header[k].lpData );
 	    }
 	    waveOutClose( s_hwave_out );
 	    s_hwave_out = 0;
     }
-
-	for( int k = 0; k < _NUM_BUF; k++ ){
-		if( NULL != s_wave[k] ){
-			unsigned long *addr = s_wave[k];
-			delete [] addr;
-			s_wave[k] = NULL;
-		}
-	}
 
 	if( NULL != s_wave_buffer_l ){
 		delete [] s_wave_buffer_l;

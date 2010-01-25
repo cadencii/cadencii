@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if DEBUG
-#define TEST
+//#define TEST
 #endif
 using System;
 using org.kbinani.java.util;
@@ -51,7 +51,10 @@ namespace org.kbinani.cadencii {
         int g_numTempoList;
         boolean g_cancelRequired;
         double g_progress;
-
+        /// <summary>
+        /// StartRenderingメソッドが回っている最中にtrue
+        /// </summary>
+        boolean rendering = false;
 
         /// <summary>
         /// 指定したタイムコードにおける，曲頭から測った時間を調べる
@@ -85,8 +88,7 @@ namespace org.kbinani.cadencii {
             s_instance = this;
         }
 
-        public event WaveIncomingEventHandler WaveIncoming;
-        public event EventHandler RenderingFinished;
+        //public event WaveIncomingEventHandler WaveIncoming;
 
         public void SetFirstBufferWrittenCallback( org.kbinani.media.FirstBufferWrittenCallback handler ) {
             s_first_buffer_written_callback = handler;
@@ -193,10 +195,19 @@ namespace org.kbinani.cadencii {
             return TRUE;
         }
 
-        public int StartRendering( long total_samples, boolean mode_infinite, int sample_rate ) {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="total_samples"></param>
+        /// <param name="mode_infinite"></param>
+        /// <param name="sample_rate"></param>
+        /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
+        /// <returns></returns>
+        public int StartRendering( long total_samples, boolean mode_infinite, int sample_rate, VocaloidRenderingRunner runner ) {
 #if DEBUG
             PortUtil.println( "VocaloidDriver#StartRendering; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
+            rendering = true;
             g_cancelRequired = false;
             g_progress = 0.0;
             sampleRate = sample_rate;
@@ -246,6 +257,7 @@ namespace org.kbinani.cadencii {
                 int data_msb = 0, data_lsb = 0;
 
                 int total_processed = 0;
+                int total_processed2 = 0;
 #if TEST
                 org.kbinani.debug.push_log( "    getting dwDelay..." );
 #endif
@@ -288,6 +300,7 @@ namespace org.kbinani.cadencii {
 #endif
                     if ( g_cancelRequired ) {
                         lpEvents.clear();
+                        rendering = false;
                         return FALSE;
                     }
 #if TEST
@@ -397,6 +410,7 @@ namespace org.kbinani.cadencii {
                     while ( dwDelta > 0 ) {
                         if ( g_cancelRequired ) {
                             lpEvents.clear();
+                            rendering = false;
                             return FALSE;
                         }
                         int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
@@ -420,7 +434,8 @@ namespace org.kbinani.cadencii {
                                 send_data_l[i] = out_buffer[0][i];
                                 send_data_r[i] = out_buffer[1][i];
                             }
-                            WaveIncoming( send_data_l, send_data_r );
+                            total_processed2 += dwFrames;
+                            runner.waveIncomingImpl( send_data_l, send_data_r );
                         } else {
                             dwDeltaDelay += iOffset;
                         }
@@ -435,12 +450,16 @@ namespace org.kbinani.cadencii {
 
                 double msLast = msec_from_clock( dwNow );
                 dwDelta = (int)(sampleRate * ((double)duration + (double)delay) / 1000.0 + dwDeltaDelay);
-                if ( total_samples - total_processed > dwDelta ) {
-                    dwDelta = (int)total_samples - total_processed;
+                if ( total_samples - total_processed2 > dwDelta ) {
+                    dwDelta = (int)total_samples - total_processed2;
                 }
                 while ( dwDelta > 0 ) {
                     if ( g_cancelRequired ) {
+#if DEBUG
+                        PortUtil.println( "VocaloidDriver#StartRendering; cancel A" );
+#endif
                         lpEvents.clear();
+                        rendering = false;
                         return FALSE;
                     }
                     int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
@@ -458,7 +477,8 @@ namespace org.kbinani.cadencii {
                         send_data_l[i] = out_buffer[0][i];
                         send_data_r[i] = out_buffer[1][i];
                     }
-                    WaveIncoming( send_data_l, send_data_r );
+                    total_processed2 += dwFrames;
+                    runner.waveIncomingImpl( send_data_l, send_data_r );
                     send_data_l = null;
                     send_data_r = null;
 
@@ -474,12 +494,8 @@ namespace org.kbinani.cadencii {
                     double[] silence_l = new double[blockSize];
                     double[] silence_r = new double[blockSize];
                     while ( !g_cancelRequired ) {
-                        /*s_aeffect.ProcessReplacing( ref s_aeffect, (float**)0, out_buffer, g_block_size );
-                        for ( int i = 0; i < g_block_size; i++ ) {
-                            silence_l[i] = out_buffer[0][i];
-                            silence_r[i] = out_buffer[1][i];
-                        }*/
-                        WaveIncoming( silence_l, silence_r );
+                        total_processed2 += blockSize;
+                        runner.waveIncomingImpl( silence_l, silence_r );
                     }
                     silence_l = null;
                     silence_r = null;
@@ -487,7 +503,9 @@ namespace org.kbinani.cadencii {
 
                 aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );
                 lpEvents.clear();
-                RenderingFinished( this, null );
+#if DEBUG
+                PortUtil.println( "VocaloidDriver#StartRendering; total_processed=" + total_processed + "; total_processed2=" + total_processed2 );
+#endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VocaloidDriver#StartRendering; ex=" + ex );
             } finally {
@@ -500,7 +518,12 @@ namespace org.kbinani.cadencii {
                 }
                 exit_start_rendering();
             }
+            rendering = false;
             return 1;
+        }
+
+        public boolean isRendering() {
+            return rendering;
         }
 
         public void AbortRendering() {

@@ -1424,6 +1424,132 @@ namespace org.kbinani.cadencii {
                 checkSerializedEvents( zone, vsq_track, areas );
                 checkSerializedEvents( zone, AppManager.lastRenderedStatus[track - 1].track, areas );
 
+                // レンダリング済みのwaveがあれば、zoneに格納された編集範囲に隣接する前後が無音でない場合、
+                // 編集範囲を無音部分まで延長する。
+                if ( PortUtil.isFileExists( wavePath ) ) {
+                    WaveReader wr = null;
+                    try {
+                        wr = new WaveReader( wavePath );
+                        int sampleRate = wr.getSampleRate();
+                        int buflen = 1024;
+                        double[] left = new double[buflen];
+                        double[] right = new double[buflen];
+
+                        // まずzoneから編集範囲を抽出
+                        Vector<EditedZoneUnit> areasList = new Vector<EditedZoneUnit>();
+                        for ( Iterator itr = zone.iterator(); itr.hasNext(); ) {
+                            EditedZoneUnit e = (EditedZoneUnit)itr.next();
+                            areasList.add( (EditedZoneUnit)e.clone() );
+                        }
+
+                        for ( Iterator itr = areasList.iterator(); itr.hasNext(); ) {
+                            EditedZoneUnit e = (EditedZoneUnit)itr.next();
+                            int exStart = e.start;
+                            int exEnd = e.end;
+
+                            // 前方に1クロックずつ検索する。
+                            int end = e.start;
+                            int start = end - 1;
+                            double secEnd = vsq.getSecFromClock( end );
+                            long saEnd = (long)(secEnd * sampleRate);
+                            double secStart = 0.0;
+                            long saStart = 0;
+                            while ( true ) {
+                                start = end - 1;
+                                if ( start < 0 ) {
+                                    start = 0;
+                                    break;
+                                }
+                                secStart = vsq.getSecFromClock( start );
+                                saStart = (long)(secStart * sampleRate);
+                                int samples = (int)(saEnd - saStart);
+                                long pos = saStart;
+                                boolean allzero = true;
+                                while ( samples > 0 ) {
+                                    int delta = samples > buflen ? buflen : samples;
+                                    wr.read( pos, delta, left, right );
+                                    for ( int i = 0; i < delta; i++ ) {
+                                        if ( left[i] != 0.0 || right[i] != 0.0 ) {
+                                            allzero = false;
+                                            break;
+                                        }
+                                    }
+                                    pos += delta;
+                                    samples -= delta;
+                                    if ( !allzero ) {
+                                        break;
+                                    }
+                                }
+                                if ( allzero ) {
+                                    break;
+                                }
+                                secEnd = secStart;
+                                end = start;
+                                saEnd = saStart;
+                            }
+                            // endクロックより先は無音であるようだ。
+                            exStart = end;
+
+                            // 後方に1クロックずつ検索する
+                            if ( e.end < int.MaxValue ) {
+                                start = e.end;
+                                secStart = vsq.getSecFromClock( start );
+                                while ( true ) {
+                                    end = start + 1;
+                                    secEnd = vsq.getSecFromClock( end );
+                                    saEnd = (long)(secEnd * sampleRate);
+                                    int samples = (int)(saEnd - saStart);
+                                    long pos = saStart;
+                                    boolean allzero = true;
+                                    while ( samples > 0 ) {
+                                        int delta = samples > buflen ? buflen : samples;
+                                        wr.read( pos, delta, left, right );
+                                        for ( int i = 0; i < delta; i++ ) {
+                                            if ( left[i] != 0.0 || right[i] != 0.0 ) {
+                                                allzero = false;
+                                                break;
+                                            }
+                                        }
+                                        pos += delta;
+                                        samples -= delta;
+                                        if ( !allzero ) {
+                                            break;
+                                        }
+                                    }
+                                    if ( allzero ) {
+                                        break;
+                                    }
+                                    secStart = secEnd;
+                                    start = end;
+                                    saStart = saEnd;
+                                }
+                                // startクロック以降は無音のようだ
+                                exEnd = start;
+                            }
+#if DEBUG
+                            if ( e.start != exStart ) {
+                                PortUtil.println( "FormMain#patchWorkToFreeze; start extended; " + e.start + " => " + exStart );
+                            }
+                            if ( e.end != exEnd ) {
+                                PortUtil.println( "FormMain#patchWorkToFreeze; end extended; " + e.end + " => " + exEnd );
+                            }
+#endif
+
+                            zone.add( exStart, exEnd );
+                        }
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                    } finally {
+                        if ( wr != null ) {
+                            try {
+                                wr.close();
+                            } catch ( Exception ex2 ) {
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                            }
+                        }
+                    }
+                }
+
                 // zoneに、レンダリングが必要なアイテムの範囲が格納されているので。
                 int j = -1;
                 for ( Iterator itr = zone.iterator(); itr.hasNext(); ) {
@@ -1519,9 +1645,9 @@ namespace org.kbinani.cadencii {
                             double secEnd = vsq.getSecFromClock( clockEnd );
                             long sampleStart = (long)(secStart * sampleRate);
                             long sampleEnd = (long)(secEnd * sampleRate);
-                            if ( totalLength < sampleEnd ) {
+                            /*if ( totalLength < sampleEnd ) {
                                 sampleEnd = totalLength;
-                            }
+                            }*/
 
                             // processedからsampleStartまでをreaderから読み取り，writerに書き込む
                             long remain = sampleStart - processed;
@@ -1558,11 +1684,13 @@ namespace org.kbinani.cadencii {
                                 }
                             }
 
+#if !DEBUG
                             try {
                                 PortUtil.deleteFile( files[i] );
                             } catch ( Exception ex ) {
                                 PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                             }
+#endif
                         }
 
                         long remain3 = totalLength - processed;
@@ -4152,7 +4280,6 @@ namespace org.kbinani.cadencii {
                 setExtendedState( BForm.NORMAL );
             }
             this.setBounds( AppManager.editorConfig.WindowRect );
-            updateLayout();
 
             // プロパティウィンドウの位置を復元
             Rectangle rc1 = PortUtil.getScreenBounds( this );
@@ -4201,148 +4328,9 @@ namespace org.kbinani.cadencii {
             this.LocationChanged += new System.EventHandler( this.FormMain_LocationChanged );
 #endif
             repaint();
+            updateLayout();
 #if DEBUG
-            //VocaloSysUtil_DRAFT.getLanguageFromName( "" );
-            /*ExpressionConfigSys exp_config_sys = new ExpressionConfigSys( @"C:\Program Files\VOCALOID2\expdbdir" );
-            PortUtil.println( "vibrato:" );
-            for ( Iterator itr = exp_config_sys.vibratoConfigIterator(); itr.hasNext(); ) {
-                VibratoConfig vc = (VibratoConfig)itr.next();
-                PortUtil.println( "file=" + vc.file );
-            }
-            PortUtil.println( "attack:" );
-            for ( Iterator itr = exp_config_sys.attackConfigIterator(); itr.hasNext(); ) {
-                AttackConfig ac = (AttackConfig)itr.next();
-                PortUtil.println( "file=" + ac.file );
-            }
-
-            byte[] dat = BitConverter.GetBytes( 4 );
-            using ( StreamWriter sw = new StreamWriter( @"C:\get_bytes.txt" ) ) {
-                for ( int i = 0; i < dat.Length; i++ ) {
-                    sw.WriteLine( dat[i] );
-                }
-            }
-            using ( TextMemoryStream tms = new TextMemoryStream( @"C:\a.txt", Encoding.ASCII ) ) {
-                tms.rewind();
-                while ( tms.peek() >= 0 ) {
-                    PortUtil.println( tms.readLine() );
-                }
-            }
-            WaveDrawContext wdc = new WaveDrawContext( @"C:\ぴょ.wav" );
-            using ( Bitmap b = new Bitmap( 500, 200 ) ) {
-                using ( Graphics g = Graphics.FromImage( b ) ) {
-                    wdc.Draw( g, Pens.Black, new Rectangle( 0, 0, 500, 200 ), 0.0f, 0.5f );
-                }
-                b.Save( @"C:\ぴょ.wav.png", System.Drawing.Imaging.ImageFormat.Png );
-            }
-            try {
-                UtauFreq uf = UtauFreq.FromFrq( @"C:\あ_wav.frq" );
-                uf.Write( new FileStream( @"C:\regenerated.frq", FileMode.Create, FileAccess.Write ) );
-            } catch {
-            }*/
             menuHidden.setVisible( true );
-            /*using ( StreamWriter sw = new StreamWriter( PortUtil.combinePath( Application.StartupPath, "Keys.txt" ) ) ) {
-                foreach ( Keys key in Enum.GetValues( typeof( Keys ) ) ) {
-                    sw.WriteLine( (int)key + "\t" + key.ToString() );
-                }
-            }*/
-            /*OpenFileDialog ofd = new OpenFileDialog();
-            XmlSerializer xs = new XmlSerializer( typeof( VsqFileEx ) );
-            while ( ofd.ShowDialog() == DialogResult.OK ) {
-                VsqFileEx vsq = new VsqFileEx( ofd.FileName );
-                vsq.Track.get( 1 ).getEvent( 1 ).UstEvent = new UstEvent();
-                using ( FileStream fs = new FileStream( ofd.FileName + "_regen.xml", FileMode.Create ) ) {
-                    xs.Serialize( fs, vsq );
-                }
-            }*/
-            /*Cursor c = SynthCursor( Properties.Resources.arrow_135 );
-            if ( c != null ) {
-                HAND = c;
-            }*/
-            /*MessageBody mb = new MessageBody( "ja", PortUtil.combinePath( Application.StartupPath, "ja.po" ) );
-            mb.Write( PortUtil.combinePath( Application.StartupPath, "foo.po" ) );*/
-            /*OpenFileDialog ofd = new OpenFileDialog();
-            Wave.TestEnabled = true;
-            while ( ofd.ShowDialog() == DialogResult.OK ) {
-                String file = PortUtil.combinePath( Path.GetDirectoryName( ofd.FileName ), PortUtil.getFileNameWithoutExtension( ofd.FileName ) + ".txt" );
-                using ( StreamWriter sw = new StreamWriter( file ) )
-                using ( Wave w = new Wave( ofd.FileName ) ) {
-                    w.TrimSilence();
-                    int WID = 2048;
-                    double[] wind = new double[WID];
-                    for ( int j = 0; j < WID; j++ ) {
-                        wind[j] = org.kbinani.math.window_func( org.kbinani.math.WindowFunctionType.Hamming, (double)j / (double)WID );
-                    }
-                    uint i = w.SampleRate;
-                    //for ( uint i = 0; i < w.TotalSamples; i+=10 ) {
-                        double f0 = w.TEST_GetF0( i, wind );
-                        double n = 12.0 * Math.Log( f0 / 440.0, 2.0 ) + 69.0;
-                        sw.WriteLine( i / (double)w.SampleRate + "\t" + n + "\t" + f0 );
-                    //}
-                }
-            }*/
-            /*org.kbinani.debug.push_log( "installed singers 1" );
-            SingerConfig[] s1 = VocaloSysUtil.getInstalledSingers1();
-            foreach ( SingerConfig sc in s1 ) {
-                org.kbinani.debug.push_log( "    " + sc );
-            }
-            org.kbinani.debug.push_log( "installed singers 2" );
-            SingerConfig[] s2 = VocaloSysUtil.getInstalledSingers2();
-            foreach ( SingerConfig sc in s2 ) {
-                org.kbinani.debug.push_log( "    " + sc );
-            }
-            if ( AppManager.EditorConfig.PathUtauVSTi != "" ) {
-                org.kbinani.debug.push_log( "installed singers utau" );
-                UtauSingerConfigSys uscs = new UtauSingerConfigSys( Path.GetDirectoryName( AppManager.EditorConfig.PathUtauVSTi ) );
-                s2 = uscs.getInstalledSingers();
-                foreach ( SingerConfig sc in s2 ) {
-                    org.kbinani.debug.push_log( "    " + sc );
-                }
-            }
-            PortUtil.println( VocaloSysUtil.getLanguage2( 0 ) );*/
-
-            /*OpenFileDialog ofd = new OpenFileDialog();
-                const String format = "    {0,8} 0x{1:X4} {2,-32} 0x{3:X2} 0x{4:X2}";
-                const String format0 = "    {0,8} 0x{1:X4} {2,-32} 0x{3:X2}";
-            while ( ofd.ShowDialog() == DialogResult.OK ) {
-                VsqFile vf = new VsqFile( ofd.FileName );
-                vf.getTrack( 1 ).getCommon().Version = "UTU000";
-                VsqNrpn[] nrpns = VsqFile.generateNRPN( vf, 1, 500 );
-                String file = PortUtil.combinePath( Path.GetDirectoryName( ofd.FileName ), PortUtil.getFileNameWithoutExtension( ofd.FileName ) + "_regen.txt" );
-                using ( StreamWriter sw = new StreamWriter( file ) ) {
-                    for ( int i = 0; i < nrpns.Length; i++ ) {
-                        VsqNrpn vn = nrpns[i];
-                        if ( vn.DataLsbSpecified ) {
-                            sw.WriteLine( String.Format( format, vn.Clock, vn.Nrpn, NRPN.getName( vn.Nrpn ), vn.DataMsb, vn.DataLsb ) );
-                        } else {
-                            sw.WriteLine( String.Format( format0, vn.Clock, vn.Nrpn, NRPN.getName( vn.Nrpn ), vn.DataMsb ) );
-                        }
-                    }
-                }
-            }*/
-            /*unsafe {
-                WavePlay w = new WavePlay( 44100, 44100 );
-                w.on_your_mark( new String[] { }, 0 );
-                float* left = (float*)System.Runtime.InteropServices.Marshal.AllocHGlobal( sizeof( float ) * 10000 );
-                float* right = (float*)System.Runtime.InteropServices.Marshal.AllocHGlobal( sizeof( float ) * 10000 );
-                float** buf = (float**)System.Runtime.InteropServices.Marshal.AllocHGlobal( sizeof( float* ) * 2 );
-                buf[0] = left;
-                buf[1] = right;
-                float wv = 0.0f;
-                for ( int i = 0; i < 10000; i++ ) {
-                    wv += 0.002f;
-                    if ( wv > 0.2f ) {
-                        wv = -0.2f;
-                    }
-                    left[i] = wv;
-                    right[i] = -wv;
-                }
-                for ( int i = 0; i < 100; i++ ) {
-                    w.append( buf, 10000, 0.2, 0.2 );
-                }
-                w.flush_and_exit( 0.2, 0.2 );
-                while ( w.is_alive() ) {
-                }
-            }*/
 #endif
         }
 
@@ -10308,9 +10296,6 @@ namespace org.kbinani.cadencii {
         /// <returns></returns>
         public Object searchMenuItemRecurse( String name, Object tree ) {
             String tree_name = "";
-#if DEBUG
-            //PortUtil.println( "searchMenuItemRecurse; name=" + name + "; (tree is System.Windows.Forms.Control)=" + (tree is System.Windows.Forms.Control) );
-#endif
 #if JAVA
             JMenuItem menu = null;
             if( tree instanceof JMenuItem ){
@@ -10433,22 +10418,24 @@ namespace org.kbinani.cadencii {
             int width = panel1.Width;
             int height = panel1.Height;
 
-            // splitContainter1.Panel1->splitContainer2.Panel1
             if ( AppManager.editorConfig.OverviewEnabled ) {
                 panelOverview.Height = _OVERVIEW_HEIGHT;
             } else {
                 panelOverview.Height = 0;
             }
             panelOverview.Width = width;
-            pictOverview.Left = AppManager.keyWidth;
-            pictOverview.Width = panelOverview.Width - AppManager.keyWidth;
+            int key_width = AppManager.keyWidth;
+            pictOverview.Left = key_width;
+            pictOverview.Width = panelOverview.Width - key_width;
             pictOverview.Top = 0;
             pictOverview.Height = panelOverview.Height;
 
             picturePositionIndicator.Width = width;
             picturePositionIndicator.Height = _PICT_POSITION_INDICATOR_HEIGHT;
 
-            hScroll.Width = width - pictKeyLengthSplitter.Width - pictureBox2.Width - pictureBox3.Width - trackBar.Width;
+            hScroll.Top = 0;
+            hScroll.Left = key_width;
+            hScroll.Width = width - key_width - _SCROLL_WIDTH - trackBar.Width;
             hScroll.Height = _SCROLL_WIDTH;
 
             vScroll.Width = _SCROLL_WIDTH;
@@ -10457,7 +10444,7 @@ namespace org.kbinani.cadencii {
             pictPianoRoll.Width = width - _SCROLL_WIDTH;
             pictPianoRoll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH - panelOverview.Height;
 
-            pictureBox3.Width = AppManager.keyWidth - _SCROLL_WIDTH;
+            pictureBox3.Width = key_width - _SCROLL_WIDTH;
             pictKeyLengthSplitter.Width = _SCROLL_WIDTH;
             pictureBox3.Height = _SCROLL_WIDTH;
             pictureBox2.Height = _SCROLL_WIDTH;
@@ -10490,11 +10477,8 @@ namespace org.kbinani.cadencii {
             pictureBox2.Left = width - _SCROLL_WIDTH;
 
             waveView.Top = 0;
-            waveView.Left = AppManager.keyWidth;
-            waveView.Width = width - AppManager.keyWidth;
-            // splitContainer1.Panel2
-            //trackSelector.Width = splitContainer1.Panel2.Width - _SCROLL_WIDTH;
-            //trackSelector.Height = splitContainer1.Panel2.Height;
+            waveView.Left = key_width;
+            waveView.Width = width - key_width;
 #endif
         }
 

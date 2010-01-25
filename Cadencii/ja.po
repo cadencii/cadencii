@@ -6,11 +6,11 @@ msgstr ""
 msgid "Grid"
 msgstr "グリッド"
 
-msgid "Uncheck All"
-msgstr "全てのチェックを外す"
-
 msgid "Undo."
 msgstr "元に戻す"
+
+msgid "Uncheck All"
+msgstr "全てのチェックを外す"
 
 msgid "Right Control Point"
 msgstr "右制御点"
@@ -51,38 +51,38 @@ msgstr "プリセンドタイム"
 msgid "Setting"
 msgstr "設定"
 
-msgid "Note"
-msgstr "音符"
-
 msgid "Consonant"
 msgstr "子音部"
+
+msgid "Note"
+msgstr "音符"
 
 msgid "Drawing lyrics to screen or not"
 msgstr "歌詞をピアノロールに表示するかどうか"
 
-msgid "Available Dictionaries"
-msgstr "利用可能な辞書"
+msgid "Refresh STF"
+msgstr "STFを更新"
 
 msgid "Stop Realtime Input"
 msgstr "リアルタイム入力を停止"
 
-msgid "Refresh STF"
-msgstr "STFを更新"
+msgid "Available Dictionaries"
+msgstr "利用可能な辞書"
 
 msgid "Command"
 msgstr "コマンド"
 
-msgid "Insert Bars"
-msgstr "小節の挿入"
-
-msgid "Velocity"
-msgstr "ベロシティ"
+msgid "Generate STF file"
+msgstr "STFを作成する"
 
 msgid "Attack"
 msgstr "アタック"
 
-msgid "Generate STF file"
-msgstr "STFを作成する"
+msgid "Velocity"
+msgstr "ベロシティ"
+
+msgid "Insert Bars"
+msgstr "小節の挿入"
 
 msgid "Whether scroll horizontally with mouse-wheel"
 msgstr "マウスホイール時に水平方向にスクロールする"
@@ -108,32 +108,32 @@ msgstr "終点"
 msgid "Show/Hide Grid Line"
 msgstr "グリッドライン　表示/非表示"
 
-msgid "Program#"
-msgstr "プログラムナンバー"
-
 msgid "Attack Depth"
 msgstr "アタックの深さ"
 
-msgid "Control Track"
-msgstr "コントロールトラック"
-
-msgid "Select all items of current track."
-msgstr "現在のトラックの全ての音符を選択する"
+msgid "Program#"
+msgstr "プログラムナンバー"
 
 msgid "Show/Hide expression lines."
 msgstr "表情線を表示/非表示"
 
+msgid "Select all items of current track."
+msgstr "現在のトラックの全ての音符を選択する"
+
+msgid "Control Track"
+msgstr "コントロールトラック"
+
 msgid "Dynamics Control (VOCALOID2)"
-msgstr "Dynamics Control (VOCALOID2)"
+msgstr "ダイナミクスコントロール (VOCALOID2)"
 
 msgid "Cut"
 msgstr "切り取り"
 
-msgid "Note Shift"
-msgstr "音符のシフト"
-
 msgid "Select All"
 msgstr "全てを選択"
+
+msgid "Note Shift"
+msgstr "音符のシフト"
 
 msgid "New"
 msgstr "新規"
@@ -141,11 +141,14 @@ msgstr "新規"
 msgid "All Files(*.*)|*.*"
 msgstr "全てのファイル(*.*)|*.*"
 
+msgid "Show/Hide grid line."
+msgstr "グリッドラインを表示/非表示"
+
 msgid "Copy"
 msgstr "コピー"
 
-msgid "Show/Hide grid line."
-msgstr "グリッドラインを表示/非表示"
+msgid "Play After Synth"
+msgstr "合成後に再生する"
 
 msgid "Change track name."
 msgstr "このトラックの名前を変更"
@@ -156,17 +159,17 @@ msgstr "エンドマーカー"
 msgid "Grid Line"
 msgstr "グリッドライン"
 
-msgid "Script"
-msgstr "スクリプト"
-
-msgid "Credit"
-msgstr "クレジット"
+msgid "Close this window."
+msgstr "このウィンドウを閉じる"
 
 msgid "Program Change"
 msgstr "プログラムチェンジ"
 
-msgid "Close this window."
-msgstr "このウィンドウを閉じる"
+msgid "Credit"
+msgstr "クレジット"
+
+msgid "Script"
+msgstr "スクリプト"
 
 msgid "Add Track"
 msgstr "トラックの追加"
@@ -174,14 +177,11 @@ msgstr "トラックの追加"
 msgid "Delete Track"
 msgstr "トラックの削除"
 
-msgid "Exit without save？"
-msgstr "保存せずに終了しますか？"
-
 msgid "Lyrics"
 msgstr "歌詞"
 
 msgid "remove '{0}'?"
-msgstr "'{0}'を削除しますか?"
+msgstr "'{0}'を取り除きますか?"
 
 msgid "Reload VSTi dll."
 msgstr "VSTi DLLをリロード"
@@ -195,20 +195,20 @@ msgstr "無効な VSQ/VOCALOID MIDIファイルです"
 msgid "now synthesizing..."
 msgstr "合成中..."
 
-msgid "milli second"
-msgstr "ミリ秒"
-
 msgid "VST dll(*.dll)|*.dll"
 msgstr "VSTプラグイン(*.dll)|*.dll"
 
-msgid "Cannot remove first symbol of track!"
-msgstr "曲頭のシンボルは削除できません！"
+msgid "milli second"
+msgstr "ミリ秒"
+
+msgid "Track"
+msgstr "トラック"
 
 msgid "File"
 msgstr "ファイル"
 
-msgid "Track"
-msgstr "トラック"
+msgid "Cannot remove first symbol of track!"
+msgstr "曲頭のシンボルは削除できません！"
 
 msgid "UI Language"
 msgstr "UI言語"
@@ -234,11 +234,11 @@ msgstr "最近使ったファイル"
 msgid "Pitch Line"
 msgstr "ピッチ曲線"
 
-msgid "Show/Hide mixer window."
-msgstr "ミキサーウィンドウを表示/非表示"
-
 msgid "play-time"
 msgstr "演奏時間"
+
+msgid "Show/Hide mixer window."
+msgstr "ミキサーウィンドウを表示/非表示"
 
 msgid "Open"
 msgstr "開く"
@@ -249,26 +249,26 @@ msgstr "待機時間"
 msgid "Set Offset Seconds"
 msgstr "オフセット秒数を設定"
 
-msgid "Beat"
-msgstr "拍子"
-
 msgid "Dot"
 msgstr "付点"
 
-msgid "Expression control property"
-msgstr "表情コントロールプロパティ"
+msgid "Beat"
+msgstr "拍子"
 
 msgid "Avoid automaticaly polyphonic editing."
 msgstr "ポリフォニックな音符配置を自動回避"
 
+msgid "Expression control property"
+msgstr "表情コントロールプロパティ"
+
 msgid "Open Cadencii project."
 msgstr "Cadenciiプロジェクトを開く"
 
-msgid "Edit Bezier Data Point"
-msgstr "ベジエデータ点の編集"
-
 msgid "Pre Utterance"
 msgstr "先行発音"
+
+msgid "Edit Bezier Data Point"
+msgstr "ベジエデータ点の編集"
 
 msgid "Offset"
 msgstr "オフセット"
@@ -276,14 +276,14 @@ msgstr "オフセット"
 msgid "Appearance"
 msgstr "外観"
 
-msgid "Original Format(*.evsq)|*.evsq"
-msgstr "Original Format(*.evsq)|*.evsq"
+msgid "Synthesize"
+msgstr "合成"
 
 msgid "Triplet"
 msgstr "三連符"
 
-msgid "Synthesize"
-msgstr "合成"
+msgid "Original Format(*.evsq)|*.evsq"
+msgstr "Original Format(*.evsq)|*.evsq"
 
 msgid "Invoke UTAU cores with Wine"
 msgstr "Wine経由でUTAUコアを起動する"
@@ -294,14 +294,14 @@ msgstr "音符"
 msgid "Pointer"
 msgstr "ポインター"
 
-msgid "Script runtime error:"
-msgstr "スクリプト実行エラー:"
+msgid "Use Command key as Control key"
+msgstr "コマンドキーをコントロールキーとして使う"
 
 msgid "Play Preview On Right Click"
 msgstr "右クリックでプレビュー再生する"
 
-msgid "Use Command key as Control key"
-msgstr "コマンドキーをコントロールキーとして使う"
+msgid "Script runtime error:"
+msgstr "スクリプト実行エラー:"
 
 msgid "Beat Change"
 msgstr "拍子の変更"
@@ -381,23 +381,23 @@ msgstr "WAVEファイルにエクスポート"
 msgid "Overlap"
 msgstr "オーバーラップ"
 
-msgid "Enable Quantize for Curve Selecting"
-msgstr "カーブの選択もクオンタイズする"
-
-msgid "Playback Sample Sound"
-msgstr "合成音のサンプル出力"
-
 msgid "Off"
 msgstr "オフ"
+
+msgid "Enable Quantize for Curve Selecting"
+msgstr "カーブの選択もクオンタイズする"
 
 msgid "Start After Premeasure"
 msgstr "プリメジャー後に開始"
 
-msgid "mio"
-msgstr "mio"
+msgid "Playback Sample Sound"
+msgstr "合成音のサンプル出力"
 
 msgid "Error"
 msgstr "エラー"
+
+msgid "mio"
+msgstr "mio"
 
 msgid "Undo"
 msgstr "元に戻す"
@@ -414,23 +414,23 @@ msgstr "リアルタイム入力を開始"
 msgid "Phoneme Transformation"
 msgstr "発音記号変換"
 
-msgid "Dynamics"
-msgstr "ダイナミクス"
-
 msgid "Save Voice DB configuration file."
 msgstr "音源設定ファイルを保存"
 
-msgid "Vibrato type"
-msgstr "ビブラートの種類"
+msgid "Dynamics"
+msgstr "ダイナミクス"
 
 msgid "Copy selected items."
 msgstr "選択されたアイテムをコピー"
 
-msgid "Randomize"
-msgstr "ランダマイズ"
+msgid "Vibrato type"
+msgstr "ビブラートの種類"
 
 msgid "Generate {0} file"
 msgstr "{0}ファイルを作成"
+
+msgid "Randomize"
+msgstr "ランダマイズ"
 
 msgid "Analyzer, 'straightVoiceDB.exe' does not exist."
 msgstr "解析ツール, 'straightVoiceDB.exe' が見つかりません"
@@ -438,32 +438,32 @@ msgstr "解析ツール, 'straightVoiceDB.exe' が見つかりません"
 msgid "Start Lyric Input"
 msgstr "歌詞の入力に移行"
 
-msgid "Chagne Tool Pointer / Eraser"
-msgstr "ツール切り替え: ポインター / 消しゴム"
-
 msgid "Randomize items."
 msgstr "アイテムをランダマイズする"
 
-msgid "clocks"
-msgstr "クロック"
+msgid "Chagne Tool Pointer / Eraser"
+msgstr "ツール切り替え: ポインター / 消しゴム"
 
 msgid "Vibrato Settings"
 msgstr "ビブラートの設定"
 
-msgid "Note#"
-msgstr "ノートナンバー"
+msgid "clocks"
+msgstr "クロック"
 
 msgid "Open UTAU Project File"
 msgstr "UTAUプロジェクトファイルを開く"
 
+msgid "Note#"
+msgstr "ノートナンバー"
+
 msgid "Name"
 msgstr "名前"
 
-msgid "list of files recentry used"
-msgstr "list of files recentry used"
-
 msgid "Render current track."
 msgstr "現在のトラックを合成"
+
+msgid "list of files recentry used"
+msgstr "list of files recentry used"
 
 msgid "Copy current track."
 msgstr "このトラックをコピー"
@@ -471,23 +471,23 @@ msgstr "このトラックをコピー"
 msgid "maximum frame rate(in frames per second)"
 msgstr "maximum frame rate(in frames per second)"
 
-msgid "Preference"
-msgstr "プリファレンス"
-
 msgid "th bar"
 msgstr "小節目"
 
-msgid "Bend Length"
-msgstr "ベンドの長さ"
+msgid "Preference"
+msgstr "プリファレンス"
 
 msgid "Horizontal Scroll when Mouse wheel"
 msgstr "マウスホイールで水平方向にスクロール"
 
-msgid "Correct overlapped item."
-msgstr "重複したアイテムを補正する"
+msgid "Bend Length"
+msgstr "ベンドの長さ"
 
 msgid "Recent projects."
 msgstr "最近使ったプロジェクト"
+
+msgid "Correct overlapped item."
+msgstr "重複したアイテムを補正する"
 
 msgid "UTAU"
 msgstr "UTAU"
@@ -501,11 +501,11 @@ msgstr "無効な値"
 msgid "Run"
 msgstr "実行"
 
-msgid "Open VSQ/Vocaloid Midi"
-msgstr "VSQ/Vocaloid Midiを開く"
-
 msgid "Export to Standard MIDI."
 msgstr "Standard MIDIファイルにエクスポート"
+
+msgid "Open VSQ/Vocaloid Midi"
+msgstr "VSQ/Vocaloid Midiを開く"
 
 msgid "Show/Hide control curves."
 msgstr "コントロールカーブを表示/非表示"
@@ -516,18 +516,17 @@ msgstr "ミキサー"
 msgid "MP3 File(*.mp3)|*.mp3"
 msgstr "MP3ファイル(*.mp3)|*.mp3"
 
+msgid "Select command and hit key(s) you want to set.\nHit Backspace if you want to remove shortcut key."
+msgstr "やり直し"
+
 msgid "Redo"
 msgstr "やり直し"
 
-msgid "Select command and hit key(s) you want to set.\nHit Backspace if you want to remove shortcut key."
-msgstr "コマンドを選択し、設定したいショートカットキーを入力してください。
-設定を消したい場合はバックスペースキーを押してください。"
+msgid "VOCALOID1"
+msgstr "VOCALOID1"
 
 msgid "To"
 msgstr "終点"
-
-msgid "VOCALOID1"
-msgstr "VOCALOID1"
 
 msgid "Add new track."
 msgstr "新しいトラックを追加"
@@ -541,20 +540,20 @@ msgstr "歌声合成エンジンを選択"
 msgid "Game controler is not available"
 msgstr "ゲームコントローラが接続されていません"
 
-msgid "Down"
-msgstr "下へ"
-
 msgid "Select all items and control curves of current track."
 msgstr "現在のトラックの、全ての音符とコントロールカーブを選択する"
 
-msgid "Insert bar"
-msgstr "小節の挿入"
+msgid "Down"
+msgstr "下へ"
+
+msgid "Pattern"
+msgstr "パターン"
 
 msgid "Misc"
 msgstr "その他"
 
-msgid "Pattern"
-msgstr "パターン"
+msgid "Insert bar"
+msgstr "小節の挿入"
 
 msgid "Redo."
 msgstr "やり直し"
@@ -562,35 +561,35 @@ msgstr "やり直し"
 msgid "Input Offset Seconds"
 msgstr "オフセット秒数を入力"
 
-msgid "Integer format error"
-msgstr "整数の書式エラー"
-
 msgid "Search"
 msgstr "検索"
+
+msgid "Integer format error"
+msgstr "整数の書式エラー"
 
 msgid "XML-VSQ Format(*.xvsq)|*.xvsq"
 msgstr "XML-VSQフォーマット(*.xvsq)|*.xvsq"
 
-msgid "Track On"
-msgstr "トラックオン"
-
 msgid "Export MusicXML"
 msgstr "MusicXMLにエクスポート"
+
+msgid "Track On"
+msgstr "トラックオン"
 
 msgid "Fix play cursor to the center of screen"
 msgstr "マーカーを画面中心に固定"
 
-msgid "Track Height (pixel)"
-msgstr "トラックの描画高さ (ピクセル)"
-
 msgid "Notes"
 msgstr "音符"
 
-msgid "Paste copied items to current song position."
-msgstr "現在のソングポジションに、コピーしたアイテムを貼り付ける"
+msgid "Track Height (pixel)"
+msgstr "トラックの描画高さ (ピクセル)"
 
 msgid "min"
 msgstr "分"
+
+msgid "Paste copied items to current song position."
+msgstr "現在のソングポジションに、コピーしたアイテムを貼り付ける"
 
 msgid "Visible Control Curve"
 msgstr "表示するコントロールカーブ"
@@ -604,11 +603,11 @@ msgstr "メニュー・歌詞"
 msgid "Open Voice DB configuration file"
 msgstr "音源設定ファイルを開く"
 
-msgid "Enable Automatic Vibrato"
-msgstr "オートビブラートを有効にする"
-
 msgid "Change"
 msgstr "変更"
+
+msgid "Enable Automatic Vibrato"
+msgstr "オートビブラートを有効にする"
 
 msgid "Current Platform"
 msgstr "現在の実行環境"
@@ -625,11 +624,11 @@ msgstr "UTAUスクリプト形式(*.ust)|*.ust"
 msgid "Load"
 msgstr "読み込む"
 
-msgid "Help"
-msgstr "ヘルプ"
-
 msgid "Moduration"
 msgstr "モジュレーション"
+
+msgid "Help"
+msgstr "ヘルプ"
 
 msgid "About {0}"
 msgstr "{0}について"
@@ -746,7 +745,7 @@ msgid "Save As"
 msgstr "名前をつけて保存"
 
 msgid "Renderer"
-msgstr "音声合成エンジン"
+msgstr "歌声合成エンジン"
 
 msgid "Next"
 msgstr "次を検索"
@@ -772,29 +771,29 @@ msgstr "手前に表示"
 msgid "Other Settings"
 msgstr "その他の設定"
 
-msgid "Sequence"
-msgstr "シーケンスの設定"
-
 msgid "Export"
 msgstr "書き出し"
 
-msgid "[file not found]"
-msgstr "[ファイルが見つかりません]"
+msgid "Sequence"
+msgstr "シーケンスの設定"
 
 msgid "Select All Events"
 msgstr "全てのイベントを選択"
 
-msgid "Normalize Notes"
-msgstr "音符のノーマライズ"
+msgid "[file not found]"
+msgstr "[ファイルが見つかりません]"
 
 msgid "Timing"
 msgstr "タイミング"
 
-msgid "Start realtime input."
-msgstr "リアルタイム入力を開始"
+msgid "Normalize Notes"
+msgstr "音符のノーマライズ"
 
 msgid "tolerance of mouse operation (in pixel)"
 msgstr "tolerance of mouse operation (in pixel)"
+
+msgid "Start realtime input."
+msgstr "リアルタイム入力を開始"
 
 msgid "List of files recentry used"
 msgstr "最近使用したファイルのリスト"
@@ -805,26 +804,26 @@ msgstr "保存しますか?"
 msgid "Maximum Frame Rate"
 msgstr "最大フレームレート"
 
-msgid "Measure"
-msgstr "小節"
-
 msgid "Remove"
 msgstr "削除"
+
+msgid "Measure"
+msgstr "小節"
 
 msgid "Disabled"
 msgstr "無効"
 
-msgid "capacity of RecentFiles"
-msgstr "最近使用したファイルリストのリスト長"
-
 msgid "Others"
 msgstr "その他"
 
-msgid "Render Current Track"
-msgstr "現在のトラックを合成"
+msgid "capacity of RecentFiles"
+msgstr "最近使用したファイルリストのリスト長"
 
 msgid "Script compilation failed."
 msgstr "スクリプトのコンパイルに失敗しました"
+
+msgid "Render Current Track"
+msgstr "現在のトラックを合成"
 
 msgid "Note Property"
 msgstr "音符のプロパティ"
@@ -832,26 +831,26 @@ msgstr "音符のプロパティ"
 msgid "Insert bar."
 msgstr "小節を挿入"
 
-msgid "Reload VSTi"
-msgstr "VSTiをリロード"
-
 msgid "Job"
 msgstr "ジョブ"
 
-msgid "Show/Hide waveform."
-msgstr "波形を表示/非表示"
+msgid "Reload VSTi"
+msgstr "VSTiをリロード"
 
 msgid "Search Next"
 msgstr "次を検索"
 
+msgid "Show/Hide waveform."
+msgstr "波形を表示/非表示"
+
 msgid "Use space key as Middle button modifier"
 msgstr "スペースキーを、マウス中ボタンの修飾キーとして使う"
 
-msgid "Edit"
-msgstr "編集"
-
 msgid "Import lyric."
 msgstr "歌詞の流し込み"
+
+msgid "Edit"
+msgstr "編集"
 
 msgid "Edit Value"
 msgstr "値を編集"
@@ -868,11 +867,11 @@ msgstr "このトラックを有効化する"
 msgid "Check All"
 msgstr "全てにチェック"
 
-msgid "Reset And Exit"
-msgstr "デフォルト値にリセット"
-
 msgid "Convert Tempo"
 msgstr "Convert Tempo"
+
+msgid "Reset And Exit"
+msgstr "デフォルト値にリセット"
 
 msgid "VSTi Plugin UI"
 msgstr "VSTiプラグイン画面"
@@ -883,11 +882,11 @@ msgstr "トラック{0} : "
 msgid "Save Voice DB configuration file with new name."
 msgstr "音源設定ファイルを新しいファイル名で保存"
 
-msgid "Left Control Point"
-msgstr "左制御点"
-
 msgid "Vibrato Length"
 msgstr "ビブラート長"
+
+msgid "Left Control Point"
+msgstr "左制御点"
 
 msgid "Speed"
 msgstr "速度"
@@ -895,74 +894,77 @@ msgstr "速度"
 msgid "Smooth"
 msgstr "滑らかにする"
 
-msgid "If checked, convert gate-time of notes in order to match the base-tempo"
-msgstr "チェックを入れると、全音符のゲートタイムを曲頭のテンポでの演奏時刻と合致するよう変換します"
-
 msgid "File Name"
 msgstr "ファイル名"
+
+msgid "If checked, convert gate-time of notes in order to match the base-tempo"
+msgstr "チェックを入れると、全音符のゲートタイムを曲頭のテンポでの演奏時刻と合致するよう変換します"
 
 msgid "Vibrato"
 msgstr "ビブラート"
 
-msgid "Quit"
-msgstr "終了"
-
 msgid "Voice DB Config(*.ini)|*.ini"
 msgstr "音源設定ファイル(*.ini)|*.ini"
+
+msgid "Quit"
+msgstr "終了"
 
 msgid "track"
 msgstr "トラック"
 
-msgid "Add portamento in falling movement"
-msgstr "下行形でポルタメントを付加"
+msgid "Show/Hide lyrics."
+msgstr "歌詞を表示/非表示"
 
 msgid "_PREFIX_TH_"
 msgstr "第"
 
-msgid "Show/Hide lyrics."
-msgstr "歌詞を表示/非表示"
-
-msgid "Project Property"
-msgstr "プロジェクトのプロパティ"
-
-msgid "Overlay"
-msgstr "オーバーレイ"
+msgid "Add portamento in falling movement"
+msgstr "下行形でポルタメントを付加"
 
 msgid "Data Poin"
 msgstr "データ点"
 
+msgid "Overlay"
+msgstr "オーバーレイ"
+
+msgid "Project Property"
+msgstr "プロジェクトのプロパティ"
+
+msgid "Exit without save？"
+msgstr "保存せずに終了しますか？"
+
 msgid "Phrase"
 msgstr "歌詞"
-
-msgid "Length"
-msgstr "長さ"
-
-msgid "VSQ Format(*.vsq)|*.vsq"
-msgstr "VSQフォーマット(*.vsq)|*.vsq"
 
 msgid "Invalid MIDI file."
 msgstr "無効なMIDIファイルです"
 
-msgid "Copy Track"
-msgstr "トラックのコピー"
+msgid "VSQ Format(*.vsq)|*.vsq"
+msgstr "VSQフォーマット(*.vsq)|*.vsq"
+
+msgid "Length"
+msgstr "長さ"
 
 msgid "Up-Portamento"
 msgstr "上行形でポルタメント"
 
-msgid "From"
-msgstr "始点"
-
-msgid "Normal"
-msgstr "通常"
+msgid "Copy Track"
+msgstr "トラックのコピー"
 
 msgid "Metronome"
 msgstr "メトロノーム"
 
-msgid "Save this sequence?"
-msgstr "このシーケンスを保存しますか？"
+msgid "Normal"
+msgstr "通常"
+
+msgid "From"
+msgstr "始点"
 
 msgid "hour"
 msgstr "時間"
+
+msgid "Save this sequence?"
+msgstr "このシーケンスを保存しますか？"
 
 msgid "Remaining"
 msgstr "残り時間"
@@ -970,74 +972,74 @@ msgstr "残り時間"
 msgid "Previous Track"
 msgstr "前のトラックへ"
 
-msgid "User Dictionary Configuration"
-msgstr "ユーザ辞書の設定"
-
 msgid "View"
 msgstr "表示"
 
-msgid "Wave Export"
-msgstr "Waveファイルの書き出し"
+msgid "User Dictionary Configuration"
+msgstr "ユーザ辞書の設定"
 
 msgid "Export pre-measure part"
 msgstr "プリメジャー部分をエクスポート"
 
+msgid "Wave Export"
+msgstr "Waveファイルの書き出し"
+
 msgid "elapsed"
 msgstr "経過"
-
-msgid "Master Tuning in Cent"
-msgstr "マスターチューニング(単位：Cent)"
 
 msgid "Script aborted"
 msgstr "スクリプトの実行が中断されました"
 
+msgid "Master Tuning in Cent"
+msgstr "マスターチューニング(単位：Cent)"
+
 msgid "Resolution"
 msgstr "分解能"
-
-msgid "Delete Bezier Point"
-msgstr "ベジエデータ点を削除"
-
-msgid "beat"
-msgstr "拍子"
 
 msgid "Capacity of RecentFiles"
 msgstr "最近使用したファイルのリスト長"
 
-msgid "Would you like to change singer style for all events?"
-msgstr "全ての音符の表情データを変更しますか？"
+msgid "beat"
+msgstr "拍子"
+
+msgid "Delete Bezier Point"
+msgstr "ベジエデータ点を削除"
 
 msgid "Skip"
 msgstr "スキップ"
 
+msgid "Would you like to change singer style for all events?"
+msgstr "全ての音符の表情データを変更しますか？"
+
 msgid "VSQ/Vocaloid Midi Import"
 msgstr "VSQ/Vocaloid Midiのインポート"
-
-msgid "Default Singer"
-msgstr "デフォルト歌手"
 
 msgid "line"
 msgstr "行"
 
+msgid "Default Singer"
+msgstr "デフォルト歌手"
+
 msgid "Connect Notes"
 msgstr "音符の結合"
-
-msgid "Position"
-msgstr "位置"
-
-msgid "Rename Track"
-msgstr "トラック名の変更"
 
 msgid "UTAU Cores"
 msgstr "UTAUコア"
 
+msgid "Rename Track"
+msgstr "トラック名の変更"
+
+msgid "Position"
+msgstr "位置"
+
 msgid "Next Track"
 msgstr "次のトラックへ"
 
-msgid "Maximum frame rate(in frames per second)"
-msgstr "画面描画の最大フレームレート(fps)"
-
 msgid "About Cadencii"
 msgstr "Cadenciiについて"
+
+msgid "Maximum frame rate(in frames per second)"
+msgstr "画面描画の最大フレームレート(fps)"
 
 msgid "Load Default"
 msgstr "デフォルトを読込む"
@@ -1051,17 +1053,17 @@ msgstr "デフォルトプリメジャー"
 msgid "VOCALOID2"
 msgstr "VOCALOID2"
 
-msgid "Arrow"
-msgstr "ポインター"
-
-msgid "Line"
-msgstr "ライン"
+msgid "Convert Gate-time"
+msgstr "ゲートタイムを変換"
 
 msgid "Note# (Bell)"
 msgstr "ノートナンバー(ベル)"
 
-msgid "Convert Gate-time"
-msgstr "ゲートタイムを変換"
+msgid "Line"
+msgstr "ライン"
+
+msgid "Arrow"
+msgstr "ポインター"
 
 msgid "Vibrato length"
 msgstr "ビブラート長"
@@ -1069,11 +1071,11 @@ msgstr "ビブラート長"
 msgid "Default value of pre-measure"
 msgstr "デフォルトプリメジャー"
 
-msgid "User Word Dictionary"
-msgstr "ユーザ辞書"
-
 msgid "Attack Control (VOCALOID1)"
 msgstr "Attack Control (VOCALOID1)"
+
+msgid "User Word Dictionary"
+msgstr "ユーザ辞書"
 
 msgid "Executable(*.exe)|*.exe"
 msgstr "実行ファイル(*.exe)|*.exe"
@@ -1084,23 +1086,23 @@ msgstr "選択されたアイテムを切り取る"
 msgid "seconds"
 msgstr "秒"
 
-msgid "vocaloid NRPN"
-msgstr "vocaloid NRPN"
-
 msgid "Fix Play Cursor to Center"
 msgstr "マーカーを画面中心に固定"
+
+msgid "vocaloid NRPN"
+msgstr "vocaloid NRPN"
 
 msgid "Vibrato Type"
 msgstr "ビブラートの種類"
 
-msgid "Midi Export"
-msgstr "Midiエクスポート"
+msgid "VSQ / Vocaloid Midi"
+msgstr "VSQ / Vocaloid Midi"
 
 msgid "Quantize"
 msgstr "クオンタイズ"
 
-msgid "VSQ / Vocaloid Midi"
-msgstr "VSQ / Vocaloid Midi"
+msgid "Midi Export"
+msgstr "Midiエクスポート"
 
 msgid "Default scale for width direction in pixel/clock"
 msgstr "横方向のデフォルトの表示倍率(pixel/clock)"
@@ -1120,32 +1122,32 @@ msgstr "プロパティウィンドウを表示/非表示"
 msgid "Font size in GraphicsUnit.Point unit"
 msgstr "メニュー項目のフォントサイズ(ポイント)"
 
-msgid "tempo"
-msgstr "テンポ"
-
-msgid "Delete bar."
-msgstr "小節を削除"
+msgid "file '{0}' is already registered as BGM."
+msgstr "ファイル '{0}' は既にBGMに指定されています"
 
 msgid "Show background items."
 msgstr "バックに他のトラックのアイテムを表示する"
 
-msgid "file '{0}' is already registered as BGM."
-msgstr "ファイル '{0}' は既にBGMに指定されています"
+msgid "Delete bar."
+msgstr "小節を削除"
 
-msgid "Pitch Fluctuation"
-msgstr "ピッチ変動"
-
-msgid "Invoke resampler with Wine"
-msgstr "Wine経由でUTAUコアを起動する"
+msgid "tempo"
+msgstr "テンポ"
 
 msgid "Render all tracks."
 msgstr "全てのトラックを合成"
 
-msgid "Midi Import"
-msgstr "Midiインポート"
+msgid "Invoke resampler with Wine"
+msgstr "Wine経由でUTAUコアを起動する"
+
+msgid "Pitch Fluctuation"
+msgstr "ピッチ変動"
 
 msgid "Alias"
 msgstr "エイリアス"
+
+msgid "Midi Import"
+msgstr "Midiインポート"
 
 msgid "Exit"
 msgstr "戻る"
@@ -1156,35 +1158,35 @@ msgstr "オプション"
 msgid "Waveform"
 msgstr "波形を表示"
 
-msgid "Set Sound File"
-msgstr "音声ファイルを指定"
+msgid "Import Basis"
+msgstr "インポートの基準"
 
 msgid "Insert Lyrics"
 msgstr "歌詞の流し込み"
 
-msgid "Import Basis"
-msgstr "インポートの基準"
+msgid "Set Sound File"
+msgstr "音声ファイルを指定"
 
 msgid "Search Previous"
 msgstr "一つ前を検索"
 
-msgid "Change Tool Pointer / Pencil"
-msgstr "ツール切り替え: ポインター / 鉛筆"
-
 msgid "minute(s)"
 msgstr "分"
 
-msgid "Platform"
-msgstr "実行環境"
+msgid "Change Tool Pointer / Pencil"
+msgstr "ツール切り替え: ポインター / 鉛筆"
 
 msgid "Accent"
 msgstr "アクセント"
 
-msgid "OK"
-msgstr "了解"
+msgid "Platform"
+msgstr "実行環境"
 
 msgid "Note Expression/Vibrato"
 msgstr "音符の表情/ビブラート"
+
+msgid "OK"
+msgstr "了解"
 
 msgid "Note Expression Property"
 msgstr "音符の表情プロパティ"
@@ -1195,23 +1197,23 @@ msgstr "上行形でポルタメントを付加"
 msgid "Generate STF files"
 msgstr "STFファイルを作成"
 
-msgid "lyric"
-msgstr "歌詞"
-
 msgid "Counter"
 msgstr "カウンター"
 
-msgid "Affirmation"
-msgstr "確認"
+msgid "lyric"
+msgstr "歌詞"
 
 msgid "Game Controler Configuration"
 msgstr "ゲームコントローラの設定"
 
-msgid "Game Controler"
-msgstr "ゲームコントローラ"
+msgid "Affirmation"
+msgstr "確認"
 
 msgid "Cursor"
 msgstr "カーソル"
+
+msgid "Game Controler"
+msgstr "ゲームコントローラ"
 
 msgid "Go to the first"
 msgstr "先頭へ移動"
@@ -1222,11 +1224,11 @@ msgstr "小節の削除"
 msgid "Project Proeprty"
 msgstr "Project Proeprty"
 
-msgid "Add"
-msgstr "追加"
-
 msgid "Program# (Bell)"
 msgstr "プログラムナンバー(ベル)"
+
+msgid "Add"
+msgstr "追加"
 
 msgid "Waiting Time for Preview"
 msgstr "プレビューまでの待機時間"
@@ -1234,29 +1236,29 @@ msgstr "プレビューまでの待機時間"
 msgid "interval"
 msgstr "間隔"
 
-msgid "end"
-msgstr "end"
+msgid "Next Control Curve"
+msgstr "次のコントロールカーブへ"
 
 msgid "Import lyrics"
 msgstr "歌詞の流し込み"
 
-msgid "Next Control Curve"
-msgstr "次のコントロールカーブへ"
-
-msgid "Clock"
-msgstr "クロック"
+msgid "end"
+msgstr "end"
 
 msgid "Phonetic Symbol"
 msgstr "発音記号"
 
+msgid "Clock"
+msgstr "クロック"
+
 msgid "Path"
 msgstr "ディレクトリ"
 
-msgid "Apply to current track"
-msgstr "現在のトラックに適用"
-
 msgid "Lengthen note end to neighboring note."
 msgstr "音符の末尾を、直後の音符の先頭まで延長する"
+
+msgid "Apply to current track"
+msgstr "現在のトラックに適用"
 
 msgid "Global Tempo"
 msgstr "グローバルテンポ"
@@ -1267,11 +1269,11 @@ msgstr "トラックプロパティ"
 msgid "Auto Normalize Mode"
 msgstr "音符のノーマライズ"
 
-msgid "Delete current track."
-msgstr "このトラックを削除する"
-
 msgid "Import tempo from ReWire host."
 msgstr "ReWireホストからテンポをインポートする"
+
+msgid "Delete current track."
+msgstr "このトラックを削除する"
 
 msgid "Ring Bell"
 msgstr "ベルを鳴らす"
@@ -1285,11 +1287,11 @@ msgstr "プリメジャー位置から挿入"
 msgid "Tempo"
 msgstr "テンポ"
 
-msgid "Dynamics Control"
-msgstr "ダイナミクスコントロール"
-
 msgid "offset"
 msgstr "オフセット"
+
+msgid "Dynamics Control"
+msgstr "ダイナミクスコントロール"
 
 msgid "Default Singer Style"
 msgstr "デフォルト歌唱スタイル"
@@ -1297,11 +1299,11 @@ msgstr "デフォルト歌唱スタイル"
 msgid "Chase Event"
 msgstr "過去のイベントを追跡"
 
-msgid "Down-Portamento"
-msgstr "下行形でポルタメント"
-
 msgid "Apply"
 msgstr "適用"
+
+msgid "Down-Portamento"
+msgstr "下行形でポルタメント"
 
 msgid "Template"
 msgstr "テンプレート"
@@ -1309,23 +1311,23 @@ msgstr "テンプレート"
 msgid "Shortcut Keys"
 msgstr "ショートカットキー"
 
-msgid "MusicXML(*.xml)|*.xml"
-msgstr "MusicXML(*.xml)|*.xml"
-
 msgid "Use Custom File Dialog"
 msgstr "monoのファイルダイアログを使用しない"
 
-msgid "Master Tuning"
-msgstr "マスターチューニング"
+msgid "MusicXML(*.xml)|*.xml"
+msgstr "MusicXML(*.xml)|*.xml"
 
 msgid "Select Singer Directory"
 msgstr "音源のディレクトリを選択してください"
 
-msgid "Do you wish to remove track? {0} : '{1}'"
-msgstr "トラック{0} : '{1}'を削除しますか？"
+msgid "Master Tuning"
+msgstr "マスターチューニング"
 
 msgid "Open UTAU project and create new project."
 msgstr "UTAUプロジェクトから、新しいプロジェクトを作成する"
+
+msgid "Do you wish to remove track? {0} : '{1}'"
+msgstr "トラック{0} : '{1}'を削除しますか？"
 
 msgid "Up"
 msgstr "Up"

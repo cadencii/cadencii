@@ -354,7 +354,8 @@ namespace org.kbinani.cadencii {
                                                                  reader,
                                                                  track,
                                                                  reflect_amp_to_wave,
-                                                                 SAMPLE_RATE );
+                                                                 SAMPLE_RATE,
+                                                                 ms_presend );
 #else
                 return;
 #endif
