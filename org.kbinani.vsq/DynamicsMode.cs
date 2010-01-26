@@ -21,6 +21,9 @@ namespace org.kbinani.vsq{
     public class DynamicsMode{
         public const int Standard = 0;
         public const int Expert = 1;
+
+        private DynamicsMode() {
+        }
     }
 
 #if !JAVA

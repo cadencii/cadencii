@@ -4763,7 +4763,7 @@ namespace org.kbinani.cadencii {
                 int clockStart = AppManager.startMarkerEnabled ? AppManager.startMarker : 0;
                 int clockEnd = AppManager.endMarkerEnabled ? AppManager.endMarker : vsq.TotalClocks + 240;
                 if ( clockStart > clockEnd ) {
-                    AppManager.showMessageBox( _( "invalid rendering region; start >= end" ), _( "Error" ), AppManager.OK_OPTION, AppManager.MSGBOX_INFORMATION_MESSAGE );
+                    AppManager.showMessageBox( _( "invalid rendering region; start>=end" ), _( "Error" ), AppManager.OK_OPTION, AppManager.MSGBOX_INFORMATION_MESSAGE );
                     return;
                 }
                 fs = new FormSynthesize( vsq,
@@ -12986,9 +12986,11 @@ namespace org.kbinani.cadencii {
             if ( AppManager.inputTextBox.isVisible() ) {
                 return;
             }
+#if ENABLE_PROPERTY
             if ( AppManager.propertyPanel.isEditing() ) {
                 return;
             }
+#endif
 
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -15832,7 +15834,7 @@ namespace org.kbinani.cadencii {
             this.btnRight2 = new org.kbinani.windows.forms.BButton();
             this.pictOverview = new org.kbinani.windows.forms.BPictureBox();
             this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
-            this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
+            this.hScroll = new HScroll();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
@@ -18931,7 +18933,7 @@ namespace org.kbinani.cadencii {
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         public BToolStripButton stripBtnStartMarker;
         public BToolStripButton stripBtnEndMarker;
-        public BHScrollBar hScroll;
+        public HScroll hScroll;
         public BVScrollBar vScroll;
         public BMenuItem menuLyricVibratoProperty;
         public BMenuItem cMenuPianoVibratoProperty;

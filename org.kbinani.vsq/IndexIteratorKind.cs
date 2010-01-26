@@ -24,6 +24,9 @@ namespace org.kbinani.vsq {
         public const int CRESCEND = 1 << 2;
         public const int DECRESCEND = 1 << 3;
         public const int DYNAFF = 1 << 4;
+
+        private IndexIteratorKind() {
+        }
     }
 
 #if !JAVA

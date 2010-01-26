@@ -14,24 +14,49 @@
 #if JAVA
 package org.kbinani.vsq;
 
+import java.io.*;
 #else
 using System;
 
 namespace org.kbinani.vsq {
 #endif
 
+#if JAVA
+    public class IconDynamicsHandle extends IconParameter implements Cloneable, Serializable {
+#else
     [Serializable]
     public class IconDynamicsHandle : IconParameter, ICloneable {
+#endif
         public String IconID = "";
         public String IDS = "";
         public int Original;
 
         public IconDynamicsHandle()
-            : base() {
+#if JAVA
+        {
+#else
+            :
+#endif
+            base()
+#if JAVA
+            ;
+#else
+        {
+#endif
         }
 
         public IconDynamicsHandle( String aic_file, String ids, String icon_id, int index )
-            : base( aic_file ) {
+#if JAVA
+        {
+#else
+            :
+#endif
+            base( aic_file )
+#if JAVA
+            ;
+#else
+        {
+#endif
             IDS = ids;
             IconID = icon_id;
             Original = index;

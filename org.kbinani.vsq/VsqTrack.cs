@@ -40,7 +40,11 @@ namespace org.kbinani.vsq {
         public String Tag;
         public VsqMetaText MetaText;
 
+#if JAVA
+        private class IndexIterator implements Iterator<Integer> {
+#else
         private class IndexIterator : Iterator<Integer> {
+#endif
             VsqEventList list;
             int pos;
             boolean kindSinger = false;
@@ -159,7 +163,8 @@ namespace org.kbinani.vsq {
             }
 
             public boolean hasNext() {
-                for ( int i = m_pos + 1; i < m_list.getCount(); i++ ) {
+                int num = m_list.getCount();
+                for ( int i = m_pos + 1; i < num; i++ ) {
                     if ( m_list.getElement( i ).ID.type == VsqIDType.Singer ) {
                         return true;
                     }
@@ -168,7 +173,8 @@ namespace org.kbinani.vsq {
             }
 
             public Object next() {
-                for ( int i = m_pos + 1; i < m_list.getCount(); i++ ) {
+                int num = m_list.getCount();
+                for ( int i = m_pos + 1; i < num; i++ ) {
                     VsqEvent item = m_list.getElement( i );
                     if ( item.ID.type == VsqIDType.Singer ) {
                         m_pos = i;
@@ -314,6 +320,10 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// このトラックの再生モードを取得します．
+        /// </summary>
+        /// <returns>PlayMode.PlayAfterSynthまたはPlayMode.PlayWithSynth</returns>
         public int getPlayMode() {
             if ( MetaText == null ){
                 return PlayMode.PlayWithSynth;
@@ -327,6 +337,10 @@ namespace org.kbinani.vsq {
             return MetaText.Common.LastPlayMode;
         }
 
+        /// <summary>
+        /// このトラックの再生モードを設定します．
+        /// </summary>
+        /// <param name="value">PlayMode.PlayAfterSynth, PlayMode.PlayWithSynth, またはPlayMode.Offのいずれかを指定します</param>
         public void setPlayMode( int value ) {
             if ( MetaText == null ) return;
             if ( MetaText.Common == null ) {
@@ -343,12 +357,20 @@ namespace org.kbinani.vsq {
             MetaText.Common.PlayMode = value;
         }
 
+        /// <summary>
+        /// このトラックがレンダリングされるかどうかを取得します．
+        /// </summary>
+        /// <returns></returns>
         public boolean isTrackOn() {
             if ( MetaText == null ) return true;
             if ( MetaText.Common == null ) return true;
             return MetaText.Common.PlayMode != PlayMode.Off;
         }
 
+        /// <summary>
+        /// このトラックがレンダリングされるかどうかを設定します，
+        /// </summary>
+        /// <param name="value"></param>
         public void setTrackOn( boolean value ) {
             if ( MetaText == null ) return;
             if ( MetaText.Common == null ) {
@@ -369,6 +391,10 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// このトラックの名前を取得します．
+        /// </summary>
+        /// <returns></returns>
         public String getName() {
             if ( MetaText == null || (MetaText != null && MetaText.Common == null) ) {
                 return "Master Track";
@@ -377,6 +403,10 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// このトラックの名前を設定します．
+        /// </summary>
+        /// <param name="value"></param>
         public void setName( String value ) {
             if ( MetaText != null ) {
                 if ( MetaText.Common == null ) {
@@ -387,6 +417,9 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
+        /// <summary>
+        /// XMLシリアライズ用．このトラックの名前を設定します．
+        /// </summary>
         [Obsolete]
         public String Name {
             get {
@@ -399,9 +432,9 @@ namespace org.kbinani.vsq {
 #endif
 
         /// <summary>
-        /// ピッチベンド。Cent単位
+        /// このトラックの，指定したゲートタイムにおけるピッチベンドを取得します．単位はCentです．
         /// </summary>
-        /// <param name="clock"></param>
+        /// <param name="clock">ピッチベンドを取得するゲートタイム</param>
         /// <returns></returns>
         public double getPitchAt( int clock ) {
             double inv2_13 = 1.0 / 8192.0;
@@ -411,7 +444,8 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// クレッシェンド，デクレッシェンド，強弱記号をダイナミクスカーブに反映させる
+        /// クレッシェンド，デクレッシェンド，および強弱記号をダイナミクスカーブに反映させます．
+        /// この操作によって，ダイナミクスカーブに設定されたデータは全て削除されます．
         /// </summary>
         public void reflectDynamics() {
             VsqBPList dyn = getCurve( "dyn" );
@@ -518,7 +552,7 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// 指定したクロック位置において、歌唱を担当している歌手のVsqEventを返します。
+        /// 指定したゲートタイムにおいて、歌唱を担当している歌手のVsqEventを取得します．
         /// </summary>
         /// <param name="clock"></param>
         /// <returns></returns>
@@ -534,12 +568,15 @@ namespace org.kbinani.vsq {
             return last;
         }
 
+        /// <summary>
+        /// このトラックに設定されているイベントを，ゲートタイム順に並べ替えます．
+        /// </summary>
         public void sortEvent() {
             MetaText.Events.sort();
         }
 
         /// <summary>
-        /// 歌手変更イベントを，曲の先頭から順に返すIteratorを取得します
+        /// 歌手変更イベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
         /// <returns></returns>
         public Iterator getSingerEventIterator() {
@@ -547,7 +584,7 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// 音符イベントを，曲の先頭から順に返すIteratorを取得します
+        /// 音符イベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
         /// <returns></returns>
         public Iterator getNoteEventIterator() {
@@ -558,6 +595,10 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// クレッシェンド，デクレッシェンド，および強弱記号を表すイベントを，曲の先頭から順に返すIteratorを取得します．
+        /// </summary>
+        /// <returns></returns>
         public Iterator getDynamicsEventIterator() {
             if ( MetaText == null ) {
                 return new DynamicsEventIterator( new VsqEventList() );
@@ -567,7 +608,7 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// メタテキストを，メモリー上のストリームに出力します
+        /// このトラックのメタテキストをストリームに出力します．
         /// </summary>
         /// <param name="sw"></param>
         /// <param name="encode"></param>
@@ -582,7 +623,7 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// メタテキストを，指定されたファイルに出力します
+        /// このトラックのメタテキストを，指定されたファイルに出力します．
         /// </summary>
         /// <param name="file"></param>
         public void printMetaText( String file )
@@ -617,23 +658,31 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// Masterを取得します
+        /// このトラックのMasterを取得します．
         /// </summary>
         public VsqMaster getMaster() {
             return MetaText.master;
         }
 
+        /// <summary>
+        /// このトラックのMasterを設定します．
+        /// </summary>
+        /// <param name="value"></param>
         public void setMaster( VsqMaster value ) {
             MetaText.master = value;
         }
 
         /// <summary>
-        /// Mixerを取得します
+        /// このトラックのMixerを取得します．
         /// </summary>
         public VsqMixer getMixer() {
             return MetaText.mixer;
         }
 
+        /// <summary>
+        /// このトラックのMixerを設定します．
+        /// </summary>
+        /// <param name="value"></param>
         public void setMixer( VsqMixer value ) {
             MetaText.mixer = value;
         }

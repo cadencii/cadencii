@@ -213,8 +213,8 @@ namespace org.kbinani.cadencii {
             comboDeviceGeneral.selectedIndexChangedEvent.add( new BEventHandler( this, "comboDeviceGeneral_SelectedIndexChanged" ) );
             numPreUtterance.valueChangedEvent.add( new BEventHandler( this, "numPreUtterance_ValueChanged" ) );
             numNoteBell.valueChangedEvent.add( new BEventHandler( this, "numNoteBell_ValueChanged" ) );
-            numNoteNormal.valueChangedEvent.add( new BEventHandler( this, "umNoteNormal_ValueChanged" ) );
-            numProgramBell.valueChangedEvent.add( new BEventHandler( this, "umProgramBell_ValueChanged" ) );
+            numNoteNormal.valueChangedEvent.add( new BEventHandler( this, "numNoteNormal_ValueChanged" ) );
+            numProgramBell.valueChangedEvent.add( new BEventHandler( this, "numProgramBell_ValueChanged" ) );
             numProgramNormal.valueChangedEvent.add( new BEventHandler( this, "numProgramNormal_ValueChanged" ) );
             formClosingEvent.add( new BFormClosingEventHandler( this, "FormMidiConfig_FormClosing" ) );
             btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );

@@ -69,11 +69,11 @@ namespace org.kbinani.cadencii {
             }
             set {
                 s_ring_bell = value;
-                if ( value ) {
+                /*if ( value ) {
                     RestartMetronome();
                 } else {
                     m_stop_metronome_required = true;
-                }
+                }*/
             }
         }
 
@@ -216,7 +216,7 @@ namespace org.kbinani.cadencii {
                 mq.Done += new MidiQueueDoneEventHandler( ReGenerateMidiQueue );
                 s_queue.add( mq );
 
-                if ( RingBell && next_bar.value != bar.value ) {
+                if ( s_ring_bell && next_bar.value != bar.value ) {
                     MidiQueue mq_bell = new MidiQueue();
                     mq_bell.Track = 0;
                     mq_bell.Clock = next_clock;
@@ -279,7 +279,7 @@ namespace org.kbinani.cadencii {
                     mq.Done += new MidiQueueDoneEventHandler( ReGenerateMidiQueue );
                     ret.add( mq );
 
-                    if ( RingBell && next_bar.value != bar.value ) {
+                    if ( s_ring_bell && next_bar.value != bar.value ) {
                         MidiQueue mq_bell = new MidiQueue();
                         mq_bell.Track = 0;
                         mq_bell.Clock = next_clock;
@@ -294,7 +294,7 @@ namespace org.kbinani.cadencii {
                 int track = sender.Track;
                 int clock = sender.Clock;
 #if DEBUG
-                AppManager.debugWriteLine( "Metronome.ReGenerateMidiQueue; track=" + track );
+                AppManager.debugWriteLine( "MidiPlayer#ReGenerateMidiQueue; track=" + track );
 #endif
                 for ( Iterator itr = m_vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = (VsqEvent)itr.next();
@@ -376,7 +376,7 @@ namespace org.kbinani.cadencii {
                 int wait_millisec = (int)((next_tick - PortUtil.getCurrentTime()) * 1000.0) - PreUtterance;
                 int thiswait = (wait_millisec > TOLERANCE_MILLISEC * 2) ? TOLERANCE_MILLISEC * 2 : wait_millisec;
 #if DEBUG
-                AppManager.debugWriteLine( "Metronome.ThreadProc; wait_millisec=" + wait_millisec );
+                AppManager.debugWriteLine( "MidiPlayer#ThreadProc; wait_millisec=" + wait_millisec );
 #endif
                 while ( thiswait > TOLERANCE_MILLISEC ) {
                     Thread.Sleep( thiswait );

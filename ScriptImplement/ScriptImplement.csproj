@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A0B35F11-5790-4473-A508-5868FFA67D70}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -129,7 +129,6 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(ProjectDir)Pitch and Volume Adjuster.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Pitch and Volume Adjuster.txt"
 copy "$(ProjectDir)Transpose Plus 1 Degree.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Transpose Plus 1 Degree.txt"
-copy "$(ProjectDir)Generate VLF.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Generate VLF.txt"
 copy "$(ProjectDir)Generate VLF.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Generate VLF.txt"
 copy "$(ProjectDir)DivideNote.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\tool\DivideNote.txt"
 copy "$(ProjectDir)Utau Plugin Invoker.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Utau Plugin Invoker.txt"

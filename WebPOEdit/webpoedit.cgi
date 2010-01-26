@@ -20,6 +20,7 @@ sub new{
 			chomp $line;
 			if( $line =~ /^msgid \"(.*)\"/ ){
 				if( !($id eq "") ){
+#print "file=$argFile; id=$id; str=$str<br>\n";
 					$dict{$id} = $str;
 				}
 				$id = $1;
@@ -36,6 +37,10 @@ sub new{
 			}
 		}
 		close $in;
+		if( $id ne "" && $mode == 1 ){
+			$dict{$id} = $str;
+#print "file=$argFile; id=$id; str=$str<br>\n";
+		}
 	}
 	$argFile =~ /.*\/(.*?)\.po$/;
 	$self = {
@@ -323,12 +328,6 @@ my @LANGS = (
 
 #binmode( STDOUT, ":encoding($textEncode)" );
 
-for( $i = 0; $i <= $#LANGS; $i++ ){
-	my $f = "./cache/" . $LANGS[$i][1] . ".po";
-	open FH, ">$f";
-	close FH;
-}
-
 print "Content-type: text/html" . "\n\n";
 
 $app_name = "webpoedit";
@@ -575,34 +574,25 @@ if( $author eq "" ){
 	            $value = url_decode( $spl2[1] );
 	        }
             $value =~ s/\\n/\n/g;
-            if( $mb->containsKey( $id ) ){
-            	my $contains = 0;
-            	for( $i = 0; $i <= $#enKeys; $i++ ){
-            		if( $enKeys[$i] eq $id ){
-            			$contains = 1;
-            			last;
-            		}
-            	}
-                if( $contains != 0 ){
-                    my $old = $mb->getMessage( $id );
-                    $mb->put( $id, $value ); #.list[id].message = value;
-                    if( $old ne $value ){
-                    }
-                }else{
-                    $mb->remove( $id );
-                }
-            }else{
-            	my $contains = 0;
-            	for( $i = 0; $i <= $#enKeys; $i++ ){
-            		if( $enKeys[$i] eq $id ){
-            			$contains = 1;
-            			last;
-            		}
-            	}
-            	if( $contains == 1 ){
-            		$mb->put( $id, $value );
-            	}
-            }
+#            if( $mb->containsKey( $id ) ){
+#            	my $contains = 0;
+#            	for( $i = 0; $i <= $#enKeys; $i++ ){
+#            		if( $enKeys[$i] eq $id ){
+#            			$contains = 1;
+#            			last;
+#            		}
+#            	}
+#                if( $contains != 0 ){
+#                    my $old = $mb->getMessage( $id );
+#                    $mb->put( $id, $value ); #.list[id].message = value;
+#                    if( $old ne $value ){
+#                    }
+#                }else{
+#                    $mb->remove( $id );
+#                }
+#            }else{
+            	$mb->put( $id, $value );
+#            }
         }
         $mb->printTo( "../htdocs/" . $lang . ".po" );
 	}
@@ -618,11 +608,12 @@ if( $author eq "" ){
 		print "  <tr>\n";
 		$strKey = $key;
 		$strKey =~ s/\n/\\n/g;
+		$strKey = escapeHtml( $strKey );
 		print "    <td class=" . $class_kind . ">" . $strKey . "</td>\n";
 		my $msg = $mb->getMessage( $key );
 		print "    <td nowrap class=" . $class_kind . ">\n";
 		$msg =~ s/\n/\\n/g;
-		$utfMsg = $msg;
+		$utfMsg = escapeHtml( $msg );
 		if( $msg eq $key ){
 			print "      <input type=\"text\" name=\"";
 			print $id;
@@ -644,6 +635,14 @@ if( $author eq "" ){
 }
 
 exit;
+
+sub escapeHtml{
+	my $str = shift;
+	$str =~ s/\&/&amp;/g;
+	$str =~ s/\</&lt;/g;
+	$str =~ s/\>/&gt;/g;
+	return $str;
+}
 
 sub dec_b64{
 	my $str = shift;

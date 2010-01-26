@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.vsq;
 
+import java.io.*;
 #else
 using System;
 using org.kbinani.java.io;
@@ -21,8 +22,12 @@ using org.kbinani.java.io;
 namespace org.kbinani.vsq{
 #endif
 
+#if JAVA
+    public class IconParameter implements Serializable {
+#else
     [Serializable]
     public class IconParameter {
+#endif
         public enum ArticulationType {
             Vibrato,
             Crescendo,

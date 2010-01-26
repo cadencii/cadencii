@@ -12,10 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.vsq;
+package org.kbinani.cadencii;
 
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.cadencii {
 #endif
 
     public enum DrawObjectType {

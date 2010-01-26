@@ -192,6 +192,22 @@ namespace org.kbinani.apputil {
             this.ResumeLayout( false );
         }
 
+        /// <summary>
+        /// コントロールがユーザーとの対話に応答できるかどうかを示す値を設定します。
+        /// </summary>
+        /// <param name="value"></param>
+        public void setEnabled( bool value ) {
+            base.Enabled = value;
+        }
+
+        /// <summary>
+        /// コントロールがユーザーとの対話に応答できるかどうかを示す値を取得します。
+        /// </summary>
+        /// <returns></returns>
+        public bool isEnabled() {
+            return base.Enabled;
+        }
+
         private void SplitContainerEx_Paint( object sender, PaintEventArgs e ) {
             bool panel1_visible = true;
             if ( Orientation == Orientation.Horizontal ) {
