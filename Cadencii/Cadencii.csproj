@@ -21,7 +21,7 @@
     <ManifestCertificateThumbprint>3B7855CA5AB710E8AC0C79D614FD5307A8FDC6F3</ManifestCertificateThumbprint>
     <ManifestKeyFile>keyfile.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <ApplicationIcon>resources\icon.ico</ApplicationIcon>
     <TargetZone>LocalIntranet</TargetZone>
     <SignAssembly>false</SignAssembly>
