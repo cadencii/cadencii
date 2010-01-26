@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-23 02:27+0900\n"
+"POT-Creation-Date: 2010-01-27 01:10+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: kbinani <kbinani@msn.com>\n"
 "Language-Team: \n"
@@ -18,24 +18,24 @@ msgstr ""
 "X-Poedit-SearchPath-1: org.kbinani.apputil\n"
 "X-Poedit-SearchPath-2: EditOtoIni\n"
 
-#: Cadencii/AppManager.cs:1580
+#: Cadencii/AppManager.cs:1587
 msgid "line"
 msgstr ""
 
-#: Cadencii/AppManager.cs:1657
+#: Cadencii/AppManager.cs:1664
 msgid "Script aborted"
 msgstr ""
 
-#: Cadencii/AppManager.cs:1680
+#: Cadencii/AppManager.cs:1687
 msgid "Script runtime error:"
 msgstr ""
 
-#: Cadencii/AppManager.cs:1680
-#: Cadencii/AppManager.cs:1684
+#: Cadencii/AppManager.cs:1687
+#: Cadencii/AppManager.cs:1691
 msgid "Error"
 msgstr ""
 
-#: Cadencii/AppManager.cs:1684
+#: Cadencii/AppManager.cs:1691
 msgid "Script compilation failed."
 msgstr ""
 
@@ -181,7 +181,7 @@ msgid "Skip"
 msgstr ""
 
 #: Cadencii/FormIconPalette.cs:59
-#: Cadencii/FormMain.cs:12487
+#: Cadencii/FormMain.cs:12526
 msgid "Icon Palette"
 msgstr ""
 
@@ -195,7 +195,7 @@ msgid "Import lyrics"
 msgstr ""
 
 #: Cadencii/FormInsertBar.cs:53
-#: Cadencii/FormMain.cs:12491
+#: Cadencii/FormMain.cs:12530
 msgid "Insert Bars"
 msgstr ""
 
@@ -204,8 +204,8 @@ msgid "_PREFIX_TH_"
 msgstr ""
 
 #: Cadencii/FormInsertBar.cs:61
-#: Cadencii/FormMain.cs:12533
-#: Cadencii/FormMain.cs:12566
+#: Cadencii/FormMain.cs:12572
+#: Cadencii/FormMain.cs:12605
 msgid "Length"
 msgstr ""
 
@@ -220,66 +220,66 @@ msgid "bar"
 msgstr ""
 
 #: Cadencii/FormMain.cs:1150
-#: Cadencii/FormMain.cs:12497
+#: Cadencii/FormMain.cs:12536
 msgid "Start Realtime Input"
 msgstr ""
 
-#: Cadencii/FormMain.cs:1310
+#: Cadencii/FormMain.cs:1311
 msgid "Stop Realtime Input"
 msgstr ""
 
-#: Cadencii/FormMain.cs:3681
+#: Cadencii/FormMain.cs:3901
 msgid "Show/Hide control curves."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3685
+#: Cadencii/FormMain.cs:3905
 msgid "Show/Hide mixer window."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3689
+#: Cadencii/FormMain.cs:3909
 msgid "Show/Hide waveform."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3693
+#: Cadencii/FormMain.cs:3913
 msgid "Show/Hide property window."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3697
+#: Cadencii/FormMain.cs:3917
 msgid "Show/Hide grid line."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3701
+#: Cadencii/FormMain.cs:3921
 msgid "Enable/Disable start marker."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3705
+#: Cadencii/FormMain.cs:3925
 msgid "Enable/Disable end marker."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3709
+#: Cadencii/FormMain.cs:3929
 msgid "Show/Hide lyrics."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3713
+#: Cadencii/FormMain.cs:3933
 msgid "Show/Hide expression lines."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3717
+#: Cadencii/FormMain.cs:3937
 msgid "Show/Hide pitch bend lines."
 msgstr ""
 
-#: Cadencii/FormMain.cs:3926
-#: Cadencii/FormMain.cs:10900
+#: Cadencii/FormMain.cs:4146
+#: Cadencii/FormMain.cs:10974
 msgid "Save this sequence?"
 msgstr ""
 
-#: Cadencii/FormMain.cs:3927
-#: Cadencii/FormMain.cs:10901
+#: Cadencii/FormMain.cs:4147
+#: Cadencii/FormMain.cs:10975
 msgid "Affirmation"
 msgstr ""
 
-#: Cadencii/FormMain.cs:4605
-#: Cadencii/FormMain.cs:4628
+#: Cadencii/FormMain.cs:4685
+#: Cadencii/FormMain.cs:4708
 #, csharp-format
 msgid ""
 "Invalid note data.\n"
@@ -288,770 +288,770 @@ msgid ""
 "-> Piano roll : Blank sequence."
 msgstr ""
 
-#: Cadencii/FormMain.cs:4660
+#: Cadencii/FormMain.cs:4740
 msgid "Wave Export"
 msgstr ""
 
-#: Cadencii/FormMain.cs:4661
-#: Cadencii/FormMain.cs:12422
+#: Cadencii/FormMain.cs:4741
+#: Cadencii/FormMain.cs:12461
 msgid "Wave File(*.wav)|*.wav"
 msgstr ""
 
-#: Cadencii/FormMain.cs:4662
-#: Cadencii/FormMain.cs:5317
-#: Cadencii/FormMain.cs:12374
-#: Cadencii/FormMain.cs:12383
-#: Cadencii/FormMain.cs:12392
-#: Cadencii/FormMain.cs:12402
+#: Cadencii/FormMain.cs:4742
+#: Cadencii/FormMain.cs:5397
 #: Cadencii/FormMain.cs:12413
-#: Cadencii/FormMain.cs:12423
+#: Cadencii/FormMain.cs:12422
+#: Cadencii/FormMain.cs:12431
+#: Cadencii/FormMain.cs:12441
+#: Cadencii/FormMain.cs:12452
+#: Cadencii/FormMain.cs:12462
 msgid "All Files(*.*)|*.*"
 msgstr ""
 
-#: Cadencii/FormMain.cs:4686
-msgid "invalid rendering region; start >= end"
+#: Cadencii/FormMain.cs:4766
+msgid "invalid rendering region; start>=end"
 msgstr ""
 
-#: Cadencii/FormMain.cs:4733
-#: Cadencii/FormMain.cs:4737
+#: Cadencii/FormMain.cs:4813
+#: Cadencii/FormMain.cs:4817
 msgid "Invalid MIDI file."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5316
+#: Cadencii/FormMain.cs:5396
 msgid "MusicXML(*.xml)|*.xml"
 msgstr ""
 
-#: Cadencii/FormMain.cs:5384
-#: Cadencii/FormMain.cs:5437
+#: Cadencii/FormMain.cs:5464
+#: Cadencii/FormMain.cs:5517
 msgid "Invalid VSQ/VOCALOID MIDI file"
 msgstr ""
 
-#: Cadencii/FormMain.cs:5610
+#: Cadencii/FormMain.cs:5690
 msgid "Create new project."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5614
+#: Cadencii/FormMain.cs:5694
 msgid "Open Cadencii project."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5618
+#: Cadencii/FormMain.cs:5698
 msgid "Save current project."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5622
+#: Cadencii/FormMain.cs:5702
 msgid "Save current project with new name."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5626
+#: Cadencii/FormMain.cs:5706
 msgid "Open VSQ / VOCALOID MIDI and create new project."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5630
+#: Cadencii/FormMain.cs:5710
 msgid "Open UTAU project and create new project."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5634
+#: Cadencii/FormMain.cs:5714
 msgid "Import."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5638
+#: Cadencii/FormMain.cs:5718
 msgid "Import VSQ / VOCALOID MIDI."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5642
+#: Cadencii/FormMain.cs:5722
 msgid "Import Standard MIDI."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5646
+#: Cadencii/FormMain.cs:5726
 msgid "Export to WAVE file."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5650
+#: Cadencii/FormMain.cs:5730
 msgid "Export to Standard MIDI."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5654
+#: Cadencii/FormMain.cs:5734
 msgid "Recent projects."
 msgstr ""
 
-#: Cadencii/FormMain.cs:5658
+#: Cadencii/FormMain.cs:5738
 msgid "Close this window."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6023
+#: Cadencii/FormMain.cs:6103
 msgid "Go to the first"
 msgstr ""
 
-#: Cadencii/FormMain.cs:6163
+#: Cadencii/FormMain.cs:6243
 msgid "Undo."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6167
+#: Cadencii/FormMain.cs:6247
 msgid "Redo."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6171
+#: Cadencii/FormMain.cs:6251
 msgid "Cut selected items."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6175
+#: Cadencii/FormMain.cs:6255
 msgid "Copy selected items."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6179
+#: Cadencii/FormMain.cs:6259
 msgid "Paste copied items to current song position."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6183
+#: Cadencii/FormMain.cs:6263
 msgid "Delete selected items."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6187
+#: Cadencii/FormMain.cs:6267
 msgid "Avoid automaticaly polyphonic editing."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6191
+#: Cadencii/FormMain.cs:6271
 msgid "Select all items and control curves of current track."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6195
+#: Cadencii/FormMain.cs:6275
 msgid "Select all items of current track."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6630
+#: Cadencii/FormMain.cs:6710
 msgid "Correct overlapped item."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6634
+#: Cadencii/FormMain.cs:6714
 msgid "Insert bar."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6638
+#: Cadencii/FormMain.cs:6718
 msgid "Delete bar."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6642
+#: Cadencii/FormMain.cs:6722
 msgid "Randomize items."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6642
-#: Cadencii/FormMain.cs:6860
-#: Cadencii/FormMain.cs:6868
+#: Cadencii/FormMain.cs:6722
+#: Cadencii/FormMain.cs:6940
+#: Cadencii/FormMain.cs:6948
 msgid "(not implemented)"
 msgstr ""
 
-#: Cadencii/FormMain.cs:6852
+#: Cadencii/FormMain.cs:6932
 msgid "Lengthen note end to neighboring note."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6856
+#: Cadencii/FormMain.cs:6936
 msgid "Import lyric."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6860
+#: Cadencii/FormMain.cs:6940
 msgid "Import tempo from ReWire host."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6864
+#: Cadencii/FormMain.cs:6944
 msgid "Start realtime input."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6868
+#: Cadencii/FormMain.cs:6948
 msgid "Reload VSTi dll."
 msgstr ""
 
-#: Cadencii/FormMain.cs:6966
-#: Cadencii/FormMain.cs:7111
-#: Cadencii/FormMain.cs:7457
-#: Cadencii/FormMain.cs:7492
-#: Cadencii/FormMain.cs:13025
-#: Cadencii/FormMain.cs:13058
+#: Cadencii/FormMain.cs:7046
+#: Cadencii/FormMain.cs:7191
+#: Cadencii/FormMain.cs:7537
+#: Cadencii/FormMain.cs:7572
+#: Cadencii/FormMain.cs:13066
+#: Cadencii/FormMain.cs:13099
 msgid "Cannot remove first symbol of track!"
 msgstr ""
 
-#: Cadencii/FormMain.cs:8541
+#: Cadencii/FormMain.cs:8618
 msgid "Enable current track."
 msgstr ""
 
-#: Cadencii/FormMain.cs:8545
+#: Cadencii/FormMain.cs:8622
 msgid "Add new track."
 msgstr ""
 
-#: Cadencii/FormMain.cs:8549
+#: Cadencii/FormMain.cs:8626
 msgid "Copy current track."
 msgstr ""
 
-#: Cadencii/FormMain.cs:8553
+#: Cadencii/FormMain.cs:8630
 msgid "Change track name."
 msgstr ""
 
-#: Cadencii/FormMain.cs:8557
+#: Cadencii/FormMain.cs:8634
 msgid "Delete current track."
 msgstr ""
 
-#: Cadencii/FormMain.cs:8561
+#: Cadencii/FormMain.cs:8638
 msgid "Render current track."
 msgstr ""
 
-#: Cadencii/FormMain.cs:8565
+#: Cadencii/FormMain.cs:8642
 msgid "Render all tracks."
 msgstr ""
 
-#: Cadencii/FormMain.cs:8569
+#: Cadencii/FormMain.cs:8646
 msgid "Show background items."
 msgstr ""
 
-#: Cadencii/FormMain.cs:8573
+#: Cadencii/FormMain.cs:8650
 msgid "Select voice synthesis engine."
 msgstr ""
 
-#: Cadencii/FormMain.cs:8577
+#: Cadencii/FormMain.cs:8654
 msgid "VOCALOID1"
 msgstr ""
 
-#: Cadencii/FormMain.cs:8581
+#: Cadencii/FormMain.cs:8658
 msgid "VOCALOID2"
 msgstr ""
 
-#: Cadencii/FormMain.cs:8585
+#: Cadencii/FormMain.cs:8662
 msgid "UTAU"
 msgstr ""
 
-#: Cadencii/FormMain.cs:8589
+#: Cadencii/FormMain.cs:8666
 msgid "Set global pitch shift."
 msgstr ""
 
-#: Cadencii/FormMain.cs:9490
+#: Cadencii/FormMain.cs:9567
 msgid "Speed"
 msgstr ""
 
-#: Cadencii/FormMain.cs:9886
-#: Cadencii/FormMain.cs:12525
+#: Cadencii/FormMain.cs:9963
+#: Cadencii/FormMain.cs:12564
 msgid "Remove"
 msgstr ""
 
-#: Cadencii/FormMain.cs:9897
+#: Cadencii/FormMain.cs:9974
 msgid "Start After Premeasure"
 msgstr ""
 
-#: Cadencii/FormMain.cs:9910
+#: Cadencii/FormMain.cs:9987
 msgid "Set Offset Seconds"
 msgstr ""
 
-#: Cadencii/FormMain.cs:9912
-#: Cadencii/FormMain.cs:9969
+#: Cadencii/FormMain.cs:9989
+#: Cadencii/FormMain.cs:10046
 #: Cadencii/FormMidiImExport.cs:98
 #: Cadencii/FormMidiImExport.cs:282
 msgid "seconds"
 msgstr ""
 
-#: Cadencii/FormMain.cs:9925
+#: Cadencii/FormMain.cs:10002
 msgid "Add"
 msgstr ""
 
-#: Cadencii/FormMain.cs:9948
+#: Cadencii/FormMain.cs:10025
 msgid "Input Offset Seconds"
 msgstr ""
 
-#: Cadencii/FormMain.cs:10034
+#: Cadencii/FormMain.cs:10111
 #, csharp-format
 msgid "file '{0}' is already registered as BGM."
 msgstr ""
 
-#: Cadencii/FormMain.cs:10060
+#: Cadencii/FormMain.cs:10137
 #, csharp-format
 msgid "remove '{0}'?"
 msgstr ""
 
-#: Cadencii/FormMain.cs:11323
-#: Cadencii/FormMain.cs:11343
+#: Cadencii/FormMain.cs:11397
+#: Cadencii/FormMain.cs:11417
 msgid "Disabled"
 msgstr ""
 
-#: Cadencii/FormMain.cs:11326
+#: Cadencii/FormMain.cs:11400
 msgid "Cursor"
 msgstr ""
 
-#: Cadencii/FormMain.cs:11329
+#: Cadencii/FormMain.cs:11403
 msgid "Keyboard"
 msgstr ""
 
-#: Cadencii/FormMain.cs:11332
+#: Cadencii/FormMain.cs:11406
 msgid "Normal"
 msgstr ""
 
-#: Cadencii/FormMain.cs:11400
+#: Cadencii/FormMain.cs:11474
 msgid "Run"
 msgstr ""
 
-#: Cadencii/FormMain.cs:11458
+#: Cadencii/FormMain.cs:11532
 msgid "Failed loading script."
 msgstr ""
 
-#: Cadencii/FormMain.cs:12373
-#: Cadencii/FormMain.cs:12382
+#: Cadencii/FormMain.cs:12412
+#: Cadencii/FormMain.cs:12421
 msgid "XML-VSQ Format(*.xvsq)|*.xvsq"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12391
+#: Cadencii/FormMain.cs:12430
 msgid "UTAU Script Format(*.ust)|*.ust"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12400
-#: Cadencii/FormMain.cs:12411
+#: Cadencii/FormMain.cs:12439
+#: Cadencii/FormMain.cs:12450
 msgid "MIDI Format(*.mid)|*.mid"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12401
-#: Cadencii/FormMain.cs:12412
+#: Cadencii/FormMain.cs:12440
+#: Cadencii/FormMain.cs:12451
 msgid "VSQ Format(*.vsq)|*.vsq"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12429
-#: Cadencii/FormMain.cs:12523
-#: Cadencii/FormMain.cs:12622
+#: Cadencii/FormMain.cs:12468
+#: Cadencii/FormMain.cs:12562
+#: Cadencii/FormMain.cs:12661
 msgid "Game Controler"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12436
-#: Cadencii/FormMain.cs:12437
+#: Cadencii/FormMain.cs:12475
+#: Cadencii/FormMain.cs:12476
 msgid "Pointer"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12438
-#: Cadencii/FormMain.cs:12439
-#: Cadencii/FormMain.cs:12553
-#: Cadencii/FormMain.cs:12603
+#: Cadencii/FormMain.cs:12477
+#: Cadencii/FormMain.cs:12478
+#: Cadencii/FormMain.cs:12592
+#: Cadencii/FormMain.cs:12642
 msgid "Pencil"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12440
-#: Cadencii/FormMain.cs:12441
-#: Cadencii/FormMain.cs:12604
+#: Cadencii/FormMain.cs:12479
+#: Cadencii/FormMain.cs:12480
+#: Cadencii/FormMain.cs:12643
 msgid "Line"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12442
-#: Cadencii/FormMain.cs:12443
-#: Cadencii/FormMain.cs:12554
-#: Cadencii/FormMain.cs:12605
+#: Cadencii/FormMain.cs:12481
+#: Cadencii/FormMain.cs:12482
+#: Cadencii/FormMain.cs:12593
+#: Cadencii/FormMain.cs:12644
 msgid "Eraser"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12444
-#: Cadencii/FormMain.cs:12445
-#: Cadencii/FormMain.cs:12557
-#: Cadencii/FormMain.cs:12608
+#: Cadencii/FormMain.cs:12483
+#: Cadencii/FormMain.cs:12484
+#: Cadencii/FormMain.cs:12596
+#: Cadencii/FormMain.cs:12647
 msgid "Curve"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12446
-#: Cadencii/FormMain.cs:12447
+#: Cadencii/FormMain.cs:12485
+#: Cadencii/FormMain.cs:12486
 msgid "Grid"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12450
+#: Cadencii/FormMain.cs:12489
 #: Cadencii/FormShortcutKeys.cs:112
 msgid "File"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12451
+#: Cadencii/FormMain.cs:12490
 msgid "New"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12452
+#: Cadencii/FormMain.cs:12491
 msgid "Open"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12453
+#: Cadencii/FormMain.cs:12492
 msgid "Open VSQ/Vocaloid Midi"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12454
+#: Cadencii/FormMain.cs:12493
 msgid "Open UTAU Project File"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12455
+#: Cadencii/FormMain.cs:12494
 msgid "Save"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12456
+#: Cadencii/FormMain.cs:12495
 msgid "Save As"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12457
+#: Cadencii/FormMain.cs:12496
 msgid "Import"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12458
+#: Cadencii/FormMain.cs:12497
 msgid "VSQ / Vocaloid Midi"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12459
+#: Cadencii/FormMain.cs:12498
 msgid "Export"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12460
+#: Cadencii/FormMain.cs:12499
 msgid "Recent Files"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12461
+#: Cadencii/FormMain.cs:12500
 msgid "Quit"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12463
+#: Cadencii/FormMain.cs:12502
 #: Cadencii/FormShortcutKeys.cs:114
 msgid "Edit"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12464
-#: Cadencii/FormMain.cs:12571
+#: Cadencii/FormMain.cs:12503
 #: Cadencii/FormMain.cs:12610
+#: Cadencii/FormMain.cs:12649
 msgid "Undo"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12465
-#: Cadencii/FormMain.cs:12572
+#: Cadencii/FormMain.cs:12504
 #: Cadencii/FormMain.cs:12611
+#: Cadencii/FormMain.cs:12650
 msgid "Redo"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12466
-#: Cadencii/FormMain.cs:12574
+#: Cadencii/FormMain.cs:12505
 #: Cadencii/FormMain.cs:12613
+#: Cadencii/FormMain.cs:12652
 msgid "Cut"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12467
-#: Cadencii/FormMain.cs:12576
-#: Cadencii/FormMain.cs:12614
+#: Cadencii/FormMain.cs:12506
+#: Cadencii/FormMain.cs:12615
+#: Cadencii/FormMain.cs:12653
 msgid "Copy"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12468
-#: Cadencii/FormMain.cs:12575
-#: Cadencii/FormMain.cs:12615
+#: Cadencii/FormMain.cs:12507
+#: Cadencii/FormMain.cs:12614
+#: Cadencii/FormMain.cs:12654
 msgid "Paste"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12469
-#: Cadencii/FormMain.cs:12577
+#: Cadencii/FormMain.cs:12508
 #: Cadencii/FormMain.cs:12616
+#: Cadencii/FormMain.cs:12655
 msgid "Delete"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12470
+#: Cadencii/FormMain.cs:12509
 msgid "Auto Normalize Mode"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12471
-#: Cadencii/FormMain.cs:12579
+#: Cadencii/FormMain.cs:12510
+#: Cadencii/FormMain.cs:12618
 msgid "Select All"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12472
-#: Cadencii/FormMain.cs:12580
+#: Cadencii/FormMain.cs:12511
 #: Cadencii/FormMain.cs:12619
+#: Cadencii/FormMain.cs:12658
 msgid "Select All Events"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12474
+#: Cadencii/FormMain.cs:12513
 #: Cadencii/FormShortcutKeys.cs:116
 msgid "View"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12475
+#: Cadencii/FormMain.cs:12514
 msgid "Control Track"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12476
+#: Cadencii/FormMain.cs:12515
 #: Cadencii/FormMixer.cs:70
 msgid "Mixer"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12477
+#: Cadencii/FormMain.cs:12516
 msgid "Waveform"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12478
+#: Cadencii/FormMain.cs:12517
 msgid "Property Window"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12479
+#: Cadencii/FormMain.cs:12518
 msgid "Navigation"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12480
+#: Cadencii/FormMain.cs:12519
 msgid "Grid Line"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12481
+#: Cadencii/FormMain.cs:12520
 msgid "Start Marker"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12482
+#: Cadencii/FormMain.cs:12521
 msgid "End Marker"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12483
+#: Cadencii/FormMain.cs:12522
 msgid "Lyrics/Phoneme"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12484
+#: Cadencii/FormMain.cs:12523
 msgid "Note Expression/Vibrato"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12485
+#: Cadencii/FormMain.cs:12524
 msgid "Pitch Line"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12486
+#: Cadencii/FormMain.cs:12525
 msgid "VSTi Plugin UI"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12489
+#: Cadencii/FormMain.cs:12528
 #: Cadencii/FormShortcutKeys.cs:118
 msgid "Job"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12490
+#: Cadencii/FormMain.cs:12529
 msgid "Normalize Notes"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12493
+#: Cadencii/FormMain.cs:12532
 #: Cadencii/FormRandomize.cs:280
 msgid "Randomize"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12494
+#: Cadencii/FormMain.cs:12533
 msgid "Connect Notes"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12495
-#: Cadencii/FormMain.cs:12584
+#: Cadencii/FormMain.cs:12534
+#: Cadencii/FormMain.cs:12623
 msgid "Insert Lyrics"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12496
+#: Cadencii/FormMain.cs:12535
 msgid "Import ReWire Host Tempo"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12498
+#: Cadencii/FormMain.cs:12537
 msgid "Reload VSTi"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12500
+#: Cadencii/FormMain.cs:12539
 #: Cadencii/FormMidiImExport.cs:63
 #: Cadencii/FormMidiImExport.cs:83
 #: Cadencii/FormShortcutKeys.cs:126
 msgid "Track"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12501
-#: Cadencii/FormMain.cs:12588
+#: Cadencii/FormMain.cs:12540
+#: Cadencii/FormMain.cs:12627
 msgid "Track On"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12502
-#: Cadencii/FormMain.cs:12589
+#: Cadencii/FormMain.cs:12541
+#: Cadencii/FormMain.cs:12628
 msgid "Play After Synth"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12503
-#: Cadencii/FormMain.cs:12590
+#: Cadencii/FormMain.cs:12542
+#: Cadencii/FormMain.cs:12629
 msgid "Add Track"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12504
-#: Cadencii/FormMain.cs:12591
+#: Cadencii/FormMain.cs:12543
+#: Cadencii/FormMain.cs:12630
 msgid "Copy Track"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12505
-#: Cadencii/FormMain.cs:12592
+#: Cadencii/FormMain.cs:12544
+#: Cadencii/FormMain.cs:12631
 msgid "Rename Track"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12506
-#: Cadencii/FormMain.cs:12593
+#: Cadencii/FormMain.cs:12545
+#: Cadencii/FormMain.cs:12632
 msgid "Delete Track"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12507
-#: Cadencii/FormMain.cs:12595
+#: Cadencii/FormMain.cs:12546
+#: Cadencii/FormMain.cs:12634
 msgid "Render Current Track"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12508
-#: Cadencii/FormMain.cs:12596
+#: Cadencii/FormMain.cs:12547
+#: Cadencii/FormMain.cs:12635
 msgid "Render All Tracks"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12509
-#: Cadencii/FormMain.cs:12597
+#: Cadencii/FormMain.cs:12548
+#: Cadencii/FormMain.cs:12636
 msgid "Overlay"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12510
-#: Cadencii/FormMain.cs:12598
+#: Cadencii/FormMain.cs:12549
+#: Cadencii/FormMain.cs:12637
 msgid "Renderer"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12512
+#: Cadencii/FormMain.cs:12551
 #: Cadencii/FormMidiImExport.cs:92
 #: Cadencii/FormShortcutKeys.cs:120
 msgid "Lyrics"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12513
-#: Cadencii/FormMain.cs:12582
+#: Cadencii/FormMain.cs:12552
+#: Cadencii/FormMain.cs:12621
 msgid "Note Expression Property"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12514
-#: Cadencii/FormMain.cs:12583
+#: Cadencii/FormMain.cs:12553
+#: Cadencii/FormMain.cs:12622
 msgid "Note Vibrato Property"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12515
+#: Cadencii/FormMain.cs:12554
 msgid "Phoneme Transformation"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12516
+#: Cadencii/FormMain.cs:12555
 msgid "User Word Dictionary"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12518
+#: Cadencii/FormMain.cs:12557
 #: Cadencii/FormShortcutKeys.cs:128
 msgid "Script"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12519
+#: Cadencii/FormMain.cs:12558
 msgid "Update Script List"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12521
-#: Cadencii/FormMain.cs:12526
+#: Cadencii/FormMain.cs:12560
+#: Cadencii/FormMain.cs:12565
 #: Cadencii/FormShortcutKeys.cs:122
 msgid "Setting"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12522
+#: Cadencii/FormMain.cs:12561
 msgid "Preference"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12524
+#: Cadencii/FormMain.cs:12563
 msgid "Load"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12527
+#: Cadencii/FormMain.cs:12566
 #: Cadencii/FormShortcutKeys.cs:101
 msgid "Shortcut Key"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12528
+#: Cadencii/FormMain.cs:12567
 msgid "UTAU Voice DB"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12529
+#: Cadencii/FormMain.cs:12568
 msgid "Singing Style Defaults"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12530
-#: Cadencii/FormMain.cs:12563
+#: Cadencii/FormMain.cs:12569
+#: Cadencii/FormMain.cs:12602
 msgid "Quantize"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12531
-#: Cadencii/FormMain.cs:12534
-#: Cadencii/FormMain.cs:12561
-#: Cadencii/FormMain.cs:12565
-#: Cadencii/FormMain.cs:12568
+#: Cadencii/FormMain.cs:12570
+#: Cadencii/FormMain.cs:12573
+#: Cadencii/FormMain.cs:12600
+#: Cadencii/FormMain.cs:12604
+#: Cadencii/FormMain.cs:12607
 msgid "Off"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12532
-#: Cadencii/FormMain.cs:12535
-#: Cadencii/FormMain.cs:12560
-#: Cadencii/FormMain.cs:12564
-#: Cadencii/FormMain.cs:12567
+#: Cadencii/FormMain.cs:12571
+#: Cadencii/FormMain.cs:12574
+#: Cadencii/FormMain.cs:12599
+#: Cadencii/FormMain.cs:12603
+#: Cadencii/FormMain.cs:12606
 msgid "Triplet"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12536
+#: Cadencii/FormMain.cs:12575
 msgid "Singer Properties"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12537
-#: Cadencii/FormMain.cs:12555
-#: Cadencii/FormMain.cs:12606
+#: Cadencii/FormMain.cs:12576
+#: Cadencii/FormMain.cs:12594
+#: Cadencii/FormMain.cs:12645
 msgid "Palette Tool"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12539
+#: Cadencii/FormMain.cs:12578
 #: Cadencii/FormShortcutKeys.cs:124
 msgid "Help"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12540
+#: Cadencii/FormMain.cs:12579
 msgid "About Cadencii"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12542
+#: Cadencii/FormMain.cs:12581
 msgid "Start Lyric Input"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12543
+#: Cadencii/FormMain.cs:12582
 msgid "Chagne Tool Pointer / Eraser"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12544
+#: Cadencii/FormMain.cs:12583
 msgid "Change Tool Pointer / Pencil"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12545
+#: Cadencii/FormMain.cs:12584
 msgid "Previous Track"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12546
+#: Cadencii/FormMain.cs:12585
 msgid "Next Track"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12547
+#: Cadencii/FormMain.cs:12586
 msgid "Previous Control Curve"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12548
+#: Cadencii/FormMain.cs:12587
 msgid "Next Control Curve"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12552
-#: Cadencii/FormMain.cs:12602
+#: Cadencii/FormMain.cs:12591
+#: Cadencii/FormMain.cs:12641
 msgid "Arrow"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12559
+#: Cadencii/FormMain.cs:12598
 msgid "Note Fixed Length"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12562
+#: Cadencii/FormMain.cs:12601
 msgid "Dot"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12569
+#: Cadencii/FormMain.cs:12608
 msgid "Show/Hide Grid Line"
 msgstr ""
 
-#: Cadencii/FormMain.cs:12617
+#: Cadencii/FormMain.cs:12656
 msgid "Delete Bezier Point"
 msgstr ""
 
-#: Cadencii/FormMain.cs:13723
+#: Cadencii/FormMain.cs:13764
 #, csharp-format
 msgid "Do you wish to remove track? {0} : '{1}'"
 msgstr ""
 
-#: Cadencii/FormMain.cs:14317
+#: Cadencii/FormMain.cs:14358
 msgid "[file not found]"
 msgstr ""
 
@@ -1295,37 +1295,37 @@ msgstr ""
 msgid "Default Singer Style"
 msgstr ""
 
-#: Cadencii/FormSynthesize.cs:138
+#: Cadencii/FormSynthesize.cs:134
 msgid "Synthesize"
 msgstr ""
 
-#: Cadencii/FormSynthesize.cs:139
+#: Cadencii/FormSynthesize.cs:135
 msgid "now synthesizing..."
 msgstr ""
 
-#: Cadencii/FormSynthesize.cs:313
-#: Cadencii/FormSynthesize.cs:315
+#: Cadencii/FormSynthesize.cs:312
+#: Cadencii/FormSynthesize.cs:314
 msgid "Remaining"
 msgstr ""
 
-#: Cadencii/FormSynthesize.cs:313
-#: Cadencii/FormSynthesize.cs:315
+#: Cadencii/FormSynthesize.cs:312
+#: Cadencii/FormSynthesize.cs:314
 msgid "elapsed"
 msgstr ""
 
-#: Cadencii/FormSynthesize.cs:328
+#: Cadencii/FormSynthesize.cs:327
 msgid "day"
 msgstr ""
 
-#: Cadencii/FormSynthesize.cs:334
+#: Cadencii/FormSynthesize.cs:333
 msgid "hour"
 msgstr ""
 
-#: Cadencii/FormSynthesize.cs:340
+#: Cadencii/FormSynthesize.cs:339
 msgid "min"
 msgstr ""
 
-#: Cadencii/FormSynthesize.cs:344
+#: Cadencii/FormSynthesize.cs:343
 msgid "sec"
 msgstr ""
 
@@ -1369,219 +1369,219 @@ msgstr ""
 msgid "Down"
 msgstr ""
 
-#: Cadencii/Preference.cs:548
+#: Cadencii/Preference.cs:545
 msgid "Executable(*.exe)|*.exe"
 msgstr ""
 
-#: Cadencii/Preference.cs:555
+#: Cadencii/Preference.cs:552
 msgid "Select Singer Directory"
 msgstr ""
 
-#: Cadencii/Preference.cs:567
-#: Cadencii/Preference.cs:583
+#: Cadencii/Preference.cs:564
+#: Cadencii/Preference.cs:580
 msgid "Sequence"
 msgstr ""
 
-#: Cadencii/Preference.cs:569
-#: Cadencii/Preference.cs:584
+#: Cadencii/Preference.cs:566
+#: Cadencii/Preference.cs:581
 msgid "Other Settings"
 msgstr ""
 
-#: Cadencii/Preference.cs:571
-#: Cadencii/Preference.cs:585
+#: Cadencii/Preference.cs:568
+#: Cadencii/Preference.cs:582
 msgid "Appearance"
 msgstr ""
 
-#: Cadencii/Preference.cs:573
-#: Cadencii/Preference.cs:586
+#: Cadencii/Preference.cs:570
+#: Cadencii/Preference.cs:583
 msgid "Operation"
 msgstr ""
 
-#: Cadencii/Preference.cs:575
-#: Cadencii/Preference.cs:587
-#: Cadencii/Preference.cs:644
+#: Cadencii/Preference.cs:572
+#: Cadencii/Preference.cs:584
+#: Cadencii/Preference.cs:641
 msgid "Platform"
 msgstr ""
 
-#: Cadencii/Preference.cs:577
-#: Cadencii/Preference.cs:588
+#: Cadencii/Preference.cs:574
+#: Cadencii/Preference.cs:585
 msgid "UTAU Singers"
 msgstr ""
 
-#: Cadencii/Preference.cs:594
+#: Cadencii/Preference.cs:591
 msgid "Resolution(VSTi)"
 msgstr ""
 
-#: Cadencii/Preference.cs:595
+#: Cadencii/Preference.cs:592
 msgid "Dynamics"
 msgstr ""
 
-#: Cadencii/Preference.cs:596
+#: Cadencii/Preference.cs:593
 msgid "Vibrato Depth"
 msgstr ""
 
-#: Cadencii/Preference.cs:597
+#: Cadencii/Preference.cs:594
 msgid "Vibrato Rate"
 msgstr ""
 
-#: Cadencii/Preference.cs:598
+#: Cadencii/Preference.cs:595
 msgid "Vibrato Settings"
 msgstr ""
 
-#: Cadencii/Preference.cs:599
+#: Cadencii/Preference.cs:596
 msgid "Default Vibrato Length"
 msgstr ""
 
-#: Cadencii/Preference.cs:600
+#: Cadencii/Preference.cs:597
 msgid "Auto Vibrato Settings"
 msgstr ""
 
-#: Cadencii/Preference.cs:601
+#: Cadencii/Preference.cs:598
 msgid "Enable Automatic Vibrato"
 msgstr ""
 
-#: Cadencii/Preference.cs:602
+#: Cadencii/Preference.cs:599
 msgid "Minimum note length for Automatic Vibrato"
 msgstr ""
 
-#: Cadencii/Preference.cs:608
+#: Cadencii/Preference.cs:605
 msgid "Default Singer"
 msgstr ""
 
-#: Cadencii/Preference.cs:609
+#: Cadencii/Preference.cs:606
 msgid "Pre-Send time"
 msgstr ""
 
-#: Cadencii/Preference.cs:610
+#: Cadencii/Preference.cs:607
 msgid "Waiting Time"
 msgstr ""
 
-#: Cadencii/Preference.cs:611
+#: Cadencii/Preference.cs:608
 msgid "Default Pre-measure"
 msgstr ""
 
-#: Cadencii/Preference.cs:612
+#: Cadencii/Preference.cs:609
 msgid "Chase Event"
 msgstr ""
 
-#: Cadencii/Preference.cs:616
+#: Cadencii/Preference.cs:613
 msgid "Font"
 msgstr ""
 
-#: Cadencii/Preference.cs:617
+#: Cadencii/Preference.cs:614
 msgid "Menu / Lyrics"
 msgstr ""
 
-#: Cadencii/Preference.cs:618
+#: Cadencii/Preference.cs:615
 msgid "Screen"
 msgstr ""
 
-#: Cadencii/Preference.cs:619
+#: Cadencii/Preference.cs:616
 msgid "UI Language"
 msgstr ""
 
-#: Cadencii/Preference.cs:620
-#: Cadencii/Preference.cs:621
+#: Cadencii/Preference.cs:617
+#: Cadencii/Preference.cs:618
 msgid "Change"
 msgstr ""
 
-#: Cadencii/Preference.cs:622
+#: Cadencii/Preference.cs:619
 msgid "Track Height (pixel)"
 msgstr ""
 
-#: Cadencii/Preference.cs:623
+#: Cadencii/Preference.cs:620
 msgid "Visible Control Curve"
 msgstr ""
 
-#: Cadencii/Preference.cs:627
+#: Cadencii/Preference.cs:624
 msgid "Mouse wheel Rate"
 msgstr ""
 
-#: Cadencii/Preference.cs:628
+#: Cadencii/Preference.cs:625
 msgid "Fix Play Cursor to Center"
 msgstr ""
 
-#: Cadencii/Preference.cs:629
+#: Cadencii/Preference.cs:626
 msgid "Horizontal Scroll when Mouse wheel"
 msgstr ""
 
-#: Cadencii/Preference.cs:630
+#: Cadencii/Preference.cs:627
 msgid "Maximum Frame Rate"
 msgstr ""
 
-#: Cadencii/Preference.cs:631
+#: Cadencii/Preference.cs:628
 msgid "Keep Lyric Input Mode"
 msgstr ""
 
-#: Cadencii/Preference.cs:632
+#: Cadencii/Preference.cs:629
 msgid "Waiting Time for Preview"
 msgstr ""
 
-#: Cadencii/Preference.cs:633
+#: Cadencii/Preference.cs:630
 msgid "milli second"
 msgstr ""
 
-#: Cadencii/Preference.cs:634
+#: Cadencii/Preference.cs:631
 msgid "Play Preview On Right Click"
 msgstr ""
 
-#: Cadencii/Preference.cs:635
+#: Cadencii/Preference.cs:632
 msgid "Enable Quantize for Curve Selecting"
 msgstr ""
 
-#: Cadencii/Preference.cs:636
+#: Cadencii/Preference.cs:633
 msgid "MIDI In Port Number"
 msgstr ""
 
-#: Cadencii/Preference.cs:637
+#: Cadencii/Preference.cs:634
 msgid "Use space key as Middle button modifier"
 msgstr ""
 
-#: Cadencii/Preference.cs:639
+#: Cadencii/Preference.cs:636
 msgid "Piano Roll"
 msgstr ""
 
-#: Cadencii/Preference.cs:640
+#: Cadencii/Preference.cs:637
 msgid "Misc"
 msgstr ""
 
-#: Cadencii/Preference.cs:645
+#: Cadencii/Preference.cs:642
 msgid "Current Platform"
 msgstr ""
 
-#: Cadencii/Preference.cs:646
+#: Cadencii/Preference.cs:643
 msgid "Use Command key as Control key"
 msgstr ""
 
-#: Cadencii/Preference.cs:647
+#: Cadencii/Preference.cs:644
 msgid "Translate Roman letters into Kana"
 msgstr ""
 
-#: Cadencii/Preference.cs:649
+#: Cadencii/Preference.cs:646
 msgid "UTAU Cores"
 msgstr ""
 
-#: Cadencii/Preference.cs:650
+#: Cadencii/Preference.cs:647
 msgid "Invoke UTAU cores with Wine"
 msgstr ""
 
-#: Cadencii/Preference.cs:654
+#: Cadencii/Preference.cs:651
 msgid "Program Change"
 msgstr ""
 
-#: Cadencii/Preference.cs:654
+#: Cadencii/Preference.cs:651
 msgid "Path"
 msgstr ""
 
-#: Cadencii/Preference.cs:662
+#: Cadencii/Preference.cs:659
 msgid "Automatical Backup"
 msgstr ""
 
-#: Cadencii/Preference.cs:663
+#: Cadencii/Preference.cs:660
 msgid "interval"
 msgstr ""
 
-#: Cadencii/Preference.cs:664
+#: Cadencii/Preference.cs:661
 msgid "minute(s)"
 msgstr ""
 

@@ -908,6 +908,14 @@ namespace org.kbinani.cadencii {
         /// 再生中にWAVE波形の描画をスキップするかどうか（デフォルトはtrue）
         /// </summary>
         public static boolean skipDrawingWaveformWhenPlaying = true;
+        /// <summary>
+        /// コントロールカーブに、音符の境界線を重ね描きするかどうか（デフォルトはtrue）
+        /// </summary>
+        public static boolean drawItemBorderInControlCurveView = true;
+        /// <summary>
+        /// コントロールカーブに、データ点を表す四角を描くかどうか（デフォルトはtrue）
+        /// </summary>
+        public static boolean drawCurveDotInControlCurveView = true;
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
