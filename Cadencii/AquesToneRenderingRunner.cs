@@ -470,19 +470,19 @@ namespace org.kbinani.cadencii {
                             pit_change.put( clock, pvalue );
                         }
                         // ビブラート部分のピッチを取得
-                        Vector<PointD> ret = FormMain.getVibratoPoints( vsq,
-                                                                        item.ID.VibratoHandle.RateBP,
-                                                                        item.ID.VibratoHandle.StartRate,
-                                                                        item.ID.VibratoHandle.DepthBP,
-                                                                        item.ID.VibratoHandle.StartDepth,
-                                                                        item.Clock + item.ID.VibratoDelay,
-                                                                        item.ID.getLength() - item.ID.VibratoDelay,
-                                                                        (float)delta_sec );
-                        int c = ret.size();
-                        for ( int i = 0; i < c; i++ ) {
-                            float gtime = (float)ret.get( i ).getX();
+                        Vector<PointD> ret = new Vector<PointD>();
+                        for ( Iterator<PointD> itr2 = new VibratoPointIterator( vsq,
+                                                                               item.ID.VibratoHandle.RateBP,
+                                                                               item.ID.VibratoHandle.StartRate,
+                                                                               item.ID.VibratoHandle.DepthBP,
+                                                                               item.ID.VibratoHandle.StartDepth,
+                                                                               item.Clock + item.ID.VibratoDelay,
+                                                                               item.ID.getLength() - item.ID.VibratoDelay,
+                                                                               (float)delta_sec ); itr2.hasNext(); ) {
+                            PointD p = itr2.next();
+                            float gtime = (float)p.getX();
                             int clock = (int)vsq.getClockFromSec( gtime );
-                            float pvalue = (float)(t.getPitchAt( clock ) + ret.get( i ).getY() * 100.0);
+                            float pvalue = (float)(t.getPitchAt( clock ) + p.getY() * 100.0);
                             pitmax = Math.Max( pitmax, Math.Abs( pvalue ) );
                             pit_change.put( clock, pvalue );
                         }

@@ -318,19 +318,20 @@ namespace org.kbinani.cadencii {
                             }
                             totalcount++;
                         }
-                        Vector<PointD> ret = FormMain.getVibratoPoints( m_vsq,
-                                                                      item.ID.VibratoHandle.RateBP,
-                                                                      item.ID.VibratoHandle.StartRate,
-                                                                      item.ID.VibratoHandle.DepthBP,
-                                                                      item.ID.VibratoHandle.StartDepth,
-                                                                      item.Clock + item.ID.VibratoDelay,
-                                                                      item.ID.getLength() - item.ID.VibratoDelay,
-                                                                      (float)delta_sec );
-                        for ( int i = 0; i < ret.size(); i++ ) {
-                            float gtime = (float)ret.get( i ).getX();
+                        Iterator<PointD> itr = new VibratoPointIterator( m_vsq,
+                                                                         item.ID.VibratoHandle.RateBP,
+                                                                         item.ID.VibratoHandle.StartRate,
+                                                                         item.ID.VibratoHandle.DepthBP,
+                                                                         item.ID.VibratoHandle.StartDepth,
+                                                                         item.Clock + item.ID.VibratoDelay,
+                                                                         item.ID.getLength() - item.ID.VibratoDelay,
+                                                                         (float)delta_sec );
+                        for ( ; itr.hasNext(); ) {
+                            PointD ret = itr.next();
+                            float gtime = (float)ret.getX();
                             int clock = (int)m_vsq.getClockFromSec( gtime );
                             float pvalue = (float)target.getPitchAt( clock );
-                            pitch += " " + PortUtil.formatDecimal( "0.00", pvalue + ret.get( i ).getY() * 100.0f );
+                            pitch += " " + PortUtil.formatDecimal( "0.00", pvalue + ret.getY() * 100.0f );
                             if ( totalcount == 0 ) {
                                 pitch += "Q" + tempo;
                             }

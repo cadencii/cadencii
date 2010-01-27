@@ -2647,7 +2647,10 @@ namespace org.kbinani.cadencii {
 #if USE_DOBJ
                         for ( Iterator itr = AppManager.drawObjects.get( selected_track - 1 ).iterator(); itr.hasNext(); ) {
                             DrawObject dobj = (DrawObject)itr.next();
-                            Rectangle rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth - stdx, dobj.pxRectangle.y - stdy, _EDIT_HANDLE_WIDTH, dobj.pxRectangle.height );
+                            Rectangle rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth - stdx, 
+                                                          dobj.pxRectangle.y - stdy,
+                                                          _EDIT_HANDLE_WIDTH, 
+                                                          dobj.pxRectangle.height );
 #else
                     for( Iterator itr = AppManager.VsqFile.getTrack( AppManager.Selected ).getNoteEventIterator(); itr.hasNext(); ){
                         VsqEvent evnt = (VsqEvent)itr.next();
@@ -10636,59 +10639,6 @@ namespace org.kbinani.cadencii {
                 AppManager.debugWriteLine( "DrawUtauVibrato; oex=" + oex );
 #endif
             }
-        }
-
-        /// <summary>
-        /// ビブラート用のデータ点のリストを取得します。返却されるリストは、{秒, ビブラートの振幅(ノートナンバー単位)}の値ペアとなっています
-        /// </summary>
-        /// <param name="rate"></param>
-        /// <param name="start_rate"></param>
-        /// <param name="depth"></param>
-        /// <param name="start_depth"></param>
-        /// <param name="clock_start"></param>
-        /// <param name="clock_width"></param>
-        /// <returns></returns>
-        public static Vector<PointD> getVibratoPoints( VsqFileEx vsq,
-                                                       VibratoBPList rate,
-                                                       int start_rate,
-                                                       VibratoBPList depth,
-                                                       int start_depth,
-                                                       int clock_start,
-                                                       int clock_width,
-                                                       float sec_resolution ) {
-            Vector<PointD> ret = new Vector<PointD>();
-            double sec0 = vsq.getSecFromClock( clock_start );
-            double sec1 = vsq.getSecFromClock( clock_start + clock_width );
-            int count = (int)((sec1 - sec0) / sec_resolution);
-            double phase = 0;
-            start_rate = rate.getValue( 0.0f, start_rate );
-            start_depth = depth.getValue( 0.0f, start_depth );
-            float amplitude = start_depth * 2.5f / 127.0f / 2.0f; // ビブラートの振幅。
-            float period = (float)Math.Exp( 5.24 - 1.07e-2 * start_rate ) * 2.0f / 1000.0f; //ビブラートの周期、秒
-            float omega = (float)(2.0 * Math.PI / period); // 角速度(rad/sec)
-            ret.add( new PointD( sec0, 0 ) );
-            double sec = sec0;
-            float fadewidth = (float)(sec1 - sec0) * 0.2f;
-            for ( int i = 1; i < count; i++ ) {
-                double t_sec = sec0 + sec_resolution * i;
-                double clock = vsq.getClockFromSec( t_sec );
-                if ( sec0 <= t_sec && t_sec <= sec0 + fadewidth ) {
-                    amplitude *= (float)(t_sec - sec0) / fadewidth;
-                }
-                if ( sec1 - fadewidth <= t_sec && t_sec <= sec1 ) {
-                    amplitude *= (float)(sec1 - t_sec) / fadewidth;
-                }
-                phase += omega * (t_sec - sec);
-                ret.add( new PointD( t_sec, amplitude * Math.Sin( phase ) ) );
-                float v = (float)(clock - clock_start) / (float)clock_width;
-                int r = rate.getValue( v, start_rate );
-                int d = depth.getValue( v, start_depth );
-                amplitude = d * 2.5f / 127.0f / 2.0f;
-                period = (float)Math.Exp( 5.24 - 1.07e-2 * r ) * 2.0f / 1000.0f;
-                omega = (float)(2.0 * Math.PI / period);
-                sec = t_sec;
-            }
-            return ret;
         }
 
 #if !JAVA

@@ -2154,26 +2154,24 @@ namespace org.kbinani.cadencii {
             for ( Iterator itr = s_vsq.Track.get( s_selected ).getEventIterator(); itr.hasNext(); ) {
                 VsqEvent ev = (VsqEvent)itr.next();
                 if ( ev.InternalID == id ) {
-                    if ( !isSelectedEventContains( s_selected, id ) ) {
-                        // まだ選択されていなかった場合
-                        s_selected_events.add( new SelectedEventEntry( s_selected, ev, (VsqEvent)ev.clone() ) );
-                        if ( !silent ) {
-                            try {
-                                selectedEventChangedEvent.raise( typeof( AppManager ), false );
-                            } catch ( Exception ex ) {
-                                PortUtil.stderr.println( "AppManager#addSelectedEventCor; ex=" + ex );
-                            }
-                        }
-                    } else {
-                        // すでに選択されているアイテムの再選択
+                    if ( isSelectedEventContains( s_selected, id ) ) {
+                        // すでに選択されていた場合
                         int count = s_selected_events.size();
                         for ( int i = 0; i < count; i++ ) {
                             SelectedEventEntry item = s_selected_events.get( i );
                             if ( item.original.InternalID == id ) {
                                 s_selected_events.removeElementAt( i );
-                                s_selected_events.add( item );
                                 break;
                             }
+                        }
+                    }
+
+                    s_selected_events.add( new SelectedEventEntry( s_selected, ev, (VsqEvent)ev.clone() ) );
+                    if ( !silent ) {
+                        try {
+                            selectedEventChangedEvent.raise( typeof( AppManager ), false );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "AppManager#addSelectedEventCor; ex=" + ex );
                         }
                     }
                     break;

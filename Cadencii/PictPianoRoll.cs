@@ -1035,7 +1035,7 @@ namespace org.kbinani.cadencii {
         /// <param name="note">描画する音符のノートナンバー</param>
         /// <param name="clock_start">ビブラートが始まるクロック位置</param>
         /// <param name="clock_width">ビブラートのクロック長さ</param>
-        private void drawVibratoPitchbend( Graphics g,
+        private void drawVibratoPitchbend( Graphics2D g,
                                            VibratoBPList rate,
                                            int start_rate,
                                            VibratoBPList depth,
@@ -1052,33 +1052,23 @@ namespace org.kbinani.cadencii {
             int clock_start = AppManager.clockFromXCoord( x_start );
             int clock_end = AppManager.clockFromXCoord( x_start + px_width );
             int tempo = vsq.getTempoAt( clock_start );
-            Vector<PointD> ret = FormMain.getVibratoPoints( vsq,
-                                                 rate,
-                                                 start_rate,
-                                                 depth,
-                                                 start_depth,
-                                                 clock_start,
-                                                 clock_end - clock_start,
-                                                 (float)(tempo * 1e-6 / 480.0) );
-            int count = ret.size();
-            if ( count >= 2 ) {
-                int[] drawx = new int[count];
-                int[] drawy = new int[count];
-                for ( int i = 0; i < count; i++ ) {
-                    PointD p = ret.get( i );
-                    drawx[i] = AppManager.xCoordFromClocks( vsq.getClockFromSec( p.getX() ) );
-                    drawy[i] = (int)(p.getY() * px_track_height + y0);
-                }
-#if !JAVA
-                System.Drawing.Drawing2D.SmoothingMode sm = g.nativeGraphics.SmoothingMode;
-                g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
-                g.setColor( Color.blue );
-                g.drawPolygon( drawx, drawy, count );
-#if !JAVA
-                g.nativeGraphics.SmoothingMode = sm;
-#endif
+
+            PolylineDrawer drawer = new PolylineDrawer( g, 1024 );
+            Iterator<PointD> itr = new VibratoPointIterator( vsq,
+                                                             rate,
+                                                             start_rate,
+                                                             depth,
+                                                             start_depth,
+                                                             clock_start,
+                                                             clock_end - clock_start,
+                                                             (float)(tempo * 1e-6 / 480.0) );
+            g.setColor( Color.blue );
+            for ( ; itr.hasNext(); ) {
+                PointD p = itr.next();
+                drawer.append( AppManager.xCoordFromClocks( vsq.getClockFromSec( p.getX() ) ),
+                               (int)(p.getY() * px_track_height + y0) );
             }
+            drawer.flush();                                                  
         }
 
         private void drawVibratoLine( Graphics g, Point origin, int vibrato_length ) {
