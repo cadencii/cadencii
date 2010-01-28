@@ -15361,11 +15361,14 @@ namespace org.kbinani.cadencii {
             mouseMoveEvent.add( new BMouseEventHandler( this, "FormMain_MouseMove" ) );
         }
 
+#if !JAVA
         private void FormMain_DragLeave( object sender, EventArgs e ) {
             AppManager.setEditMode( EditMode.NONE );
             iconPaletteOnceDragEntered = false;
         }
+#endif
 
+#if !JAVA
         private void FormMain_DragOver( object sender, System.Windows.Forms.DragEventArgs e ) {
             if ( AppManager.getEditMode() != EditMode.DRAG_DROP ) {
                 return;
@@ -15387,6 +15390,7 @@ namespace org.kbinani.cadencii {
                                                       0 );
             pictPianoRoll_MouseMove( this, e0 );
         }
+#endif
 
 #if !JAVA
         private void FormMain_DragDrop( object sender, System.Windows.Forms.DragEventArgs e ) {

@@ -46,7 +46,17 @@ namespace org.kbinani.vsq {
         }
 
         public VibratoHandle( String aic_file, String ids, String icon_id, int index )
-            : base( aic_file ) {
+#if JAVA
+        {
+#else
+            :
+#endif
+            base( aic_file )
+#if JAVA
+            ;
+#else
+        {
+#endif
             IDS = ids;
             IconID = icon_id;
             Index = index;

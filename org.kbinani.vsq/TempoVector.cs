@@ -15,6 +15,7 @@
 package org.kbinani.vsq;
 
 import java.io.*;
+import java.util.*;
 #else
 using System;
 using org.kbinani.java.util;
@@ -27,7 +28,7 @@ namespace org.kbinani.vsq {
     /// テンポ情報を格納したテーブル．
     /// </summary>
 #if JAVA
-    public class TempoVector extends Vector<TempoTableEntry>, Serializable {
+    public class TempoVector extends Vector<TempoTableEntry> implements Serializable {
 #else
     [Serializable]
     public class TempoVector : Vector<TempoTableEntry> {
@@ -36,7 +37,17 @@ namespace org.kbinani.vsq {
         protected const int baseTempo = 500000; 
 
         public TempoVector()
-            : base() {
+#if JAVA
+        {
+#else
+            :
+#endif
+            base()
+#if JAVA
+            ;
+#else
+        {
+#endif
         }
 
         public double getClockFromSec( double time ) {

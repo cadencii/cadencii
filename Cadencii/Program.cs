@@ -26,7 +26,6 @@ namespace org.kbinani.cadencii{
         static FormSplash splash = null;
         static Thread splashThread = null;
 
-        delegate void VoidDelegate();
 #if JAVA
         public static void main( String[] args ){
             AppManager.init();
@@ -34,6 +33,8 @@ namespace org.kbinani.cadencii{
             AppManager.mainWindow.setVisible( true );
         }
 #else
+        delegate void VoidDelegate();
+
         [STAThread]
         static void Main() {
             Application.EnableVisualStyles();
@@ -55,7 +56,6 @@ namespace org.kbinani.cadencii{
             }
 #endif
         }
-#endif
 
         static void showSplash() {
             splash = new FormSplash();
@@ -76,6 +76,7 @@ namespace org.kbinani.cadencii{
             splash = null;
             AppManager.mainWindow.Load -= mainWindow_Load;
         }
+#endif
     }
 
 #if !JAVA

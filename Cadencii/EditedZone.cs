@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.util.*;
 #else
 using System;
 using org.kbinani.java.util;
@@ -22,7 +23,11 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 
+#if JAVA
+    public class EditedZone implements Cloneable {
+#else
     public class EditedZone : ICloneable {
+#endif
         private Vector<EditedZoneUnit> series = new Vector<EditedZoneUnit>();
 
         public EditedZone(){

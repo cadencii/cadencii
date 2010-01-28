@@ -65,27 +65,6 @@ namespace org.kbinani.vsq {
             this.PreMeasure = pre_measure;
         }
 
-        /* /// <summary>
-        /// テキストファイルからのコンストラクタ
-        /// </summary>
-        /// <param name="sr">読み込み元</param>
-        /// <param name="last_line">最後に読み込んだ行が返されます</param>
-        public VsqMaster( TextMemoryStream sr, ByRef<String> last_line ) {
-            PreMeasure = 0;
-            String[] spl;
-            last_line.value = sr.readLine().ToString();
-            while ( !last_line.value.StartsWith( "[" ) ) {
-                spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                if ( spl[0].Equals( "PreMeasure" ) ) {
-                    this.PreMeasure = PortUtil.parseInt( spl[1] );
-                }
-                if ( sr.peek() < 0 ) {
-                    break;
-                }
-                last_line.value = sr.readLine().ToString();
-            }
-        }*/
-
         /// <summary>
         /// テキストファイルからのコンストラクタ
         /// </summary>

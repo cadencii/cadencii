@@ -46,6 +46,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="IAviWriter.cs" />
+    <Compile Include="IWaveReceiver.cs" />
     <Compile Include="MediaPlayer.cs" />
     <Compile Include="MidiInDevice.cs" />
     <Compile Include="MidiOutDevice.cs" />

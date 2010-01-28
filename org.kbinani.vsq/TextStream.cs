@@ -86,7 +86,11 @@ namespace org.kbinani.vsq {
                     }
                     newLength = array.Length * order;
                 }
+#if JAVA
+                array = Arrays.copyOf( array, newLength );
+#else
                 Array.Resize( ref array, newLength );
+#endif
             }
         }
 

@@ -220,62 +220,6 @@ namespace org.kbinani.vsq {
             }
         }
 
-        /* /// <summary>
-        /// VsqEvent, VsqBPList, BezierCurvesの全てのクロックを、tempoに格納されているテンポテーブルに
-        /// 合致するようにシフトします
-        /// </summary>
-        /// <param name="work"></param>
-        /// <param name="tempo"></param>
-        public virtual void adjustClockToMatchWith( VsqFile tempo ) {
-            //double premeasure_sec_target = getSecFromClock( getPreMeasureClocks() );
-            double premeasure_sec_tempo = 0;// premeasure_sec_target;
-
-            // テンポをリプレースする場合。
-            // まずクロック値を、リプレース後のモノに置き換え
-            for ( int track = 1; track < this.Track.size(); track++ ) {
-                // ノート・歌手イベントをシフト
-                for ( Iterator itr = this.Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
-                    if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
-                        continue;
-                    }
-                    int clock = item.Clock;
-                    double sec_start = this.getSecFromClock( clock );// -premeasure_sec_target + premeasure_sec_tempo;
-                    double sec_end = this.getSecFromClock( clock + item.ID.getLength() );// -premeasure_sec_target + premeasure_sec_tempo;
-                    int clock_start = (int)tempo.getClockFromSec( sec_start );
-                    int clock_end = (int)tempo.getClockFromSec( sec_end );
-                    item.Clock = clock_start;
-                    item.ID.setLength( clock_end - clock_start );
-                    if ( item.ID.VibratoHandle != null ) {
-                        double sec_vib_start = this.getSecFromClock( clock + item.ID.VibratoDelay );// -premeasure_sec_target + premeasure_sec_tempo;
-                        int clock_vib_start = (int)tempo.getClockFromSec( sec_vib_start );
-                        item.ID.VibratoDelay = clock_vib_start - clock_start;
-                        item.ID.VibratoHandle.setLength( clock_end - clock_vib_start );
-                    }
-                }
-
-                // コントロールカーブをシフト
-                for ( int j = 0; j < _CURVES.Length; j++ ) {
-                    String ct = _CURVES[j];
-                    VsqBPList item = this.Track.get( track ).getCurve( ct );
-                    if ( item == null ) {
-                        continue;
-                    }
-                    VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
-                    for ( int i = 0; i < item.size(); i++ ) {
-                        int clock = item.getKeyClock( i );
-                        int value = item.getElement( i );
-                        double sec = this.getSecFromClock( clock );// -premeasure_sec_target + premeasure_sec_tempo;
-                        if ( sec >= premeasure_sec_tempo ) {
-                            int clock_new = (int)tempo.getClockFromSec( sec );
-                            repl.add( clock_new, value );
-                        }
-                    }
-                    this.Track.get( track ).setCurve( ct, repl );
-                }
-            }
-        }*/
-
         public void printAsMusicXml( String file, String encoding ) {
             printAsMusicXmlCore( file, encoding, "", (int)(60e6 / getTempoAt( 0 )), false );
         }

@@ -11,17 +11,33 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+import java.util.*;
+#else
 using System;
 using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
+#endif
 
     public class EditedZoneCommand {
         public Vector<EditedZoneUnit> add;
         public Vector<EditedZoneUnit> remove;
 
         public EditedZoneCommand( int addStart, int addEnd )
-            : this( new EditedZoneUnit[] { new EditedZoneUnit( addStart, addEnd ) }, new EditedZoneUnit[] { } ) {
+#if JAVA
+         {
+#else
+            :
+#endif
+            this( new EditedZoneUnit[] { new EditedZoneUnit( addStart, addEnd ) }, new EditedZoneUnit[] { } )
+#if JAVA
+            ;
+#else
+        {
+#endif
         }
 
         public EditedZoneCommand( EditedZoneUnit[] add, EditedZoneUnit[] remove ) {
@@ -36,8 +52,20 @@ namespace org.kbinani.cadencii {
         }
 
         public EditedZoneCommand( Vector<EditedZoneUnit> add, Vector<EditedZoneUnit> remove )
-            : this( add.toArray( new EditedZoneUnit[] { } ), remove.toArray( new EditedZoneUnit[] { } ) ) {
+#if JAVA
+            {
+#else
+            :
+#endif
+            this( add.toArray( new EditedZoneUnit[] { } ), remove.toArray( new EditedZoneUnit[] { } ) )
+#if JAVA
+            ;
+#else
+        {
+#endif
         }
     }
 
+#if !JAVA
 }
+#endif

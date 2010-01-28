@@ -14,7 +14,13 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.util.*;
+import java.awt.*;
+import java.io.*;
+import javax.swing.*;
 import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;

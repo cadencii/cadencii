@@ -139,12 +139,20 @@ namespace org.kbinani.media {
                     if ( bBufLeft == null ) {
                         bBufLeft = new double[num];
                     } else if ( bBufLeft.Length < num ) {
+#if JAVA
+                        bBufLeft = Arrays.copyOf( bBufLeft, num );
+#else
                         Array.Resize( ref bBufLeft, num );
+#endif
                     }
                     if ( bBufRight == null ) {
                         bBufRight = new double[num];
                     } else if ( bBufRight.Length < num ) {
+#if JAVA
+                        bBufRight = Arrays.copyOf( bBufRight, num );
+#else
                         Array.Resize( ref bBufRight, num );
+#endif
                     }
                     for ( int i = 0; i < num; i++ ) {
                         bBufLeft[i] = left[bBufBase + i - bCount];
@@ -156,11 +164,6 @@ namespace org.kbinani.media {
             bCount += left.Length;
             aCount = aEnd;
         }
-    }
-
-    public interface IWaveReceiver {
-        void append( double[] left, double[] right );
-        int getSampleRate();
     }
 
 #if !JAVA

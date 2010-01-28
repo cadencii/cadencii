@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.awt.*;
 #else
 using System;
 using org.kbinani.java.awt;

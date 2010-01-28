@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMixer.java
 
 import java.util.*;
+import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;

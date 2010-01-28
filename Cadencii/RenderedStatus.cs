@@ -14,6 +14,8 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.util.*;
+import org.kbinani.vsq.*;
 #else
 using System;
 using org.kbinani.java.util;

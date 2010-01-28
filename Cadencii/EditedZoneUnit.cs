@@ -20,7 +20,11 @@ using System;
 namespace org.kbinani.cadencii {
 #endif
 
+#if JAVA
+    public class EditedZoneUnit implements Clonable, Comparable<EditedZoneUnit> {
+#else
     public class EditedZoneUnit : ICloneable, IComparable<EditedZoneUnit> {
+#endif
         public int start;
         public int end;
 

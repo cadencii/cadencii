@@ -83,7 +83,11 @@ namespace org.kbinani.cadencii {
                 int saTo = (int)(sec_to * m_sample_rate);
                 int oldLength = m_wave.Length;
                 if ( oldLength < saTo ) {
+#if JAVA
+                    m_wave = Arrays.copyOf( m_wave, saTo );
+#else
                     Array.Resize( ref m_wave, saTo );
+#endif
                     saFrom = oldLength;
                 }
                 int buflen = 1024;
@@ -181,12 +185,14 @@ namespace org.kbinani.cadencii {
             return m_length;
         }
 
+#if !JAVA
         /// <summary>
         /// デストラクタ。disposeメソッドを呼び出します。
         /// </summary>
         ~WaveDrawContext() {
             dispose();
         }
+#endif
 
 #if !JAVA
         /// <summary>
