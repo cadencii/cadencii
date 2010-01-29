@@ -75,6 +75,10 @@ namespace org.kbinani.cadencii {
         /// アイコンパレットのアイテムをドラッグ＆ドロップ中
         /// </summary>
         DRAG_DROP,
+        /// <summary>
+        /// MTCスレーブ状態で，同期再生中
+        /// </summary>
+        REALTIME_MTC,
     }
 
 #if !JAVA

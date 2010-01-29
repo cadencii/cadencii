@@ -329,6 +329,10 @@ namespace org.kbinani.cadencii {
         /// waveファイル出力時に、全トラックをmixして出力するかどうか
         /// </summary>
         public boolean WaveFileOutputFromMasterTrack = false;
+        /// <summary>
+        /// MTCスレーブ動作を行う際使用するMIDI INポートの設定
+        /// </summary>
+        public MidiPortConfig MidiInPortMtc = new MidiPortConfig();
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(

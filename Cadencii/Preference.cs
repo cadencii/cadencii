@@ -61,6 +61,8 @@ namespace org.kbinani.cadencii {
         private BGroupBox groupWaveFileOutput;
         private BRadioButton radioCurrentTrack;
         private BRadioButton radioMasterTrack;
+        private BComboBox comboMtcMidiInPortNumber;
+        private BLabel labelMtcMidiInPort;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -209,14 +211,18 @@ namespace org.kbinani.cadencii {
             org.kbinani.MIDIINCAPS[] midiins = MidiInDevice.GetMidiInDevices();
             for ( int i = 0; i < midiins.Length; i++ ) {
                 comboMidiInPortNumber.addItem( midiins[i] );
+                comboMtcMidiInPortNumber.addItem( midiins[i] );
             }
-            if ( comboMidiInPortNumber.getItemCount() == 0 ) {
+            if ( midiins.Length <= 0 ) {
                 comboMidiInPortNumber.setEnabled( false );
+                comboMtcMidiInPortNumber.setEnabled( false );
             } else {
                 comboMidiInPortNumber.setEnabled( true );
+                comboMtcMidiInPortNumber.setEnabled( true );
             }
 #else
             comboMidiInPortNumber.setEnabled( false );
+            comboMtcMidiInPortNumber.setEnabled( false );
 #endif
 
             txtVOCALOID1.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 ) );
@@ -272,6 +278,21 @@ namespace org.kbinani.cadencii {
         }
 
 #if ENABLE_MIDI
+        public int getMtcMidiInPort() {
+            if ( comboMtcMidiInPortNumber.isEnabled() ) {
+                int indx = comboMtcMidiInPortNumber.getSelectedIndex();
+                if ( indx >= 0 ) {
+                    return indx;
+                } else {
+                    return 0;
+                }
+            } else {
+                return -1;
+            }
+        }
+#endif
+
+#if ENABLE_MIDI
         public int getMidiInPort() {
             if ( comboMidiInPortNumber.isEnabled() ) {
                 if ( comboMidiInPortNumber.getSelectedIndex() >= 0 ) {
@@ -281,6 +302,18 @@ namespace org.kbinani.cadencii {
                 }
             } else {
                 return -1;
+            }
+        }
+#endif
+
+#if ENABLE_MIDI
+        public void setMtcMidiInPort( int value ){
+            if ( comboMtcMidiInPortNumber.isEnabled() ){
+                if ( 0 <= value && value < comboMtcMidiInPortNumber.getItemCount() ){
+                    comboMtcMidiInPortNumber.setSelectedIndex( value );
+                } else {
+                    comboMtcMidiInPortNumber.setSelectedIndex( 0 );
+                }
             }
         }
 #endif
@@ -1242,6 +1275,7 @@ namespace org.kbinani.cadencii {
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.label5 = new org.kbinani.windows.forms.BLabel();
@@ -1373,6 +1407,8 @@ namespace org.kbinani.cadencii {
             this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.labelMtcMidiInPort = new org.kbinani.windows.forms.BLabel();
+            this.comboMtcMidiInPortNumber = new org.kbinani.windows.forms.BComboBox();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupAutoVibratoConfig.SuspendLayout();
@@ -1416,7 +1452,7 @@ namespace org.kbinani.cadencii {
             this.tabPreference.Multiline = true;
             this.tabPreference.Name = "tabPreference";
             this.tabPreference.SelectedIndex = 0;
-            this.tabPreference.Size = new System.Drawing.Size( 462, 402 );
+            this.tabPreference.Size = new System.Drawing.Size( 462, 434 );
             this.tabPreference.TabIndex = 0;
             // 
             // tabSequence
@@ -2310,13 +2346,15 @@ namespace org.kbinani.cadencii {
             this.tabOperation.Location = new System.Drawing.Point( 4, 40 );
             this.tabOperation.Name = "tabOperation";
             this.tabOperation.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabOperation.Size = new System.Drawing.Size( 454, 358 );
+            this.tabOperation.Size = new System.Drawing.Size( 454, 390 );
             this.tabOperation.TabIndex = 5;
             this.tabOperation.Text = "Operation";
             this.tabOperation.UseVisualStyleBackColor = true;
             // 
             // groupMisc
             // 
+            this.groupMisc.Controls.Add( this.comboMtcMidiInPortNumber );
+            this.groupMisc.Controls.Add( this.labelMtcMidiInPort );
             this.groupMisc.Controls.Add( this.lblMaximumFrameRate );
             this.groupMisc.Controls.Add( this.comboMidiInPortNumber );
             this.groupMisc.Controls.Add( this.numMaximumFrameRate );
@@ -2326,7 +2364,7 @@ namespace org.kbinani.cadencii {
             this.groupMisc.Controls.Add( this.numMouseHoverTime );
             this.groupMisc.Location = new System.Drawing.Point( 6, 227 );
             this.groupMisc.Name = "groupMisc";
-            this.groupMisc.Size = new System.Drawing.Size( 442, 109 );
+            this.groupMisc.Size = new System.Drawing.Size( 442, 143 );
             this.groupMisc.TabIndex = 91;
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
@@ -2810,13 +2848,16 @@ namespace org.kbinani.cadencii {
             listViewGroup5.Name = null;
             listViewGroup6.Header = "ListViewGroup";
             listViewGroup6.Name = null;
+            listViewGroup7.Header = "ListViewGroup";
+            listViewGroup7.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
             listViewGroup3,
             listViewGroup4,
             listViewGroup5,
-            listViewGroup6} );
+            listViewGroup6,
+            listViewGroup7} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
@@ -2890,7 +2931,7 @@ namespace org.kbinani.cadencii {
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 374, 425 );
+            this.btnCancel.Location = new System.Drawing.Point( 374, 457 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 88, 23 );
             this.btnCancel.TabIndex = 201;
@@ -2900,12 +2941,29 @@ namespace org.kbinani.cadencii {
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point( 280, 425 );
+            this.btnOK.Location = new System.Drawing.Point( 280, 457 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 88, 23 );
             this.btnOK.TabIndex = 200;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
+            // 
+            // labelMtcMidiInPort
+            // 
+            this.labelMtcMidiInPort.AutoSize = true;
+            this.labelMtcMidiInPort.Location = new System.Drawing.Point( 16, 104 );
+            this.labelMtcMidiInPort.Name = "labelMtcMidiInPort";
+            this.labelMtcMidiInPort.Size = new System.Drawing.Size( 137, 12 );
+            this.labelMtcMidiInPort.TabIndex = 90;
+            this.labelMtcMidiInPort.Text = "MTC MIDI In Port Number";
+            // 
+            // comboMtcMidiInPortNumber
+            // 
+            this.comboMtcMidiInPortNumber.FormattingEnabled = true;
+            this.comboMtcMidiInPortNumber.Location = new System.Drawing.Point( 176, 101 );
+            this.comboMtcMidiInPortNumber.Name = "comboMtcMidiInPortNumber";
+            this.comboMtcMidiInPortNumber.Size = new System.Drawing.Size( 239, 20 );
+            this.comboMtcMidiInPortNumber.TabIndex = 91;
             // 
             // Preference
             // 
@@ -2913,7 +2971,7 @@ namespace org.kbinani.cadencii {
             this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 475, 464 );
+            this.ClientSize = new System.Drawing.Size( 475, 496 );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnCancel );
             this.Controls.Add( this.tabPreference );

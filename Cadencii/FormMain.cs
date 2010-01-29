@@ -390,6 +390,7 @@ namespace org.kbinani.cadencii {
         public boolean m_spacekey_downed = false;
 #if ENABLE_MIDI
         public MidiInDevice m_midi_in = null;
+        public MidiInDevice m_midi_in_mtc = null;
 #endif
         public FormMidiImExport m_midi_imexport_dialog = null;
         public TreeMap<EditTool, Cursor> m_cursor = new TreeMap<EditTool, Cursor>();
@@ -471,6 +472,18 @@ namespace org.kbinani.cadencii {
         /// アイコンパレットのドラッグ＆ドロップ処理中，一度でもpictPianoRoll内にマウスが入ったかどうか
         /// </summary>
         private boolean iconPaletteOnceDragEntered = false;
+        private byte mtcFrameLsb;
+        private byte mtcFrameMsb;
+        private byte mtcSecLsb;
+        private byte mtcSecMsb;
+        private byte mtcMinLsb;
+        private byte mtcMinMsb;
+        private byte mtcHourLsb;
+        private byte mtcHourMsb;
+        /// <summary>
+        /// MTCを最後に受信した時刻
+        /// </summary>
+        private double mtcLastReceived = 0.0;
         #endregion
 
         public FormMain() {
@@ -1313,6 +1326,9 @@ namespace org.kbinani.cadencii {
 #if ENABLE_MIDI
                 if ( m_midi_in != null ) {
                     m_midi_in.Start();
+                }
+                if ( m_midi_in_mtc != null ) {
+                    m_midi_in_mtc.Start();
                 }
                 MidiPlayer.SetSpeed( AppManager.editorConfig.getRealtimeInputSpeed(), m_last_ignitted );
                 MidiPlayer.Start( vsq, clock, m_last_ignitted );
@@ -4129,11 +4145,18 @@ namespace org.kbinani.cadencii {
                 }
                 PortUtil.deleteDirectory( tempdir, true );
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#FormMain_FormClosed; ex=" + ex );
             }
             VSTiProxy.abortRendering();
             VSTiProxy.terminate();
 #if ENABLE_MIDI
             MidiPlayer.Stop();
+            if ( m_midi_in != null ) {
+                m_midi_in.Close();
+            }
+            if ( m_midi_in_mtc != null ) {
+                m_midi_in_mtc.Close();
+            }
 #endif
             PlaySound.terminate();
         }
@@ -5868,6 +5891,8 @@ namespace org.kbinani.cadencii {
             m_preference_dlg.setCurveVisibleEnvelope( AppManager.editorConfig.CurveVisibleEnvelope );
 #if ENABLE_MIDI
             m_preference_dlg.setMidiInPort( AppManager.editorConfig.MidiInPort.PortNumber );
+            m_preference_dlg.setMtcMidiInPort( AppManager.editorConfig.MidiInPortMtc.PortNumber );
+
 #endif
             m_preference_dlg.setInvokeWithWine( AppManager.editorConfig.InvokeUtauCoreWithWine );
             m_preference_dlg.setPathResampler( AppManager.editorConfig.PathResampler );
@@ -5968,6 +5993,7 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_MIDI
                 AppManager.editorConfig.MidiInPort.PortNumber = m_preference_dlg.getMidiInPort();
+                AppManager.editorConfig.MidiInPortMtc.PortNumber = m_preference_dlg.getMtcMidiInPort();
                 updateMidiInStatus();
                 reloadMidiIn();
 #endif
@@ -11248,22 +11274,103 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_MIDI
         public void reloadMidiIn() {
-#if DEBUG
-            AppManager.debugWriteLine( "FormMain.ReloadMidiIn" );
-#endif
             if ( m_midi_in != null ) {
                 m_midi_in.MidiReceived -= m_midi_in_MidiReceived;
                 m_midi_in.Dispose();
+                m_midi_in = null;
             }
-            try {
-                m_midi_in = new MidiInDevice( AppManager.editorConfig.MidiInPort.PortNumber );
-                m_midi_in.MidiReceived += m_midi_in_MidiReceived;
-            } catch ( Exception ex ) {
+            int portNumber = AppManager.editorConfig.MidiInPort.PortNumber;
+            int portNumberMtc = AppManager.editorConfig.MidiInPortMtc.PortNumber;
 #if DEBUG
-                AppManager.debugWriteLine( "    ex=" + ex );
+            PortUtil.println( "FormMain#reloadMidiIn; portNumber=" + portNumber + "; portNumberMtc=" + portNumberMtc );
 #endif
+            try {
+                m_midi_in = new MidiInDevice( portNumber );
+                m_midi_in.MidiReceived += m_midi_in_MidiReceived;
+                if ( portNumber == portNumberMtc ) {
+                    m_midi_in.setReceiveSystemCommonMessage( true );
+                    m_midi_in.setReceiveSystemRealtimeMessage( true );
+                    m_midi_in.MidiReceived += handleMtcMidiReceived;
+                    m_midi_in.Start();
+                } else {
+                    m_midi_in.setReceiveSystemCommonMessage( false );
+                    m_midi_in.setReceiveSystemRealtimeMessage( false );
+                }
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
+            }
+
+            if ( m_midi_in_mtc != null ) {
+                m_midi_in_mtc.MidiReceived -= handleMtcMidiReceived;
+                m_midi_in_mtc.Dispose();
+                m_midi_in_mtc = null;
+            }
+            if ( portNumber != portNumberMtc ) {
+                try {
+                    m_midi_in_mtc = new MidiInDevice( AppManager.editorConfig.MidiInPortMtc.PortNumber );
+                    m_midi_in_mtc.MidiReceived += handleMtcMidiReceived;
+                    m_midi_in_mtc.setReceiveSystemCommonMessage( true );
+                    m_midi_in_mtc.setReceiveSystemRealtimeMessage( true );
+                    m_midi_in_mtc.Start();
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
+                }
             }
             updateMidiInStatus();
+        }
+#endif
+
+#if ENABLE_MIDI
+        private void handleMtcMidiReceived( double now, byte[] dataArray ) {
+            byte data = (byte)(dataArray[1] & 0x0f);
+            byte type = (byte)((dataArray[1] >> 4) & 0x0f);
+            if ( type == 0 ) {
+                mtcFrameLsb = data;
+            } else if ( type == 1 ) {
+                mtcFrameMsb = data;
+            } else if ( type == 2 ) {
+                mtcSecLsb = data;
+            } else if ( type == 3 ) {
+                mtcSecMsb = data;
+            } else if ( type == 4 ) {
+                mtcMinLsb = data;
+            } else if ( type == 5 ) {
+                mtcMinMsb = data;
+            } else if ( type == 6 ) {
+                mtcHourLsb = data;
+            } else if ( type == 7 ) {
+                mtcHourMsb = (byte)(data & 1);
+                int fpsType = (data & 6) >> 1;
+                double fps = 30.0;
+                if ( fpsType == 0 ) {
+                    fps = 24.0;
+                } else if ( fpsType == 1 ) {
+                    fps = 25;
+                } else if ( fpsType == 2 ) {
+                    fps = 30000.0 / 1001.0;
+                } else if ( fpsType == 3 ) {
+                    fps = 30.0;
+                }
+                int hour = (mtcHourMsb << 4 | mtcHourLsb);
+                int min = (mtcMinMsb << 4 | mtcMinLsb);
+                int sec = (mtcSecMsb << 4 | mtcSecLsb);
+                int frame = (mtcFrameMsb << 4 | mtcFrameLsb) + 2;
+                double time = (hour * 60.0 + min) * 60.0 + sec + frame / fps;
+                mtcLastReceived = now;
+                if ( !AppManager.isPlaying() ) {
+                    AppManager.setEditMode( EditMode.REALTIME_MTC );
+                    EventHandler handler = new EventHandler( AppManager_PreviewStarted );
+                    if ( handler != null ) {
+                        this.Invoke( handler );
+                        while ( !AppManager.isPlaying() ) {
+                            System.Windows.Forms.Application.DoEvents();
+                        }
+                    }
+                }
+#if DEBUG
+                PortUtil.println( "FormMain#handleMtcMidiReceived; time=" + time );
+#endif
+            }
         }
 #endif
 

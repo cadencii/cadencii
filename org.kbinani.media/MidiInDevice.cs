@@ -24,6 +24,7 @@ using System.Runtime.InteropServices;
 using org.kbinani;
 
 namespace org.kbinani.media {
+    using boolean = System.Boolean;
 
     public delegate void MidiReceivedEventHandler( double time, byte[] data );
 
@@ -34,7 +35,9 @@ namespace org.kbinani.media {
         private IntPtr m_delegate_pointer;
         private uint m_hmidiin = 0;
         private int m_port_number;
-
+        private boolean receiveSystemCommonMessage = false;
+        private boolean receiveSystemRealtimeMessage = false;
+        
         public event MidiReceivedEventHandler MidiReceived;
 
         public MidiInDevice( int port_number ) {
@@ -42,6 +45,22 @@ namespace org.kbinani.media {
             m_delegate = new MidiInProcDelegate( MidiInProc );
             m_delegate_pointer = Marshal.GetFunctionPointerForDelegate( m_delegate );
             win32.midiInOpen( ref m_hmidiin, port_number, m_delegate_pointer, 0, win32.CALLBACK_FUNCTION );
+        }
+
+        public boolean isReceiveSystemRealtimeMessage() {
+            return receiveSystemRealtimeMessage;
+        }
+
+        public void setReceiveSystemRealtimeMessage( boolean value ) {
+            receiveSystemRealtimeMessage = value;
+        }
+
+        public boolean isReceiveSystemCommonMessage() {
+            return receiveSystemCommonMessage;
+        }
+
+        public void setReceiveSystemCommonMessage( boolean value ) {
+            receiveSystemCommonMessage = value;
         }
 
         public void Start() {
@@ -136,6 +155,36 @@ namespace org.kbinani.media {
                                 if ( MidiReceived != null ) {
                                     MidiReceived( now, new byte[] { (byte)( receive & 0xff ),
                                                                     (byte)((receive & 0xffff) >> 8) } );
+                                }
+                                break;
+                            case 0xf0:
+                                if ( receiveSystemCommonMessage ) {
+                                    byte b0 = (byte)(receive & 0xff);
+                                    byte b1 = (byte)((receive >> 8) & 0xff);
+                                    byte b2 = (byte)((receive >> 16) & 0xff);
+                                    byte b3 = (byte)((receive >> 24) & 0xff);
+                                    if ( b0 == 0xf1 ) {
+                                        // MTC quater frame message
+                                        if ( MidiReceived != null ) {
+                                            MidiReceived( now, new byte[]{ b0, b1, b2 } );
+                                        }
+                                    } else if ( b0 == 0xf2 ) {
+                                        // song position pointer
+#if DEBUG
+                                        PortUtil.println( "MidiInDevice#MidiInProc; 0xf2; b0=" + PortUtil.toHexString( b0, 2 ) + "; b1=" + PortUtil.toHexString( b1, 2 ) + "; b2=" + PortUtil.toHexString( b2, 2 ) );
+#endif
+                                    }
+                                }
+                                if ( receiveSystemRealtimeMessage && MidiReceived != null ) {
+                                    byte b0 = (byte)(receive & 0xff);
+                                    byte b1 = (byte)((receive >> 8) & 0xff);
+                                    byte b2 = (byte)((receive >> 16) & 0xff);
+                                    byte b3 = (byte)((receive >> 24) & 0xff);
+                                    if ( b0 == 0xfa ) {
+                                        MidiReceived( now, new byte[] { b0 } );
+                                    } else if ( b0 == 0xfc ) {
+                                        MidiReceived( now, new byte[] { b0 } );
+                                    }
                                 }
                                 break;
                         }
