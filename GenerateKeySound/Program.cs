@@ -271,6 +271,15 @@ namespace org.kbinani.generatekeysound {
             vsq.Track.get( 1 ).addEvent( item );
             vsq.updateTotalClocks();
             int ms_presend = 500;
+            String tempdir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            if ( !PortUtil.isDirectoryExists( tempdir ) ) {
+                try {
+                    PortUtil.createDirectory( tempdir );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "Program#GenerateSinglePhone; ex=" + ex );
+                    return;
+                }
+            }
             using ( WaveWriter ww = new WaveWriter( file ) ) {
                 VSTiProxy.render( vsq,
                                   1,
@@ -282,7 +291,7 @@ namespace org.kbinani.generatekeysound {
                                   new WaveReader[] { },
                                   0.0,
                                   false,
-                                  AppManager.getTempWaveDir(),
+                                  tempdir,
                                   false );
             }
         }

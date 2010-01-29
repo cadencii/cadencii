@@ -40,6 +40,11 @@ namespace org.kbinani.cadencii {
                 this.tempo.add( (TempoTableEntry)itr.next() );
             }
         }
+
+        public RenderedStatus() {
+            track = new VsqTrack( 0, 0, 0 );
+            tempo = new TempoVector();
+        }
     }
 
 #if !JAVA

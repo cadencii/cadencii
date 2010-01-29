@@ -390,6 +390,8 @@ namespace org.kbinani.cadencii {
         public boolean m_spacekey_downed = false;
 #if ENABLE_MIDI
         public MidiInDevice m_midi_in = null;
+#endif
+#if ENABLE_MTC
         public MidiInDevice m_midi_in_mtc = null;
 #endif
         public FormMidiImExport m_midi_imexport_dialog = null;
@@ -1323,12 +1325,14 @@ namespace org.kbinani.cadencii {
             if ( AppManager.getEditMode() == EditMode.REALTIME ) {
                 menuJobRealTime.setText( _( "Stop Realtime Input" ) );
                 AppManager.rendererAvailable = false;
+#if ENABLE_MTC
+                if ( m_midi_in_mtc != null ) {
+                    m_midi_in_mtc.Start();
+                }
+#endif
 #if ENABLE_MIDI
                 if ( m_midi_in != null ) {
                     m_midi_in.Start();
-                }
-                if ( m_midi_in_mtc != null ) {
-                    m_midi_in_mtc.Start();
                 }
                 MidiPlayer.SetSpeed( AppManager.editorConfig.getRealtimeInputSpeed(), m_last_ignitted );
                 MidiPlayer.Start( vsq, clock, m_last_ignitted );
@@ -1618,6 +1622,7 @@ namespace org.kbinani.cadencii {
                     if ( wavePath.Equals( files.get( startIndex[k] ) ) && startIndex[k] < finished ) {
                         // このとき，パッチワークを行う必要なし．
                         AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( track ).clone(), vsq.TempoTable );
+                        AppManager.serializeRenderingStatus( temppath, track );
                         waveView.load( track - 1, wavePath );
                         continue;
                     }
@@ -1722,6 +1727,7 @@ namespace org.kbinani.cadencii {
                         if ( startIndex[k + 1] - 1 < finished ) {
                             // 途中で終了せず，このトラックの全てのパッチワークが完了した．
                             AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable );
+                            AppManager.serializeRenderingStatus( temppath, track );
                             AppManager.setRenderRequired( track, false );
                         } else {
                             // パッチワークの作成途中で，キャンセルされた
@@ -1778,6 +1784,7 @@ namespace org.kbinani.cadencii {
                             }
 
                             AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( copied, vsq.TempoTable );
+                            AppManager.serializeRenderingStatus( temppath, track );
                         }
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
@@ -4134,7 +4141,10 @@ namespace org.kbinani.cadencii {
         #region FormMain
         public void FormMain_FormClosed( Object sender, BFormClosedEventArgs e ) {
             clearTempWave();
-            String tempdir = AppManager.getTempWaveDir();
+            String tempdir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            if ( !PortUtil.isDirectoryExists( tempdir ) ) {
+                PortUtil.createDirectory( tempdir );
+            }
             String log = PortUtil.combinePath( tempdir, "run.log" );
 #if !JAVA
             org.kbinani.debug.close();
@@ -4154,6 +4164,8 @@ namespace org.kbinani.cadencii {
             if ( m_midi_in != null ) {
                 m_midi_in.Close();
             }
+#endif
+#if ENABLE_MTC
             if ( m_midi_in_mtc != null ) {
                 m_midi_in_mtc.Close();
             }
@@ -5891,6 +5903,8 @@ namespace org.kbinani.cadencii {
             m_preference_dlg.setCurveVisibleEnvelope( AppManager.editorConfig.CurveVisibleEnvelope );
 #if ENABLE_MIDI
             m_preference_dlg.setMidiInPort( AppManager.editorConfig.MidiInPort.PortNumber );
+#endif
+#if ENABLE_MTC
             m_preference_dlg.setMtcMidiInPort( AppManager.editorConfig.MidiInPortMtc.PortNumber );
 
 #endif
@@ -5993,7 +6007,11 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_MIDI
                 AppManager.editorConfig.MidiInPort.PortNumber = m_preference_dlg.getMidiInPort();
+#endif
+#if ENABLE_MTC
                 AppManager.editorConfig.MidiInPortMtc.PortNumber = m_preference_dlg.getMtcMidiInPort();
+#endif
+#if ENABLE_MIDI || ENABLE_MTC
                 updateMidiInStatus();
                 reloadMidiIn();
 #endif
@@ -11287,6 +11305,7 @@ namespace org.kbinani.cadencii {
             try {
                 m_midi_in = new MidiInDevice( portNumber );
                 m_midi_in.MidiReceived += m_midi_in_MidiReceived;
+#if ENABLE_MTC
                 if ( portNumber == portNumberMtc ) {
                     m_midi_in.setReceiveSystemCommonMessage( true );
                     m_midi_in.setReceiveSystemRealtimeMessage( true );
@@ -11296,10 +11315,15 @@ namespace org.kbinani.cadencii {
                     m_midi_in.setReceiveSystemCommonMessage( false );
                     m_midi_in.setReceiveSystemRealtimeMessage( false );
                 }
+#else
+                m_midi_in.setReceiveSystemCommonMessage( false );
+                m_midi_in.setReceiveSystemRealtimeMessage( false );
+#endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
             }
 
+#if ENABLE_MTC
             if ( m_midi_in_mtc != null ) {
                 m_midi_in_mtc.MidiReceived -= handleMtcMidiReceived;
                 m_midi_in_mtc.Dispose();
@@ -11316,12 +11340,20 @@ namespace org.kbinani.cadencii {
                     PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
                 }
             }
+#endif
             updateMidiInStatus();
         }
 #endif
 
-#if ENABLE_MIDI
+#if ENABLE_MTC
         private void handleMtcMidiReceived( double now, byte[] dataArray ) {
+#if DEBUG
+            String s = "FormMain#handleMtcMidiReceived;";
+            for ( int i = 0; i < dataArray.Length; i++ ) {
+                s += " " + PortUtil.toHexString( dataArray[i], 2 );
+            }
+            PortUtil.println( s );
+#endif
             byte data = (byte)(dataArray[1] & 0x0f);
             byte type = (byte)((dataArray[1] >> 4) & 0x0f);
             if ( type == 0 ) {
@@ -12398,7 +12430,10 @@ namespace org.kbinani.cadencii {
         }
 
         public void clearTempWave() {
-            String tmppath = AppManager.getTempWaveDir();
+            String tmppath = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            if ( !PortUtil.isDirectoryExists( tmppath ) ) {
+                return;
+            }
 
             // 今回このPCが起動されるよりも以前に，Cadenciiが残したデータを削除する
             //TODO: システムカウンタは約49日でリセットされてしまい，厳密には実装できないようなので，保留．

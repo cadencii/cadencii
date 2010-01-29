@@ -56,6 +56,20 @@ namespace org.kbinani.cadencii {
         /// </summary>
         boolean rendering = false;
 
+        public override void close() {
+            if ( rendering ) {
+                g_cancelRequired = true;
+                while ( rendering ) {
+#if JAVA
+                    Thread.sleep( 0 );
+#else
+                    System.Windows.Forms.Application.DoEvents();
+#endif
+                }
+            }
+            base.close();
+        }
+
         /// <summary>
         /// 指定したタイムコードにおける，曲頭から測った時間を調べる
         /// </summary>

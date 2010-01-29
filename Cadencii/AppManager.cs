@@ -916,6 +916,11 @@ namespace org.kbinani.cadencii {
         /// コントロールカーブに、データ点を表す四角を描くかどうか（デフォルトはtrue）
         /// </summary>
         public static boolean drawCurveDotInControlCurveView = true;
+        /// <summary>
+        /// RenderingStatusをXMLシリアライズするためのシリアライザ
+        /// </summary>
+        private static XmlSerializer renderingStatusSerializer = new XmlSerializer( typeof( RenderedStatus ) );
+        private static String tempWaveDir = "";
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
@@ -928,6 +933,24 @@ namespace org.kbinani.cadencii {
         public static BEvent<BEventHandler> currentClockChangedEvent = new BEvent<BEventHandler>();
 
         private const String TEMPDIR_NAME = "cadencii";
+
+        public static void serializeRenderingStatus( String temppath, int track ) {
+            FileOutputStream fs = null;
+            try {
+                fs = new FileOutputStream( PortUtil.combinePath( temppath, track + ".xml" ) );
+                renderingStatusSerializer.serialize( fs, lastRenderedStatus[track - 1] );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+            } finally {
+                if ( fs != null ) {
+                    try {
+                        fs.close();
+                    } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                    }
+                }
+            }
+        }
 
         public static EditedZoneUnit[] detectRenderedStatusDifference( RenderedStatus status1, RenderedStatus status2 ) {
             EditedZoneUnit[] areaTempo = detectTempotableDifference( status1.tempo, status2.tempo );
@@ -1706,13 +1729,12 @@ namespace org.kbinani.cadencii {
             return PortUtil.combinePath( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
         }
 
+        public static void setTempWaveDir( String value ) {
+            tempWaveDir = value;
+        }
+
         public static String getTempWaveDir() {
-            String temp = getCadenciiTempDir();
-            String dir = PortUtil.combinePath( temp, getID() );
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
-                PortUtil.createDirectory( dir );
-            }
-            return dir;
+            return tempWaveDir;
         }
 
         public static String getCadenciiTempDir() {
@@ -2595,6 +2617,10 @@ namespace org.kbinani.cadencii {
 
 #if !TREECOM
             s_id = PortUtil.getMD5FromString( (long)PortUtil.getCurrentTime() + "" ).Replace( "_", "" );
+            tempWaveDir = PortUtil.combinePath( getCadenciiTempDir(), s_id );
+            if ( !PortUtil.isDirectoryExists( tempWaveDir ) ) {
+                PortUtil.createDirectory( tempWaveDir );
+            }
             String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
 #endif
 

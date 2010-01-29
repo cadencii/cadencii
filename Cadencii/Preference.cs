@@ -208,20 +208,30 @@ namespace org.kbinani.cadencii {
 
             comboMidiInPortNumber.removeAllItems();
 #if ENABLE_MIDI
-            org.kbinani.MIDIINCAPS[] midiins = MidiInDevice.GetMidiInDevices();
+            MIDIINCAPS[] midiins = MidiInDevice.GetMidiInDevices();
             for ( int i = 0; i < midiins.Length; i++ ) {
                 comboMidiInPortNumber.addItem( midiins[i] );
-                comboMtcMidiInPortNumber.addItem( midiins[i] );
             }
             if ( midiins.Length <= 0 ) {
                 comboMidiInPortNumber.setEnabled( false );
-                comboMtcMidiInPortNumber.setEnabled( false );
             } else {
                 comboMidiInPortNumber.setEnabled( true );
-                comboMtcMidiInPortNumber.setEnabled( true );
             }
 #else
             comboMidiInPortNumber.setEnabled( false );
+#endif
+
+#if ENABLE_MTC
+            MIDIINCAPS[] midiins2 = MidiInDevice.GetMidiInDevices();
+            for ( int i = 0; i < midiins2.Length; i++ ) {
+                comboMtcMidiInPortNumber.addItem( midiins2[i] );
+            }
+            if ( midiins2.Length <= 0 ){
+                comboMtcMidiInPortNumber.setEnabled( false );
+            } else {
+                comboMtcMidiInPortNumber.setEnabled( true );
+            }
+#else
             comboMtcMidiInPortNumber.setEnabled( false );
 #endif
 
@@ -277,7 +287,7 @@ namespace org.kbinani.cadencii {
             chkInvokeWithWine.setSelected( value );
         }
 
-#if ENABLE_MIDI
+#if ENABLE_MTC
         public int getMtcMidiInPort() {
             if ( comboMtcMidiInPortNumber.isEnabled() ) {
                 int indx = comboMtcMidiInPortNumber.getSelectedIndex();
@@ -306,7 +316,7 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-#if ENABLE_MIDI
+#if ENABLE_MTC
         public void setMtcMidiInPort( int value ){
             if ( comboMtcMidiInPortNumber.isEnabled() ){
                 if ( 0 <= value && value < comboMtcMidiInPortNumber.getItemCount() ){
