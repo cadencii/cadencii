@@ -36,7 +36,7 @@ namespace org.kbinani.cadencii{
         delegate void VoidDelegate();
 
         [STAThread]
-        static void Main() {
+        public static void Main( String[] args ) {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
 #if !DEBUG

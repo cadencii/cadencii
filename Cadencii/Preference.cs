@@ -126,11 +126,11 @@ namespace org.kbinani.cadencii {
             comboDynamics.removeAllItems();
             comboAmplitude.removeAllItems();
             comboPeriod.removeAllItems();
-            for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ) {
+            for ( Iterator itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
                 ClockResolution cr = (ClockResolution)itr.next();
-                comboDynamics.addItem( cr.ToString() );
-                comboAmplitude.addItem( cr.ToString() );
-                comboPeriod.addItem( cr.ToString() );
+                comboDynamics.addItem( ClockResolutionUtility.toString( cr ) );
+                comboAmplitude.addItem( ClockResolutionUtility.toString( cr ) );
+                comboPeriod.addItem( ClockResolutionUtility.toString( cr ) );
             }
             comboDynamics.setSelectedIndex( 0 );
             comboAmplitude.setSelectedIndex( 0 );
@@ -751,7 +751,7 @@ namespace org.kbinani.cadencii {
         public ClockResolution getControlCurveResolution() {
             int count = -1;
             int index = comboDynamics.getSelectedIndex();
-            for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ) {
+            for ( Iterator itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
                 ClockResolution vt = (ClockResolution)itr.next();
                 count++;
                 if ( count == index ) {
@@ -764,7 +764,7 @@ namespace org.kbinani.cadencii {
 
         public void setControlCurveResolution( ClockResolution value ) {
             int count = -1;
-            for ( Iterator itr = ClockResolution.iterator(); itr.hasNext(); ) {
+            for ( Iterator itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
                 ClockResolution vt = (ClockResolution)itr.next();
                 count++;
                 if ( vt.Equals( value ) ) {

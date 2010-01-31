@@ -919,7 +919,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// RenderingStatusをXMLシリアライズするためのシリアライザ
         /// </summary>
-        private static XmlSerializer renderingStatusSerializer = new XmlSerializer( typeof( RenderedStatus ) );
+        public static XmlSerializer renderingStatusSerializer = new XmlSerializer( typeof( RenderedStatus ) );
         private static String tempWaveDir = "";
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
@@ -1730,6 +1730,10 @@ namespace org.kbinani.cadencii {
         }
 
         public static void setTempWaveDir( String value ) {
+#if DEBUG
+            PortUtil.println( "AppManager#setTempWaveDir; before: \"" + tempWaveDir + "\"" );
+            PortUtil.println( "                           after:  \"" + value + "\"" );
+#endif
             tempWaveDir = value;
         }
 
@@ -1774,15 +1778,9 @@ namespace org.kbinani.cadencii {
         /// アンドゥ処理を行います
         /// </summary>
         public static void undo() {
-#if DEBUG
-            AppManager.debugWriteLine( "CommonConfig.Undo()" );
-#endif
             if ( isUndoAvailable() ) {
                 ICommand run_src = s_commands.get( s_command_position );
                 CadenciiCommand run = (CadenciiCommand)run_src;
-#if DEBUG
-                AppManager.debugWriteLine( "    command type=" + run.type );
-#endif
                 if ( run.vsqCommand != null ) {
                     if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
                         int track = (Integer)run.vsqCommand.Args[0];
@@ -1806,9 +1804,6 @@ namespace org.kbinani.cadencii {
         /// リドゥ処理を行います
         /// </summary>
         public static void redo() {
-#if DEBUG
-            AppManager.debugWriteLine( "CommonConfig.Redo()" );
-#endif
             if ( isRedoAvailable() ) {
                 ICommand run_src = s_commands.get( s_command_position + 1 );
                 CadenciiCommand run = (CadenciiCommand)run_src;
@@ -1836,10 +1831,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="command"></param>
         public static void register( ICommand command ) {
-#if DEBUG
-            AppManager.debugWriteLine( "EditorManager.Register; command=" + command );
-            AppManager.debugWriteLine( "    m_commands.Count=" + s_commands.size() );
-#endif
             if ( s_command_position == s_commands.size() - 1 ) {
                 // 新しいコマンドバッファを追加する場合
                 s_commands.add( command );
@@ -2422,7 +2413,82 @@ namespace org.kbinani.cadencii {
         }
 
         public static void saveTo( String file ) {
+            if ( s_vsq != null ) {
+                if ( editorConfig.UseProjectCache ) {
+                    // キャッシュディレクトリの処理
+                    String dir = PortUtil.getDirectoryName( file );
+                    String name = PortUtil.getFileNameWithoutExtension( file );
+                    String cacheDir = PortUtil.combinePath( dir, name + ".cadencii" );
+
+                    if ( !PortUtil.isDirectoryExists( cacheDir ) ) {
+                        try {
+                            PortUtil.createDirectory( cacheDir );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                            showMessageBox( PortUtil.formatMessage( _( "failed to create cache directory, '{0}'." ), cacheDir ),
+                                            _( "Info." ),
+                                            OK_OPTION,
+                                            MSGBOX_INFORMATION_MESSAGE );
+                            return;
+                        }
+                    }
+
+                    String currentCacheDir = getTempWaveDir();
+                    if ( !currentCacheDir.Equals( cacheDir ) ) {
+                        for ( int i = 1; i < s_vsq.Track.size(); i++ ) {
+                            String wavFrom = PortUtil.combinePath( currentCacheDir, i + ".wav" );
+                            String wavTo = PortUtil.combinePath( cacheDir, i + ".wav" );
+                            if ( PortUtil.isFileExists( wavFrom ) ) {
+                                if ( PortUtil.isFileExists( wavTo ) ) {
+                                    try {
+                                        PortUtil.deleteFile( wavTo );
+                                    } catch ( Exception ex ) {
+                                        PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                                    }
+                                }
+                                try {
+                                    PortUtil.moveFile( wavFrom, wavTo );
+                                } catch ( Exception ex ) {
+                                    PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                                    showMessageBox( PortUtil.formatMessage( _( "failed copy WAVE cache file, '{0}'." ), wavFrom ),
+                                                    _( "Error" ),
+                                                    OK_OPTION,
+                                                    MSGBOX_WARNING_MESSAGE );
+                                    break;
+                                }
+                            }
+
+                            String xmlFrom = PortUtil.combinePath( currentCacheDir, i + ".xml" );
+                            String xmlTo = PortUtil.combinePath( cacheDir, i + ".xml" );
+                            if ( PortUtil.isFileExists( xmlFrom ) ) {
+                                if ( PortUtil.isFileExists( xmlTo ) ) {
+                                    try {
+                                        PortUtil.deleteFile( xmlTo );
+                                    } catch ( Exception ex ) {
+                                        PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                                    }
+                                }
+                                try {
+                                    PortUtil.moveFile( xmlFrom, xmlTo );
+                                } catch ( Exception ex ) {
+                                    PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                                    showMessageBox( PortUtil.formatMessage( _( "failed copy XML cache file, '{0}'." ), xmlFrom ),
+                                                    _( "Error" ),
+                                                    OK_OPTION,
+                                                    MSGBOX_WARNING_MESSAGE );
+                                    break;
+                                }
+                            }
+                        }
+
+                        setTempWaveDir( cacheDir );
+                    }
+                    s_vsq.cacheDir = cacheDir;
+                }
+            }
+
             saveToCor( file );
+            
             if ( s_vsq != null ) {
                 s_file = file;
                 editorConfig.pushRecentFiles( s_file );
@@ -2439,12 +2505,15 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// 現在の演奏マーカーの位置を取得または設定します。
+        /// 現在の演奏マーカーの位置を取得します。
         /// </summary>
         public static int getCurrentClock() {
             return s_current_clock;
         }
 
+        /// <summary>
+        /// 現在の演奏マーカーの位置を設定します。
+        /// </summary>
         public static void setCurrentClock( int value ) {
             int old = s_current_clock;
             s_current_clock = value;
@@ -3167,9 +3236,6 @@ namespace org.kbinani.cadencii {
         public static String getAssemblyConfigurationAttribute() {
             Assembly a = Assembly.GetAssembly( typeof( AppManager ) );
             AssemblyConfigurationAttribute attr = (AssemblyConfigurationAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyConfigurationAttribute ) );
-#if DEBUG
-            AppManager.debugWriteLine( "GetAssemblyConfigurationAttribute; attr.Configuration=" + attr.Configuration );
-#endif
             return attr.Configuration;
         }
 #endif

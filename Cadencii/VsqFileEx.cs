@@ -44,6 +44,10 @@ namespace org.kbinani.cadencii {
 
         public AttachedCurve AttachedCurves;
         public Vector<BgmFile> BgmFiles = new Vector<BgmFile>();
+        /// <summary>
+        /// キャッシュ用ディレクトリのパス
+        /// </summary>
+        public String cacheDir = "";
 #if !JAVA
         [System.Xml.Serialization.XmlIgnore]
 #endif
@@ -405,7 +409,7 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < c; i++ ) {
                 ret.BgmFiles.add( (BgmFile)BgmFiles.get( i ).clone() );
             }
-
+            ret.cacheDir = cacheDir;
             return ret;
         }
 

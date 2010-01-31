@@ -3722,7 +3722,7 @@ namespace org.kbinani.cadencii {
                                                                                                                        m_selected_curve,
                                                                                                                        chain.value.id,
                                                                                                                        work,
-                                                                                                                       AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                                                       AppManager.editorConfig.getControlCurveResolutionValue() );
                                                     executeCommand( run, true );
                                                     m_mouse_down_mode = MouseDownMode.NONE;
                                                     invalidate();
@@ -3732,7 +3732,7 @@ namespace org.kbinani.cadencii {
                                                     CadenciiCommand run = VsqFileEx.generateCommandDeleteBezierChain( AppManager.getSelected(),
                                                                                                                       m_selected_curve,
                                                                                                                       chain.value.id,
-                                                                                                                      AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                                                      AppManager.editorConfig.getControlCurveResolutionValue() );
                                                     executeCommand( run, true );
                                                     m_mouse_down_mode = MouseDownMode.NONE;
                                                     invalidate();
@@ -3754,7 +3754,7 @@ namespace org.kbinani.cadencii {
                                                                                                                    m_selected_curve,
                                                                                                                    chain.value.id,
                                                                                                                    work,
-                                                                                                                   AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                                                   AppManager.editorConfig.getControlCurveResolutionValue() );
                                                 executeCommand( run, true );
                                                 m_mouse_down_mode = MouseDownMode.NONE;
                                                 invalidate();
@@ -3923,7 +3923,7 @@ namespace org.kbinani.cadencii {
                         CadenciiCommand run = VsqFileEx.generateCommandAddBezierChain( track,
                                                                                 m_selected_curve,
                                                                                 chain_id,
-                                                                                AppManager.editorConfig.ControlCurveResolution.getValue(),
+                                                                                AppManager.editorConfig.getControlCurveResolutionValue(),
                                                                                 adding );
                         executeCommand( run, false );
                         m_mouse_down_mode = MouseDownMode.BEZIER_ADD_NEW;
@@ -3939,7 +3939,7 @@ namespace org.kbinani.cadencii {
                                                                                     m_selected_curve,
                                                                                     target_chain.id,
                                                                                     target_chain,
-                                                                                    AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                    AppManager.editorConfig.getControlCurveResolutionValue() );
                         executeCommand( run, false );
                         m_mouse_down_mode = MouseDownMode.BEZIER_EDIT;
                     }
@@ -4167,12 +4167,12 @@ namespace org.kbinani.cadencii {
                         CadenciiCommand pre = VsqFileEx.generateCommandDeleteBezierChain( selected,
                                                                                           m_selected_curve,
                                                                                           chain_id,
-                                                                                          AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                          AppManager.editorConfig.getControlCurveResolutionValue() );
                         executeCommand( pre, false );
                         CadenciiCommand run = VsqFileEx.generateCommandAddBezierChain( selected,
                                                                                        m_selected_curve,
                                                                                        chain_id,
-                                                                                       AppManager.editorConfig.ControlCurveResolution.getValue(),
+                                                                                       AppManager.editorConfig.getControlCurveResolutionValue(),
                                                                                        edited );
                         executeCommand( run, true );
                     } else if ( m_mouse_down_mode == MouseDownMode.BEZIER_EDIT ) {
@@ -4180,13 +4180,13 @@ namespace org.kbinani.cadencii {
                                                                                            m_selected_curve,
                                                                                            chain_id,
                                                                                            m_editing_bezier_original,
-                                                                                           AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                           AppManager.editorConfig.getControlCurveResolutionValue() );
                         executeCommand( pre, false );
                         CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( selected,
                                                                                            m_selected_curve,
                                                                                            chain_id,
                                                                                            edited,
-                                                                                           AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                           AppManager.editorConfig.getControlCurveResolutionValue() );
                         executeCommand( run, true );
                     } else if ( m_mouse_down_mode == MouseDownMode.BEZIER_MODE && m_mouse_moved ) {
                         vsq.AttachedCurves.get( selected - 1 ).setBezierChain( m_selected_curve, chain_id, m_editing_bezier_original );
@@ -4194,7 +4194,7 @@ namespace org.kbinani.cadencii {
                                                                                            m_selected_curve,
                                                                                            chain_id,
                                                                                            edited,
-                                                                                           AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                           AppManager.editorConfig.getControlCurveResolutionValue() );
                         executeCommand( run, true );
 #if DEBUG
                         AppManager.debugWriteLine( "    m_mouse_down_mode=" + m_mouse_down_mode );
@@ -4547,7 +4547,7 @@ namespace org.kbinani.cadencii {
                                 #endregion
                             } else if ( m_selected_curve.equals( CurveType.VibratoRate ) || m_selected_curve.equals( CurveType.VibratoDepth ) ) {
                                 #region VibratoRate || VibratoDepth
-                                int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
+                                int step_clock = AppManager.editorConfig.getControlCurveResolutionValue();
                                 int step_px = (int)(step_clock * AppManager.scaleX);
                                 if ( step_px <= 0 ) {
                                     step_px = 1;
@@ -4675,7 +4675,7 @@ namespace org.kbinani.cadencii {
                             } else {
                                 #region Other Curves
                                 int track = selected;
-                                int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
+                                int step_clock = AppManager.editorConfig.getControlCurveResolutionValue();
                                 int step_px = (int)(step_clock * AppManager.scaleX);
                                 if ( step_px <= 0 ) {
                                     step_px = 1;
@@ -4841,7 +4841,7 @@ namespace org.kbinani.cadencii {
                                 }
                             } else if ( m_selected_curve.equals( CurveType.VibratoDepth ) || m_selected_curve.equals( CurveType.VibratoRate ) ) {
                                 int stdx = AppManager.startToDrawX;
-                                int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
+                                int step_clock = AppManager.editorConfig.getControlCurveResolutionValue();
                                 int cl_start = x0;
                                 int cl_end = x1;
 #if DEBUG
@@ -4920,7 +4920,7 @@ namespace org.kbinani.cadencii {
                             } else {
                                 VsqBPList list = vsq_track.getCurve( m_selected_curve.getName() );
                                 if ( list != null ) {
-                                    int step_clock = AppManager.editorConfig.ControlCurveResolution.getValue();
+                                    int step_clock = AppManager.editorConfig.getControlCurveResolutionValue();
                                     Vector<Long> delete = new Vector<Long>();
                                     TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
                                     int c = list.size();
@@ -5411,7 +5411,7 @@ namespace org.kbinani.cadencii {
                                                                                                m_selected_curve,
                                                                                                chain_id,
                                                                                                before,
-                                                                                               AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                               AppManager.editorConfig.getControlCurveResolutionValue() );
                                 executeCommand( revert, false );
                                 if ( ret == BDialogResult.OK ) {
                                     // ダイアログの結果がOKで、かつベジエ曲線が単調増加なら編集を適用
@@ -5420,7 +5420,7 @@ namespace org.kbinani.cadencii {
                                                                                                     m_selected_curve,
                                                                                                     chain_id,
                                                                                                     after,
-                                                                                                    AppManager.editorConfig.ControlCurveResolution.getValue() );
+                                                                                                    AppManager.editorConfig.getControlCurveResolutionValue() );
                                         executeCommand( run, true );
                                     }
                                 }

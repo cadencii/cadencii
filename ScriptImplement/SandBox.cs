@@ -102,7 +102,7 @@ public static class AutoBRI {
         org.kbinani.vsq.VsqTrack track = vsq.Track.get( AppManager.getSelected() );
 
         // コントロールカーブの時間方向の解像度を，Cadenciiの設定値から取得
-        int resol = AppManager.editorConfig.ControlCurveResolution.getValue();
+        int resol = AppManager.editorConfig.getControlCurveResolutionValue();
         for ( int i = 0; i < ids.Count; i++ ) {
             int internal_id = ids[i];
 
@@ -174,7 +174,7 @@ public class AutoBRITool : IPaletteTool {
     /// <returns></returns>
     public bool edit( org.kbinani.vsq.VsqTrack track, int[] ids, System.Windows.Forms.MouseButtons button ) {
         // コントロールカーブの時間方向の解像度を，Cadenciiの設定値から取得
-        int resol = AppManager.editorConfig.ControlCurveResolution.getValue();
+        int resol = AppManager.editorConfig.getControlCurveResolutionValue();
         for ( int i = 0; i < ids.Length; i++ ) {
             int internal_id = ids[i];
             

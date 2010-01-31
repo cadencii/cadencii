@@ -96,26 +96,26 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void reloadPartial( int track, String file, double sec_from, double sec_to ) {
-            if ( track < 0 || drawer.Length <= track ) {
+        public void reloadPartial( int index, String file, double sec_from, double sec_to ) {
+            if ( index < 0 || drawer.Length <= index ) {
                 return;
             }
-            if ( drawer[track] == null ) {
-                drawer[track] = new WaveDrawContext();
-                drawer[track].load( file );
+            if ( drawer[index] == null ) {
+                drawer[index] = new WaveDrawContext();
+                drawer[index].load( file );
             } else {
-                drawer[track].reloadPartial( file, sec_from, sec_to );
+                drawer[index].reloadPartial( file, sec_from, sec_to );
             }
         }
 
-        public void load( int track, String wave_path ) {
-            if ( track < 0 || drawer.Length <= track ) {
+        public void load( int index, String wave_path ) {
+            if ( index < 0 || drawer.Length <= index ) {
                 return;
             }
-            if ( drawer[track] == null ) {
-                drawer[track] = new WaveDrawContext();
+            if ( drawer[index] == null ) {
+                drawer[index] = new WaveDrawContext();
             }
-            drawer[track].load( wave_path );
+            drawer[index].load( wave_path );
         }
 
         protected override void OnPaint( PaintEventArgs e ) {

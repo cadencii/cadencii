@@ -946,11 +946,11 @@ namespace org.kbinani.cadencii {
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                     //int start = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.Start );
                     //int end = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.End );
-                    int start = (int)(AppManager.wholeSelectedInterval.getStart() * scalex) + xoffset + 2;
+                    int start = (int)(AppManager.wholeSelectedInterval.getStart() * scalex) + xoffset;
                     if ( start < key_width ) {
                         start = key_width;
                     }
-                    int end = (int)(AppManager.wholeSelectedInterval.getEnd() * scalex) + xoffset + 2;
+                    int end = (int)(AppManager.wholeSelectedInterval.getEnd() * scalex) + xoffset;
                     if ( start < end ) {
                         g.setColor( new Color( 0, 0, 0, 98 ) );
                         g.fillRect( start, 0, end - start, getHeight() );

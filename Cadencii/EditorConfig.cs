@@ -333,6 +333,10 @@ namespace org.kbinani.cadencii {
         /// MTCスレーブ動作を行う際使用するMIDI INポートの設定
         /// </summary>
         public MidiPortConfig MidiInPortMtc = new MidiPortConfig();
+        /// <summary>
+        /// プロジェクトごとのキャッシュディレクトリを使うかどうか
+        /// </summary>
+        public boolean UseProjectCache = true;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
@@ -418,6 +422,10 @@ namespace org.kbinani.cadencii {
         /// 変更された時発生します
         /// </summary>
         public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
+
+        public int getControlCurveResolutionValue() {
+            return ClockResolutionUtility.getValue( ControlCurveResolution );
+        }
 
         public BKeys[] getShortcutKeyFor( BMenuItem menu_item ) {
             String name = menu_item.getName();
