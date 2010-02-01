@@ -1306,7 +1306,9 @@ namespace org.kbinani.cadencii {
                     int clock_now = AppManager.getCurrentClock();
                     double sec_now = vsq.getSecFromClock( clock_now );
                 } else {
-                    VSTiProxy.render( new VsqFileEx( "Miku", vsq.getPreMeasure(), 4, 4, 500000 ),
+                    VsqFileEx tvsq = new VsqFileEx( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
+                    tvsq.Track.get( 1 ).getCommon().Version = VSTiProxy.RENDERER_NULL;
+                    VSTiProxy.render( tvsq,
                                       1,
                                       null,
                                       0,

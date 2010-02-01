@@ -38,8 +38,11 @@ namespace org.kbinani.cadencii {
         public const String RENDERER_UTU0 = "UTU0";
         public const String RENDERER_STR0 = "STR0";
         public const String RENDERER_AQT0 = "AQT0";
+        /// <summary>
+        /// EmtryRenderingRunnerが使用される
+        /// </summary>
+        public const String RENDERER_NULL = "NUL0";
         public static int SAMPLE_RATE = 44100;
-        //public const int BLOCK_SIZE = 4410;
         const float a0 = -17317.563f;
         const float a1 = 86.7312112f;
         const float a2 = -0.237323499f;
@@ -229,9 +232,6 @@ namespace org.kbinani.cadencii {
             boolean reflect_amp_to_wave
         ) {
             s_working_renderer = VSTiProxy.RENDERER_DSB3;
-            if ( direct_play ) {
-                //PlaySound.reset();
-            }
             Vector<WaveReader> reader = new Vector<WaveReader>();
             for ( int i = 0; i < files.Length; i++ ) {
                 reader.add( files[i] );
@@ -246,6 +246,8 @@ namespace org.kbinani.cadencii {
                 s_working_renderer = VSTiProxy.RENDERER_STR0;
             } else if ( version.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
                 s_working_renderer = VSTiProxy.RENDERER_AQT0;
+            } else if ( version.StartsWith( VSTiProxy.RENDERER_NULL ) ) {
+                s_working_renderer = VSTiProxy.RENDERER_NULL;
             }
 #if DEBUG
             org.kbinani.debug.push_log( "s_working_renderer=" + s_working_renderer );
@@ -330,6 +332,17 @@ namespace org.kbinani.cadencii {
                                                                     direct_play,
                                                                     reflect_amp_to_wave );
 #endif
+            } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_NULL ) ){
+                s_rendering_context = new EmptyRenderingRunner( track,
+                                                                reflect_amp_to_wave,
+                                                                wave_writer,
+                                                                wave_read_offset_seconds,
+                                                                reader,
+                                                                direct_play,
+                                                                trim_msec,
+                                                                total_samples,
+                                                                SAMPLE_RATE,
+                                                                mode_infinite );
             } else {
 #if ENABLE_VOCALOID
                 VocaloidDriver driver = null;
@@ -393,9 +406,12 @@ namespace org.kbinani.cadencii {
             } else if ( argument is StraightRenderingRunner ) {
                 StraightRenderingRunner arg = (StraightRenderingRunner)argument;
                 arg.run();
+            } else if ( argument is EmptyRenderingRunner ) {
+                EmptyRenderingRunner arg = (EmptyRenderingRunner)argument;
+                arg.run();
             }
 #if ENABLE_AQUESTONE
-            else if ( argument is AquesToneRenderingRunner ) {
+ else if ( argument is AquesToneRenderingRunner ) {
                 AquesToneRenderingRunner arg = (AquesToneRenderingRunner)argument;
                 arg.run();
             }
