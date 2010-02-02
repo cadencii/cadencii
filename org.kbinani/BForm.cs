@@ -89,6 +89,15 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        #region event impl KeyUp
+        // root impl of KeyUp event is in BPictureBox
+        public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+        protected override void OnKeyUp( System.Windows.Forms.KeyEventArgs e ) {
+            base.OnKeyUp( e );
+            keyUpEvent.raise( this, e );
+        }
+        #endregion
+
         #region event impl MouseMove
         // root impl of MouseMove event is in BButton
         public BEvent<BMouseEventHandler> mouseMoveEvent = new BEvent<BMouseEventHandler>();

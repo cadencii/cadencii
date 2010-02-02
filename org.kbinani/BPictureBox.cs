@@ -120,11 +120,15 @@ namespace org.kbinani.windows.forms {
             keyDownEvent.raise( this, e );
         }
 
+        // root impl of KeyUp
+        #region event impl KeyUp
+        // root impl of KeyUp event is in BPictureBox
         public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-        protected override void OnKeyUp( KeyEventArgs e ) {
+        protected override void OnKeyUp( System.Windows.Forms.KeyEventArgs e ) {
             base.OnKeyUp( e );
             keyUpEvent.raise( this, e );
         }
+        #endregion
 
         public void setImage( org.kbinani.java.awt.Image value ) {
             if ( value != null ) {

@@ -920,7 +920,14 @@ namespace org.kbinani.cadencii {
         /// RenderingStatusをXMLシリアライズするためのシリアライザ
         /// </summary>
         public static XmlSerializer renderingStatusSerializer = new XmlSerializer( typeof( RenderedStatus ) );
+        /// <summary>
+        /// wavを出力するための一時ディレクトリのパス。
+        /// </summary>
         private static String tempWaveDir = "";
+        /// <summary>
+        /// 再生開始からの経過時刻がこの秒数以下の場合、再生を止めることが禁止される。
+        /// </summary>
+        public static double forbidFlipPlayingThresholdSeconds = 0.2;
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();

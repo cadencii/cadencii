@@ -1307,7 +1307,9 @@ namespace org.kbinani.cadencii {
                     double sec_now = vsq.getSecFromClock( clock_now );
                 } else {
                     VsqFileEx tvsq = new VsqFileEx( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
+#if ENABLE_EMPTY_RENDERING_RUNNER
                     tvsq.Track.get( 1 ).getCommon().Version = VSTiProxy.RENDERER_NULL;
+#endif
                     VSTiProxy.render( tvsq,
                                       1,
                                       null,
@@ -3804,7 +3806,8 @@ namespace org.kbinani.cadencii {
 #endif
                 refreshScreen();
             }
-            ProcessSpecialShortcutKey( e );
+            BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
+            processSpecialShortcutKey( e0, true );
         }
         #endregion
 
@@ -4438,8 +4441,16 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
+        public void FormMain_KeyUp( Object sender, BKeyEventArgs e ) {
+            processSpecialShortcutKey( e, false );
+        }
+
         public void FormMain_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
-            ProcessSpecialShortcutKey( e );
+#if DEBUG
+            PortUtil.println( "FormMain#FormMain_PreviewKeyDown" );
+#endif
+            BKeyEventArgs eDeleg = new BKeyEventArgs( e.KeyData );
+            processSpecialShortcutKey( eDeleg, true );
         }
 
         public void FormMain_Deactivate( Object sender, EventArgs e ) {
@@ -7911,7 +7922,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void picturePositionIndicator_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
-            ProcessSpecialShortcutKey( e );
+            BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
+            processSpecialShortcutKey( e0, true );
         }
         #endregion
 
@@ -8434,7 +8446,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void trackSelector_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
-            ProcessSpecialShortcutKey( e );
+            BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
+            processSpecialShortcutKey( e0, true );
         }
 
         public void trackSelector_RenderRequired( Object sender, int[] tracks ) {
@@ -11804,7 +11817,13 @@ namespace org.kbinani.cadencii {
             ensureVisible( AppManager.getCurrentClock() );
         }
 
-        public void ProcessSpecialShortcutKey( BPreviewKeyDownEventArgs e ) {
+        /// <summary>
+        /// 特殊なショートカットキーを処理します。
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="onPreviewKeyDown">PreviewKeyDownイベントから送信されてきた場合、true（送る側が設定する）</param>
+        public void processSpecialShortcutKey( BKeyEventArgs e, boolean onPreviewKeyDown ) {
+            boolean flipPlaying = false; // 再生/停止状態の切り替えが要求されたらtrue
 #if JAVA
             if ( !AppManager.inputTextBox.isVisible() ) {
 #else
@@ -11816,48 +11835,49 @@ namespace org.kbinani.cadencii {
 #else
                 if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
 #endif
-                    if ( AppManager.isPlaying() ) {
-                        timer.stop();
-                    }
-                    AppManager.setPlaying( !AppManager.isPlaying() );
+                    flipPlaying = true;
 #if JAVA
                 } else if ( e.KeyValue == KeyEvent.VK_SPACE ) {
 #else
                 } else if ( e.KeyCode == System.Windows.Forms.Keys.Space ) {
 #endif
                     if ( !AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
-                        if ( AppManager.isPlaying() ) {
-                            timer.stop();
-                        }
-                        AppManager.setPlaying( !AppManager.isPlaying() );
+                        flipPlaying = true;
                     }
 #if JAVA
                 } else if ( e.KeyValue == KeyEvent.VK_PERIOD ) {
 #else
                 } else if ( e.KeyCode == System.Windows.Forms.Keys.OemPeriod ) {
 #endif
-                    if ( AppManager.isPlaying() ) {
-                        AppManager.setPlaying( false );
-                    } else {
-                        if ( !AppManager.startMarkerEnabled ) {
-                            AppManager.setCurrentClock( 0 );
+                    if ( !onPreviewKeyDown ) {
+
+                        if ( AppManager.isPlaying() ) {
+                            AppManager.setPlaying( false );
                         } else {
-                            AppManager.setCurrentClock( AppManager.startMarker );
+                            if ( !AppManager.startMarkerEnabled ) {
+                                AppManager.setCurrentClock( 0 );
+                            } else {
+                                AppManager.setCurrentClock( AppManager.startMarker );
+                            }
+                            refreshScreen();
                         }
-                        refreshScreen();
                     }
 #if JAVA
                 } else if( e.KeyValue == KeyEvent.VK_ADD || e.KeyValue == KeyEvent.VK_PLUS || e.KeyValue == KeyEvent.VK_RIGHT ) {
 #else
                 } else if ( e.KeyCode == System.Windows.Forms.Keys.Add || e.KeyCode == System.Windows.Forms.Keys.Oemplus || e.KeyCode == System.Windows.Forms.Keys.Right ) {
 #endif
-                    forward();
+                    if ( onPreviewKeyDown ) {
+                        forward();
+                    }
 #if JAVA
                 } else if ( e.KeyValue == KeyEvent.VK_MINUS || e.KeyValue == KeyEvent.VK_LEFT ) {
 #else
                 } else if ( e.KeyCode == System.Windows.Forms.Keys.Subtract || e.KeyCode == System.Windows.Forms.Keys.OemMinus || e.KeyCode == System.Windows.Forms.Keys.Left ) {
 #endif
-                    rewind();
+                    if ( onPreviewKeyDown ) {
+                        rewind();
+                    }
                 } else {
                     if ( !AppManager.isPlaying() ) {
                         // 最初に戻る、の機能を発動
@@ -11870,6 +11890,21 @@ namespace org.kbinani.cadencii {
                                 refreshScreen();
                             }
                         }
+                    }
+                }
+                if ( !onPreviewKeyDown && flipPlaying ) {
+                    if ( AppManager.isPlaying() ) {
+                        double elapsed = PlaySound.getPosition();
+                        double threshold = AppManager.forbidFlipPlayingThresholdSeconds;
+                        if ( threshold < 0 ) {
+                            threshold = 0.0;
+                        }
+                        if ( elapsed > threshold ) {
+                            timer.stop();
+                            AppManager.setPlaying( false );
+                        }
+                    } else {
+                        AppManager.setPlaying( true );
                     }
                 }
             }
@@ -15629,6 +15664,7 @@ namespace org.kbinani.cadencii {
             activatedEvent.add( new BEventHandler( this, "FormMain_Activated" ) );
             formClosedEvent.add( new BFormClosedEventHandler( this, "FormMain_FormClosed" ) );
             formClosingEvent.add( new BFormClosingEventHandler( this, "FormMain_FormClosing" ) );
+            keyUpEvent.add( new BKeyEventHandler( this, "FormMain_KeyUp" ) );
             previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "FormMain_PreviewKeyDown" ) );
             panelOverview.enterEvent.add( new BEventHandler( this, "panelOverview_Enter" ) );
             mouseMoveEvent.add( new BMouseEventHandler( this, "FormMain_MouseMove" ) );

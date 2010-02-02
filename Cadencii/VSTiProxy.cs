@@ -38,10 +38,13 @@ namespace org.kbinani.cadencii {
         public const String RENDERER_UTU0 = "UTU0";
         public const String RENDERER_STR0 = "STR0";
         public const String RENDERER_AQT0 = "AQT0";
+#if ENABLE_EMPTY_RENDERING_RUNNER
         /// <summary>
         /// EmtryRenderingRunnerが使用される
         /// </summary>
         public const String RENDERER_NULL = "NUL0";
+#error FormMain.AppManager_PreviewStartedも更新すること
+#endif
         public static int SAMPLE_RATE = 44100;
         const float a0 = -17317.563f;
         const float a1 = 86.7312112f;
@@ -246,8 +249,10 @@ namespace org.kbinani.cadencii {
                 s_working_renderer = VSTiProxy.RENDERER_STR0;
             } else if ( version.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
                 s_working_renderer = VSTiProxy.RENDERER_AQT0;
+#if ENABLE_EMPTY_RENDERING_RUNNER
             } else if ( version.StartsWith( VSTiProxy.RENDERER_NULL ) ) {
                 s_working_renderer = VSTiProxy.RENDERER_NULL;
+#endif
             }
 #if DEBUG
             org.kbinani.debug.push_log( "s_working_renderer=" + s_working_renderer );
@@ -331,6 +336,7 @@ namespace org.kbinani.cadencii {
                                                                     direct_play,
                                                                     reflect_amp_to_wave );
 #endif
+#if ENABLE_EMPTY_RENDERING_RUNNER
             } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_NULL ) ){
                 s_rendering_context = new EmptyRenderingRunner( track,
                                                                 reflect_amp_to_wave,
@@ -342,6 +348,7 @@ namespace org.kbinani.cadencii {
                                                                 total_samples,
                                                                 SAMPLE_RATE,
                                                                 mode_infinite );
+#endif
             } else {
 #if ENABLE_VOCALOID
                 VocaloidDriver driver = null;
@@ -405,9 +412,11 @@ namespace org.kbinani.cadencii {
             } else if ( argument is StraightRenderingRunner ) {
                 StraightRenderingRunner arg = (StraightRenderingRunner)argument;
                 arg.run();
+#if ENABLE_EMPTY_RENDERING_RUNNER
             } else if ( argument is EmptyRenderingRunner ) {
                 EmptyRenderingRunner arg = (EmptyRenderingRunner)argument;
                 arg.run();
+#endif
             }
 #if ENABLE_AQUESTONE
  else if ( argument is AquesToneRenderingRunner ) {
