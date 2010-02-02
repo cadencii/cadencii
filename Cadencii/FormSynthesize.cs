@@ -251,7 +251,7 @@ namespace org.kbinani.cadencii {
                             }
                             m_finished++;
                         } catch ( Exception ex ) {
-                            AppManager.reportException( "FormSynthesize#bgWork_DoWork", ex, 0 );
+                            AppManager.reportError( ex, "FormSynthesize#bgWork_DoWork", 0 );
                         } finally {
                             if ( ww != null ) {
                                 try {

@@ -62,7 +62,6 @@ namespace org.kbinani.cadencii {
                                     Vector<SingerConfig> singer_config_sys,
                                     String resampler,
                                     String wavtool,
-                                    String temp_dir,
                                     boolean invoke_with_wine,
                                     int sample_rate,
                                     int trim_msec,
@@ -88,7 +87,7 @@ namespace org.kbinani.cadencii {
             m_singer_config_sys = singer_config_sys;
             m_resampler = resampler;
             m_wavtool = wavtool;
-            m_temp_dir = temp_dir;
+            m_temp_dir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
             m_invoke_with_wine = invoke_with_wine;
             m_mode_infinite = mode_infinite;
         }

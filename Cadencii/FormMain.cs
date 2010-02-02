@@ -2275,13 +2275,13 @@ namespace org.kbinani.cadencii {
                                         refreshScreen();
                                     }
                                 } catch ( Exception ex ) {
-                                    AppManager.reportException( "FormMain#pictPianoRoll_MouseDoubleClick", ex, 0 );
+                                    AppManager.reportError( ex, "FormMain#pictPianoRoll_MouseDoubleClick", 0 );
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
                                             dlg.close();
                                         } catch ( Exception ex2 ) {
-                                            AppManager.reportException( "FormMain#pictPianoRoll_MouseDoubleClick", ex2, 0 );
+                                            AppManager.reportError( ex2, "FormMain#pictPianoRoll_MouseDoubleClick", 0 );
                                         }
                                     }
                                 }
@@ -5995,6 +5995,7 @@ namespace org.kbinani.cadencii {
             m_preference_dlg.setPathAquesTone( AppManager.editorConfig.PathAquesTone );
             m_preference_dlg.setWaveFileOutputFromMasterTrack( AppManager.editorConfig.WaveFileOutputFromMasterTrack );
             m_preference_dlg.setWaveFileOutputChannel( AppManager.editorConfig.WaveFileOutputChannel );
+            m_preference_dlg.setUseProjectCache( AppManager.editorConfig.UseProjectCache );
 
             m_preference_dlg.setLocation( getFormPreferedLocation( m_preference_dlg ) );
 
@@ -6121,6 +6122,75 @@ namespace org.kbinani.cadencii {
 #endif
                 AppManager.editorConfig.WaveFileOutputFromMasterTrack = m_preference_dlg.isWaveFileOutputFromMasterTrack();
                 AppManager.editorConfig.WaveFileOutputChannel = m_preference_dlg.getWaveFileOutputChannel();
+                if ( AppManager.editorConfig.UseProjectCache && !m_preference_dlg.isUseProjectCache() ) {
+                    // プロジェクト用キャッシュを使用していたが，使用しないように変更された場合.
+                    // プロジェクト用キャッシュが存在するなら，共用のキャッシュに移動する．
+                    String file = AppManager.getFileName();
+                    if( file != null && !file.Equals( "" ) ){
+                        String dir = PortUtil.getDirectoryName( file );
+                        String name = PortUtil.getFileNameWithoutExtension( file );
+                        String projectCacheDir = PortUtil.combinePath( dir, name + ".cadencii" );
+                        String commonCacheDir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+                        if ( PortUtil.isDirectoryExists( projectCacheDir ) ) {
+                            VsqFileEx vsq = AppManager.getVsqFile();
+                            for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                                // wavを移動
+                                String wavFrom = PortUtil.combinePath( projectCacheDir, i + ".wav" );
+                                String wavTo = PortUtil.combinePath( commonCacheDir, i + ".wav" );
+                                if ( !PortUtil.isFileExists( wavFrom ) ) {
+                                    continue;
+                                }
+                                if ( PortUtil.isFileExists( wavTo ) ) {
+                                    try {
+                                        PortUtil.deleteFile( wavTo );
+                                    } catch ( Exception ex ) {
+                                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                        continue;
+                                    }
+                                }
+                                try {
+                                    PortUtil.moveFile( wavFrom, wavTo );
+                                } catch ( Exception ex ) {
+                                    PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                }
+
+                                // xmlを移動
+                                String xmlFrom = PortUtil.combinePath( projectCacheDir, i + ".xml" );
+                                String xmlTo = PortUtil.combinePath( commonCacheDir, i + ".xml" );
+                                if ( !PortUtil.isFileExists( xmlFrom ) ) {
+                                    continue;
+                                }
+                                if ( PortUtil.isFileExists( xmlTo ) ) {
+                                    try {
+                                        PortUtil.deleteFile( xmlTo );
+                                    } catch ( Exception ex ) {
+                                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                        continue;
+                                    }
+                                }
+                                try {
+                                    PortUtil.moveFile( xmlFrom, xmlTo );
+                                } catch ( Exception ex ) {
+                                    PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                }
+                            }
+
+                            // projectCacheDirが空なら，ディレクトリごと削除する
+                            String[] files = PortUtil.listFiles( projectCacheDir, "*.*" );
+                            if ( files.Length <= 0 ) {
+                                try {
+                                    PortUtil.deleteDirectory( projectCacheDir );
+                                } catch ( Exception ex ) {
+                                    PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                }
+                            }
+
+                            // キャッシュのディレクトリを再指定
+                            AppManager.setTempWaveDir( commonCacheDir );
+                        }
+                    }
+                }
+                AppManager.editorConfig.UseProjectCache = m_preference_dlg.isUseProjectCache();
 
                 Vector<CurveType> visible_curves = new Vector<CurveType>();
                 trackSelector.clearViewingCurve();

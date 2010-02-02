@@ -1191,8 +1191,20 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void reportException( String message, Exception ex, int level ) {
-            PortUtil.stderr.println( message + ex );
+        public static void reportError( Exception ex, String message, int level ) {
+            Console.Error.WriteLine( message + "; ex=" + ex );
+            if ( level < 0 ) {
+                FormCompileResult dialog = null;
+                try {
+                    dialog = new FormCompileResult( message, "Message:\r\n" + ex.Message + "\r\n\r\nStackTrace:\r\n" + ex.StackTrace );
+                    beginShowDialog();
+                    dialog.showDialog();
+                    endShowDialog();
+                } catch ( Exception ex2 ) {
+                } finally {
+                    dialog.Dispose();
+                }
+            }
         }
 
         /// <summary>
@@ -1250,7 +1262,7 @@ namespace org.kbinani.cadencii {
             return showMessageBox( text, caption, optionType, MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
+        public static void beginShowDialog() {
 #if ENABLE_PROPERTY
             boolean property = (propertyWindow != null) ? propertyWindow.isAlwaysOnTop() : false;
             if ( property ) {
@@ -1261,7 +1273,26 @@ namespace org.kbinani.cadencii {
             if ( mixer ) {
                 mixerWindow.setAlwaysOnTop( false );
             }
+        }
 
+        public static void endShowDialog() {
+#if ENABLE_PROPERTY
+            boolean property = (propertyWindow != null) ? propertyWindow.isAlwaysOnTop() : false;
+            if ( property ) {
+                propertyWindow.setAlwaysOnTop( true );
+            }
+#endif
+            boolean mixer = (mixerWindow != null) ? mixerWindow.isAlwaysOnTop() : false;
+            if ( mixer ) {
+                mixerWindow.setAlwaysOnTop( true );
+            }
+            if ( mainWindow != null ) {
+                mainWindow.requestFocus();
+            }
+        }
+        
+        public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
+            beginShowDialog();
             BDialogResult ret = BDialogResult.CANCEL;
 #if JAVA
             int r = JOptionPane.showConfirmDialog( null, text, caption, optionType, messageType );
@@ -1312,19 +1343,7 @@ namespace org.kbinani.cadencii {
                 ret = BDialogResult.NO;
             }
 #endif
-
-#if ENABLE_PROPERTY
-            if ( property ) {
-                propertyWindow.setAlwaysOnTop( true );
-            }
-#endif
-            if ( mixer ) {
-                mixerWindow.setAlwaysOnTop( true );
-            }
-            if ( mainWindow != null ) {
-                mainWindow.requestFocus();
-            }
-
+            endShowDialog();
             return ret;
         }
         #endregion

@@ -63,6 +63,7 @@ namespace org.kbinani.cadencii {
         private BRadioButton radioMasterTrack;
         private BComboBox comboMtcMidiInPortNumber;
         private BLabel labelMtcMidiInPort;
+        private BCheckBox chkKeepProjectCache;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -244,6 +245,14 @@ namespace org.kbinani.cadencii {
 
             registerEventHandlers();
             setResources();
+        }
+
+        public boolean isUseProjectCache() {
+            return chkKeepProjectCache.isSelected();
+        }
+
+        public void setUseProjectCache( boolean value ) {
+            chkKeepProjectCache.setSelected( value );
         }
 
         public boolean isUseSpaceKeyAsMiddleButtonModifier() {
@@ -1286,6 +1295,7 @@ namespace org.kbinani.cadencii {
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.label5 = new org.kbinani.windows.forms.BLabel();
@@ -1366,6 +1376,8 @@ namespace org.kbinani.cadencii {
             this.numTrackHeight = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabOperation = new System.Windows.Forms.TabPage();
             this.groupMisc = new org.kbinani.windows.forms.BGroupBox();
+            this.comboMtcMidiInPortNumber = new org.kbinani.windows.forms.BComboBox();
+            this.labelMtcMidiInPort = new org.kbinani.windows.forms.BLabel();
             this.lblMaximumFrameRate = new org.kbinani.windows.forms.BLabel();
             this.comboMidiInPortNumber = new org.kbinani.windows.forms.BComboBox();
             this.numMaximumFrameRate = new org.kbinani.cadencii.NumericUpDownEx();
@@ -1417,8 +1429,7 @@ namespace org.kbinani.cadencii {
             this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.labelMtcMidiInPort = new org.kbinani.windows.forms.BLabel();
-            this.comboMtcMidiInPortNumber = new org.kbinani.windows.forms.BComboBox();
+            this.chkKeepProjectCache = new org.kbinani.windows.forms.BCheckBox();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupAutoVibratoConfig.SuspendLayout();
@@ -1487,7 +1498,7 @@ namespace org.kbinani.cadencii {
             this.tabSequence.Location = new System.Drawing.Point( 4, 40 );
             this.tabSequence.Name = "tabSequence";
             this.tabSequence.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSequence.Size = new System.Drawing.Size( 454, 358 );
+            this.tabSequence.Size = new System.Drawing.Size( 454, 390 );
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
@@ -1780,7 +1791,7 @@ namespace org.kbinani.cadencii {
             this.tabAnother.Location = new System.Drawing.Point( 4, 40 );
             this.tabAnother.Name = "tabAnother";
             this.tabAnother.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAnother.Size = new System.Drawing.Size( 454, 358 );
+            this.tabAnother.Size = new System.Drawing.Size( 454, 390 );
             this.tabAnother.TabIndex = 2;
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
@@ -1987,7 +1998,7 @@ namespace org.kbinani.cadencii {
             this.tabAppearance.Location = new System.Drawing.Point( 4, 40 );
             this.tabAppearance.Name = "tabAppearance";
             this.tabAppearance.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAppearance.Size = new System.Drawing.Size( 454, 358 );
+            this.tabAppearance.Size = new System.Drawing.Size( 454, 390 );
             this.tabAppearance.TabIndex = 3;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -2379,6 +2390,23 @@ namespace org.kbinani.cadencii {
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
             // 
+            // comboMtcMidiInPortNumber
+            // 
+            this.comboMtcMidiInPortNumber.FormattingEnabled = true;
+            this.comboMtcMidiInPortNumber.Location = new System.Drawing.Point( 176, 101 );
+            this.comboMtcMidiInPortNumber.Name = "comboMtcMidiInPortNumber";
+            this.comboMtcMidiInPortNumber.Size = new System.Drawing.Size( 239, 20 );
+            this.comboMtcMidiInPortNumber.TabIndex = 91;
+            // 
+            // labelMtcMidiInPort
+            // 
+            this.labelMtcMidiInPort.AutoSize = true;
+            this.labelMtcMidiInPort.Location = new System.Drawing.Point( 16, 104 );
+            this.labelMtcMidiInPort.Name = "labelMtcMidiInPort";
+            this.labelMtcMidiInPort.Size = new System.Drawing.Size( 137, 12 );
+            this.labelMtcMidiInPort.TabIndex = 90;
+            this.labelMtcMidiInPort.Text = "MTC MIDI In Port Number";
+            // 
             // lblMaximumFrameRate
             // 
             this.lblMaximumFrameRate.AutoSize = true;
@@ -2578,7 +2606,7 @@ namespace org.kbinani.cadencii {
             this.tabPlatform.Location = new System.Drawing.Point( 4, 40 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 358 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 390 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
@@ -2796,7 +2824,7 @@ namespace org.kbinani.cadencii {
             this.tabUtauSingers.Location = new System.Drawing.Point( 4, 40 );
             this.tabUtauSingers.Name = "tabUtauSingers";
             this.tabUtauSingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 358 );
+            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 390 );
             this.tabUtauSingers.TabIndex = 6;
             this.tabUtauSingers.Text = "UTAU Singers";
             this.tabUtauSingers.UseVisualStyleBackColor = true;
@@ -2860,6 +2888,8 @@ namespace org.kbinani.cadencii {
             listViewGroup6.Name = null;
             listViewGroup7.Header = "ListViewGroup";
             listViewGroup7.Name = null;
+            listViewGroup8.Header = "ListViewGroup";
+            listViewGroup8.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
@@ -2867,7 +2897,8 @@ namespace org.kbinani.cadencii {
             listViewGroup4,
             listViewGroup5,
             listViewGroup6,
-            listViewGroup7} );
+            listViewGroup7,
+            listViewGroup8} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
@@ -2879,6 +2910,7 @@ namespace org.kbinani.cadencii {
             // 
             // tabFile
             // 
+            this.tabFile.Controls.Add( this.chkKeepProjectCache );
             this.tabFile.Controls.Add( this.lblAutoBackupMinutes );
             this.tabFile.Controls.Add( this.lblAutoBackupInterval );
             this.tabFile.Controls.Add( this.chkAutoBackup );
@@ -2886,7 +2918,7 @@ namespace org.kbinani.cadencii {
             this.tabFile.Location = new System.Drawing.Point( 4, 40 );
             this.tabFile.Name = "tabFile";
             this.tabFile.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabFile.Size = new System.Drawing.Size( 454, 358 );
+            this.tabFile.Size = new System.Drawing.Size( 454, 390 );
             this.tabFile.TabIndex = 7;
             this.tabFile.Text = "File";
             this.tabFile.UseVisualStyleBackColor = true;
@@ -2894,7 +2926,7 @@ namespace org.kbinani.cadencii {
             // lblAutoBackupMinutes
             // 
             this.lblAutoBackupMinutes.AutoSize = true;
-            this.lblAutoBackupMinutes.Location = new System.Drawing.Point( 318, 20 );
+            this.lblAutoBackupMinutes.Location = new System.Drawing.Point( 318, 14 );
             this.lblAutoBackupMinutes.Name = "lblAutoBackupMinutes";
             this.lblAutoBackupMinutes.Size = new System.Drawing.Size( 53, 12 );
             this.lblAutoBackupMinutes.TabIndex = 3;
@@ -2903,7 +2935,7 @@ namespace org.kbinani.cadencii {
             // lblAutoBackupInterval
             // 
             this.lblAutoBackupInterval.AutoSize = true;
-            this.lblAutoBackupInterval.Location = new System.Drawing.Point( 194, 20 );
+            this.lblAutoBackupInterval.Location = new System.Drawing.Point( 194, 14 );
             this.lblAutoBackupInterval.Name = "lblAutoBackupInterval";
             this.lblAutoBackupInterval.Size = new System.Drawing.Size( 43, 12 );
             this.lblAutoBackupInterval.TabIndex = 1;
@@ -2912,7 +2944,7 @@ namespace org.kbinani.cadencii {
             // chkAutoBackup
             // 
             this.chkAutoBackup.AutoSize = true;
-            this.chkAutoBackup.Location = new System.Drawing.Point( 18, 19 );
+            this.chkAutoBackup.Location = new System.Drawing.Point( 15, 13 );
             this.chkAutoBackup.Name = "chkAutoBackup";
             this.chkAutoBackup.Size = new System.Drawing.Size( 127, 16 );
             this.chkAutoBackup.TabIndex = 0;
@@ -2921,7 +2953,7 @@ namespace org.kbinani.cadencii {
             // 
             // numAutoBackupInterval
             // 
-            this.numAutoBackupInterval.Location = new System.Drawing.Point( 243, 18 );
+            this.numAutoBackupInterval.Location = new System.Drawing.Point( 243, 12 );
             this.numAutoBackupInterval.Minimum = new decimal( new int[] {
             1,
             0,
@@ -2958,22 +2990,15 @@ namespace org.kbinani.cadencii {
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
-            // labelMtcMidiInPort
+            // chkKeepProjectCache
             // 
-            this.labelMtcMidiInPort.AutoSize = true;
-            this.labelMtcMidiInPort.Location = new System.Drawing.Point( 16, 104 );
-            this.labelMtcMidiInPort.Name = "labelMtcMidiInPort";
-            this.labelMtcMidiInPort.Size = new System.Drawing.Size( 137, 12 );
-            this.labelMtcMidiInPort.TabIndex = 90;
-            this.labelMtcMidiInPort.Text = "MTC MIDI In Port Number";
-            // 
-            // comboMtcMidiInPortNumber
-            // 
-            this.comboMtcMidiInPortNumber.FormattingEnabled = true;
-            this.comboMtcMidiInPortNumber.Location = new System.Drawing.Point( 176, 101 );
-            this.comboMtcMidiInPortNumber.Name = "comboMtcMidiInPortNumber";
-            this.comboMtcMidiInPortNumber.Size = new System.Drawing.Size( 239, 20 );
-            this.comboMtcMidiInPortNumber.TabIndex = 91;
+            this.chkKeepProjectCache.AutoSize = true;
+            this.chkKeepProjectCache.Location = new System.Drawing.Point( 15, 40 );
+            this.chkKeepProjectCache.Name = "chkKeepProjectCache";
+            this.chkKeepProjectCache.Size = new System.Drawing.Size( 125, 16 );
+            this.chkKeepProjectCache.TabIndex = 4;
+            this.chkKeepProjectCache.Text = "Keep Project Cache";
+            this.chkKeepProjectCache.UseVisualStyleBackColor = true;
             // 
             // Preference
             // 

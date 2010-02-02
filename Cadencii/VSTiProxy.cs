@@ -292,7 +292,6 @@ namespace org.kbinani.cadencii {
                                                                AppManager.editorConfig.UtauSingers,
                                                                AppManager.editorConfig.PathResampler,
                                                                AppManager.editorConfig.PathWavtool,
-                                                               temp_dir,
                                                                AppManager.editorConfig.InvokeUtauCoreWithWine,
                                                                SAMPLE_RATE,
                                                                trim_msec,

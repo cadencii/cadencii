@@ -72,7 +72,8 @@ public:
 };
 
 ClassSlave::ClassSlave( audioMasterCallback audioMaster )
-: AudioEffectX( audioMaster, 1, 0 ) { // 1 program, 0 parameter.
+: AudioEffectX( audioMaster, 1, 0 ) // 1 program, 0 parameter.
+{
     setNumInputs( 0 );
     setNumOutputs( 2 );
     setUniqueID( 'Cdnc' );

@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
 using org.kbinani.xml;
+using org.kbinani.apputil;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -104,16 +105,30 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        public static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
         public static boolean invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( loadedTools.containsKey( id ) ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
-                VsqTrack vsq_track = vsq.Track.get( track );
-                VsqTrack item = (VsqTrack)vsq_track.clone();
+                VsqTrack item = (VsqTrack)vsq.Track.get( track ).clone();
+                object objPal = loadedTools.get( id );
+                if ( objPal == null ) {
+                    return false;
+                }
+                if ( !(objPal is IPaletteTool) ) {
+                    return false;
+                }
+                IPaletteTool pal = (IPaletteTool)objPal;
                 boolean edited = false;
                 try {
-                    edited = ((IPaletteTool)loadedTools.get( id )).edit( item, vsq_event_intrenal_ids, button );
+                    edited = pal.edit( item, vsq_event_intrenal_ids, button );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "PaletteToolServer#InvokePaletteTool; ex=" + ex );
+                    AppManager.reportError( ex,
+                                            PortUtil.formatMessage( _( "Palette tool '{0}' reported an error.\nPlease copy the exception text and report it to developper." ), id ),
+                                            -1 );
+                    Console.Error.WriteLine( "PaletteToolServer#InvokePaletteTool; ex=" + ex );
                     edited = false;
                 }
                 if ( edited ) {
