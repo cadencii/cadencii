@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D9E9BE68-1790-4DBE-B556-44057B6B6AB7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -60,12 +60,16 @@
   <ItemGroup>
     <Compile Include="AddItemEventHandler.cs" />
     <Compile Include="AppManager.cs" />
+    <Compile Include="FlagType.cs" />
     <Compile Include="FormConfigUtauVoiceConfig.cs" />
     <Compile Include="FormGenerateStf.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormUtauVoiceConfig.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NumberTextBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -74,6 +78,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="StfQueueArgs.cs" />
+    <Compile Include="WaveDrawContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -83,10 +88,6 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cadencii\Cadencii.csproj">
-      <Project>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</Project>
-      <Name>Cadencii</Name>
-    </ProjectReference>
     <ProjectReference Include="..\org.kbinani.apputil\org.kbinani.apputil.csproj">
       <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
       <Name>org.kbinani.apputil</Name>
@@ -94,6 +95,10 @@
     <ProjectReference Include="..\org.kbinani.media\org.kbinani.media.csproj">
       <Project>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</Project>
       <Name>org.kbinani.media</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.vsq\org.kbinani.vsq.csproj">
+      <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
+      <Name>org.kbinani.vsq</Name>
     </ProjectReference>
     <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>

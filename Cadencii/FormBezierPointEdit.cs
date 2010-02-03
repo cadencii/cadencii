@@ -139,7 +139,7 @@ namespace org.kbinani.cadencii {
                 x = PortUtil.parseInt( txtDataPointClock.getText() );
                 y = PortUtil.parseInt( txtDataPointValue.getText() );
                 if ( y < m_min || m_max < y ) {
-                    AppManager.showMessageBox( _( "Invalid value" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_ERROR_MESSAGE );
+                    AppManager.showMessageBox( _( "Invalid value" ), _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_ERROR_MESSAGE );
                     return;
                 }
                 if ( chkEnableSmooth.isSelected() ) {
@@ -150,7 +150,7 @@ namespace org.kbinani.cadencii {
                 }
                 setDialogResult( BDialogResult.OK );
             } catch ( Exception ex ) {
-                AppManager.showMessageBox( _( "Integer format error" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_ERROR_MESSAGE );
+                AppManager.showMessageBox( _( "Integer format error" ), _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_ERROR_MESSAGE );
                 setDialogResult( BDialogResult.CANCEL );
             }
         }

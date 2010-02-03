@@ -14,7 +14,15 @@
 #if JAVA
 package org.kbinani.editotoini;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\FormUtauVoiceConfig.java
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormUtauVoiceConfig.java
+import java.util.*;
+import java.io.*;
+import java.awt.*;
+import org.kbinani.*;
+import org.kbinani.media.*;
+import org.kbinani.apputil.*;
+import org.kbinani.windows.forms.*;
+import org.kbinani.componentmodel.*;
 #else
 using System;
 using System.ComponentModel;
@@ -22,7 +30,6 @@ using System.Threading;
 using System.Windows.Forms;
 using org.kbinani;
 using org.kbinani.apputil;
-using org.kbinani.cadencii;
 using org.kbinani.java.awt;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
@@ -38,10 +45,11 @@ namespace org.kbinani.editotoini {
     using Float = System.Single;
     using Graphics = org.kbinani.java.awt.Graphics2D;
     using java = org.kbinani.java;
+    using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
 #endif
 
 #if JAVA
-    public class FormUtauVoiceConfig extends BForm
+    public class FormUtauVoiceConfig extends BForm {
 #else
     public class FormUtauVoiceConfig : BForm {
 #endif
@@ -53,24 +61,6 @@ namespace org.kbinani.editotoini {
             MoveBlank,
             MovePreUtterance,
             MoveOverlap,
-        }
-
-        public class FlagType {
-            public static readonly FlagType Offset = new FlagType( 0 );
-            public static readonly FlagType Consonant = new FlagType( 1 );
-            public static readonly FlagType Blank = new FlagType( 2 );
-            public static readonly FlagType PreUtterance = new FlagType( 3 );
-            public static readonly FlagType Overlap = new FlagType( 4 );
-
-            private int m_value;
-
-            private FlagType( int value ) {
-                m_value = value;
-            }
-
-            public int getValue() {
-                return m_value;
-            }
         }
 
         const int LINE_HEIGHT = 20;
@@ -139,7 +129,8 @@ namespace org.kbinani.editotoini {
             saveFileDialog = new BFileChooser( "" );
             openFileDialog.setSelectedFile( "oto.ini" );
 
-            pictWave.MouseWheel += new MouseEventHandler( pictWave_MouseWheel );
+            pictWave.mouseWheelEvent.add( new BMouseEventHandler( this, "pictWave_MouseWheel" ) );
+#if !JAVA
             splitContainerIn.Panel1.BorderStyle = BorderStyle.None;
             splitContainerIn.Panel2.BorderStyle = BorderStyle.FixedSingle;
             splitContainerIn.Panel2.BorderColor = System.Drawing.SystemColors.ControlDark;
@@ -147,18 +138,29 @@ namespace org.kbinani.editotoini {
             splitContainerOut.Panel1.BorderStyle = BorderStyle.None;
             splitContainerOut.Panel2.BorderStyle = BorderStyle.FixedSingle;
             splitContainerOut.Panel2.BorderColor = System.Drawing.SystemColors.ControlDark;
+#endif
 
-            splitContainerIn.Panel1.Controls.Add( panelLeft );
+            splitContainerIn.setLeftComponent( panelLeft );
+#if !JAVA
             panelLeft.Dock = DockStyle.Fill;
-            splitContainerIn.Panel2.Controls.Add( panelRight );
+#endif
+            splitContainerIn.setRightComponent( panelRight );
+#if !JAVA
             panelRight.Dock = DockStyle.Fill;
+#endif
 
-            splitContainerOut.Panel1.Controls.Add( splitContainerIn );
+            splitContainerOut.setTopComponent( splitContainerIn );
+#if !JAVA
             splitContainerIn.Dock = DockStyle.Fill;
-            splitContainerOut.Panel2.Controls.Add( panelBottom );
+#endif
+            splitContainerOut.setBottomComponent( panelBottom );
+#if !JAVA
             panelBottom.Dock = DockStyle.Fill;
+#endif
 
+#if !JAVA
             splitContainerOut.Dock = DockStyle.Fill;
+#endif
             listFiles.setColumnHeaders( new String[] { "File Name", "Alias", "Offset", "Consonant", "Blank", "Pre Utterance", "Overlap", "FRQ", "STF" } );
             listFiles.setColumnWidth( 0, columnWidthFilename );
             listFiles.setColumnWidth( 1, columnWidthAlias );
@@ -425,7 +427,7 @@ namespace org.kbinani.editotoini {
                     String freq = PortUtil.combinePath( dir, f2 );
                     boolean freq_exists = PortUtil.isFileExists( freq );
                     if ( freq_exists ) {
-                        wdc.Freq = UtauFreq.FromFrq( freq );
+                        //wdc.Freq = UtauFreq.FromFrq( freq );
                     }
                     m_drawer.add( wdc );
                     Vector<String> columns = new Vector<String>( Arrays.asList( spl ) );
@@ -598,7 +600,7 @@ namespace org.kbinani.editotoini {
             g.setColor( m_pen_preutterance );
             g.drawLine( x_pre_utterance, 0, x_pre_utterance, h );
 
-            Font font = AppManager.cadenciiConfig.getBaseFont();
+            Font font = AppManager.getBaseFont();
 
             int x_lastpreview = XFromSec( m_last_preview / 1000.0f );
             g.setColor( Color.blue );
@@ -957,7 +959,7 @@ namespace org.kbinani.editotoini {
             }
         }
 
-        private void bgWorkRead_RunWorkerCompleted( Object sender, RunWorkerCompletedEventArgs e ) {
+        private void bgWorkRead_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
             setEdited( false );
         }
 
@@ -1109,7 +1111,7 @@ namespace org.kbinani.editotoini {
             if ( !PortUtil.isFileExists( path_config_cadencii ) ) {
                 return;
             }
-            EditorConfig cadencii_config = null;
+            /*EditorConfig cadencii_config = null;
             FileInputStream fin = null;
             try {
                 fin = new FileInputStream( path_config_cadencii );
@@ -1133,7 +1135,7 @@ namespace org.kbinani.editotoini {
             }
             if ( cadencii_config != null ) {
                 AppManager.cadenciiConfig = cadencii_config;
-            }
+            }*/
             ApplyLanguage();
         }
 
@@ -1308,8 +1310,16 @@ namespace org.kbinani.editotoini {
                 }
                 return;
             }
-            using ( FormGenerateStf form = new FormGenerateStf( m_oto_ini, list, mode ) ) {
+            FormGenerateStf form = null;
+            try {
+                form = new FormGenerateStf( m_oto_ini, list, mode );
                 form.ShowDialog();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormUtauVoiceConfig#generateSTForFRQ; ex=" + ex );
+            } finally {
+                if ( form != null ) {
+                    form.close();
+                }
             }
             if ( mode == FormGenerateStf.GenerateMode.STF ) {
                 checkSTFExistence();
@@ -1339,7 +1349,7 @@ namespace org.kbinani.editotoini {
             searchCor( true );
         }
 
-        private bool checkListFileItem( int index, String search ) {
+        private boolean checkListFileItem( int index, String search ) {
             BListViewItem item = listFiles.getItemAt( "", index );
             if ( item.SubItems[0].Text.Contains( search ) ) {
                 item.Selected = true;
@@ -1354,7 +1364,7 @@ namespace org.kbinani.editotoini {
             return false;
         }
 
-        private void setSearchTextColor( bool found ) {
+        private void setSearchTextColor( boolean found ) {
             if ( found ) {
                 txtSearch.setBackground( Color.white );
                 txtSearch.setForeground( Color.black );
@@ -1364,7 +1374,7 @@ namespace org.kbinani.editotoini {
             }
         }
 
-        private void searchCor( bool go_back ) {
+        private void searchCor( boolean go_back ) {
             if ( txtSearch.getText().Equals( "" ) ) {
                 setSearchTextColor( false );
                 return;
@@ -1419,8 +1429,8 @@ namespace org.kbinani.editotoini {
         }
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\FormUtauVoiceConfig.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\FormUtauVoiceConfig.java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormUtauVoiceConfig.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormUtauVoiceConfig.java
         #endregion
 #else
         #region UI Impl for C#
@@ -1467,19 +1477,19 @@ namespace org.kbinani.editotoini {
             this.btnRefreshFrq = new BButton();
             this.btnRefreshStf = new BButton();
             this.label9 = new BLabel();
-            this.txtOverlap = new org.kbinani.cadencii.NumberTextBox();
+            this.txtOverlap = new NumberTextBox();
             this.lblOverlap = new BLabel();
             this.label7 = new BLabel();
-            this.txtPreUtterance = new org.kbinani.cadencii.NumberTextBox();
+            this.txtPreUtterance = new NumberTextBox();
             this.lblPreUtterance = new BLabel();
             this.label5 = new BLabel();
-            this.txtBlank = new org.kbinani.cadencii.NumberTextBox();
+            this.txtBlank = new NumberTextBox();
             this.lblBlank = new BLabel();
             this.label3 = new BLabel();
-            this.txtConsonant = new org.kbinani.cadencii.NumberTextBox();
+            this.txtConsonant = new NumberTextBox();
             this.lblConsonant = new BLabel();
             this.label2 = new BLabel();
-            this.txtOffset = new org.kbinani.cadencii.NumberTextBox();
+            this.txtOffset = new NumberTextBox();
             this.lblOffset = new BLabel();
             this.txtAlias = new BTextBox();
             this.lblAlias = new BLabel();
@@ -1704,7 +1714,7 @@ namespace org.kbinani.editotoini {
             this.txtOverlap.TabIndex = 18;
             this.txtOverlap.Text = "0";
             this.txtOverlap.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtOverlap.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
+            this.txtOverlap.Type = NumberTextBox.ValueType.Float;
             this.txtOverlap.TextChanged += new System.EventHandler( this.txtOverlap_TextChanged );
             // 
             // lblOverlap
@@ -1735,7 +1745,7 @@ namespace org.kbinani.editotoini {
             this.txtPreUtterance.TabIndex = 15;
             this.txtPreUtterance.Text = "0";
             this.txtPreUtterance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtPreUtterance.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
+            this.txtPreUtterance.Type = NumberTextBox.ValueType.Float;
             this.txtPreUtterance.TextChanged += new System.EventHandler( this.txtPreUtterance_TextChanged );
             // 
             // lblPreUtterance
@@ -1766,7 +1776,7 @@ namespace org.kbinani.editotoini {
             this.txtBlank.TabIndex = 12;
             this.txtBlank.Text = "0";
             this.txtBlank.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtBlank.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
+            this.txtBlank.Type = NumberTextBox.ValueType.Float;
             this.txtBlank.TextChanged += new System.EventHandler( this.txtBlank_TextChanged );
             // 
             // lblBlank
@@ -1797,7 +1807,7 @@ namespace org.kbinani.editotoini {
             this.txtConsonant.TabIndex = 9;
             this.txtConsonant.Text = "0";
             this.txtConsonant.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtConsonant.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
+            this.txtConsonant.Type = NumberTextBox.ValueType.Float;
             this.txtConsonant.TextChanged += new System.EventHandler( this.txtConsonant_TextChanged );
             // 
             // lblConsonant
@@ -1828,7 +1838,7 @@ namespace org.kbinani.editotoini {
             this.txtOffset.TabIndex = 6;
             this.txtOffset.Text = "0";
             this.txtOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtOffset.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Float;
+            this.txtOffset.Type = NumberTextBox.ValueType.Float;
             this.txtOffset.TextChanged += new System.EventHandler( this.txtOffset_TextChanged );
             // 
             // lblOffset

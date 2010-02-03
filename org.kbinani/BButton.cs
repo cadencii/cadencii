@@ -111,6 +111,16 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        // root impl of MouseWheel event
+        #region event impl MouseClick
+        // root impl of MouseWheel is in BButton
+        public BEvent<BMouseEventHandler> mouseWheelEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseWheel( System.Windows.Forms.MouseEventArgs e ) {
+            base.OnMouseWheel( e );
+            mouseWheelEvent.raise( this, e );
+        }
+        #endregion
+
         // root impl of Paint event
         #region event impl Paint
         // root impl of Paint is in BButton

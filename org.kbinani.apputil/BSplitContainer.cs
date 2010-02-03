@@ -492,6 +492,24 @@ namespace org.kbinani.apputil {
             }
         }
 
+        public void setTopComponent( Control comp ) {
+            setLeftComponent( comp );
+        }
+
+        public void setBottomComponent( Control comp ) {
+            setRightComponent( comp );
+        }
+
+        public void setRightComponent( Control comp ) {
+            m_panel2.Controls.Clear();
+            m_panel2.Controls.Add( comp );
+        }
+
+        public void setLeftComponent( Control comp ) {
+            m_panel1.Controls.Clear();
+            m_panel1.Controls.Add( comp );
+        }
+
         protected override void OnSizeChanged( EventArgs e ) {
 #if DEBUG
             //Console.WriteLine( "BSplitContainer+OnSizeChanged" );

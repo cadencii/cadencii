@@ -12,5 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentModel\BRunWorkerCompletedEventHandler.java
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentmodel\BRunWorkerCompletedEventHandler.java
 #endif

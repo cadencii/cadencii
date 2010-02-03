@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package org.kbinani.editotoini;
 
 import java.awt.*;
 import org.kbinani.*;
@@ -26,7 +26,7 @@ using org.kbinani.java.util;
 using org.kbinani.vsq;
 using org.kbinani.apputil;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.editotoini {
     using boolean = System.Boolean;
 #endif
 
@@ -41,7 +41,7 @@ namespace org.kbinani.cadencii {
         private byte[] m_wave;
         private int m_sample_rate = 44100;
         private String m_name;
-        public UtauFreq Freq;
+        //public UtauFreq Freq;
         private float m_length;
         private PolylineDrawer drawer = null;
 
@@ -214,161 +214,6 @@ namespace org.kbinani.cadencii {
 #else
             GC.Collect();
 #endif
-        }
-
-        /// <summary>
-        /// このWAVE描画コンテキストが保持しているWAVEデータを、ゲートタイム基準でグラフィクスに描画します。
-        /// </summary>
-        /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
-        /// <param name="pen">描画に使用するペン</param>
-        /// <param name="rect">描画範囲</param>
-        /// <param name="clock_start">描画開始位置のゲートタイム</param>
-        /// <param name="clock_end">描画終了位置のゲートタイム</param>
-        /// <param name="tempo_table">ゲートタイムから秒数を調べる際使用するテンポ・テーブル</param>
-        /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
-        public void draw( Graphics2D g, 
-                          Color pen,
-                          Rectangle rect,
-                          int clock_start,
-                          int clock_end, 
-                          TempoVector tempo_table, 
-                          float pixel_per_clock ) {
-            if ( m_wave.Length == 0 ) {
-                return;
-            }
-#if DEBUG
-            double startedTime = PortUtil.getCurrentTime();
-#endif
-            drawer.setGraphics( g );
-            drawer.clear();
-            double secStart = tempo_table.getSecFromClock( clock_start );
-            double secEnd = tempo_table.getSecFromClock( clock_end );
-            int sStart0 = (int)(secStart * m_sample_rate) - 1;
-            int sEnd0 = (int)(secEnd * m_sample_rate) + 1;
-
-            int count = tempo_table.size();
-            int sStart = 0;
-            double cStart = 0.0;
-            float order_y = rect.height / 127.0f;
-            int ox = rect.x;
-            int oy = rect.y + rect.height;
-            byte last = m_wave[0];
-            int lastx = ox;
-            int lastYMax = oy - (int)(last * order_y);
-            int lastYMin = lastYMax;
-            int lasty = lastYMin;
-            int lasty2 = lastYMin;
-            boolean skipped = false;
-            drawer.append( ox, lasty );
-            int xmax = rect.x + rect.width;
-            int lastTempo = 500000;
-            for ( int i = 0; i <= count; i++ ) {
-                double time = 0.0;
-                int tempo = 500000;
-                int cEnd = 0;
-                if ( i < count ) {
-                    TempoTableEntry entry = tempo_table.get( i );
-                    time = entry.Time;
-                    tempo = entry.Tempo;
-                    cEnd = entry.Clock;
-                } else {
-                    time = tempo_table.getSecFromClock( clock_end );
-                    tempo = tempo_table.get( i - 1 ).Tempo;
-                    cEnd = clock_end;
-                }
-                int sEnd = (int)(time * m_sample_rate);
-                
-                // sStartサンプルからsThisEndサンプルまでを描画する(必要なら!)
-                if ( sEnd < sStart0 ) {
-                    sStart = sEnd;
-                    cStart = cEnd;
-                    lastTempo = tempo;
-                    continue;
-                }
-                if ( sEnd0 < sStart ) {
-                    break;
-                }
-
-                // 
-                int xoffset = (int)(cStart * pixel_per_clock) - AppManager.startToDrawX + AppManager.keyOffset;
-                double sec_per_clock = lastTempo * 1e-6 / 480.0;
-                lastTempo = tempo;
-                double pixel_per_sample = 1.0 / m_sample_rate / sec_per_clock * pixel_per_clock;
-                int j0 = sStart;
-                if ( j0 < 0 ) {
-                    j0 = 0;
-                }
-                int j1 = sEnd;
-                if ( m_wave.Length < j1 ) {
-                    j1 = m_wave.Length;
-                }
-
-                // 第j0サンプルのデータを画面に描画したときのx座標がいくらになるか？
-                int draftStartX = xoffset + (int)((j0 - sStart) * pixel_per_sample);
-                if ( draftStartX < rect.x ) {
-                    j0 = (int)((rect.x - xoffset) / pixel_per_sample) + sStart;
-                }
-                // 第j1サンプルのデータを画面に描画した時のx座標がいくらになるか？
-                int draftEndX = xoffset + (int)((j1 - sStart) * pixel_per_sample);
-                if ( rect.x + rect.width < draftEndX ) {
-                    j1 = (int)((rect.x + rect.width - xoffset) / pixel_per_sample) + sStart;
-                }
-
-                boolean breakRequired = false;
-                for ( int j = j0; j < j1; j++ ) {
-                    byte v = m_wave[j];
-                    if ( v == last ) {
-                        skipped = true;
-                        continue;
-                    }
-                    int x = xoffset + (int)((j - sStart) * pixel_per_sample);
-                    if ( xmax < x ) {
-                        breakRequired = true;
-                        break;
-                    }
-                    if ( x < rect.x ) {
-                        continue;
-                    }
-                    int y = oy - (int)(v * order_y);
-                    if ( lastx == x ) {
-                        lastYMax = Math.Max( lastYMax, y );
-                        lastYMin = Math.Min( lastYMin, y );
-                        continue;
-                    }
-
-                    if ( skipped ) {
-                        drawer.append( x - 1, lasty );
-                        lastx = x - 1;
-                    }
-                    if ( lastYMax == lastYMin ) {
-                        drawer.append( x, y );
-                    } else {
-                        if ( lasty2 != lastYMin ) {
-                            drawer.append( lastx, lastYMin );
-                        }
-                        drawer.append( lastx, lastYMax );
-                        if ( lastYMax != lasty ) {
-                            drawer.append( lastx, lasty );
-                        }
-                        drawer.append( x, y );
-                    }
-                    lasty2 = lasty;
-                    lastx = x;
-                    lastYMin = y;
-                    lastYMax = y;
-                    lasty = y;
-                    last = v;
-                    skipped = false;
-                }
-                sStart = sEnd;
-                cStart = cEnd;
-                if ( breakRequired ) {
-                    break;
-                }
-            }
-
-            drawer.append( rect.x + rect.width, lasty );
-            drawer.flush();
         }
 
         /// <summary>

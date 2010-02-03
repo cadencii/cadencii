@@ -15,6 +15,7 @@
 package org.kbinani.editotoini;
 
 import org.kbinani.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Drawing;

@@ -47,7 +47,7 @@ public class BBackgroundWorker{
     
     public BBackgroundWorker(){
     }
-
+    
     public void runWorkerAsync(){
         runWorkerAsync( null );
     }
@@ -65,7 +65,7 @@ public class BBackgroundWorker{
     public void reportProgress( int percentProgress, Object userState ){
         BProgressChangedEventArgs e = new BProgressChangedEventArgs( percentProgress, userState );
         try{
-            progressChangedEvent.raise( e );
+            progressChangedEvent.raise( this, e );
         }catch( Exception ex ){
             System.err.println( "BBackgroundWorker#reportProgress(int,Object); ex=" + ex );
         }

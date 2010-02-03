@@ -2,6 +2,7 @@ CP=cp
 RM=rm
 TARGET=.\build\win
 MCS_OPT=-warn:0
+JROOT=.\build\java\org\kbinani
 
 all: first $(TARGET)\Cadencii.exe
 
@@ -11,6 +12,10 @@ first: .\first.pl
 jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq
 	pp_cs2java.exe -DJAVA -DUSE_DOBJ -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\Cadencii"
 	javac .\build\java\org\kbinani\cadencii\*.java .\build\java\org\kbinani\*.java .\build\java\org\kbinani\apputil\*.java .\build\java\org\kbinani\media\*.java .\build\java\org\kbinani\vsq\*.java .\build\java\org\kbinani\cadencii\*.java .\build\java\org\kbinani\componentModel\*.java .\build\java\org\kbinani\windows\forms\*.java .\build\java\org\kbinani\xml\*.java -encoding UTF8
+
+jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
+	pp_cs2java.exe -DJAVA -DUSE_DOBJ -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\EditOtoIni"
+	javac $(JROOT)\editotoini\*.java $(JROOT)\*.java $(JROOT)\windows\forms\*.java $(JROOT)\componentmodel\*.java $(JROOT)\vsq\*.java $(JROOT)\xml\*.java $(JROOT)\apputil\*.java $(JROOT)\media\*.java -encoding UTF8
 
 jcorlib: pp_cs2java.exe ./org.kbinani/*.cs
 	pp_cs2java.exe -DJAVA -DUSE_DOBJ -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani"

@@ -368,8 +368,8 @@ namespace org.kbinani.cadencii {
         private void btnApply_Click( Object sender, BEventArgs e ) {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
-                                  AppManager.MSGBOX_YES_NO_OPTION,
-                                  AppManager.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
+                                  PortUtil.MSGBOX_YES_NO_OPTION,
+                                  PortUtil.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
                 m_apply_current_track = true;
                 setDialogResult( BDialogResult.OK );
             }

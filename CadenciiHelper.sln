@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlaySound", "PlaySound\PlaySound.vcproj", "{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "straightVoiceDB", "straightVoiceDB\straightVoiceDB.vcproj", "{46E75F69-D15E-48EE-A22B-1D21250661CB}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "straightdrv", "straightdrv\straightdrv.vcproj", "{625D0CEE-7769-4634-9D3A-28629909F118}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "straightdrv_draft", "straightdrv_draft\straightdrv_draft.vcproj", "{33B691AF-3A2E-431D-AA60-123FE6F4B999}"
@@ -22,12 +20,6 @@ Global
 		{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}.Release|Win32.Build.0 = Release|Win32
 		{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}.Release64|Win32.ActiveCfg = Release|Win32
 		{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}.Release64|Win32.Build.0 = Release|Win32
-		{46E75F69-D15E-48EE-A22B-1D21250661CB}.Debug|Win32.ActiveCfg = Debug|Win32
-		{46E75F69-D15E-48EE-A22B-1D21250661CB}.Debug|Win32.Build.0 = Debug|Win32
-		{46E75F69-D15E-48EE-A22B-1D21250661CB}.Release|Win32.ActiveCfg = Release|Win32
-		{46E75F69-D15E-48EE-A22B-1D21250661CB}.Release|Win32.Build.0 = Release|Win32
-		{46E75F69-D15E-48EE-A22B-1D21250661CB}.Release64|Win32.ActiveCfg = Release|Win32
-		{46E75F69-D15E-48EE-A22B-1D21250661CB}.Release64|Win32.Build.0 = Release|Win32
 		{625D0CEE-7769-4634-9D3A-28629909F118}.Debug|Win32.ActiveCfg = Debug|Win32
 		{625D0CEE-7769-4634-9D3A-28629909F118}.Debug|Win32.Build.0 = Debug|Win32
 		{625D0CEE-7769-4634-9D3A-28629909F118}.Release|Win32.ActiveCfg = Release|Win32

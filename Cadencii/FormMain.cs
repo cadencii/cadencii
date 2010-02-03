@@ -4151,8 +4151,8 @@ namespace org.kbinani.cadencii {
                 }
                 BDialogResult ret = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                                _( "Affirmation" ),
-                                                               AppManager.MSGBOX_YES_NO_CANCEL_OPTION,
-                                                               AppManager.MSGBOX_QUESTION_MESSAGE );
+                                                               PortUtil.MSGBOX_YES_NO_CANCEL_OPTION,
+                                                               PortUtil.MSGBOX_QUESTION_MESSAGE );
                 if ( ret == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
                         int dr = saveXmlVsqDialog.showSaveDialog( this );
@@ -4699,8 +4699,8 @@ namespace org.kbinani.cadencii {
                             _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
                         ),
                         _APP_NAME,
-                        AppManager.MSGBOX_DEFAULT_OPTION,
-                        AppManager.MSGBOX_WARNING_MESSAGE );
+                        PortUtil.MSGBOX_DEFAULT_OPTION,
+                        PortUtil.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
             }
@@ -4722,8 +4722,8 @@ namespace org.kbinani.cadencii {
                             _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
                         ),
                         _APP_NAME,
-                        AppManager.MSGBOX_DEFAULT_OPTION,
-                        AppManager.MSGBOX_WARNING_MESSAGE );
+                        PortUtil.MSGBOX_DEFAULT_OPTION,
+                        PortUtil.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
             }
@@ -4777,7 +4777,7 @@ namespace org.kbinani.cadencii {
                 int clockStart = AppManager.startMarkerEnabled ? AppManager.startMarker : 0;
                 int clockEnd = AppManager.endMarkerEnabled ? AppManager.endMarker : vsq.TotalClocks + 240;
                 if ( clockStart > clockEnd ) {
-                    AppManager.showMessageBox( _( "invalid rendering region; start>=end" ), _( "Error" ), AppManager.OK_OPTION, AppManager.MSGBOX_INFORMATION_MESSAGE );
+                    AppManager.showMessageBox( _( "invalid rendering region; start>=end" ), _( "Error" ), PortUtil.OK_OPTION, PortUtil.MSGBOX_INFORMATION_MESSAGE );
                     return;
                 }
                 fs = new FormSynthesize( vsq,
@@ -4824,11 +4824,11 @@ namespace org.kbinani.cadencii {
             try {
                 mf = new MidiFile( openMidiDialog.getSelectedFile() );
             } catch ( Exception ex ) {
-                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             if ( mf == null ) {
-                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             int count = mf.getTrackCount();
@@ -5475,7 +5475,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                 PortUtil.println( "FormMain#menuFileOpenVsq_Click; ex=" + ex );
 #endif
-                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             AppManager.setSelected( 1 );
@@ -5528,7 +5528,7 @@ namespace org.kbinani.cadencii {
             try {
                 vsq = new VsqFileEx( openMidiDialog.getSelectedFile(), "Shift_JIS" );
             } catch ( Exception ex ) {
-                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), AppManager.MSGBOX_DEFAULT_OPTION, AppManager.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             if ( m_midi_imexport_dialog == null ) {
@@ -5699,8 +5699,8 @@ namespace org.kbinani.cadencii {
                                     PortUtil.stderr.println( "FormMain#commonFileOpen_Click; ex=" + ex );
                                     AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                                _( "Info." ),
-                                                               AppManager.OK_OPTION,
-                                                               AppManager.MSGBOX_INFORMATION_MESSAGE );
+                                                               PortUtil.OK_OPTION,
+                                                               PortUtil.MSGBOX_INFORMATION_MESSAGE );
                                     return;
                                 }
                             }
@@ -5732,8 +5732,8 @@ namespace org.kbinani.cadencii {
                             PortUtil.stderr.println( "FormMain#commonFileOpen_Click; ex=" + ex );
                             AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                        _( "Info." ),
-                                                       AppManager.OK_OPTION,
-                                                       AppManager.MSGBOX_INFORMATION_MESSAGE );
+                                                       PortUtil.OK_OPTION,
+                                                       PortUtil.MSGBOX_INFORMATION_MESSAGE );
                             return;
                         }
                     }
@@ -10311,8 +10311,8 @@ namespace org.kbinani.cadencii {
             if ( found ) {
                 AppManager.showMessageBox( PortUtil.formatMessage( _( "file '{0}' is already registered as BGM." ), file ),
                                  _( "Error" ),
-                                 AppManager.MSGBOX_DEFAULT_OPTION,
-                                 AppManager.MSGBOX_WARNING_MESSAGE );
+                                 PortUtil.MSGBOX_DEFAULT_OPTION,
+                                 PortUtil.MSGBOX_WARNING_MESSAGE );
                 return;
             }
 
@@ -10337,8 +10337,8 @@ namespace org.kbinani.cadencii {
             BgmFile bgm = AppManager.getBgm( index );
             if ( AppManager.showMessageBox( PortUtil.formatMessage( _( "remove '{0}'?" ), bgm.file ),
                                   "Cadencii",
-                                  AppManager.MSGBOX_YES_NO_OPTION,
-                                  AppManager.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
+                                  PortUtil.MSGBOX_YES_NO_OPTION,
+                                  PortUtil.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
                 return;
             }
             AppManager.removeBgm( index );
@@ -11121,8 +11121,8 @@ namespace org.kbinani.cadencii {
                 }
                 BDialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                               _( "Affirmation" ),
-                                                              AppManager.MSGBOX_YES_NO_CANCEL_OPTION,
-                                                              AppManager.MSGBOX_QUESTION_MESSAGE );
+                                                              PortUtil.MSGBOX_YES_NO_CANCEL_OPTION,
+                                                              PortUtil.MSGBOX_QUESTION_MESSAGE );
                 if ( dr == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
                         int dr2 = saveXmlVsqDialog.showSaveDialog( this );
@@ -14021,8 +14021,8 @@ namespace org.kbinani.cadencii {
             if ( AppManager.showMessageBox(
                     PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, vsq.Track.get( selected ).getName() ),
                     _APP_NAME,
-                    AppManager.MSGBOX_YES_NO_OPTION,
-                    AppManager.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
+                    PortUtil.MSGBOX_YES_NO_OPTION,
+                    PortUtil.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
                 CadenciiCommand run = VsqFileEx.generateCommandDeleteTrack( selected );
                 if ( selected >= 2 ) {
                     AppManager.setSelected( selected - 1 );

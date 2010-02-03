@@ -57,22 +57,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private const String CLIP_PREFIX = "CADENCIIOBJ";
 #endif
-        public const int MSGBOX_DEFAULT_OPTION = -1;
-        public const int MSGBOX_YES_NO_OPTION = 0;
-        public const int MSGBOX_YES_NO_CANCEL_OPTION = 1;
-        public const int MSGBOX_OK_CANCEL_OPTION = 2;
-
-        public const int MSGBOX_ERROR_MESSAGE = 0;
-        public const int MSGBOX_INFORMATION_MESSAGE = 1;
-        public const int MSGBOX_WARNING_MESSAGE = 2;
-        public const int MSGBOX_QUESTION_MESSAGE = 3;
-        public const int MSGBOX_PLAIN_MESSAGE = -1;
-
-        public const int YES_OPTION = 0;
-        public const int NO_OPTION = 1;
-        public const int CANCEL_OPTION = 2;
-        public const int OK_OPTION = 0;
-        public const int CLOSED_OPTION = -1;
         /// <summary>
         /// 強弱記号の，ピアノロール画面上の表示幅（ピクセル）
         /// </summary>
@@ -1258,15 +1242,15 @@ namespace org.kbinani.cadencii {
 
         #region MessageBoxのラッパー
         public static BDialogResult showMessageBox( String text ) {
-            return showMessageBox( text, "", MSGBOX_DEFAULT_OPTION, MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox( text, "", PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_PLAIN_MESSAGE );
         }
 
         public static BDialogResult showMessageBox( String text, String caption ) {
-            return showMessageBox( text, caption, MSGBOX_DEFAULT_OPTION, MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox( text, caption, PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_PLAIN_MESSAGE );
         }
 
         public static BDialogResult showMessageBox( String text, String caption, int optionType ) {
-            return showMessageBox( text, caption, optionType, MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox( text, caption, optionType, PortUtil.MSGBOX_PLAIN_MESSAGE );
         }
 
         public static void beginShowDialog() {
@@ -1300,56 +1284,7 @@ namespace org.kbinani.cadencii {
         
         public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
             beginShowDialog();
-            BDialogResult ret = BDialogResult.CANCEL;
-#if JAVA
-            int r = JOptionPane.showConfirmDialog( null, text, caption, optionType, messageType );
-            if ( r == JOptionPane.YES_OPTION ){
-                ret = BDialogResult.YES;
-            } else if ( r == JOptionPane.NO_OPTION ){
-                ret = BDialogResult.NO;
-            } else if ( r == JOptionPane.CANCEL_OPTION ){
-                ret = BDialogResult.CANCEL;
-            } else if ( r == JOptionPane.OK_OPTION ){
-                ret = BDialogResult.OK;
-            } else if ( r == JOptionPane.CLOSED_OPTION ){
-                ret = BDialogResult.CANCEL;
-            }
-#else
-            MessageBoxButtons btn = MessageBoxButtons.OK;
-            if ( optionType == MSGBOX_YES_NO_CANCEL_OPTION ) {
-                btn = MessageBoxButtons.YesNoCancel;
-            } else if ( optionType == MSGBOX_YES_NO_OPTION ) {
-                btn = MessageBoxButtons.YesNo;
-            } else if ( optionType == MSGBOX_OK_CANCEL_OPTION ) {
-                btn = MessageBoxButtons.OKCancel;
-            } else {
-                btn = MessageBoxButtons.OK;
-            }
-
-            MessageBoxIcon icon = MessageBoxIcon.None;
-            if ( messageType == MSGBOX_ERROR_MESSAGE ) {
-                icon = MessageBoxIcon.Error;
-            } else if ( messageType == MSGBOX_INFORMATION_MESSAGE ) {
-                icon = MessageBoxIcon.Information;
-            } else if ( messageType == MSGBOX_PLAIN_MESSAGE ) {
-                icon = MessageBoxIcon.None;
-            } else if ( messageType == MSGBOX_QUESTION_MESSAGE ) {
-                icon = MessageBoxIcon.Question;
-            } else if ( messageType == MSGBOX_WARNING_MESSAGE ) {
-                icon = MessageBoxIcon.Warning;
-            }
-
-            DialogResult dr = MessageBox.Show( text, caption, btn, icon );
-            if ( dr == DialogResult.OK ) {
-                ret = BDialogResult.OK;
-            } else if ( dr == DialogResult.Cancel ) {
-                ret = BDialogResult.CANCEL;
-            } else if ( dr == DialogResult.Yes ) {
-                ret = BDialogResult.YES;
-            } else if ( dr == DialogResult.No ) {
-                ret = BDialogResult.NO;
-            }
-#endif
+            BDialogResult ret = PortUtil.showMessageBox( text, caption, optionType, messageType );
             endShowDialog();
             return ret;
         }
@@ -1714,7 +1649,7 @@ namespace org.kbinani.cadencii {
                         ret = ScriptReturnStatus.ERROR;
                     }
                     if ( ret == ScriptReturnStatus.ERROR ) {
-                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", MSGBOX_DEFAULT_OPTION, MSGBOX_INFORMATION_MESSAGE );
+                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_INFORMATION_MESSAGE );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
                         register( s_vsq.executeCommand( run ) );
@@ -1737,11 +1672,11 @@ namespace org.kbinani.cadencii {
                     }
                     return (ret == ScriptReturnStatus.EDITED);
                 } catch ( Exception ex ) {
-                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), MSGBOX_DEFAULT_OPTION, MSGBOX_INFORMATION_MESSAGE );
+                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_INFORMATION_MESSAGE );
                     PortUtil.stderr.println( "AppManager#invokeScript; ex=" + ex );
                 }
             } else {
-                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), MSGBOX_DEFAULT_OPTION, MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_WARNING_MESSAGE );
             }
             return false;
         }
@@ -2453,8 +2388,8 @@ namespace org.kbinani.cadencii {
                             PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
                             showMessageBox( PortUtil.formatMessage( _( "failed to create cache directory, '{0}'." ), cacheDir ),
                                             _( "Info." ),
-                                            OK_OPTION,
-                                            MSGBOX_INFORMATION_MESSAGE );
+                                            PortUtil.OK_OPTION,
+                                            PortUtil.MSGBOX_INFORMATION_MESSAGE );
                             return;
                         }
                     }
@@ -2478,8 +2413,8 @@ namespace org.kbinani.cadencii {
                                     PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
                                     showMessageBox( PortUtil.formatMessage( _( "failed copy WAVE cache file, '{0}'." ), wavFrom ),
                                                     _( "Error" ),
-                                                    OK_OPTION,
-                                                    MSGBOX_WARNING_MESSAGE );
+                                                    PortUtil.OK_OPTION,
+                                                    PortUtil.MSGBOX_WARNING_MESSAGE );
                                     break;
                                 }
                             }
@@ -2500,8 +2435,8 @@ namespace org.kbinani.cadencii {
                                     PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
                                     showMessageBox( PortUtil.formatMessage( _( "failed copy XML cache file, '{0}'." ), xmlFrom ),
                                                     _( "Error" ),
-                                                    OK_OPTION,
-                                                    MSGBOX_WARNING_MESSAGE );
+                                                    PortUtil.OK_OPTION,
+                                                    PortUtil.MSGBOX_WARNING_MESSAGE );
                                     break;
                                 }
                             }

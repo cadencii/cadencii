@@ -14,15 +14,28 @@
 #if JAVA
 package org.kbinani.editotoini;
 
-import org.kbinani.cadencii.*;
+import java.awt.*;
 #else
-using org.kbinani.cadencii;
+using System;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.editotoini {
 #endif
 
     public class AppManager {
-        public static EditorConfig cadenciiConfig = new EditorConfig();
+        //public static EditorConfig cadenciiConfig = new EditorConfig();
+        private static Font baseFont = null;
+        private static String BaseFontName = "MS UI Gothic";
+        private static float BaseFontSize = 9.0f;
+        private static String pathResampler = "";
+
+        public static Font getBaseFont() {
+            return new Font( BaseFontName, Font.PLAIN, (int)BaseFontSize );
+        }
+
+        public static String getPathResampler() {
+            return pathResampler;
+        }
     }
 
 #if !JAVA

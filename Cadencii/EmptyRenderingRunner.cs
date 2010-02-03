@@ -1,0 +1,110 @@
+﻿#if JAVA
+package org.kbinani.cadencii;
+
+import java.util.*;
+import org.kbinani.media.*;
+#else
+using System;
+using org.kbinani.media;
+using org.kbinani.java.util;
+
+namespace org.kbinani.cadencii {
+    using boolean = System.Boolean;
+#endif
+
+    public class EmptyRenderingRunner : RenderingRunner {
+        private boolean modeInfinite;
+        private double startedDate;
+
+        public EmptyRenderingRunner( int track,
+                                     boolean reflect_amp_to_wave,
+                                     WaveWriter wave_writer,
+                                     double wave_read_offset_seconds,
+                                     Vector<WaveReader> readers,
+                                     boolean direct_play,
+                                     int trim_msec,
+                                     long total_samples,
+                                     int sample_rate,
+                                     boolean mode_infinite )
+#if JAVA
+            {
+#else
+            :
+#endif
+ base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, readers, direct_play, trim_msec, total_samples, sample_rate )
+#if JAVA
+            ;
+#else
+ {
+#endif
+            modeInfinite = mode_infinite;
+        }
+
+        public override void run() {
+            m_rendering = true;
+            startedDate = PortUtil.getCurrentTime();
+            int buflen = 1024;
+            double[] left = new double[buflen];
+            double[] right = new double[buflen];
+            long remain = totalSamples;
+            //m_total_append = 0;
+            while ( remain > 0 && !m_abort_required ) {
+                int delta = (remain > buflen) ? buflen : (int)remain;
+                waveIncoming( left, right );
+                for ( int i = 0; i < buflen; i++ ) {
+                    left[i] = 0.0;
+                    right[i] = 0.0;
+                }
+                remain -= delta;
+               // m_total_append += delta;
+            }
+
+            if ( modeInfinite ) {
+                while ( !m_abort_required ) {
+                    waveIncoming( left, right );
+                    for ( int i = 0; i < buflen; i++ ) {
+                        left[i] = 0.0;
+                        right[i] = 0.0;
+                    }
+                   // m_total_append += buflen;
+                }
+            }
+
+            if ( directPlay ) {
+                PlaySound.waitForExit();
+            }
+
+            m_rendering = false;
+        }
+
+        public override double getProgress() {
+            if ( m_rendering ) {
+                return m_total_append / (double)totalSamples * 100.0;
+            } else {
+                return 0.0;
+            }
+        }
+
+        public override double getElapsedSeconds() {
+            if ( m_rendering ) {
+                return PortUtil.getCurrentTime() - startedDate;
+            } else {
+                return 0.0;
+            }
+        }
+
+        public override double computeRemainingSeconds() {
+            if ( m_rendering ) {
+                double progress = getProgress();
+                double elapsed = getElapsedSeconds();
+                double rate = progress / elapsed;
+                return (100.0 - progress) / rate;
+            } else {
+                return 0.0;
+            }
+        }
+    }
+
+#if !JAVA
+}
+#endif

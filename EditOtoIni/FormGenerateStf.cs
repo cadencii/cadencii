@@ -52,6 +52,7 @@ namespace org.kbinani.editotoini {
         private GenerateMode m_mode = GenerateMode.STF;
         private long m_remaining = 0;
         private long m_elapsed = 0;
+        private BBackgroundWorker bgWork;
 
         public FormGenerateStf( String oto_ini, Vector<StfQueueArgs> list, GenerateMode mode ) {
 #if JAVA
@@ -60,6 +61,7 @@ namespace org.kbinani.editotoini {
 #else
             InitializeComponent();
 #endif
+            bgWork = new BBackgroundWorker();
             registerEventHandlers();
             setResources();
             m_oto_ini = oto_ini;
@@ -70,7 +72,7 @@ namespace org.kbinani.editotoini {
         }
 
         private void FormGenerateStf_Load( Object sender, BEventArgs e ) {
-            bgWork.RunWorkerAsync();
+            bgWork.runWorkerAsync();
         }
 
         private static String _( String id ) {
@@ -87,8 +89,8 @@ namespace org.kbinani.editotoini {
             if ( !PortUtil.isFileExists( m_oto_ini ) ) {
                 return;
             }
-            String straightVoiceDB = PortUtil.combinePath( Application.StartupPath, "straightVoiceDB.exe" );
-            String resampler = AppManager.cadenciiConfig.PathResampler;
+            String straightVoiceDB = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "straightVoiceDB.exe" );
+            String resampler = AppManager.getPathResampler();
 #if DEBUG
             Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; straightVoiceDB=" + straightVoiceDB );
 #endif
@@ -104,10 +106,10 @@ namespace org.kbinani.editotoini {
             if ( m_mode == GenerateMode.STF ) {
                 #region STF
                 if ( !PortUtil.isFileExists( straightVoiceDB ) ) {
-                    MessageBox.Show( _( "Analyzer, 'straightVoiceDB.exe' does not exist." ),
-                                     _( "Error" ),
-                                     MessageBoxButtons.OK,
-                                     MessageBoxIcon.Exclamation );
+                    PortUtil.showMessageBox( _( "Analyzer, 'straightVoiceDB.exe' does not exist." ),
+                                             _( "Error" ),
+                                             PortUtil.OK_OPTION,
+                                             PortUtil.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
                 String dir = PortUtil.getDirectoryName( m_oto_ini );
@@ -134,7 +136,7 @@ namespace org.kbinani.editotoini {
                     }
                     actual_count++;
                 }
-                bgWork.ReportProgress( 0, new int[] { 0, actual_count } );
+                bgWork.reportProgress( 0, new int[] { 0, actual_count } );
 
                 int actual_progress = 0;
                 for ( int i = 0; i < count; i++ ) {
@@ -163,8 +165,8 @@ namespace org.kbinani.editotoini {
                         cmds.add( stf_file );
                         cmds.add( sOffset + "" );
                         cmds.add( sBlank + "" );
-                        p = r.exec( cmds.toArray( new String[]{} ) );
-                        p.waitFor();
+                        process = r.exec( cmds.toArray( new String[]{} ) );
+                        process.waitFor();
 #else
                         process = new Process();
                         process.StartInfo.FileName = straightVoiceDB;
@@ -204,16 +206,16 @@ namespace org.kbinani.editotoini {
                     double remaining_seconds = total_bytes * elapsed_seconds / processed_bytes - elapsed_seconds;
                     m_remaining = (long)remaining_seconds;
                     // 
-                    bgWork.ReportProgress( actual_progress * 100 / actual_count, new int[] { actual_progress, actual_count } );
+                    bgWork.reportProgress( actual_progress * 100 / actual_count, new int[] { actual_progress, actual_count } );
                 }
-                bgWork.ReportProgress( 100, new int[] { actual_count, actual_count } );
+                bgWork.reportProgress( 100, new int[] { actual_count, actual_count } );
                 #endregion
             } else {
                 if ( !PortUtil.isFileExists( resampler ) ) {
-                    MessageBox.Show( _( "Don't know the path of 'resampler.exe'. Please check the configuration of Cadencii." ),
+                    PortUtil.showMessageBox( _( "Don't know the path of 'resampler.exe'. Please check the configuration of Cadencii." ),
                                      _( "Error" ),
-                                     MessageBoxButtons.OK,
-                                     MessageBoxIcon.Exclamation );
+                                     PortUtil.OK_OPTION,
+                                     PortUtil.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
                 String dir = PortUtil.getDirectoryName( m_oto_ini );
@@ -236,7 +238,7 @@ namespace org.kbinani.editotoini {
                     }
                     actual_count++;
                 }
-                bgWork.ReportProgress( 0, new int[] { 0, actual_count } );
+                bgWork.reportProgress( 0, new int[] { 0, actual_count } );
 
                 String temp_wav = PortUtil.createTempFile() + ".wav";
                 int actual_progress = 0;
@@ -264,8 +266,8 @@ namespace org.kbinani.editotoini {
                         cmds.add( temp_wav );
                         cmds.add( "C3" );
                         cmds.add( "100" );
-                        p = r.exec( cmds.toArray( new String[]{} ) );
-                        p.waitFor();
+                        process = r.exec( cmds.toArray( new String[]{} ) );
+                        process.waitFor();
 #else
                         process = new Process();
                         process.StartInfo.FileName = resampler;
@@ -282,7 +284,11 @@ namespace org.kbinani.editotoini {
                     } finally {
                         if ( process != null ) {
                             try {
+#if JAVA
+                                process.destroy();
+#else
                                 process.Dispose();
+#endif
                             } catch ( Exception ex2 ) {
                             }
                         }
@@ -303,13 +309,13 @@ namespace org.kbinani.editotoini {
                     double remaining_seconds = total_bytes * elapsed_seconds / processed_bytes - elapsed_seconds;
                     m_remaining = (long)remaining_seconds;
                     // 
-                    bgWork.ReportProgress( actual_progress * 100 / actual_count, new int[] { actual_progress, actual_count } );
+                    bgWork.reportProgress( actual_progress * 100 / actual_count, new int[] { actual_progress, actual_count } );
                 }
                 try {
                     PortUtil.deleteFile( temp_wav );
                 } catch ( Exception ex ) {
                 }
-                bgWork.ReportProgress( 100, new int[] { actual_count, actual_count } );
+                bgWork.reportProgress( 100, new int[] { actual_count, actual_count } );
             }
         }
 
@@ -337,9 +343,13 @@ namespace org.kbinani.editotoini {
 
         private void btnCancel_Click( Object sender, BEventArgs e ) {
             m_abort_required = true;
-            if ( bgWork.IsBusy ) {
-                while ( bgWork.IsBusy ) {
+            if ( bgWork.isBusy() ) {
+                while ( bgWork.isBusy() ) {
+#if JAVA
+                    Thread.sleep( 0 );
+#else
                     Application.DoEvents();
+#endif
                 }
             }
             setDialogResult( BDialogResult.CANCEL );
@@ -351,7 +361,7 @@ namespace org.kbinani.editotoini {
         private void bgWork_RunWorkerCompleted( Object sender, RunWorkerCompletedEventArgs e )
 #endif
         {
-            this.Close();
+            this.close();
         }
 
         private static String getTimeSpanString( long span ) {
@@ -433,7 +443,6 @@ namespace org.kbinani.editotoini {
             this.lblPercent = new BLabel();
             this.progressBar = new BProgressBar();
             this.btnCancel = new BButton();
-            this.bgWork = new BBackgroundWorker();
             this.lblTime = new BLabel();
             this.SuspendLayout();
             // 
@@ -507,7 +516,6 @@ namespace org.kbinani.editotoini {
         private BLabel lblPercent;
         private BProgressBar progressBar;
         private BButton btnCancel;
-        private BBackgroundWorker bgWork;
         private BLabel lblTime;
         #endregion
 #endif

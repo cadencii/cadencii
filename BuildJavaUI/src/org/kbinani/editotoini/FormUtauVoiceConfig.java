@@ -27,7 +27,7 @@ import org.kbinani.windows.forms.BTextBox;
 public class FormUtauVoiceConfig extends BForm {
     //SECTION-BEGIN-FIELD
 	private static final long serialVersionUID = 1L;
-	private BPanel splitContainerOut = null;
+	private BPanel contentPanel = null;
 	private BMenuBar jJMenuBar = null;
 	private BMenu menuFile = null;
 	private BMenuItem menuFileOpen = null;
@@ -35,7 +35,7 @@ public class FormUtauVoiceConfig extends BForm {
 	private BMenuItem menuFileSaveAs = null;
 	private JSeparator jMenuItem3 = null;
 	private BMenuItem menuFileQuit = null;
-	private BSplitPane bSplitPane = null;
+	private BSplitPane splitContainerOut = null;
 	private BSplitPane splitContainerIn = null;
 	private BPanel panelLeft = null;
 	private JScrollPane jScrollPane = null;
@@ -113,22 +113,22 @@ public class FormUtauVoiceConfig extends BForm {
 	private void initialize() {
 		this.setSize(712, 507);
 		this.setJMenuBar(getJJMenuBar());
-		this.setContentPane(getSplitContainerOut());
+		this.setContentPane(getContentPanel());
 		this.setTitle("JFrame");
 	}
 
 	/**
-	 * This method initializes splitContainerOut	
+	 * This method initializes contentPanel	
 	 * 	
 	 * @return org.kbinani.windows.forms.BPanel	
 	 */
-	private BPanel getSplitContainerOut() {
-		if (splitContainerOut == null) {
-			splitContainerOut = new BPanel();
-			splitContainerOut.setLayout(new BorderLayout());
-			splitContainerOut.add(getJSplitPane(), BorderLayout.CENTER);
+	private BPanel getContentPanel() {
+		if (contentPanel == null) {
+			contentPanel = new BPanel();
+			contentPanel.setLayout(new BorderLayout());
+			contentPanel.add(getJSplitPane(), BorderLayout.CENTER);
 		}
-		return splitContainerOut;
+		return contentPanel;
 	}
 
 	/**
@@ -236,14 +236,14 @@ public class FormUtauVoiceConfig extends BForm {
 	 * @return org.kbinani.windows.forms.BSplitPane	
 	 */
 	private BSplitPane getJSplitPane() {
-		if (bSplitPane == null) {
-			bSplitPane = new BSplitPane();
-			bSplitPane.setOrientation(BSplitPane.VERTICAL_SPLIT);
-			bSplitPane.setTopComponent(getSplitContainerIn());
-			bSplitPane.setBottomComponent(getPanelBottom());
-			bSplitPane.setDividerLocation(260);
+		if (splitContainerOut == null) {
+			splitContainerOut = new BSplitPane();
+			splitContainerOut.setOrientation(BSplitPane.VERTICAL_SPLIT);
+			splitContainerOut.setTopComponent(getSplitContainerIn());
+			splitContainerOut.setBottomComponent(getPanelBottom());
+			splitContainerOut.setDividerLocation(260);
 		}
-		return bSplitPane;
+		return splitContainerOut;
 	}
 
 	/**

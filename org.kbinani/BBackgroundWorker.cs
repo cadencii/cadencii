@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentModel\BBackgroundWorker.java
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentmodel\BBackgroundWorker.java
 #else
 using org.kbinani;
 
@@ -42,6 +42,14 @@ namespace org.kbinani.componentmodel {
 
         public void runWorkerAsync() {
             base.RunWorkerAsync();
+        }
+
+        public void reportProgress( int percent_progress ) {
+            reportProgress( percent_progress, null );
+        }
+
+        public void reportProgress( int percent_progress, object user_status ) {
+            base.ReportProgress( percent_progress, user_status );
         }
     }
 }
