@@ -486,6 +486,10 @@ namespace org.kbinani.cadencii {
         /// MTCを最後に受信した時刻
         /// </summary>
         private double mtcLastReceived = 0.0;
+        /// <summary>
+        /// AppManager.inputTextBoxがhideInputTextBoxによって隠された後、何回目のEnterキーの入力を受けたかを表すカウンター。
+        /// </summary>
+        private int numEnterKeyAfterHideInputTextBox = 0;
         #endregion
 
         public FormMain() {
@@ -957,10 +961,6 @@ namespace org.kbinani.cadencii {
 
         #region AppManager.inputTextBox
         public void m_input_textbox_KeyDown( Object sender, BKeyEventArgs e ) {
-#if DEBUG
-            AppManager.debugWriteLine( "m_input_textbox_KeyDown" );
-            AppManager.debugWriteLine( "    e.KeyCode=" + e.KeyCode );
-#endif
 #if JAVA
             int keycode = e.getKeyCode();
             int modifiers = e.getModifiers();
@@ -1030,9 +1030,7 @@ namespace org.kbinani.cadencii {
                                             new Point( x, y ),
                                             phonetic_symbol_edit_mode );
                     int clWidth = (int)(AppManager.inputTextBox.getWidth() / AppManager.scaleX);
-#if DEBUG
-                    System.Diagnostics.Debug.WriteLine( "    clWidth=" + clWidth );
-#endif
+
                     // 画面上にAppManager.inputTextBoxが見えるように，移動
                     int SPACE = 20;
                     if ( x < AppManager.keyWidth || pictPianoRoll.getWidth() < x + AppManager.inputTextBox.getWidth() ) {
@@ -1086,9 +1084,6 @@ namespace org.kbinani.cadencii {
         }
 
         public void m_input_textbox_ImeModeChanged( Object sender, EventArgs e ) {
-#if DEBUG
-            Console.WriteLine( "FormMain#m_input_textbox_ImeModeChanged; imemode=" + AppManager.inputTextBox.ImeMode );
-#endif
             m_last_is_imemode_on = AppManager.inputTextBox.isImeModeOn();
         }
 
@@ -1949,6 +1944,10 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region pictPianoRoll
+        public void pictPianoRoll_KeyUp( Object sender, BKeyEventArgs e ) {
+            processSpecialShortcutKey( e, false );
+        }
+
         public void pictPianoRoll_MouseClick( Object sender, BMouseEventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseClick" );
@@ -4439,10 +4438,6 @@ namespace org.kbinani.cadencii {
                 }
             }
             refreshScreen();
-        }
-
-        public void FormMain_KeyUp( Object sender, BKeyEventArgs e ) {
-            processSpecialShortcutKey( e, false );
         }
 
         public void FormMain_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
@@ -9222,13 +9217,7 @@ namespace org.kbinani.cadencii {
                 play_time = play_time * AppManager.editorConfig.getRealtimeInputSpeed();
             }
             float now = (float)(play_time + m_direct_play_shift);
-#if DEBUG
-            PortUtil.println( "FormMain#timer_Tick; now=" + now + "; play_time=" + play_time + "; m_preview_ending_time=" + m_preview_ending_time );
-#endif
             if ( (play_time < 0.0 || m_preview_ending_time < now) && AppManager.getEditMode() != EditMode.REALTIME ) {
-#if DEBUG
-                PortUtil.println( "FormMain#timer_Tick; setPlaying(false); A" );
-#endif
                 AppManager.setPlaying( false );
                 timer.stop();
                 if ( AppManager.startMarkerEnabled ) {
@@ -9242,12 +9231,7 @@ namespace org.kbinani.cadencii {
                 if ( AppManager.getEditMode() == EditMode.REALTIME ) {
                     hScroll.setMaximum( clock + (int)((pictPianoRoll.getWidth() - AppManager.keyWidth) / 2.0f / AppManager.scaleX) );
                 } else {
-                    //AppManager.CurrentClock = 0;
-                    //EnsureCursorVisible();
                     if ( !AppManager.isRepeatMode() ) {
-#if DEBUG
-                        PortUtil.println( "FormMain#timer_Tick; setPlaying(false); B" );
-#endif
                         timer.stop();
                         AppManager.setPlaying( false );
                     }
@@ -11835,7 +11819,11 @@ namespace org.kbinani.cadencii {
 #else
                 if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
 #endif
-                    flipPlaying = true;
+                    numEnterKeyAfterHideInputTextBox++;
+                    if ( numEnterKeyAfterHideInputTextBox >= 2 ) {
+                        // 2回目以降しか受け付けないことにする
+                        flipPlaying = true;
+                    }
 #if JAVA
                 } else if ( e.KeyValue == KeyEvent.VK_SPACE ) {
 #else
@@ -14721,7 +14709,6 @@ namespace org.kbinani.cadencii {
             AppManager.inputTextBox.setVisible( true );
             AppManager.inputTextBox.requestFocusInWindow();
             AppManager.inputTextBox.selectAll();
-
         }
 
         public void hideInputTextBox() {
@@ -14745,6 +14732,7 @@ namespace org.kbinani.cadencii {
 #endif
             AppManager.inputTextBox.setEnabled( false );
             pictPianoRoll.requestFocus();
+            numEnterKeyAfterHideInputTextBox = 0;
         }
 
         /// <summary>
@@ -15598,6 +15586,7 @@ namespace org.kbinani.cadencii {
             picturePositionIndicator.paintEvent.add( new BPaintEventHandler( this, "picturePositionIndicator_Paint" ) );
             pictPianoRoll.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "pictPianoRoll_PreviewKeyDown" ) );
             pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
+            pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "pictPianoRoll_KeyUp" ) );
             pictPianoRoll.mouseMoveEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseMove" ) );
             pictPianoRoll.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDoubleClick" ) );
             pictPianoRoll.mouseClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseClick" ) );
@@ -15664,7 +15653,7 @@ namespace org.kbinani.cadencii {
             activatedEvent.add( new BEventHandler( this, "FormMain_Activated" ) );
             formClosedEvent.add( new BFormClosedEventHandler( this, "FormMain_FormClosed" ) );
             formClosingEvent.add( new BFormClosingEventHandler( this, "FormMain_FormClosing" ) );
-            keyUpEvent.add( new BKeyEventHandler( this, "FormMain_KeyUp" ) );
+            //keyUpEvent.add( new BKeyEventHandler( this, "FormMain_KeyUp" ) );
             previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "FormMain_PreviewKeyDown" ) );
             panelOverview.enterEvent.add( new BEventHandler( this, "panelOverview_Enter" ) );
             mouseMoveEvent.add( new BMouseEventHandler( this, "FormMain_MouseMove" ) );

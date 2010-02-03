@@ -13,15 +13,14 @@
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
 -CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
--スタートマーカーとエンドマーカーがある時、wav出力範囲をマーカー範囲に限定する
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
 -VsqHandleのcastTo**はクローンする必要があるのかどうか検討
 -最新のバージョンがあるかどうかを問い合わせる機能
 -英語音源のとき、歌詞/発音記号の入力はどうなってる？
 -トラックをFreezする機能（レンダリング結果のwaveをどこかに保存？）
 -Mixerのソロボタンとミュートボタンの動作仕様について検討する。
--パレットツールDivideNoteがクラッシュする原因を調べる．（VOCALOIDがインストールされていない環境で起こっている(?); 古い設定ファイルが残っていて，それの読み込みに失敗している(?)）
 -splashウィンドウの画像をどうしようか・・・
+-PlayAfterSynthモードにて。temp.wavに一度書き出して改名するのではなく、1.wavに直接書き込めないか？
 
 -v3.0.10done-----------------------------------------------------------
 -EnterまたはSpaceを長押しすると、エラーダイアログがたくさん出た後クラッシュするのを修正。

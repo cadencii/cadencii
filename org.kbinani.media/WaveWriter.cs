@@ -35,6 +35,10 @@ namespace org.kbinani.media {
         private int m_total_samples = 0;
         private RandomAccessFile m_stream = null;
         private String m_path = "";
+        /// <summary>
+        /// dataチャンクの開始位置。第1番目のデータが、このアドレスに書き込まれることになる。
+        /// </summary>
+        private long m_pos_data_chunk;
 
         public WaveWriter( String path ) 
 #if JAVA
@@ -59,6 +63,64 @@ namespace org.kbinani.media {
             m_sample_rate = sample_rate;
             m_total_samples = 0;
             writeHeader();
+        }
+
+        /// <summary>
+        /// 第posサンプルからlengthサンプル分、指定した波形データで置き換えます
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="length"></param>
+        /// <param name="L"></param>
+        /// <param name="R"></param>
+        public void replace( long pos, int length, double[] L, double[] R ) {
+            long lastPos = m_stream.getFilePointer();
+            long posFile = pos * m_channel * m_bit_per_sample / 8 + m_pos_data_chunk;
+            long streamLen = m_stream.length();
+            if ( streamLen < posFile ) {
+                // ファイルの長さが足りていない場合、とりあえず0で埋める。
+                m_stream.seek( streamLen - 1 );
+                long remain = posFile - streamLen;
+                int buflen = 1024;
+                byte[] data = new byte[buflen];
+                while ( remain > 0 ) {
+                    int delta = remain > buflen ? buflen : (int)remain;
+                    m_stream.write( data, 0, delta );
+                    remain -= delta;
+                }
+            }
+            m_stream.seek( posFile );
+
+            // 書き込み
+            if ( m_bit_per_sample == 8 ) {
+                if ( m_channel == 1 ) {
+                    for ( int i = 0; i < length; i++ ) {
+                        m_stream.writeByte( (int)((L[i] + R[i] + 2.0) * 63.75) );
+                    }
+                } else {
+                    for ( int i = 0; i < length; i++ ) {
+                        m_stream.writeByte( (int)((L[i] + 1.0) * 127.5) );
+                        m_stream.writeByte( (int)((R[i] + 1.0) * 127.5) );
+                    }
+                }
+            } else {
+                byte[] buf;
+                if ( m_channel == 1 ) {
+                    for ( int i = 0; i < length; i++ ) {
+                        buf = PortUtil.getbytes_int16_le( (short)((L[i] + R[i]) * 16384.0) );
+                        writeByteArray( m_stream, buf, 2 );
+                    }
+                } else {
+                    for ( int i = 0; i < length; i++ ) {
+                        buf = PortUtil.getbytes_int16_le( (short)(L[i] * 32768.0) );
+                        writeByteArray( m_stream, buf, 2 );
+                        buf = PortUtil.getbytes_int16_le( (short)(R[i] * 32768.0) );
+                        writeByteArray( m_stream, buf, 2 );
+                    }
+                }
+            }
+
+            // 最後にファイルポインタを戻す
+            m_stream.seek( lastPos );
         }
 
 #if !JAVA
@@ -150,6 +212,7 @@ namespace org.kbinani.media {
             int size = block_size * m_total_samples;
             buf = PortUtil.getbytes_uint32_le( size );
             writeByteArray( m_stream, buf, 4 );
+            m_pos_data_chunk = m_stream.getFilePointer();
         }
 
         public void close()

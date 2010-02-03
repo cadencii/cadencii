@@ -16,11 +16,13 @@
 #else
 using System.Windows.Forms;
 using org.kbinani.windows.forms;
+using org.kbinani;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     public class TextBoxEx : BTextBox {
+        private boolean compositioning = false;
         protected override boolean IsInputKey( Keys keyData ) {
             switch ( keyData ) {
                 case Keys.Tab:
@@ -31,6 +33,29 @@ namespace org.kbinani.cadencii {
             }
             return true;
         }
+
+        /*protected override void WndProc( ref Message m ) {
+            base.WndProc( ref m );
+            if ( m.Msg == win32.WM_IME_STARTCOMPOSITION ) {
+                compositioning = true;
+#if DEBUG
+                PortUtil.println( "TextBoxEx#WndProc; compositioning=" + compositioning );
+#endif
+            } else if ( m.Msg == win32.WM_IME_ENDCOMPOSITION ) {
+                compositioning = false;
+#if DEBUG
+                PortUtil.println( "TextBoxEx#WndProc; compositioning=" + compositioning );
+#endif
+            }
+        }
+
+        /// <summary>
+        /// IMEが変換中かどうかを調べます。
+        /// </summary>
+        /// <returns></returns>
+        public boolean isComposition() {
+            return compositioning;
+        }*/
     }
 
 }

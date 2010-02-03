@@ -167,6 +167,23 @@ namespace org.kbinani {
         public const int WM_MOUSEWHEEL = 522;
         #endregion
 
+        #region imm.h
+        public const int WM_CONVERTREQUESTEX = 0x108;
+        public const int WM_IME_STARTCOMPOSITION = 0x10D;
+        public const int WM_IME_ENDCOMPOSITION = 0x10E;
+        public const int WM_IME_COMPOSITION = 0x10F;
+        public const int WM_IME_KEYLAST = 0x10F;
+        public const int WM_IME_SETCONTEXT = 0x281;
+        public const int WM_IME_NOTIFY = 0x282;
+        public const int WM_IME_CONTROL = 0x283;
+        public const int WM_IME_COMPOSITIONFULL = 0x284;
+        public const int WM_IME_SELECT = 0x285;
+        public const int WM_IME_CHAR = 0x286;
+        public const int WM_IME_KEYDOWN = 0x290;
+        public const int WM_IME_KEYUP = 0x291;
+        #endregion
+
+
         public const uint SHGFI_ICON = 0x100;
         public const uint SHGFI_LARGEICON = 0x0; // 'Large icon
         public const uint SHGFI_SMALLICON = 0x1; // 'Small icon
