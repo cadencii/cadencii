@@ -1,11 +1,12 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>org.kbinani.cadencii</RootNamespace>
     <AssemblyName>org.kbinani.cadencii</AssemblyName>
@@ -15,8 +16,6 @@
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <StartupObject>
-    </StartupObject>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ManifestCertificateThumbprint>3B7855CA5AB710E8AC0C79D614FD5307A8FDC6F3</ManifestCertificateThumbprint>
     <ManifestKeyFile>keyfile.pfx</ManifestKeyFile>
@@ -54,6 +53,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>DEBUG;USE_DOBJ, ENABLE_PROPERTY, ENABLE_VOCALOID, ENABLE_SCRIPT, ENABLE_MIDI, ENABLE_STRIP_DROPDOWN, ENABLE_AQUESTONE</DefineConstants>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DebugType>none</DebugType>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -64,6 +66,8 @@
     <Optimize>true</Optimize>
     <DocumentationFile>
     </DocumentationFile>
+    <DebugType>none</DebugType>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -75,8 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmplifyCoefficient.cs" />
-    <Compile Include="AquesToneDriver.cs">
-    </Compile>
+    <Compile Include="AquesToneDriver.cs" />
     <Compile Include="AquesToneRenderingRunner.cs" />
     <Compile Include="AttachedCurve.cs" />
     <Compile Include="AttackVariation.cs" />
@@ -241,8 +244,7 @@
     <Compile Include="FormMixer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AppManager.cs">
-    </Compile>
+    <Compile Include="AppManager.cs" />
     <Compile Include="FormTrackProperty.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -278,8 +280,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="QuantizeMode.cs" />
     <Compile Include="RgbColor.cs" />
-    <Compile Include="SandBox.cs">
-    </Compile>
+    <Compile Include="SandBox.cs" />
     <Compile Include="ScriptInvoker.cs" />
     <Compile Include="SelectedBezierPoint.cs" />
     <Compile Include="SelectedEventEntry.cs" />
@@ -291,23 +292,17 @@
       <SubType>Component</SubType>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ToolStripLocation.cs" />
     <Compile Include="TrackSelector.cs">
@@ -340,14 +335,14 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="winmmhelp.cs" />
+    <None Include="makefile" />
+    <None Include="Properties\app.manifest" />
+    <None Include="Resources.list" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ja.po">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="makefile" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="manual\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -356,8 +351,6 @@
     </Content>
     <Content Include="Properties\cursor.cur" />
     <Content Include="Properties\Icon1.ico" />
-    <None Include="Properties\app.manifest" />
-    <None Include="Resources.list" />
     <Content Include="zh-TW.po">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -539,18 +532,12 @@
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
       <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
       <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
@@ -574,336 +561,114 @@
   <ItemGroup>
     <PublishFile Include="Properties\alarm-clock.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow-180.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow-skip-090.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow_circle_double.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow_skip.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\arrow_skip_180.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\author_list.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\btn1.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\btn2.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\btn3.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\chevron-small-collapse.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\clipboard_paste.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\control.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\control_pause.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\control_stop.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\control_stop_180.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\cross-small.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\cursor.cur">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\disk.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\disk__plus.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\documents.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\drive.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\edit-list-order.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\end_marker.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\folder--plus.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\folder.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\folder_horizontal_open.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\Icon1.ico">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\layer_shape_curve.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\layer_shape_line.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\pencil.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\piano.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\scissors.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\slash.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\start_marker.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\target--pencil.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Properties\VSTonWht.png">
       <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -914,4 +679,19 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile">
+          <BuildFilesVar />
+          <DeployFilesVar />
+          <ResourcesVar />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

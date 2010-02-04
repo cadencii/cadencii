@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="AddItemEventHandler.cs" />
     <Compile Include="AppManager.cs" />
+    <Compile Include="EditorConfig.cs" />
     <Compile Include="FlagType.cs" />
     <Compile Include="FormConfigUtauVoiceConfig.cs" />
     <Compile Include="FormGenerateStf.cs">

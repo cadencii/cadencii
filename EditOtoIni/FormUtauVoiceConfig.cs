@@ -18,6 +18,7 @@ package org.kbinani.editotoini;
 import java.util.*;
 import java.io.*;
 import java.awt.*;
+import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.media.*;
 import org.kbinani.apputil.*;
@@ -30,6 +31,7 @@ using System.Threading;
 using System.Windows.Forms;
 using org.kbinani;
 using org.kbinani.apputil;
+using org.kbinani.componentmodel;
 using org.kbinani.java.awt;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
@@ -40,7 +42,6 @@ using org.kbinani.xml;
 namespace org.kbinani.editotoini {
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Float = System.Single;
     using Graphics = org.kbinani.java.awt.Graphics2D;
@@ -117,6 +118,8 @@ namespace org.kbinani.editotoini {
         private static int columnWidthStf = 60;
         private BFileChooser openFileDialog;
         private BFileChooser saveFileDialog;
+        private BBackgroundWorker bgWorkScreen;
+        private BBackgroundWorker bgWorkRead;
 
         public FormUtauVoiceConfig() {
 #if JAVA
@@ -125,6 +128,8 @@ namespace org.kbinani.editotoini {
 #else
             InitializeComponent();
 #endif
+            bgWorkScreen = new BBackgroundWorker();
+            bgWorkRead = new BBackgroundWorker();
             openFileDialog = new BFileChooser( "" );
             saveFileDialog = new BFileChooser( "" );
             openFileDialog.setSelectedFile( "oto.ini" );
@@ -192,8 +197,8 @@ namespace org.kbinani.editotoini {
         }
 
         private void refreshScreen() {
-            if ( !bgWorkScreen.IsBusy ) {
-                bgWorkScreen.RunWorkerAsync();
+            if ( !bgWorkScreen.isBusy() ) {
+                bgWorkScreen.runWorkerAsync();
             }
         }
 
@@ -202,7 +207,11 @@ namespace org.kbinani.editotoini {
         /// Gets the path for application data
         /// </summary>
         public static String getApplicationDataPath() {
+#if JAVA
+            String dir = PortUtil.combinePath( System.getenv( "APPDATA" ), "Boare" );
+#else
             String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+#endif
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
@@ -217,8 +226,8 @@ namespace org.kbinani.editotoini {
             FormConfigUtauVoiceConfig ret = new FormConfigUtauVoiceConfig();
             ret.Bounds = new XmlRectangle( m_current_bounds );
             ret.State = this.getExtendedState();
-            ret.InnerSplitterDistancePercentage = splitContainerIn.SplitterDistance / (float)splitContainerIn.Width * 100.0f;
-            ret.OuterSplitterDistancePercentage = splitContainerOut.SplitterDistance / (float)splitContainerOut.Height * 100.0f;
+            ret.InnerSplitterDistancePercentage = splitContainerIn.getDividerLocation() / (float)splitContainerIn.getWidth() * 100.0f;
+            ret.OuterSplitterDistancePercentage = splitContainerOut.getDividerLocation() / (float)splitContainerOut.getHeight() * 100.0f;
             ret.WaveViewScale = m_trackbar_value;
 
             ret.ColumnWidthFileName = listFiles.getColumnWidth( 0 );
@@ -240,10 +249,10 @@ namespace org.kbinani.editotoini {
             if ( value.State != BForm.MAXIMIZED_BOTH ) {
                 this.setBounds( value.Bounds.toRectangle() );
             } else {
-                this.WindowState = FormWindowState.Maximized;
+                this.setExtendedState( BForm.MAXIMIZED_BOTH );
             }
-            splitContainerIn.SplitterDistance = (int)(splitContainerIn.Width * value.InnerSplitterDistancePercentage / 100.0f);
-            splitContainerOut.SplitterDistance = (int)(splitContainerOut.Height * value.OuterSplitterDistancePercentage / 100.0f);
+            splitContainerIn.setDividerLocation( (int)(splitContainerIn.getWidth() * value.InnerSplitterDistancePercentage / 100.0f) );
+            splitContainerOut.setDividerLocation( (int)(splitContainerOut.getHeight() * value.OuterSplitterDistancePercentage / 100.0f) );
             if ( value.WaveViewScale < TRACKBAR_MIN ) {
                 m_trackbar_value = TRACKBAR_MIN;
             } else if ( TRACKBAR_MAX < value.WaveViewScale ) {
@@ -269,9 +278,14 @@ namespace org.kbinani.editotoini {
         }
 
         private void HoverWaitThread() {
+#if JAVA
+            Thread.sleep( 1000 );
+            pictWave_MouseHover( this, new EventArgs() );
+#else
             Thread.Sleep( SystemInformation.MouseHoverTime );
             EventHandler eh = new EventHandler( pictWave_MouseHover );
             this.Invoke( eh, pictWave, new EventArgs() );
+#endif
         }
 
         private void pictWave_MouseHover( Object sender, EventArgs e ) {
@@ -346,15 +360,15 @@ namespace org.kbinani.editotoini {
         }
 
         private void pictWave_MouseWheel( Object sender, MouseEventArgs e ) {
-            int draft = hScroll.Value - e.Delta / 120 * hScroll.LargeChange / 2;
-            if ( draft > hScroll.Maximum - hScroll.LargeChange + 1 ) {
-                draft = hScroll.Maximum - hScroll.LargeChange + 1;
+            int draft = hScroll.getValue() - e.Delta / 120 * hScroll.getVisibleAmount() / 2;
+            if ( draft > hScroll.getMaximum() - hScroll.getVisibleAmount() + 1 ) {
+                draft = hScroll.getMaximum() - hScroll.getVisibleAmount() + 1;
             }
-            if ( draft < hScroll.Minimum ) {
-                draft = hScroll.Minimum;
+            if ( draft < hScroll.getMinimum() ) {
+                draft = hScroll.getMinimum();
             }
-            if ( draft != hScroll.Value ) {
-                hScroll.Value = draft;
+            if ( draft != hScroll.getValue() ) {
+                hScroll.setValue( draft );
             }
         }
 
@@ -382,7 +396,7 @@ namespace org.kbinani.editotoini {
             String oto_ini_path = (String)e.Argument;
             int c = m_drawer.size();
             for ( int i = 0; i < c; i++ ) {
-                m_drawer.get( i ).Dispose();
+                m_drawer.get( i ).dispose();
             }
             m_drawer.clear();
 
@@ -417,7 +431,7 @@ namespace org.kbinani.editotoini {
                     }
                     String f = line.Substring( 0, eq );
                     line = line.Substring( eq + 1 );
-                    String[] spl = line.Split( ',' );
+                    String[] spl = PortUtil.splitString( line, ',' );
                     String file = PortUtil.combinePath( dir, f );
                     WaveDrawContext wdc = new WaveDrawContext( file );
                     wdc.setName( f + spl[0] );
@@ -436,12 +450,16 @@ namespace org.kbinani.editotoini {
                     String stf = PortUtil.combinePath( PortUtil.combinePath( dir, "analyzed" ), wave_name + ".stf" );
                     boolean stf_exists = PortUtil.isFileExists( stf );
                     columns.add( stf_exists ? "○" : "" );
+#if JAVA
+                    AddItem( this, PortUtil.isFileExists( file ), columns.toArray( new String[] { } ) );
+#else
                     AddItemEventHandler deleg =
                         new AddItemEventHandler( AddItem );
                     this.Invoke( deleg,
                                  this,
                                  PortUtil.isFileExists( file ),
                                  columns.toArray( new String[] { } ) );
+#endif
                 }
             } catch ( Exception ex ) {
 #if DEBUG
@@ -464,10 +482,10 @@ namespace org.kbinani.editotoini {
             }
             int index = listFiles.getSelectedIndex( "" );
             BListViewItem selected_item = listFiles.getItemAt( "", index );
-            String name = selected_item.Text + selected_item.SubItems[1].Text;
+            String name = selected_item.getSubItemAt( 0 ) + selected_item.getSubItemAt( 1 );
             boolean enabled = true;
-            if ( selected_item.Tag != null && selected_item.Tag is boolean ) {
-                enabled = (boolean)selected_item.Tag;
+            if ( selected_item.getTag() != null && selected_item.getTag() is Boolean ) {
+                enabled = (Boolean)selected_item.getTag();
             }
             if ( !enabled ) {
                 listFiles.clearSelection( "" );
@@ -479,10 +497,10 @@ namespace org.kbinani.editotoini {
                 if ( name.Equals( m_drawer.get( i ).getName() ) ) {
                     m_index = i;
                     m_length = m_drawer.get( i ).getLength();
-                    int c2 = selected_item.SubItems.Count;
+                    int c2 = selected_item.getSubItemCount();
                     String[] spl = new String[c2];
                     for ( int i2 = 0; i2 < c2; i2++ ) {
-                        spl[i2] = selected_item.SubItems[i2].Text;
+                        spl[i2] = selected_item.getSubItemAt( 2 );
                     }
                     boolean old = getEdited();
                     txtFileName.setText( spl[0] );
@@ -492,27 +510,27 @@ namespace org.kbinani.editotoini {
 
                     if ( PortUtil.tryParseFloat( spl[2], o ) ) {
                         m_offset = round2Digits( o.value );
-                        txtOffset.setText( m_offset.ToString() );
+                        txtOffset.setText( m_offset + "" );
                     }
 
                     if ( PortUtil.tryParseFloat( spl[3], o ) ) {
                         m_consonant = round2Digits( o.value );
-                        txtConsonant.setText( m_consonant.ToString() );
+                        txtConsonant.setText( m_consonant + "" );
                     }
 
                     if ( PortUtil.tryParseFloat( spl[4], o ) ) {
                         m_blank = round2Digits( o.value );
-                        txtBlank.setText( m_blank.ToString() );
+                        txtBlank.setText( m_blank + "" );
                     }
 
                     if ( PortUtil.tryParseFloat( spl[5], o ) ) {
                         m_pre_utterance = round2Digits( o.value );
-                        txtPreUtterance.setText( m_pre_utterance.ToString() );
+                        txtPreUtterance.setText( m_pre_utterance + "" );
                     }
 
                     if ( PortUtil.tryParseFloat( spl[6], o ) ) {
                         m_overlap = round2Digits( o.value );
-                        txtOverlap.setText( m_overlap.ToString() );
+                        txtOverlap.setText( m_overlap + "" );
                     }
                     setEdited( old );
                     float minimum = Math.Min( m_overlap, Math.Min( m_offset, m_pre_utterance ) );
@@ -522,10 +540,10 @@ namespace org.kbinani.editotoini {
                     Console.WriteLine( "FormUtauVoiceConfig#listFiles_SelectedIndexChanged; m_drawer.get( i ).Length=" + m_drawer.get( i ).getLength() );
                     Console.WriteLine( "FormUtauVoiceConfig#listFiles_SelectedIndexChanged; A; hScroll.Minimum=" + hScroll.Minimum + "; hScroll.Maximum=" + hScroll.Maximum );
 #endif
-                    hScroll.Minimum = (int)(minimum * ORDER);
-                    hScroll.Maximum = (int)(m_drawer.get( i ).getLength() * 1000 * ORDER);
-                    if ( m_start_to_draw < hScroll.Minimum / 1000.0f / ORDER ) {
-                        m_start_to_draw = hScroll.Minimum / 1000.0f / ORDER;
+                    hScroll.setMinimum( (int)(minimum * ORDER) );
+                    hScroll.setMaximum( (int)(m_drawer.get( i ).getLength() * 1000 * ORDER) );
+                    if ( m_start_to_draw < hScroll.getMinimum() / 1000.0f / ORDER ) {
+                        m_start_to_draw = hScroll.getMinimum() / 1000.0f / ORDER;
                     }
 #if DEBUG
                     Console.WriteLine( "FormUtauVoiceConfig#listFiles_SelectedIndexChanged; B; hScroll.Minimum=" + hScroll.Minimum + "; hScroll.Maximum=" + hScroll.Maximum );
@@ -557,11 +575,18 @@ namespace org.kbinani.editotoini {
 
         private void pictWave_Paint( Object sender, PaintEventArgs e ) {
             if ( 0 <= m_index && m_index < m_drawer.size() ) {
+#if JAVA
+                paint( e.Graphics );
+#else
                 paint( new Graphics2D( e.Graphics ) );
+#endif
             }
         }
 
-        private void paint( Graphics g1 ) {
+        public void paint( Graphics g1 ) {
+#if JAVA
+            super.paint( g1 );
+#endif
             Graphics2D g = (Graphics2D)g1;
             /*int c = listFiles.Items[m_index].SubItems.Count;
             String[] spl = new String[c];
@@ -935,8 +960,12 @@ namespace org.kbinani.editotoini {
 
         private void FormUtauVoiceConfig_FormClosed( Object sender, FormClosedEventArgs e ) {
             m_cancel_required = true;
-            while ( bgWorkRead.IsBusy ) {
+            while ( bgWorkRead.isBusy() ) {
+#if JAVA
+                Thread.sleep( 0 );
+#else
                 Application.DoEvents();
+#endif
             }
             if ( m_player != null ) {
                 m_player.Close();
@@ -1111,31 +1140,6 @@ namespace org.kbinani.editotoini {
             if ( !PortUtil.isFileExists( path_config_cadencii ) ) {
                 return;
             }
-            /*EditorConfig cadencii_config = null;
-            FileInputStream fin = null;
-            try {
-                fin = new FileInputStream( path_config_cadencii );
-#if JAVA
-                XmlSerializer xs = new XmlSerializer( com.boare.cadencii.EditorConfig.class );
-                cadencii_config = (com.boare.cadencii.EditorConfig)xs.deserialize( fin );
-#else
-                XmlSerializer xs = new XmlSerializer( typeof( EditorConfig ) );
-                cadencii_config = (EditorConfig)xs.deserialize( fin );
-#endif
-                String lang = cadencii_config.Language;
-                Messaging.setLanguage( lang );
-            } catch ( Exception ex ) {
-            } finally {
-                if ( fin != null ) {
-                    try {
-                        fin.close();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-            }
-            if ( cadencii_config != null ) {
-                AppManager.cadenciiConfig = cadencii_config;
-            }*/
             ApplyLanguage();
         }
 
@@ -1330,7 +1334,11 @@ namespace org.kbinani.editotoini {
         }
 
         private void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e ) {
-            this.Invoke( new BEventHandler( this.refreshScreenCore ) );
+#if JAVA
+            refreshScreenCore();
+#else
+            this.Invoke( new EventHandler( this.refreshScreenCore ) );
+#endif
         }
 
         private void refreshScreenCore( Object sender, BEventArgs e ) {
@@ -1498,9 +1506,8 @@ namespace org.kbinani.editotoini {
             this.panelBottom = new System.Windows.Forms.Panel();
             this.btnMinus = new BButton();
             this.btnPlus = new BButton();
-            this.hScroll = new System.Windows.Forms.HScrollBar();
+            this.hScroll = new BHScrollBar();
             this.pictWave = new BPictureBox();
-            this.bgWorkRead = new System.ComponentModel.BackgroundWorker();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLblTootip = new BStatusLabel();
             this.splitContainerIn = new org.kbinani.apputil.BSplitContainer();
@@ -1512,7 +1519,6 @@ namespace org.kbinani.editotoini {
             this.buttonNext = new BButton();
             this.lblSearch = new BLabel();
             this.txtSearch = new BTextBox();
-            this.bgWorkScreen = new System.ComponentModel.BackgroundWorker();
             this.menuStrip.SuspendLayout();
             this.panelRight.SuspendLayout();
             this.panelBottom.SuspendLayout();
@@ -2175,8 +2181,7 @@ namespace org.kbinani.editotoini {
         private System.Windows.Forms.Panel panelRight;
         private BMenuItem menuFile;
         private System.Windows.Forms.Panel panelBottom;
-        private System.Windows.Forms.HScrollBar hScroll;
-        private System.ComponentModel.BackgroundWorker bgWorkRead;
+        private BHScrollBar hScroll;
         private System.Windows.Forms.StatusStrip statusStrip;
         private org.kbinani.apputil.BSplitContainer splitContainerIn;
         private BLabel lblFileName;
@@ -2218,7 +2223,6 @@ namespace org.kbinani.editotoini {
         private BLabel lblSearch;
         private BButton buttonNext;
         private BButton buttonPrevious;
-        private System.ComponentModel.BackgroundWorker bgWorkScreen;
         private BMenuItem menuView;
         private BMenuItem menuViewSearchNext;
         private BMenuItem menuViewSearchPrevious;

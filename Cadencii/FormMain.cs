@@ -137,6 +137,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "okokta" ),
             new AuthorListEntry( "カプチ２" ),
             new AuthorListEntry( "あにぃ" ),
+            new AuthorListEntry( "tomo" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -1608,16 +1609,10 @@ namespace org.kbinani.cadencii {
                                              false );
                 dialog.showDialog();
                 int finished = dialog.getFinished();
-#if DEBUG
-                PortUtil.println( "FormMain#patchWorkToFreeze; finished=" + finished );
-#endif
                 for ( int k = 0; k < tracks.Length; k++ ) {
                     int track = tracks[k];
                     String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
 
-#if DEBUG
-                    PortUtil.println( "FormMain#patchWorkToFreeze_impl; wavePath=" + wavePath + "; files.get(startIndex[k])=" + files.get( startIndex[k] ) );
-#endif
                     if ( wavePath.Equals( files.get( startIndex[k] ) ) && startIndex[k] < finished ) {
                         // このとき，パッチワークを行う必要なし．
                         AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( track ).clone(), vsq.TempoTable );
@@ -1626,33 +1621,11 @@ namespace org.kbinani.cadencii {
                         continue;
                     }
 
-                    WaveReader reader = null;
                     WaveWriter writer = null;
-
                     try {
-                        if ( !PortUtil.isFileExists( wavePath ) ) {
-                            // 読み込みもとのファイルがない場合．
-                            WaveWriter twriter = null;
-                            try {
-                                twriter = new WaveWriter( wavePath, AppManager.editorConfig.WaveFileOutputChannel, 16, VSTiProxy.SAMPLE_RATE );
-                            } catch ( Exception ex ) {
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
-                            } finally {
-                                if ( twriter != null ) {
-                                    try {
-                                        twriter.close();
-                                    } catch ( Exception ex2 ) {
-                                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
-                                    }
-                                }
-                            }
-                        }
-                        reader = new WaveReader( wavePath );
-
-                        int sampleRate = reader.getSampleRate();
+                        int sampleRate = VSTiProxy.SAMPLE_RATE;
                         long totalLength = (long)((vsq.getSecFromClock( vsq.TotalClocks ) + 1.0) * sampleRate);
-                        writer = new WaveWriter( tempWave, AppManager.editorConfig.WaveFileOutputChannel, 16, sampleRate );
-                        long processed = 0; // writerに書き込みが終了したサンプルの個数
+                        writer = new WaveWriter( wavePath, AppManager.editorConfig.WaveFileOutputChannel, 16, sampleRate );
                         int BUFLEN = 1024;
                         double[] bufl = new double[BUFLEN];
                         double[] bufr = new double[BUFLEN];
@@ -1665,19 +1638,6 @@ namespace org.kbinani.cadencii {
                             double secEnd = vsq.getSecFromClock( clockEnd );
                             long sampleStart = (long)(secStart * sampleRate);
                             long sampleEnd = (long)(secEnd * sampleRate);
-                            /*if ( totalLength < sampleEnd ) {
-                                sampleEnd = totalLength;
-                            }*/
-
-                            // processedからsampleStartまでをreaderから読み取り，writerに書き込む
-                            long remain = sampleStart - processed;
-                            while ( remain > 0 ) {
-                                int delta = remain > BUFLEN ? BUFLEN : (int)remain;
-                                reader.read( processed, delta, bufl, bufr );
-                                writer.append( bufl, bufr, delta );
-                                processed += delta;
-                                remain -= delta;
-                            }
 
                             WaveReader wr = null;
                             try {
@@ -1687,8 +1647,7 @@ namespace org.kbinani.cadencii {
                                 while ( remain2 > 0 ) {
                                     int delta = remain2 > BUFLEN ? BUFLEN : (int)remain2;
                                     wr.read( proc, delta, bufl, bufr );
-                                    writer.append( bufl, bufr, delta );
-                                    processed += delta;
+                                    writer.replace( sampleStart + proc, delta, bufl, bufr );
                                     proc += delta;
                                     remain2 -= delta;
                                 }
@@ -1704,22 +1663,11 @@ namespace org.kbinani.cadencii {
                                 }
                             }
 
-#if !DEBUG
                             try {
                                 PortUtil.deleteFile( files[i] );
                             } catch ( Exception ex ) {
                                 PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                             }
-#endif
-                        }
-
-                        long remain3 = totalLength - processed;
-                        while ( remain3 > 0 ) {
-                            int delta = remain3 > BUFLEN ? BUFLEN : (int)remain3;
-                            reader.read( processed, delta, bufl, bufr );
-                            writer.append( bufl, bufr, delta );
-                            processed += delta;
-                            remain3 -= delta;
                         }
 
                         VsqTrack vsq_track = vsq.Track.get( track );
@@ -1788,13 +1736,6 @@ namespace org.kbinani.cadencii {
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                     } finally {
-                        if ( reader != null ) {
-                            try {
-                                reader.close();
-                            } catch ( Exception ex2 ) {
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
-                            }
-                        }
                         if ( writer != null ) {
                             try {
                                 writer.close();
@@ -1802,14 +1743,6 @@ namespace org.kbinani.cadencii {
                                 PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
                             }
                         }
-                    }
-
-                    // 名前を変える
-                    try {
-                        PortUtil.deleteFile( wavePath );
-                        PortUtil.moveFile( tempWave, wavePath );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                     }
 
                     // 波形表示用のWaveDrawContextの内容を更新する。

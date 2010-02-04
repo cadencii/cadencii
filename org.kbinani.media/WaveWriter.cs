@@ -32,7 +32,7 @@ namespace org.kbinani.media {
         private int m_channel = 1;
         private int m_bit_per_sample;
         private int m_sample_rate;
-        private int m_total_samples = 0;
+        private long m_total_samples = 0;
         private RandomAccessFile m_stream = null;
         private String m_path = "";
         /// <summary>
@@ -61,8 +61,8 @@ namespace org.kbinani.media {
             m_channel = channel;
             m_bit_per_sample = bit_per_sample;
             m_sample_rate = sample_rate;
-            m_total_samples = 0;
             writeHeader();
+            m_total_samples = (m_stream.length() - m_pos_data_chunk) / m_channel / (m_bit_per_sample / 8);
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace org.kbinani.media {
             m_stream.writeByte( 0x61 );
 
             // size of data chunk
-            int size = block_size * m_total_samples;
+            long size = block_size * m_total_samples;
             buf = PortUtil.getbytes_uint32_le( size );
             writeByteArray( m_stream, buf, 4 );
             m_pos_data_chunk = m_stream.getFilePointer();
@@ -229,7 +229,7 @@ namespace org.kbinani.media {
 
                 // size of data chunk
                 int block_size = (int)(m_bit_per_sample / 8 * (int)m_channel);
-                int size = block_size * m_total_samples;
+                long size = block_size * m_total_samples;
                 m_stream.seek( 42 );
                 buf = PortUtil.getbytes_uint32_le( size );
                 writeByteArray( m_stream, buf, 4 );

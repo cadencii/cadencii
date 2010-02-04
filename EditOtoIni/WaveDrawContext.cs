@@ -16,15 +16,13 @@ package org.kbinani.editotoini;
 
 import java.awt.*;
 import org.kbinani.*;
+import org.kbinani.apputil.*;
 import org.kbinani.media.*;
 #else
 using System;
-using org.kbinani.media;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
 using org.kbinani.apputil;
+using org.kbinani.java.awt;
+using org.kbinani.media;
 
 namespace org.kbinani.editotoini {
     using boolean = System.Boolean;

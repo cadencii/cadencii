@@ -16,6 +16,7 @@ import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuBar;
 import org.kbinani.windows.forms.BMenuItem;
@@ -39,7 +40,7 @@ public class FormUtauVoiceConfig extends BForm {
 	private BSplitPane splitContainerIn = null;
 	private BPanel panelLeft = null;
 	private JScrollPane jScrollPane = null;
-	private JTable jTable = null;
+	private BListView listFiles = null;
 	private BPanel panelLeftBottom = null;
 	private BButton buttonNext = null;
 	private BLabel lblSearch = null;
@@ -67,12 +68,12 @@ public class FormUtauVoiceConfig extends BForm {
 	private BButton btnMinus = null;
 	private BButton btnPlus = null;
 	private BMenu menuEdit = null;
-	private BMenuItem menuEditGenerateFrq = null;
-	private BMenuItem menuEditGenerateStf = null;
+	private BMenuItem menuEditGenerateFRQ = null;
+	private BMenuItem menuEditGenerateSTF = null;
 	private BMenu menuView = null;
 	private BMenuItem menuViewSearchNext = null;
 	private BMenuItem menuViewSearchPrevious = null;
-	private DefaultTableModel listFiles = null;
+	private DefaultTableModel tableModel = null;
 	private String[] columnHeaders = new String[]{ "FIle Name", "Alias", "offste", "Consonant", "Blank", "pre Utrerance", "Overlap" };
 	private BPanel BPanel = null;
 	private BTextBox txtOffset = null;
@@ -305,19 +306,19 @@ public class FormUtauVoiceConfig extends BForm {
 	 * 	
 	 * @return javax.swing.JTable	
 	 */
-	private JTable getListFiles() {
-		if (jTable == null) {
-			jTable = new JTable();
-			jTable.setModel( getTableModel() );
+	private BListView getListFiles() {
+		if (listFiles == null) {
+			listFiles = new BListView();
+			//jTable.setModel( getTableModel() );
 		}
-		return jTable;
+		return listFiles;
 	}
 
 	private DefaultTableModel getTableModel(){
-		if( listFiles == null){
-			listFiles = new DefaultTableModel( columnHeaders, 0  );
+		if( tableModel == null){
+			tableModel = new DefaultTableModel( columnHeaders, 0  );
 		}
-		return listFiles;
+		return tableModel;
 	}
 	
 	/**
@@ -716,36 +717,36 @@ public class FormUtauVoiceConfig extends BForm {
 			menuEdit = new BMenu();
 			menuEdit.setText("Edit");
 			menuEdit.setMnemonic(KeyEvent.VK_E);
-			menuEdit.add(getMenuEditGenerateFrq());
-			menuEdit.add(getMenuEditGenerateStf());
+			menuEdit.add(getMenuEditGenerateFRQ());
+			menuEdit.add(getMenuEditGenerateSTF());
 		}
 		return menuEdit;
 	}
 
 	/**
-	 * This method initializes menuEditGenerateFrq	
+	 * This method initializes menuEditGenerateFRQ	
 	 * 	
 	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private BMenuItem getMenuEditGenerateFrq() {
-		if (menuEditGenerateFrq == null) {
-			menuEditGenerateFrq = new BMenuItem();
-			menuEditGenerateFrq.setText("Generate FRQ files");
+	private BMenuItem getMenuEditGenerateFRQ() {
+		if (menuEditGenerateFRQ == null) {
+			menuEditGenerateFRQ = new BMenuItem();
+			menuEditGenerateFRQ.setText("Generate FRQ files");
 		}
-		return menuEditGenerateFrq;
+		return menuEditGenerateFRQ;
 	}
 
 	/**
-	 * This method initializes menuEditGenerateStf	
+	 * This method initializes menuEditGenerateSTF	
 	 * 	
 	 * @return org.kbinani.windows.forms.BMenuItem	
 	 */
-	private BMenuItem getMenuEditGenerateStf() {
-		if (menuEditGenerateStf == null) {
-			menuEditGenerateStf = new BMenuItem();
-			menuEditGenerateStf.setText("Generate STF files");
+	private BMenuItem getMenuEditGenerateSTF() {
+		if (menuEditGenerateSTF == null) {
+			menuEditGenerateSTF = new BMenuItem();
+			menuEditGenerateSTF.setText("Generate STF files");
 		}
-		return menuEditGenerateStf;
+		return menuEditGenerateSTF;
 	}
 
 	/**
