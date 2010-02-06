@@ -24,6 +24,7 @@ using System;
 using System.Windows.Forms;
 using org.kbinani;
 using org.kbinani.windows.forms;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -37,8 +38,6 @@ namespace org.kbinani.cadencii {
     class VolumeTracker : UserControl {
 #endif
         private int m_feder = 0;
-        //private boolean m_muted = false;
-        //private boolean m_solo = false;
         private String m_number = "0";
         private String m_title = "";
         private Object m_tag = null;
@@ -141,13 +140,8 @@ namespace org.kbinani.cadencii {
         };
         #endregion
 
-#if JAVA
         public BEvent<BEventHandler> federChangedEvent = new BEvent<BEventHandler>();
         public BEvent<BEventHandler> panpotChangedEvent = new BEvent<BEventHandler>();
-#else
-        public event EventHandler FederChanged;
-        public event EventHandler PanpotChanged;
-#endif
         public BEvent<BEventHandler> muteButtonClick = new BEvent<BEventHandler>();
         public BEvent<BEventHandler> soloButtonClick = new BEvent<BEventHandler>();
 
@@ -163,6 +157,8 @@ namespace org.kbinani.cadencii {
 #if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );
 #endif
+            setMuted( false );
+            setSolo( false );
         }
 
         public void setTag( Object value ) {
@@ -208,6 +204,10 @@ namespace org.kbinani.cadencii {
         public void setMuted( boolean value ) {
             boolean old = chkMute.isSelected();
             chkMute.setSelected( value );
+#if JAVA
+#else
+            chkMute.BackColor = value ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
+#endif
         }
 
         public boolean isSolo() {
@@ -217,6 +217,10 @@ namespace org.kbinani.cadencii {
         public void setSolo( boolean value ) {
             boolean old = chkSolo.isSelected();
             chkSolo.setSelected( value );
+#if JAVA
+#else
+            chkSolo.BackColor = value ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
+#endif
         }
 
         public int getPanpot() {
@@ -243,17 +247,11 @@ namespace org.kbinani.cadencii {
             int old = m_feder;
             m_feder = value;
             if ( old != m_feder ){
-#if JAVA
                 try{
                     federChangedEvent.raise( this, new BEventArgs() );
                 }catch( Exception ex ){
-                    System.err.println( "VolumeTracker#setFeder; ex=" + ex );
+                    PortUtil.stderr.println( "VolumeTracker#setFeder; ex=" + ex );
                 }
-#else
-                if ( FederChanged != null ) {
-                    FederChanged( this, new EventArgs() );
-                }
-#endif
             }
             int v = 177 - getYCoordFromFeder( m_feder );
             trackFeder.setValue( v );
@@ -335,32 +333,20 @@ namespace org.kbinani.cadencii {
         private void trackFeder_ValueChanged( Object sender, BEventArgs e ) {
             m_feder = getFederFromYCoord( 151 - (trackFeder.getValue() - 26) );
             txtFeder.setText( (m_feder / 10.0) + "" );
-#if JAVA
             try{
                 federChangedEvent.raise( this, new BEventArgs() );
             }catch( Exception ex ){
-                System.err.println( "VolumeTracker#trackFeder_ValueChanged; ex=" + ex );
+                PortUtil.stderr.println( "VolumeTracker#trackFeder_ValueChanged; ex=" + ex );
             }
-#else
-            if ( FederChanged != null ) {
-                FederChanged( this, new EventArgs() );
-            }
-#endif
         }
 
         private void trackPanpot_ValueChanged( Object sender, BEventArgs e ) {
             txtPanpot.setText( trackPanpot.getValue() + "" );
-#if JAVA
             try{
                 panpotChangedEvent.raise( this, new BEventArgs() );
             }catch( Exception ex ){
-                System.err.println( "VolumeTracker#trackPanpot_ValueChanged; ex=" + ex );
+                PortUtil.stderr.println( "VolumeTracker#trackPanpot_ValueChanged; ex=" + ex );
             }
-#else
-            if ( PanpotChanged != null ) {
-                PanpotChanged( this, new EventArgs() );
-            }
-#endif
         }
 
         private void txtFeder_KeyDown( Object sender, BKeyEventArgs e ) {
@@ -386,6 +372,7 @@ namespace org.kbinani.cadencii {
                 txtFeder.requestFocusInWindow();
                 txtFeder.selectAll();
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VolumeTracker#txtFeder_KeyDown; ex=" + ex );
             }
         }
 
@@ -412,6 +399,7 @@ namespace org.kbinani.cadencii {
                 txtPanpot.requestFocusInWindow();
                 txtPanpot.selectAll();
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VolumeTracker#txtPanpot_KeyDown; ex=" + ex );
             }
         }
 
@@ -419,7 +407,7 @@ namespace org.kbinani.cadencii {
             try {
                 soloButtonClick.raise( this, e );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VolumeTracker#chkSolo_Click" );
+                PortUtil.stderr.println( "VolumeTracker#chkSolo_Click; ex=" + ex );
             }
         }
 
@@ -427,7 +415,7 @@ namespace org.kbinani.cadencii {
             try {
                 muteButtonClick.raise( this, e );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VolumeTracker#chkMute_Click" );
+                PortUtil.stderr.println( "VolumeTracker#chkMute_Click; ex=" + ex );
             }
         }
 

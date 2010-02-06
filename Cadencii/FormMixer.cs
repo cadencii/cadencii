@@ -46,7 +46,7 @@ namespace org.kbinani.cadencii {
     public class FormMixer : BForm {
 #endif
         private FormMain m_parent;
-        private VolumeTracker[] m_tracker;
+        private Vector<VolumeTracker> m_tracker = null;
 
 #if JAVA
         public BEvent<FederChangedEventHandler> federChangedEvent = new BEvent<FederChangedEventHandler>();
@@ -78,22 +78,18 @@ namespace org.kbinani.cadencii {
                     break;
                 }
             }
-            for ( int i = 0; i < m_tracker.Length; i++ ) {
+            for ( int i = 0; i < m_tracker.size(); i++ ) {
                 if ( soloSpecificationExists ) {
                     if ( vsq.getSolo( i + 1 ) ) {
-                        m_tracker[i].setSolo( true );
-                        m_tracker[i].setMuted( false );
+                        m_tracker.get( i ).setSolo( true );
+                        m_tracker.get( i ).setMuted( vsq.getMute( i + 1 ) );
                     } else {
-                        m_tracker[i].setSolo( false );
-                        m_tracker[i].setMuted( true );
+                        m_tracker.get( i ).setSolo( false );
+                        m_tracker.get( i ).setMuted( true );
                     }
                 } else {
-                    m_tracker[i].setSolo( vsq.getSolo( i + 1 ) );
-                    if ( vsq.getSolo( i + 1 ) ) {
-                        m_tracker[i].setMuted( false );
-                    } else {
-                        m_tracker[i].setMuted( vsq.getMute( i + 1 ) );
-                    }
+                    m_tracker.get( i ).setSolo( vsq.getSolo( i + 1 ) );
+                    m_tracker.get( i ).setMuted( vsq.getMute( i + 1 ) );
                 }
             }
         }
@@ -117,6 +113,27 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "FormMixer#UpdateStatus; num=" + num );
 #endif
+#if !OLD_IMPL
+            if ( m_tracker == null ) {
+                m_tracker = new Vector<VolumeTracker>();
+            }
+            if ( m_tracker.size() < num ) {
+                int remain = num - m_tracker.size();
+                for ( int i = 0; i < remain; i++ ) {
+                    VolumeTracker item = new VolumeTracker();
+                    item.muteButtonClick.add( new BEventHandler( this, "FormMixer_MuteButtonClick" ) );
+                    item.soloButtonClick.add( new BEventHandler( this, "FormMixer_SoloButtonClick" ) );
+                    item.federChangedEvent.add( new BEventHandler( this, "FormMixer_FederChanged" ) );
+                    item.panpotChangedEvent.add( new BEventHandler( this, "FormMixer_PanpotChanged" ) );
+                    m_tracker.add( item );
+                }
+            } else if ( m_tracker.size() > num ) {
+                int delete = m_tracker.size() - num;
+                for ( int i = 0; i < delete; i++ ) {
+                    m_tracker.removeElementAt( m_tracker.size() - 1 );
+                }
+            }
+#else
             if ( m_tracker != null ) {
                 for ( int i = 0; i < m_tracker.Length; i++ ) {
 #if !JAVA
@@ -127,6 +144,7 @@ namespace org.kbinani.cadencii {
                 m_tracker = null;
             }
             m_tracker = new VolumeTracker[num];
+#endif
 
             // 同時に表示できるVolumeTrackerの個数を計算
             int max = PortUtil.getWorkingArea( this ).width;
@@ -171,7 +189,7 @@ namespace org.kbinani.cadencii {
             for ( Iterator itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
                 VsqMixerEntry vme = (VsqMixerEntry)itr.next();
                 j++;
-                m_tracker[j] = new VolumeTracker();
+                //m_tracker[j] = new VolumeTracker();
                 m_tracker[j].setFeder( vme.Feder );
                 m_tracker[j].setPanpot( vme.Panpot );
                 m_tracker[j].setTitle( vsq.Track.get( j + 1 ).getName() );
@@ -183,18 +201,6 @@ namespace org.kbinani.cadencii {
                 m_tracker[j].setMuted( (vme.Mute == 1) );
                 m_tracker[j].setSolo( (vme.Solo == 1) );
                 m_tracker[j].setTag( j + 1 );
-#if JAVA
-                m_tracker[j].isMutedChangedEvent.add( new BEventHandler( this, "FormMixer_IsMutedChanged" ) );
-                m_tracker[j].isSoloChangedEvent.add( new BEventHandler( this, "FormMixer_IsSoloChanged" ) );
-                m_tracker[j].federChangedEvent.add( new BEventHandler( this, "FormMixer_FederChanged" ) );
-                m_tracker[j].panpotChangedEvent.add( new BEventHandler( this, "FormMixer_PanpotChanged" ) );
-#else
-                m_tracker[j].muteButtonClick.add( new BEventHandler( this, "FormMixer_MuteButtonClick" ) );
-                m_tracker[j].soloButtonClick.add( new BEventHandler( this, "FormMixer_SoloButtonClick" ) );
-                m_tracker[j].FederChanged += new EventHandler( FormMixer_FederChanged );
-                m_tracker[j].PanpotChanged += new EventHandler( FormMixer_PanpotChanged );
-#endif
-
 #if JAVA
 #else
                 panel1.Controls.Add( m_tracker[j] );
@@ -217,16 +223,6 @@ namespace org.kbinani.cadencii {
                 m_tracker[j].setSolo( false );
                 m_tracker[j].setTag( (int)(-i - 1) );
                 m_tracker[j].setSoloButtonVisible( true );
-                m_tracker[j].muteButtonClick.add( new BEventHandler( this, "FormMixer_MuteButtonClick" ) );
-                m_tracker[j].soloButtonClick.add( new BEventHandler( this, "FormMixer_SoloButtonClick" ) );
-#if JAVA
-                m_tracker[j].federChangedEvent.add( new BEventHandler( this, "FormMixer_FederChanged" ) );
-                m_tracker[j].panpotChangedEvent.add( new BEventHandler( this, "FormMixer_PanpotChanged" ) );
-#else
-                m_tracker[j].FederChanged += new EventHandler( FormMixer_FederChanged );
-                m_tracker[j].PanpotChanged += new EventHandler( FormMixer_PanpotChanged );
-#endif
-
 #if JAVA
 #else
                 panel1.Controls.Add( m_tracker[j] );
@@ -251,7 +247,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void FormMixer_PanpotChanged( Object sender, BEventArgs e ) {
+        public void FormMixer_PanpotChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (Integer)parent.getTag();
 #if JAVA
@@ -267,7 +263,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void FormMixer_FederChanged( Object sender, BEventArgs e ) {
+        public void FormMixer_FederChanged( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (Integer)parent.getTag();
 #if JAVA
@@ -352,7 +348,7 @@ namespace org.kbinani.cadencii {
 #if !JAVA
         private void panel1_Paint( Object sender, PaintEventArgs e ) {
             using ( Pen pen_102_102_102 = new Pen( System.Drawing.Color.FromArgb( 102, 102, 102 ) ) ) {
-                for ( int i = 0; i < m_tracker.Length; i++ ) {
+                for ( int i = 0; i < m_tracker.size(); i++ ) {
                     int x = (i + 1) * (VolumeTracker.WIDTH + 1);
                     e.Graphics.DrawLine(
                         pen_102_102_102,
@@ -367,7 +363,7 @@ namespace org.kbinani.cadencii {
             this.invalidate();
         }
 
-        private void volumeMaster_FederChanged( Object sender, BEventArgs e ) {
+        public void volumeMaster_FederChanged( Object sender, BEventArgs e ) {
 #if JAVA
             try{
                 federChangedEvent.raise( 0, volumeMaster.getFeder() );
@@ -381,7 +377,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void volumeMaster_PanpotChanged( Object sender, BEventArgs e ) {
+        public void volumeMaster_PanpotChanged( Object sender, BEventArgs e ) {
 #if JAVA
             try{
                 panpotChangedEvent.raise( 0, volumeMaster.getPanpot() );
@@ -446,8 +442,8 @@ namespace org.kbinani.cadencii {
             this.menuVisualReturn.Click += new System.EventHandler( this.menuVisualReturn_Click );
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
             this.hScroll.ValueChanged += new System.EventHandler( this.veScrollBar_ValueChanged );
-            this.volumeMaster.PanpotChanged += new System.EventHandler( this.volumeMaster_PanpotChanged );
-            this.volumeMaster.FederChanged += new System.EventHandler( this.volumeMaster_FederChanged );
+            this.volumeMaster.panpotChangedEvent.add( new BEventHandler( this, "volumeMaster_PanpotChanged" ) );
+            this.volumeMaster.federChangedEvent.add( new BEventHandler( this, "volumeMaster_FederChanged" ) );
             this.chkTopmost.CheckedChanged += new System.EventHandler( this.chkTopmost_CheckedChanged );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMixer_FormClosing );
 #endif

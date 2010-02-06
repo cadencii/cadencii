@@ -162,9 +162,6 @@ namespace org.kbinani.cadencii {
                 Mixer.MasterMute = value ? 1 : 0;
             } else if ( track - 1 < Mixer.Slave.size() ) {
                 Mixer.Slave.get( track - 1 ).Mute = value ? 1 : 0;
-                if ( value && getSolo( track ) ) {
-                    setSolo( track, false );
-                }
             }
         }
 
@@ -200,6 +197,13 @@ namespace org.kbinani.cadencii {
                 return;
             } else if ( track - 1 < Mixer.Slave.size() ) {
                 Mixer.Slave.get( track - 1 ).Solo = value ? 1 : 0;
+                if ( value ) {
+                    for ( int i = 0; i < Mixer.Slave.size(); i++ ) {
+                        if ( i + 1 != track && Mixer.Slave.get( i ).Solo == 1 ) {
+                            Mixer.Slave.get( i ).Solo = 0;
+                        }
+                    }
+                }
             }
         }
 
