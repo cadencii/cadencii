@@ -25,14 +25,13 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.javax.swing;
+using org.kbinani.vsq;
 using org.kbinani.windows.forms;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -63,6 +62,42 @@ namespace org.kbinani.cadencii {
         public event TopMostChangedEventHandler TopMostChanged;
 #endif
 
+        public void updateSoloMute() {
+#if DEBUG
+            PortUtil.println( "FormMixer#updateSoloMute" );
+#endif
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+            volumeMaster.setMuted( vsq.getMasterMute() );
+            boolean soloSpecificationExists = false; // 1トラックでもソロ指定があればtrue
+            for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                if ( vsq.getSolo( i ) ) {
+                    soloSpecificationExists = true;
+                    break;
+                }
+            }
+            for ( int i = 0; i < m_tracker.Length; i++ ) {
+                if ( soloSpecificationExists ) {
+                    if ( vsq.getSolo( i + 1 ) ) {
+                        m_tracker[i].setSolo( true );
+                        m_tracker[i].setMuted( false );
+                    } else {
+                        m_tracker[i].setSolo( false );
+                        m_tracker[i].setMuted( true );
+                    }
+                } else {
+                    m_tracker[i].setSolo( vsq.getSolo( i + 1 ) );
+                    if ( vsq.getSolo( i + 1 ) ) {
+                        m_tracker[i].setMuted( false );
+                    } else {
+                        m_tracker[i].setMuted( vsq.getMute( i + 1 ) );
+                    }
+                }
+            }
+        }
+
         public void applyShortcut( KeyStroke shortcut ) {
             menuVisualReturn.setAccelerator( shortcut );
         }
@@ -77,7 +112,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void updateStatus() {
-            int num = AppManager.getVsqFile().Mixer.Slave.size() + AppManager.getBgmCount();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int num = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
 #if DEBUG
             PortUtil.println( "FormMixer#UpdateStatus; num=" + num );
 #endif
@@ -102,7 +138,7 @@ namespace org.kbinani.cadencii {
             int screen_num = num <= max_num ? num : max_num; //スクリーン上に表示するVolumeTrackerの個数
 
             // panel1上に配置するVolumeTrackerの個数
-            int num_vtracker_on_panel = AppManager.getVsqFile().Mixer.Slave.size() + AppManager.getBgmCount();
+            int num_vtracker_on_panel = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
             // panel1上に配置可能なVolumeTrackerの個数
             int panel_capacity = max_num - 1;
 
@@ -112,13 +148,16 @@ namespace org.kbinani.cadencii {
                 hScroll.setValue( 0 );
                 hScroll.setMaximum( 0 );
                 hScroll.setVisibleAmount( 1 );
+                hScroll.setPreferredSize( new Dimension( VolumeTracker.WIDTH * num_vtracker_on_panel, hScroll.getHeight() ) );
             } else {
                 // num_vtracker_on_panel個のVolumeTrackerのうち，panel_capacity個しか，画面上に同時表示できない
                 hScroll.setMinimum( 0 );
                 hScroll.setValue( 0 );
                 hScroll.setMaximum( num_vtracker_on_panel - 1 );
                 hScroll.setVisibleAmount( panel_capacity );
+                hScroll.setPreferredSize( new Dimension( VolumeTracker.WIDTH * panel_capacity, hScroll.getHeight() ) );
             }
+            hScroll.setLocation( 0, VolumeTracker.HEIGHT );
 
 #if DEBUG
             AppManager.debugWriteLine( "FormMixer#updateStatus;" );
@@ -129,16 +168,16 @@ namespace org.kbinani.cadencii {
 #endif
 
             int j = -1;
-            for ( Iterator itr = AppManager.getVsqFile().Mixer.Slave.iterator(); itr.hasNext(); ) {
+            for ( Iterator itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
                 VsqMixerEntry vme = (VsqMixerEntry)itr.next();
                 j++;
                 m_tracker[j] = new VolumeTracker();
                 m_tracker[j].setFeder( vme.Feder );
                 m_tracker[j].setPanpot( vme.Panpot );
-                m_tracker[j].setTitle( AppManager.getVsqFile().Track.get( j + 1 ).getName() );
+                m_tracker[j].setTitle( vsq.Track.get( j + 1 ).getName() );
                 m_tracker[j].setNumber( (j + 1) + "" );
 #if !JAVA
-                m_tracker[j].Location = new Point( j * (VolumeTracker.WIDTH + 1), 0 );
+                m_tracker[j].Location = new System.Drawing.Point( j * (VolumeTracker.WIDTH + 1), 0 );
 #endif
                 m_tracker[j].setSoloButtonVisible( true );
                 m_tracker[j].setMuted( (vme.Mute == 1) );
@@ -150,8 +189,8 @@ namespace org.kbinani.cadencii {
                 m_tracker[j].federChangedEvent.add( new BEventHandler( this, "FormMixer_FederChanged" ) );
                 m_tracker[j].panpotChangedEvent.add( new BEventHandler( this, "FormMixer_PanpotChanged" ) );
 #else
-                m_tracker[j].IsMutedChanged += new EventHandler( FormMixer_IsMutedChanged );
-                m_tracker[j].IsSoloChanged += new EventHandler( FormMixer_IsSoloChanged );
+                m_tracker[j].muteButtonClick.add( new BEventHandler( this, "FormMixer_MuteButtonClick" ) );
+                m_tracker[j].soloButtonClick.add( new BEventHandler( this, "FormMixer_SoloButtonClick" ) );
                 m_tracker[j].FederChanged += new EventHandler( FormMixer_FederChanged );
                 m_tracker[j].PanpotChanged += new EventHandler( FormMixer_PanpotChanged );
 #endif
@@ -171,20 +210,19 @@ namespace org.kbinani.cadencii {
                 m_tracker[j].setTitle( PortUtil.getFileName( item.file ) );
                 m_tracker[j].setNumber( "" );
 #if !JAVA
-                m_tracker[j].Location = new Point( j * (VolumeTracker.WIDTH + 1), 0 );
+                m_tracker[j].Location = new System.Drawing.Point( j * (VolumeTracker.WIDTH + 1), 0 );
 #endif
                 m_tracker[j].setSoloButtonVisible( false );
                 m_tracker[j].setMuted( (item.mute == 1) );
                 m_tracker[j].setSolo( false );
                 m_tracker[j].setTag( (int)(-i - 1) );
+                m_tracker[j].setSoloButtonVisible( true );
+                m_tracker[j].muteButtonClick.add( new BEventHandler( this, "FormMixer_MuteButtonClick" ) );
+                m_tracker[j].soloButtonClick.add( new BEventHandler( this, "FormMixer_SoloButtonClick" ) );
 #if JAVA
-                m_tracker[j].isMutedChangedEvent.add( new BEventHandler( this, "FormMixer_IsMutedChanged" ) );
-                //m_tracker[j].isSoloChangedEvent.add( new BEventHandler( this, "FormMixer_IsSoloChanged" ) );
                 m_tracker[j].federChangedEvent.add( new BEventHandler( this, "FormMixer_FederChanged" ) );
                 m_tracker[j].panpotChangedEvent.add( new BEventHandler( this, "FormMixer_PanpotChanged" ) );
 #else
-                m_tracker[j].IsMutedChanged += new EventHandler( FormMixer_IsMutedChanged );
-                //m_tracker[j].IsSoloChanged += new EventHandler( FormMixer_IsSoloChanged );
                 m_tracker[j].FederChanged += new EventHandler( FormMixer_FederChanged );
                 m_tracker[j].PanpotChanged += new EventHandler( FormMixer_PanpotChanged );
 #endif
@@ -194,17 +232,18 @@ namespace org.kbinani.cadencii {
                 panel1.Controls.Add( m_tracker[j] );
 #endif
             }
-            volumeMaster.setFeder( AppManager.getVsqFile().Mixer.MasterFeder );
-            volumeMaster.setPanpot( AppManager.getVsqFile().Mixer.MasterPanpot );
+            volumeMaster.setFeder( vsq.Mixer.MasterFeder );
+            volumeMaster.setPanpot( vsq.Mixer.MasterPanpot );
+            volumeMaster.setSoloButtonVisible( false );
 
 #if JAVA
 #else
             panel1.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
-            volumeMaster.Location = new Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
+            volumeMaster.Location = new System.Drawing.Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
             chkTopmost.Left = panel1.Width;
             this.MaximumSize = Size.Empty;
             this.MinimumSize = Size.Empty;
-            this.ClientSize = new Size( screen_num * (VolumeTracker.WIDTH + 1) + 3, 279 );
+            this.ClientSize = new Size( screen_num * (VolumeTracker.WIDTH + 1) + 3, VolumeTracker.HEIGHT + hScroll.Height );
             this.MinimumSize = this.Size;
             this.MaximumSize = this.Size;
             this.Invalidate();
@@ -244,7 +283,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void FormMixer_IsSoloChanged( Object sender, BEventArgs e ) {
+        public void FormMixer_SoloButtonClick( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (Integer)parent.getTag();
 #if JAVA
@@ -258,9 +297,10 @@ namespace org.kbinani.cadencii {
                 SoloChanged( track, parent.isSolo() );
             }
 #endif
+            updateSoloMute();
         }
 
-        private void FormMixer_IsMutedChanged( Object sender, BEventArgs e ) {
+        public void FormMixer_MuteButtonClick( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (Integer)parent.getTag();
 #if JAVA
@@ -274,6 +314,7 @@ namespace org.kbinani.cadencii {
                 MuteChanged( track, parent.isMuted() );
             }
 #endif
+            updateSoloMute();
         }
 
         public FormMixer( FormMain parent ) {
@@ -310,13 +351,13 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         private void panel1_Paint( Object sender, PaintEventArgs e ) {
-            using ( Pen pen_102_102_102 = new Pen( Color.FromArgb( 102, 102, 102 ) ) ) {
+            using ( Pen pen_102_102_102 = new Pen( System.Drawing.Color.FromArgb( 102, 102, 102 ) ) ) {
                 for ( int i = 0; i < m_tracker.Length; i++ ) {
                     int x = (i + 1) * (VolumeTracker.WIDTH + 1);
                     e.Graphics.DrawLine(
                         pen_102_102_102,
-                        new Point( x - 1, 0 ),
-                        new Point( x - 1, 261 + 4 ) );
+                        new System.Drawing.Point( x - 1, 0 ),
+                        new System.Drawing.Point( x - 1, 261 + 4 ) );
                 }
             }
         }
@@ -354,7 +395,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void volumeMaster_IsMutedChanged( Object sender, BEventArgs e ) {
+        public void volumeMaster_MuteButtonClick( Object sender, BEventArgs e ) {
 #if JAVA
             try{
                 muteChangedEvent.raise( 0, volumeMaster.isMuted() );
@@ -398,7 +439,6 @@ namespace org.kbinani.cadencii {
 //            panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
             hScroll.valueChangedEvent.add( new BEventHandler( this, "veScrollBar_ValueChanged" ) );
             volumeMaster.panpotChangedEvent.add( new BEventHandler( this, "volumeMaster_PanpotChanged" ) );
-            volumeMaster.isMutedChangedEvent.add( new BEventHandler( this, "volumeMaster_IsMutedChanged" ) );
             volumeMaster.federChangedEvent.add( new BEventHandler( this, "volumeMaster_FederChanged" ) );
             chkTopmost.checkedChangedEvent.add( new BEventHandler( this, "chkTopmost_CheckedChanged" ) );
             formClosingEvent.add( new BFormClosingEventHandler( this, "FormMixer_FormClosing" ) );
@@ -407,11 +447,11 @@ namespace org.kbinani.cadencii {
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
             this.hScroll.ValueChanged += new System.EventHandler( this.veScrollBar_ValueChanged );
             this.volumeMaster.PanpotChanged += new System.EventHandler( this.volumeMaster_PanpotChanged );
-            this.volumeMaster.IsMutedChanged += new System.EventHandler( this.volumeMaster_IsMutedChanged );
             this.volumeMaster.FederChanged += new System.EventHandler( this.volumeMaster_FederChanged );
             this.chkTopmost.CheckedChanged += new System.EventHandler( this.chkTopmost_CheckedChanged );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMixer_FormClosing );
 #endif
+            volumeMaster.muteButtonClick.add( new BEventHandler( this, "volumeMaster_MuteButtonClick" ) );
         }
 
         private void setResources() {
@@ -452,11 +492,10 @@ namespace org.kbinani.cadencii {
             this.menuVisual = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualReturn = new org.kbinani.windows.forms.BMenuItem();
             this.panel1 = new org.kbinani.windows.forms.BPanel();
-            this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
-            this.volumeMaster = new org.kbinani.cadencii.VolumeTracker();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.chkTopmost = new org.kbinani.windows.forms.BCheckBox();
+            this.volumeMaster = new org.kbinani.cadencii.VolumeTracker();
             this.menuMain.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuMain
@@ -465,7 +504,7 @@ namespace org.kbinani.cadencii {
             this.menuVisual} );
             this.menuMain.Location = new System.Drawing.Point( 0, 0 );
             this.menuMain.Name = "menuMain";
-            this.menuMain.Size = new System.Drawing.Size( 173, 24 );
+            this.menuMain.Size = new System.Drawing.Size( 170, 26 );
             this.menuMain.TabIndex = 1;
             this.menuMain.Text = "menuStrip1";
             this.menuMain.Visible = false;
@@ -475,66 +514,61 @@ namespace org.kbinani.cadencii {
             this.menuVisual.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuVisualReturn} );
             this.menuVisual.Name = "menuVisual";
-            this.menuVisual.Size = new System.Drawing.Size( 57, 20 );
+            this.menuVisual.Size = new System.Drawing.Size( 62, 22 );
             this.menuVisual.Text = "表示(&V)";
             // 
             // menuVisualReturn
             // 
             this.menuVisualReturn.Name = "menuVisualReturn";
             this.menuVisualReturn.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.menuVisualReturn.Size = new System.Drawing.Size( 177, 22 );
+            this.menuVisualReturn.Size = new System.Drawing.Size( 206, 22 );
             this.menuVisualReturn.Text = "エディタ画面へ戻る";
             // 
             // panel1
             // 
-            this.panel1.Controls.Add( this.hScroll );
             this.panel1.Location = new System.Drawing.Point( 0, 0 );
             this.panel1.Margin = new System.Windows.Forms.Padding( 0 );
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size( 85, 279 );
+            this.panel1.Size = new System.Drawing.Size( 85, 284 );
             this.panel1.TabIndex = 6;
             // 
             // hScroll
             // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.hScroll.LargeChange = 2;
-            this.hScroll.Location = new System.Drawing.Point( 0, 260 );
+            this.hScroll.Location = new System.Drawing.Point( 0, 284 );
             this.hScroll.Maximum = 1;
             this.hScroll.Name = "hScroll";
             this.hScroll.Size = new System.Drawing.Size( 85, 19 );
             this.hScroll.TabIndex = 0;
             // 
+            // chkTopmost
+            // 
+            this.chkTopmost.Location = new System.Drawing.Point( 85, 284 );
+            this.chkTopmost.Margin = new System.Windows.Forms.Padding( 0 );
+            this.chkTopmost.Name = "chkTopmost";
+            this.chkTopmost.Size = new System.Drawing.Size( 85, 19 );
+            this.chkTopmost.TabIndex = 7;
+            this.chkTopmost.Text = "Top Most";
+            this.chkTopmost.UseVisualStyleBackColor = true;
+            // 
             // volumeMaster
             // 
             this.volumeMaster.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
             this.volumeMaster.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.volumeMaster.Location = new System.Drawing.Point( 87, 0 );
+            this.volumeMaster.Location = new System.Drawing.Point( 85, 0 );
             this.volumeMaster.Margin = new System.Windows.Forms.Padding( 0 );
             this.volumeMaster.Name = "volumeMaster";
-            this.volumeMaster.Size = new System.Drawing.Size( 85, 261 );
+            this.volumeMaster.Size = new System.Drawing.Size( 85, 284 );
             this.volumeMaster.TabIndex = 5;
-            // 
-            // chkTopmost
-            // 
-            this.chkTopmost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkTopmost.Location = new System.Drawing.Point( 87, 261 );
-            this.chkTopmost.Margin = new System.Windows.Forms.Padding( 0 );
-            this.chkTopmost.Name = "chkTopmost";
-            this.chkTopmost.Size = new System.Drawing.Size( 85, 18 );
-            this.chkTopmost.TabIndex = 7;
-            this.chkTopmost.Text = "Top Most";
-            this.chkTopmost.UseVisualStyleBackColor = true;
             // 
             // FormMixer
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
-            this.ClientSize = new System.Drawing.Size( 173, 279 );
-            this.Controls.Add( this.chkTopmost );
+            this.ClientSize = new System.Drawing.Size( 170, 304 );
+            this.Controls.Add( this.hScroll );
             this.Controls.Add( this.panel1 );
+            this.Controls.Add( this.chkTopmost );
             this.Controls.Add( this.volumeMaster );
             this.Controls.Add( this.menuMain );
             this.DoubleBuffered = true;
@@ -546,7 +580,6 @@ namespace org.kbinani.cadencii {
             this.Text = "Mixer";
             this.menuMain.ResumeLayout( false );
             this.menuMain.PerformLayout();
-            this.panel1.ResumeLayout( false );
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -559,7 +592,7 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;
         private BPanel panel1;
-        private BHScrollBar hScroll;
+        private HScroll hScroll;
         private BCheckBox chkTopmost;
         #endregion
 #endif

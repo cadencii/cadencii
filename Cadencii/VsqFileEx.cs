@@ -39,6 +39,7 @@ namespace org.kbinani.cadencii {
     [Serializable]
     public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable {
 #endif
+        public const int NUM_TRACK = 17;
 
         static XmlSerializer s_vsq_serializer;
 
@@ -52,6 +53,8 @@ namespace org.kbinani.cadencii {
         [System.Xml.Serialization.XmlIgnore]
 #endif
         public EditorStatus editorStatus = new EditorStatus();
+        public boolean[] mute = new boolean[NUM_TRACK];
+        public boolean[] solo = new boolean[NUM_TRACK];
 
         public const String TAGNAME_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
 #if JAVA
@@ -110,6 +113,93 @@ namespace org.kbinani.cadencii {
                     }
                 }
                 item.Tag = newtag;
+            }
+        }
+
+        public boolean getMasterMute() {
+            if ( Mixer == null ) {
+                return false;
+            }
+            return Mixer.MasterMute == 1;
+        }
+
+        public void setMasterMute( boolean value ) {
+            if ( Mixer == null ) {
+                return;
+            }
+            Mixer.MasterMute = value ? 1 : 0;
+        }
+
+        public boolean getMute( int track ) {
+            if ( Mixer == null ) {
+                return false;
+            }
+            if ( Mixer.Slave == null ) {
+                return false;
+            }
+            if ( track < 0 ) {
+                return false;
+            }
+            if ( track == 0 ) {
+                return Mixer.MasterMute == 1;
+            } else if ( track - 1 < Mixer.Slave.size() ) {
+                return Mixer.Slave.get( track - 1 ).Mute == 1;
+            } else {
+                return false;
+            }
+        }
+
+        public void setMute( int track, boolean value ) {
+            if ( Mixer == null ) {
+                return;
+            }
+            if ( Mixer.Slave == null ) {
+                return;
+            }
+            if ( track < 0 ) {
+                return;
+            } else if ( track == 0 ) {
+                Mixer.MasterMute = value ? 1 : 0;
+            } else if ( track - 1 < Mixer.Slave.size() ) {
+                Mixer.Slave.get( track - 1 ).Mute = value ? 1 : 0;
+                if ( value && getSolo( track ) ) {
+                    setSolo( track, false );
+                }
+            }
+        }
+
+        public boolean getSolo( int track ) {
+            if ( Mixer == null ) {
+                return false;
+            }
+            if ( Mixer.Slave == null ) {
+                return false;
+            }
+            if ( track < 0 ) {
+                return false;
+            }
+            if ( track == 0 ) {
+                return false;
+            } else if ( track - 1 < Mixer.Slave.size() ) {
+                return Mixer.Slave.get( track - 1 ).Solo == 1;
+            } else {
+                return false;
+            }
+        }
+
+        public void setSolo( int track, boolean value ) {
+            if ( Mixer == null ) {
+                return;
+            }
+            if ( Mixer.Slave == null ) {
+                return;
+            }
+            if ( track < 0 ) {
+                return;
+            } else if ( track == 0 ) {
+                return;
+            } else if ( track - 1 < Mixer.Slave.size() ) {
+                Mixer.Slave.get( track - 1 ).Solo = value ? 1 : 0;
             }
         }
 

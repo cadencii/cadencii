@@ -19,14 +19,14 @@ namespace org.kbinani.cadencii {
 #endif
 
     public class EditorStatus {
-
+        const int NUM_TRACK = 16;
         /// <summary>
         /// トラックのレンダリングが必要かどうかを表すフラグ
         /// </summary>
-        public boolean[] renderRequired = new boolean[16];
+        public boolean[] renderRequired = new boolean[NUM_TRACK];
 
         public EditorStatus() {
-            for ( int i = 0; i < renderRequired.Length; i++ ) {
+            for ( int i = 0; i < NUM_TRACK; i++ ) {
                 renderRequired[i] = false;
             }
         }

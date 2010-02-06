@@ -808,7 +808,7 @@ namespace org.kbinani.cadencii {
             toolStripFile.Location = new System.Drawing.Point( p.x, p.y );
             addToolStripInPositionOrder( toolStripContainer.TopToolStripPanel, top );
             addToolStripInPositionOrder( toolStripContainer.BottomToolStripPanel, bottom );
-            
+
             toolStripTool.ParentChanged += new System.EventHandler( this.toolStripEdit_ParentChanged );
             toolStripTool.Move += new System.EventHandler( this.toolStripEdit_Move );
             toolStripMeasure.ParentChanged += new System.EventHandler( this.toolStripMeasure_ParentChanged );
@@ -3984,12 +3984,13 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "    track=" + track );
             AppManager.debugWriteLine( "    solo=" + solo );
 #endif
-            if ( track == 0 ) {
-                // ここはなし
-            } else if ( track > 0 ) {
-                AppManager.getVsqFile().Mixer.Slave.get( track - 1 ).Solo = solo ? 1 : 0;
-            } else {
-                // ここもなし
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+            vsq.setSolo( track, solo );
+            if ( AppManager.mixerWindow != null ) {
+                AppManager.mixerWindow.updateSoloMute();
             }
         }
 
@@ -3999,12 +4000,13 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "    track=" + track );
             AppManager.debugWriteLine( "    mute=" + mute );
 #endif
-            if ( track == 0 ) {
-                AppManager.getVsqFile().Mixer.MasterMute = mute ? 1 : 0;
-            } else if ( track > 0 ) {
-                AppManager.getVsqFile().Mixer.Slave.get( track - 1 ).Mute = mute ? 1 : 0;
-            } else {
-                AppManager.getBgm( -track - 1 ).mute = mute ? 1 : 0;
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+            vsq.setMute( track, mute );
+            if ( AppManager.mixerWindow != null ) {
+                AppManager.mixerWindow.updateSoloMute();
             }
         }
 

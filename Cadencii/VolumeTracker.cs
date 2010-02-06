@@ -37,16 +37,17 @@ namespace org.kbinani.cadencii {
     class VolumeTracker : UserControl {
 #endif
         private int m_feder = 0;
-        private boolean m_solo_button_visible;
-        private boolean m_muted = false;
-        private boolean m_solo = false;
+        //private boolean m_muted = false;
+        //private boolean m_solo = false;
         private String m_number = "0";
         private String m_title = "";
         private Object m_tag = null;
 
         #region Constants
         public const int WIDTH = 85;
-        const int _HEIGHT = 261;
+        public const int HEIGHT = 284;
+        private BCheckBox chkMute;
+        private BCheckBox chkSolo;
 #if JAVA
         private static final int[][] _KEY = {
 #else
@@ -143,14 +144,12 @@ namespace org.kbinani.cadencii {
 #if JAVA
         public BEvent<BEventHandler> federChangedEvent = new BEvent<BEventHandler>();
         public BEvent<BEventHandler> panpotChangedEvent = new BEvent<BEventHandler>();
-        public BEvent<BEventHandler> isMutedChangedEvent = new BEvent<BEventHandler>();
-        public BEvent<BEventHandler> isSoloChangedEvent = new BEvent<BEventHandler>();
 #else
         public event EventHandler FederChanged;
         public event EventHandler PanpotChanged;
-        public event EventHandler IsMutedChanged;
-        public event EventHandler IsSoloChanged;
 #endif
+        public BEvent<BEventHandler> muteButtonClick = new BEvent<BEventHandler>();
+        public BEvent<BEventHandler> soloButtonClick = new BEvent<BEventHandler>();
 
         public VolumeTracker() {
 #if JAVA
@@ -203,47 +202,21 @@ namespace org.kbinani.cadencii {
         }
 
         public boolean isMuted() {
-            return m_muted;
+            return chkMute.isSelected();
         }
 
         public void setMuted( boolean value ) {
-            boolean old = m_muted;
-            m_muted = value;
-            if ( old != m_muted ){
-#if JAVA
-                try{
-                    isMutedChangedEvent.raise( this, new BEventArgs() );
-                }catch( Exception ex ){
-                    System.err.println( "VolumeTracker#setMuted; ex=" + ex );
-                }
-#else
-                if( IsMutedChanged != null ) {
-                    IsMutedChanged( this, new EventArgs() );
-                }
-#endif
-            }
+            boolean old = chkMute.isSelected();
+            chkMute.setSelected( value );
         }
 
         public boolean isSolo() {
-            return m_solo;
+            return chkSolo.isSelected();
         }
 
         public void setSolo( boolean value ) {
-            boolean old = m_solo;
-            m_solo = value;
-            if ( old != m_solo ){
-#if JAVA
-                try{
-                    isSoloChangedEvent.raise( this, new BEventArgs() );
-                }catch( Exception ex ){
-                    System.err.println( "VolumeTracker#setSolo; ex=" + ex );
-                }
-#else
-                if ( IsSoloChanged != null ) {
-                    IsSoloChanged( this, new EventArgs() );
-                }
-#endif
-            }
+            boolean old = chkSolo.isSelected();
+            chkSolo.setSelected( value );
         }
 
         public int getPanpot() {
@@ -255,11 +228,11 @@ namespace org.kbinani.cadencii {
         }
 
         public boolean isSoloButtonVisible() {
-            return m_solo_button_visible;
+            return chkSolo.isVisible();
         }
 
         public void setSoloButtonVisible( boolean value ) {
-            m_solo_button_visible = value;
+            chkSolo.setVisible( value );
         }
 
         public int getFeder() {
@@ -289,7 +262,7 @@ namespace org.kbinani.cadencii {
         private void VolumeTracker_Resize( Object sender, BEventArgs e ) {
 #if !JAVA
             this.Width = WIDTH;
-            this.Height = _HEIGHT;
+            this.Height = HEIGHT;
 #endif
         }
 
@@ -442,6 +415,22 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        public void chkSolo_Click( Object sender, EventArgs e ) {
+            try {
+                soloButtonClick.raise( this, e );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VolumeTracker#chkSolo_Click" );
+            }
+        }
+
+        public void chkMute_Click( Object sender, EventArgs e ) {
+            try {
+                muteButtonClick.raise( this, e );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VolumeTracker#chkMute_Click" );
+            }
+        }
+
         private void registerEventHandlers() {
 #if JAVA
             trackFeder.valueChangedEvent.add( new BEventHandler( this, "trackFeder_ValueChanged" ) );
@@ -455,6 +444,8 @@ namespace org.kbinani.cadencii {
             this.txtPanpot.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtPanpot_KeyDown );
             this.txtFeder.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtFeder_KeyDown );
             this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
+            chkSolo.clickEvent.add( new BEventHandler( this, "chkSolo_Click" ) );
+            chkMute.clickEvent.add( new BEventHandler( this, "chkMute_Click" ) );
 #endif
         }
 
@@ -496,6 +487,8 @@ namespace org.kbinani.cadencii {
             this.txtPanpot = new org.kbinani.windows.forms.BTextBox();
             this.lblTitle = new org.kbinani.windows.forms.BLabel();
             this.txtFeder = new org.kbinani.windows.forms.BTextBox();
+            this.chkMute = new org.kbinani.windows.forms.BCheckBox();
+            this.chkSolo = new org.kbinani.windows.forms.BCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackPanpot)).BeginInit();
             this.SuspendLayout();
@@ -505,7 +498,7 @@ namespace org.kbinani.cadencii {
             this.trackFeder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.trackFeder.AutoSize = false;
-            this.trackFeder.Location = new System.Drawing.Point( 21, 35 );
+            this.trackFeder.Location = new System.Drawing.Point( 21, 58 );
             this.trackFeder.Maximum = 151;
             this.trackFeder.Minimum = 26;
             this.trackFeder.Name = "trackFeder";
@@ -521,7 +514,7 @@ namespace org.kbinani.cadencii {
             this.trackPanpot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.trackPanpot.AutoSize = false;
-            this.trackPanpot.Location = new System.Drawing.Point( 3, 185 );
+            this.trackPanpot.Location = new System.Drawing.Point( 3, 208 );
             this.trackPanpot.Margin = new System.Windows.Forms.Padding( 3, 3, 3, 0 );
             this.trackPanpot.Maximum = 64;
             this.trackPanpot.Minimum = -64;
@@ -536,7 +529,7 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPanpot.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
             this.txtPanpot.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPanpot.Location = new System.Drawing.Point( 10, 206 );
+            this.txtPanpot.Location = new System.Drawing.Point( 10, 229 );
             this.txtPanpot.Margin = new System.Windows.Forms.Padding( 10, 0, 10, 0 );
             this.txtPanpot.Name = "txtPanpot";
             this.txtPanpot.Size = new System.Drawing.Size( 65, 19 );
@@ -548,7 +541,7 @@ namespace org.kbinani.cadencii {
             // 
             this.lblTitle.BackColor = System.Drawing.Color.White;
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblTitle.Location = new System.Drawing.Point( 0, 238 );
+            this.lblTitle.Location = new System.Drawing.Point( 0, 261 );
             this.lblTitle.Margin = new System.Windows.Forms.Padding( 0 );
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size( 85, 23 );
@@ -562,17 +555,39 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFeder.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
             this.txtFeder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtFeder.Location = new System.Drawing.Point( 3, 10 );
+            this.txtFeder.Location = new System.Drawing.Point( 3, 33 );
             this.txtFeder.Name = "txtFeder";
             this.txtFeder.Size = new System.Drawing.Size( 79, 19 );
             this.txtFeder.TabIndex = 5;
             this.txtFeder.Text = "0";
             this.txtFeder.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // chkMute
+            // 
+            this.chkMute.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkMute.Location = new System.Drawing.Point( 4, 5 );
+            this.chkMute.Name = "chkMute";
+            this.chkMute.Size = new System.Drawing.Size( 22, 22 );
+            this.chkMute.TabIndex = 6;
+            this.chkMute.Text = "M";
+            this.chkMute.UseVisualStyleBackColor = true;
+            // 
+            // chkSolo
+            // 
+            this.chkSolo.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkSolo.Location = new System.Drawing.Point( 28, 5 );
+            this.chkSolo.Name = "chkSolo";
+            this.chkSolo.Size = new System.Drawing.Size( 22, 22 );
+            this.chkSolo.TabIndex = 7;
+            this.chkSolo.Text = "S";
+            this.chkSolo.UseVisualStyleBackColor = true;
+            // 
             // VolumeTracker
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
+            this.Controls.Add( this.chkSolo );
+            this.Controls.Add( this.chkMute );
             this.Controls.Add( this.txtFeder );
             this.Controls.Add( this.lblTitle );
             this.Controls.Add( this.txtPanpot );
@@ -580,7 +595,7 @@ namespace org.kbinani.cadencii {
             this.Controls.Add( this.trackFeder );
             this.DoubleBuffered = true;
             this.Name = "VolumeTracker";
-            this.Size = new System.Drawing.Size( 85, 261 );
+            this.Size = new System.Drawing.Size( 85, 284 );
             ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackPanpot)).EndInit();
             this.ResumeLayout( false );
