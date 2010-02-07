@@ -27,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.vsq", "org.kbin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani", "org.kbinani\org.kbinani.csproj", "{C8AAE632-9C6C-4372-8175-811528A66742}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugCadenciiLauncher", "DebugCadenciiLauncher\DebugCadenciiLauncher.csproj", "{245E6028-9B9A-47CC-A209-1CD66CC56ADB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -67,10 +65,6 @@ Global
 		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|x86.Build.0 = Debug|x86
 		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|x86.ActiveCfg = Release|x86
 		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|x86.Build.0 = Release|x86
-		{245E6028-9B9A-47CC-A209-1CD66CC56ADB}.Debug|x86.ActiveCfg = Debug|x86
-		{245E6028-9B9A-47CC-A209-1CD66CC56ADB}.Debug|x86.Build.0 = Debug|x86
-		{245E6028-9B9A-47CC-A209-1CD66CC56ADB}.Release|x86.ActiveCfg = Release|x86
-		{245E6028-9B9A-47CC-A209-1CD66CC56ADB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

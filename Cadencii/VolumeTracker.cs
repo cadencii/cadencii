@@ -161,6 +161,14 @@ namespace org.kbinani.cadencii {
             setSolo( false );
         }
 
+        public void setLocation( int x, int y ) {
+#if JAVA
+            super.setLocation( x, y );
+#else
+            base.Location = new System.Drawing.Point( x, y );
+#endif
+        }
+
         public void setTag( Object value ) {
             m_tag = value;
         }
@@ -204,10 +212,7 @@ namespace org.kbinani.cadencii {
         public void setMuted( boolean value ) {
             boolean old = chkMute.isSelected();
             chkMute.setSelected( value );
-#if JAVA
-#else
-            chkMute.BackColor = value ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
-#endif
+            chkMute.setBackground( value ? PortUtil.DimGray : Color.white );
         }
 
         public boolean isSolo() {
@@ -217,10 +222,7 @@ namespace org.kbinani.cadencii {
         public void setSolo( boolean value ) {
             boolean old = chkSolo.isSelected();
             chkSolo.setSelected( value );
-#if JAVA
-#else
-            chkSolo.BackColor = value ? System.Drawing.SystemColors.ControlDark : System.Drawing.SystemColors.Control;
-#endif
+            chkSolo.setBackground( value ? PortUtil.DarkCyan : Color.white );
         }
 
         public int getPanpot() {

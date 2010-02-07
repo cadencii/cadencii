@@ -116,30 +116,61 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public boolean getMasterMute() {
-            if ( Mixer == null ) {
-                return false;
+        /// <summary>
+        /// MasterMute, トラックのMute指定、トラックのSolo指定、トラックのPlayModeを考慮し、このVSQシーケンスの指定したトラックがミュートされた状態かどうかを判定します。
+        /// </summary>
+        /// <param name="track"></param>
+        /// <returns></returns>
+        public boolean getActualMuted( int track ) {
+            if ( track < 1 || Track.size() <= track ) return true;
+            if ( getMasterMute() ) return true;
+            if ( getMute( track ) ) return true;
+            if ( !Track.get( track ).isTrackOn() ) return true;
+
+            boolean soloSpecificationExists = false;
+            for ( int i = 1; i < Track.size(); i++ ) {
+                if ( getSolo( i ) ) {
+                    soloSpecificationExists = true;
+                    break;
+                }
             }
+            if ( soloSpecificationExists ) {
+                if ( getSolo( track ) ) {
+                    return getMute( track );
+                } else {
+                    return true;
+                }
+            } else {
+                return getMute( track );
+            }
+        }
+
+        /// <summary>
+        /// このVSQシーケンスのマスタートラックをミュートするかどうかを取得します。
+        /// </summary>
+        /// <returns></returns>
+        public boolean getMasterMute() {
+            if ( Mixer == null ) return false;
             return Mixer.MasterMute == 1;
         }
 
+        /// <summary>
+        /// このVSQシーケンスのマスタートラックをミュートするかどうかを設定します。
+        /// </summary>
         public void setMasterMute( boolean value ) {
-            if ( Mixer == null ) {
-                return;
-            }
+            if ( Mixer == null ) return;
             Mixer.MasterMute = value ? 1 : 0;
         }
 
+        /// <summary>
+        /// このVSQシーケンスの指定したトラックをミュートするかどうかを取得します。
+        /// </summary>
+        /// <param name="track"></param>
+        /// <returns></returns>
         public boolean getMute( int track ) {
-            if ( Mixer == null ) {
-                return false;
-            }
-            if ( Mixer.Slave == null ) {
-                return false;
-            }
-            if ( track < 0 ) {
-                return false;
-            }
+            if ( Mixer == null ) return false;
+            if ( Mixer.Slave == null ) return false;
+            if ( track < 0 ) return false;
             if ( track == 0 ) {
                 return Mixer.MasterMute == 1;
             } else if ( track - 1 < Mixer.Slave.size() ) {
@@ -149,13 +180,14 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// このVSQシーケンスの指定したトラックをミュートするかどうかを設定します。
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="value"></param>
         public void setMute( int track, boolean value ) {
-            if ( Mixer == null ) {
-                return;
-            }
-            if ( Mixer.Slave == null ) {
-                return;
-            }
+            if ( Mixer == null ) return;
+            if ( Mixer.Slave == null ) return;
             if ( track < 0 ) {
                 return;
             } else if ( track == 0 ) {
@@ -165,16 +197,15 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// このVSQシーケンスの指定したトラックをソロモードとするかどうかを取得します。
+        /// </summary>
+        /// <param name="track"></param>
+        /// <returns></returns>
         public boolean getSolo( int track ) {
-            if ( Mixer == null ) {
-                return false;
-            }
-            if ( Mixer.Slave == null ) {
-                return false;
-            }
-            if ( track < 0 ) {
-                return false;
-            }
+            if ( Mixer == null ) return false;
+            if ( Mixer.Slave == null ) return false;
+            if ( track < 0 ) return false;
             if ( track == 0 ) {
                 return false;
             } else if ( track - 1 < Mixer.Slave.size() ) {
@@ -184,13 +215,14 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// このVSQシーケンスの指定したトラックをソロモードとするかどうかを設定します。
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="value"></param>
         public void setSolo( int track, boolean value ) {
-            if ( Mixer == null ) {
-                return;
-            }
-            if ( Mixer.Slave == null ) {
-                return;
-            }
+            if ( Mixer == null ) return;
+            if ( Mixer.Slave == null ) return;
             if ( track < 0 ) {
                 return;
             } else if ( track == 0 ) {

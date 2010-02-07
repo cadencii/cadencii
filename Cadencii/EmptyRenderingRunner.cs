@@ -1,4 +1,17 @@
-﻿#if JAVA
+﻿/*
+ * EmptyRenderingRunner.cs
+ * Copyright (C) 2010 kbinani
+ *
+ * This file is part of org.kbinani.cadencii.
+ *
+ * org.kbinani.cadencii is free software; you can redistribute it and/or
+ * modify it under the terms of the GPLv3 License.
+ *
+ * org.kbinani.cadencii is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+#if JAVA
 package org.kbinani.cadencii;
 
 import java.util.*;
@@ -47,7 +60,6 @@ namespace org.kbinani.cadencii {
             double[] left = new double[buflen];
             double[] right = new double[buflen];
             long remain = totalSamples;
-            //m_total_append = 0;
             while ( remain > 0 && !m_abort_required ) {
                 int delta = (remain > buflen) ? buflen : (int)remain;
                 waveIncoming( left, right );
@@ -56,7 +68,6 @@ namespace org.kbinani.cadencii {
                     right[i] = 0.0;
                 }
                 remain -= delta;
-               // m_total_append += delta;
             }
 
             if ( modeInfinite ) {
@@ -66,7 +77,6 @@ namespace org.kbinani.cadencii {
                         left[i] = 0.0;
                         right[i] = 0.0;
                     }
-                   // m_total_append += buflen;
                 }
             }
 

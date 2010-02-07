@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMixer.java
 
+import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 import org.kbinani.*;
@@ -27,11 +28,11 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using org.kbinani.apputil;
+using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.javax.swing;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
-using org.kbinani.java.awt;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -70,7 +71,11 @@ namespace org.kbinani.cadencii {
             if ( vsq == null ) {
                 return;
             }
-            volumeMaster.setMuted( vsq.getMasterMute() );
+            // マスター
+            boolean masterMuted = vsq.getMasterMute();
+            volumeMaster.setMuted( masterMuted );
+
+            // VSQのトラック
             boolean soloSpecificationExists = false; // 1トラックでもソロ指定があればtrue
             for ( int i = 1; i < vsq.Track.size(); i++ ) {
                 if ( vsq.getSolo( i ) ) {
@@ -78,19 +83,25 @@ namespace org.kbinani.cadencii {
                     break;
                 }
             }
-            for ( int i = 0; i < m_tracker.size(); i++ ) {
+            for( int track = 1; track < vsq.Track.size(); track++ ){
                 if ( soloSpecificationExists ) {
-                    if ( vsq.getSolo( i + 1 ) ) {
-                        m_tracker.get( i ).setSolo( true );
-                        m_tracker.get( i ).setMuted( vsq.getMute( i + 1 ) );
+                    if ( vsq.getSolo( track ) ) {
+                        m_tracker.get( track - 1 ).setSolo( true );
+                        m_tracker.get( track - 1 ).setMuted( masterMuted ? true : vsq.getMute( track ) );
                     } else {
-                        m_tracker.get( i ).setSolo( false );
-                        m_tracker.get( i ).setMuted( true );
+                        m_tracker.get( track - 1 ).setSolo( false );
+                        m_tracker.get( track - 1 ).setMuted( true );
                     }
                 } else {
-                    m_tracker.get( i ).setSolo( vsq.getSolo( i + 1 ) );
-                    m_tracker.get( i ).setMuted( vsq.getMute( i + 1 ) );
+                    m_tracker.get( track - 1 ).setSolo( vsq.getSolo( track ) );
+                    m_tracker.get( track - 1 ).setMuted( masterMuted ? true : vsq.getMute( track ) );
                 }
+            }
+
+            // BGM
+            int offset = vsq.Track.size() - 1;
+            for ( int i = 0; i < vsq.BgmFiles.size(); i++ ) {
+                m_tracker.get( offset + i ).setMuted( masterMuted ? true : vsq.BgmFiles.get( i ).mute == 1 );
             }
         }
 
@@ -166,14 +177,14 @@ namespace org.kbinani.cadencii {
                 hScroll.setValue( 0 );
                 hScroll.setMaximum( 0 );
                 hScroll.setVisibleAmount( 1 );
-                hScroll.setPreferredSize( new Dimension( VolumeTracker.WIDTH * num_vtracker_on_panel, hScroll.getHeight() ) );
+                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * num_vtracker_on_panel, hScroll.getHeight() ) );
             } else {
                 // num_vtracker_on_panel個のVolumeTrackerのうち，panel_capacity個しか，画面上に同時表示できない
                 hScroll.setMinimum( 0 );
                 hScroll.setValue( 0 );
-                hScroll.setMaximum( num_vtracker_on_panel - 1 );
-                hScroll.setVisibleAmount( panel_capacity );
-                hScroll.setPreferredSize( new Dimension( VolumeTracker.WIDTH * panel_capacity, hScroll.getHeight() ) );
+                hScroll.setMaximum( num_vtracker_on_panel * VolumeTracker.WIDTH );
+                hScroll.setVisibleAmount( panel_capacity * VolumeTracker.WIDTH );
+                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * panel_capacity, hScroll.getHeight() ) );
             }
             hScroll.setLocation( 0, VolumeTracker.HEIGHT );
 
@@ -189,18 +200,16 @@ namespace org.kbinani.cadencii {
             for ( Iterator itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
                 VsqMixerEntry vme = (VsqMixerEntry)itr.next();
                 j++;
-                //m_tracker[j] = new VolumeTracker();
                 m_tracker[j].setFeder( vme.Feder );
                 m_tracker[j].setPanpot( vme.Panpot );
                 m_tracker[j].setTitle( vsq.Track.get( j + 1 ).getName() );
                 m_tracker[j].setNumber( (j + 1) + "" );
-#if !JAVA
-                m_tracker[j].Location = new System.Drawing.Point( j * (VolumeTracker.WIDTH + 1), 0 );
-#endif
+                m_tracker[j].setLocation( j * (VolumeTracker.WIDTH + 1), 0 );
                 m_tracker[j].setSoloButtonVisible( true );
                 m_tracker[j].setMuted( (vme.Mute == 1) );
                 m_tracker[j].setSolo( (vme.Solo == 1) );
                 m_tracker[j].setTag( j + 1 );
+                m_tracker[j].setSoloButtonVisible( true );
 #if JAVA
 #else
                 panel1.Controls.Add( m_tracker[j] );
@@ -210,19 +219,16 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < count; i++ ) {
                 j++;
                 BgmFile item = AppManager.getBgm( i );
-                m_tracker[j] = new VolumeTracker();
                 m_tracker[j].setFeder( item.feder );
                 m_tracker[j].setPanpot( item.panpot );
                 m_tracker[j].setTitle( PortUtil.getFileName( item.file ) );
                 m_tracker[j].setNumber( "" );
-#if !JAVA
-                m_tracker[j].Location = new System.Drawing.Point( j * (VolumeTracker.WIDTH + 1), 0 );
-#endif
+                m_tracker[j].setLocation( j * (VolumeTracker.WIDTH + 1), 0 );
                 m_tracker[j].setSoloButtonVisible( false );
                 m_tracker[j].setMuted( (item.mute == 1) );
                 m_tracker[j].setSolo( false );
                 m_tracker[j].setTag( (int)(-i - 1) );
-                m_tracker[j].setSoloButtonVisible( true );
+                m_tracker[j].setSoloButtonVisible( false );
 #if JAVA
 #else
                 panel1.Controls.Add( m_tracker[j] );
@@ -264,8 +270,13 @@ namespace org.kbinani.cadencii {
         }
 
         public void FormMixer_FederChanged( Object sender, BEventArgs e ) {
+            if ( sender == null ) return;
+            if ( !(sender is VolumeTracker) ) return;
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (Integer)parent.getTag();
+            Object tag = parent.getTag();
+            if ( tag == null ) return;
+            if ( !(tag is Integer) ) return;
+            int track = (Integer)tag;
 #if JAVA
             try{
                 federChangedEvent.raise( track, parent.getFeder() );
@@ -347,9 +358,10 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         private void panel1_Paint( Object sender, PaintEventArgs e ) {
+            int stdx = hScroll.getValue();
             using ( Pen pen_102_102_102 = new Pen( System.Drawing.Color.FromArgb( 102, 102, 102 ) ) ) {
                 for ( int i = 0; i < m_tracker.size(); i++ ) {
-                    int x = (i + 1) * (VolumeTracker.WIDTH + 1);
+                    int x = -stdx + (i + 1) * (VolumeTracker.WIDTH + 1);
                     e.Graphics.DrawLine(
                         pen_102_102_102,
                         new System.Drawing.Point( x - 1, 0 ),
@@ -360,6 +372,10 @@ namespace org.kbinani.cadencii {
 #endif
 
         private void veScrollBar_ValueChanged( Object sender, BEventArgs e ) {
+            int stdx = hScroll.getValue();
+            for ( int i = 0; i < m_tracker.size(); i++ ) {
+                m_tracker.get( i ).setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
+            }
             this.invalidate();
         }
 
@@ -488,7 +504,7 @@ namespace org.kbinani.cadencii {
             this.menuVisual = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualReturn = new org.kbinani.windows.forms.BMenuItem();
             this.panel1 = new org.kbinani.windows.forms.BPanel();
-            this.hScroll = new org.kbinani.cadencii.HScroll();
+            this.hScroll = new BHScrollBar();
             this.chkTopmost = new org.kbinani.windows.forms.BCheckBox();
             this.volumeMaster = new org.kbinani.cadencii.VolumeTracker();
             this.menuMain.SuspendLayout();
@@ -588,7 +604,7 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;
         private BPanel panel1;
-        private HScroll hScroll;
+        private BHScrollBar hScroll;
         private BCheckBox chkTopmost;
         #endregion
 #endif

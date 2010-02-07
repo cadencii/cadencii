@@ -1212,9 +1212,9 @@ namespace org.kbinani.cadencii {
                 Vector<Integer> tracks = new Vector<Integer>();
                 for ( int track = 1; track < track_count; track++ ) {
                     VsqTrack vsq_track = vsq.Track.get( track );
-                    boolean trackOn = vsq_track.isTrackOn();
+                    boolean trackMuted = vsq.getActualMuted( track );
                     int playMode = vsq_track.getPlayMode();
-                    if ( !trackOn ) {
+                    if ( trackMuted ) {
                         continue;
                     } else if ( playMode == PlayMode.PlayWithSynth ) {
                         if ( track == selected ) {
@@ -1275,7 +1275,7 @@ namespace org.kbinani.cadencii {
                 }
 
                 boolean mode_infinite = AppManager.getEditMode() == EditMode.REALTIME;
-                if ( vsq.Track.get( selected ).getPlayMode() == PlayMode.PlayWithSynth && count > 0 ) {
+                if ( vsq.Track.get( selected ).getPlayMode() == PlayMode.PlayWithSynth && count > 0 && !vsq.getActualMuted( selected ) ) {
                     int ms_presend = AppManager.editorConfig.PreSendTime;
                     if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
                         ms_presend = 0;
@@ -1303,9 +1303,7 @@ namespace org.kbinani.cadencii {
                     double sec_now = vsq.getSecFromClock( clock_now );
                 } else {
                     VsqFileEx tvsq = new VsqFileEx( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
-#if ENABLE_EMPTY_RENDERING_RUNNER
                     tvsq.Track.get( 1 ).getCommon().Version = VSTiProxy.RENDERER_NULL;
-#endif
                     VSTiProxy.render( tvsq,
                                       1,
                                       null,
@@ -3889,7 +3887,11 @@ namespace org.kbinani.cadencii {
             }
 
             // AquesTone
+#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
+            VocaloidDriver drv = VSTiProxy.aquesToneDriver;
+#else
             AquesToneDriver drv = VSTiProxy.aquesToneDriver;
+#endif
             boolean chk = true;
             if ( drv == null ) {
                 chk = false;
@@ -3957,7 +3959,11 @@ namespace org.kbinani.cadencii {
             boolean visible = !menuVisualPluginUiAquesTone.isSelected();
             menuVisualPluginUiAquesTone.setSelected( visible );
 
+#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
+            VocaloidDriver drv = VSTiProxy.aquesToneDriver;
+#else
             AquesToneDriver drv = VSTiProxy.aquesToneDriver;
+#endif
             boolean chk = true;
             if ( drv == null ) {
                 chk = false;
@@ -4004,7 +4010,11 @@ namespace org.kbinani.cadencii {
             if ( vsq == null ) {
                 return;
             }
-            vsq.setMute( track, mute );
+            if ( track < 0 ) {
+                AppManager.getBgm( -track - 1 ).mute = mute ? 1 : 0;
+            } else {
+                vsq.setMute( track, mute );
+            }
             if ( AppManager.mixerWindow != null ) {
                 AppManager.mixerWindow.updateSoloMute();
             }
@@ -12360,8 +12370,8 @@ namespace org.kbinani.cadencii {
 
                 // ミキサーウィンドウ
                 if ( AppManager.mixerWindow != null ) {
-                    if ( dict.containsKey( "menuVisualProperty" ) ) {
-                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualProperty" ) );
+                    if ( dict.containsKey( "menuVisualMixer" ) ) {
+                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
                         AppManager.mixerWindow.applyShortcut( shortcut );
                     }
                 }

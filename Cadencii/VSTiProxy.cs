@@ -21,6 +21,11 @@ import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 #else
 //#define TEST
+#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
+#if !DEBUG
+#error FAKE_AQUES_TONE_DLL_AS_VOCALOID1 is not valid definition for release build
+#endif
+#endif
 using System;
 using System.Threading;
 using org.kbinani;
@@ -38,13 +43,10 @@ namespace org.kbinani.cadencii {
         public const String RENDERER_UTU0 = "UTU0";
         public const String RENDERER_STR0 = "STR0";
         public const String RENDERER_AQT0 = "AQT0";
-#if ENABLE_EMPTY_RENDERING_RUNNER
         /// <summary>
         /// EmtryRenderingRunnerが使用される
         /// </summary>
         public const String RENDERER_NULL = "NUL0";
-#error FormMain.AppManager_PreviewStartedも更新すること
-#endif
         public static int SAMPLE_RATE = 44100;
         const float a0 = -17317.563f;
         const float a1 = 86.7312112f;
@@ -56,7 +58,11 @@ namespace org.kbinani.cadencii {
         public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
 #endif
 #if ENABLE_AQUESTONE
+#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
+        public static VocaloidDriver aquesToneDriver = null;
+#else
         public static AquesToneDriver aquesToneDriver = null;
+#endif
 #endif
 
         private static RenderingRunner s_rendering_context;
@@ -66,8 +72,6 @@ namespace org.kbinani.cadencii {
         }
 
         public static void initCor() {
-            //PlaySound.init( SAMPLE_RATE );
-
 #if ENABLE_VOCALOID
 #if !DEBUG
             try {
@@ -78,7 +82,6 @@ namespace org.kbinani.cadencii {
                     VocaloidDriver vr = new VocaloidDriver();
                     vr.path = vocalo2_dll_path;
                     vr.loaded = false;
-                    //vr.dllInstance = new VocaloidDriver();
                     vr.name = RENDERER_DSB3;
                     vocaloidDriver.add( vr );
                 }
@@ -86,7 +89,6 @@ namespace org.kbinani.cadencii {
                     VocaloidDriver vr = new VocaloidDriver();
                     vr.path = vocalo1_dll_path;
                     vr.loaded = false;
-                    //vr.dllInstance = new VocaloidDriver();
                     vr.name = RENDERER_DSB2;
                     vocaloidDriver.add( vr );
                 }
@@ -121,7 +123,11 @@ namespace org.kbinani.cadencii {
         public static void reloadAquesTone() {
             String aques_tone = AppManager.editorConfig.PathAquesTone;
             if ( aquesToneDriver == null ) {
+#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
+                aquesToneDriver = new VocaloidDriver();
+#else
                 aquesToneDriver = new AquesToneDriver();
+#endif
                 aquesToneDriver.loaded = false;
                 aquesToneDriver.name = RENDERER_AQT0;
             }
@@ -249,10 +255,8 @@ namespace org.kbinani.cadencii {
                 s_working_renderer = VSTiProxy.RENDERER_STR0;
             } else if ( version.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
                 s_working_renderer = VSTiProxy.RENDERER_AQT0;
-#if ENABLE_EMPTY_RENDERING_RUNNER
             } else if ( version.StartsWith( VSTiProxy.RENDERER_NULL ) ) {
                 s_working_renderer = VSTiProxy.RENDERER_NULL;
-#endif
             }
 #if DEBUG
             org.kbinani.debug.push_log( "s_working_renderer=" + s_working_renderer );
@@ -321,7 +325,27 @@ namespace org.kbinani.cadencii {
                                                                    direct_play,
                                                                    reflect_amp_to_wave );
 #if ENABLE_AQUESTONE
-            } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_AQT0 ) ){
+            } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_AQT0 ) ) {
+#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
+                split.Track.get( track ).getCommon().Version = "DSB2";
+                VsqNrpn[] nrpn = VsqFile.generateNRPN( split, track, ms_presend );
+                NrpnData[] nrpn_data = VsqNrpn.convert( nrpn );
+                s_rendering_context = new VocaloidRenderingRunner( s_working_renderer,
+                                                                   nrpn_data,
+                                                                   split.TempoTable.toArray( new TempoTableEntry[] { } ),
+                                                                   trim_msec,
+                                                                   total_samples,
+                                                                   wave_read_offset_seconds,
+                                                                   mode_infinite,
+                                                                   aquesToneDriver,
+                                                                   direct_play,
+                                                                   wave_writer,
+                                                                   reader,
+                                                                   track,
+                                                                   reflect_amp_to_wave,
+                                                                   SAMPLE_RATE,
+                                                                   ms_presend );
+#else
                 s_rendering_context = new AquesToneRenderingRunner( aquesToneDriver,
                                                                     split,
                                                                     track,
@@ -336,7 +360,7 @@ namespace org.kbinani.cadencii {
                                                                     direct_play,
                                                                     reflect_amp_to_wave );
 #endif
-#if ENABLE_EMPTY_RENDERING_RUNNER
+#endif
             } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_NULL ) ){
                 s_rendering_context = new EmptyRenderingRunner( track,
                                                                 reflect_amp_to_wave,
@@ -348,7 +372,6 @@ namespace org.kbinani.cadencii {
                                                                 total_samples,
                                                                 SAMPLE_RATE,
                                                                 mode_infinite );
-#endif
             } else {
 #if ENABLE_VOCALOID
                 VocaloidDriver driver = null;
@@ -361,20 +384,20 @@ namespace org.kbinani.cadencii {
                 VsqNrpn[] nrpn = VsqFile.generateNRPN( split, track, ms_presend );
                 NrpnData[] nrpn_data = VsqNrpn.convert( nrpn );
                 s_rendering_context = new VocaloidRenderingRunner( s_working_renderer,
-                                                                 nrpn_data,
-                                                                 split.TempoTable.toArray( new TempoTableEntry[]{} ),
-                                                                 trim_msec,
-                                                                 total_samples,
-                                                                 wave_read_offset_seconds,
-                                                                 mode_infinite,
-                                                                 driver,
-                                                                 direct_play,
-                                                                 wave_writer,
-                                                                 reader,
-                                                                 track,
-                                                                 reflect_amp_to_wave,
-                                                                 SAMPLE_RATE,
-                                                                 ms_presend );
+                                                                   nrpn_data,
+                                                                   split.TempoTable.toArray( new TempoTableEntry[]{} ),
+                                                                   trim_msec,
+                                                                   total_samples,
+                                                                   wave_read_offset_seconds,
+                                                                   mode_infinite,
+                                                                   driver,
+                                                                   direct_play,
+                                                                   wave_writer,
+                                                                   reader,
+                                                                   track,
+                                                                   reflect_amp_to_wave,
+                                                                   SAMPLE_RATE,
+                                                                   ms_presend );
 #else
                 return;
 #endif
@@ -412,11 +435,9 @@ namespace org.kbinani.cadencii {
             } else if ( argument is StraightRenderingRunner ) {
                 StraightRenderingRunner arg = (StraightRenderingRunner)argument;
                 arg.run();
-#if ENABLE_EMPTY_RENDERING_RUNNER
             } else if ( argument is EmptyRenderingRunner ) {
                 EmptyRenderingRunner arg = (EmptyRenderingRunner)argument;
                 arg.run();
-#endif
             }
 #if ENABLE_AQUESTONE
  else if ( argument is AquesToneRenderingRunner ) {
