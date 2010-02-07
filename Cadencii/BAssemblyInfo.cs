@@ -41,6 +41,7 @@ namespace org.kbinani.cadencii {
         public const String fileVersion = "3.1.0";
     }
 
+
 #if !JAVA
 }
 #endif

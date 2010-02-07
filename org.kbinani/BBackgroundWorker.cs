@@ -28,6 +28,24 @@ namespace org.kbinani.componentmodel {
         }
         #endregion
 
+        // root impl of RunWorkerCompleted event
+        #region impl of RunWorkerCompleted
+        // root impl of RunWorkerCompleted is in BBackgroundWorker
+        public BEvent<BRunWorkerCompletedEventHandler> runWorkerCompletedEvent = new BEvent<BRunWorkerCompletedEventHandler>();
+        protected override void OnRunWorkerCompleted( System.ComponentModel.RunWorkerCompletedEventArgs e ) {
+            base.OnRunWorkerCompleted( e );
+            runWorkerCompletedEvent.raise( this, e );
+        }
+        #endregion
+
+        public bool isWorkerReportsProgress() {
+            return base.WorkerReportsProgress;
+        }
+
+        public void setWorkerReportsProgress( bool value ) {
+            base.WorkerReportsProgress = value;
+        }
+
         public bool isCancellationPending() {
             return base.CancellationPending;
         }
@@ -42,6 +60,10 @@ namespace org.kbinani.componentmodel {
 
         public void runWorkerAsync() {
             base.RunWorkerAsync();
+        }
+
+        public void runWorkerAsync( object argument ) {
+            base.RunWorkerAsync( argument );
         }
 
         public void reportProgress( int percent_progress ) {

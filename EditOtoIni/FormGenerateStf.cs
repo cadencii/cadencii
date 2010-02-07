@@ -62,6 +62,7 @@ namespace org.kbinani.editotoini {
             InitializeComponent();
 #endif
             bgWork = new BBackgroundWorker();
+            bgWork.setWorkerReportsProgress( true );
             registerEventHandlers();
             setResources();
             m_oto_ini = oto_ini;
@@ -474,10 +475,6 @@ namespace org.kbinani.editotoini {
             this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // bgWork
-            // 
-            this.bgWork.WorkerReportsProgress = true;
             // 
             // lblTime
             // 

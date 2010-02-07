@@ -14,6 +14,7 @@ namespace org.kbinani.editotoini {
         public String BaseFontName = "MS UI Gothic";
         public float BaseFontSize = 9.0f;
         public String PathResampler = "";
+        public String Language = "";
     }
 
 #if !JAVA

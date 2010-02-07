@@ -100,6 +100,17 @@ namespace org.kbinani.editotoini {
             }
             return cadenciiConfig.PathResampler;
         }
+
+        public static String getLanguage() {
+            if ( cadenciiConfig == null ) {
+                loadConfig();
+            }
+            String lang = cadenciiConfig.Language;
+            if ( lang == null ) {
+                lang = "ja";
+            }
+            return lang;
+        }
     }
 
 #if !JAVA

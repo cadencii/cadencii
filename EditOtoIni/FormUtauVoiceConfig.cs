@@ -129,7 +129,12 @@ namespace org.kbinani.editotoini {
             InitializeComponent();
 #endif
             bgWorkScreen = new BBackgroundWorker();
+            bgWorkScreen.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWorkScreen_DoWork" ) );
+            
             bgWorkRead = new BBackgroundWorker();
+            bgWorkRead.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWorkRead_DoWork" ) );
+            bgWorkRead.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWorkRead_RunWorkerCompleted" ) );
+            
             openFileDialog = new BFileChooser( "" );
             saveFileDialog = new BFileChooser( "" );
             openFileDialog.setSelectedFile( "oto.ini" );
@@ -190,6 +195,9 @@ namespace org.kbinani.editotoini {
 #else
         [STAThread]
         public static void Main( string[] args ) {
+            AppManager.loadConfig();
+            Messaging.setLanguage( AppManager.getLanguage() );
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             Application.Run( new FormUtauVoiceConfig() );
@@ -359,7 +367,7 @@ namespace org.kbinani.editotoini {
             return Messaging.getMessage( id );
         }
 
-        private void pictWave_MouseWheel( Object sender, MouseEventArgs e ) {
+        public void pictWave_MouseWheel( Object sender, MouseEventArgs e ) {
             int draft = hScroll.getValue() - e.Delta / 120 * hScroll.getVisibleAmount() / 2;
             if ( draft > hScroll.getMaximum() - hScroll.getVisibleAmount() + 1 ) {
                 draft = hScroll.getMaximum() - hScroll.getVisibleAmount() + 1;
@@ -377,11 +385,7 @@ namespace org.kbinani.editotoini {
             UpdateFormTitle();
             m_cancel_required = false;
             listFiles.clear();
-#if JAVA
             bgWorkRead.runWorkerAsync( oto_ini_path );
-#else
-            bgWorkRead.RunWorkerAsync( oto_ini_path );
-#endif
         }
 
         private void AddItem( Object sender, boolean bool_value, String[] stringarr_value ) {
@@ -392,7 +396,7 @@ namespace org.kbinani.editotoini {
             listFiles.addItem( "", item );
         }
 
-        private void bgWorkRead_DoWork( Object sender, DoWorkEventArgs e ) {
+        public void bgWorkRead_DoWork( Object sender, DoWorkEventArgs e ) {
             String oto_ini_path = (String)e.Argument;
             int c = m_drawer.size();
             for ( int i = 0; i < c; i++ ) {
@@ -500,7 +504,7 @@ namespace org.kbinani.editotoini {
                     int c2 = selected_item.getSubItemCount();
                     String[] spl = new String[c2];
                     for ( int i2 = 0; i2 < c2; i2++ ) {
-                        spl[i2] = selected_item.getSubItemAt( 2 );
+                        spl[i2] = selected_item.getSubItemAt( i2 );
                     }
                     boolean old = getEdited();
                     txtFileName.setText( spl[0] );
@@ -988,7 +992,7 @@ namespace org.kbinani.editotoini {
             }
         }
 
-        private void bgWorkRead_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
+        public void bgWorkRead_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
             setEdited( false );
         }
 
@@ -1333,7 +1337,7 @@ namespace org.kbinani.editotoini {
             setEdited( true );
         }
 
-        private void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e ) {
+        public void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e ) {
 #if JAVA
             refreshScreenCore();
 #else
@@ -1951,11 +1955,6 @@ namespace org.kbinani.editotoini {
             this.pictWave.Paint += new System.Windows.Forms.PaintEventHandler( this.pictWave_Paint );
             this.pictWave.MouseUp += new System.Windows.Forms.MouseEventHandler( this.pictWave_MouseUp );
             // 
-            // bgWorkRead
-            // 
-            this.bgWorkRead.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWorkRead_DoWork );
-            this.bgWorkRead.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWorkRead_RunWorkerCompleted );
-            // 
             // statusStrip
             // 
             this.statusStrip.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
@@ -2130,10 +2129,6 @@ namespace org.kbinani.editotoini {
             this.txtSearch.Size = new System.Drawing.Size( 100, 19 );
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextChanged += new System.EventHandler( this.txtSearch_TextChanged );
-            // 
-            // bgWorkScreen
-            // 
-            this.bgWorkScreen.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWorkScreen_DoWork );
             // 
             // FormUtauVoiceConfig
             // 
