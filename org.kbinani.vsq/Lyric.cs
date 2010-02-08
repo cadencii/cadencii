@@ -266,17 +266,21 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /*public String toString() {
+            return toString( true );
+        }*/
+
         /// <summary>
         /// このインスタンスを文字列に変換します
         /// </summary>
-        /// <param name="a_encode">2バイト文字をエンコードするか否かを指定するフラグ</param>
+        /// <param name="add_quatation_mark">クォーテーションマークを付けるかどうか</param>
         /// <returns>変換後の文字列</returns>
-        public String toString() {
+        public String toString( boolean add_quatation_mark ) {
+            String quot = (add_quatation_mark ? "\"" : "");
             String result;
-            result = "\"";
-            result += this.Phrase;
+            result = quot + this.Phrase + quot + ",";
             String[] symbol = getPhoneticSymbolList();
-            result += "\",\"" + this.getPhoneticSymbol() + "\"," + PortUtil.formatDecimal( "0.000000", UnknownFloat );
+            result += quot + this.getPhoneticSymbol() + quot + "," + PortUtil.formatDecimal( "0.000000", UnknownFloat );
             result = result.Replace( "\\" + "\\", "\\" );
             if ( m_consonant_adjustment == null ) {
                 m_consonant_adjustment = new int[symbol.Length];
@@ -297,7 +301,7 @@ namespace org.kbinani.vsq {
 
 #if !JAVA
         public override string ToString() {
-            return toString();
+            return toString( true );
         }
 #endif
     }

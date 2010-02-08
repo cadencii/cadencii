@@ -57,6 +57,10 @@ namespace org.kbinani.vsq {
         public int StartDyn;
         public int EndDyn;
         public VibratoBPList DynBP;
+        /// <summary>
+        /// 歌詞・発音記号列の前後にクォーテーションマークを付けるかどうか
+        /// </summary>
+        public boolean addQuotationMark = true;
 
         public VsqHandle() {
         }
@@ -329,16 +333,15 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// インスタンスを文字列に変換します
         /// </summary>
-        /// <param name="encode">2バイト文字をエンコードするか否かを指定するフラグ</param>
         /// <returns>インスタンスを変換した文字列</returns>
         public String toString() {
             String result = "";
             result += "[h#" + PortUtil.formatDecimal( "0000", Index ) + "]";
             if ( m_type == VsqHandleType.Lyric ) {
-                result += "\n" + "L0=" + L0.toString();
+                result += "\n" + "L0=" + L0.toString( addQuotationMark );
                 int c = Trailing.size();
                 for( int i = 0; i < c; i++ ){
-                    result += "\n" + "L" + (i + 1) + Trailing.get( i ).toString();
+                    result += "\n" + "L" + (i + 1) + Trailing.get( i ).toString( addQuotationMark );
                 }
             } else if ( m_type == VsqHandleType.Vibrato ) {
                 result += "\n" + "IconID=" + IconID + "\n";

@@ -4282,6 +4282,7 @@ namespace org.kbinani.cadencii {
             updateLayout();
 #if DEBUG
             menuHidden.setVisible( true );
+            
 #endif
         }
 
@@ -7974,7 +7975,55 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 #if DEBUG
-            if ( AppManager.getVsqFile().Track.size() >= 3 ) {
+            string dir = @"E:\Documents and Settings\kbinani\My Documents\svn\cadencii\Cadencii\trunk\buildDefaultEnglishDictionary\LOLA";
+            string ext = ".mid";
+            string defSymbol = "u:";
+            System.Collections.Generic.Dictionary<string, string> dict = new System.Collections.Generic.Dictionary<string, string>();
+
+            // preload existing dictionary
+            string dictFile = dir + "\\dictionary.txt";
+            if ( !System.IO.Directory.Exists( dir ) ) {
+                System.IO.Directory.CreateDirectory( dir );
+            }
+            if ( System.IO.File.Exists( dictFile ) ) {
+                using ( System.IO.StreamReader sr = new System.IO.StreamReader( dictFile ) ) {
+                    string line = "";
+                    while ( (line = sr.ReadLine()) != null ) {
+                        string[] spl = line.Split( '\t' );
+                        dict.Add( spl[0], spl[1] );
+                    }
+                }
+            }
+
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo( dir );
+            foreach ( System.IO.FileInfo fi in di.GetFiles( "*" + ext ) ) {
+                Console.WriteLine( fi.FullName );
+                VsqFile vsq = new VsqFile( fi.FullName, "Shift_JIS" );
+                for ( Iterator itr = vsq.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = (VsqEvent)itr.next();
+                    string symbol = item.ID.LyricHandle.L0.getPhoneticSymbol();
+                    if ( symbol != defSymbol ) {
+                        string phrase = item.ID.LyricHandle.L0.Phrase;
+                        if ( !dict.ContainsKey( phrase ) ) {
+                            dict.Add( phrase, symbol );
+                        }
+                    }
+                }
+            }
+
+            using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( dictFile ) ) {
+                System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>();
+                foreach ( string key in dict.Keys ) {
+                    list.Add( key );
+                }
+                list.Sort();
+                int num = list.Count;
+                for ( int i = 0; i < num; i++ ) {
+                    string key = list[i];
+                    sw.WriteLine( key + "\t" + dict[key] );
+                }
+            }
+            /*if ( AppManager.getVsqFile().Track.size() >= 3 ) {
                 EditedZoneUnit[] ret = AppManager.detectTrackDifference( AppManager.getVsqFile().Track.get( 1 ), AppManager.getVsqFile().Track.get( 2 ) );
                 PortUtil.println( "FormMain#menuHelpDebug_Click; ret.Length=" + ret.Length );
                 using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( PortUtil.combinePath( System.Windows.Forms.Application.StartupPath, "track_difference.txt" ) ) ) {
@@ -7982,7 +8031,7 @@ namespace org.kbinani.cadencii {
                         sw.WriteLine( ret[i].start + "\t" + ret[i].end );
                     }
                 }
-            }
+            }*/
             /*InputBox box = new InputBox( "input sample rate" );
             if ( box.showDialog() == BDialogResult.OK ) {
                 String ret = box.getResult();

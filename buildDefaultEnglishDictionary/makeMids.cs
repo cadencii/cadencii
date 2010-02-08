@@ -29,7 +29,7 @@ class WordsFromDBFiles{
 				item.ID.setLength( 480 );
 				item.ID.Note = 64;
 				item.ID.LyricHandle = new LyricHandle();
-				item.ID.LyricHandle.L0 = new Lyric( line, "" );
+				item.ID.LyricHandle.L0 = new Lyric( line, "u:" );
 				vsq.Track.get( 1 ).addEvent( item );
 				
 				clock += 480;

@@ -26,19 +26,23 @@ class ExtractDictionary{
 				string line = "";
 				while( (line = sr.ReadLine()) != null ){
 					string[] spl = line.Split( '\t' );
-					dict.Add( spl[0], spl[1] );
+                    string key = spl[0].ToLower();
+                    if( !dict.ContainsKey( key ) ){
+					    dict.Add( key, spl[1] );
+                    }
 				}
 			}
 		}
 
 		DirectoryInfo di = new DirectoryInfo( dir );
 		foreach( FileInfo fi in di.GetFiles( "*" + ext ) ){
+            Console.WriteLine( fi.FullName );
 			VsqFile vsq = new VsqFile( fi.FullName, "Shift_JIS" );
 			for( Iterator itr = vsq.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ){
 				VsqEvent item = (VsqEvent)itr.next();
 				string symbol = item.ID.LyricHandle.L0.getPhoneticSymbol();
 				if( symbol != defSymbol ){
-					string phrase = item.ID.LyricHandle.L0.Phrase;
+					string phrase = item.ID.LyricHandle.L0.Phrase.ToLower();
 					if( !dict.ContainsKey( phrase ) ){
 						dict.Add( phrase, symbol );
 					}

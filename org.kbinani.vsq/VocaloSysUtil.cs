@@ -461,7 +461,11 @@ namespace org.kbinani.vsq {
             } else if ( search.Equals( "sweet_ann" ) ||
                 search.Equals( "prima" ) ||
                 search.Equals( "luka_eng" ) ||
-                search.Equals( "sonika" ) )
+                search.Equals( "sonika" ) ||
+                search.Equals( "lola" ) ||
+                search.Equals( "leon" ) ||
+                search.Equals( "miriam" ) ||
+                search.Equals( "big_al" ) )
             {
                 return VsqVoiceLanguage.English;
             }

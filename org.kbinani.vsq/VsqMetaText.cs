@@ -415,6 +415,10 @@ namespace org.kbinani.vsq {
             Vector<VsqHandle> handle = new Vector<VsqHandle>();
             int current_id = -1;
             int current_handle = -1;
+            boolean add_quotation_mark = true;
+            boolean is_vocalo1 = Common.Version.StartsWith( "DSB2" );
+            boolean is_vocalo2 = Common.Version.StartsWith( "DSB3" );
+            String version = Common.Version;
             for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 current_id++;
@@ -428,6 +432,13 @@ namespace org.kbinani.vsq {
                         handle_item.Index = current_handle;
                         handle.add( handle_item );
                         item.ID.IconHandle_index = current_handle;
+                        if ( is_vocalo1 ) {
+                            VsqVoiceLanguage lang = VocaloSysUtil.getLanguageFromName( ish.IDS );
+                            add_quotation_mark = lang == VsqVoiceLanguage.Japanese;
+                        } else if ( is_vocalo2 ) {
+                            VsqVoiceLanguage lang = VocaloSysUtil.getLanguageFromName( ish.IDS );
+                            add_quotation_mark = lang == VsqVoiceLanguage.Japanese;
+                        }
                     }
                 }
                 // LyricHandle
@@ -435,6 +446,7 @@ namespace org.kbinani.vsq {
                     current_handle++;
                     VsqHandle handle_item = item.ID.LyricHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
+                    handle_item.addQuotationMark = add_quotation_mark;
                     handle.add( handle_item );
                     item.ID.LyricHandle_index = current_handle;
                 }

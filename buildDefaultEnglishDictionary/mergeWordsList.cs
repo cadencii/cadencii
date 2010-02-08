@@ -14,8 +14,14 @@ class MergeWordsList{
 		using( StreamWriter sw = new StreamWriter( fileout ) ){
 			dict.Sort();
 			int num = dict.Count;
+            string last_line = "";
 			for( int i = 0; i < num; i++ ){
-				sw.WriteLine( dict[i] );
+                string s = dict[i];
+                if( s == last_line ){
+                    continue;
+                }
+				sw.WriteLine( s );
+                last_line = s;
 			}
 		}
 	}
@@ -24,9 +30,7 @@ class MergeWordsList{
 		using( StreamReader sr = new StreamReader( file ) ){
 			string line = "";
 			while( (line = sr.ReadLine()) != null ){
-				if( !dict.Contains( line ) ){
-					dict.Add( line );
-				}
+				dict.Add( line );
 			}
 		}
 	}

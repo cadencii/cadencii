@@ -2323,8 +2323,22 @@ namespace org.kbinani.vsq {
                 Track.add( new VsqTrack( mf.getMidiEventList( i ), encoding ) );
             }
 
-            Master = (VsqMaster)Track.get( 1 ).getMaster().clone();
-            Mixer = (VsqMixer)Track.get( 1 ).getMixer().clone();
+            VsqMaster master = Track.get( 1 ).getMaster();
+            if ( master == null ) {
+                Master = new VsqMaster( 4 );
+            } else {
+                Master = (VsqMaster)master.clone();
+            }
+            VsqMixer mixer = Track.get( 1 ).getMixer();
+            if ( mixer == null ) {
+                Mixer = new VsqMixer( 0, 0, 0, 0 );
+                Mixer.Slave = new Vector<VsqMixerEntry>();
+                for ( int i = 1; i < Track.size(); i++ ) {
+                    Mixer.Slave.add( new VsqMixerEntry() );
+                }
+            } else {
+                Mixer = (VsqMixer)mixer.clone();
+            }
             Track.get( 1 ).setMaster( null );
             Track.get( 1 ).setMixer( null );
 
