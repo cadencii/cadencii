@@ -138,6 +138,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "カプチ２" ),
             new AuthorListEntry( "あにぃ" ),
             new AuthorListEntry( "tomo" ),
+            new AuthorListEntry( "ナウ□マP" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),

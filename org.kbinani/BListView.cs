@@ -94,6 +94,9 @@ namespace org.kbinani.windows.forms {
         }
 
         private ListViewGroup getGroupFromName( string name ) {
+            if ( name == null ) {
+                name = "";
+            }
             foreach ( ListViewGroup group in base.Groups ) {
                 if ( name == group.Name ) {
                     if ( name == "" ) {

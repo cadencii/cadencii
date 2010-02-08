@@ -286,17 +286,14 @@ namespace org.kbinani.cadencii {
                         int selected = AppManager.getSelected();
                         VsqTrack vsq_track = vsq.Track.get( selected );
                         String renderer = vsq_track.getCommon().Version;
-                        //if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) ||
-                        //     renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
-                            VsqEvent singer = vsq_track.getSingerEventAt( m_clock.getClock().getIntValue() );
-                            SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Program );
-                            if ( AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                                UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
-                                OtoArgs oa = db.attachFileNameFromLyric( m_phrase );
-                                m_ust_event.VoiceOverlap = oa.msOverlap;
-                                m_ust_event.PreUtterance = oa.msPreUtterance;
-                            }
-                        //}
+                        VsqEvent singer = vsq_track.getSingerEventAt( m_clock.getClock().getIntValue() );
+                        SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Program );
+                        if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                            UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
+                            OtoArgs oa = db.attachFileNameFromLyric( m_phrase );
+                            m_ust_event.VoiceOverlap = oa.msOverlap;
+                            m_ust_event.PreUtterance = oa.msPreUtterance;
+                        }
                     }
                 }
             }
