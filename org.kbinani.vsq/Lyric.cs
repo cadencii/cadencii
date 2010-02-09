@@ -280,7 +280,13 @@ namespace org.kbinani.vsq {
             String result;
             result = quot + this.Phrase + quot + ",";
             String[] symbol = getPhoneticSymbolList();
-            result += quot + this.getPhoneticSymbol() + quot + "," + PortUtil.formatDecimal( "0.000000", UnknownFloat );
+            String strSymbol = getPhoneticSymbol();
+            if( !add_quatation_mark ){
+                if( strSymbol == null || (strSymbol != null && strSymbol.Equals( "" ) ) ){
+                    strSymbol = "u:";
+                }
+            }
+            result += quot + strSymbol + quot + "," + PortUtil.formatDecimal( "0.000000", UnknownFloat );
             result = result.Replace( "\\" + "\\", "\\" );
             if ( m_consonant_adjustment == null ) {
                 m_consonant_adjustment = new int[symbol.Length];

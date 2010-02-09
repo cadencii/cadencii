@@ -114,6 +114,9 @@ namespace org.kbinani.cadencii {
 
         public override boolean open( string dll_path, int block_size, int sample_rate ) {
             base.open( dll_path, block_size, sample_rate );
+#if DEBUG
+            PortUtil.println( "VocaloidDriver#open; dllHandle=0x" + PortUtil.toHexString( dllHandle.ToInt32() ).ToUpper() );
+#endif
             g_pEvents = new Vector<MidiEvent>();
             g_midiPrepared0 = false;
             g_midiPrepared1 = false;

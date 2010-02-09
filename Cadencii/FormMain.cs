@@ -6428,6 +6428,47 @@ namespace org.kbinani.cadencii {
             editNoteExpressionProperty();
         }
 
+        public void menuLyricPhonemeTransformation_Click( Object sender, EventArgs e ) {
+            Vector<Integer> internal_ids = new Vector<Integer>();
+            Vector<VsqID> ids = new Vector<VsqID>();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+            for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = (VsqEvent)itr.next();
+                VsqID id = item.ID;
+                if ( id.LyricHandle.L0.PhoneticSymbolProtected ) {
+                    continue;
+                }
+                String phrase = id.LyricHandle.L0.Phrase;
+                String symbolOld = id.LyricHandle.L0.getPhoneticSymbol();
+                ByRef<String> symbolResult = new ByRef<String>( symbolOld );
+                if ( !SymbolTable.attatch( phrase, symbolResult ) ) {
+                    continue;
+                }
+                if ( symbolResult.value.Equals( symbolOld ) ) {
+                    continue;
+                }
+                VsqID idNew = (VsqID)id.clone();
+                idNew.LyricHandle.L0.setPhoneticSymbol( symbolResult.value );
+                ids.add( idNew );
+                internal_ids.add( item.InternalID );
+            }
+            if ( ids.size() <= 0 ) {
+                return;
+            }
+            CadenciiCommand run = new CadenciiCommand(
+                VsqCommand.generateCommandEventChangeIDContaintsRange(
+                    selected,
+                    PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
+                    ids.toArray( new VsqID[] { } ) ) );
+            AppManager.register( vsq.executeCommand( run ) );
+            setEdited( true );
+        }
+
         public void menuLyricDictionary_Click( Object sender, EventArgs e ) {
             FormWordDictionary dlg = null;
             try {
@@ -6438,6 +6479,7 @@ namespace org.kbinani.cadencii {
                     SymbolTable.changeOrder( result );
                 }
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#menuLyricDictionary_Click; ex=" + ex );
             } finally {
                 if ( dlg != null ) {
                     try {
@@ -12796,7 +12838,7 @@ namespace org.kbinani.cadencii {
             menuLyric.setText( _( "Lyrics" ) + "(&L)" );
             menuLyricExpressionProperty.setText( _( "Note Expression Property" ) + "(&E)" );
             menuLyricVibratoProperty.setText( _( "Note Vibrato Property" ) + "(&V)" );
-            menuLyricSymbol.setText( _( "Phoneme Transformation" ) + "(&T)" );
+            menuLyricPhonemeTransformation.setText( _( "Phoneme Transformation" ) + "(&T)" );
             menuLyricDictionary.setText( _( "User Word Dictionary" ) + "(&C)" );
 
             menuScript.setText( _( "Script" ) + "(&C)" );
@@ -15418,6 +15460,7 @@ namespace org.kbinani.cadencii {
             menuLyricExpressionProperty.clickEvent.add( new BEventHandler( this, "menuLyricExpressionProperty_Click" ) );
             menuLyricVibratoProperty.clickEvent.add( new BEventHandler( this, "menuLyricVibratoProperty_Click" ) );
             menuLyricDictionary.clickEvent.add( new BEventHandler( this, "menuLyricDictionary_Click" ) );
+            menuLyricPhonemeTransformation.clickEvent.add( new BEventHandler( this, "menuLyricPhonemeTransformation_Click" ) );
             menuScriptUpdate.clickEvent.add( new BEventHandler( this, "menuScriptUpdate_Click" ) );
             menuSetting.dropDownOpeningEvent.add( new BEventHandler( this, "menuSetting_DropDownOpening" ) );
             menuSettingPreference.clickEvent.add( new BEventHandler( this, "menuSettingPreference_Click" ) );
@@ -15893,6 +15936,7 @@ namespace org.kbinani.cadencii {
             this.menuJobReloadVsti = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrack = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrackOn = new org.kbinani.windows.forms.BMenuItem();
+            this.menuTrackPlayAfterSynth = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem21 = new System.Windows.Forms.ToolStripSeparator();
             this.menuTrackAdd = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrackCopy = new org.kbinani.windows.forms.BMenuItem();
@@ -15915,7 +15959,7 @@ namespace org.kbinani.cadencii {
             this.menuLyric = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricExpressionProperty = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricVibratoProperty = new org.kbinani.windows.forms.BMenuItem();
-            this.menuLyricSymbol = new org.kbinani.windows.forms.BMenuItem();
+            this.menuLyricPhonemeTransformation = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricDictionary = new org.kbinani.windows.forms.BMenuItem();
             this.menuScript = new org.kbinani.windows.forms.BMenuItem();
             this.menuScriptUpdate = new org.kbinani.windows.forms.BMenuItem();
@@ -16076,8 +16120,9 @@ namespace org.kbinani.cadencii {
             this.btnRight2 = new org.kbinani.windows.forms.BButton();
             this.pictOverview = new org.kbinani.windows.forms.BPictureBox();
             this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
-            this.hScroll = new HScroll();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
             this.toolStripTool = new org.kbinani.windows.forms.BToolBar();
@@ -16164,8 +16209,6 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.menuTrackPlayAfterSynth = new org.kbinani.windows.forms.BMenuItem();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -16176,6 +16219,7 @@ namespace org.kbinani.cadencii {
             this.panelOverview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.toolStripTool.SuspendLayout();
@@ -16188,7 +16232,6 @@ namespace org.kbinani.cadencii {
             this.toolStripFile.SuspendLayout();
             this.toolStripPosition.SuspendLayout();
             this.toolStripMeasure.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -16693,6 +16736,12 @@ namespace org.kbinani.cadencii {
             this.menuTrackOn.Size = new System.Drawing.Size( 219, 22 );
             this.menuTrackOn.Text = "Track On(&K)";
             // 
+            // menuTrackPlayAfterSynth
+            // 
+            this.menuTrackPlayAfterSynth.Name = "menuTrackPlayAfterSynth";
+            this.menuTrackPlayAfterSynth.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackPlayAfterSynth.Text = "Play After Synth(&P)";
+            // 
             // toolStripMenuItem21
             // 
             this.toolStripMenuItem21.Name = "toolStripMenuItem21";
@@ -16815,7 +16864,7 @@ namespace org.kbinani.cadencii {
             this.menuLyric.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuLyricExpressionProperty,
             this.menuLyricVibratoProperty,
-            this.menuLyricSymbol,
+            this.menuLyricPhonemeTransformation,
             this.menuLyricDictionary} );
             this.menuLyric.Name = "menuLyric";
             this.menuLyric.Size = new System.Drawing.Size( 70, 22 );
@@ -16833,12 +16882,11 @@ namespace org.kbinani.cadencii {
             this.menuLyricVibratoProperty.Size = new System.Drawing.Size( 241, 22 );
             this.menuLyricVibratoProperty.Text = "Note Vibrato Property(&V)";
             // 
-            // menuLyricSymbol
+            // menuLyricPhonemeTransformation
             // 
-            this.menuLyricSymbol.Enabled = false;
-            this.menuLyricSymbol.Name = "menuLyricSymbol";
-            this.menuLyricSymbol.Size = new System.Drawing.Size( 241, 22 );
-            this.menuLyricSymbol.Text = "Phoneme Transformation(&T)";
+            this.menuLyricPhonemeTransformation.Name = "menuLyricPhonemeTransformation";
+            this.menuLyricPhonemeTransformation.Size = new System.Drawing.Size( 241, 22 );
+            this.menuLyricPhonemeTransformation.Text = "Phoneme Transformation(&T)";
             // 
             // menuLyricDictionary
             // 
@@ -17766,7 +17814,7 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem31,
             this.cMenuTrackSelectorSelectAll} );
             this.cMenuTrackSelector.Name = "cMenuTrackSelector";
-            this.cMenuTrackSelector.Size = new System.Drawing.Size( 206, 358 );
+            this.cMenuTrackSelector.Size = new System.Drawing.Size( 206, 336 );
             // 
             // cMenuTrackSelectorPointer
             // 
@@ -18047,6 +18095,20 @@ namespace org.kbinani.cadencii {
             this.picturePositionIndicator.Size = new System.Drawing.Size( 421, 48 );
             this.picturePositionIndicator.TabIndex = 10;
             this.picturePositionIndicator.TabStop = false;
+            // 
+            // pictPianoRoll
+            // 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.MinimumSize = new System.Drawing.Size( 0, 100 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
             // 
             // pictureBox3
             // 
@@ -18872,26 +18934,6 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
-            // menuTrackPlayAfterSynth
-            // 
-            this.menuTrackPlayAfterSynth.Name = "menuTrackPlayAfterSynth";
-            this.menuTrackPlayAfterSynth.Size = new System.Drawing.Size( 219, 22 );
-            this.menuTrackPlayAfterSynth.Text = "Play After Synth(&P)";
-            // 
-            // pictPianoRoll
-            // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.MinimumSize = new System.Drawing.Size( 0, 100 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
-            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -18916,6 +18958,7 @@ namespace org.kbinani.cadencii {
             this.panelOverview.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.toolStripTool.ResumeLayout( false );
@@ -18937,7 +18980,6 @@ namespace org.kbinani.cadencii {
             this.toolStripPosition.PerformLayout();
             this.toolStripMeasure.ResumeLayout( false );
             this.toolStripMeasure.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -19112,7 +19154,7 @@ namespace org.kbinani.cadencii {
         public BMenuItem menuJobLyric;
         public BMenuItem menuJobRewire;
         public BMenuItem menuLyricExpressionProperty;
-        public BMenuItem menuLyricSymbol;
+        public BMenuItem menuLyricPhonemeTransformation;
         public BMenuItem menuLyricDictionary;
         public BMenuItem menuHelpAbout;
         public BMenuItem menuHelpDebug;

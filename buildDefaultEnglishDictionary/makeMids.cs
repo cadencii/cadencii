@@ -26,16 +26,17 @@ class WordsFromDBFiles{
 				item.Clock = clock;
 				item.ID = new VsqID();
 				item.ID.type = VsqIDType.Anote;
-				item.ID.setLength( 480 );
+				item.ID.setLength( 240 );
 				item.ID.Note = 64;
 				item.ID.LyricHandle = new LyricHandle();
 				item.ID.LyricHandle.L0 = new Lyric( line, "u:" );
-				vsq.Track.get( 1 ).addEvent( item );
+				vsq.Track.get( 1 ).addEvent( item, count + 1 );
 				
-				clock += 480;
+				clock += 240;
 				count++;
-				if( count > 3000 ){
+				if( count > 5000 ){
 					vsq.Track.get( 1 ).getCommon().Version = dsb;
+                    vsq.Track.get( 1 ).sortEvent();
 					vsq.write( singer + "\\" + numVsqs + ext );
 					numVsqs++;
 					vsq = null;

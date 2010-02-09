@@ -44,6 +44,7 @@ namespace org.kbinani.vsq {
         private static SymbolTable s_default_jp = null;
         private static SymbolTable s_default_en = null;
         private static boolean s_initialized = false;
+        #region KEY_EN
 #if JAVA
         public static final String[][] _KEY_EN = {
 #else
@@ -2114,6 +2115,8 @@ namespace org.kbinani.vsq {
             {"vice", "v aI s"},
             {"view", "v j u:"},
         };
+        #endregion
+        #region KEY_JP
 #if JAVA
         public static final String[][] _KEY_JP = {
 #else
@@ -2544,6 +2547,7 @@ namespace org.kbinani.vsq {
             {"ju", "dZ M"},
             {"jo", "dZ o"},
         };
+        #endregion
         #endregion
 
         #region Static Method and Property

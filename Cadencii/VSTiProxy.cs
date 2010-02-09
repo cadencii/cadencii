@@ -25,6 +25,9 @@ import org.kbinani.vsq.*;
 #if !DEBUG
 #error FAKE_AQUES_TONE_DLL_AS_VOCALOID1 is not valid definition for release build
 #endif
+#if !ENABLE_VOCALOID
+#error FAKE_AQUES_TONE_DLL_AS_VOCALOID1 is not valid definition for ifndef ENABLE_VOCALOID
+#endif
 #endif
 using System;
 using System.Threading;

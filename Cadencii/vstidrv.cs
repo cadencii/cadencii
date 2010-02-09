@@ -356,7 +356,11 @@ namespace org.kbinani.cadencii {
         }
 
         public virtual bool open( string dll_path, int block_size, int sample_rate ) {
+#if DEBUG
             dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
+#else
+            dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
+#endif
             if ( dllHandle == IntPtr.Zero ) {
                 return false;
             }

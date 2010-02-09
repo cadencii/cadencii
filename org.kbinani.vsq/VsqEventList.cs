@@ -84,6 +84,11 @@ namespace org.kbinani.vsq {
 
         public void add( VsqEvent item ) {
             add( item, getNextId( 0 ) );
+            Collections.sort( Events );
+            int count = Events.size();
+            for ( int i = 0; i < count; i++ ) {
+                m_ids.set( i, Events.get( i ).InternalID );
+            }
         }
 
         public void add( VsqEvent item, int internal_id ) {
@@ -91,11 +96,6 @@ namespace org.kbinani.vsq {
             item.InternalID = internal_id;
             Events.add( item );
             m_ids.add( internal_id );
-            Collections.sort( Events );
-            int count = Events.size();
-            for ( int i = 0; i < count; i++ ) {
-                m_ids.set( i, Events.get( i ).InternalID );
-            }
         }
 
         public void removeAt( int index ) {

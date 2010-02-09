@@ -1,0 +1,51 @@
+start = 1;
+end = 100;
+
+strStart = input( "開始インデクス" );
+start = val( strStart, 1 );
+strEnd = input( "終了インデクス" );
+end = val( strEnd, 100 );
+ext = input( "拡張子" );
+
+for n = start to end
+    hwnd = getid( "VOCALOID Editor" );
+    acw( hwnd );
+    clkitem( hwnd, "File", CLK_MENU );
+    clkitem( hwnd, "Open", CLK_MENU );
+    hwnd_open = getid( "ファイルを開く" );
+    acw( hwnd_open );
+    sleep( 0.5 );
+    sckey( hwnd_open, VK_N, VK_ALT );
+    file = n + "" + ext;
+    sendstr( hwnd_open, file, 0, TRUE );
+    clkitem( hwnd_open, "開く", CLK_BTN );
+    sleep( 2 );
+    while TRUE
+        id = getid( "VOCALOID Editor - " + file );
+        ifb id = hwnd then
+            break;
+        endif
+        sleep( 1 );
+    wend
+    acw( hwnd );
+    sleep( 2 );
+
+    acw( hwnd );
+    clkitem( hwnd, "Lyrics", CLK_MENU );
+    clkitem( hwnd, "Phoneme Transformation", CLK_MENU );
+    while status( hwnd, ST_BUSY )
+        sleep( 1 )
+    wend
+
+    clkitem( hwnd, "File", CLK_MENU );
+    clkitem( hwnd, "Save As", CLK_MENU );
+    sleep( 1 );
+    hwnd_save = getid( "名前を付けて保存" );
+    acw( hwnd_save );
+    i2 = int( n / 100 );
+    i1 = int( (n - i2 * 100) / 10 );
+    i0 = int( n - i2 * 100 - i1 * 10 )
+    sendstr( hwnd_save, "n" + file, 0, TRUE );
+    clkitem( hwnd_save, "保存" );
+    sleep( 3 );
+next

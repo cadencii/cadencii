@@ -434,7 +434,7 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// Gets the voice language of specified program change
+        /// Gets the voice language of specified singer
         /// </summary>
         /// <param name="name">name of singer</param>
         /// <returns></returns>

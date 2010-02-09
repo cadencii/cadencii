@@ -418,7 +418,6 @@ namespace org.kbinani.vsq {
             boolean add_quotation_mark = true;
             boolean is_vocalo1 = Common.Version.StartsWith( "DSB2" );
             boolean is_vocalo2 = Common.Version.StartsWith( "DSB3" );
-            String version = Common.Version;
             for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 current_id++;

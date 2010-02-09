@@ -776,6 +776,10 @@ namespace org.kbinani.vsq {
             MetaText.getEventList().add( item );
         }
 
+        public void addEvent( VsqEvent item, int internal_id ) {
+            MetaText.Events.add( item, internal_id );
+        }
+
         public Iterator getEventIterator() {
             return new EventIterator( MetaText.getEventList() );
         }
