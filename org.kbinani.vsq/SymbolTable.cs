@@ -2725,23 +2725,24 @@ namespace org.kbinani.vsq {
                     if ( !line.StartsWith( "//" ) ) {
                         String[] spl = PortUtil.splitString( line, new String[] { "\t" }, 2, true );
                         if ( spl.Length >= 2 ) {
-                            if ( m_dict.containsKey( spl[0] ) ) {
+                            String key = spl[0].ToLower();
+                            if ( m_dict.containsKey( key ) ) {
                                 PortUtil.println( "SymbolTable..ctor" );
-                                PortUtil.println( "    dictionary already contains key: " + spl[0] );
+                                PortUtil.println( "    dictionary already contains key: " + key );
                             } else {
-                                m_dict.put( spl[0], spl[1] );
+                                m_dict.put( key, spl[1] );
                             }
                         }
                     }
                 }
             } catch ( Exception ex ) {
-                PortUtil.println( "SymbolTable..ctor" );
-                PortUtil.println( "    " + ex );
+                PortUtil.stderr.println( "SymbolTable#.ctor; ex=" + ex );
             } finally {
                 if ( sr != null ) {
                     try {
                         sr.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "SymbolTable#.ctor; ex=" + ex2 );
                     }
                 }
             }
@@ -2768,17 +2769,19 @@ namespace org.kbinani.vsq {
             m_dict = new TreeMap<String, String>();
 #if JAVA
             for( int i = 0; i < key.length; i++ ){
-                if( m_dict.containsKey( key[i][0] ) ){
-                }else{
-                    m_dict.put( key[i][0], key[i][1] );
+                String k = key[i][0].toLowerCase();
+                if( m_dict.containsKey( k ) ){
+                    continue;
                 }
+                m_dict.put( k, key[i][1] );
             }
 #else
             for ( int i = 0; i < key.GetLength( 0 ); i++ ) {
-                if ( m_dict.containsKey( key[i, 0] ) ) {
-                } else {
-                    m_dict.put( key[i, 0], key[i, 1] );
+                String k = key[i, 0].ToLower();
+                if ( m_dict.containsKey( k ) ) {
+                    continue;
                 }
+                m_dict.put( k, key[i, 1] );
             }
 #endif
         }

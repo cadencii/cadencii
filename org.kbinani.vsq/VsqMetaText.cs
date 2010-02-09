@@ -1051,13 +1051,16 @@ namespace org.kbinani.vsq {
 
             // idをeventListに埋め込み
             Events = new VsqEventList();
+            int count = 0;
             for ( int i = 0; i < t_event_list.size(); i++ ) {
                 int clock = t_event_list.get( i ).getKey();
                 int id_number = t_event_list.get( i ).getValue();
                 if ( __id.containsKey( id_number ) ) {
-                    Events.add( new VsqEvent( clock, (VsqID)__id.get( id_number ).clone() ) );
+                    count++;
+                    Events.add( new VsqEvent( clock, (VsqID)__id.get( id_number ).clone() ), count );
                 }
             }
+            Events.sort();
 
             if ( Common == null ) {
                 Common = new VsqCommon();

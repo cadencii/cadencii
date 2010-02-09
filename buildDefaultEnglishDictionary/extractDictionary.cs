@@ -14,7 +14,8 @@ class ExtractDictionary{
 		string dir = args[0];
 		string ext = args[1];
 		string defSymbol = args[2];
-		Dictionary<string, string> dict = new Dictionary<string, string>();
+        List<Entry> dict = new List<Entry>();
+		//Dictionary<string, string> dict = new Dictionary<string, string>();
 
 		// preload existing dictionary
 		string dictFile = dir + "\\dictionary.txt";
@@ -27,9 +28,7 @@ class ExtractDictionary{
 				while( (line = sr.ReadLine()) != null ){
 					string[] spl = line.Split( '\t' );
                     string key = spl[0].ToLower();
-                    if( !dict.ContainsKey( key ) ){
-					    dict.Add( key, spl[1] );
-                    }
+                    dict.Add( new Entry( key, spl[1] ) );
 				}
 			}
 		}
@@ -41,17 +40,28 @@ class ExtractDictionary{
 			for( Iterator itr = vsq.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ){
 				VsqEvent item = (VsqEvent)itr.next();
 				string symbol = item.ID.LyricHandle.L0.getPhoneticSymbol();
+        		string phrase = item.ID.LyricHandle.L0.Phrase.ToLower();
+                Console.WriteLine( phrase + " => " + symbol );
 				if( symbol != defSymbol ){
-					string phrase = item.ID.LyricHandle.L0.Phrase.ToLower();
-					if( !dict.ContainsKey( phrase ) ){
-						dict.Add( phrase, symbol );
-					}
+                    dict.Add( new Entry( phrase, symbol ) );
 				}
 			}
 		}
 		
 		using( StreamWriter sw = new StreamWriter( dictFile ) ){
-			List<string> list = new List<string>();
+            dict.Sort();
+            string lastKey = "";
+            int num = dict.Count;
+            for( int i = 0; i < num; i++ ){
+                string key = dict[i].key;
+                string value = dict[i].value;
+                if( key == lastKey ){
+                    continue;
+                }
+                sw.WriteLine( key + "\t" + value );
+                lastKey = key;
+            }
+			/*List<string> list = new List<string>();
 			foreach( string key in dict.Keys ){
 				list.Add( key );
 			}
@@ -60,7 +70,23 @@ class ExtractDictionary{
 			for( int i = 0; i < num; i++ ){
 				string key = list[i];
 				sw.WriteLine( key + "\t" + dict[key] );
-			}
+			}*/
 		}
 	}
+}
+
+struct Entry : IComparable<Entry>{
+    public string key;
+    public string value;
+
+    public Entry( string key_, string value_ ){
+        key = key_;
+        value = value_;
+    }
+
+    public int CompareTo( Entry item ){
+        string thisKey = (key == null) ? "" : key;
+        string itemKey = (item.key == null) ? "" : item.key;
+        return thisKey.CompareTo( itemKey );
+    }
 }
