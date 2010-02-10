@@ -12,6 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#define USE_NATIVE_DLL_LOADER
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -356,12 +357,9 @@ namespace org.kbinani.cadencii {
         }
 
         public virtual bool open( string dll_path, int block_size, int sample_rate ) {
-#if DEBUG
             dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
-#else
-            dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
-#endif
             if ( dllHandle == IntPtr.Zero ) {
+                PortUtil.stderr.println( "vstidrv#open; dllHandle is null" );
                 return false;
             }
 
@@ -369,10 +367,15 @@ namespace org.kbinani.cadencii {
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( mainProcPointer,
                                                                             typeof( PVSTMAIN ) );
             if ( mainDelegate == null ) {
+                PortUtil.stderr.println( "vstidrv#open; mainDelegate is null" );
                 return false;
             }
 
             audioMaster = new audioMasterCallback( AudioMaster );
+            if ( audioMaster == null ) {
+                PortUtil.stderr.println( "vstidrv#open; audioMaster is null" );
+                return false;
+            }
 
             aEffectPointer = IntPtr.Zero;
             try {
@@ -382,6 +385,7 @@ namespace org.kbinani.cadencii {
                 return false;
             }
             if ( aEffectPointer == IntPtr.Zero ) {
+                PortUtil.stderr.println( "vstidrv#open; aEffectPointer is null" );
                 return false;
             }
             blockSize = block_size;
