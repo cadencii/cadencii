@@ -730,7 +730,7 @@ namespace org.kbinani.cadencii {
                 try {
                     value = PortUtil.parseInt( v );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VsqEventItemProxy#get_Release" );
+                    PortUtil.stderr.println( "VsqEventItemProxy#get_Release; ex=" + ex );
                     value = 64;
                 }
                 if ( 0 > value ) {
