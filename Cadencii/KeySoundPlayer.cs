@@ -34,10 +34,13 @@ namespace org.kbinani.cadencii {
         private static boolean[] m_prepared;
         
         public static void init() {
+#if DEBUG
+            PortUtil.println( "KeySoundPlayer#init" );
+#endif
             m_sound_previewer = new BSoundPlayer[48];
             m_temp_player = null;
             m_prepared = new boolean[127];
-            String cache_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "cache" );
+            String cache_path = AppManager.getKeySoundPath();
             for ( int i = 0; i <= 126; i++ ) {
                 String path = PortUtil.combinePath( cache_path, i + ".wav" );
                 if ( PortUtil.isFileExists( path ) ) {
@@ -46,7 +49,7 @@ namespace org.kbinani.cadencii {
                         try {
                             m_sound_previewer[i - 36] = new BSoundPlayer( path );
                         } catch( Exception ex ) {
-                            PortUtil.stderr.println( "KeySoundPlayer#.ctor; ex=" + ex );
+                            PortUtil.stderr.println( "KeySoundPlayer#init; ex=" + ex );
                         }
                     }
                 } else {
@@ -59,11 +62,6 @@ namespace org.kbinani.cadencii {
             if ( note < 0 || 127 <= note ) {
                 return;
             }
-#if DEBUG
-            AppManager.debugWriteLine( "KeySoundPlayer+Play" );
-            AppManager.debugWriteLine( "    note=" + note );
-            AppManager.debugWriteLine( "    m_prepared[note]=" + m_prepared[note] );
-#endif
             if ( !m_prepared[note] ) {
                 return;
             }
@@ -72,16 +70,14 @@ namespace org.kbinani.cadencii {
                     try {
                         m_sound_previewer[note - 36].play();
                     } catch( Exception ex ) {
-#if JAVA
-                        System.err.println( "KeySoundPlayer#Play; ex=" + ex );
-#endif
+                        PortUtil.stderr.println( "KeySoundPlayer#play; ex=" + ex );
                     }
                 }
             } else {
                 if ( m_temp_player == null ) {
                     m_temp_player = new BSoundPlayer();
                 }
-                String path = PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "cache" ), note + ".wav" );
+                String path = PortUtil.combinePath( AppManager.getKeySoundPath(), note + ".wav" );
                 if ( PortUtil.isFileExists( path ) ) {
                     m_temp_player.setSoundLocation( path );
                     m_temp_player.play();

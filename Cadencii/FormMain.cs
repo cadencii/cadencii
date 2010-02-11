@@ -28,7 +28,6 @@ import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
-#define USE_PATCHWORKTOFREEZE
 //#define MONITOR_FPS
 #define AUTHOR_LIST_SAVE_BUTTON_VISIBLE
 using System;
@@ -139,6 +138,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "あにぃ" ),
             new AuthorListEntry( "tomo" ),
             new AuthorListEntry( "ナウ□マP" ),
+            new AuthorListEntry( "mianaito" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -513,12 +513,6 @@ namespace org.kbinani.cadencii {
                 PortUtil.stderr.println( "AppManager#init; ex=" + ex );
             }
 #endif
-
-            try {
-                KeySoundPlayer.init();
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
-            }
 
 #if ENABLE_PROPERTY
             AppManager.propertyPanel = new PropertyPanel();
@@ -4284,6 +4278,98 @@ namespace org.kbinani.cadencii {
             menuHidden.setVisible( true );
             
 #endif
+
+            // 鍵盤用のキャッシュが古い位置に保存されている場合。
+            String cache_new = AppManager.getKeySoundPath();
+            String cache_old = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "cache" );
+            if ( PortUtil.isDirectoryExists( cache_old ) ) {
+                boolean exists = false;
+                for ( int i = 0; i < 127; i++ ) {
+                    String s = PortUtil.combinePath( cache_new, i + ".wav" );
+                    if ( PortUtil.isFileExists( s ) ) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                // 新しいキャッシュが1つも無い場合に、古いディレクトリからコピーする
+                if ( !exists ) {
+                    for ( int i = 0; i < 127; i++ ) {
+                        String wav_from = PortUtil.combinePath( cache_old, i + ".wav" );
+                        String wav_to = PortUtil.combinePath( cache_new, i + ".wav" );
+                        if ( PortUtil.isFileExists( wav_from ) ) {
+                            try {
+                                PortUtil.copyFile( wav_from, wav_to );
+                                PortUtil.deleteFile( wav_from );
+                            } catch ( Exception ex ) {
+                                PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 足りてないキャッシュがひとつでもあればFormGenerateKeySound発動する
+            boolean cache_is_incomplete = false;
+            for ( int i = 0; i < 127; i++ ) {
+                String wav = PortUtil.combinePath( cache_new, i + ".wav" );
+                if ( !PortUtil.isFileExists( wav ) ) {
+                    cache_is_incomplete = true;
+                    break;
+                }
+            }
+
+            boolean init_key_sound_player_immediately = true; //FormGenerateKeySoundの終了を待たずにKeySoundPlayer.initするかどうか。
+            if ( !AppManager.editorConfig.DoNotAskKeySoundGeneration && cache_is_incomplete ) {
+                FormAskKeySoundGeneration dialog = null;
+                BDialogResult dialog_result = BDialogResult.NO;
+                boolean always_check_this = !AppManager.editorConfig.DoNotAskKeySoundGeneration;
+                try {
+                    dialog = new FormAskKeySoundGeneration();
+                    dialog.setAlwaysPerformThisCheck( always_check_this );
+                    dialog_result = dialog.showDialog();
+                    always_check_this = dialog.isAlwaysPerformThisCheck();
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
+                } finally {
+                    if ( dialog != null ) {
+                        try {
+                            dialog.close();
+                        } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "FormMain#FormMain_Load; ex2=" + ex2 );
+                        }
+                    }
+                }
+                AppManager.editorConfig.DoNotAskKeySoundGeneration = !always_check_this;
+
+                if ( dialog_result == BDialogResult.YES ) {
+                    FormGenerateKeySound form = null;
+                    try {
+                        form = new FormGenerateKeySound( true );
+                        form.formClosedEvent.add( new BFormClosedEventHandler( this, "FormGenerateKeySound_FormClosed" ) );
+                        form.setVisible( true );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
+                    }
+                    init_key_sound_player_immediately = false;
+                }
+            }
+
+            if ( init_key_sound_player_immediately ) {
+                try {
+                    KeySoundPlayer.init();
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
+                }
+            }
+        }
+
+        public void FormGenerateKeySound_FormClosed( Object sender, BFormClosedEventArgs e ) {
+            try {
+                KeySoundPlayer.init();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#FormGenerateKeySound_FormClosed; ex=" + ex );
+            }
         }
 
 #if ENABLE_PROPERTY

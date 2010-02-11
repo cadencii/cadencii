@@ -441,6 +441,23 @@ namespace org.kbinani.cadencii {
                 }
                 #endregion
 
+                // 現在選択されている歌声合成システムの名前をオーバーレイ表示する
+                if ( AppManager.drawOverSynthNameOnPianoroll ) {
+                    g.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, 50 ) );
+                    g.setColor( new Color( 0, 0, 0, 64 ) );
+                    String str = "VOCALOID2";
+                    if ( renderer.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                        str = "AquesTone";
+                    } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                        str = "VOCALOID1";
+                    } else if ( renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+                        str = "STRAIGHT X UTAU";
+                    } else if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
+                        str = "UTAU";
+                    }
+                    g.drawString( str, key_width + 10, 10 );
+                }
+
                 #region トラックのエントリを描画
                 if ( AppManager.drawObjects != null ) {
                     if ( AppManager.isOverlay() ) {

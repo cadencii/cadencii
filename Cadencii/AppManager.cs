@@ -912,6 +912,10 @@ namespace org.kbinani.cadencii {
         /// 再生開始からの経過時刻がこの秒数以下の場合、再生を止めることが禁止される。
         /// </summary>
         public static double forbidFlipPlayingThresholdSeconds = 0.2;
+        /// <summary>
+        /// ピアノロール画面に、現在選択中の歌声合成エンジンの種類を描くかどうか
+        /// </summary>
+        public static boolean drawOverSynthNameOnPianoroll = true;
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
@@ -2386,7 +2390,7 @@ namespace org.kbinani.cadencii {
                             PortUtil.createDirectory( cacheDir );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
-                            showMessageBox( PortUtil.formatMessage( _( "failed to create cache directory, '{0}'." ), cacheDir ),
+                            showMessageBox( PortUtil.formatMessage( _( "failed creating cache directory, '{0}'." ), cacheDir ),
                                             _( "Info." ),
                                             PortUtil.OK_OPTION,
                                             PortUtil.MSGBOX_INFORMATION_MESSAGE );
@@ -2411,7 +2415,7 @@ namespace org.kbinani.cadencii {
                                     PortUtil.moveFile( wavFrom, wavTo );
                                 } catch ( Exception ex ) {
                                     PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
-                                    showMessageBox( PortUtil.formatMessage( _( "failed copy WAVE cache file, '{0}'." ), wavFrom ),
+                                    showMessageBox( PortUtil.formatMessage( _( "failed copying WAVE cache file, '{0}'." ), wavFrom ),
                                                     _( "Error" ),
                                                     PortUtil.OK_OPTION,
                                                     PortUtil.MSGBOX_WARNING_MESSAGE );
@@ -2433,7 +2437,7 @@ namespace org.kbinani.cadencii {
                                     PortUtil.moveFile( xmlFrom, xmlTo );
                                 } catch ( Exception ex ) {
                                     PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
-                                    showMessageBox( PortUtil.formatMessage( _( "failed copy XML cache file, '{0}'." ), xmlFrom ),
+                                    showMessageBox( PortUtil.formatMessage( _( "failed copying XML cache file, '{0}'." ), xmlFrom ),
                                                     _( "Error" ),
                                                     PortUtil.OK_OPTION,
                                                     PortUtil.MSGBOX_WARNING_MESSAGE );
@@ -2705,6 +2709,19 @@ namespace org.kbinani.cadencii {
             Collections.sort( list2 );
             for ( int i = 0; i < list2.size(); i++ ) {
                 ret += (ret.Equals( "" ) ? "" : "+") + getKeyDisplayString( list2.get( i ) );
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 鍵盤用の音源が保存されているディレクトリへのパスを返します。
+        /// </summary>
+        /// <returns></returns>
+        public static String getKeySoundPath() {
+            String data_path = getApplicationDataPath();
+            String ret = PortUtil.combinePath( data_path, "cache" );
+            if ( !PortUtil.isDirectoryExists( ret ) ) {
+                PortUtil.createDirectory( ret );
             }
             return ret;
         }

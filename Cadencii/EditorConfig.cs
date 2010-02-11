@@ -337,6 +337,10 @@ namespace org.kbinani.cadencii {
         /// プロジェクトごとのキャッシュディレクトリを使うかどうか
         /// </summary>
         public boolean UseProjectCache = true;
+        /// <summary>
+        /// 鍵盤用のキャッシュが無いとき、FormGenerateKeySoundを表示しないかどうか。trueなら表示しない、falseなら表示する（デフォルト）
+        /// </summary>
+        public boolean DoNotAskKeySoundGeneration = false;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(

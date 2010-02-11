@@ -5,22 +5,27 @@ using org.kbinani.vsq;
 class WordsFromDBFiles{
     public static void Main( string[] args ){
         if( args.Length < 3 ){
-            Console.WriteLine( "makeMids [singer(ex. Miku)] [DSB(ex. DSB303)] [extension(ex. .vsq)]" );
+            Console.WriteLine( "makeMids [words-list] [singer(ex. Miku)] [DSB(ex. DSB303)] [extension(ex. .vsq)] [start-index]" );
             return;
         }
-        string singer = args[0];
-        string dsb = args[1];
-        string ext = args[2];
+        string list = args[0];
+        string singer = args[1];
+        string dsb = args[2];
+        string ext = args[3];
+        int start_index = 0;
+        if( args.Length >= 5 ){
+            start_index = int.Parse( args[4] );
+        }
         if( !Directory.Exists( singer ) ){
             Directory.CreateDirectory( singer );
         }
-        using( StreamReader sr = new StreamReader( "parsed.txt" ) ){
+        using( StreamReader sr = new StreamReader( list ) ){
             string line = "";
             VsqFile src = new VsqFile( singer, 2, 4, 4, 500000 );
             VsqFile vsq = (VsqFile)src.clone();
             int clock = 480 * 4 * 2;
             int count = 0;
-            int numVsqs = 0;
+            int numVsqs = start_index;
             while( (line = sr.ReadLine()) != null ){
                 VsqEvent item = new VsqEvent();
                 item.Clock = clock;
