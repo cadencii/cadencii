@@ -12,7 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#define USE_NATIVE_DLL_LOADER
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -135,6 +134,39 @@ namespace org.kbinani.cadencii {
         /// </summary>
         Dimension uiWindowRect = new Dimension( 373, 158 );
         protected MemoryManager memoryManager = new MemoryManager();
+        [DllImport( "util" )]
+        private static extern boolean IsInitialized();
+        [DllImport( "util" )]
+        private static extern void InitializeDllLoad();
+        [DllImport( "util" )]
+        private static extern void KillDllLoad();
+        [DllImport( "util" )]
+        private static extern IntPtr GetDllProcAddress( IntPtr hModule, string lpProcName );
+        [DllImport( "util" )]
+        private static extern IntPtr LoadDllW( [MarshalAs( UnmanagedType.LPWStr )]string lpLibFileName );
+        [DllImport( "util" )]
+        private static extern IntPtr LoadDllA( [MarshalAs( UnmanagedType.LPStr )]string lpLibFileName );
+
+        private static IntPtr LoadDll( string lpLibFileName ) {
+            IntPtr ret = IntPtr.Zero;
+            try {
+                ret = LoadDllA( lpLibFileName );
+                return ret;
+            } catch ( EntryPointNotFoundException ex ) {
+                ret = IntPtr.Zero;
+            } catch ( Exception ex1 ) {
+                PortUtil.stderr.println( "vstidrv#LoadDll; ex1=" + ex1 );
+            }
+            if ( ret == IntPtr.Zero ) {
+                try {
+                    ret = LoadDllW( lpLibFileName );
+                } catch ( Exception ex ) {
+                    ret = IntPtr.Zero;
+                    PortUtil.stderr.println( "vstidrv#LoadDll; ex=" + ex );
+                }
+            }
+            return ret;
+        }
 
         public void resetAllParameters() {
             if ( paramDefaults == null ) {
@@ -356,14 +388,25 @@ namespace org.kbinani.cadencii {
             return;
         }
 
-        public virtual bool open( string dll_path, int block_size, int sample_rate ) {
-            dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
+        public virtual bool open( string dll_path, int block_size, int sample_rate, boolean use_native_dll_loader ) {
+            if ( use_native_dll_loader ) {
+                dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
+            } else {
+                if ( !IsInitialized() ){
+                    InitializeDllLoad();
+                }
+                dllHandle = LoadDll( dll_path );
+            }
             if ( dllHandle == IntPtr.Zero ) {
                 PortUtil.stderr.println( "vstidrv#open; dllHandle is null" );
                 return false;
             }
 
-            mainProcPointer = win32.GetProcAddress( dllHandle, "main" );
+            if ( use_native_dll_loader ) {
+                mainProcPointer = win32.GetProcAddress( dllHandle, "main" );
+            } else {
+                mainProcPointer = GetDllProcAddress( dllHandle, "main" );
+            }
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( mainProcPointer,
                                                                             typeof( PVSTMAIN ) );
             if ( mainDelegate == null ) {

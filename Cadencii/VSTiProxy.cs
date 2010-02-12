@@ -106,7 +106,7 @@ namespace org.kbinani.cadencii {
                 boolean loaded = false;
                 try {
                     if ( dll_path != "" ) {
-                        loaded = vocaloidDriver.get( i ).open( dll_path, SAMPLE_RATE, SAMPLE_RATE );
+                        loaded = vocaloidDriver.get( i ).open( dll_path, SAMPLE_RATE, SAMPLE_RATE, true );
                     } else {
                         loaded = false;
                     }
@@ -142,7 +142,11 @@ namespace org.kbinani.cadencii {
             if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) ) {
                 boolean loaded = false;
                 try {
-                    loaded = aquesToneDriver.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE );
+#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
+                    loaded = aquesToneDriver.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, false );
+#else
+                    loaded = aquesToneDriver.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE. true );
+#endif
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
                     loaded = false;

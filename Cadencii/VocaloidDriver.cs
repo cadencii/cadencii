@@ -112,8 +112,8 @@ namespace org.kbinani.cadencii {
             s_instance.s_first_buffer_written_callback();
         }
 
-        public override boolean open( string dll_path, int block_size, int sample_rate ) {
-            base.open( dll_path, block_size, sample_rate );
+        public override boolean open( string dll_path, int block_size, int sample_rate, boolean use_native_dll_loader ) {
+            base.open( dll_path, block_size, sample_rate, use_native_dll_loader );
 #if DEBUG
             PortUtil.println( "VocaloidDriver#open; dllHandle=0x" + PortUtil.toHexString( dllHandle.ToInt32() ).ToUpper() );
 #endif

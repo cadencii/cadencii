@@ -86,7 +86,7 @@ namespace org.kbinani.cadencii {
         public int bendLblParameterIndex = 7;
         public int phontParameterIndex = 8;
 
-        public override boolean open( string dll_path, int block_size, int sample_rate ) {
+        public override boolean open( string dll_path, int block_size, int sample_rate, boolean use_native_dll_loader ){
 #if DEBUG
             PortUtil.println( "AquesToneDriver#open" );
 #endif
@@ -103,7 +103,7 @@ namespace org.kbinani.cadencii {
             win32.WriteProfileString( "AquesTone", "FileKoe_00", required );
             boolean ret = false;
             try {
-                ret = base.open( dll_path, block_size, sample_rate );
+                ret = base.open( dll_path, block_size, sample_rate, true );
             } catch ( Exception ex ) {
                 ret = false;
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
