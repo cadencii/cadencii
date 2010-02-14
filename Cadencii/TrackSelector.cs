@@ -227,7 +227,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// cmenuSingerのメニューアイテムを初期化するのに使用したRenderer。
         /// </summary>
-        private String m_cmenu_singer_prepared = "";
+        private RendererKind m_cmenu_singer_prepared = RendererKind.NULL;
         /// <summary>
         /// マウスがDownしてからUpするまでのモード
         /// </summary>
@@ -2623,8 +2623,8 @@ namespace org.kbinani.cadencii {
                                 }
                             }
                         }
-                        String version = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
-                        if ( version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) );
+                        if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
                             cmenuCurveVelocity.setVisible( true );
                             cmenuCurveAccent.setVisible( true );
                             cmenuCurveDecay.setVisible( true );
@@ -2658,7 +2658,7 @@ namespace org.kbinani.cadencii {
                             cmenuCurveEnvelope.setVisible( false );
 
                             cmenuCurveBreathiness.setText( "Noise" );
-                        } else if ( version.StartsWith( VSTiProxy.RENDERER_UTU0 ) || version.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+                        } else if ( kind == RendererKind.UTAU || kind == RendererKind.STRAIGHT_UTAU ) {
                             cmenuCurveVelocity.setVisible( false );
                             cmenuCurveAccent.setVisible( false );
                             cmenuCurveDecay.setVisible( false );
@@ -5480,7 +5480,7 @@ namespace org.kbinani.cadencii {
                 #region MouseDown occured on singer list
                 if ( AppManager.getSelectedTool() != EditTool.ERASER ) {
                     VsqEvent ve = findItemAt( e.X, e.Y );
-                    String renderer = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
+                    RendererKind renderer = VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) );
                     if ( ve != null ) {
                         if ( ve.ID.type != VsqIDType.Singer ) {
                             return;
@@ -5538,16 +5538,16 @@ namespace org.kbinani.cadencii {
         /// 指定した歌声合成システムの歌手のリストを作成し，コンテキストメニューを準備します．
         /// </summary>
         /// <param name="renderer"></param>
-        public void prepareSingerMenu( String renderer ) {
+        public void prepareSingerMenu( RendererKind renderer ) {
             cmenuSinger.removeAll();
             Vector<SingerConfig> items = null;
-            if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) || renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+            if ( renderer == RendererKind.UTAU || renderer == RendererKind.STRAIGHT_UTAU ) {
                 items = AppManager.editorConfig.UtauSingers;
-            } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+            } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) ) );
-            } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
+            } else if ( renderer == RendererKind.VOCALOID2 ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) ) );
-            } else if ( renderer.StartsWith( VSTiProxy.RENDERER_AQT0 ) ){
+            } else if ( renderer == RendererKind.AQUES_TONE ){
                 items = new Vector<SingerConfig>();
                 int c = AquesToneDriver.SINGERS.Length;
                 for( int i = 0; i < c; i++ ){
@@ -5560,12 +5560,12 @@ namespace org.kbinani.cadencii {
             for ( Iterator itr = items.iterator(); itr.hasNext(); ) {
                 SingerConfig sc = (SingerConfig)itr.next();
                 String tip = "";
-                if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) || renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+                if ( renderer == RendererKind.UTAU || renderer == RendererKind.STRAIGHT_UTAU ) {
                     if ( sc != null ) {
                         tip = "Name: " + sc.VOICENAME +
                               "\nDirectory: " + sc.VOICEIDSTR;
                     }
-                } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
                     if ( sc != null ) {
                         tip = "Original: " + VocaloSysUtil.getOriginalSinger( sc.VOICENAME, SynthesizerType.VOCALOID1 ) +
                               "\nHarmonics: " + sc.Harmonics +
@@ -5578,7 +5578,7 @@ namespace org.kbinani.cadencii {
                               "\nReso3(Freq,BandWidth,Amp): " + sc.Resonance3Frequency + ", " + sc.Resonance3BandWidth + ", " + sc.Resonance3Amplitude +
                               "\nReso4(Freq,BandWidth,Amp): " + sc.Resonance4Frequency + ", " + sc.Resonance4BandWidth + ", " + sc.Resonance4Amplitude;
                     }
-                } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
+                } else if ( renderer == RendererKind.VOCALOID2 ) {
                     if ( sc != null ) {
                         tip = "Original: " + VocaloSysUtil.getOriginalSinger( sc.VOICENAME, SynthesizerType.VOCALOID2 ) +
                               "\nBreathiness: " + sc.Breathiness +
@@ -5587,7 +5587,7 @@ namespace org.kbinani.cadencii {
                               "\nGender Factor: " + sc.GenderFactor +
                               "\nOpening: " + sc.Opening;
                     }
-                } else if ( renderer.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                } else if ( renderer == RendererKind.AQUES_TONE ) {
                     if ( sc != null ) {
                         tip = "Name: " + sc.VOICENAME;
                     }
@@ -5702,13 +5702,13 @@ namespace org.kbinani.cadencii {
                 TagForCMenuSingerDropDown tag_dditem = (TagForCMenuSingerDropDown)((BMenuItem)sender).getTag();
                 String singer = tag_dditem.SingerName;
                 VsqID item = null;
-                if ( m_cmenu_singer_prepared.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                if ( m_cmenu_singer_prepared == RendererKind.VOCALOID1_100 || m_cmenu_singer_prepared == RendererKind.VOCALOID1_101 ) {
                     item = VocaloSysUtil.getSingerID( singer, SynthesizerType.VOCALOID1 );
-                } else if ( m_cmenu_singer_prepared.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
+                } else if ( m_cmenu_singer_prepared == RendererKind.VOCALOID2 ) {
                     item = VocaloSysUtil.getSingerID( singer, SynthesizerType.VOCALOID2 );
-                } else if ( m_cmenu_singer_prepared.StartsWith( VSTiProxy.RENDERER_UTU0 ) || m_cmenu_singer_prepared.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+                } else if ( m_cmenu_singer_prepared == RendererKind.UTAU || m_cmenu_singer_prepared == RendererKind.STRAIGHT_UTAU ) {
                     item = AppManager.getSingerIDUtau( singer );
-                } else if ( m_cmenu_singer_prepared.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                } else if ( m_cmenu_singer_prepared == RendererKind.AQUES_TONE ) {
                     item = AppManager.getSingerIDAquesTone( singer );
                 }
                 if ( item != null ) {

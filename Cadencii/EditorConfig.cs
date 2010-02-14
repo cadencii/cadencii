@@ -338,9 +338,30 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public boolean UseProjectCache = true;
         /// <summary>
-        /// 鍵盤用のキャッシュが無いとき、FormGenerateKeySoundを表示しないかどうか。trueなら表示しない、falseなら表示する（デフォルト）
+        /// 鍵盤用のキャッシュが無いとき、FormGenerateKeySoundを表示しないかどうか。
+        /// trueなら表示しない、falseなら表示する（デフォルト）
         /// </summary>
         public boolean DoNotAskKeySoundGeneration = false;
+        /// <summary>
+        /// VOCALOID1 (1.0)のDLLを読み込まない場合true。既定ではfalse
+        /// </summary>
+        public boolean DoNotUseVocaloid100 = false;
+        /// <summary>
+        /// VOCALOID1 (1.1)のDLLを読み込まない場合true。既定ではfalse
+        /// </summary>
+        public boolean DoNotUseVocaloid101 = false;
+        /// <summary>
+        /// VOCALOID2のDLLを読み込まない場合true。既定ではfalse
+        /// </summary>
+        public boolean DoNotUseVocaloid2 = false;
+        /// <summary>
+        /// AquesToneのDLLを読み込まない場合true。既定ではfalse
+        /// </summary>
+        public boolean DoNotUseAquesTone = false;
+        /// <summary>
+        /// 2個目のVOCALOID1 DLLを読み込むかどうか。既定ではfalse
+        /// </summary>
+        public boolean LoadSecondaryVocaloid1Dll = false;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(

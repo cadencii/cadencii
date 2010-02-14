@@ -35,6 +35,7 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
+using org.kbinani.java.io;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -56,7 +57,7 @@ namespace org.kbinani.cadencii {
         const float a2 = -0.237323499f;
 
         public static String CurrentUser = "";
-        private static String s_working_renderer = "";
+        private static RendererKind s_working_renderer = RendererKind.NULL;
 #if ENABLE_VOCALOID
         public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
 #endif
@@ -76,37 +77,119 @@ namespace org.kbinani.cadencii {
 
         public static void initCor() {
 #if ENABLE_VOCALOID
-#if !DEBUG
-            try {
-#endif
-                String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
-                String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
-                if ( vocalo2_dll_path != "" && PortUtil.isFileExists( vocalo2_dll_path ) ) {
-                    VocaloidDriver vr = new VocaloidDriver();
+            int default_dse_version = VocaloSysUtil.getDefaultDseVersion();
+            String editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
+            String ini = PortUtil.combinePath( PortUtil.getDirectoryName( editor_dir ), "VOCALOID.ini" );
+            String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
+            String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
+            if ( vocalo2_dll_path != "" && PortUtil.isFileExists( vocalo2_dll_path ) ) {
+                if ( !AppManager.editorConfig.DoNotUseVocaloid2 ) {
+                    VocaloidDriver vr = new VocaloidDriver( 200 );
                     vr.path = vocalo2_dll_path;
                     vr.loaded = false;
-                    vr.name = RENDERER_DSB3;
+                    vr.kind = RendererKind.VOCALOID2;
                     vocaloidDriver.add( vr );
                 }
-                if ( vocalo1_dll_path != "" && PortUtil.isFileExists( vocalo1_dll_path ) ) {
-                    VocaloidDriver vr = new VocaloidDriver();
-                    vr.path = vocalo1_dll_path;
-                    vr.loaded = false;
-                    vr.name = RENDERER_DSB2;
-                    vocaloidDriver.add( vr );
-                }
-#if !DEBUG
-            } catch ( Exception ex ){
-                AppManager.debugWriteLine( "    ex=" + ex );
-                org.kbinani.debug.push_log( "    ex=" + ex );
             }
+            if ( vocalo1_dll_path != "" && PortUtil.isFileExists( vocalo1_dll_path ) ) {
+                // VOCALOID.iniを読み込んでデフォルトのDSEVersionを調べる
+#if DEBUG
+                PortUtil.println( "VSTiProxy#initCor; ini=" + ini );
 #endif
+                if ( PortUtil.isFileExists( ini ) ) {
+                    // デフォルトのDSEバージョンのVOCALOID1 VSTi DLL
+                    if ( default_dse_version == 100 && !AppManager.editorConfig.DoNotUseVocaloid100 ||
+                         default_dse_version == 101 && !AppManager.editorConfig.DoNotUseVocaloid101 ) {
+                        VocaloidDriver vr = new VocaloidDriver( default_dse_version );
+                        vr.path = vocalo1_dll_path;
+                        vr.loaded = false;
+                        vr.kind = (default_dse_version == 100) ? RendererKind.VOCALOID1_100 : RendererKind.VOCALOID1_101;
+                        vocaloidDriver.add( vr );
+                    }
+
+                    // デフォルトじゃない方のVOCALOID1 VSTi DLLを読み込む
+                    if ( AppManager.editorConfig.LoadSecondaryVocaloid1Dll ) {
+                        int another_dse_version = (default_dse_version == 100) ? 101 : 100;
+                        if ( another_dse_version == 100 && !AppManager.editorConfig.DoNotUseVocaloid100 ||
+                             another_dse_version == 101 && !AppManager.editorConfig.DoNotUseVocaloid101 ) {
+                            VocaloidDriver vr2 = new VocaloidDriver( another_dse_version );
+                            vr2.path = (default_dse_version == 0) ? "" : vocalo1_dll_path; // DSEVersionが取得できない=>1.0しか使用できない
+                            vr2.loaded = false;
+                            vr2.kind = (another_dse_version == 100) ? RendererKind.VOCALOID1_100 : RendererKind.VOCALOID1_101;
+                            vocaloidDriver.add( vr2 );
+                        }
+                    }
+                }
+            }
+
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
                 String dll_path = vocaloidDriver.get( i ).path;
                 boolean loaded = false;
                 try {
                     if ( dll_path != "" ) {
-                        loaded = vocaloidDriver.get( i ).open( dll_path, SAMPLE_RATE, SAMPLE_RATE, true );
+                        // VOCALOID1を読み込む場合で、かつ、DSEVersionがVOCALOID.iniの指定と異なるバージョンを読み込む場合、
+                        // VOCALOID.iniの設定を一時的に書き換える。
+                        boolean use_native_dll_loader = true;
+                        int dse_version = vocaloidDriver.get( i ).getDseVersion();
+                        if ( dse_version != 0 && dse_version != 200 && dse_version != default_dse_version ) {
+                            use_native_dll_loader = false;
+                        }
+                        String copy_ini = "";
+                        if ( !use_native_dll_loader ) {
+                            // DSEVersionを強制的に書き換える。
+                            copy_ini = PortUtil.createTempFile();
+                            if ( PortUtil.isFileExists( ini ) ) {
+                                PortUtil.deleteFile( copy_ini );
+                                PortUtil.copyFile( ini, copy_ini );
+                                BufferedReader br = null;
+                                BufferedWriter bw = null;
+                                try {
+                                    br = new BufferedReader( new InputStreamReader( new FileInputStream( copy_ini ), "Shift_JIS" ) );
+                                    bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ini ), "Shift_JIS" ) );
+                                    while ( br.ready() ) {
+                                        String line = br.readLine();
+                                        if ( line == null ) {
+                                            bw.newLine();
+                                        } else if ( line.StartsWith( "DSEVersion" ) ) {
+                                            bw.write( "DSEVersion = " + dse_version ); bw.newLine();
+                                        } else {
+                                            bw.write( line ); bw.newLine();
+                                        }
+                                    }
+                                } catch ( Exception ex ) {
+                                    PortUtil.stderr.println( "VSTiProxy#initCor; ex=" + ex );
+                                } finally {
+                                    if ( bw != null ) {
+                                        try {
+                                            bw.close();
+                                        } catch ( Exception ex2 ) {
+                                            PortUtil.stderr.println( "VSTiProxy#initCor; ex2=" + ex2 );
+                                        }
+                                    }
+                                    if ( br != null ) {
+                                        try {
+                                            br.close();
+                                        } catch ( Exception ex2 ) {
+                                            PortUtil.stderr.println( "VSTiProxy#initCor; ex2=" + ex2 );
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // 読込み。
+                        loaded = vocaloidDriver.get( i ).open( dll_path, SAMPLE_RATE, SAMPLE_RATE, use_native_dll_loader );
+
+                        // VOCALOID.iniをもとにもどす。
+                        if ( !use_native_dll_loader ) {
+                            try {
+                                PortUtil.deleteFile( ini );
+                                PortUtil.copyFile( copy_ini, ini );
+                                PortUtil.deleteFile( copy_ini );
+                            } catch ( Exception ex ) {
+                                PortUtil.stderr.println( "VSTiProxy#initCor; ex=" + ex );
+                            }
+                        }
                     } else {
                         loaded = false;
                     }
@@ -132,20 +215,20 @@ namespace org.kbinani.cadencii {
                 aquesToneDriver = new AquesToneDriver();
 #endif
                 aquesToneDriver.loaded = false;
-                aquesToneDriver.name = RENDERER_AQT0;
+                aquesToneDriver.kind = RendererKind.AQUES_TONE;
             }
             if ( aquesToneDriver.loaded ) {
                 aquesToneDriver.close();
                 aquesToneDriver.loaded = false;
             }
             aquesToneDriver.path = aques_tone;
-            if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) ) {
+            if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
                 boolean loaded = false;
                 try {
 #if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
                     loaded = aquesToneDriver.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, false );
 #else
-                    loaded = aquesToneDriver.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE. true );
+                    loaded = aquesToneDriver.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, true );
 #endif
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
@@ -159,22 +242,22 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public static boolean isRendererAvailable( String renderer ) {
+        public static boolean isRendererAvailable( RendererKind renderer ) {
 #if ENABLE_VOCALOID
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
-                if ( renderer.StartsWith( vocaloidDriver.get( i ).name ) && vocaloidDriver.get( i ).loaded ) {
+                if ( renderer == vocaloidDriver.get( i ).kind && vocaloidDriver.get( i ).loaded ) {
                     return true;
                 }
             }
 #endif
 
 #if ENABLE_AQUESTONE
-            if ( renderer.StartsWith( RENDERER_AQT0 ) && aquesToneDriver != null && aquesToneDriver.loaded ) {
+            if ( renderer == RendererKind.AQUES_TONE && aquesToneDriver != null && aquesToneDriver.loaded ) {
                 return true;
             }
 #endif
 
-            if ( renderer.StartsWith( RENDERER_UTU0 ) ) {
+            if ( renderer == RendererKind.UTAU ) {
                 if ( !AppManager.editorConfig.PathResampler.Equals( "" ) && PortUtil.isFileExists( AppManager.editorConfig.PathResampler ) &&
                      !AppManager.editorConfig.PathWavtool.Equals( "" ) && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) ) {
                     if ( AppManager.editorConfig.UtauSingers.size() > 0 ) {
@@ -182,7 +265,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
-            if ( renderer.StartsWith( RENDERER_STR0 ) ) {
+            if ( renderer == RendererKind.STRAIGHT_UTAU ) {
                 if ( PortUtil.isFileExists( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner.STRAIGHT_SYNTH ) ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
                     for ( int i = 0; i < count; i++ ) {
@@ -205,6 +288,9 @@ namespace org.kbinani.cadencii {
                 if ( vocaloidDriver.get( i ) != null ) {
                     vocaloidDriver.get( i ).close();
                 }
+            }
+            if ( DllLoad.isInitialized() ) {
+                DllLoad.terminate();
             }
 #endif
 
@@ -247,24 +333,12 @@ namespace org.kbinani.cadencii {
             String temp_dir,
             boolean reflect_amp_to_wave
         ) {
-            s_working_renderer = VSTiProxy.RENDERER_DSB3;
+            s_working_renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( track ) );
             Vector<WaveReader> reader = new Vector<WaveReader>();
             for ( int i = 0; i < files.Length; i++ ) {
                 reader.add( files[i] );
             }
 
-            String version = vsq.Track.get( track ).getCommon().Version;
-            if ( version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
-                s_working_renderer = VSTiProxy.RENDERER_DSB2;
-            } else if ( version.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
-                s_working_renderer = VSTiProxy.RENDERER_UTU0;
-            } else if ( version.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
-                s_working_renderer = VSTiProxy.RENDERER_STR0;
-            } else if ( version.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
-                s_working_renderer = VSTiProxy.RENDERER_AQT0;
-            } else if ( version.StartsWith( VSTiProxy.RENDERER_NULL ) ) {
-                s_working_renderer = VSTiProxy.RENDERER_NULL;
-            }
 #if DEBUG
             org.kbinani.debug.push_log( "s_working_renderer=" + s_working_renderer );
 #endif
@@ -302,7 +376,7 @@ namespace org.kbinani.cadencii {
 #endif
 
             s_rendering_context = null;
-            if ( s_working_renderer.Equals( VSTiProxy.RENDERER_UTU0 ) ) {
+            if ( s_working_renderer == RendererKind.UTAU ) {
                 s_rendering_context = new UtauRenderingRunner( split,
                                                                track,
                                                                AppManager.editorConfig.UtauSingers,
@@ -318,7 +392,7 @@ namespace org.kbinani.cadencii {
                                                                reader,
                                                                direct_play,
                                                                reflect_amp_to_wave );
-            } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_STR0 ) ){
+            } else if ( s_working_renderer == RendererKind.STRAIGHT_UTAU ){
                 s_rendering_context = new StraightRenderingRunner( split,
                                                                    track,
                                                                    AppManager.editorConfig.UtauSingers,
@@ -332,7 +406,7 @@ namespace org.kbinani.cadencii {
                                                                    direct_play,
                                                                    reflect_amp_to_wave );
 #if ENABLE_AQUESTONE
-            } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_AQT0 ) ) {
+            } else if ( s_working_renderer == RendererKind.AQUES_TONE ) {
 #if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
                 split.Track.get( track ).getCommon().Version = "DSB2";
                 VsqNrpn[] nrpn = VsqFile.generateNRPN( split, track, ms_presend );
@@ -368,7 +442,7 @@ namespace org.kbinani.cadencii {
                                                                     reflect_amp_to_wave );
 #endif
 #endif
-            } else if ( s_working_renderer.Equals( VSTiProxy.RENDERER_NULL ) ){
+            } else if ( s_working_renderer == RendererKind.NULL ){
                 s_rendering_context = new EmptyRenderingRunner( track,
                                                                 reflect_amp_to_wave,
                                                                 wave_writer,
@@ -383,15 +457,14 @@ namespace org.kbinani.cadencii {
 #if ENABLE_VOCALOID
                 VocaloidDriver driver = null;
                 for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
-                    if ( vocaloidDriver.get( i ).name.Equals( s_working_renderer ) ) {
+                    if ( vocaloidDriver.get( i ).kind == s_working_renderer ) {
                         driver = vocaloidDriver.get( i );
                         break;
                     }
                 }
                 VsqNrpn[] nrpn = VsqFile.generateNRPN( split, track, ms_presend );
                 NrpnData[] nrpn_data = VsqNrpn.convert( nrpn );
-                s_rendering_context = new VocaloidRenderingRunner( s_working_renderer,
-                                                                   nrpn_data,
+                s_rendering_context = new VocaloidRenderingRunner( nrpn_data,
                                                                    split.TempoTable.toArray( new TempoTableEntry[]{} ),
                                                                    trim_msec,
                                                                    total_samples,

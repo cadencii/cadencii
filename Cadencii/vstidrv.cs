@@ -82,7 +82,7 @@ namespace org.kbinani.cadencii {
 
         public boolean loaded = false;
         public String path = "";
-        public String name = "";
+        public RendererKind kind = RendererKind.NULL;
         /// <summary>
         /// プラグインのUI
         /// </summary>
@@ -133,40 +133,11 @@ namespace org.kbinani.cadencii {
         /// UIウィンドウのサイズ
         /// </summary>
         Dimension uiWindowRect = new Dimension( 373, 158 );
+        /// <summary>
+        /// win32.LoadLibraryExを使うかどうか。trueならwin32.LoadLibraryExを使い、falseならutil.dllのLoadDllをつかう。既定ではtrue
+        /// </summary>
+        boolean useNativeDllLoader = true;
         protected MemoryManager memoryManager = new MemoryManager();
-        [DllImport( "util" )]
-        private static extern boolean IsInitialized();
-        [DllImport( "util" )]
-        private static extern void InitializeDllLoad();
-        [DllImport( "util" )]
-        private static extern void KillDllLoad();
-        [DllImport( "util" )]
-        private static extern IntPtr GetDllProcAddress( IntPtr hModule, string lpProcName );
-        [DllImport( "util" )]
-        private static extern IntPtr LoadDllW( [MarshalAs( UnmanagedType.LPWStr )]string lpLibFileName );
-        [DllImport( "util" )]
-        private static extern IntPtr LoadDllA( [MarshalAs( UnmanagedType.LPStr )]string lpLibFileName );
-
-        private static IntPtr LoadDll( string lpLibFileName ) {
-            IntPtr ret = IntPtr.Zero;
-            try {
-                ret = LoadDllA( lpLibFileName );
-                return ret;
-            } catch ( EntryPointNotFoundException ex ) {
-                ret = IntPtr.Zero;
-            } catch ( Exception ex1 ) {
-                PortUtil.stderr.println( "vstidrv#LoadDll; ex1=" + ex1 );
-            }
-            if ( ret == IntPtr.Zero ) {
-                try {
-                    ret = LoadDllW( lpLibFileName );
-                } catch ( Exception ex ) {
-                    ret = IntPtr.Zero;
-                    PortUtil.stderr.println( "vstidrv#LoadDll; ex=" + ex );
-                }
-            }
-            return ret;
-        }
 
         public void resetAllParameters() {
             if ( paramDefaults == null ) {
@@ -389,23 +360,24 @@ namespace org.kbinani.cadencii {
         }
 
         public virtual bool open( string dll_path, int block_size, int sample_rate, boolean use_native_dll_loader ) {
-            if ( use_native_dll_loader ) {
+            useNativeDllLoader = use_native_dll_loader;
+            if ( useNativeDllLoader ) {
                 dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
             } else {
-                if ( !IsInitialized() ){
-                    InitializeDllLoad();
+                if ( !DllLoad.isInitialized() ){
+                    DllLoad.initialize();
                 }
-                dllHandle = LoadDll( dll_path );
+                dllHandle = DllLoad.loadDll( dll_path );
             }
             if ( dllHandle == IntPtr.Zero ) {
                 PortUtil.stderr.println( "vstidrv#open; dllHandle is null" );
                 return false;
             }
 
-            if ( use_native_dll_loader ) {
+            if ( useNativeDllLoader ) {
                 mainProcPointer = win32.GetProcAddress( dllHandle, "main" );
             } else {
-                mainProcPointer = GetDllProcAddress( dllHandle, "main" );
+                mainProcPointer = DllLoad.getProcAddress( dllHandle, "main" );
             }
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( mainProcPointer,
                                                                             typeof( PVSTMAIN ) );
@@ -482,7 +454,11 @@ namespace org.kbinani.cadencii {
                     aEffect.Dispatch( AEffectOpcodes.effClose, 0, 0, IntPtr.Zero, 0.0f );
                 }
                 if ( dllHandle != IntPtr.Zero ) {
-                    win32.FreeLibrary( dllHandle );
+                    if ( useNativeDllLoader ) {
+                        win32.FreeLibrary( dllHandle );
+                    } else {
+                        DllLoad.freeDll( dllHandle );
+                    }
                 }
             } catch( Exception ex ){
                 PortUtil.stderr.println( "vstidrv#close; ex=" + ex );

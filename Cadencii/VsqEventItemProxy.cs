@@ -107,7 +107,8 @@ namespace org.kbinani.cadencii {
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
                 SynthesizerType type = SynthesizerType.VOCALOID2;
-                if ( vsq.Track.get( AppManager.getSelected() ).getCommon().Version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
                     type = SynthesizerType.VOCALOID1;
                 }
 
@@ -179,7 +180,8 @@ namespace org.kbinani.cadencii {
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
                 SynthesizerType type = SynthesizerType.VOCALOID2;
-                if ( vsq.Track.get( AppManager.getSelected() ).getCommon().Version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
                     type = SynthesizerType.VOCALOID1;
                 }
 
@@ -285,7 +287,6 @@ namespace org.kbinani.cadencii {
                     if ( vsq != null ) {
                         int selected = AppManager.getSelected();
                         VsqTrack vsq_track = vsq.Track.get( selected );
-                        String renderer = vsq_track.getCommon().Version;
                         VsqEvent singer = vsq_track.getSingerEventAt( m_clock.getClock().getIntValue() );
                         SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Program );
                         if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
@@ -725,7 +726,7 @@ namespace org.kbinani.cadencii {
             get {
                 VsqEvent e = new VsqEvent();
                 e.Tag = m_tag;
-                String v = VsqFileEx.getEventTag( e, VsqFileEx.TAGNAME_AQUESTONE_RELEASE );
+                String v = VsqFileEx.getEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
                 int value = 64;
                 try {
                     value = PortUtil.parseInt( v );
@@ -738,7 +739,7 @@ namespace org.kbinani.cadencii {
                 } else if ( 127 < value ) {
                     value = 127;
                 }
-                VsqFileEx.setEventTag( e, VsqFileEx.TAGNAME_AQUESTONE_RELEASE, value + "" );
+                VsqFileEx.setEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE, value + "" );
                 m_tag = e.Tag;
                 return value;
             }
@@ -750,7 +751,7 @@ namespace org.kbinani.cadencii {
                 }
                 VsqEvent e = new VsqEvent();
                 e.Tag = m_tag;
-                VsqFileEx.setEventTag( e, VsqFileEx.TAGNAME_AQUESTONE_RELEASE, value + "" );
+                VsqFileEx.setEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE, value + "" );
                 m_tag = e.Tag;
             }
         }

@@ -23,7 +23,6 @@ namespace org.kbinani.cadencii {
     using boolean = Boolean;
 
     public class VocaloidRenderingRunner : RenderingRunner {
-        public String renderer;
         public NrpnData[] nrpn;
         public TempoTableEntry[] tempo;
         public boolean mode_infinite;
@@ -35,8 +34,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private int msPresend = 0;
 
-        public VocaloidRenderingRunner( String renderer_,
-                                        NrpnData[] nrpn_,
+        public VocaloidRenderingRunner( NrpnData[] nrpn_,
                                         TempoTableEntry[] tempo_,
                                         int trim_msec_,
                                         long total_samples_,
@@ -62,7 +60,6 @@ namespace org.kbinani.cadencii {
         {
 #endif
             msPresend = ms_presend;
-            renderer = renderer_;
             nrpn = nrpn_;
             tempo = tempo_;
             mode_infinite = mode_infinite_;

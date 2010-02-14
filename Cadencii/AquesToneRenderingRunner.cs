@@ -374,7 +374,7 @@ namespace org.kbinani.cadencii {
                             q.param = new Vector<ParameterEvent>();
                         }
 
-                        String strRelease = VsqFileEx.getEventTag( item, VsqFileEx.TAGNAME_AQUESTONE_RELEASE );
+                        String strRelease = VsqFileEx.getEventTag( item, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
                         int release = 64;
                         try {
                             release = PortUtil.parseInt( strRelease );

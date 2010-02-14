@@ -254,8 +254,13 @@ namespace org.kbinani.cadencii {
         }
 
         public void FormMixer_PanpotChanged( Object sender, BEventArgs e ) {
+            if ( sender == null ) return;
+            if ( !(sender is VolumeTracker) ) return;
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (Integer)parent.getTag();
+            Object tag = parent.getTag();
+            if ( tag == null ) return;
+            if ( !(tag is Integer) ) return;
+            int track = (Integer)tag;
 #if JAVA
             try{
                 panpotChangedEvent.raise( track, parent.getPanpot() );

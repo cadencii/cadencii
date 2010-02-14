@@ -56,7 +56,8 @@ namespace org.kbinani.cadencii {
         public boolean[] mute = new boolean[NUM_TRACK];
         public boolean[] solo = new boolean[NUM_TRACK];
 
-        public const String TAGNAME_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
+        public const String TAG_VSQEVENT_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
+        public const String TAG_VSQTRACK_RENDERER_KIND = "org.kbinani.cadencii.RendererKind";
 #if JAVA
         static {
             s_vsq_serializer = new XmlSerializer( VsqFileEx.class );
@@ -67,37 +68,100 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public static String getEventTag( VsqEvent item, String name ) {
-            if ( name == null || (name != null && name.Equals( "" ) ) ){
-                return "";
+        public static RendererKind getTrackRendererKind( VsqTrack vsq_track ) {
+            String str_kind = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RENDERER_KIND );
+            if ( str_kind != null && !str_kind.Equals( "" ) ) {
+#if JAVA
+                RendererKind[] values = RendererKind.values();
+#else
+                RendererKind[] values = (RendererKind[])Enum.GetValues( typeof( RendererKind ) );
+#endif
+                foreach ( RendererKind kind in values ) {
+                    if ( str_kind.Equals( kind + "" ) ) {
+                        return kind;
+                    }
+                }
             }
-            if ( item.Tag != null ) {
-                String[] spl = PortUtil.splitString( item.Tag, ';' );
-                foreach ( String s in spl ) {
-                    String[] spl2 = PortUtil.splitString( s, ':' );
-                    if ( spl2.Length == 2 ) {
-                        if ( name.Equals( spl2[0] ) ) {
-                            return spl2[1];
-                        }
+
+            // タグからの判定ができないので、VsqTrackのVsqCommonから判定を試みる。
+            VsqCommon vsq_common = vsq_track.getCommon();
+            if ( vsq_common == null ) {
+                // お手上げである。
+                return RendererKind.VOCALOID2;
+            }
+            String version = vsq_common.Version;
+            if ( version == null ) {
+                // お手上げである。その２
+                return RendererKind.VOCALOID2;
+            }
+            if ( version.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                return RendererKind.AQUES_TONE;
+            } else if ( version.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
+                return RendererKind.VOCALOID2;
+            } else if ( version.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+                return RendererKind.STRAIGHT_UTAU;
+            } else if ( version.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
+                return RendererKind.UTAU;
+            } else if ( version.StartsWith( VSTiProxy.RENDERER_NULL ) ) {
+                return RendererKind.NULL;
+            } else {
+                // ここにくる場合は、VOCALOID1_100またはVOCALOID1_101のどちらか。
+                // システムのデフォルトのDSEVersionから、どちらかを判定する。不可能なら、VOCALOID1_100にする。
+                int default_dse_version = VocaloSysUtil.getDefaultDseVersion();
+                if ( default_dse_version == 101 ) {
+                    return RendererKind.VOCALOID1_101;
+                } else {
+                    return RendererKind.VOCALOID1_100;
+                }
+            }
+        }
+
+        public static void setTrackRendererKind( VsqTrack vsq_track, RendererKind renderer_kind ) {
+            vsq_track.Tag = setTagCor( vsq_track.Tag, TAG_VSQTRACK_RENDERER_KIND, renderer_kind + "" );
+            VsqCommon vsq_common = vsq_track.getCommon();
+            if ( vsq_common != null ) {
+                if ( renderer_kind == RendererKind.AQUES_TONE ) {
+                    vsq_common.Version = VSTiProxy.RENDERER_AQT0;
+                } else if ( renderer_kind == RendererKind.STRAIGHT_UTAU ) {
+                    vsq_common.Version = VSTiProxy.RENDERER_STR0;
+                } else if ( renderer_kind == RendererKind.UTAU ) {
+                    vsq_common.Version = VSTiProxy.RENDERER_UTU0;
+                } else if ( renderer_kind == RendererKind.VOCALOID1_100 || renderer_kind == RendererKind.VOCALOID1_101 ) {
+                    vsq_common.Version = VSTiProxy.RENDERER_DSB2;
+                } else if ( renderer_kind == RendererKind.VOCALOID2 ) {
+                    vsq_common.Version = VSTiProxy.RENDERER_DSB3;
+                } else if ( renderer_kind == RendererKind.NULL ) {
+                    vsq_common.Version = VSTiProxy.RENDERER_NULL;
+                }
+            }
+        }
+
+        private static String getTagCor( String tag, String tag_name ) {
+            if ( tag_name == null ) return "";
+            if ( tag_name.Equals( "" ) ) return "";
+            if ( tag == null ) return "";
+            if ( tag.Equals( "" ) ) return "";
+            String[] spl = PortUtil.splitString( tag, ';' );
+            foreach ( String s in spl ) {
+                String[] spl2 = PortUtil.splitString( s, ':' );
+                if ( spl2.Length == 2 ) {
+                    if ( tag_name.Equals( spl2[0] ) ) {
+                        return spl2[1];
                     }
                 }
             }
             return "";
         }
 
-        public static void setEventTag( VsqEvent item, String name, String value ) {
-            if ( name == null ){
-                return;
-            }
-            if ( name.Equals( "" ) ){
-                return;
-            }
+        private static String setTagCor( String old_tag, String name, String value ) {
+            if ( name == null ) return old_tag;
+            if ( name.Equals( "" ) ) return old_tag;
             String v = value.Replace( ":", "" ).Replace( ";", "" );
-            if ( item.Tag == null ) {
-                item.Tag = name + ":" + value;
+            if ( old_tag == null ) {
+                return name + ":" + value;
             } else {
                 String newtag = "";
-                String[] spl = PortUtil.splitString( item.Tag, ';' );
+                String[] spl = PortUtil.splitString( old_tag, ';' );
                 boolean is_first = true;
                 foreach ( String s in spl ) {
                     String[] spl2 = PortUtil.splitString( s, ':' );
@@ -112,8 +176,19 @@ namespace org.kbinani.cadencii {
                         is_first = false;
                     }
                 }
-                item.Tag = newtag;
+                if ( is_first ) {
+                    newtag = name + ":" + value;
+                }
+                return newtag;
             }
+        }
+
+        public static String getEventTag( VsqEvent item, String name ) {
+            return getTagCor( item.Tag, name );
+        }
+
+        public static void setEventTag( VsqEvent item, String name, String value ) {
+            item.Tag = setTagCor( item.Tag, name, value );
         }
 
         /// <summary>
@@ -1140,7 +1215,7 @@ namespace org.kbinani.cadencii {
                 for ( Iterator itr = track.getSingerEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = (VsqEvent)itr.next();
                     if ( ((IconHandle)ve.ID.IconHandle).IDS.ToLower().Equals( "utau" ) ) {
-                        track.getCommon().Version = "UTU000";
+                        setTrackRendererKind( track, RendererKind.UTAU );
                         break;
                     }
                 }

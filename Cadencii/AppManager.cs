@@ -997,7 +997,7 @@ namespace org.kbinani.cadencii {
         public static EditedZoneUnit[] detectTrackDifference( VsqTrack track1, VsqTrack track2 ) {
             EditedZone ret = new EditedZone();
 
-            if ( !track1.getCommon().Version.Equals( track2.getCommon().Version ) ) {
+            if ( VsqFileEx.getTrackRendererKind( track1 ) != VsqFileEx.getTrackRendererKind( track2 ) ) {
                 return new EditedZoneUnit[] { new EditedZoneUnit( 0, int.MaxValue ) };
             }
 

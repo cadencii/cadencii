@@ -210,7 +210,7 @@ namespace org.kbinani.cadencii {
                 Color white = AppManager.editorConfig.PianorollColorVocalo2White.getColor();
                 Color bar = AppManager.editorConfig.PianorollColorVocalo2Bar.getColor();
                 Color beat = AppManager.editorConfig.PianorollColorVocalo2Beat.getColor();
-                String renderer = "";
+                RendererKind renderer = RendererKind.VOCALOID2;
 
                 VsqFileEx vsq = AppManager.getVsqFile();
                 EditMode edit_mode = AppManager.getEditMode();
@@ -221,28 +221,28 @@ namespace org.kbinani.cadencii {
                 System.out.println( "PictPianoRoll#paint; (vsq==null)=" + (vsq == null) );
 #endif
                 if ( vsq != null ) {
-                    renderer = vsq.Track.get( selected ).getCommon().Version;
+                    renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
                 }
 #if JAVA
                 System.out.println( "PictPianoRoll#paint; (renderer == null)=" + (renderer == null) + "; renderer=" + renderer );
 #endif
 
-                if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
+                if ( renderer == RendererKind.UTAU ) {
                     black = AppManager.editorConfig.PianorollColorUtauBlack.getColor();
                     white = AppManager.editorConfig.PianorollColorUtauWhite.getColor();
                     bar = AppManager.editorConfig.PianorollColorUtauBar.getColor();
                     beat = AppManager.editorConfig.PianorollColorUtauBeat.getColor();
-                } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
                     black = AppManager.editorConfig.PianorollColorVocalo1Black.getColor();
                     white = AppManager.editorConfig.PianorollColorVocalo1White.getColor();
                     bar = AppManager.editorConfig.PianorollColorVocalo1Bar.getColor();
                     beat = AppManager.editorConfig.PianorollColorVocalo1Beat.getColor();
-                } else if ( renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+                } else if ( renderer == RendererKind.STRAIGHT_UTAU ) {
                     black = AppManager.editorConfig.PianorollColorStraightBlack.getColor();
                     white = AppManager.editorConfig.PianorollColorStraightWhite.getColor();
                     bar = AppManager.editorConfig.PianorollColorStraightBar.getColor();
                     beat = AppManager.editorConfig.PianorollColorStraightBeat.getColor();
-                } else if ( renderer.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                } else if ( renderer == RendererKind.AQUES_TONE ) {
                     black = AppManager.editorConfig.PianorollColorAquesToneBlack.getColor();
                     white = AppManager.editorConfig.PianorollColorAquesToneWhite.getColor();
                     bar = AppManager.editorConfig.PianorollColorAquesToneBar.getColor();
@@ -444,15 +444,17 @@ namespace org.kbinani.cadencii {
                 // 現在選択されている歌声合成システムの名前をオーバーレイ表示する
                 if ( AppManager.drawOverSynthNameOnPianoroll ) {
                     g.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, 50 ) );
-                    g.setColor( new Color( 0, 0, 0, 64 ) );
+                    g.setColor( new Color( 0, 0, 0, 32 ) );
                     String str = "VOCALOID2";
-                    if ( renderer.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+                    if ( renderer == RendererKind.AQUES_TONE ) {
                         str = "AquesTone";
-                    } else if ( renderer.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
-                        str = "VOCALOID1";
-                    } else if ( renderer.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+                    } else if ( renderer == RendererKind.VOCALOID1_100 ) {
+                        str = "VOCALOID1 [1.0]";
+                    } else if ( renderer == RendererKind.VOCALOID1_101 ) {
+                        str = "VOCALOID1 [1.1]";
+                    } else if ( renderer == RendererKind.STRAIGHT_UTAU ) {
                         str = "STRAIGHT X UTAU";
-                    } else if ( renderer.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
+                    } else if ( renderer == RendererKind.UTAU ) {
                         str = "UTAU";
                     }
                     g.drawString( str, key_width + 10, 10 );

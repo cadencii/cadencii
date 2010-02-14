@@ -32,7 +32,8 @@ namespace org.kbinani.cadencii {
             SynthesizerType type = SynthesizerType.VOCALOID2;
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
-                if ( vsq.Track.get( AppManager.getSelected() ).getCommon().Version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
                     type = SynthesizerType.VOCALOID1;
                 }
             }
@@ -69,7 +70,8 @@ namespace org.kbinani.cadencii {
                     SynthesizerType type = SynthesizerType.VOCALOID2;
                     VsqFileEx vsq = AppManager.getVsqFile();
                     if ( vsq != null ) {
-                        if ( vsq.Track.get( AppManager.getSelected() ).getCommon().Version.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                        if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
                             type = SynthesizerType.VOCALOID1;
                         }
                         String svalue = (String)value;

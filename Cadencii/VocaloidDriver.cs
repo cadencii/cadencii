@@ -55,6 +55,11 @@ namespace org.kbinani.cadencii {
         /// StartRenderingメソッドが回っている最中にtrue
         /// </summary>
         boolean rendering = false;
+        int dseVersion;
+
+        public int getDseVersion() {
+            return dseVersion;
+        }
 
         public override void close() {
             if ( rendering ) {
@@ -98,11 +103,10 @@ namespace org.kbinani.cadencii {
 
         org.kbinani.media.FirstBufferWrittenCallback s_first_buffer_written_callback;
 
-        public VocaloidDriver() {
+        public VocaloidDriver( int dse_version ) {
             s_instance = this;
+            dseVersion = dse_version;
         }
-
-        //public event WaveIncomingEventHandler WaveIncoming;
 
         public void SetFirstBufferWrittenCallback( org.kbinani.media.FirstBufferWrittenCallback handler ) {
             s_first_buffer_written_callback = handler;

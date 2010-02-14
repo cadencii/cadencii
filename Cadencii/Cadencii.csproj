@@ -52,7 +52,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>DEBUG;USE_DOBJ, ENABLE_PROPERTY, ENABLE_VOCALOID, ENABLE_SCRIPT, ENABLE_MIDI, ENABLE_STRIP_DROPDOWN, ENABLE_AQUESTONE, FAKE_AQUES_TONE_DLL_AS_VOCALOID1</DefineConstants>
+    <DefineConstants>DEBUG;USE_DOBJ, ENABLE_PROPERTY, ENABLE_VOCALOID, ENABLE_SCRIPT, ENABLE_MIDI, ENABLE_STRIP_DROPDOWN, ENABLE_AQUESTONE</DefineConstants>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -102,6 +102,7 @@
     <Compile Include="ClockResolutionUtility.cs" />
     <Compile Include="DefaultVibratoLengthEnum.cs" />
     <Compile Include="DefaultVibratoLengthUtil.cs" />
+    <Compile Include="DllLoad.cs" />
     <Compile Include="DrawObjectType.cs" />
     <Compile Include="DynaffComparisonContext.cs" />
     <Compile Include="EditedZone.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="QuantizeModeUtil.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="RenderedStatus.cs" />
+    <Compile Include="RendererKind.cs" />
     <Compile Include="RenderingRunner.cs" />
     <Compile Include="NoteNumberExpressionType.cs" />
     <Compile Include="NoteNumberProperty.cs" />

@@ -26,6 +26,7 @@ using org.kbinani.java.util;
 using org.kbinani.java.io;
 
 namespace org.kbinani.vsq {
+    using boolean = System.Boolean;
 #endif
 
     public class VocaloSysUtil {
@@ -34,8 +35,37 @@ namespace org.kbinani.vsq {
         private static TreeMap<SynthesizerType, String> s_path_vsti = new TreeMap<SynthesizerType, String>();
         private static TreeMap<SynthesizerType, String> s_path_editor = new TreeMap<SynthesizerType, String>();
         private static Boolean isInitialized = false;
+        /// <summary>
+        /// VOCALOID1の、デフォルトのSynthesize Engineバージョン。1.0の場合100, 1.1の場合101。規定では100(1.0)。
+        /// initメソッドにおいて、VOCALOID.iniから読み取る
+        /// </summary>
+        private static int defaultDseVersion = 100;
+        /// <summary>
+        /// VOCALOID1にて、バージョン1.1のSynthesize Engineが利用可能かどうか。
+        /// 既定ではfalse。DSE1_1.dllが存在するかどうかで判定。
+        /// </summary>
+        private static boolean dseVersion101Available = false;
 
         private VocaloSysUtil() {
+        }
+
+        /// <summary>
+        /// VOCALOID1にて、バージョン1.1のSynthesize Engineが利用可能かどうか。
+        /// 既定ではfalse。DSE1_1.dllが存在するかどうかで判定。
+        /// </summary>
+        public static boolean isDSEVersion101Available() {
+            return dseVersion101Available;
+        }
+
+        /// <summary>
+        /// VOCALOID1の、デフォルトのSynthesize Engineバージョンを取得します。
+        /// 1.0の場合100, 1.1の場合101。規定では100(1.0)。
+        /// </summary>
+        public static int getDefaultDseVersion() {
+            if ( !isInitialized ) {
+                init();
+            }
+            return defaultDseVersion;
         }
 
 #if JAVA
@@ -90,6 +120,51 @@ namespace org.kbinani.vsq {
                     exp_config_sys1 = new ExpressionConfigSys( path_editor.value, path_expdb1.value );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
+
+                // DSE1_1.dllがあるかどうか？
+                String path_dll = PortUtil.getDirectoryName( path_vsti.value );
+                String dse1_1 = PortUtil.combinePath( path_dll, "DSE1_1.dll" );
+                dseVersion101Available = PortUtil.isFileExists( dse1_1 );
+
+                // VOCALOID.iniから、DSEVersionを取得
+                if ( path_editor.value != null && !path_editor.value.Equals( "" ) && PortUtil.isFileExists( path_editor.value ) ) {
+                    String dir = PortUtil.getDirectoryName( path_editor.value );
+                    String ini = PortUtil.combinePath( dir, "VOCALOID.ini" );
+                    if ( PortUtil.isFileExists( ini ) ) {
+                        BufferedReader br = null;
+                        try {
+                            br = new BufferedReader( new InputStreamReader( new FileInputStream( ini ), "Shift_JIS" ) );
+                            while ( br.ready() ) {
+                                String line = br.readLine();
+                                if ( line == null ) continue;
+                                if ( line.Equals( "" ) ) continue;
+                                if ( line.StartsWith( "DSEVersion" ) ) {
+                                    String[] spl = PortUtil.splitString( line, '=' );
+                                    if ( spl.Length >= 2 ) {
+                                        String str_dse_version = spl[1];
+                                        try {
+                                            defaultDseVersion = PortUtil.parseInt( str_dse_version );
+                                        } catch ( Exception ex ) {
+                                            PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
+                                            defaultDseVersion = 100;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
+                        } finally {
+                            if ( br != null ) {
+                                try {
+                                    br.close();
+                                } catch ( Exception ex2 ) {
+                                    PortUtil.stderr.println( "VocaloSysUtil#init; ex2=" + ex2 );
+                                }
+                            }
+                        }
+                    }
+                }
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
