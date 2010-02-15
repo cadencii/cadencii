@@ -19,11 +19,8 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
-using System.Text;
-using System.Windows.Forms;
-using org.kbinani;
-using org.kbinani.java.util;
 using org.kbinani.java.io;
+using org.kbinani.java.util;
 
 namespace org.kbinani.vsq {
     using boolean = System.Boolean;
@@ -1605,6 +1602,7 @@ namespace org.kbinani.vsq {
             {"claunch", "kh l O: n tS"},
             {"claus", "kh l O: z"},
             {"clause", "kh l O: z"},
+            {"clave", "kh l eI v"},
             {"claw", "kh l O:"},
             {"clawed", "kh l O: d"},
             {"claws", "kh l O: z"},
@@ -2420,7 +2418,7 @@ namespace org.kbinani.vsq {
             {"doge", "dh @U dZ"},
             {"dogged", "dh O: g d"},
             {"dogs", "dh Q g z"},
-            {"dog's", "dh Q g z"},
+            {"dog's", "dh O: g z"},
             {"doh", "dh @U"},
             {"doi", "dh OI"},
             {"doig", "dh OI g"},
@@ -2678,6 +2676,7 @@ namespace org.kbinani.vsq {
             {"duped", "dh u: p t"},
             {"dupes", "dh u: p s"},
             {"duque", "dh u: k"},
+            {"dur", "dh @r"},
             {"durn", "dh @r n"},
             {"durr", "dh @r"},
             {"durst", "dh @r s t"},
@@ -3684,6 +3683,7 @@ namespace org.kbinani.vsq {
             {"glimpse", "gh l I m p s"},
             {"glimpsed", "gh l I m p s t"},
             {"glint", "gh l I n t"},
+            {"gliss", "gh l I s"},
             {"glitch", "gh l I tS"},
             {"glitz", "gh l I t s"},
             {"gloat", "gh l @U t"},
@@ -4137,6 +4137,7 @@ namespace org.kbinani.vsq {
             {"halls", "h O: l z"},
             {"hall's", "h O: l z"},
             {"halm", "h Q m"},
+            {"hals", "h { l s"},
             {"hal's", "h { l z"},
             {"halt", "h O: l t"},
             {"halts", "h O: l t s"},
@@ -4735,6 +4736,7 @@ namespace org.kbinani.vsq {
             {"jake", "dZ eI k"},
             {"jakes", "dZ eI k s"},
             {"jake's", "dZ eI k s"},
+            {"jal", "dZ Q l"},
             {"jam", "dZ { m"},
             {"jamb", "dZ { m"},
             {"james", "dZ eI m z"},
@@ -4946,6 +4948,7 @@ namespace org.kbinani.vsq {
             {"kane", "kh eI n"},
             {"kane's", "kh eI n z"},
             {"kang", "kh { N"},
+            {"kanpur", "kh Q@ n p r r"},
             {"kant", "kh { n t"},
             {"kao", "kh aU"},
             {"kapp", "kh { p"},
@@ -6154,6 +6157,7 @@ namespace org.kbinani.vsq {
             {"mix", "m I k s"},
             {"mixed", "m I k s t"},
             {"mize", "m aI z"},
+            {"mk", "m Q@ k"},
             {"mo", "m @U"},
             {"moan", "m @U n"},
             {"moaned", "m @U n d"},
@@ -6193,6 +6197,7 @@ namespace org.kbinani.vsq {
             {"moll", "m Q l"},
             {"molle", "m Q l"},
             {"molt", "m @U l t"},
+            {"molto", "m Q l t"},
             {"mom", "m Q m"},
             {"moms", "m Q m z"},
             {"mom's", "m Q m z"},
@@ -6339,6 +6344,7 @@ namespace org.kbinani.vsq {
             {"n", "e n"},
             {"n.", "e n"},
             {"na", "n Q"},
+            {"naan", "n { n n"},
             {"naas", "n Q z"},
             {"nab", "n { b"},
             {"nabb", "n { b"},
@@ -6349,6 +6355,7 @@ namespace org.kbinani.vsq {
             {"naff", "n { f"},
             {"nag", "n { g"},
             {"nagged", "n { g d"},
+            {"nagpur", "n @r g p l l"},
             {"nags", "n { g z"},
             {"nah", "n Q"},
             {"naik", "n eI k"},
@@ -6410,6 +6417,7 @@ namespace org.kbinani.vsq {
             {"needs", "n i: d z"},
             {"neel", "n i: l"},
             {"neeld", "n i: l d"},
+            {"neem", "n i: m m"},
             {"neer", "n I@"},
             {"ne'er", "n e@"},
             {"neese", "n i: z"},

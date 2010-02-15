@@ -231,12 +231,12 @@ namespace org.kbinani.cadencii {
         public RgbColor PianorollColorVocalo1Beat = new RgbColor( 209, 204, 172 );
         public RgbColor PianorollColorVocalo2Bar = new RgbColor( 161, 157, 136 );
         public RgbColor PianorollColorVocalo2Beat = new RgbColor( 209, 204, 172 );
-        
+
         public RgbColor PianorollColorUtauBlack = new RgbColor( 212, 212, 212 );
         public RgbColor PianorollColorUtauWhite = new RgbColor( 240, 240, 240 );
         public RgbColor PianorollColorUtauBar = new RgbColor( 255, 64, 255 );
         public RgbColor PianorollColorUtauBeat = new RgbColor( 128, 128, 255 );
-        
+
         public RgbColor PianorollColorStraightBlack = new RgbColor( 212, 212, 212 );
         public RgbColor PianorollColorStraightWhite = new RgbColor( 240, 240, 240 );
         public RgbColor PianorollColorStraightBar = new RgbColor( 255, 153, 0 );
@@ -597,9 +597,9 @@ namespace org.kbinani.cadencii {
         public void setPositionQuantize( QuantizeMode value ) {
             if ( m_position_quantize != value ) {
                 m_position_quantize = value;
-                try{
+                try {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
-                }catch( Exception ex ){
+                } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setPositionQuantize; ex=" + ex );
                 }
             }
@@ -624,9 +624,9 @@ namespace org.kbinani.cadencii {
         public void setPositionQuantizeTriplet( boolean value ) {
             if ( m_position_quantize_triplet != value ) {
                 m_position_quantize_triplet = value;
-                try{
+                try {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
-                }catch( Exception ex ){
+                } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
                 }
             }
@@ -651,9 +651,9 @@ namespace org.kbinani.cadencii {
         public void setLengthQuantize( QuantizeMode value ) {
             if ( m_length_quantize != value ) {
                 m_length_quantize = value;
-                try{
+                try {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
-                }catch( Exception ex ){
+                } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setLengthQuantize; ex=" + ex );
                 }
             }
@@ -677,9 +677,9 @@ namespace org.kbinani.cadencii {
         public void setLengthQuantizeTriplet( boolean value ) {
             if ( m_length_quantize_triplet != value ) {
                 m_length_quantize_triplet = value;
-                try{
+                try {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
-                }catch( Exception ex ){
+                } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
                 }
             }
@@ -702,9 +702,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="new_file"></param>
         public void pushRecentFiles( String new_file ) {
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine( "PushRecentFiles" );
-#endif
             // NumRecentFilesは0以下かも知れない
             if ( NumRecentFiles <= 0 ) {
                 NumRecentFiles = 5;

@@ -258,6 +258,14 @@ namespace org.kbinani.cadencii {
             listSingers.setColumnWidth( 1, columnWidthHeaderName );
             listSingers.setColumnWidth( 2, columnWidthHeaderPath );
 
+            if ( VocaloSysUtil.getDefaultDseVersion() == 100 ) {
+                chkLoadVocaloid100.setText( "VOCALOID1 [1.0] (primary)" );
+                chkLoadVocaloid101.setText( "VOCALOID1 [1.1] (secondary)" );
+            } else {
+                chkLoadVocaloid100.setText( "VOCALOID1 [1.0] (secondary)" );
+                chkLoadVocaloid101.setText( "VOCALOID1 [1.1] (primary)" );
+            }
+
             if ( VocaloSysUtil.isDSEVersion101Available() ) {
                 chkLoadSecondaryVOCALOID1.setEnabled( true );
             } else {
