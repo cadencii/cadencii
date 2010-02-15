@@ -23,7 +23,6 @@ namespace org.kbinani.cadencii.impl {
     using BYTE = System.Byte;
 
     public unsafe class DllLoad {
-        /* <= TODO: remove this!
         // DllMain時のアタッチ、デタッチ判定
         public const int DLL_ATTACH = 0;
         public const int DLL_DETACH = 1;
@@ -32,7 +31,15 @@ namespace org.kbinani.cadencii.impl {
         public const int SIZE_OF_PARAMETER_BLOCK = 4096;
         public const uint IMAGE_PARAMETER_MAGIC = 0xCDC31337;
 
-        private static IntPtr RVATOVA( IntPtr base_, int offset ) {
+        private static WORD LOWORD( DWORD value ) {
+            return (WORD)(0xffff & value);
+        }
+
+        private static WORD HIWORD( DWORD value ) {
+            return (WORD)(0xffff & (value >> 16));
+        }
+
+        private static IntPtr RVATOVA( IntPtr base_, DWORD offset ) {
             return new IntPtr( base_.ToInt32() + offset );
         }
 
@@ -101,6 +108,7 @@ namespace org.kbinani.cadencii.impl {
 
         // DllMainのポインタ関数
         //typedef BOOL (WINAPI *DLLMAIN_T)(HMODULE, DWORD, LPVOID);
+        delegate bool DLLMAIN_T( IntPtr hModule, DWORD d, void* lpvoid );
 
         /// <summary>
         /// DLLデータベースのトップ(IMAGE_PARAMETERS*)
@@ -335,42 +343,42 @@ namespace org.kbinani.cadencii.impl {
         /// <param name="lpProcName">関数名</param>
         /// <returns>成功なら関数アドレス、失敗ならNULL</returns>
         public static IntPtr GetDllProcAddress( IntPtr hModule, 
-                                                string lpProcName ){
+                                                IntPtr lpProcName ){
             // hModuleがNULLならばエラー
             if( IntPtr.Zero == hModule ){
                 return IntPtr.Zero;
             }
     
             // ディレクトリカウント取得
-            //PIMAGE_OPTIONAL_HEADER
-            IntPtr poh = OPTHDROFFSET( hModule );
-            int nDirCount = (int)((IMAGE_OPTIONAL_HEADER*)poh.ToPointer())->NumberOfRvaAndSizes;
+            IMAGE_OPTIONAL_HEADER *poh = (IMAGE_OPTIONAL_HEADER*)OPTHDROFFSET( hModule ).ToPointer();
+            int nDirCount = (int)poh->NumberOfRvaAndSizes;
             if( nDirCount < 16 ){
                 return IntPtr.Zero;
             }
 
             // エクスポートディレクトリテーブル取得
             DWORD dwIDEE = win32.IMAGE_DIRECTORY_ENTRY_EXPORT;
-            if( ((IMAGE_OPTIONAL_HEADER*)poh.ToPointer())->getDataDirectory( (int)dwIDEE ).Size == 0 ){
+            if( poh->getDataDirectory( (int)dwIDEE ).Size == 0 ){
                 return IntPtr.Zero;
             }
-            DWORD dwAddr = ((IMAGE_OPTIONAL_HEADER*)poh.ToPointer())->getDataDirectory( (int)dwIDEE ).VirtualAddress;
-            //PIMAGE_EXPORT_DIRECTORY
-            IntPtr ped = RVATOVA( hModule, (int)dwAddr );
+            DWORD dwAddr = poh->getDataDirectory( (int)dwIDEE ).VirtualAddress;
+            IMAGE_EXPORT_DIRECTORY *ped = (IMAGE_EXPORT_DIRECTORY*)RVATOVA( hModule, dwAddr ).ToPointer();
     
             // 序数取得
-            int nOrdinal = (LOWORD( lpProcName )) - ((IMAGE_EXPORT_DIRECTORY*)ped.ToPointer())->Base;
+            int nOrdinal = ((int)LOWORD( (DWORD)lpProcName.ToInt32() )) - (int)ped->Base;
     
-            if( HIWORD( lpProcName ) != 0 ){
-                int count = (int)((IMAGE_EXPORT_DIRECTORY*)ped.ToPointer())->NumberOfNames;
+            if( HIWORD( (DWORD)lpProcName .ToInt32() ) != 0 ){
+                int count = (int)ped->NumberOfNames;
                 // 名前と序数を取得
-                DWORD *pdwNamePtr = (DWORD*)RVATOVA( hModule, (int)((IMAGE_EXPORT_DIRECTORY*)ped.ToPointer())->AddressOfNames );
-                WORD *pwOrdinalPtr = (WORD*)RVATOVA( hModule, (int)((IMAGE_EXPORT_DIRECTORY*)ped.ToPointer())->AddressOfNameOrdinals );
+                DWORD *pdwNamePtr = (DWORD*)RVATOVA( hModule, ped->AddressOfNames );
+                WORD *pwOrdinalPtr = (WORD*)RVATOVA( hModule, ped->AddressOfNameOrdinals );
                 // 関数検索
                 int i;
                 for( i = 0; i < count; i++, pdwNamePtr++, pwOrdinalPtr++ ){
-                    PTCHAR svName = (PTCHAR)RVATOVA( hModule, *pdwNamePtr );
-                    if( lstrcmp(svName, lpProcName) == 0 ){
+                    IntPtr svName = RVATOVA( hModule, *pdwNamePtr );
+                    string str_sv_name = Marshal.PtrToStringAnsi( svName );
+                    string str_lp_proc_name = Marshal.PtrToStringAnsi( lpProcName );
+                    if( str_sv_name == str_lp_proc_name ){
                         nOrdinal = *pwOrdinalPtr;
                         break;
                     }
@@ -382,67 +390,101 @@ namespace org.kbinani.cadencii.impl {
             }
     
             // 発見した関数を返す
-            DWORD *pAddrTable = (DWORD*)RVATOVA( hModule, (int)((IMAGE_EXPORT_DIRECTORY*)ped.ToPointer())->AddressOfFunctions );
-            return RVATOVA( hModule, (int)pAddrTable[nOrdinal] );
+            DWORD *pAddrTable = (DWORD*)RVATOVA( hModule, ped->AddressOfFunctions );
+            return RVATOVA( hModule, pAddrTable[nOrdinal] );
         }
 
-        /*
-
-
-        // -------------------------------------------------------------
-        // DLLのDLLMain関数を走らせる関数
-        // 引数　：DLLハンドル、DLLサイズ、Attach or Detachのフラグ
-        // 戻り値：error -1, success(keep 0, delete 1)
-        // -------------------------------------------------------------
-        static BOOL RunDllMain( PVOID pImageBase, 
+        /// <summary>
+        /// DLLのDLLMain関数を走らせる関数
+        /// </summary>
+        /// <param name="pImageBase">DLLハンドル</param>
+        /// <param name="dwImageSize">DLLサイズ</param>
+        /// <param name="bDetach">Attach or Detachのフラグ</param>
+        /// <returns>error -1, success(keep 0, delete 1)</returns>
+        public static bool RunDllMain( IntPtr pImageBase, 
                                 DWORD dwImageSize, 
-                                BOOL bDetach ){
+                                bool bDetach ){
             // フラグの検査
-            PIMAGE_FILE_HEADER pfh = (PIMAGE_FILE_HEADER)PEFHDROFFSET( pImageBase );
-            if( (pfh->Characteristics & IMAGE_FILE_DLL) == 0 ){
-                return TRUE;
+            IMAGE_FILE_HEADER *pfh = (IMAGE_FILE_HEADER*)PEFHDROFFSET( pImageBase ).ToPointer();
+            if( (pfh->Characteristics & win32.IMAGE_FILE_DLL) == 0 ){
+                return true;
             }
 
             // DLLMain関数のアドレス取得
-            PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( pImageBase );
-            DLLMAIN_T pMain = (DLLMAIN_T)RVATOVA( pImageBase, poh->AddressOfEntryPoint );
+            //PIMAGE_OPTIONAL_HEADER
+            IMAGE_OPTIONAL_HEADER* poh = (IMAGE_OPTIONAL_HEADER*)OPTHDROFFSET( pImageBase ).ToPointer();
+            IMAGE_OPTIONAL_HEADER* ptr_main = (IMAGE_OPTIONAL_HEADER*)RVATOVA( pImageBase, ((IMAGE_OPTIONAL_HEADER*)poh.ToInt32())->AddressOfEntryPoint ).ToPointer();
+            DLLMAIN_T pMain = (DLLMAIN_T)Marshal.GetDelegateForFunctionPointer( ptr_main, typeof( DLLMAIN_T ) );
 
             // デタッチ時orアタッチ時
             if( bDetach ){
-                return pMain( (HMODULE)pImageBase, DLL_PROCESS_DETACH, NULL );
+                return pMain( pImageBase, win32.DLL_PROCESS_DETACH, (void*)0 );
             }else{
-                return pMain( (HMODULE)pImageBase, DLL_PROCESS_ATTACH, NULL );
+                return pMain( pImageBase, win32.DLL_PROCESS_ATTACH, (void*)0 );
             }
         }
 
+        private struct MY_IMAGE_THUNK_DATA {
+            public DWORD u1;
 
+            public DWORD Function {
+                get {
+                    return u1;
+                }
+                set {
+                    u1 = value;
+                }
+            }
+
+            public DWORD Ordinal {
+                get {
+                    return u1;
+                }
+                set {
+                    u1 = value;
+                }
+            }
+
+            public DWORD AddressOfData {
+                get {
+                    return u1;
+                }
+                set {
+                    u1 = value;
+                }
+            }
+        }
+        /*
         // -------------------------------------------------------------
         // インポート関数のアドレス解決関数
         // 引数　：DLLファイルイメージ、DLLファイルイメージのサイズ
         // 戻り値：成功TRUE、失敗FALSE
         // -------------------------------------------------------------
-        BOOL PrepareDllImage( PVOID pMemoryImage, 
+        public static bool PrepareDllImage( IntPtr pMemoryImage, 
                               DWORD dwImageSize ){
-            PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( pMemoryImage );
-            int nDirCount = poh->NumberOfRvaAndSizes;
+            IMAGE_OPTIONAL_HEADER* poh = (IMAGE_OPTIONAL_HEADER*)OPTHDROFFSET( pMemoryImage ).ToPointer();
+            int nDirCount = (int)poh->NumberOfRvaAndSizes;
             if( nDirCount < 16 ){
-                return FALSE;
+                return false;
             }
 
-            PIMAGE_SECTION_HEADER psh = (PIMAGE_SECTION_HEADER)SECHDROFFSET( pMemoryImage );
+            //PIMAGE_SECTION_HEADER
+            IntPtr psh = SECHDROFFSET( pMemoryImage );
 
-            DWORD dwIDEI = IMAGE_DIRECTORY_ENTRY_IMPORT;
+            DWORD dwIDEI = win32.IMAGE_DIRECTORY_ENTRY_IMPORT;
 
-            if( poh->DataDirectory[dwIDEI].Size != 0 ){
-                PIMAGE_IMPORT_DESCRIPTOR pid = (PIMAGE_IMPORT_DESCRIPTOR)RVATOVA( pMemoryImage, 
-                                                                                  poh->DataDirectory[dwIDEI].VirtualAddress );
+            if( poh->getDataDirectory( (int)dwIDEI ).Size != 0 ){
+                IMAGE_IMPORT_DESCRIPTOR* pid = (IMAGE_IMPORT_DESCRIPTOR*)RVATOVA( pMemoryImage, 
+                                                                                  (uint)poh->getDataDirectory( (int)dwIDEI ).VirtualAddress ).ToPointer();
 
                 for( ; pid->OriginalFirstThunk != 0; pid++ ){
-                    PTCHAR svDllName = (PTCHAR)RVATOVA( pMemoryImage, pid->Name );
-                    HMODULE hDll = GetModuleHandle( svDllName );
-                    if( hDll == NULL ){
-                        if( (hDll = LoadLibrary( svDllName )) == NULL ){
-                            return FALSE;
+                    //PTCHAR
+                    IntPtr svDllName = RVATOVA( pMemoryImage, pid->Name );
+                    //HMODULE
+                    IntPtr hDll = win32.GetModuleHandle( svDllName );
+                    if( hDll == IntPtr.Zero ){
+                        if( (hDll = win32.LoadLibrary( svDllName )) == null ){
+                            return false;
                         }
                     }
 
@@ -453,16 +495,9 @@ namespace org.kbinani.cadencii.impl {
                     pid->ForwarderChain = (DWORD)hDll;
                     pid->TimeDateStamp  = IMAGE_PARAMETER_MAGIC;
 
-                    typedef struct{
-                        union{
-                            DWORD Function;
-                            DWORD Ordinal;
-                            DWORD AddressOfData;
-                        } u1;
-                    } MY_IMAGE_THUNK_DATA, *PMY_IMAGE_THUNK_DATA;
-
-                    PMY_IMAGE_THUNK_DATA ptd_in = (PMY_IMAGE_THUNK_DATA)RVATOVA( pMemoryImage, pid->OriginalFirstThunk );
-                    PMY_IMAGE_THUNK_DATA ptd_out = (PMY_IMAGE_THUNK_DATA)RVATOVA( pMemoryImage, pid->FirstThunk );
+                    //PMY_IMAGE_THUNK_DATA 
+                    MY_IMAGE_THUNK_DATA* ptd_in = (MY_IMAGE_THUNK_DATA*)RVATOVA( pMemoryImage, pid->OriginalFirstThunk ).ToPointer();
+                    MY_IMAGE_THUNK_DATA* ptd_out = (MY_IMAGE_THUNK_DATA*)RVATOVA( pMemoryImage, pid->FirstThunk ).ToPointer();
                 
                     for( ; ptd_in->u1.Function != NULL; ptd_in++, ptd_out++ ){
                         FARPROC func;
@@ -531,6 +566,7 @@ namespace org.kbinani.cadencii.impl {
             return TRUE;
         }
 
+        /*
 
         // -------------------------------------------------------------
         // DLLイメージをプロテクトする

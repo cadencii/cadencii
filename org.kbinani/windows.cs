@@ -155,22 +155,63 @@ namespace org.kbinani {
 
         public const int IMAGE_NUMBEROF_DIRECTORY_ENTRIES = 16;
 
-        public const int  IMAGE_DIRECTORY_ENTRY_EXPORT=	0;
-        public const int  IMAGE_DIRECTORY_ENTRY_IMPORT=	1;
-        public const int  IMAGE_DIRECTORY_ENTRY_RESOURCE	=2;
-        public const int IMAGE_DIRECTORY_ENTRY_EXCEPTION=	3;
-        public const int  IMAGE_DIRECTORY_ENTRY_SECURITY	=4;
-        public const int  IMAGE_DIRECTORY_ENTRY_BASERELOC=	5;
-        public const int  IMAGE_DIRECTORY_ENTRY_DEBUG=	6;
-        public const int  IMAGE_DIRECTORY_ENTRY_COPYRIGHT=	7;
-        public const int  IMAGE_DIRECTORY_ENTRY_ARCHITECTURE	=7;
-        public const int  IMAGE_DIRECTORY_ENTRY_GLOBALPTR=	8;
-        public const int  IMAGE_DIRECTORY_ENTRY_TLS	=9;
-        public const int  IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG=	10;
-        public const int  IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT=	11;
-        public const int  IMAGE_DIRECTORY_ENTRY_IAT=	12;
-        public const int  IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT	=13;
+        public const int IMAGE_DIRECTORY_ENTRY_EXPORT = 0;
+        public const int IMAGE_DIRECTORY_ENTRY_IMPORT = 1;
+        public const int IMAGE_DIRECTORY_ENTRY_RESOURCE = 2;
+        public const int IMAGE_DIRECTORY_ENTRY_EXCEPTION = 3;
+        public const int IMAGE_DIRECTORY_ENTRY_SECURITY = 4;
+        public const int IMAGE_DIRECTORY_ENTRY_BASERELOC = 5;
+        public const int IMAGE_DIRECTORY_ENTRY_DEBUG = 6;
+        public const int IMAGE_DIRECTORY_ENTRY_COPYRIGHT = 7;
+        public const int IMAGE_DIRECTORY_ENTRY_ARCHITECTURE = 7;
+        public const int IMAGE_DIRECTORY_ENTRY_GLOBALPTR = 8;
+        public const int IMAGE_DIRECTORY_ENTRY_TLS = 9;
+        public const int IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG = 10;
+        public const int IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT = 11;
+        public const int IMAGE_DIRECTORY_ENTRY_IAT = 12;
+        public const int IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT = 13;
         public const int IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR = 14;
+
+        public const int DLL_PROCESS_DETACH = 0;
+        public const int DLL_PROCESS_ATTACH = 1;
+        public const int DLL_THREAD_ATTACH = 2;
+        public const int DLL_THREAD_DETACH = 3;
+
+        public const int IMAGE_FILE_RELOCS_STRIPPED = 1;
+        public const int IMAGE_FILE_EXECUTABLE_IMAGE = 2;
+        public const int IMAGE_FILE_LINE_NUMS_STRIPPED = 4;
+        public const int IMAGE_FILE_LOCAL_SYMS_STRIPPED = 8;
+        public const int IMAGE_FILE_AGGRESIVE_WS_TRIM = 16;
+        public const int IMAGE_FILE_LARGE_ADDRESS_AWARE = 32;
+        public const int IMAGE_FILE_BYTES_REVERSED_LO = 128;
+        public const int IMAGE_FILE_32BIT_MACHINE = 256;
+        public const int IMAGE_FILE_DEBUG_STRIPPED = 512;
+        public const int IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP = 1024;
+        public const int IMAGE_FILE_NET_RUN_FROM_SWAP = 2048;
+        public const int IMAGE_FILE_SYSTEM = 4096;
+        public const int IMAGE_FILE_DLL = 8192;
+        public const int IMAGE_FILE_UP_SYSTEM_ONLY = 16384;
+        public const int IMAGE_FILE_BYTES_REVERSED_HI = 32768;
+        public const int IMAGE_FILE_MACHINE_UNKNOWN = 0x0000;
+        public const int IMAGE_FILE_MACHINE_AM33 = 0x01d3;
+        public const int IMAGE_FILE_MACHINE_AMD64 = 0x8664;
+        public const int IMAGE_FILE_MACHINE_ARM = 0x01c0;
+        public const int IMAGE_FILE_MACHINE_EBC = 0x0ebc;
+        public const int IMAGE_FILE_MACHINE_I386 = 0x014c;
+        public const int IMAGE_FILE_MACHINE_IA64 = 0x0200;
+        public const int IMAGE_FILE_MACHINE_M32R = 0x9041;
+        public const int IMAGE_FILE_MACHINE_MIPS16 = 0x0266;
+        public const int IMAGE_FILE_MACHINE_MIPSFPU = 0x0366;
+        public const int IMAGE_FILE_MACHINE_MIPSFPU16 = 0x0466;
+        public const int IMAGE_FILE_MACHINE_POWERPC = 0x01f0;
+        public const int IMAGE_FILE_MACHINE_POWERPCFP = 0x01f1;
+        public const int IMAGE_FILE_MACHINE_R4000 = 0x0166;
+        public const int IMAGE_FILE_MACHINE_SH3 = 0x01a2;
+        public const int IMAGE_FILE_MACHINE_SH3DSP = 0x01a3;
+        public const int IMAGE_FILE_MACHINE_SH4 = 0x01a6;
+        public const int IMAGE_FILE_MACHINE_SH5 = 0x01a8;
+        public const int IMAGE_FILE_MACHINE_THUMB = 0x01c2;
+        public const int IMAGE_FILE_MACHINE_WCEMIPSV2 = 0x0169;
         #endregion
 
         #region windef.h
@@ -264,7 +305,7 @@ namespace org.kbinani {
         /// <param name="nSize">バッファのサイズ</param>
         /// <returns></returns>
         [DllImport( "kernel32.dll" )]
-        public static extern DWORD GetModuleFileName( 
+        public static extern DWORD GetModuleFileName(
           IntPtr hModule,    // 
           IntPtr lpFilename,  // 
           DWORD nSize         // 
@@ -286,7 +327,7 @@ namespace org.kbinani {
         [DllImport( "user32.dll" )]
         public static extern bool EnumChildWindows( IntPtr hWndParent, [MarshalAs( UnmanagedType.FunctionPtr )]EnumChildProc lpEnumFunc, int lParam );
 
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -317,6 +358,33 @@ namespace org.kbinani {
     #endregion
 
     #region winnt.h
+    public struct IMAGE_IMPORT_DESCRIPTOR {
+        DWORD union;
+
+        public DWORD Characteristics {
+            get {
+                return union;
+            }
+            set {
+                union = value;
+            }
+        }
+
+        public DWORD OriginalFirstThunk {
+            get {
+                return union;
+            }
+            set {
+                union = value;
+            }
+        }
+
+        public DWORD TimeDateStamp;
+        public DWORD ForwarderChain;
+        public DWORD Name;
+        public DWORD FirstThunk;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public unsafe struct LIST_ENTRY {
         public LIST_ENTRY* Flink;
