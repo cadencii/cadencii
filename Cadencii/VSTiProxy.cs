@@ -36,6 +36,7 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.java.io;
+using org.kbinani.cadencii.util;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -289,8 +290,8 @@ namespace org.kbinani.cadencii {
                     vocaloidDriver.get( i ).close();
                 }
             }
-            if ( DllLoad.isInitialized() ) {
-                DllLoad.terminate();
+            if ( DllLoad.IsInitialized() ) {
+                DllLoad.KillDllLoad();
             }
 #endif
 

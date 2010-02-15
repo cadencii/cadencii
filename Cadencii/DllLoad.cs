@@ -16,7 +16,7 @@ using System;
 using System.Runtime.InteropServices;
 using org.kbinani;
 
-namespace org.kbinani.cadencii.impl {
+namespace org.kbinani.cadencii.implB {
     using WORD = System.UInt16;
     using DWORD = System.UInt32;
     using LONG = System.Int32;
@@ -393,7 +393,7 @@ namespace org.kbinani.cadencii.impl {
             DWORD *pAddrTable = (DWORD*)RVATOVA( hModule, ped->AddressOfFunctions );
             return RVATOVA( hModule, pAddrTable[nOrdinal] );
         }
-
+        /*
         /// <summary>
         /// DLLのDLLMain関数を走らせる関数
         /// </summary>
@@ -910,7 +910,7 @@ namespace org.kbinani.cadencii.impl {
 
 }
 
-namespace org.kbinani.cadencii{
+namespace org.kbinani.cadencii.implA{
     using boolean = System.Boolean;
 
     public class DllLoad {
