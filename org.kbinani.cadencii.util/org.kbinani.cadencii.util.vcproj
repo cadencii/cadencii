@@ -6,7 +6,7 @@
 	ProjectGUID="{D75DA4EB-238B-4E00-AF4E-0AE4D285FFDE}"
 	RootNamespace="orgkbinanicadenciiutil"
 	Keyword="ManagedCProj"
-	TargetFrameworkVersion="196613"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -21,7 +21,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			CharacterSet="1"
+			CharacterSet="2"
 			ManagedExtensions="1"
 			>
 			<Tool
@@ -91,8 +91,8 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="1"
+			ConfigurationType="1"
+			CharacterSet="2"
 			ManagedExtensions="1"
 			WholeProgramOptimization="1"
 			>
@@ -118,6 +118,7 @@
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
+				CallingConvention="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -132,8 +133,13 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(NoInherit)"
 				LinkIncremental="1"
+				EnableUAC="true"
+				UACExecutionLevel="0"
 				GenerateDebugInformation="true"
+				RandomizedBaseAddress="2"
+				FixedBaseAddress="1"
 				TargetMachine="1"
+				CLRThreadAttribute="0"
 			/>
 			<Tool
 				Name="VCALinkTool"

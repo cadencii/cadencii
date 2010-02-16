@@ -10,6 +10,9 @@
 #include <windowsx.h>
 #include <tchar.h>
 #include <winnt.h>
+#include <stdio.h>
+#include <vcclr.h>
+#include <stdlib.h>
 
 // DllMain時のアタッチ、デタッチ判定
 #define DLL_ATTACH    0
@@ -90,6 +93,7 @@ CRITICAL_SECTION g_DLLCrit;
 bool g_initialized = false;
 
 using namespace System;
+using namespace System::Runtime::InteropServices;
 
 namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
 
@@ -98,7 +102,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         // -------------------------------------------------------------
         // 初期化処理
         // -------------------------------------------------------------
-        static void InitializeDllLoad(){
+        static void initialize(){
             if( g_initialized ){
                 return;
             }
@@ -107,14 +111,14 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             g_initialized = true;
         }
 
-        static bool IsInitialized(){
+        static bool isInitialized(){
             return g_initialized;
         }
 
         // -------------------------------------------------------------
         // 終了処理
         // -------------------------------------------------------------
-        static void KillDllLoad(){
+        static void terminate(){
             if( !g_initialized ) return;
             PIMAGE_PARAMETERS cur = g_pImageParamHead;
 
@@ -128,6 +132,205 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         }
 
 
+        // -------------------------------------------------------------
+        // DLL内にあるエクスポート関数を検索する
+        // 引数　：DLLハンドル、関数名
+        // 戻り値：成功なら関数アドレス、失敗ならNULL
+        // -------------------------------------------------------------
+        static IntPtr getProcAddress( IntPtr ^hModule, 
+                                         String ^lpProcName ){
+            // hModuleがNULLならばエラー
+			if( IntPtr::Zero == hModule ){
+                return IntPtr::Zero;
+            }
+            
+            // ディレクトリカウント取得
+			PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( hModule->ToPointer() );
+            int nDirCount = poh->NumberOfRvaAndSizes;
+            if( nDirCount < 16 ){
+                return IntPtr::Zero;
+            }
+
+            // エクスポートディレクトリテーブル取得
+            DWORD dwIDEE = IMAGE_DIRECTORY_ENTRY_EXPORT;
+            if( poh->DataDirectory[dwIDEE].Size == 0 ){
+                return IntPtr::Zero;
+            }
+            DWORD dwAddr = poh->DataDirectory[dwIDEE].VirtualAddress;
+            PIMAGE_EXPORT_DIRECTORY ped = (PIMAGE_EXPORT_DIRECTORY)RVATOVA( hModule->ToInt32(), dwAddr );
+            
+            // 序数取得
+			TCHAR char_proc_name[MAX_PATH];
+			_stprintf_s( char_proc_name, _T( "%s" ), lpProcName );
+            int nOrdinal = (LOWORD(char_proc_name)) - ped->Base;
+            
+            if( HIWORD( char_proc_name ) != 0 ){
+                int count = ped->NumberOfNames;
+                // 名前と序数を取得
+                DWORD *pdwNamePtr = (PDWORD)RVATOVA( hModule->ToInt32(), ped->AddressOfNames );
+                WORD *pwOrdinalPtr = (PWORD)RVATOVA( hModule->ToInt32(), ped->AddressOfNameOrdinals );
+                // 関数検索
+                int i;
+                for( i = 0; i < count; i++, pdwNamePtr++, pwOrdinalPtr++ ){
+                    PTCHAR svName = (PTCHAR)RVATOVA( hModule->ToInt32(), *pdwNamePtr );
+                    if( lstrcmp(svName, char_proc_name ) == 0 ){
+                        nOrdinal = *pwOrdinalPtr;
+                        break;
+                    }
+                }
+                // 見つからなければNULLを返却
+                if( i == count ){
+                    return IntPtr::Zero;
+                }
+            }
+            
+            // 発見した関数を返す
+            PDWORD pAddrTable = (PDWORD)RVATOVA( hModule->ToInt32(), ped->AddressOfFunctions );
+			IntPtr ret( RVATOVA( hModule->ToInt32(), pAddrTable[nOrdinal] ) );
+            return ret;
+        }
+
+        // -------------------------------------------------------------
+        // DLLをロードする関数
+        // 引数　：DLLファイル名、予約語（NULL固定）、フラグ
+        // 戻り値：成功DLLハンドル、失敗NULL
+        // -------------------------------------------------------------
+        static IntPtr loadDllEx( String^ lpLibFileName,
+                            IntPtr^ hReserved,
+                            DWORD dwFlags ){
+            // 代替ファイル検索方法指定
+            // （LOAD_WITH_ALTERED_SEARCH_PATH）はサポートしない
+            if( dwFlags & LOAD_WITH_ALTERED_SEARCH_PATH ){
+#ifdef _DEBUG
+				Console::WriteLine( "DllLoad#LoadDllEx; error: not supported LOAD_WITH_ALTERED_PATH" );
+#endif
+                return IntPtr::Zero;
+            }
+
+            // DLLパス取得
+            TCHAR szPath[MAX_PATH + 1], *szFilePart;
+
+			const size_t newsize = 100;
+			pin_ptr<const wchar_t> wch = PtrToStringChars( lpLibFileName );
+#ifdef UNICODE
+			wchar_t char_lib_file_name[newsize];
+			wcscpy_s( char_lib_file_name, wch );
+#else
+			size_t origsize = wcslen(wch) + 1;
+			size_t convertedChars = 0;
+			char char_lib_file_name[newsize];
+			wcstombs_s(&convertedChars, char_lib_file_name, origsize, wch, _TRUNCATE);
+#endif
+
+#ifdef _DEBUG
+			Console::WriteLine( "DllLoad#LoadDllEx; lpLibFileName=" + lpLibFileName );
+			Console::WriteLine( "DllLoad#LoadDllEx; char_lib_file_name=" + gcnew String( char_lib_file_name ) );
+#endif
+			int nLen = SearchPath( NULL, char_lib_file_name, _T( ".dll" ), MAX_PATH, szPath, &szFilePart );
+            if( nLen == 0 ){
+#ifdef _DEBUG
+				Console::WriteLine( "DllLoad#LoadDllEx; SearchPath returns 0" );
+#endif
+                return IntPtr::Zero;
+            }
+
+            // ファイルマッピング
+            HANDLE hFile = CreateFile( szPath,
+                                       GENERIC_READ,
+                                       FILE_SHARE_READ,
+                                       NULL,
+                                       OPEN_EXISTING,
+                                       0,
+                                       NULL );
+            if( hFile == INVALID_HANDLE_VALUE ){
+#ifdef _DEBUG
+				Console::WriteLine( "DllLoad#LoadDllEx; CreateFile returns INVALID_HANDLE_VALUE" );
+#endif
+                return IntPtr::Zero;
+            }
+            HANDLE hMapping = CreateFileMapping( hFile,
+                                                 NULL,
+                                                 PAGE_READONLY,
+                                                 0,
+                                                 0,
+                                                 NULL );
+            CloseHandle( hFile );
+            LPVOID pBaseAddr = MapViewOfFile( hMapping, FILE_MAP_READ, 0, 0, 0 );
+            if( pBaseAddr == NULL ){
+                CloseHandle( hMapping );
+#ifdef _DEBUG
+				Console::WriteLine( "DllLoad#LoadDllEx; MapViewOfFile returns NULL" );
+#endif
+				return IntPtr::Zero;
+            }
+
+            // DLLイメージの読み込み
+            HMODULE hRet = LoadDllFromImage( pBaseAddr,
+                                             szFilePart,
+                                             dwFlags & ~LOAD_WITH_ALTERED_SEARCH_PATH );
+
+            // ファイルマッピング解除
+            UnmapViewOfFile( pBaseAddr );
+            CloseHandle( hMapping );
+			IntPtr ptr( hRet );
+            return ptr;
+        }
+
+
+        // -------------------------------------------------------------
+        // DLLをロードする関数（LoadDLLExへの橋渡し）
+        // 引数　：DLLファイル名
+        // 戻り値：成功DLLハンドル、失敗NULL
+        // -------------------------------------------------------------
+        static IntPtr loadDll( String^ lpLibFileName ){
+			return loadDllEx( lpLibFileName, IntPtr::Zero, 0 );
+        }
+
+
+        // -------------------------------------------------------------
+        // DLLを開放する関数
+        // 引数　：DLLハンドル
+        // 戻り値：成功TRUE、失敗FALSE
+        // -------------------------------------------------------------
+        static BOOL freeDll( IntPtr ^hLibModule ){
+            // hLibModuleがNULLなら問題外
+			if( hLibModule == IntPtr::Zero ){
+                return FALSE;
+            }
+            
+            // PEデータの識別
+			PIMAGE_DOS_HEADER doshead = (PIMAGE_DOS_HEADER)hLibModule->ToPointer();
+            if( doshead->e_magic != IMAGE_DOS_SIGNATURE ){
+                return FALSE;
+            }
+			if( *(PDWORD)NTSIGNATURE(hLibModule->ToPointer()) != IMAGE_NT_SIGNATURE ){
+                return FALSE;
+            }
+            PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( hLibModule->ToPointer() );
+            if( poh->Magic != 0x010B ){
+                return FALSE;
+            }
+
+            DWORD dwFlags;
+            TCHAR szName[MAX_PATH];
+            // DLLデータベースからはずす
+            int dllaction = RemoveDllReference( hLibModule->ToPointer(), szName, &dwFlags );
+            if( dllaction == -1 ){
+                return FALSE;
+            }
+
+            // DLLのデタッチ
+            if( !(dwFlags & (LOAD_LIBRARY_AS_DATAFILE | DONT_RESOLVE_DLL_REFERENCES)) ){
+                // カウンタが0（dllaction=1）ならばDLLをデタッチして終了
+                if( dllaction ){
+                    RunDllMain( hLibModule->ToPointer(), poh->SizeOfImage, DLL_DETACH );
+                    return UnmapViewOfFile( hLibModule->ToPointer() );
+                }
+            }
+            return TRUE;
+        }
+
+	private:
         // -------------------------------------------------------------
         // データベースに新しいDLLを追加
         // 引数　：DLLハンドル、DLL名（識別子）
@@ -265,7 +468,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             }
             
             // まずは通常のGetModuleFileNameで調べる
-            DWORD dwRet = GetModuleFileName( hModule, lpFileName, dwSize );
+			DWORD dwRet = GetModuleFileName( hModule, lpFileName, dwSize );
             if( dwRet != 0 ){
                 return dwRet;
             }
@@ -290,64 +493,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             return 0;
         }
 
-
-        // -------------------------------------------------------------
-        // DLL内にあるエクスポート関数を検索する
-        // 引数　：DLLハンドル、関数名
-        // 戻り値：成功なら関数アドレス、失敗ならNULL
-        // -------------------------------------------------------------
-        static IntPtr^ GetDllProcAddress( HMODULE hModule, 
-                                          LPCSTR lpProcName ){
-            // hModuleがNULLならばエラー
-            if( NULL == hModule ){
-                return IntPtr::Zero;
-            }
-            
-            // ディレクトリカウント取得
-            PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( hModule );
-            int nDirCount = poh->NumberOfRvaAndSizes;
-            if( nDirCount < 16 ){
-                return IntPtr::Zero;
-            }
-
-            // エクスポートディレクトリテーブル取得
-            DWORD dwIDEE = IMAGE_DIRECTORY_ENTRY_EXPORT;
-            if( poh->DataDirectory[dwIDEE].Size == 0 ){
-                return IntPtr::Zero;
-            }
-            DWORD dwAddr = poh->DataDirectory[dwIDEE].VirtualAddress;
-            PIMAGE_EXPORT_DIRECTORY ped = (PIMAGE_EXPORT_DIRECTORY)RVATOVA( hModule, dwAddr );
-            
-            // 序数取得
-            int nOrdinal = (LOWORD(lpProcName)) - ped->Base;
-            
-            if( HIWORD( lpProcName ) != 0 ){
-                int count = ped->NumberOfNames;
-                // 名前と序数を取得
-                DWORD *pdwNamePtr = (PDWORD)RVATOVA( hModule, ped->AddressOfNames );
-                WORD *pwOrdinalPtr = (PWORD)RVATOVA( hModule, ped->AddressOfNameOrdinals );
-                // 関数検索
-                int i;
-                for( i = 0; i < count; i++, pdwNamePtr++, pwOrdinalPtr++ ){
-                    PCHAR svName = (PCHAR)RVATOVA( hModule, *pdwNamePtr );
-                    if( lstrcmpA(svName, lpProcName) == 0 ){
-                        nOrdinal = *pwOrdinalPtr;
-                        break;
-                    }
-                }
-                // 見つからなければNULLを返却
-                if( i == count ){
-                    return IntPtr::Zero;
-                }
-            }
-            
-            // 発見した関数を返す
-            PDWORD pAddrTable = (PDWORD)RVATOVA( hModule, ped->AddressOfFunctions );
-            return gcnew IntPtr( RVATOVA( hModule, pAddrTable[nOrdinal] ) );
-        }
-
-
-        // -------------------------------------------------------------
+		// -------------------------------------------------------------
         // DLLのDLLMain関数を走らせる関数
         // 引数　：DLLハンドル、DLLサイズ、Attach or Detachのフラグ
         // 戻り値：error -1, success(keep 0, delete 1)
@@ -355,7 +501,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         static BOOL RunDllMain( PVOID pImageBase, 
                                 DWORD dwImageSize, 
                                 BOOL bDetach ){
-            // フラグの検査
+			// フラグの検査
             PIMAGE_FILE_HEADER pfh = (PIMAGE_FILE_HEADER)PEFHDROFFSET( pImageBase );
             if( (pfh->Characteristics & IMAGE_FILE_DLL) == 0 ){
                 return TRUE;
@@ -363,8 +509,11 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
 
             // DLLMain関数のアドレス取得
             PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( pImageBase );
-            DLLMAIN_T pMain = (DLLMAIN_T)RVATOVA( pImageBase, poh->AddressOfEntryPoint );
-
+			void* rawPtrMain = RVATOVA( pImageBase, poh->AddressOfEntryPoint );
+			DLLMAIN_T pMain = (DLLMAIN_T)rawPtrMain;			
+#ifdef _DEBUG
+			Console::WriteLine( "DllLoad#RunDllMain; pMain=0x" + String::Format( "{0:X}", (int)pMain ) );
+#endif
             // デタッチ時orアタッチ時
             if( bDetach ){
                 return pMain( (HMODULE)pImageBase, DLL_PROCESS_DETACH, NULL );
@@ -693,131 +842,6 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
 
             return (HMODULE)pImageBase;    
         }
-
-
-        // -------------------------------------------------------------
-        // DLLをロードする関数
-        // 引数　：DLLファイル名、予約語（NULL固定）、フラグ
-        // 戻り値：成功DLLハンドル、失敗NULL
-        // -------------------------------------------------------------
-#ifdef UNICODE
-        static IntPtr^ LoadDllExW( LPCWSTR lpLibFileName,
-                            HANDLE hReserved,
-                            DWORD dwFlags )
-#else
-        static HMODULE LoadDllExA( LPCSTR lpLibFileName,
-                            HANDLE hReserved,
-                            DWORD dwFlags )
-#endif
-        {
-            // 代替ファイル検索方法指定
-            // （LOAD_WITH_ALTERED_SEARCH_PATH）はサポートしない
-            if( dwFlags & LOAD_WITH_ALTERED_SEARCH_PATH ){
-                return IntPtr::Zero;
-            }
-
-            // DLLパス取得
-            TCHAR szPath[MAX_PATH + 1], *szFilePart;
-            int nLen = SearchPath( NULL, lpLibFileName, _T(".dll"), MAX_PATH, szPath, &szFilePart );
-            if( nLen == 0 ){
-                return IntPtr::Zero;
-            }
-
-            // ファイルマッピング
-            HANDLE hFile = CreateFile( szPath,
-                                       GENERIC_READ,
-                                       FILE_SHARE_READ,
-                                       NULL,
-                                       OPEN_EXISTING,
-                                       0,
-                                       NULL );
-            if( hFile == INVALID_HANDLE_VALUE ){
-                return IntPtr::Zero;
-            }
-            HANDLE hMapping = CreateFileMapping( hFile,
-                                                 NULL,
-                                                 PAGE_READONLY,
-                                                 0,
-                                                 0,
-                                                 NULL );
-            CloseHandle( hFile );
-            LPVOID pBaseAddr = MapViewOfFile( hMapping, FILE_MAP_READ, 0, 0, 0 );
-            if( pBaseAddr == NULL ){
-                CloseHandle( hMapping );
-                return IntPtr::Zero;
-            }
-
-            // DLLイメージの読み込み
-            HMODULE hRet = LoadDllFromImage( pBaseAddr,
-                                             szFilePart,
-                                             dwFlags & ~LOAD_WITH_ALTERED_SEARCH_PATH );
-
-            // ファイルマッピング解除
-            UnmapViewOfFile( pBaseAddr );
-            CloseHandle( hMapping );
-            return gcnew IntPtr( hRet );
-        }
-
-
-        // -------------------------------------------------------------
-        // DLLをロードする関数（LoadDLLExへの橋渡し）
-        // 引数　：DLLファイル名
-        // 戻り値：成功DLLハンドル、失敗NULL
-        // -------------------------------------------------------------
-#ifdef UNICODE
-        static IntPtr^ LoadDllW( LPCWSTR lpLibFileName ){
-            return LoadDllExW( lpLibFileName, NULL, 0 );
-        }
-#else
-        static HMODULE LoadDllA( LPCSTR lpLibFileName ){
-            return LoadDllExA( lpLibFileName, NULL, 0 );
-        }
-#endif
-
-
-        // -------------------------------------------------------------
-        // DLLを開放する関数
-        // 引数　：DLLハンドル
-        // 戻り値：成功TRUE、失敗FALSE
-        // -------------------------------------------------------------
-        static BOOL FreeDll( HMODULE hLibModule ){
-            // hLibModuleがNULLなら問題外
-            if( hLibModule == NULL ){
-                return FALSE;
-            }
-            
-            // PEデータの識別
-            PIMAGE_DOS_HEADER doshead = (PIMAGE_DOS_HEADER)hLibModule;
-            if( doshead->e_magic != IMAGE_DOS_SIGNATURE ){
-                return FALSE;
-            }
-            if( *(PDWORD)NTSIGNATURE(hLibModule) != IMAGE_NT_SIGNATURE ){
-                return FALSE;
-            }
-            PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( hLibModule );
-            if( poh->Magic != 0x010B ){
-                return FALSE;
-            }
-
-            DWORD dwFlags;
-            TCHAR szName[MAX_PATH];
-            // DLLデータベースからはずす
-            int dllaction = RemoveDllReference( hLibModule, szName, &dwFlags );
-            if( dllaction == -1 ){
-                return FALSE;
-            }
-
-            // DLLのデタッチ
-            if( !(dwFlags & (LOAD_LIBRARY_AS_DATAFILE | DONT_RESOLVE_DLL_REFERENCES)) ){
-                // カウンタが0（dllaction=1）ならばDLLをデタッチして終了
-                if( dllaction ){
-                    RunDllMain( hLibModule, poh->SizeOfImage, DLL_DETACH );
-                    return UnmapViewOfFile( hLibModule );
-                }
-            }
-            return TRUE;
-        }
-
 	};
 
 } } } }

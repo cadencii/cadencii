@@ -917,24 +917,24 @@ namespace org.kbinani.cadencii.implA{
         [DllImport( "util" )]
         private static extern boolean IsInitialized();
         [DllImport( "util" )]
-        private static extern void InitializeDllLoad();
+        private static extern void InitializeDLLLoad();
         [DllImport( "util" )]
-        private static extern void KillDllLoad();
+        private static extern void KillDLLLoad();
         [DllImport( "util" )]
-        private static extern IntPtr GetDllProcAddress( IntPtr hModule, string lpProcName );
+        private static extern IntPtr GetDLLProcAddress( IntPtr hModule, string lpProcName );
+        /*[DllImport( "util" )]
+        private static extern IntPtr LoadDllW( [MarshalAs( UnmanagedType.LPWStr )]string lpLibFileName );*/
         [DllImport( "util" )]
-        private static extern IntPtr LoadDllW( [MarshalAs( UnmanagedType.LPWStr )]string lpLibFileName );
+        private static extern IntPtr LoadDLL( [MarshalAs( UnmanagedType.LPStr )]string lpLibFileName );
         [DllImport( "util" )]
-        private static extern IntPtr LoadDllA( [MarshalAs( UnmanagedType.LPStr )]string lpLibFileName );
-        [DllImport( "util" )]
-        private static extern boolean FreeDll( IntPtr hLibModule );
+        private static extern boolean FreeDLL( IntPtr hLibModule );
 
         private DllLoad(){
         }
 
         public static void terminate() {
             try {
-                KillDllLoad();
+                KillDLLLoad();
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "DllLoad#terminate; ex=" + ex );
             }
@@ -942,7 +942,7 @@ namespace org.kbinani.cadencii.implA{
 
         public static IntPtr getProcAddress( IntPtr hModule, string lpProcName ) {
             try {
-                return GetDllProcAddress( hModule, lpProcName );
+                return GetDLLProcAddress( hModule, lpProcName );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "DllLoad#getProcAddress; ex=" + ex );
             }
@@ -960,7 +960,7 @@ namespace org.kbinani.cadencii.implA{
 
         public static void initialize() {
             try {
-                InitializeDllLoad();
+                InitializeDLLLoad();
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "DllLoad#initialize; ex=" + ex );
             }
@@ -969,27 +969,27 @@ namespace org.kbinani.cadencii.implA{
         public static IntPtr loadDll( string lpLibFileName ) {
             IntPtr ret = IntPtr.Zero;
             try {
-                ret = LoadDllA( lpLibFileName );
+                ret = LoadDLL( lpLibFileName );
                 return ret;
             } catch ( EntryPointNotFoundException ex ) {
                 ret = IntPtr.Zero;
             } catch ( Exception ex1 ) {
                 PortUtil.stderr.println( "DllLoad#loadDll; ex1=" + ex1 );
             }
-            if ( ret == IntPtr.Zero ) {
+            /*if ( ret == IntPtr.Zero ) {
                 try {
                     ret = LoadDllW( lpLibFileName );
                 } catch ( Exception ex ) {
                     ret = IntPtr.Zero;
                     PortUtil.stderr.println( "DllLoad#loadDll; ex=" + ex );
                 }
-            }
+            }*/
             return ret;
         }
 
         public static boolean freeDll( IntPtr hModule ) {
             try {
-                return FreeDll( hModule );
+                return FreeDLL( hModule );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "DllLoad#freeDll; ex=" + ex );
             }

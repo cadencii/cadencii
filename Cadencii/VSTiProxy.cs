@@ -36,7 +36,7 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.java.io;
-using org.kbinani.cadencii.util;
+using org.kbinani.cadencii.implA;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -68,6 +68,10 @@ namespace org.kbinani.cadencii {
 #else
         public static AquesToneDriver aquesToneDriver = null;
 #endif
+#endif
+
+#if DEBUG
+        delegate int PADDFUNC( int a, int b );
 #endif
 
         private static RenderingRunner s_rendering_context;
@@ -290,8 +294,8 @@ namespace org.kbinani.cadencii {
                     vocaloidDriver.get( i ).close();
                 }
             }
-            if ( DllLoad.IsInitialized() ) {
-                DllLoad.KillDllLoad();
+            if ( DllLoad.isInitialized() ) {
+                DllLoad.terminate();
             }
 #endif
 
