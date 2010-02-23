@@ -137,15 +137,15 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         // 引数　：DLLハンドル、関数名
         // 戻り値：成功なら関数アドレス、失敗ならNULL
         // -------------------------------------------------------------
-        static IntPtr getProcAddress( IntPtr ^hModule, 
-                                         String ^lpProcName ){
+        static IntPtr getProcAddress( IntPtr hModule, 
+                                      String ^lpProcName ){
             // hModuleがNULLならばエラー
 			if( IntPtr::Zero == hModule ){
                 return IntPtr::Zero;
             }
             
             // ディレクトリカウント取得
-			PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( hModule->ToPointer() );
+            PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( hModule.ToPointer() );
             int nDirCount = poh->NumberOfRvaAndSizes;
             if( nDirCount < 16 ){
                 return IntPtr::Zero;
@@ -157,7 +157,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
                 return IntPtr::Zero;
             }
             DWORD dwAddr = poh->DataDirectory[dwIDEE].VirtualAddress;
-            PIMAGE_EXPORT_DIRECTORY ped = (PIMAGE_EXPORT_DIRECTORY)RVATOVA( hModule->ToInt32(), dwAddr );
+            PIMAGE_EXPORT_DIRECTORY ped = (PIMAGE_EXPORT_DIRECTORY)RVATOVA( hModule.ToInt32(), dwAddr );
             
             // 序数取得
 			TCHAR char_proc_name[MAX_PATH];
@@ -167,12 +167,12 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             if( HIWORD( char_proc_name ) != 0 ){
                 int count = ped->NumberOfNames;
                 // 名前と序数を取得
-                DWORD *pdwNamePtr = (PDWORD)RVATOVA( hModule->ToInt32(), ped->AddressOfNames );
-                WORD *pwOrdinalPtr = (PWORD)RVATOVA( hModule->ToInt32(), ped->AddressOfNameOrdinals );
+                DWORD *pdwNamePtr = (PDWORD)RVATOVA( hModule.ToInt32(), ped->AddressOfNames );
+                WORD *pwOrdinalPtr = (PWORD)RVATOVA( hModule.ToInt32(), ped->AddressOfNameOrdinals );
                 // 関数検索
                 int i;
                 for( i = 0; i < count; i++, pdwNamePtr++, pwOrdinalPtr++ ){
-                    PTCHAR svName = (PTCHAR)RVATOVA( hModule->ToInt32(), *pdwNamePtr );
+                    PTCHAR svName = (PTCHAR)RVATOVA( hModule.ToInt32(), *pdwNamePtr );
                     if( lstrcmp(svName, char_proc_name ) == 0 ){
                         nOrdinal = *pwOrdinalPtr;
                         break;
@@ -185,8 +185,8 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             }
             
             // 発見した関数を返す
-            PDWORD pAddrTable = (PDWORD)RVATOVA( hModule->ToInt32(), ped->AddressOfFunctions );
-			IntPtr ret( RVATOVA( hModule->ToInt32(), pAddrTable[nOrdinal] ) );
+            PDWORD pAddrTable = (PDWORD)RVATOVA( hModule.ToInt32(), ped->AddressOfFunctions );
+			IntPtr ret( RVATOVA( hModule.ToInt32(), pAddrTable[nOrdinal] ) );
             return ret;
         }
 
@@ -196,8 +196,8 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         // 戻り値：成功DLLハンドル、失敗NULL
         // -------------------------------------------------------------
         static IntPtr loadDllEx( String^ lpLibFileName,
-                            IntPtr^ hReserved,
-                            DWORD dwFlags ){
+                                 IntPtr hReserved,
+                                 DWORD dwFlags ){
             // 代替ファイル検索方法指定
             // （LOAD_WITH_ALTERED_SEARCH_PATH）はサポートしない
             if( dwFlags & LOAD_WITH_ALTERED_SEARCH_PATH ){
@@ -292,21 +292,21 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         // 引数　：DLLハンドル
         // 戻り値：成功TRUE、失敗FALSE
         // -------------------------------------------------------------
-        static BOOL freeDll( IntPtr ^hLibModule ){
+        static BOOL freeDll( IntPtr hLibModule ){
             // hLibModuleがNULLなら問題外
 			if( hLibModule == IntPtr::Zero ){
                 return FALSE;
             }
             
             // PEデータの識別
-			PIMAGE_DOS_HEADER doshead = (PIMAGE_DOS_HEADER)hLibModule->ToPointer();
+			PIMAGE_DOS_HEADER doshead = (PIMAGE_DOS_HEADER)hLibModule.ToPointer();
             if( doshead->e_magic != IMAGE_DOS_SIGNATURE ){
                 return FALSE;
             }
-			if( *(PDWORD)NTSIGNATURE(hLibModule->ToPointer()) != IMAGE_NT_SIGNATURE ){
+			if( *(PDWORD)NTSIGNATURE(hLibModule.ToPointer()) != IMAGE_NT_SIGNATURE ){
                 return FALSE;
             }
-            PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( hLibModule->ToPointer() );
+            PIMAGE_OPTIONAL_HEADER poh = (PIMAGE_OPTIONAL_HEADER)OPTHDROFFSET( hLibModule.ToPointer() );
             if( poh->Magic != 0x010B ){
                 return FALSE;
             }
@@ -314,7 +314,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             DWORD dwFlags;
             TCHAR szName[MAX_PATH];
             // DLLデータベースからはずす
-            int dllaction = RemoveDllReference( hLibModule->ToPointer(), szName, &dwFlags );
+            int dllaction = RemoveDllReference( hLibModule.ToPointer(), szName, &dwFlags );
             if( dllaction == -1 ){
                 return FALSE;
             }
@@ -323,8 +323,8 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             if( !(dwFlags & (LOAD_LIBRARY_AS_DATAFILE | DONT_RESOLVE_DLL_REFERENCES)) ){
                 // カウンタが0（dllaction=1）ならばDLLをデタッチして終了
                 if( dllaction ){
-                    RunDllMain( hLibModule->ToPointer(), poh->SizeOfImage, DLL_DETACH );
-                    return UnmapViewOfFile( hLibModule->ToPointer() );
+                    RunDllMain( hLibModule.ToPointer(), poh->SizeOfImage, DLL_DETACH );
+                    return UnmapViewOfFile( hLibModule.ToPointer() );
                 }
             }
             return TRUE;

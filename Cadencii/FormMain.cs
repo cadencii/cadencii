@@ -6043,10 +6043,10 @@ namespace org.kbinani.cadencii {
             m_preference_dlg.setWaveFileOutputChannel( AppManager.editorConfig.WaveFileOutputChannel );
             m_preference_dlg.setUseProjectCache( AppManager.editorConfig.UseProjectCache );
             m_preference_dlg.setLoadAquesTone( !AppManager.editorConfig.DoNotUseAquesTone );
+            m_preference_dlg.setLoadSecondaryVocaloid1Dll( AppManager.editorConfig.LoadSecondaryVocaloid1Dll );
             m_preference_dlg.setLoadVocaloid100( !AppManager.editorConfig.DoNotUseVocaloid100 );
             m_preference_dlg.setLoadVocaloid101( !AppManager.editorConfig.DoNotUseVocaloid101 );
             m_preference_dlg.setLoadVocaloid2( !AppManager.editorConfig.DoNotUseVocaloid2 );
-            m_preference_dlg.setLoadSecondaryVocaloid1Dll( AppManager.editorConfig.LoadSecondaryVocaloid1Dll );
 
             m_preference_dlg.setLocation( getFormPreferedLocation( m_preference_dlg ) );
 

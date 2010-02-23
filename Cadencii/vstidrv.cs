@@ -20,7 +20,8 @@ using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
 using VstSdk;
-using org.kbinani.cadencii.implA;
+//using org.kbinani.cadencii.implA;
+using org.kbinani.cadencii.util;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
