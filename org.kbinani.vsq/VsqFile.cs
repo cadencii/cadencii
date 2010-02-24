@@ -2925,6 +2925,9 @@ namespace org.kbinani.vsq {
             byte duration0 = dur.getKey();
             byte duration1 = dur.getValue();
 
+#if DEBUG
+            PortUtil.println( "VsqFile#generateNoteNRPN; vsq.getPresendClockAt( clock, msPreSend )=" + vsq.getPresendClockAt( clock, msPreSend ) );
+#endif
             VsqNrpn add;
             if ( add_delay_sign ) {
                 ValuePair<Byte, Byte> msp = getMsbAndLsb( msPreSend );
