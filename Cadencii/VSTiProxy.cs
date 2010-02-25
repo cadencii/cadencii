@@ -37,6 +37,7 @@ using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.java.io;
 using org.kbinani.cadencii.util;
+using org.kbinani.cadencii.implTrunk;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -567,6 +568,7 @@ namespace org.kbinani.cadencii {
         }
 
         public static int getErrorSamples( float tempo ) {
+            return 0;
             if ( tempo <= 240 ) {
                 return 4666;
             } else {

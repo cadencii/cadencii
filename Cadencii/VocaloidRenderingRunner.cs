@@ -19,7 +19,7 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii.implTrunk {
     using boolean = Boolean;
 
     public class VocaloidRenderingRunner : RenderingRunner {

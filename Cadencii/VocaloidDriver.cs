@@ -224,7 +224,7 @@ namespace org.kbinani.cadencii {
         /// <param name="sample_rate"></param>
         /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
         /// <returns></returns>
-        public int StartRendering( long total_samples, boolean mode_infinite, int sample_rate, VocaloidRenderingRunner runner ) {
+        public int StartRendering( long total_samples, boolean mode_infinite, int sample_rate, org.kbinani.cadencii.implTrunk.VocaloidRenderingRunner runner ) {
 #if DEBUG
             PortUtil.println( "VocaloidDriver#StartRendering; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
