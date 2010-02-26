@@ -8120,7 +8120,15 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 #if DEBUG
-            string dir = @"E:\Documents and Settings\kbinani\My Documents\svn\cadencii\Cadencii\trunk\buildDefaultEnglishDictionary\LOLA";
+            InputBox ib = new InputBox( "enter clock" );
+            while ( ib.showDialog() == BDialogResult.OK ) {
+                string s = ib.getResult();
+                int i = int.Parse( s );
+                int presend_clock = AppManager.getVsqFile().getPresendClockAt( i, AppManager.editorConfig.PreSendTime );
+                AppManager.showMessageBox( "presend_clock=" + presend_clock );
+            }
+
+            /*string dir = @"E:\Documents and Settings\kbinani\My Documents\svn\cadencii\Cadencii\trunk\buildDefaultEnglishDictionary\LOLA";
             string ext = ".mid";
             string defSymbol = "u:";
             System.Collections.Generic.Dictionary<string, string> dict = new System.Collections.Generic.Dictionary<string, string>();
@@ -8167,7 +8175,7 @@ namespace org.kbinani.cadencii {
                     string key = list[i];
                     sw.WriteLine( key + "\t" + dict[key] );
                 }
-            }
+            }*/
             /*if ( AppManager.getVsqFile().Track.size() >= 3 ) {
                 EditedZoneUnit[] ret = AppManager.detectTrackDifference( AppManager.getVsqFile().Track.get( 1 ), AppManager.getVsqFile().Track.get( 2 ) );
                 PortUtil.println( "FormMain#menuHelpDebug_Click; ret.Length=" + ret.Length );

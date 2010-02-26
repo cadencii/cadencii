@@ -378,6 +378,7 @@ namespace org.kbinani.cadencii {
             long total_samples = (long)((end_sec - start_sec) * SAMPLE_RATE);
             int trim_msec = (int)(trim_sec * 1000.0);
 #if DEBUG
+            PortUtil.println( "VSTiProxy#render; split.Track.get( track ).getEventCount()=" + split.Track.get( track ).getEventCount() );
             PortUtil.println( "VSTiProxy#render; trim_msec=" + trim_msec );
 #endif
 
@@ -471,7 +472,7 @@ namespace org.kbinani.cadencii {
                 VsqNrpn[] nrpn = VsqFile.generateNRPN( split, track, ms_presend );
                 NrpnData[] nrpn_data = VsqNrpn.convert( nrpn );
                 s_rendering_context = new VocaloidRenderingRunner( nrpn_data,
-                                                                   split.TempoTable.toArray( new TempoTableEntry[]{} ),
+                                                                   split.TempoTable,
                                                                    trim_msec,
                                                                    total_samples,
                                                                    wave_read_offset_seconds,

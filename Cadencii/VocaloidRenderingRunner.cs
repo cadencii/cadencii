@@ -24,7 +24,7 @@ namespace org.kbinani.cadencii.implTrunk {
 
     public class VocaloidRenderingRunner : RenderingRunner {
         public NrpnData[] nrpn;
-        public TempoTableEntry[] tempo;
+        public TempoVector tempo;
         public boolean mode_infinite;
         public VocaloidDriver driver;
 
@@ -35,7 +35,7 @@ namespace org.kbinani.cadencii.implTrunk {
         private int msPresend = 0;
 
         public VocaloidRenderingRunner( NrpnData[] nrpn_,
-                                        TempoTableEntry[] tempo_,
+                                        TempoVector tempo_,
                                         int trim_msec_,
                                         long total_samples_,
                                         double wave_read_offset_seconds_,
@@ -66,7 +66,7 @@ namespace org.kbinani.cadencii.implTrunk {
             driver = driver_;
 
             float first_tempo = 125.0f;
-            if ( tempo.Length > 0 ) {
+            if ( tempo.size() > 0 ) {
                 first_tempo = (float)(60e6 / (double)tempo[0].Tempo);
             }
             int errorSamples = VSTiProxy.getErrorSamples( first_tempo );
@@ -139,12 +139,12 @@ namespace org.kbinani.cadencii.implTrunk {
 #endif
                 return;
             }
-            int tempo_count = tempo.Length;
+            int tempo_count = tempo.size();
             float first_tempo = 125.0f;
-            if ( tempo.Length > 0 ) {
+            if ( tempo.size() > 0 ) {
                 first_tempo = (float)(60e6 / (double)tempo[0].Tempo);
             }
-            byte[] masterEventsSrc = new byte[tempo_count * 3];
+            /*byte[] masterEventsSrc = new byte[tempo_count * 3];
             int[] masterClocksSrc = new int[tempo_count];
             int count = -3;
             for ( int i = 0; i < tempo.Length; i++ ) {
@@ -158,12 +158,14 @@ namespace org.kbinani.cadencii.implTrunk {
                 masterEventsSrc[count + 1] = b1;
                 masterEventsSrc[count + 2] = b2;
             }
-            driver.SendEvent( masterEventsSrc, masterClocksSrc, 0 );
+            driver.SendEvent( masterEventsSrc, masterClocksSrc );*/
+            //TODO: ここにテンポテーブルを指定する部分を書く
+            driver.setTempoTable( tempo );
 
             int numEvents = nrpn.Length;
             byte[] bodyEventsSrc = new byte[numEvents * 3];
             int[] bodyClocksSrc = new int[numEvents];
-            count = -3;
+            int count = -3;
             int last_clock = 0;
             for ( int i = 0; i < numEvents; i++ ) {
                 count += 3;
@@ -188,7 +190,7 @@ namespace org.kbinani.cadencii.implTrunk {
 #endif
             m_trim_remain = trim_remain;
 
-            driver.SendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
+            driver.SendEvent( bodyEventsSrc, bodyClocksSrc );
 
             m_rendering = true;
             if ( waveWriter != null ) {

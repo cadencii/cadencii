@@ -1819,6 +1819,12 @@ namespace org.kbinani.vsq {
         /// <param name="clock_start">削除を行う範囲の開始クロック</param>
         /// <param name="clock_end">削除を行う範囲の終了クロック</param>
         public void removePart( int clock_start, int clock_end ) {
+#if DEBUG
+            PortUtil.println( "VsqFile#removePart; before:" );
+            for ( int i = 0; i < TempoTable.size(); i++ ) {
+                PortUtil.println( "    c" + TempoTable.get( i ).Clock + ", s" + TempoTable.get( i ).Time + ", t" + TempoTable.get( i ).Tempo );
+            }
+#endif
             int dclock = clock_end - clock_start;
 
             // テンポ情報の削除、シフト
@@ -1829,6 +1835,9 @@ namespace org.kbinani.vsq {
                 if ( clock_start <= itemi.Clock && itemi.Clock < clock_end ) {
                     TempoTable.removeElementAt( i );
                 } else {
+                    if ( clock_end < itemi.Clock ) {
+                        itemi.Clock -= dclock;
+                    }
                     i++;
                 }
             }
@@ -1921,6 +1930,12 @@ namespace org.kbinani.vsq {
                     }
                 }
             }
+#if DEBUG
+            PortUtil.println( "VsqFile#removePart; after:" );
+            for ( int i = 0; i < TempoTable.size(); i++ ) {
+                PortUtil.println( "    c" + TempoTable.get( i ).Clock + ", s" + TempoTable.get( i ).Time + ", t" + TempoTable.get( i ).Tempo );
+            }
+#endif
         }
 
         /// <summary>
@@ -2926,7 +2941,7 @@ namespace org.kbinani.vsq {
             byte duration1 = dur.getValue();
 
 #if DEBUG
-            PortUtil.println( "VsqFile#generateNoteNRPN; vsq.getPresendClockAt( clock, msPreSend )=" + vsq.getPresendClockAt( clock, msPreSend ) );
+            PortUtil.println( "VsqFile#generateNoteNRPN; vsq.getPresendClockAt( " + clock + ", " + msPreSend + " )=" + vsq.getPresendClockAt( clock, msPreSend ) );
 #endif
             VsqNrpn add;
             if ( add_delay_sign ) {
