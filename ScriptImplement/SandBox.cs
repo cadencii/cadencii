@@ -288,7 +288,7 @@ public class AutoBRITool : IPaletteTool {
 
 public static class SaveMetaText {
     public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {
-        vsq.Track.get( 1 ).printMetaText( @"c:\meta_text.txt" );
+        vsq.Track.get( 1 ).printMetaText( @"c:\meta_text.txt", "Shift_JIS" );
         return true;
     }
 }

@@ -626,7 +626,7 @@ namespace org.kbinani.vsq {
         /// このトラックのメタテキストを，指定されたファイルに出力します．
         /// </summary>
         /// <param name="file"></param>
-        public void printMetaText( String file )
+        public void printMetaText( String file, String encoding )
 #if JAVA
             throws IOException
 #endif
@@ -637,7 +637,7 @@ namespace org.kbinani.vsq {
             MetaText.print( tms, clLast, 0 );
             BufferedWriter sw = null;
             try {
-                sw = new BufferedWriter( new FileWriter( file ) );
+                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), encoding ) );
                 tms.setPointer( -1 );
                 while ( tms.ready() ) {
                     String line = tms.readLine().ToString();

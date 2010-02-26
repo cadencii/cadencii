@@ -15,6 +15,7 @@
 package org.kbinani.vsq;
 
 import java.io.*;
+import org.kbinani.*;
 #else
 using System;
 using org.kbinani.java.io;
@@ -93,8 +94,8 @@ namespace org.kbinani.vsq{
                     if ( spl.Length != 2 ) {
                         continue;
                     }
-                    String name = spl[0].Trim( new char[]{ ' ', '\t' } );
-                    String value = spl[1].Trim( new char[]{ ' ', '\t' } );
+                    String name = spl[0].Trim();// new char[]{ ' ', '\t' } );
+                    String value = spl[1].Trim();// new char[]{ ' ', '\t' } );
                     if ( name.Equals( "Articulation" ) ) {
                         if ( value.Equals( "Vibrato" ) ) {
                             articulation = ArticulationType.Vibrato;

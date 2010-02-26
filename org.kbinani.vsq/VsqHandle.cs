@@ -84,16 +84,16 @@ namespace org.kbinani.vsq {
         public VibratoHandle castToVibratoHandle() {
             VibratoHandle ret = new VibratoHandle();
             ret.Index = Index;
-            ret.Caption = Caption;
-            ret.DepthBP = (VibratoBPList)DepthBP.clone();
+            ret.setCaption( Caption );
+            ret.setDepthBP( (VibratoBPList)DepthBP.clone() );
             ret.IconID = IconID;
             ret.IDS = IDS;
             ret.Index = Index;
             ret.setLength( Length );
             ret.Original = Original;
-            ret.RateBP = (VibratoBPList)RateBP.clone();
-            ret.StartDepth = StartDepth;
-            ret.StartRate = StartRate;
+            ret.setRateBP( (VibratoBPList)RateBP.clone() );
+            ret.setStartDepth( StartDepth );
+            ret.setStartRate( StartRate );
             return ret;
         }
 
@@ -113,12 +113,12 @@ namespace org.kbinani.vsq {
 
         public NoteHeadHandle castToNoteHeadHandle() {
             NoteHeadHandle ret = new NoteHeadHandle();
-            ret.Caption = Caption;
-            ret.Depth = Depth;
-            ret.Duration = Duration;
+            ret.setCaption( Caption );
+            ret.setDepth( Depth );
+            ret.setDuration( Duration );
             ret.IconID = IconID;
             ret.IDS = IDS;
-            ret.setLength( Length );
+            ret.setLength( getLength() );
             ret.Original = Original;
             return ret;
         }
@@ -131,7 +131,7 @@ namespace org.kbinani.vsq {
             ret.setCaption( Caption );
             ret.setDynBP( DynBP );
             ret.setEndDyn( EndDyn );
-            ret.setLength( Length );
+            ret.setLength( getLength() );
             ret.setStartDyn( StartDyn );
             return ret;
         }

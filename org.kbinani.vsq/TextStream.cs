@@ -61,7 +61,11 @@ namespace org.kbinani.vsq {
                 if ( c == '\n' ) {
                     break;
                 }
+#if JAVA
+                sb.append( c );
+#else
                 sb.Append( c );
+#endif
             }
             return sb.ToString();
         }
@@ -100,7 +104,11 @@ namespace org.kbinani.vsq {
             int offset = length;
             ensureCapacity( newSize );
             for ( int i = 0; i < len; i++ ) {
+#if JAVA
+                array[offset + i] = str.charAt( i );
+#else
                 array[offset + i] = str[i];
+#endif
             }
             length = newSize;
         }
@@ -111,7 +119,11 @@ namespace org.kbinani.vsq {
             int offset = length;
             ensureCapacity( newSize );
             for ( int i = 0; i < len; i++ ) {
+#if JAVA
+                array[offset + i] = str.charAt( i );
+#else
                 array[offset + i] = str[i];
+#endif
             }
             array[offset + len] = '\n';
             length = newSize;

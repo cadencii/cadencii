@@ -160,7 +160,11 @@ namespace org.kbinani.vsq {
         /// このインスタンスをテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力対象</param>
-        public void write( ITextWriter sw ) {
+        public void write( ITextWriter sw ) 
+#if JAVA
+            throws java.io.IOException
+#endif
+        {
             sw.writeLine( "[Mixer]" );
             sw.writeLine( "MasterFeder=" + MasterFeder );
             sw.writeLine( "MasterPanpot=" + MasterPanpot );

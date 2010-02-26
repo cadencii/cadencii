@@ -252,6 +252,9 @@ namespace org.kbinani.vsq {
             boolean tie_start_required,
             boolean tie_stop_required,
             String type ) 
+#if JAVA
+            throws java.io.IOException
+#endif
         {
             writer.write( "      <note>" ); writer.newLine();
             if ( note < 0 ) {
@@ -325,6 +328,9 @@ namespace org.kbinani.vsq {
             TreeMap<String, Boolean> altered_context,
             boolean tie_start_required, 
             boolean tie_stop_required )
+#if JAVA
+            throws java.io.IOException
+#endif
         {
             int numInsert = tempoInsert.size();
             for ( int i = 0; i < numInsert; i++ ) {
@@ -385,7 +391,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        private void printAsMusicXmlCore( String file, String encoding, String software, int tempo, boolean change_tempo ) {
+        private void printAsMusicXmlCore( String file, String encoding, String software, int tempo, boolean change_tempo ) 
+        {
             BufferedWriter sw = null;
             VsqFile vsq = (VsqFile)clone();
             int intTempo = (int)(60e6 / tempo);
@@ -3325,28 +3332,32 @@ namespace org.kbinani.vsq {
                                             (byte)0x00,
                                             (byte)0x00 );
                 add2.append( NRPN.CC_VD_DELAY, del.getKey(), del.getValue(), true );
-                add2.append( NRPN.CC_VD_VIBRATO_DEPTH, (byte)ve.ID.VibratoHandle.StartDepth, true );
-                add2.append( NRPN.CC_VR_VIBRATO_RATE, (byte)ve.ID.VibratoHandle.StartRate );
+                add2.append( NRPN.CC_VD_VIBRATO_DEPTH, (byte)ve.ID.VibratoHandle.getStartDepth(), true );
+                add2.append( NRPN.CC_VR_VIBRATO_RATE, (byte)ve.ID.VibratoHandle.getStartRate() );
                 ret.add( add2 );
                 int vlength = ve.ID.getLength() - ve.ID.VibratoDelay;
-                int count = ve.ID.VibratoHandle.RateBP.getCount();
+                VibratoBPList rateBP = ve.ID.VibratoHandle.getRateBP();
+                int count = rateBP.getCount();
                 if ( count > 0 ) {
                     for ( int i = 0; i < count; i++ ) {
-                        float percent = ve.ID.VibratoHandle.RateBP.getElement( i ).X;
+                        VibratoBPPair itemi = rateBP.getElement( i );
+                        float percent = itemi.X;
                         int cl = vclock + (int)(percent * vlength);
                         ret.add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ),
                                               NRPN.CC_VR_VIBRATO_RATE,
-                                              (byte)ve.ID.VibratoHandle.RateBP.getElement( i ).Y ) );
+                                              (byte)itemi.Y ) );
                     }
                 }
-                count = ve.ID.VibratoHandle.DepthBP.getCount();
+                VibratoBPList depthBP = ve.ID.VibratoHandle.getDepthBP();
+                count = depthBP.getCount();
                 if ( count > 0 ) {
                     for ( int i = 0; i < count; i++ ) {
-                        float percent = ve.ID.VibratoHandle.DepthBP.getElement( i ).X;
+                        VibratoBPPair itemi = depthBP.getElement( i );
+                        float percent = itemi.X;
                         int cl = vclock + (int)(percent * vlength);
                         ret.add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ),
                                               NRPN.CC_VD_VIBRATO_DEPTH,
-                                              (byte)ve.ID.VibratoHandle.DepthBP.getElement( i ).Y ) );
+                                              (byte)itemi.Y ) );
                     }
                 }
             }

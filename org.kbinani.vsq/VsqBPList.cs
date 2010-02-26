@@ -220,7 +220,11 @@ namespace org.kbinani.vsq {
         public String getData() {
             StringBuilder ret = new StringBuilder();
             for ( int i = 0; i < length; i++ ) {
+#if JAVA
+                ret.append( (i == 0 ? "" : ",") + clocks[i] + "=" + items[i].value );
+#else
                 ret.Append( (i == 0 ? "" : ",") + clocks[i] + "=" + items[i].value );
+#endif
             }
             return ret.ToString();
         }
@@ -369,7 +373,11 @@ namespace org.kbinani.vsq {
                 length++;
                 ensureBufferLength( length );
                 clocks[length - 1] = new_clock;
+#if JAVA
+                Arrays.sort( clocks, 0, length );
+#else
                 Array.Sort( clocks, 0, length );
+#endif
                 index_new = find( new_clock );
                 item.value = new_value;
                 for ( int i = length - 1; i > index_new; i-- ) {
@@ -551,7 +559,11 @@ namespace org.kbinani.vsq {
                     minus = -1;
                     continue;
                 }
+#if JAVA
+                if( Character.isDigit( ch ) ){
+#else
                 if ( Char.IsNumber( ch ) ) {
+#endif
                     int num = 0;
                     if ( ch == '1' ) {
                         num = 1;
@@ -591,7 +603,11 @@ namespace org.kbinani.vsq {
         }
 
         private int find( int value ) {
+#if JAVA
+            return Arrays.binarySearch( clocks, 0, length, value );
+#else
             return Array.BinarySearch( clocks, 0, length, value );
+#endif
             //return Array.IndexOf( clocks, value, 0, length );
         }
 
@@ -626,7 +642,11 @@ namespace org.kbinani.vsq {
                 length++;
                 ensureBufferLength( length );
                 clocks[length - 1] = clock;
+#if JAVA
+                Arrays.sort( clocks, 0, length );
+#else
                 Array.Sort( clocks, 0, length );
+#endif
                 index = find( clock );
                 maxId++;
                 for ( int i = length - 1; i > index; i-- ) {
@@ -649,7 +669,11 @@ namespace org.kbinani.vsq {
                 length++;
                 ensureBufferLength( length );
                 clocks[length - 1] = clock;
+#if JAVA
+                Arrays.sort( clocks, 0, length );
+#else
                 Array.Sort( clocks, 0, length );
+#endif
                 index = find( clock );
                 for ( int i = length - 1; i > index; i-- ) {
                     items[i] = items[i - 1];

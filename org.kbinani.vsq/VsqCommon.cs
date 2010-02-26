@@ -130,7 +130,11 @@ namespace org.kbinani.vsq {
         /// インスタンスの内容をテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力先</param>
-        public void write( ITextWriter sw ) {
+        public void write( ITextWriter sw ) 
+#if JAVA
+            throws java.io.IOException
+#endif
+        {
             sw.writeLine( "[Common]" );
             sw.writeLine( "Version=" + Version );
             sw.writeLine( "Name=" + Name );

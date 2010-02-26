@@ -22,7 +22,7 @@ namespace org.kbinani.vsq {
 #endif
 
 #if JAVA
-    public class VibratoHandle implements Cloneable, Serializable {
+    public class VibratoHandle extends IconParameter implements Cloneable, Serializable {
 #else
     [Serializable]
     public class VibratoHandle : IconParameter, ICloneable {
@@ -220,13 +220,13 @@ namespace org.kbinani.vsq {
             result.IconID = IconID;
             result.IDS = this.IDS;
             result.Original = this.Original;
-            result.setCaption( getCaption() );
+            result.setCaption( caption );
             result.setLength( getLength() );
-            result.setStartDepth( getStartDepth() );
+            result.setStartDepth( startDepth );
             if ( depthBP != null ) {
                 result.setDepthBP( (VibratoBPList)depthBP.clone() );
             }
-            result.setStartRate( getStartRate() );
+            result.setStartRate( startRate );
             if ( rateBP != null ) {
                 result.setRateBP( (VibratoBPList)rateBP.clone() );
             }
@@ -240,12 +240,12 @@ namespace org.kbinani.vsq {
             ret.IconID = IconID;
             ret.IDS = IDS;
             ret.Original = Original;
-            ret.Caption = Caption;
-            ret.setLength( Length );
-            ret.StartDepth = StartDepth;
-            ret.StartRate = StartRate;
-            ret.DepthBP = (VibratoBPList)DepthBP.clone();
-            ret.RateBP = (VibratoBPList)RateBP.clone();
+            ret.Caption = caption;
+            ret.setLength( getLength() );
+            ret.StartDepth = startDepth;
+            ret.StartRate = startRate;
+            ret.DepthBP = (VibratoBPList)depthBP.clone();
+            ret.RateBP = (VibratoBPList)rateBP.clone();
             return ret;
         }
     }

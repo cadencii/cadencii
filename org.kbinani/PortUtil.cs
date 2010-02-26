@@ -1324,8 +1324,17 @@ namespace org.kbinani {
 #endif
         }
 
-        public static void moveFile( String pathBefore, String pathAfter ) {
+        public static void moveFile( String pathBefore, String pathAfter ) 
+#if JAVA
+            throws java.io.FileNotFoundException, java.io.IOException
+#endif
+        {
+#if JAVA
+            copyFile( pathBefore, pathAfter );
+            deleteFile( pathBefore );
+#else
             System.IO.File.Move( pathBefore, pathAfter );
+#endif
         }
 
         public static boolean isDirectoryExists( String path ) {

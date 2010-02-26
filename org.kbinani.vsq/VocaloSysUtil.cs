@@ -68,11 +68,7 @@ namespace org.kbinani.vsq {
             return defaultDseVersion;
         }
 
-#if JAVA
-        static{
-#else
         public static void init() {
-#endif
             if ( isInitialized ) {
                 return;
             }
@@ -374,27 +370,31 @@ namespace org.kbinani.vsq {
         private static void initPrint( String reg_key_name, String parent_name, Vector<String> list ) {
 #if JAVA
 #else
-            RegistryKey key = Registry.LocalMachine.OpenSubKey( reg_key_name, false );
-            if ( key == null ) {
-                return;
-            }
-
-            // 直下のキー内を再帰的にリストアップ
-            String[] subkeys = key.GetSubKeyNames();
-            foreach ( String s in subkeys ) {
-                initPrint( reg_key_name + "\\" + s, parent_name + "\\" + s, list );
-            }
-
-            // 直下の値を出力
-            String[] valuenames = key.GetValueNames();
-            foreach ( String s in valuenames ) {
-                RegistryValueKind kind = key.GetValueKind( s );
-                if ( kind == RegistryValueKind.String ) {
-                    String str = parent_name + "\t" + s + "\t" + (String)key.GetValue( s, "" );
-                    list.add( str );
+            try {
+                RegistryKey key = Registry.LocalMachine.OpenSubKey( reg_key_name, false );
+                if ( key == null ) {
+                    return;
                 }
+
+                // 直下のキー内を再帰的にリストアップ
+                String[] subkeys = key.GetSubKeyNames();
+                foreach ( String s in subkeys ) {
+                    initPrint( reg_key_name + "\\" + s, parent_name + "\\" + s, list );
+                }
+
+                // 直下の値を出力
+                String[] valuenames = key.GetValueNames();
+                foreach ( String s in valuenames ) {
+                    RegistryValueKind kind = key.GetValueKind( s );
+                    if ( kind == RegistryValueKind.String ) {
+                        String str = parent_name + "\t" + s + "\t" + (String)key.GetValue( s, "" );
+                        list.add( str );
+                    }
+                }
+                key.Close();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "VocaloSysUtil#initPrint; ex=" + ex );
             }
-            key.Close();
 #endif
         }
 

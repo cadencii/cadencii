@@ -120,7 +120,7 @@ namespace org.kbinani.vsq {
             if ( this.IconHandle != null ) {
                 result.IconHandle = (IconHandle)IconHandle.clone();
             }
-            result.setLength( Length );
+            result.setLength( getLength() );
             result.Note = this.Note;
             result.Dynamics = this.Dynamics;
             result.PMBendDepth = this.PMBendDepth;
@@ -247,7 +247,7 @@ namespace org.kbinani.vsq {
         public override String ToString() {
             String ret = "{Type=" + type;
             if ( type == VsqIDType.Anote ) {
-                ret += ", Length=" + Length;
+                ret += ", Length=" + getLength();
                 ret += ", Note#=" + Note;
                 ret += ", Dynamics=" + Dynamics;
                 ret += ", PMBendDepth=" + PMBendDepth;

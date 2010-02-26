@@ -41,6 +41,7 @@ namespace org.kbinani.vsq {
         private static SymbolTable s_default_jp = null;
         private static SymbolTable s_default_en = null;
         private static boolean s_initialized = false;
+#if !JAVA
         #region KEY_EN
 #if JAVA
         public static final String[][] _KEY_EN = {
@@ -11445,6 +11446,7 @@ namespace org.kbinani.vsq {
             {"zwick", "z w I k"},
         };
         #endregion
+#endif
         #region KEY_JP
 #if JAVA
         public static final String[][] _KEY_JP = {
@@ -11896,7 +11898,9 @@ namespace org.kbinani.vsq {
             PortUtil.println( "SymbolTable.LoadDictionary()" );
 #endif
             s_default_jp = new SymbolTable( "DEFAULT_JP", _KEY_JP, true );
+#if !JAVA
             s_default_en = new SymbolTable( "DEFAULT_EN", _KEY_EN, true );
+#endif
             s_table.clear();
             int count = 0;
             s_table.put( count, s_default_en );
