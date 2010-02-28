@@ -2609,6 +2609,7 @@ namespace org.kbinani.cadencii {
         public static void init() {
             loadConfig();
             VSTiProxy.init();
+            PlaySound.init();
             s_locker = new Object();
             SymbolTable.loadDictionary();
             VSTiProxy.CurrentUser = "";

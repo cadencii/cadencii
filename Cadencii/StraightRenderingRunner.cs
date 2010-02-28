@@ -871,14 +871,33 @@ namespace org.kbinani.cadencii {
             log.close();
 #endif
 
-            if ( m_mode_infinite ) {
-                double[] silence_l = new double[44100];
-                double[] silence_r = new double[44100];
-                while ( !m_abort_required ) {
-                    waveIncoming( silence_l, silence_r );
+            double[] silence_l0 = new double[sampleRate];
+            double[] silence_r0 = new double[sampleRate];
+            int tremain = (int)(totalSamples - m_total_append);
+#if DEBUG
+            PortUtil.println( "UtauRenderingRunner#run; tremain=" + tremain );
+#endif
+            while ( tremain > 0 ) {
+                int tlength = tremain > sampleRate ? sampleRate : tremain;
+                double[] l = null;
+                double[] r = null;
+                if ( tlength != sampleRate ) {
+                    l = new double[tlength];
+                    r = new double[tlength];
+                } else {
+                    l = silence_l0;
+                    r = silence_r0;
                 }
-                silence_l = null;
-                silence_r = null;
+                waveIncoming( l, r );
+                tremain -= tlength;
+            }
+
+            if ( m_mode_infinite ) {
+                while ( !m_abort_required ) {
+                    waveIncoming( silence_l0, silence_r0 );
+                }
+                silence_l0 = null;
+                silence_r0 = null;
             }
 
             m_abort_required = false;

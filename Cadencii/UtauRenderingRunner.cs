@@ -172,9 +172,9 @@ namespace org.kbinani.cadencii {
                     PortUtil.deleteFile( file_dat );
                 }
 #if DEBUG
-                AppManager.debugWriteLine( "temp_dir=" + m_temp_dir );
-                AppManager.debugWriteLine( "file_whd=" + file_whd );
-                AppManager.debugWriteLine( "file_dat=" + file_dat );
+                AppManager.debugWriteLine( "UtauRenderingRunner#run; temp_dir=" + m_temp_dir );
+                AppManager.debugWriteLine( "UtauRenderingRunner#run; file_whd=" + file_whd );
+                AppManager.debugWriteLine( "UtauRenderingRunner#run; file_dat=" + file_dat );
 #endif
 
                 int count = -1;
@@ -365,7 +365,7 @@ namespace org.kbinani.cadencii {
                             }
                             try {
 #if DEBUG
-                                org.kbinani.debug.push_log( "deleting... \"" + delfile + "\"" );
+                                org.kbinani.debug.push_log( "UtauRenderingRunner#run; deleting... \"" + delfile + "\"" );
 #endif
                                 PortUtil.deleteFile( delfile );
                             } catch ( Exception ex ) {
@@ -399,12 +399,12 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if DEBUG
-                org.kbinani.debug.push_log( "s_cache:" );
+                org.kbinani.debug.push_log( "UtauRenderingRunner#run; s_cache:" );
                 for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
                     String key = (String)itr.next();
                     ValuePair<String, Double> value = s_cache.get( key );
-                    org.kbinani.debug.push_log( "    arg=" + key );
-                    org.kbinani.debug.push_log( "    file=" + value.getKey() );
+                    org.kbinani.debug.push_log( "UtauRenderingRunner#run;     arg=" + key );
+                    org.kbinani.debug.push_log( "UtauRenderingRunner#run;     file=" + value.getKey() );
                 }
 #endif
 
@@ -416,7 +416,7 @@ namespace org.kbinani.cadencii {
                 boolean first = true;
                 int trim_remain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
 #if DEBUG
-                org.kbinani.debug.push_log( "trim_remain=" + trim_remain );
+                org.kbinani.debug.push_log( "UtauRenderingRunner#run; trim_remain=" + trim_remain );
 #endif
                 VsqBPList dyn_curve = m_vsq.Track.get( renderingTrack ).getCurve( "dyn" );
 #if MAKEBAT_SP
@@ -427,7 +427,7 @@ namespace org.kbinani.cadencii {
                     if ( !rq.ResamplerFinished ) {
                         String arg = rq.ResamplerArg;
 #if DEBUG
-                        org.kbinani.debug.push_log( "resampler arg=" + arg );
+                        org.kbinani.debug.push_log( "UtauRenderingRunner#run; resampler arg=" + arg );
 #endif
 #if MAKEBAT_SP
                         bat.WriteLine( "\"" + m_resampler + "\" " + arg );
@@ -468,7 +468,7 @@ namespace org.kbinani.cadencii {
                     }
                     sec_fin = p.secEnd - oa_next.msOverlap / 1000.0;
 #if DEBUG
-                    AppManager.debugWriteLine( "sec_fin=" + sec_fin );
+                    AppManager.debugWriteLine( "UtauRenderingRunner#run; sec_fin=" + sec_fin );
 #endif
                     float mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
                     String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
@@ -480,7 +480,7 @@ namespace org.kbinani.cadencii {
                     // できたwavを読み取ってWaveIncomingイベントを発生させる
                     int sample_end = (int)(sec_fin * sampleRate);
 #if DEBUG
-                    AppManager.debugWriteLine( "RenderUtau.StartRendering; sample_end=" + sample_end );
+                    AppManager.debugWriteLine( "UtauRenderingRunner#run; sample_end=" + sample_end );
 #endif
                     // whdを読みに行く
                     if ( first ) {
@@ -494,7 +494,7 @@ namespace org.kbinani.cadencii {
                             int gcount = whd.read( buf, 0, 4 );
                             if ( buf[0] != 'R' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != 'F' ) {
 #if DEBUG
-                                AppManager.debugWriteLine( "RenderUtau.startRendering; whd header error" );
+                                AppManager.debugWriteLine( "UtauRenderingRunner#run; whd header error" );
                                 AppManager.debugWriteLine( ((char)buf[0]).ToString() + "" + ((char)buf[1]).ToString() + "" + ((char)buf[2]).ToString() + "" + ((char)buf[3]).ToString() + " must be RIFF" );
 #endif
                                 continue;
@@ -505,7 +505,7 @@ namespace org.kbinani.cadencii {
                             whd.read( buf, 0, 4 );
                             if ( buf[0] != 'W' || buf[1] != 'A' || buf[2] != 'V' || buf[3] != 'E' ) {
 #if DEBUG
-                                AppManager.debugWriteLine( "RenderUtau.startRendering; whd header error" );
+                                AppManager.debugWriteLine( "UtauRenderingRunner#run; whd header error" );
                                 AppManager.debugWriteLine( ((char)buf[0]).ToString() + "" + ((char)buf[1]).ToString() + "" + ((char)buf[2]).ToString() + "" + ((char)buf[3]).ToString() + " must be WAVE" );
 #endif
                                 continue;
@@ -514,7 +514,7 @@ namespace org.kbinani.cadencii {
                             whd.read( buf, 0, 4 );
                             if ( buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ' ) {
 #if DEBUG
-                                AppManager.debugWriteLine( "RenderUtau.startRendering; whd header error" );
+                                AppManager.debugWriteLine( "UtauRenderingRunner#run; whd header error" );
                                 AppManager.debugWriteLine( ((char)buf[0]).ToString() + "" + ((char)buf[1]).ToString() + "" + ((char)buf[2]).ToString() + "" + ((char)buf[3]).ToString() + " must be fmt " );
 #endif
                                 continue;
@@ -548,7 +548,7 @@ namespace org.kbinani.cadencii {
                             whd.read( buf, 0, 4 );
                             if ( buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a' ) {
 #if DEBUG
-                                AppManager.debugWriteLine( "RenderUtau.startRendering; whd header error" );
+                                AppManager.debugWriteLine( "UtauRenderingRunner#run; whd header error" );
                                 AppManager.debugWriteLine( ((char)buf[0]).ToString() + "" + ((char)buf[1]).ToString() + "" + ((char)buf[2]).ToString() + "" + ((char)buf[3]).ToString() + " must be data" );
 #endif
                                 continue;
@@ -575,7 +575,7 @@ namespace org.kbinani.cadencii {
                     // datを読みに行く
                     int sampleFrames = sample_end - processed_sample;
 #if DEBUG
-                    AppManager.debugWriteLine( "RenderUtau.StartRendering; sampleFrames=" + sampleFrames + "; channel=" + channel + "; byte_per_sample=" + byte_per_sample );
+                    AppManager.debugWriteLine( "UtauRenderingRunner#run; sampleFrames=" + sampleFrames + "; channel=" + channel + "; byte_per_sample=" + byte_per_sample );
 #endif
                     if ( channel > 0 && byte_per_sample > 0 && sampleFrames > 0 ) {
                         int length = (sampleFrames > sampleRate ? sampleRate : sampleFrames);
@@ -746,7 +746,7 @@ namespace org.kbinani.cadencii {
                             return;
                         }
 #if DEBUG
-                        AppManager.debugWriteLine( "calling WaveIncoming..." );
+                        AppManager.debugWriteLine( "UtauRenderingRunner#run; calling WaveIncoming..." );
 #endif
                         if ( pos > 0 ) {
                             double[] bufl = new double[pos];
@@ -767,7 +767,7 @@ namespace org.kbinani.cadencii {
                         GC.Collect();
 #endif
 #if DEBUG
-                        AppManager.debugWriteLine( "...done(calling WaveIncoming)" );
+                        AppManager.debugWriteLine( "UtauRenderingRunner#run; ...done(calling WaveIncoming)" );
 #endif
                         processed_sample += (sampleFrames - remain);
                         m_progress = processed_sample / sample_length * 100.0;
@@ -781,9 +781,28 @@ namespace org.kbinani.cadencii {
                 bat = null;
 #endif
 
+                double[] silence_l = new double[sampleRate];
+                double[] silence_r = new double[sampleRate];
+                int tremain = (int)(totalSamples - m_total_append);
+#if DEBUG
+                PortUtil.println( "UtauRenderingRunner#run; tremain=" + tremain );
+#endif
+                while ( tremain > 0 ) {
+                    int tlength = tremain > sampleRate ? sampleRate : tremain;
+                    double[] l = null;
+                    double[] r = null;
+                    if ( tlength != sampleRate ) {
+                        l = new double[tlength];
+                        r = new double[tlength];
+                    } else {
+                        l = silence_l;
+                        r = silence_r;
+                    }
+                    waveIncoming( l, r );
+                    tremain -= tlength;
+                }
+
                 if ( m_mode_infinite ) {
-                    double[] silence_l = new double[44100];
-                    double[] silence_r = new double[44100];
                     while ( !m_abort_required ) {
                         waveIncoming( silence_l, silence_r );
                     }
@@ -822,7 +841,7 @@ namespace org.kbinani.cadencii {
 
         private static void ProcessWavtool( String arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine ) {
 #if DEBUG
-            org.kbinani.debug.push_log( "wavtool arg=" + arg );
+            org.kbinani.debug.push_log( "UtauRenderingRunner#run; wavtool arg=" + arg );
 #endif
 
 #if JAVA

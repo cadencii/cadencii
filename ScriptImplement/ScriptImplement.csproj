@@ -127,7 +127,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)Pitch and Volume Adjuster.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Pitch and Volume Adjuster.txt"
+    <PostBuildEvent>copy "$(ProjectDir)Render As UTAU.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Render As UTAU.txt"
+copy "$(ProjectDir)Pitch and Volume Adjuster.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Pitch and Volume Adjuster.txt"
 copy "$(ProjectDir)Transpose Plus 1 Degree.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Transpose Plus 1 Degree.txt"
 copy "$(ProjectDir)Generate VLF.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Generate VLF.txt"
 copy "$(ProjectDir)DivideNote.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\tool\DivideNote.txt"

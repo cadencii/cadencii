@@ -19,7 +19,7 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii.implTrunk {
+namespace org.kbinani.cadencii {
     using boolean = Boolean;
 
     public class VocaloidRenderingRunner : RenderingRunner {
@@ -64,7 +64,6 @@ namespace org.kbinani.cadencii.implTrunk {
             tempo = tempo_;
             mode_infinite = mode_infinite_;
             driver = driver_;
-
             float first_tempo = 125.0f;
             if ( tempo.size() > 0 ) {
                 first_tempo = (float)(60e6 / (double)tempo[0].Tempo);
@@ -139,33 +138,39 @@ namespace org.kbinani.cadencii.implTrunk {
 #endif
                 return;
             }
+#if DEBUG
+            debugWaveWriter = new WaveWriter( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "t.wav" ), 2, 16, 44100 );
+#endif
+            // 古いイベントをクリア
+            driver.clearSendEvents();
+
             int tempo_count = tempo.size();
             float first_tempo = 125.0f;
             if ( tempo.size() > 0 ) {
                 first_tempo = (float)(60e6 / (double)tempo[0].Tempo);
             }
-            /*byte[] masterEventsSrc = new byte[tempo_count * 3];
+            byte[] masterEventsSrc = new byte[tempo_count * 3];
             int[] masterClocksSrc = new int[tempo_count];
             int count = -3;
-            for ( int i = 0; i < tempo.Length; i++ ) {
+            for ( int i = 0; i < tempo.size(); i++ ) {
                 count += 3;
-                masterClocksSrc[i] = tempo[i].Clock;
-                byte b0 = (byte)(tempo[i].Tempo >> 16);
-                uint u0 = (uint)(tempo[i].Tempo - (b0 << 16));
+                TempoTableEntry itemi = tempo.get( i );
+                masterClocksSrc[i] = itemi.Clock;
+                byte b0 = (byte)(itemi.Tempo >> 16);
+                uint u0 = (uint)(itemi.Tempo - (b0 << 16));
                 byte b1 = (byte)(u0 >> 8);
                 byte b2 = (byte)(u0 - (u0 << 8));
                 masterEventsSrc[count] = b0;
                 masterEventsSrc[count + 1] = b1;
                 masterEventsSrc[count + 2] = b2;
             }
-            driver.SendEvent( masterEventsSrc, masterClocksSrc );*/
-            //TODO: ここにテンポテーブルを指定する部分を書く
-            driver.setTempoTable( tempo );
+            driver.SendEvent( masterEventsSrc, masterClocksSrc, 0 );
+            //driver.setTempoTable( tempo );
 
             int numEvents = nrpn.Length;
             byte[] bodyEventsSrc = new byte[numEvents * 3];
             int[] bodyClocksSrc = new int[numEvents];
-            int count = -3;
+            count = -3;
             int last_clock = 0;
             for ( int i = 0; i < numEvents; i++ ) {
                 count += 3;
@@ -184,13 +189,8 @@ namespace org.kbinani.cadencii.implTrunk {
                 }
             }
             int last_tempo = tempo[index].Tempo;
-            int trim_remain = VSTiProxy.getErrorSamples( first_tempo ) + (int)(trimMillisec / 1000.0 * VSTiProxy.SAMPLE_RATE);
-#if DEBUG
-            PortUtil.println( "VocaloidRenderingRunner#run; trim_remain=" + trim_remain + "; m_trim_remain=" + m_trim_remain );
-#endif
-            m_trim_remain = trim_remain;
 
-            driver.SendEvent( bodyEventsSrc, bodyClocksSrc );
+            driver.SendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
 
             m_rendering = true;
             if ( waveWriter != null ) {
@@ -213,6 +213,13 @@ namespace org.kbinani.cadencii.implTrunk {
                 PlaySound.waitForExit();
             }
 #if DEBUG
+            if ( debugWaveWriter != null ) {
+                try {
+                    debugWaveWriter.close();
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VocaloidRenderingRunner#run; ex=" + ex );
+                }
+            }
             PortUtil.println( "VocaloidRenderingRunner#run; m_total_append=" + m_total_append );
 #endif
         }

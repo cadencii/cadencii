@@ -37,7 +37,7 @@ using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.java.io;
 using org.kbinani.cadencii.util;
-using org.kbinani.cadencii.implTrunk;
+//using org.kbinani.cadencii.implTrunk;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -365,7 +365,7 @@ namespace org.kbinani.cadencii {
             extra_note.ID.setLength( extra_note_clock_end - extra_note_clock );
             extra_note.ID.VibratoHandle = null;
             extra_note.ID.LyricHandle = new LyricHandle( "a", "a" );
-            split.Track.get( track ).addEvent( extra_note );
+            //split.Track.get( track ).addEvent( extra_note );
 
             double trim_sec = 0.0; // レンダリング結果から省かなければならない秒数。
             if ( clock_start < split.getPreMeasureClocks() ) {
@@ -569,7 +569,6 @@ namespace org.kbinani.cadencii {
         }
 
         public static int getErrorSamples( float tempo ) {
-            return 0;
             if ( tempo <= 240 ) {
                 return 4666;
             } else {

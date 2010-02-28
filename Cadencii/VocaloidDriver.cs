@@ -20,7 +20,7 @@ using org.kbinani.java.util;
 using org.kbinani.vsq;
 using VstSdk;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii.new_ {
     using boolean = System.Boolean;
     using VstIntPtr = System.Int32;
 
@@ -551,7 +551,7 @@ namespace org.kbinani.cadencii {
 
 }
 
-namespace org.kbinani.cadencii.old {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using VstIntPtr = System.Int32;
 
@@ -562,7 +562,6 @@ namespace org.kbinani.cadencii.old {
         const int TIME_FORMAT = 480;
         const int DEF_TEMPO = 500000;           // デフォルトのテンポ．
 
-        static VocaloidDriver s_instance;
         Vector<Vector<MidiEvent>> s_track_events;
         Vector<MidiEvent> g_pEvents;
         int g_pCurrentEvent;
@@ -587,6 +586,12 @@ namespace org.kbinani.cadencii.old {
         /// </summary>
         boolean rendering = false;
         int dseVersion;
+
+        public void clearSendEvents() {
+            for ( int i = 0; i < s_track_events.size(); i++ ) {
+                s_track_events.get( i ).clear();
+            }
+        }
 
         public int getDseVersion() {
             return dseVersion;
@@ -632,19 +637,8 @@ namespace org.kbinani.cadencii.old {
             aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );
         }
 
-        org.kbinani.media.FirstBufferWrittenCallback s_first_buffer_written_callback;
-
         public VocaloidDriver( int dse_version ) {
-            s_instance = this;
             dseVersion = dse_version;
-        }
-
-        public void SetFirstBufferWrittenCallback( org.kbinani.media.FirstBufferWrittenCallback handler ) {
-            s_first_buffer_written_callback = handler;
-        }
-
-        public static void InvokeFirstBufferWrittenEvent() {
-            s_instance.s_first_buffer_written_callback();
         }
 
         public override boolean open( string dll_path, int block_size, int sample_rate, boolean use_native_dll_loader ) {
@@ -719,6 +713,11 @@ namespace org.kbinani.cadencii.old {
             count = -3;
             int pPrev = 0;
             s_track_events.get( targetTrack ).clear();
+#if DEBUG
+            PortUtil.println( "VocaloidDriver#SendEvent" );
+            byte msb = 0x0;
+            byte lsb = 0x0;
+#endif
             for ( int i = 0; i < numEvents; i++ ) {
                 count += 3;
                 MidiEvent pEvent = new MidiEvent();
@@ -735,6 +734,19 @@ namespace org.kbinani.cadencii.old {
                     pEvent.data[3] = src[count + 1];
                     pEvent.data[4] = src[count + 2];
                 } else {
+#if DEBUG
+                    if ( src[count + 1] == 0x63 ) {
+                        msb = src[count + 2];
+                    } else if ( src[count + 1] == 0x62 ) {
+                        lsb = src[count + 2];
+                    } else {
+                        String str = (src[count + 1] == 0x06) ? ("0x" + PortUtil.toHexString( src[count + 2], 2 )) : "    ";
+                        str += (src[count + 1] == 0x26) ? (" 0x" + PortUtil.toHexString( src[count + 2], 2 )) : "";
+
+                        int nrpn = msb << 8 | lsb;
+                        PortUtil.println( "VocaloidDriver#SendEvent; NRPN: 0x" + PortUtil.toHexString( nrpn, 4 ) + " " + str );
+                    }
+#endif
                     pEvent.firstByte = src[count];
                     pEvent.data = new byte[3];
                     pEvent.data[0] = src[count + 1];
@@ -755,7 +767,7 @@ namespace org.kbinani.cadencii.old {
         /// <param name="sample_rate"></param>
         /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
         /// <returns></returns>
-        public int StartRendering( long total_samples, boolean mode_infinite, int sample_rate, org.kbinani.cadencii.implTrunk.VocaloidRenderingRunner runner ) {
+        public int StartRendering( long total_samples, boolean mode_infinite, int sample_rate, VocaloidRenderingRunner runner ) {
 #if DEBUG
             PortUtil.println( "VocaloidDriver#StartRendering; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
@@ -925,9 +937,9 @@ namespace org.kbinani.cadencii.old {
                         VstMidiEvent* pMidiEvent;
 
                         switch ( event_code ) {
-                            case 0xff:
                             case 0xf0:
                             case 0xf7:
+                            case 0xff:
                                 break;
                             default:
                                 pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();

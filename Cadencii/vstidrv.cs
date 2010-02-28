@@ -1,6 +1,6 @@
 ﻿#if ENABLE_VOCALOID
 /*
- * VSTiProxy.cs
+ * vstidrv.cs
  * Copyright (C) 2008-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -44,39 +44,6 @@ namespace org.kbinani.cadencii {
         /// テンポが変更される時刻
         /// </summary>
         public double TotalSec;
-    }
-
-    public class MemoryManager {
-        private Vector<IntPtr> list = new Vector<IntPtr>();
-
-        public IntPtr malloc( int bytes ) {
-            IntPtr ret = Marshal.AllocHGlobal( bytes );
-            list.add( ret );
-            return ret;
-        }
-
-        public void free( IntPtr p ) {
-            for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
-                IntPtr v = (IntPtr)itr.next();
-                if ( v.Equals( p ) ) {
-                    Marshal.FreeHGlobal( p );
-                    itr.remove();
-                    break;
-                }
-            }
-        }
-
-        public void dispose() {
-            for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
-                IntPtr v = (IntPtr)itr.next();
-                Marshal.FreeHGlobal( v );
-            }
-            list.clear();
-        }
-
-        ~MemoryManager() {
-            dispose();
-        }
     }
 
     public class vstidrv {

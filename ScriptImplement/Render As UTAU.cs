@@ -2,8 +2,8 @@
 // written by kbinani & 88
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
+using System.IO;
 using org.kbinani.vsq;
 using org.kbinani.apputil;
 using org.kbinani;
@@ -351,7 +351,7 @@ public class RenderAsUtau : Form {
                         PortUtil.deleteFile( saveFileDialog.FileName );
                     }
                     LastWave = saveFileDialog.FileName;
-                    File.Move( file, saveFileDialog.FileName );
+                    PortUtil.moveFile( file, saveFileDialog.FileName );
                 } else {
                     PortUtil.deleteFile( file );
                 }

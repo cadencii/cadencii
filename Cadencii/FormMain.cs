@@ -1156,6 +1156,8 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "AppManager_PreviewAborted" );
 #endif
+            timer.stop();
+
             if ( AppManager.getEditMode() == EditMode.REALTIME ) {
                 menuJobRealTime.setText( _( "Start Realtime Input" ) );
                 AppManager.setEditMode( EditMode.NONE );
@@ -1174,21 +1176,20 @@ namespace org.kbinani.cadencii {
             }
 #endif
 
-            PlaySound.reset();
+            PlaySound.exit();
             for ( int i = 0; i < AppManager.drawStartIndex.Length; i++ ) {
                 AppManager.drawStartIndex[i] = 0;
             }
 #if ENABLE_MIDI
             MidiPlayer.Stop();
 #endif
-            timer.stop();
         }
 
         public void AppManager_PreviewStarted( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "m_config_PreviewStarted" );
 #endif
-            PlaySound.init( VSTiProxy.SAMPLE_RATE );
+            PlaySound.prepare( VSTiProxy.SAMPLE_RATE );
 #if DEBUG
             PortUtil.println( "FormMain#AppManager_PreviewStarted; VSTiProxy.SAMPLE_RATE=" + VSTiProxy.SAMPLE_RATE );
 #endif
@@ -4084,7 +4085,7 @@ namespace org.kbinani.cadencii {
                 m_midi_in_mtc.Close();
             }
 #endif
-            PlaySound.terminate();
+            PlaySound.kill();
         }
 
         public void FormMain_FormClosing( Object sender, BFormClosingEventArgs e ) {
@@ -7615,6 +7616,7 @@ namespace org.kbinani.cadencii {
                         }
                         #endregion
                     }
+                    m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
                     #endregion
                 }
                 picturePositionIndicator.repaint();
@@ -8120,12 +8122,27 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 #if DEBUG
+            /*VsqFileEx vsq = AppManager.getVsqFile();
+            int ms_presend = AppManager.editorConfig.PreSendTime;
+            for ( int i = vsq.getPreMeasureClocks(); i < vsq.TotalClocks; i++ ) {
+                int presend_clock = vsq.getPresendClockAt( i, ms_presend );
+                double sec_at_i = vsq.getSecFromClock( i );
+                double sec_at_ipresend = vsq.getSecFromClock( i - presend_clock );
+                double sec_at_i2 = sec_at_ipresend + ms_presend / 1000.0;
+                if ( Math.Abs( sec_at_i - sec_at_i2 ) > 1 ) {
+                    PortUtil.println( "sec_at_i=" + sec_at_i + "; sec_at_i2=" + sec_at_i2 );
+                }
+            }*/
             InputBox ib = new InputBox( "enter clock" );
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int ms_presend = AppManager.editorConfig.PreSendTime;
             while ( ib.showDialog() == BDialogResult.OK ) {
                 string s = ib.getResult();
                 int i = int.Parse( s );
-                int presend_clock = AppManager.getVsqFile().getPresendClockAt( i, AppManager.editorConfig.PreSendTime );
-                AppManager.showMessageBox( "presend_clock=" + presend_clock );
+                int presend_clock = vsq.getPresendClockAt( i, ms_presend );
+                double sec_at_i = vsq.getSecFromClock( i );
+                double sec_at_i2 = vsq.getSecFromClock( i - presend_clock ) + ms_presend / 1000.0;
+                AppManager.showMessageBox( "presend_clock=" + presend_clock + "; delta=" + (sec_at_i - sec_at_i2) );
             }
 
             /*string dir = @"E:\Documents and Settings\kbinani\My Documents\svn\cadencii\Cadencii\trunk\buildDefaultEnglishDictionary\LOLA";
@@ -9371,7 +9388,13 @@ namespace org.kbinani.cadencii {
                 play_time = play_time * AppManager.editorConfig.getRealtimeInputSpeed();
             }
             float now = (float)(play_time + m_direct_play_shift);
-            if ( (play_time < 0.0 || m_preview_ending_time < now) && AppManager.getEditMode() != EditMode.REALTIME ) {
+#if DEBUG
+            PortUtil.println( "FormMain#timer_Tick; now=" + now + "m_preview_ending_time=" + m_preview_ending_time );
+#endif
+            if ( (play_time < 0.0 || m_preview_ending_time <= now) && AppManager.getEditMode() != EditMode.REALTIME ) {
+#if DEBUG
+                PortUtil.println( "FormMain#timer_Tick; stop at A" );
+#endif
                 AppManager.setPlaying( false );
                 timer.stop();
                 if ( AppManager.startMarkerEnabled ) {
@@ -9387,12 +9410,18 @@ namespace org.kbinani.cadencii {
                 } else {
                     if ( !AppManager.isRepeatMode() ) {
                         timer.stop();
+#if DEBUG
+                        PortUtil.println( "FormMain#timer_Tick; stop at B" );
+#endif
                         AppManager.setPlaying( false );
                     }
                 }
             } else if ( AppManager.endMarkerEnabled && clock > (int)AppManager.endMarker && AppManager.getEditMode() != EditMode.REALTIME ) {
                 AppManager.setCurrentClock( (AppManager.startMarkerEnabled) ? AppManager.startMarker : 0 );
                 ensureCursorVisible();
+#if DEBUG
+                PortUtil.println( "FormMain#timer_Tick; stop at C" );
+#endif
                 AppManager.setPlaying( false );
                 if ( AppManager.isRepeatMode() ) {
                     AppManager.setPlaying( true );

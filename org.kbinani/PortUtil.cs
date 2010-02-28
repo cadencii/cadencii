@@ -1498,7 +1498,7 @@ namespace org.kbinani {
 
         public static String toHexString( long value, int digits ) {
             String ret = toHexString( value );
-            int add = 4 - getStringLength( ret );
+            int add = digits - getStringLength( ret );
             for ( int i = 0; i < add; i++ ) {
                 ret = "0" + ret;
             }

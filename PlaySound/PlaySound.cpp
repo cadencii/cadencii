@@ -249,9 +249,17 @@ void waveplay::append_cor( double** a_data, unsigned int length, double amp_left
             // _NUM_BUFブロック分のデータを未だ全て受信していない場合。バッファが未だひとつも書き込まれていないので
             // 0番のブロックから順に書き込む
             s_processed_count++;
+            while( !s_done[0] ){
+                Sleep( 0 );
+                if( s_abort_required ){
+                    s_abort_required = false;
+                    goto clean_and_exit;
+                }
+            }
             mix( s_processed_count, aleft, aright );
             s_done[0] = false;
             waveOutWrite( s_hwave_out, &s_wave_header[0], sizeof( WAVEHDR ) );
+            s_current_buffer = 1;
             if( s_first_buffer_written_callback ){
 #ifdef TEST
 #ifdef __cplusplus_cli
@@ -264,9 +272,17 @@ void waveplay::append_cor( double** a_data, unsigned int length, double amp_left
             }
             for( int i = 1; i < _NUM_BUF - 1; i++ ){
                 s_processed_count++;
+                while( !s_done[i] ){
+                    Sleep( 0 );
+                    if( s_abort_required ){
+                        s_abort_required = false;
+                        goto clean_and_exit;
+                    }
+                }
                 mix( s_processed_count, aleft, aright );
                 s_done[i] = false;
                 waveOutWrite( s_hwave_out, &s_wave_header[i], sizeof( WAVEHDR ) );
+                s_current_buffer = i + 1;
             }
         }
         unsigned long zero = MAKELONG( 0, 0 );

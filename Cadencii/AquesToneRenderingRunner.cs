@@ -231,7 +231,7 @@ namespace org.kbinani.cadencii {
             }
 
             // totalSamplesに足りなかったら、追加してレンダリング
-            saRemain = (int)(totalSamples - saProcessed);
+            saRemain = (int)(totalSamples - m_total_append);
 #if DEBUG
             PortUtil.println( "AquesToneRenderingRunner#run; totalSamples=" + totalSamples + "; saProcessed=" + saProcessed + "; saRemain=" + saRemain );
 #endif
