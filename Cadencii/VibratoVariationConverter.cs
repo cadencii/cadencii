@@ -13,15 +13,11 @@
  */
 using System;
 using System.ComponentModel;
-using System.Windows.Forms;
-using org.kbinani.vsq;
-using org.kbinani;
 using org.kbinani.java.util;
-using org.kbinani.java.io;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
 
-    using boolean = System.Boolean;
 
     public class VibratoVariationConverter : TypeConverter {
         public override bool GetStandardValuesSupported( ITypeDescriptorContext context ) {

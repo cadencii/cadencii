@@ -13,9 +13,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Reflection;
 using System.ComponentModel;
-
+using System.Reflection;
 using org.kbinani.apputil;
 
 namespace org.kbinani.cadencii {

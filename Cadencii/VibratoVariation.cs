@@ -11,9 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
 using System.ComponentModel;
-using System.Drawing.Design;
 
 namespace org.kbinani.cadencii {
 

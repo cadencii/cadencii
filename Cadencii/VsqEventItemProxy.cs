@@ -14,11 +14,8 @@
  */
 using System;
 using System.ComponentModel;
-using System.Reflection;
-using org.kbinani.vsq;
-using org.kbinani.apputil;
-using org.kbinani;
 using org.kbinani.java.util;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
 

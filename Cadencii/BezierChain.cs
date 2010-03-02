@@ -20,13 +20,9 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
-//using System.Collections.Generic;
-//using System.Drawing;
 using System.Runtime.Serialization;
-using org.kbinani;
-using org.kbinani.java.util;
-using org.kbinani.java.io;
 using org.kbinani.java.awt;
+using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;

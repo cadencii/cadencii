@@ -13,16 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using org.kbinani;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
-using org.kbinani.vsq;
 using org.kbinani.media;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
-    using Integer = System.Int32;
     using Float = System.Single;
+    using Integer = System.Int32;
 
 #if JAVA
     public class AquesToneRenderingRunner extends RenderingRunner {

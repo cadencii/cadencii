@@ -18,11 +18,8 @@ import org.kbinani.vsq.*;
 #else
 using System;
 using System.Text;
-using org.kbinani.vsq;
-using org.kbinani;
-using org.kbinani.java.awt;
 using org.kbinani.java.io;
-using VstSdk;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
