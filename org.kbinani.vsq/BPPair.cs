@@ -22,7 +22,7 @@ namespace org.kbinani.vsq {
 #endif
 
     /// <summary>
-    /// Stores the paired value of "Clock" and integer. Mainly used in VsqBPList
+    /// ゲートタイムと、何らかのパラメータ値とのペアを表します。主にVsqBPListで使用します。
     /// </summary>
 #if JAVA
     public class BPPair implements Comparable<BPPair>, Serializable{
@@ -54,6 +54,11 @@ namespace org.kbinani.vsq {
         }
 #endif
 
+        /// <summary>
+        /// 指定されたゲートタイムとパラメータ値を使って、新しいインスタンスを初期化します。
+        /// </summary>
+        /// <param name="clock_"></param>
+        /// <param name="value_"></param>
         public BPPair( int clock_, int value_ ) {
             Clock = clock_;
             Value = value_;

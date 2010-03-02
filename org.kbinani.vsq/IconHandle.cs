@@ -22,14 +22,27 @@ namespace org.kbinani.vsq {
     using boolean = System.Boolean;
 #endif
 
+    /// <summary>
+    /// 歌手設定を表します。
+    /// </summary>
 #if JAVA
     public class IconHandle implements Cloneable, Serializable{
 #else
     [Serializable]
     public class IconHandle : ICloneable{
 #endif
+        /// <summary>
+        /// キャプション。
+        /// </summary>
         public String Caption = "";
+        /// <summary>
+        /// この歌手設定を一意に識別するためのIDです。
+        /// </summary>
         public String IconID = "";
+        /// <summary>
+        /// ユーザ・フレンドリー名。
+        /// このフィールドの値は、他の歌手設定のユーザ・フレンドリー名と重複する場合があります。
+        /// </summary>
         public String IDS = "";
         public int Index;
         public int Length;

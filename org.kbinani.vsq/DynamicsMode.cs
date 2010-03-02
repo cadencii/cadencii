@@ -18,8 +18,17 @@ package org.kbinani.vsq;
 namespace org.kbinani.vsq{
 #endif
 
+    /// <summary>
+    /// VOCALOID1における、ダイナミクスモードを表す定数を格納するためのクラスです。
+    /// </summary>
     public class DynamicsMode{
+        /// <summary>
+        /// デフォルトのダイナミクスモードです。DYNカーブが非表示になるモードです。
+        /// </summary>
         public const int Standard = 0;
+        /// <summary>
+        /// エキスパートモードです。DYNカーブが表示されます。
+        /// </summary>
         public const int Expert = 1;
 
         private DynamicsMode() {

@@ -1,9 +1,40 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using org.kbinani.cadencii;
 using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.java.util;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml;
+
+public class SmartHtml {
+    public static void Main( string[] args ) {
+        if ( args != 2 ) {
+            return;
+        }
+        string indir = args[0];
+        string outdir = args[1];
+        if ( !Directory.Exists( indir ) || !Directory.Exists( outdir ) ) {
+            Console.WriteLine( "error; directory not exists" );
+            return;
+        }
+        
+        List<string> files = new List<string>( Directory.GetFiles( "*.htm" ) );
+        files.AddRange( Directory.GetFiles( "*.html" ) );
+        foreach ( string name in files ) {
+            string path = Path.Combine( indir, name );
+            XmlDocument doc = new XmlDocument();
+            doc.Load( path );
+            XmlTextWriter xtw = new XmlTextWriter( new FileStream( Path.Combine( outdir, name ), FileMode.OpenOrCreate, FileAccess.Write ), System.Text.Encoding.GetEncoding( "Shift_JIS" ) );
+            doc.WriteTo( xtw );
+            xtw.Close();
+        }
+    }
+}
 
 public class Search {
     public static bool Edit( VsqFile vsq ) {

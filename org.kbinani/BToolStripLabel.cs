@@ -12,9 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 namespace org.kbinani.windows.forms {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class BToolStripLabel : System.Windows.Forms.ToolStripLabel {
         public void setText( string value ) {
             base.Text = value;
         }
     }
+
 }

@@ -25,6 +25,9 @@ using org.kbinani.java.util;
 namespace org.kbinani.vsq {
 #endif
 
+    /// <summary>
+    /// VOCALOID1またはVOCALOID2の、表情ライブラリの設定値を表します。
+    /// </summary>
     public class ExpressionConfigSys {
 #if JAVA
         private final int MAX_VIBRATO = 0x400;
@@ -136,6 +139,10 @@ namespace org.kbinani.vsq {
             }
         }*/
 
+        /// <summary>
+        /// VOCALOID1システムのデフォルトの表情ライブラリの設定値を取得します。
+        /// </summary>
+        /// <returns></returns>
         public static ExpressionConfigSys getVocaloid1Default() {
             ExpressionConfigSys ret = new ExpressionConfigSys();
             ret.m_vibrato_configs = new Vector<VibratoHandle>();
@@ -580,6 +587,10 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
+        /// <summary>
+        /// VOCALOID2システムのデフォルトの表情ライブラリの設定値を取得します。
+        /// </summary>
+        /// <returns></returns>
         public static ExpressionConfigSys getVocaloid2Default() {
             ExpressionConfigSys ret = new ExpressionConfigSys();
             ret.m_vibrato_configs = new Vector<VibratoHandle>();
@@ -860,26 +871,50 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
+        /// <summary>
+        /// 登録されているビブラート設定の個数を取得します。
+        /// </summary>
+        /// <returns></returns>
         public int getVibratoConfigCount() {
             return m_vibrato_configs.size();
         }
 
+        /// <summary>
+        /// 登録されているアタック設定の個数を取得します。
+        /// </summary>
+        /// <returns></returns>
         public int getAttackConfigCount() {
             return m_attack_configs.size();
         }
 
+        /// <summary>
+        /// 登録されている強弱記号設定の個数を取得します。
+        /// </summary>
+        /// <returns></returns>
         public int getDynamicsConfigCount() {
             return m_dynamics_configs.size();
         }
 
+        /// <summary>
+        /// 登録されているビブラート設定を順に返す反復子を取得します。
+        /// </summary>
+        /// <returns></returns>
         public Iterator vibratoConfigIterator() {
             return m_vibrato_configs.iterator();
         }
 
+        /// <summary>
+        /// 登録されているアタック設定を順に返す反復子を取得します。
+        /// </summary>
+        /// <returns></returns>
         public Iterator attackConfigIterator() {
             return m_attack_configs.iterator();
         }
 
+        /// <summary>
+        /// 登録されている強弱記号設定を順に返す反復子を返します。
+        /// </summary>
+        /// <returns></returns>
         public Iterator dynamicsConfigIterator() {
             return m_dynamics_configs.iterator();
         }
@@ -887,6 +922,11 @@ namespace org.kbinani.vsq {
         private ExpressionConfigSys() {
         }
 
+        /// <summary>
+        /// VOCALOID(1/2)エディタの実行ファイルのパスと、表情ライブラリのディレクトリのパスを元に、新しい表情ライブラリ設定を構築します。
+        /// </summary>
+        /// <param name="path_editor"></param>
+        /// <param name="path_expdb"></param>
         public ExpressionConfigSys( String path_editor, String path_expdb ) {
             m_vibrato_configs = new Vector<VibratoHandle>();
             m_attack_configs = new Vector<NoteHeadHandle>();
