@@ -1506,6 +1506,11 @@ namespace org.kbinani.cadencii {
             return Messaging.getMessage( id );
         }
 
+        /// <summary>
+        /// 指定されたファイルを読み込んでスクリプトをコンパイルします．
+        /// </summary>
+        /// <param name="file">スクリプトを発動するのに使用するコンテナを返します．</param>
+        /// <returns></returns>
 #if ENABLE_SCRIPT
         public static ScriptInvoker loadScript( String file ) {
 #if JAVA
@@ -1694,6 +1699,11 @@ namespace org.kbinani.cadencii {
             return PortUtil.combinePath( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
         }
 
+        /// <summary>
+        /// 音声ファイルのキャッシュディレクトリのパスを設定します。
+        /// このメソッドでは、キャッシュディレクトリの変更に伴う他の処理は実行されません。
+        /// </summary>
+        /// <param name="value"></param>
         public static void setTempWaveDir( String value ) {
 #if DEBUG
             PortUtil.println( "AppManager#setTempWaveDir; before: \"" + tempWaveDir + "\"" );
@@ -1702,10 +1712,18 @@ namespace org.kbinani.cadencii {
             tempWaveDir = value;
         }
 
+        /// <summary>
+        /// 音声ファイルのキャッシュディレクトリのパスを取得します。
+        /// </summary>
+        /// <returns></returns>
         public static String getTempWaveDir() {
             return tempWaveDir;
         }
 
+        /// <summary>
+        /// Cadenciiが使用する一時ディレクトリのパスを取得します。
+        /// </summary>
+        /// <returns></returns>
         public static String getCadenciiTempDir() {
             String temp = PortUtil.combinePath( PortUtil.getTempPath(), TEMPDIR_NAME );
             if ( !PortUtil.isDirectoryExists( temp ) ) {
@@ -1714,10 +1732,18 @@ namespace org.kbinani.cadencii {
             return temp;
         }
 
+        /// <summary>
+        /// ベジエ曲線を編集するモードかどうかを取得します。
+        /// </summary>
+        /// <returns></returns>
         public static boolean isCurveMode() {
             return s_is_curve_mode;
         }
 
+        /// <summary>
+        /// ベジエ曲線を編集するモードかどうかを設定します。
+        /// </summary>
+        /// <param name="value"></param>
         public static void setCurveMode( boolean value ) {
             boolean old = s_is_curve_mode;
             s_is_curve_mode = value;
@@ -1732,7 +1758,7 @@ namespace org.kbinani.cadencii {
 
 #if !TREECOM
         /// <summary>
-        /// コマンドの履歴を削除します
+        /// アンドゥ・リドゥ用のコマンド履歴を削除します。
         /// </summary>
         public static void clearCommandBuffer() {
             s_commands.clear();
@@ -1740,7 +1766,7 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// アンドゥ処理を行います
+        /// アンドゥ処理を行います。
         /// </summary>
         public static void undo() {
             if ( isUndoAvailable() ) {
@@ -1766,7 +1792,7 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// リドゥ処理を行います
+        /// リドゥ処理を行います。
         /// </summary>
         public static void redo() {
             if ( isRedoAvailable() ) {
@@ -1792,7 +1818,7 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// コマンドバッファに指定されたコマンドを登録します
+        /// アンドゥ・リドゥ用のコマンドバッファに、指定されたコマンドを登録します。
         /// </summary>
         /// <param name="command"></param>
         public static void register( ICommand command ) {
@@ -1811,8 +1837,9 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// リドゥ操作が可能かどうかを表すプロパティ
+        /// リドゥ操作が可能かどうかを取得します。
         /// </summary>
+        /// <returns>リドゥ操作が可能ならtrue、そうでなければfalseを返します。</returns>
         public static boolean isRedoAvailable() {
             if ( s_commands.size() > 0 && 0 <= s_command_position + 1 && s_command_position + 1 < s_commands.size() ) {
                 return true;
@@ -1822,8 +1849,9 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// アンドゥ操作が可能かどうかを表すプロパティ
+        /// アンドゥ操作が可能かどうかを取得します。
         /// </summary>
+        /// <returns>アンドゥ操作が可能ならtrue、そうでなければfalseを返します。</returns>
         public static boolean isUndoAvailable() {
             if ( s_commands.size() > 0 && 0 <= s_command_position && s_command_position < s_commands.size() ) {
                 return true;
@@ -1833,10 +1861,18 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
+        /// <summary>
+        /// 現在選択されているツールを取得します。
+        /// </summary>
+        /// <returns></returns>
         public static EditTool getSelectedTool() {
             return s_selected_tool;
         }
 
+        /// <summary>
+        /// 現在選択されているツールを設定します。
+        /// </summary>
+        /// <param name="value"></param>
         public static void setSelectedTool( EditTool value ) {
             EditTool old = s_selected_tool;
             s_selected_tool = value;
@@ -1850,13 +1886,18 @@ namespace org.kbinani.cadencii {
         }
 
         #region SelectedBezier
-        public static Iterator getSelectedBezierEnumerator() {
+        /// <summary>
+        /// 選択されているベジエ曲線のデータ点を順に返す反復子を取得します。
+        /// </summary>
+        /// <returns></returns>
+        public static Iterator getSelectedBezierIterator() {
             return s_selected_bezier.iterator();
         }
 
         /// <summary>
-        /// ベジエ点のリストに最後に追加された点の情報を取得します
+        /// 最後に選択状態となったベジエ曲線のデータ点を取得します。
         /// </summary>
+        /// <returns>最後に選択状態となったベジエ曲線のデータ点を返します。選択状態となっているベジエ曲線がなければnullを返します。</returns>
         public static SelectedBezierPoint getLastSelectedBezier() {
             if ( s_last_selected_bezier.chainID < 0 || s_last_selected_bezier.pointID < 0 ) {
                 return null;
@@ -1866,9 +1907,9 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// 選択されているベジエ点のリストに、アイテムを追加します
+        /// 指定されたベジエ曲線のデータ点を選択状態にします。
         /// </summary>
-        /// <param name="selected">追加する点</param>
+        /// <param name="selected">選択状態にするデータ点。</param>
         public static void addSelectedBezier( SelectedBezierPoint selected ) {
             s_last_selected_bezier = selected;
             int index = -1;
@@ -1888,7 +1929,7 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// 選択されているベジエ点のリストを初期化します
+        /// すべてのベジエ曲線のデータ点の選択状態を解除します。
         /// </summary>
         public static void clearSelectedBezier() {
             s_selected_bezier.clear();
@@ -1899,6 +1940,10 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region SelectedTimesig
+        /// <summary>
+        /// 最後に選択状態となった拍子変更設定を取得します。
+        /// </summary>
+        /// <returns>最後に選択状態となった拍子変更設定を返します。選択状態となっている拍子変更設定が無ければnullを返します。</returns>
         public static SelectedTimesigEntry getLastSelectedTimesig() {
             if ( s_selected_timesig.containsKey( s_last_selected_timesig ) ) {
                 return s_selected_timesig.get( s_last_selected_timesig );

@@ -18,7 +18,7 @@
     <HtmlHelpName>Documentation</HtmlHelpName>
     <Language>ja-JP</Language>
     <FrameworkVersion>2.0.50727</FrameworkVersion>
-    <HelpFileFormat>Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <DocumentationSources>
       <DocumentationSource sourceFile="Cadencii\bin\x86\Release\Cadencii.exe" />
       <DocumentationSource sourceFile="Cadencii\bin\x86\Release\Cadencii.xml" />
@@ -36,7 +36,7 @@
     <NamingMethod>MemberName</NamingMethod>
     <CollectionTocStyle>Hierarchical</CollectionTocStyle>
     <IndentHtml>False</IndentHtml>
-    <PresentationStyle>Prototype</PresentationStyle>
+    <PresentationStyle>vs2005</PresentationStyle>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in
        order for Visual Studio to perform the build.  The others are optional

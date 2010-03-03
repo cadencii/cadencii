@@ -45,22 +45,41 @@ namespace org.kbinani.vsq {
         /// </summary>
         public String IDS = "";
         public int Index;
+        /// <summary>
+        /// ゲートタイム長さ。
+        /// </summary>
         public int Length;
         public int Original;
         public int Program;
         public int Language;
 
+        /// <summary>
+        /// 新しい歌手設定のインスタンスを初期化します。
+        /// </summary>
         public IconHandle() {
         }
 
+        /// <summary>
+        /// ゲートタイム長さを取得します。
+        /// </summary>
+        /// <returns></returns>
         public int getLength() {
             return Length;
         }
 
+        /// <summary>
+        /// ゲートタイム長さを設定します。
+        /// </summary>
+        /// <param name="value"></param>
         public void setLength( int value ) {
             Length = value;
         }
 
+        /// <summary>
+        /// このインスタンスと、指定された歌手変更のインスタンスが等しいかどうかを判定します。
+        /// </summary>
+        /// <param name="item">比較対象の歌手変更。</param>
+        /// <returns>このインスタンスと、比較対象の歌手変更が等しければtrue、そうでなければfalseを返します。</returns>
         public boolean equals( IconHandle item ) {
             if ( item == null ) {
                 return false;
@@ -69,6 +88,10 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// このインスタンスのコピーを作成します。
+        /// </summary>
+        /// <returns></returns>
         public Object clone() {
             IconHandle ret = new IconHandle();
             ret.Caption = Caption;
@@ -83,11 +106,19 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
+        /// <summary>
+        /// このインスタンスのコピーを作成します。
+        /// </summary>
+        /// <returns></returns>
         public object Clone() {
             return clone();
         }
 #endif
 
+        /// <summary>
+        /// この歌手設定のインスタンスを、VsqHandleに型キャストします。
+        /// </summary>
+        /// <returns></returns>
         public VsqHandle castToVsqHandle() {
             VsqHandle ret = new VsqHandle();
             ret.m_type = VsqHandleType.Singer;

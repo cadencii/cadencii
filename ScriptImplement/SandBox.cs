@@ -13,7 +13,7 @@ using System.Xml;
 
 public class SmartHtml {
     public static void Main( string[] args ) {
-        if ( args != 2 ) {
+        if ( args.Length != 2 ) {
             return;
         }
         string indir = args[0];

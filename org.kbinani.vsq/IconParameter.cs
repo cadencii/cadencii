@@ -23,28 +23,77 @@ using org.kbinani.java.io;
 namespace org.kbinani.vsq{
 #endif
 
+    /// <summary>
+    /// アイコン設定ファイルである*.AICファイルを読み取ることで作成されるアイコン設定を表します。
+    /// アイコン設定ファイルを使用するIconDynamicsHandle、NoteHeadHandle、およびVibratoHandleの基底クラスとなっています。
+    /// <see cref="T:org.kbinani.vsq.IconDynamicsHandle"/>
+    /// <see cref="T:org.kbinani.vsq.NoteHeadHandle"/>
+    /// <see cref="T:org.kbinani.vsq.VibratoHandle"/>
+    /// </summary>
 #if JAVA
     public class IconParameter implements Serializable {
 #else
     [Serializable]
     public class IconParameter {
 #endif
+        /// <summary>
+        /// アイコン設定の種類を表します。
+        /// </summary>
         public enum ArticulationType {
+            /// <summary>
+            /// ビブラート
+            /// </summary>
             Vibrato,
+            /// <summary>
+            /// クレッシェンド、またはデクレッシェンド
+            /// </summary>
             Crescendo,
+            /// <summary>
+            /// ピアノ、フォルテ等の強弱記号
+            /// </summary>
             Dynaff,
+            /// <summary>
+            /// アタック
+            /// </summary>
             NoteAttack,
+            /// <summary>
+            /// NoteTransition(詳細不明)
+            /// </summary>
             NoteTransition,
         }
 
+        /// <summary>
+        /// アイコン設定の種類
+        /// </summary>
         protected ArticulationType articulation;
+        /// <summary>
+        /// アイコンのボタンに使用される画像ファイルへの相対パス
+        /// </summary>
         protected String button = "";
+        /// <summary>
+        /// キャプション
+        /// </summary>
         protected String caption = "";
 
+        /// <summary>
+        /// ゲートタイム長さ
+        /// </summary>
         protected int length;
+        /// <summary>
+        /// ビブラート深さの開始値
+        /// </summary>
         protected int startDepth;
+        /// <summary>
+        /// ビブラート深さの終了値
+        /// </summary>
         protected int endDepth;
+        /// <summary>
+        /// ビブラート速さの開始値
+        /// </summary>
         protected int startRate;
+        /// <summary>
+        /// ビブラート速さの終了値
+        /// </summary>
         protected int endRate;
         protected int startDyn;
         protected int endDyn;

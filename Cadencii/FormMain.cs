@@ -9282,7 +9282,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void cMenuTrackSelectorDeleteBezier_Click( Object sender, EventArgs e ) {
-            for ( Iterator itr = AppManager.getSelectedBezierEnumerator(); itr.hasNext(); ) {
+            for ( Iterator itr = AppManager.getSelectedBezierIterator(); itr.hasNext(); ) {
                 SelectedBezierPoint sbp = (SelectedBezierPoint)itr.next();
                 int chain_id = sbp.chainID;
                 int point_id = sbp.pointID;
