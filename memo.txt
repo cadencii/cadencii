@@ -20,7 +20,6 @@
 -設定画面で、利用するDLLが増減した場合、再起動後に有効になる旨ダイアログを出す.
 -ショートカットキーを増やす（詳細はメール）
 -#vocalosoftlist
--branches/3.0のPlaySound.dllをtrunkにマージする
 -v3.1.1done------------------------------------------------------------
 -PhonemeTransformationの機能を実装
 -VOCALOID1で出力したVOCALOID MIDIの読み込みが失敗するのを修正

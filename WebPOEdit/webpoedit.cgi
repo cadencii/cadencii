@@ -545,7 +545,7 @@ if( $author eq "" ){
 
 	my $is_rtl = 0;
 
-	print "<title>" . $project_name . "&nbsp;&gt;&gt;&nbsp;" . $lang . "</title>\n";
+	print "<title>" . $project_name . "&gt;&gt;" . $lang . "</title>\n";
 	print "</head>\n";
 	if( $is_rtl != 0 ){
 		print "<body dir=\"rtl\">\n";
