@@ -54,9 +54,6 @@ namespace org.kbinani.cadencii {
         protected boolean directPlay;
         protected int trimMillisec;
         protected int sampleRate;
-#if DEBUG
-        protected WaveWriter debugWaveWriter = null;
-#endif
 
         public abstract void run();
         public abstract double getProgress();
@@ -269,11 +266,6 @@ namespace org.kbinani.cadencii {
                 reader_l = null;
                 reader_r = null;
                 if ( directPlay ) {
-#if DEBUG
-                    if ( debugWaveWriter != null ) {
-                        debugWaveWriter.append( L, R );
-                    }
-#endif
                     PlaySound.append( L, R, L.Length );
                 }
                 m_total_append += length;

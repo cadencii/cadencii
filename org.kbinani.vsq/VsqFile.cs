@@ -2464,7 +2464,10 @@ namespace org.kbinani.vsq {
         /// </summary>
         public void updateTimesigInfo() {
 #if DEBUG
-            PortUtil.println( "VsqFile.UpdateTimesigInfo()" );
+            PortUtil.println( "VsqFile#updateTimesigInfo; before:" );
+            for ( int i = 0; i < TimesigTable.size(); i++ ) {
+                PortUtil.println( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
+            }
 #endif
             if ( TimesigTable.get( 0 ).Clock != 0 ) {
                 return;
@@ -2483,7 +2486,7 @@ namespace org.kbinani.vsq {
                 TimesigTable.get( j ).Clock = clock;
             }
 #if DEBUG
-            PortUtil.println( "TimesigTable;" );
+            PortUtil.println( "VsqFile#updateTimesigInfo; after:" );
             for ( int i = 0; i < TimesigTable.size(); i++ ) {
                 PortUtil.println( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
             }

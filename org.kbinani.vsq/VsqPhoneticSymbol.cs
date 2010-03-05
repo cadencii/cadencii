@@ -21,6 +21,9 @@ namespace org.kbinani.vsq {
     using boolean = System.Boolean;
 #endif
 
+    /// <summary>
+    /// VSQで使用される発音記号の種類や有効性を判定するユーティリティ群です。
+    /// </summary>
     public class VsqPhoneticSymbol {
         private static String[] _SYMBOL_VOWEL_JP = new String[]{
             "a",
@@ -123,6 +126,11 @@ namespace org.kbinani.vsq {
             "h",
         };
 
+        /// <summary>
+        /// 指定した文字列が子音を表す発音記号かどうかを判定します。
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns></returns>
         public static boolean isConsonant( String symbol ) {
             for ( int i = 0; i < _SYMBOL_CONSONANT_JP.Length; i++ ) {
                 String s = _SYMBOL_CONSONANT_JP[i];
@@ -133,6 +141,11 @@ namespace org.kbinani.vsq {
             return false;
         }
 
+        /// <summary>
+        /// 指定した文字列が発音記号として有効かどうかを判定します。
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns></returns>
         public static boolean isValidSymbol( String symbol ) {
             for ( int i = 0; i < _SYMBOL_VOWEL_JP.Length; i++ ) {
                 String s = _SYMBOL_VOWEL_JP[i];
@@ -150,6 +163,20 @@ namespace org.kbinani.vsq {
                 String s = _SYMBOL_EN[i];
                 if ( s.Equals( symbol ) ) {
                     return true;
+                }
+            }
+
+            // ブレスの判定
+            int strlen = PortUtil.getStringLength( symbol );
+            if ( symbol.StartsWith( "br" ) && strlen > 2 ) {
+                String s = symbol.Substring( 2 );
+                try {
+                    // br001とかをfalseにするためのチェック
+                    int num = PortUtil.parseInt( s );
+                    if ( s.Equals( "" + num ) ) {
+                        return true;
+                    }
+                } catch ( Exception ex ) {
                 }
             }
             return false;

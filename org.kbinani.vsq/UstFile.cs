@@ -58,18 +58,16 @@ namespace org.kbinani.vsq {
             try {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "Shift_JIS" ) );
 #if DEBUG
-                org.kbinani.debug.push_log( "path=" + path );
-                org.kbinani.debug.push_log( "(sr==null)=" + (sr == null) );
+                PortUtil.println( "UstFile#.ctor; path=" + path );
+                PortUtil.println( "UstFile#.ctor; (sr==null)=" + (sr == null) );
 #endif
                 String line = sr.readLine();
-                if ( !line.Equals( "[#SETTING]" ) ) {
-                    throw new Exception( "invalid ust file" );
-                }
+
                 UstTrack track = new UstTrack();
                 int type = 0; //0 => reading "SETTING" section
                 while ( true ) {
 #if DEBUG
-                    PortUtil.println( "line=" + line );
+                    PortUtil.println( "UstFile#.ctor; line=" + line );
 #endif
                     UstEvent ue = null;
                     if ( type == 1 ) {
@@ -83,6 +81,10 @@ namespace org.kbinani.vsq {
                     } else if ( line.ToUpper().Equals( "[#PREV]" ) ) {
                         index = PREV_INDEX;
                     } else {
+                        if ( type != 1 ) {
+                            ue = new UstEvent();
+                            type = 1;
+                        }
                         String s = line.Replace( "[#", "" ).Replace( "]", "" ).Trim();
                         try {
                             index = PortUtil.parseInt( s );
@@ -93,7 +95,7 @@ namespace org.kbinani.vsq {
                         }
                     }
 #if DEBUG
-                    org.kbinani.debug.push_log( "index=" + index );
+                    PortUtil.println( "UstFile#.ctor; index=" + index );
 #endif
                     line = sr.readLine(); // "[#" 直下の行
                     if ( line == null ) {
@@ -335,6 +337,14 @@ namespace org.kbinani.vsq {
         }
 
         private UstFile() {
+        }
+
+        public void setVoiceDir( String value ) {
+            m_voice_dir = value;
+        }
+
+        public String getVoiceDir() {
+            return m_voice_dir;
         }
 
         public String getProjectName() {

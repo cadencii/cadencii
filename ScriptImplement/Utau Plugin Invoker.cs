@@ -5,16 +5,26 @@ using org.kbinani.cadencii;
 using System.Collections.Generic;
 using org.kbinani.vsq;
 using org.kbinani.java.util;
+using org.kbinani.apputil;
+using System.Text;
 
 public class Utau_Plugin_Invoker {
     private static bool s_finished = false;
-    private static string s_plugin_txt_path = @"E:\Program Files\UTAU\plugins\picedit\plugin.txt";
+    private static string s_plugin_txt_path = @"C:\Program Files\UTAU\plugins\Lyric Diphonizer\plugin.txt";
 
     public static ScriptReturnStatus Edit( VsqFileEx vsq ) {
         if ( AppManager.getSelectedEventCount() <= 0 ) {
             return ScriptReturnStatus.NOT_EDITED;
         }
-        string pluginTxtPath = s_plugin_txt_path;
+        int selected = AppManager.getSelected();
+        string pluginTxtPath;
+        using ( InputBox ib = new InputBox( "input path of plugin.txt" ) ) {
+            ib.setResult( s_plugin_txt_path );
+            if ( ib.ShowDialog() != DialogResult.OK ) {
+                return ScriptReturnStatus.NOT_EDITED;
+            }
+            pluginTxtPath = ib.getResult();
+        }
         if ( pluginTxtPath == "" ) {
             AppManager.showMessageBox( "pluginTxtPath=" + pluginTxtPath );
             return ScriptReturnStatus.ERROR;
@@ -94,7 +104,7 @@ public class Utau_Plugin_Invoker {
         int clock_begin = items[0].Clock;
         int clock_end = items[items.Count - 1].Clock;
         int clock_end_end = clock_end + items[items.Count - 1].ID.Length;
-        VsqTrack vsq_track = vsq.Track.get( AppManager.getSelected() );
+        VsqTrack vsq_track = vsq.Track.get( selected );
         VsqEvent tlast_event = null;
         VsqEvent prev = null;
         VsqEvent next = null;
@@ -164,6 +174,15 @@ public class Utau_Plugin_Invoker {
 
         string temp = Path.GetTempFileName();
         UstFile tust = new UstFile( conv, 1 );
+        VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );
+        string voice_dir = "";
+        foreach( SingerConfig sc in AppManager.editorConfig.UtauSingers ){
+            if ( sc.Program == singer_event.ID.IconHandle.Program ){
+                voice_dir = sc.VOICEIDSTR;
+                break;
+            }
+        }
+        tust.setVoiceDir( voice_dir );
         if ( prev != null ) {
             tust.getTrack( 0 ).getEvent( 0 ).Index = int.MinValue;
         }
@@ -176,159 +195,151 @@ public class Utau_Plugin_Invoker {
         StartPluginArgs arg = new StartPluginArgs();
         arg.exePath = exe_path;
         arg.tmpFile = temp;
-        System.Threading.Thread t = new System.Threading.Thread( new System.Threading.ParameterizedThreadStart( runPlugin ) );
+        System.Threading.Thread thread = new System.Threading.Thread( new System.Threading.ParameterizedThreadStart( runPlugin ) );
         s_finished = false;
-        t.Start( arg );
+        thread.Start( arg );
         while ( !s_finished ) {
             System.Threading.Thread.Sleep( 100 );
             Application.DoEvents();
         }
 
         // 結果を反映 -----------------------------------------------------------------------
-        UstFile ust = null;
-        VsqFile vsq_edited = null;
-        try {
-            ust = new UstFile( temp );
-            vsq_edited = new VsqFile( ust );
-        } catch ( Exception ex ) {
-            AppManager.showMessageBox( "invalid ust file; ex=" + ex );
-            return ScriptReturnStatus.ERROR;
-        }
-
-        // プラグインの実行結果が、どのクロック範囲に及んでいるかを判定
-        UstTrack tr = ust.getTrack( 0 );
-        int clock_edit_start = clock_begin;
-        int clock_edit_end = clock_end_end;
-        int event_size = tr.getEventCount();
-        int counter = -1;
-        int clock = 0;
-        // clock_edit_startを取得
-        for ( int i = 0; i < event_size; i++ ) {
-            UstEvent ue = tr.getEvent( i );
-            counter++;
-            if ( prev == null ) {
-                clock_edit_start = clock;
-                break;
-            } else {
-                if ( counter > 0 ) {
-                    clock_edit_start = clock;
-                    break;
+        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( 932 ) ) ) {
+            string line = "";
+            string current_parse = "";
+            while ( (line = sr.ReadLine()) != null ) {
+                Console.WriteLine( "Utau_Plugin_Invoker#Edit; line=" + line );
+                if ( line.StartsWith( "[#" ) ){
+                    current_parse = line;
+                    continue;
                 }
-            }
-            clock += ue.Length;
-        }
-        counter = -1;
-        // clock_edit_endを取得
-        for ( int i = event_size - 1; i >= 0; i-- ) {
-            UstEvent ue = tr.getEvent( i );
-            counter++;
-            if ( prev == null ) {
-                clock_edit_end = clock + ue.Length;
-                break;
-            } else {
-                if ( counter > 0 ) {
-                    clock_edit_end = clock + ue.Length;
-                    break;
-                }
-            }
-            clock += ue.Length;
-        }
-        int len = clock_edit_end - clock_edit_start;
 
-        // vsq_editedのクロックをシフト
-        // clock_edit_startが、clock_beginにくるように移動させる
-        VsqFile.shift( vsq_edited, clock_begin - clock_edit_start );
-        clock_edit_start = clock_begin;          // シフト後の、被編集範囲の開始位置
-        clock_edit_end = clock_edit_start + len; // シフト後の、非編集範囲の終了位置
-
-        // clock_edit_end != clock_endの場合。clock_end以降のアイテムをずらす必要がある
-        if ( clock_edit_end != clock_end ) {
-            int shift = clock_edit_end - clock_end;
-            int track_size = vsq.Track.size();
-            for ( int i = 0; i < track_size; i++ ) {
-                VsqTrack track_edit = vsq.Track.get( i );
-                foreach ( CurveType s in AppManager.CURVE_USAGE ) {
-                    VsqBPList list = track_edit.getCurve( s.getName() );
-                    if ( list == null ) {
+                if ( current_parse == "[#SETTING]" ) {
+                } else if ( current_parse == "[#TRACKEND]" ) {
+                } else if ( current_parse == "[#PREV]" ) {
+                } else if ( current_parse == "[#NEXT]" ) {
+                } else if ( current_parse.StartsWith( "[#" ) ) {
+                    int indx_blacket = current_parse.IndexOf( ']' );
+                    string str_num = current_parse.Substring( 2, indx_blacket - 2 );
+                    Console.WriteLine( "Utau_Plugin_Invoker#Edit; str_num=" + str_num );
+                    int num = -1;
+                    if ( !int.TryParse( str_num, out num ) ) {
+                        Console.WriteLine( "Utau_Plugin_Invoker#Edit; format error; str_num=" + str_num );
                         continue;
                     }
-                    int num_points = list.size();
-                    if ( shift > 0 ) {
-                        // 遅らせる
-                        for ( int j = num_points - 1; j >= 0; j-- ) {
-                            int cl = list.getKeyClock( j );
-                            if ( clock_end <= cl ) {
-                                list.move( cl, cl + shift, list.getElement( j ) );
-                            } else if ( cl < clock_end ) {
-                                break;
+                    if ( num < 0 || map_id.Count <= num ) {
+                        Console.WriteLine( "Utau_Plugin_Invoker#Edit; invalid range; num=" + num + "; map_id.Count=" + map_id.Count );
+                        continue;
+                    }
+                    VsqEvent target = vsq_track.findEventFromID( map_id[num] );
+                    if ( target == null ) {
+                        Console.WriteLine( "Utau_Plugin_Invoker#Edit; target event not found; num=" + num + "; map_id[num]=" + map_id[num] );
+                        continue;
+                    }
+                    if ( target.UstEvent == null ) {
+                        target.UstEvent = new UstEvent();
+                    }
+                    string[] spl = line.Split( '=' );
+                    if ( spl.Length < 2 ) {
+                        continue;
+                    }
+                    string left = spl[0];
+                    string right = spl[1];
+                    if ( left == "Length" ) {
+                        int v = target.ID.getLength();
+                        try {
+                            v = int.Parse( right );
+                            target.ID.setLength( v );
+                            target.UstEvent.Length = v;
+                        } catch {
+                        }
+                    } else if ( left == "Lyric" ) {
+                        if ( target.ID.LyricHandle == null ) {
+                            target.ID.LyricHandle = new LyricHandle( "あ", "a" );
+                        }
+                        target.ID.LyricHandle.L0.Phrase = right;
+                        target.UstEvent.Lyric = right;
+                    } else if ( left == "NoteNum" ) {
+                        int v = target.ID.Note;
+                        try {
+                            v = int.Parse( right );
+                            target.ID.Note = v;
+                            target.UstEvent.Note = v;
+                        } catch {
+                        }
+                    } else if ( left == "Intensity" ) {
+                        int v = target.ID.Dynamics;
+                        try {
+                            v = int.Parse( right );
+                            target.ID.Dynamics = v;
+                            target.UstEvent.Intensity = v;
+                        } catch {
+                        }
+                    } else if ( left == "PBType" ) {
+                        int v = target.UstEvent.PBType;
+                        try {
+                            v = int.Parse( right );
+                            target.UstEvent.PBType = v;
+                        } catch {
+                        }
+                    } else if ( left == "Piches" ) {
+                        string[] spl2 = right.Split( ',' );
+                        float[] t = new float[spl2.Length];
+                        for ( int i = 0; i < spl2.Length; i++ ) {
+                            float v = 0;
+                            try {
+                                v = float.Parse( spl2[i] );
+                                t[i] = v;
+                            } catch {
                             }
                         }
-                    } else {
-                        // clock_edit_end <= * < clock_end の間のデータ点を削除
-                        for ( int j = num_points - 1; j >= 0; j-- ) {
-                            int cl = list.getKeyClock( j );
-                            if ( clock_edit_end <= cl && cl < clock_end ) {
-                                list.remove( cl );
-                            } else if ( cl < clock_edit_end ) {
-                                break;
-                            }
+                        target.UstEvent.Pitches = t;
+                        // pitとpbsの処理を何とかする．
+                    } else if ( left == "Tempo" ) {
+                        float v = 125f;
+                        try {
+                            v = float.Parse( right );
+                            vsq.TempoTable.add( new TempoTableEntry( target.Clock, (int)(60e6 / v), 0.0 ) );
+                            vsq.updateTempoInfo();
+                        } catch {
                         }
-
-                        // アイテムをずらす
-                        num_points = list.size();
-                        for ( int j = 0; j < num_points; j++ ) {
-                            int cl = list.getKeyClock( j );
-                            if ( clock_edit_end <= cl && cl < clock_end ) {
-                                list.move( cl, cl + shift, list.getElement( j ) );
-                            } else if ( clock_end <= cl ) {
-                                break;
-                            }
+                    } else if ( left == "VBR" ) {
+                        target.UstEvent.Vibrato = new UstVibrato( line );
+                    } else if ( left == "PBW" ||
+                                left == "PBS" ||
+                                left == "PBY" ||
+                                left == "PBM" ) {
+                        if ( target.UstEvent.Portamento == null ) {
+                            target.UstEvent.Portamento = new UstPortamento();
+                        }
+                        target.UstEvent.Portamento.ParseLine( line );
+                    } else if ( left == "Envelope" ) {
+                        target.UstEvent.Envelope = new UstEnvelope( line );
+                    } else if ( left == "VoiceOverlap" ) {
+                        float v = target.UstEvent.VoiceOverlap;
+                        try {
+                            v = float.Parse( right );
+                            target.UstEvent.VoiceOverlap = v;
+                        } catch {
+                        }
+                    } else if ( left == "PreUtterance" ) {
+                        float v = target.UstEvent.PreUtterance;
+                        try {
+                            v = float.Parse( right );
+                            target.UstEvent.PreUtterance = v;
+                        } catch {
                         }
                     }
                 }
             }
         }
-
-        int track_count = ust.getTrackCount();
-        for ( int i = 0; i < track_count; i++ ) {
-            UstTrack track = ust.getTrack( i );
-            int event_count = track.getEventCount();
-            int shift_required_clock = 0; //選択部の音符以降を、このクロック数だけずらす必要がある.
-            for ( int j = 0; j < event_count; j++ ) {
-                UstEvent itemj = track.getEvent( j );
-                if ( itemj.Index == int.MinValue ) {
-                    AppManager.showMessageBox( "[#PREV]" );
-                } else if ( itemj.Index == int.MaxValue ) {
-                    AppManager.showMessageBox( "[#NEXT]" );
-                } else {
-                    if ( 0 <= itemj.Index && itemj.Index < map_id.Count ) {
-                        // 既存の音符(ダミーRも含む)に対する編集
-                        int internal_id = map_id[itemj.Index];
-                        if ( internal_id > 0 ) {
-                            // 普通の音符
-                            VsqEvent edit = vsq_track.findEventFromID( internal_id );
-                            if ( edit != null ) {
-                                edit.ID.Dynamics = itemj.Intensity;
-                                shift_required_clock += itemj.getLength() - edit.ID.getLength();
-                                edit.ID.setLength( itemj.getLength() );
-                                edit.ID.Note = itemj.Note;
-                                edit.UstEvent = itemj;
-                            }
-                        } else {
-                            // ダミーR
-                        }
-                    } else {
-                        // 新規の音符が追加された
-                    }
-                }
-            }
-        }
-
         try {
-            System.IO.File.Delete( temp );
+            //System.IO.File.Delete( temp );
+            //TODO:後でコメントをはずすこと
+            Console.WriteLine( "Utau_Plugin_Invoker#Edit; temp=" + temp );
         } catch ( Exception ex ) {
         }
-        return ScriptReturnStatus.ERROR;
+        return ScriptReturnStatus.EDITED;
     }
 
     private static void copyCurve( VsqBPList src, VsqBPList dest, int clock_shift ) {

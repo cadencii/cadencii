@@ -1,10 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlaySound", "PlaySound\PlaySound.vcproj", "{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "util\util.vcproj", "{38AB9E3D-2201-4C02-8274-692CCA1953A0}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "org.kbinani.cadencii.util", "org.kbinani.cadencii.util\org.kbinani.cadencii.util.vcproj", "{D75DA4EB-238B-4E00-AF4E-0AE4D285FFDE}"
 EndProject
 Global
@@ -14,18 +10,6 @@ Global
 		Release64|Win32 = Release64|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}.Debug|Win32.Build.0 = Debug|Win32
-		{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}.Release|Win32.ActiveCfg = Release|Win32
-		{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}.Release|Win32.Build.0 = Release|Win32
-		{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}.Release64|Win32.ActiveCfg = Release|Win32
-		{DA918850-02BC-4A4A-8A6E-7A99BC9828DC}.Release64|Win32.Build.0 = Release|Win32
-		{38AB9E3D-2201-4C02-8274-692CCA1953A0}.Debug|Win32.ActiveCfg = Debug|Win32
-		{38AB9E3D-2201-4C02-8274-692CCA1953A0}.Debug|Win32.Build.0 = Debug|Win32
-		{38AB9E3D-2201-4C02-8274-692CCA1953A0}.Release|Win32.ActiveCfg = Release|Win32
-		{38AB9E3D-2201-4C02-8274-692CCA1953A0}.Release|Win32.Build.0 = Release|Win32
-		{38AB9E3D-2201-4C02-8274-692CCA1953A0}.Release64|Win32.ActiveCfg = Release|Win32
-		{38AB9E3D-2201-4C02-8274-692CCA1953A0}.Release64|Win32.Build.0 = Release|Win32
 		{D75DA4EB-238B-4E00-AF4E-0AE4D285FFDE}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D75DA4EB-238B-4E00-AF4E-0AE4D285FFDE}.Debug|Win32.Build.0 = Debug|Win32
 		{D75DA4EB-238B-4E00-AF4E-0AE4D285FFDE}.Release|Win32.ActiveCfg = Release|Win32

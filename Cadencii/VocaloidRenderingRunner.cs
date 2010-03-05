@@ -138,9 +138,6 @@ namespace org.kbinani.cadencii {
 #endif
                 return;
             }
-#if DEBUG
-            debugWaveWriter = new WaveWriter( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "t.wav" ), 2, 16, 44100 );
-#endif
             // 古いイベントをクリア
             driver.clearSendEvents();
 
@@ -213,13 +210,6 @@ namespace org.kbinani.cadencii {
                 PlaySound.waitForExit();
             }
 #if DEBUG
-            if ( debugWaveWriter != null ) {
-                try {
-                    debugWaveWriter.close();
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VocaloidRenderingRunner#run; ex=" + ex );
-                }
-            }
             PortUtil.println( "VocaloidRenderingRunner#run; m_total_append=" + m_total_append );
 #endif
         }

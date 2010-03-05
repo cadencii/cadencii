@@ -1140,10 +1140,20 @@ namespace org.kbinani.cadencii {
         }
 
         #region AppManager
-        public void AppManager_CurrentClockChanged( Object sender, EventArgs e ) {
+        private void changeCurrentClockView( Object sender, EventArgs e ) {
             stripLblBeat.setText( AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator );
             stripLblTempo.setText( PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo ) );
             stripLblCursor.setText( AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock ) );
+        }
+
+        public void AppManager_CurrentClockChanged( Object sender, EventArgs e ) {
+#if DEBUG
+            Console.WriteLine( "FormMain#AppManager_CurrentClockChanged" );
+#endif
+            EventHandler handler = new EventHandler( changeCurrentClockView );
+            if ( handler != null ) {
+                this.Invoke( handler );
+            }
         }
 
         public void AppManager_GridVisibleChanged( Object sender, EventArgs e ) {
@@ -2586,31 +2596,39 @@ namespace org.kbinani.cadencii {
 #endif
                         int stdx = AppManager.startToDrawX;
                         int stdy = getStartToDrawY();
+                        int min_width = 4 * _EDIT_HANDLE_WIDTH;
 #if USE_DOBJ
                         for ( Iterator itr = AppManager.drawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                             DrawObject dobj = (DrawObject)itr.next();
+
+                            int edit_handle_width = _EDIT_HANDLE_WIDTH;
+                            if ( dobj.pxRectangle.width < min_width ) {
+                                edit_handle_width = dobj.pxRectangle.width / 4;
+                            }
+
+                            // 左端の"のり代"にマウスがあるかどうか
                             Rectangle rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth - stdx, 
                                                           dobj.pxRectangle.y - stdy,
-                                                          _EDIT_HANDLE_WIDTH, 
+                                                          edit_handle_width, 
                                                           dobj.pxRectangle.height );
 #else
-                    for( Iterator itr = AppManager.VsqFile.getTrack( AppManager.Selected ).getNoteEventIterator(); itr.hasNext(); ){
-                        VsqEvent evnt = (VsqEvent)itr.next();
-                        int event_ex = XCoordFromClocks( evnt.Clock + evnt.ID.Length );
-                        if ( event_ex < 0 ) {
-                            continue;
-                        }
-                        int event_sx = XCoordFromClocks( evnt.Clock );
-                        if ( pictPianoRoll.getWidth() < event_sx ) {
-                            break;
-                        }
-                        int event_sy = YCoordFromNote( evnt.ID.Note, stdy );
+                        for( Iterator itr = AppManager.VsqFile.getTrack( AppManager.Selected ).getNoteEventIterator(); itr.hasNext(); ){
+                            VsqEvent evnt = (VsqEvent)itr.next();
+                            int event_ex = XCoordFromClocks( evnt.Clock + evnt.ID.Length );
+                            if ( event_ex < 0 ) {
+                                continue;
+                            }
+                            int event_sx = XCoordFromClocks( evnt.Clock );
+                            if ( pictPianoRoll.getWidth() < event_sx ) {
+                                break;
+                            }
+                            int event_sy = YCoordFromNote( evnt.ID.Note, stdy );
 
-                        // 左端
-                        Rectangle rc = new Rectangle( event_sx - _EDIT_HANDLE_WIDTH / 2, 
-                                                      event_sy,
-                                                      _EDIT_HANDLE_WIDTH,
-                                                      AppManager.EditorConfig.PxTrackHeight );
+                            // 左端
+                            Rectangle rc = new Rectangle( event_sx - _EDIT_HANDLE_WIDTH / 2, 
+                                                          event_sy,
+                                                          _EDIT_HANDLE_WIDTH,
+                                                          AppManager.EditorConfig.PxTrackHeight );
 #endif
                             if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 AppManager.setWholeSelectedIntervalEnabled( false );
@@ -2630,10 +2648,12 @@ namespace org.kbinani.cadencii {
 #endif
                                 return;
                             }
+
+                            // 右端の糊代にマウスがあるかどうか
 #if USE_DOBJ
-                            rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx - _EDIT_HANDLE_WIDTH,
+                            rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx - edit_handle_width,
                                                 dobj.pxRectangle.y - stdy,
-                                                _EDIT_HANDLE_WIDTH,
+                                                edit_handle_width,
                                                 dobj.pxRectangle.height );
 #else
                             rect = new Rectangle( event_ex - _EDIT_HANDLE_WIDTH / 2,
@@ -2960,7 +2980,10 @@ namespace org.kbinani.cadencii {
                         if ( tx + twidth < x0 ) {
                             break;
                         }
-                        boolean found = isInRect( new Point( x0, y0 ), rect ) | isInRect( new Point( x0, y1 ), rect ) | isInRect( new Point( x1, y0 ), rect ) | isInRect( new Point( x1, y1 ), rect );
+                        boolean found = isInRect( new Point( x0, y0 ), rect ) | 
+                                        isInRect( new Point( x0, y1 ), rect ) |
+                                        isInRect( new Point( x1, y0 ), rect ) |
+                                        isInRect( new Point( x1, y1 ), rect );
                         if ( found ) {
                             add_required.add( internal_id );
                         } else {
@@ -3164,20 +3187,26 @@ namespace org.kbinani.cadencii {
             if ( !m_mouse_downed ) {
                 boolean split_cursor = false;
                 boolean hand_cursor = false;
+                int min_width = 4 * _EDIT_HANDLE_WIDTH;
 #if USE_DOBJ
                 for ( Iterator itr = AppManager.drawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                     DrawObject dobj = (DrawObject)itr.next();
                     Rectangle rc;
                     if ( dobj.type != DrawObjectType.Dynaff ) {
-                        // 音符左側の編集領域
 #else
                 for ( Iterator itr = AppManager.VsqFile.getTrack( AppManager.Selected ).getNoteEventIterator(); itr.hasNext(); ){
 
 #endif
+                        int edit_handle_width = _EDIT_HANDLE_WIDTH;
+                        if ( dobj.pxRectangle.width < min_width ) {
+                            edit_handle_width = dobj.pxRectangle.width / 4;
+                        }
+
+                        // 音符左側の編集領域
                         rc = new Rectangle(
                                             dobj.pxRectangle.x + AppManager.keyWidth - stdx,
                                             dobj.pxRectangle.y - stdy,
-                                            _EDIT_HANDLE_WIDTH,
+                                            edit_handle_width,
                                             AppManager.editorConfig.PxTrackHeight );
                         if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
                             split_cursor = true;
@@ -3185,9 +3214,9 @@ namespace org.kbinani.cadencii {
                         }
 
                         // 音符右側の編集領域
-                        rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx - _EDIT_HANDLE_WIDTH,
+                        rc = new Rectangle( dobj.pxRectangle.x + AppManager.keyWidth + dobj.pxRectangle.width - stdx - edit_handle_width,
                                             dobj.pxRectangle.y - stdy,
-                                            _EDIT_HANDLE_WIDTH,
+                                            edit_handle_width,
                                             AppManager.editorConfig.PxTrackHeight );
                         if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
                             split_cursor = true;
@@ -4916,6 +4945,10 @@ namespace org.kbinani.cadencii {
                 Vector<MidiEvent> events = mf.getMidiEventList( i );
                 boolean t_tempo_added = false;   //第iトラックからテンポをインポートしたかどうか
                 boolean t_timesig_added = false; //第iトラックから拍子をインポートしたかどうか
+                int last_timesig_clock = 0; // 最後に拍子変更を検出したゲートタイム
+                int last_num = 4; // 最後に検出した拍子変更の分子
+                int last_den = 4; // 最後に検出した拍子変更の分母
+                int last_barcount = 0;
                 int events_Count = events.size();
                 for ( int j = 0; j < events_Count; j++ ) {
                     MidiEvent itemj = events.get( j );
@@ -4930,7 +4963,13 @@ namespace org.kbinani.cadencii {
                         for ( int k = 0; k < itemj.data[2]; k++ ) {
                             den = den * 2;
                         }
-                        tempo.TimesigTable.add( new TimeSigTableEntry( (int)itemj.clock, num, den, 0 ) );
+                        int clock_per_bar = last_num * 480 * 4 / last_den;
+                        int barcount_at_itemj = last_barcount + ((int)itemj.clock - last_timesig_clock) / clock_per_bar;
+                        tempo.TimesigTable.add( new TimeSigTableEntry( (int)itemj.clock, num, den, barcount_at_itemj ) );
+                        last_timesig_clock = (int)itemj.clock;
+                        last_den = den;
+                        last_num = num;
+                        last_barcount = barcount_at_itemj;
                         t_timesig_added = true;
                     }
                 }
@@ -4980,6 +5019,10 @@ namespace org.kbinani.cadencii {
             }
             tempo.updateTempoInfo();
             tempo.updateTimesigInfo();
+#if DEBUG
+            Console.WriteLine( "hit Enter to continue" );
+            Console.ReadLine();
+#endif
 
             // tempoをインポート
             boolean import_tempo = m_midi_imexport_dialog.isTempo();
@@ -11595,15 +11638,13 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
+        /// <summary>
+        /// MTC用のMIDI-INデバイスからMIDIを受信します。
+        /// </summary>
+        /// <param name="now"></param>
+        /// <param name="dataArray"></param>
 #if ENABLE_MTC
         private void handleMtcMidiReceived( double now, byte[] dataArray ) {
-#if DEBUG
-            String s = "FormMain#handleMtcMidiReceived;";
-            for ( int i = 0; i < dataArray.Length; i++ ) {
-                s += " " + PortUtil.toHexString( dataArray[i], 2 );
-            }
-            PortUtil.println( s );
-#endif
             byte data = (byte)(dataArray[1] & 0x0f);
             byte type = (byte)((dataArray[1] >> 4) & 0x0f);
             if ( type == 0 ) {
@@ -11639,16 +11680,22 @@ namespace org.kbinani.cadencii {
                 int frame = (mtcFrameMsb << 4 | mtcFrameLsb) + 2;
                 double time = (hour * 60.0 + min) * 60.0 + sec + frame / fps;
                 mtcLastReceived = now;
-                if ( !AppManager.isPlaying() ) {
+#if DEBUG
+                int clock = (int)AppManager.getVsqFile().getClockFromSec( time );
+                AppManager.setCurrentClock( clock );
+#endif
+                /*if ( !AppManager.isPlaying() ) {
                     AppManager.setEditMode( EditMode.REALTIME_MTC );
+                    AppManager.setPlaying( true );
                     EventHandler handler = new EventHandler( AppManager_PreviewStarted );
                     if ( handler != null ) {
                         this.Invoke( handler );
-                        while ( !AppManager.isPlaying() ) {
+                        while ( VSTiProxy.getPlayTime() <= 0.0 ) {
                             System.Windows.Forms.Application.DoEvents();
                         }
+                        AppManager.setPlaying( true );
                     }
-                }
+                }*/
 #if DEBUG
                 PortUtil.println( "FormMain#handleMtcMidiReceived; time=" + time );
 #endif

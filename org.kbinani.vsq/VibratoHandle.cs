@@ -27,16 +27,10 @@ namespace org.kbinani.vsq {
     [Serializable]
     public class VibratoHandle : IconParameter, ICloneable {
 #endif
-        /*public int StartDepth;
-        public VibratoBPList DepthBP;
-        public int StartRate;
-        public VibratoBPList RateBP;*/
         public int Index;
         public String IconID = "";
         public String IDS = "";
         public int Original;
-        /*public String Caption = "";
-        public int Length;*/
 
         public VibratoHandle() {
             startRate = 64;
