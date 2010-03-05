@@ -10,7 +10,7 @@ using System.Text;
 
 public class Utau_Plugin_Invoker {
     private static bool s_finished = false;
-    private static string s_plugin_txt_path = @"C:\Program Files\UTAU\plugins\Lyric Diphonizer\plugin.txt";
+    private static string s_plugin_txt_path = @"E:\Program Files\UTAU\plugins\Lyric Diphonizer\plugin.txt";
 
     public static ScriptReturnStatus Edit( VsqFileEx vsq ) {
         if ( AppManager.getSelectedEventCount() <= 0 ) {
@@ -176,13 +176,12 @@ public class Utau_Plugin_Invoker {
         UstFile tust = new UstFile( conv, 1 );
         VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );
         string voice_dir = "";
-        foreach( SingerConfig sc in AppManager.editorConfig.UtauSingers ){
-            if ( sc.Program == singer_event.ID.IconHandle.Program ){
-                voice_dir = sc.VOICEIDSTR;
-                break;
-            }
+        SingerConfig sc = AppManager.getSingerInfoUtau( singer_event.ID.IconHandle.Program );
+        if ( sc != null ) {
+            voice_dir = sc.VOICEIDSTR;
         }
         tust.setVoiceDir( voice_dir );
+
         if ( prev != null ) {
             tust.getTrack( 0 ).getEvent( 0 ).Index = int.MinValue;
         }
@@ -207,10 +206,13 @@ public class Utau_Plugin_Invoker {
         using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( 932 ) ) ) {
             string line = "";
             string current_parse = "";
+            int clock = clock_begin;
+            int tlength = 0;
             while ( (line = sr.ReadLine()) != null ) {
                 Console.WriteLine( "Utau_Plugin_Invoker#Edit; line=" + line );
                 if ( line.StartsWith( "[#" ) ){
                     current_parse = line;
+                    clock += tlength;
                     continue;
                 }
 
@@ -251,6 +253,7 @@ public class Utau_Plugin_Invoker {
                             v = int.Parse( right );
                             target.ID.setLength( v );
                             target.UstEvent.Length = v;
+                            tlength = v;
                         } catch {
                         }
                     } else if ( left == "Lyric" ) {
@@ -259,6 +262,7 @@ public class Utau_Plugin_Invoker {
                         }
                         target.ID.LyricHandle.L0.Phrase = right;
                         target.UstEvent.Lyric = right;
+                        AppManager.changePhrase( vsq, selected, target, clock, right );
                     } else if ( left == "NoteNum" ) {
                         int v = target.ID.Note;
                         try {

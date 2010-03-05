@@ -9,6 +9,8 @@ int buffer_index = 0; // 次のデータを書き込むバッファの番号
 int buffer_loc = 0; // 次のデータを書き込む位置
 CRITICAL_SECTION locker;
 bool abort_required;
+int block_size = 4410; // ブロックサイズ
+int block_size_used; // SoundPrepareで初期化されたブロックサイズ
 
 #ifdef __cplusplus
 extern "C" {
@@ -89,7 +91,7 @@ void SoundWaitForExit() {
 
         if( !abort_required ){
             // 後半部分を0で埋める
-            for ( int i = buffer_loc; i < wave_format.nSamplesPerSec; i++ ) {
+            for ( int i = buffer_loc; i < block_size_used; i++ ) {
                 wave[act_buffer_index][i] = MAKELONG( 0, 0 );
             }
 
@@ -120,6 +122,10 @@ void SoundWaitForExit() {
     SoundExit();
 }
 
+void SoundSetResolution( int resolution ){
+    block_size = resolution;
+}
+
 void SoundAppend( double *left, double *right, int length ) {
     if ( NULL == wave_out ) {
         return;
@@ -135,7 +141,7 @@ void SoundAppend( double *left, double *right, int length ) {
             Sleep( 0 );
         }
 
-        int t_length = (int)wave_format.nSamplesPerSec - buffer_loc; // 転送するデータの個数
+        int t_length = block_size_used - buffer_loc; // 転送するデータの個数
         if ( t_length > length - appended ) {
             t_length = length - appended;
         }
@@ -144,7 +150,7 @@ void SoundAppend( double *left, double *right, int length ) {
         }
         appended += t_length;
         buffer_loc += t_length;
-        if ( buffer_loc == wave_format.nSamplesPerSec ) {
+        if ( buffer_loc == block_size_used ) {
             // バッファがいっぱいになったようだ
             buffer_index++;
             buffer_loc = 0;
@@ -227,10 +233,11 @@ void SoundPrepare( int sample_rate ) {
                  CALLBACK_FUNCTION );
 
     // バッファを準備
+    block_size_used = block_size;
     for ( int i = 0; i < NUM_BUF; i++ ) {
-        wave[i] = (DWORD*)malloc( (int)(sizeof( DWORD ) * wave_format.nSamplesPerSec) );
+        wave[i] = (DWORD*)malloc( (int)(sizeof( DWORD ) * block_size_used) );
         wave_header[i].lpData = (LPSTR)wave[i];
-        wave_header[i].dwBufferLength = sizeof( DWORD ) * wave_format.nSamplesPerSec;
+        wave_header[i].dwBufferLength = sizeof( DWORD ) * block_size_used;
         wave_header[i].dwFlags = WHDR_BEGINLOOP | WHDR_ENDLOOP;
         wave_header[i].dwLoops = 1;
         waveOutPrepareHeader( wave_out, &wave_header[i], sizeof( WAVEHDR ) );

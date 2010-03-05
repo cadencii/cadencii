@@ -140,6 +140,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "ナウ□マP" ),
             new AuthorListEntry( "mianaito" ),
             new AuthorListEntry( "maizeziam" ),
+            new AuthorListEntry( "いぬくま" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -496,6 +497,10 @@ namespace org.kbinani.cadencii {
         /// AppManager.inputTextBoxがhideInputTextBoxによって隠された後、何回目のEnterキーの入力を受けたかを表すカウンター。
         /// </summary>
         private int numEnterKeyAfterHideInputTextBox = 0;
+        /// <summary>
+        /// Deleteキーがショートカットとして割り当てられているアイテム．
+        /// </summary>
+        private BMenuItem deleteShortcutHolder = null;
         #endregion
 
         public FormMain() {
@@ -1089,6 +1094,9 @@ namespace org.kbinani.cadencii {
 
         public void m_input_textbox_KeyPress( Object sender, BKeyPressEventArgs e ) {
 #if !JAVA
+#if DEBUG
+            PortUtil.println( "FormMain#m_input_textbox_KeyPress; e.KeyChar=" + e.KeyChar );
+#endif
             //           Enter                                  Tab
             e.Handled = (e.KeyChar == Convert.ToChar( 13 )) || (e.KeyChar == Convert.ToChar( 09 ));
 #endif
@@ -11974,6 +11982,16 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
+                if ( e.KeyValue == KeyEvent.VK_DELETE ) {
+#else
+                if ( e.KeyCode == System.Windows.Forms.Keys.Delete ) {
+#endif
+                    if ( deleteShortcutHolder != null ) {
+                        deleteShortcutHolder.clickEvent.raise( deleteShortcutHolder, new EventArgs() );
+                    }
+                }
+
+#if JAVA
                 if ( e.KeyValue == KeyEvent.VK_ENTER ) {
 #else
                 if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
@@ -12450,6 +12468,8 @@ namespace org.kbinani.cadencii {
         /// メニューのショートカットキーを、AppManager.EditorConfig.ShorcutKeysの内容に応じて変更します
         /// </summary>
         public void applyShortcut() {
+            deleteShortcutHolder = null;
+
             if ( AppManager.editorConfig.Platform == PlatformEnum.Macintosh ) {
                 #region Platform.Macintosh
                 String _CO = "";
@@ -12650,9 +12670,22 @@ namespace org.kbinani.cadencii {
                         ((JMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
                     }
 #else
-                    if ( item is System.Windows.Forms.ToolStripMenuItem ) {
-                        ((System.Windows.Forms.ToolStripMenuItem)item).ShortcutKeys = PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ).keys;
-                        //((BMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
+#if DEBUG
+                    if ( !(item is BMenuItem) ){
+                        throw new Exception( "FormMain#applyMenuItemShortcut; item is NOT BMenuItem" );
+                    }
+#endif
+                    if ( item is BMenuItem ) {
+                        BMenuItem menu = (BMenuItem)item;
+                        System.Windows.Forms.Keys shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ).keys;
+                        if ( shortcut == System.Windows.Forms.Keys.Delete ) {
+                            deleteShortcutHolder = menu;
+                            menu.ShortcutKeyDisplayString = "Delete";
+                            menu.ShortcutKeys = System.Windows.Forms.Keys.None;
+                        } else {
+                            menu.ShortcutKeyDisplayString = "";
+                            menu.ShortcutKeys = shortcut;
+                        }
                     }
 #endif
                 } else {

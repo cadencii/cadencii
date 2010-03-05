@@ -124,6 +124,8 @@ namespace org.kbinani.vsq {
             "s",
             "S",
             "h",
+            "Sil",
+            "Asp",
         };
 
         /// <summary>

@@ -929,6 +929,44 @@ namespace org.kbinani.cadencii {
 
         private const String TEMPDIR_NAME = "cadencii";
 
+        /// <summary>
+        /// 指定したVSQファイルの，指定したトラック上の，指定したゲートタイム位置に音符イベントがあると仮定して，
+        /// 指定した音符イベントの歌詞を指定した値に変更します．Consonant Adjustment，VoiceOverlap，およびPreUtteranceが同時に自動で変更されます．
+        /// </summary>
+        /// <param name="vsq"></param>
+        /// <param name="track"></param>
+        /// <param name="item"></param>
+        /// <param name="clock"></param>
+        /// <param name="new_phrase"></param>
+        public static void changePhrase( VsqFileEx vsq, int track, VsqEvent item, int clock, String new_phrase ) {
+            ByRef<String> phonetic_symbol = new ByRef<String>( "" );
+            SymbolTable.attatch( new_phrase, phonetic_symbol );
+            string str_phonetic_symbol = phonetic_symbol.value;
+
+            // consonant adjustment
+            String[] spl = PortUtil.splitString( str_phonetic_symbol, new char[] { ' ', ',' }, true );
+            String consonant_adjustment = "";
+            for ( int i = 0; i < spl.Length; i++ ) {
+                consonant_adjustment += (i == 0 ? "" : " ") + (VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0);
+            }
+
+            // overlap, preUtterancec
+            if ( vsq != null ) {
+                VsqTrack vsq_track = vsq.Track.get( track );
+                VsqEvent singer = vsq_track.getSingerEventAt( clock );
+                SingerConfig sc = getSingerInfoUtau( singer.ID.IconHandle.Program );
+                if ( sc != null && utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                    UtauVoiceDB db = utauVoiceDB.get( sc.VOICEIDSTR );
+                    OtoArgs oa = db.attachFileNameFromLyric( new_phrase );
+                    if ( item.UstEvent == null ){
+                        item.UstEvent = new UstEvent();
+                    }
+                    item.UstEvent.VoiceOverlap = oa.msOverlap;
+                    item.UstEvent.PreUtterance = oa.msPreUtterance;
+                }
+            }
+        }
+
         public static void serializeRenderingStatus( String temppath, int track ) {
             FileOutputStream fs = null;
             try {
