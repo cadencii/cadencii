@@ -33,6 +33,7 @@ using org.kbinani.windows.forms;
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using java = org.kbinani.java;
+    using Integer = System.Int32;
 #endif
 
 #if JAVA
@@ -1017,6 +1018,178 @@ namespace org.kbinani.cadencii {
                 Brushes.Red,
                 new PointF( 0, 0 ) );
 #endif
+                #endregion
+
+                #region コントロールカーブのオーバーレイ表示
+                if ( AppManager.curveOnPianoroll ) {
+                    g.setColor( new Color( 255, 255, 255, 64 ) );
+                    g.fillRect( key_width, 0, width - key_width, height );
+
+                    VsqBPList pit = vsq.Track.get( selected ).getCurve( "pit" );
+                    if ( pit == null ) {
+                        pit = new VsqBPList( CurveType.PIT.getName(),
+                                             CurveType.PIT.getDefault(),
+                                             CurveType.PIT.getMinimum(),
+                                             CurveType.PIT.getMaximum() );
+                    }
+
+                    VsqBPList pbs = vsq.Track.get( selected ).getCurve( "pbs" );
+                    if ( pbs == null ) {
+                        pbs = new VsqBPList( CurveType.PBS.getName(), 
+                                             CurveType.PBS.getDefault(), 
+                                             CurveType.PBS.getMinimum(), 
+                                             CurveType.PBS.getMaximum() );
+                    }
+
+                    Color fill = new Color( 0, 0, 0, 128 ); 
+                    g.setColor( fill );
+                    Color pitline = PortUtil.MidnightBlue;
+                    BasicStroke stroke = new BasicStroke( 2.0f );
+                    g.setStroke( stroke );
+                    lock ( AppManager.drawObjects ) {
+                        Vector<DrawObject> list = AppManager.drawObjects.get( selected - 1 );
+                        int j_start = AppManager.drawStartIndex[selected - 1];
+                        int c = list.size();
+                        int last_x = key_width;
+                        
+                        ByRef<Integer> pbs_index = new ByRef<Integer>( 0 );
+                        int pbs_count = pbs.size();
+                        double a = 1.0 / 8192.0;
+
+                        ByRef<Integer> pit_index = new ByRef<Integer>( 0 );
+                        int pit_count = pit.size();
+                        PolylineDrawer pdrawer = new PolylineDrawer( g, 20 );
+                        ByRef<Integer> pbs_index_for_pit = new ByRef<Integer>( 0 );
+
+                        for ( int j = j_start; j < c; j++ ) {
+                            DrawObject dobj = list.get( j );
+                            int clock = dobj.clock;
+                            int x_at_clock = (int)(clock * scalex + xoffset);
+
+                            g.setColor( fill );
+
+                            // 直前の音符の無い部分を塗りつぶす
+                            if ( last_x < x_at_clock ) {
+                                if ( key_width < x_at_clock ) {
+                                    if ( last_x < key_width ) {
+                                        last_x = key_width;
+                                    }
+                                    g.fillRect( last_x, 0, x_at_clock - last_x, height );
+                                }
+                            }
+                            last_x = x_at_clock;
+
+                            // 音符の区間中に，PBSがあるかもしれないのでPBSのデータ点を探しながら塗りつぶす
+                            if ( pbs_index.value > 0 ) {
+                                pbs_index.value--;
+                            }
+                            int last_pbs_value = pbs.getValue( clock, pbs_index );
+
+                            if ( pbs_count <= 0 ) {
+                                // データ点が無い場合
+                                double delta_note = 8192.0 * last_pbs_value * a;
+                                int y_top = (int)(-(dobj.note + delta_note - 0.5) * track_height + yoffset);
+                                int y_bottom = (int)(-(dobj.note - delta_note - 0.5) * track_height + yoffset);
+
+                                if ( last_x < key_width ) {
+                                    last_x = key_width;
+                                }
+                                int x = (int)((clock + dobj.length) * scalex + xoffset);
+                                g.fillRect( last_x, 0, x - last_x, y_top );
+                                g.fillRect( last_x, y_bottom, x - last_x, height - y_bottom );
+                                last_x = x;
+                            } else {
+                                // データ点がある場合
+                                for ( ; pbs_index.value < pbs_count; pbs_index.value++ ) {
+                                    int pbs_clock;
+                                    int pbs_value;
+                                    if ( 0 <= pbs_index.value + 1 && pbs_index.value + 1 < pbs_count ) {
+                                        pbs_clock = pbs.getKeyClock( pbs_index.value + 1 );
+                                        if ( pbs_clock > clock + dobj.length ) {
+                                            pbs_clock = clock + dobj.length;
+                                        }
+                                        pbs_value = pbs.getElement( pbs_index.value + 1 );
+                                    } else {
+                                        pbs_clock = clock + dobj.length;
+                                        pbs_value = last_pbs_value;
+                                    }
+
+                                    double delta_note = 8192.0 * last_pbs_value * a;
+
+                                    int y_top = (int)(-(dobj.note + delta_note - 0.5) * track_height + yoffset);
+                                    int y_bottom = (int)(-(dobj.note - delta_note - 0.5) * track_height + yoffset);
+                                    int x = (int)(pbs_clock * scalex + xoffset);
+                                    if ( x < key_width ) {
+                                        x = key_width;
+                                        last_x = x;
+                                        last_pbs_value = pbs_value;
+                                        continue;
+                                    }
+                                    if ( last_x < key_width ) {
+                                        last_x = key_width;
+                                    }
+
+                                    // top
+                                    g.fillRect( last_x, 0, x - last_x, y_top );
+                                    // bottom
+                                    g.fillRect( last_x, y_bottom, x - last_x, height - y_bottom );
+
+                                    last_x = x;
+                                    last_pbs_value = pbs_value;
+                                }
+                            }
+
+                            // PITを描画
+                            pdrawer.clear();
+                            g.setColor( pitline );
+                            if ( pit_index.value > 0 ) {
+                                pit_index.value--;
+                            }
+                            if ( pbs_index_for_pit.value > 0 ){
+                                pbs_index_for_pit.value--;
+                            }
+                            double last_pit_value = pit.getValue( clock, pit_index );
+                            double last_pbs_value_for_pit = pbs.getValue( clock, pbs_index_for_pit );
+                            int pit_last_y = (int)(-(dobj.note + (last_pit_value * last_pbs_value_for_pit * a) - 0.5) * track_height + yoffset);
+                            pdrawer.append( x_at_clock, pit_last_y );
+                            for ( ; pit_index.value < pit_count; pit_index.value++ ) {
+                                double pit_value;
+                                int pit_clock;
+                                if ( 0 <= pit_index.value + 1 && pit_index.value + 1 < pit_count ) {
+                                    pit_value = pit.getElement( pit_index.value + 1 );
+                                    pit_clock = pit.getKeyClock( pit_index.value + 1 );
+                                } else {
+                                    pit_value = last_pit_value;
+                                    pit_clock = clock + dobj.length;
+                                }
+                                double pbs_value = pbs.getValue( pit_clock, pbs_index_for_pit );
+                                double delta = pbs_value * pit_value * a;
+                                int pit_y = (int)(-(dobj.note + delta - 0.5) * track_height + yoffset);
+                                int x = (int)(pit_clock * scalex + xoffset);
+
+                                if ( pit_clock < clock + dobj.length ) {
+                                    pdrawer.append( x, pit_last_y );
+                                    pdrawer.append( x, pit_y );
+                                } else {
+                                    x = (int)((clock + dobj.length) * scalex + xoffset);
+                                    pdrawer.append( x, pit_last_y );
+                                    break;
+                                }
+                                pit_last_y = pit_y;
+                            }
+                            pdrawer.flush();
+                        }
+
+                        // 最後の音符の無い部分を塗りつぶす
+                        if ( last_x < width ) {
+                            if ( last_x < key_width ) {
+                                last_x = key_width;
+                            }
+                            g.setColor( fill );
+                            g.fillRect( last_x, 0, width - last_x, height );
+                        }
+                    }
+                }
                 #endregion
             } catch ( Exception ex ) {
 #if JAVA

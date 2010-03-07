@@ -267,6 +267,14 @@ namespace org.kbinani.cadencii {
         const float _OVERVIEW_SCROLL_SPEED = 500.0f;
         const int _OVERVIEW_SCALE_COUNT_MAX = 7;
         const int _OVERVIEW_SCALE_COUNT_MIN = 3;
+        /// <summary>
+        /// WAVE再生時のバッファーサイズの最大値
+        /// </summary>
+        const int MAX_WAVE_MSEC_RESOLUTION = 1000;
+        /// <summary>
+        /// WAVE再生時のバッファーサイズの最小値
+        /// </summary>
+        const int MIN_WAVE_MSEC_RESOLUTION = 100;
         #endregion
 
         #region Static Field
@@ -1155,9 +1163,6 @@ namespace org.kbinani.cadencii {
         }
 
         public void AppManager_CurrentClockChanged( Object sender, EventArgs e ) {
-#if DEBUG
-            Console.WriteLine( "FormMain#AppManager_CurrentClockChanged" );
-#endif
             EventHandler handler = new EventHandler( changeCurrentClockView );
             if ( handler != null ) {
                 this.Invoke( handler );
@@ -1207,6 +1212,14 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "m_config_PreviewStarted" );
 #endif
+            int ms_resolution = AppManager.editorConfig.BufferSizeMilliSeconds;
+            if ( ms_resolution < MIN_WAVE_MSEC_RESOLUTION ) {
+                ms_resolution = MIN_WAVE_MSEC_RESOLUTION;
+            }
+            if ( ms_resolution > MAX_WAVE_MSEC_RESOLUTION ) {
+                ms_resolution = MAX_WAVE_MSEC_RESOLUTION;
+            }
+            PlaySound.setResolution( (int)(ms_resolution / 1000.0 * VSTiProxy.SAMPLE_RATE) );
             PlaySound.prepare( VSTiProxy.SAMPLE_RATE );
 #if DEBUG
             PortUtil.println( "FormMain#AppManager_PreviewStarted; VSTiProxy.SAMPLE_RATE=" + VSTiProxy.SAMPLE_RATE );
@@ -6099,6 +6112,7 @@ namespace org.kbinani.cadencii {
             m_preference_dlg.setLoadVocaloid100( !AppManager.editorConfig.DoNotUseVocaloid100 );
             m_preference_dlg.setLoadVocaloid101( !AppManager.editorConfig.DoNotUseVocaloid101 );
             m_preference_dlg.setLoadVocaloid2( !AppManager.editorConfig.DoNotUseVocaloid2 );
+            m_preference_dlg.setBufferSize( AppManager.editorConfig.BufferSizeMilliSeconds );
 
             m_preference_dlg.setLocation( getFormPreferedLocation( m_preference_dlg ) );
 
@@ -6299,6 +6313,7 @@ namespace org.kbinani.cadencii {
                 AppManager.editorConfig.DoNotUseVocaloid101 = !m_preference_dlg.isLoadVocaloid101();
                 AppManager.editorConfig.DoNotUseVocaloid2 = !m_preference_dlg.isLoadVocaloid2();
                 AppManager.editorConfig.LoadSecondaryVocaloid1Dll = m_preference_dlg.isLoadSecondaryVocaloid1Dll();
+                AppManager.editorConfig.BufferSizeMilliSeconds = m_preference_dlg.getBufferSize();
 
                 Vector<CurveType> visible_curves = new Vector<CurveType>();
                 trackSelector.clearViewingCurve();
@@ -8173,6 +8188,8 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 #if DEBUG
+            AppManager.curveOnPianoroll = !AppManager.curveOnPianoroll;
+
             /*VsqFileEx vsq = AppManager.getVsqFile();
             int ms_presend = AppManager.editorConfig.PreSendTime;
             for ( int i = vsq.getPreMeasureClocks(); i < vsq.TotalClocks; i++ ) {
@@ -8184,7 +8201,8 @@ namespace org.kbinani.cadencii {
                     PortUtil.println( "sec_at_i=" + sec_at_i + "; sec_at_i2=" + sec_at_i2 );
                 }
             }*/
-            InputBox ib = new InputBox( "enter clock" );
+
+            /*InputBox ib = new InputBox( "enter clock" );
             VsqFileEx vsq = AppManager.getVsqFile();
             int ms_presend = AppManager.editorConfig.PreSendTime;
             while ( ib.showDialog() == BDialogResult.OK ) {
@@ -8194,7 +8212,7 @@ namespace org.kbinani.cadencii {
                 double sec_at_i = vsq.getSecFromClock( i );
                 double sec_at_i2 = vsq.getSecFromClock( i - presend_clock ) + ms_presend / 1000.0;
                 AppManager.showMessageBox( "presend_clock=" + presend_clock + "; delta=" + (sec_at_i - sec_at_i2) );
-            }
+            }*/
 
             /*string dir = @"E:\Documents and Settings\kbinani\My Documents\svn\cadencii\Cadencii\trunk\buildDefaultEnglishDictionary\LOLA";
             string ext = ".mid";
@@ -9439,9 +9457,6 @@ namespace org.kbinani.cadencii {
                 play_time = play_time * AppManager.editorConfig.getRealtimeInputSpeed();
             }
             float now = (float)(play_time + m_direct_play_shift);
-#if DEBUG
-            PortUtil.println( "FormMain#timer_Tick; now=" + now + "m_preview_ending_time=" + m_preview_ending_time );
-#endif
             if ( (play_time < 0.0 || m_preview_ending_time <= now) && AppManager.getEditMode() != EditMode.REALTIME ) {
 #if DEBUG
                 PortUtil.println( "FormMain#timer_Tick; stop at A" );
@@ -11842,7 +11857,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             menuScript.removeAll();
-            String script_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "script" );
+            String script_path = AppManager.getScriptPath();
             if ( !PortUtil.isDirectoryExists( script_path ) ) {
                 System.IO.Directory.CreateDirectory( script_path );
             }

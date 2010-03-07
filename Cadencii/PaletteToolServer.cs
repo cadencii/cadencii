@@ -29,7 +29,7 @@ namespace org.kbinani.cadencii {
         public static TreeMap<String, Object> loadedTools = new TreeMap<String, Object>();
 
         public static void init() {
-            String path = Path.Combine( Application.StartupPath, "tool" );
+            String path = AppManager.getToolPath();
             if ( !Directory.Exists( path ) ) {
                 return;
             }

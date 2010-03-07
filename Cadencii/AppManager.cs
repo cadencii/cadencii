@@ -916,6 +916,10 @@ namespace org.kbinani.cadencii {
         /// ピアノロール画面に、現在選択中の歌声合成エンジンの種類を描くかどうか
         /// </summary>
         public static boolean drawOverSynthNameOnPianoroll = true;
+        /// <summary>
+        /// ピアノロール画面に，コントロールカーブをオーバーレイしているモード
+        /// </summary>
+        public static boolean curveOnPianoroll = false;
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
@@ -928,6 +932,30 @@ namespace org.kbinani.cadencii {
         public static BEvent<BEventHandler> currentClockChangedEvent = new BEvent<BEventHandler>();
 
         private const String TEMPDIR_NAME = "cadencii";
+
+        /// <summary>
+        /// スクリプトが格納されているディレクトリのパスを取得します。
+        /// </summary>
+        /// <returns></returns>
+        public static string getScriptPath() {
+#if DEBUG
+            return PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "script" );
+#else
+            return PortUtil.combinePath( AppManager.getApplicationDataPath(), "script" );
+#endif
+        }
+
+        /// <summary>
+        /// パレットツールが格納されているディレクトリのパスを取得します。
+        /// </summary>
+        /// <returns></returns>
+        public static string getToolPath() {
+#if DEBUG
+            return PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "tool" );
+#else
+            return PortUtil.combinePath( AppManager.getApplicationDataPath(), "tool" );
+#endif
+        }
 
         /// <summary>
         /// 指定したVSQファイルの，指定したトラック上の，指定したゲートタイム位置に音符イベントがあると仮定して，
@@ -1583,9 +1611,9 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
-            foreach ( String s in AppManager.USINGS ) {
+            /*foreach ( String s in AppManager.USINGS ) {
                 script = script.Replace( s, "" );
-            }
+            }*/
 
             String code = "";
             foreach ( String s in AppManager.USINGS ) {
@@ -1653,8 +1681,25 @@ namespace org.kbinani.cadencii {
                         }
 
                         // 設定ファイルからDeserialize
-                        using ( System.IO.FileStream fs = new System.IO.FileStream( config_file, System.IO.FileMode.Open ) ) {
+                        System.IO.FileStream fs = null;
+                        boolean delete_when_exit = false;
+                        try {
+                            fs = new System.IO.FileStream( config_file, System.IO.FileMode.Open, System.IO.FileAccess.Read );
                             ret.Serializer.deserialize( fs );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "AppManager#loadScript; ex=" + ex );
+                            delete_when_exit = true;
+                        } finally {
+                            if ( fs != null ) {
+                                try {
+                                    fs.Close();
+                                    if ( delete_when_exit ) {
+                                        System.IO.File.Delete( config_file );
+                                    }
+                                } catch ( Exception ex2 ) {
+                                    PortUtil.stderr.println( "AppManager#loadScript; ex2=" + ex2 );
+                                }
+                            }
                         }
                     }
                 }
@@ -1703,15 +1748,20 @@ namespace org.kbinani.cadencii {
                     }
                     String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
                     FileOutputStream fs = null;
+                    boolean delete_xml_when_exit = false; // xmlを消すときtrue
                     try {
                         fs = new FileOutputStream( config_file );
                         script_invoker.Serializer.serialize( fs, null );
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "AppManager#invokeScript; ex=" + ex );
+                        delete_xml_when_exit = true;
                     } finally {
                         if ( fs != null ) {
                             try {
                                 fs.close();
+                                if ( delete_xml_when_exit ) {
+                                    PortUtil.deleteFile( config_file );
+                                }
                             } catch ( Exception ex2 ) {
                                 PortUtil.stderr.println( "AppManager#invokeScript; ex2=" + ex2 );
                             }

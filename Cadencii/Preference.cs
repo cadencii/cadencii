@@ -79,6 +79,9 @@ namespace org.kbinani.cadencii {
         private BCheckBox chkLoadAquesTone;
         private BCheckBox chkLoadVocaloid2;
         private BCheckBox chkLoadVocaloid101;
+        private BLabel bLabel2;
+        private NumericUpDownEx numBuffer;
+        private BLabel lblBuffer;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -276,6 +279,22 @@ namespace org.kbinani.cadencii {
 
             registerEventHandlers();
             setResources();
+        }
+
+        /// <summary>
+        /// バッファーサイズの設定値（単位：ミリ秒）を取得します。
+        /// </summary>
+        /// <returns></returns>
+        public int getBufferSize() {
+            return (int)numBuffer.getValue();
+        }
+
+        /// <summary>
+        /// バッファーサイズの設定値（単位：ミリ秒）を設定します。
+        /// </summary>
+        /// <param name="value"></param>
+        public void setBufferSize( int value ) {
+            numBuffer.setValue( value );
         }
 
         public void chkLoadSecondaryVOCALOID1_CheckedChanged( Object sender, EventArgs e ) {
@@ -1104,6 +1123,23 @@ namespace org.kbinani.cadencii {
         }
 
         public void btnOK_Click( Object sender, BEventArgs e ) {
+            boolean was_modified = false;
+            if ( AppManager.editorConfig.DoNotUseVocaloid2 != !isLoadVocaloid2() ) {
+                was_modified = true;
+            }
+            if ( AppManager.editorConfig.DoNotUseVocaloid101 != !isLoadVocaloid101() ) {
+                was_modified = true;
+            }
+            if ( AppManager.editorConfig.DoNotUseVocaloid100 != !isLoadVocaloid100() ) {
+                was_modified = true;
+            }
+            if ( was_modified ) {
+                AppManager.showMessageBox( _( "Restart Cadencii to complete your changes" ),
+                                           "Cadencii",
+                                           PortUtil.OK_OPTION,
+                                           PortUtil.MSGBOX_INFORMATION_MESSAGE );
+            }
+
             setDialogResult( BDialogResult.OK );
         }
 
@@ -1400,18 +1436,21 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.ListViewGroup listViewGroup73 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup74 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup75 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup76 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup77 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup78 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup79 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup80 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup81 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup82 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup83 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup84 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup13 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup14 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup15 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.label5 = new org.kbinani.windows.forms.BLabel();
@@ -1440,6 +1479,9 @@ namespace org.kbinani.cadencii {
             this.lblVibratoLength = new org.kbinani.windows.forms.BLabel();
             this.lblVibratoConfig = new org.kbinani.windows.forms.BLabel();
             this.tabAnother = new System.Windows.Forms.TabPage();
+            this.bLabel2 = new org.kbinani.windows.forms.BLabel();
+            this.numBuffer = new org.kbinani.cadencii.NumericUpDownEx();
+            this.lblBuffer = new org.kbinani.windows.forms.BLabel();
             this.groupWaveFileOutput = new org.kbinani.windows.forms.BGroupBox();
             this.radioCurrentTrack = new org.kbinani.windows.forms.BRadioButton();
             this.radioMasterTrack = new org.kbinani.windows.forms.BRadioButton();
@@ -1557,6 +1599,7 @@ namespace org.kbinani.cadencii {
             this.tabSequence.SuspendLayout();
             this.groupAutoVibratoConfig.SuspendLayout();
             this.tabAnother.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).BeginInit();
             this.groupWaveFileOutput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWait)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).BeginInit();
@@ -1902,6 +1945,9 @@ namespace org.kbinani.cadencii {
             // 
             // tabAnother
             // 
+            this.tabAnother.Controls.Add( this.bLabel2 );
+            this.tabAnother.Controls.Add( this.numBuffer );
+            this.tabAnother.Controls.Add( this.lblBuffer );
             this.tabAnother.Controls.Add( this.groupWaveFileOutput );
             this.tabAnother.Controls.Add( this.label13 );
             this.tabAnother.Controls.Add( this.label12 );
@@ -1922,13 +1968,53 @@ namespace org.kbinani.cadencii {
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
             // 
+            // bLabel2
+            // 
+            this.bLabel2.AutoSize = true;
+            this.bLabel2.Location = new System.Drawing.Point( 305, 182 );
+            this.bLabel2.Name = "bLabel2";
+            this.bLabel2.Size = new System.Drawing.Size( 88, 12 );
+            this.bLabel2.TabIndex = 30;
+            this.bLabel2.Text = "msec(100-1000)";
+            // 
+            // numBuffer
+            // 
+            this.numBuffer.Location = new System.Drawing.Point( 216, 180 );
+            this.numBuffer.Maximum = new decimal( new int[] {
+            1000,
+            0,
+            0,
+            0} );
+            this.numBuffer.Minimum = new decimal( new int[] {
+            100,
+            0,
+            0,
+            0} );
+            this.numBuffer.Name = "numBuffer";
+            this.numBuffer.Size = new System.Drawing.Size( 68, 19 );
+            this.numBuffer.TabIndex = 31;
+            this.numBuffer.Value = new decimal( new int[] {
+            1000,
+            0,
+            0,
+            0} );
+            // 
+            // lblBuffer
+            // 
+            this.lblBuffer.AutoSize = true;
+            this.lblBuffer.Location = new System.Drawing.Point( 29, 182 );
+            this.lblBuffer.Name = "lblBuffer";
+            this.lblBuffer.Size = new System.Drawing.Size( 78, 12 );
+            this.lblBuffer.TabIndex = 29;
+            this.lblBuffer.Text = "Buffer Size(&B)";
+            // 
             // groupWaveFileOutput
             // 
             this.groupWaveFileOutput.Controls.Add( this.radioCurrentTrack );
             this.groupWaveFileOutput.Controls.Add( this.radioMasterTrack );
             this.groupWaveFileOutput.Controls.Add( this.lblChannel );
             this.groupWaveFileOutput.Controls.Add( this.comboChannel );
-            this.groupWaveFileOutput.Location = new System.Drawing.Point( 23, 190 );
+            this.groupWaveFileOutput.Location = new System.Drawing.Point( 23, 215 );
             this.groupWaveFileOutput.Name = "groupWaveFileOutput";
             this.groupWaveFileOutput.Size = new System.Drawing.Size( 407, 100 );
             this.groupWaveFileOutput.TabIndex = 28;
@@ -2221,7 +2307,7 @@ namespace org.kbinani.cadencii {
             this.groupVisibleCurve.Controls.Add( this.chkVibratoRate );
             this.groupVisibleCurve.Controls.Add( this.chkDecay );
             this.groupVisibleCurve.Controls.Add( this.chkAccent );
-            this.groupVisibleCurve.Location = new System.Drawing.Point( 23, 153 );
+            this.groupVisibleCurve.Location = new System.Drawing.Point( 23, 173 );
             this.groupVisibleCurve.Name = "groupVisibleCurve";
             this.groupVisibleCurve.Size = new System.Drawing.Size( 407, 169 );
             this.groupVisibleCurve.TabIndex = 46;
@@ -2441,7 +2527,7 @@ namespace org.kbinani.cadencii {
             // lblTrackHeight
             // 
             this.lblTrackHeight.AutoSize = true;
-            this.lblTrackHeight.Location = new System.Drawing.Point( 31, 130 );
+            this.lblTrackHeight.Location = new System.Drawing.Point( 31, 141 );
             this.lblTrackHeight.Name = "lblTrackHeight";
             this.lblTrackHeight.Size = new System.Drawing.Size( 107, 12 );
             this.lblTrackHeight.TabIndex = 13;
@@ -2450,7 +2536,7 @@ namespace org.kbinani.cadencii {
             // comboLanguage
             // 
             this.comboLanguage.FormattingEnabled = true;
-            this.comboLanguage.Location = new System.Drawing.Point( 148, 99 );
+            this.comboLanguage.Location = new System.Drawing.Point( 148, 105 );
             this.comboLanguage.Name = "comboLanguage";
             this.comboLanguage.Size = new System.Drawing.Size( 121, 20 );
             this.comboLanguage.TabIndex = 44;
@@ -2458,7 +2544,7 @@ namespace org.kbinani.cadencii {
             // lblLanguage
             // 
             this.lblLanguage.AutoSize = true;
-            this.lblLanguage.Location = new System.Drawing.Point( 31, 102 );
+            this.lblLanguage.Location = new System.Drawing.Point( 31, 108 );
             this.lblLanguage.Name = "lblLanguage";
             this.lblLanguage.Size = new System.Drawing.Size( 68, 12 );
             this.lblLanguage.TabIndex = 9;
@@ -2466,7 +2552,7 @@ namespace org.kbinani.cadencii {
             // 
             // numTrackHeight
             // 
-            this.numTrackHeight.Location = new System.Drawing.Point( 210, 128 );
+            this.numTrackHeight.Location = new System.Drawing.Point( 210, 139 );
             this.numTrackHeight.Maximum = new decimal( new int[] {
             50,
             0,
@@ -2929,42 +3015,51 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listSingers.FullRowSelect = true;
-            listViewGroup73.Header = "ListViewGroup";
-            listViewGroup74.Header = "ListViewGroup";
-            listViewGroup74.Name = null;
-            listViewGroup75.Header = "ListViewGroup";
-            listViewGroup75.Name = null;
-            listViewGroup76.Header = "ListViewGroup";
-            listViewGroup76.Name = null;
-            listViewGroup77.Header = "ListViewGroup";
-            listViewGroup77.Name = null;
-            listViewGroup78.Header = "ListViewGroup";
-            listViewGroup78.Name = null;
-            listViewGroup79.Header = "ListViewGroup";
-            listViewGroup79.Name = null;
-            listViewGroup80.Header = "ListViewGroup";
-            listViewGroup80.Name = null;
-            listViewGroup81.Header = "ListViewGroup";
-            listViewGroup81.Name = null;
-            listViewGroup82.Header = "ListViewGroup";
-            listViewGroup82.Name = null;
-            listViewGroup83.Header = "ListViewGroup";
-            listViewGroup83.Name = null;
-            listViewGroup84.Header = "ListViewGroup";
-            listViewGroup84.Name = null;
+            listViewGroup1.Header = "ListViewGroup";
+            listViewGroup2.Header = "ListViewGroup";
+            listViewGroup2.Name = null;
+            listViewGroup3.Header = "ListViewGroup";
+            listViewGroup3.Name = null;
+            listViewGroup4.Header = "ListViewGroup";
+            listViewGroup4.Name = null;
+            listViewGroup5.Header = "ListViewGroup";
+            listViewGroup5.Name = null;
+            listViewGroup6.Header = "ListViewGroup";
+            listViewGroup6.Name = null;
+            listViewGroup7.Header = "ListViewGroup";
+            listViewGroup7.Name = null;
+            listViewGroup8.Header = "ListViewGroup";
+            listViewGroup8.Name = null;
+            listViewGroup9.Header = "ListViewGroup";
+            listViewGroup9.Name = null;
+            listViewGroup10.Header = "ListViewGroup";
+            listViewGroup10.Name = null;
+            listViewGroup11.Header = "ListViewGroup";
+            listViewGroup11.Name = null;
+            listViewGroup12.Header = "ListViewGroup";
+            listViewGroup12.Name = null;
+            listViewGroup13.Header = "ListViewGroup";
+            listViewGroup13.Name = null;
+            listViewGroup14.Header = "ListViewGroup";
+            listViewGroup14.Name = null;
+            listViewGroup15.Header = "ListViewGroup";
+            listViewGroup15.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup73,
-            listViewGroup74,
-            listViewGroup75,
-            listViewGroup76,
-            listViewGroup77,
-            listViewGroup78,
-            listViewGroup79,
-            listViewGroup80,
-            listViewGroup81,
-            listViewGroup82,
-            listViewGroup83,
-            listViewGroup84} );
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5,
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10,
+            listViewGroup11,
+            listViewGroup12,
+            listViewGroup13,
+            listViewGroup14,
+            listViewGroup15} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
@@ -3243,6 +3338,7 @@ namespace org.kbinani.cadencii {
             this.groupAutoVibratoConfig.PerformLayout();
             this.tabAnother.ResumeLayout( false );
             this.tabAnother.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).EndInit();
             this.groupWaveFileOutput.ResumeLayout( false );
             this.groupWaveFileOutput.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWait)).EndInit();

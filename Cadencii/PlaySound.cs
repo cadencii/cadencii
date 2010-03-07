@@ -48,6 +48,14 @@ namespace org.kbinani.cadencii {
         [DllImport( "PlaySound" )]
         private static extern void SoundUnprepare();
 
+        public static void setResolution( int value ) {
+            try {
+                SoundSetResolution( value );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "PlaySound#setResolution; ex=" + ex );
+            }
+        }
+
         public static void init() {
 #if JAVA
             m_buffer = new byte[UNIT_BUFFER * 4];

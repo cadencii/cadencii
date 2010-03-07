@@ -461,10 +461,10 @@ namespace org.kbinani.vsq {
                     int keyclock = clocks[i];
                     if ( clock < keyclock ) {
                         if ( i > 0 ) {
-                            index.value = i;
+                            index.value = i - 1;
                             return items[i - 1].value;
                         } else {
-                            index.value = i;
+                            index.value = i - 1;
                             return defaultValue;
                         }
                     }

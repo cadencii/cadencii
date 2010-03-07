@@ -77,6 +77,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="UTAU Plugin Manager.resx">
+      <DependentUpon>UTAU Plugin Manager.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
@@ -133,6 +136,7 @@ copy "$(ProjectDir)Transpose Plus 1 Degree.cs" "$(ProjectDir)..\Cadencii\bin\x86
 copy "$(ProjectDir)Generate VLF.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Generate VLF.txt"
 copy "$(ProjectDir)DivideNote.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\tool\DivideNote.txt"
 copy "$(ProjectDir)Utau Plugin Invoker.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Utau Plugin Invoker.txt"
+copy "$(ProjectDir)Utau Plugin Manager.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Utau Plugin Manager.txt"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

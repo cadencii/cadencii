@@ -21,6 +21,7 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
+using org.kbinani.java.awt;
 using org.kbinani.apputil;
 using org.kbinani.windows.forms;
 
@@ -64,6 +65,9 @@ namespace org.kbinani.cadencii {
             listTrack.setColumnWidth( 0, columnWidthTrack );
             listTrack.setColumnWidth( 1, columnWidthName );
             listTrack.setColumnWidth( 2, columnWidthNotes );
+
+            Point p = btnCheckAll.getLocation();
+            btnUncheckAll.setLocation( p.x + btnCheckAll.getWidth() + 6, p.y );
 
             registerEventHandlers();
             setResources();

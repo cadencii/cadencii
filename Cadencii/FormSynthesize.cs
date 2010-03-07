@@ -255,6 +255,9 @@ namespace org.kbinani.cadencii {
                         } finally {
                             if ( ww != null ) {
                                 try {
+#if DEBUG
+                                    PortUtil.println( "FormSynthesize#bgWork_DoWork; calling ww#close; track=" + k );
+#endif
                                     ww.close();
                                 } catch ( Exception ex2 ) {
                                     PortUtil.stderr.println( "FormSynthesize#bgWork_DoWork; ex2=" + ex2 );

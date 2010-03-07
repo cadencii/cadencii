@@ -1,30 +1,25 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using org.kbinani.cadencii;
-using System.Collections.Generic;
-using org.kbinani.vsq;
 using org.kbinani.java.util;
-using org.kbinani.apputil;
-using System.Text;
+using org.kbinani.vsq;
 
 public class Utau_Plugin_Invoker {
     private static bool s_finished = false;
     private static string s_plugin_txt_path = @"E:\Program Files\UTAU\plugins\Lyric Diphonizer\plugin.txt";
+    private static readonly string s_class_name = "Utau_Plugin_Invoker";
 
     public static ScriptReturnStatus Edit( VsqFileEx vsq ) {
         if ( AppManager.getSelectedEventCount() <= 0 ) {
             return ScriptReturnStatus.NOT_EDITED;
         }
+
         int selected = AppManager.getSelected();
-        string pluginTxtPath;
-        using ( InputBox ib = new InputBox( "input path of plugin.txt" ) ) {
-            ib.setResult( s_plugin_txt_path );
-            if ( ib.ShowDialog() != DialogResult.OK ) {
-                return ScriptReturnStatus.NOT_EDITED;
-            }
-            pluginTxtPath = ib.getResult();
-        }
+        
+        string pluginTxtPath = s_plugin_txt_path;
         if ( pluginTxtPath == "" ) {
             AppManager.showMessageBox( "pluginTxtPath=" + pluginTxtPath );
             return ScriptReturnStatus.ERROR;
@@ -33,6 +28,7 @@ public class Utau_Plugin_Invoker {
             AppManager.showMessageBox( "'" + pluginTxtPath + "' does not exists" );
             return ScriptReturnStatus.ERROR;
         }
+
         System.Text.Encoding shift_jis = System.Text.Encoding.GetEncoding( "Shift_JIS" );
         string name = "";
         string exe_path = "";
@@ -209,7 +205,7 @@ public class Utau_Plugin_Invoker {
             int clock = clock_begin;
             int tlength = 0;
             while ( (line = sr.ReadLine()) != null ) {
-                Console.WriteLine( "Utau_Plugin_Invoker#Edit; line=" + line );
+                Console.WriteLine( s_class_name + "#Edit; line=" + line );
                 if ( line.StartsWith( "[#" ) ){
                     current_parse = line;
                     clock += tlength;
@@ -223,19 +219,19 @@ public class Utau_Plugin_Invoker {
                 } else if ( current_parse.StartsWith( "[#" ) ) {
                     int indx_blacket = current_parse.IndexOf( ']' );
                     string str_num = current_parse.Substring( 2, indx_blacket - 2 );
-                    Console.WriteLine( "Utau_Plugin_Invoker#Edit; str_num=" + str_num );
+                    Console.WriteLine( s_class_name + "#Edit; str_num=" + str_num );
                     int num = -1;
                     if ( !int.TryParse( str_num, out num ) ) {
-                        Console.WriteLine( "Utau_Plugin_Invoker#Edit; format error; str_num=" + str_num );
+                        Console.WriteLine( s_class_name + "#Edit; format error; str_num=" + str_num );
                         continue;
                     }
                     if ( num < 0 || map_id.Count <= num ) {
-                        Console.WriteLine( "Utau_Plugin_Invoker#Edit; invalid range; num=" + num + "; map_id.Count=" + map_id.Count );
+                        Console.WriteLine( s_class_name + "#Edit; invalid range; num=" + num + "; map_id.Count=" + map_id.Count );
                         continue;
                     }
                     VsqEvent target = vsq_track.findEventFromID( map_id[num] );
                     if ( target == null ) {
-                        Console.WriteLine( "Utau_Plugin_Invoker#Edit; target event not found; num=" + num + "; map_id[num]=" + map_id[num] );
+                        Console.WriteLine( s_class_name + "#Edit; target event not found; num=" + num + "; map_id[num]=" + map_id[num] );
                         continue;
                     }
                     if ( target.UstEvent == null ) {
@@ -340,7 +336,7 @@ public class Utau_Plugin_Invoker {
         try {
             //System.IO.File.Delete( temp );
             //TODO:後でコメントをはずすこと
-            Console.WriteLine( "Utau_Plugin_Invoker#Edit; temp=" + temp );
+            Console.WriteLine( s_class_name + "#Edit; temp=" + temp );
         } catch ( Exception ex ) {
         }
         return ScriptReturnStatus.EDITED;
@@ -371,9 +367,11 @@ public class Utau_Plugin_Invoker {
         StartPluginArgs a = (StartPluginArgs)arg;
         string exe_path = a.exePath;
         string temp = a.tmpFile;
+        string dquote = new string( (char)0x22, 1 );
+        Console.WriteLine( s_class_name + "#runPlugin; dquote=" + dquote );
         using ( System.Diagnostics.Process p = new System.Diagnostics.Process() ) {
             p.StartInfo.FileName = exe_path;
-            p.StartInfo.Arguments = "\"" + temp + "\"";
+            p.StartInfo.Arguments = dquote + temp + dquote;
             p.StartInfo.WorkingDirectory = Path.GetDirectoryName( exe_path );
             p.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             p.Start();

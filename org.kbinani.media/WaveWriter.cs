@@ -87,6 +87,7 @@ namespace org.kbinani.media {
                     m_stream.write( data, 0, delta );
                     remain -= delta;
                 }
+                m_total_samples = pos;
             }
             m_stream.seek( posFile );
 
@@ -118,6 +119,7 @@ namespace org.kbinani.media {
                     }
                 }
             }
+            m_total_samples = (m_total_samples < pos + length) ? (pos + length) : (m_total_samples);
 
             // 最後にファイルポインタを戻す
             m_stream.seek( lastPos );
@@ -220,7 +222,13 @@ namespace org.kbinani.media {
             throws IOException
 #endif
         {
+#if DEBUG
+            PortUtil.println( "WaveWriter#close" );
+#endif
             if ( m_stream != null ) {
+#if DEBUG
+                PortUtil.println( "WaveWriter#close; writing chunk length" );
+#endif
                 // 最後にWAVEチャンクのサイズ
                 int position = (int)m_stream.getFilePointer();
                 m_stream.seek( 4 );

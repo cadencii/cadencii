@@ -362,6 +362,10 @@ namespace org.kbinani.cadencii {
         /// 2個目のVOCALOID1 DLLを読み込むかどうか。既定ではfalse
         /// </summary>
         public boolean LoadSecondaryVocaloid1Dll = false;
+        /// <summary>
+        /// WAVE再生時のバッファーサイズ。既定では1000ms。
+        /// </summary>
+        public int BufferSizeMilliSeconds = 1000;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(

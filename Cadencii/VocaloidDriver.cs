@@ -713,7 +713,7 @@ namespace org.kbinani.cadencii {
             count = -3;
             int pPrev = 0;
             s_track_events.get( targetTrack ).clear();
-#if DEBUG
+#if VOCALO_DRIVER_PRINT_EVENTS
             PortUtil.println( "VocaloidDriver#SendEvent" );
             byte msb = 0x0;
             byte lsb = 0x0;
@@ -734,7 +734,7 @@ namespace org.kbinani.cadencii {
                     pEvent.data[3] = src[count + 1];
                     pEvent.data[4] = src[count + 2];
                 } else {
-#if DEBUG
+#if VOCALO_DRIVER_PRINT_EVENTS
                     if ( src[count + 1] == 0x63 ) {
                         msb = src[count + 2];
                     } else if ( src[count + 1] == 0x62 ) {

@@ -217,6 +217,9 @@ namespace org.kbinani.xml {
             string prefix = static_mode ? "StaticMembersOf" : "";
             code += "    public class " + prefix + item.Name + "{\n";
             foreach ( MemberEntry entry in config_names ) {
+#if DEBUG
+                PortUtil.println( "XmlStaticMemberSerializer#GenerateClassCodeFromXmlSerialization; entry.Type.ToString()=" + entry.Type.ToString() );
+#endif
                 code += "        public " + entry.Type.ToString() + " " + entry.Name + ";\n";
             }
             code += "    }\n";
@@ -347,6 +350,9 @@ namespace org.kbinani.xml {
             parameters.GenerateInMemory = true;
             parameters.GenerateExecutable = false;
             parameters.IncludeDebugInformation = true;
+#if DEBUG
+            PortUtil.println( "XmlStaticMemberSerializer#GenerateConfigtype; code=" + code );
+#endif
             CompilerResults results = provider.CompileAssemblyFromSource( parameters, code );
             Assembly asm = results.CompiledAssembly;
             if ( asm.GetTypes().Length <= 0 ) {
@@ -403,11 +409,40 @@ namespace org.kbinani.xml {
             code += "namespace org.kbinani.xml{\n";
             code += "    public class StaticMembersOf" + item.Name + "{\n";
             foreach ( MemberEntry entry in config_names ) {
-                code += "        public " + entry.Type.ToString() + " " + entry.Name + ";\n";
+                code += "        public " + actualTypeNameFrom( entry.Type.ToString() ) + " " + entry.Name + ";\n";
             }
             code += "    }\n";
             code += "}\n";
             return code;
+        }
+
+        /// <summary>
+        /// ソースコード上で利用可能な型名を調べます。
+        /// System.Collections.Generic.List`1[System.String] =&gt; System.Collections.Generic.List&lt;System.String&gt;など。
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private static string actualTypeNameFrom( string name ) {
+            int indx = name.IndexOf( "`" );
+            if ( indx >= 0 ) {
+                int indx_bla = name.IndexOf( "[", indx );
+                int indx_cket = name.LastIndexOf( "]" );
+                string contains = name.Substring( indx_bla + 1, indx_cket - indx_bla - 1 );
+                string str_num = name.Substring( indx + 1, indx_bla - indx - 1 );
+                string body = name.Substring( 0, indx );
+
+                int num = 0;
+                if ( int.TryParse( str_num, out num ) ) {
+                    string[] spl = contains.Split( new char[]{ ',' }, num );
+                    string ret = body + "<";
+                    for ( int i = 0; i < num; i++ ) {
+                        ret += (i > 0 ? "," : "") + actualTypeNameFrom( spl[i] );
+                    }
+                    ret += ">";
+                    return ret;
+                }
+            }
+            return name;
         }
     }
 
