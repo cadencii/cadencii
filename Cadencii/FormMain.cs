@@ -11892,19 +11892,16 @@ namespace org.kbinani.cadencii {
                 String scriptname = PortUtil.getFileNameWithoutExtension( fname );
                 BMenuItem item = new BMenuItem();
                 item.setText( scriptname );
-                BMenuItem dd_run = new BMenuItem();
-                dd_run.setText( _( "Run" ) + "(&R)" );
-                dd_run.setName( "menuScript" + scriptname + "Run" );
+                item.setName( "menuScript" + scriptname + "Run" );
                 if ( old.containsKey( fname ) && old.get( fname ) != null ) {
-                    dd_run.setTag( old.get( fname ) );
+                    item.setTag( old.get( fname ) );
                 } else {
                     ScriptInvoker si2 = new ScriptInvoker();
                     si2.FileTimestamp = DateTime.MinValue;
                     si2.ScriptFile = fname;
-                    dd_run.setTag( si2 );
+                    item.setTag( si2 );
                 }
-                dd_run.Click += new EventHandler( dd_run_Click );
-                item.add( dd_run );
+                item.Click += new EventHandler( dd_run_Click );
                 menuScript.add( item );
             }
             old.clear();

@@ -100,10 +100,10 @@ namespace org.kbinani.vsq {
             throws IOException
 #endif
         {
-            if ( this.Index == int.MinValue ) {
+            if ( this.Index == UstFile.PREV_INDEX ) {
                 sw.write( "[#PREV]" );
                 sw.newLine();
-            } else if ( this.Index == int.MaxValue ) {
+            } else if ( this.Index == UstFile.NEXT_INDEX ) {
                 sw.write( "[#NEXT]" );
                 sw.newLine();
             } else {
@@ -144,15 +144,15 @@ namespace org.kbinani.vsq {
             if ( Portamento != null ) {
                 Portamento.print( sw );
             }
+            if ( PreUtterance != 0 ) {
+                sw.write( "PreUtterance=" + PreUtterance );
+                sw.newLine();
+            }
+            if ( VoiceOverlap != 0 ) {
+                sw.write( "VoiceOverlap=" + VoiceOverlap );
+                sw.newLine();
+            }
             if ( Envelope != null ) {
-                if ( PreUtterance >= 0 ) {
-                    sw.write( "PreUtterance=" + PreUtterance );
-                    sw.newLine();
-                }
-                if ( VoiceOverlap != 0 ) {
-                    sw.write( "VoiceOverlap=" + VoiceOverlap );
-                    sw.newLine();
-                }
                 sw.write( Envelope.ToString() );
                 sw.newLine();
             }
@@ -162,10 +162,6 @@ namespace org.kbinani.vsq {
             }
             if ( Moduration >= 0 ) {
                 sw.write( "Moduration=" + Moduration );
-                sw.newLine();
-            }
-            if ( Envelope != null ) {
-                sw.write( Envelope.toString() );
                 sw.newLine();
             }
         }

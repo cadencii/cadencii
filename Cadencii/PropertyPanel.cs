@@ -152,39 +152,20 @@ namespace org.kbinani.cadencii {
         }
 
         private void propertyGrid_PropertyValueChanged( object s, PropertyValueChangedEventArgs e ) {
-            String name = e.ChangedItem.PropertyDescriptor.Name;
-            object old_value = e.OldValue;
+            //String name = e.ChangedItem.PropertyDescriptor.Name;
+            //object old_value = e.OldValue;
             int len = propertyGrid.SelectedObjects.Length;
             VsqEvent[] items = new VsqEvent[len];
             for ( int i = 0; i < len; i++ ) {
                 VsqEventItemProxy proxy = (VsqEventItemProxy)propertyGrid.SelectedObjects[i];
-
                 items[i] = proxy.GetItemDifference();
-
-                VsqEventItemProxy item = m_items.get( i );
-                item.original.Clock = proxy.Clock.getClock().getIntValue();
-                item.original.ID.DEMaccent = proxy.Accent;
-                item.original.ID.DEMdecGainRate = proxy.Decay;
-                item.original.ID.Dynamics = proxy.Velocity;
-                item.original.ID.Length = proxy.Length.getIntValue();
-                item.original.ID.LyricHandle.L0.setPhoneticSymbol( proxy.PhoneticSymbol );
-                item.original.ID.LyricHandle.L0.Phrase = proxy.Phrase;
-                item.original.ID.Note = proxy.Note.noteNumber;
-                item.original.ID.PMBendDepth = proxy.BendDepth;
-                item.original.ID.PMBendLength = proxy.BendLength;
-                item.original.ID.PMbPortamentoUse = proxy.GetPortamentoUsage();
-                item.original.ID.VibratoDelay = VsqEventItemProxy.GetVibratoDelay( item.VibratoLength, item.original.ID.Length );
-                item.original.UstEvent.PreUtterance = proxy.PreUtterance;
-                item.original.UstEvent.VoiceOverlap = proxy.Overlap;
-                item.original.UstEvent.Moduration = proxy.Moduration;
-                item.original.ID.d4mean = proxy.d4mean;
-                item.original.ID.pMeanEndingNote = proxy.pMeanEndingNote;
-                item.original.ID.pMeanOnsetFirstNote = proxy.pMeanOnsetFirstNote;
-                item.original.ID.vMeanNoteTransition = proxy.vMeanNoteTransition;
             }
             if ( CommandExecuteRequired != null ) {
                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplaceRange( m_track, items ) );
                 CommandExecuteRequired( run );
+            }
+            for ( int i = 0; i < len; i++ ) {
+                AppManager.addSelectedEvent( items[i].InternalID );
             }
             propertyGrid.Refresh();
             setEditing( false );

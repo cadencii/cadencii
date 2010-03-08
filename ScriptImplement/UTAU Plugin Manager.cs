@@ -20,14 +20,68 @@ class UtauPluginManager : Form {
         "using System.IO;\n" +
         "using System.Text;\n" +
         "using System.Windows.Forms;\n" +
+        "using System.Threading;\n" +
         "using org.kbinani.cadencii;\n" +
         "using org.kbinani.java.util;\n" +
         "using org.kbinani.vsq;\n" +
         "\n" +
-        "public class {0} {\n" +
-        "    private static bool s_finished = false;\n" +
+        "public class {0} : Form {\n" +
+        "    class StartPluginArgs {\n" +
+        "        public string exePath = \"\";\n" +
+        "        public string tmpFile = \"\";\n" +
+        "    }\n" +
+        "\n" +
         "    private static string s_plugin_txt_path = @\"{1}\";\n" +
+        "    private Label lblMessage;\n" +
         "    private static readonly string s_class_name = \"{0}\";\n" +
+        "\n" +
+        "    private string m_exe_path = \"\";\n" +
+        "    private System.ComponentModel.BackgroundWorker bgWork;\n" +
+        "    private string m_temp = \"\";\n" +
+        "\n" +
+        "    private {0}( string exe_path, string temp_file ) {\n" +
+        "        InitializeComponent();\n" +
+        "        m_exe_path = exe_path;\n" +
+        "        m_temp = temp_file;\n" +
+        "    }\n" +
+        "\n" +
+        "    private void InitializeComponent() {\n" +
+        "        this.lblMessage = new System.Windows.Forms.Label();\n" +
+        "        this.bgWork = new System.ComponentModel.BackgroundWorker();\n" +
+        "        this.SuspendLayout();\n" +
+        "        // \n" +
+        "        // lblMessage\n" +
+        "        // \n" +
+        "        this.lblMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)\n" +
+        "                    | System.Windows.Forms.AnchorStyles.Right)));\n" +
+        "        this.lblMessage.Location = new System.Drawing.Point( 12, 21 );\n" +
+        "        this.lblMessage.Name = \"lblMessage\";\n" +
+        "        this.lblMessage.Size = new System.Drawing.Size( 289, 23 );\n" +
+        "        this.lblMessage.TabIndex = 0;\n" +
+        "        this.lblMessage.Text = \"waiting plugin process...\";\n" +
+        "        this.lblMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;\n" +
+        "        // \n" +
+        "        // bgWork\n" +
+        "        // \n" +
+        "        this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );\n" +
+        "        this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );\n" +
+        "        // \n" +
+        "        // Utau_Plugin_Invoker\n" +
+        "        // \n" +
+        "        this.ClientSize = new System.Drawing.Size( 313, 119 );\n" +
+        "        this.Controls.Add( this.lblMessage );\n" +
+        "        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;\n" +
+        "        this.MaximizeBox = false;\n" +
+        "        this.MinimizeBox = false;\n" +
+        "        this.Name = \"Utau_Plugin_Invoker\";\n" +
+        "        this.ShowIcon = false;\n" +
+        "        this.ShowInTaskbar = false;\n" +
+        "        this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;\n" +
+        "        this.Text = \"Utau Plugin Invoker\";\n" +
+        "        this.Load += new System.EventHandler( this.Utau_Plugin_Invoker_Load );\n" +
+        "        this.ResumeLayout( false );\n" +
+        "\n" +
+        "    }\n" +
         "\n" +
         "    public static ScriptReturnStatus Edit( VsqFileEx vsq ) {\n" +
         "        if ( AppManager.getSelectedEventCount() <= 0 ) {\n" +
@@ -77,6 +131,9 @@ class UtauPluginManager : Form {
         "        for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {\n" +
         "            SelectedEventEntry item_itr = (SelectedEventEntry)itr.next();\n" +
         "            if ( item_itr.original.ID.type == VsqIDType.Anote ) {\n" +
+        "                //#if DEBUG\n" +
+        "                Console.WriteLine( s_class_name + \"#Edit; item_itr.original.UstEvent.PreUtterance=\" + item_itr.original.UstEvent.PreUtterance + \"; item_itr.editing.UstEvent.PreUtterance=\" + item_itr.editing.UstEvent.PreUtterance );\n" +
+        "                //#endif\n" +
         "                items.Add( (VsqEvent)item_itr.original.clone() );\n" +
         "                num_selected++;\n" +
         "            }\n" +
@@ -186,6 +243,12 @@ class UtauPluginManager : Form {
         "        copyCurve( vsq_track.getCurve( \"pbs\" ), conv_track.getCurve( \"pbs\" ), clock_begin );\n" +
         "\n" +
         "        string temp = Path.GetTempFileName();\n" +
+        "        //#if DEBUG\n" +
+        "        for ( Iterator itr = conv.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ) {\n" +
+        "            VsqEvent item = (VsqEvent)itr.next();\n" +
+        "            Console.WriteLine( s_class_name + \"#Edit; lyric=\" + item.ID.LyricHandle.L0.Phrase + \"; preUtterance=\" + item.UstEvent.PreUtterance );\n" +
+        "        }\n" +
+        "        //#endif\n" +
         "        UstFile tust = new UstFile( conv, 1 );\n" +
         "        VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );\n" +
         "        string voice_dir = \"\";\n" +
@@ -209,16 +272,8 @@ class UtauPluginManager : Form {
         "        //#endif\n" +
         "\n" +
         "        // 起動 -----------------------------------------------------------------------------\n" +
-        "        StartPluginArgs arg = new StartPluginArgs();\n" +
-        "        arg.exePath = exe_path;\n" +
-        "        arg.tmpFile = temp;\n" +
-        "        System.Threading.Thread thread = new System.Threading.Thread( new System.Threading.ParameterizedThreadStart( runPlugin ) );\n" +
-        "        s_finished = false;\n" +
-        "        thread.Start( arg );\n" +
-        "        while ( !s_finished ) {\n" +
-        "            System.Threading.Thread.Sleep( 100 );\n" +
-        "            Application.DoEvents();\n" +
-        "        }\n" +
+        "        {0} dialog = new {0}( exe_path, temp );\n" +
+        "        dialog.ShowDialog();\n" +
         "\n" +
         "        //#if DEBUG\n" +
         "        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( \"Shift_JIS\" ) ) ) {\n" +
@@ -227,6 +282,7 @@ class UtauPluginManager : Form {
         "        //#endif\n" +
         "\n" +
         "        // 結果を反映 -----------------------------------------------------------------------\n" +
+        "        List<int> pit_added_ids = new List<int>(); // Pitchesが追加されたので、後でPIT, PBSに反映させる処理が必要なVsqEventの、InternalID\n" +
         "        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( 932 ) ) ) {\n" +
         "            string line = \"\";\n" +
         "            string current_parse = \"\";\n" +
@@ -322,7 +378,10 @@ class UtauPluginManager : Form {
         "                            }\n" +
         "                        }\n" +
         "                        target.UstEvent.Pitches = t;\n" +
-        "                        // pitとpbsの処理を何とかする．\n" +
+        "\n" +
+        "                        if ( !pit_added_ids.Contains( map_id[num] ) ) {\n" +
+        "                            pit_added_ids.Add( map_id[num] );\n" +
+        "                        }\n" +
         "                    } else if ( left == \"Tempo\" ) {\n" +
         "                        float v = 125f;\n" +
         "                        try {\n" +
@@ -361,9 +420,119 @@ class UtauPluginManager : Form {
         "                }\n" +
         "            }\n" +
         "        }\n" +
+        "\n" +
+        "        // PitchesをPIT, PBSに反映させる処理\n" +
+        "        VsqBPList cpit = vsq_track.getCurve( \"pit\" );\n" +
+        "        if ( cpit == null ) {\n" +
+        "            cpit = new VsqBPList( CurveType.PIT.getName(),\n" +
+        "                                  CurveType.PIT.getDefault(),\n" +
+        "                                  CurveType.PIT.getMinimum(),\n" +
+        "                                  CurveType.PIT.getMaximum() );\n" +
+        "            vsq_track.setCurve( \"pit\", cpit );\n" +
+        "        }\n" +
+        "        VsqBPList cpbs = vsq_track.getCurve( \"pbs\" );\n" +
+        "        if ( cpbs == null ) {\n" +
+        "            cpbs = new VsqBPList( CurveType.PBS.getName(),\n" +
+        "                                  CurveType.PBS.getDefault(),\n" +
+        "                                  CurveType.PBS.getMinimum(),\n" +
+        "                                  CurveType.PBS.getMaximum() );\n" +
+        "            vsq_track.setCurve( \"pbs\", cpbs );\n" +
+        "        }\n" +
+        "        for ( int i = 0; i < pit_added_ids.Count; i++ ) {\n" +
+        "            int internal_id = pit_added_ids[i];\n" +
+        "            VsqEvent target = vsq_track.findEventFromID( internal_id );\n" +
+        "            if ( target == null ) {\n" +
+        "                continue;\n" +
+        "            }\n" +
+        "\n" +
+        "            // ピッチベンド絶対値の最大値を調べる\n" +
+        "            float abs_pit_max = 0;\n" +
+        "            for ( int j = 0; j < target.UstEvent.Pitches.Length; j++ ) {\n" +
+        "                abs_pit_max = Math.Max( abs_pit_max, Math.Abs( target.UstEvent.Pitches[j] ) );\n" +
+        "            }\n" +
+        "\n" +
+        "            // ピッチベンドを表現するのに最低限必要なPBSを調べる。\n" +
+        "            int pbs = (int)(abs_pit_max / 100.0);\n" +
+        "            if ( pbs * 100 != abs_pit_max ) {\n" +
+        "                // abs_pit_maxが100の倍数で無い場合。\n" +
+        "                pbs++;\n" +
+        "            }\n" +
+        "            if ( pbs < 1 ) {\n" +
+        "                pbs = 1;\n" +
+        "            }\n" +
+        "            if ( CurveType.PBS.getMaximum() < pbs ){\n" +
+        "                pbs = CurveType.PBS.getMaximum();\n" +
+        "            }\n" +
+        "\n" +
+        "            // これからPITをいじる範囲内のPBSが、pbsと違う値になっていた場合の処理\n" +
+        "            double sec_pitstart = vsq.getSecFromClock( target.Clock ) - target.UstEvent.PreUtterance / 1000.0;\n" +
+        "            int pit_start = (int)vsq.getClockFromSec( sec_pitstart );\n" +
+        "            Console.WriteLine( s_class_name + \"#Edit; pit_start=\" + pit_start + \"; target.Clock=\" + target.Clock );\n" +
+        "            int pbtype = target.UstEvent.PBType;\n" +
+        "            if ( pbtype < 1 ) {\n" +
+        "                pbtype = 5;\n" +
+        "            }\n" +
+        "            target.UstEvent.PBType = pbtype;\n" +
+        "            int pit_end = pit_start + pbtype * target.UstEvent.Pitches.Length;\n" +
+        "            int pbs_at_pitend = cpbs.getValue( pit_end - 1 );\n" +
+        "            for ( int j = 0; j < cpbs.size(); ) {\n" +
+        "                int jclock = cpbs.getKeyClock( j );\n" +
+        "                if ( pit_start <= jclock && jclock < pit_end ) {\n" +
+        "                    int jpbs = cpbs.getElement( j );\n" +
+        "                    if ( jpbs != pbs ) {\n" +
+        "                        cpbs.removeElementAt( j );\n" +
+        "                    } else {\n" +
+        "                        j++;\n" +
+        "                    }\n" +
+        "                } else if ( pit_end < jclock ) {\n" +
+        "                    break;\n" +
+        "                } else {\n" +
+        "                    j++;\n" +
+        "                }\n" +
+        "            }\n" +
+        "            if ( cpbs.getValue( pit_start ) != pbs ) {\n" +
+        "                cpbs.add( pit_start, pbs );\n" +
+        "            }\n" +
+        "            if ( pbs_at_pitend != pbs ) {\n" +
+        "                cpbs.add( pit_end, pbs_at_pitend );\n" +
+        "            }\n" +
+        "\n" +
+        "            // これからPITをいじる範囲にPITが指定されていたら削除する\n" +
+        "            int pit_at_pitend = cpit.getValue( pit_end );\n" +
+        "            for ( int j = 0; j < cpit.size(); ) {\n" +
+        "                int jclock = cpit.getKeyClock( j );\n" +
+        "                if ( pit_start <= jclock && jclock < pit_end ) {\n" +
+        "                    cpit.removeElementAt( j );\n" +
+        "                } else if ( pit_end < jclock ) {\n" +
+        "                    break;\n" +
+        "                } else {\n" +
+        "                    j++;\n" +
+        "                }\n" +
+        "            }\n" +
+        "\n" +
+        "            // PITを追加。\n" +
+        "            int lastpit = CurveType.PIT.getMinimum() - 1;\n" +
+        "            for ( int j = 0; j < target.UstEvent.Pitches.Length; j++ ) {\n" +
+        "                int jclock = pit_start + j * pbtype;\n" +
+        "                int pit = (int)(8192.0 * target.UstEvent.Pitches[j] / 100.0 / (double)pbs);\n" +
+        "                if ( pit < CurveType.PIT.getMinimum() ) {\n" +
+        "                    pit = CurveType.PIT.getMinimum();\n" +
+        "                } else if ( CurveType.PIT.getMaximum() < pit ) {\n" +
+        "                    pit = CurveType.PIT.getMaximum();\n" +
+        "                }\n" +
+        "                if ( pit != lastpit ) {\n" +
+        "                    cpit.add( jclock, pit );\n" +
+        "                    Console.WriteLine( s_class_name + \"#Edit; j=\" + j + \"; jclock=\" + jclock );\n" +
+        "                    lastpit = pit;\n" +
+        "                }\n" +
+        "            }\n" +
+        "            if ( cpit.getValue( pit_end ) != pit_at_pitend ) {\n" +
+        "                cpit.add( pit_end, pit_at_pitend );\n" +
+        "            }\n" +
+        "        }\n" +
+        "\n" +
         "        try {\n" +
-        "            //System.IO.File.Delete( temp );\n" +
-        "            //TODO:後でコメントをはずすこと\n" +
+        "            System.IO.File.Delete( temp );\n" +
         "            Console.WriteLine( s_class_name + \"#Edit; temp=\" + temp );\n" +
         "        } catch ( Exception ex ) {\n" +
         "        }\n" +
@@ -391,27 +560,27 @@ class UtauPluginManager : Form {
         "        }\n" +
         "    }\n" +
         "\n" +
-        "    private static void runPlugin( object arg ) {\n" +
-        "        StartPluginArgs a = (StartPluginArgs)arg;\n" +
-        "        string exe_path = a.exePath;\n" +
-        "        string temp = a.tmpFile;\n" +
+        "    private void Utau_Plugin_Invoker_Load( object sender, EventArgs e ) {\n" +
+        "        bgWork.RunWorkerAsync();\n" +
+        "    }\n" +
+        "\n" +
+        "    private void bgWork_DoWork( object sender, System.ComponentModel.DoWorkEventArgs e ) {\n" +
         "        string dquote = new string( (char)0x22, 1 );\n" +
         "        Console.WriteLine( s_class_name + \"#runPlugin; dquote=\" + dquote );\n" +
         "        using ( System.Diagnostics.Process p = new System.Diagnostics.Process() ) {\n" +
-        "            p.StartInfo.FileName = exe_path;\n" +
-        "            p.StartInfo.Arguments = dquote + temp + dquote;\n" +
-        "            p.StartInfo.WorkingDirectory = Path.GetDirectoryName( exe_path );\n" +
+        "            p.StartInfo.FileName = m_exe_path;\n" +
+        "            p.StartInfo.Arguments = dquote + m_temp + dquote;\n" +
+        "            p.StartInfo.WorkingDirectory = Path.GetDirectoryName( m_exe_path );\n" +
         "            p.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;\n" +
         "            p.Start();\n" +
         "            p.WaitForExit();\n" +
         "        }\n" +
-        "        s_finished = true;\n" +
         "    }\n" +
         "\n" +
-        "    private class StartPluginArgs {\n" +
-        "        public string exePath = \"\";\n" +
-        "        public string tmpFile = \"\";\n" +
+        "    private void bgWork_RunWorkerCompleted( object sender, System.ComponentModel.RunWorkerCompletedEventArgs e ) {\n" +
+        "        this.Close();\n" +
         "    }\n" +
+        "\n" +
         "}\n" +
         "";
     private ListView listPlugins;
