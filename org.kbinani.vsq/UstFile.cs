@@ -298,6 +298,9 @@ namespace org.kbinani.vsq {
                 item_add.Moduration = item.UstEvent.Moduration;
                 item_add.PreUtterance = item.UstEvent.PreUtterance;
                 item_add.VoiceOverlap = item.UstEvent.VoiceOverlap;
+                if ( item.UstEvent.Envelope != null ) {
+                    item_add.Envelope = (UstEnvelope)item.UstEvent.Envelope.clone();
+                }
                 index++;
                 track_add.addEvent( item_add );
                 last_clock = item.Clock + item.ID.getLength();
@@ -427,6 +430,10 @@ namespace org.kbinani.vsq {
         }
 
         public void write( String file ) {
+            write( file, true );
+        }
+
+        public void write( String file, boolean print_track_end ) {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "Shift_JIS" ) );
@@ -453,14 +460,18 @@ namespace org.kbinani.vsq {
                 for ( int i = 0; i < count; i++ ) {
                     target.getEvent( i ).print( sw );
                 }
-                sw.write( "[#TRACKEND]" );
+                if ( print_track_end ) {
+                    sw.write( "[#TRACKEND]" );
+                }
                 sw.newLine();
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "UstFile#write; ex=" + ex );
             } finally {
                 if ( sw != null ) {
                     try {
                         sw.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "UstFile#write; ex2=" + ex2 );
                     }
                 }
             }

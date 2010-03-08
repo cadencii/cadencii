@@ -2699,7 +2699,9 @@ namespace org.kbinani.cadencii {
             } else {
                 s_selected = -1;
             }
-            mainWindow.updateBgmMenuState();
+            if ( mainWindow != null ) {
+                mainWindow.updateBgmMenuState();
+            }
         }
 
 #if !TREECOM

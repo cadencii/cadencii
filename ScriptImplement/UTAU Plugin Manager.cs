@@ -8,6 +8,8 @@ using org.kbinani.apputil;
 using org.kbinani.cadencii;
 
 class UtauPluginManager : Form {
+    delegate void VoidDelegate();
+    
     private Button btnOk;
     private Button btnAdd;
     private Button btnRemove;
@@ -199,7 +201,12 @@ class UtauPluginManager : Form {
         "        if ( next != null ) {\n" +
         "            tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = int.MaxValue;\n" +
         "        }\n" +
-        "        tust.write( temp );\n" +
+        "        tust.write( temp, false );\n" +
+        "        //#if DEBUG\n" +
+        "        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( \"Shift_JIS\" ) ) ) {\n" +
+        "            Console.WriteLine( s_class_name + \"#Edit; before: text=\" + sr.ReadToEnd() );\n" +
+        "        }\n" +
+        "        //#endif\n" +
         "\n" +
         "        // 起動 -----------------------------------------------------------------------------\n" +
         "        StartPluginArgs arg = new StartPluginArgs();\n" +
@@ -212,6 +219,12 @@ class UtauPluginManager : Form {
         "            System.Threading.Thread.Sleep( 100 );\n" +
         "            Application.DoEvents();\n" +
         "        }\n" +
+        "\n" +
+        "        //#if DEBUG\n" +
+        "        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( \"Shift_JIS\" ) ) ) {\n" +
+        "            Console.WriteLine( s_class_name + \"#Edit; after : text=\" + sr.ReadToEnd() );\n" +
+        "        }\n" +
+        "        //#endif\n" +
         "\n" +
         "        // 結果を反映 -----------------------------------------------------------------------\n" +
         "        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( 932 ) ) ) {\n" +
@@ -414,6 +427,7 @@ class UtauPluginManager : Form {
     public static int ColumnWidthPath = 200;
     public static int DialogWidth = 295;
     public static int DialogHeight = 352;
+    private static List<string> oldPlugins = null;
 
     public UtauPluginManager() {
         InitializeComponent();
@@ -430,6 +444,14 @@ class UtauPluginManager : Form {
             Height = DialogHeight;
         }
 
+        btnAdd.Text = _( "Add" );
+        btnRemove.Text = _( "Remove" );
+        btnOk.Text = _( "OK" );
+        btnCancel.Text = _( "Cancel" );
+        headerName.Text = _( "Name" );
+        headerPath.Text = _( "Path" );
+
+        oldPlugins = new List<string>();
         Encoding sjis = Encoding.GetEncoding( "Shift_JIS" );
         foreach ( string s in getPlugins() ) {
             if ( !System.IO.File.Exists( s ) ) {
@@ -439,6 +461,7 @@ class UtauPluginManager : Form {
             if ( name != "" ) {
                 listPlugins.Items.Add( new ListViewItem( new string[] { name, s } ) );
             }
+            oldPlugins.Add( s );
         }
     }
 
@@ -518,6 +541,7 @@ class UtauPluginManager : Form {
         this.listPlugins.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
             this.headerName,
             this.headerPath} );
+        this.listPlugins.FullRowSelect = true;
         this.listPlugins.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
         this.listPlugins.Location = new System.Drawing.Point( 12, 41 );
         this.listPlugins.Name = "listPlugins";
@@ -631,6 +655,30 @@ class UtauPluginManager : Form {
                 if ( lang == "ja" ) {
                     return "'{0}' を削除しますか？";
                 }
+            } else if ( id == "Add" ) {
+                if ( lang == "ja" ) {
+                    return "追加";
+                }
+            } else if ( id == "Remove" ) {
+                if ( lang == "ja" ) {
+                    return "削除";
+                }
+            } else if ( id == "OK" ) {
+                if ( lang == "ja" ) {
+                    return "了解";
+                }
+            } else if ( id == "Cancel" ) {
+                if ( lang == "ja" ) {
+                    return "取消";
+                }
+            } else if ( id == "Name" ) {
+                if ( lang == "ja" ) {
+                    return "名称";
+                }
+            } else if ( id == "Path" ) {
+                if ( lang == "ja" ) {
+                    return "保存場所";
+                }
             }
         }
         return id;
@@ -675,6 +723,21 @@ class UtauPluginManager : Form {
     }
 
     private void btnOk_Click( object sender, EventArgs e ) {
+        if ( oldPlugins != null ) {
+            // 削除されたスクリプトをアンインストールする
+            foreach ( string file in oldPlugins ) {
+                if ( !getPlugins().Contains( file ) ) {
+                    string name = getPluginName( file );
+                    if ( name != "" ) {
+                        string script_path = PortUtil.combinePath( AppManager.getScriptPath(), name + ".txt" );
+                        if ( PortUtil.isFileExists( script_path ) ) {
+                            PortUtil.deleteFile( script_path );
+                        }
+                    }
+                }
+            }
+        }
+
         foreach ( string file in getPlugins() ) {
             if ( !PortUtil.isFileExists( file ) ) {
                 continue;
@@ -689,6 +752,13 @@ class UtauPluginManager : Form {
             code = code.Replace( "{1}", file );
             using ( StreamWriter sw = new StreamWriter( PortUtil.combinePath( AppManager.getScriptPath(), name + ".txt" ) ) ) {
                 sw.WriteLine( code );
+            }
+        }
+
+        if ( AppManager.mainWindow != null ) {
+            VoidDelegate deleg = new VoidDelegate( AppManager.mainWindow.updateScriptShortcut );
+            if ( deleg != null ) {
+                AppManager.mainWindow.Invoke( deleg );
             }
         }
     }

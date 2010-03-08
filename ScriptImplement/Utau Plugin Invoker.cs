@@ -184,7 +184,12 @@ public class Utau_Plugin_Invoker {
         if ( next != null ) {
             tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = int.MaxValue;
         }
-        tust.write( temp );
+        tust.write( temp, false );
+        //#if DEBUG
+        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
+            Console.WriteLine( s_class_name + "#Edit; before: text=" + sr.ReadToEnd() );
+        }
+        //#endif
 
         // 起動 -----------------------------------------------------------------------------
         StartPluginArgs arg = new StartPluginArgs();
@@ -197,6 +202,12 @@ public class Utau_Plugin_Invoker {
             System.Threading.Thread.Sleep( 100 );
             Application.DoEvents();
         }
+
+        //#if DEBUG
+        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
+            Console.WriteLine( s_class_name + "#Edit; after : text=" + sr.ReadToEnd() );
+        }
+        //#endif
 
         // 結果を反映 -----------------------------------------------------------------------
         using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( 932 ) ) ) {

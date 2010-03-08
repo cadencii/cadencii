@@ -46,8 +46,12 @@ namespace org.kbinani.cadencii{
             splashThread.TrySetApartmentState( ApartmentState.STA );
             splashThread.Start();
 
+            String file = "";
+            if ( args.Length > 0 ) {
+                file = args[0];
+            }
             AppManager.init();
-            AppManager.mainWindow = new FormMain();
+            AppManager.mainWindow = new FormMain( file );
             AppManager.mainWindow.Load += mainWindow_Load;
             Application.Run( AppManager.mainWindow );
 #if !DEBUG

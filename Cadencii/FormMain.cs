@@ -511,7 +511,7 @@ namespace org.kbinani.cadencii {
         private BMenuItem deleteShortcutHolder = null;
         #endregion
 
-        public FormMain() {
+        public FormMain( String file ) {
 #if JAVA
 		    super();
 #endif
@@ -883,6 +883,25 @@ namespace org.kbinani.cadencii {
 #endif
             initResource();
             applyShortcut();
+
+            // ファイルを開く
+            if ( !file.Equals( "" ) ) {
+                if ( PortUtil.isFileExists( file ) ) {
+                    String low_file = file.ToLower();
+                    if ( low_file.EndsWith( ".xvsq" ) ) {
+                        AppManager.readVsq( file );
+                    } else if ( low_file.EndsWith( ".vsq" ) ) {
+                        VsqFileEx vsq = null;
+                        try {
+                            vsq = new VsqFileEx( file, "Shift_JIS" );
+                            AppManager.setVsqFile( vsq );
+                            updateBgmMenuState();
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "FormMain#.ctor; ex=" + ex );
+                        }
+                    }
+                }
+            }
         }
 
         public void panelOverview_Enter( Object sender, EventArgs e ) {

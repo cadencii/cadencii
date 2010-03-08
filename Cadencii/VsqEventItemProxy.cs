@@ -89,7 +89,11 @@ namespace org.kbinani.cadencii {
                 }
                 m_symbol_protected = item.ID.LyricHandle.L0.PhoneticSymbolProtected ? BooleanEnum.On : BooleanEnum.Off;
             }
-            m_ust_event = item.UstEvent;
+            if ( item.UstEvent != null ) {
+                m_ust_event = (UstEvent)item.UstEvent.clone();
+            } else {
+                m_ust_event = new UstEvent();
+            }
             m_pMeanOnsetFirstNote = item.ID.pMeanOnsetFirstNote;
             m_vMeanNoteTransition = item.ID.vMeanNoteTransition;
             m_d4mean = item.ID.d4mean;
@@ -449,6 +453,16 @@ namespace org.kbinani.cadencii {
             }
             set {
                 m_ust_event.Moduration = value;
+            }
+        }
+
+        [Category( "UTAU" )]
+        public String Flags {
+            get {
+                return m_ust_event.Flags;
+            }
+            set {
+                m_ust_event.Flags = value;
             }
         }
         #endregion

@@ -164,6 +164,10 @@ namespace org.kbinani.vsq {
                 sw.write( "Moduration=" + Moduration );
                 sw.newLine();
             }
+            if ( Envelope != null ) {
+                sw.write( Envelope.toString() );
+                sw.newLine();
+            }
         }
 
         /*public VsqEvent convertToVsqEvent( int clock, int internal_id ) {
