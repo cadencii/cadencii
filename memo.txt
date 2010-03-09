@@ -11,7 +11,6 @@
 -Federの値が本家と違う場合がある（？）
 -makeRes.csの、Cursorのときの処理を追加する
 -LyricHandleのL1以降の取り扱い。->実装してみた.動作を確認すること
--CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
 -VsqHandleのcastTo**はクローンする必要があるのかどうか検討
@@ -20,7 +19,6 @@
 -splashウィンドウの画像をどうしようか・・・
 -ショートカットキーを増やす（詳細はメール）
 -MTCで同期する機能
--VsqEventItemProxyとSelectedEventEntryは同じクラスにまとめられるのでは？
 
 -v3.0.16todo-----------------------------------------------------------
 
@@ -46,6 +44,8 @@
 -Utau Plugin Invokerが書きかけ．PIT,PBSを取得する部分から．
 -スクリプトのメニューの階層を1個浅くする。直で実行できるように。
 -スクリプト起動中はモーダルダイアログを出すなどしてメイン画面での編集を回避する必要がある．
+-CadenciiからUTAUのプラグインを呼び出す仕組み->./ScriptImplement/Utau Plugin Invoker.cs + ./ScriptImplement/UTAU Plugin Manager.cs
+-VsqEventItemProxyを削除し，機能をSelectedEventEntryに組み込んだ
 
 -v3.0.15done-----------------------------------------------------------
 -音符の表示幅が28ピクセルよりも小さい場合のツールの当たり判定を改善

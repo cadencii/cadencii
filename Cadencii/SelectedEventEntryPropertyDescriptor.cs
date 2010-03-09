@@ -1,7 +1,7 @@
 ﻿#if ENABLE_PROPERTY
 /*
- * VsqEventItemProxyPropertyDescriptor.cs
- * Copyright (C) 2009-2010 kbinani
+ * SelectedEventEntryPropertyDescriptor.cs
+ * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -20,12 +20,12 @@ using org.kbinani.apputil;
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
-    public class VsqEventItemProxyPropertyDescriptor : PropertyDescriptor {
+    public class SelectedEventEntryPropertyDescriptor : PropertyDescriptor {
         private Type m_type;
 
-        public VsqEventItemProxyPropertyDescriptor( MemberDescriptor md )
+        public SelectedEventEntryPropertyDescriptor( MemberDescriptor md )
             : base( md ) {
-            m_type = typeof( VsqEventItemProxy );
+            m_type = typeof( SelectedEventEntry );
         }
 
         public override boolean ShouldSerializeValue( object component ) {

@@ -27,7 +27,7 @@ namespace org.kbinani.cadencii {
 
     public class PropertyPanel : UserControl {
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
-        private Vector<VsqEventItemProxy> m_items;
+        private Vector<SelectedEventEntry> m_items;
         private int m_track;
         private boolean m_editing;
 
@@ -35,7 +35,7 @@ namespace org.kbinani.cadencii {
             InitializeComponent();
             registerEventHandlers();
             setResources();
-            m_items = new Vector<VsqEventItemProxy>();
+            m_items = new Vector<SelectedEventEntry>();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -120,45 +120,25 @@ namespace org.kbinani.cadencii {
             // 現在のGridItemの展開状態を取得
             pushGridItemExpandStatus();
 
-            // InternalIDを列挙
-            Vector<Integer> items = new Vector<Integer>();
+            object[] objs = new object[AppManager.getSelectedEventCount()];
+            int i = -1;
             for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                 SelectedEventEntry item = (SelectedEventEntry)itr.next();
-                if ( item.track == track ) {
-                    items.add( item.original.InternalID );
-                }
+                i++;
+                objs[i] = item;
             }
 
-            // itemsの中身を列挙
-            int count = 0;
-            for ( Iterator itr = AppManager.getVsqFile().Track.get( m_track ).getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent ve = (VsqEvent)itr.next();
-                if ( items.contains( ve.InternalID ) ) {
-                    count++;
-                    m_items.add( new VsqEventItemProxy( ve ) );
-                }
-                if ( count == items.size() ) {
-                    break;
-                }
-            }
-
-            object[] objs = new object[m_items.size()];
-            for ( int i = 0; i < m_items.size(); i++ ) {
-                objs[i] = m_items.get( i );
-            }
             propertyGrid.SelectedObjects = objs;
             popGridItemExpandStatus();
             setEditing( false );
         }
 
         private void propertyGrid_PropertyValueChanged( object s, PropertyValueChangedEventArgs e ) {
-            //String name = e.ChangedItem.PropertyDescriptor.Name;
-            //object old_value = e.OldValue;
             int len = propertyGrid.SelectedObjects.Length;
             VsqEvent[] items = new VsqEvent[len];
             for ( int i = 0; i < len; i++ ) {
-                VsqEventItemProxy proxy = (VsqEventItemProxy)propertyGrid.SelectedObjects[i];
-                items[i] = proxy.GetItemDifference();
+                SelectedEventEntry proxy = (SelectedEventEntry)propertyGrid.SelectedObjects[i];
+                items[i] = proxy.editing;
             }
             if ( CommandExecuteRequired != null ) {
                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplaceRange( m_track, items ) );

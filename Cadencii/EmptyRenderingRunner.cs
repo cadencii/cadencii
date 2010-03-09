@@ -25,7 +25,11 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 
+#if JAVA
+    public class EmptyRenderingRunner extends RenderingRunner {
+#else
     public class EmptyRenderingRunner : RenderingRunner {
+#endif
         private boolean modeInfinite;
         private double startedDate;
 

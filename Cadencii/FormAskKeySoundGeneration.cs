@@ -1,6 +1,10 @@
 ﻿#if JAVA
 package org.kbinani.cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\cadencii\FormAskKeySoundGeneration.java
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
+import org.kbinani.apputil.*;
 #else
 using System;
 using org.kbinani.windows.forms;
@@ -11,7 +15,11 @@ namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
 #endif
 
+#if JAVA
+    public class FormAskKeySoundGeneration extends BForm {
+#else
     public class FormAskKeySoundGeneration : BForm {
+#endif
         private BButton btnNo;
         private BCheckBox chkAlwaysPerformThisCheck;
         private BLabel lblMessage;
@@ -56,6 +64,10 @@ namespace org.kbinani.cadencii {
             return chkAlwaysPerformThisCheck.isSelected();
         }
 
+#if JAVA
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\cadencii\FormAskKeySoundGeneration.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\cadencii\FormAskKeySoundGeneration.java
+#else
         private void InitializeComponent() {
             this.btnNo = new org.kbinani.windows.forms.BButton();
             this.btnYes = new org.kbinani.windows.forms.BButton();
@@ -129,6 +141,7 @@ namespace org.kbinani.cadencii {
             this.PerformLayout();
 
         }
+#endif
     }
 
 #if !JAVA

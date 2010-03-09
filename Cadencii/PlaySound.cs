@@ -27,6 +27,13 @@ namespace org.kbinani.cadencii {
 #endif
 
     public class PlaySound {
+#if JAVA
+        private static final int UNIT_BUFFER = 512;
+        private static SourceDataLine m_line;
+        private static AudioFormat m_format;
+        private static DataLine.Info m_info;
+        private static byte[] m_buffer;
+#else
         [DllImport( "PlaySound" )]
         private static extern void SoundInit();
         [DllImport( "PlaySound" )]
@@ -47,6 +54,7 @@ namespace org.kbinani.cadencii {
         private static extern void SoundKill();
         [DllImport( "PlaySound" )]
         private static extern void SoundUnprepare();
+#endif
 
         public static void setResolution( int value ) {
             try {
@@ -198,8 +206,8 @@ namespace org.kbinani.cadencii {
             } catch ( Exception ex ) {
                 PortUtil.println( "PlaySound#unprepare; ex=" + ex );
             }
-        }
 #endif
+        }
     }
 
 #if !JAVA

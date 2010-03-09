@@ -1,7 +1,7 @@
 ﻿#if ENABLE_PROPERTY
 /*
- * VsqEventItemProxyTypeConverter.cs
- * Copyright (C) 2009-2010 kbinani
+ * SelectedEventEntryTypeConverter.cs
+ * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -18,8 +18,8 @@ using System.ComponentModel;
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
-    public class VsqEventItemProxyTypeConverter : TypeConverter {
-        public VsqEventItemProxyTypeConverter() {
+    public class SelectedEventEntryTypeConverter : TypeConverter {
+        public SelectedEventEntryTypeConverter() {
         }
 
         public override PropertyDescriptorCollection GetProperties( ITypeDescriptorContext context, object value, Attribute[] attributes ) {
@@ -28,7 +28,7 @@ namespace org.kbinani.cadencii {
             buffClassProps = new PropertyDescriptorCollection( null );
 
             foreach ( PropertyDescriptor oPD in buffProps ) {
-                buffClassProps.Add( new VsqEventItemProxyPropertyDescriptor( oPD ) );
+                buffClassProps.Add( new SelectedEventEntryPropertyDescriptor( oPD ) );
             }
             return buffClassProps;
         }
