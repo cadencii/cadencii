@@ -938,11 +938,11 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         public static string getScriptPath() {
-#if DEBUG
-            return PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "script" );
-#else
-            return PortUtil.combinePath( AppManager.getApplicationDataPath(), "script" );
-#endif
+            String dir = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "script" );
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
+                PortUtil.createDirectory( dir );
+            }
+            return dir;
         }
 
         /// <summary>
@@ -950,11 +950,11 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         public static string getToolPath() {
-#if DEBUG
-            return PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "tool" );
-#else
-            return PortUtil.combinePath( AppManager.getApplicationDataPath(), "tool" );
-#endif
+            String dir = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "tool" );
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
+                PortUtil.createDirectory( dir );
+            }
+            return dir;
         }
 
         /// <summary>
@@ -1589,9 +1589,9 @@ namespace org.kbinani.cadencii {
 #endif
             ScriptInvoker ret = new ScriptInvoker();
             ret.ScriptFile = file;
-            ret.FileTimestamp = System.IO.File.GetLastWriteTimeUtc( file );
+            ret.fileTimestamp = PortUtil.getFileLastModified( file );
             // スクリプトの記述のうち、以下のリストに当てはまる部分は空文字に置換される
-            String config_file = configFileNameFromScriptFileName( file );
+            String config_file = ScriptServer.configFileNameFromScriptFileName( file );
             String script = "";
             BufferedReader sr = null;
             try {
@@ -1611,9 +1611,6 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
-            /*foreach ( String s in AppManager.USINGS ) {
-                script = script.Replace( s, "" );
-            }*/
 
             String code = "";
             foreach ( String s in AppManager.USINGS ) {
@@ -1655,6 +1652,15 @@ namespace org.kbinani.cadencii {
             } else {
                 foreach ( Type implemented in testAssembly.GetTypes() ) {
                     Object scriptDelegate = null;
+                    ScriptDelegateGetDisplayName getDisplayNameDelegate = null;
+
+                    MethodInfo get_displayname_delegate = implemented.GetMethod( "GetDisplayName", new Type[] { } );
+                    if ( get_displayname_delegate != null && get_displayname_delegate.IsStatic && get_displayname_delegate.IsPublic ) {
+                        if ( get_displayname_delegate.ReturnType.Equals( typeof( String ) ) ) {
+                            getDisplayNameDelegate = (ScriptDelegateGetDisplayName)Delegate.CreateDelegate( typeof( ScriptDelegateGetDisplayName ), get_displayname_delegate );
+                        }
+                    }
+
                     MethodInfo tmi = implemented.GetMethod( "Edit", new Type[] { typeof( VsqFile ) } );
                     if ( tmi != null && tmi.IsStatic && tmi.IsPublic ) {
                         if ( tmi.ReturnType.Equals( typeof( boolean ) ) ) {
@@ -1675,6 +1681,7 @@ namespace org.kbinani.cadencii {
                         ret.ScriptType = implemented;
                         ret.scriptDelegate = scriptDelegate;
                         ret.Serializer = new XmlSerializer( implemented, true );
+                        ret.getDisplayNameDelegate = getDisplayNameDelegate;
 
                         if ( !PortUtil.isFileExists( config_file ) ) {
                             continue;
@@ -1708,84 +1715,6 @@ namespace org.kbinani.cadencii {
 #endif
         }
 #endif
-
-#if ENABLE_SCRIPT
-        /// <summary>
-        /// スクリプトを実行します
-        /// </summary>
-        /// <param name="evsd"></param>
-        public static boolean invokeScript( ScriptInvoker script_invoker ) {
-            if ( script_invoker != null && script_invoker.scriptDelegate != null ) {
-                try {
-                    VsqFileEx work = (VsqFileEx)s_vsq.clone();
-                    ScriptReturnStatus ret = ScriptReturnStatus.ERROR;
-                    if ( script_invoker.scriptDelegate is EditVsqScriptDelegate ) {
-                        boolean b_ret = ((EditVsqScriptDelegate)script_invoker.scriptDelegate).Invoke( work );
-                        if ( b_ret ) {
-                            ret = ScriptReturnStatus.EDITED;
-                        } else {
-                            ret = ScriptReturnStatus.ERROR;
-                        }
-                    } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateEx ) {
-                        boolean b_ret = ((EditVsqScriptDelegateEx)script_invoker.scriptDelegate).Invoke( work );
-                        if ( b_ret ) {
-                            ret = ScriptReturnStatus.EDITED;
-                        } else {
-                            ret = ScriptReturnStatus.ERROR;
-                        }
-                    } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateWithStatus ) {
-                        ret = ((EditVsqScriptDelegateWithStatus)script_invoker.scriptDelegate).Invoke( work );
-                    } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateExWithStatus ) {
-                        ret = ((EditVsqScriptDelegateExWithStatus)script_invoker.scriptDelegate).Invoke( work );
-                    } else {
-                        ret = ScriptReturnStatus.ERROR;
-                    }
-                    if ( ret == ScriptReturnStatus.ERROR ) {
-                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_INFORMATION_MESSAGE );
-                    } else if ( ret == ScriptReturnStatus.EDITED ) {
-                        CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
-                        register( s_vsq.executeCommand( run ) );
-                    }
-                    String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
-                    FileOutputStream fs = null;
-                    boolean delete_xml_when_exit = false; // xmlを消すときtrue
-                    try {
-                        fs = new FileOutputStream( config_file );
-                        script_invoker.Serializer.serialize( fs, null );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager#invokeScript; ex=" + ex );
-                        delete_xml_when_exit = true;
-                    } finally {
-                        if ( fs != null ) {
-                            try {
-                                fs.close();
-                                if ( delete_xml_when_exit ) {
-                                    PortUtil.deleteFile( config_file );
-                                }
-                            } catch ( Exception ex2 ) {
-                                PortUtil.stderr.println( "AppManager#invokeScript; ex2=" + ex2 );
-                            }
-                        }
-                    }
-                    return (ret == ScriptReturnStatus.EDITED);
-                } catch ( Exception ex ) {
-                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_INFORMATION_MESSAGE );
-                    PortUtil.stderr.println( "AppManager#invokeScript; ex=" + ex );
-                }
-            } else {
-                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_WARNING_MESSAGE );
-            }
-            return false;
-        }
-#endif
-
-        private static String configFileNameFromScriptFileName( String script_file ) {
-            String dir = PortUtil.combinePath( AppManager.getApplicationDataPath(), "script" );
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
-                PortUtil.createDirectory( dir );
-            }
-            return PortUtil.combinePath( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
-        }
 
         /// <summary>
         /// 音声ファイルのキャッシュディレクトリのパスを設定します。

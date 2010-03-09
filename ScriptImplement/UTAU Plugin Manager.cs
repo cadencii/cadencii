@@ -34,6 +34,7 @@ class UtauPluginManager : Form {
         "    private static string s_plugin_txt_path = @\"{1}\";\n" +
         "    private Label lblMessage;\n" +
         "    private static readonly string s_class_name = \"{0}\";\n" +
+        "    private static readonly string s_display_name = \"{0}\";\n" +
         "\n" +
         "    private string m_exe_path = \"\";\n" +
         "    private System.ComponentModel.BackgroundWorker bgWork;\n" +
@@ -66,19 +67,19 @@ class UtauPluginManager : Form {
         "        this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );\n" +
         "        this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );\n" +
         "        // \n" +
-        "        // Utau_Plugin_Invoker\n" +
+        "        // {0}\n" +
         "        // \n" +
         "        this.ClientSize = new System.Drawing.Size( 313, 119 );\n" +
         "        this.Controls.Add( this.lblMessage );\n" +
         "        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;\n" +
         "        this.MaximizeBox = false;\n" +
         "        this.MinimizeBox = false;\n" +
-        "        this.Name = \"Utau_Plugin_Invoker\";\n" +
+        "        this.Name = \"{0}\";\n" +
         "        this.ShowIcon = false;\n" +
         "        this.ShowInTaskbar = false;\n" +
         "        this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;\n" +
         "        this.Text = \"Utau Plugin Invoker\";\n" +
-        "        this.Load += new System.EventHandler( this.Utau_Plugin_Invoker_Load );\n" +
+        "        this.Load += new System.EventHandler( this.{0}_Load );\n" +
         "        this.ResumeLayout( false );\n" +
         "\n" +
         "    }\n" +
@@ -131,9 +132,6 @@ class UtauPluginManager : Form {
         "        for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {\n" +
         "            SelectedEventEntry item_itr = (SelectedEventEntry)itr.next();\n" +
         "            if ( item_itr.original.ID.type == VsqIDType.Anote ) {\n" +
-        "                //#if DEBUG\n" +
-        "                Console.WriteLine( s_class_name + \"#Edit; item_itr.original.UstEvent.PreUtterance=\" + item_itr.original.UstEvent.PreUtterance + \"; item_itr.editing.UstEvent.PreUtterance=\" + item_itr.editing.UstEvent.PreUtterance );\n" +
-        "                //#endif\n" +
         "                items.Add( (VsqEvent)item_itr.original.clone() );\n" +
         "                num_selected++;\n" +
         "            }\n" +
@@ -243,12 +241,6 @@ class UtauPluginManager : Form {
         "        copyCurve( vsq_track.getCurve( \"pbs\" ), conv_track.getCurve( \"pbs\" ), clock_begin );\n" +
         "\n" +
         "        string temp = Path.GetTempFileName();\n" +
-        "        //#if DEBUG\n" +
-        "        for ( Iterator itr = conv.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ) {\n" +
-        "            VsqEvent item = (VsqEvent)itr.next();\n" +
-        "            Console.WriteLine( s_class_name + \"#Edit; lyric=\" + item.ID.LyricHandle.L0.Phrase + \"; preUtterance=\" + item.UstEvent.PreUtterance );\n" +
-        "        }\n" +
-        "        //#endif\n" +
         "        UstFile tust = new UstFile( conv, 1 );\n" +
         "        VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );\n" +
         "        string voice_dir = \"\";\n" +
@@ -265,21 +257,10 @@ class UtauPluginManager : Form {
         "            tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = int.MaxValue;\n" +
         "        }\n" +
         "        tust.write( temp, false );\n" +
-        "        //#if DEBUG\n" +
-        "        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( \"Shift_JIS\" ) ) ) {\n" +
-        "            Console.WriteLine( s_class_name + \"#Edit; before: text=\" + sr.ReadToEnd() );\n" +
-        "        }\n" +
-        "        //#endif\n" +
         "\n" +
         "        // 起動 -----------------------------------------------------------------------------\n" +
         "        {0} dialog = new {0}( exe_path, temp );\n" +
         "        dialog.ShowDialog();\n" +
-        "\n" +
-        "        //#if DEBUG\n" +
-        "        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( \"Shift_JIS\" ) ) ) {\n" +
-        "            Console.WriteLine( s_class_name + \"#Edit; after : text=\" + sr.ReadToEnd() );\n" +
-        "        }\n" +
-        "        //#endif\n" +
         "\n" +
         "        // 結果を反映 -----------------------------------------------------------------------\n" +
         "        List<int> pit_added_ids = new List<int>(); // Pitchesが追加されたので、後でPIT, PBSに反映させる処理が必要なVsqEventの、InternalID\n" +
@@ -289,7 +270,6 @@ class UtauPluginManager : Form {
         "            int clock = clock_begin;\n" +
         "            int tlength = 0;\n" +
         "            while ( (line = sr.ReadLine()) != null ) {\n" +
-        "                Console.WriteLine( s_class_name + \"#Edit; line=\" + line );\n" +
         "                if ( line.StartsWith( \"[#\" ) ){\n" +
         "                    current_parse = line;\n" +
         "                    clock += tlength;\n" +
@@ -303,19 +283,15 @@ class UtauPluginManager : Form {
         "                } else if ( current_parse.StartsWith( \"[#\" ) ) {\n" +
         "                    int indx_blacket = current_parse.IndexOf( ']' );\n" +
         "                    string str_num = current_parse.Substring( 2, indx_blacket - 2 );\n" +
-        "                    Console.WriteLine( s_class_name + \"#Edit; str_num=\" + str_num );\n" +
         "                    int num = -1;\n" +
         "                    if ( !int.TryParse( str_num, out num ) ) {\n" +
-        "                        Console.WriteLine( s_class_name + \"#Edit; format error; str_num=\" + str_num );\n" +
         "                        continue;\n" +
         "                    }\n" +
         "                    if ( num < 0 || map_id.Count <= num ) {\n" +
-        "                        Console.WriteLine( s_class_name + \"#Edit; invalid range; num=\" + num + \"; map_id.Count=\" + map_id.Count );\n" +
         "                        continue;\n" +
         "                    }\n" +
         "                    VsqEvent target = vsq_track.findEventFromID( map_id[num] );\n" +
         "                    if ( target == null ) {\n" +
-        "                        Console.WriteLine( s_class_name + \"#Edit; target event not found; num=\" + num + \"; map_id[num]=\" + map_id[num] );\n" +
         "                        continue;\n" +
         "                    }\n" +
         "                    if ( target.UstEvent == null ) {\n" +
@@ -467,7 +443,6 @@ class UtauPluginManager : Form {
         "            // これからPITをいじる範囲内のPBSが、pbsと違う値になっていた場合の処理\n" +
         "            double sec_pitstart = vsq.getSecFromClock( target.Clock ) - target.UstEvent.PreUtterance / 1000.0;\n" +
         "            int pit_start = (int)vsq.getClockFromSec( sec_pitstart );\n" +
-        "            Console.WriteLine( s_class_name + \"#Edit; pit_start=\" + pit_start + \"; target.Clock=\" + target.Clock );\n" +
         "            int pbtype = target.UstEvent.PBType;\n" +
         "            if ( pbtype < 1 ) {\n" +
         "                pbtype = 5;\n" +
@@ -522,7 +497,6 @@ class UtauPluginManager : Form {
         "                }\n" +
         "                if ( pit != lastpit ) {\n" +
         "                    cpit.add( jclock, pit );\n" +
-        "                    Console.WriteLine( s_class_name + \"#Edit; j=\" + j + \"; jclock=\" + jclock );\n" +
         "                    lastpit = pit;\n" +
         "                }\n" +
         "            }\n" +
@@ -533,7 +507,6 @@ class UtauPluginManager : Form {
         "\n" +
         "        try {\n" +
         "            System.IO.File.Delete( temp );\n" +
-        "            Console.WriteLine( s_class_name + \"#Edit; temp=\" + temp );\n" +
         "        } catch ( Exception ex ) {\n" +
         "        }\n" +
         "        return ScriptReturnStatus.EDITED;\n" +
@@ -560,13 +533,12 @@ class UtauPluginManager : Form {
         "        }\n" +
         "    }\n" +
         "\n" +
-        "    private void Utau_Plugin_Invoker_Load( object sender, EventArgs e ) {\n" +
+        "    private void {0}_Load( object sender, EventArgs e ) {\n" +
         "        bgWork.RunWorkerAsync();\n" +
         "    }\n" +
         "\n" +
         "    private void bgWork_DoWork( object sender, System.ComponentModel.DoWorkEventArgs e ) {\n" +
         "        string dquote = new string( (char)0x22, 1 );\n" +
-        "        Console.WriteLine( s_class_name + \"#runPlugin; dquote=\" + dquote );\n" +
         "        using ( System.Diagnostics.Process p = new System.Diagnostics.Process() ) {\n" +
         "            p.StartInfo.FileName = m_exe_path;\n" +
         "            p.StartInfo.Arguments = dquote + m_temp + dquote;\n" +
@@ -581,6 +553,9 @@ class UtauPluginManager : Form {
         "        this.Close();\n" +
         "    }\n" +
         "\n" +
+        "    public static String GetDisplayName() {\n" +
+        "        return s_display_name;\n" +
+        "    }\n" +
         "}\n" +
         "";
     private ListView listPlugins;
@@ -916,6 +891,10 @@ class UtauPluginManager : Form {
             if ( name == "" ) {
                 continue;
             }
+            char[] invalid_classname = new char[] { ' ', '!', '#', '$', '%', '&', '\'', '(', ')', '=', '-', '~', '^', '`', '@', '{', '}', '[', ']', '+', '*', ';', '.' };
+            foreach ( char c in invalid_classname ) {
+                name = name.Replace( c, '_' );
+            }
             string text = TEXT;
             string code = text.Replace( "{0}", name );
             code = code.Replace( "{1}", file );
@@ -929,6 +908,15 @@ class UtauPluginManager : Form {
             if ( deleg != null ) {
                 AppManager.mainWindow.Invoke( deleg );
             }
+        }
+    }
+
+    public static String GetDisplayName() {
+        String lang = Messaging.getLanguage();
+        if ( lang == "ja" ) {
+            return "UTAU用プラグインをインストール";
+        } else {
+            return "Install UTAU Plugin";
         }
     }
 }

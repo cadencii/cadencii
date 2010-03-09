@@ -4404,7 +4404,9 @@ namespace org.kbinani.cadencii {
                 try {
                     dialog = new FormAskKeySoundGeneration();
                     dialog.setAlwaysPerformThisCheck( always_check_this );
+                    AppManager.beginShowDialog();
                     dialog_result = dialog.showDialog();
+                    AppManager.endShowDialog();
                     always_check_this = dialog.isAlwaysPerformThisCheck();
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
@@ -11854,57 +11856,27 @@ namespace org.kbinani.cadencii {
         /// スクリプトフォルダ中のスクリプトへのショートカットを作成する
         /// </summary>
         public void updateScriptShortcut() {
-            TreeMap<String, ScriptInvoker> old = new TreeMap<String, ScriptInvoker>();
-            MenuElement[] sub_menu_script = menuScript.getSubElements();
-            for ( int i = 0; i < sub_menu_script.Length; i++ ) {
-                MenuElement item = sub_menu_script[i];
-                if ( !(item is BMenuItem) ) {
-                    continue;
-                }
-                BMenuItem tsmi = (BMenuItem)item;
-                MenuElement[] sub_tsmi = tsmi.getSubElements();
-                if ( sub_tsmi.Length <= 0 ) {
-                    continue;
-                }
-                if ( !(sub_tsmi[0] is BMenuItem) ) {
-                    continue;
-                }
-                BMenuItem sub_tsmi0 = (BMenuItem)sub_tsmi[0];
-                if ( sub_tsmi0.getTag() != null && sub_tsmi0.getTag() is ScriptInvoker ) {
-                    ScriptInvoker si = (ScriptInvoker)sub_tsmi0.getTag();
-                    old.put( si.ScriptFile, si );
-                }
-            }
+            // 既存のアイテムを削除
             menuScript.removeAll();
-            String script_path = AppManager.getScriptPath();
-            if ( !PortUtil.isDirectoryExists( script_path ) ) {
-                System.IO.Directory.CreateDirectory( script_path );
+            // スクリプトをリロード
+            ScriptServer.reload();
+
+            // スクリプトごとのメニューを追加
+            int count = 0;
+            for ( Iterator itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
+                String id = (String)itr.next();
+                String display = ScriptServer.getDisplayName( id );
+                String name = id.Replace( '.', '_' );
+                BMenuItem item = new BMenuItem();
+                item.setText( display );
+                item.setName( name );
+                item.setTag( id );
+                item.Click += new EventHandler( handleScriptMenuItem_Click );
+                menuScript.add( item );
+                count++;
             }
 
-            System.IO.DirectoryInfo current = new System.IO.DirectoryInfo( script_path );
-            int count = 0;
-            Vector<System.IO.FileInfo> files = new Vector<System.IO.FileInfo>( Arrays.asList( current.GetFiles( "*.txt" ) ) );
-            files.addAll( Arrays.asList( current.GetFiles( "*.cs" ) ) );
-            for ( Iterator itr = files.iterator(); itr.hasNext(); ) {
-                System.IO.FileInfo fi = (System.IO.FileInfo)itr.next();
-                count++;
-                String fname = fi.FullName;
-                String scriptname = PortUtil.getFileNameWithoutExtension( fname );
-                BMenuItem item = new BMenuItem();
-                item.setText( scriptname );
-                item.setName( "menuScript" + scriptname + "Run" );
-                if ( old.containsKey( fname ) && old.get( fname ) != null ) {
-                    item.setTag( old.get( fname ) );
-                } else {
-                    ScriptInvoker si2 = new ScriptInvoker();
-                    si2.FileTimestamp = DateTime.MinValue;
-                    si2.ScriptFile = fname;
-                    item.setTag( si2 );
-                }
-                item.Click += new EventHandler( dd_run_Click );
-                menuScript.add( item );
-            }
-            old.clear();
+            // 「スクリプトのリストを更新」を追加
             if ( count > 0 ) {
                 menuScript.addSeparator();
             }
@@ -11915,30 +11887,17 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if ENABLE_SCRIPT
-        public void dd_run_Click( Object sender, EventArgs e ) {
-#if DEBUG
-            AppManager.debugWriteLine( "dd_run_Click" );
-#endif
-            try {
-                ScriptInvoker si = (ScriptInvoker)((BMenuItem)sender).getTag();
-                String script_file = si.ScriptFile;
-#if DEBUG
-                AppManager.debugWriteLine( "    si.FileTimestamp=" + si.FileTimestamp );
-                AppManager.debugWriteLine( "    File.GetLastWriteTimeUtc( script_file )=" + System.IO.File.GetLastWriteTimeUtc( script_file ) );
-#endif
-                if ( si.FileTimestamp != System.IO.File.GetLastWriteTimeUtc( script_file ) ||
-                     si.ScriptType == null ||
-                     si.Serializer == null ||
-                     si.scriptDelegate == null ) {
+        public void handleScriptMenuItem_Click( Object sender, EventArgs e ) {
 
-                    si = AppManager.loadScript( script_file );
-                    ((BMenuItem)sender).setTag( si );
-#if DEBUG
-                    AppManager.debugWriteLine( "    err_msg=" + si.ErrorMessage );
-#endif
+            try {
+                String dir = AppManager.getScriptPath();
+                String id = (String)((BMenuItem)sender).getTag();
+                String script_file = PortUtil.combinePath( dir, id );
+                if ( ScriptServer.getTimestamp( id ) != PortUtil.getFileLastModified( script_file ) ) {
+                    ScriptServer.reload( id );
                 }
-                if ( si.scriptDelegate != null ) {
-                    if ( AppManager.invokeScript( si ) ) {
+                if ( ScriptServer.isAvailable( id ) ) {
+                    if ( ScriptServer.invokeScript( id, AppManager.getVsqFile() ) ) {
                         setEdited( true );
 #if USE_DOBJ
                         updateDrawObjectList();
@@ -11948,7 +11907,7 @@ namespace org.kbinani.cadencii {
                 } else {
                     FormCompileResult dlg = null;
                     try {
-                        dlg = new FormCompileResult( _( "Failed loading script." ), si.ErrorMessage );
+                        dlg = new FormCompileResult( _( "Failed loading script." ), ScriptServer.getCompileMessage( id ) );
                         dlg.showDialog();
                     } catch ( Exception ex ) {
                     } finally {

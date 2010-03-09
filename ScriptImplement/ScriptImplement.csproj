@@ -135,7 +135,6 @@ copy "$(ProjectDir)Pitch and Volume Adjuster.cs" "$(ProjectDir)..\Cadencii\bin\x
 copy "$(ProjectDir)Transpose Plus 1 Degree.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Transpose Plus 1 Degree.txt"
 copy "$(ProjectDir)Generate VLF.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Generate VLF.txt"
 copy "$(ProjectDir)DivideNote.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\tool\DivideNote.txt"
-copy "$(ProjectDir)Utau Plugin Invoker.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Utau Plugin Invoker.txt"
 copy "$(ProjectDir)Utau Plugin Manager.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Utau Plugin Manager.txt"
 </PostBuildEvent>
   </PropertyGroup>

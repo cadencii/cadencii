@@ -25,6 +25,7 @@ namespace org.kbinani.cadencii {
     public delegate boolean EditVsqScriptDelegateEx( VsqFileEx vsq );
     public delegate ScriptReturnStatus EditVsqScriptDelegateWithStatus( VsqFile vsq );
     public delegate ScriptReturnStatus EditVsqScriptDelegateExWithStatus( VsqFileEx vsq );
+    public delegate String ScriptDelegateGetDisplayName();
 
     /// <summary>
     /// スクリプトの起動とスクリプト設定の保存を行うためのオブジェクトの纏まり．
@@ -54,7 +55,11 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 最後にスクリプトをコンパイルしたときの，スクリプトが記述されたファイルのタイムスタンプ
         /// </summary>
-        public DateTime FileTimestamp;
+        public double fileTimestamp;
+        /// <summary>
+        /// スクリプトの表示名を取得するためのデリゲート
+        /// </summary>
+        public ScriptDelegateGetDisplayName getDisplayNameDelegate;
     }
 
 }

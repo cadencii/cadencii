@@ -17,6 +17,7 @@ public class Utau_Plugin_Invoker : Form {
     private static string s_plugin_txt_path = @"E:\Program Files\UTAU\plugins\picedit\plugin.txt";
     private Label lblMessage;
     private static readonly string s_class_name = "Utau_Plugin_Invoker";
+    private static readonly string s_display_name = "Utau Plugin Invoker";
 
     private string m_exe_path = "";
     private System.ComponentModel.BackgroundWorker bgWork;
@@ -114,9 +115,6 @@ public class Utau_Plugin_Invoker : Form {
         for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
             SelectedEventEntry item_itr = (SelectedEventEntry)itr.next();
             if ( item_itr.original.ID.type == VsqIDType.Anote ) {
-                //#if DEBUG
-                Console.WriteLine( s_class_name + "#Edit; item_itr.original.UstEvent.PreUtterance=" + item_itr.original.UstEvent.PreUtterance + "; item_itr.editing.UstEvent.PreUtterance=" + item_itr.editing.UstEvent.PreUtterance );
-                //#endif
                 items.Add( (VsqEvent)item_itr.original.clone() );
                 num_selected++;
             }
@@ -226,12 +224,6 @@ public class Utau_Plugin_Invoker : Form {
         copyCurve( vsq_track.getCurve( "pbs" ), conv_track.getCurve( "pbs" ), clock_begin );
 
         string temp = Path.GetTempFileName();
-        //#if DEBUG
-        for ( Iterator itr = conv.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ) {
-            VsqEvent item = (VsqEvent)itr.next();
-            Console.WriteLine( s_class_name + "#Edit; lyric=" + item.ID.LyricHandle.L0.Phrase + "; preUtterance=" + item.UstEvent.PreUtterance );
-        }
-        //#endif
         UstFile tust = new UstFile( conv, 1 );
         VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );
         string voice_dir = "";
@@ -248,21 +240,10 @@ public class Utau_Plugin_Invoker : Form {
             tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = int.MaxValue;
         }
         tust.write( temp, false );
-        //#if DEBUG
-        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
-            Console.WriteLine( s_class_name + "#Edit; before: text=" + sr.ReadToEnd() );
-        }
-        //#endif
 
         // 起動 -----------------------------------------------------------------------------
         Utau_Plugin_Invoker dialog = new Utau_Plugin_Invoker( exe_path, temp );
         dialog.ShowDialog();
-
-        //#if DEBUG
-        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( "Shift_JIS" ) ) ) {
-            Console.WriteLine( s_class_name + "#Edit; after : text=" + sr.ReadToEnd() );
-        }
-        //#endif
 
         // 結果を反映 -----------------------------------------------------------------------
         List<int> pit_added_ids = new List<int>(); // Pitchesが追加されたので、後でPIT, PBSに反映させる処理が必要なVsqEventの、InternalID
@@ -272,7 +253,6 @@ public class Utau_Plugin_Invoker : Form {
             int clock = clock_begin;
             int tlength = 0;
             while ( (line = sr.ReadLine()) != null ) {
-                Console.WriteLine( s_class_name + "#Edit; line=" + line );
                 if ( line.StartsWith( "[#" ) ){
                     current_parse = line;
                     clock += tlength;
@@ -286,19 +266,15 @@ public class Utau_Plugin_Invoker : Form {
                 } else if ( current_parse.StartsWith( "[#" ) ) {
                     int indx_blacket = current_parse.IndexOf( ']' );
                     string str_num = current_parse.Substring( 2, indx_blacket - 2 );
-                    Console.WriteLine( s_class_name + "#Edit; str_num=" + str_num );
                     int num = -1;
                     if ( !int.TryParse( str_num, out num ) ) {
-                        Console.WriteLine( s_class_name + "#Edit; format error; str_num=" + str_num );
                         continue;
                     }
                     if ( num < 0 || map_id.Count <= num ) {
-                        Console.WriteLine( s_class_name + "#Edit; invalid range; num=" + num + "; map_id.Count=" + map_id.Count );
                         continue;
                     }
                     VsqEvent target = vsq_track.findEventFromID( map_id[num] );
                     if ( target == null ) {
-                        Console.WriteLine( s_class_name + "#Edit; target event not found; num=" + num + "; map_id[num]=" + map_id[num] );
                         continue;
                     }
                     if ( target.UstEvent == null ) {
@@ -450,7 +426,6 @@ public class Utau_Plugin_Invoker : Form {
             // これからPITをいじる範囲内のPBSが、pbsと違う値になっていた場合の処理
             double sec_pitstart = vsq.getSecFromClock( target.Clock ) - target.UstEvent.PreUtterance / 1000.0;
             int pit_start = (int)vsq.getClockFromSec( sec_pitstart );
-            Console.WriteLine( s_class_name + "#Edit; pit_start=" + pit_start + "; target.Clock=" + target.Clock );
             int pbtype = target.UstEvent.PBType;
             if ( pbtype < 1 ) {
                 pbtype = 5;
@@ -505,7 +480,6 @@ public class Utau_Plugin_Invoker : Form {
                 }
                 if ( pit != lastpit ) {
                     cpit.add( jclock, pit );
-                    Console.WriteLine( s_class_name + "#Edit; j=" + j + "; jclock=" + jclock );
                     lastpit = pit;
                 }
             }
@@ -516,7 +490,6 @@ public class Utau_Plugin_Invoker : Form {
 
         try {
             System.IO.File.Delete( temp );
-            Console.WriteLine( s_class_name + "#Edit; temp=" + temp );
         } catch ( Exception ex ) {
         }
         return ScriptReturnStatus.EDITED;
@@ -549,7 +522,6 @@ public class Utau_Plugin_Invoker : Form {
 
     private void bgWork_DoWork( object sender, System.ComponentModel.DoWorkEventArgs e ) {
         string dquote = new string( (char)0x22, 1 );
-        Console.WriteLine( s_class_name + "#runPlugin; dquote=" + dquote );
         using ( System.Diagnostics.Process p = new System.Diagnostics.Process() ) {
             p.StartInfo.FileName = m_exe_path;
             p.StartInfo.Arguments = dquote + m_temp + dquote;
@@ -564,4 +536,7 @@ public class Utau_Plugin_Invoker : Form {
         this.Close();
     }
 
+    public static String GetDisplayName() {
+        return s_display_name;
+    }
 }
