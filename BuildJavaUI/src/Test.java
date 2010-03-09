@@ -1,21 +1,9 @@
-import org.kbinani.BEventArgs;
-import org.kbinani.BEventHandler;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
-import org.kbinani.windows.forms.BForm;
-import org.kbinani.windows.forms.BMenu;
-import org.kbinani.windows.forms.BSplitPane;
 import java.awt.Dimension;
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import javax.swing.JCheckBox;
-import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BMenu;
 
 
 public class Test extends BForm {

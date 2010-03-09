@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-pacakge org.kbinani.cadencii;
+package org.kbinani.cadencii;
 
 #else
 using System;

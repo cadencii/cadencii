@@ -166,18 +166,13 @@ public class Preference extends JFrame {
     private JTabbedPane tabPane = null;
 	private BNumericUpDown numAutoBackupInterval = null;
     private JCheckBox chkChasePastEvent = null;
-    private JLabel lblSampleOutput = null;
-    private JCheckBox chkEnableSampleOutput = null;
-    private JLabel lblTiming = null;
-    private BNumericUpDown numTiming = null;
-    private JLabel label14 = null;
-    private JLabel lblPreSendTimeSample = null;
-    private BNumericUpDown numPreSendTimeSample = null;
-    private JLabel label15 = null;
-    private JPanel jPanel = null;
     private BLabel lblAquesTone = null;
     private BTextBox txtAquesTone = null;
     private BButton btnAquesTone = null;
+    private JLabel jLabel = null;
+    private BNumericUpDown numWait1 = null;
+    private BLabel jLabel811 = null;
+    private BGroupBox groupAutoVibratoConfig1 = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -624,54 +619,31 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getTabAnother() {
 		if (tabAnother == null) {
-			GridBagConstraints gridBagConstraints130 = new GridBagConstraints();
-			gridBagConstraints130.gridx = 0;
-			gridBagConstraints130.gridwidth = 3;
-			gridBagConstraints130.anchor = GridBagConstraints.WEST;
-			gridBagConstraints130.insets = new Insets(0, 48, 0, 0);
-			gridBagConstraints130.gridy = 8;
-			label15 = new JLabel();
-			label15.setText("msec(50-500)");
-			numPreSendTimeSample = new BNumericUpDown();
-			numPreSendTimeSample.setValue(50);
-			numPreSendTimeSample.setPreferredSize(new Dimension(68, 20));
-			lblPreSendTimeSample = new JLabel();
-			lblPreSendTimeSample.setText("Pre-Send Time for sample sound");
-			GridBagConstraints gridBagConstraints126 = new GridBagConstraints();
-			gridBagConstraints126.gridx = 2;
-			gridBagConstraints126.anchor = GridBagConstraints.WEST;
-			gridBagConstraints126.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints126.gridy = 7;
-			label14 = new JLabel();
-			label14.setText("msec(500-1500)");
 			GridBagConstraints gridBagConstraints125 = new GridBagConstraints();
-			gridBagConstraints125.gridx = 1;
-			gridBagConstraints125.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints125.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints125.gridy = 7;
-			numTiming = new BNumericUpDown();
-			numTiming.setValue( 500 );
-			numTiming.setPreferredSize(new Dimension(68, 20));
+			gridBagConstraints125.gridx = 0;
+			gridBagConstraints125.gridwidth = 3;
+			gridBagConstraints125.fill = GridBagConstraints.BOTH;
+			gridBagConstraints125.insets = new Insets(0, 16, 0, 16);
+			gridBagConstraints125.gridy = 6;
 			GridBagConstraints gridBagConstraints124 = new GridBagConstraints();
-			gridBagConstraints124.gridx = 0;
+			gridBagConstraints124.gridx = 2;
 			gridBagConstraints124.anchor = GridBagConstraints.WEST;
-			gridBagConstraints124.insets = new Insets(3, 48, 3, 0);
-			gridBagConstraints124.gridy = 7;
-			lblTiming = new JLabel();
-			lblTiming.setText("Timing");
+			gridBagConstraints124.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints124.gridy = 5;
+			jLabel811 = new BLabel();
+			jLabel811.setText("msec(100-1000)");
 			GridBagConstraints gridBagConstraints123 = new GridBagConstraints();
-			gridBagConstraints123.gridx = 0;
-			gridBagConstraints123.insets = new Insets(0, 24, 0, 0);
+			gridBagConstraints123.gridx = 1;
 			gridBagConstraints123.anchor = GridBagConstraints.WEST;
-			gridBagConstraints123.gridy = 6;
+			gridBagConstraints123.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints123.gridy = 5;
 			GridBagConstraints gridBagConstraints122 = new GridBagConstraints();
 			gridBagConstraints122.gridx = 0;
 			gridBagConstraints122.anchor = GridBagConstraints.WEST;
-			gridBagConstraints122.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints122.gridwidth = 3;
+			gridBagConstraints122.insets = new Insets(3, 24, 3, 0);
 			gridBagConstraints122.gridy = 5;
-			lblSampleOutput = new JLabel();
-			lblSampleOutput.setText("Playback Sample Sound");
+			jLabel = new JLabel();
+			jLabel.setText("Buffer Size");
 			GridBagConstraints gridBagConstraints90 = new GridBagConstraints();
 			gridBagConstraints90.gridx = 0;
 			gridBagConstraints90.anchor = GridBagConstraints.WEST;
@@ -773,12 +745,10 @@ public class Preference extends JFrame {
 			tabAnother.add(getComboDefaultPremeasure(), gridBagConstraints34);
 			tabAnother.add(jLabel9, gridBagConstraints35);
 			tabAnother.add(getChkChasePastEvent(), gridBagConstraints90);
-			tabAnother.add(lblSampleOutput, gridBagConstraints122);
-			tabAnother.add(getChkEnableSampleOutput(), gridBagConstraints123);
-			tabAnother.add(lblTiming, gridBagConstraints124);
-			tabAnother.add(numTiming, gridBagConstraints125);
-			tabAnother.add(label14, gridBagConstraints126);
-			tabAnother.add(getJPanel2(), gridBagConstraints130);
+			tabAnother.add(jLabel, gridBagConstraints122);
+			tabAnother.add(getNumWait1(), gridBagConstraints123);
+			tabAnother.add(jLabel811, gridBagConstraints124);
+			tabAnother.add(getGroupAutoVibratoConfig1(), gridBagConstraints125);
 		}
 		return tabAnother;
 	}
@@ -2468,47 +2438,6 @@ public class Preference extends JFrame {
     }
 
     /**
-     * This method initializes chkEnableSampleOutput	
-     * 	
-     * @return javax.swing.JCheckBox	
-     */
-    private JCheckBox getChkEnableSampleOutput() {
-        if (chkEnableSampleOutput == null) {
-            chkEnableSampleOutput = new JCheckBox();
-            chkEnableSampleOutput.setText("Enable");
-        }
-        return chkEnableSampleOutput;
-    }
-
-    /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel2() {
-        if (jPanel == null) {
-            GridBagConstraints gridBagConstraints129 = new GridBagConstraints();
-            gridBagConstraints129.gridx = 2;
-            gridBagConstraints129.insets = new Insets(3, 12, 3, 0);
-            gridBagConstraints129.gridy = 0;
-            GridBagConstraints gridBagConstraints128 = new GridBagConstraints();
-            gridBagConstraints128.gridx = 1;
-            gridBagConstraints128.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints128.insets = new Insets(3, 12, 3, 0);
-            gridBagConstraints128.gridy = 0;
-            GridBagConstraints gridBagConstraints127 = new GridBagConstraints();
-            gridBagConstraints127.gridx = 0;
-            gridBagConstraints127.gridy = 0;
-            jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            jPanel.add(lblPreSendTimeSample, gridBagConstraints127);
-            jPanel.add(numPreSendTimeSample, gridBagConstraints128);
-            jPanel.add(label15, gridBagConstraints129);
-        }
-        return jPanel;
-    }
-
-    /**
      * This method initializes txtAquesTone	
      * 	
      * @return org.kbinani.windows.forms.BTextBox	
@@ -2532,6 +2461,36 @@ public class Preference extends JFrame {
             btnAquesTone.setText("...");
         }
         return btnAquesTone;
+    }
+
+    /**
+     * This method initializes numWait1	
+     * 	
+     * @return org.kbinani.windows.forms.BNumericUpDown	
+     */
+    private BNumericUpDown getNumWait1() {
+        if (numWait1 == null) {
+            numWait1 = new BNumericUpDown();
+            numWait1.setPreferredSize(new Dimension(68, 20));
+            numWait1.setMinimum(100.0F);
+            numWait1.setDecimalPlaces(0);
+            numWait1.setMaximum(1000.0F);
+        }
+        return numWait1;
+    }
+
+    /**
+     * This method initializes groupAutoVibratoConfig1	
+     * 	
+     * @return org.kbinani.windows.forms.BGroupBox	
+     */
+    private BGroupBox getGroupAutoVibratoConfig1() {
+        if (groupAutoVibratoConfig1 == null) {
+            groupAutoVibratoConfig1 = new BGroupBox();
+            groupAutoVibratoConfig1.setLayout(new GridBagLayout());
+            groupAutoVibratoConfig1.setTitle("Wave File Output");
+        }
+        return groupAutoVibratoConfig1;
     }
 
 	//SECTION-END-METHOD

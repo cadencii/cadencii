@@ -937,7 +937,7 @@ namespace org.kbinani.cadencii {
         /// スクリプトが格納されているディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static string getScriptPath() {
+        public static String getScriptPath() {
             String dir = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "script" );
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
@@ -949,7 +949,7 @@ namespace org.kbinani.cadencii {
         /// パレットツールが格納されているディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static string getToolPath() {
+        public static String getToolPath() {
             String dir = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "tool" );
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
