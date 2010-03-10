@@ -68,6 +68,16 @@ namespace org.kbinani.cadencii {
 #else
     public class FormMain : BForm {
 #endif
+        private class SpecialShortcutHolder {
+            public KeyStroke shortcut;
+            public BMenuItem menu;
+
+            public SpecialShortcutHolder( KeyStroke shortcut, BMenuItem menu ) {
+                this.shortcut = shortcut;
+                this.menu = menu;
+            }
+        }
+
         #region Static Readonly Field
         public readonly Color s_pen_105_105_105 = new Color( 105, 105, 105 );
         public readonly Color s_pen_187_187_255 = new Color( 187, 187, 255 );
@@ -505,10 +515,14 @@ namespace org.kbinani.cadencii {
         /// AppManager.inputTextBoxがhideInputTextBoxによって隠された後、何回目のEnterキーの入力を受けたかを表すカウンター。
         /// </summary>
         private int numEnterKeyAfterHideInputTextBox = 0;
+        public BMenuItem menuHiddenSelectForward;
+        public BMenuItem menuHiddenSelectBackward;
+        public BMenuItem menuHiddenMoveUp;
+        public BMenuItem menuHiddenMoveDown;
         /// <summary>
-        /// Deleteキーがショートカットとして割り当てられているアイテム．
+        /// 特殊な取り扱いが必要なショートカットのキー列と、対応するメニューアイテムを保存しておくリスト。
         /// </summary>
-        private BMenuItem deleteShortcutHolder = null;
+        private Vector<SpecialShortcutHolder> specialShortcutHolders = new Vector<SpecialShortcutHolder>();
         #endregion
 
         public FormMain( String file ) {
@@ -902,6 +916,181 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 選択された音符の音程を、指定されたノートナンバー分上下させます。
+        /// </summary>
+        /// <param name="delta"></param>
+        private void moveUpDownCor( int delta ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+
+            Vector<VsqEvent> items = new Vector<VsqEvent>();
+            int selected = AppManager.getSelected();
+            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                if ( item.editing.ID.type != VsqIDType.Anote ) {
+                    continue;
+                }
+                int note = item.editing.ID.Note;
+                if ( 0 <= note + delta && note + delta <= 127 ) {
+                    VsqEvent add = (VsqEvent)item.editing.clone();
+                    add.ID.Note += delta;
+                    items.add( add );
+                }
+            }
+            if ( items.size() <= 0 ) {
+                return;
+            }
+
+            // コマンドを発行
+            CadenciiCommand run = new CadenciiCommand(
+                VsqCommand.generateCommandEventReplaceRange(
+                    selected, items.toArray( new VsqEvent[] { } ) ) );
+            AppManager.register( vsq.executeCommand( run ) );
+
+            // 編集されたものを再選択する
+            for ( Iterator itr = items.iterator(); itr.hasNext(); ) {
+                VsqEvent item = (VsqEvent)itr.next();
+                AppManager.addSelectedEvent( item.InternalID );
+            }
+
+            // 編集が施された。
+            setEdited( true );
+        }
+
+        /// <summary>
+        /// 現在選択されている音符の音程を1つ上げます。
+        /// </summary>
+        public void moveUp() {
+            moveUpDownCor( 1 );
+        }
+
+        /// <summary>
+        /// 現在選択されている音符の音程を1つ下げます。
+        /// </summary>
+        public void moveDown() {
+            moveUpDownCor( -1 );
+        }
+
+        /// <summary>
+        /// 現在選択されている音符よりも1個前方の音符を選択しなおします。
+        /// </summary>
+        public void selectBackward() {
+            int count = AppManager.getSelectedEventCount();
+            if ( count <= 0 ) {
+                return;
+            }
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+
+            // 選択されている音符のうち、最も前方にあるものがどれかを調べる
+            int min_clock = int.MaxValue;
+            int internal_id = -1;
+            VsqIDType type = VsqIDType.Unknown;
+            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                if ( item.editing.Clock <= min_clock ) {
+                    min_clock = item.editing.Clock;
+                    internal_id = item.original.InternalID;
+                    type = item.original.ID.type;
+                }
+            }
+            if ( internal_id == -1 || type == VsqIDType.Unknown ) {
+                return;
+            }
+
+            // 1個前のアイテムのIDを検索
+            int last_id = -1;
+            int clock = AppManager.getCurrentClock();
+            for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = (VsqEvent)itr.next();
+                if ( item.ID.type != type ) {
+                    continue;
+                }
+                if ( item.InternalID == internal_id ) {
+                    break;
+                }
+                last_id = item.InternalID;
+                clock = item.Clock;
+            }
+            if ( last_id == -1 ) {
+                return;
+            }
+
+            // 選択しなおす
+            AppManager.clearSelectedEvent();
+            AppManager.addSelectedEvent( last_id );
+            ensureVisible( clock );
+        }
+
+        /// <summary>
+        /// 現在選択されている音符よりも1個後方の音符を選択しなおします。
+        /// </summary>
+        public void selectForward() {
+            int count = AppManager.getSelectedEventCount();
+            if ( count <= 0 ) {
+                return;
+            }
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+
+            // 選択されている音符のうち、最も後方にあるものがどれかを調べる
+            int max_clock = int.MinValue;
+            int internal_id = -1;
+            VsqIDType type = VsqIDType.Unknown;
+            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                if ( max_clock <= item.editing.Clock ) {
+                    max_clock = item.editing.Clock;
+                    internal_id = item.original.InternalID;
+                    type = item.original.ID.type;
+                }
+            }
+            if ( internal_id == -1 || type == VsqIDType.Unknown ) {
+                return;
+            }
+
+            // 1個後ろのアイテムのIDを検索
+            int last_id = -1;
+            int clock = AppManager.getCurrentClock();
+            boolean break_next = false;
+            for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = (VsqEvent)itr.next();
+                if ( item.ID.type != type ) {
+                    continue;
+                }
+                if ( item.InternalID == internal_id ) {
+                    break_next = true;
+                    last_id = item.InternalID;
+                    clock = item.Clock;
+                    continue;
+                }
+                last_id = item.InternalID;
+                clock = item.Clock;
+                if ( break_next ) {
+                    break;
+                }
+            }
+            if ( last_id == -1 ) {
+                return;
+            }
+
+            // 選択しなおす
+            AppManager.clearSelectedEvent();
+            AppManager.addSelectedEvent( last_id );
+            ensureVisible( clock );
         }
 
         public void panelOverview_Enter( Object sender, EventArgs e ) {
@@ -9132,6 +9321,22 @@ namespace org.kbinani.cadencii {
             pasteEvent();
         }
 
+        public void menuHiddenMoveUp_Click( Object sender, EventArgs e ) {
+            moveUp();
+        }
+
+        public void menuHiddenMoveDown_Click( Object sender, EventArgs e ) {
+            moveDown();
+        }
+
+        public void menuHiddenSelectBackward_Click( Object sender, EventArgs e ) {
+            selectBackward();
+        }
+
+        public void menuHiddenSelectForward_Click( Object sender, EventArgs e ) {
+            selectForward();
+        }
+
         public void menuHiddenEditFlipToolPointerPencil_Click( Object sender, EventArgs e ) {
             if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
                 AppManager.setSelectedTool( EditTool.PENCIL );
@@ -11965,21 +12170,33 @@ namespace org.kbinani.cadencii {
         /// <param name="onPreviewKeyDown">PreviewKeyDownイベントから送信されてきた場合、true（送る側が設定する）</param>
         public void processSpecialShortcutKey( BKeyEventArgs e, boolean onPreviewKeyDown ) {
             boolean flipPlaying = false; // 再生/停止状態の切り替えが要求されたらtrue
+
+            // 最初に、特殊な取り扱いが必要なショートカット、について、
+            // 該当するショートカットがあればそいつらを発動する。
+            int modifier = PortUtil.getCurrentModifierKey();
+            if ( onPreviewKeyDown ) {
+                KeyStroke stroke = KeyStroke.getKeyStroke( e.KeyValue, modifier );
+                int keycode = stroke.getKeyCode();
+#if DEBUG
+                PortUtil.println( "FormMain#processSpecialShortcutKey; e.KeyCode=" + e.KeyCode + "; keycode=" + keycode + "; modifier=" + modifier );
+#endif
+
+                foreach ( SpecialShortcutHolder holder in specialShortcutHolders ) {
+                    if ( holder.shortcut.getKeyCode() == keycode && holder.shortcut.getModifiers() == modifier ) {
+                        holder.menu.clickEvent.raise( holder.menu, new EventArgs() );
+                        return;
+                    }
+                }
+            }
+
+            if ( modifier != KeyEvent.VK_UNDEFINED ) {
+                return;
+            }
 #if JAVA
             if ( !AppManager.inputTextBox.isVisible() ) {
 #else
             if ( !AppManager.inputTextBox.Enabled ) {
 #endif
-
-#if JAVA
-                if ( e.KeyValue == KeyEvent.VK_DELETE ) {
-#else
-                if ( e.KeyCode == System.Windows.Forms.Keys.Delete ) {
-#endif
-                    if ( deleteShortcutHolder != null ) {
-                        deleteShortcutHolder.clickEvent.raise( deleteShortcutHolder, new EventArgs() );
-                    }
-                }
 
 #if JAVA
                 if ( e.KeyValue == KeyEvent.VK_ENTER ) {
@@ -12458,7 +12675,7 @@ namespace org.kbinani.cadencii {
         /// メニューのショートカットキーを、AppManager.EditorConfig.ShorcutKeysの内容に応じて変更します
         /// </summary>
         public void applyShortcut() {
-            deleteShortcutHolder = null;
+            specialShortcutHolders.clear();
 
             if ( AppManager.editorConfig.Platform == PlatformEnum.Macintosh ) {
                 #region Platform.Macintosh
@@ -12667,14 +12884,28 @@ namespace org.kbinani.cadencii {
 #endif
                     if ( item is BMenuItem ) {
                         BMenuItem menu = (BMenuItem)item;
-                        System.Windows.Forms.Keys shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ).keys;
+                        BKeys[] keys = dict.get( item_name );
+                        System.Windows.Forms.Keys shortcut = PortUtil.getKeyStrokeFromBKeys( keys ).keys;
+
                         if ( shortcut == System.Windows.Forms.Keys.Delete ) {
-                            deleteShortcutHolder = menu;
                             menu.ShortcutKeyDisplayString = "Delete";
                             menu.ShortcutKeys = System.Windows.Forms.Keys.None;
+                            specialShortcutHolders.add( 
+                                new SpecialShortcutHolder( PortUtil.getKeyStrokeFromBKeys( keys ), menu ) );
                         } else {
-                            menu.ShortcutKeyDisplayString = "";
-                            menu.ShortcutKeys = shortcut;
+                            try {
+                                menu.ShortcutKeyDisplayString = "";
+                                menu.ShortcutKeys = shortcut;
+                            } catch ( Exception ex ) {
+                                // ショートカットの適用に失敗する→特殊な取り扱いが必要
+                                menu.ShortcutKeyDisplayString = AppManager.getShortcutDisplayString( keys );
+                                menu.ShortcutKeys = System.Windows.Forms.Keys.None;
+                                specialShortcutHolders.add( 
+                                    new SpecialShortcutHolder( PortUtil.getKeyStrokeFromBKeys( keys ), menu ) );
+#if DEBUG
+                                PortUtil.println( "FormMain#applyMenuItemShortcut; display_string=" + menu.ShortcutKeyDisplayString + "; menu.getName()=" + menu.getName() );
+#endif
+                            }
                         }
                     }
 #endif
@@ -15650,6 +15881,11 @@ namespace org.kbinani.cadencii {
             menuHiddenCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
             menuHiddenPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
             menuHiddenCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
+            menuHiddenSelectBackward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectBackward_Click" ) );
+            menuHiddenSelectForward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectForward_Click" ) );
+            menuHiddenMoveUp.clickEvent.add( new BEventHandler( this, "menuHiddenMoveUp_Click" ) );
+            menuHiddenMoveDown.clickEvent.add( new BEventHandler( this, "menuHiddenMoveDown_Click" ) );
+
             cMenuPiano.openingEvent.add( new BCancelEventHandler( this, "cMenuPiano_Opening" ) );
             cMenuPianoPointer.clickEvent.add( new BEventHandler( this, "cMenuPianoPointer_Click" ) );
             cMenuPianoPencil.clickEvent.add( new BEventHandler( this, "cMenuPianoPencil_Click" ) );
@@ -16064,6 +16300,7 @@ namespace org.kbinani.cadencii {
             this.menuVisualOverview = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualPluginUi = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualPluginUiVocaloid100 = new org.kbinani.windows.forms.BMenuItem();
+            this.menuVisualPluginUiVocaloid101 = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualPluginUiVocaloid2 = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualPluginUiAquesTone = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
@@ -16164,6 +16401,8 @@ namespace org.kbinani.cadencii {
             this.menuHiddenCopy = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenPaste = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenCut = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenSelectForward = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenSelectBackward = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPiano = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cMenuPianoPointer = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPianoPencil = new org.kbinani.windows.forms.BMenuItem();
@@ -16362,7 +16601,8 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.menuVisualPluginUiVocaloid101 = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenMoveUp = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenMoveDown = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -16713,6 +16953,12 @@ namespace org.kbinani.cadencii {
             this.menuVisualPluginUiVocaloid100.Name = "menuVisualPluginUiVocaloid100";
             this.menuVisualPluginUiVocaloid100.Size = new System.Drawing.Size( 159, 22 );
             this.menuVisualPluginUiVocaloid100.Text = "VOCALOID1 [1.0]";
+            // 
+            // menuVisualPluginUiVocaloid101
+            // 
+            this.menuVisualPluginUiVocaloid101.Name = "menuVisualPluginUiVocaloid101";
+            this.menuVisualPluginUiVocaloid101.Size = new System.Drawing.Size( 159, 22 );
+            this.menuVisualPluginUiVocaloid101.Text = "VOCALOID1 [1.1]";
             // 
             // menuVisualPluginUiVocaloid2
             // 
@@ -17348,7 +17594,11 @@ namespace org.kbinani.cadencii {
             this.menuHiddenTrackBack,
             this.menuHiddenCopy,
             this.menuHiddenPaste,
-            this.menuHiddenCut} );
+            this.menuHiddenCut,
+            this.menuHiddenSelectForward,
+            this.menuHiddenSelectBackward,
+            this.menuHiddenMoveUp,
+            this.menuHiddenMoveDown} );
             this.menuHidden.Name = "menuHidden";
             this.menuHidden.Size = new System.Drawing.Size( 79, 20 );
             this.menuHidden.Text = "MenuHidden";
@@ -17429,6 +17679,20 @@ namespace org.kbinani.cadencii {
             this.menuHiddenCut.Name = "menuHiddenCut";
             this.menuHiddenCut.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenCut.Text = "Cut";
+            // 
+            // menuHiddenSelectForward
+            // 
+            this.menuHiddenSelectForward.Name = "menuHiddenSelectForward";
+            this.menuHiddenSelectForward.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Right)));
+            this.menuHiddenSelectForward.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenSelectForward.Text = "Select Forward";
+            // 
+            // menuHiddenSelectBackward
+            // 
+            this.menuHiddenSelectBackward.Name = "menuHiddenSelectBackward";
+            this.menuHiddenSelectBackward.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Left)));
+            this.menuHiddenSelectBackward.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenSelectBackward.Text = "Select Backward";
             // 
             // cMenuPiano
             // 
@@ -19103,11 +19367,17 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
-            // menuVisualPluginUiVocaloid101
+            // menuHiddenMoveUp
             // 
-            this.menuVisualPluginUiVocaloid101.Name = "menuVisualPluginUiVocaloid101";
-            this.menuVisualPluginUiVocaloid101.Size = new System.Drawing.Size( 159, 22 );
-            this.menuVisualPluginUiVocaloid101.Text = "VOCALOID1 [1.1]";
+            this.menuHiddenMoveUp.Name = "menuHiddenMoveUp";
+            this.menuHiddenMoveUp.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenMoveUp.Text = "Move Up";
+            // 
+            // menuHiddenMoveDown
+            // 
+            this.menuHiddenMoveDown.Name = "menuHiddenMoveDown";
+            this.menuHiddenMoveDown.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenMoveDown.Text = "Move Down";
             // 
             // FormMain
             // 

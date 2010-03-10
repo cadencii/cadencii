@@ -261,9 +261,9 @@ namespace org.kbinani.cadencii {
             // 指定されたキーの組み合わせが、ショートカットとして適切かどうか判定
             try {
 #if JAVA
-                m_dumy.setAccelerator( KeyStroke.getKeyStroke( capture.getValue(), modifier ) );
+                //m_dumy.setAccelerator( KeyStroke.getKeyStroke( capture.getValue(), modifier ) );
 #else
-                m_dumy.setAccelerator( KeyStroke.getKeyStroke( (int)capture, modifier ) );
+                //m_dumy.setAccelerator( KeyStroke.getKeyStroke( (int)capture, modifier ) );
 #endif
             } catch ( Exception ex ) {
 #if JAVA

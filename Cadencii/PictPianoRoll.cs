@@ -940,32 +940,7 @@ namespace org.kbinani.cadencii {
                 #endregion
 
                 #region pictPianoRoll_Paintより
-                // マーカー
-                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + AppManager.keyOffset + key_width - AppManager.startToDrawX);
-                if ( key_width <= marker_x && marker_x <= getWidth() ) {
-                    g.setColor( Color.white );
-                    g.setStroke( new BasicStroke( 2f ) );
-                    g.drawLine( marker_x, 0, marker_x, getHeight() );
-                    g.setStroke( defaultStroke );
-                }
-
-                /*DateTime dnow = DateTime.Now;
-                for ( int i = 0; i < _NUM_PCOUNTER - 1; i++ )
-                {
-                    m_performance[i] = m_performance[i + 1];
-                }
-                m_performance[_NUM_PCOUNTER - 1] = (float)dnow.Subtract( m_last_ignitted ).TotalSeconds;
-                m_last_ignitted = dnow;
-                float sum = 0f;
-                for ( int i = 0; i < _NUM_PCOUNTER; i++ )
-                {
-                    sum += m_performance[i];
-                }
-                m_fps = _NUM_PCOUNTER / sum;*/
-
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                    //int start = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.Start );
-                    //int end = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.End );
                     int start = (int)(AppManager.wholeSelectedInterval.getStart() * scalex) + xoffset;
                     if ( start < key_width ) {
                         start = key_width;
@@ -1022,6 +997,9 @@ namespace org.kbinani.cadencii {
 
                 #region コントロールカーブのオーバーレイ表示
                 if ( AppManager.curveOnPianoroll ) {
+#if !JAVA
+                    g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+#endif
                     g.setColor( new Color( 255, 255, 255, 64 ) );
                     g.fillRect( key_width, 0, width - key_width, height );
 
@@ -1191,6 +1169,15 @@ namespace org.kbinani.cadencii {
                     }
                 }
                 #endregion
+
+                // マーカー
+                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + AppManager.keyOffset + key_width - AppManager.startToDrawX);
+                if ( key_width <= marker_x && marker_x <= getWidth() ) {
+                    g.setColor( Color.white );
+                    g.setStroke( new BasicStroke( 2f ) );
+                    g.drawLine( marker_x, 0, marker_x, getHeight() );
+                    g.setStroke( defaultStroke );
+                }
             } catch ( Exception ex ) {
 #if JAVA
                 System.err.println( "PictPianoRoll#paint; ex=" + ex );

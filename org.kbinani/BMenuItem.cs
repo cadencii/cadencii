@@ -397,11 +397,7 @@ namespace org.kbinani.windows.forms {
         }
 
         public void setAccelerator( KeyStroke stroke ) {
-            try {
-                base.ShortcutKeys = stroke.keys;
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "BMenuItem#setAccelerator; ex=" + ex );
-            }
+            base.ShortcutKeys = stroke.keys;
         }
 
         public void add( ToolStripItem item ) {
