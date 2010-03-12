@@ -1787,6 +1787,12 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static void undo() {
             if ( isUndoAvailable() ) {
+                Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
+                for ( Iterator itr = getSelectedEventIterator(); itr.hasNext(); ) {
+                    SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                    before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
+                }
+
                 ICommand run_src = s_commands.get( s_command_position );
                 CadenciiCommand run = (CadenciiCommand)run_src;
                 if ( run.vsqCommand != null ) {
@@ -1805,6 +1811,9 @@ namespace org.kbinani.cadencii {
                 }
                 s_commands.set( s_command_position, inv );
                 s_command_position--;
+
+                cleanupDeadSelection( before_ids );
+                updateSelectedEventInstance();
             }
         }
 
@@ -1813,6 +1822,12 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static void redo() {
             if ( isRedoAvailable() ) {
+                Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
+                for ( Iterator itr = getSelectedEventIterator(); itr.hasNext(); ) {
+                    SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                    before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
+                }
+
                 ICommand run_src = s_commands.get( s_command_position + 1 );
                 CadenciiCommand run = (CadenciiCommand)run_src;
                 if ( run.vsqCommand != null ) {
@@ -1831,6 +1846,45 @@ namespace org.kbinani.cadencii {
                 }
                 s_commands.set( s_command_position + 1, inv );
                 s_command_position++;
+
+                cleanupDeadSelection( before_ids );
+                updateSelectedEventInstance();
+            }
+        }
+
+        /// <summary>
+        /// 選択中のアイテムが編集された場合、編集にあわせてオブジェクトを更新する。
+        /// </summary>
+        public static void updateSelectedEventInstance() {
+            if ( s_vsq == null ) {
+                return;
+            }
+            VsqTrack vsq_track = s_vsq.Track.get( s_selected );
+
+            for ( Iterator itr = getSelectedEventIterator(); itr.hasNext(); ) {
+                SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                int internal_id = item.original.InternalID;
+                item.original = vsq_track.findEventFromID( internal_id );
+            }
+        }
+
+        /// <summary>
+        /// 「選択されている」と登録されているオブジェクトのうち、Undo, Redoなどによって存在しなくなったものを登録解除する
+        /// </summary>
+        public static void cleanupDeadSelection( Vector<ValuePair<Integer, Integer>> before_ids ) {
+            for ( Iterator itr = before_ids.iterator(); itr.hasNext(); ) {
+                ValuePair<Integer, Integer> specif = (ValuePair<Integer, Integer>)itr.next();
+                boolean found = false;
+                for ( Iterator itr2 = s_vsq.Track.get( specif.getKey() ).getNoteEventIterator(); itr2.hasNext(); ) {
+                    VsqEvent item = (VsqEvent)itr2.next();
+                    if ( item.InternalID == specif.getValue() ) {
+                        found = true;
+                        break;
+                    }
+                }
+                if ( !found ) {
+                    AppManager.removeSelectedEvent( specif.getKey() );
+                }
             }
         }
 

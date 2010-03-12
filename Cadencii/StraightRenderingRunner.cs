@@ -315,7 +315,8 @@ namespace org.kbinani.cadencii {
                                                                              "PreUtterance",
                                                                              "VoiceOverlap",
                                                                              "PMBendDepth",
-                                                                             "PMBendLength" } ) );
+                                                                             "PMBendLength",
+                                                                             "PMbPortamentoUse", } ) );
             for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = (VsqEvent)itr.next();
                 item.write( writer, print_targets );

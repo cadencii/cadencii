@@ -930,6 +930,8 @@ namespace org.kbinani.cadencii {
 
             Vector<VsqEvent> items = new Vector<VsqEvent>();
             int selected = AppManager.getSelected();
+            int note_max = -1;
+            int note_min = 129;
             for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                 SelectedEventEntry item = (SelectedEventEntry)itr.next();
                 if ( item.editing.ID.type != VsqIDType.Anote ) {
@@ -939,6 +941,8 @@ namespace org.kbinani.cadencii {
                 if ( 0 <= note + delta && note + delta <= 127 ) {
                     VsqEvent add = (VsqEvent)item.editing.clone();
                     add.ID.Note += delta;
+                    note_max = Math.Max( note_max, add.ID.Note );
+                    note_min = Math.Min( note_min, add.ID.Note );
                     items.add( add );
                 }
             }
@@ -960,6 +964,23 @@ namespace org.kbinani.cadencii {
 
             // 編集が施された。
             setEdited( true );
+            updateDrawObjectList();
+
+            // 音符が見えるようにする
+            if ( delta > 0 ) {
+                note_max++;
+                if ( 127 < note_max ) {
+                    note_max = 127;
+                }
+                ensureVisibleY( note_max );
+            } else {
+                note_min -= 2;
+                if ( note_min < 0 ) {
+                    note_min = 0;
+                }
+                ensureVisibleY( note_min );
+            }
+            refreshScreen();
         }
 
         /// <summary>
@@ -4469,6 +4490,14 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_SCRIPT
             updateScriptShortcut();
+            // RunOnceという名前のスクリプトがあれば，そいつを実行
+            for ( Iterator itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
+                String id = (String)itr.next();
+                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower().Equals( "runonce" ) ) {
+                    ScriptServer.invokeScript( id, AppManager.getVsqFile() );
+                    break;
+                }
+            }
 #endif
 
             clearTempWave();
@@ -4542,7 +4571,6 @@ namespace org.kbinani.cadencii {
             updateLayout();
 #if DEBUG
             menuHidden.setVisible( true );
-            
 #endif
 
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
@@ -12070,6 +12098,9 @@ namespace org.kbinani.cadencii {
             int count = 0;
             for ( Iterator itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
                 String id = (String)itr.next();
+                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower().Equals( "runonce" ) ) {
+                    continue;
+                }
                 String display = ScriptServer.getDisplayName( id );
                 String name = id.Replace( '.', '_' );
                 BMenuItem item = new BMenuItem();
@@ -12132,6 +12163,41 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
+        /// <summary>
+        /// 指定したノートナンバーが可視状態となるよう、縦スクロールバーを移動させます。
+        /// </summary>
+        /// <param name="note"></param>
+        public void ensureVisibleY( int note ) {
+            if ( note == 0 ) {
+                vScroll.setValue( vScroll.getMaximum() );
+                return;
+            } else if ( note == 127 ) {
+                vScroll.setValue( vScroll.getMinimum() );
+                return;
+            }
+            int height = vScroll.getHeight();
+            int noteTop = noteFromYCoord( 0 ); //画面上端でのノートナンバー
+            int noteBottom = noteFromYCoord( height ); // 画面下端でのノートナンバー
+
+            int maximum = vScroll.getMaximum();
+            int track_height = AppManager.editorConfig.PxTrackHeight;
+            if ( note < noteBottom ) {
+                // noteBottomがnoteになるようにstartToDrawYを変える
+                int draft = (127 - note) * track_height - height;
+                int value = draft * maximum / (128 * track_height - height);
+                vScroll.setValue( value );
+            } else if ( noteTop < note ) {
+                // noteTopがnoteになるようにstartToDrawYを変える
+                int draft = (127 - note) * track_height;
+                int value = draft * maximum / (128 * track_height - height);
+                vScroll.setValue( value );
+            }
+        }
+
+        /// <summary>
+        /// 指定したゲートタイムがピアノロール上で可視状態となるよう、横スクロールバーを移動させます。
+        /// </summary>
+        /// <param name="clock"></param>
         public void ensureVisible( int clock ) {
             // カーソルが画面内にあるかどうか検査
             int clock_left = AppManager.clockFromXCoord( AppManager.keyWidth );
@@ -15188,32 +15254,6 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// 「選択されている」と登録されているオブジェクトのうち、Undo, Redoなどによって存在しなくなったものを登録解除する
-        /// </summary>
-        public void cleanupDeadSelection() {
-            Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = (SelectedEventEntry)itr.next();
-                list.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
-            }
-
-            for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> specif = (ValuePair<Integer, Integer>)itr.next();
-                boolean found = false;
-                for ( Iterator itr2 = AppManager.getVsqFile().Track.get( specif.getKey() ).getNoteEventIterator(); itr2.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr2.next();
-                    if ( item.InternalID == specif.getValue() ) {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( !found ) {
-                    AppManager.removeSelectedEvent( specif.getKey() );
-                }
-            }
-        }
-
-        /// <summary>
         /// アンドゥ処理を行います
         /// </summary>
         public void undo() {
@@ -15227,7 +15267,6 @@ namespace org.kbinani.cadencii {
                 cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
                 AppManager.mixerWindow.updateStatus();
                 setEdited( true );
-                cleanupDeadSelection();
 #if USE_DOBJ
                 updateDrawObjectList();
 #endif
@@ -15254,7 +15293,6 @@ namespace org.kbinani.cadencii {
                 cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
                 AppManager.mixerWindow.updateStatus();
                 setEdited( true );
-                cleanupDeadSelection();
 #if USE_DOBJ
                 updateDrawObjectList();
 #endif

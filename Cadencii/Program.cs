@@ -18,6 +18,7 @@ package org.kbinani.cadencii;
 using System;
 using System.Threading;
 using System.Windows.Forms;
+using org.kbinani.apputil;
 
 namespace org.kbinani.cadencii{
 #endif
@@ -56,9 +57,40 @@ namespace org.kbinani.cadencii{
             Application.Run( AppManager.mainWindow );
 #if !DEBUG
             } catch ( Exception ex ) {
-                org.kbinani.debug.push_log( ex.ToString() );
+                String str_ex = getExceptionText( ex, 0 );
+                FormCompileResult dialog = new FormCompileResult(
+                    _( "Failed to launch Cadencii. Please send the exception report to developer" ),
+                    str_ex );
+                dialog.setTitle( _( "Error" ) );
+                dialog.showDialog();
+                if ( splash != null ) {
+                    VoidDelegate splash_close = new VoidDelegate( splash.close );
+                    if ( splash != null ) {
+                        splash.Invoke( splash_close );
+                    }
+                }
             }
 #endif
+        }
+
+        /// <summary>
+        /// 内部例外を含めた例外テキストを再帰的に取得します。
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="depth_count"></param>
+        /// <returns></returns>
+        private static String getExceptionText( Exception ex, int depth_count ) {
+            String ret = ex.ToString();
+            if ( ex.InnerException != null ) {
+                ret += "\n" +
+                       "-- InnerException; Depth Level " + depth_count + " -----------------------" +
+                       getExceptionText( ex.InnerException, depth_count + 1 );
+            }
+            return ret;
+        }
+
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
         static void showSplash() {

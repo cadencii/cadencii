@@ -98,17 +98,19 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.label1 = new BLabel();
-            this.textBox1 = new BTextBox();
-            this.btnOK = new BButton();
+            this.label1 = new org.kbinani.windows.forms.BLabel();
+            this.textBox1 = new org.kbinani.windows.forms.BTextBox();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
             this.SuspendLayout();
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point( 23, 23 );
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoEllipsis = true;
+            this.label1.Location = new System.Drawing.Point( 12, 9 );
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size( 35, 12 );
+            this.label1.Size = new System.Drawing.Size( 354, 41 );
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
             // 
