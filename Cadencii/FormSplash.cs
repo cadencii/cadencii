@@ -1,17 +1,34 @@
-﻿using System;
+﻿#if JAVA
+package org.kbinani.cadencii;
+
+import java.awt.*;
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
+#else
+using System;
 using System.Windows.Forms;
 using org.kbinani.java.awt;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class FormSplash extends BForm {
+#else
     public class FormSplash : BForm {
+#endif
         boolean mouseDowned = false;
         Point mouseDownedLocation = new Point( 0, 0 );
 
         public FormSplash() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
         }
@@ -43,6 +60,11 @@ namespace org.kbinani.cadencii {
             this.mouseMoveEvent.add( new BMouseEventHandler( this, "FormSplash_MouseMove" ) );
         }
 
+#if JAVA
+        private void initialize(){
+            setSize( 500, 335 );
+        }
+#else
         private void InitializeComponent() {
             this.SuspendLayout();
             // 
@@ -60,6 +82,9 @@ namespace org.kbinani.cadencii {
             this.ResumeLayout( false );
 
         }
+#endif
     }
 
+#if !JAVA
 }
+#endif

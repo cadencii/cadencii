@@ -14,6 +14,8 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.io.*;
+
 #else
 using System;
 

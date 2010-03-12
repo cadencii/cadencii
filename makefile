@@ -9,9 +9,9 @@ all: first $(TARGET)\Cadencii.exe
 first: .\first.pl
 	perl .\first.pl
 
-jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq
+jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq resources
 	pp_cs2java.exe -DJAVA -DUSE_DOBJ -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\Cadencii"
-	javac .\build\java\org\kbinani\cadencii\*.java .\build\java\org\kbinani\*.java .\build\java\org\kbinani\apputil\*.java .\build\java\org\kbinani\media\*.java .\build\java\org\kbinani\vsq\*.java .\build\java\org\kbinani\cadencii\*.java .\build\java\org\kbinani\componentModel\*.java .\build\java\org\kbinani\windows\forms\*.java .\build\java\org\kbinani\xml\*.java -encoding UTF8
+	javac .\build\java\org\kbinani\cadencii\*.java .\build\java\org\kbinani\*.java .\build\java\org\kbinani\apputil\*.java .\build\java\org\kbinani\media\*.java .\build\java\org\kbinani\vsq\*.java .\build\java\org\kbinani\cadencii\*.java .\build\java\org\kbinani\componentmodel\*.java .\build\java\org\kbinani\windows\forms\*.java .\build\java\org\kbinani\xml\*.java -encoding UTF8
 
 jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
 	pp_cs2java.exe -DJAVA -DUSE_DOBJ -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\EditOtoIni"

@@ -65,7 +65,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 鍵盤の表示幅(pixel)
         /// </summary>
-        public static int keyWidth = MIN_KEY_WIDTH;
+        public static int keyWidth = MIN_KEY_WIDTH * 2;
         /// <summary>
         /// keyWidth+keyOffsetの位置からが、0になってる
         /// </summary>
@@ -969,7 +969,7 @@ namespace org.kbinani.cadencii {
         public static void changePhrase( VsqFileEx vsq, int track, VsqEvent item, int clock, String new_phrase ) {
             ByRef<String> phonetic_symbol = new ByRef<String>( "" );
             SymbolTable.attatch( new_phrase, phonetic_symbol );
-            string str_phonetic_symbol = phonetic_symbol.value;
+            String str_phonetic_symbol = phonetic_symbol.value;
 
             // consonant adjustment
             String[] spl = PortUtil.splitString( str_phonetic_symbol, new char[] { ' ', ',' }, true );
@@ -1253,17 +1253,26 @@ namespace org.kbinani.cadencii {
         }
 
         public static void reportError( Exception ex, String message, int level ) {
-            Console.Error.WriteLine( message + "; ex=" + ex );
+            PortUtil.stderr.println( message + "; ex=" + ex );
             if ( level < 0 ) {
                 FormCompileResult dialog = null;
                 try {
+#if JAVA
+                    dialog = new FormCompileResult( message, ex.toString() );
+#else
                     dialog = new FormCompileResult( message, "Message:\r\n" + ex.Message + "\r\n\r\nStackTrace:\r\n" + ex.StackTrace );
+#endif
                     beginShowDialog();
                     dialog.showDialog();
                     endShowDialog();
-                } catch ( Exception ex2 ) {
+                } catch ( Exception ex ) {
                 } finally {
-                    dialog.Dispose();
+                    if ( dialog != null ) {
+                        try {
+                            dialog.close();
+                        } catch ( Exception ex ) {
+                        }
+                    }
                 }
             }
         }
@@ -1883,7 +1892,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
                 if ( !found ) {
-                    AppManager.removeSelectedEvent( specif.getKey() );
+                    AppManager.removeSelectedEvent( specif.getValue() );
                 }
             }
         }

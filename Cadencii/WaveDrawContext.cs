@@ -16,7 +16,9 @@ package org.kbinani.cadencii;
 
 import java.awt.*;
 import org.kbinani.*;
+import org.kbinani.apputil.*;
 import org.kbinani.media.*;
+import org.kbinani.vsq.*;
 #else
 using System;
 using org.kbinani.media;

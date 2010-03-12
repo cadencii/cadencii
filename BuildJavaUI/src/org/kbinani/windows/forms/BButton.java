@@ -29,6 +29,7 @@ public class BButton extends JButton
                                 MouseWheelListener
 {
     private static final long serialVersionUID = 1L;
+    private Object m_tag = null;
 
     public BButton(){
         super();
@@ -39,6 +40,14 @@ public class BButton extends JButton
         addKeyListener( this );
         addComponentListener( this );
         addMouseWheelListener( this );
+    }
+
+    public Object getTag(){
+        return m_tag;
+    }
+
+    public void setTag( Object value ){
+        m_tag = value;
     }
 
     /* root impl of MouseWheel event */

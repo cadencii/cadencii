@@ -18,6 +18,7 @@ import java.util.*;
 import java.awt.*;
 import java.io.*;
 import javax.swing.*;
+import javax.imageio.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
