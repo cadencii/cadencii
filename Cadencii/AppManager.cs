@@ -3144,6 +3144,9 @@ namespace org.kbinani.cadencii {
             return QuantizeModeUtil.getQuantizeClock( editorConfig.getLengthQuantize(), editorConfig.isLengthQuantizeTriplet() );
         }
 
+        /// <summary>
+        /// 現在の設定を設定ファイルに書き込みます。
+        /// </summary>
         public static void saveConfig() {
             // ユーザー辞書の情報を取り込む
             editorConfig.UserDictionaries.clear();
@@ -3162,12 +3165,16 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// 設定ファイルを読み込みます。
+        /// 設定ファイルが壊れていたり存在しない場合、デフォルトの設定が使われます。
+        /// </summary>
         public static void loadConfig() {
             String config_file = PortUtil.combinePath( getApplicationDataPath(), CONFIG_FILE_NAME );
             EditorConfig ret = null;
             if ( PortUtil.isFileExists( config_file ) ) {
                 try {
-                    ret = EditorConfig.deserialize( editorConfig, config_file );
+                    ret = EditorConfig.deserialize( config_file );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#loadConfig; ex=" + ex );
                     ret = null;
@@ -3176,7 +3183,7 @@ namespace org.kbinani.cadencii {
                 config_file = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), CONFIG_FILE_NAME );
                 if ( PortUtil.isFileExists( config_file ) ) {
                     try {
-                        ret = EditorConfig.deserialize( editorConfig, config_file );
+                        ret = EditorConfig.deserialize( config_file );
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "AppManager#locdConfig; ex=" + ex );
                         ret = null;

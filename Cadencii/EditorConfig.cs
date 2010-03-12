@@ -537,7 +537,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static EditorConfig deserialize( EditorConfig old_instance, String file ) {
+        public static EditorConfig deserialize( String file ) {
             EditorConfig ret = null;
             FileInputStream fs = null;
             try {
@@ -552,6 +552,11 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
+
+            if ( ret == null ) {
+                return null;
+            }
+
             for ( int j = 0; j < DEFAULT_SHORTCUT_KEYS.size(); j++ ) {
                 boolean found = false;
                 for ( int i = 0; i < ret.ShortcutKeys.size(); i++ ) {

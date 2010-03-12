@@ -89,7 +89,7 @@ namespace org.kbinani.vsq {
                         sw.newLine();
                     }
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
+                    PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
                 } finally {
                     if ( sw != null ) {
                         try {
@@ -118,9 +118,13 @@ namespace org.kbinani.vsq {
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
 
                 // DSE1_1.dllがあるかどうか？
-                String path_dll = PortUtil.getDirectoryName( path_vsti.value );
-                String dse1_1 = PortUtil.combinePath( path_dll, "DSE1_1.dll" );
-                dseVersion101Available = PortUtil.isFileExists( dse1_1 );
+                if ( !path_vsti.value.Equals( "" ) ) {
+                    String path_dll = PortUtil.getDirectoryName( path_vsti.value );
+                    String dse1_1 = PortUtil.combinePath( path_dll, "DSE1_1.dll" );
+                    dseVersion101Available = PortUtil.isFileExists( dse1_1 );
+                } else {
+                    dseVersion101Available = false;
+                }
 
                 // VOCALOID.iniから、DSEVersionを取得
                 if ( path_editor.value != null && !path_editor.value.Equals( "" ) && PortUtil.isFileExists( path_editor.value ) ) {
@@ -162,7 +166,7 @@ namespace org.kbinani.vsq {
                     }
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
+                PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys1 = null;
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
