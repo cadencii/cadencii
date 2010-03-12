@@ -46,7 +46,6 @@ namespace org.kbinani.cadencii {
 #else
     public class FormShortcutKeys : BForm {
 #endif
-        private BMenuItem m_dumy;
         private TreeMap<String, ValuePair<String, BKeys[]>> m_dict;
         private TreeMap<String, ValuePair<String, BKeys[]>> m_first_dict;
         private static int columnWidthCommand = 240;
@@ -80,10 +79,6 @@ namespace org.kbinani.cadencii {
             ApplyLanguage();
 
             m_dict = dict;
-            m_dumy = new BMenuItem();
-#if !JAVA
-            m_dumy.ShowShortcutKeys = true;
-#endif
             m_first_dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             CopyDict( m_dict, m_first_dict );
             UpdateList();
@@ -164,15 +159,10 @@ namespace org.kbinani.cadencii {
                 foreach ( BKeys key in m_dict.get( display ).getValue() ) {
                     a.add( key );
                 }
-                try {
-                    m_dumy.setAccelerator( PortUtil.getKeyStrokeFromBKeys( a.toArray( new BKeys[] { } ) ) );
-                } catch( Exception ex ) {
-                    a.clear();
-                }
+
                 BListViewItem item = new BListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
                 String name = m_dict.get( display ).getKey();
                 item.setName( name );
-                //item.Tag = a;
                 String group = "";
 #if DEBUG
                 PortUtil.println( "FormShortcutKeys#UpdateList; name=" + name );

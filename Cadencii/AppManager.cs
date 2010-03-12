@@ -1265,12 +1265,12 @@ namespace org.kbinani.cadencii {
                     beginShowDialog();
                     dialog.showDialog();
                     endShowDialog();
-                } catch ( Exception ex ) {
+                } catch ( Exception ex2 ) {
                 } finally {
                     if ( dialog != null ) {
                         try {
                             dialog.close();
-                        } catch ( Exception ex ) {
+                        } catch ( Exception ex3 ) {
                         }
                     }
                 }

@@ -397,6 +397,8 @@ namespace org.kbinani.cadencii {
             new ValuePairOfStringArrayOfKeys( "menuHiddenSelectForward", new BKeys[]{ BKeys.Alt, BKeys.Right } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenMoveUp", new BKeys[]{ BKeys.Shift, BKeys.Up } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenMoveDown", new BKeys[]{ BKeys.Shift, BKeys.Down } ),
+            new ValuePairOfStringArrayOfKeys( "menuHiddenMoveLeft", new BKeys[]{ BKeys.Shift, BKeys.Left } ),
+            new ValuePairOfStringArrayOfKeys( "menuHiddenMoveRight", new BKeys[]{ BKeys.Shift, BKeys.Right } ),
             new ValuePairOfStringArrayOfKeys( "menuFileSaveNamed", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuFileImportVsq", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuFileOpenUst", new BKeys[]{} ),

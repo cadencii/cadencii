@@ -519,6 +519,8 @@ namespace org.kbinani.cadencii {
         public BMenuItem menuHiddenSelectBackward;
         public BMenuItem menuHiddenMoveUp;
         public BMenuItem menuHiddenMoveDown;
+        public BMenuItem menuHiddenMoveLeft;
+        public BMenuItem menuHiddenMoveRight;
         /// <summary>
         /// 特殊な取り扱いが必要なショートカットのキー列と、対応するメニューアイテムを保存しておくリスト。
         /// </summary>
@@ -919,10 +921,11 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// 選択された音符の音程を、指定されたノートナンバー分上下させます。
+        /// 選択された音符の音程とゲートタイムを、指定されたノートナンバーおよびゲートタイム分上下させます。
         /// </summary>
-        /// <param name="delta"></param>
-        private void moveUpDownCor( int delta ) {
+        /// <param name="delta_note"></param>
+        /// <param name="delta_clock"></param>
+        private void moveUpDownLeftRight( int delta_note, int delta_clock ) {
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) {
                 return;
@@ -932,17 +935,37 @@ namespace org.kbinani.cadencii {
             int selected = AppManager.getSelected();
             int note_max = -1;
             int note_min = 129;
+            int clock_max = int.MinValue;
+            int clock_min = int.MaxValue;
             for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                 SelectedEventEntry item = (SelectedEventEntry)itr.next();
                 if ( item.editing.ID.type != VsqIDType.Anote ) {
                     continue;
                 }
+                VsqEvent add = null;
+
+                // 音程
                 int note = item.editing.ID.Note;
-                if ( 0 <= note + delta && note + delta <= 127 ) {
-                    VsqEvent add = (VsqEvent)item.editing.clone();
-                    add.ID.Note += delta;
+                if ( delta_note != 0 && 0 <= note + delta_note && note + delta_note <= 127 ) {
+                    add = (VsqEvent)item.editing.clone();
+                    add.ID.Note += delta_note;
                     note_max = Math.Max( note_max, add.ID.Note );
                     note_min = Math.Min( note_min, add.ID.Note );
+                }
+
+                // ゲートタイム
+                int clockstart = item.editing.Clock;
+                int clockend = clockstart + item.editing.ID.getLength();
+                if ( delta_clock != 0 ) {
+                    if ( add == null ) {
+                        add = (VsqEvent)item.editing.clone();
+                    }
+                    add.Clock += delta_clock;
+                    clock_max = Math.Max( clock_max, clockend + delta_clock );
+                    clock_min = Math.Min( clock_min, clockstart );
+                }
+
+                if ( add != null ) {
                     items.add( add );
                 }
             }
@@ -966,35 +989,28 @@ namespace org.kbinani.cadencii {
             setEdited( true );
             updateDrawObjectList();
 
-            // 音符が見えるようにする
-            if ( delta > 0 ) {
+            // 音符が見えるようにする。音程方向
+            if ( delta_note > 0 ) {
                 note_max++;
                 if ( 127 < note_max ) {
                     note_max = 127;
                 }
                 ensureVisibleY( note_max );
-            } else {
+            } else if ( delta_note < 0 ) {
                 note_min -= 2;
                 if ( note_min < 0 ) {
                     note_min = 0;
                 }
                 ensureVisibleY( note_min );
             }
+
+            // 音符が見えるようにする。時間方向
+            if ( delta_clock > 0 ) {
+                ensureVisible( clock_max );
+            } else if ( delta_clock < 0 ) {
+                ensureVisible( clock_min );
+            }
             refreshScreen();
-        }
-
-        /// <summary>
-        /// 現在選択されている音符の音程を1つ上げます。
-        /// </summary>
-        public void moveUp() {
-            moveUpDownCor( 1 );
-        }
-
-        /// <summary>
-        /// 現在選択されている音符の音程を1つ下げます。
-        /// </summary>
-        public void moveDown() {
-            moveUpDownCor( -1 );
         }
 
         /// <summary>
@@ -9350,11 +9366,28 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuHiddenMoveUp_Click( Object sender, EventArgs e ) {
-            moveUp();
+            moveUpDownLeftRight( 1, 0 );
         }
 
         public void menuHiddenMoveDown_Click( Object sender, EventArgs e ) {
-            moveDown();
+            moveUpDownLeftRight( -1, 0 );
+        }
+
+        public void menuHiddenMoveLeft_Click( Object sender, EventArgs e ) {
+            QuantizeMode mode = AppManager.editorConfig.getPositionQuantize();
+            boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
+            int delta = -QuantizeModeUtil.getQuantizeClock( mode, triplet );
+#if DEBUG
+            PortUtil.println( "FormMain#menuHiddenMoveLeft_Click; delta=" + delta );
+#endif
+            moveUpDownLeftRight( 0, delta );
+        }
+
+        public void menuHiddenMoveRight_Click( Object sender, EventArgs e ) {
+            QuantizeMode mode = AppManager.editorConfig.getPositionQuantize();
+            boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
+            int delta = QuantizeModeUtil.getQuantizeClock( mode, triplet );
+            moveUpDownLeftRight( 0, delta );
         }
 
         public void menuHiddenSelectBackward_Click( Object sender, EventArgs e ) {
@@ -15923,6 +15956,8 @@ namespace org.kbinani.cadencii {
             menuHiddenSelectForward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectForward_Click" ) );
             menuHiddenMoveUp.clickEvent.add( new BEventHandler( this, "menuHiddenMoveUp_Click" ) );
             menuHiddenMoveDown.clickEvent.add( new BEventHandler( this, "menuHiddenMoveDown_Click" ) );
+            menuHiddenMoveLeft.clickEvent.add( new BEventHandler( this, "menuHiddenMoveLeft_Click" ) );
+            menuHiddenMoveRight.clickEvent.add( new BEventHandler( this, "menuHiddenMoveRight_Click" ) );
 
             cMenuPiano.openingEvent.add( new BCancelEventHandler( this, "cMenuPiano_Opening" ) );
             cMenuPianoPointer.clickEvent.add( new BEventHandler( this, "cMenuPianoPointer_Click" ) );
@@ -16441,6 +16476,8 @@ namespace org.kbinani.cadencii {
             this.menuHiddenCut = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenSelectForward = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenSelectBackward = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenMoveUp = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenMoveDown = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPiano = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cMenuPianoPointer = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPianoPencil = new org.kbinani.windows.forms.BMenuItem();
@@ -16639,8 +16676,8 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.menuHiddenMoveUp = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenMoveDown = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenMoveLeft = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenMoveRight = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17636,7 +17673,9 @@ namespace org.kbinani.cadencii {
             this.menuHiddenSelectForward,
             this.menuHiddenSelectBackward,
             this.menuHiddenMoveUp,
-            this.menuHiddenMoveDown} );
+            this.menuHiddenMoveDown,
+            this.menuHiddenMoveLeft,
+            this.menuHiddenMoveRight} );
             this.menuHidden.Name = "menuHidden";
             this.menuHidden.Size = new System.Drawing.Size( 79, 20 );
             this.menuHidden.Text = "MenuHidden";
@@ -17731,6 +17770,18 @@ namespace org.kbinani.cadencii {
             this.menuHiddenSelectBackward.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Left)));
             this.menuHiddenSelectBackward.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenSelectBackward.Text = "Select Backward";
+            // 
+            // menuHiddenMoveUp
+            // 
+            this.menuHiddenMoveUp.Name = "menuHiddenMoveUp";
+            this.menuHiddenMoveUp.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenMoveUp.Text = "Move Up";
+            // 
+            // menuHiddenMoveDown
+            // 
+            this.menuHiddenMoveDown.Name = "menuHiddenMoveDown";
+            this.menuHiddenMoveDown.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenMoveDown.Text = "Move Down";
             // 
             // cMenuPiano
             // 
@@ -19405,17 +19456,17 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
-            // menuHiddenMoveUp
+            // menuHiddenMoveLeft
             // 
-            this.menuHiddenMoveUp.Name = "menuHiddenMoveUp";
-            this.menuHiddenMoveUp.Size = new System.Drawing.Size( 267, 22 );
-            this.menuHiddenMoveUp.Text = "Move Up";
+            this.menuHiddenMoveLeft.Name = "menuHiddenMoveLeft";
+            this.menuHiddenMoveLeft.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenMoveLeft.Text = "Move Left";
             // 
-            // menuHiddenMoveDown
+            // menuHiddenMoveRight
             // 
-            this.menuHiddenMoveDown.Name = "menuHiddenMoveDown";
-            this.menuHiddenMoveDown.Size = new System.Drawing.Size( 267, 22 );
-            this.menuHiddenMoveDown.Text = "Move Down";
+            this.menuHiddenMoveRight.Name = "menuHiddenMoveRight";
+            this.menuHiddenMoveRight.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenMoveRight.Text = "Move Right";
             // 
             // FormMain
             // 

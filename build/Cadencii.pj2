@@ -1,6 +1,6 @@
 [Project]
 ProjectName=Cadencii
-CreateFileName=cadencii_v3.1.2
+CreateFileName=cadencii_v3.1.3_DRAFT_12Mar2010
 CreateFolder=E:\Documents and Settings\kbinani\My Documents\svn\cadencii\Cadencii\trunk\build
 InstallerModuleName=EI_MODERN
 InstallerModuleLanguage=1041
@@ -12,7 +12,7 @@ Generator=EINSTALL 2.0
 ProjectType=0
 CreateFileType=2
 CreateFileCompLevel=2
-CreateFileNameOption=1
+CreateFileNameOption=0
 CreateFolderBeforeBackup=1
 InstallerModuleKey=
 UseUniqueKey=0
