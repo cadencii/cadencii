@@ -24,15 +24,14 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.Windows.Forms;
 using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani;
 using org.kbinani.java.awt;
+using org.kbinani.java.awt.geom;
 using org.kbinani.java.util;
+using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
-    using java = org.kbinani.java;
     using Integer = System.Int32;
 #endif
 
@@ -1000,6 +999,9 @@ namespace org.kbinani.cadencii {
 #if !JAVA
                     g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
 #endif
+                    g.setClip( null ); 
+                   
+                    Area fillarea = new Area( new Rectangle( key_width, 0, width - key_width, height ) ); // 塗りつぶす領域．最後に処理する
                     g.setColor( new Color( 255, 255, 255, 64 ) );
                     g.fillRect( key_width, 0, width - key_width, height );
 
@@ -1019,8 +1021,6 @@ namespace org.kbinani.cadencii {
                                              CurveType.PBS.getMaximum() );
                     }
 
-                    Color fill = new Color( 0, 0, 0, 128 ); 
-                    g.setColor( fill );
                     Color pitline = PortUtil.MidnightBlue;
                     BasicStroke stroke = new BasicStroke( 2.0f );
                     g.setStroke( stroke );
@@ -1043,18 +1043,6 @@ namespace org.kbinani.cadencii {
                             DrawObject dobj = list.get( j );
                             int clock = dobj.clock;
                             int x_at_clock = (int)(clock * scalex + xoffset);
-
-                            g.setColor( fill );
-
-                            // 直前の音符の無い部分を塗りつぶす
-                            if ( last_x < x_at_clock ) {
-                                if ( key_width < x_at_clock ) {
-                                    if ( last_x < key_width ) {
-                                        last_x = key_width;
-                                    }
-                                    g.fillRect( last_x, 0, x_at_clock - last_x, height );
-                                }
-                            }
                             last_x = x_at_clock;
 
                             // 音符の区間中に，PBSがあるかもしれないのでPBSのデータ点を探しながら塗りつぶす
@@ -1073,8 +1061,7 @@ namespace org.kbinani.cadencii {
                                     last_x = key_width;
                                 }
                                 int x = (int)((clock + dobj.length) * scalex + xoffset);
-                                g.fillRect( last_x, 0, x - last_x, y_top );
-                                g.fillRect( last_x, y_bottom, x - last_x, height - y_bottom );
+                                fillarea.subtract( new Area( new Rectangle( last_x, y_top, x - last_x, y_bottom - y_top ) ) );
                                 last_x = x;
                             } else {
                                 // データ点がある場合
@@ -1107,10 +1094,7 @@ namespace org.kbinani.cadencii {
                                         last_x = key_width;
                                     }
 
-                                    // top
-                                    g.fillRect( last_x, 0, x - last_x, y_top );
-                                    // bottom
-                                    g.fillRect( last_x, y_bottom, x - last_x, height - y_bottom );
+                                    fillarea.subtract( new Area( new Rectangle( last_x, y_top, x - last_x, y_bottom - y_top ) ) );
 
                                     last_x = x;
                                     last_pbs_value = pbs_value;
@@ -1157,16 +1141,11 @@ namespace org.kbinani.cadencii {
                             }
                             pdrawer.flush();
                         }
-
-                        // 最後の音符の無い部分を塗りつぶす
-                        if ( last_x < width ) {
-                            if ( last_x < key_width ) {
-                                last_x = key_width;
-                            }
-                            g.setColor( fill );
-                            g.fillRect( last_x, 0, width - last_x, height );
-                        }
                     }
+
+                    Color fill = new Color( 0, 0, 0, 128 );
+                    g.setColor( fill );
+                    g.fill( fillarea );
                 }
                 #endregion
 

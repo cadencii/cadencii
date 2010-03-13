@@ -13,6 +13,8 @@
  */
 #if !JAVA
 using System;
+using org.kbinani.java.awt;
+using org.kbinani.java.awt.geom;
 
 namespace org.kbinani.java.awt {
 
@@ -188,7 +190,7 @@ namespace org.kbinani.java.awt {
         }
 
         public Shape getClip() {
-            Shape ret = new Shape();
+            Area ret = new Area();
             ret.region = nativeGraphics.Clip;
             return ret;
         }
@@ -196,8 +198,15 @@ namespace org.kbinani.java.awt {
         public void setClip( Shape clip ) {
             if ( clip == null ) {
                 nativeGraphics.Clip = new System.Drawing.Region();
+            } else if ( clip is Area ) {
+                nativeGraphics.Clip = ((Area)clip).region;
+            } else if ( clip is Rectangle ) {
+                Rectangle rc = (Rectangle)clip;
+                nativeGraphics.Clip = new System.Drawing.Region( new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height ) );
             } else {
-                nativeGraphics.Clip = clip.region;
+                PortUtil.stderr.println( 
+                    "fixme: org.kbinani.java.awt.Graphics#setClip; argument type of clip is not supported for '" +
+                    clip.GetType() + "'." );
             }
         }
 
@@ -222,6 +231,26 @@ namespace org.kbinani.java.awt {
     public class Graphics2D : Graphics{
         public Graphics2D( System.Drawing.Graphics g )
             : base( g ) {
+        }
+
+        public void fill( Shape s ) {
+            if ( s == null ) {
+                return;
+            }
+
+            if ( s is Area ) {
+                Area a = (Area)s;
+                if ( a.region != null ) {
+                    nativeGraphics.FillRegion( brush, a.region );
+                }
+            } else if ( s is Rectangle ) {
+                Rectangle rc = (Rectangle)s;
+                nativeGraphics.FillRectangle( brush, rc.x, rc.y, rc.width, rc.height );
+            } else {
+                PortUtil.stderr.println(
+                    "fixme; org.kbinani.java.awt.Graphics2D#fill; type of argument s is not supported for '" +
+                    s.GetType() + "'." );
+            }
         }
     }
 
@@ -365,7 +394,7 @@ namespace org.kbinani.java.awt {
     }
 
     [Serializable]
-    public struct Rectangle {
+    public struct Rectangle : Shape {
         public int height;
         public int width;
         public int x;
@@ -527,8 +556,7 @@ namespace org.kbinani.java.awt {
         }
     }
 
-    public class Shape {
-        public System.Drawing.Region region;
+    public interface Shape {
     }
 
     public struct Dimension {
@@ -544,5 +572,73 @@ namespace org.kbinani.java.awt {
     public class Frame : System.Windows.Forms.Form {
     }
 
+}
+
+namespace org.kbinani.java.awt.geom {
+    public class Area : Shape {
+        public System.Drawing.Region region;
+
+        public Area() {
+            region = new System.Drawing.Region();
+            region.MakeEmpty();
+        }
+
+        public Area( Shape s ) {
+            if ( s == null ) {
+                region = new System.Drawing.Region();
+            } else if ( s is Area ) {
+                Area a = (Area)s;
+                if ( a.region == null ) {
+                    region = new System.Drawing.Region();
+                } else {
+                    region = (System.Drawing.Region)a.region.Clone();
+                }
+            } else if ( s is Rectangle ) {
+                Rectangle rc = (Rectangle)s;
+                region = new System.Drawing.Region( new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height ) );
+            } else {
+                PortUtil.stderr.println(
+                    "fixme: org.kbinani.java.awt.Area#.ctor(org.kbinani.java.awt.Shape); type of argument s is not supported for '" +
+                    s.GetType() + "'." );
+                region = new System.Drawing.Region();
+            }
+        }
+
+        public void add( Area rhs ) {
+            if ( rhs == null ) {
+                return;
+            }
+            if ( rhs.region == null ) {
+                return;
+            }
+            if ( region == null ) {
+                region = new System.Drawing.Region();
+            }
+            region.Union( rhs.region );
+        }
+
+        public void subtract( Area rhs ) {
+            if ( rhs == null ) {
+                return;
+            }
+            if ( rhs.region == null ) {
+                return;
+            }
+            if ( region == null ) {
+                region = new System.Drawing.Region();
+            }
+            region.Exclude( rhs.region );
+        }
+
+        public Object clone() {
+            Area ret = new Area();
+            if ( region == null ) {
+                ret.region = new System.Drawing.Region();
+            } else {
+                ret.region = (System.Drawing.Region)region.Clone();
+            }
+            return ret;
+        }
+    }
 }
 #endif

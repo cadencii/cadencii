@@ -1043,7 +1043,7 @@ namespace org.kbinani.vsq {
                 fs.seek( 0x20 );
                 for ( int i = 0; i < MAX_VIBRATO; i++ ) {
                     fs.read( dat, 0, 8 );
-                    long value = VocaloSysUtil.makelong_le( dat );
+                    long value = PortUtil.make_int64_le( dat );
                     if ( value <= 0 ) {
                         continue;
                     }

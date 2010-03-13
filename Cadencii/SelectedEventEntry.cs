@@ -762,11 +762,13 @@ namespace org.kbinani.cadencii {
                 e.Tag = editing.Tag;
                 String v = VsqFileEx.getEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
                 int value = 64;
-                try {
-                    value = PortUtil.parseInt( v );
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VsqEventItemProxy#get_Release; ex=" + ex );
-                    value = 64;
+                if ( !v.Equals( "" ) ) {
+                    try {
+                        value = PortUtil.parseInt( v );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "VsqEventItemProxy#get_Release; ex=" + ex );
+                        value = 64;
+                    }
                 }
                 if ( 0 > value ) {
                     value = 0;

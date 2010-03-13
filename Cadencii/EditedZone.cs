@@ -147,36 +147,6 @@ namespace org.kbinani.cadencii {
             return generateCommandAdd( new EditedZoneUnit[] { new EditedZoneUnit( start, end ) } );
         }
 
-        private EditedZoneCommand generateCommandAdd_( int start, int end ) {
-            Vector<EditedZoneUnit> add = new Vector<EditedZoneUnit>();
-            Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-
-            int actualStart = start;
-            int actualEnd = end;
-
-            boolean addRequired = true;
-            int count = series.size();
-            for ( int i = 0; i < count; i++ ) {
-                EditedZoneUnit item = series.get( i );
-                if ( actualStart <= item.end && item.end < actualEnd ) {
-                    remove.add( new EditedZoneUnit( item.start, item.end ) );
-                    actualStart = item.start;
-                } else if ( actualStart < item.start && item.start <= actualEnd ) {
-                    remove.add( new EditedZoneUnit( item.start, item.end ) );
-                    actualEnd = item.end;
-                } else if ( actualStart <= item.start && item.end < actualEnd ) {
-                    remove.add( new EditedZoneUnit( item.start, item.end ) );
-                } else if ( item.start <= actualStart && actualEnd < item.end ) {
-                    addRequired = false;
-                }
-            }
-
-            if ( addRequired ) {
-                add.add( new EditedZoneUnit( actualStart, actualEnd ) );
-            }
-            return new EditedZoneCommand( add, remove );
-        }
-
         /// <summary>
         /// 重複している部分を統合する
         /// </summary>
@@ -229,11 +199,6 @@ namespace org.kbinani.cadencii {
                 }
             }
             Collections.sort( series );
-        }
-
-        public EditedZoneCommand clear() {
-            EditedZoneCommand com = generateCommandClear();
-            return executeCommand( com );
         }
 
 #if !JAVA

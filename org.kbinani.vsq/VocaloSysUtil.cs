@@ -29,6 +29,9 @@ namespace org.kbinani.vsq {
     using boolean = System.Boolean;
 #endif
 
+    /// <summary>
+    /// VOCALOID / VOCALOID2システムについての情報を取得するユーティリティ。
+    /// </summary>
     public class VocaloSysUtil {
         private static TreeMap<SynthesizerType, SingerConfigSys> s_singer_config_sys = new TreeMap<SynthesizerType, SingerConfigSys>();
         private static TreeMap<SynthesizerType, ExpressionConfigSys> s_exp_config_sys = new TreeMap<SynthesizerType, ExpressionConfigSys>();
@@ -68,6 +71,9 @@ namespace org.kbinani.vsq {
             return defaultDseVersion;
         }
 
+        /// <summary>
+        /// インストールされているVOCALOID / VOCALOID2についての情報を読み込み、初期化します。
+        /// </summary>
         public static void init() {
             if ( isInitialized ) {
                 return;
@@ -402,6 +408,11 @@ namespace org.kbinani.vsq {
 #endif
         }
 
+        /// <summary>
+        /// アタック設定を順に返す反復子を取得します。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static Iterator attackConfigIterator( SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
@@ -413,6 +424,11 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// ビブラート設定を順に返す反復子を取得します。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static Iterator vibratoConfigIterator( SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
@@ -424,6 +440,11 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// 強弱記号設定を順に返す反復子を取得します。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static Iterator dynamicsConfigIterator( SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
@@ -436,7 +457,7 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// Gets the name of original singer of specified program change.
+        /// 指定した歌声合成システムに登録されている指定した名前の歌手について、その派生元の歌手名を取得します。
         /// </summary>
         /// <param name="singer"></param>
         /// <returns></returns>
@@ -468,6 +489,12 @@ namespace org.kbinani.vsq {
             return "";
         }
 
+        /// <summary>
+        /// 指定した歌声合成システムに登録されている指定した名前の歌手について、その歌手を表現するVsqIDのインスタンスを取得します。
+        /// </summary>
+        /// <param name="singer"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static VsqID getSingerID( String singer, SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
@@ -479,6 +506,11 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// 指定した歌声合成システムの、エディタの実行ファイルのパスを取得します。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static String getEditorPath( SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
@@ -490,6 +522,11 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// 指定した歌声合成システムの、VSTi DLL本体のパスを取得します。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static String getDllPathVsti( SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
@@ -501,6 +538,11 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// 指定された歌声合成システムに登録されている歌手設定のリストを取得します。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static SingerConfig[] getSingerConfigs( SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
@@ -513,7 +555,7 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// Gets the voice language of specified singer
+        /// 指定した名前の歌手の歌唱言語を取得します。
         /// </summary>
         /// <param name="name">name of singer</param>
         /// <returns></returns>
@@ -551,26 +593,41 @@ namespace org.kbinani.vsq {
             return VsqVoiceLanguage.Japanese;
         }
 
+        /// <summary>
+        /// 指定したPAN値における、左チャンネルの増幅率を取得します。
+        /// </summary>
+        /// <param name="pan"></param>
+        /// <returns></returns>
         public static double getAmplifyCoeffFromPanLeft( int pan ) {
             return pan / -64.0 + 1.0;
         }
 
+        /// <summary>
+        /// 指定したPAN値における、右チャンネルの増幅率を取得します。
+        /// </summary>
+        /// <param name="pan"></param>
+        /// <returns></returns>
         public static double getAmplifyCoeffFromPanRight( int pan ) {
             return pan / 64.0 + 1.0;
         }
 
+        /// <summary>
+        /// 指定したFEDER値における、増幅率を取得します。
+        /// </summary>
+        /// <param name="feder"></param>
+        /// <returns></returns>
         public static double getAmplifyCoeffFromFeder( int feder ) {
             return Math.Exp( -1.26697245e-02 + 1.18448420e-01 * feder / 10.0 );
         }
 
-        /// <summary>
+        /* // <summary>
         /// Transform the byte array(length=8) to unsigned long, assuming that the byte array is little endian.
         /// </summary>
         /// <param name="oct"></param>
         /// <returns></returns>
         public static long makelong_le( byte[] oct ) {
             return (long)oct[7] << 56 | (long)oct[6] << 48 | (long)oct[5] << 40 | (long)oct[4] << 32 | (long)oct[3] << 24 | (long)oct[2] << 16 | (long)oct[1] << 8 | (long)oct[0];
-        }
+        }*/
     }
 
 #if !JAVA

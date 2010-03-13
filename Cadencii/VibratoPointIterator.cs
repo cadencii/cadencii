@@ -1,5 +1,5 @@
 ﻿/*
- * VibratoPointITertor.cs
+ * VibratoPointItertor.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.

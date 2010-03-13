@@ -52,6 +52,14 @@ namespace org.kbinani.cadencii{
                 file = args[0];
             }
             AppManager.init();
+#if ENABLE_SCRIPT
+            try {
+                ScriptServer.reload();
+                PaletteToolServer.init();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "Program#Main; ex=" + ex );
+            }
+#endif
             AppManager.mainWindow = new FormMain( file );
             AppManager.mainWindow.Load += mainWindow_Load;
             Application.Run( AppManager.mainWindow );

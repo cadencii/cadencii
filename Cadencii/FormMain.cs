@@ -538,16 +538,8 @@ namespace org.kbinani.cadencii {
                 Messaging.loadMessages();
                 Messaging.setLanguage( AppManager.editorConfig.Language );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                PortUtil.stderr.println( "FormMain#.ctor; ex=" + ex );
             }
-
-#if ENABLE_SCRIPT
-            try {
-                PaletteToolServer.init();
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
-            }
-#endif
 
 #if ENABLE_PROPERTY
             AppManager.propertyPanel = new PropertyPanel();
