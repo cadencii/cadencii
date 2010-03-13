@@ -19,6 +19,7 @@ import java.io.*;
 using System;
 
 namespace org.kbinani.vsq {
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -30,6 +31,19 @@ namespace org.kbinani.vsq {
     [Serializable]
     public class IconDynamicsHandle : IconParameter, ICloneable {
 #endif
+        /// <summary>
+        /// 強弱記号の場合の、IconIDの最初の5文字。
+        /// </summary>
+        public const String ICONID_HEAD_DYNAFF = "$0501";
+        /// <summary>
+        /// クレッシェンドの場合の、IconIDの最初の5文字。
+        /// </summary>
+        public const String ICONID_HEAD_CRESCEND = "$0502";
+        /// <summary>
+        /// デクレッシェンドの場合の、IconIDの最初の5文字。
+        /// </summary>
+        public const String ICONID_HEAD_DECRESCEND = "$0503";
+
         /// <summary>
         /// この強弱記号設定を一意に識別するためのIDです。
         /// </summary>
@@ -83,6 +97,42 @@ namespace org.kbinani.vsq {
             IDS = ids;
             IconID = icon_id;
             Original = index;
+        }
+
+        /// <summary>
+        /// このハンドルが強弱記号を表すものかどうかを表すブール値を取得します。
+        /// </summary>
+        /// <returns></returns>
+        public boolean isDynaffType() {
+            if ( IconID != null ) {
+                return IconID.StartsWith( ICONID_HEAD_DYNAFF );
+            } else {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// このハンドルがクレッシェンドを表すものかどうかを表すブール値を取得します。
+        /// </summary>
+        /// <returns></returns>
+        public boolean isCrescendType() {
+            if ( IconID != null ) {
+                return IconID.StartsWith( ICONID_HEAD_CRESCEND );
+            } else {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// このハンドルがデクレッシェンドを表すものかどうかを表すブール値を取得します。
+        /// </summary>
+        /// <returns></returns>
+        public boolean isDecrescendType() {
+            if ( IconID != null ) {
+                return IconID.StartsWith( ICONID_HEAD_DECRESCEND );
+            } else {
+                return false;
+            }
         }
 
         /// <summary>

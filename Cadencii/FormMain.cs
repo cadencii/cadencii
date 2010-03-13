@@ -521,6 +521,8 @@ namespace org.kbinani.cadencii {
         public BMenuItem menuHiddenMoveDown;
         public BMenuItem menuHiddenMoveLeft;
         public BMenuItem menuHiddenMoveRight;
+        public BMenuItem menuHiddenLengthen;
+        public BMenuItem menuHiddenShorten;
         /// <summary>
         /// 特殊な取り扱いが必要なショートカットのキー列と、対応するメニューアイテムを保存しておくリスト。
         /// </summary>
@@ -918,6 +920,76 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 選択された音符の長さを、指定したゲートタイム分長くします。
+        /// </summary>
+        /// <param name="delta_length"></param>
+        private void lengthenSelectedEvent( int delta_length ) {
+            if ( delta_length == 0 ) {
+                return;
+            }
+
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+
+            int selected = AppManager.getSelected();
+
+            Vector<VsqEvent> items = new Vector<VsqEvent>();
+            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                if ( item.editing.ID.type != VsqIDType.Anote && 
+                     item.editing.ID.type != VsqIDType.Aicon ) {
+                    continue;
+                }
+
+                // クレッシェンド、デクレッシェンドでないものを省く
+                if ( item.editing.ID.type == VsqIDType.Aicon ) {
+                    if ( item.editing.ID.IconDynamicsHandle == null ) {
+                        continue;
+                    }
+                    if ( !item.editing.ID.IconDynamicsHandle.isCrescendType() &&
+                         !item.editing.ID.IconDynamicsHandle.isDecrescendType() ) {
+                        continue;
+                    }
+                }
+
+                // 長さを変える。0未満になると0に直す
+                int length = item.editing.ID.getLength();
+                int draft = length + delta_length;
+                if ( draft < 0 ) {
+                    draft = 0;
+                }
+                if ( length == draft ) {
+                    continue;
+                }
+                VsqEvent add = (VsqEvent)item.editing.clone();
+                add.ID.setLength( draft );
+                items.add( add );
+            }
+
+            if ( items.size() <= 0 ) {
+                return;
+            }
+
+            // コマンドを発行
+            CadenciiCommand run = new CadenciiCommand(
+                VsqCommand.generateCommandEventReplaceRange(
+                    selected, items.toArray( new VsqEvent[] { } ) ) );
+            AppManager.register( vsq.executeCommand( run ) );
+
+            // 編集されたものを再選択する
+            for ( Iterator itr = items.iterator(); itr.hasNext(); ) {
+                VsqEvent item = (VsqEvent)itr.next();
+                AppManager.addSelectedEvent( item.InternalID );
+            }
+
+            // 編集が施された。
+            setEdited( true );
+            updateDrawObjectList();
         }
 
         /// <summary>
@@ -2854,7 +2926,7 @@ namespace org.kbinani.cadencii {
 
                 // まず、両端の編集モードに移行可能かどうか調べる
                 if ( item.ID.type != VsqIDType.Aicon ||
-                     (item.ID.type == VsqIDType.Aicon && !item.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" )) ) {
+                     (item.ID.type == VsqIDType.Aicon && !item.ID.IconDynamicsHandle.isDynaffType()) ) {
 #if ENABLE_SCRIPT
                     if ( selected_tool != EditTool.ERASER && selected_tool != EditTool.PALETTE_TOOL && e.Button == BMouseButtons.Left ) {
 #else
@@ -3749,7 +3821,7 @@ namespace org.kbinani.cadencii {
                             clocks[i] = ev.editing.Clock;
                             values[i] = ev.editing.ID;
                             if ( ev.original.ID.type == VsqIDType.Aicon ) {
-                                if ( ev.original.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                                if ( ev.original.ID.IconDynamicsHandle.isDynaffType() ) {
                                     values[i].setLength( 1 );
                                 }
                             }
@@ -3767,7 +3839,7 @@ namespace org.kbinani.cadencii {
                             clocks[i] = ev.editing.Clock;
                             values[i] = ev.editing.ID;
                             if ( ev.original.ID.type == VsqIDType.Aicon ) {
-                                if ( ev.original.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                                if ( ev.original.ID.IconDynamicsHandle.isDynaffType() ) {
                                     values[i].setLength( 1 );
                                 }
                             }
@@ -9352,6 +9424,13 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
+        public void menuHiddenShorten_Click( Object sender, EventArgs e ) {
+            QuantizeMode qmode = AppManager.editorConfig.getLengthQuantize();
+            boolean triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
+            int delta = -QuantizeModeUtil.getQuantizeClock( qmode, triplet );
+            lengthenSelectedEvent( delta );
+        }
+
         public void menuHiddenTrackBack_Click( Object sender, EventArgs e ) {
             if ( AppManager.getSelected() == 1 ) {
                 AppManager.setSelected( AppManager.getVsqFile().Track.size() - 1 );
@@ -9365,12 +9444,19 @@ namespace org.kbinani.cadencii {
             pasteEvent();
         }
 
-        public void menuHiddenMoveUp_Click( Object sender, EventArgs e ) {
-            moveUpDownLeftRight( 1, 0 );
+        public void menuHiddenLengthen_Click( Object sender, EventArgs e ) {
+            QuantizeMode qmode = AppManager.editorConfig.getLengthQuantize();
+            boolean triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
+            int delta = QuantizeModeUtil.getQuantizeClock( qmode, triplet );
+            lengthenSelectedEvent( delta );
         }
 
         public void menuHiddenMoveDown_Click( Object sender, EventArgs e ) {
             moveUpDownLeftRight( -1, 0 );
+        }
+
+        public void menuHiddenMoveUp_Click( Object sender, EventArgs e ) {
+            moveUpDownLeftRight( 1, 0 );
         }
 
         public void menuHiddenMoveLeft_Click( Object sender, EventArgs e ) {
@@ -14983,7 +15069,7 @@ namespace org.kbinani.cadencii {
                             DrawObjectType type = DrawObjectType.Note;
                             int width = 0;
                             String str = "";
-                            if ( handle.IconID.StartsWith( "$0501" ) ) {
+                            if ( handle.isDynaffType() ) {
                                 // 強弱記号
                                 type = DrawObjectType.Dynaff;
                                 width = AppManager.DYNAFF_ITEM_WIDTH;
@@ -15007,12 +15093,12 @@ namespace org.kbinani.cadencii {
                                 } else {
                                     str = "?";
                                 }
-                            } else if ( handle.IconID.StartsWith( "$0502" ) ) {
+                            } else if ( handle.isCrescendType() ) {
                                 // クレッシェンド
                                 type = DrawObjectType.Crescend;
                                 width = raw_width;
                                 str = handle.IDS;
-                            } else if ( handle.IconID.StartsWith( "$0503" ) ) {
+                            } else if ( handle.isDecrescendType() ) {
                                 // デクレッシェンド
                                 type = DrawObjectType.Decrescend;
                                 width = raw_width;
@@ -15958,6 +16044,8 @@ namespace org.kbinani.cadencii {
             menuHiddenMoveDown.clickEvent.add( new BEventHandler( this, "menuHiddenMoveDown_Click" ) );
             menuHiddenMoveLeft.clickEvent.add( new BEventHandler( this, "menuHiddenMoveLeft_Click" ) );
             menuHiddenMoveRight.clickEvent.add( new BEventHandler( this, "menuHiddenMoveRight_Click" ) );
+            menuHiddenLengthen.clickEvent.add( new BEventHandler( this, "menuHiddenLengthen_Click" ) );
+            menuHiddenShorten.clickEvent.add( new BEventHandler( this, "menuHiddenShorten_Click" ) );
 
             cMenuPiano.openingEvent.add( new BCancelEventHandler( this, "cMenuPiano_Opening" ) );
             cMenuPianoPointer.clickEvent.add( new BEventHandler( this, "cMenuPianoPointer_Click" ) );
@@ -16478,6 +16566,8 @@ namespace org.kbinani.cadencii {
             this.menuHiddenSelectBackward = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenMoveUp = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenMoveDown = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenMoveLeft = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenMoveRight = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPiano = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cMenuPianoPointer = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPianoPencil = new org.kbinani.windows.forms.BMenuItem();
@@ -16676,8 +16766,8 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.menuHiddenMoveLeft = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenMoveRight = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenLengthen = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenShorten = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17675,7 +17765,9 @@ namespace org.kbinani.cadencii {
             this.menuHiddenMoveUp,
             this.menuHiddenMoveDown,
             this.menuHiddenMoveLeft,
-            this.menuHiddenMoveRight} );
+            this.menuHiddenMoveRight,
+            this.menuHiddenLengthen,
+            this.menuHiddenShorten} );
             this.menuHidden.Name = "menuHidden";
             this.menuHidden.Size = new System.Drawing.Size( 79, 20 );
             this.menuHidden.Text = "MenuHidden";
@@ -17782,6 +17874,18 @@ namespace org.kbinani.cadencii {
             this.menuHiddenMoveDown.Name = "menuHiddenMoveDown";
             this.menuHiddenMoveDown.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveDown.Text = "Move Down";
+            // 
+            // menuHiddenMoveLeft
+            // 
+            this.menuHiddenMoveLeft.Name = "menuHiddenMoveLeft";
+            this.menuHiddenMoveLeft.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenMoveLeft.Text = "Move Left";
+            // 
+            // menuHiddenMoveRight
+            // 
+            this.menuHiddenMoveRight.Name = "menuHiddenMoveRight";
+            this.menuHiddenMoveRight.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenMoveRight.Text = "Move Right";
             // 
             // cMenuPiano
             // 
@@ -19456,17 +19560,17 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
-            // menuHiddenMoveLeft
+            // menuHiddenLengthen
             // 
-            this.menuHiddenMoveLeft.Name = "menuHiddenMoveLeft";
-            this.menuHiddenMoveLeft.Size = new System.Drawing.Size( 267, 22 );
-            this.menuHiddenMoveLeft.Text = "Move Left";
+            this.menuHiddenLengthen.Name = "menuHiddenLengthen";
+            this.menuHiddenLengthen.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenLengthen.Text = "Lengthen";
             // 
-            // menuHiddenMoveRight
+            // menuHiddenShorten
             // 
-            this.menuHiddenMoveRight.Name = "menuHiddenMoveRight";
-            this.menuHiddenMoveRight.Size = new System.Drawing.Size( 267, 22 );
-            this.menuHiddenMoveRight.Text = "Move Right";
+            this.menuHiddenShorten.Name = "menuHiddenShorten";
+            this.menuHiddenShorten.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenShorten.Text = "Shorten";
             // 
             // FormMain
             // 

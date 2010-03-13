@@ -1005,11 +1005,11 @@ namespace org.kbinani.vsq {
                                     String[] spl2 = PortUtil.splitString( spl[1], ',' );
                                     String preset = "";
                                     if ( name.Equals( "Dynaff" ) ) {
-                                        preset = "$0501";
+                                        preset = IconDynamicsHandle.ICONID_HEAD_DYNAFF;
                                     } else if ( name.Equals( "Crescendo" ) ) {
-                                        preset = "$0502";
+                                        preset = IconDynamicsHandle.ICONID_HEAD_CRESCEND;
                                     } else if ( name.Equals( "Decrescendo" ) ) {
-                                        preset = "$0503";
+                                        preset = IconDynamicsHandle.ICONID_HEAD_DECRESCEND;
                                     }
                                     for ( int i = 0; i < spl2.Length; i++ ) {
                                         String aic_name = spl2[i];

@@ -701,7 +701,7 @@ namespace org.kbinani.cadencii {
                             y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
                             int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
                             if ( AppManager.addingEvent.ID.type == VsqIDType.Aicon ) {
-                                if ( AppManager.addingEvent.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                                if ( AppManager.addingEvent.ID.IconDynamicsHandle.isDynaffType() ) {
                                     length = AppManager.DYNAFF_ITEM_WIDTH;
                                 }
                             }
@@ -732,7 +732,7 @@ namespace org.kbinani.cadencii {
                                     continue;
                                 }
                                 int length = 0;
-                                if ( ev.editing.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                                if ( ev.editing.ID.IconDynamicsHandle.isDynaffType() ) {
                                     length = AppManager.DYNAFF_ITEM_WIDTH;
                                 } else {
                                     length = (int)(ev.editing.ID.getLength() * scalex);
@@ -798,7 +798,7 @@ namespace org.kbinani.cadencii {
                         int length = (int)(last.ID.getLength() * scalex);
 
                         if ( last.ID.type == VsqIDType.Aicon ) {
-                            if ( last.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                            if ( last.ID.IconDynamicsHandle.isDynaffType() ) {
                                 length = AppManager.DYNAFF_ITEM_WIDTH;
                             }
                         }
@@ -831,7 +831,7 @@ namespace org.kbinani.cadencii {
                     int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
 
                     if ( AppManager.addingEvent.ID.type == VsqIDType.Aicon ) {
-                        if ( AppManager.addingEvent.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                        if ( AppManager.addingEvent.ID.IconDynamicsHandle.isDynaffType() ) {
                             length = AppManager.DYNAFF_ITEM_WIDTH;
                         }
                     }

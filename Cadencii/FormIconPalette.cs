@@ -168,17 +168,17 @@ namespace org.kbinani.cadencii {
                 btn.setPreferredSize( new Dimension( buttonWidth, buttonWidth ) );
                 int iw = 0;
                 int ih = 0;
-                if ( icon_id.StartsWith( "$0501" ) ) {
+                if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_DYNAFF ) ) {
                     // dynaff
                     dynaffButtons.add( btn );
                     ih = 0;
                     iw = dynaffButtons.size() - 1;
-                } else if ( icon_id.StartsWith( "$0502" ) ) {
+                } else if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_CRESCEND ) ) {
                     // crescend
                     crescendButtons.add( btn );
                     ih = 1;
                     iw = crescendButtons.size() - 1;
-                } else if ( icon_id.StartsWith( "$0503" ) ) {
+                } else if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_DECRESCEND ) ) {
                     // decrescend
                     decrescendButtons.add( btn );
                     ih = 2;

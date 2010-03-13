@@ -80,17 +80,17 @@ namespace org.kbinani.vsq {
                     if ( item.ID.type == VsqIDType.Aicon && item.ID.IconDynamicsHandle != null && item.ID.IconDynamicsHandle.IconID != null ) {
                         String iconid = item.ID.IconDynamicsHandle.IconID;
                         if ( kindDynaff ) {
-                            if ( iconid.StartsWith( "$0501" ) ) {
+                            if ( iconid.StartsWith( IconDynamicsHandle.ICONID_HEAD_DYNAFF ) ) {
                                 return true;
                             }
                         }
                         if ( kindCrescend ) {
-                            if ( iconid.StartsWith( "$0502" ) ) {
+                            if ( iconid.StartsWith( IconDynamicsHandle.ICONID_HEAD_CRESCEND ) ) {
                                 return true;
                             }
                         }
                         if ( kindDecrescend ) {
-                            if ( iconid.StartsWith( "$0503" ) ) {
+                            if ( iconid.StartsWith( IconDynamicsHandle.ICONID_HEAD_DECRESCEND ) ) {
                                 return true;
                             }
                         }
@@ -119,19 +119,19 @@ namespace org.kbinani.vsq {
                         if ( item.ID.type == VsqIDType.Aicon && item.ID.IconDynamicsHandle != null && item.ID.IconDynamicsHandle.IconID != null ) {
                             String iconid = item.ID.IconDynamicsHandle.IconID;
                             if ( kindDynaff ) {
-                                if ( iconid.StartsWith( "$0501" ) ) {
+                                if ( iconid.StartsWith( IconDynamicsHandle.ICONID_HEAD_DYNAFF ) ) {
                                     pos = i;
                                     return i;
                                 }
                             }
                             if ( kindCrescend ) {
-                                if ( iconid.StartsWith( "$0502" ) ) {
+                                if ( iconid.StartsWith( IconDynamicsHandle.ICONID_HEAD_CRESCEND ) ) {
                                     pos = i;
                                     return i;
                                 }
                             }
                             if ( kindDecrescend ) {
-                                if ( iconid.StartsWith( "$0503" ) ) {
+                                if ( iconid.StartsWith( IconDynamicsHandle.ICONID_HEAD_DECRESCEND ) ) {
                                     pos = i;
                                     return i;
                                 }
@@ -459,7 +459,7 @@ namespace org.kbinani.vsq {
                 int clock = item.Clock;
                 int length = item.ID.getLength();
 
-                if ( handle.IconID.StartsWith( "$0501" ) ) {
+                if ( handle.isDynaffType() ) {
                     // 強弱記号
                     dyn.add( clock, handle.getStartDyn() );
                 } else {

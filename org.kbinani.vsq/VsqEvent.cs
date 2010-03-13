@@ -129,7 +129,7 @@ namespace org.kbinani.vsq {
                 #endregion
             } else if ( this.ID.type == VsqIDType.Aicon ) {
                 if ( !this.ID.IconDynamicsHandle.IconID.Equals( item.ID.IconDynamicsHandle.IconID ) ) return false;
-                if ( this.ID.IconDynamicsHandle.IconID.StartsWith( "$0501" ) ) {
+                if ( this.ID.IconDynamicsHandle.isDynaffType() ) {
                     // 強弱記号
                 } else {
                     // クレッシェンド・デクレッシェンド
