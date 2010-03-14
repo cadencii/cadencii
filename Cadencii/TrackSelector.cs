@@ -5496,7 +5496,8 @@ namespace org.kbinani.cadencii {
                         for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                             BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
                             TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)tsmi.getTag();
-                            if ( tag2.SingerName.Equals( ((IconHandle)ve.ID.IconHandle).IDS ) ) {
+                            if ( tag2.Language == ve.ID.IconHandle.Language && 
+                                 tag2.Program == ve.ID.IconHandle.Program ) {
                                 tsmi.setSelected( true );
                             } else {
                                 tsmi.setSelected( false );
@@ -5567,7 +5568,7 @@ namespace org.kbinani.cadencii {
                     }
                 } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
                     if ( sc != null ) {
-                        tip = "Original: " + VocaloSysUtil.getOriginalSinger( sc.VOICENAME, SynthesizerType.VOCALOID1 ) +
+                        tip = "Original: " + VocaloSysUtil.getOriginalSinger( sc.Language, sc.Program, SynthesizerType.VOCALOID1 ) +
                               "\nHarmonics: " + sc.Harmonics +
                               "\nNoise: " + sc.Breathiness +
                               "\nBrightness: " + sc.Brightness +
@@ -5580,7 +5581,7 @@ namespace org.kbinani.cadencii {
                     }
                 } else if ( renderer == RendererKind.VOCALOID2 ) {
                     if ( sc != null ) {
-                        tip = "Original: " + VocaloSysUtil.getOriginalSinger( sc.VOICENAME, SynthesizerType.VOCALOID2 ) +
+                        tip = "Original: " + VocaloSysUtil.getOriginalSinger( sc.Language, sc.Program, SynthesizerType.VOCALOID2 ) +
                               "\nBreathiness: " + sc.Breathiness +
                               "\nBrightness: " + sc.Brightness +
                               "\nClearness: " + sc.Clearness +
@@ -5596,9 +5597,10 @@ namespace org.kbinani.cadencii {
                     BMenuItem tsmi = new BMenuItem();
                     tsmi.setText( sc.VOICENAME );
                     TagForCMenuSingerDropDown tag = new TagForCMenuSingerDropDown();
-                    tag.SingerName = sc.VOICENAME;
                     tag.ToolTipText = tip;
                     tag.ToolTipPxWidth = 0;
+                    tag.Language = sc.Language;
+                    tag.Program = sc.Program;
                     tsmi.setTag( tag );
 #if JAVA
                     tsmi.clickEvent.add( new BEventHandler( this, "tsmi_Click" ) );
@@ -5646,7 +5648,8 @@ namespace org.kbinani.cadencii {
             try {
                 TagForCMenuSingerDropDown tag = (TagForCMenuSingerDropDown)((BMenuItem)sender).getTag();
                 String tip = tag.ToolTipText;
-                String singer = tag.SingerName;
+                int language = tag.Language;
+                int program = tag.Program;
 
                 // tooltipを表示するy座標を決める
                 int y = 0;
@@ -5654,8 +5657,8 @@ namespace org.kbinani.cadencii {
                 for ( int i = 0; i < sub.Length; i++ ) {
                     BMenuItem item = (BMenuItem)sub[i];
                     TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)item.getTag();
-                    String singer2 = tag2.SingerName;
-                    if ( singer.Equals( singer2 ) ) {
+                    if ( language == tag2.Language &&
+                         program == tag2.Program ) {
                         break;
                     }
                     y += item.getHeight();
@@ -5666,7 +5669,10 @@ namespace org.kbinani.cadencii {
                 Point pts = new Point( ppts.x, ppts.y );
                 Rectangle rrc = PortUtil.getScreenBounds( this );
                 Rectangle rc = new Rectangle( rrc.x, rrc.y, rrc.width, rrc.height );
-                toolTip.Tag = singer;
+                TagForCMenuSingerDropDown tag3 = new TagForCMenuSingerDropDown();
+                tag3.Program = program;
+                tag3.Language = language;
+                toolTip.Tag = tag3;
                 if ( pts.x + cmenuSinger.getWidth() + tip_width > rc.width ) {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( -tip_width, y ), 5000 );
                 } else {
@@ -5683,13 +5689,13 @@ namespace org.kbinani.cadencii {
             public boolean SingerChangeExists;
             public int Clock;
             public int InternalID;
-            //public String Renderer;
         }
 
         private struct TagForCMenuSingerDropDown {
-            public String SingerName;
             public int ToolTipPxWidth;
             public String ToolTipText;
+            public int Language;
+            public int Program;
         }
 
         private void tsmi_Click( Object sender, BEventArgs e ) {
@@ -5700,16 +5706,17 @@ namespace org.kbinani.cadencii {
             if ( sender is BMenuItem ) {
                 TagForCMenuSinger tag = (TagForCMenuSinger)cmenuSinger.getTag();
                 TagForCMenuSingerDropDown tag_dditem = (TagForCMenuSingerDropDown)((BMenuItem)sender).getTag();
-                String singer = tag_dditem.SingerName;
+                int language = tag_dditem.Language;
+                int program = tag_dditem.Program;
                 VsqID item = null;
                 if ( m_cmenu_singer_prepared == RendererKind.VOCALOID1_100 || m_cmenu_singer_prepared == RendererKind.VOCALOID1_101 ) {
-                    item = VocaloSysUtil.getSingerID( singer, SynthesizerType.VOCALOID1 );
+                    item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID1 );
                 } else if ( m_cmenu_singer_prepared == RendererKind.VOCALOID2 ) {
-                    item = VocaloSysUtil.getSingerID( singer, SynthesizerType.VOCALOID2 );
+                    item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID2 );
                 } else if ( m_cmenu_singer_prepared == RendererKind.UTAU || m_cmenu_singer_prepared == RendererKind.STRAIGHT_UTAU ) {
-                    item = AppManager.getSingerIDUtau( singer );
+                    item = AppManager.getSingerIDUtau( language, program );
                 } else if ( m_cmenu_singer_prepared == RendererKind.AQUES_TONE ) {
-                    item = AppManager.getSingerIDAquesTone( singer );
+                    item = AppManager.getSingerIDAquesTone( program );
                 }
                 if ( item != null ) {
                     int selected = AppManager.getSelected();
@@ -5733,23 +5740,44 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         private void toolTip_Draw( Object sender, System.Windows.Forms.DrawToolTipEventArgs e ) {
+            if ( !(sender is System.Windows.Forms.ToolTip) ) {
+                return;
+            }
+
             System.Drawing.Rectangle rrc = e.Bounds;
             Rectangle rc = new Rectangle( rrc.X, rrc.Y, rrc.Width, rrc.Height );
 #if DEBUG
-            AppManager.debugWriteLine( "toolTip_Draw" );
-            AppManager.debugWriteLine( "    sender.GetType()=" + sender.GetType() );
+            PortUtil.println( "FormMain#toolTip_Draw; sender.GetType()=" + sender.GetType() );
 #endif
-            String singer = (String)((System.Windows.Forms.ToolTip)sender).Tag;
+
+            System.Windows.Forms.ToolTip tooltip = (System.Windows.Forms.ToolTip)sender;
+            if ( tooltip.Tag == null ) {
+                return;
+            }
+            if ( !(tooltip.Tag is TagForCMenuSingerDropDown) ) {
+                return;
+            }
+            TagForCMenuSingerDropDown tag_tooltip = (TagForCMenuSingerDropDown)tooltip.Tag;
             MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
             for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                 MenuElement tsi = sub_cmenu_singer[i];
-                if ( tsi is BMenuItem ) {
-                    TagForCMenuSingerDropDown tag = (TagForCMenuSingerDropDown)((BMenuItem)tsi).getTag();
-                    if ( tag.SingerName.Equals( singer ) ) {
-                        tag.ToolTipPxWidth = rc.width;
-                        ((BMenuItem)tsi).setTag( tag );
-                        break;
-                    }
+                if ( !(tsi is BMenuItem) ) {
+                    continue;
+                }
+                BMenuItem menu = (BMenuItem)tsi;
+                Object obj = menu.getTag();
+                if ( obj == null ) {
+                    continue;
+                }
+                if ( !(obj is TagForCMenuSingerDropDown) ) {
+                    continue;
+                }
+                TagForCMenuSingerDropDown tag = (TagForCMenuSingerDropDown)obj;
+                if ( tag.Language == tag_tooltip.Language &&
+                     tag.Program == tag_tooltip.Program ) {
+                    tag.ToolTipPxWidth = rc.width;
+                    ((BMenuItem)tsi).setTag( tag );
+                    break;
                 }
             }
             e.DrawBackground();

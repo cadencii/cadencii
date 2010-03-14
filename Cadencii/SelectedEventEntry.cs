@@ -168,7 +168,7 @@ namespace org.kbinani.cadencii {
                         int selected = AppManager.getSelected();
                         VsqTrack vsq_track = vsq.Track.get( selected );
                         VsqEvent singer = vsq_track.getSingerEventAt( editing.Clock );
-                        SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Program );
+                        SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
                         if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                             UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
                             OtoArgs oa = db.attachFileNameFromLyric( phrase );

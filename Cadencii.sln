@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.vsq", "org.kbin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani", "org.kbinani\org.kbinani.csproj", "{C8AAE632-9C6C-4372-8175-811528A66742}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckSinger", "CheckSinger\CheckSinger.csproj", "{711503AA-C2FE-43BD-A09F-C6BB655CC8EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -65,6 +67,10 @@ Global
 		{C8AAE632-9C6C-4372-8175-811528A66742}.Debug|x86.Build.0 = Debug|x86
 		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|x86.ActiveCfg = Release|x86
 		{C8AAE632-9C6C-4372-8175-811528A66742}.Release|x86.Build.0 = Release|x86
+		{711503AA-C2FE-43BD-A09F-C6BB655CC8EC}.Debug|x86.ActiveCfg = Debug|x86
+		{711503AA-C2FE-43BD-A09F-C6BB655CC8EC}.Debug|x86.Build.0 = Debug|x86
+		{711503AA-C2FE-43BD-A09F-C6BB655CC8EC}.Release|x86.ActiveCfg = Release|x86
+		{711503AA-C2FE-43BD-A09F-C6BB655CC8EC}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

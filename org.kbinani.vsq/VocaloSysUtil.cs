@@ -52,6 +52,14 @@ namespace org.kbinani.vsq {
         private VocaloSysUtil() {
         }
 
+        public static SingerConfigSys getSingerConfigSys( SynthesizerType type ) {
+            if ( s_singer_config_sys.containsKey( type ) ) {
+                return s_singer_config_sys.get( type );
+            } else {
+                return null;
+            }
+        }
+
         /// <summary>
         /// VOCALOID1にて、バージョン1.1のSynthesize Engineが利用可能かどうか。
         /// 既定ではfalse。DSE1_1.dllが存在するかどうかで判定。
@@ -246,8 +254,9 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// ビブラートのプリセットタイプから，VibratoHandleを作成します
         /// </summary>
+        /// <param name="icon_id"></param>
+        /// <param name="vibrato_length"></param>
         /// <param name="type"></param>
-        /// <param name="vibrato_clocks"></param>
         /// <returns></returns>
         public static VibratoHandle getDefaultVibratoHandle( String icon_id, int vibrato_length, SynthesizerType type ) {
             if ( !isInitialized ) {
@@ -308,27 +317,26 @@ namespace org.kbinani.vsq {
 
             // path_vicedbを取得
             TreeMap<String, String> install_dirs = new TreeMap<String, String>();
-            // 最初はpath_voicedbの取得と、id（BHXXXXXXXXXXXXXXXX）のようなシリアルを取得
             for ( Iterator itr = voice.iterator(); itr.hasNext(); ) {
                 String s = (String)itr.next();
                 String[] spl = PortUtil.splitString( s, '\t' );
-                if ( spl.Length >= 2 ) {
-                    if ( spl[0].Equals( "VOICEDIR" ) ) {
-                        path_voicedb.value = spl[1];
-                    } else if ( spl.Length >= 3 ) {
-                        String[] spl2 = PortUtil.splitString( spl[0], '\\' );
-                        if ( spl2.Length == 1 ){
-                            if ( !install_dirs.containsKey( spl2[0] ) ) {
-                                String install = "";
-                                if ( spl[1].Equals( "INSTALLDIR" ) ) {
-                                    install = spl[2];
-                                }
-                                install_dirs.put( spl2[0], install );
-                            } else {
-                                if ( spl[1].Equals( "INSTALLDIR" ) ) {
-                                    install_dirs.put( spl2[0], spl[2] );
-                                }
-                            }
+                if ( spl.Length < 2 ) {
+                    continue;
+                }
+
+                if ( spl[0].Equals( "VOICEDIR" ) ) {
+                    path_voicedb.value = spl[1];
+                } else if ( spl.Length >= 3 ) {
+                    String[] spl2 = PortUtil.splitString( spl[0], '\\' );
+                    if ( spl2.Length == 1 ) {
+                        String id = spl2[0]; // BHXXXXXXXXXXXXみたいなシリアル
+                        if ( !install_dirs.containsKey( id ) ) {
+                            install_dirs.put( id, "" );
+                        }
+                        if ( spl[1].Equals( "INSTALLDIR" ) ) {
+                            // VOCALOID1の場合は、ここには到達しないはず
+                            String installdir = spl[2];
+                            install_dirs.put( id, PortUtil.combinePath( installdir, id ) );
                         }
                     }
                 }
@@ -338,8 +346,8 @@ namespace org.kbinani.vsq {
             for ( Iterator itr = install_dirs.keySet().iterator(); itr.hasNext(); ) {
                 String id = (String)itr.next();
                 String install = install_dirs.get( id );
-                if ( id.Equals( "" ) ) {
-                    install = path_voicedb.value;
+                if ( install.Equals( "" ) ) {
+                    install = PortUtil.combinePath( path_voicedb.value, id );
                 }
                 installed_singers.add( install );
             }
@@ -374,7 +382,7 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// レジストリkey内の値を再帰的に検索し、ファイルfpに順次出力する
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="reg_key_name"></param>
         /// <param name="parent_name"></param>
         /// <param name="list"></param>
         private static void initPrint( String reg_key_name, String parent_name, Vector<String> list ) {
@@ -459,9 +467,11 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 指定した歌声合成システムに登録されている指定した名前の歌手について、その派生元の歌手名を取得します。
         /// </summary>
-        /// <param name="singer"></param>
+        /// <param name="language"></param>
+        /// <param name="program"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        public static String getOriginalSinger( String singer, SynthesizerType type ) {
+        public static String getOriginalSinger( int language, int program, SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
             }
@@ -472,7 +482,7 @@ namespace org.kbinani.vsq {
             SingerConfigSys scs = s_singer_config_sys.get( type );
             SingerConfig[] singer_configs = scs.getSingerConfigs();
             for ( int i = 0; i < singer_configs.Length; i++ ) {
-                if ( singer.Equals( singer_configs[i].VOICENAME ) ) {
+                if ( language == singer_configs[i].Language && program == singer_configs[i].Program ) {
                     voiceidstr = singer_configs[i].VOICEIDSTR;
                     break;
                 }
@@ -492,17 +502,18 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 指定した歌声合成システムに登録されている指定した名前の歌手について、その歌手を表現するVsqIDのインスタンスを取得します。
         /// </summary>
-        /// <param name="singer"></param>
+        /// <param name="language"></param>
+        /// <param name="program"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static VsqID getSingerID( String singer, SynthesizerType type ) {
+        public static VsqID getSingerID( int language, int program, SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
             }
             if ( !s_singer_config_sys.containsKey( type ) ) {
                 return null;
             } else {
-                return s_singer_config_sys.get( type ).getSingerID( singer );
+                return s_singer_config_sys.get( type ).getSingerID( language, program );
             }
         }
 
@@ -619,15 +630,6 @@ namespace org.kbinani.vsq {
         public static double getAmplifyCoeffFromFeder( int feder ) {
             return Math.Exp( -1.26697245e-02 + 1.18448420e-01 * feder / 10.0 );
         }
-
-        /* // <summary>
-        /// Transform the byte array(length=8) to unsigned long, assuming that the byte array is little endian.
-        /// </summary>
-        /// <param name="oct"></param>
-        /// <returns></returns>
-        public static long makelong_le( byte[] oct ) {
-            return (long)oct[7] << 56 | (long)oct[6] << 48 | (long)oct[5] << 40 | (long)oct[4] << 32 | (long)oct[3] << 24 | (long)oct[2] << 16 | (long)oct[1] << 8 | (long)oct[0];
-        }*/
     }
 
 #if !JAVA

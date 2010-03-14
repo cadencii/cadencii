@@ -17,7 +17,7 @@ public class Utau_Plugin_Invoker : Form {
     private static string s_plugin_txt_path = @"E:\Program Files\UTAU\plugins\picedit\plugin.txt";
     private Label lblMessage;
     private static readonly string s_class_name = "Utau_Plugin_Invoker";
-    private static readonly string s_display_name = "Utau Plugin Invoker";
+    private static readonly string s_display_name = "Utau_Plugin_Invoker";
 
     private string m_exe_path = "";
     private System.ComponentModel.BackgroundWorker bgWork;
@@ -227,7 +227,7 @@ public class Utau_Plugin_Invoker : Form {
         UstFile tust = new UstFile( conv, 1 );
         VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );
         string voice_dir = "";
-        SingerConfig sc = AppManager.getSingerInfoUtau( singer_event.ID.IconHandle.Program );
+        SingerConfig sc = AppManager.getSingerInfoUtau( singer_event.ID.IconHandle.Language, singer_event.ID.IconHandle.Program );
         if ( sc != null ) {
             voice_dir = sc.VOICEIDSTR;
         }

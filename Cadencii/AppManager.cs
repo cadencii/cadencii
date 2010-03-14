@@ -982,7 +982,7 @@ namespace org.kbinani.cadencii {
             if ( vsq != null ) {
                 VsqTrack vsq_track = vsq.Track.get( track );
                 VsqEvent singer = vsq_track.getSingerEventAt( clock );
-                SingerConfig sc = getSingerInfoUtau( singer.ID.IconHandle.Program );
+                SingerConfig sc = getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
                 if ( sc != null && utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                     UtauVoiceDB db = utauVoiceDB.get( sc.VOICEIDSTR );
                     OtoArgs oa = db.attachFileNameFromLyric( new_phrase );
@@ -3230,28 +3230,20 @@ namespace org.kbinani.cadencii {
             keyWidth = draft_key_width;
         }
 
-        public static VsqID getSingerIDUtau( String name ) {
+        public static VsqID getSingerIDUtau( int language, int program ) {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
-            int index = -1;
-            int c = editorConfig.UtauSingers.size();
-            for ( int i = 0; i < c; i++ ) {
-                if ( editorConfig.UtauSingers.get( i ).VOICENAME.Equals( name ) ) {
-                    index = i;
-                    break;
-                }
-            }
-            if ( index >= 0 ) {
+            int index = language << 7 | program;
+            if ( 0 <= index && index < editorConfig.UtauSingers.size() ) {
                 SingerConfig sc = editorConfig.UtauSingers.get( index );
-                int lang = 0;//utauは今のところ全部日本語
                 ret.IconHandle = new IconHandle();
-                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( index, 4 );
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( language, 2 ) + PortUtil.toHexString( program, 2 );
                 ret.IconHandle.IDS = sc.VOICENAME;
                 ret.IconHandle.Index = 0;
-                ret.IconHandle.Language = lang;
+                ret.IconHandle.Language = language;
                 ret.IconHandle.setLength( 1 );
-                ret.IconHandle.Original = sc.Original;
-                ret.IconHandle.Program = sc.Program;
+                ret.IconHandle.Original = language << 8 | program;
+                ret.IconHandle.Program = program;
                 ret.IconHandle.Caption = "";
                 return ret;
             } else {
@@ -3265,9 +3257,10 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static SingerConfig getSingerInfoUtau( int program_change ) {
-            if ( 0 <= program_change && program_change < editorConfig.UtauSingers.size() ) {
-                return editorConfig.UtauSingers.get( program_change );
+        public static SingerConfig getSingerInfoUtau( int language, int program ) {
+            int index = language << 7 | program;
+            if ( 0 <= index && index < editorConfig.UtauSingers.size() ) {
+                return editorConfig.UtauSingers.get( index );
             } else {
                 return null;
             }
@@ -3282,13 +3275,13 @@ namespace org.kbinani.cadencii {
             return null;
         }
 
-        public static VsqID getSingerIDAquesTone( String name ) {
+        public static VsqID getSingerIDAquesTone( int program ) {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             int index = -1;
             int c = AquesToneDriver.SINGERS.Length;
             for ( int i = 0; i < c; i++ ) {
-                if ( AquesToneDriver.SINGERS[i].VOICENAME.Equals( name ) ) {
+                if ( AquesToneDriver.SINGERS[i].Program == program ) {
                     index = i;
                     break;
                 }
@@ -3297,20 +3290,20 @@ namespace org.kbinani.cadencii {
                 SingerConfig sc = AquesToneDriver.SINGERS[index];
                 int lang = 0;
                 ret.IconHandle = new IconHandle();
-                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( index, 4 );
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( lang, 2 ) + PortUtil.toHexString( program, 2 );
                 ret.IconHandle.IDS = sc.VOICENAME;
                 ret.IconHandle.Index = 0;
                 ret.IconHandle.Language = lang;
                 ret.IconHandle.setLength( 1 );
-                ret.IconHandle.Original = sc.Original;
-                ret.IconHandle.Program = sc.Program;
+                ret.IconHandle.Original = lang << 8 | program;
+                ret.IconHandle.Program = program;
                 ret.IconHandle.Caption = "";
                 return ret;
             } else {
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.Program = 0;
                 ret.IconHandle.Language = 0;
-                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( 0, 4 );
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( 0, 2 ) + PortUtil.toHexString( 0, 2 );
                 ret.IconHandle.IDS = "Unknown";
                 ret.type = VsqIDType.Singer;
                 return ret;

@@ -27,7 +27,7 @@ namespace org.kbinani.vsq {
 #endif
 
     public class SingerConfigSys {
-        private const int MAX_SINGERS = 0x4000;
+        public const int MAX_SINGERS = 0x4000;
 
         private Vector<SingerConfig> m_installed_singers = new Vector<SingerConfig>();
         private Vector<SingerConfig> m_singer_configs = new Vector<SingerConfig>();
@@ -44,62 +44,59 @@ namespace org.kbinani.vsq {
             if ( !PortUtil.isFileExists( map ) ) {
                 return;
             }
+
+            // インストールされている歌手の情報を読み取る。miku.vvd等から。
+            for ( int j = 0; j < path_installed_singers.Length; j++ ) {
+                String ipath = path_installed_singers[j];
+#if DEBUG
+                PortUtil.println( "SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j] );
+#endif
+                String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
+                if ( vvds.Length > 0 ) {
+                    SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
+                    m_installed_singers.add( installed );
+                    break;
+                }
+            }
+            
+            // voice.mapから、プログラムチェンジ、バンクセレクトと音源との紐付け情報を読み出す。
             RandomAccessFile fs = null;
             try {
                 fs = new RandomAccessFile( map, "r" );
                 byte[] dat = new byte[8];
                 fs.seek( 0x20 );
-                for ( int i = 0; i < MAX_SINGERS; i++ ) {
-                    fs.read( dat, 0, 8 );
-                    long value = PortUtil.make_int64_le( dat );
-                    if ( value >= 1 ) {
-                        String vvd = PortUtil.combinePath( path_voicedb, "vvoice" + value + ".vvd" );
-                        SingerConfig item = SingerConfig.fromVvd( vvd, 0 );
-                        item.Program = i;
-
-                        int original = -1;
-                        for ( Iterator itr = m_installed_singers.iterator(); itr.hasNext(); ) {
-                            SingerConfig sc = (SingerConfig)itr.next();
-                            if ( sc.VOICEIDSTR.Equals( item.VOICEIDSTR ) ) {
-                                original = sc.Program;
-                                break;
-                            }
+                for ( int language = 0; language < 0x80; language++ ) {
+                    for ( int program = 0; program < 0x80; program++ ) {
+                        fs.read( dat, 0, 8 );
+                        long value = PortUtil.make_int64_le( dat );
+                        if ( value >= 1 ) {
+                            String vvd = PortUtil.combinePath( path_voicedb, "vvoice" + value + ".vvd" );
+                            SingerConfig item = SingerConfig.fromVvd( vvd, language, program );
+                            m_singer_configs.add( item );
                         }
-                        if ( original < 0 ) {
-#if JAVA
-                            int count = path_installed_singers.length;
-#else
-                            int count = path_installed_singers.Length;
-#endif
-                            for ( int j = 0; j < count; j++ ) {
-                                String ipath = path_installed_singers[j];
-                                if ( ipath.EndsWith( item.VOICEIDSTR ) ) {
-                                    String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
-#if JAVA
-                                    if ( vvds.length > 0 ) {
-#else
-                                    if ( vvds.Length > 0 ) {
-#endif
-                                        original = m_installed_singers.size();
-                                        SingerConfig installed = SingerConfig.fromVvd( vvds[0], original );
-                                        installed.Program = original;
-                                        m_installed_singers.add( installed );
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        item.Original = original;
-                        m_singer_configs.add( item );
                     }
                 }
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "SingerConfigSys#.ctor; ex=" + ex );
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "SingerConfigSys#.ctor; ex2=" + ex2 );
+                    }
+                }
+            }
+
+            // m_singer_configsの情報から、m_installed_singersの歌唱言語情報を類推する
+            for ( Iterator itr = m_installed_singers.iterator(); itr.hasNext(); ) {
+                SingerConfig sc = (SingerConfig)itr.next();
+                String searchid = sc.VOICEIDSTR;
+                for ( Iterator itr2 = m_singer_configs.iterator(); itr2.hasNext(); ) {
+                    SingerConfig sc2 = (SingerConfig)itr2.next();
+                    if ( sc2.VOICEIDSTR.Equals( searchid ) ) {
+                        sc.Language = sc2.Language;
+                        break;
                     }
                 }
             }
@@ -114,39 +111,27 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="program_change"></param>
         /// <returns></returns>        
-        public VsqID getSingerID( String singer ) {
+        public VsqID getSingerID( int language, int program ) {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             SingerConfig sc = null;
             for ( int i = 0; i < m_singer_configs.size(); i++ ) {
-                if ( m_singer_configs.get( i ).VOICENAME.Equals( singer ) ) {
-                    sc = m_singer_configs.get( i );
+                SingerConfig itemi = m_singer_configs.get( i );
+                if ( itemi.Language == language && itemi.Program == program ) {
+                    sc = itemi;
                     break;
                 }
             }
             if ( sc == null ) {
                 sc = new SingerConfig();
             }
-            int lang = 0;
-            for ( Iterator itr = m_installed_singers.iterator(); itr.hasNext(); ) {
-                SingerConfig sc2 = (SingerConfig)itr.next();
-                if ( sc.VOICEIDSTR.Equals( sc2.VOICEIDSTR ) ) {
-                    VsqVoiceLanguage lang_enum = VocaloSysUtil.getLanguageFromName( sc.VOICENAME );
-#if JAVA
-                    lang = lang_enum.ordinal();
-#else
-                    lang = (int)lang_enum;
-#endif
-                    break;
-                }
-            }
             ret.IconHandle = new IconHandle();
-            ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( sc.Program, 4 );
+            ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( sc.Language, 2 ) + PortUtil.toHexString( sc.Program, 2 );
             ret.IconHandle.IDS = sc.VOICENAME;
             ret.IconHandle.Index = 0;
-            ret.IconHandle.Language = lang;
+            ret.IconHandle.Language = sc.Language;
             ret.IconHandle.setLength( 1 );
-            ret.IconHandle.Original = sc.Original;
+            ret.IconHandle.Original = sc.Language << 8 | sc.Program;
             ret.IconHandle.Program = sc.Program;
             ret.IconHandle.Caption = "";
             return ret;
@@ -157,10 +142,10 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="program_change"></param>
         /// <returns></returns>
-        public SingerConfig getSingerInfo( String singer ) {
+        public SingerConfig getSingerInfo( int language, int program ) {
             for ( Iterator itr = m_installed_singers.iterator(); itr.hasNext(); ) {
                 SingerConfig item = (SingerConfig)itr.next();
-                if ( item.VOICENAME.Equals( singer ) ) {
+                if ( item.Language == language && item.Program == program ) {
                     return item;
                 }
             }

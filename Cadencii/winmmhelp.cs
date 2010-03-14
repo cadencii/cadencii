@@ -137,7 +137,7 @@ namespace org.kbinani.cadencii {
             if ( s_joy_attatched[index] ) {
                 win32.joyGetPosEx( (uint)index, ref ji_ex );
                 pov = (int)ji_ex.dwPOV;
-                if ( pov == 0xffff ) {
+                if ( (0xffff & ji_ex.dwPOV) == 0xffff ) {
                     pov = -1;
                 }
                 for ( int i = 0; i < len && i < s_button_num[index]; i++ ) {

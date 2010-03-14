@@ -79,38 +79,38 @@ namespace org.kbinani.cadencii {
         }
 
         #region Static Readonly Field
-        public readonly Color s_pen_105_105_105 = new Color( 105, 105, 105 );
-        public readonly Color s_pen_187_187_255 = new Color( 187, 187, 255 );
+        private readonly Color s_pen_105_105_105 = new Color( 105, 105, 105 );
+        private readonly Color s_pen_187_187_255 = new Color( 187, 187, 255 );
         public readonly Color s_pen_007_007_151 = new Color( 7, 7, 151 );
         public readonly Color s_pen_065_065_065 = new Color( 65, 65, 65 );
         public readonly Color s_txtbox_backcolor = new Color( 128, 128, 128 );
         public readonly Color s_note_fill = new Color( 181, 220, 86 );
-        public readonly AuthorListEntry[] _CREDIT = new AuthorListEntry[]{
+        private readonly AuthorListEntry[] _CREDIT = new AuthorListEntry[]{
             new AuthorListEntry( "is developped by:", 2 ),
-            new AuthorListEntry( "kbinani" ),
-            new AuthorListEntry( "HAL(修羅場P)" ),
+            new AuthorListEntry( "kbinani (@kbinani)" ),
+            new AuthorListEntry( "修羅場P (@shurabaP)" ),
             new AuthorListEntry(),
             new AuthorListEntry(),
             new AuthorListEntry( "Special Thanks to", 3 ),
             new AuthorListEntry(),
             new AuthorListEntry( "tool icons designer:", 2 ),
-            new AuthorListEntry( "Yusuke KAMIYAMANE" ),
+            new AuthorListEntry( "Yusuke KAMIYAMANE (@ykamiyamane)" ),
             new AuthorListEntry(),
             new AuthorListEntry( "developper of STRAIGHT LIBRARY:", 2 ),
             new AuthorListEntry( "Hideki KAWAHARA" ),
             new AuthorListEntry( "Tetsu TAKAHASHI" ),
             new AuthorListEntry( "Hideki BANNO" ),
-            new AuthorListEntry( "Masanori MORISE" ),
+            new AuthorListEntry( "Masanori MORISE (@m_morise)" ),
             new AuthorListEntry( "(sorry, list is not complete)", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "developper of v.Connect:", 2 ),
-            new AuthorListEntry( "HAL(修羅場P)" ),
+            new AuthorListEntry( "修羅場P (@shurabaP)" ),
             new AuthorListEntry(),
             new AuthorListEntry( "developper of UTAU:", 2 ),
-            new AuthorListEntry( "飴屋/菖蒲" ),
+            new AuthorListEntry( "飴屋/菖蒲 (@ameyaP_)" ),
             new AuthorListEntry(),
             new AuthorListEntry( "promoter:", 2 ),
-            new AuthorListEntry( "zhuo" ),
+            new AuthorListEntry( "zhuo (@zhuop)" ),
             new AuthorListEntry(),
             new AuthorListEntry( "library tester:", 2 ),
             new AuthorListEntry( "evm" ),
@@ -121,7 +121,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "逃亡者" ),
             new AuthorListEntry(),
             new AuthorListEntry( "translator:", 2 ),
-            new AuthorListEntry( "Eji (zh-TW translation)" ),
+            new AuthorListEntry( "Eji (zh-TW translation, @ejiwarp)" ),
             new AuthorListEntry( "kankan (zh-TW translation)" ),
             new AuthorListEntry(),
             new AuthorListEntry(),
@@ -133,24 +133,26 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "Amby" ),
             new AuthorListEntry( "ケロッグ" ),
             new AuthorListEntry( "beginner" ),
-            new AuthorListEntry( "b2ox" ),
+            new AuthorListEntry( "b2ox (@b2ox)" ),
             new AuthorListEntry( "麻太郎" ),
-            new AuthorListEntry( "もみじぱん" ),
-            new AuthorListEntry( "PEX" ),
+            new AuthorListEntry( "もみじぱん (@momijipan)" ),
+            new AuthorListEntry( "PEX (@pex_zeo)" ),
             new AuthorListEntry( "やなぎがうら" ),
-            new AuthorListEntry( "cocoonP" ),
+            new AuthorListEntry( "cocoonP (@cocoonP)" ),
             new AuthorListEntry( "かつ" ),
             new AuthorListEntry( "ちゃそ" ),
             new AuthorListEntry( "ちょむ" ),
             new AuthorListEntry( "whimsoft" ),
-            new AuthorListEntry( "okokta" ),
+            new AuthorListEntry( "kitiketao (@okoktaokokta)" ),
             new AuthorListEntry( "カプチ２" ),
             new AuthorListEntry( "あにぃ" ),
             new AuthorListEntry( "tomo" ),
-            new AuthorListEntry( "ナウ□マP" ),
-            new AuthorListEntry( "mianaito" ),
-            new AuthorListEntry( "maizeziam" ),
+            new AuthorListEntry( "ナウ□マP (@now_romaP)" ),
+            new AuthorListEntry( "内藤　魅亜 (@mianaito)" ),
+            new AuthorListEntry( "空茶 (@maizeziam)" ),
             new AuthorListEntry( "いぬくま" ),
+            new AuthorListEntry( "shu-t (@shu_sonicwave)" ),
+            new AuthorListEntry( "さささ (@sasasa3396)" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -3667,8 +3669,7 @@ namespace org.kbinani.cadencii {
 
                         // oto.iniの設定を反映
                         VsqEvent item = vsq_track.getSingerEventAt( AppManager.addingEvent.Clock );
-                        SingerConfig singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Program );
-
+                        SingerConfig singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Language, item.ID.IconHandle.Program );
 
                         if ( singerConfig != null && AppManager.utauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
                             UtauVoiceDB utauVoiceDb = AppManager.utauVoiceDB.get( singerConfig.VOICEIDSTR );
@@ -10097,7 +10098,7 @@ namespace org.kbinani.cadencii {
                     singers = new Vector<VsqID>();
                     for ( int i = 0; i < list.Length; i++ ) {
                         SingerConfig sc = list[i];
-                        singers.add( AppManager.getSingerIDAquesTone( sc.VOICENAME ) );
+                        singers.add( AppManager.getSingerIDAquesTone( sc.Program ) );
                     }
                     renderer = "AQT00";
                 } else if ( kind == RendererKind.STRAIGHT_UTAU || kind == RendererKind.UTAU ) {
@@ -10105,7 +10106,7 @@ namespace org.kbinani.cadencii {
                     singers = new Vector<VsqID>();
                     for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
                         SingerConfig sc = (SingerConfig)itr.next();
-                        singers.add( AppManager.getSingerIDUtau( sc.VOICENAME ) );
+                        singers.add( AppManager.getSingerIDUtau( sc.Language, sc.Program ) );
                     }
                     renderer = (kind == RendererKind.UTAU) ? "UTU000" : "STR000";
                 } else if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
@@ -10113,7 +10114,7 @@ namespace org.kbinani.cadencii {
                     singers = new Vector<VsqID>();
                     for ( int i = 0; i < configs.Length; i++ ) {
                         SingerConfig sc = configs[i];
-                        singers.add( VocaloSysUtil.getSingerID( sc.VOICENAME, SynthesizerType.VOCALOID1 ) );
+                        singers.add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID1 ) );
                     }
                     renderer = "DSB202";
                 } else if ( kind == RendererKind.VOCALOID2 ) {
@@ -10121,7 +10122,7 @@ namespace org.kbinani.cadencii {
                     SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
                     for ( int i = 0; i < configs.Length; i++ ) {
                         SingerConfig sc = configs[i];
-                        singers.add( VocaloSysUtil.getSingerID( sc.VOICENAME, SynthesizerType.VOCALOID2 ) );
+                        singers.add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID2 ) );
                     }
                     renderer = "DSB301";
                 }
@@ -11904,7 +11905,7 @@ namespace org.kbinani.cadencii {
                     item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
                     VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
                     VsqEvent singer = vsq_track.getSingerEventAt( item.Clock );
-                    SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Program );
+                    SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
                     if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                         UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
                         OtoArgs oa = db.attachFileNameFromLyric( phrase );

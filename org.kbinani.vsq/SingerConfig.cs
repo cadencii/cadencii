@@ -40,7 +40,6 @@ namespace org.kbinani.vsq {
         public int Clearness;
         public int Opening;
         public int GenderFactor;
-        public int Original;
         public int Program;
         public int Resonance1Amplitude;
         public int Resonance1Frequency;
@@ -55,14 +54,16 @@ namespace org.kbinani.vsq {
         public int Resonance4Frequency;
         public int Resonance4BandWidth;
         public int Harmonics;
+        public String VvdPath = "";
+        public int Language;
 
         public SingerConfig() {
         }
 
-        public SingerConfig( String voiceName, int program, int original ) {
+        public SingerConfig( String voiceName, int language, int program ) {
             VOICENAME = voiceName;
+            Language = language;
             Program = program;
-            Original = original;
         }
 
         public Object clone() {
@@ -76,7 +77,6 @@ namespace org.kbinani.vsq {
             ret.Clearness = Clearness;
             ret.Opening = Opening;
             ret.GenderFactor = GenderFactor;
-            ret.Original = Original;
             ret.Program = Program;
             ret.Resonance1Amplitude = Resonance1Amplitude;
             ret.Resonance1Frequency = Resonance1Frequency;
@@ -91,6 +91,8 @@ namespace org.kbinani.vsq {
             ret.Resonance4Frequency = Resonance4Frequency;
             ret.Resonance4BandWidth = Resonance4BandWidth;
             ret.Harmonics = Harmonics;
+            ret.VvdPath = VvdPath;
+            ret.Language = Language;
             return ret;
         }
 
@@ -100,9 +102,8 @@ namespace org.kbinani.vsq {
         }
 #endif
 
-        public static SingerConfig fromVvd( String file, int original ) {
+        public static SingerConfig fromVvd( String file, int language, int program ) {
             SingerConfig sc = new SingerConfig();
-            //original = original;
             sc.ID = "VOCALOID:VIRTUAL:VOICE";
             sc.FORMAT = "2.0.0.0";
             sc.VOICEIDSTR = "";
@@ -112,7 +113,9 @@ namespace org.kbinani.vsq {
             sc.Clearness = 0;
             sc.Opening = 0;
             sc.GenderFactor = 0;
-            sc.Original = original; //original = 0;
+            sc.VvdPath = file;
+            sc.Language = language;
+            sc.Program = program;
             RandomAccessFile fs = null;
             try {
                 fs = new RandomAccessFile( file, "r" );
