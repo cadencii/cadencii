@@ -20,8 +20,6 @@ using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
 using VstSdk;
-//using org.kbinani.cadencii.implA;
-using org.kbinani.cadencii.util;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -333,10 +331,12 @@ namespace org.kbinani.cadencii {
             if ( useNativeDllLoader ) {
                 dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
             } else {
-                if ( !DllLoad.isInitialized() ){
-                    DllLoad.initialize();
+#if !MONO
+                if ( !org.kbinani.cadencii.util.DllLoad.isInitialized() ){
+                    org.kbinani.cadencii.util.DllLoad.initialize();
                 }
-                dllHandle = DllLoad.loadDll( dll_path );
+                dllHandle = org.kbinani.cadencii.util.DllLoad.loadDll( dll_path );
+#endif
             }
             if ( dllHandle == IntPtr.Zero ) {
                 PortUtil.stderr.println( "vstidrv#open; dllHandle is null" );
@@ -346,7 +346,9 @@ namespace org.kbinani.cadencii {
             if ( useNativeDllLoader ) {
                 mainProcPointer = win32.GetProcAddress( dllHandle, "main" );
             } else {
-                mainProcPointer = DllLoad.getProcAddress( dllHandle, "main" );
+#if !MONO
+                mainProcPointer = org.kbinani.cadencii.util.DllLoad.getProcAddress( dllHandle, "main" );
+#endif
             }
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( mainProcPointer,
                                                                             typeof( PVSTMAIN ) );
@@ -426,7 +428,9 @@ namespace org.kbinani.cadencii {
                     if ( useNativeDllLoader ) {
                         win32.FreeLibrary( dllHandle );
                     } else {
-                        DllLoad.freeDll( dllHandle );
+#if !MONO
+                        org.kbinani.cadencii.util.DllLoad.freeDll( dllHandle );
+#endif
                     }
                 }
             } catch( Exception ex ){

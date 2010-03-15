@@ -910,12 +910,14 @@ class UtauPluginManager : Form {
             }
         }
 
+#if ENABLE_SCRIPT
         if ( AppManager.mainWindow != null ) {
             VoidDelegate deleg = new VoidDelegate( AppManager.mainWindow.updateScriptShortcut );
             if ( deleg != null ) {
                 AppManager.mainWindow.Invoke( deleg );
             }
         }
+#endif
     }
 
     public static String GetDisplayName() {

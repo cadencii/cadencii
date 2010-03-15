@@ -5548,12 +5548,14 @@ namespace org.kbinani.cadencii {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) ) );
             } else if ( renderer == RendererKind.VOCALOID2 ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) ) );
+#if ENABLE_AQUESTONE
             } else if ( renderer == RendererKind.AQUES_TONE ){
                 items = new Vector<SingerConfig>();
                 int c = AquesToneDriver.SINGERS.Length;
                 for( int i = 0; i < c; i++ ){
                     items.add( AppManager.getSingerInfoAquesTone( i ) );
                 }
+#endif
             } else {
                 return;
             }

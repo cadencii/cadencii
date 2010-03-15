@@ -1,5 +1,4 @@
-﻿#if !JAVA
-//#if ENABLE_MIDI
+﻿#if ENABLE_MIDI
 /*
  * FormMidiConfig.cs
  * Copyright (C) 2009-2010 kbinani

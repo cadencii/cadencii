@@ -36,8 +36,6 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.java.io;
-using org.kbinani.cadencii.util;
-//using org.kbinani.cadencii.implTrunk;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -295,9 +293,11 @@ namespace org.kbinani.cadencii {
                     vocaloidDriver.get( i ).close();
                 }
             }
-            if ( DllLoad.isInitialized() ) {
-                DllLoad.terminate();
+#if !MONO
+            if ( org.kbinani.cadencii.util.DllLoad.isInitialized() ) {
+                org.kbinani.cadencii.util.DllLoad.terminate();
             }
+#endif
 #endif
 
 #if ENABLE_AQUESTONE

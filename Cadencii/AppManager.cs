@@ -3267,11 +3267,13 @@ namespace org.kbinani.cadencii {
         }
 
         public static SingerConfig getSingerInfoAquesTone( int program_change ) {
+#if ENABLE_AQUESTONE
             for ( int i = 0; i < AquesToneDriver.SINGERS.Length; i++ ) {
                 if ( program_change == AquesToneDriver.SINGERS[i].Program ) {
                     return AquesToneDriver.SINGERS[i];
                 }
             }
+#endif
             return null;
         }
 
@@ -3279,6 +3281,7 @@ namespace org.kbinani.cadencii {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             int index = -1;
+#if ENABLE_AQUESTONE
             int c = AquesToneDriver.SINGERS.Length;
             for ( int i = 0; i < c; i++ ) {
                 if ( AquesToneDriver.SINGERS[i].Program == program ) {
@@ -3300,6 +3303,7 @@ namespace org.kbinani.cadencii {
                 ret.IconHandle.Caption = "";
                 return ret;
             } else {
+#endif
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.Program = 0;
                 ret.IconHandle.Language = 0;
@@ -3307,7 +3311,9 @@ namespace org.kbinani.cadencii {
                 ret.IconHandle.IDS = "Unknown";
                 ret.type = VsqIDType.Singer;
                 return ret;
+#if ENABLE_AQUESTONE
             }
+#endif
         }
 
         public static String getVersion() {
