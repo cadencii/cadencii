@@ -114,8 +114,8 @@ namespace org.kbinani.cadencii {
             EditedZone zone = new EditedZone();
             AppManager.compareList( zone, new VsqBPListComparisonContext( list, src ) );
             Vector<EditedZoneUnit> zoneUnits = new Vector<EditedZoneUnit>();
-            for ( Iterator itr = zone.iterator(); itr.hasNext(); ){
-                zoneUnits.add( (EditedZoneUnit)itr.next() );
+            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ){
+                zoneUnits.add( itr.next() );
             }
             AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
 

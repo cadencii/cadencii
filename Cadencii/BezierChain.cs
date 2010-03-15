@@ -354,8 +354,8 @@ namespace org.kbinani.cadencii {
             //todo: ベジエが有効なときに、曲線の描く最大値、最小値も考慮
             min.value = Default;
             max.value = Default;
-            for ( Iterator itr = points.iterator(); itr.hasNext(); ){
-                BezierPoint bp = (BezierPoint)itr.next();
+            for ( Iterator<BezierPoint> itr = points.iterator(); itr.hasNext(); ){
+                BezierPoint bp = itr.next();
                 min.value = Math.Min( min.value, bp.getBase().getY() );
                 max.value = Math.Max( max.value, bp.getBase().getY() );
             }
@@ -364,8 +364,8 @@ namespace org.kbinani.cadencii {
         public void getKeyMinMax( ByRef<Double> min, ByRef<Double> max ) {
             min.value = Default;
             max.value = Default;
-            for ( Iterator itr = points.iterator(); itr.hasNext(); ){
-                BezierPoint bp = (BezierPoint)itr.next();
+            for ( Iterator<BezierPoint> itr = points.iterator(); itr.hasNext(); ){
+                BezierPoint bp = itr.next();
                 min.value = Math.Min( min.value, bp.getBase().getX() );
                 max.value = Math.Max( max.value, bp.getBase().getX() );
             }
@@ -373,8 +373,8 @@ namespace org.kbinani.cadencii {
         
         public Object clone() {
             BezierChain result = new BezierChain( this.m_color );
-            for ( Iterator itr = points.iterator(); itr.hasNext(); ){
-                BezierPoint bp = (BezierPoint)itr.next();
+            for ( Iterator<BezierPoint> itr = points.iterator(); itr.hasNext(); ){
+                BezierPoint bp = itr.next();
                 result.points.add( (BezierPoint)bp.clone() );
             }
             result.Default = this.Default;

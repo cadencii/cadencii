@@ -197,8 +197,8 @@ namespace org.kbinani.cadencii {
 #endif
 
             int j = -1;
-            for ( Iterator itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
-                VsqMixerEntry vme = (VsqMixerEntry)itr.next();
+            for ( Iterator<VsqMixerEntry> itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
+                VsqMixerEntry vme = itr.next();
                 j++;
                 m_tracker[j].setFeder( vme.Feder );
                 m_tracker[j].setPanpot( vme.Panpot );

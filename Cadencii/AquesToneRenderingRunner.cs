@@ -162,16 +162,16 @@ namespace org.kbinani.cadencii {
             // レンダリング開始位置での、パラメータの値をセットしておく
 
 
-            for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 long saNoteStart = (long)(vsq.getSecFromClock( item.Clock ) * sampleRate);
                 long saNoteEnd = (long)(vsq.getSecFromClock( item.Clock + item.ID.getLength() ) * sampleRate);
 
                 TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( vsq, renderingTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
-                for ( Iterator itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
+                for ( Iterator<Integer> itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
-                    Integer clock = (Integer)itr2.next();
+                    Integer clock = itr2.next();
                     long saStart = (long)(vsq.getSecFromClock( clock ) * sampleRate);
                     saRemain = (int)(saStart - saProcessed);
                     while ( saRemain > 0 ) {
@@ -205,8 +205,8 @@ namespace org.kbinani.cadencii {
                     }
                     // parameterの変更
                     if ( queue.param != null ) {
-                        for ( Iterator itr3 = queue.param.iterator(); itr3.hasNext(); ) {
-                            ParameterEvent pe = (ParameterEvent)itr3.next();
+                        for ( Iterator<ParameterEvent> itr3 = queue.param.iterator(); itr3.hasNext(); ) {
+                            ParameterEvent pe = itr3.next();
                             driver.setParameter( pe.index, pe.value );
                         }
                     }
@@ -287,8 +287,8 @@ namespace org.kbinani.cadencii {
             VsqTrack t = vsq.Track.get( track );
 
             // 歌手変更
-            for ( Iterator itr = t.getSingerEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = t.getSingerEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 if ( clock_start <= item.Clock && item.Clock <= clock_end ) {
                     if ( item.ID.IconHandle == null ) {
                         continue;
@@ -321,8 +321,8 @@ namespace org.kbinani.cadencii {
             VsqBPList bre = t.getCurve( "bre" );
             VsqBPList cle = t.getCurve( "cle" );
             VsqBPList por = t.getCurve( "por" );
-            for ( Iterator itr = t.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = t.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 int endclock = item.Clock + item.ID.getLength();
                 boolean contains_start = clock_start <= item.Clock && item.Clock <= clock_end;
                 boolean contains_end = clock_start <= endclock && endclock <= clock_end;
@@ -507,8 +507,8 @@ namespace org.kbinani.cadencii {
                         queue.param.add( pe );
 
                         // PITを順次追加
-                        for ( Iterator itr2 = pit_change.keySet().iterator(); itr2.hasNext(); ) {
-                            Integer clock = (Integer)itr2.next();
+                        for ( Iterator<Integer> itr2 = pit_change.keySet().iterator(); itr2.hasNext(); ) {
+                            Integer clock = itr2.next();
                             if ( clock_start <= clock && clock <= clock_end ) {
                                 float pvalue = pit_change.get( clock );
                                 int pit_value = (int)(8192.0 / (double)required_pbs * pvalue / 100.0);
@@ -589,8 +589,8 @@ namespace org.kbinani.cadencii {
                     int clock = pit.getKeyClock( i );
                     if ( clock_start <= clock && clock <= clock_end ) {
                         boolean contains = false;
-                        for ( Iterator itr = pit_send.iterator(); itr.hasNext(); ) {
-                            Point p = (Point)itr.next();
+                        for ( Iterator<Point> itr = pit_send.iterator(); itr.hasNext(); ) {
+                            Point p = itr.next();
                             if ( p.x <= clock && clock <= p.y ) {
                                 contains = true;
                                 break;

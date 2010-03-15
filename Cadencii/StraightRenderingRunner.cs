@@ -267,8 +267,8 @@ namespace org.kbinani.cadencii {
 
             // 最後のクロックがいくつかを調べる
             int tlast_clock = 0;
-            for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 tlast_clock = item.Clock + item.ID.getLength();
             }
             double abstract_sec = tlast_clock / (8.0 * TEMPO);
@@ -317,8 +317,8 @@ namespace org.kbinani.cadencii {
                                                                              "PMBendDepth",
                                                                              "PMBendLength",
                                                                              "PMbPortamentoUse", } ) );
-            for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 item.write( writer, print_targets );
             }
             int count = handles.size();
@@ -498,8 +498,8 @@ namespace org.kbinani.cadencii {
                         boolean first = true;
                         double old_date = PortUtil.getCurrentTime();
                         String old_key = "";
-                        for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ) {
-                            String key = (String)itr.next();
+                        for ( Iterator<String> itr = s_cache.keySet().iterator(); itr.hasNext(); ) {
+                            String key = itr.next();
                             double time = s_cache.get( key );
                             if ( first ) {
                                 old_date = time;
@@ -920,8 +920,8 @@ namespace org.kbinani.cadencii {
 
         public static void clearCache() {
             String tmp_dir = AppManager.getTempWaveDir();
-            for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ) {
-                String key = (String)itr.next();
+            for ( Iterator<String> itr = s_cache.keySet().iterator(); itr.hasNext(); ) {
+                String key = itr.next();
                 try {
                     PortUtil.deleteFile( PortUtil.combinePath( tmp_dir, key + ".wav" ) );
                 } catch( Exception ex ) {

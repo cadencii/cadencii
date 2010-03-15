@@ -310,8 +310,8 @@ namespace org.kbinani.vsq {
             command.Args = new Object[2];
             command.Args[0] = track;
             Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator itr = velocity.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> item = (ValuePair<Integer, Integer>)itr.next();
+            for ( Iterator<ValuePair<Integer, Integer>> itr = velocity.iterator(); itr.hasNext(); ) {
+                ValuePair<Integer, Integer> item = itr.next();
                 list.add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
@@ -353,8 +353,8 @@ namespace org.kbinani.vsq {
             command.Args = new Object[2];
             command.Args[0] = track;
             Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator itr = accent_list.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> item = (ValuePair<Integer, Integer>)itr.next();
+            for ( Iterator<ValuePair<Integer, Integer>> itr = accent_list.iterator(); itr.hasNext(); ) {
+                ValuePair<Integer, Integer> item = itr.next();
                 list.add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
@@ -374,8 +374,8 @@ namespace org.kbinani.vsq {
             command.Args = new Object[2];
             command.Args[0] = track;
             Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator itr = decay_list.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> item = (ValuePair<Integer, Integer>)itr.next();
+            for ( Iterator<ValuePair<Integer, Integer>> itr = decay_list.iterator(); itr.hasNext(); ) {
+                ValuePair<Integer, Integer> item = itr.next();
                 list.add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
@@ -441,8 +441,8 @@ namespace org.kbinani.vsq {
             command.Args[0] = track;
             command.Args[1] = target;
             Vector<BPPair> copied = new Vector<BPPair>();
-            for ( Iterator itr = edit.iterator(); itr.hasNext(); ) {
-                BPPair item = (BPPair)itr.next();
+            for ( Iterator<BPPair> itr = edit.iterator(); itr.hasNext(); ) {
+                BPPair item = itr.next();
                 copied.add( item );
             }
             command.Args[2] = copied;
@@ -464,15 +464,15 @@ namespace org.kbinani.vsq {
             command.Args[0] = track;
             command.Args[1] = target;
             Vector<Long> cp_delete = new Vector<Long>();
-            for ( Iterator itr = delete.iterator(); itr.hasNext(); ) {
-                long id = (Long)itr.next();
+            for ( Iterator<Long> itr = delete.iterator(); itr.hasNext(); ) {
+                long id = itr.next();
                 cp_delete.add( id );
             }
             command.Args[2] = cp_delete;
 
             TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
-            for ( Iterator itr = add.keySet().iterator(); itr.hasNext(); ) {
-                int clock = (Integer)itr.next();
+            for ( Iterator<Integer> itr = add.keySet().iterator(); itr.hasNext(); ) {
+                int clock = itr.next();
                 VsqBPPair item = add.get( clock );
                 cp_add.put( clock, item );
             }
@@ -495,8 +495,8 @@ namespace org.kbinani.vsq {
             count = edits.size();
             for ( int i = 0; i < count; i++ ) {
                 Vector<BPPair> copied = new Vector<BPPair>();
-                for ( Iterator itr = edits.get( i ).iterator(); itr.hasNext(); ) {
-                    BPPair item = (BPPair)itr.next();
+                for ( Iterator<BPPair> itr = edits.get( i ).iterator(); itr.hasNext(); ) {
+                    BPPair item = itr.next();
                     copied.add( new BPPair( item.Clock, item.Value ) );
                 }
                 cp_edits.add( copied );
@@ -529,8 +529,8 @@ namespace org.kbinani.vsq {
             c = delete.size();
             for ( int i = 0; i < c; i++ ) {
                 Vector<Long> cp_delete = new Vector<Long>();
-                for ( Iterator itr = delete.get( i ).iterator(); itr.hasNext(); ) {
-                    long id = (Long)itr.next();
+                for ( Iterator<Long> itr = delete.get( i ).iterator(); itr.hasNext(); ) {
+                    long id = itr.next();
                     cp_delete.add( id );
                 }
                 cp_vec_delete.add( cp_delete );
@@ -542,8 +542,8 @@ namespace org.kbinani.vsq {
             for ( int i = 0; i < c; i++ ) {
                 TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
                 TreeMap<Integer, VsqBPPair> tmp = add.get( i );
-                for ( Iterator itr = tmp.keySet().iterator(); itr.hasNext(); ) {
-                    int clock = (Integer)itr.next();
+                for ( Iterator<Integer> itr = tmp.keySet().iterator(); itr.hasNext(); ) {
+                    int clock = itr.next();
                     VsqBPPair item = tmp.get( clock );
                     cp_add.put( clock, item );
                 }

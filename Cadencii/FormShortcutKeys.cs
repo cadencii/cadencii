@@ -139,8 +139,8 @@ namespace org.kbinani.cadencii {
 
         private static void CopyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, TreeMap<String, ValuePair<String, BKeys[]>> dest ) {
             dest.clear();
-            for ( Iterator itr = src.keySet().iterator(); itr.hasNext(); ) {
-                String name = (String)itr.next();
+            for ( Iterator<String> itr = src.keySet().iterator(); itr.hasNext(); ) {
+                String name = itr.next();
                 String key = src.get( name ).getKey();
                 BKeys[] values = src.get( name ).getValue();
                 Vector<BKeys> cp = new Vector<BKeys>();
@@ -153,8 +153,8 @@ namespace org.kbinani.cadencii {
 
         private void UpdateList() {
             list.clear();
-            for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
-                String display = (String)itr.next();
+            for ( Iterator<String> itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
+                String display = itr.next();
                 Vector<BKeys> a = new Vector<BKeys>();
                 foreach ( BKeys key in m_dict.get( display ).getValue() ) {
                     a.add( key );
@@ -226,8 +226,8 @@ namespace org.kbinani.cadencii {
 
             Vector<BKeys> capturelist = new Vector<BKeys>();
             BKeys capture = BKeys.None;
-            for ( Iterator itr = AppManager.SHORTCUT_ACCEPTABLE.iterator(); itr.hasNext(); ) {
-                BKeys k = (BKeys)itr.next();
+            for ( Iterator<BKeys> itr = AppManager.SHORTCUT_ACCEPTABLE.iterator(); itr.hasNext(); ) {
+                BKeys k = itr.next();
 #if JAVA
                 if( code == k.getValue() ){
 #else
@@ -288,8 +288,8 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < EditorConfig.DEFAULT_SHORTCUT_KEYS.size(); i++ ) {
                 String name = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Key;
                 BKeys[] keys = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Value;
-                for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
-                    String display = (String)itr.next();
+                for ( Iterator<String> itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
+                    String display = itr.next();
                     if ( name.Equals( m_dict.get( display ).getKey() ) ) {
                         m_dict.get( display ).setValue( keys );
                         break;

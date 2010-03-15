@@ -186,8 +186,8 @@ namespace org.kbinani.cadencii {
                 trackDuration.setEnabled( false );
                 trackDepth.setEnabled( false );
             }
-            for ( Iterator itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                NoteHeadHandle item = (NoteHeadHandle)itr.next();
+            for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
+                NoteHeadHandle item = itr.next();
                 comboAttackTemplate.addItem( item );
                 if ( item.IconID.Equals( icon_id ) ) {
                     comboAttackTemplate.setSelectedItem( comboAttackTemplate.getItemAt( comboAttackTemplate.getItemCount() - 1 ) );

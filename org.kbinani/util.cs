@@ -118,7 +118,7 @@ namespace org.kbinani.java.util {
         /// セット内の各要素についての反復子を返します。
         /// </summary>
         /// <returns></returns>
-        Iterator iterator();
+        Iterator<E> iterator();
         /// <summary>
         /// 指定された要素がセット内にあった場合、セットから削除します (任意のオペレーション)。
         /// </summary>

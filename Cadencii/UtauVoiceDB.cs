@@ -131,8 +131,8 @@ namespace org.kbinani.cadencii {
         /// <returns></returns>
         public OtoArgs attachFileNameFromLyric( String lyric ) {
             int count = m_configs.size();
-            for ( Iterator itr = m_configs.iterator(); itr.hasNext(); ) {
-                OtoArgs item = (OtoArgs)itr.next();
+            for ( Iterator<OtoArgs> itr = m_configs.iterator(); itr.hasNext(); ) {
+                OtoArgs item = itr.next();
                 if ( PortUtil.getFileNameWithoutExtension( item.fileName ).Equals( lyric ) ) {
                     return item;
                 }

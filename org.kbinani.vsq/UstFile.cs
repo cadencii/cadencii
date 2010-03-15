@@ -279,8 +279,8 @@ namespace org.kbinani.vsq {
             UstTrack track_add = new UstTrack();
             int last_clock = 0;
             int index = 0;
-            for( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ){
-                VsqEvent item = (VsqEvent)itr.next();
+            for( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ){
+                VsqEvent item = itr.next();
                 if( last_clock < item.Clock ){
                     // ゲートタイム差あり，Rを追加
                     UstEvent itemust = (UstEvent)template.clone();
@@ -310,8 +310,8 @@ namespace org.kbinani.vsq {
             //VsqBPList pbs = track.getCurve( "pbs" );
             //VsqBPList pit = track.getCurve( "pit" );
             int clock = 0;
-            for ( Iterator itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
-                UstEvent item = (UstEvent)itr.next();
+            for ( Iterator<UstEvent> itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
+                UstEvent item = itr.next();
                 int clock_begin = clock;
                 int clock_end = clock + item.getLength();
                 Vector<Float> pitch = new Vector<Float>();

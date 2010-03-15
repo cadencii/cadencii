@@ -55,12 +55,8 @@ namespace org.kbinani.vsq {
             return m_events.size();
         }
 
-        public Iterator getNoteEventIterator() {
-#if JAVA
+        public Iterator<UstEvent> getNoteEventIterator() {
             return m_events.iterator();
-#else
-            return new ListIterator<UstEvent>( m_events );
-#endif
         }
 
         public Object clone() {

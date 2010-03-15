@@ -1083,8 +1083,8 @@ namespace org.kbinani.cadencii {
                         int dashed_line_step = AppManager.getPositionQuantizeClock();
                         g.clipRect( key_width, HEADER, size.width - key_width, size.height - 2 * OFFSET_TRACK_TAB );
                         Color white100 = new Color( 0, 0, 0, 100 );
-                        for ( Iterator itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( getWidth() ) ); itr.hasNext(); ) {
-                            VsqBarLineType blt = (VsqBarLineType)itr.next();
+                        for ( Iterator<VsqBarLineType> itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( getWidth() ) ); itr.hasNext(); ) {
+                            VsqBarLineType blt = itr.next();
                             int x = AppManager.xCoordFromClocks( blt.clock() );
                             int local_clock_step = 480 * 4 / blt.getLocalDenominator();
                             if ( blt.isSeparator() ) {
@@ -1269,8 +1269,8 @@ namespace org.kbinani.cadencii {
                                 int count = 0;
                                 int lastx = 0;
                                 int lasty = 0;
-                                for ( Iterator itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
-                                    int key = (Integer)itr.next();
+                                for ( Iterator<Integer> itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
+                                    int key = itr.next();
                                     int x = key - stdx;
                                     int y = m_mouse_trace.get( key );
                                     if ( y < 8 ) {
@@ -1325,8 +1325,8 @@ namespace org.kbinani.cadencii {
                             }
                         }
                         if ( m_mouse_down_mode == MouseDownMode.SINGER_LIST && AppManager.getSelectedTool() != EditTool.ERASER ) {
-                            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                                SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                            for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                                SelectedEventEntry item = itr.next();
                                 int x = AppManager.xCoordFromClocks( item.editing.Clock );
                                 g.setColor( s_pen_128_128_128 );
                                 g.drawPolygon( new int[] { x, x, x + SINGER_ITEM_WIDTH, x + SINGER_ITEM_WIDTH },
@@ -1367,8 +1367,8 @@ namespace org.kbinani.cadencii {
                     //sf.LineAlignment = StringAlignment.Near;
                     g.drawString( m_selected_curve.getName(), 7, 24 ); // new Rectangle( 7, 24, 56, 14 ), sf
 
-                    for ( Iterator itr = m_viewing_curves.iterator(); itr.hasNext(); ) {
-                        CurveType curve = (CurveType)itr.next();
+                    for ( Iterator<CurveType> itr = m_viewing_curves.iterator(); itr.hasNext(); ) {
+                        CurveType curve = itr.next();
                         Rectangle rc = getRectFromCurveType( curve );
                         if ( curve.equals( m_selected_curve ) || curve.equals( m_last_selected_curve ) ) {
                             g.setColor( new Color( 108, 108, 108 ) );
@@ -1486,8 +1486,8 @@ namespace org.kbinani.cadencii {
             Point selected_point = new Point();
             boolean selected_found = false;
             boolean search_mouse = (0 <= mouse.y && mouse.y <= getHeight());
-            for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 if ( last == null ) {
                     last = item;
                     continue;
@@ -1716,8 +1716,8 @@ namespace org.kbinani.cadencii {
             VsqEvent last = null;
             int dotwid = DOT_WID * 2 + 1;
             VsqFileEx vsq = AppManager.getVsqFile();
-            for ( Iterator itr = vsq.Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = vsq.Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 if ( last == null ) {
                     last = item;
                     continue;
@@ -2165,8 +2165,8 @@ namespace org.kbinani.cadencii {
                 // draw curve
                 Color shadow = new Color( 0, 0, 0, 127 );
                 int last_shadow_x = AppManager.keyWidth;
-                for ( Iterator itr = draw_target.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = draw_target.getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent ve = itr.next();
                     int start = ve.Clock + ve.ID.VibratoDelay;
                     int end = ve.Clock + ve.ID.getLength();
                     if ( end < cl_start ) {
@@ -2387,8 +2387,8 @@ namespace org.kbinani.cadencii {
                     int dx = mouse.x + AppManager.startToDrawX - m_mouse_down_location.x;
                     int dy = mouse.y - m_mouse_down_location.y;
                     int w = DOT_WID * 2 + 1;
-                    for ( Iterator itr = m_moving_points.iterator(); itr.hasNext(); ) {
-                        BPPair item = (BPPair)itr.next();
+                    for ( Iterator<BPPair> itr = m_moving_points.iterator(); itr.hasNext(); ) {
+                        BPPair item = itr.next();
                         int x = AppManager.xCoordFromClocks( item.Clock ) + dx;
                         int y = yCoordFromValue( item.Value ) + dy;
                         g.setColor( CURVE_COLOR_DOT );
@@ -2557,8 +2557,8 @@ namespace org.kbinani.cadencii {
                     int dx = mouse.x + AppManager.startToDrawX - m_mouse_down_location.x;
                     int dy = mouse.y - m_mouse_down_location.y;
                     int w = DOT_WID * 2 + 1;
-                    for ( Iterator itr = m_moving_points.iterator(); itr.hasNext(); ) {
-                        BPPair item = (BPPair)itr.next();
+                    for ( Iterator<BPPair> itr = m_moving_points.iterator(); itr.hasNext(); ) {
+                        BPPair item = itr.next();
                         int x = AppManager.xCoordFromClocks( item.Clock ) + dx;
                         int y = yCoordFromValue( item.Value ) + dy;
                         g.setColor( CURVE_COLOR_DOT );
@@ -2596,8 +2596,8 @@ namespace org.kbinani.cadencii {
             if ( m_curve_visible ) {
                 if ( e.Button == BMouseButtons.Left ) {
                     // カーブの種類一覧上で発生したイベントかどうかを検査
-                    for ( Iterator itr = m_viewing_curves.iterator(); itr.hasNext(); ) {
-                        CurveType curve = (CurveType)itr.next();
+                    for ( Iterator<CurveType> itr = m_viewing_curves.iterator(); itr.hasNext(); ) {
+                        CurveType curve = itr.next();
                         Rectangle r = getRectFromCurveType( curve );
                         if ( isInRect( e.X, e.Y, r ) ) {
                             changeCurve( curve );
@@ -2964,15 +2964,15 @@ namespace org.kbinani.cadencii {
                         Vector<Integer> removelist = new Vector<Integer>();
                         int x = e.X + AppManager.startToDrawX;
                         if ( x < m_mouse_trace_last_x ) {
-                            for ( Iterator itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
-                                int key = (Integer)itr.next();
+                            for ( Iterator<Integer> itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
+                                int key = itr.next();
                                 if ( x <= key && key < m_mouse_trace_last_x ) {
                                     removelist.add( key );
                                 }
                             }
                         } else if ( m_mouse_trace_last_x < x ) {
-                            for ( Iterator itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
-                                int key = (Integer)itr.next();
+                            for ( Iterator<Integer> itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
+                                int key = itr.next();
                                 if ( m_mouse_trace_last_x < key && key <= x ) {
                                     removelist.add( key );
                                 }
@@ -3015,8 +3015,8 @@ namespace org.kbinani.cadencii {
                 }
             } else if ( m_mouse_down_mode == MouseDownMode.SINGER_LIST ) {
                 int dclock = clock - m_singer_move_started_clock;
-                for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                    SelectedEventEntry item = itr.next();
                     item.editing.Clock = item.original.Clock + dclock;
                 }
             } else if ( m_mouse_down_mode == MouseDownMode.VEL_EDIT ) {
@@ -3029,8 +3029,8 @@ namespace org.kbinani.cadencii {
                 } else if ( m_selected_curve.equals( CurveType.Decay ) ) {
                     d_vel = t_value - m_veledit_selected.get( m_veledit_last_selectedid ).original.ID.DEMdecGainRate;
                 }
-                for ( Iterator itr = m_veledit_selected.keySet().iterator(); itr.hasNext(); ) {
-                    int id = (Integer)itr.next();
+                for ( Iterator<Integer> itr = m_veledit_selected.keySet().iterator(); itr.hasNext(); ) {
+                    int id = itr.next();
                     if ( m_selected_curve.equals( CurveType.VEL ) ) {
                         int new_vel = m_veledit_selected.get( id ).original.ID.Dynamics + d_vel;
                         if ( new_vel < m_selected_curve.getMinimum() ) {
@@ -3163,8 +3163,8 @@ namespace org.kbinani.cadencii {
             Point location = new Point( locx, locy );
             for ( int i = 0; i < c; i++ ) {
                 BezierChain bc = list.get( i );
-                for ( Iterator itr = bc.points.iterator(); itr.hasNext(); ) {
-                    BezierPoint bp = (BezierPoint)itr.next();
+                for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
+                    BezierPoint bp = itr.next();
                     Point p = getScreenCoord( bp.getBase() );
                     Rectangle r = new Rectangle( p.x - shift, p.y - shift, width, width );
                     if ( isInRect( locx, locy, r ) ) {
@@ -3322,8 +3322,8 @@ namespace org.kbinani.cadencii {
                         if ( (m_modifier_on_mouse_down & m_modifier_key) == m_modifier_key ) {
                             if ( AppManager.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
                                 Vector<Integer> old = new Vector<Integer>();
-                                for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                                    SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                                    SelectedEventEntry item = itr.next();
                                     int id = item.original.InternalID;
                                     if ( id != ve.InternalID ) {
                                         old.add( id );
@@ -3339,8 +3339,8 @@ namespace org.kbinani.cadencii {
                             int tmin = Math.Min( ve.Clock, last_clock );
                             int tmax = Math.Max( ve.Clock, last_clock );
                             Vector<Integer> add_required = new Vector<Integer>();
-                            for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
-                                VsqEvent item = (VsqEvent)itr.next();
+                            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
+                                VsqEvent item = itr.next();
                                 if ( item.ID.type == VsqIDType.Singer && tmin <= item.Clock && item.Clock <= tmax ) {
                                     add_required.add( item.InternalID );
                                     //AppManager.AddSelectedEvent( item.InternalID );
@@ -3365,8 +3365,8 @@ namespace org.kbinani.cadencii {
                 boolean clock_inner_note = false; //マウスの降りたクロックが，ノートの範囲内かどうかをチェック
                 int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
                 int right_clock = AppManager.clockFromXCoord( getWidth() - vScroll.getWidth() );
-                for ( Iterator itr = vsq.Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = vsq.Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent ve = itr.next();
                     if ( ve.ID.type == VsqIDType.Anote ) {
                         int start = ve.Clock;
                         if ( right_clock < start ) {
@@ -3513,8 +3513,8 @@ namespace org.kbinani.cadencii {
                                 AppManager.clearSelectedBezier();
                                 for ( int i = 0; i < dict.size(); i++ ) {
                                     BezierChain bc = dict.get( i );
-                                    for ( Iterator itr = bc.points.iterator(); itr.hasNext(); ) {
-                                        BezierPoint bp = (BezierPoint)itr.next();
+                                    for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
+                                        BezierPoint bp = itr.next();
                                         Point pt = getScreenCoord( bp.getBase() );
                                         Rectangle rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                         if ( isInRect( e.X, e.Y, rc ) ) {
@@ -3565,8 +3565,8 @@ namespace org.kbinani.cadencii {
                                     if ( (m_modifier_on_mouse_down & m_modifier_key) == m_modifier_key ) {
                                         // clicked with CTRL key
                                         Vector<Integer> list = new Vector<Integer>();
-                                        for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                                            SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                                        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                                            SelectedEventEntry item = itr.next();
                                             VsqEvent ve2 = item.original;
                                             if ( ve.InternalID == ve2.InternalID ) {
                                                 found2 = true;
@@ -3584,8 +3584,8 @@ namespace org.kbinani.cadencii {
                                             int tmin = Math.Min( ve.Clock, last_clock );
                                             int tmax = Math.Max( ve.Clock, last_clock );
                                             Vector<Integer> add_required = new Vector<Integer>();
-                                            for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
-                                                VsqEvent item = (VsqEvent)itr.next();
+                                            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+                                                VsqEvent item = itr.next();
                                                 if ( tmin <= item.Clock && item.Clock <= tmax ) {
                                                     add_required.add( item.InternalID );
                                                 }
@@ -3613,8 +3613,8 @@ namespace org.kbinani.cadencii {
                                     }
                                     m_veledit_selected.clear();
                                     if ( AppManager.isSelectedEventContains( AppManager.getSelected(), m_veledit_last_selectedid ) ) {
-                                        for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                                            SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                                        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                                            SelectedEventEntry item = itr.next();
                                             m_veledit_selected.put( item.original.InternalID,
                                                                     new SelectedEventEntry( AppManager.getSelected(),
                                                                                             item.original,
@@ -3803,8 +3803,8 @@ namespace org.kbinani.cadencii {
                                 boolean found = false;
                                 for ( int i = 0; i < dict.size(); i++ ) {
                                     BezierChain bc = dict.get( i );
-                                    for ( Iterator itr = bc.points.iterator(); itr.hasNext(); ) {
-                                        BezierPoint bp = (BezierPoint)itr.next();
+                                    for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
+                                        BezierPoint bp = itr.next();
                                         Point pt = getScreenCoord( bp.getBase() );
                                         Rectangle rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
                                         if ( isInRect( e.X, e.Y, rc ) ) {
@@ -3872,8 +3872,8 @@ namespace org.kbinani.cadencii {
                             is_middle = true;
                         }
                         if ( !too_near ) {
-                            for ( Iterator itr = bc.points.iterator(); itr.hasNext(); ) {
-                                BezierPoint bp = (BezierPoint)itr.next();
+                            for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
+                                BezierPoint bp = itr.next();
                                 Point pt = getScreenCoord( bp.getBase() );
                                 Rectangle rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                 if ( isInRect( e.X, e.Y, rc ) ) {
@@ -4334,8 +4334,8 @@ namespace org.kbinani.cadencii {
                                 AppManager.curveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                 AppManager.clearSelectedEvent();
                                 Vector<Integer> deleting = new Vector<Integer>();
-                                for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ev = (VsqEvent)itr.next();
+                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ev = itr.next();
                                     if ( start <= ev.Clock && ev.Clock <= end ) {
                                         deleting.add( ev.InternalID );
                                     }
@@ -4352,8 +4352,8 @@ namespace org.kbinani.cadencii {
                                 int er_end = Math.Max( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
                                 Vector<Integer> internal_ids = new Vector<Integer>();
                                 Vector<VsqID> items = new Vector<VsqID>();
-                                for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = (VsqEvent)itr.next();
+                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ve = itr.next();
                                     if ( ve.ID.VibratoHandle == null ) {
                                         continue;
                                     }
@@ -4491,15 +4491,15 @@ namespace org.kbinani.cadencii {
                                 AppManager.debugWriteLine( "        end=" + end );
 #endif
                                 TreeMap<Integer, Integer> velocity = new TreeMap<Integer, Integer>();
-                                for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = (VsqEvent)itr.next();
+                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ve = itr.next();
                                     if ( start <= ve.Clock && ve.Clock < end ) {
                                         int i = -1;
                                         int lkey = 0;
                                         int count = m_mouse_trace.size();
-                                        for ( Iterator itr2 = m_mouse_trace.keySet().iterator(); itr2.hasNext(); ) {
+                                        for ( Iterator<Integer> itr2 = m_mouse_trace.keySet().iterator(); itr2.hasNext(); ) {
                                             i++;
-                                            int key = (Integer)itr2.next();
+                                            int key = itr2.next();
                                             if ( i == 0 ) {
                                                 lkey = key;
                                                 continue;
@@ -4529,8 +4529,8 @@ namespace org.kbinani.cadencii {
                                 }
                                 if ( velocity.size() > 0 ) {
                                     Vector<ValuePair<Integer, Integer>> cpy = new Vector<ValuePair<Integer, Integer>>();
-                                    for ( Iterator itr = velocity.keySet().iterator(); itr.hasNext(); ) {
-                                        int key = (Integer)itr.next();
+                                    for ( Iterator<Integer> itr = velocity.keySet().iterator(); itr.hasNext(); ) {
+                                        int key = itr.next();
                                         int value = (Integer)velocity.get( key );
                                         cpy.add( new ValuePair<Integer, Integer>( key, value ) );
                                     }
@@ -4559,8 +4559,8 @@ namespace org.kbinani.cadencii {
 #endif
                                 Vector<Integer> internal_ids = new Vector<Integer>();
                                 Vector<VsqID> items = new Vector<VsqID>();
-                                for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = (VsqEvent)itr.next();
+                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ve = itr.next();
                                     int cl_vib_start = ve.Clock + ve.ID.VibratoDelay;
                                     float cl_vib_length = ve.ID.getLength() - ve.ID.VibratoDelay;
                                     int vib_start = AppManager.xCoordFromClocks( cl_vib_start ) + stdx;          // 仮想スクリーン上の、ビブラートの描画開始位置
@@ -4585,9 +4585,9 @@ namespace org.kbinani.cadencii {
                                                 int j = -1;
                                                 int lkey = 0;
                                                 int lvalue = 0;
-                                                for ( Iterator itr2 = m_mouse_trace.keySet().iterator(); itr2.hasNext(); ) {
+                                                for ( Iterator<Integer> itr2 = m_mouse_trace.keySet().iterator(); itr2.hasNext(); ) {
                                                     j++;
-                                                    int key = (Integer)itr2.next();
+                                                    int key = itr2.next();
                                                     int value = m_mouse_trace.get( key );
                                                     if ( j == 0 ) {
                                                         lkey = key;
@@ -4729,9 +4729,9 @@ namespace org.kbinani.cadencii {
                                         int j = -1;
                                         int lkey = 0;
                                         int lvalue = 0;
-                                        for ( Iterator itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
+                                        for ( Iterator<Integer> itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
                                             j++;
-                                            int key = (Integer)itr.next();
+                                            int key = itr.next();
                                             int value = m_mouse_trace.get( key );
                                             if ( j == 0 ) {
                                                 lkey = key;
@@ -4819,8 +4819,8 @@ namespace org.kbinani.cadencii {
                             float b0 = y0 - a0 * x0;
                             if ( m_selected_curve.equals( CurveType.VEL ) || m_selected_curve.equals( CurveType.Accent ) || m_selected_curve.equals( CurveType.Decay ) ) {
                                 Vector<ValuePair<Integer, Integer>> velocity = new Vector<ValuePair<Integer, Integer>>();
-                                for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = (VsqEvent)itr.next();
+                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ve = itr.next();
                                     if ( x0 <= ve.Clock && ve.Clock < x1 ) {
                                         int new_value = (int)(a0 * ve.Clock + b0);
                                         velocity.add( new ValuePair<Integer, Integer>( ve.InternalID, new_value ) );
@@ -4849,8 +4849,8 @@ namespace org.kbinani.cadencii {
 #endif
                                 Vector<Integer> internal_ids = new Vector<Integer>();
                                 Vector<VsqID> items = new Vector<VsqID>();
-                                for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = (VsqEvent)itr.next();
+                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ve = itr.next();
                                     int cl_vib_start = ve.Clock + ve.ID.VibratoDelay;
                                     int cl_vib_length = ve.ID.getLength() - ve.ID.VibratoDelay;
                                     int cl_vib_end = cl_vib_start + cl_vib_length;
@@ -4967,8 +4967,8 @@ namespace org.kbinani.cadencii {
                         boolean is_valid = true;
                         boolean contains_first_singer = false;
                         int premeasure = vsq.getPreMeasureClocks();
-                        for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                            SelectedEventEntry item = itr.next();
                             i++;
                             ids[i] = item.original.InternalID;
                             clocks[i] = item.editing.Clock;
@@ -5002,8 +5002,8 @@ namespace org.kbinani.cadencii {
                             }
                             boolean changed = false;
                             for ( int j = 0; j < ids.Length; j++ ) {
-                                for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                                    SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                                    SelectedEventEntry item = itr.next();
                                     if ( item.original.InternalID == ids[j] && item.original.Clock != clocks[j] ) {
                                         changed = true;
                                         break;
@@ -5026,8 +5026,8 @@ namespace org.kbinani.cadencii {
                 int[] ids = new int[count];
                 VsqID[] values = new VsqID[count];
                 int i = -1;
-                for ( Iterator itr = m_veledit_selected.keySet().iterator(); itr.hasNext(); ) {
-                    int id = (Integer)itr.next();
+                for ( Iterator<Integer> itr = m_veledit_selected.keySet().iterator(); itr.hasNext(); ) {
+                    int id = itr.next();
                     i++;
                     ids[i] = id;
                     values[i] = (VsqID)m_veledit_selected.get( id ).editing.ID.clone();
@@ -5172,8 +5172,8 @@ namespace org.kbinani.cadencii {
                     float x = -1f;
                     VsqID edited = null;
                     int event_id = -1;
-                    for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
-                        VsqEvent ve = (VsqEvent)itr.next();
+                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+                        VsqEvent ve = itr.next();
                         if ( ve.ID.VibratoHandle == null ) {
                             continue;
                         }
@@ -5354,8 +5354,8 @@ namespace org.kbinani.cadencii {
                         int dict_size = dict.size();
                         for ( int i = 0; i < dict_size; i++ ) {
                             BezierChain bc = dict.get( i );
-                            for ( Iterator itr = bc.points.iterator(); itr.hasNext(); ) {
-                                BezierPoint bp = (BezierPoint)itr.next();
+                            for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
+                                BezierPoint bp = itr.next();
                                 Point pt = getScreenCoord( bp.getBase() );
                                 Rectangle rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
                                 if ( isInRect( e.X, e.Y, rc ) ) {
@@ -5511,8 +5511,8 @@ namespace org.kbinani.cadencii {
                         String singer = AppManager.editorConfig.DefaultSingerName;
                         int clock = AppManager.clockFromXCoord( e.X );
                         int last_clock = 0;
-                        for ( Iterator itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getSingerEventIterator(); itr.hasNext(); ) {
-                            VsqEvent ve2 = (VsqEvent)itr.next();
+                        for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getSingerEventIterator(); itr.hasNext(); ) {
+                            VsqEvent ve2 = itr.next();
                             if ( last_clock <= clock && clock < ve2.Clock ) {
                                 singer = ((IconHandle)ve2.ID.IconHandle).IDS;
                                 break;
@@ -5560,8 +5560,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
             int count = 0;
-            for ( Iterator itr = items.iterator(); itr.hasNext(); ) {
-                SingerConfig sc = (SingerConfig)itr.next();
+            for ( Iterator<SingerConfig> itr = items.iterator(); itr.hasNext(); ) {
+                SingerConfig sc = itr.next();
                 String tip = "";
                 if ( renderer == RendererKind.UTAU || renderer == RendererKind.STRAIGHT_UTAU ) {
                     if ( sc != null ) {

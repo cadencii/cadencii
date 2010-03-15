@@ -84,8 +84,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
             boolean smooth = false;
-            for ( Iterator itr = AppManager.getVsqFile().AttachedCurves.get( m_track - 1 ).getBezierChain( m_curve_type, m_chain_id ).points.iterator(); itr.hasNext(); ) {
-                BezierPoint bp = (BezierPoint)itr.next();
+            for ( Iterator<BezierPoint> itr = AppManager.getVsqFile().AttachedCurves.get( m_track - 1 ).getBezierChain( m_curve_type, m_chain_id ).points.iterator(); itr.hasNext(); ) {
+                BezierPoint bp = itr.next();
                 if ( bp.getID() == m_point_id ) {
                     m_point = bp;
                     smooth = bp.getControlLeftType() != BezierControlType.None || bp.getControlRightType() != BezierControlType.None;

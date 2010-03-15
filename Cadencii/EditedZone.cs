@@ -37,7 +37,7 @@ namespace org.kbinani.cadencii {
             return series.size();
         }
 
-        public Iterator iterator() {
+        public Iterator<EditedZoneUnit> iterator() {
             return series.iterator();
         }
 
@@ -62,8 +62,8 @@ namespace org.kbinani.cadencii {
         }
 
         public EditedZoneCommand executeCommand( EditedZoneCommand run ) {
-            for ( Iterator itr = run.remove.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = (EditedZoneUnit)itr.next();
+            for ( Iterator<EditedZoneUnit> itr = run.remove.iterator(); itr.hasNext(); ) {
+                EditedZoneUnit item = itr.next();
                 int count = series.size();
                 for ( int i = 0; i < count; i++ ) {
                     EditedZoneUnit item2 = series.get( i );
@@ -74,8 +74,8 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            for ( Iterator itr = run.add.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = (EditedZoneUnit)itr.next();
+            for ( Iterator<EditedZoneUnit> itr = run.add.iterator(); itr.hasNext(); ) {
+                EditedZoneUnit item = itr.next();
                 series.add( (EditedZoneUnit)item.clone() );
             }
 
@@ -86,8 +86,8 @@ namespace org.kbinani.cadencii {
 
         private EditedZoneCommand generateCommandClear() {
             Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-            for ( Iterator itr = series.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = (EditedZoneUnit)itr.next();
+            for ( Iterator<EditedZoneUnit> itr = series.iterator(); itr.hasNext(); ) {
+                EditedZoneUnit item = itr.next();
                 remove.add( (EditedZoneUnit)item.clone() );
             }
 
@@ -107,11 +107,11 @@ namespace org.kbinani.cadencii {
 
             // thisに存在していて、workに存在しないものをremoveに登録
             Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-            for ( Iterator itrThis = iterator(); itrThis.hasNext(); ) {
+            for ( Iterator<EditedZoneUnit> itrThis = iterator(); itrThis.hasNext(); ) {
                 boolean found = false;
-                EditedZoneUnit itemThis = (EditedZoneUnit)itrThis.next();
-                for ( Iterator itrWork = work.iterator(); itrWork.hasNext(); ) {
-                    EditedZoneUnit itemWork = (EditedZoneUnit)itrWork.next();
+                EditedZoneUnit itemThis = itrThis.next();
+                for ( Iterator<EditedZoneUnit> itrWork = work.iterator(); itrWork.hasNext(); ) {
+                    EditedZoneUnit itemWork = itrWork.next();
                     if ( itemThis.start == itemWork.start && itemThis.end == itemWork.end ) {
                         found = true;
                         break;
@@ -124,11 +124,11 @@ namespace org.kbinani.cadencii {
 
             // workに存在していて、thisに存在しないものをaddに登録
             Vector<EditedZoneUnit> add = new Vector<EditedZoneUnit>();
-            for ( Iterator itrWork = work.iterator(); itrWork.hasNext(); ) {
+            for ( Iterator<EditedZoneUnit> itrWork = work.iterator(); itrWork.hasNext(); ) {
                 boolean found = false;
-                EditedZoneUnit itemWork = (EditedZoneUnit)itrWork.next();
-                for ( Iterator itrThis = iterator(); itrThis.hasNext(); ) {
-                    EditedZoneUnit itemThis = (EditedZoneUnit)itrThis.next();
+                EditedZoneUnit itemWork = itrWork.next();
+                for ( Iterator<EditedZoneUnit> itrThis = iterator(); itrThis.hasNext(); ) {
+                    EditedZoneUnit itemThis = itrThis.next();
                     if ( itemThis.start == itemWork.start && itemThis.end == itemWork.end ) {
                         found = true;
                         break;

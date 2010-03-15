@@ -47,8 +47,8 @@ namespace org.kbinani.vsq {
         public Object clone() {
             VsqMixer res = new VsqMixer( MasterFeder, MasterPanpot, MasterMute, OutputMode );
             res.Slave = new Vector<VsqMixerEntry>();
-            for ( Iterator itr = Slave.iterator(); itr.hasNext(); ) {
-                VsqMixerEntry item = (VsqMixerEntry)itr.next();
+            for ( Iterator<VsqMixerEntry> itr = Slave.iterator(); itr.hasNext(); ) {
+                VsqMixerEntry item = itr.next();
                 res.Slave.add( (VsqMixerEntry)item.clone() );
             }
             return res;

@@ -596,8 +596,8 @@ namespace org.kbinani.cadencii {
                             last_depth = editing.ID.NoteHeadHandle.getDepth();
                             last_duration = editing.ID.NoteHeadHandle.getDuration();
                         }
-                        for ( Iterator itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                            NoteHeadHandle aconfig = (NoteHeadHandle)itr.next();
+                        for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
+                            NoteHeadHandle aconfig = itr.next();
                             if ( description.Equals( aconfig.getDisplayString() ) ) {
                                 editing.ID.NoteHeadHandle = (NoteHeadHandle)aconfig.clone();
                                 editing.ID.NoteHeadHandle.Depth = last_depth;
@@ -678,8 +678,8 @@ namespace org.kbinani.cadencii {
                             type = SynthesizerType.VOCALOID1;
                         }
                         String description = value.description;
-                        for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                            VibratoHandle vconfig = (VibratoHandle)itr.next();
+                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
+                            VibratoHandle vconfig = itr.next();
                             if ( description.Equals( vconfig.getDisplayString() ) ) {
                                 editing.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
                                 break;
@@ -734,8 +734,8 @@ namespace org.kbinani.cadencii {
                             if ( iconid == "" ) {
                                 iconid = "$04040001";
                             }
-                            for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                                VibratoHandle handle = (VibratoHandle)itr.next();
+                            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
+                                VibratoHandle handle = itr.next();
                                 if ( iconid.Equals( handle.IconID ) ) {
                                     editing.ID.VibratoHandle = (VibratoHandle)handle.clone();
                                     break;

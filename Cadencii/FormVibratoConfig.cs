@@ -76,8 +76,8 @@ namespace org.kbinani.cadencii {
             comboVibratoType.addItem( empty );
             comboVibratoType.setSelectedItem( empty );
             int count = 0;
-            for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
-                VibratoHandle vconfig = (VibratoHandle)itr.next();
+            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
+                VibratoHandle vconfig = itr.next();
                 comboVibratoType.addItem( vconfig );
                 count++;
                 if ( vibrato_handle != null ) {
@@ -149,8 +149,8 @@ namespace org.kbinani.cadencii {
                     return;
                 } else {
                     txtVibratoLength.setEnabled( true );
-                    for ( Iterator itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
-                        VibratoHandle vconfig = (VibratoHandle)itr.next();
+                    for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
+                        VibratoHandle vconfig = itr.next();
                         if ( s.Equals( vconfig.IconID ) ) {
                             int percent;
                             try {

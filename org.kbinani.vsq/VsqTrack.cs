@@ -152,7 +152,7 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class SingerEventIterator implements Iterator{
 #else
-        private class SingerEventIterator : Iterator {
+        private class SingerEventIterator : Iterator<VsqEvent> {
 #endif
             VsqEventList m_list;
             int m_pos;
@@ -172,7 +172,7 @@ namespace org.kbinani.vsq {
                 return false;
             }
 
-            public Object next() {
+            public VsqEvent next() {
                 int num = m_list.getCount();
                 for ( int i = m_pos + 1; i < num; i++ ) {
                     VsqEvent item = m_list.getElement( i );
@@ -194,7 +194,7 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class NoteEventIterator implements Iterator{
 #else
-        private class NoteEventIterator : Iterator {
+        private class NoteEventIterator : Iterator<VsqEvent> {
 #endif
             VsqEventList m_list;
             int m_pos;
@@ -214,7 +214,7 @@ namespace org.kbinani.vsq {
                 return false;
             }
 
-            public Object next() {
+            public VsqEvent next() {
                 int count = m_list.getCount();
                 for ( int i = m_pos + 1; i < count; i++ ) {
                     VsqEvent item = m_list.getElement( i );
@@ -236,7 +236,7 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class DynamicsEventIterator implements Iterator{
 #else
-        private class DynamicsEventIterator : Iterator {
+        private class DynamicsEventIterator : Iterator<VsqEvent> {
 #endif
             VsqEventList m_list;
             int m_pos;
@@ -256,7 +256,7 @@ namespace org.kbinani.vsq {
                 return false;
             }
 
-            public Object next() {
+            public VsqEvent next() {
                 int c = m_list.getCount();
                 for ( int i = m_pos + 1; i < c; i++ ) {
                     VsqEvent item = m_list.getElement( i );
@@ -278,7 +278,7 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class EventIterator implements Iterator{
 #else
-        private class EventIterator : Iterator {
+        private class EventIterator : Iterator<VsqEvent> {
 #endif
             private VsqEventList m_list;
             private int m_pos;
@@ -295,7 +295,7 @@ namespace org.kbinani.vsq {
                 return false;
             }
 
-            public Object next() {
+            public VsqEvent next() {
                 m_pos++;
                 return m_list.getElement( m_pos );
             }
@@ -450,8 +450,8 @@ namespace org.kbinani.vsq {
         public void reflectDynamics() {
             VsqBPList dyn = getCurve( "dyn" );
             dyn.clear();
-            for ( Iterator itr = getDynamicsEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = getDynamicsEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 IconDynamicsHandle handle = item.ID.IconDynamicsHandle;
                 if ( handle == null ) {
                     continue;
@@ -558,8 +558,8 @@ namespace org.kbinani.vsq {
         /// <returns></returns>
         public VsqEvent getSingerEventAt( int clock ) {
             VsqEvent last = null;
-            for ( Iterator itr = getSingerEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = getSingerEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 if ( clock < item.Clock ) {
                     return last;
                 }
@@ -579,7 +579,7 @@ namespace org.kbinani.vsq {
         /// 歌手変更イベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
         /// <returns></returns>
-        public Iterator getSingerEventIterator() {
+        public Iterator<VsqEvent> getSingerEventIterator() {
             return new SingerEventIterator( MetaText.getEventList() );
         }
 
@@ -587,7 +587,7 @@ namespace org.kbinani.vsq {
         /// 音符イベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
         /// <returns></returns>
-        public Iterator getNoteEventIterator() {
+        public Iterator<VsqEvent> getNoteEventIterator() {
             if ( MetaText == null ) {
                 return new NoteEventIterator( new VsqEventList() );
             } else {
@@ -599,7 +599,7 @@ namespace org.kbinani.vsq {
         /// クレッシェンド，デクレッシェンド，および強弱記号を表すイベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
         /// <returns></returns>
-        public Iterator getDynamicsEventIterator() {
+        public Iterator<VsqEvent> getDynamicsEventIterator() {
             if ( MetaText == null ) {
                 return new DynamicsEventIterator( new VsqEventList() );
             } else {
@@ -721,8 +721,8 @@ namespace org.kbinani.vsq {
                 default_id = singers.get( 0 );
             }
 
-            for ( Iterator itr = getSingerEventIterator(); itr.hasNext(); ) {
-                VsqEvent ve = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = getSingerEventIterator(); itr.hasNext(); ) {
+                VsqEvent ve = itr.next();
                 IconHandle singer_handle = (IconHandle)ve.ID.IconHandle;
                 int program = singer_handle.Program;
                 boolean found = false;
@@ -780,7 +780,7 @@ namespace org.kbinani.vsq {
             MetaText.Events.add( item, internal_id );
         }
 
-        public Iterator getEventIterator() {
+        public Iterator<VsqEvent> getEventIterator() {
             return new EventIterator( MetaText.getEventList() );
         }
 

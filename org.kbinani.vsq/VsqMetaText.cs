@@ -111,8 +111,8 @@ namespace org.kbinani.vsq {
             }
             if ( Events != null ) {
                 res.Events = new VsqEventList();
-                for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     res.Events.add( (VsqEvent)item.clone(), item.InternalID );
                 }
             }
@@ -373,8 +373,8 @@ namespace org.kbinani.vsq {
         /// Singerプロパティに指定されている
         /// </summary>
         public String getSinger() {
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 if ( item.ID.type == VsqIDType.Singer ) {
                     return item.ID.IconHandle.IDS;
                 }
@@ -383,8 +383,8 @@ namespace org.kbinani.vsq {
         }
 
         public void setSinger( String value ) {
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 if ( item.ID.type == VsqIDType.Singer ) {
                     ((IconHandle)item.ID.IconHandle).IDS = value;
                     break;
@@ -418,8 +418,8 @@ namespace org.kbinani.vsq {
             boolean add_quotation_mark = true;
             boolean is_vocalo1 = Common.Version.StartsWith( "DSB2" );
             boolean is_vocalo2 = Common.Version.StartsWith( "DSB3" );
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 current_id++;
                 item.ID.value = current_id;
                 // IconHandle
@@ -498,8 +498,8 @@ namespace org.kbinani.vsq {
                 mixer.write( sw );
             }
             Vector<VsqHandle> handle = writeEventList( sw, eos );
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 item.write( sw );
             }
             for ( int i = 0; i < handle.size(); i++ ) {
@@ -593,8 +593,8 @@ namespace org.kbinani.vsq {
             Vector<VsqHandle> handles = buildHandleList();
             writer.writeLine( "[EventList]" );
             Vector<VsqEvent> temp = new Vector<VsqEvent>();
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
-                temp.add( (VsqEvent)itr.next() );
+            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
+                temp.add( itr.next() );
             }
             Collections.sort( temp );
             int i = 0;

@@ -29,12 +29,12 @@ namespace org.kbinani.apputil {
         private static Vector<MessageBody> s_messages = new Vector<MessageBody>();
         
         public static String[] getKeys( String lang ) {
-            for( Iterator itr = s_messages.iterator(); itr.hasNext(); ){
-                MessageBody dict = (MessageBody)itr.next();
+            for( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
+                MessageBody dict = itr.next();
                 if ( lang.Equals( dict.lang ) ) {
                     Vector<String> list = new Vector<String>();
-                    for ( Iterator itr2 = dict.list.keySet().iterator(); itr2.hasNext(); ) {
-                        String key = (String)itr2.next();
+                    for ( Iterator<String> itr2 = dict.list.keySet().iterator(); itr2.hasNext(); ) {
+                        String key = itr2.next();
                         list.add( key );
                     }
                     return list.toArray( new String[] { } );
@@ -45,8 +45,8 @@ namespace org.kbinani.apputil {
 
         public static String[] getRegisteredLanguage() {
             Vector<String> res = new Vector<String>();
-            for ( Iterator itr = s_messages.iterator(); itr.hasNext(); ) {
-                MessageBody dict = (MessageBody)itr.next();
+            for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ) {
+                MessageBody dict = itr.next();
                 res.add( dict.lang );
             }
             return res.toArray( new String[] { } );
@@ -103,8 +103,8 @@ namespace org.kbinani.apputil {
             if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }
-            for ( Iterator itr = s_messages.iterator(); itr.hasNext(); ){
-                MessageBody mb = (MessageBody)itr.next();
+            for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
+                MessageBody mb = itr.next();
                 if ( mb.lang.Equals( s_lang ) ) {
                     return mb.getMessageDetail( id );
                 }
@@ -116,8 +116,8 @@ namespace org.kbinani.apputil {
             if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }
-            for ( Iterator itr = s_messages.iterator(); itr.hasNext(); ){
-                MessageBody mb = (MessageBody)itr.next();
+            for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
+                MessageBody mb = itr.next();
                 if ( mb.lang.Equals( s_lang ) ) {
                     return mb.getMessage( id );
                 }

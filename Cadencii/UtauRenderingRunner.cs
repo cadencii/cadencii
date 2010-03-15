@@ -93,8 +93,8 @@ namespace org.kbinani.cadencii {
         }
 
         public static void clearCache() {
-            for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
-                String key = (String)itr.next();
+            for ( Iterator<String> itr = s_cache.keySet().iterator(); itr.hasNext(); ){
+                String key = itr.next();
                 ValuePair<String, Double> value = s_cache.get( key );
                 String file = value.getKey();
                 try {
@@ -185,8 +185,8 @@ namespace org.kbinani.cadencii {
 
                 // 前後の音符の先行発音やオーバーラップやらを取得したいので、一度リストに格納する
                 Vector<VsqEvent> events = new Vector<VsqEvent>();
-                for ( Iterator itr = target.getNoteEventIterator(); itr.hasNext(); ) {
-                    events.add( (VsqEvent)itr.next() );
+                for ( Iterator<VsqEvent> itr = target.getNoteEventIterator(); itr.hasNext(); ) {
+                    events.add( itr.next() );
                 }
                 
 #if MAKEBAT_SP
@@ -354,8 +354,8 @@ namespace org.kbinani.cadencii {
                             double old = PortUtil.getCurrentTime();
                             String delfile = "";
                             String delkey = "";
-                            for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
-                                String key = (String)itr.next();
+                            for ( Iterator<String> itr = s_cache.keySet().iterator(); itr.hasNext(); ){
+                                String key = itr.next();
                                 ValuePair<String, Double> value = s_cache.get( key );
                                 if ( old < value.getValue() ) {
                                     old = value.getValue();
@@ -400,8 +400,8 @@ namespace org.kbinani.cadencii {
 
 #if DEBUG
                 org.kbinani.debug.push_log( "UtauRenderingRunner#run; s_cache:" );
-                for ( Iterator itr = s_cache.keySet().iterator(); itr.hasNext(); ){
-                    String key = (String)itr.next();
+                for ( Iterator<String> itr = s_cache.keySet().iterator(); itr.hasNext(); ){
+                    String key = itr.next();
                     ValuePair<String, Double> value = s_cache.get( key );
                     org.kbinani.debug.push_log( "UtauRenderingRunner#run;     arg=" + key );
                     org.kbinani.debug.push_log( "UtauRenderingRunner#run;     file=" + value.getKey() );

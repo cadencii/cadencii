@@ -49,7 +49,7 @@ namespace org.kbinani.vsq {
 
         const int INIT_BUFLEN = 512;
 
-        class KeyClockIterator : Iterator {
+        class KeyClockIterator : Iterator<Integer> {
             private VsqBPList m_list;
             private int m_pos;
 
@@ -66,7 +66,7 @@ namespace org.kbinani.vsq {
                 }
             }
 
-            public Object next() {
+            public Integer next() {
                 m_pos++;
                 return m_list.clocks[m_pos];
             }
@@ -598,7 +598,7 @@ namespace org.kbinani.vsq {
             return length;
         }
 
-        public Iterator keyClockIterator() {
+        public Iterator<Integer> keyClockIterator() {
             return new KeyClockIterator( this );
         }
 

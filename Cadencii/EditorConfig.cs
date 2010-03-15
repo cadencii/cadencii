@@ -467,8 +467,8 @@ namespace org.kbinani.cadencii {
         public BKeys[] getShortcutKeyFor( BMenuItem menu_item ) {
             String name = menu_item.getName();
             Vector<BKeys> ret = new Vector<BKeys>();
-            for ( Iterator itr = ShortcutKeys.iterator(); itr.hasNext(); ) {
-                ValuePairOfStringArrayOfKeys item = (ValuePairOfStringArrayOfKeys)itr.next();
+            for ( Iterator<ValuePairOfStringArrayOfKeys> itr = ShortcutKeys.iterator(); itr.hasNext(); ) {
+                ValuePairOfStringArrayOfKeys item = itr.next();
                 if ( name.Equals( item.Key ) ) {
                     for ( int i = 0; i < item.Value.Length; i++ ) {
                         BKeys k = item.Value[i];
@@ -514,8 +514,8 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < ShortcutKeys.size(); i++ ) {
                 ret.put( ShortcutKeys.get( i ).Key, ShortcutKeys.get( i ).Value );
             }
-            for ( Iterator itr = DEFAULT_SHORTCUT_KEYS.iterator(); itr.hasNext(); ) {
-                ValuePairOfStringArrayOfKeys item = (ValuePairOfStringArrayOfKeys)itr.next();
+            for ( Iterator<ValuePairOfStringArrayOfKeys> itr = DEFAULT_SHORTCUT_KEYS.iterator(); itr.hasNext(); ) {
+                ValuePairOfStringArrayOfKeys item = itr.next();
                 if ( !ret.containsKey( item.Key ) ) {
                     ret.put( item.Key, item.Value );
                 }
@@ -731,8 +731,8 @@ namespace org.kbinani.cadencii {
 
             // 重複があれば消す
             Vector<String> dict = new Vector<String>();
-            for ( Iterator itr = RecentFiles.iterator(); itr.hasNext(); ) {
-                String s = (String)itr.next();
+            for ( Iterator<String> itr = RecentFiles.iterator(); itr.hasNext(); ) {
+                String s = itr.next();
                 boolean found = false;
                 for ( int i = 0; i < dict.size(); i++ ) {
                     if ( s.Equals( dict.get( i ) ) ) {
@@ -744,8 +744,8 @@ namespace org.kbinani.cadencii {
                 }
             }
             RecentFiles.clear();
-            for ( Iterator itr = dict.iterator(); itr.hasNext(); ) {
-                String s = (String)itr.next();
+            for ( Iterator<String> itr = dict.iterator(); itr.hasNext(); ) {
+                String s = itr.next();
                 RecentFiles.add( s );
             }
 

@@ -99,8 +99,8 @@ namespace org.kbinani.cadencii {
         }
 
         private void initialize() {
-            for ( Iterator itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                IconDynamicsHandle handle = (IconDynamicsHandle)itr.next();
+            for ( Iterator<IconDynamicsHandle> itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
+                IconDynamicsHandle handle = itr.next();
                 String icon_id = handle.IconID;
                 BButton btn = new BButton();
                 btn.setName( icon_id );

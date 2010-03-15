@@ -89,11 +89,11 @@ namespace org.kbinani.vsq {
             }
 
             // m_singer_configsの情報から、m_installed_singersの歌唱言語情報を類推する
-            for ( Iterator itr = m_installed_singers.iterator(); itr.hasNext(); ) {
-                SingerConfig sc = (SingerConfig)itr.next();
+            for ( Iterator<SingerConfig> itr = m_installed_singers.iterator(); itr.hasNext(); ) {
+                SingerConfig sc = itr.next();
                 String searchid = sc.VOICEIDSTR;
-                for ( Iterator itr2 = m_singer_configs.iterator(); itr2.hasNext(); ) {
-                    SingerConfig sc2 = (SingerConfig)itr2.next();
+                for ( Iterator<SingerConfig> itr2 = m_singer_configs.iterator(); itr2.hasNext(); ) {
+                    SingerConfig sc2 = itr2.next();
                     if ( sc2.VOICEIDSTR.Equals( searchid ) ) {
                         sc.Language = sc2.Language;
                         break;
@@ -143,8 +143,8 @@ namespace org.kbinani.vsq {
         /// <param name="program_change"></param>
         /// <returns></returns>
         public SingerConfig getSingerInfo( int language, int program ) {
-            for ( Iterator itr = m_installed_singers.iterator(); itr.hasNext(); ) {
-                SingerConfig item = (SingerConfig)itr.next();
+            for ( Iterator<SingerConfig> itr = m_installed_singers.iterator(); itr.hasNext(); ) {
+                SingerConfig item = itr.next();
                 if ( item.Language == language && item.Program == program ) {
                     return item;
                 }

@@ -112,7 +112,7 @@ public class Utau_Plugin_Invoker : Form {
         List<VsqEvent> items = new List<VsqEvent>(); // Ustに追加する音符のリスト
         List<int> map_id = new List<int>(); // ustの[#index]が、map_id[index].InternalIDというIDを持つVsqEventに相当することを記録しておくリスト
         int num_selected = 0; // 選択されていた音符の個数
-        for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
             SelectedEventEntry item_itr = (SelectedEventEntry)itr.next();
             if ( item_itr.original.ID.type == VsqIDType.Anote ) {
                 items.Add( (VsqEvent)item_itr.original.clone() );
@@ -163,8 +163,8 @@ public class Utau_Plugin_Invoker : Form {
         // VsqFile -> UstFileのコンバート
         VsqFile conv = new VsqFile( "Miku", 2, 4, 4, (int)(6e7 / TEMPO) );
         VsqTrack conv_track = conv.Track.get( 1 );
-        for ( Iterator itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-            VsqEvent item_itr = (VsqEvent)itr.next();
+        for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+            VsqEvent item_itr = itr.next();
             if ( item_itr.Clock == clock_begin ) {
                 if ( tlast_event != null ) {
                     // アイテムあり

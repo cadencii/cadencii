@@ -45,8 +45,8 @@ public class Search {
         if ( AppManager.getSelectedEventCount() <= 0 ) {
             // 選択状態の音符がひとつも無い場合。
             // 曲の最初の音符から検索することにする
-            for ( Iterator itr = vsq.Track[track].getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = vsq.Track[track].getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 selectedid = item.InternalID;
                 break;
             }
@@ -60,8 +60,8 @@ public class Search {
         } else {
             selectedid = AppManager.getLastSelectedEvent().original.InternalID;
         }
-        for ( Iterator itr = vsq.Track[track].getNoteEventIterator(); itr.hasNext(); ) {
-            VsqEvent item = (VsqEvent)itr.next();
+        for ( Iterator<VsqEvent> itr = vsq.Track[track].getNoteEventIterator(); itr.hasNext(); ) {
+            VsqEvent item = itr.next();
             if ( item.InternalID == selectedid ) {
                 begin_count = true;
                 if ( AppManager.isSelectedEventContains( track, item.InternalID ) ) {
@@ -125,8 +125,8 @@ public static class AutoBRI {
     public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {
         // 選択されているアイテム（のInternalID）をリストアップ
         System.Collections.Generic.List<int> ids = new System.Collections.Generic.List<int>();
-        for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ){
-            SelectedEventEntry entry = (SelectedEventEntry)itr.next();
+        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ){
+            SelectedEventEntry entry = itr.next();
             ids.Add( entry.original.InternalID );
         }
 
@@ -137,8 +137,8 @@ public static class AutoBRI {
         for ( int i = 0; i < ids.Count; i++ ) {
             int internal_id = ids[i];
 
-            for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                org.kbinani.vsq.VsqEvent item = itr.next();
                 // 指定されたInternalIDと同じなら，編集する
                 if ( item.InternalID == internal_id ) {
                     // Brightnessカーブを取得
@@ -148,8 +148,8 @@ public static class AutoBRI {
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
 
                     // これから編集しようとしている範囲にすでに値がある場合，邪魔なので削除する
-                    for ( Iterator itr2 = bri.keyClockIterator(); itr.hasNext(); ){
-                        int clock = (int)itr2.next();
+                    for ( Iterator<int> itr2 = bri.keyClockIterator(); itr.hasNext(); ){
+                        int clock = itr2.next();
                         System.Console.WriteLine( "clock=" + clock );
                         if ( item.Clock <= clock && clock <= item.Clock + item.ID.Length ) {
                             itr2.remove();
@@ -209,8 +209,8 @@ public class AutoBRITool : IPaletteTool {
         for ( int i = 0; i < ids.Length; i++ ) {
             int internal_id = ids[i];
             
-            for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                org.kbinani.vsq.VsqEvent item = itr.next();
                 // 指定されたInternalIDと同じなら，編集する
                 if ( item.InternalID == internal_id ) {
                     // Brightnessカーブを取得
@@ -220,8 +220,8 @@ public class AutoBRITool : IPaletteTool {
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
 
                     // これから編集しようとしている範囲にすでに値がある場合，邪魔なので削除する
-                    for ( Iterator itr2 = bri.keyClockIterator(); itr2.hasNext(); ){
-                        int clock = (int)itr2.next();
+                    for ( Iterator<int> itr2 = bri.keyClockIterator(); itr2.hasNext(); ){
+                        int clock = itr2.next();
                         System.Console.WriteLine( "clock=" + clock );
                         if ( item.Clock <= clock && clock <= item.Clock + item.ID.Length ) {
                             itr2.remove();
@@ -329,8 +329,8 @@ public static class PrintLyric {
         System.IO.StreamWriter sw = null;
         try {
             sw = new System.IO.StreamWriter( @"c:\lyrics.txt" );
-            for ( Iterator itr = Vsq.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = Vsq.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ) {
+                org.kbinani.vsq.VsqEvent item = itr.next();
                 int clStart = item.Clock;
                 int clEnd = clStart + item.ID.Length;
                 double secStart = Vsq.getSecFromClock( clStart );
@@ -351,8 +351,8 @@ public static class PrintLyric {
 public static class UpHalfStep {
     public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
         for ( int i = 1; i < Vsq.Track.size(); i++ ) {
-            for ( Iterator itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
+                org.kbinani.vsq.VsqEvent item = itr.next();
                 if ( item.ID.Note < 127 ) {
                     item.ID.Note++;
                 }
@@ -365,8 +365,8 @@ public static class UpHalfStep {
 public static class Trim32 {
     public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
         for ( int i = 1; i < Vsq.Track.size(); i++ ) {
-            for ( Iterator itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = (org.kbinani.vsq.VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
+                org.kbinani.vsq.VsqEvent item = itr.next();
                 // 32分音符の長さは，クロック数に直すと60クロック
                 if ( item.ID.Length > 60 ) {
                     item.ID.Length -= 60;

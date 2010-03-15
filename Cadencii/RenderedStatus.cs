@@ -36,8 +36,8 @@ namespace org.kbinani.cadencii {
         public RenderedStatus( VsqTrack track, TempoVector tempo ) {
             this.track = track;
             this.tempo = new TempoVector();
-            for ( Iterator itr = tempo.iterator(); itr.hasNext(); ) {
-                this.tempo.add( (TempoTableEntry)itr.next() );
+            for ( Iterator<TempoTableEntry> itr = tempo.iterator(); itr.hasNext(); ) {
+                this.tempo.add( itr.next() );
             }
         }
 

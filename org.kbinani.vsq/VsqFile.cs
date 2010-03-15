@@ -72,8 +72,8 @@ namespace org.kbinani.vsq {
 #endif
             int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
             VsqBPList pitch = new VsqBPList( "", 0, -2400, 2400 ); // ノートナンバー×100
-            for ( Iterator itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
-                UstEvent ue = (UstEvent)itr.next();
+            for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
+                UstEvent ue = itr.next();
                 if ( ue.Lyric != "R" ) {
                     VsqID id = new VsqID( 0 );
                     id.setLength( ue.getLength() );
@@ -113,8 +113,8 @@ namespace org.kbinani.vsq {
             for ( int track = 1; track < numTrack; track++ ) {
                 VsqTrack vsq_track = Track.get( track );
                 // ノート・歌手イベントをシフト
-                for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
                         continue;
                     }
@@ -177,8 +177,8 @@ namespace org.kbinani.vsq {
             for ( int track = 1; track < numTrack; track++ ) {
                 VsqTrack vsq_track = Track.get( track );
                 // ノート・歌手イベントをシフト
-                for ( Iterator itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
                         continue;
                     }
@@ -778,8 +778,8 @@ namespace org.kbinani.vsq {
             Vector<Integer> parts = new Vector<Integer>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
             parts.add( premeasure_clock );
             int lastclock = premeasure_clock;
-            for ( Iterator itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent ve = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent ve = itr.next();
                 if ( ve.Clock <= lastclock ) {
                     lastclock = Math.Max( lastclock, ve.Clock + ve.ID.getLength() );
                 } else {
@@ -855,8 +855,8 @@ namespace org.kbinani.vsq {
             int track_count = Track.size();
             for ( int i = 1; i < track_count; i++ ) {
                 VsqTrack track = Track.get( i );
-                for ( Iterator itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     int presend_clock = getPresendClockAt( item.Clock, ms_pre_send_time );
                     if ( item.Clock - presend_clock < 0 ) {
                         return false;
@@ -1139,8 +1139,8 @@ namespace org.kbinani.vsq {
                 int internal_id = (Integer)command.Args[1];
                 VsqEvent[] original = new VsqEvent[1];
                 VsqTrack target = Track.get( track );
-                for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
                         original[0] = (VsqEvent)item.clone();
                         break;
@@ -1187,8 +1187,8 @@ namespace org.kbinani.vsq {
                 int internal_id = (Integer)command.Args[1];
                 int value = (Integer)command.Args[2];
                 VsqTrack target = this.Track.get( track );
-                for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeClock( track, internal_id, item.Clock );
                         int min = Math.Min( item.Clock, value );
@@ -1209,8 +1209,8 @@ namespace org.kbinani.vsq {
                 String phonetic_symbol = (String)command.Args[3];
                 boolean protect_symbol = (Boolean)command.Args[4];
                 VsqTrack target = this.Track.get( track );
-                for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
                         if ( item.ID.type == VsqIDType.Anote ) {
                             VsqCommand ret = VsqCommand.generateCommandEventChangeLyric( track, internal_id, item.ID.LyricHandle.L0.Phrase, item.ID.LyricHandle.L0.getPhoneticSymbol(), item.ID.LyricHandle.L0.PhoneticSymbolProtected );
@@ -1230,8 +1230,8 @@ namespace org.kbinani.vsq {
                 int internal_id = (Integer)command.Args[1];
                 int note = (Integer)command.Args[2];
                 VsqTrack target = this.Track.get( track );
-                for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeNote( track, internal_id, item.ID.Note );
                         item.ID.Note = note;
@@ -1248,8 +1248,8 @@ namespace org.kbinani.vsq {
                 int clock = (Integer)command.Args[2];
                 int note = (Integer)command.Args[3];
                 VsqTrack target = this.Track.get( track );
-                for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeClockAndNote( track, internal_id, item.Clock, item.ID.Note );
                         int min = Math.Min( item.Clock, clock );
@@ -1275,15 +1275,15 @@ namespace org.kbinani.vsq {
                     if ( com.size() > 0 ) {
                         int start_clock = com.get( 0 ).Clock;
                         int end_clock = com.get( 0 ).Clock;
-                        for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
-                            BPPair item = (BPPair)itr.next();
+                        for ( Iterator<BPPair> itr = com.iterator(); itr.hasNext(); ) {
+                            BPPair item = itr.next();
                             start_clock = Math.Min( start_clock, item.Clock );
                             end_clock = Math.Max( end_clock, item.Clock );
                         }
                         int start_value = target_list.getValue( start_clock );
                         int end_value = target_list.getValue( end_clock );
-                        for ( Iterator i = target_list.keyClockIterator(); i.hasNext(); ) {
-                            int clock = (Integer)i.next();
+                        for ( Iterator<Integer> i = target_list.keyClockIterator(); i.hasNext(); ) {
+                            int clock = i.next();
                             if ( start_clock <= clock && clock <= end_clock ) {
                                 edit.add( new BPPair( clock, target_list.getValue( clock ) ) );
                             }
@@ -1327,8 +1327,8 @@ namespace org.kbinani.vsq {
                     return inv;
                 } else if ( com.size() == 1 ) {
                     boolean found = false;
-                    for ( Iterator itr = target_list.keyClockIterator(); itr.hasNext(); ) {
-                        int clock = (Integer)itr.next();
+                    for ( Iterator<Integer> itr = target_list.keyClockIterator(); itr.hasNext(); ) {
+                        int clock = itr.next();
                         if ( clock == com.get( 0 ).Clock ) {
                             found = true;
                             target_list.add( clock, com.get( 0 ).Value );
@@ -1344,8 +1344,8 @@ namespace org.kbinani.vsq {
                     boolean removed = true;
                     while ( removed ) {
                         removed = false;
-                        for ( Iterator itr = target_list.keyClockIterator(); itr.hasNext(); ) {
-                            int clock = (Integer)itr.next();
+                        for ( Iterator<Integer> itr = target_list.keyClockIterator(); itr.hasNext(); ) {
+                            int clock = itr.next();
                             if ( start_clock <= clock && clock <= end_clock ) {
                                 target_list.remove( clock );
                                 removed = true;
@@ -1353,8 +1353,8 @@ namespace org.kbinani.vsq {
                             }
                         }
                     }
-                    for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
-                        BPPair item = (BPPair)itr.next();
+                    for ( Iterator<BPPair> itr = com.iterator(); itr.hasNext(); ) {
+                        BPPair item = itr.next();
                         target_list.add( item.Clock, item.Value );
                     }
                 }
@@ -1438,15 +1438,15 @@ namespace org.kbinani.vsq {
                         if ( com.size() > 0 ) {
                             int start_clock = com.get( 0 ).Clock;
                             int end_clock = com.get( 0 ).Clock;
-                            for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
-                                BPPair item = (BPPair)itr.next();
+                            for ( Iterator<BPPair> itr = com.iterator(); itr.hasNext(); ) {
+                                BPPair item = itr.next();
                                 start_clock = Math.Min( start_clock, item.Clock );
                                 end_clock = Math.Max( end_clock, item.Clock );
                             }
                             int start_value = Track.get( track ).getCurve( curve ).getValue( start_clock );
                             int end_value = Track.get( track ).getCurve( curve ).getValue( end_clock );
-                            for ( Iterator itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
-                                int clock = (Integer)itr.next();
+                            for ( Iterator<Integer> itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
+                                int clock = itr.next();
                                 if ( start_clock <= clock && clock <= end_clock ) {
                                     edit.add( new BPPair( clock, Track.get( track ).getCurve( curve ).getValue( clock ) ) );
                                 }
@@ -1491,8 +1491,8 @@ namespace org.kbinani.vsq {
                         return inv;
                     } else if ( com.size() == 1 ) {
                         boolean found = false;
-                        for ( Iterator itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
-                            int clock = (Integer)itr.next();
+                        for ( Iterator<Integer> itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
+                            int clock = itr.next();
                             if ( clock == com.get( 0 ).Clock ) {
                                 found = true;
                                 Track.get( track ).getCurve( curve ).add( clock, com.get( 0 ).Value );
@@ -1508,8 +1508,8 @@ namespace org.kbinani.vsq {
                         boolean removed = true;
                         while ( removed ) {
                             removed = false;
-                            for ( Iterator itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
-                                int clock = (Integer)itr.next();
+                            for ( Iterator<Integer> itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
+                                int clock = itr.next();
                                 if ( start_clock <= clock && clock <= end_clock ) {
                                     Track.get( track ).getCurve( curve ).remove( clock );
                                     removed = true;
@@ -1517,8 +1517,8 @@ namespace org.kbinani.vsq {
                                 }
                             }
                         }
-                        for ( Iterator itr = com.iterator(); itr.hasNext(); ) {
-                            BPPair item = (BPPair)itr.next();
+                        for ( Iterator<BPPair> itr = com.iterator(); itr.hasNext(); ) {
+                            BPPair item = itr.next();
                             Track.get( track ).getCurve( curve ).add( item.Clock, item.Value );
                         }
                     }
@@ -1530,10 +1530,10 @@ namespace org.kbinani.vsq {
                 int track = (Integer)command.Args[0];
                 Vector<ValuePair<Integer, Integer>> veloc = (Vector<ValuePair<Integer, Integer>>)command.Args[1];
                 Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ev = (VsqEvent)itr.next();
-                    for ( Iterator itr2 = veloc.iterator(); itr2.hasNext(); ) {
-                        ValuePair<Integer, Integer> add = (ValuePair<Integer, Integer>)itr2.next();
+                for ( Iterator<VsqEvent> itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent ev = itr.next();
+                    for ( Iterator<ValuePair<Integer, Integer>> itr2 = veloc.iterator(); itr2.hasNext(); ) {
+                        ValuePair<Integer, Integer> add = itr2.next();
                         if ( ev.InternalID == add.getKey() ) {
                             inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.Dynamics ) );
                             ev.ID.Dynamics = add.getValue();
@@ -1548,10 +1548,10 @@ namespace org.kbinani.vsq {
                 int track = (Integer)command.Args[0];
                 Vector<ValuePair<Integer, Integer>> veloc = (Vector<ValuePair<Integer, Integer>>)command.Args[1];
                 Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ev = (VsqEvent)itr.next();
-                    for ( Iterator itr2 = veloc.iterator(); itr2.hasNext(); ) {
-                        ValuePair<Integer, Integer> add = (ValuePair<Integer, Integer>)itr2.next();
+                for ( Iterator<VsqEvent> itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent ev = itr.next();
+                    for ( Iterator<ValuePair<Integer, Integer>> itr2 = veloc.iterator(); itr2.hasNext(); ) {
+                        ValuePair<Integer, Integer> add = itr2.next();
                         if ( ev.InternalID == add.getKey() ) {
                             inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMaccent ) );
                             ev.ID.DEMaccent = add.getValue();
@@ -1566,10 +1566,10 @@ namespace org.kbinani.vsq {
                 int track = (Integer)command.Args[0];
                 Vector<ValuePair<Integer, Integer>> veloc = (Vector<ValuePair<Integer, Integer>>)command.Args[1];
                 Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ev = (VsqEvent)itr.next();
-                    for ( Iterator itr2 = veloc.iterator(); itr2.hasNext(); ) {
-                        ValuePair<Integer, Integer> add = (ValuePair<Integer, Integer>)itr2.next();
+                for ( Iterator<VsqEvent> itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent ev = itr.next();
+                    for ( Iterator<ValuePair<Integer, Integer>> itr2 = veloc.iterator(); itr2.hasNext(); ) {
+                        ValuePair<Integer, Integer> add = itr2.next();
                         if ( ev.InternalID == add.getKey() ) {
                             inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMdecGainRate ) );
                             ev.ID.DEMdecGainRate = add.getValue();
@@ -1584,8 +1584,8 @@ namespace org.kbinani.vsq {
                 int track = (Integer)command.Args[0];
                 int internal_id = (Integer)command.Args[1];
                 int new_length = (Integer)command.Args[2];
-                for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeLength( track, internal_id, item.ID.getLength() );
                         item.ID.setLength( new_length );
@@ -1601,8 +1601,8 @@ namespace org.kbinani.vsq {
                 int internal_id = (Integer)command.Args[1];
                 int new_clock = (Integer)command.Args[2];
                 int new_length = (Integer)command.Args[3];
-                for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeClockAndLength( track, internal_id, item.Clock, item.ID.getLength() );
                         int min = Math.Min( item.Clock, new_clock );
@@ -1622,8 +1622,8 @@ namespace org.kbinani.vsq {
                 int track = (Integer)command.Args[0];
                 int internal_id = (Integer)command.Args[1];
                 VsqID value = (VsqID)command.Args[2];
-                for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeIDContaints( track, internal_id, item.ID );
                         int max_length = Math.Max( item.ID.getLength(), value.getLength() );
@@ -1641,8 +1641,8 @@ namespace org.kbinani.vsq {
                 VsqID[] values = (VsqID[])command.Args[2];
                 VsqID[] inv_values = new VsqID[values.Length];
                 for ( int i = 0; i < internal_ids.Length; i++ ) {
-                    for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                        VsqEvent item = (VsqEvent)itr.next();
+                    for ( Iterator<VsqEvent> itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                        VsqEvent item = itr.next();
                         if ( item.InternalID == internal_ids[i] ) {
                             inv_values[i] = (VsqID)item.ID.clone();
                             int max_length = Math.Max( item.ID.getLength(), values[i].getLength() );
@@ -1661,8 +1661,8 @@ namespace org.kbinani.vsq {
                 int new_clock = (Integer)command.Args[2];
                 VsqID value = (VsqID)command.Args[3];
                 VsqTrack target = Track.get( track );
-                for ( Iterator itr = target.getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
                         VsqCommand ret = VsqCommand.generateCommandEventChangeClockAndIDContaints( track, internal_id, item.Clock, item.ID );
                         int max_length = Math.Max( item.ID.getLength(), value.getLength() );
@@ -1686,8 +1686,8 @@ namespace org.kbinani.vsq {
                 Vector<VsqID> inv_id = new Vector<VsqID>();
                 Vector<Integer> inv_clock = new Vector<Integer>();
                 for ( int i = 0; i < internal_ids.Length; i++ ) {
-                    for ( Iterator itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                        VsqEvent item = (VsqEvent)itr.next();
+                    for ( Iterator<VsqEvent> itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                        VsqEvent item = itr.next();
                         if ( item.InternalID == internal_ids[i] ) {
                             inv_id.add( (VsqID)item.ID.clone() );
                             inv_clock.add( item.Clock );
@@ -1800,8 +1800,8 @@ namespace org.kbinani.vsq {
             inv_add.clear();
 
             // 最初に削除コマンドを実行
-            for ( Iterator itr = delete.iterator(); itr.hasNext(); ) {
-                long id = (Long)itr.next();
+            for ( Iterator<Long> itr = delete.iterator(); itr.hasNext(); ) {
+                long id = itr.next();
                 VsqBPPairSearchContext item = list.findElement( id );
                 if ( item.index >= 0 ) {
                     int clock = item.clock;
@@ -1811,8 +1811,8 @@ namespace org.kbinani.vsq {
             }
 
             // 追加コマンドを実行
-            for ( Iterator itr = add.keySet().iterator(); itr.hasNext(); ) {
-                int clock = (Integer)itr.next();
+            for ( Iterator<Integer> itr = add.keySet().iterator(); itr.hasNext(); ) {
+                int clock = itr.next();
                 VsqBPPair item = add.get( clock );
                 list.addWithID( clock, item.value, item.id );
                 inv_delete.add( item.id );
@@ -1869,8 +1869,8 @@ namespace org.kbinani.vsq {
                 VsqTrack vsqTrack = Track.get( track );
                 // 削除する範囲に歌手変更イベントが存在するかどうかを検査。
                 VsqEvent t_last_singer = null;
-                for ( Iterator itr = vsqTrack.getSingerEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = vsqTrack.getSingerEventIterator(); itr.hasNext(); ) {
+                    VsqEvent ve = itr.next();
                     if ( clock_start <= ve.Clock && ve.Clock < clock_end ) {
                         t_last_singer = ve;
                     }
@@ -1921,8 +1921,8 @@ namespace org.kbinani.vsq {
                     bplist.clear();
                     int value_at_end = buf_bplist.getValue( clock_end );
                     boolean at_end_added = false;
-                    for ( Iterator itr = buf_bplist.keyClockIterator(); itr.hasNext(); ) {
-                        int key = (Integer)itr.next();
+                    for ( Iterator<Integer> itr = buf_bplist.keyClockIterator(); itr.hasNext(); ) {
+                        int key = itr.next();
                         if ( key < clock_start ) {
                             bplist.add( key, buf_bplist.getValue( key ) );
                         } else if ( clock_end <= key ) {
@@ -1980,8 +1980,8 @@ namespace org.kbinani.vsq {
                     }
                     // 順番に+=dclockしていくとVsqBPList内部のSortedListの値がかぶる可能性がある．
                     VsqBPList new_one = new VsqBPList( edit.getName(), edit.getDefault(), edit.getMinimum(), edit.getMaximum() );
-                    for ( Iterator itr2 = edit.keyClockIterator(); itr2.hasNext(); ) {
-                        int key = (Integer)itr2.next();
+                    for ( Iterator<Integer> itr2 = edit.keyClockIterator(); itr2.hasNext(); ) {
+                        int key = itr2.next();
                         new_one.add( key + dclock, edit.getValue( key ) );
                     }
                     vsqTrack.setCurve( curve, new_one );
@@ -2031,7 +2031,7 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class BarLineIterator implements Iterator{
 #else
-        private class BarLineIterator : Iterator {
+        private class BarLineIterator : Iterator<VsqBarLineType> {
 #endif
             private Vector<TimeSigTableEntry> m_list;
             private int m_end_clock;
@@ -2052,7 +2052,7 @@ namespace org.kbinani.vsq {
                 clock = 0;
             }
 
-            public Object next() {
+            public VsqBarLineType next() {
                 int mod = clock_step * local_numerator;
                 if ( clock < t_end ) {
                     if ( (clock - local_clock) % mod == 0 ) {
@@ -2094,7 +2094,7 @@ namespace org.kbinani.vsq {
                         }
                     }
                 }
-                return null;
+                return new VsqBarLineType();
             }
 
             public void remove() {
@@ -2114,7 +2114,7 @@ namespace org.kbinani.vsq {
         /// 小節の区切りを順次返すIterator。
         /// </summary>
         /// <returns></returns>
-        public Iterator getBarLineIterator( int end_clock ) {
+        public Iterator<VsqBarLineType> getBarLineIterator( int end_clock ) {
             return new BarLineIterator( TimesigTable, end_clock );
         }
 
@@ -3180,8 +3180,8 @@ namespace org.kbinani.vsq {
             int ms_presend = msPreSend;
             if ( version.StartsWith( "UTU0" ) ) {
                 double sec_maxlen = 0.0;
-                for ( Iterator itr = target.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = target.getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent ve = itr.next();
                     double len = vsq.getSecFromClock( ve.Clock + ve.ID.getLength() ) - vsq.getSecFromClock( ve.Clock );
                     sec_maxlen = Math.Max( sec_maxlen, len );
                 }
@@ -3424,8 +3424,8 @@ namespace org.kbinani.vsq {
 
         public Vector<MidiEvent> generateTimeSig() {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
-            for ( Iterator itr = TimesigTable.iterator(); itr.hasNext(); ) {
-                TimeSigTableEntry entry = (TimeSigTableEntry)itr.next();
+            for ( Iterator<TimeSigTableEntry> itr = TimesigTable.iterator(); itr.hasNext(); ) {
+                TimeSigTableEntry entry = itr.next();
                 events.add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
             }
             return events;
@@ -3433,8 +3433,8 @@ namespace org.kbinani.vsq {
 
         public Vector<MidiEvent> generateTempoChange() {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
-            for ( Iterator itr = TempoTable.iterator(); itr.hasNext(); ) {
-                TempoTableEntry entry = (TempoTableEntry)itr.next();
+            for ( Iterator<TempoTableEntry> itr = TempoTable.iterator(); itr.hasNext(); ) {
+                TempoTableEntry entry = itr.next();
                 events.add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
                 //last_clock = Math.Max( last_clock, entry.Clock );
             }
@@ -3512,13 +3512,13 @@ namespace org.kbinani.vsq {
                 fs.write( _MASTER_TRACK, 0, _MASTER_TRACK.Length );
 
                 Vector<MidiEvent> events = new Vector<MidiEvent>();
-                for ( Iterator itr = TimesigTable.iterator(); itr.hasNext(); ) {
-                    TimeSigTableEntry entry = (TimeSigTableEntry)itr.next();
+                for ( Iterator<TimeSigTableEntry> itr = TimesigTable.iterator(); itr.hasNext(); ) {
+                    TimeSigTableEntry entry = itr.next();
                     events.add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
                     last_clock = Math.Max( last_clock, entry.Clock );
                 }
-                for ( Iterator itr = TempoTable.iterator(); itr.hasNext(); ) {
-                    TempoTableEntry entry = (TempoTableEntry)itr.next();
+                for ( Iterator<TempoTableEntry> itr = TempoTable.iterator(); itr.hasNext(); ) {
+                    TempoTableEntry entry = itr.next();
                     events.add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
                     last_clock = Math.Max( last_clock, entry.Clock );
                 }
@@ -3527,8 +3527,8 @@ namespace org.kbinani.vsq {
 #endif
                 Collections.sort( events );
                 long last = 0;
-                for ( Iterator itr = events.iterator(); itr.hasNext(); ) {
-                    MidiEvent me = (MidiEvent)itr.next();
+                for ( Iterator<MidiEvent> itr = events.iterator(); itr.hasNext(); ) {
+                    MidiEvent me = itr.next();
 #if DEBUG
                     PortUtil.println( "me.Clock=" + me.clock );
 #endif

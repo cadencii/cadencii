@@ -304,8 +304,8 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            for ( Iterator itr = AppManager.editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
-                SingerConfig sc = (SingerConfig)itr.next();
+            for ( Iterator<SingerConfig> itr = AppManager.editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
+                SingerConfig sc = itr.next();
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = sc.VOICENAME;
                     first_found_renderer = VSTiProxy.RENDERER_UTU0;

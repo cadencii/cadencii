@@ -213,8 +213,8 @@ public class RenderAsUtau : Form {
                 int count = -1;
                 double sec_end = 0;
                 double sec_end_old = 0;
-                for ( Iterator itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     count++;
                     double sec_start = vsq.getSecFromClock( item.Clock );
                     sec_end_old = sec_end;

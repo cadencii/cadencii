@@ -162,7 +162,7 @@ namespace org.kbinani.java.util {
             return ret;
         }
 
-        public Iterator iterator() {
+        public Iterator<T> iterator() {
             return new ListIterator<T>( this );
         }
     }

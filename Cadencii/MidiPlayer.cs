@@ -232,8 +232,8 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                 AppManager.debugWriteLine( "Metronome.Start; track=" + track );
 #endif
-                for ( Iterator itr = m_vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = m_vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( start_clock <= item.Clock ) {
                         MidiQueue q = new MidiQueue();
                         q.Track = track;
@@ -296,8 +296,8 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                 AppManager.debugWriteLine( "MidiPlayer#ReGenerateMidiQueue; track=" + track );
 #endif
-                for ( Iterator itr = m_vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = m_vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
                     if ( clock < item.Clock ) {
                         int thisclock = item.Clock;
                         boolean first = true;

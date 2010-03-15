@@ -28,8 +28,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void free( IntPtr p ) {
-            for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
-                IntPtr v = (IntPtr)itr.next();
+            for ( Iterator<IntPtr> itr = list.iterator(); itr.hasNext(); ) {
+                IntPtr v = itr.next();
                 if ( v.Equals( p ) ) {
                     Marshal.FreeHGlobal( p );
                     itr.remove();
@@ -39,8 +39,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void dispose() {
-            for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
-                IntPtr v = (IntPtr)itr.next();
+            for ( Iterator<IntPtr> itr = list.iterator(); itr.hasNext(); ) {
+                IntPtr v = itr.next();
                 try {
                     Marshal.FreeHGlobal( v );
                 } catch ( Exception ex ) {

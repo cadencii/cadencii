@@ -263,8 +263,8 @@ namespace org.kbinani.vsq {
                 init();
             }
             if ( s_exp_config_sys.containsKey( type ) ) {
-                for ( Iterator itr = s_exp_config_sys.get( type ).vibratoConfigIterator(); itr.hasNext(); ) {
-                    VibratoHandle vconfig = (VibratoHandle)itr.next();
+                for ( Iterator<VibratoHandle> itr = s_exp_config_sys.get( type ).vibratoConfigIterator(); itr.hasNext(); ) {
+                    VibratoHandle vconfig = itr.next();
                     if ( vconfig.IconID.Equals( icon_id ) ) {
                         VibratoHandle ret = (VibratoHandle)vconfig.clone();
                         ret.setLength( vibrato_length );
@@ -291,8 +291,8 @@ namespace org.kbinani.vsq {
             path_expdb.value = "";
             path_voicedb.value = "";
             path_editor.value = "";
-            for ( Iterator itr = dir.iterator(); itr.hasNext(); ) {
-                String s = (String)itr.next();
+            for ( Iterator<String> itr = dir.iterator(); itr.hasNext(); ) {
+                String s = itr.next();
                 if ( s.StartsWith( header + "\\APPLICATION" ) ) {
                     application.add( s.Substring( PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\EXPRESSION" ) ) {
@@ -303,8 +303,8 @@ namespace org.kbinani.vsq {
             }
 
             // path_vstiを取得
-            for ( Iterator itr = application.iterator(); itr.hasNext(); ) {
-                String s = (String)itr.next();
+            for ( Iterator<String> itr = application.iterator(); itr.hasNext(); ) {
+                String s = itr.next();
                 String[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length >= 3 && spl[1].Equals( "PATH" ) ) {
                     if ( spl[2].ToLower().EndsWith( ".dll" ) ) {
@@ -317,8 +317,8 @@ namespace org.kbinani.vsq {
 
             // path_vicedbを取得
             TreeMap<String, String> install_dirs = new TreeMap<String, String>();
-            for ( Iterator itr = voice.iterator(); itr.hasNext(); ) {
-                String s = (String)itr.next();
+            for ( Iterator<String> itr = voice.iterator(); itr.hasNext(); ) {
+                String s = itr.next();
                 String[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length < 2 ) {
                     continue;
@@ -343,8 +343,8 @@ namespace org.kbinani.vsq {
             }
 
             // installed_singersに追加
-            for ( Iterator itr = install_dirs.keySet().iterator(); itr.hasNext(); ) {
-                String id = (String)itr.next();
+            for ( Iterator<String> itr = install_dirs.keySet().iterator(); itr.hasNext(); ) {
+                String id = itr.next();
                 String install = install_dirs.get( id );
                 if ( install.Equals( "" ) ) {
                     install = PortUtil.combinePath( path_voicedb.value, id );
@@ -355,8 +355,8 @@ namespace org.kbinani.vsq {
             // path_expdbを取得
             Vector<String> exp_ids = new Vector<String>();
             // 最初はpath_expdbの取得と、id（BHXXXXXXXXXXXXXXXX）のようなシリアルを取得
-            for ( Iterator itr = expression.iterator(); itr.hasNext(); ) {
-                String s = (String)itr.next();
+            for ( Iterator<String> itr = expression.iterator(); itr.hasNext(); ) {
+                String s = itr.next();
                 String[] spl = PortUtil.splitString( s, new char[] { '\t' }, true );
                 if ( spl.Length >= 3 ) {
                     if ( spl[1].Equals( "EXPRESSIONDIR" ) ) {
@@ -421,7 +421,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Iterator attackConfigIterator( SynthesizerType type ) {
+        public static Iterator<NoteHeadHandle> attackConfigIterator( SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
             }
@@ -437,7 +437,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Iterator vibratoConfigIterator( SynthesizerType type ) {
+        public static Iterator<VibratoHandle> vibratoConfigIterator( SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
             }
@@ -453,7 +453,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Iterator dynamicsConfigIterator( SynthesizerType type ) {
+        public static Iterator<IconDynamicsHandle> dynamicsConfigIterator( SynthesizerType type ) {
             if ( !isInitialized ) {
                 init();
             }

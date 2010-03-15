@@ -63,8 +63,8 @@ namespace org.kbinani.cadencii {
         private void popGridItemExpandStatusCore( GridItem item ) {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
-                for ( Iterator itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
-                    ValuePair<String, boolean> v = (ValuePair<String, boolean>)itr.next();
+                for ( Iterator<ValuePair<String, Boolean>> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
+                    ValuePair<String, Boolean> v = itr.next();
                     String key = v.getKey();
                     if ( key == null ) {
                         key = "";
@@ -97,8 +97,8 @@ namespace org.kbinani.cadencii {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
                 boolean found = false;
-                for ( Iterator itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
-                    ValuePair<String, boolean> v = (ValuePair<String, boolean>)itr.next();
+                for ( Iterator<ValuePair<String, Boolean>> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
+                    ValuePair<String, Boolean> v = itr.next();
                     if ( v.getKey().Equals( s ) ) {
                         found = true;
                         v.setValue( item.Expanded );
@@ -122,8 +122,8 @@ namespace org.kbinani.cadencii {
 
             object[] objs = new object[AppManager.getSelectedEventCount()];
             int i = -1;
-            for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = (SelectedEventEntry)itr.next();
+            for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                SelectedEventEntry item = itr.next();
                 i++;
                 objs[i] = item;
             }

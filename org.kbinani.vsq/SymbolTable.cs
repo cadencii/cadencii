@@ -159,8 +159,8 @@ namespace org.kbinani.vsq {
             PortUtil.println( "SymbolTable.Attatch" );
             PortUtil.println( "    phrase=" + phrase );
 #endif
-            for ( Iterator itr = s_table.keySet().iterator(); itr.hasNext(); ) {
-                int key = (Integer)itr.next();
+            for ( Iterator<Integer> itr = s_table.keySet().iterator(); itr.hasNext(); ) {
+                int key = itr.next();
                 SymbolTable table = s_table.get( key );
                 if ( table.isEnabled() ) {
                     if ( table.attatchImp( phrase, result ) ) {
@@ -184,8 +184,8 @@ namespace org.kbinani.vsq {
             PortUtil.println( "SymbolTable#changeOrder" );
 #endif
             TreeMap<Integer, SymbolTable> buff = new TreeMap<Integer, SymbolTable>();
-            for ( Iterator itr = s_table.keySet().iterator(); itr.hasNext(); ) {
-                int key = (Integer)itr.next();
+            for ( Iterator<Integer> itr = s_table.keySet().iterator(); itr.hasNext(); ) {
+                int key = itr.next();
                 buff.put( key, (SymbolTable)s_table.get( key ).clone() );
             }
             s_table.clear();
@@ -195,8 +195,8 @@ namespace org.kbinani.vsq {
 #if DEBUG
                 PortUtil.println( "SymbolTable#changeOrder; list[" + i + "]=" + itemi.getKey() + "," + itemi.getValue() );
 #endif
-                for ( Iterator itr = buff.keySet().iterator(); itr.hasNext(); ) {
-                    int key = (Integer)itr.next();
+                for ( Iterator<Integer> itr = buff.keySet().iterator(); itr.hasNext(); ) {
+                    int key = itr.next();
                     SymbolTable table = buff.get( key );
                     if ( table.getName().Equals( itemi.getKey() ) ) {
                         table.setEnabled( itemi.getValue() );
@@ -217,8 +217,8 @@ namespace org.kbinani.vsq {
         public Object clone() {
             SymbolTable ret = new SymbolTable();
             ret.m_dict = new TreeMap<String, String>();
-            for ( Iterator itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
-                String key = (String)itr.next();
+            for ( Iterator<String> itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
+                String key = itr.next();
                 ret.m_dict.put( key, m_dict.get( key ) );
             }
             ret.m_name = m_name;

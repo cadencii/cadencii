@@ -414,8 +414,8 @@ namespace org.kbinani.cadencii {
                 #region 小節ごとの線
                 if ( vsq != null ) {
                     int dashed_line_step = AppManager.getPositionQuantizeClock();
-                    for ( Iterator itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( width ) ); itr.hasNext(); ) {
-                        VsqBarLineType blt = (VsqBarLineType)itr.next();
+                    for ( Iterator<VsqBarLineType> itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( width ) ); itr.hasNext(); ) {
+                        VsqBarLineType blt = itr.next();
                         int local_clock_step = 1920 / blt.getLocalDenominator();
                         int x = (int)(blt.clock() * scalex + xoffset);
                         g.setStroke( defaultStroke );
@@ -431,11 +431,12 @@ namespace org.kbinani.cadencii {
                         if ( dashed_line_step > 1 && AppManager.isGridVisible() ) {
                             int numDashedLine = local_clock_step / dashed_line_step;
                             g.setColor( beat );
+                            g.setStroke( dashedStroke );
                             for ( int i = 1; i < numDashedLine; i++ ) {
                                 int x2 = (int)((blt.clock() + i * dashed_line_step) * scalex + xoffset);
-                                g.setStroke( dashedStroke );
                                 g.drawLine( x2, 0, x2, height );
                             }
+                            g.setStroke( defaultStroke );
                         }
                     }
                 }
@@ -722,8 +723,8 @@ namespace org.kbinani.cadencii {
                                  edit_mode == EditMode.MOVE_ENTRY_WHOLE ||
                                  edit_mode == EditMode.EDIT_LEFT_EDGE ||
                                  edit_mode == EditMode.EDIT_RIGHT_EDGE) && AppManager.getSelectedEventCount() > 0 ) {
-                        for ( Iterator itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry ev = (SelectedEventEntry)itr.next();
+                        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                            SelectedEventEntry ev = itr.next();
                             int x = (int)(ev.editing.Clock * scalex + xoffset);
                             y = -ev.editing.ID.Note * track_height + yoffset + 1;
                             if ( ev.editing.ID.type == VsqIDType.Aicon ) {

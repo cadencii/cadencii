@@ -899,7 +899,7 @@ namespace org.kbinani.vsq {
         /// 登録されているビブラート設定を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public Iterator vibratoConfigIterator() {
+        public Iterator<VibratoHandle> vibratoConfigIterator() {
             return m_vibrato_configs.iterator();
         }
 
@@ -907,7 +907,7 @@ namespace org.kbinani.vsq {
         /// 登録されているアタック設定を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public Iterator attackConfigIterator() {
+        public Iterator<NoteHeadHandle> attackConfigIterator() {
             return m_attack_configs.iterator();
         }
 
@@ -915,7 +915,7 @@ namespace org.kbinani.vsq {
         /// 登録されている強弱記号設定を順に返す反復子を返します。
         /// </summary>
         /// <returns></returns>
-        public Iterator dynamicsConfigIterator() {
+        public Iterator<IconDynamicsHandle> dynamicsConfigIterator() {
             return m_dynamics_configs.iterator();
         }
 
@@ -990,13 +990,13 @@ namespace org.kbinani.vsq {
                 if ( !folder_name.Equals( "" ) ) {
                     String aiconDB_path = PortUtil.combinePath( base_path, folder_name );
                     if ( PortUtil.isDirectoryExists( aiconDB_path ) ) {
-                        for ( Iterator itr = list.keySet().iterator(); itr.hasNext(); ) {
-                            String key = (String)itr.next();
+                        for ( Iterator<String> itr = list.keySet().iterator(); itr.hasNext(); ) {
+                            String key = itr.next();
                             String section_name = key.Replace( "[", "" ).Replace( "]", "" );
                             String section_path = PortUtil.combinePath( aiconDB_path, section_name );
                             if ( PortUtil.isDirectoryExists( section_path ) ) {
-                                for ( Iterator itr2 = list.get( key ).iterator(); itr2.hasNext(); ) {
-                                    String line = (String)itr2.next();
+                                for ( Iterator<String> itr2 = list.get( key ).iterator(); itr2.hasNext(); ) {
+                                    String line = itr2.next();
                                     String[] spl = PortUtil.splitString( line, '=' );
                                     if ( spl.Length != 2 ) {
                                         continue;

@@ -14,15 +14,9 @@
  */
 namespace org.kbinani.java.util {
 
-    public interface Iterator {
+    public interface Iterator<E> {
         bool hasNext();
-        object next();
-        void remove();
-    }
-
-    public interface Iterator<T> {
-        bool hasNext();
-        T next();
+        E next();
         void remove();
     }
 

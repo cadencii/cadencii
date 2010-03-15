@@ -1021,9 +1021,9 @@ namespace org.kbinani.cadencii {
             zone.add( areaTrack );
             EditedZoneUnit[] ret = new EditedZoneUnit[zone.size()];
             int i = -1;
-            for ( Iterator itr = zone.iterator(); itr.hasNext(); ) {
+            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
                 i++;
-                ret[i] = (EditedZoneUnit)itr.next();
+                ret[i] = itr.next();
             }
             return ret;
         }
@@ -1130,8 +1130,8 @@ namespace org.kbinani.cadencii {
             }
 
             Vector<EditedZoneUnit> vec = new Vector<EditedZoneUnit>();
-            for ( Iterator itr = ret.iterator(); itr.hasNext(); ) {
-                vec.add( (EditedZoneUnit)itr.next() );
+            for ( Iterator<EditedZoneUnit> itr = ret.iterator(); itr.hasNext(); ) {
+                vec.add( itr.next() );
             }
             return vec.toArray( new EditedZoneUnit[] { } );
         }
@@ -1145,8 +1145,8 @@ namespace org.kbinani.cadencii {
             EditedZone zone = new EditedZone();
             compareList( zone, context );
             Vector<EditedZoneUnit> ret = new Vector<EditedZoneUnit>();
-            for ( Iterator itr = zone.iterator(); itr.hasNext(); ) {
-                ret.add( (EditedZoneUnit)itr.next() );
+            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
+                ret.add( itr.next() );
             }
             return ret.toArray( new EditedZoneUnit[] { } );
         }
@@ -1797,8 +1797,8 @@ namespace org.kbinani.cadencii {
         public static void undo() {
             if ( isUndoAvailable() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator itr = getSelectedEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                for ( Iterator<SelectedEventEntry> itr = getSelectedEventIterator(); itr.hasNext(); ) {
+                    SelectedEventEntry item = itr.next();
                     before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
 
@@ -1832,8 +1832,8 @@ namespace org.kbinani.cadencii {
         public static void redo() {
             if ( isRedoAvailable() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator itr = getSelectedEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = (SelectedEventEntry)itr.next();
+                for ( Iterator<SelectedEventEntry> itr = getSelectedEventIterator(); itr.hasNext(); ) {
+                    SelectedEventEntry item = itr.next();
                     before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
 
@@ -1870,8 +1870,8 @@ namespace org.kbinani.cadencii {
             }
             VsqTrack vsq_track = s_vsq.Track.get( s_selected );
 
-            for ( Iterator itr = getSelectedEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = (SelectedEventEntry)itr.next();
+            for ( Iterator<SelectedEventEntry> itr = getSelectedEventIterator(); itr.hasNext(); ) {
+                SelectedEventEntry item = itr.next();
                 int internal_id = item.original.InternalID;
                 item.original = vsq_track.findEventFromID( internal_id );
             }
@@ -1881,11 +1881,11 @@ namespace org.kbinani.cadencii {
         /// 「選択されている」と登録されているオブジェクトのうち、Undo, Redoなどによって存在しなくなったものを登録解除する
         /// </summary>
         public static void cleanupDeadSelection( Vector<ValuePair<Integer, Integer>> before_ids ) {
-            for ( Iterator itr = before_ids.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> specif = (ValuePair<Integer, Integer>)itr.next();
+            for ( Iterator<ValuePair<Integer, Integer>> itr = before_ids.iterator(); itr.hasNext(); ) {
+                ValuePair<Integer, Integer> specif = itr.next();
                 boolean found = false;
-                for ( Iterator itr2 = s_vsq.Track.get( specif.getKey() ).getNoteEventIterator(); itr2.hasNext(); ) {
-                    VsqEvent item = (VsqEvent)itr2.next();
+                for ( Iterator<VsqEvent> itr2 = s_vsq.Track.get( specif.getKey() ).getNoteEventIterator(); itr2.hasNext(); ) {
+                    VsqEvent item = itr2.next();
                     if ( item.InternalID == specif.getValue() ) {
                         found = true;
                         break;
@@ -1970,7 +1970,7 @@ namespace org.kbinani.cadencii {
         /// 選択されているベジエ曲線のデータ点を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public static Iterator getSelectedBezierIterator() {
+        public static Iterator<SelectedBezierPoint> getSelectedBezierIterator() {
             return s_selected_bezier.iterator();
         }
 
@@ -2041,8 +2041,8 @@ namespace org.kbinani.cadencii {
             clearSelectedTempo();
             s_last_selected_timesig = barcount;
             if ( !s_selected_timesig.containsKey( barcount ) ) {
-                for ( Iterator itr = s_vsq.TimesigTable.iterator(); itr.hasNext(); ) {
-                    TimeSigTableEntry tte = (TimeSigTableEntry)itr.next();
+                for ( Iterator<TimeSigTableEntry> itr = s_vsq.TimesigTable.iterator(); itr.hasNext(); ) {
+                    TimeSigTableEntry tte = itr.next();
                     if ( tte.BarCount == barcount ) {
                         s_selected_timesig.put( barcount, new SelectedTimesigEntry( tte, (TimeSigTableEntry)tte.clone() ) );
                         break;
@@ -2062,10 +2062,10 @@ namespace org.kbinani.cadencii {
             return s_selected_timesig.size();
         }
 
-        public static Iterator getSelectedTimesigIterator() {
+        public static Iterator<ValuePair<Integer, SelectedTimesigEntry>> getSelectedTimesigIterator() {
             Vector<ValuePair<Integer, SelectedTimesigEntry>> list = new Vector<ValuePair<Integer, SelectedTimesigEntry>>();
-            for ( Iterator itr = s_selected_timesig.keySet().iterator(); itr.hasNext(); ) {
-                int clock = (Integer)itr.next();
+            for ( Iterator<Integer> itr = s_selected_timesig.keySet().iterator(); itr.hasNext(); ) {
+                int clock = itr.next();
                 list.add( new ValuePair<Integer, SelectedTimesigEntry>( clock, s_selected_timesig.get( clock ) ) );
             }
             return list.iterator();
@@ -2109,8 +2109,8 @@ namespace org.kbinani.cadencii {
             clearSelectedTimesig();
             s_last_selected_tempo = clock;
             if ( !s_selected_tempo.containsKey( clock ) ) {
-                for ( Iterator itr = s_vsq.TempoTable.iterator(); itr.hasNext(); ) {
-                    TempoTableEntry tte = (TempoTableEntry)itr.next();
+                for ( Iterator<TempoTableEntry> itr = s_vsq.TempoTable.iterator(); itr.hasNext(); ) {
+                    TempoTableEntry tte = itr.next();
                     if ( tte.Clock == clock ) {
                         s_selected_tempo.put( clock, new SelectedTempoEntry( tte, (TempoTableEntry)tte.clone() ) );
                         break;
@@ -2130,10 +2130,10 @@ namespace org.kbinani.cadencii {
             return s_selected_tempo.size();
         }
 
-        public static Iterator getSelectedTempoIterator() {
+        public static Iterator<ValuePair<Integer, SelectedTempoEntry>> getSelectedTempoIterator() {
             Vector<ValuePair<Integer, SelectedTempoEntry>> list = new Vector<ValuePair<Integer, SelectedTempoEntry>>();
-            for ( Iterator itr = s_selected_tempo.keySet().iterator(); itr.hasNext(); ) {
-                int clock = (Integer)itr.next();
+            for ( Iterator<Integer> itr = s_selected_tempo.keySet().iterator(); itr.hasNext(); ) {
+                int clock = itr.next();
                 list.add( new ValuePair<Integer, SelectedTempoEntry>( clock, s_selected_tempo.get( clock ) ) );
             }
             return list.iterator();
@@ -2213,8 +2213,8 @@ namespace org.kbinani.cadencii {
             VsqEvent[] index = new VsqEvent[list.size()];
             int count = 0;
             int c = list.size();
-            for ( Iterator itr = s_vsq.Track.get( s_selected ).getEventIterator(); itr.hasNext(); ) {
-                VsqEvent ev = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = s_vsq.Track.get( s_selected ).getEventIterator(); itr.hasNext(); ) {
+                VsqEvent ev = itr.next();
                 int find = -1;
                 for ( int i = 0; i < c; i++ ) {
                     if ( list.get( i ) == ev.InternalID ) {
@@ -2254,8 +2254,8 @@ namespace org.kbinani.cadencii {
         private static void addSelectedEventCor( int id, boolean silent ) {
             clearSelectedTempo();
             clearSelectedTimesig();
-            for ( Iterator itr = s_vsq.Track.get( s_selected ).getEventIterator(); itr.hasNext(); ) {
-                VsqEvent ev = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = s_vsq.Track.get( s_selected ).getEventIterator(); itr.hasNext(); ) {
+                VsqEvent ev = itr.next();
                 if ( ev.InternalID == id ) {
                     if ( isSelectedEventContains( s_selected, id ) ) {
                         // すでに選択されていた場合
@@ -2306,7 +2306,7 @@ namespace org.kbinani.cadencii {
             return false;
         }
 
-        public static Iterator getSelectedEventIterator() {
+        public static Iterator<SelectedEventEntry> getSelectedEventIterator() {
             return s_selected_events.iterator();
         }
 
@@ -2356,7 +2356,7 @@ namespace org.kbinani.cadencii {
             return selectedPointCurveType;
         }
 
-        public static Iterator getSelectedPointIDIterator() {
+        public static Iterator<Long> getSelectedPointIDIterator() {
             return selectedPointIDs.iterator();
         }
 
@@ -2786,8 +2786,8 @@ namespace org.kbinani.cadencii {
             String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
 #endif
 
-            for ( Iterator itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
-                SingerConfig config = (SingerConfig)itr.next();
+            for ( Iterator<SingerConfig> itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
+                SingerConfig config = itr.next();
                 UtauVoiceDB db = null;
                 String dir = PortUtil.combinePath( config.VOICEIDSTR, "oto.ini" );
                 try {
@@ -3198,8 +3198,8 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < count; i++ ) {
                 SymbolTable st = SymbolTable.getSymbolTable( i );
                 boolean found = false;
-                for ( Iterator itr = editorConfig.UserDictionaries.iterator(); itr.hasNext(); ) {
-                    String s = (String)itr.next();
+                for ( Iterator<String> itr = editorConfig.UserDictionaries.iterator(); itr.hasNext(); ) {
+                    String s = itr.next();
                     String[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
                     if ( st.getName().Equals( spl[0] ) ) {
                         found = true;

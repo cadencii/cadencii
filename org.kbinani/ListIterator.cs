@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace org.kbinani.java.util {
 
-    public class ListIterator<T> : Iterator {
+    public class ListIterator<T> : Iterator<T> {
         private List<T> m_list;
         private int m_pos;
 
@@ -43,9 +43,9 @@ namespace org.kbinani.java.util {
             }
         }
 
-        public Object next() {
+        public T next() {
             if ( m_list == null ) {
-                return null;
+                return default( T );
             }
             m_pos++;
             return m_list[m_pos];

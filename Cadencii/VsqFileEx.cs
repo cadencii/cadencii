@@ -338,10 +338,10 @@ namespace org.kbinani.cadencii {
                     if ( list == null ) {
                         continue;
                     }
-                    for ( Iterator itr = list.iterator(); itr.hasNext(); ) {
-                        BezierChain chain = (BezierChain)itr.next();
-                        for ( Iterator itr2 = chain.points.iterator(); itr2.hasNext(); ) {
-                            BezierPoint point = (BezierPoint)itr2.next();
+                    for ( Iterator<BezierChain> itr = list.iterator(); itr.hasNext(); ) {
+                        BezierChain chain = itr.next();
+                        for ( Iterator<BezierPoint> itr2 = chain.points.iterator(); itr2.hasNext(); ) {
+                            BezierPoint point = itr2.next();
                             PointD bse = new PointD( tempo.getClockFromSec( this.getSecFromClock( point.getBase().getX() ) - premeasure_sec_target + premeasure_sec_tempo ),
                                                      point.getBase().getY() );
                             double rx = point.getBase().getX() + point.controlRight.getX();
@@ -373,8 +373,8 @@ namespace org.kbinani.cadencii {
             // 古いのから情報をコピー
             VsqFile tempo = new VsqFile( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
             tempo.TempoTable.clear();
-            for ( Iterator itr = vsq.TempoTable.iterator(); itr.hasNext(); ) {
-                TempoTableEntry item = (TempoTableEntry)itr.next();
+            for ( Iterator<TempoTableEntry> itr = vsq.TempoTable.iterator(); itr.hasNext(); ) {
+                TempoTableEntry item = itr.next();
                 tempo.TempoTable.add( item );
             }
             tempo.updateTempoInfo();
@@ -529,8 +529,8 @@ namespace org.kbinani.cadencii {
                     int list_count = list.size();
                     for ( int j = 0; j < list_count; j++ ) {
                         BezierChain chain = list.get( j );
-                        for ( Iterator itr2 = chain.points.iterator(); itr2.hasNext(); ) {
-                            BezierPoint point = (BezierPoint)itr2.next();
+                        for ( Iterator<BezierPoint> itr2 = chain.points.iterator(); itr2.hasNext(); ) {
+                            BezierPoint point = itr2.next();
                             PointD bse = new PointD( vsq.getClockFromSec( vsq.getSecFromClock( point.getBase().getX() ) + sec ),
                                                      point.getBase().getY() );
                             double rx = point.getBase().getX() + point.controlRight.getX();
@@ -720,12 +720,12 @@ namespace org.kbinani.cadencii {
             ret.args = new Object[2];
             ret.args[0] = track;
             TreeMap<CurveType, Vector<BezierChain>> copy = new TreeMap<CurveType, Vector<BezierChain>>();
-            for ( Iterator itr = attached_curves.keySet().iterator(); itr.hasNext(); ) {
-                CurveType ct = (CurveType)itr.next();
+            for ( Iterator<CurveType> itr = attached_curves.keySet().iterator(); itr.hasNext(); ) {
+                CurveType ct = itr.next();
                 Vector<BezierChain> list = attached_curves.get( ct );
                 Vector<BezierChain> copy_list = new Vector<BezierChain>();
-                for ( Iterator itr2 = list.iterator(); itr2.hasNext(); ) {
-                    copy_list.add( (BezierChain)((BezierChain)itr2.next()).clone() );
+                for ( Iterator<BezierChain> itr2 = list.iterator(); itr2.hasNext(); ) {
+                    copy_list.add( (BezierChain)(itr2.next()).clone() );
                 }
                 copy.put( ct, copy_list );
             }
@@ -1049,8 +1049,8 @@ namespace org.kbinani.cadencii {
                     int track = (Integer)command.args[0];
                     TreeMap<CurveType, Vector<BezierChain>> curves = (TreeMap<CurveType, Vector<BezierChain>>)command.args[1];
                     TreeMap<CurveType, Vector<BezierChain>> inv = new TreeMap<CurveType, Vector<BezierChain>>();
-                    for ( Iterator itr = curves.keySet().iterator(); itr.hasNext(); ) {
-                        CurveType ct = (CurveType)itr.next();
+                    for ( Iterator<CurveType> itr = curves.keySet().iterator(); itr.hasNext(); ) {
+                        CurveType ct = itr.next();
                         Vector<BezierChain> chains = new Vector<BezierChain>();
                         Vector<BezierChain> src = this.AttachedCurves.get( track - 1 ).get( ct );
                         for ( int i = 0; i < src.size(); i++ ) {
@@ -1059,8 +1059,8 @@ namespace org.kbinani.cadencii {
                         inv.put( ct, chains );
 
                         this.AttachedCurves.get( track - 1 ).get( ct ).clear();
-                        for ( Iterator itr2 = curves.get( ct ).iterator(); itr2.hasNext(); ) {
-                            BezierChain bc = (BezierChain)itr2.next();
+                        for ( Iterator<BezierChain> itr2 = curves.get( ct ).iterator(); itr2.hasNext(); ) {
+                            BezierChain bc = itr2.next();
                             this.AttachedCurves.get( track - 1 ).get( ct ).add( bc );
                         }
                     }
@@ -1212,8 +1212,8 @@ namespace org.kbinani.cadencii {
             int count = Track.size();
             for ( int i = 1; i < count; i++ ) {
                 VsqTrack track = Track.get( i );
-                for ( Iterator itr = track.getSingerEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = (VsqEvent)itr.next();
+                for ( Iterator<VsqEvent> itr = track.getSingerEventIterator(); itr.hasNext(); ) {
+                    VsqEvent ve = itr.next();
                     if ( ((IconHandle)ve.ID.IconHandle).IDS.ToLower().Equals( "utau" ) ) {
                         setTrackRendererKind( track, RendererKind.UTAU );
                         break;
@@ -1272,8 +1272,8 @@ namespace org.kbinani.cadencii {
                         ret.AttachedCurves.add( new BezierCurves() );
                     }
                 } else {
-                    for ( Iterator itr = ret.AttachedCurves.getCurves().iterator(); itr.hasNext(); ) {
-                        BezierCurves bc = (BezierCurves)itr.next();
+                    for ( Iterator<BezierCurves> itr = ret.AttachedCurves.getCurves().iterator(); itr.hasNext(); ) {
+                        BezierCurves bc = itr.next();
                         for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
                             CurveType ct = AppManager.CURVE_USAGE[k];
                             Vector<BezierChain> list = bc.get( ct );

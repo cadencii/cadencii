@@ -150,8 +150,8 @@ namespace org.kbinani.apputil {
                     sw.newLine();
                     sw.newLine();
                 }
-                for ( Iterator itr = list.keySet().iterator(); itr.hasNext(); ){
-                    String key = (String)itr.next();
+                for ( Iterator<String> itr = list.keySet().iterator(); itr.hasNext(); ){
+                    String key = itr.next();
                     String skey = key.Replace( "\n", "\\n\"\n\"" );
                     MessageBodyEntry mbe = list.get( key );
                     String s = mbe.message;

@@ -65,7 +65,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static Iterator iterator() {
+        public static Iterator<ClockResolution> iterator() {
             ClockResolution[] arr = new ClockResolution[] { ClockResolution.L1, 
                                                             ClockResolution.L2, 
                                                             ClockResolution.L4, 

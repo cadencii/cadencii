@@ -31,7 +31,7 @@ namespace org.kbinani.vsq {
 #if JAVA
     public class NrpnIterator implements Iterator {
 #else
-    public class NrpnIterator : Iterator {
+    public class NrpnIterator : Iterator<ValuePair<String, Integer>> {
 #endif
         private Vector<ValuePair<String, Integer>> nrpns = new Vector<ValuePair<String, Integer>>();
         private int m_pos = -1;
@@ -69,9 +69,9 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public Object next() {
+        public ValuePair<String, Integer> next() {
             m_pos++;
-            return nrpns.get( m_pos ).getValue();
+            return nrpns.get( m_pos );
         }
 
         public void remove() {

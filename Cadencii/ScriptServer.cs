@@ -78,8 +78,8 @@ namespace org.kbinani.cadencii {
             boolean changed = true;
             while ( changed ) {
                 changed = false;
-                for ( Iterator itr = scripts.keySet().iterator(); itr.hasNext(); ) {
-                    String id = (String)itr.next();
+                for ( Iterator<String> itr = scripts.keySet().iterator(); itr.hasNext(); ) {
+                    String id = itr.next();
                     if ( !added.contains( id ) ) {
                         scripts.remove( id );
                         changed = true;
@@ -184,7 +184,7 @@ namespace org.kbinani.cadencii {
         /// 読み込まれたスクリプトのIDを順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public static Iterator getScriptIdIterator() {
+        public static Iterator<String> getScriptIdIterator() {
             return scripts.keySet().iterator();
         }
 

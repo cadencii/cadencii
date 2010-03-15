@@ -136,8 +136,8 @@ namespace org.kbinani.cadencii {
             }
 
             // 削除を実行
-            for ( Iterator itr = delete_list.iterator(); itr.hasNext(); ){
-                int id = (Integer)itr.next();
+            for ( Iterator<Integer> itr = delete_list.iterator(); itr.hasNext(); ){
+                int id = itr.next();
                 remove( curve, id );
                 //this[curve].Remove( id );
             }
@@ -315,14 +315,14 @@ namespace org.kbinani.cadencii {
             int clock_end
         ) {
             boolean edited = false;
-            for ( Iterator itr1 = target_curve.iterator(); itr1.hasNext(); ){
-                CurveType curve = (CurveType)itr1.next();
+            for ( Iterator<CurveType> itr1 = target_curve.iterator(); itr1.hasNext(); ){
+                CurveType curve = itr1.next();
                 if ( curve.isScalar() || curve.isAttachNote() ) {
                     continue;
                 }
                 Vector<BezierChain> tmp = new Vector<BezierChain>();
-                for ( Iterator itr = this.get( curve ).iterator(); itr.hasNext(); ){
-                    BezierChain bc = (BezierChain)itr.next();
+                for ( Iterator<BezierChain> itr = this.get( curve ).iterator(); itr.hasNext(); ){
+                    BezierChain bc = itr.next();
                     int len = bc.points.size();
                     if ( len < 1 ) {
                         continue;
@@ -373,14 +373,14 @@ namespace org.kbinani.cadencii {
                     }
                 }
                 this.get( curve ).clear();
-                for ( Iterator itr = tmp.iterator(); itr.hasNext(); ){
-                    BezierChain bc = (BezierChain)itr.next();
+                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ){
+                    BezierChain bc = itr.next();
                     if ( bc.id >= 0 ) {
                         addBezierChain( curve, bc, bc.id );
                     }
                 }
-                for ( Iterator itr = tmp.iterator(); itr.hasNext(); ){
-                    BezierChain bc = (BezierChain)itr.next();
+                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ){
+                    BezierChain bc = itr.next();
                     if ( bc.id < 0 ) {
                         bc.id = this.getNextId( curve );
                         addBezierChain( curve, bc, bc.id );

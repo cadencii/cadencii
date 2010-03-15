@@ -46,8 +46,8 @@ namespace org.kbinani.vsq {
         }
 
         public VsqEvent findFromID( int internal_id ) {
-            for ( Iterator itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = (VsqEvent)itr.next();
+            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
                 if ( item.InternalID == internal_id ) {
                     return item;
                 }
@@ -77,7 +77,7 @@ namespace org.kbinani.vsq {
             m_ids.clear();
         }
 
-        public Iterator iterator() {
+        public Iterator<VsqEvent> iterator() {
             updateIDList();
             return Events.iterator();
         }

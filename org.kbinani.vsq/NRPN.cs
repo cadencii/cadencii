@@ -569,13 +569,13 @@ namespace org.kbinani.vsq {
         private NRPN() {
         }
 
-        public static Iterator iterator() {
+        public static Iterator<ValuePair<String, Integer>> iterator() {
             return new NrpnIterator();
         }
 
         public static String getName( int nrpn ) {
-            for ( Iterator itr = iterator(); itr.hasNext(); ) {
-                ValuePair<String, Integer> v = (ValuePair<String, Integer>)itr.next();
+            for ( Iterator<ValuePair<String, Integer>> itr = iterator(); itr.hasNext(); ) {
+                ValuePair<String, Integer> v = itr.next();
                 if ( v.getValue() == nrpn ) {
                     return v.getKey();
                 }
