@@ -11,6 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
+import org.kbinani.apputil.*;
+
+#else
 using System;
 using org.kbinani;
 using org.kbinani.windows.forms;
@@ -19,8 +27,13 @@ using org.kbinani.apputil;
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+#endif
 
+#if JAVA
+    public class FormExportMusicXml extends BForm {
+#else
     public class FormExportMusicXml : BForm {
+#endif
         private static boolean isChangeTempo = false;
 
         private BButton btnCancel;
@@ -140,4 +153,6 @@ namespace org.kbinani.cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif

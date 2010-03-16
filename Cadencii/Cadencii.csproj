@@ -381,6 +381,9 @@
     <Content Include="Properties\Icon1.ico" />
     <None Include="Properties\app.manifest" />
     <None Include="Resources.list" />
+    <None Include="zh-CN.po">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="resources\dict_en.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

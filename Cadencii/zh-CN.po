@@ -1,0 +1,1197 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "capacity of RecentFiles"
+msgstr "capacity of RecentFiles"
+
+msgid "list of files recentry used"
+msgstr "list of files recentry used"
+
+msgid "tolerance of mouse operation (in pixel)"
+msgstr "tolerance of mouse operation (in pixel)"
+
+msgid "whether scroll horizontally with mouse-wheel"
+msgstr "whether scroll horizontally with mouse-wheel"
+
+msgid "maximum frame rate(in frames per second)"
+msgstr "maximum frame rate(in frames per second)"
+
+msgid "line"
+msgstr "行"
+
+msgid "Script aborted"
+msgstr "忽略脚本"
+
+msgid "Script runtime error:"
+msgstr "脚本运行错误:"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Script compilation failed."
+msgstr "脚本编辑失败"
+
+msgid "Beat Change"
+msgstr "变更节拍"
+
+msgid "Position"
+msgstr "位置"
+
+msgid "Beat"
+msgstr "节拍"
+
+msgid "OK"
+msgstr "确认"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "From"
+msgstr "开始"
+
+msgid "To"
+msgstr "终止"
+
+msgid "Measure"
+msgstr "小节"
+
+msgid "Edit Bezier Data Point"
+msgstr "编辑贝尔曲线数据点"
+
+msgid "Data Poin"
+msgstr "数据"
+
+msgid "Clock"
+msgstr "时钟"
+
+msgid "Value"
+msgstr "变量"
+
+msgid "Left Control Point"
+msgstr "左控制点"
+
+msgid "Right Control Point"
+msgstr "右控制点"
+
+msgid "Smooth"
+msgstr "平滑化"
+
+msgid "Invalid value"
+msgstr "無效的數值"
+
+msgid "Integer format error"
+msgstr "整數格式錯誤"
+
+msgid "Script Compilation Result"
+msgstr "腳本編譯結果"
+
+msgid "Delete bar"
+msgstr "刪除小節"
+
+msgid "Start"
+msgstr "起點"
+
+msgid "End"
+msgstr "終點"
+
+msgid "Push buttons in turn as shown below"
+msgstr "Push buttons in turn as shown below"
+
+msgid "Game controler is not available"
+msgstr "不可使用遊戲控制器"
+
+msgid "Game Controler Configuration"
+msgstr "遊戲控制器設定"
+
+msgid "Reset And Exit"
+msgstr "Reset And Exit"
+
+msgid "Skip"
+msgstr "跳過"
+
+msgid "Import lyrics"
+msgstr "輸入歌詞"
+
+msgid "Insert bar"
+msgstr "插入小節"
+
+msgid "_PREFIX_TH_"
+msgstr "第"
+
+msgid "Length"
+msgstr "長度"
+
+msgid "th bar"
+msgstr "小節"
+
+msgid "bar"
+msgstr "小節"
+
+msgid "Expression control property"
+msgstr "表情控制資訊內容"
+
+msgid "Save this sequence?"
+msgstr "請問要將這個序列存檔嗎？"
+
+msgid "Affirmation"
+msgstr "確認"
+
+msgid "Invalid note data.\n"
+"Track {0} : {1}\n"
+"\n"
+"-> Piano roll : Blank sequence."
+msgstr "錯誤的音符資訊. Track {0} : {1}  -> Piano roll : 空的 sequence."
+
+msgid "Wave Export"
+msgstr "輸出Wave檔"
+
+msgid "Wave File(*.wav)|*.wav"
+msgstr "Wave檔案(*.wav)|*.wav"
+
+msgid "All Files(*.*)|*.*"
+msgstr "所有檔案(*.*)|*.*"
+
+msgid "Default Singer Style"
+msgstr "預設歌唱設定"
+
+msgid "MP3 File(*.mp3)|*.mp3"
+msgstr "MP3檔案(*.mp3)|*.mp3"
+
+msgid "Cannot remove first symbol of track!"
+msgstr "無法刪除曲頭的符號！"
+
+msgid "Disabled"
+msgstr "無效"
+
+msgid "Cursor"
+msgstr "游標"
+
+msgid "Keyboard"
+msgstr "鍵盤"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Run"
+msgstr "執行"
+
+msgid "Failed loading script."
+msgstr "無法讀取腳本"
+
+msgid "VSQ Format(*.vsq)|*.vsq"
+msgstr "VSQ 格式(*.vsq)|*.vsq"
+
+msgid "Original Format(*.evsq)|*.evsq"
+msgstr "Original Format(*.evsq)|*.evsq"
+
+msgid "MIDI Format(*.mid)|*.mid"
+msgstr "MIDI Format(*.mid)|*.mid"
+
+msgid "UTAU Script Format(*.ust)|*.ust"
+msgstr "UTAU 腳本格式(*.ust)|*.ust"
+
+msgid "Game Controler"
+msgstr "遊戲控制器"
+
+msgid "Pointer"
+msgstr "Pointer"
+
+msgid "Pencil"
+msgstr "鉛筆"
+
+msgid "Line"
+msgstr "直線"
+
+msgid "Eraser"
+msgstr "橡皮擦"
+
+msgid "Curve"
+msgstr "曲線"
+
+msgid "Grid"
+msgstr "格"
+
+msgid "File"
+msgstr "檔案"
+
+msgid "New"
+msgstr "開新檔案"
+
+msgid "Open"
+msgstr "開啟舊檔"
+
+msgid "Save"
+msgstr "儲存檔案"
+
+msgid "Save As"
+msgstr "另存新檔"
+
+msgid "Import"
+msgstr "匯入"
+
+msgid "UTAU Project File"
+msgstr "UTAU 專案"
+
+msgid "Export"
+msgstr "匯出"
+
+msgid "Recent Files"
+msgstr "最近使用的檔案"
+
+msgid "Quit"
+msgstr "結束"
+
+msgid "Edit"
+msgstr "編輯"
+
+msgid "Undo"
+msgstr "復原"
+
+msgid "Redo"
+msgstr "重複"
+
+msgid "Cut"
+msgstr "剪下"
+
+msgid "Copy"
+msgstr "複製"
+
+msgid "Paste"
+msgstr "貼上"
+
+msgid "Delete"
+msgstr "刪除"
+
+msgid "Auto Normalize Mode"
+msgstr "自動音符正規化(重疊自動更正)"
+
+msgid "Select All"
+msgstr "全選"
+
+msgid "Select All Events"
+msgstr "選取所有事件"
+
+msgid "View"
+msgstr "檢視"
+
+msgid "Control Track"
+msgstr "控制軌"
+
+msgid "Mixer"
+msgstr "混音器"
+
+msgid "Waveform"
+msgstr "表示波形"
+
+msgid "Grid Line"
+msgstr "格線"
+
+msgid "Start Marker"
+msgstr "開始記號"
+
+msgid "End Marker"
+msgstr "結束記號"
+
+msgid "Lyrics/Phoneme"
+msgstr "歌詞/發音記號"
+
+msgid "Note Expression/Vibrato"
+msgstr "音符表現/Vibrato"
+
+msgid "Job"
+msgstr "工作"
+
+msgid "Normalize Notes"
+msgstr "音符正規化(去除音符重疊)"
+
+msgid "Insert Bars"
+msgstr "插入小節"
+
+msgid "Delete Bars"
+msgstr "刪除小節"
+
+msgid "Randomize"
+msgstr "Randomize"
+
+msgid "Connect Notes"
+msgstr "結合音符"
+
+msgid "Insert Lyrics"
+msgstr "插入歌詞"
+
+msgid "Import ReWire Host Tempo"
+msgstr "自ReWire Host取得Tempo"
+
+msgid "Start Realtime Input"
+msgstr "開始即時輸出"
+
+msgid "Reload VSTi"
+msgstr "重新讀取VSTi"
+
+msgid "Track"
+msgstr "Track"
+
+msgid "Track On"
+msgstr "Track On"
+
+msgid "Add Track"
+msgstr "追加Track"
+
+msgid "Copy Track"
+msgstr "複製 Track"
+
+msgid "Rename Track"
+msgstr "重新命名Track"
+
+msgid "Delete Track"
+msgstr "刪除Track"
+
+msgid "Render Current Track"
+msgstr "合成目前這個音軌"
+
+msgid "Render All Tracks"
+msgstr "合成所有的音軌"
+
+msgid "Overlay"
+msgstr "覆蓋"
+
+msgid "Lyrics"
+msgstr "歌詞"
+
+msgid "Note Expression Property"
+msgstr "音符表情參數"
+
+msgid "Note Vibrato Property"
+msgstr "音符Vibrato參數"
+
+msgid "Phoneme Transformation"
+msgstr "發音記號轉換"
+
+msgid "User Word Dictionary"
+msgstr "使用者辭典"
+
+msgid "Script"
+msgstr "腳本"
+
+msgid "Update Script List"
+msgstr "更新腳本清單"
+
+msgid "Setting"
+msgstr "設定"
+
+msgid "Preference"
+msgstr "選項"
+
+msgid "Reload"
+msgstr "重新讀取"
+
+msgid "Singing Style Defaults"
+msgstr "預設唱法"
+
+msgid "Quantize"
+msgstr "Quantize"
+
+msgid "Off"
+msgstr "關閉"
+
+msgid "Triplet"
+msgstr "三連音符"
+
+msgid "Singer Properties"
+msgstr "歌手設定"
+
+msgid "Set Sound File"
+msgstr "指定聲音檔"
+
+msgid "Mute"
+msgstr "靜音"
+
+msgid "Help"
+msgstr "幫助"
+
+msgid "About Cadencii"
+msgstr "關於Cadencii"
+
+msgid "Arrow"
+msgstr "游標"
+
+msgid "Note Fixed Length"
+msgstr "輸入固定長度的音符"
+
+msgid "Dot"
+msgstr "付點"
+
+msgid "Show/Hide Grid Line"
+msgstr "顯示/隱藏 Grid Line"
+
+msgid "Do you wish to remove track? {0} : "{1}""
+msgstr "要刪除track{0} : "
+
+msgid "[file not found]"
+msgstr "[找不到檔案]"
+
+msgid "Template"
+msgstr "範本"
+
+msgid "Pitch Control"
+msgstr "音高控制"
+
+msgid "Bend Depth"
+msgstr "Bend深度"
+
+msgid "Bend Length"
+msgstr "Bend長度"
+
+msgid "Add portamento in rising movement"
+msgstr "在上行形付加滑音"
+
+msgid "Add portamento in falling movement"
+msgstr "在下行形付加滑音"
+
+msgid "Dynamics Control"
+msgstr "力道控制"
+
+msgid "Decay"
+msgstr "延遲"
+
+msgid "Accent"
+msgstr "重音"
+
+msgid "Apply to current track"
+msgstr "套入現在的Track"
+
+msgid "Would you like to change singer style for all events?"
+msgstr "要改變所有音符的表現資料嗎？"
+
+msgid "Synthesize"
+msgstr "合成"
+
+msgid "now synthesizing..."
+msgstr "合成中..."
+
+msgid "Global Tempo"
+msgstr "Global Tempo"
+
+msgid "Tempo"
+msgstr "節奏"
+
+msgid "Vibrato property"
+msgstr "Vibrato屬性"
+
+msgid "Vibrato length"
+msgstr "Vibrato長度"
+
+msgid "Vibrato type"
+msgstr "Vibrato種類"
+
+msgid "User Dictionary Configuration"
+msgstr "使用者辭典設定"
+
+msgid "Available Dictionaries"
+msgstr "可以使用的辭典"
+
+msgid "Up"
+msgstr "上"
+
+msgid "Down"
+msgstr "下"
+
+msgid "VST dll(*.dll)|*.dll"
+msgstr "VST dll(*.dll)|*.dll"
+
+msgid "Sequence"
+msgstr "Sequence"
+
+msgid "Resolution(VSTi)"
+msgstr "解析度(VSTi)"
+
+msgid "Dynamics"
+msgstr "力道"
+
+msgid "Vibrato Depth"
+msgstr "Vibrato的振幅"
+
+msgid "Vibrato Rate"
+msgstr "Vibrato的周期"
+
+msgid "Vibrato Settings"
+msgstr "Vibrato設定"
+
+msgid "Default Vibrato Length"
+msgstr "預設Vibrato長度"
+
+msgid "Auto Vibrato Settings"
+msgstr "自動Vibrato設定"
+
+msgid "Enable Automatic Vibrato"
+msgstr "啟用自動Vibrato"
+
+msgid "Minimum note length for Automatic Vibrato"
+msgstr "可使用自動Vibrato的最短音符長度"
+
+msgid "Vibrato Type"
+msgstr "Vibrato的種類"
+
+msgid "Other Settings"
+msgstr "其他設定"
+
+msgid "Default Singer"
+msgstr "預設歌手"
+
+msgid "Pre-Send time"
+msgstr "Pre-Send time"
+
+msgid "Waiting Time"
+msgstr "待機時間"
+
+msgid "Default Pre-measure"
+msgstr "標準前置拍"
+
+msgid "Chase Event"
+msgstr "追蹤Event"
+
+msgid "Playback Sample Sound"
+msgstr "合成音Sample輸出"
+
+msgid "Enable"
+msgstr "有效"
+
+msgid "Timing"
+msgstr "時機"
+
+msgid "Pre-Send Time for sample sound"
+msgstr "Sample音輸出前的Pre-Send Time"
+
+msgid "Appearance"
+msgstr "外観"
+
+msgid "Font"
+msgstr "字體"
+
+msgid "Menu / Lyrics"
+msgstr "選單 / 歌詞"
+
+msgid "Screen"
+msgstr "畫面"
+
+msgid "Counter"
+msgstr "計數器"
+
+msgid "UI Language"
+msgstr "UI語言"
+
+msgid "Change"
+msgstr "變更"
+
+msgid "Track Height (pixel)"
+msgstr "Track的高度 (pixel)"
+
+msgid "Visible Control Curve"
+msgstr "要表示的控制曲線"
+
+msgid "Operation"
+msgstr "操作"
+
+msgid "Mouse wheel Rate"
+msgstr "滑鼠滾動比率"
+
+msgid "Fix Play Cursor to Center"
+msgstr "將Marker固定在畫面中心"
+
+msgid "Horizontal Scroll when Mouse wheel"
+msgstr "讓滑鼠滾輪向水平方向捲動"
+
+msgid "Place Tempo/Beat Dialog to appropriate Position"
+msgstr "讓Tempo/拍子對話框出現在適當的位置"
+
+msgid "Maximum Frame Rate"
+msgstr "最大影格數"
+
+msgid "Keep Lyric Input Mode"
+msgstr "維持輸入歌詞時的模式"
+
+msgid "Waiting Time for Preview"
+msgstr "預覽前的待機時間長"
+
+msgid "milli second"
+msgstr "毫秒"
+
+msgid "Play Preview On Right Click"
+msgstr "按右鍵演奏預覽音"
+
+msgid "Enable Quantize for Curve Selecting"
+msgstr "Enable Quantize for Curve Selecting"
+
+msgid "MIDI In Port Number"
+msgstr "MIDI In Port Number"
+
+msgid "Platform"
+msgstr "使用平台"
+
+msgid "Current Platform"
+msgstr "現在使用的平台"
+
+msgid "Use Command key as Control key"
+msgstr "把command鍵當作ctrl鍵使用"
+
+msgid "About {0}"
+msgstr "關於{0}"
+
+msgid "Credit"
+msgstr "工作人員列表"
+
+msgid "mio"
+msgstr "mio"
+
+msgid "Capacity of RecentFiles"
+msgstr "「最近使用的檔案列表」大小"
+
+msgid "Default scale for width direction in pixel/clock"
+msgstr "Default scale for width direction in pixel/clock"
+
+msgid "Default value of pre-measure"
+msgstr "標準前置拍"
+
+msgid "Drawing lyrics to screen or not"
+msgstr "是否在畫面上描繪歌詞"
+
+msgid "Fix play cursor to the center of screen"
+msgstr "Fix play cursor to the center of screen"
+
+msgid "List of files recentry used"
+msgstr "最近使用的檔案"
+
+msgid "Maximum frame rate(in frames per second)"
+msgstr "最大影格數(in frames per second)"
+
+msgid "Mouse wheel speed"
+msgstr "滑鼠滾動速度"
+
+msgid "Program change of default singer"
+msgstr "Program change of default singer"
+
+msgid "Show actual pitch line or not"
+msgstr "Show actual pitch line or not"
+
+msgid "Tolerance of mouse operation (in pixel)"
+msgstr "Tolerance of mouse operation (in pixel)"
+
+msgid "Whether scroll horizontally with mouse-wheel"
+msgstr "Whether scroll horizontally with mouse-wheel"
+
+msgid "beat"
+msgstr "拍子"
+
+msgid "Check All"
+msgstr "全選"
+
+msgid "Delete Bezier Point"
+msgstr "刪除貝茲點"
+
+msgid "lyric"
+msgstr "歌詞"
+
+msgid "Master Tuning"
+msgstr "Master Tuning"
+
+msgid "Master Tuning in Cent"
+msgstr "Master Tuning in Cent"
+
+msgid "Midi Export"
+msgstr "輸出Midi"
+
+msgid "Midi Import"
+msgstr "輸入Midi"
+
+msgid "name"
+msgstr "名稱"
+
+msgid "note"
+msgstr "音符"
+
+msgid "notes"
+msgstr "音符"
+
+msgid "Option"
+msgstr "選項"
+
+msgid "Palette Tool"
+msgstr "Palette Tool"
+
+msgid "Pitch Line"
+msgstr "Pitch Line"
+
+msgid "Renderer"
+msgstr "Renderer"
+
+msgid "tempo"
+msgstr "節奏"
+
+msgid "track"
+msgstr "track"
+
+msgid "Track Property"
+msgstr "Track Property"
+
+msgid "Uncheck All"
+msgstr "全部取消選取"
+
+msgid "vocaloid meta text"
+msgstr "vocaloid meta text"
+
+msgid "vocaloid NRPN"
+msgstr "vocaloid NRPN"
+
+msgid "XML-VSQ Format(*.xvsq)|*.xvsq"
+msgstr "XML-VSQ 格式(*.xvsq)|*.xvsq"
+
+msgid "Font size in GraphicsUnit.Point unit"
+msgstr "Font size in GraphicsUnit.Point unit"
+
+msgid "Invoke resampler with Wine"
+msgstr "Invoke resampler with Wine"
+
+msgid "Add"
+msgstr "Add"
+
+msgid "Executable(*.exe)|*.exe"
+msgstr "Executable(*.exe)|*.exe"
+
+msgid "Invoke UTAU cores with Wine"
+msgstr "Invoke UTAU cores with Wine"
+
+msgid "Misc"
+msgstr "Misc"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Path"
+msgstr "Path"
+
+msgid "Piano Roll"
+msgstr "Piano Roll"
+
+msgid "Program Change"
+msgstr "Program Change"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "Select Singer Directory"
+msgstr "選擇歌手資料夾"
+
+msgid "Top Most"
+msgstr "Top Most"
+
+msgid "Translate Roman letters into Kana"
+msgstr "把羅馬字母改成假名"
+
+msgid "Use Custom File Dialog"
+msgstr "Use Custom File Dialog"
+
+msgid "UTAU Cores"
+msgstr "UTAU 核心"
+
+msgid "UTAU Singers"
+msgstr "UTAU 歌手"
+
+msgid "VSQ / Vocaloid Midi"
+msgstr "VSQ / Vocaloid Midi"
+
+msgid "Chagne Tool Pointer / Eraser"
+msgstr "Chagne Tool Pointer / Eraser"
+
+msgid "Change Tool Pointer / Pencil"
+msgstr "Change Tool Pointer / Pencil"
+
+msgid "Command"
+msgstr "Command"
+
+msgid "Do you wish to remove track? {0} : '{1}'"
+msgstr "Do you wish to remove track? {0} : '{1}'"
+
+msgid "Down-Portamento"
+msgstr "Down-Portamento"
+
+msgid "Load Default"
+msgstr "Load Default"
+
+msgid "Metronome"
+msgstr "Metronome"
+
+msgid "Metronome Config"
+msgstr "Metronome Config"
+
+msgid "MIDI Device"
+msgstr "MIDI Device"
+
+msgid "Moduration"
+msgstr "Moduration"
+
+msgid "Next Control Curve"
+msgstr "Next Control Curve"
+
+msgid "Next Track"
+msgstr "Next Track"
+
+msgid "Note"
+msgstr "Note"
+
+msgid "Note Property"
+msgstr "Note Property"
+
+msgid "Note#"
+msgstr "Note#"
+
+msgid "Note# (Bell)"
+msgstr "Note# (Bell)"
+
+msgid "Notes"
+msgstr "Notes"
+
+msgid "Open UTAU Project File"
+msgstr "Open UTAU Project File"
+
+msgid "Open VSQ/Vocaloid Midi"
+msgstr "Open VSQ/Vocaloid Midi"
+
+msgid "Others"
+msgstr "Others"
+
+msgid "Overlap"
+msgstr "Overlap"
+
+msgid "Phonetic Symbol"
+msgstr "Phonetic Symbol"
+
+msgid "Phrase"
+msgstr "Phrase"
+
+msgid "Pre Utterance"
+msgstr "Pre Utterance"
+
+msgid "Preview"
+msgstr "Preview"
+
+msgid "Previous Control Curve"
+msgstr "Previous Control Curve"
+
+msgid "Previous Track"
+msgstr "Previous Track"
+
+msgid "Program#"
+msgstr "Program#"
+
+msgid "Program# (Bell)"
+msgstr "Program# (Bell)"
+
+msgid "Property Window"
+msgstr "Property Window"
+
+msgid "Revert"
+msgstr "Revert"
+
+msgid "Ring Bell"
+msgstr "Ring Bell"
+
+msgid "Select command and hit key(s) you want to set.\n"
+"Hit Delete or Backspace if you want to remove shortcut key."
+msgstr "Select command and hit key(s) you want to set.\n"
+"Hit Delete or Backspace if you want to remove shortcut key."
+
+msgid "Shortcut Config"
+msgstr "快捷設定"
+
+msgid "Shortcut Key"
+msgstr "快捷鍵"
+
+msgid "Speed"
+msgstr "Speed"
+
+msgid "Start Lyric Input"
+msgstr "Start Lyric Input"
+
+msgid "Stop Realtime Input"
+msgstr "Stop Realtime Input"
+
+msgid "Up-Portamento"
+msgstr "Up-Portamento"
+
+msgid "Velocity"
+msgstr "Velocity"
+
+msgid "Vibrato Length"
+msgstr "Vibrato 長度"
+
+msgid "VSQ/Vocaloid Midi Import"
+msgstr "VSQ/Vocaloid Midi Import"
+
+msgid "(not implemented)"
+msgstr "(not implemented)"
+
+msgid "Add new track."
+msgstr "Add new track."
+
+msgid "Alias"
+msgstr "Alias"
+
+msgid "Attack"
+msgstr "Attack"
+
+msgid "Attack Control (VOCALOID1)"
+msgstr "Attack Control (VOCALOID1)"
+
+msgid "Attack Depth"
+msgstr "Attack Depth"
+
+msgid "Attack Duration"
+msgstr "Attack Duration"
+
+msgid "Automatical Backup"
+msgstr "Automatical Backup"
+
+msgid "Avoid automaticaly polyphonic editing."
+msgstr "Avoid automaticaly polyphonic editing."
+
+msgid "Blank"
+msgstr "Blank"
+
+msgid "Change track name."
+msgstr "Change track name."
+
+msgid "Close this window."
+msgstr "Close this window."
+
+msgid "Consonant"
+msgstr "Consonant"
+
+msgid "Copy current track."
+msgstr "Copy current track."
+
+msgid "Copy selected items."
+msgstr "Copy selected items."
+
+msgid "Correct overlapped item."
+msgstr "Correct overlapped item."
+
+msgid "Create new project."
+msgstr "Create new project."
+
+msgid "Cut selected items."
+msgstr "Cut selected items."
+
+msgid "Delete bar."
+msgstr "Delete bar."
+
+msgid "Delete current track."
+msgstr "Delete current track."
+
+msgid "Delete selected items."
+msgstr "Delete selected items."
+
+msgid "Dynamics Control (VOCALOID2)"
+msgstr "Dynamics Control (VOCALOID2)"
+
+msgid "Enable current track."
+msgstr "Enable current track."
+
+msgid "Enable/Disable end marker."
+msgstr "Enable/Disable end marker."
+
+msgid "Enable/Disable start marker."
+msgstr "Enable/Disable start marker."
+
+msgid "Export pre-measure part"
+msgstr "Export pre-measure part"
+
+msgid "Export to Standard MIDI."
+msgstr "Export to Standard MIDI."
+
+msgid "Export to WAVE file."
+msgstr "Export to WAVE file."
+
+msgid "file '{0}' is already registered as BGM."
+msgstr "file '{0}' is already registered as BGM."
+
+msgid "File Name"
+msgstr "File Name"
+
+msgid "Import lyric."
+msgstr "Import lyric."
+
+msgid "Import Standard MIDI."
+msgstr "Import Standard MIDI."
+
+msgid "Import tempo from ReWire host."
+msgstr "Import tempo from ReWire host."
+
+msgid "Import VSQ / VOCALOID MIDI."
+msgstr "Import VSQ / VOCALOID MIDI."
+
+msgid "Import."
+msgstr "Import."
+
+msgid "Input Offset Seconds"
+msgstr "Input Offset Seconds"
+
+msgid "Insert bar."
+msgstr "Insert bar."
+
+msgid "Inserting start at pre-measure"
+msgstr "Inserting start at pre-measure"
+
+msgid "interval"
+msgstr "interval"
+
+msgid "Invalid MIDI file."
+msgstr "Invalid MIDI file."
+
+msgid "Invalid VSQ/VOCALOID MIDI file"
+msgstr "Invalid VSQ/VOCALOID MIDI file"
+
+msgid "Lengthen note end to neighboring note."
+msgstr "Lengthen note end to neighboring note."
+
+msgid "Load"
+msgstr "Load"
+
+msgid "minute(s)"
+msgstr "minute(s)"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "Offset"
+msgstr "Offset"
+
+msgid "Open Cadencii project."
+msgstr "Open Cadencii project."
+
+msgid "Open UTAU project and create new project."
+msgstr "Open UTAU project and create new project."
+
+msgid "Open Voice DB configuration file"
+msgstr "Open Voice DB configuration file"
+
+msgid "Open VSQ / VOCALOID MIDI and create new project."
+msgstr "Open VSQ / VOCALOID MIDI and create new project."
+
+msgid "Paste copied items to current song position."
+msgstr "Paste copied items to current song position."
+
+msgid "Randomize items."
+msgstr "Randomize items."
+
+msgid "Recent projects."
+msgstr "Recent projects."
+
+msgid "Redo."
+msgstr "Redo."
+
+msgid "Reload VSTi dll."
+msgstr "Reload VSTi dll."
+
+msgid "remove '{0}'?"
+msgstr "remove '{0}'?"
+
+msgid "Render all tracks."
+msgstr "Render all tracks."
+
+msgid "Render current track."
+msgstr "Render current track."
+
+msgid "Save current project with new name."
+msgstr "Save current project with new name."
+
+msgid "Save current project."
+msgstr "Save current project."
+
+msgid "Save Voice DB configuration file with new name."
+msgstr "Save Voice DB configuration file with new name."
+
+msgid "Save Voice DB configuration file."
+msgstr "Save Voice DB configuration file."
+
+msgid "seconds"
+msgstr "seconds"
+
+msgid "Select all items and control curves of current track."
+msgstr "Select all items and control curves of current track."
+
+msgid "Select all items of current track."
+msgstr "Select all items of current track."
+
+msgid "Select command and hit key(s) you want to set.\n"
+"Hit Backspace if you want to remove shortcut key."
+msgstr "Select command and hit key(s) you want to set.\n"
+"Hit Backspace if you want to remove shortcut key."
+
+msgid "Select voice synthesis engine."
+msgstr "Select voice synthesis engine."
+
+msgid "Set global pitch shift."
+msgstr "Set global pitch shift."
+
+msgid "Set Offset Seconds"
+msgstr "Set Offset Seconds"
+
+msgid "Show background items."
+msgstr "Show background items."
+
+msgid "Show/Hide control curves."
+msgstr "Show/Hide control curves."
+
+msgid "Show/Hide expression lines."
+msgstr "Show/Hide expression lines."
+
+msgid "Show/Hide grid line."
+msgstr "Show/Hide grid line."
+
+msgid "Show/Hide lyrics."
+msgstr "Show/Hide lyrics."
+
+msgid "Show/Hide mixer window."
+msgstr "Show/Hide mixer window."
+
+msgid "Show/Hide pitch bend lines."
+msgstr "Show/Hide pitch bend lines."
+
+msgid "Show/Hide property window."
+msgstr "Show/Hide property window."
+
+msgid "Show/Hide waveform."
+msgstr "Show/Hide waveform."
+
+msgid "Start After Premeasure"
+msgstr "Start After Premeasure"
+
+msgid "Start realtime input."
+msgstr "Start realtime input."
+
+msgid "Undo."
+msgstr "Undo."
+
+msgid "UTAU"
+msgstr "UTAU"
+
+msgid "UTAU Voice DB"
+msgstr "UTAU Voice DB"
+
+msgid "Vibrato"
+msgstr "Vibrato"
+
+msgid "VOCALOID1"
+msgstr "VOCALOID1"
+
+msgid "VOCALOID2"
+msgstr "VOCALOID2"
+
+msgid "Voice DB Config"
+msgstr "Voice DB Config"
+
+msgid "Voice DB Config(*.ini)|*.ini"
+msgstr "Voice DB Config(*.ini)|*.ini"
+

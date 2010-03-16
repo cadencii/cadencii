@@ -995,11 +995,12 @@ namespace org.kbinani.cadencii {
 #endif
                 #endregion
 
+#if !JAVA
+                g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+#endif
+
                 #region コントロールカーブのオーバーレイ表示
                 if ( AppManager.curveOnPianoroll ) {
-#if !JAVA
-                    g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-#endif
                     g.setClip( null ); 
                    
                     Area fillarea = new Area( new Rectangle( key_width, 0, width - key_width, height ) ); // 塗りつぶす領域．最後に処理する

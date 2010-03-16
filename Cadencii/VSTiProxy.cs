@@ -83,7 +83,10 @@ namespace org.kbinani.cadencii {
 #if ENABLE_VOCALOID
             int default_dse_version = VocaloSysUtil.getDefaultDseVersion();
             String editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
-            String ini = PortUtil.combinePath( PortUtil.getDirectoryName( editor_dir ), "VOCALOID.ini" );
+            String ini = "";
+            if( !editor_dir.Equals( "" ) ){
+                ini = PortUtil.combinePath( PortUtil.getDirectoryName( editor_dir ), "VOCALOID.ini" );
+            }
             String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
             String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
             if ( vocalo2_dll_path != "" && PortUtil.isFileExists( vocalo2_dll_path ) ) {
@@ -100,7 +103,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                 PortUtil.println( "VSTiProxy#initCor; ini=" + ini );
 #endif
-                if ( PortUtil.isFileExists( ini ) ) {
+                if ( !ini.Equals( "" ) && PortUtil.isFileExists( ini ) ) {
                     // デフォルトのDSEバージョンのVOCALOID1 VSTi DLL
                     if ( default_dse_version == 100 && !AppManager.editorConfig.DoNotUseVocaloid100 ||
                          default_dse_version == 101 && !AppManager.editorConfig.DoNotUseVocaloid101 ) {

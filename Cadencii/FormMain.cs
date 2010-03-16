@@ -9704,11 +9704,10 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                 PortUtil.println( "FormMain#timer_Tick; stop at C" );
 #endif
+                timer.stop();
                 AppManager.setPlaying( false );
                 if ( AppManager.isRepeatMode() ) {
                     AppManager.setPlaying( true );
-                } else {
-                    timer.stop();
                 }
             } else {
                 AppManager.setCurrentClock( (int)clock );
@@ -11002,6 +11001,9 @@ namespace org.kbinani.cadencii {
             pictOverview.Width = panelOverview.Width - key_width;
             pictOverview.Top = 0;
             pictOverview.Height = panelOverview.Height;
+
+            btnMooz.setBounds( 3, 12, 23, 23 );
+            btnZoom.setBounds( 26, 12, 23, 23 );
 
             picturePositionIndicator.Width = width;
             picturePositionIndicator.Height = _PICT_POSITION_INDICATOR_HEIGHT;

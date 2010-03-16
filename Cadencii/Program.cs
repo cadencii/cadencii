@@ -43,9 +43,12 @@ namespace org.kbinani.cadencii{
 #if !DEBUG
             try {
 #endif
+
+#if !MONO
             splashThread = new Thread( new ThreadStart( showSplash ) );
             splashThread.TrySetApartmentState( ApartmentState.STA );
             splashThread.Start();
+#endif
 
             String file = "";
             if ( args.Length > 0 ) {
@@ -61,7 +64,9 @@ namespace org.kbinani.cadencii{
             }
 #endif
             AppManager.mainWindow = new FormMain( file );
+#if !MONO
             AppManager.mainWindow.Load += mainWindow_Load;
+#endif
             Application.Run( AppManager.mainWindow );
 #if !DEBUG
             } catch ( Exception ex ) {
