@@ -1,7 +1,7 @@
 ﻿#if ENABLE_PROPERTY
 /*
- * CalculatableString.cs
- * Copyright (C) 2009-2010 kbinani
+ * LengthProperty.cs
+ * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -19,23 +19,23 @@ using org.kbinani;
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
-    [TypeConverter( typeof( CalculatableStringConverter ) )]
-    public class CalculatableString {
+    [TypeConverter( typeof( LengthPropertyConverter ) )]
+    public class LengthProperty {
         private String m_value = "0";
         private int m_int = 0;
 
-        public CalculatableString()
+        public LengthProperty()
             : this( 0 ) {
         }
 
-        public CalculatableString( int value ) {
+        public LengthProperty( int value ) {
             m_int = value;
             m_value = "" + value;
         }
 
         public boolean equals( Object obj ) {
-            if ( obj is CalculatableString ) {
-                if ( m_int == ((CalculatableString)obj).m_int ) {
+            if ( obj is LengthProperty ) {
+                if ( m_int == ((LengthProperty)obj).m_int ) {
                     return true;
                 } else {
                     return false;

@@ -960,6 +960,39 @@ namespace org.kbinani.cadencii {
                 if ( length == draft ) {
                     continue;
                 }
+
+                // ビブラートの長さを変更
+                if ( item.editing.ID.VibratoHandle != null ) {
+                    VibratoLengthEditingRule rule = AppManager.vibratoLengthEditingRule;
+                    int new_delay = item.editing.ID.VibratoDelay; // ここではディレイが独立変数
+
+                    if ( rule == VibratoLengthEditingRule.DELAY ) {
+                        // ディレイが保存される
+                        // 特に何もしない
+                    } else if ( rule == VibratoLengthEditingRule.LENGTH ) {
+                        // ビブラート長さが保存される
+                        new_delay = draft - item.editing.ID.VibratoHandle.getLength();
+                        if ( new_delay < 0 ) {
+                            new_delay = 0;
+                        }
+                    } else if ( rule == VibratoLengthEditingRule.PERCENTAGE ) {
+                        // ビブラート長の割合が保存される
+                        double old_percentage = item.editing.ID.VibratoHandle.getLength() / (double)length * 100.0;
+                        new_delay = (int)(draft * old_percentage / 100.0);
+                        if ( new_delay < 0 ) {
+                            new_delay = 0;
+                        }
+                    }
+
+                    if ( new_delay >= draft ) {
+                        // ディレイが音符より長い場合。ビブラートは削除される
+                        item.editing.ID.VibratoDelay = draft;
+                        item.editing.ID.VibratoHandle = null;
+                    } else {
+                        item.editing.ID.VibratoDelay = new_delay;
+                        item.editing.ID.VibratoHandle.setLength( draft - new_delay );
+                    }
+                }
                 VsqEvent add = (VsqEvent)item.editing.clone();
                 add.ID.setLength( draft );
                 items.add( add );

@@ -22,6 +22,7 @@ using org.kbinani.java.util;
 using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
+    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -47,9 +48,9 @@ namespace org.kbinani.cadencii {
         public VsqEvent editing;
 #if ENABLE_PROPERTY
         private static int lastVibratoLength = 66;
-        private ClockProperty m_clock;
+        private GatetimeProperty m_clock;
         private BooleanEnum m_symbol_protected;
-        private CalculatableString m_length;
+        private LengthProperty m_length;
         private NoteNumberProperty m_note;
         private BooleanEnum m_portamento_up;
         private BooleanEnum m_portamento_down;
@@ -70,8 +71,8 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_PROPERTY
             // clock
-            m_clock = new ClockProperty();
-            m_clock.setClock( new CalculatableString( editing.Clock ) );
+            m_clock = new GatetimeProperty();
+            m_clock.Clock = new CalculatableString( editing.Clock );
 
             // symbol_protected
             m_symbol_protected = BooleanEnum.Off;
@@ -80,7 +81,7 @@ namespace org.kbinani.cadencii {
             }
 
             // length
-            m_length = new CalculatableString( editing.ID.getLength() );
+            m_length = new LengthProperty( editing.ID.getLength() );
 
             // note
             m_note = new NoteNumberProperty();
@@ -268,28 +269,28 @@ namespace org.kbinani.cadencii {
 
         #region Note
         [Category( "Note" )]
-        public ClockProperty Clock {
+        public GatetimeProperty Clock {
             get {
                 return m_clock;
             }
             set {
                 m_clock = value;
-                editing.Clock = m_clock.getClock().getIntValue();
+                editing.Clock = m_clock.Clock.getIntValue();
             }
         }
 
         [Category( "Note" )]
-        public CalculatableString Length {
+        public LengthProperty Length {
             get {
                 return m_length;
             }
             set {
                 int draft = value.getIntValue();
                 if ( draft <= 0 ) {
-                    m_length = new CalculatableString( 0 );
+                    m_length = new LengthProperty( 0 );
                 } else {
                     VsqFileEx vsq = AppManager.getVsqFile();
-                    int clock = m_clock.getClock().getIntValue();
+                    int clock = m_clock.Clock.getIntValue();
                     if ( vsq != null ) {
                         double ms_clock = vsq.getSecFromClock( clock ) * 1000.0;
                         double ms_end = vsq.getSecFromClock( clock + draft ) * 1000.0;
@@ -306,7 +307,7 @@ namespace org.kbinani.cadencii {
                                 }
                                 draft2--;
                             }
-                            m_length = new CalculatableString( draft2 );
+                            m_length = new LengthProperty( draft2 );
                         } else {
                             m_length = value;
                         }

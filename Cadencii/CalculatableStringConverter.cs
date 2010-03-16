@@ -45,6 +45,13 @@ namespace org.kbinani.cadencii {
 
         public override object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, object value ) {
             if ( value is String ) {
+                CalculatableString old = null;
+                object instance = context.Instance;
+                if ( instance != null ) {
+                    if ( instance is SelectedEventEntry ) {
+
+                    }
+                }
                 CalculatableString obj = new CalculatableString();
                 obj.setStr( (String)value );
                 return obj;
