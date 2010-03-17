@@ -34,7 +34,10 @@ namespace org.kbinani.vsq {
     [Serializable]
     public class VsqID : ICloneable {
 #endif
-        public const int MAX_NOTE_LENGTH = 16383;
+        /// <summary>
+        /// ミリ秒で表した、音符の最大長さ
+        /// </summary>
+        public const int MAX_NOTE_MILLISEC_LENGTH = 16383;
 #if JAVA
         public int value;
         public int IconHandle_index;

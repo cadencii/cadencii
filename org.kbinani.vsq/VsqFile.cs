@@ -2832,6 +2832,24 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
+        /// 指定したクロックにおける、音符長さ(ゲートタイム単位)の最大値を調べます
+        /// </summary>
+        /// <param name="clock"></param>
+        /// <returns></returns>
+        public int getMaximumNoteLengthAt( int clock ) {
+            double secAtStart = getSecFromClock( clock );
+            double secAtEnd = secAtStart + VsqID.MAX_NOTE_MILLISEC_LENGTH / 1000.0;
+            int clockAtEnd = (int)getClockFromSec( secAtEnd ) - 1;
+            secAtEnd = getSecFromClock( clockAtEnd );
+            while ( (int)(secAtEnd * 1000.0) - (int)(secAtStart * 1000.0) <= VsqID.MAX_NOTE_MILLISEC_LENGTH ) {
+                clockAtEnd++;
+                secAtEnd = getSecFromClock( clockAtEnd );
+            }
+            clockAtEnd--;
+            return clockAtEnd - clock;
+        }
+
+        /// <summary>
         /// 指定したトラックから、Expression(DYN)のNRPNリストを作成します
         /// </summary>
         /// <param name="track"></param>

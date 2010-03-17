@@ -33,9 +33,12 @@ namespace org.kbinani.cadencii {
         //指定した値オブジェクトを、指定した型に変換する
         //CustomClass型のオブジェクトをString型に変換する方法を提供する
         public override object ConvertTo( ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType ) {
+#if DEBUG
+            PortUtil.println( "GatetimePropertyConverter#ConvertTo" );
+#endif
             if ( destinationType == typeof( String ) && value is GatetimeProperty ) {
                 GatetimeProperty cp = (GatetimeProperty)value;
-                return cp.Measure.getIntValue() + " : " + cp.Beat.getIntValue() + " : " + cp.Gate.getIntValue();
+                return cp.Measure + " : " + cp.Beat + " : " + cp.Gate;
             }
             return base.ConvertTo( context, culture, value, destinationType );
         }
@@ -53,16 +56,39 @@ namespace org.kbinani.cadencii {
         //指定した値をコンバータの型に変換する
         //String型のオブジェクトをCustomClass型に変換する方法を提供する
         public override object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, object value ) {
+#if DEBUG
+            PortUtil.println( "GatetimePropretyConverter#ConvertFrom" );
+#endif
             if ( value is String ) {
+#if DEBUG
+                if ( context != null ) {
+                    if ( context.Instance != null ) {
+                        PortUtil.println( "GatetimePropertyConverter#ConvertFrom; context.Instance.GetType()=" + context.Instance.GetType() );
+                        if ( context.Instance.GetType() == typeof( object[] ) ) {
+                            object[] objs = (object[])context.Instance;
+                            for ( int i = 0; i < objs.Length; i++ ) {
+                                object obj = objs[i];
+                                if ( obj != null ) {
+                                    PortUtil.println( "GatetimePropretyConverter#ConvertFrom; ((object[])context.Instance)[" + i + "].GetType()=" + ((object[])context.Instance)[i].GetType() );
+                                }
+                            }
+                        }
+                    }
+                }
+#endif
                 String[] ss = ((String)value).Split( new char[] { ':' }, 3 );
-                CalculatableString cs = new CalculatableString();
-                cs.setStr( ss[0] );
-                int measure = cs.getIntValue();
-                cs.setStr( ss[1] );
-                int beat = cs.getIntValue();
-                cs.setStr( ss[2] );
-                int gate = cs.getIntValue();
-                return new GatetimeProperty( measure, beat, gate );
+                if ( ss.Length >= 3 ) {
+                    try {
+                        int measure = int.Parse( ss[0].Trim() );
+                        int beat = int.Parse( ss[1].Trim() );
+                        int gate = int.Parse( ss[2].Trim() );
+                        return new GatetimeProperty( measure, beat, gate );
+                    } catch {
+                        return new GatetimeProperty();
+                    }
+                } else {
+                    return new GatetimeProperty();
+                }
             }
             return base.ConvertFrom( context, culture, value );
         }

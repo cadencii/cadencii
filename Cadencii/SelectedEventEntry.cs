@@ -50,12 +50,15 @@ namespace org.kbinani.cadencii {
         private static int lastVibratoLength = 66;
         private GatetimeProperty m_clock;
         private BooleanEnum m_symbol_protected;
-        private LengthProperty m_length;
+        private String m_length;
         private NoteNumberProperty m_note;
         private BooleanEnum m_portamento_up;
         private BooleanEnum m_portamento_down;
         private AttackVariation m_attack;
         private VibratoVariation m_vibrato;
+#if DEBUG
+        private DEBUG_GatetimeProperty m_debug_clock = new DEBUG_GatetimeProperty();
+#endif
 #endif
 
         /// <summary>
@@ -72,7 +75,7 @@ namespace org.kbinani.cadencii {
 #if ENABLE_PROPERTY
             // clock
             m_clock = new GatetimeProperty();
-            m_clock.Clock = new CalculatableString( editing.Clock );
+            m_clock.Clock = editing.Clock + "";
 
             // symbol_protected
             m_symbol_protected = BooleanEnum.Off;
@@ -81,8 +84,7 @@ namespace org.kbinani.cadencii {
             }
 
             // length
-            m_length = new LengthProperty( editing.ID.getLength() );
-            StrLength = m_length + "";
+            m_length = editing.ID.getLength() + "";
 
             // note
             m_note = new NoteNumberProperty();
@@ -126,6 +128,47 @@ namespace org.kbinani.cadencii {
         }
 
 #if ENABLE_PROPERTY
+        /// <summary>
+        /// プロパティに入力された文字列と、編集前の値を元に、入力された文字列を解釈することによって編集後の値がどうなるかを調べます
+        /// </summary>
+        /// <param name="old_value"></param>
+        /// <param name="received_string"></param>
+        /// <returns></returns>
+        public static int evalReceivedString( int old_value, String received_string ) {
+            int draft = old_value;
+            if ( received_string.StartsWith( "+" ) || received_string.StartsWith( "-" ) || received_string.StartsWith( "*" ) || received_string.StartsWith( "/" ) ) {
+                try {
+                    string eq = "x" + received_string;
+
+                    // 「+ 480)*1.1」みたいな書式を許容したいので。「+ 480)*1.1」=>「(x+ 480)*1.1」
+                    int num_bla = 0; // "("の個数
+                    int num_cket = 0; // ")"の個数
+                    for ( int i = 0; i < eq.Length; i++ ) {
+                        char c = eq[i];
+                        if ( c == '(' ) {
+                            num_bla++;
+                        } else if ( c == ')' ) {
+                            num_cket++;
+                        }
+                    }
+                    int diff = num_cket - num_bla;
+                    for ( int i = 0; i < diff; i++ ) {
+                        eq = "(" + eq;
+                    }
+                    draft = (int)AppManager.eval( draft, eq );
+                } catch {
+                    draft = old_value;
+                }
+            } else {
+                try {
+                    draft = (int)AppManager.eval( 0, received_string );
+                } catch {
+                    draft = old_value;
+                }
+            }
+            return draft;
+        }
+
         #region Lyric
         [Category( "Lyric" )]
         public String Phrase {
@@ -276,53 +319,19 @@ namespace org.kbinani.cadencii {
             }
             set {
                 m_clock = value;
-                editing.Clock = m_clock.Clock.getIntValue();
+                editing.Clock = m_clock.getClockValue();
             }
         }
 
         [Category( "Note" )]
-        public String StrLength {
-            get;
-            set;
-        }
-
-        [Category( "Note" )]
-        public LengthProperty Length {
+        public String Length {
             get {
                 return m_length;
             }
             set {
-                int draft = value.getIntValue();
-                if ( draft <= 0 ) {
-                    m_length = new LengthProperty( 0 );
-                } else {
-                    VsqFileEx vsq = AppManager.getVsqFile();
-                    int clock = m_clock.Clock.getIntValue();
-                    if ( vsq != null ) {
-                        double ms_clock = vsq.getSecFromClock( clock ) * 1000.0;
-                        double ms_end = vsq.getSecFromClock( clock + draft ) * 1000.0;
-                        if ( (int)(ms_end - ms_clock) > VsqID.MAX_NOTE_LENGTH ) {
-                            double ms_max = ms_clock + VsqID.MAX_NOTE_LENGTH;
-                            int draft2 = (int)vsq.getClockFromSec( ms_max / 1000.0 ) - clock;
-                            if ( draft2 < 0 ) {
-                                draft2 = 0;
-                            } else {
-                                ms_end = vsq.getSecFromClock( clock + draft2 );
-                                while ( (int)(ms_end - ms_clock) <= VsqID.MAX_NOTE_LENGTH ) {
-                                    draft2++;
-                                    ms_end = vsq.getSecFromClock( clock + draft2 ) * 1000.0;
-                                }
-                                draft2--;
-                            }
-                            m_length = new LengthProperty( draft2 );
-                        } else {
-                            m_length = value;
-                        }
-                    } else {
-                        m_length = value;
-                    }
-                }
-                editing.ID.setLength( m_length.getIntValue() );
+                int oldvalue = editing.ID.getLength();
+                int draft = evalReceivedString( oldvalue, value );
+                editing.ID.setLength( draft );
             }
         }
 
@@ -800,8 +809,103 @@ namespace org.kbinani.cadencii {
             }
         }
         #endregion
+
+#if DEBUG
+        public DEBUG_GatetimeProperty DEBUG_Clock {
+            get {
+                return m_debug_clock;
+            }
+            set {
+                m_debug_clock = value;
+            }
+        }
+#endif
+
 #endif
     }
+
+#if DEBUG
+    public class DEBUG_GatetimePropertyConverter : ExpandableObjectConverter {
+        public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
+            if ( sourceType == typeof( string ) ) {
+                return true;
+            }
+            return base.CanConvertFrom( context, sourceType );
+        }
+
+        // string -> DEBUG_GatetimeProperty
+        public override object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value ) {
+            if ( value is string ) {
+                string s = (string)value;
+                string[] spl = s.Split( ',' );
+                if ( spl.Length >= 3 ) {
+                    try {
+                        int measure = int.Parse( spl[0].Trim() );
+                        int beat = int.Parse( spl[1].Trim() );
+                        int gate = int.Parse( spl[2].Trim() );
+                        DEBUG_GatetimeProperty ret = new DEBUG_GatetimeProperty();
+                        ret.Measure = measure + "";
+                        ret.Beat = beat + "";
+                        ret.Gate = gate + "";
+                        return ret;
+                    } catch {
+                    }
+                }
+            }
+            return base.ConvertFrom( context, culture, value );
+        }
+
+        public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
+            if ( destinationType == typeof( DEBUG_GatetimeProperty ) ) {
+                return true;
+            }
+            return base.CanConvertTo( context, destinationType );
+        }
+
+        // DEBUG_GatetimeProperty -> string
+        public override object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType ) {
+            if ( value is DEBUG_GatetimeProperty && destinationType == typeof( string ) ) {
+                DEBUG_GatetimeProperty gp = (DEBUG_GatetimeProperty)value;
+                return gp.Measure + ", " + gp.Beat + ", " + gp.Gate;
+            }
+            return base.ConvertTo( context, culture, value, destinationType );
+        }
+    }
+
+    [TypeConverter( typeof( DEBUG_GatetimePropertyConverter) )]
+    public class DEBUG_GatetimeProperty {
+        string m = "1";
+        string b = "2";
+        string g = "3";
+
+        public string Measure {
+            get {
+                return m;
+            }
+            set {
+                m = value;
+            }
+        }
+
+        public string Beat {
+            get {
+                return b;
+            }
+            set {
+                b = value;
+            }
+        }
+
+        public string Gate {
+            get {
+                return g;
+            }
+            set {
+                g = value;
+            }
+        }
+    }
+#endif
 
 #if !JAVA
 }

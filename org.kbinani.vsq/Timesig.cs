@@ -20,6 +20,11 @@ namespace org.kbinani.vsq {
     public struct Timesig {
         public int numerator;
         public int denominator;
+
+        public Timesig( int numerator, int denominator ) {
+            this.numerator = numerator;
+            this.denominator = denominator;
+        }
     }
 
 #if !JAVA

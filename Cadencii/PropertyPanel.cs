@@ -138,24 +138,6 @@ namespace org.kbinani.cadencii {
             VsqEvent[] items = new VsqEvent[len];
             for ( int i = 0; i < len; i++ ) {
                 SelectedEventEntry proxy = (SelectedEventEntry)propertyGrid.SelectedObjects[i];
-                String strlength = proxy.StrLength;
-                if ( strlength.StartsWith( "+" ) ) {
-                    int delta = 0;
-                    try {
-                        delta = (int)AppManager.eval( 0.0, strlength );
-                    } catch {
-                        delta = 0;
-                    }
-                    proxy.editing.ID.setLength( proxy.editing.ID.getLength() + delta );
-                } else {
-                    int length = proxy.editing.ID.getLength();
-                    try {
-                        length = (int)AppManager.eval( 0, strlength );
-                    } catch {
-                        proxy.editing.ID.getLength();
-                    }
-                    proxy.editing.ID.setLength( length );
-                }
                 items[i] = proxy.editing;
             }
             if ( CommandExecuteRequired != null ) {
