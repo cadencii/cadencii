@@ -7,7 +7,6 @@
 -異常終了した場合に、一時ディレクトリが消されずに残るので、次回起動したときに自動で消すようにする。ディレクトリ内のファイルの更新日が最も新しいやつの日付＜PCの起動時刻のやつがあれば、そのディレクトリは破棄する。
 -#vocalosoftlist
 -VSTエフェクトを実装できないか？
--LipSync/LipSync/Editor/FormCurveExport.*をsvn add
 
 -v3.1.3todo------------------------------------------------------------
 -Federの値が本家と違う場合がある（？）
@@ -24,11 +23,13 @@
 -Ctrl + END ：エンドマーカーへ移動
 -Ctrl + Space：スタートマーカーから再生
 -Shift + Space：フォーカスのある小節だけ再生
--ゲートタイムを一括変換するスクリプト
 -tool, scriptのキャッシュを保存しておけないだろうか。
 -音符の長さを編集する箇所、VibratoLengthEditingRuleで場合分けする箇所が他に無いか
 -プロパティウィンドウ。現在はSelectedEventEntryのClockプロパティのClockPropertyのClock, Gate, Beat, Measureプロパティと、SelectedEventEntryのLengthプロパティをすべてCalculatableString型で処理しているが、これをすべて別の型に実装する（中身は一緒）。でもって、各型のTypeConverterにおいて、StringからのConvertFromで文字列(string)valueが+-/*%で始まっていたら現在の値から足し引き割る掛け%となるようにする。別の型にする理由は、ConvertFromのcontext.InstanceがSelectedEventEntryだったりClockPropertyだったりして古い値がどのプロパティのものか分からなくなるから。別の型にしておけば、SelectedEventEntry/ClockProperty型のどのメンバーに対するConvertFromなのか特定できる。
 -複数選択の場合context.InstanceがObject[]となるので、現在の値を検出できない！！
+-エンドマーカーが有効の場合で，かつ曲の長さがエンドマーカーよりも短い場合，曲の終わりで再生が止まる．
+-LengthなどのプロパティはString型とし，propertyGrid_ValueChanged(?)イベントで検出し，先頭に+-etcがくる場合を検出する
+-↑ので，閉じ括弧の個数が足りなければ，先頭に加えるようにしてみる
 
 -v3.1.3done------------------------------------------------------------
 -起動時に1回だけスクリプトが自動実行されるようにした．（名前がRunOnceとなっているもののみ。隠し設定を含めここで変更可能）

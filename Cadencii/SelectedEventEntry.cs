@@ -82,6 +82,7 @@ namespace org.kbinani.cadencii {
 
             // length
             m_length = new LengthProperty( editing.ID.getLength() );
+            StrLength = m_length + "";
 
             // note
             m_note = new NoteNumberProperty();
@@ -277,6 +278,12 @@ namespace org.kbinani.cadencii {
                 m_clock = value;
                 editing.Clock = m_clock.Clock.getIntValue();
             }
+        }
+
+        [Category( "Note" )]
+        public String StrLength {
+            get;
+            set;
         }
 
         [Category( "Note" )]
