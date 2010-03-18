@@ -889,18 +889,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static RenderedStatus[] lastRenderedStatus = new RenderedStatus[16];
         /// <summary>
-        /// 再生中にWAVE波形の描画をスキップするかどうか（デフォルトはtrue）
-        /// </summary>
-        public static boolean skipDrawingWaveformWhenPlaying = true;
-        /// <summary>
-        /// コントロールカーブに、音符の境界線を重ね描きするかどうか（デフォルトはtrue）
-        /// </summary>
-        public static boolean drawItemBorderInControlCurveView = true;
-        /// <summary>
-        /// コントロールカーブに、データ点を表す四角を描くかどうか（デフォルトはtrue）
-        /// </summary>
-        public static boolean drawCurveDotInControlCurveView = true;
-        /// <summary>
         /// RenderingStatusをXMLシリアライズするためのシリアライザ
         /// </summary>
         public static XmlSerializer renderingStatusSerializer = new XmlSerializer( typeof( RenderedStatus ) );
@@ -913,17 +901,36 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static double forbidFlipPlayingThresholdSeconds = 0.2;
         /// <summary>
+        /// ピアノロール画面に，コントロールカーブをオーバーレイしているモード
+        /// </summary>
+        public static boolean curveOnPianoroll = false;
+
+        #region 裏設定項目
+        /// <summary>
+        /// 再生中にWAVE波形の描画をスキップするかどうか（デフォルトはtrue）
+        /// </summary>
+        public static boolean skipDrawingWaveformWhenPlaying = true;
+        /// <summary>
+        /// コントロールカーブに、音符の境界線を重ね描きするかどうか（デフォルトはtrue）
+        /// </summary>
+        public static boolean drawItemBorderInControlCurveView = true;
+        /// <summary>
+        /// コントロールカーブに、データ点を表す四角を描くかどうか（デフォルトはtrue）
+        /// </summary>
+        public static boolean drawCurveDotInControlCurveView = true;
+        /// <summary>
         /// ピアノロール画面に、現在選択中の歌声合成エンジンの種類を描くかどうか
         /// </summary>
         public static boolean drawOverSynthNameOnPianoroll = true;
         /// <summary>
-        /// ピアノロール画面に，コントロールカーブをオーバーレイしているモード
-        /// </summary>
-        public static boolean curveOnPianoroll = false;
-        /// <summary>
         /// 音符の長さが変更されたとき、ビブラートの長さがどう影響を受けるかを決める因子
         /// </summary>
         public static VibratoLengthEditingRule vibratoLengthEditingRule = VibratoLengthEditingRule.PERCENTAGE;
+        /// <summary>
+        /// ピアノロール上で右クリックでコンテキストメニューを表示するかどうか
+        /// </summary>
+        public static boolean showContextMenuWhenRightClickedOnPianoroll = false;
+        #endregion // 裏設定項目
 
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
@@ -937,6 +944,81 @@ namespace org.kbinani.cadencii {
 
         private const String TEMPDIR_NAME = "cadencii";
 
+        /// <summary>
+        /// VSQイベントの長さを変更すると同時に、ビブラートの長さを指定したルールに則って変更します。
+        /// </summary>
+        /// <param name="vsq_event"></param>
+        /// <param name="rule"></param>
+        public static void editLengthOfVsqEvent( VsqEvent vsq_event, int new_length, VibratoLengthEditingRule rule ) {
+#if DEBUG
+            PortUtil.println( "AppManager#editLengthOfVsqEvent; rule=" + rule );
+#endif
+            if ( vsq_event.ID.VibratoHandle != null ) {
+                int oldlength = vsq_event.ID.getLength();
+                int new_delay = vsq_event.ID.VibratoDelay; // ここではディレイが独立変数
+
+                if ( rule == VibratoLengthEditingRule.DELAY ) {
+                    // ディレイが保存される
+                    // 特に何もしない
+                } else if ( rule == VibratoLengthEditingRule.LENGTH ) {
+                    // ビブラート長さが保存される
+                    new_delay = new_length - vsq_event.ID.VibratoHandle.getLength();
+                    if ( new_delay < 0 ) {
+                        new_delay = 0;
+                    }
+                } else if ( rule == VibratoLengthEditingRule.PERCENTAGE ) {
+                    // ビブラート長の割合が保存される
+                    double old_percentage = vsq_event.ID.VibratoDelay / (double)oldlength * 100.0;
+                    new_delay = (int)(new_length * old_percentage / 100.0);
+                    if ( new_delay < 0 ) {
+                        new_delay = 0;
+                    }
+                }
+
+                if ( new_delay >= new_length ) {
+                    // ディレイが音符より長い場合。ビブラートは削除される
+                    vsq_event.ID.VibratoDelay = new_length;
+                    vsq_event.ID.VibratoHandle = null;
+                } else {
+                    vsq_event.ID.VibratoDelay = new_delay;
+                    vsq_event.ID.VibratoHandle.setLength( new_length - new_delay );
+                }
+            }
+
+            if ( vsq_event.ID.type == VsqIDType.Anote ) {
+                // 音符
+                vsq_event.ID.setLength( new_length );
+            } else if ( vsq_event.ID.type == VsqIDType.Singer ) {
+                // 歌手変更
+                vsq_event.ID.setLength( 1 );
+            } else if ( vsq_event.ID.type == VsqIDType.Aicon ) {
+                // 強弱記号、クレッシェンド、デクレッシェンド
+                if ( vsq_event.ID.IconDynamicsHandle != null ) {
+                    if ( vsq_event.ID.IconDynamicsHandle.isDynaffType() ) {
+                        // 強弱記号
+                        vsq_event.ID.IconDynamicsHandle.setLength( 1 );
+                        vsq_event.ID.setLength( 1 );
+                    } else {
+                        // クレッシェンド、デクレッシェンド
+                        vsq_event.ID.IconDynamicsHandle.setLength( new_length );
+                        vsq_event.ID.setLength( new_length );
+                    }
+                } else {
+                    vsq_event.ID.setLength( new_length );
+                }
+            } else {
+                // 不明
+                vsq_event.ID.setLength( new_length );
+            }
+        }
+
+        /// <summary>
+        /// 与えられた式をC#の数式とみなし、評価します。
+        /// equationに"x"という文字列がある場合、それを変数xとみなし、引数xの値が代入される。
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="equation"></param>
+        /// <returns></returns>
         public static double eval( double x, String equation ) {
             String equ = "(" + equation + ")"; // ( )でくくる
             equ = equ.Replace( "Math.PI", Math.PI + "" ); // πを数値に置換

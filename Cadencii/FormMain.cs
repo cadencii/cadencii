@@ -525,6 +525,8 @@ namespace org.kbinani.cadencii {
         public BMenuItem menuHiddenMoveRight;
         public BMenuItem menuHiddenLengthen;
         public BMenuItem menuHiddenShorten;
+        public BMenuItem menuHiddenGoToStartMarker;
+        public BMenuItem menuHiddenGoToEndMarker;
         /// <summary>
         /// 特殊な取り扱いが必要なショートカットのキー列と、対応するメニューアイテムを保存しておくリスト。
         /// </summary>
@@ -962,39 +964,8 @@ namespace org.kbinani.cadencii {
                 }
 
                 // ビブラートの長さを変更
-                if ( item.editing.ID.VibratoHandle != null ) {
-                    VibratoLengthEditingRule rule = AppManager.vibratoLengthEditingRule;
-                    int new_delay = item.editing.ID.VibratoDelay; // ここではディレイが独立変数
-
-                    if ( rule == VibratoLengthEditingRule.DELAY ) {
-                        // ディレイが保存される
-                        // 特に何もしない
-                    } else if ( rule == VibratoLengthEditingRule.LENGTH ) {
-                        // ビブラート長さが保存される
-                        new_delay = draft - item.editing.ID.VibratoHandle.getLength();
-                        if ( new_delay < 0 ) {
-                            new_delay = 0;
-                        }
-                    } else if ( rule == VibratoLengthEditingRule.PERCENTAGE ) {
-                        // ビブラート長の割合が保存される
-                        double old_percentage = item.editing.ID.VibratoHandle.getLength() / (double)length * 100.0;
-                        new_delay = (int)(draft * old_percentage / 100.0);
-                        if ( new_delay < 0 ) {
-                            new_delay = 0;
-                        }
-                    }
-
-                    if ( new_delay >= draft ) {
-                        // ディレイが音符より長い場合。ビブラートは削除される
-                        item.editing.ID.VibratoDelay = draft;
-                        item.editing.ID.VibratoHandle = null;
-                    } else {
-                        item.editing.ID.VibratoDelay = new_delay;
-                        item.editing.ID.VibratoHandle.setLength( draft - new_delay );
-                    }
-                }
                 VsqEvent add = (VsqEvent)item.editing.clone();
-                add.ID.setLength( draft );
+                AppManager.editLengthOfVsqEvent( add, draft, AppManager.vibratoLengthEditingRule );
                 items.add( add );
             }
 
@@ -1617,7 +1588,12 @@ namespace org.kbinani.cadencii {
                 }
 
                 // リアルタイム再生用のデータを準備
-                m_preview_ending_time = vsq.getSecFromClock( vsq.TotalClocks ) + 1.0;
+                int preview_ending_clock = vsq.TotalClocks;
+                if ( AppManager.endMarkerEnabled ) {
+                    //preview_ending_clock = Math.Max( preview_ending_clock, AppManager.endMarker );
+                    //TODO: fixme FormMain#AppManager_PreviewStarted
+                }
+                m_preview_ending_time = vsq.getSecFromClock( preview_ending_clock ) + 1.0;
 
                 // clock以降に音符があるかどうかを調べる
                 int count = 0;
@@ -2390,7 +2366,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
 #endif
-                show_context_menu = show_context_menu && !m_mouse_moved;
+                show_context_menu = AppManager.showContextMenuWhenRightClickedOnPianoroll ? (show_context_menu && !m_mouse_moved) : false;
                 if ( show_context_menu ) {
 #if ENABLE_MOUSEHOVER
                     if ( m_mouse_hover_thread != null ) {
@@ -2625,10 +2601,21 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            // 必要な操作が何も無ければ，クリック位置にソングポジションを移動
-            if ( e.Button == BMouseButtons.Left && AppManager.keyWidth < e.X ) {
-                int clock = doQuantize( AppManager.clockFromXCoord( e.X ), AppManager.getPositionQuantizeClock() );
-                AppManager.setCurrentClock( clock );
+            if ( e.Button == BMouseButtons.Left ){
+                // 必要な操作が何も無ければ，クリック位置にソングポジションを移動
+                if ( AppManager.keyWidth < e.X ) {
+                    int clock = doQuantize( AppManager.clockFromXCoord( e.X ), AppManager.getPositionQuantizeClock() );
+                    AppManager.setCurrentClock( clock );
+                }
+            } else if ( e.Button == System.Windows.Forms.MouseButtons.Right ) {
+                // ツールをポインター <--> 鉛筆に切り替える
+                if ( AppManager.keyWidth < e.X ) {
+                    if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
+                        AppManager.setSelectedTool( EditTool.PENCIL );
+                    } else {
+                        AppManager.setSelectedTool( EditTool.ARROW );
+                    }
+                }
             }
         }
 
@@ -3356,6 +3343,11 @@ namespace org.kbinani.cadencii {
                         new_length = unit;
                     }
                     item.editing.Clock = end_clock - new_length;
+                    if ( AppManager.vibratoLengthEditingRule == VibratoLengthEditingRule.PERCENTAGE ) {
+                        double percentage = item.original.ID.VibratoDelay / (double)item.original.ID.getLength() * 100.0;
+                        int newdelay = (int)(new_length * percentage / 100.0);
+                        item.editing.ID.VibratoDelay = newdelay;
+                    }
                     item.editing.ID.setLength( new_length );
                 }
                 #endregion
@@ -3370,6 +3362,11 @@ namespace org.kbinani.cadencii {
                     int new_length = doQuantize( item.original.ID.getLength() + dlength, unit );
                     if ( new_length <= 0 ) {
                         new_length = unit;
+                    }
+                    if ( AppManager.vibratoLengthEditingRule == VibratoLengthEditingRule.PERCENTAGE ) {
+                        double percentage = item.original.ID.VibratoDelay / (double)item.original.ID.getLength() * 100.0;
+                        int newdelay = (int)(new_length * percentage / 100.0);
+                        item.editing.ID.VibratoDelay = newdelay;
                     }
                     item.editing.ID.setLength( new_length );
 #if DEBUG
@@ -3711,7 +3708,13 @@ namespace org.kbinani.cadencii {
                             contains_aicon = true;
                         }
                         i++;
-                        if ( ev.editing.ID.VibratoHandle == null ) {
+
+                        //ev.editing.ID.VibratoDelay = ev.original.ID.VibratoDelay;
+                        AppManager.editLengthOfVsqEvent( ev.editing, ev.editing.ID.getLength(), AppManager.vibratoLengthEditingRule );
+                        ids[i] = ev.original.InternalID;
+                        clocks[i] = ev.editing.Clock;
+                        values[i] = ev.editing.ID;
+                        /*if ( ev.editing.ID.VibratoHandle == null ) {
                             ids[i] = ev.original.InternalID;
                             clocks[i] = ev.editing.Clock;
                             values[i] = ev.editing.ID;
@@ -3738,7 +3741,7 @@ namespace org.kbinani.cadencii {
                                     values[i].setLength( 1 );
                                 }
                             }
-                        }
+                        }*/
                     }
 
                     CadenciiCommand run = null;
@@ -9318,6 +9321,30 @@ namespace org.kbinani.cadencii {
 
         public void menuHiddenEditPaste_Click( Object sender, EventArgs e ) {
             pasteEvent();
+        }
+
+        public void menuHiddenGoToEndMarker_Click( Object sender, EventArgs e ) {
+            if ( AppManager.isPlaying() ) {
+                return;
+            }
+
+            if ( AppManager.endMarkerEnabled ) {
+                AppManager.setCurrentClock( AppManager.endMarker );
+                ensureCursorVisible();
+                refreshScreen();
+            }
+        }
+
+        public void menuHiddenGoToStartMarker_Click( Object sender, EventArgs e ) {
+            if ( AppManager.isPlaying() ) {
+                return;
+            }
+
+            if ( AppManager.startMarkerEnabled ) {
+                AppManager.setCurrentClock( AppManager.startMarker );
+                ensureCursorVisible();
+                refreshScreen();
+            }
         }
 
         public void menuHiddenLengthen_Click( Object sender, EventArgs e ) {
@@ -15912,6 +15939,8 @@ namespace org.kbinani.cadencii {
             menuHiddenMoveRight.clickEvent.add( new BEventHandler( this, "menuHiddenMoveRight_Click" ) );
             menuHiddenLengthen.clickEvent.add( new BEventHandler( this, "menuHiddenLengthen_Click" ) );
             menuHiddenShorten.clickEvent.add( new BEventHandler( this, "menuHiddenShorten_Click" ) );
+            menuHiddenGoToEndMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToEndMarker_Click" ) );
+            menuHiddenGoToStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToStartMarker_Click" ) );
 
             cMenuPiano.openingEvent.add( new BCancelEventHandler( this, "cMenuPiano_Opening" ) );
             cMenuPianoPointer.clickEvent.add( new BEventHandler( this, "cMenuPianoPointer_Click" ) );
@@ -16434,6 +16463,9 @@ namespace org.kbinani.cadencii {
             this.menuHiddenMoveDown = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenMoveLeft = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenMoveRight = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenLengthen = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenShorten = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenGoToStartMarker = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPiano = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cMenuPianoPointer = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPianoPencil = new org.kbinani.windows.forms.BMenuItem();
@@ -16632,8 +16664,7 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.menuHiddenLengthen = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenShorten = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenGoToEndMarker = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17633,7 +17664,9 @@ namespace org.kbinani.cadencii {
             this.menuHiddenMoveLeft,
             this.menuHiddenMoveRight,
             this.menuHiddenLengthen,
-            this.menuHiddenShorten} );
+            this.menuHiddenShorten,
+            this.menuHiddenGoToStartMarker,
+            this.menuHiddenGoToEndMarker} );
             this.menuHidden.Name = "menuHidden";
             this.menuHidden.Size = new System.Drawing.Size( 79, 20 );
             this.menuHidden.Text = "MenuHidden";
@@ -17752,6 +17785,24 @@ namespace org.kbinani.cadencii {
             this.menuHiddenMoveRight.Name = "menuHiddenMoveRight";
             this.menuHiddenMoveRight.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveRight.Text = "Move Right";
+            // 
+            // menuHiddenLengthen
+            // 
+            this.menuHiddenLengthen.Name = "menuHiddenLengthen";
+            this.menuHiddenLengthen.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenLengthen.Text = "Lengthen";
+            // 
+            // menuHiddenShorten
+            // 
+            this.menuHiddenShorten.Name = "menuHiddenShorten";
+            this.menuHiddenShorten.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenShorten.Text = "Shorten";
+            // 
+            // menuHiddenGoToStartMarker
+            // 
+            this.menuHiddenGoToStartMarker.Name = "menuHiddenGoToStartMarker";
+            this.menuHiddenGoToStartMarker.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenGoToStartMarker.Text = "GoTo Start Marker";
             // 
             // cMenuPiano
             // 
@@ -19426,17 +19477,11 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
-            // menuHiddenLengthen
+            // menuHiddenGoToEndMarker
             // 
-            this.menuHiddenLengthen.Name = "menuHiddenLengthen";
-            this.menuHiddenLengthen.Size = new System.Drawing.Size( 267, 22 );
-            this.menuHiddenLengthen.Text = "Lengthen";
-            // 
-            // menuHiddenShorten
-            // 
-            this.menuHiddenShorten.Name = "menuHiddenShorten";
-            this.menuHiddenShorten.Size = new System.Drawing.Size( 267, 22 );
-            this.menuHiddenShorten.Text = "Shorten";
+            this.menuHiddenGoToEndMarker.Name = "menuHiddenGoToEndMarker";
+            this.menuHiddenGoToEndMarker.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenGoToEndMarker.Text = "GoTo End Marker";
             // 
             // FormMain
             // 

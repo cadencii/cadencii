@@ -58,7 +58,7 @@ namespace org.kbinani.cadencii {
         private VibratoVariation m_vibrato;
         private String m_measure;
         private String m_beat;
-        private String m_gate;
+        private String m_tick;
 #if DEBUG
         private DEBUG_GatetimeProperty m_debug_clock = new DEBUG_GatetimeProperty();
 #endif
@@ -84,7 +84,7 @@ namespace org.kbinani.cadencii {
             Timesig timesig = getPosition( out measure, out beat, out gate );
             m_measure = measure + "";
             m_beat = beat + "";
-            m_gate = gate + "";
+            m_tick = gate + "";
 
             // symbol_protected
             m_symbol_protected = BooleanEnum.Off;
@@ -393,10 +393,10 @@ namespace org.kbinani.cadencii {
                 return m_measure;
             }
             set {
-                int measure, beat, gate;
-                Timesig timesig = getPosition( out measure, out beat, out gate );
+                int measure, beat, tick;
+                Timesig timesig = getPosition( out measure, out beat, out tick );
                 int draft = evalReceivedString( measure, value );
-                int clock = calculateClock( draft, beat, gate );
+                int clock = calculateClock( draft, beat, tick );
                 editing.Clock = clock;
                 m_clock = clock + "";
             }
@@ -408,24 +408,24 @@ namespace org.kbinani.cadencii {
                 return m_beat;
             }
             set {
-                int measure, beat, gate;
-                Timesig timesig = getPosition( out measure, out beat, out gate );
+                int measure, beat, tick;
+                Timesig timesig = getPosition( out measure, out beat, out tick );
                 int draft = evalReceivedString( beat, value );
-                int clock = calculateClock( measure, draft, gate );
+                int clock = calculateClock( measure, draft, tick );
                 editing.Clock = clock;
                 m_clock = clock + "";
             }
         }
 
         [Category( "Note Location" )]
-        public String Gate {
+        public String Tick {
             get {
-                return m_gate;
+                return m_tick;
             }
             set {
-                int measure, beat, gate;
-                Timesig timesig = getPosition( out measure, out beat, out gate );
-                int draft = evalReceivedString( gate, value );
+                int measure, beat, tick;
+                Timesig timesig = getPosition( out measure, out beat, out tick );
+                int draft = evalReceivedString( tick, value );
                 int clock = calculateClock( measure, beat, draft );
                 editing.Clock = clock;
                 m_clock = clock + "";
@@ -442,7 +442,20 @@ namespace org.kbinani.cadencii {
             set {
                 int oldvalue = editing.ID.getLength();
                 int draft = evalReceivedString( oldvalue, value );
-                editing.ID.setLength( draft );
+                if ( draft < 0 ) {
+                    draft = 0;
+                } else {
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    if ( vsq != null ) {
+                        int maxlength = vsq.getMaximumNoteLengthAt( editing.Clock );
+                        if ( maxlength < draft ) {
+                            draft = maxlength;
+                        }
+                    }
+                }
+
+                // ビブラートの長さを調節
+                AppManager.editLengthOfVsqEvent( editing, draft, AppManager.vibratoLengthEditingRule );
             }
         }
 
