@@ -48,7 +48,7 @@ namespace org.kbinani.cadencii {
         public VsqEvent editing;
 #if ENABLE_PROPERTY
         private static int lastVibratoLength = 66;
-        private GatetimeProperty m_clock;
+        private String m_clock;
         private BooleanEnum m_symbol_protected;
         private String m_length;
         private NoteNumberProperty m_note;
@@ -56,6 +56,9 @@ namespace org.kbinani.cadencii {
         private BooleanEnum m_portamento_down;
         private AttackVariation m_attack;
         private VibratoVariation m_vibrato;
+        private String m_measure;
+        private String m_beat;
+        private String m_gate;
 #if DEBUG
         private DEBUG_GatetimeProperty m_debug_clock = new DEBUG_GatetimeProperty();
 #endif
@@ -74,8 +77,14 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_PROPERTY
             // clock
-            m_clock = new GatetimeProperty();
-            m_clock.Clock = editing.Clock + "";
+            m_clock = editing.Clock + "";
+
+            // measure, beat, gate
+            int measure, beat, gate;
+            Timesig timesig = getPosition( out measure, out beat, out gate );
+            m_measure = measure + "";
+            m_beat = beat + "";
+            m_gate = gate + "";
 
             // symbol_protected
             m_symbol_protected = BooleanEnum.Off;
@@ -128,6 +137,59 @@ namespace org.kbinani.cadencii {
         }
 
 #if ENABLE_PROPERTY
+        /// <summary>
+        /// 小節数、拍数、ゲート数から、クロック値を計算します
+        /// </summary>
+        /// <param name="measure"></param>
+        /// <param name="beat"></param>
+        /// <param name="gate"></param>
+        /// <returns></returns>
+        private int calculateClock( int measure, int beat, int gate ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                int premeasure = 2;
+                return ((measure + premeasure - 1) * 4 + (beat - 1)) * 480 + gate;
+            } else {
+                int premeasure = vsq.getPreMeasure();
+                int bartopclock = vsq.getClockFromBarCount( measure + premeasure - 1 );
+                Timesig timesig = vsq.getTimesigAt( bartopclock );
+                return bartopclock + (beat - 1) * 480 * 4 / timesig.denominator + gate;
+            }
+        }
+
+        /// <summary>
+        /// 現在のクロック値(m_clock)から、小節数、拍数、ゲート数(?)を計算します
+        /// </summary>
+        /// <param name="measure"></param>
+        /// <param name="beat"></param>
+        /// <param name="gate"></param>
+        /// <returns></returns>
+        private Timesig getPosition( out int measure, out int beat, out int gate ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int clock = editing.Clock;
+            if ( vsq == null ) {
+                // 4/4拍子, プリメジャー2と仮定
+                int i = clock / (480 * 4);
+                int tpremeasure = 2;
+                measure = i - tpremeasure + 1;
+                int tdif = clock - i * 480 * 4;
+                beat = tdif / 480 + 1;
+                gate = tdif - (beat - 1) * 480;
+                return new Timesig( 4, 4 );
+            }
+
+            int premeasure = vsq.getPreMeasure();
+            measure = vsq.getBarCountFromClock( clock ) - premeasure + 1;
+            int clock_bartop = vsq.getClockFromBarCount( measure + premeasure - 1 );
+            Timesig timesig = vsq.getTimesigAt( clock );
+            int den = timesig.denominator;
+            int dif = clock - clock_bartop;
+            int step = 480 * 4 / den;
+            beat = dif / step + 1;
+            gate = dif - (beat - 1) * step;
+            return timesig;
+        }
+
         /// <summary>
         /// プロパティに入力された文字列と、編集前の値を元に、入力された文字列を解釈することによって編集後の値がどうなるかを調べます
         /// </summary>
@@ -311,18 +373,67 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
-        #region Note
-        [Category( "Note" )]
-        public GatetimeProperty Clock {
+        #region Note Location
+        [Category( "Note Location" )]
+        public String Clock {
             get {
                 return m_clock;
             }
             set {
-                m_clock = value;
-                editing.Clock = m_clock.getClockValue();
+                int oldvalue = editing.Clock;
+                int draft = evalReceivedString( oldvalue, value );
+                editing.Clock = draft;
+                m_clock = draft + "";
             }
         }
 
+        [Category( "Note Location" )]
+        public String Measure {
+            get {
+                return m_measure;
+            }
+            set {
+                int measure, beat, gate;
+                Timesig timesig = getPosition( out measure, out beat, out gate );
+                int draft = evalReceivedString( measure, value );
+                int clock = calculateClock( draft, beat, gate );
+                editing.Clock = clock;
+                m_clock = clock + "";
+            }
+        }
+
+        [Category( "Note Location" )]
+        public String Beat {
+            get {
+                return m_beat;
+            }
+            set {
+                int measure, beat, gate;
+                Timesig timesig = getPosition( out measure, out beat, out gate );
+                int draft = evalReceivedString( beat, value );
+                int clock = calculateClock( measure, draft, gate );
+                editing.Clock = clock;
+                m_clock = clock + "";
+            }
+        }
+
+        [Category( "Note Location" )]
+        public String Gate {
+            get {
+                return m_gate;
+            }
+            set {
+                int measure, beat, gate;
+                Timesig timesig = getPosition( out measure, out beat, out gate );
+                int draft = evalReceivedString( gate, value );
+                int clock = calculateClock( measure, beat, draft );
+                editing.Clock = clock;
+                m_clock = clock + "";
+            }
+        }
+        #endregion
+
+        #region Note
         [Category( "Note" )]
         public String Length {
             get {
@@ -810,17 +921,6 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
-#if DEBUG
-        public DEBUG_GatetimeProperty DEBUG_Clock {
-            get {
-                return m_debug_clock;
-            }
-            set {
-                m_debug_clock = value;
-            }
-        }
-#endif
-
 #endif
     }
 
@@ -878,6 +978,7 @@ namespace org.kbinani.cadencii {
         string b = "2";
         string g = "3";
 
+        [NotifyParentProperty(true), RefreshProperties(RefreshProperties.All)]
         public string Measure {
             get {
                 return m;
@@ -887,6 +988,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
         public string Beat {
             get {
                 return b;
@@ -896,6 +998,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
         public string Gate {
             get {
                 return g;
