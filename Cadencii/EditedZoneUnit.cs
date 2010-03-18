@@ -23,7 +23,7 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class EditedZoneUnit implements Clonable, Comparable<EditedZoneUnit> {
+    public class EditedZoneUnit implements Cloneable, Comparable<EditedZoneUnit> {
 #else
     public class EditedZoneUnit : ICloneable, IComparable<EditedZoneUnit> {
 #endif
