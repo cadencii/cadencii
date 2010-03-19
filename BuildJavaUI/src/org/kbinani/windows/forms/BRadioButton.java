@@ -4,4 +4,9 @@ import javax.swing.JRadioButton;
 
 public class BRadioButton extends JRadioButton {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
 }

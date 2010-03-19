@@ -315,6 +315,21 @@ public class FormMain extends BForm {
     private BMenuItem menuSettingGameControlerRemove = null;
     private BMenuItem menuHelpDebug = null;
     private BPanel pictureBox2 = null;
+    private BMenu menuVisualPluginUi = null;
+    private BMenuItem menuVisualPluginUiVocaloid100 = null;
+    private BMenuItem menuVisualPluginUiVocaloid101 = null;
+    private BMenuItem menuVisualPluginUiVocaloid2 = null;
+    private BMenuItem menuVisualPluginUiAquesTone = null;
+    private BMenuItem menuHiddenSelectForward = null;
+    private BMenuItem menuHiddenSelectBackward = null;
+    private BMenuItem menuHiddenMoveUp = null;
+    private BMenuItem menuHiddenMoveDown = null;
+    private BMenuItem menuHiddenMoveLeft = null;
+    private BMenuItem menuHiddenMoveRight = null;
+    private BMenuItem menuHiddenLengthen = null;
+    private BMenuItem menuHiddenShorten = null;
+    private BMenuItem menuHiddenGoToStartMarker = null;
+    private BMenuItem menuHiddenGoToEndMarker = null;
 
     //SECTION-END-FIELD
     /**
@@ -325,6 +340,11 @@ public class FormMain extends BForm {
         initialize();
     }
     //SECTION-BEGIN-METHOD
+
+    public static void main( String[] args ){
+       FormMain form = new FormMain();
+       form.setVisible( true );
+    }
 
     /**
      * This method initializes this
@@ -340,6 +360,9 @@ public class FormMain extends BForm {
         this.setJMenuBar(getMenuStripMain());
         this.setContentPane( this.getJContentPane());
         this.setTitle("JFrame");
+        this.getCMenuPiano();
+        this.getCMenuTrackSelector();
+        this.getCMenuTrackTab();
     }
 
     /**
@@ -820,6 +843,7 @@ public class FormMain extends BForm {
             menuVisual.add(getMenuVisualWaveform());
             menuVisual.add(getBMenuItem23());
             menuVisual.add(getBMenuItem32());
+            menuVisual.add(getMenuVisualPluginUi());
             menuVisual.add(getToolStripMenuItem1031());
             menuVisual.add(getBMenuItem18());
             menuVisual.add(getToolStripMenuItem1032());
@@ -3907,6 +3931,16 @@ public class FormMain extends BForm {
             menuHidden.add(getMenuHiddenCopy());
             menuHidden.add(getMenuHiddenPaste());
             menuHidden.add(getMenuHiddenCut());
+            menuHidden.add(getMenuHiddenSelectForward());
+            menuHidden.add(getMenuHiddenSelectBackward());
+            menuHidden.add(getMenuHiddenMoveUp());
+            menuHidden.add(getMenuHiddenMoveDown());
+            menuHidden.add(getMenuHiddenMoveLeft());
+            menuHidden.add(getMenuHiddenMoveRight());
+            menuHidden.add(getMenuHiddenLengthen());
+            menuHidden.add(getMenuHiddenShorten());
+            menuHidden.add(getMenuHiddenGoToStartMarker());
+            menuHidden.add(getMenuHiddenGoToEndMarker());
         }
         return menuHidden;
     }
@@ -4155,6 +4189,206 @@ public class FormMain extends BForm {
             pictureBox2.setLayout(new GridBagLayout());
         }
         return pictureBox2;
+    }
+
+    /**
+     * This method initializes menuVisualPluginUi	
+     * 	
+     * @return javax.swing.JMenu	
+     */
+    private BMenu getMenuVisualPluginUi() {
+        if (menuVisualPluginUi == null) {
+            menuVisualPluginUi = new BMenu();
+            menuVisualPluginUi.setText("VSTi Plugin UI");
+            menuVisualPluginUi.add(getMenuVisualPluginUiVocaloid100());
+            menuVisualPluginUi.add(getMenuVisualPluginUiVocaloid101());
+            menuVisualPluginUi.add(getMenuVisualPluginUiVocaloid2());
+            menuVisualPluginUi.add(getMenuVisualPluginUiAquesTone());
+        }
+        return menuVisualPluginUi;
+    }
+
+    /**
+     * This method initializes menuVisualPluginUiVocaloid100	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuVisualPluginUiVocaloid100() {
+        if (menuVisualPluginUiVocaloid100 == null) {
+            menuVisualPluginUiVocaloid100 = new BMenuItem();
+            menuVisualPluginUiVocaloid100.setText("VOCALOID1 [1.0]");
+        }
+        return menuVisualPluginUiVocaloid100;
+    }
+
+    /**
+     * This method initializes menuVisualPluginUiVocaloid101	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuVisualPluginUiVocaloid101() {
+        if (menuVisualPluginUiVocaloid101 == null) {
+            menuVisualPluginUiVocaloid101 = new BMenuItem();
+            menuVisualPluginUiVocaloid101.setText("VOCALOID1 [1.1]");
+        }
+        return menuVisualPluginUiVocaloid101;
+    }
+
+    /**
+     * This method initializes menuVisualPluginUiVocaloid2	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuVisualPluginUiVocaloid2() {
+        if (menuVisualPluginUiVocaloid2 == null) {
+            menuVisualPluginUiVocaloid2 = new BMenuItem();
+            menuVisualPluginUiVocaloid2.setText("VOCALOID2");
+            menuVisualPluginUiVocaloid2.setActionCommand("VOCALOID2");
+        }
+        return menuVisualPluginUiVocaloid2;
+    }
+
+    /**
+     * This method initializes menuVisualPluginUiAquesTone	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuVisualPluginUiAquesTone() {
+        if (menuVisualPluginUiAquesTone == null) {
+            menuVisualPluginUiAquesTone = new BMenuItem();
+            menuVisualPluginUiAquesTone.setText("AquesTone");
+        }
+        return menuVisualPluginUiAquesTone;
+    }
+
+    /**
+     * This method initializes menuHiddenSelectForward	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenSelectForward() {
+        if (menuHiddenSelectForward == null) {
+            menuHiddenSelectForward = new BMenuItem();
+            menuHiddenSelectForward.setText("Select Forward");
+        }
+        return menuHiddenSelectForward;
+    }
+
+    /**
+     * This method initializes menuHiddenSelectBackward	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenSelectBackward() {
+        if (menuHiddenSelectBackward == null) {
+            menuHiddenSelectBackward = new BMenuItem();
+            menuHiddenSelectBackward.setText("Select Backward");
+        }
+        return menuHiddenSelectBackward;
+    }
+
+    /**
+     * This method initializes menuHiddenMoveUp	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenMoveUp() {
+        if (menuHiddenMoveUp == null) {
+            menuHiddenMoveUp = new BMenuItem();
+            menuHiddenMoveUp.setText("Move Up");
+        }
+        return menuHiddenMoveUp;
+    }
+
+    /**
+     * This method initializes menuHiddenMoveDown	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenMoveDown() {
+        if (menuHiddenMoveDown == null) {
+            menuHiddenMoveDown = new BMenuItem();
+            menuHiddenMoveDown.setText("Move Up");
+        }
+        return menuHiddenMoveDown;
+    }
+
+    /**
+     * This method initializes menuHiddenMoveLeft	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenMoveLeft() {
+        if (menuHiddenMoveLeft == null) {
+            menuHiddenMoveLeft = new BMenuItem();
+            menuHiddenMoveLeft.setText("Move Left");
+        }
+        return menuHiddenMoveLeft;
+    }
+
+    /**
+     * This method initializes menuHiddenMoveRight	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenMoveRight() {
+        if (menuHiddenMoveRight == null) {
+            menuHiddenMoveRight = new BMenuItem();
+            menuHiddenMoveRight.setText("Move Right");
+        }
+        return menuHiddenMoveRight;
+    }
+
+    /**
+     * This method initializes menuHiddenLengthen	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenLengthen() {
+        if (menuHiddenLengthen == null) {
+            menuHiddenLengthen = new BMenuItem();
+            menuHiddenLengthen.setText("Lengthen");
+        }
+        return menuHiddenLengthen;
+    }
+
+    /**
+     * This method initializes menuHiddenShorten	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenShorten() {
+        if (menuHiddenShorten == null) {
+            menuHiddenShorten = new BMenuItem();
+            menuHiddenShorten.setText("Shorten");
+        }
+        return menuHiddenShorten;
+    }
+
+    /**
+     * This method initializes menuHiddenGoToStartMarker	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenGoToStartMarker() {
+        if (menuHiddenGoToStartMarker == null) {
+            menuHiddenGoToStartMarker = new BMenuItem();
+            menuHiddenGoToStartMarker.setText("GoTo Start Marker");
+        }
+        return menuHiddenGoToStartMarker;
+    }
+
+    /**
+     * This method initializes menuHiddenGoToEndMarker	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenGoToEndMarker() {
+        if (menuHiddenGoToEndMarker == null) {
+            menuHiddenGoToEndMarker = new BMenuItem();
+            menuHiddenGoToEndMarker.setText("GoTo End Marker");
+        }
+        return menuHiddenGoToEndMarker;
     }
 
     //SECTION-END-METHOD

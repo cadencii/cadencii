@@ -8,7 +8,6 @@ import javax.swing.event.PopupMenuListener;
 import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
-import org.kbinani.componentmodel.BCancelEventHandler;
 
 public class BPopupMenu extends JPopupMenu 
                         implements ComponentListener,

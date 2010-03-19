@@ -16,6 +16,7 @@ import org.kbinani.windows.forms.BPanel;
 public class FormTrackProperty extends BForm {
     //SECTION-BEGIN-FIELD
 
+    private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private JLabel lblMasterTuning = null;
     private JTextField txtMasterTuning = null;

@@ -11,7 +11,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -25,7 +24,6 @@ import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BTextBox;
-import javax.swing.JButton;
 
 //SECTION-END-IMPORT
 public class Preference extends JFrame {

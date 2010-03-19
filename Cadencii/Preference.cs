@@ -56,32 +56,6 @@ namespace org.kbinani.cadencii {
         private static int columnWidthHeaderName = 100;
         private static int columnWidthHeaderPath = 250;
         private BFontChooser fontDialog;
-        private BLabel lblChannel;
-        private BComboBox comboChannel;
-        private BGroupBox groupWaveFileOutput;
-        private BRadioButton radioCurrentTrack;
-        private BRadioButton radioMasterTrack;
-        private BComboBox comboMtcMidiInPortNumber;
-        private BLabel labelMtcMidiInPort;
-        private BCheckBox chkKeepProjectCache;
-        private System.Windows.Forms.TabPage tabSingingSynth;
-        private BCheckBox chkLoadSecondaryVOCALOID1;
-        private BGroupBox groupSynthesizerDll;
-        private BCheckBox chkLoadVocaloid100;
-        private BGroupBox groupVsti;
-        private BButton btnAquesTone;
-        private BTextBox txtAquesTone;
-        private BLabel lblAquesTone;
-        private BTextBox txtVOCALOID2;
-        private BTextBox txtVOCALOID1;
-        private BLabel lblVOCALOID2;
-        private BLabel lblVOCALOID1;
-        private BCheckBox chkLoadAquesTone;
-        private BCheckBox chkLoadVocaloid2;
-        private BCheckBox chkLoadVocaloid101;
-        private BLabel bLabel2;
-        private NumericUpDownEx numBuffer;
-        private BLabel lblBuffer;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -3496,6 +3470,32 @@ namespace org.kbinani.cadencii {
         private BComboBox comboAutoVibratoType2;
         private BLabel lblAutoVibratoType2;
         private BCheckBox chkUseSpaceKeyAsMiddleButtonModifier;
+        private BLabel lblChannel;
+        private BComboBox comboChannel;
+        private BGroupBox groupWaveFileOutput;
+        private BRadioButton radioCurrentTrack;
+        private BRadioButton radioMasterTrack;
+        private BComboBox comboMtcMidiInPortNumber;
+        private BLabel labelMtcMidiInPort;
+        private BCheckBox chkKeepProjectCache;
+        private System.Windows.Forms.TabPage tabSingingSynth;
+        private BCheckBox chkLoadSecondaryVOCALOID1;
+        private BGroupBox groupSynthesizerDll;
+        private BCheckBox chkLoadVocaloid100;
+        private BGroupBox groupVsti;
+        private BButton btnAquesTone;
+        private BTextBox txtAquesTone;
+        private BLabel lblAquesTone;
+        private BTextBox txtVOCALOID2;
+        private BTextBox txtVOCALOID1;
+        private BLabel lblVOCALOID2;
+        private BLabel lblVOCALOID1;
+        private BCheckBox chkLoadAquesTone;
+        private BCheckBox chkLoadVocaloid2;
+        private BCheckBox chkLoadVocaloid101;
+        private BLabel bLabel2;
+        private NumericUpDownEx numBuffer;
+        private BLabel lblBuffer;
         #endregion
 #endif
     }

@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormExportMusicXml.java
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 import org.kbinani.apputil.*;
@@ -35,12 +36,6 @@ namespace org.kbinani.cadencii {
     public class FormExportMusicXml : BForm {
 #endif
         private static boolean isChangeTempo = false;
-
-        private BButton btnCancel;
-        private BCheckBox chkChangeTempo;
-        private System.ComponentModel.IContainer components;
-        private BLabel lblDescription;
-        private BButton btnOK;
 
         public FormExportMusicXml() {
             InitializeComponent();
@@ -84,6 +79,14 @@ namespace org.kbinani.cadencii {
             return chkChangeTempo.isSelected();
         }
 
+#if JAVA
+        #region UI Impl for Java
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormExportMusicXml.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormExportMusicXml.java
+        #endregion
+#else
+        #region UI Impl for C#
+        #region Windows フォーム デザイナで生成されたコード
         private void InitializeComponent() {
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
@@ -151,6 +154,16 @@ namespace org.kbinani.cadencii {
             this.PerformLayout();
 
         }
+        #endregion
+
+        private BButton btnCancel;
+        private BCheckBox chkChangeTempo;
+        private System.ComponentModel.IContainer components;
+        private BLabel lblDescription;
+        private BButton btnOK;
+
+        #endregion
+#endif
     }
 
 #if !JAVA

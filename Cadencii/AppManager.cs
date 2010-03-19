@@ -1033,13 +1033,18 @@ namespace org.kbinani.cadencii {
                 if ( m1 < 0 ) {
                     break;
                 }
-                if ( m1 == 0 || equ[m1 - 1] == 40 || equ[m1 - 1] == 42 || equ[m1 - 1] == 47 || equ[m1 - 1] == 43 || equ[m1 - 1] == 44 ) {
+#if JAVA
+                int eq_mi_1 = (int)equ.charAt( m1 - 1 );
+#else
+                int eq_mi_1 = equ[m1 - 1];
+#endif
+                if ( m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44 ) {
                     equ = equ.Substring( 0, m1 - 0 ) + equ.Substring( m1 + 2 ); // -- を 取る
                 } else {
                     equ = equ.Substring( 0, m1 - 0 ) + "+" + equ.Substring( m1 + 2 ); // -- を + に置換
                 }
                 m0 = m1;
-                if ( m0 > equ.Length - 1 ) {
+                if ( m0 > PortUtil.getStringLength( equ ) - 1 ) {
                     break;
                 }
             }
@@ -1050,13 +1055,20 @@ namespace org.kbinani.cadencii {
                 if ( m1 < 0 ) {
                     break;
                 }
-                if ( m1 == 0 || equ[m1 - 1] == 40 || equ[m1 - 1] == 42 || equ[m1 - 1] == 47 || equ[m1 - 1] == 43 || equ[m1 - 1] == 44 ) {
+#if JAVA
+                int eq_mi_1 = (int)equ.charAt( m1 - 1 );
+#else
+                int eq_mi_1 = equ[m1 - 1];
+#endif
+                if ( m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44 ) {
                     m0 = m1 + 1;
                 } else {
                     equ = equ.Substring( 0, m1 - 0 ) + "+(-1)*" + equ.Substring( m1 + 1 ); // -a、-Math.sin(A) などを +(-1)*a、 +(-1)*Math.sin(A) などに置き換える
                     m0 = m1 + 6;
                 }
-                if ( m0 > equ.Length - 1 ) { break; }
+                if ( m0 > PortUtil.getStringLength( equ ) - 1 ) {
+                    break;
+                }
             }
             double valResult = PortUtil.parseDouble( evalMy0( equ ) );
             return valResult;
@@ -1099,14 +1111,24 @@ namespace org.kbinani.cadencii {
                     }
                 } else {
                     int check0 = 0; // strが数値（数字）かどうかチェック（str="-3.7" なら 数値なので 0 とする）
-                    for ( int i = 0; i < str.Length; i++ ) {
+                    for ( int i = 0; i < PortUtil.getStringLength( str ); i++ ) {
                         if ( i == 0 ) {
-                            if ( (str[0] < 48 || str[0] > 57) && str[0] != 46 && str[0] != 43 && str[0] != 45 ) {
+#if JAVA
+                            int str0 = (int)str.charAt( 0 );
+#else
+                            int str0 = str[0];
+#endif
+                            if ( (str0 < 48 || str0 > 57) && str0 != 46 && str0 != 43 && str0 != 45 ) {
                                 check0 = 1;
                                 break;
                             }
                         } else {
-                            if ( (str[i] < 48 || str[i] > 57) && str[i] != 46 ) {
+#if JAVA
+                            int stri = (int)str.charAt( i );
+#else
+                            int stri = str[i];
+#endif
+                            if ( (stri < 48 || stri > 57) && stri != 46 ) {
                                 check0 = 1;
                                 break;
                             }

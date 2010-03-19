@@ -18,6 +18,8 @@ import org.kbinani.windows.forms.BKeyEventArgs;
 import org.kbinani.windows.forms.BKeyEventHandler;
 
 public class TextBoxEx extends JWindow implements WindowFocusListener, ComponentListener, KeyListener {
+
+    private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;
     private JTextField jTextField = null;
 

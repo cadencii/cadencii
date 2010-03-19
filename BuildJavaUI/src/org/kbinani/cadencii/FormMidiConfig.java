@@ -19,6 +19,7 @@ import org.kbinani.windows.forms.BButton;
 public class FormMidiConfig extends BForm {
     //SECTION-BEGIN-FIELD
 
+    private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private BGroupBox groupMetronome = null;
     private JLabel lblDeviceMetronome = null;

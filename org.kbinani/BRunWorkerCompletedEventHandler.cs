@@ -19,42 +19,16 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace org.kbinani.componentmodel {
-#endif
 
-#if JAVA
-    public class BRunWorkerCompletedEventHandler extends BEventHandler{
-#else
     public class BRunWorkerCompletedEventHandler : BEventHandler {
-#endif
         public BRunWorkerCompletedEventHandler( Object sender, String method_name )
-#if JAVA
-        {
-#else
-            :
-#endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( RunWorkerCompletedEventArgs ) )
-#if JAVA
-            ;
-#else
-        {
-#endif
+            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( RunWorkerCompletedEventArgs ) ) {
         }
 
         public BRunWorkerCompletedEventHandler( Type sender, String method_name )
-#if JAVA
-        {
-#else
-            :
-#endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( RunWorkerCompletedEventArgs ) )
-#if JAVA
-            ;
-#else
-        {
-#endif
+            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( RunWorkerCompletedEventArgs ) ) {
         }
     }
 
-#if !JAVA
 }
 #endif

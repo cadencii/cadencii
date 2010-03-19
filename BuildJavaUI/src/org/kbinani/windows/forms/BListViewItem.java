@@ -8,7 +8,7 @@ public class BListViewItem implements Cloneable{
     private Object tag;
     protected TableModel tmodel = null;
     protected int row;
-    private String group = "";
+    //private String group = "";
     private String name = "";
     
     public BListViewItem( String[] values ){

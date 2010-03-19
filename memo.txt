@@ -13,6 +13,7 @@
 -makeRes.csの、Cursorのときの処理を追加する
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
+-org.kbinani.dllの*EventHandler.csのJava実装部分がBuildJavaUIからプリプロセッサ・インポートしない書き方になっているのでこれを直す．eclipseで開いたときこれらのイベントハンドラが無いとテスト実行できないので．
 
 -v3.1.4todo------------------------------------------------------------
 -ピアノロール上でピッチベンドを編集する機能
@@ -25,6 +26,8 @@
 -エンドマーカーが有効の場合で，かつ曲の長さがエンドマーカーよりも短い場合，曲の終わりで再生が止まる．
 -FormMain#m_preview_ending_timeを計算するとき、vsq.TotalClocksを使わない場合なぜ止まるのか？
 -ループ再生(with start/end marker)の動作がおかしい（再発）．
+-AppManager.startMarker，ibid.startMarkerEnabled, ibid.end...はxvsqに保存されるべきではないか？
+-AppManager.s_repeat_modeはxvsqに保存されるべきではないか？
 
 -v3.1.3done------------------------------------------------------------
 -起動時に1回だけスクリプトが自動実行されるようにした．（名前がRunOnceとなっているもののみ。隠し設定を含めここで変更可能）

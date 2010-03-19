@@ -21,6 +21,7 @@ import org.kbinani.windows.forms.BTextBox;
 public class FormSingerStyleConfig extends BForm {
     //SECTION-BEGIN-FIELD
 
+    private static final long serialVersionUID = 1L;
     private BPanel panelVocaloid2Template = null;
     private BLabel lblTemplate = null;
     private BComboBox comboTemplate = null;

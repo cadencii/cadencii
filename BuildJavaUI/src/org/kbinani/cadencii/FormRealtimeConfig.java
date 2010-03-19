@@ -16,6 +16,8 @@ import org.kbinani.windows.forms.BNumericUpDown;
 //SECTION-END-IMPORT
 public class FormRealtimeConfig extends BForm {
     //SECTION-BEGIN-FIELD
+
+    private static final long serialVersionUID = 1L;
     private JLabel lblRealTimeInput = null;
     private JPanel jPanel = null;
     private BButton btnStart = null;

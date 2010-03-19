@@ -9,7 +9,6 @@ import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import org.kbinani.windows.forms.BButton;
@@ -103,6 +102,10 @@ public class FormUtauVoiceConfig extends BForm {
 	public FormUtauVoiceConfig() {
 		super();
 		initialize();
+		String[] dumy = this.columnHeaders;
+		System.out.println( dumy.length );
+		DefaultTableModel dumy1 = this.tableModel;
+		System.out.println( dumy1 + "" );
 	}
 
 	//SECTION-BEGIN-METHOD
@@ -314,12 +317,12 @@ public class FormUtauVoiceConfig extends BForm {
 		return listFiles;
 	}
 
-	private DefaultTableModel getTableModel(){
+	/*private DefaultTableModel getTableModel(){
 		if( tableModel == null){
 			tableModel = new DefaultTableModel( columnHeaders, 0  );
 		}
 		return tableModel;
-	}
+	}*/
 	
 	/**
 	 * This method initializes panelLeftBottom	

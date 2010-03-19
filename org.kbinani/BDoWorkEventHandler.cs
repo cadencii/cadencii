@@ -12,51 +12,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.componentmodel;
-
-import org.kbinani.BEventHandler;
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentmodel\BDoWorkEventHandler.java
 #else
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace org.kbinani.componentmodel {
-#endif
 
-#if JAVA
-    public class BDoWorkEventHandler extends BEventHandler{
-#else
     public class BDoWorkEventHandler : BEventHandler {
-#endif
         public BDoWorkEventHandler( Object sender, String method_name )
-#if JAVA
-        {
-#else
-            :
-#endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) )
-#if JAVA
-            ;
-#else
-        {
-#endif
+            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) ) {
         }
 
         public BDoWorkEventHandler( Type sender, String method_name )
-#if JAVA
-        {
-#else
-            :
-#endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) )
-#if JAVA
-            ;
-#else
-        {
-#endif
+            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( DoWorkEventArgs ) ) {
         }
     }
 
-#if !JAVA
 }
 #endif

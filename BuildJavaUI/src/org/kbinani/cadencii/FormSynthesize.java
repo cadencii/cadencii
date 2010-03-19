@@ -15,6 +15,7 @@ import org.kbinani.windows.forms.BProgressBar;
 public class FormSynthesize extends BForm {
     //SECTION-BEGIN-FIELD
     
+    private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private BLabel lblSynthesizing = null;
     private BLabel lblProgress = null;

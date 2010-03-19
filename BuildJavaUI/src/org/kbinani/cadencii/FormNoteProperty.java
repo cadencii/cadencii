@@ -1,21 +1,19 @@
 package org.kbinani.cadencii;
 
 //SECTION-BEGIN-IMPORT
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import javax.swing.JPanel;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuBar;
 import org.kbinani.windows.forms.BMenuItem;
-import java.awt.Dimension;
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 //SECTION-END-IMPORT
 public class FormNoteProperty extends BForm {
     //SECTION-BEGIN-FIELD
 
+    private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private BMenuBar menuStrip = null;
     private BMenu menuWindow = null;

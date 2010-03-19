@@ -16,6 +16,7 @@ import javax.swing.border.EtchedBorder;
 
 public class BFolderBrowser extends BForm {
 
+    private static final long serialVersionUID = 1L;
     private JTree jTree = null;
     private JScrollPane jScrollPane = null;
     private JPanel jPanel = null;

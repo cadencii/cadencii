@@ -1,19 +1,15 @@
 package org.kbinani.cadencii;
 //SECTION-BEGIN-IMPORT
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.JSeparator;
 import javax.swing.JToolTip;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPopupMenu;
-import javax.swing.JScrollBar;
-import java.awt.BorderLayout;
-import javax.swing.JLabel;
 
 //SECTION-END-IMPORT
 public class TrackSelector extends JPanel {
@@ -71,6 +67,9 @@ public class TrackSelector extends JPanel {
     public TrackSelector() {
     	super();
     	initialize();
+    	this.getCmenuCurve();
+    	this.getCmenuSinger();
+    	this.getJLabel();
     }
     //SECTION-BEGIN-METHOD
 

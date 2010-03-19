@@ -492,8 +492,6 @@ namespace org.kbinani.cadencii {
         public BTimer timer;
         public BBackgroundWorker bgWorkScreen;
         public WaveView waveView;
-        private BMenuItem cMenuTrackTabPlayAfterSynth;
-        private BMenuItem menuTrackPlayAfterSynth;
         /// <summary>
         /// アイコンパレットのドラッグ＆ドロップ処理中，一度でもpictPianoRoll内にマウスが入ったかどうか
         /// </summary>
@@ -510,23 +508,10 @@ namespace org.kbinani.cadencii {
         /// MTCを最後に受信した時刻
         /// </summary>
         private double mtcLastReceived = 0.0;
-        public BMenuItem menuTrackRendererVOCALOID101;
-        public BMenuItem cMenuTrackTabRendererVOCALOID101;
-        private BMenuItem menuVisualPluginUiVocaloid101;
         /// <summary>
         /// AppManager.inputTextBoxがhideInputTextBoxによって隠された後、何回目のEnterキーの入力を受けたかを表すカウンター。
         /// </summary>
         private int numEnterKeyAfterHideInputTextBox = 0;
-        public BMenuItem menuHiddenSelectForward;
-        public BMenuItem menuHiddenSelectBackward;
-        public BMenuItem menuHiddenMoveUp;
-        public BMenuItem menuHiddenMoveDown;
-        public BMenuItem menuHiddenMoveLeft;
-        public BMenuItem menuHiddenMoveRight;
-        public BMenuItem menuHiddenLengthen;
-        public BMenuItem menuHiddenShorten;
-        public BMenuItem menuHiddenGoToStartMarker;
-        public BMenuItem menuHiddenGoToEndMarker;
         /// <summary>
         /// 特殊な取り扱いが必要なショートカットのキー列と、対応するメニューアイテムを保存しておくリスト。
         /// </summary>
@@ -1590,7 +1575,7 @@ namespace org.kbinani.cadencii {
                 // リアルタイム再生用のデータを準備
                 int preview_ending_clock = vsq.TotalClocks;
                 if ( AppManager.endMarkerEnabled ) {
-                    //preview_ending_clock = Math.Max( preview_ending_clock, AppManager.endMarker );
+                    preview_ending_clock = Math.Max( preview_ending_clock, AppManager.endMarker );
                     //TODO: fixme FormMain#AppManager_PreviewStarted
                 }
                 m_preview_ending_time = vsq.getSecFromClock( preview_ending_clock ) + 1.0;
@@ -1652,8 +1637,8 @@ namespace org.kbinani.cadencii {
                     for ( int i = 0; i < AppManager.drawStartIndex.Length; i++ ) {
                         AppManager.drawStartIndex[i] = 0;
                     }
-                    int clock_now = AppManager.getCurrentClock();
-                    double sec_now = vsq.getSecFromClock( clock_now );
+                    //int clock_now = AppManager.getCurrentClock();
+                    //double sec_now = vsq.getSecFromClock( clock_now );
                 } else {
                     VsqFileEx tvsq = new VsqFileEx( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
                     VsqFileEx.setTrackRendererKind( tvsq.Track.get( 1 ), RendererKind.NULL );
@@ -9733,9 +9718,11 @@ namespace org.kbinani.cadencii {
                 play_time = play_time * AppManager.editorConfig.getRealtimeInputSpeed();
             }
             float now = (float)(play_time + m_direct_play_shift);
-            if ( (play_time < 0.0 || m_preview_ending_time <= now) && AppManager.getEditMode() != EditMode.REALTIME ) {
+            if ( (play_time < 0.0 || m_preview_ending_time <= now) && 
+                 AppManager.getEditMode() != EditMode.REALTIME &&
+                 !AppManager.endMarkerEnabled ) {
 #if DEBUG
-                PortUtil.println( "FormMain#timer_Tick; stop at A" );
+                PortUtil.println( "FormMain#timer_Tick; stop at A; play_time=" + play_time + "; m_preview_ending_time=" + m_preview_ending_time + "; now=" + now );
 #endif
                 AppManager.setPlaying( false );
                 timer.stop();
@@ -9759,15 +9746,29 @@ namespace org.kbinani.cadencii {
                     }
                 }
             } else if ( AppManager.endMarkerEnabled && clock > (int)AppManager.endMarker && AppManager.getEditMode() != EditMode.REALTIME ) {
-                AppManager.setCurrentClock( (AppManager.startMarkerEnabled) ? AppManager.startMarker : 0 );
-                ensureCursorVisible();
 #if DEBUG
                 PortUtil.println( "FormMain#timer_Tick; stop at C" );
 #endif
                 timer.stop();
-                AppManager.setPlaying( false );
                 if ( AppManager.isRepeatMode() ) {
+                    AppManager.setPlaying( false );
+                    while ( AppManager.isPlaying() ) {
+#if DEBUG
+                        PortUtil.println( "FormMain#timer_Tick; waiting AppManager.isPlaying() is true" );
+#endif
+
+#if JAVA
+                        Thread.sleep( 0 );
+#else
+                        System.Windows.Forms.Application.DoEvents();
+#endif
+                    }
+                    AppManager.setCurrentClock( (AppManager.startMarkerEnabled) ? AppManager.startMarker : 0 );
                     AppManager.setPlaying( true );
+                } else {
+                    AppManager.setPlaying( false );
+                    AppManager.setCurrentClock( (AppManager.startMarkerEnabled) ? AppManager.startMarker : 0 );
+                    ensureCursorVisible();
                 }
             } else {
                 AppManager.setCurrentClock( (int)clock );
@@ -19874,6 +19875,21 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuVisualPluginUiVocaloid2;
         private BMenuItem menuVisualIconPalette;
         private BMenuItem menuFileExportMusicXml;
+        public BMenuItem menuTrackRendererVOCALOID101;
+        public BMenuItem cMenuTrackTabRendererVOCALOID101;
+        private BMenuItem menuVisualPluginUiVocaloid101;
+        public BMenuItem menuHiddenSelectForward;
+        public BMenuItem menuHiddenSelectBackward;
+        public BMenuItem menuHiddenMoveUp;
+        public BMenuItem menuHiddenMoveDown;
+        public BMenuItem menuHiddenMoveLeft;
+        public BMenuItem menuHiddenMoveRight;
+        public BMenuItem menuHiddenLengthen;
+        public BMenuItem menuHiddenShorten;
+        public BMenuItem menuHiddenGoToStartMarker;
+        public BMenuItem menuHiddenGoToEndMarker;
+        private BMenuItem cMenuTrackTabPlayAfterSynth;
+        private BMenuItem menuTrackPlayAfterSynth;
         #endregion
 #endif
 

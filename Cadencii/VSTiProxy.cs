@@ -68,6 +68,10 @@ namespace org.kbinani.cadencii {
         public static AquesToneDriver aquesToneDriver = null;
 #endif
 #endif
+        /// <summary>
+        /// リアルタイム再生のために使用されるスレッド
+        /// </summary>
+        public static Thread directPlayThread = null;
 
 #if DEBUG
         delegate int PADDFUNC( int a, int b );
@@ -342,6 +346,24 @@ namespace org.kbinani.cadencii {
             String temp_dir,
             boolean reflect_amp_to_wave
         ) {
+            if ( s_rendering_context != null ) {
+                try {
+                    s_rendering_context.abortRendering();
+                } catch ( Exception ex ) {
+                    PortUtil.println( "VSTiProxy#render; ex=" + ex );
+                }
+                while ( s_rendering_context != null ) {
+#if DEBUG
+                    PortUtil.println( "VSTiProxy#render; waiting (s_rendering_context!=null)" );
+#endif
+#if JAVA
+                    Thread.sleep( 0 );
+#else
+                    System.Windows.Forms.Application.DoEvents();
+#endif
+                }
+            }
+
             s_working_renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( track ) );
             Vector<WaveReader> reader = new Vector<WaveReader>();
             for ( int i = 0; i < files.Length; i++ ) {
@@ -494,15 +516,16 @@ namespace org.kbinani.cadencii {
             }
             if ( direct_play ) {
 #if JAVA
-                Thread thread = new Thread( s_rendering_context );
-                thread.start();
+                directPlayThread = new Thread( s_rendering_context );
+                directPlayThread.start();
 #else
-                Thread thread = new Thread( new ParameterizedThreadStart( renderWithDirectPlay ) );
-                thread.Priority = ThreadPriority.Normal;
-                thread.Start( s_rendering_context );
+                directPlayThread = new Thread( new ParameterizedThreadStart( renderWithDirectPlay ) );
+                directPlayThread.Priority = ThreadPriority.Normal;
+                directPlayThread.Start( s_rendering_context );
 #endif
             } else {
                 s_rendering_context.run();
+                s_rendering_context = null;
             }
         }
 
@@ -534,6 +557,11 @@ namespace org.kbinani.cadencii {
                 AquesToneRenderingRunner arg = (AquesToneRenderingRunner)argument;
                 arg.run();
             }
+#endif
+
+            s_rendering_context = null;
+#if DEBUG
+            PortUtil.println( "VSTiProxy#renderWithDirectPlay; exit" );
 #endif
         }
 #if JAVA
@@ -567,6 +595,7 @@ namespace org.kbinani.cadencii {
         public static void abortRendering() {
             if ( s_rendering_context != null ){
                 s_rendering_context.abortRendering();
+                s_rendering_context = null;
             }
         }
 

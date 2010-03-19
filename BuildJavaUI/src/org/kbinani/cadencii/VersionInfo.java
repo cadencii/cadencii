@@ -19,6 +19,7 @@ import org.kbinani.windows.forms.BPictureBox;
 public class VersionInfo extends BForm {
     //SECTION-BEGIN-FIELD
 
+    private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private JScrollPane jScrollPane = null;
     private JPanel jPanel1 = null;

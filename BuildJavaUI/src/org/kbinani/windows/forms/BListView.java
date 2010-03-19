@@ -26,13 +26,13 @@ import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
 
 public class BListView extends JPanel implements MouseMotionListener{
-    private static final long serialVersionUID = -8159742081426120737L;
+    private static final long serialVersionUID = 1L;
     private boolean isMultiSelect = true;
     private boolean isCheckBoxes = false;
     private final int FIRST_COLUMN_WIDTH = 25;
     protected Vector<Group> groups = new Vector<Group>();
     protected Group defaultGroup = null;
-    private JScrollPane jScrollPane0 = null;
+    //private JScrollPane jScrollPane0 = null;
     private JScrollPane jScrollPane10 = null;
     private JPanel panel = null;
     private JLabel label = null;
@@ -45,12 +45,17 @@ public class BListView extends JPanel implements MouseMotionListener{
         private boolean isColumnModelUpdated = true;
         public JLabel label;
         public Component headerView = null;
-        private boolean isHeaderVisible = true;
+        //private boolean isHeaderVisible = true;
         
         public Group( String groupTitle ){
             super();
             setName( groupTitle );
             tableModel = new DefaultTableModel(){
+                            /**
+                 * 
+                 */
+                private static final long serialVersionUID = 1L;
+
                             public boolean isCellEditable(int row, int column) {
                                  if( isCheckBoxes && column == 0 ){
                                      return true;
@@ -186,6 +191,11 @@ public class BListView extends JPanel implements MouseMotionListener{
     }
     
     private class CheckCellRenderer extends DefaultTableCellRenderer{
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         public CheckCellRenderer(){
             super();
         }
@@ -264,7 +274,7 @@ public class BListView extends JPanel implements MouseMotionListener{
     }
     
     public void setItemBackColorAt( String group, int index, Color color ){
-        Group g = getGroupFromName( group );
+        //Group g = getGroupFromName( group );
         // TODO: BListView#setItemBackColorAt
     }
     
@@ -363,20 +373,6 @@ public class BListView extends JPanel implements MouseMotionListener{
         }
     }
     
-    private void fo(){
-        /*GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-        gridBagConstraints1.fill = GridBagConstraints.BOTH;
-        gridBagConstraints1.gridy = 0;
-        gridBagConstraints1.ipadx = 0;
-        gridBagConstraints1.weightx = 1.0;
-        gridBagConstraints1.weighty = 0.0D;
-        gridBagConstraints1.anchor = GridBagConstraints.NORTH;
-        gridBagConstraints1.gridx = 0;
-        jPanel = new JPanel();
-        jPanel.setLayout(new GridBagLayout());
-        jPanel.add(getJScrollPane0(), gridBagConstraints1);*/
-    }
-    
     public void initialize(){
         GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
         gridBagConstraints2.fill = GridBagConstraints.BOTH;
@@ -437,7 +433,7 @@ public class BListView extends JPanel implements MouseMotionListener{
     }
     
     public BListViewItem getItemAt( String group, int index ){
-        Group g = getGroupFromName( group );
+        //Group g = getGroupFromName( group );
         /*int columns = tmodel.getColumnCount() - 1;
         String[] sub = new String[columns];
         for( int i = 0; i < columns; i++ ){
@@ -664,7 +660,7 @@ public class BListView extends JPanel implements MouseMotionListener{
         if( headers == null ){
             return;
         }
-        String[] empty = new String[headers.length];
+        //String[] empty = new String[headers.length];
         int count = groups.size();
         if ( count > 0 ){
             groups.get( 0 ).setColumnHeaderCor( headers );
@@ -683,11 +679,7 @@ public class BListView extends JPanel implements MouseMotionListener{
         return null;
     }
 
-    /**
-     * This method initializes jScrollPane0	
-     * 	
-     * @return javax.swing.JScrollPane	
-     */
+    /*
     private JScrollPane getJScrollPane0() {
         if (jScrollPane0 == null) {
             jScrollPane0 = new JScrollPane();
@@ -696,7 +688,7 @@ public class BListView extends JPanel implements MouseMotionListener{
             jScrollPane0.setBorder(null);
         }
         return jScrollPane0;
-    }
+    }*/
 
     /**
      * This method initializes jScrollPane10	

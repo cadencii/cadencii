@@ -7,6 +7,10 @@ import org.kbinani.windows.forms.BMenu;
 
 
 public class Test extends BForm {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private JMenuBar jJMenuBar = null;
     private BMenu jMenu = null;
     private JMenuItem jMenuItem = null;

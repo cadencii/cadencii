@@ -18,6 +18,7 @@ import java.awt.Color;
 
 public class BFontChooser extends BForm {
 
+    private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private BButton btnOK = null;
     private BButton btnCancel = null;

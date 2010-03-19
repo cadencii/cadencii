@@ -12,50 +12,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import org.kbinani.BEventHandler;
+//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentmodel\BPreviewKeyDownEventHandler.java
 #else
 using System;
 using System.Windows.Forms;
 
 namespace org.kbinani.windows.forms {
-#endif
 
-#if JAVA
-    public class BPreviewKeyDownEventHandler extends BEventHandler{
-#else
     public class BPreviewKeyDownEventHandler : BEventHandler {
-#endif
         public BPreviewKeyDownEventHandler( Object sender, String method_name )
-#if JAVA
-        {
-#else
-            :
-#endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( PreviewKeyDownEventArgs ) )
-#if JAVA
-            ;
-#else
-        {
-#endif
+            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( PreviewKeyDownEventArgs ) ) {
         }
 
         public BPreviewKeyDownEventHandler( Type sender, String method_name )
-#if JAVA
-        {
-#else
-            :
-#endif
-        base( sender, method_name, typeof( void ), typeof( Object ), typeof( PreviewKeyDownEventArgs ) )
-#if JAVA
-            ;
-#else
-        {
-#endif
+            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( PreviewKeyDownEventArgs ) ) {
         }
     }
 
-#if !JAVA
 }
 #endif
