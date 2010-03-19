@@ -24,6 +24,7 @@ namespace org.kbinani.cadencii {
     using DWORD = System.UInt32;
     using UINT = System.UInt32;
     using WORD = System.UInt16;
+    using boolean = System.Boolean;
 #endif
 
     public class PlaySound {
@@ -44,8 +45,8 @@ namespace org.kbinani.cadencii {
         private static extern void SoundExit();
         [DllImport( "PlaySound" )]
         private static extern double SoundGetPosition();
-        [DllImport( "PlaySound" )]
-        private static extern bool SoundIsBusy();
+        /*[DllImport( "PlaySound" )]
+        private static extern bool SoundIsBusy();*/
         [DllImport( "PlaySound" )]
         private static extern void SoundWaitForExit();
         [DllImport( "PlaySound" )]
@@ -198,8 +199,9 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private static void unprepare() {
+        public static void unprepare() {
 #if JAVA
+            //TODO: fixme PlaySound#unprepare
 #else
             try {
                 SoundUnprepare();

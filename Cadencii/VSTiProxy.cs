@@ -535,6 +535,10 @@ namespace org.kbinani.cadencii {
             Object argument = s_rendering_context;
 #else
         private static void renderWithDirectPlay( Object argument ) {
+#if DEBUG
+            DateTime now = DateTime.Now;
+            PortUtil.println( "VSTiProxy#renderWithDirectPlay; enter; now=" + now );
+#endif
 #endif
 #if ENABLE_VOCALOID
             if ( argument is VocaloidRenderingRunner ) {
@@ -561,7 +565,7 @@ namespace org.kbinani.cadencii {
 
             s_rendering_context = null;
 #if DEBUG
-            PortUtil.println( "VSTiProxy#renderWithDirectPlay; exit" );
+            PortUtil.println( "VSTiProxy#renderWithDirectPlay; exit; now=" + now );
 #endif
         }
 #if JAVA

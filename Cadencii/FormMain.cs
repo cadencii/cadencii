@@ -9704,6 +9704,9 @@ namespace org.kbinani.cadencii {
         }
 
         public void timer_Tick( Object sender, EventArgs e ) {
+#if DEBUG
+            PortUtil.println( "FormMain#timer_Tick; AppManager.firstBufferWritten=" + AppManager.firstBufferWritten );
+#endif
             float play_time = -1.0f;
             if ( AppManager.rendererAvailable ) {
                 // レンダリング用VSTiが利用可能な状態でAppManager_PreviewStartedした場合
@@ -9718,6 +9721,10 @@ namespace org.kbinani.cadencii {
                 play_time = play_time * AppManager.editorConfig.getRealtimeInputSpeed();
             }
             float now = (float)(play_time + m_direct_play_shift);
+#if DEBUG
+            PortUtil.println( "FormMain#timer_Tick; play_time=" + play_time + "; m_preview_ending_time=" + m_preview_ending_time + "; now=" + now );
+            PortUtil.println( "FormMain#timer_Tick; AppManager.isPlaying()=" + AppManager.isPlaying() );
+#endif
             if ( (play_time < 0.0 || m_preview_ending_time <= now) && 
                  AppManager.getEditMode() != EditMode.REALTIME &&
                  !AppManager.endMarkerEnabled ) {
@@ -9752,17 +9759,7 @@ namespace org.kbinani.cadencii {
                 timer.stop();
                 if ( AppManager.isRepeatMode() ) {
                     AppManager.setPlaying( false );
-                    while ( AppManager.isPlaying() ) {
-#if DEBUG
-                        PortUtil.println( "FormMain#timer_Tick; waiting AppManager.isPlaying() is true" );
-#endif
-
-#if JAVA
-                        Thread.sleep( 0 );
-#else
-                        System.Windows.Forms.Application.DoEvents();
-#endif
-                    }
+                    PlaySound.unprepare();
                     AppManager.setCurrentClock( (AppManager.startMarkerEnabled) ? AppManager.startMarker : 0 );
                     AppManager.setPlaying( true );
                 } else {

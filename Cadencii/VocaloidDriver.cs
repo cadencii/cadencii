@@ -55,10 +55,13 @@ namespace org.kbinani.cadencii {
         /// </summary>
         boolean rendering = false;
         int dseVersion;
+        private Object locker = new Object();
 
         public void clearSendEvents() {
-            for ( int i = 0; i < s_track_events.size(); i++ ) {
-                s_track_events.get( i ).clear();
+            lock ( locker ) {
+                for ( int i = 0; i < s_track_events.size(); i++ ) {
+                    s_track_events.get( i ).clear();
+                }
             }
         }
 
@@ -102,10 +105,6 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        void exit_start_rendering() {
-            aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );
-        }
-
         public VocaloidDriver( int dse_version ) {
             dseVersion = dse_version;
         }
@@ -132,77 +131,78 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public int SendEvent( byte[] src, int[] deltaFrames/*, int numEvents*/, int targetTrack ) {
-            int count;
-            int numEvents = deltaFrames.Length;
-            if ( targetTrack == 0 ) {
-                if ( g_tempoList == null ) {
-                    g_tempoList = new Vector<TempoInfo>();
-                } else {
-                    g_tempoList.clear();
-                }
-                if ( numEvents <= 0 ) {
-                    g_numTempoList = 1;
-                    TempoInfo ti = new TempoInfo();
-                    ti.Clock = 0;
-                    ti.Tempo = DEF_TEMPO;
-                    ti.TotalSec = 0.0;
-                    g_tempoList.add( ti );
-                } else {
-                    if ( deltaFrames[0] == 0 ) {
-                        g_numTempoList = numEvents;
+        public int sendEvent( byte[] src, int[] deltaFrames/*, int numEvents*/, int targetTrack ) {
+            lock ( locker ) {
+                int count;
+                int numEvents = deltaFrames.Length;
+                if ( targetTrack == 0 ) {
+                    if ( g_tempoList == null ) {
+                        g_tempoList = new Vector<TempoInfo>();
                     } else {
-                        g_numTempoList = numEvents + 1;
+                        g_tempoList.clear();
+                    }
+                    if ( numEvents <= 0 ) {
+                        g_numTempoList = 1;
                         TempoInfo ti = new TempoInfo();
                         ti.Clock = 0;
                         ti.Tempo = DEF_TEMPO;
                         ti.TotalSec = 0.0;
                         g_tempoList.add( ti );
-                    }
-                    int prev_tempo = DEF_TEMPO;
-                    int prev_clock = 0;
-                    double total = 0.0;
-                    count = -3;
-                    for ( int i = 0; i < numEvents; i++ ) {
-                        count += 3;
-                        int tempo = (int)(src[count + 2] | (src[count + 1] << 8) | (src[count] << 16));
-                        total += (deltaFrames[i] - prev_clock) * (double)prev_tempo / (1000.0 * TIME_FORMAT);
-                        TempoInfo ti = new TempoInfo();
-                        ti.Clock = deltaFrames[i];
-                        ti.Tempo = tempo;
-                        ti.TotalSec = total;
-                        g_tempoList.add( ti );
-                        prev_tempo = tempo;
-                        prev_clock = deltaFrames[i];
+                    } else {
+                        if ( deltaFrames[0] == 0 ) {
+                            g_numTempoList = numEvents;
+                        } else {
+                            g_numTempoList = numEvents + 1;
+                            TempoInfo ti = new TempoInfo();
+                            ti.Clock = 0;
+                            ti.Tempo = DEF_TEMPO;
+                            ti.TotalSec = 0.0;
+                            g_tempoList.add( ti );
+                        }
+                        int prev_tempo = DEF_TEMPO;
+                        int prev_clock = 0;
+                        double total = 0.0;
+                        count = -3;
+                        for ( int i = 0; i < numEvents; i++ ) {
+                            count += 3;
+                            int tempo = (int)(src[count + 2] | (src[count + 1] << 8) | (src[count] << 16));
+                            total += (deltaFrames[i] - prev_clock) * (double)prev_tempo / (1000.0 * TIME_FORMAT);
+                            TempoInfo ti = new TempoInfo();
+                            ti.Clock = deltaFrames[i];
+                            ti.Tempo = tempo;
+                            ti.TotalSec = total;
+                            g_tempoList.add( ti );
+                            prev_tempo = tempo;
+                            prev_clock = deltaFrames[i];
+                        }
                     }
                 }
-            }
 
-            // 与えられたイベント情報をs_track_eventsに収納
-            count = -3;
-            int pPrev = 0;
-            s_track_events.get( targetTrack ).clear();
+                // 与えられたイベント情報をs_track_eventsに収納
+                count = -3;
+                int pPrev = 0;
+                s_track_events.get( targetTrack ).clear();
 #if VOCALO_DRIVER_PRINT_EVENTS
             PortUtil.println( "VocaloidDriver#SendEvent" );
             byte msb = 0x0;
             byte lsb = 0x0;
 #endif
-            for ( int i = 0; i < numEvents; i++ ) {
-                count += 3;
-                MidiEvent pEvent = new MidiEvent();
-                //pEvent = &(new MIDI_EVENT());
-                //pEvent->pNext = NULL;
-                pEvent.clock = (uint)deltaFrames[i];
-                //pEvent.dwOffset = 0;
-                if ( targetTrack == 0 ) {
-                    pEvent.firstByte = 0xff;
-                    pEvent.data = new byte[5];
-                    pEvent.data[0] = 0x51;
-                    pEvent.data[1] = 0x03;
-                    pEvent.data[2] = src[count];
-                    pEvent.data[3] = src[count + 1];
-                    pEvent.data[4] = src[count + 2];
-                } else {
+                for ( int i = 0; i < numEvents; i++ ) {
+                    count += 3;
+                    MidiEvent pEvent = new MidiEvent();
+                    //pEvent = &(new MIDI_EVENT());
+                    //pEvent->pNext = NULL;
+                    pEvent.clock = (uint)deltaFrames[i];
+                    //pEvent.dwOffset = 0;
+                    if ( targetTrack == 0 ) {
+                        pEvent.firstByte = 0xff;
+                        pEvent.data = new byte[5];
+                        pEvent.data[0] = 0x51;
+                        pEvent.data[1] = 0x03;
+                        pEvent.data[2] = src[count];
+                        pEvent.data[3] = src[count + 1];
+                        pEvent.data[4] = src[count + 2];
+                    } else {
 #if VOCALO_DRIVER_PRINT_EVENTS
                     if ( src[count + 1] == 0x63 ) {
                         msb = src[count + 2];
@@ -216,13 +216,14 @@ namespace org.kbinani.cadencii {
                         PortUtil.println( "VocaloidDriver#SendEvent; NRPN: 0x" + PortUtil.toHexString( nrpn, 4 ) + " " + str );
                     }
 #endif
-                    pEvent.firstByte = src[count];
-                    pEvent.data = new byte[3];
-                    pEvent.data[0] = src[count + 1];
-                    pEvent.data[1] = src[count + 2];
-                    pEvent.data[2] = 0x00;
+                        pEvent.firstByte = src[count];
+                        pEvent.data = new byte[3];
+                        pEvent.data[0] = src[count + 1];
+                        pEvent.data[1] = src[count + 2];
+                        pEvent.data[2] = 0x00;
+                    }
+                    s_track_events.get( targetTrack ).add( pEvent );
                 }
-                s_track_events.get( targetTrack ).add( pEvent );
             }
 
             return TRUE;
@@ -236,322 +237,304 @@ namespace org.kbinani.cadencii {
         /// <param name="sample_rate"></param>
         /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
         /// <returns></returns>
-        public int StartRendering( long total_samples, boolean mode_infinite, int sample_rate, VocaloidRenderingRunner runner ) {
+        public int startRendering( long total_samples, boolean mode_infinite, int sample_rate, VocaloidRenderingRunner runner ) {
 #if DEBUG
-            PortUtil.println( "VocaloidDriver#StartRendering; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
+            PortUtil.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
-            rendering = true;
-            g_cancelRequired = false;
-            g_progress = 0.0;
-            sampleRate = sample_rate;
+            lock ( locker ) {
+                rendering = true;
+                g_cancelRequired = false;
+                g_progress = 0.0;
+                sampleRate = sample_rate;
 
-            Vector<MidiEvent> lpEvents = merge_events( s_track_events.get( 0 ), s_track_events.get( 1 ) );
-            int current_count = -1;
-            MidiEvent current = new MidiEvent();// = lpEvents;
+                Vector<MidiEvent> lpEvents = merge_events( s_track_events.get( 0 ), s_track_events.get( 1 ) );
+                int current_count = -1;
+                MidiEvent current = new MidiEvent();// = lpEvents;
 
-            MemoryManager mman = null;
-            float* left_ch;
-            float* right_ch;
-            float** out_buffer;
-            try {
-                mman = new MemoryManager();
-                left_ch = (float*)mman.malloc( sizeof( float ) * sampleRate ).ToPointer();
-                right_ch = (float*)mman.malloc( sizeof( float ) * sampleRate ).ToPointer();
-                out_buffer = (float**)mman.malloc( sizeof( float* ) * 2 ).ToPointer();
-                out_buffer[0] = left_ch;
-                out_buffer[1] = right_ch;
+                MemoryManager mman = null;
+                float* left_ch;
+                float* right_ch;
+                float** out_buffer;
+                try {
+                    mman = new MemoryManager();
+                    left_ch = (float*)mman.malloc( sizeof( float ) * sampleRate ).ToPointer();
+                    right_ch = (float*)mman.malloc( sizeof( float ) * sampleRate ).ToPointer();
+                    out_buffer = (float**)mman.malloc( sizeof( float* ) * 2 ).ToPointer();
+                    out_buffer[0] = left_ch;
+                    out_buffer[1] = right_ch;
 
 #if TEST
                 org.kbinani.debug.push_log( "    calling initial dispatch..." );
 #endif
-                aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
-                aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0 );
-                
-                // ここではブロックサイズ＝サンプリングレートということにする
-                aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, sampleRate, IntPtr.Zero, 0 );
-                
-                // レンダリングの途中で停止した場合，ここでProcessする部分が無音でない場合がある
-                for ( int i = 0; i < 3; i++ ) {
-                    aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), sampleRate );
-                }
+                    aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
+                    aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0 );
+
+                    // ここではブロックサイズ＝サンプリングレートということにする
+                    aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, sampleRate, IntPtr.Zero, 0 );
+
+                    // レンダリングの途中で停止した場合，ここでProcessする部分が無音でない場合がある
+                    for ( int i = 0; i < 3; i++ ) {
+                        aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), sampleRate );
+                    }
 #if TEST
                 org.kbinani.debug.push_log( "    ...done" );
 #endif
 
-                int delay = 0;
-                int duration = 0;
-                int dwNow = 0;
-                int dwPrev = 0;
-                int dwDelta;
-                int dwDelay = 0;
-                int dwDeltaDelay = 0;
+                    int delay = 0;
+                    int duration = 0;
+                    int dwNow = 0;
+                    int dwPrev = 0;
+                    int dwDelta;
+                    int dwDelay = 0;
+                    int dwDeltaDelay = 0;
 
-                int addr_msb = 0, addr_lsb = 0;
-                int data_msb = 0, data_lsb = 0;
+                    int addr_msb = 0, addr_lsb = 0;
+                    int data_msb = 0, data_lsb = 0;
 
-                int total_processed = 0;
-                int total_processed2 = 0;
+                    int total_processed = 0;
+                    int total_processed2 = 0;
 #if TEST
                 org.kbinani.debug.push_log( "    getting dwDelay..." );
 #endif
-                dwDelay = 0;
-                Vector<MidiEvent> list = s_track_events.get( 1 );
-                int list_size = list.size();
-                for ( int i = 0; i < list_size; i++ ) {
-                    MidiEvent work = list.get( i );
-                    if ( (work.firstByte & 0xf0) == 0xb0 ) {
-                        switch ( work.data[0] ) {
-                            case 0x63:
-                                addr_msb = work.data[1];
-                                addr_lsb = 0;
-                                break;
-                            case 0x62:
-                                addr_lsb = work.data[1];
-                                break;
-                            case 0x06:
-                                data_msb = work.data[1];
-                                break;
-                            case 0x26:
-                                data_lsb = work.data[1];
-                                if ( addr_msb == 0x50 && addr_lsb == 0x01 ) {
-                                    dwDelay = (data_msb & 0xff) << 7 | (data_lsb & 0x7f);
-                                }
-                                break;
-                        }
-                    }
-                    if ( dwDelay > 0 ) {
-                        break;
-                    }
-                }
-#if TEST
-                org.kbinani.debug.push_log( "    ...done; dwDelay=" + dwDelay );
-#endif
-
-                while ( true ) {
-#if TEST
-                    org.kbinani.debug.push_log( "g_cancelRequired=" + g_cancelRequired );
-#endif
-                    if ( g_cancelRequired ) {
-                        lpEvents.clear();
-                        rendering = false;
-                        return FALSE;
-                    }
-#if TEST
-                    org.kbinani.debug.push_log( "-----------------------------------------------------------------------" );
-#endif
-                    //MIDI_EVENT pProcessEvent = current;
-                    int process_event_count = current_count;
-                    int nEvents = 0;
-
-#if TEST
-                    org.kbinani.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
-#endif
-                    if ( current_count < 0 ) {
-                        current_count = 0;
-                        current = lpEvents.get( current_count );
-                        process_event_count = current_count;
-                    }
-                    while ( current.clock == dwNow ) {
-                        // durationを取得
-                        if ( (current.firstByte & 0xf0) == 0xb0 ) {
-                            switch ( current.data[0] ) {
+                    dwDelay = 0;
+                    Vector<MidiEvent> list = s_track_events.get( 1 );
+                    int list_size = list.size();
+                    for ( int i = 0; i < list_size; i++ ) {
+                        MidiEvent work = list.get( i );
+                        if ( (work.firstByte & 0xf0) == 0xb0 ) {
+                            switch ( work.data[0] ) {
                                 case 0x63:
-                                    addr_msb = current.data[1];
+                                    addr_msb = work.data[1];
                                     addr_lsb = 0;
                                     break;
                                 case 0x62:
-                                    addr_lsb = current.data[1];
+                                    addr_lsb = work.data[1];
                                     break;
                                 case 0x06:
-                                    data_msb = current.data[1];
+                                    data_msb = work.data[1];
                                     break;
                                 case 0x26:
-                                    data_lsb = current.data[1];
-                                    // Note Duration in millisec
-                                    if ( addr_msb == 0x50 && addr_lsb == 0x4 ) {
-                                        duration = data_msb << 7 | data_lsb;
+                                    data_lsb = work.data[1];
+                                    if ( addr_msb == 0x50 && addr_lsb == 0x01 ) {
+                                        dwDelay = (data_msb & 0xff) << 7 | (data_lsb & 0x7f);
                                     }
                                     break;
                             }
                         }
-
-                        nEvents++;
-                        if ( current_count + 1 < lpEvents.size() ) {
-                            current_count++;
-                            current = lpEvents.get( current_count );
-                        } else {
+                        if ( dwDelay > 0 ) {
                             break;
                         }
                     }
+#if TEST
+                org.kbinani.debug.push_log( "    ...done; dwDelay=" + dwDelay );
+#endif
 
-                    if ( current_count + 1 >= lpEvents.size() ) {
-                        break;
-                    }
+                    while ( !g_cancelRequired ) {
+                        int process_event_count = current_count;
+                        int nEvents = 0;
 
-                    double msNow = msec_from_clock( dwNow );
-                    dwDelta = (int)(msNow / 1000.0 * sampleRate) - total_processed;
+#if TEST
+                    org.kbinani.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
+#endif
+                        if ( current_count < 0 ) {
+                            current_count = 0;
+                            current = lpEvents.get( current_count );
+                            process_event_count = current_count;
+                        }
+                        while ( current.clock == dwNow ) {
+                            // durationを取得
+                            if ( (current.firstByte & 0xf0) == 0xb0 ) {
+                                switch ( current.data[0] ) {
+                                    case 0x63:
+                                        addr_msb = current.data[1];
+                                        addr_lsb = 0;
+                                        break;
+                                    case 0x62:
+                                        addr_lsb = current.data[1];
+                                        break;
+                                    case 0x06:
+                                        data_msb = current.data[1];
+                                        break;
+                                    case 0x26:
+                                        data_lsb = current.data[1];
+                                        // Note Duration in millisec
+                                        if ( addr_msb == 0x50 && addr_lsb == 0x4 ) {
+                                            duration = data_msb << 7 | data_lsb;
+                                        }
+                                        break;
+                                }
+                            }
+
+                            nEvents++;
+                            if ( current_count + 1 < lpEvents.size() ) {
+                                current_count++;
+                                current = lpEvents.get( current_count );
+                            } else {
+                                break;
+                            }
+                        }
+
+                        if ( current_count + 1 >= lpEvents.size() ) {
+                            break;
+                        }
+
+                        double msNow = msec_from_clock( dwNow );
+                        dwDelta = (int)(msNow / 1000.0 * sampleRate) - total_processed;
 #if TEST
                     org.kbinani.debug.push_log( "dwNow=" + dwNow );
                     org.kbinani.debug.push_log( "dwPrev=" + dwPrev );
                     org.kbinani.debug.push_log( "dwDelta=" + dwDelta );
 #endif
-                    VstEvents* pVSTEvents = (VstEvents*)mman.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) ).ToPointer();
-                    pVSTEvents->numEvents = 0;
-                    pVSTEvents->reserved = (VstIntPtr)0;
+                        VstEvents* pVSTEvents = (VstEvents*)mman.malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) ).ToPointer();
+                        pVSTEvents->numEvents = 0;
+                        pVSTEvents->reserved = (VstIntPtr)0;
 
-                    for ( int i = 0; i < nEvents; i++ ) {
-                        MidiEvent pProcessEvent = lpEvents.get( process_event_count );
-                        byte event_code = pProcessEvent.firstByte;
-                        VstEvent* pVSTEvent = (VstEvent*)0;
-                        VstMidiEvent* pMidiEvent;
+                        for ( int i = 0; i < nEvents; i++ ) {
+                            MidiEvent pProcessEvent = lpEvents.get( process_event_count );
+                            byte event_code = pProcessEvent.firstByte;
+                            VstEvent* pVSTEvent = (VstEvent*)0;
+                            VstMidiEvent* pMidiEvent;
 
-                        switch ( event_code ) {
-                            case 0xf0:
-                            case 0xf7:
-                            case 0xff:
-                                break;
-                            default:
-                                pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();
-                                pMidiEvent->byteSize = sizeof( VstMidiEvent );
-                                pMidiEvent->deltaFrames = dwDelta;
-                                pMidiEvent->detune = 0;
-                                pMidiEvent->flags = 1;
-                                pMidiEvent->noteLength = 0;
-                                pMidiEvent->noteOffset = 0;
-                                pMidiEvent->noteOffVelocity = 0;
-                                pMidiEvent->reserved1 = 0;
-                                pMidiEvent->reserved2 = 0;
-                                pMidiEvent->type = VstEventTypes.kVstMidiType;
-                                pMidiEvent->midiData[0] = pProcessEvent.firstByte;
-                                for ( int j = 0; j < pProcessEvent.data.Length; j++ ) {
-                                    pMidiEvent->midiData[j + 1] = pProcessEvent.data[j];
-                                }
-                                pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
-                                break;
+                            switch ( event_code ) {
+                                case 0xf0:
+                                case 0xf7:
+                                case 0xff:
+                                    break;
+                                default:
+                                    pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();
+                                    pMidiEvent->byteSize = sizeof( VstMidiEvent );
+                                    pMidiEvent->deltaFrames = dwDelta;
+                                    pMidiEvent->detune = 0;
+                                    pMidiEvent->flags = 1;
+                                    pMidiEvent->noteLength = 0;
+                                    pMidiEvent->noteOffset = 0;
+                                    pMidiEvent->noteOffVelocity = 0;
+                                    pMidiEvent->reserved1 = 0;
+                                    pMidiEvent->reserved2 = 0;
+                                    pMidiEvent->type = VstEventTypes.kVstMidiType;
+                                    pMidiEvent->midiData[0] = pProcessEvent.firstByte;
+                                    for ( int j = 0; j < pProcessEvent.data.Length; j++ ) {
+                                        pMidiEvent->midiData[j + 1] = pProcessEvent.data[j];
+                                    }
+                                    pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
+                                    break;
+                            }
+                            process_event_count++;
+                            //pProcessEvent = lpEvents[process_event_count];
                         }
-                        process_event_count++;
-                        //pProcessEvent = lpEvents[process_event_count];
-                    }
 #if TEST
                     org.kbinani.debug.push_log( "calling Dispatch with effProcessEvents..." );
 #endif
-                    aEffect.Dispatch( AEffectXOpcodes.effProcessEvents, 0, 0, new IntPtr( pVSTEvents ), 0 );
+                        aEffect.Dispatch( AEffectXOpcodes.effProcessEvents, 0, 0, new IntPtr( pVSTEvents ), 0 );
 #if TEST
                     org.kbinani.debug.push_log( "...done" );
 #endif
 
-                    while ( dwDelta > 0 ) {
-                        if ( g_cancelRequired ) {
-                            lpEvents.clear();
-                            rendering = false;
-                            return FALSE;
-                        }
-                        int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
+                        while ( dwDelta > 0 && !g_cancelRequired ) {
+                            int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
                         org.kbinani.debug.push_log( "calling ProcessReplacing..." );
 #endif
-                        aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), dwFrames );
+                            aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), dwFrames );
 #if TEST
                         org.kbinani.debug.push_log( "...done" );
 #endif
 
-                        int iOffset = dwDelay - dwDeltaDelay;
-                        if ( iOffset > (int)dwFrames ) {
-                            iOffset = (int)dwFrames;
-                        }
-
-                        if ( iOffset == 0 ) {
-                            double[] send_data_l = new double[dwFrames];
-                            double[] send_data_r = new double[dwFrames];
-                            for ( int i = 0; i < (int)dwFrames; i++ ) {
-                                send_data_l[i] = out_buffer[0][i];
-                                send_data_r[i] = out_buffer[1][i];
+                            int iOffset = dwDelay - dwDeltaDelay;
+                            if ( iOffset > (int)dwFrames ) {
+                                iOffset = (int)dwFrames;
                             }
-                            total_processed2 += dwFrames;
-                            runner.waveIncomingImpl( send_data_l, send_data_r );
-                        } else {
-                            dwDeltaDelay += iOffset;
+
+                            if ( iOffset == 0 ) {
+                                double[] send_data_l = new double[dwFrames];
+                                double[] send_data_r = new double[dwFrames];
+                                for ( int i = 0; i < (int)dwFrames; i++ ) {
+                                    send_data_l[i] = out_buffer[0][i];
+                                    send_data_r[i] = out_buffer[1][i];
+                                }
+                                total_processed2 += dwFrames;
+                                runner.waveIncomingImpl( send_data_l, send_data_r );
+                            } else {
+                                dwDeltaDelay += iOffset;
+                            }
+                            dwDelta -= dwFrames;
+                            total_processed += dwFrames;
                         }
-                        dwDelta -= dwFrames;
-                        total_processed += dwFrames;
+
+                        dwPrev = dwNow;
+                        dwNow = (int)current.clock;
+                        g_progress = total_processed / (double)total_samples * 100.0;
                     }
 
-                    dwPrev = dwNow;
-                    dwNow = (int)current.clock;
-                    g_progress = total_processed / (double)total_samples * 100.0;
-                }
-
-                double msLast = msec_from_clock( dwNow );
-                dwDelta = (int)(sampleRate * ((double)duration + (double)delay) / 1000.0 + dwDeltaDelay);
-                if ( total_samples - total_processed2 > dwDelta ) {
-                    dwDelta = (int)total_samples - total_processed2;
-                }
-                while ( dwDelta > 0 ) {
-                    if ( g_cancelRequired ) {
-#if DEBUG
-                        PortUtil.println( "VocaloidDriver#StartRendering; cancel A" );
-#endif
-                        lpEvents.clear();
-                        rendering = false;
-                        return FALSE;
+                    double msLast = msec_from_clock( dwNow );
+                    dwDelta = (int)(sampleRate * ((double)duration + (double)delay) / 1000.0 + dwDeltaDelay);
+                    if ( total_samples - total_processed2 > dwDelta ) {
+                        dwDelta = (int)total_samples - total_processed2;
                     }
-                    int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
+                    while ( dwDelta > 0 && !g_cancelRequired ) {
+                        int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
                     org.kbinani.debug.push_log( "calling ProcessReplacing..." );
 #endif
-                    aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), dwFrames );
+                        aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), dwFrames );
 #if TEST
                     org.kbinani.debug.push_log( "...done" );
 #endif
 
-                    double[] send_data_l = new double[dwFrames];
-                    double[] send_data_r = new double[dwFrames];
-                    for ( int i = 0; i < (int)dwFrames; i++ ) {
-                        send_data_l[i] = out_buffer[0][i];
-                        send_data_r[i] = out_buffer[1][i];
-                    }
-                    total_processed2 += dwFrames;
-                    runner.waveIncomingImpl( send_data_l, send_data_r );
-                    send_data_l = null;
-                    send_data_r = null;
+                        double[] send_data_l = new double[dwFrames];
+                        double[] send_data_r = new double[dwFrames];
+                        for ( int i = 0; i < (int)dwFrames; i++ ) {
+                            send_data_l[i] = out_buffer[0][i];
+                            send_data_r[i] = out_buffer[1][i];
+                        }
+                        total_processed2 += dwFrames;
+                        runner.waveIncomingImpl( send_data_l, send_data_r );
+                        send_data_l = null;
+                        send_data_r = null;
 
-                    dwDelta -= dwFrames;
-                    total_processed += dwFrames;
-                }
+                        dwDelta -= dwFrames;
+                        total_processed += dwFrames;
+                    }
 
 #if TEST
                 PortUtil.println( "vstidrv::StartRendering; total_processed=" + total_processed );
 #endif
 
-                if ( mode_infinite ) {
-                    double[] silence_l = new double[blockSize];
-                    double[] silence_r = new double[blockSize];
-                    while ( !g_cancelRequired ) {
-                        total_processed2 += blockSize;
-                        runner.waveIncomingImpl( silence_l, silence_r );
+                    if ( mode_infinite ) {
+                        double[] silence_l = new double[blockSize];
+                        double[] silence_r = new double[blockSize];
+                        while ( !g_cancelRequired ) {
+                            total_processed2 += blockSize;
+                            runner.waveIncomingImpl( silence_l, silence_r );
+                        }
+                        silence_l = null;
+                        silence_r = null;
                     }
-                    silence_l = null;
-                    silence_r = null;
-                }
 
-                aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );
-                lpEvents.clear();
+                    aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );
+                    lpEvents.clear();
 #if DEBUG
-                PortUtil.println( "VocaloidDriver#StartRendering; total_processed=" + total_processed + "; total_processed2=" + total_processed2 );
+                    PortUtil.println( "VocaloidDriver#startRendering; done; total_processed=" + total_processed + "; total_processed2=" + total_processed2 );
 #endif
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VocaloidDriver#StartRendering; ex=" + ex );
-            } finally {
-                if ( mman != null ) {
-                    try {
-                        mman.dispose();
-                    } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "VocaloidDriver#StartRendering; ex2=" + ex2 );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VocaloidDriver#startRendering; ex=" + ex );
+                } finally {
+                    if ( mman != null ) {
+                        try {
+                            mman.dispose();
+                        } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "VocaloidDriver#startRendering; ex2=" + ex2 );
+                        }
                     }
                 }
-                exit_start_rendering();
+                rendering = false;
+                g_saProcessed = 0;
+                for ( int i = 0; i < s_track_events.size(); i++ ) {
+                    s_track_events.get( i ).clear();
+                }
+                g_tempoList.clear();
+                g_cancelRequired = false;
             }
-            rendering = false;
             return 1;
         }
 
@@ -559,11 +542,11 @@ namespace org.kbinani.cadencii {
             return rendering;
         }
 
-        public void AbortRendering() {
+        public void abortRendering() {
             g_cancelRequired = true;
         }
 
-        public double GetProgress() {
+        public double getProgress() {
             return g_progress;
         }
 

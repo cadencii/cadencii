@@ -87,7 +87,7 @@ namespace org.kbinani.cadencii {
             double running_rate = 1;
             if ( driver != null && driver != null ) {
                 try {
-                    running_rate = driver.GetProgress() / elapsed;
+                    running_rate = driver.getProgress() / elapsed;
                 } catch ( Exception ex ) {
                 }
             }
@@ -102,7 +102,7 @@ namespace org.kbinani.cadencii {
         public override void abortRendering() {
             if ( driver != null && driver != null ) {
                 try {
-                    driver.AbortRendering();
+                    driver.abortRendering();
                 } catch( Exception ex ) {
                     PortUtil.stderr.println( "VocaloidRenderingRunner#run; ex=" + ex );
                 }
@@ -118,14 +118,15 @@ namespace org.kbinani.cadencii {
         }
 
         public override double getProgress() {
-            return driver.GetProgress();
+            return driver.getProgress();
         }
 
         public override void run() {
 #if DEBUG
-            PortUtil.println( "VocaloRenderingRunner#run" );
+            PortUtil.println( "VocaloidRenderingRunner#run; enter" );
 #endif
             m_started_date = PortUtil.getCurrentTime();
+            m_abort_required = false;
             if ( driver == null ) {
 #if DEBUG
                 PortUtil.println( "VocaloRenderingRunner#run; error: driver is null" );
@@ -138,6 +139,17 @@ namespace org.kbinani.cadencii {
 #endif
                 return;
             }
+            if ( driver.isRendering() ) {
+                driver.abortRendering();
+                while ( driver.isRendering() && !m_abort_required ) {
+#if JAVA
+                    Thread.sleep( 0 );
+#else
+                    System.Windows.Forms.Application.DoEvents();
+#endif
+                }
+            }
+
             // 古いイベントをクリア
             driver.clearSendEvents();
 
@@ -161,7 +173,7 @@ namespace org.kbinani.cadencii {
                 masterEventsSrc[count + 1] = b1;
                 masterEventsSrc[count + 2] = b2;
             }
-            driver.SendEvent( masterEventsSrc, masterClocksSrc, 0 );
+            driver.sendEvent( masterEventsSrc, masterClocksSrc, 0 );
             //driver.setTempoTable( tempo );
 
             int numEvents = nrpn.Length;
@@ -187,7 +199,7 @@ namespace org.kbinani.cadencii {
             }
             int last_tempo = tempo[index].Tempo;
 
-            driver.SendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
+            driver.sendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
 
             m_rendering = true;
             if ( waveWriter != null ) {
@@ -201,7 +213,7 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            driver.StartRendering( totalSamples + m_trim_remain + (int)(msPresend / 1000.0 * sampleRate), mode_infinite, sampleRate , this );
+            driver.startRendering( totalSamples + m_trim_remain + (int)(msPresend / 1000.0 * sampleRate), mode_infinite, sampleRate , this );
             /*while ( driver.isRendering() ) {
                 Application.DoEvents();
             }*/
@@ -210,7 +222,7 @@ namespace org.kbinani.cadencii {
                 PlaySound.waitForExit();
             }
 #if DEBUG
-            PortUtil.println( "VocaloidRenderingRunner#run; m_total_append=" + m_total_append );
+            PortUtil.println( "VocaloidRenderingRunner#run; done; m_total_append=" + m_total_append );
 #endif
         }
     }

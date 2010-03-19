@@ -782,6 +782,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private static CurveType selectedPointCurveType = CurveType.Empty;
         private static Vector<Long> selectedPointIDs = new Vector<Long>();
+        /// <summary>
+        /// Playingプロパティにロックをかけるためのオブジェクト
+        /// </summary>
+        private static Object playingPropertyLocker = new Object();
 
         #region 選択範囲の管理
         /// <summary>
@@ -2781,30 +2785,32 @@ namespace org.kbinani.cadencii {
         }
 
         public static void setPlaying( boolean value ) {
+            lock ( playingPropertyLocker ) {
 #if DEBUG
-            DateTime time = DateTime.Now;
-            PortUtil.println( "AppManager#setPlaying; entry; now=" + time + "; s_playing=" + s_playing + "; value=" + value );
+                DateTime time = DateTime.Now;
+                PortUtil.println( "AppManager#setPlaying; entry; now=" + time + "; s_playing=" + s_playing + "; value=" + value );
 #endif
-            boolean previous = s_playing;
-            s_playing = value;
-            if ( previous != s_playing ) {
-                if ( s_playing ) {
-                    try {
-                        previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
-                    }
-                } else if ( !s_playing ) {
-                    try {
-                        previewAbortedEvent.raise( typeof( AppManager ), new BEventArgs() );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
+                boolean previous = s_playing;
+                s_playing = value;
+                if ( previous != s_playing ) {
+                    if ( s_playing ) {
+                        try {
+                            previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
+                        }
+                    } else if ( !s_playing ) {
+                        try {
+                            previewAbortedEvent.raise( typeof( AppManager ), new BEventArgs() );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
+                        }
                     }
                 }
-            }
 #if DEBUG
-            PortUtil.println( "AppManager#setPlaying; done; now=" + time );
+                PortUtil.println( "AppManager#setPlaying; done; now=" + time );
 #endif
+            }
         }
 
         /// <summary>
