@@ -822,6 +822,9 @@ namespace org.kbinani.cadencii {
         /// エンドマーカーの位置(clock)
         /// </summary>
         public static int endMarker = 0;
+        /// <summary>
+        /// エンドマーカーが有効かどうか
+        /// </summary>
         public static boolean endMarkerEnabled = false;
         /// <summary>
         /// x方向の表示倍率(pixel/clock)
@@ -835,6 +838,9 @@ namespace org.kbinani.cadencii {
         /// Bezierカーブ編集モードが有効かどうかを表す
         /// </summary>
         private static boolean s_is_curve_mode = false;
+        /// <summary>
+        /// スタートマーカーが有効かどうか
+        /// </summary>
         public static boolean startMarkerEnabled = false;
         /// <summary>
         /// 再生時に自動スクロールするかどうか

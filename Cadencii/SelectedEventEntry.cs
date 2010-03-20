@@ -223,7 +223,7 @@ namespace org.kbinani.cadencii {
                 }
             } else {
                 try {
-                    draft = (int)AppManager.eval( 0, received_string );
+                    draft = (int)AppManager.eval( old_value, received_string );
                 } catch {
                     draft = old_value;
                 }

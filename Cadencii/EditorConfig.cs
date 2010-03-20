@@ -403,6 +403,7 @@ namespace org.kbinani.cadencii {
             new ValuePairOfStringArrayOfKeys( "menuHiddenShorten", new BKeys[]{ BKeys.Control, BKeys.Left } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenGoToEndMarker", new BKeys[]{ BKeys.Control, BKeys.End } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenGoToStartMarker", new BKeys[]{ BKeys.Control, BKeys.Home } ),
+            new ValuePairOfStringArrayOfKeys( "menuHiddenPlayFromStartMarker", new BKeys[]{ BKeys.Control, BKeys.Enter } ),
             new ValuePairOfStringArrayOfKeys( "menuFileSaveNamed", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuFileImportVsq", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuFileOpenUst", new BKeys[]{} ),

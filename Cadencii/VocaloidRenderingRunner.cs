@@ -100,11 +100,17 @@ namespace org.kbinani.cadencii {
         }
 
         public override void abortRendering() {
-            if ( driver != null && driver != null ) {
+#if DEBUG
+            PortUtil.println( "VocaloidRenderingRunner#abortRendering; enter" );
+#endif
+            if ( driver != null && driver.isRendering() ) {
                 try {
                     driver.abortRendering();
                 } catch( Exception ex ) {
                     PortUtil.stderr.println( "VocaloidRenderingRunner#run; ex=" + ex );
+                }
+                while ( driver.isRendering() ) {
+                    System.Windows.Forms.Application.DoEvents();
                 }
             }
             m_rendering = false;

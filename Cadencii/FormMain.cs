@@ -512,6 +512,7 @@ namespace org.kbinani.cadencii {
         /// AppManager.inputTextBoxがhideInputTextBoxによって隠された後、何回目のEnterキーの入力を受けたかを表すカウンター。
         /// </summary>
         private int numEnterKeyAfterHideInputTextBox = 0;
+        public BMenuItem menuHiddenPlayFromStartMarker;
         /// <summary>
         /// 特殊な取り扱いが必要なショートカットのキー列と、対応するメニューアイテムを保存しておくリスト。
         /// </summary>
@@ -1575,7 +1576,7 @@ namespace org.kbinani.cadencii {
                 // リアルタイム再生用のデータを準備
                 int preview_ending_clock = vsq.TotalClocks;
                 if ( AppManager.endMarkerEnabled ) {
-                    preview_ending_clock = Math.Max( preview_ending_clock, AppManager.endMarker );
+                    //preview_ending_clock = Math.Max( preview_ending_clock, AppManager.endMarker + 480 );
                     //TODO: fixme FormMain#AppManager_PreviewStarted
                 }
                 m_preview_ending_time = vsq.getSecFromClock( preview_ending_clock ) + 1.0;
@@ -1620,6 +1621,7 @@ namespace org.kbinani.cadencii {
                     }
 #if DEBUG
                     AppManager.debugWriteLine( "FormMain#AppManager_PreviewStarted; m_preview_ending_time=" + m_preview_ending_time );
+                    AppManager.debugWriteLine( "FormMain#AppManager_PreviewStarted; m_direct_play_shift=" + m_direct_play_shift );
 #endif
                     VSTiProxy.render( vsq,
                                       selected,
@@ -9347,6 +9349,18 @@ namespace org.kbinani.cadencii {
             moveUpDownLeftRight( 1, 0 );
         }
 
+        public void menuHiddenPlayFromStartMarker_Click( Object sender, EventArgs e ) {
+            if ( AppManager.isPlaying() ) {
+                return;
+            }
+            if ( !AppManager.startMarkerEnabled ) {
+                return;
+            }
+
+            AppManager.setCurrentClock( AppManager.startMarker );
+            AppManager.setPlaying( true );
+        }
+        
         public void menuHiddenMoveLeft_Click( Object sender, EventArgs e ) {
             QuantizeMode mode = AppManager.editorConfig.getPositionQuantize();
             boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
@@ -9705,7 +9719,7 @@ namespace org.kbinani.cadencii {
 
         public void timer_Tick( Object sender, EventArgs e ) {
 #if DEBUG
-            PortUtil.println( "FormMain#timer_Tick; AppManager.firstBufferWritten=" + AppManager.firstBufferWritten );
+            //PortUtil.println( "FormMain#timer_Tick; AppManager.firstBufferWritten=" + AppManager.firstBufferWritten );
 #endif
             float play_time = -1.0f;
             if ( AppManager.rendererAvailable ) {
@@ -9722,12 +9736,11 @@ namespace org.kbinani.cadencii {
             }
             float now = (float)(play_time + m_direct_play_shift);
 #if DEBUG
-            PortUtil.println( "FormMain#timer_Tick; play_time=" + play_time + "; m_preview_ending_time=" + m_preview_ending_time + "; now=" + now );
-            PortUtil.println( "FormMain#timer_Tick; AppManager.isPlaying()=" + AppManager.isPlaying() );
+            //PortUtil.println( "FormMain#timer_Tick; play_time=" + play_time + "; m_preview_ending_time=" + m_preview_ending_time + "; now=" + now );
+            //PortUtil.println( "FormMain#timer_Tick; AppManager.isPlaying()=" + AppManager.isPlaying() );
 #endif
             if ( (play_time < 0.0 || m_preview_ending_time <= now) && 
-                 AppManager.getEditMode() != EditMode.REALTIME &&
-                 !AppManager.endMarkerEnabled ) {
+                 AppManager.getEditMode() != EditMode.REALTIME ) {
 #if DEBUG
                 PortUtil.println( "FormMain#timer_Tick; stop at A; play_time=" + play_time + "; m_preview_ending_time=" + m_preview_ending_time + "; now=" + now );
 #endif
@@ -9735,9 +9748,13 @@ namespace org.kbinani.cadencii {
                 timer.stop();
                 if ( AppManager.startMarkerEnabled ) {
                     AppManager.setCurrentClock( AppManager.startMarker );
+                    ensureCursorVisible();
                 }
-                ensureCursorVisible();
-                return;
+                if ( AppManager.isRepeatMode() ) {
+                    AppManager.setPlaying( true );
+                } else {
+                    return;
+                }
             }
             int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
             if ( clock > hScroll.getMaximum() ) {
@@ -13036,12 +13053,20 @@ namespace org.kbinani.cadencii {
             if ( playing ) {
                 return;
             }
-            int current = AppManager.getVsqFile().getBarCountFromClock( AppManager.getCurrentClock() );
-            if ( current > 0 ) {
-                current--;
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
             }
-            int new_clock = AppManager.getVsqFile().getClockFromBarCount( current );
-            AppManager.setCurrentClock( new_clock );
+            int cl_clock = AppManager.getCurrentClock();
+            int b_current = vsq.getBarCountFromClock( cl_clock );
+            if ( b_current > 0 ) {
+                int cl_b_current = vsq.getClockFromBarCount( b_current );
+                if ( cl_b_current >= cl_clock ) {
+                    b_current--;
+                }
+            }
+            int cl_new = vsq.getClockFromBarCount( b_current );
+            AppManager.setCurrentClock( cl_new );
             ensureCursorVisible();
             AppManager.setPlaying( playing );
             refreshScreen();
@@ -13327,9 +13352,23 @@ namespace org.kbinani.cadencii {
             menuHelp.setText( _( "Help" ) + "(&H)" );
             menuHelpAbout.setText( _( "About Cadencii" ) + "(&A)" );
 
-            menuHiddenEditLyric.setText( _( "Start Lyric Input" ) );
+            menuHiddenCopy.setText( _( "Copy" ) );
+            menuHiddenCut.setText( _( "Cut" ) );
             menuHiddenEditFlipToolPointerEraser.setText( _( "Chagne Tool Pointer / Eraser" ) );
             menuHiddenEditFlipToolPointerPencil.setText( _( "Change Tool Pointer / Pencil" ) );
+            menuHiddenEditLyric.setText( _( "Start Lyric Input" ) );
+            menuHiddenGoToEndMarker.setText( _( "GoTo End Marker" ) );
+            menuHiddenGoToStartMarker.setText( _( "GoTo Start Marker" ) );
+            menuHiddenLengthen.setText( _( "Lengthen" ) );
+            menuHiddenMoveDown.setText( _( "Move Down" ) );
+            menuHiddenMoveLeft.setText( _( "Move Left" ) );
+            menuHiddenMoveRight.setText( _( "Move Right" ) );
+            menuHiddenMoveUp.setText( _( "Move Up" ) );
+            menuHiddenPaste.setText( _( "Paste" ) );
+            menuHiddenPlayFromStartMarker.setText( _( "Play From Start Marker" ) );
+            menuHiddenSelectBackward.setText( _( "Select Backward" ) );
+            menuHiddenSelectForward.setText( _( "Select Forward" ) );
+            menuHiddenShorten.setText( _( "Shorten" ) );
             menuHiddenTrackBack.setText( _( "Previous Track" ) );
             menuHiddenTrackNext.setText( _( "Next Track" ) );
             menuHiddenVisualBackwardParameter.setText( _( "Previous Control Curve" ) );
@@ -15939,6 +15978,7 @@ namespace org.kbinani.cadencii {
             menuHiddenShorten.clickEvent.add( new BEventHandler( this, "menuHiddenShorten_Click" ) );
             menuHiddenGoToEndMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToEndMarker_Click" ) );
             menuHiddenGoToStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToStartMarker_Click" ) );
+            menuHiddenPlayFromStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenPlayFromStartMarker_Click" ) );
 
             cMenuPiano.openingEvent.add( new BCancelEventHandler( this, "cMenuPiano_Opening" ) );
             cMenuPianoPointer.clickEvent.add( new BEventHandler( this, "cMenuPianoPointer_Click" ) );
@@ -16464,6 +16504,8 @@ namespace org.kbinani.cadencii {
             this.menuHiddenLengthen = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenShorten = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenGoToStartMarker = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenGoToEndMarker = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenPlayFromStartMarker = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPiano = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cMenuPianoPointer = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPianoPencil = new org.kbinani.windows.forms.BMenuItem();
@@ -16662,7 +16704,6 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.menuHiddenGoToEndMarker = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17664,7 +17705,8 @@ namespace org.kbinani.cadencii {
             this.menuHiddenLengthen,
             this.menuHiddenShorten,
             this.menuHiddenGoToStartMarker,
-            this.menuHiddenGoToEndMarker} );
+            this.menuHiddenGoToEndMarker,
+            this.menuHiddenPlayFromStartMarker} );
             this.menuHidden.Name = "menuHidden";
             this.menuHidden.Size = new System.Drawing.Size( 79, 20 );
             this.menuHidden.Text = "MenuHidden";
@@ -17801,6 +17843,18 @@ namespace org.kbinani.cadencii {
             this.menuHiddenGoToStartMarker.Name = "menuHiddenGoToStartMarker";
             this.menuHiddenGoToStartMarker.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenGoToStartMarker.Text = "GoTo Start Marker";
+            // 
+            // menuHiddenGoToEndMarker
+            // 
+            this.menuHiddenGoToEndMarker.Name = "menuHiddenGoToEndMarker";
+            this.menuHiddenGoToEndMarker.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenGoToEndMarker.Text = "GoTo End Marker";
+            // 
+            // menuHiddenPlayFromStartMarker
+            // 
+            this.menuHiddenPlayFromStartMarker.Name = "menuHiddenPlayFromStartMarker";
+            this.menuHiddenPlayFromStartMarker.Size = new System.Drawing.Size( 267, 22 );
+            this.menuHiddenPlayFromStartMarker.Text = "Play From Start Marker";
             // 
             // cMenuPiano
             // 
@@ -19474,12 +19528,6 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Name = "stripBtnEndMarker";
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
-            // 
-            // menuHiddenGoToEndMarker
-            // 
-            this.menuHiddenGoToEndMarker.Name = "menuHiddenGoToEndMarker";
-            this.menuHiddenGoToEndMarker.Size = new System.Drawing.Size( 267, 22 );
-            this.menuHiddenGoToEndMarker.Text = "GoTo End Marker";
             // 
             // FormMain
             // 

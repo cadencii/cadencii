@@ -350,9 +350,9 @@ namespace org.kbinani.cadencii {
                 try {
                     s_rendering_context.abortRendering();
                 } catch ( Exception ex ) {
-                    PortUtil.println( "VSTiProxy#render; ex=" + ex );
+                    PortUtil.stderr.println( "VSTiProxy#render; ex=" + ex );
                 }
-                while ( s_rendering_context != null ) {
+                while ( s_rendering_context.isRendering() ) {
 #if DEBUG
                     PortUtil.println( "VSTiProxy#render; waiting (s_rendering_context!=null)" );
 #endif
@@ -563,7 +563,6 @@ namespace org.kbinani.cadencii {
             }
 #endif
 
-            s_rendering_context = null;
 #if DEBUG
             PortUtil.println( "VSTiProxy#renderWithDirectPlay; exit; now=" + now );
 #endif

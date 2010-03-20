@@ -15,8 +15,14 @@ msgstr "元に戻す"
 msgid "Right Control Point"
 msgstr "右制御点"
 
+msgid "GoTo End Marker"
+msgstr "エンドマーカーへ移動"
+
 msgid "(not implemented)"
 msgstr "(未実装)"
+
+msgid "GoTo Start Marker"
+msgstr "スタートマーカーへ移動"
 
 msgid "Lyrics/Phoneme"
 msgstr "歌詞/発音記号"
@@ -105,11 +111,11 @@ msgstr "歌詞入力時のモードを維持"
 msgid "gate-time"
 msgstr "ゲートタイム"
 
-msgid "UTAU Singers"
-msgstr "UTAU音源"
-
 msgid "Keyboard"
 msgstr "キーボード"
+
+msgid "UTAU Singers"
+msgstr "UTAU音源"
 
 msgid "End"
 msgstr "終点"
@@ -146,6 +152,9 @@ msgstr "音符のシフト"
 
 msgid "Select All"
 msgstr "全てを選択"
+
+msgid "Play From Start Marker"
+msgstr "スタートマーカーから再生"
 
 msgid "New"
 msgstr "新規"
@@ -315,6 +324,9 @@ msgstr "音符"
 msgid "Pointer"
 msgstr "ポインター"
 
+msgid "Move Down"
+msgstr "音符を下へ移動"
+
 msgid "Script runtime error:"
 msgstr "スクリプト実行エラー:"
 
@@ -449,6 +461,9 @@ msgstr "ダイナミクス"
 
 msgid "Save Voice DB configuration file."
 msgstr "音源設定ファイルを保存"
+
+msgid "Lengthen"
+msgstr "音符を延長する"
 
 msgid "Vibrato type"
 msgstr "ビブラートの種類"
@@ -744,6 +759,9 @@ msgstr "start"
 msgid "Eraser"
 msgstr "消しゴム"
 
+msgid "Restart Cadencii to complete your changes"
+msgstr "変更を適用するにはCadenciiを再起動してください"
+
 msgid "Previous"
 msgstr "一つ前を検索"
 
@@ -762,14 +780,14 @@ msgstr "自動バックアップ"
 msgid "Preview"
 msgstr "試聴"
 
+msgid "Auto Vibrato Settings"
+msgstr "オートビブラートの設定"
+
 msgid "Generate FRQ files"
 msgstr "FRQファイルを作成"
 
 msgid "Vibrato Rate"
 msgstr "ビブラートの周期"
-
-msgid "Auto Vibrato Settings"
-msgstr "オートビブラートの設定"
 
 msgid "Open VSQ / VOCALOID MIDI and create new project."
 msgstr "VSQ / VOCALOID MIDIから、新しいプロジェクトを作成する"
@@ -909,6 +927,9 @@ msgstr "歌詞の流し込み"
 msgid "Edit Value"
 msgstr "値を編集"
 
+msgid "Move Right"
+msgstr "音符を右へ移動"
+
 msgid "Import Standard MIDI."
 msgstr "Standard MIDIファイルをインポートする"
 
@@ -1025,6 +1046,9 @@ msgstr "このシーケンスを保存しますか？"
 
 msgid "hour"
 msgstr "時間"
+
+msgid "Move Up"
+msgstr "音符を上へ移動"
 
 msgid "Remaining"
 msgstr "残り時間"
@@ -1203,6 +1227,9 @@ msgstr "バックに他のトラックのアイテムを表示する"
 msgid "file '{0}' is already registered as BGM."
 msgstr "ファイル '{0}' は既にBGMに指定されています"
 
+msgid "Select Forward"
+msgstr "1個後ろの音符を選択"
+
 msgid "Pitch Fluctuation"
 msgstr "ピッチ変動"
 
@@ -1220,6 +1247,9 @@ msgstr "エイリアス"
 
 msgid "Exit"
 msgstr "戻る"
+
+msgid "Select Backward"
+msgstr "1個前の音符を選択"
 
 msgid "Option"
 msgstr "オプション"
@@ -1293,6 +1323,9 @@ msgstr "小節の削除"
 msgid "Project Proeprty"
 msgstr "Project Proeprty"
 
+msgid "Failed to launch Cadencii. Please send the exception report to developer"
+msgstr "Cadenciiの起動に失敗しました。以下の例外テキストを開発者に報告してください"
+
 msgid "Add"
 msgstr "追加"
 
@@ -1335,6 +1368,9 @@ msgstr "グローバルテンポ"
 msgid "Track Property"
 msgstr "トラックプロパティ"
 
+msgid "Move Left"
+msgstr "音符を左へ移動"
+
 msgid "Auto Normalize Mode"
 msgstr "音符のノーマライズ"
 
@@ -1355,6 +1391,9 @@ msgstr "ショートカットキーの設定"
 
 msgid "Inserting start at pre-measure"
 msgstr "プリメジャー位置から挿入"
+
+msgid "Shorten"
+msgstr "音符を短縮する"
 
 msgid "Tempo"
 msgstr "テンポ"

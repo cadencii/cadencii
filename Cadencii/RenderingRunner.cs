@@ -96,6 +96,9 @@ namespace org.kbinani.cadencii {
         }
 
         public virtual void abortRendering() {
+#if DEBUG
+            PortUtil.println( "RenderingRunner#abrotRendering; enter" );
+#endif
             m_abort_required = true;
             while ( m_rendering ) {
 #if JAVA

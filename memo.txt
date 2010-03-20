@@ -21,13 +21,6 @@
 -EditOtoIniでflacを読み込めるようにする
 
 -v3.1.3todo------------------------------------------------------------
--Ctrl + Space：スタートマーカーから再生
--Shift + Space：フォーカスのある小節だけ再生
--エンドマーカーが有効の場合で，かつ曲の長さがエンドマーカーよりも短い場合，曲の終わりで再生が止まる．
--FormMain#m_preview_ending_timeを計算するとき、vsq.TotalClocksを使わない場合なぜ止まるのか？
--ループ再生(with start/end marker)の動作がおかしい（再発）．
--AppManager.startMarker，ibid.startMarkerEnabled, ibid.end...はxvsqに保存されるべきではないか？
--AppManager.s_repeat_modeはxvsqに保存されるべきではないか？
 
 -v3.1.3done------------------------------------------------------------
 -起動時に1回だけスクリプトが自動実行されるようにした．（名前がRunOnceとなっているもののみ。隠し設定を含めここで変更可能）
