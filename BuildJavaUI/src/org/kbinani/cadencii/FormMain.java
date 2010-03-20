@@ -25,6 +25,10 @@ import org.kbinani.windows.forms.BSplitPane;
 import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BVScrollBar;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -272,7 +276,7 @@ public class FormMain extends BForm {
     private BMenuItem cMenuTrackTabOverlay = null;
     private BMenu cMenuTrackTabRenderer = null;
     private BMenuItem cMenuTrackTabRendererVOCALOID2 = null;
-    private BMenuItem cMenuTrackTabRendererVOCALOID1 = null;
+    private BMenuItem cMenuTrackTabRendererVOCALOID100 = null;
     private BMenuItem cMenuTrackTabRendererUtau = null;
     private BMenuItem cMenuTrackTabRendererStraight = null;
     private BMenuItem cMenuPianoQuantizeOff = null;
@@ -306,7 +310,7 @@ public class FormMain extends BForm {
     private BMenuItem menuHiddenCopy = null;
     private BMenuItem menuHiddenPaste = null;
     private BMenuItem menuHiddenCut = null;
-    private BMenuItem menuTrackRendererVOCALOID1 = null;
+    private BMenuItem menuTrackRendererVOCALOID100 = null;
     private BMenuItem menuTrackRendererVOCALOID2 = null;
     private BMenuItem menuTrackRendererUtau = null;
     private BMenuItem menuTrackRendererStraight = null;
@@ -330,7 +334,17 @@ public class FormMain extends BForm {
     private BMenuItem menuHiddenShorten = null;
     private BMenuItem menuHiddenGoToStartMarker = null;
     private BMenuItem menuHiddenGoToEndMarker = null;
-
+    private BMenuItem menuFileExportMusicXml = null;
+    private BMenuItem cMenuTrackTabPlayAfterSynth = null;
+    private BMenuItem menuTrackPlayAfterSynth = null;
+    private BMenuItem cMenuTrackTabRendererVOCALOID101 = null;
+    private BMenuItem menuTrackRendererVOCALOID101 = null;
+    private BMenuItem menuTrackRendererAquesTone = null;
+    private BMenuItem cMenuTrackTabRendererAquesTone = null;
+    private BMenuItem menuVisualIconPalette = null;
+    private JPanel jPanel = null;
+    private JLabel jLabel = null;
+    private JPanel jPanel2 = null;
     //SECTION-END-FIELD
     /**
      * This is the default constructor
@@ -340,6 +354,190 @@ public class FormMain extends BForm {
         initialize();
     }
     //SECTION-BEGIN-METHOD
+
+    /**
+     * This method initializes menuFileExportMusicXml	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuFileExportMusicXml() {
+        if (menuFileExportMusicXml == null) {
+            menuFileExportMusicXml = new BMenuItem();
+            menuFileExportMusicXml.setText("MusicXML");
+        }
+        return menuFileExportMusicXml;
+    }
+
+    /**
+     * This method initializes cMenuTrackTabPlayAfterSynth	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getCMenuTrackTabPlayAfterSynth() {
+        if (cMenuTrackTabPlayAfterSynth == null) {
+            cMenuTrackTabPlayAfterSynth = new BMenuItem();
+            cMenuTrackTabPlayAfterSynth.setText("Play After Synth");
+        }
+        return cMenuTrackTabPlayAfterSynth;
+    }
+
+    /**
+     * This method initializes menuTrackPlayAfterSynth	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuTrackPlayAfterSynth() {
+        if (menuTrackPlayAfterSynth == null) {
+            menuTrackPlayAfterSynth = new BMenuItem();
+            menuTrackPlayAfterSynth.setText("Play After Synth");
+        }
+        return menuTrackPlayAfterSynth;
+    }
+
+    /**
+     * This method initializes cMenuTrackTabRendererVOCALOID101	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getCMenuTrackTabRendererVOCALOID101() {
+        if (cMenuTrackTabRendererVOCALOID101 == null) {
+            cMenuTrackTabRendererVOCALOID101 = new BMenuItem();
+        }
+        return cMenuTrackTabRendererVOCALOID101;
+    }
+
+    /**
+     * This method initializes menuTrackRendererVOCALOID101	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuTrackRendererVOCALOID101() {
+        if (menuTrackRendererVOCALOID101 == null) {
+            menuTrackRendererVOCALOID101 = new BMenuItem();
+            menuTrackRendererVOCALOID101.setText("VOCALOID1 [1.1]");
+        }
+        return menuTrackRendererVOCALOID101;
+    }
+
+    /**
+     * This method initializes menuTrackRendererAquesTone	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuTrackRendererAquesTone() {
+        if (menuTrackRendererAquesTone == null) {
+            menuTrackRendererAquesTone = new BMenuItem();
+            menuTrackRendererAquesTone.setText("AquesTone");
+        }
+        return menuTrackRendererAquesTone;
+    }
+
+    /**
+     * This method initializes cMenuTrackTabRendererAquesTone	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getCMenuTrackTabRendererAquesTone() {
+        if (cMenuTrackTabRendererAquesTone == null) {
+            cMenuTrackTabRendererAquesTone = new BMenuItem();
+        }
+        return cMenuTrackTabRendererAquesTone;
+    }
+
+    /**
+     * This method initializes menuVisualIconPalette	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuVisualIconPalette() {
+        if (menuVisualIconPalette == null) {
+            menuVisualIconPalette = new BMenuItem();
+            menuVisualIconPalette.setText("Icon Palette");
+        }
+        return menuVisualIconPalette;
+    }
+
+    /**
+     * This method initializes jPanel	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel4() {
+        if (jPanel == null) {
+            GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
+            gridBagConstraints29.weightx = 1.0D;
+            jLabel = new JLabel();
+            jLabel.setText("JLabel");
+            GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
+            gridBagConstraints28.gridx = 10;
+            gridBagConstraints28.gridy = 0;
+            GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
+            gridBagConstraints27.gridx = 9;
+            gridBagConstraints27.gridy = 0;
+            GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
+            gridBagConstraints26.gridx = 8;
+            gridBagConstraints26.gridy = 0;
+            GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
+            gridBagConstraints25.gridx = 7;
+            gridBagConstraints25.gridy = 0;
+            GridBagConstraints gridBagConstraints24 = new GridBagConstraints();
+            gridBagConstraints24.gridx = 6;
+            gridBagConstraints24.gridy = 0;
+            GridBagConstraints gridBagConstraints23 = new GridBagConstraints();
+            gridBagConstraints23.gridx = 5;
+            gridBagConstraints23.gridy = 0;
+            GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
+            gridBagConstraints22.gridx = 4;
+            gridBagConstraints22.gridy = 0;
+            GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+            gridBagConstraints21.gridx = 3;
+            gridBagConstraints21.gridy = 0;
+            GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
+            gridBagConstraints20.gridx = 2;
+            gridBagConstraints20.gridy = 0;
+            GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
+            gridBagConstraints19.gridy = 0;
+            gridBagConstraints19.gridx = 1;
+            GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
+            gridBagConstraints18.gridx = 0;
+            gridBagConstraints18.gridy = 0;
+            GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
+            gridBagConstraints17.fill = GridBagConstraints.NONE;
+            gridBagConstraints17.gridx = 11;
+            gridBagConstraints17.gridy = 0;
+            gridBagConstraints17.anchor = GridBagConstraints.WEST;
+            gridBagConstraints17.weightx = 0.0D;
+            jPanel = new JPanel();
+            jPanel.setLayout(new GridBagLayout());
+            jPanel.add(toolStripLabel6, gridBagConstraints18);
+            jPanel.add(stripLblCursor, gridBagConstraints19);
+            jPanel.add(toolStripLabel8, gridBagConstraints20);
+            jPanel.add(stripLblTempo, gridBagConstraints21);
+            jPanel.add(jLabel2, gridBagConstraints22);
+            jPanel.add(stripLblBeat, gridBagConstraints23);
+            jPanel.add(jLabel3, gridBagConstraints24);
+            jPanel.add(stripLblGameCtrlMode, gridBagConstraints25);
+            jPanel.add(jLabel4, gridBagConstraints26);
+            jPanel.add(stripLblMidiIn, gridBagConstraints27);
+            jPanel.add(jLabel5, gridBagConstraints28);
+            jPanel.add(getStripDDBtnSpeed(), gridBagConstraints17);
+            jPanel.add(jLabel, gridBagConstraints29);
+        }
+        return jPanel;
+    }
+
+    /**
+     * This method initializes jPanel2	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel22() {
+        if (jPanel2 == null) {
+            jPanel2 = new JPanel();
+            jPanel2.setLayout(new GridBagLayout());
+        }
+        return jPanel2;
+    }
 
     public static void main( String[] args ){
        FormMain form = new FormMain();
@@ -352,7 +550,9 @@ public class FormMain extends BForm {
      * @return void
      */
     private void initialize() {
-        this.setSize(845, 591);
+        this.setSize(852, 561);
+        this.setContentPane(getJContentPane());
+        this.setJMenuBar(getMenuStripMain());
         this.setJMenuBar(getMenuStripMain());
         this.setContentPane(getJContentPane());
         this.setJMenuBar(getMenuStripMain());
@@ -545,6 +745,7 @@ public class FormMain extends BForm {
             menuFileExport.setText("Export");
             menuFileExport.add(getBMenuItem8());
             menuFileExport.add(getBMenuItem9());
+            menuFileExport.add(getMenuFileExportMusicXml());
         }
         return menuFileExport;
     }
@@ -841,6 +1042,7 @@ public class FormMain extends BForm {
             menuVisual.add(getBMenuItem16());
             menuVisual.add(getBMenuItem17());
             menuVisual.add(getMenuVisualWaveform());
+            menuVisual.add(getMenuVisualIconPalette());
             menuVisual.add(getBMenuItem23());
             menuVisual.add(getBMenuItem32());
             menuVisual.add(getMenuVisualPluginUi());
@@ -1185,6 +1387,7 @@ public class FormMain extends BForm {
             menuTrack = new BMenu();
             menuTrack.setText("Track");
             menuTrack.add(getBMenuItem27());
+            menuTrack.add(getMenuTrackPlayAfterSynth());
             menuTrack.add(getToolStripMenuItem10321());
             menuTrack.add(getMenuTrackAdd());
             menuTrack.add(getBMenuItem28());
@@ -1352,10 +1555,12 @@ public class FormMain extends BForm {
         if (menuTrackRenderer == null) {
             menuTrackRenderer = new BMenu();
             menuTrackRenderer.setText("Renderer");
-            menuTrackRenderer.add(getMenuTrackRendererVOCALOID1());
+            menuTrackRenderer.add(getMenuTrackRendererVOCALOID100());
+            menuTrackRenderer.add(getMenuTrackRendererVOCALOID101());
             menuTrackRenderer.add(getMenuTrackRendererVOCALOID2());
             menuTrackRenderer.add(getMenuTrackRendererUtau());
             menuTrackRenderer.add(getMenuTrackRendererStraight());
+            menuTrackRenderer.add(getMenuTrackRendererAquesTone());
         }
         return menuTrackRenderer;
     }
@@ -1962,7 +2167,8 @@ public class FormMain extends BForm {
             splitContainer2.setDividerSize(0);
             splitContainer2.setDividerLocation(300);
             splitContainer2.setEnabled(false);
-            splitContainer2.setResizeWeight(1.0D);
+            splitContainer2.setResizeWeight(0.0D);
+            splitContainer2.setPanel2Hidden(true);
             splitContainer2.setBottomComponent(getPanel2());
             splitContainer2.setTopComponent(getJPanel1());
             splitContainer2.setOrientation(BSplitPane.VERTICAL_SPLIT);
@@ -2042,7 +2248,7 @@ public class FormMain extends BForm {
     private BSplitPane getSplitContainer1() {
         if (splitContainer1 == null) {
             splitContainer1 = new BSplitPane();
-            splitContainer1.setDividerLocation(400);
+            splitContainer1.setDividerLocation(300);
             splitContainer1.setResizeWeight(1.0D);
             splitContainer1.setTopComponent(getSplitContainer2());
             splitContainer1.setBottomComponent(getTrackSelector());
@@ -2059,7 +2265,6 @@ public class FormMain extends BForm {
     private TrackSelector getTrackSelector() {
         if (trackSelector == null) {
             trackSelector = new TrackSelector();
-            trackSelector.setLayout(new GridBagLayout());
         }
         return trackSelector;
     }
@@ -2125,43 +2330,47 @@ public class FormMain extends BForm {
         if (toolStripBottom == null) {
             jLabel5 = new BLabel();
             jLabel5.setText("Speed 1.0x");
+            jLabel5.setPreferredSize(new Dimension(73, 22));
             stripLblMidiIn = new BLabel();
             stripLblMidiIn.setText("Disabled");
+            stripLblMidiIn.setPreferredSize(new Dimension(49, 20));
             jLabel4 = new BLabel();
             jLabel4.setText("MIDI In");
+            jLabel4.setPreferredSize(new Dimension(41, 20));
             stripLblGameCtrlMode = new BLabel();
             stripLblGameCtrlMode.setText("Disabled");
+            stripLblGameCtrlMode.setPreferredSize(new Dimension(49, 20));
             jLabel3 = new BLabel();
             jLabel3.setText("Game Controler");
+            jLabel3.setPreferredSize(new Dimension(85, 20));
             stripLblBeat = new BLabel();
             stripLblBeat.setText("4/4");
+            stripLblBeat.setFont(new Font("MS UI Gothic", Font.BOLD, 12));
+            stripLblBeat.setPreferredSize(new Dimension(45, 22));
             jLabel2 = new BLabel();
             jLabel2.setText("BEAT");
+            jLabel2.setPreferredSize(new Dimension(35, 22));
             stripLblTempo = new BLabel();
             stripLblTempo.setText("120.00");
+            stripLblTempo.setFont(new Font("MS UI Gothic", Font.BOLD, 12));
+            stripLblTempo.setPreferredSize(new Dimension(60, 22));
             toolStripLabel8 = new BLabel();
             toolStripLabel8.setText("TEMPO");
+            toolStripLabel8.setPreferredSize(new Dimension(43, 22));
             stripLblCursor = new BLabel();
             stripLblCursor.setText("0 : 0 : 000");
+            stripLblCursor.setFont(new Font("MS UI Gothic", Font.BOLD, 12));
+            stripLblCursor.setPreferredSize(new Dimension(90, 22));
             toolStripLabel6 = new BLabel();
             toolStripLabel6.setText("CURSOR");
+            toolStripLabel6.setVerticalAlignment(SwingConstants.CENTER);
+            toolStripLabel6.setPreferredSize(new Dimension(52, 22));
             toolStripBottom = new BToolBar();
-            toolStripBottom.add(toolStripLabel6);
-            toolStripBottom.add(stripLblCursor);
             toolStripBottom.addSeparator();
-            toolStripBottom.add(toolStripLabel8);
-            toolStripBottom.add(stripLblTempo);
             toolStripBottom.addSeparator();
-            toolStripBottom.add(jLabel2);
-            toolStripBottom.add(stripLblBeat);
             toolStripBottom.addSeparator();
-            toolStripBottom.add(jLabel3);
-            toolStripBottom.add(stripLblGameCtrlMode);
             toolStripBottom.addSeparator();
-            toolStripBottom.add(jLabel4);
-            toolStripBottom.add(stripLblMidiIn);
-            toolStripBottom.add(jLabel5);
-            toolStripBottom.add(getStripDDBtnSpeed());
+            toolStripBottom.add(getJPanel4());
             toolStripBottom.addSeparator();
             
         }
@@ -2607,6 +2816,7 @@ public class FormMain extends BForm {
     private BComboBox getStripDDBtnSpeed() {
         if (stripDDBtnSpeed == null) {
             stripDDBtnSpeed = new BComboBox();
+            stripDDBtnSpeed.setPreferredSize(new Dimension(70, 20));
         }
         return stripDDBtnSpeed;
     }
@@ -2688,6 +2898,7 @@ public class FormMain extends BForm {
         if (cMenuTrackTab == null) {
             cMenuTrackTab = new BPopupMenu();
             cMenuTrackTab.add(getCMenuTrackTabTrackOn());
+            cMenuTrackTab.add(getCMenuTrackTabPlayAfterSynth());
             cMenuTrackTab.addSeparator();
             cMenuTrackTab.add(getCMenuTrackTabAdd());
             cMenuTrackTab.add(getCMenuTrackTabCopy());
@@ -3449,6 +3660,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuTrackTabTrackOn() {
         if (cMenuTrackTabTrackOn == null) {
             cMenuTrackTabTrackOn = new BMenuItem();
+            cMenuTrackTabTrackOn.setText("Track On");
         }
         return cMenuTrackTabTrackOn;
     }
@@ -3545,10 +3757,12 @@ public class FormMain extends BForm {
     private BMenu getCMenuTrackTabRenderer() {
         if (cMenuTrackTabRenderer == null) {
             cMenuTrackTabRenderer = new BMenu();
-            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID1());
+            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID100());
+            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID101());
             cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID2());
             cMenuTrackTabRenderer.add(getCMenuTrackTabRendererUtau());
             cMenuTrackTabRenderer.add(getCMenuTrackTabRendererStraight());
+            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererAquesTone());
         }
         return cMenuTrackTabRenderer;
     }
@@ -3566,15 +3780,15 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes cMenuTrackTabRendererVOCALOID1   
+     * This method initializes cMenuTrackTabRendererVOCALOID100   
      *  
      * @return javax.swing.BMenuItem    
      */
-    private BMenuItem getCMenuTrackTabRendererVOCALOID1() {
-        if (cMenuTrackTabRendererVOCALOID1 == null) {
-            cMenuTrackTabRendererVOCALOID1 = new BMenuItem();
+    private BMenuItem getCMenuTrackTabRendererVOCALOID100() {
+        if (cMenuTrackTabRendererVOCALOID100 == null) {
+            cMenuTrackTabRendererVOCALOID100 = new BMenuItem();
         }
-        return cMenuTrackTabRendererVOCALOID1;
+        return cMenuTrackTabRendererVOCALOID100;
     }
 
     /**
@@ -4076,16 +4290,16 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes menuTrackRendererVOCALOID1	
+     * This method initializes menuTrackRendererVOCALOID100	
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private BMenuItem getMenuTrackRendererVOCALOID1() {
-        if (menuTrackRendererVOCALOID1 == null) {
-            menuTrackRendererVOCALOID1 = new BMenuItem();
-            menuTrackRendererVOCALOID1.setText("VOCALOID1");
+    private BMenuItem getMenuTrackRendererVOCALOID100() {
+        if (menuTrackRendererVOCALOID100 == null) {
+            menuTrackRendererVOCALOID100 = new BMenuItem();
+            menuTrackRendererVOCALOID100.setText("VOCALOID1 [1.0]");
         }
-        return menuTrackRendererVOCALOID1;
+        return menuTrackRendererVOCALOID100;
     }
 
     /**

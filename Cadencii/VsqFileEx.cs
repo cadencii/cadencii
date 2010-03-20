@@ -332,8 +332,8 @@ namespace org.kbinani.cadencii {
             // まずクロック値を、リプレース後のモノに置き換え
             for ( int track = 1; track < this.Track.size(); track++ ) {
                 // ベジエカーブをシフト
-                for ( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ) {
-                    CurveType ct = AppManager.CURVE_USAGE[i];
+                for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
+                    CurveType ct = Utility.CURVE_USAGE[i];
                     Vector<BezierChain> list = this.AttachedCurves.get( track - 1 ).get( ct );
                     if ( list == null ) {
                         continue;
@@ -491,8 +491,8 @@ namespace org.kbinani.cadencii {
                 }
 
                 // コントロールカーブをシフト
-                for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
-                    CurveType ct = AppManager.CURVE_USAGE[k];
+                for ( int k = 0; k < Utility.CURVE_USAGE.Length; k++ ) {
+                    CurveType ct = Utility.CURVE_USAGE[k];
                     VsqBPList item = track.getCurve( ct.getName() );
                     if ( item == null ) {
                         continue;
@@ -519,8 +519,8 @@ namespace org.kbinani.cadencii {
                 }
 
                 // ベジエカーブをシフト
-                for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
-                    CurveType ct = AppManager.CURVE_USAGE[k];
+                for ( int k = 0; k < Utility.CURVE_USAGE.Length; k++ ) {
+                    CurveType ct = Utility.CURVE_USAGE[k];
                     Vector<BezierChain> list = vsq.AttachedCurves.get( i - 1 ).get( ct );
                     if ( list == null ) {
                         continue;
@@ -1274,8 +1274,8 @@ namespace org.kbinani.cadencii {
                 } else {
                     for ( Iterator<BezierCurves> itr = ret.AttachedCurves.getCurves().iterator(); itr.hasNext(); ) {
                         BezierCurves bc = itr.next();
-                        for ( int k = 0; k < AppManager.CURVE_USAGE.Length; k++ ) {
-                            CurveType ct = AppManager.CURVE_USAGE[k];
+                        for ( int k = 0; k < Utility.CURVE_USAGE.Length; k++ ) {
+                            CurveType ct = Utility.CURVE_USAGE[k];
                             Vector<BezierChain> list = bc.get( ct );
                             int list_size = list.size();
                             for ( int i = 0; i < list_size; i++ ) {
@@ -1300,7 +1300,7 @@ namespace org.kbinani.cadencii {
             int c = ret.Track.size();
             for ( int i = 0; i < c; i++ ) {
                 VsqTrack track = ret.Track.get( i );
-                foreach ( CurveType s in AppManager.CURVE_USAGE ) {
+                foreach ( CurveType s in Utility.CURVE_USAGE ) {
                     VsqBPList list = track.getCurve( s.getName() );
                     if ( list != null ) {
                         list.setName( s.getName().ToLower() );

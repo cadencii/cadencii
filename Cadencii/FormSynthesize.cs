@@ -39,6 +39,7 @@ namespace org.kbinani.cadencii {
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using boolean = System.Boolean;
     using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
+    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -74,17 +75,17 @@ namespace org.kbinani.cadencii {
         {
             this( vsq, presend, new int[] { track }, new String[]{ file }, clock_start, clock_end, temp_premeasure, reflect_amp_to_wave, false );
 #else
-            : this( vsq, presend, new int[] { track }, new String[] { file }, new int[] { clock_start }, new int[] { clock_end }, reflect_amp_to_wave ) {
+            : this( vsq, presend, new Integer[] { track }, new String[] { file }, new Integer[] { clock_start }, new Integer[] { clock_end }, reflect_amp_to_wave ) {
 #endif
             isPartialMode = true;
         }
 
         public FormSynthesize( VsqFileEx vsq, 
                                int presend, 
-                               int[] tracks,
+                               Integer[] tracks,
                                String[] files,
-                               int[] start,
-                               int[] end,
+                               Integer[] start,
+                               Integer[] end,
                                boolean reflect_amp_to_wave ) {
 #if JAVA
             super();

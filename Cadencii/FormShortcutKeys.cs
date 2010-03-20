@@ -160,7 +160,7 @@ namespace org.kbinani.cadencii {
                     a.add( key );
                 }
 
-                BListViewItem item = new BListViewItem( new String[] { display, AppManager.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
+                BListViewItem item = new BListViewItem( new String[] { display, Utility.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
                 String name = m_dict.get( display ).getKey();
                 item.setName( name );
                 String group = "";
@@ -267,7 +267,7 @@ namespace org.kbinani.cadencii {
                 return;
             }
             BListViewItem item = list.getItemAt( selected_group, index );
-            item.setSubItemAt( 1, AppManager.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) ) );
+            item.setSubItemAt( 1, Utility.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) ) );
             list.setItemAt( selected_group, index, item );
             String display = list.getItemAt( selected_group, index ).getSubItemAt( 0 );
             if ( m_dict.containsKey( display ) ) {

@@ -1849,7 +1849,7 @@ namespace org.kbinani.cadencii {
                             destRect.x + destRect.width - 10, destRect.y + destRect.height );
             }
             g.clipRect( destRect.x, destRect.y, destRect.width, destRect.height );
-            String title = AppManager.trimString( name, AppManager.baseFont8, panel_width );
+            String title = Utility.trimString( name, AppManager.baseFont8, panel_width );
             g.setFont( AppManager.baseFont8 );
             g.setColor( panel_title );
             g.drawString( title, destRect.x + 2, destRect.y + destRect.height / 2 - AppManager.baseFont8OffsetHeight );

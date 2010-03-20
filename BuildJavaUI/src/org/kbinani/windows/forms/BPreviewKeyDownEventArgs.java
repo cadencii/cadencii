@@ -19,6 +19,10 @@ public class BPreviewKeyDownEventArgs extends BEventArgs{
         Shift = m_original.isShiftDown();
     }
     
+    public KeyEvent getRawEvent(){
+        return m_original;
+    }
+    
     public char getKeyChar(){
         if( m_original == null ){
             return '\0';

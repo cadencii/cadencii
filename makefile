@@ -10,24 +10,24 @@ first: .\first.pl
 	perl .\first.pl
 
 jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq resources
-	pp_cs2java.exe -DJAVA -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\Cadencii"
+	pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\Cadencii"
 	javac .\build\java\org\kbinani\cadencii\*.java .\build\java\org\kbinani\*.java .\build\java\org\kbinani\apputil\*.java .\build\java\org\kbinani\media\*.java .\build\java\org\kbinani\vsq\*.java .\build\java\org\kbinani\cadencii\*.java .\build\java\org\kbinani\componentmodel\*.java .\build\java\org\kbinani\windows\forms\*.java .\build\java\org\kbinani\xml\*.java -encoding UTF8
 
 jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
-	pp_cs2java.exe -DJAVA -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\EditOtoIni"
+	pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\EditOtoIni"
 	javac $(JROOT)\editotoini\*.java $(JROOT)\*.java $(JROOT)\windows\forms\*.java $(JROOT)\componentmodel\*.java $(JROOT)\vsq\*.java $(JROOT)\xml\*.java $(JROOT)\apputil\*.java $(JROOT)\media\*.java -encoding UTF8
 
 jcorlib: pp_cs2java.exe ./org.kbinani/*.cs
-	pp_cs2java.exe -DJAVA -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani"
+	pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani"
 
 japputil: pp_cs2java.exe ./org.kbinani.apputil/*.cs
-	pp_cs2java.exe -DJAVA -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani.apputil"
+	pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani.apputil"
 
 jmedia: pp_cs2java.exe ./org.kbinani.media/*.cs
-	pp_cs2java.exe -DJAVA -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani.media"
+	pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani.media"
 
 jvsq: pp_cs2java.exe ./org.kbinani.vsq/*.cs
-	pp_cs2java.exe -DJAVA -DRELEASE -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani.vsq"
+	pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani.vsq"
 
 pp_cs2java.exe: $(TARGET)\org.kbinani.dll .\pp_cs2java\Program.cs
 	gmcs .\pp_cs2java\Program.cs -out:.\pp_cs2java.exe -r:$(TARGET)\org.kbinani.dll,System.Drawing $(MCS_OPT)

@@ -29,7 +29,7 @@ namespace org.kbinani.cadencii {
         public static TreeMap<String, Object> loadedTools = new TreeMap<String, Object>();
 
         public static void init() {
-            String path = AppManager.getToolPath();
+            String path = Utility.getToolPath();
             if ( !Directory.Exists( path ) ) {
                 return;
             }
@@ -40,7 +40,7 @@ namespace org.kbinani.cadencii {
                 using ( StreamReader sr = new StreamReader( file.FullName ) ){
                     code += sr.ReadToEnd();
                 }
-                CompilerResults results = AppManager.compileScript( code );
+                CompilerResults results = Utility.compileScript( code );
                 if ( results == null ) {
                     continue;
                 }
@@ -58,7 +58,7 @@ namespace org.kbinani.cadencii {
                             AppManager.debugWriteLine( "t.FullName=" + t.FullName );
 #endif
                             object instance = asm.CreateInstance( t.FullName );
-                            String dir = Path.Combine( AppManager.getApplicationDataPath(), "tool" );
+                            String dir = Path.Combine( Utility.getApplicationDataPath(), "tool" );
                             String cfg = Path.GetFileNameWithoutExtension( file.FullName ) + ".config";
                             String config = Path.Combine( dir, cfg );
                             if ( PortUtil.isFileExists( config ) ) {

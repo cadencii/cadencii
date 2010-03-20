@@ -18,11 +18,11 @@ import org.kbinani.BEventHandler;
 
 public class RenderRequiredEventHandler extends BEventHandler{
     public RenderRequiredEventHandler( Object sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, int[].class );
+        super( sender, method_name, Void.TYPE, Object.class, Integer[].class );
     }
     
     public RenderRequiredEventHandler( Class<?> sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, int[].class );
+        super( sender, method_name, Void.TYPE, Object.class, Integer[].class );
     }
 }
 #else

@@ -11,6 +11,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormGenerateKeySound.java
+
+import java.util.*;
+import org.kbinani.componentmodel.*;
+import org.kbinani.media.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
+#else
 using System;
 using System.Windows.Forms;
 using org.kbinani.componentmodel;
@@ -24,8 +35,13 @@ namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
+#endif
 
+#if JAVA
+    public class FormGenerateKeySound extends BForm {
+#else
     public class FormGenerateKeySound : BForm {
+#endif
         public class PrepareStartArgument {
             public String singer = "Miku";
             public double amplitude = 1.0;
@@ -42,19 +58,6 @@ namespace org.kbinani.cadencii {
         /// 処理が終わったら自動でフォームを閉じるかどうか。デフォルトではfalse（閉じない）
         /// </summary>
         private boolean m_close_when_finished = false;
-
-        private BButton btnExecute;
-        private BButton btnCancel;
-        private BComboBox comboSingingSynthSystem;
-        private BLabel lblSingingSynthSystem;
-        private BLabel lblSinger;
-        private BComboBox comboSinger;
-        private BCheckBox chkIgnoreExistingWavs;
-        private BTextBox txtDir;
-        private BButton btnBrowse;
-        private FolderBrowserDialog folderBrowser;
-        private BBackgroundWorker bgWork;
-        private BLabel lblDir;
 
         public FormGenerateKeySound( boolean close_when_finished ) {
             InitializeComponent();
@@ -75,7 +78,7 @@ namespace org.kbinani.cadencii {
                 comboSingingSynthSystem.setSelectedIndex( 0 );
             }
             updateSinger();
-            txtDir.setText( AppManager.getKeySoundPath() );
+            txtDir.setText( Utility.getKeySoundPath() );
         }
 
         private void updateSinger() {
@@ -101,144 +104,6 @@ namespace org.kbinani.cadencii {
             if ( comboSinger.getItemCount() > 0 ) {
                 comboSinger.setSelectedIndex( 0 );
             }
-        }
-
-        private void InitializeComponent() {
-            this.btnExecute = new BButton();
-            this.btnCancel = new BButton();
-            this.comboSingingSynthSystem = new BComboBox();
-            this.lblSingingSynthSystem = new BLabel();
-            this.lblSinger = new BLabel();
-            this.comboSinger = new BComboBox();
-            this.chkIgnoreExistingWavs = new BCheckBox();
-            this.txtDir = new BTextBox();
-            this.btnBrowse = new BButton();
-            this.lblDir = new BLabel();
-            this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
-            this.bgWork = new BBackgroundWorker();
-            this.SuspendLayout();
-            // 
-            // btnExecute
-            // 
-            this.btnExecute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExecute.Location = new System.Drawing.Point( 286, 126 );
-            this.btnExecute.Name = "btnExecute";
-            this.btnExecute.Size = new System.Drawing.Size( 75, 23 );
-            this.btnExecute.TabIndex = 0;
-            this.btnExecute.Text = "Execute";
-            this.btnExecute.UseVisualStyleBackColor = true;
-            this.btnExecute.Click += new System.EventHandler( this.btnExecute_Click );
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point( 205, 126 );
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
-            this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "Close";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
-            // 
-            // comboSingingSynthSystem
-            // 
-            this.comboSingingSynthSystem.FormattingEnabled = true;
-            this.comboSingingSynthSystem.Location = new System.Drawing.Point( 151, 12 );
-            this.comboSingingSynthSystem.Name = "comboSingingSynthSystem";
-            this.comboSingingSynthSystem.Size = new System.Drawing.Size( 121, 20 );
-            this.comboSingingSynthSystem.TabIndex = 2;
-            this.comboSingingSynthSystem.SelectedIndexChanged += new System.EventHandler( this.comboSingingSynthSystem_SelectedIndexChanged );
-            // 
-            // lblSingingSynthSystem
-            // 
-            this.lblSingingSynthSystem.AutoSize = true;
-            this.lblSingingSynthSystem.Location = new System.Drawing.Point( 12, 15 );
-            this.lblSingingSynthSystem.Name = "lblSingingSynthSystem";
-            this.lblSingingSynthSystem.Size = new System.Drawing.Size( 119, 12 );
-            this.lblSingingSynthSystem.TabIndex = 3;
-            this.lblSingingSynthSystem.Text = "Singing Synth. System";
-            // 
-            // lblSinger
-            // 
-            this.lblSinger.AutoSize = true;
-            this.lblSinger.Location = new System.Drawing.Point( 12, 39 );
-            this.lblSinger.Name = "lblSinger";
-            this.lblSinger.Size = new System.Drawing.Size( 37, 12 );
-            this.lblSinger.TabIndex = 4;
-            this.lblSinger.Text = "Singer";
-            // 
-            // comboSinger
-            // 
-            this.comboSinger.FormattingEnabled = true;
-            this.comboSinger.Location = new System.Drawing.Point( 151, 36 );
-            this.comboSinger.Name = "comboSinger";
-            this.comboSinger.Size = new System.Drawing.Size( 121, 20 );
-            this.comboSinger.TabIndex = 5;
-            // 
-            // chkIgnoreExistingWavs
-            // 
-            this.chkIgnoreExistingWavs.AutoSize = true;
-            this.chkIgnoreExistingWavs.Checked = true;
-            this.chkIgnoreExistingWavs.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkIgnoreExistingWavs.Location = new System.Drawing.Point( 12, 63 );
-            this.chkIgnoreExistingWavs.Name = "chkIgnoreExistingWavs";
-            this.chkIgnoreExistingWavs.Size = new System.Drawing.Size( 135, 16 );
-            this.chkIgnoreExistingWavs.TabIndex = 6;
-            this.chkIgnoreExistingWavs.Text = "Ignore Existing WAVs";
-            this.chkIgnoreExistingWavs.UseVisualStyleBackColor = true;
-            // 
-            // txtDir
-            // 
-            this.txtDir.Location = new System.Drawing.Point( 94, 88 );
-            this.txtDir.Name = "txtDir";
-            this.txtDir.Size = new System.Drawing.Size( 209, 19 );
-            this.txtDir.TabIndex = 7;
-            // 
-            // btnBrowse
-            // 
-            this.btnBrowse.Location = new System.Drawing.Point( 309, 86 );
-            this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size( 40, 23 );
-            this.btnBrowse.TabIndex = 8;
-            this.btnBrowse.Text = "...";
-            this.btnBrowse.UseVisualStyleBackColor = true;
-            this.btnBrowse.Click += new System.EventHandler( this.btnBrowse_Click );
-            // 
-            // lblDir
-            // 
-            this.lblDir.AutoSize = true;
-            this.lblDir.Location = new System.Drawing.Point( 12, 91 );
-            this.lblDir.Name = "lblDir";
-            this.lblDir.Size = new System.Drawing.Size( 66, 12 );
-            this.lblDir.TabIndex = 9;
-            this.lblDir.Text = "Output Path";
-            // 
-            // bgWork
-            // 
-            this.bgWork.WorkerReportsProgress = true;
-            this.bgWork.WorkerSupportsCancellation = true;
-            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
-            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
-            this.bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
-            // 
-            // Program
-            // 
-            this.ClientSize = new System.Drawing.Size( 373, 161 );
-            this.Controls.Add( this.lblDir );
-            this.Controls.Add( this.btnBrowse );
-            this.Controls.Add( this.txtDir );
-            this.Controls.Add( this.chkIgnoreExistingWavs );
-            this.Controls.Add( this.comboSinger );
-            this.Controls.Add( this.lblSinger );
-            this.Controls.Add( this.lblSingingSynthSystem );
-            this.Controls.Add( this.comboSingingSynthSystem );
-            this.Controls.Add( this.btnCancel );
-            this.Controls.Add( this.btnExecute );
-            this.Name = "Program";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler( this.Program_FormClosed );
-            this.ResumeLayout( false );
-            this.PerformLayout();
-
         }
 
         private void comboSingingSynthSystem_SelectedIndexChanged( Object sender, BEventArgs e ) {
@@ -444,6 +309,167 @@ namespace org.kbinani.cadencii {
             }
         }
 
+#if JAVA
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormGenerateKeySound.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormGenerateKeySound.java
+#else
+        #region UI Impl for C#
+        private void InitializeComponent() {
+            this.btnExecute = new BButton();
+            this.btnCancel = new BButton();
+            this.comboSingingSynthSystem = new BComboBox();
+            this.lblSingingSynthSystem = new BLabel();
+            this.lblSinger = new BLabel();
+            this.comboSinger = new BComboBox();
+            this.chkIgnoreExistingWavs = new BCheckBox();
+            this.txtDir = new BTextBox();
+            this.btnBrowse = new BButton();
+            this.lblDir = new BLabel();
+            this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
+            this.bgWork = new BBackgroundWorker();
+            this.SuspendLayout();
+            // 
+            // btnExecute
+            // 
+            this.btnExecute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExecute.Location = new System.Drawing.Point( 286, 126 );
+            this.btnExecute.Name = "btnExecute";
+            this.btnExecute.Size = new System.Drawing.Size( 75, 23 );
+            this.btnExecute.TabIndex = 0;
+            this.btnExecute.Text = "Execute";
+            this.btnExecute.UseVisualStyleBackColor = true;
+            this.btnExecute.Click += new System.EventHandler( this.btnExecute_Click );
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.Location = new System.Drawing.Point( 205, 126 );
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Close";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
+            // 
+            // comboSingingSynthSystem
+            // 
+            this.comboSingingSynthSystem.FormattingEnabled = true;
+            this.comboSingingSynthSystem.Location = new System.Drawing.Point( 151, 12 );
+            this.comboSingingSynthSystem.Name = "comboSingingSynthSystem";
+            this.comboSingingSynthSystem.Size = new System.Drawing.Size( 121, 20 );
+            this.comboSingingSynthSystem.TabIndex = 2;
+            this.comboSingingSynthSystem.SelectedIndexChanged += new System.EventHandler( this.comboSingingSynthSystem_SelectedIndexChanged );
+            // 
+            // lblSingingSynthSystem
+            // 
+            this.lblSingingSynthSystem.AutoSize = true;
+            this.lblSingingSynthSystem.Location = new System.Drawing.Point( 12, 15 );
+            this.lblSingingSynthSystem.Name = "lblSingingSynthSystem";
+            this.lblSingingSynthSystem.Size = new System.Drawing.Size( 119, 12 );
+            this.lblSingingSynthSystem.TabIndex = 3;
+            this.lblSingingSynthSystem.Text = "Singing Synth. System";
+            // 
+            // lblSinger
+            // 
+            this.lblSinger.AutoSize = true;
+            this.lblSinger.Location = new System.Drawing.Point( 12, 39 );
+            this.lblSinger.Name = "lblSinger";
+            this.lblSinger.Size = new System.Drawing.Size( 37, 12 );
+            this.lblSinger.TabIndex = 4;
+            this.lblSinger.Text = "Singer";
+            // 
+            // comboSinger
+            // 
+            this.comboSinger.FormattingEnabled = true;
+            this.comboSinger.Location = new System.Drawing.Point( 151, 36 );
+            this.comboSinger.Name = "comboSinger";
+            this.comboSinger.Size = new System.Drawing.Size( 121, 20 );
+            this.comboSinger.TabIndex = 5;
+            // 
+            // chkIgnoreExistingWavs
+            // 
+            this.chkIgnoreExistingWavs.AutoSize = true;
+            this.chkIgnoreExistingWavs.Checked = true;
+            this.chkIgnoreExistingWavs.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkIgnoreExistingWavs.Location = new System.Drawing.Point( 12, 63 );
+            this.chkIgnoreExistingWavs.Name = "chkIgnoreExistingWavs";
+            this.chkIgnoreExistingWavs.Size = new System.Drawing.Size( 135, 16 );
+            this.chkIgnoreExistingWavs.TabIndex = 6;
+            this.chkIgnoreExistingWavs.Text = "Ignore Existing WAVs";
+            this.chkIgnoreExistingWavs.UseVisualStyleBackColor = true;
+            // 
+            // txtDir
+            // 
+            this.txtDir.Location = new System.Drawing.Point( 94, 88 );
+            this.txtDir.Name = "txtDir";
+            this.txtDir.Size = new System.Drawing.Size( 209, 19 );
+            this.txtDir.TabIndex = 7;
+            // 
+            // btnBrowse
+            // 
+            this.btnBrowse.Location = new System.Drawing.Point( 309, 86 );
+            this.btnBrowse.Name = "btnBrowse";
+            this.btnBrowse.Size = new System.Drawing.Size( 40, 23 );
+            this.btnBrowse.TabIndex = 8;
+            this.btnBrowse.Text = "...";
+            this.btnBrowse.UseVisualStyleBackColor = true;
+            this.btnBrowse.Click += new System.EventHandler( this.btnBrowse_Click );
+            // 
+            // lblDir
+            // 
+            this.lblDir.AutoSize = true;
+            this.lblDir.Location = new System.Drawing.Point( 12, 91 );
+            this.lblDir.Name = "lblDir";
+            this.lblDir.Size = new System.Drawing.Size( 66, 12 );
+            this.lblDir.TabIndex = 9;
+            this.lblDir.Text = "Output Path";
+            // 
+            // bgWork
+            // 
+            this.bgWork.WorkerReportsProgress = true;
+            this.bgWork.WorkerSupportsCancellation = true;
+            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
+            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
+            this.bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
+            // 
+            // Program
+            // 
+            this.ClientSize = new System.Drawing.Size( 373, 161 );
+            this.Controls.Add( this.lblDir );
+            this.Controls.Add( this.btnBrowse );
+            this.Controls.Add( this.txtDir );
+            this.Controls.Add( this.chkIgnoreExistingWavs );
+            this.Controls.Add( this.comboSinger );
+            this.Controls.Add( this.lblSinger );
+            this.Controls.Add( this.lblSingingSynthSystem );
+            this.Controls.Add( this.comboSingingSynthSystem );
+            this.Controls.Add( this.btnCancel );
+            this.Controls.Add( this.btnExecute );
+            this.Name = "Program";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler( this.Program_FormClosed );
+            this.ResumeLayout( false );
+            this.PerformLayout();
+
+        }
+
+        private BButton btnExecute;
+        private BButton btnCancel;
+        private BComboBox comboSingingSynthSystem;
+        private BLabel lblSingingSynthSystem;
+        private BLabel lblSinger;
+        private BComboBox comboSinger;
+        private BCheckBox chkIgnoreExistingWavs;
+        private BTextBox txtDir;
+        private BButton btnBrowse;
+        private FolderBrowserDialog folderBrowser;
+        private BBackgroundWorker bgWork;
+        private BLabel lblDir;
+
+        #endregion
+#endif
+
     }
 
+#if !JAVA
 }
+#endif

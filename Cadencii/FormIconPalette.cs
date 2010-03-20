@@ -14,6 +14,8 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormIconPalette.java
+
 import java.util.*;
 import java.awt.*;
 import java.io.*;
@@ -49,10 +51,15 @@ namespace org.kbinani.cadencii {
         private int buttonWidth = 40;
 
         public FormIconPalette() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
-            initialize();
+            init();
             registerEventHandlers();
             TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary();
             if ( dict.containsKey( "menuVisualIconPalette" ) ) {
@@ -98,7 +105,7 @@ namespace org.kbinani.cadencii {
             close();
         }
 
-        private void initialize() {
+        private void init() {
             for ( Iterator<IconDynamicsHandle> itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 IconDynamicsHandle handle = itr.next();
                 String icon_id = handle.IconID;
@@ -111,7 +118,11 @@ namespace org.kbinani.cadencii {
                 if ( setimg ) {
                     Image img = null;
 #if JAVA
-                    img = ImageIO.read( new File( buttonIconPath ) );
+                    try{
+                        img = ImageIO.read( new File( buttonIconPath ) );
+                    }catch( Exception ){
+                        PortUtil.stderr.println( "FormIconPalette#init; ex=" + ex );
+                    }
 #else
                     img = new Image();
                     img.image = System.Drawing.Image.FromStream( new System.IO.FileStream( buttonIconPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
@@ -241,9 +252,18 @@ namespace org.kbinani.cadencii {
             item.ID.setLength( length );
             AppManager.addingEvent = item;
 
+#if JAVA
+            //TODO: fixme FormIconPalette#handleCommonMouseDown
+#else
             btn.DoDragDrop( handle, System.Windows.Forms.DragDropEffects.All );
+#endif
         }
 
+#if JAVA
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormIconPalette.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormIconPalette.java
+#else
+        #region UI Impl for C#
         private void InitializeComponent() {
             this.menuBar = new org.kbinani.windows.forms.BMenuBar();
             this.menuWindow = new org.kbinani.windows.forms.BMenuItem();
@@ -311,6 +331,8 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuWindowHide;
         private BCheckBox chkTopMost;
 
+        #endregion
+#endif
     }
 
 #if !JAVA

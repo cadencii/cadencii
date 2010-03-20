@@ -414,8 +414,8 @@ namespace org.kbinani.cadencii {
 
         public Object clone() {
             BezierCurves ret = new BezierCurves();
-            for( int j = 0; j < AppManager.CURVE_USAGE.Length; j++ ){
-                CurveType ct = AppManager.CURVE_USAGE[j];
+            for( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ){
+                CurveType ct = Utility.CURVE_USAGE[j];
                 Vector<BezierChain> src = this.get( ct );
                 ret.set( ct, new Vector<BezierChain>() );
                 int count = src.size();

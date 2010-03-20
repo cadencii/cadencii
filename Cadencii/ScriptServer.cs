@@ -29,13 +29,13 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="id"></param>
         public static void reload( String id ) {
-            String dir = AppManager.getScriptPath();
+            String dir = Utility.getScriptPath();
             String file = PortUtil.combinePath( dir, id );
             if ( !PortUtil.isFileExists( file ) ) {
                 return;
             }
 
-            ScriptInvoker si = AppManager.loadScript( file );
+            ScriptInvoker si = Utility.loadScript( file );
             scripts.put( id, si );
         }
 
@@ -44,7 +44,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static void reload() {
             // 拡張子がcs, txtのファイルを列挙
-            String dir = AppManager.getScriptPath();
+            String dir = Utility.getScriptPath();
             Vector<String> files = new Vector<String>();
             files.addAll( Arrays.asList( PortUtil.listFiles( dir, ".txt" ) ) );
             files.addAll( Arrays.asList( PortUtil.listFiles( dir, ".cs" ) ) );
@@ -70,7 +70,7 @@ namespace org.kbinani.cadencii {
                     continue;
                 }
 
-                ScriptInvoker si = AppManager.loadScript( file );
+                ScriptInvoker si = Utility.loadScript( file );
                 scripts.put( id, si );
             }
 
@@ -169,7 +169,7 @@ namespace org.kbinani.cadencii {
         /// <param name="script_file"></param>
         /// <returns></returns>
         public static String configFileNameFromScriptFileName( String script_file ) {
-            String dir = PortUtil.combinePath( AppManager.getApplicationDataPath(), "script" );
+            String dir = PortUtil.combinePath( Utility.getApplicationDataPath(), "script" );
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }

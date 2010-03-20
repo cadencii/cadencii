@@ -217,13 +217,13 @@ namespace org.kbinani.cadencii {
                     for ( int i = 0; i < diff; i++ ) {
                         eq = "(" + eq;
                     }
-                    draft = (int)AppManager.eval( draft, eq );
+                    draft = (int)Utility.eval( draft, eq );
                 } catch {
                     draft = old_value;
                 }
             } else {
                 try {
-                    draft = (int)AppManager.eval( old_value, received_string );
+                    draft = (int)Utility.eval( old_value, received_string );
                 } catch {
                     draft = old_value;
                 }
@@ -455,7 +455,7 @@ namespace org.kbinani.cadencii {
                 }
 
                 // ビブラートの長さを調節
-                AppManager.editLengthOfVsqEvent( editing, draft, AppManager.vibratoLengthEditingRule );
+                Utility.editLengthOfVsqEvent( editing, draft, AppManager.vibratoLengthEditingRule );
             }
         }
 

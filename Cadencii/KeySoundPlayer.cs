@@ -40,7 +40,7 @@ namespace org.kbinani.cadencii {
             m_sound_previewer = new BSoundPlayer[48];
             m_temp_player = null;
             m_prepared = new boolean[127];
-            String cache_path = AppManager.getKeySoundPath();
+            String cache_path = Utility.getKeySoundPath();
             for ( int i = 0; i <= 126; i++ ) {
                 String path = PortUtil.combinePath( cache_path, i + ".wav" );
                 if ( PortUtil.isFileExists( path ) ) {
@@ -77,7 +77,7 @@ namespace org.kbinani.cadencii {
                 if ( m_temp_player == null ) {
                     m_temp_player = new BSoundPlayer();
                 }
-                String path = PortUtil.combinePath( AppManager.getKeySoundPath(), note + ".wav" );
+                String path = PortUtil.combinePath( Utility.getKeySoundPath(), note + ".wav" );
                 if ( PortUtil.isFileExists( path ) ) {
                     m_temp_player.setSoundLocation( path );
                     m_temp_player.play();

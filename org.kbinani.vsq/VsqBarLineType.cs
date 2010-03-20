@@ -13,6 +13,7 @@
  */
 #if JAVA
 package org.kbinani.vsq;
+
 #else
 using System;
 
@@ -46,6 +47,11 @@ namespace org.kbinani.vsq {
         public boolean isSeparator() {
             return m_is_separator;
         }
+
+#if JAVA
+        public VsqBarLineType(){
+        }
+#endif
 
         public VsqBarLineType( int clock, boolean is_separator, int denominator, int numerator, int bar_count ) {
             m_clock = clock;

@@ -49,7 +49,7 @@ public class BLabel extends JLabel{
         return gv;
     }
     
-    protected void paintComponent(Graphics g) {
+    /*protected void paintComponent(Graphics g) {
         //super.paintComponent( g );
         Graphics2D g2 = (Graphics2D)g;
         if( flg ){
@@ -63,5 +63,5 @@ public class BLabel extends JLabel{
         g2.drawGlyphVector( gvtext,
                             getInsets().left,
                             getInsets().top + getFont().getSize() );
-    }
+    }*/
 }

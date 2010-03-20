@@ -951,7 +951,7 @@ namespace org.kbinani.cadencii {
 
                 // ビブラートの長さを変更
                 VsqEvent add = (VsqEvent)item.editing.clone();
-                AppManager.editLengthOfVsqEvent( add, draft, AppManager.vibratoLengthEditingRule );
+                Utility.editLengthOfVsqEvent( add, draft, AppManager.vibratoLengthEditingRule );
                 items.add( add );
             }
 
@@ -1466,10 +1466,14 @@ namespace org.kbinani.cadencii {
         }
 
         public void AppManager_CurrentClockChanged( Object sender, EventArgs e ) {
+#if JAVA
+            changeCurrentClockView( null, null );
+#else
             EventHandler handler = new EventHandler( changeCurrentClockView );
             if ( handler != null ) {
                 this.Invoke( handler );
             }
+#endif
         }
 
         public void AppManager_GridVisibleChanged( Object sender, EventArgs e ) {
@@ -1705,7 +1709,7 @@ namespace org.kbinani.cadencii {
             stripBtnCopy.setEnabled( !selected_event_is_null );
         }
 
-        public void render( int[] tracks ) {
+        public void render( Integer[] tracks ) {
             VsqFileEx vsq = AppManager.getVsqFile();
 
             String tmppath = AppManager.getTempWaveDir();
@@ -1713,8 +1717,8 @@ namespace org.kbinani.cadencii {
                 PortUtil.createDirectory( tmppath );
             }
             String[] files = new String[tracks.Length];
-            int[] ends = new int[tracks.Length];
-            int[] starts = new int[tracks.Length];
+            Integer[] ends = new Integer[tracks.Length];
+            Integer[] starts = new Integer[tracks.Length];
             for ( int i = 0; i < tracks.Length; i++ ) {
                 files[i] = PortUtil.combinePath( tmppath, tracks[i] + ".wav" );
                 ends[i] = vsq.TotalClocks + 240;
@@ -1744,7 +1748,7 @@ namespace org.kbinani.cadencii {
         /// 指定したトラックの、レンダリングが必要な部分を再レンダリングし、ツギハギすることでトラックのキャッシュをフリーズさせます。
         /// </summary>
         /// <param name="track"></param>
-        private void patchWorkToFreeze( int[] tracks ) {
+        private void patchWorkToFreeze( Integer[] tracks ) {
             VsqFileEx vsq = AppManager.getVsqFile();
             vsq.updateTotalClocks();
             String temppath = AppManager.getTempWaveDir();
@@ -1773,8 +1777,9 @@ namespace org.kbinani.cadencii {
                 }
 
                 // 部分レンダリング
-                EditedZoneUnit[] areas = AppManager.detectRenderedStatusDifference( AppManager.lastRenderedStatus[track - 1],
-                                                                                    new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable ) );
+                EditedZoneUnit[] areas = 
+                    Utility.detectRenderedStatusDifference( AppManager.lastRenderedStatus[track - 1],
+                                                            new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable ) );
 
                 // areasとかぶっている音符がどれかを判定する
                 EditedZone zone = new EditedZone();
@@ -1979,7 +1984,7 @@ namespace org.kbinani.cadencii {
 
                             WaveReader wr = null;
                             try {
-                                wr = new WaveReader( files[i] );
+                                wr = new WaveReader( files.get( i ) );
                                 long remain2 = sampleEnd - sampleStart;
                                 long proc = 0;
                                 while ( remain2 > 0 ) {
@@ -2002,7 +2007,7 @@ namespace org.kbinani.cadencii {
                             }
 
                             try {
-                                PortUtil.deleteFile( files[i] );
+                                PortUtil.deleteFile( files.get( i ) );
                             } catch ( Exception ex ) {
                                 PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                             }
@@ -2085,7 +2090,7 @@ namespace org.kbinani.cadencii {
 
                     // 波形表示用のWaveDrawContextの内容を更新する。
                     for ( int i = startIndex[k]; i < startIndex[k + 1] && i < finished; i++ ) {
-                        double secStart = vsq.getSecFromClock( startList[i] );
+                        double secStart = vsq.getSecFromClock( startList.get( i ) );
                         int clockEnd = endList.get( i );
                         if ( clockEnd == int.MaxValue ) {
                             clockEnd = vsq.TotalClocks + 240;
@@ -2594,7 +2599,7 @@ namespace org.kbinani.cadencii {
                     int clock = doQuantize( AppManager.clockFromXCoord( e.X ), AppManager.getPositionQuantizeClock() );
                     AppManager.setCurrentClock( clock );
                 }
-            } else if ( e.Button == System.Windows.Forms.MouseButtons.Right ) {
+            } else if ( e.Button == BMouseButtons.Right ) {
                 // ツールをポインター <--> 鉛筆に切り替える
                 if ( AppManager.keyWidth < e.X ) {
                     if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
@@ -3696,48 +3701,20 @@ namespace org.kbinani.cadencii {
                         }
                         i++;
 
-                        //ev.editing.ID.VibratoDelay = ev.original.ID.VibratoDelay;
-                        AppManager.editLengthOfVsqEvent( ev.editing, ev.editing.ID.getLength(), AppManager.vibratoLengthEditingRule );
+                        Utility.editLengthOfVsqEvent( ev.editing, ev.editing.ID.getLength(), AppManager.vibratoLengthEditingRule );
                         ids[i] = ev.original.InternalID;
                         clocks[i] = ev.editing.Clock;
                         values[i] = ev.editing.ID;
-                        /*if ( ev.editing.ID.VibratoHandle == null ) {
-                            ids[i] = ev.original.InternalID;
-                            clocks[i] = ev.editing.Clock;
-                            values[i] = ev.editing.ID;
-                            if ( ev.original.ID.type == VsqIDType.Aicon ) {
-                                if ( ev.original.ID.IconDynamicsHandle.isDynaffType() ) {
-                                    values[i].setLength( 1 );
-                                }
-                            }
-                        } else {
-                            int draft_vibrato_length = ev.editing.ID.getLength() - ev.editing.ID.VibratoDelay;
-                            if ( draft_vibrato_length <= 0 ) {
-                                // ビブラートを削除
-                                ev.editing.ID.VibratoHandle = null;
-                                ev.editing.ID.VibratoDelay = 0;
-                            } else {
-                                // ビブラートは温存
-                                ev.editing.ID.VibratoHandle.setLength( draft_vibrato_length );
-                            }
-                            ids[i] = ev.original.InternalID;
-                            clocks[i] = ev.editing.Clock;
-                            values[i] = ev.editing.ID;
-                            if ( ev.original.ID.type == VsqIDType.Aicon ) {
-                                if ( ev.original.ID.IconDynamicsHandle.isDynaffType() ) {
-                                    values[i].setLength( 1 );
-                                }
-                            }
-                        }*/
                     }
 
                     CadenciiCommand run = null;
                     if ( contains_aicon ) {
                         VsqFileEx copied_vsq = (VsqFileEx)vsq.clone();
-                        VsqCommand vsq_command = VsqCommand.generateCommandEventChangeClockAndIDContaintsRange( selected,
-                                                                                                                ids,
-                                                                                                                clocks,
-                                                                                                                values );
+                        VsqCommand vsq_command = 
+                            VsqCommand.generateCommandEventChangeClockAndIDContaintsRange( selected,
+                                                                                           ids,
+                                                                                           clocks,
+                                                                                           values );
                         copied_vsq.executeCommand( vsq_command );
                         VsqTrack copied = (VsqTrack)copied_vsq.Track.get( selected ).clone();
                         copied.reflectDynamics();
@@ -3826,8 +3803,8 @@ namespace org.kbinani.cadencii {
                 }
 
                 // 全てのコントロールカーブのデータ点を移動
-                for ( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ) {
-                    CurveType curve_type = AppManager.CURVE_USAGE[i];
+                for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
+                    CurveType curve_type = Utility.CURVE_USAGE[i];
                     VsqBPList bplist = work.getCurve( curve_type.getName() );
                     if ( bplist == null ) {
                         continue;
@@ -3983,7 +3960,11 @@ namespace org.kbinani.cadencii {
 #endif
                 refreshScreen();
             }
+#if JAVA
+            BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
+#else
             BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
+#endif
             processSpecialShortcutKey( e0, true );
         }
         #endregion
@@ -4548,7 +4529,7 @@ namespace org.kbinani.cadencii {
 #endif
 
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
-            String cache_new = AppManager.getKeySoundPath();
+            String cache_new = Utility.getKeySoundPath();
             String cache_old = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "cache" );
             if ( PortUtil.isDirectoryExists( cache_old ) ) {
                 boolean exists = false;
@@ -5917,7 +5898,7 @@ namespace org.kbinani.cadencii {
                     }
 
                     // コントロールカーブをシフト
-                    foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
+                    foreach ( CurveType ct in Utility.CURVE_USAGE ) {
                         VsqBPList item = vsq.Track.get( track ).getCurve( ct.getName() );
                         if ( item == null ) {
                             continue;
@@ -5936,7 +5917,7 @@ namespace org.kbinani.cadencii {
                     }
 
                     // ベジエカーブをシフト
-                    foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
+                    foreach ( CurveType ct in Utility.CURVE_USAGE ) {
                         Vector<BezierChain> list = vsq.AttachedCurves.get( track - 1 ).get( ct );
                         if ( list == null ) {
                             continue;
@@ -6999,7 +6980,7 @@ namespace org.kbinani.cadencii {
 
                     for ( int track = 1; track < temp.Track.size(); track++ ) {
                         BezierCurves newbc = new BezierCurves();
-                        foreach ( CurveType ct in AppManager.CURVE_USAGE ) {
+                        foreach ( CurveType ct in Utility.CURVE_USAGE ) {
                             int index = ct.getIndex();
                             if ( index < 0 ) {
                                 continue;
@@ -7055,7 +7036,7 @@ namespace org.kbinani.cadencii {
                                 temp.Track.get( track ).getEvent( i ).Clock += dclock;
                             }
                         }
-                        foreach ( CurveType curve in AppManager.CURVE_USAGE ) {
+                        foreach ( CurveType curve in Utility.CURVE_USAGE ) {
                             if ( curve.isScalar() || curve.isAttachNote() ) {
                                 continue;
                             }
@@ -7130,8 +7111,8 @@ namespace org.kbinani.cadencii {
                     int dclock = clock_end - clock_start;
                     for ( int track = 1; track < temp.Track.size(); track++ ) {
                         BezierCurves newbc = new BezierCurves();
-                        for ( int j = 0; j < AppManager.CURVE_USAGE.Length; j++ ) {
-                            CurveType ct = AppManager.CURVE_USAGE[j];
+                        for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
+                            CurveType ct = Utility.CURVE_USAGE[j];
                             int index = ct.getIndex();
                             if ( index < 0 ) {
                                 continue;
@@ -7400,7 +7381,7 @@ namespace org.kbinani.cadencii {
                         int pattern = dlg.getPitRandomizePattern();
                         int value = dlg.getPitRandomizeValue();
                         double order = 1.0 / Math.Pow( 2.0, 5.0 - value );
-                        int[] patternPreset = pattern == 1 ? AppManager.RANDOMIZE_PIT_PATTERN1 : pattern == 2 ? AppManager.RANDOMIZE_PIT_PATTERN2 : AppManager.RANDOMIZE_PIT_PATTERN3;
+                        int[] patternPreset = pattern == 1 ? Utility.RANDOMIZE_PIT_PATTERN1 : pattern == 2 ? Utility.RANDOMIZE_PIT_PATTERN2 : Utility.RANDOMIZE_PIT_PATTERN3;
                         int resolution = dlg.getResolution();
                         VsqBPList pit = work.getCurve( "pit" );
                         VsqBPList pbs = work.getCurve( "pbs" );
@@ -8311,11 +8292,11 @@ namespace org.kbinani.cadencii {
 #if JAVA
             String version_str = AppManager.getVersion();
 #else
-            String version_str = AppManager.getVersion() + "\n\n" +
-                                 AppManager.getAssemblyNameAndFileVersion( typeof( org.kbinani.apputil.Util ) ) + "\n" +
-                                 AppManager.getAssemblyNameAndFileVersion( typeof( org.kbinani.media.Wave ) ) + "\n" +
-                                 AppManager.getAssemblyNameAndFileVersion( typeof( org.kbinani.vsq.VsqFile ) ) + "\n" +
-                                 AppManager.getAssemblyNameAndFileVersion( typeof( org.kbinani.math ) );
+            String version_str = Utility.getVersion() + "\n\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( org.kbinani.apputil.Util ) ) + "\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( org.kbinani.media.Wave ) ) + "\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( org.kbinani.vsq.VsqFile ) ) + "\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( org.kbinani.math ) );
 #endif
             if ( m_versioninfo == null ) {
                 m_versioninfo = new VersionInfo( _APP_NAME, version_str );
@@ -8873,7 +8854,7 @@ namespace org.kbinani.cadencii {
             processSpecialShortcutKey( e0, true );
         }
 
-        public void trackSelector_RenderRequired( Object sender, int[] tracks ) {
+        public void trackSelector_RenderRequired( Object sender, Integer[] tracks ) {
             patchWorkToFreeze( tracks );
             /*int selected = AppManager.getSelected();
             Vector<Integer> t = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( tracks ) ) );
@@ -9190,7 +9171,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuTrackRenderCurrent_Click( Object sender, EventArgs e ) {
-            patchWorkToFreeze( new int[] { AppManager.getSelected() } );
+            patchWorkToFreeze( new Integer[] { AppManager.getSelected() } );
         }
 
         public void commonTrackOn_Click( Object sender, EventArgs e ) {
@@ -9220,7 +9201,7 @@ namespace org.kbinani.cadencii {
             if ( list.size() <= 0 ) {
                 return;
             }
-            patchWorkToFreeze( PortUtil.convertIntArray( list.toArray( new Integer[] { } ) ) );
+            patchWorkToFreeze( list.toArray( new Integer[] { } ) );
         }
 
         public void menuTrackRenderer_DropDownOpening( Object sender, EventArgs e ) {
@@ -9527,7 +9508,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void cMenuTrackTabRenderCurrent_Click( Object sender, EventArgs e ) {
-            patchWorkToFreeze( new int[] { AppManager.getSelected() } );
+            patchWorkToFreeze( new Integer[] { AppManager.getSelected() } );
         }
 
         public void cMenuTrackTabRenderer_DropDownOpening( Object sender, EventArgs e ) {
@@ -10870,8 +10851,8 @@ namespace org.kbinani.cadencii {
                 }
 
                 // コントロールカーブをシフト
-                for ( int j = 0; j < AppManager.CURVE_USAGE.Length; j++ ) {
-                    CurveType ct = AppManager.CURVE_USAGE[j];
+                for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
+                    CurveType ct = Utility.CURVE_USAGE[j];
                     VsqBPList item = target.Track.get( track ).getCurve( ct.getName() );
                     if ( item == null ) {
                         continue;
@@ -10890,8 +10871,8 @@ namespace org.kbinani.cadencii {
                 }
 
                 // ベジエカーブをシフト
-                for ( int j = 0; j < AppManager.CURVE_USAGE.Length; j++ ) {
-                    CurveType ct = AppManager.CURVE_USAGE[j];
+                for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
+                    CurveType ct = Utility.CURVE_USAGE[j];
                     Vector<BezierChain> list = target.AttachedCurves.get( track - 1 ).get( ct );
                     if ( list == null ) {
                         continue;
@@ -11439,7 +11420,7 @@ namespace org.kbinani.cadencii {
                         IPaletteTool ipt = (IPaletteTool)instance;
                         if ( ipt.openDialog() == System.Windows.Forms.DialogResult.OK ) {
                             XmlSerializer xsms = new XmlSerializer( instance.GetType(), true );
-                            String dir = PortUtil.combinePath( AppManager.getApplicationDataPath(), "tool" );
+                            String dir = PortUtil.combinePath( Utility.getApplicationDataPath(), "tool" );
                             if ( !PortUtil.isDirectoryExists( dir ) ) {
                                 PortUtil.createDirectory( dir );
                             }
@@ -12165,7 +12146,7 @@ namespace org.kbinani.cadencii {
         public void handleScriptMenuItem_Click( Object sender, EventArgs e ) {
 
             try {
-                String dir = AppManager.getScriptPath();
+                String dir = Utility.getScriptPath();
                 String id = (String)((BMenuItem)sender).getTag();
                 String script_file = PortUtil.combinePath( dir, id );
                 if ( ScriptServer.getTimestamp( id ) != PortUtil.getFileLastModified( script_file ) ) {
@@ -12901,7 +12882,7 @@ namespace org.kbinani.cadencii {
                     ValuePair<String, BMenuItem[]> item = work.get( j );
                     if ( dict.containsKey( item.getKey() ) ) {
                         BKeys[] k = dict.get( item.getKey() );
-                        String s = AppManager.getShortcutDisplayString( k );
+                        String s = Utility.getShortcutDisplayString( k );
 #if !JAVA
                         if ( s != "" ) {
                             for ( int i = 0; i < item.getValue().Length; i++ ) {
@@ -13001,7 +12982,7 @@ namespace org.kbinani.cadencii {
                                 menu.ShortcutKeys = shortcut;
                             } catch ( Exception ex ) {
                                 // ショートカットの適用に失敗する→特殊な取り扱いが必要
-                                menu.ShortcutKeyDisplayString = AppManager.getShortcutDisplayString( keys );
+                                menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
                                 menu.ShortcutKeys = System.Windows.Forms.Keys.None;
                                 specialShortcutHolders.add( 
                                     new SpecialShortcutHolder( PortUtil.getKeyStrokeFromBKeys( keys ), menu ) );
@@ -13716,7 +13697,7 @@ namespace org.kbinani.cadencii {
             if ( add_required.size() > 0 ) {
                 AppManager.addSelectedEventAll( add_required );
             }
-            foreach ( CurveType vct in AppManager.CURVE_USAGE ) {
+            foreach ( CurveType vct in Utility.CURVE_USAGE ) {
                 if ( vct.isScalar() || vct.isAttachNote() ) {
                     continue;
                 }
@@ -13805,7 +13786,7 @@ namespace org.kbinani.cadencii {
                     int end_clock = AppManager.wholeSelectedInterval.getEnd();
                     Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
                     Vector<CurveType> types = new Vector<CurveType>();
-                    foreach ( CurveType vct in AppManager.CURVE_USAGE ) {
+                    foreach ( CurveType vct in Utility.CURVE_USAGE ) {
                         if ( vct.isScalar() || vct.isAttachNote() ) {
                             continue;
                         }
@@ -14184,8 +14165,8 @@ namespace org.kbinani.cadencii {
                 ce.copyStartedClock = start_clock;
                 ce.points = new TreeMap<CurveType, VsqBPList>();
                 ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
-                for ( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ) {
-                    CurveType vct = AppManager.CURVE_USAGE[i];
+                for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
+                    CurveType vct = Utility.CURVE_USAGE[i];
                     VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
                     if ( list == null ) {
                         continue;
@@ -14346,8 +14327,8 @@ namespace org.kbinani.cadencii {
                 }
 
                 // BPListに削除処理を施す
-                for ( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ) {
-                    CurveType curve = AppManager.CURVE_USAGE[i];
+                for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
+                    CurveType curve = Utility.CURVE_USAGE[i];
                     VsqBPList list = work.Track.get( track ).getCurve( curve.getName() );
                     if ( list == null ) {
                         continue;
@@ -14379,8 +14360,8 @@ namespace org.kbinani.cadencii {
                 Vector<CurveType> target_curve = new Vector<CurveType>();
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                     // ctrlによる全選択モード
-                    for ( int i = 0; i < AppManager.CURVE_USAGE.Length; i++ ) {
-                        CurveType ct = AppManager.CURVE_USAGE[i];
+                    for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
+                        CurveType ct = Utility.CURVE_USAGE[i];
                         if ( ct.isScalar() || ct.isAttachNote() ) {
                             continue;
                         }
@@ -14951,7 +14932,7 @@ namespace org.kbinani.cadencii {
                                 int lyric_width = (int)(length * scalex);
                                 String lyric_jp = ev.ID.LyricHandle.L0.Phrase;
                                 String lyric_en = ev.ID.LyricHandle.L0.getPhoneticSymbol();
-                                String title = AppManager.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );
+                                String title = Utility.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );
                                 int accent = ev.ID.DEMaccent;
                                 int vibrato_start = x + lyric_width;
                                 int vibrato_end = x;
@@ -14965,10 +14946,10 @@ namespace org.kbinani.cadencii {
                                 int rate_start = 0;
                                 int depth_start = 0;
                                 if ( ev.ID.VibratoHandle != null ) {
-                                    rate_bp = ev.ID.VibratoHandle.RateBP;
-                                    depth_bp = ev.ID.VibratoHandle.DepthBP;
-                                    rate_start = ev.ID.VibratoHandle.StartRate;
-                                    depth_start = ev.ID.VibratoHandle.StartDepth;
+                                    rate_bp = ev.ID.VibratoHandle.getRateBP();
+                                    depth_bp = ev.ID.VibratoHandle.getDepthBP();
+                                    rate_start = ev.ID.VibratoHandle.getStartRate();
+                                    depth_start = ev.ID.VibratoHandle.getStartDepth();
                                 }
                                 tmp.add( new DrawObject( DrawObjectType.Note,
                                                          new Rectangle( x, y, lyric_width, track_height ),
@@ -15794,14 +15775,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void FormMain_MouseMove( Object sender, BMouseEventArgs e ) {
-            if ( AppManager.getEditMode() != EditMode.DRAG_DROP ){
-#if DEBUG
-                PortUtil.println( "FormMain_MouseMove; drag_drop" );
-#endif
-            }
-        }
-
         public void registerEventHandlers() {
             loadEvent.add( new BEventHandler( this, "FormMain_Load" ) );
             menuStripMain.mouseDownEvent.add( new BMouseEventHandler( this, "menuStrip1_MouseDown" ) );
@@ -16175,7 +16148,6 @@ namespace org.kbinani.cadencii {
             //keyUpEvent.add( new BKeyEventHandler( this, "FormMain_KeyUp" ) );
             previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "FormMain_PreviewKeyDown" ) );
             panelOverview.enterEvent.add( new BEventHandler( this, "panelOverview_Enter" ) );
-            mouseMoveEvent.add( new BMouseEventHandler( this, "FormMain_MouseMove" ) );
         }
 
 #if !JAVA

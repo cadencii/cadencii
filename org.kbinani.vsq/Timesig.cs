@@ -21,6 +21,11 @@ namespace org.kbinani.vsq {
         public int numerator;
         public int denominator;
 
+#if JAVA
+        public Timesig(){
+        }
+#endif
+
         public Timesig( int numerator, int denominator ) {
             this.numerator = numerator;
             this.denominator = denominator;
