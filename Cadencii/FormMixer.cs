@@ -200,38 +200,40 @@ namespace org.kbinani.cadencii {
             for ( Iterator<VsqMixerEntry> itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
                 VsqMixerEntry vme = itr.next();
                 j++;
-                m_tracker[j].setFeder( vme.Feder );
-                m_tracker[j].setPanpot( vme.Panpot );
-                m_tracker[j].setTitle( vsq.Track.get( j + 1 ).getName() );
-                m_tracker[j].setNumber( (j + 1) + "" );
-                m_tracker[j].setLocation( j * (VolumeTracker.WIDTH + 1), 0 );
-                m_tracker[j].setSoloButtonVisible( true );
-                m_tracker[j].setMuted( (vme.Mute == 1) );
-                m_tracker[j].setSolo( (vme.Solo == 1) );
-                m_tracker[j].setTag( j + 1 );
-                m_tracker[j].setSoloButtonVisible( true );
+                VolumeTracker tracker = m_tracker.get( j );
+                tracker.setFeder( vme.Feder );
+                tracker.setPanpot( vme.Panpot );
+                tracker.setTitle( vsq.Track.get( j + 1 ).getName() );
+                tracker.setNumber( (j + 1) + "" );
+                tracker.setLocation( j * (VolumeTracker.WIDTH + 1), 0 );
+                tracker.setSoloButtonVisible( true );
+                tracker.setMuted( (vme.Mute == 1) );
+                tracker.setSolo( (vme.Solo == 1) );
+                tracker.setTag( j + 1 );
+                tracker.setSoloButtonVisible( true );
 #if JAVA
 #else
-                panel1.Controls.Add( m_tracker[j] );
+                panel1.Controls.Add( tracker );
 #endif
             }
             int count = AppManager.getBgmCount();
             for ( int i = 0; i < count; i++ ) {
                 j++;
                 BgmFile item = AppManager.getBgm( i );
-                m_tracker[j].setFeder( item.feder );
-                m_tracker[j].setPanpot( item.panpot );
-                m_tracker[j].setTitle( PortUtil.getFileName( item.file ) );
-                m_tracker[j].setNumber( "" );
-                m_tracker[j].setLocation( j * (VolumeTracker.WIDTH + 1), 0 );
-                m_tracker[j].setSoloButtonVisible( false );
-                m_tracker[j].setMuted( (item.mute == 1) );
-                m_tracker[j].setSolo( false );
-                m_tracker[j].setTag( (int)(-i - 1) );
-                m_tracker[j].setSoloButtonVisible( false );
+                VolumeTracker tracker = m_tracker.get( j );
+                tracker.setFeder( item.feder );
+                tracker.setPanpot( item.panpot );
+                tracker.setTitle( PortUtil.getFileName( item.file ) );
+                tracker.setNumber( "" );
+                tracker.setLocation( j * (VolumeTracker.WIDTH + 1), 0 );
+                tracker.setSoloButtonVisible( false );
+                tracker.setMuted( (item.mute == 1) );
+                tracker.setSolo( false );
+                tracker.setTag( (int)(-i - 1) );
+                tracker.setSoloButtonVisible( false );
 #if JAVA
 #else
-                panel1.Controls.Add( m_tracker[j] );
+                panel1.Controls.Add( tracker );
 #endif
             }
             volumeMaster.setFeder( vsq.Mixer.MasterFeder );

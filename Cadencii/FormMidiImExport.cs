@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMidiImExport.java
 
+import java.awt.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
@@ -46,9 +47,6 @@ namespace org.kbinani.cadencii {
         private VsqFileEx m_vsq;
         private static int columnWidthTrack = 54;
         private static int columnWidthName = 122;
-        private BLabel lblOffset;
-        private NumberTextBox txtOffset;
-        private BLabel lblOffsetUnit;
         private static int columnWidthNotes = 126;
 
         public FormMidiImExport() {
@@ -659,6 +657,9 @@ namespace org.kbinani.cadencii {
         private BGroupBox groupMode;
         private BRadioButton radioPlayTime;
         private BRadioButton radioGateTime;
+        private BLabel lblOffset;
+        private NumberTextBox txtOffset;
+        private BLabel lblOffsetUnit;
 
         #endregion
 #endif

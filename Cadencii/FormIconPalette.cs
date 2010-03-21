@@ -120,7 +120,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
                     try{
                         img = ImageIO.read( new File( buttonIconPath ) );
-                    }catch( Exception ){
+                    }catch( Exception ex ){
                         PortUtil.stderr.println( "FormIconPalette#init; ex=" + ex );
                     }
 #else

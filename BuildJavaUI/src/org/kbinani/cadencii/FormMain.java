@@ -3,12 +3,15 @@ package org.kbinani.cadencii;
 //SECTION-BEGIN-IMPORT
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BForm;
@@ -25,10 +28,6 @@ import org.kbinani.windows.forms.BSplitPane;
 import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BVScrollBar;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.JLabel;
-import java.awt.Font;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -112,7 +111,7 @@ public class FormMain extends BForm {
     private BMenu menuLyric = null;
     private BMenuItem menuLyricExpressionProperty = null;
     private BMenuItem menuLyricVibratoProperty = null;
-    private BMenuItem menuLyricSymbol = null;
+    private BMenuItem menuLyricPhonemeTransformation = null;
     private BMenuItem menuLyricDictionary = null;
     private BMenu menuScript = null;
     private BMenuItem menuScriptUpdate = null;
@@ -282,7 +281,7 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPianoQuantizeOff = null;
     private BMenuItem cMenuPianoLengthOff = null;
     private BPanel panel3 = null;
-    private BPictureBox pictOverview = null;
+    private BPictureBox panelOverview = null;
     private BButton btnMooz = null;
     private BButton btnLeft1 = null;
     private BButton btnRight1 = null;
@@ -344,12 +343,9 @@ public class FormMain extends BForm {
     private BMenuItem menuVisualIconPalette = null;
     private JPanel jPanel = null;
     private JLabel jLabel = null;
-    private JPanel jPanel2 = null;
+
     //SECTION-END-FIELD
-    /**
-     * This is the default constructor
-     */
-    public FormMain() {
+    public FormMain( String vsq_file ) {
         super();
         initialize();
     }
@@ -526,21 +522,8 @@ public class FormMain extends BForm {
         return jPanel;
     }
 
-    /**
-     * This method initializes jPanel2	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel22() {
-        if (jPanel2 == null) {
-            jPanel2 = new JPanel();
-            jPanel2.setLayout(new GridBagLayout());
-        }
-        return jPanel2;
-    }
-
     public static void main( String[] args ){
-       FormMain form = new FormMain();
+       FormMain form = new FormMain( "" );
        form.setVisible( true );
     }
 
@@ -1651,11 +1634,11 @@ public class FormMain extends BForm {
      * @return javax.swing.BMenuItem    
      */
     private BMenuItem getBMenuItem210() {
-        if (menuLyricSymbol == null) {
-            menuLyricSymbol = new BMenuItem();
-            menuLyricSymbol.setText("Phoneme Transformation");
+        if (menuLyricPhonemeTransformation == null) {
+            menuLyricPhonemeTransformation = new BMenuItem();
+            menuLyricPhonemeTransformation.setText("Phoneme Transformation");
         }
-        return menuLyricSymbol;
+        return menuLyricPhonemeTransformation;
     }
 
     /**
@@ -3885,21 +3868,21 @@ public class FormMain extends BForm {
             panel3.add(getBtnZoom(), gridBagConstraints3);
             panel3.add(getBtnLeft2(), gridBagConstraints4);
             panel3.add(getBtnRight2(), gridBagConstraints5);
-            panel3.add(getPictOverview(), gridBagConstraints6);
+            panel3.add(getPanelOverview(), gridBagConstraints6);
         }
         return panel3;
     }
 
     /**
-     * This method initializes pictOverview  
+     * This method initializes panelOverview  
      *  
      * @return javax.swing.BPanel   
      */
-    private BPictureBox getPictOverview() {
-        if (pictOverview == null) {
-            pictOverview = new BPictureBox();
+    private BPictureBox getPanelOverview() {
+        if (panelOverview == null) {
+            panelOverview = new BPictureBox();
         }
-        return pictOverview;
+        return panelOverview;
     }
 
     /**

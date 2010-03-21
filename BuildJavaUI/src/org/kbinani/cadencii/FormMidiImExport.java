@@ -15,7 +15,12 @@ import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
+import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListView;
+import org.kbinani.windows.forms.BRadioButton;
+import org.kbinani.windows.forms.BTextBox;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 //SECTION-END-IMPORT
 public class FormMidiImExport extends BForm {
@@ -45,6 +50,20 @@ public class FormMidiImExport extends BForm {
 	private BCheckBox chkExportVocaloidNrpn = null;
 	private BCheckBox chkPreMeasure = null;
 	private JLabel jLabel12 = null;
+    private BGroupBox groupMode = null;
+    private JPanel jPanel31 = null;
+    private JLabel jLabel13 = null;
+    private JPanel panel21 = null;
+    private JLabel jLabel111 = null;
+    private JPanel jPanel321 = null;
+    private BCheckBox chkExportVocaloidNrpn1 = null;
+    private BCheckBox chkPreMeasure1 = null;
+    private BLabel jLabel121 = null;
+    private BRadioButton radioGateTime = null;
+    private BRadioButton radioPlayTime = null;
+    private BLabel lblOffset = null;
+    private BTextBox txtOffset = null;
+    private BLabel lblOffsetUnit = null;
 	
 	//SECTION-END-FIELD
 	/**
@@ -62,7 +81,7 @@ public class FormMidiImExport extends BForm {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(357, 488);
+		this.setSize(357, 513);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
 	}
@@ -74,11 +93,17 @@ public class FormMidiImExport extends BForm {
 	 */
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
+			GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
+			gridBagConstraints22.gridx = 0;
+			gridBagConstraints22.weightx = 1.0D;
+			gridBagConstraints22.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints22.insets = new Insets(3, 12, 3, 12);
+			gridBagConstraints22.gridy = 3;
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			gridBagConstraints13.gridx = 0;
 			gridBagConstraints13.anchor = GridBagConstraints.EAST;
 			gridBagConstraints13.insets = new Insets(12, 0, 12, 0);
-			gridBagConstraints13.gridy = 3;
+			gridBagConstraints13.gridy = 4;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.gridx = 0;
 			gridBagConstraints12.weightx = 1.0D;
@@ -103,6 +128,7 @@ public class FormMidiImExport extends BForm {
 			jContentPane.add(getListTrack(), gridBagConstraints4);
 			jContentPane.add(getGroupCommonOption(), gridBagConstraints12);
 			jContentPane.add(getJPanel2(), gridBagConstraints13);
+			jContentPane.add(getGroupMode(), gridBagConstraints22);
 		}
 		return jContentPane;
 	}
@@ -448,6 +474,195 @@ public class FormMidiImExport extends BForm {
 		}
 		return chkPreMeasure;
 	}
+
+    /**
+     * This method initializes groupMode	
+     * 	
+     * @return org.kbinani.windows.forms.BGroupBox	
+     */
+    private BGroupBox getGroupMode() {
+        if (groupMode == null) {
+            GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
+            gridBagConstraints20.gridx = 0;
+            gridBagConstraints20.anchor = GridBagConstraints.WEST;
+            gridBagConstraints20.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints20.weightx = 1.0D;
+            gridBagConstraints20.gridy = 2;
+            GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+            gridBagConstraints16.gridx = 0;
+            gridBagConstraints16.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints16.anchor = GridBagConstraints.WEST;
+            gridBagConstraints16.weightx = 1.0D;
+            gridBagConstraints16.gridy = 1;
+            groupMode = new BGroupBox();
+            groupMode.setLayout(new GridBagLayout());
+            groupMode.setBorder(BorderFactory.createTitledBorder(null, "Import Basis", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+            groupMode.add(getPanel21(), gridBagConstraints16);
+            groupMode.add(getJPanel31(), gridBagConstraints20);
+        }
+        return groupMode;
+    }
+
+    /**
+     * This method initializes jPanel31	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel31() {
+        if (jPanel31 == null) {
+            GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
+            gridBagConstraints19.gridx = 6;
+            gridBagConstraints19.gridy = 1;
+            lblOffsetUnit = new BLabel();
+            lblOffsetUnit.setText("clocks");
+            GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
+            gridBagConstraints18.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints18.gridy = 1;
+            gridBagConstraints18.weightx = 1.0;
+            gridBagConstraints18.gridx = 5;
+            GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
+            gridBagConstraints17.gridx = 4;
+            gridBagConstraints17.gridy = 1;
+            lblOffset = new BLabel();
+            lblOffset.setText("offset");
+            GridBagConstraints gridBagConstraints83 = new GridBagConstraints();
+            gridBagConstraints83.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints83.gridy = 1;
+            gridBagConstraints83.weightx = 1.0D;
+            gridBagConstraints83.gridx = 7;
+            jLabel13 = new JLabel();
+            jLabel13.setText(" ");
+            jPanel31 = new JPanel();
+            jPanel31.setLayout(new GridBagLayout());
+            jPanel31.add(jLabel13, gridBagConstraints83);
+            jPanel31.add(lblOffset, gridBagConstraints17);
+            jPanel31.add(getTxtOffset(), gridBagConstraints18);
+            jPanel31.add(lblOffsetUnit, gridBagConstraints19);
+        }
+        return jPanel31;
+    }
+
+    /**
+     * This method initializes panel21	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getPanel21() {
+        if (panel21 == null) {
+            GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
+            gridBagConstraints15.gridx = 3;
+            gridBagConstraints15.gridy = 0;
+            GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+            gridBagConstraints14.gridx = 2;
+            gridBagConstraints14.gridy = 0;
+            GridBagConstraints gridBagConstraints811 = new GridBagConstraints();
+            gridBagConstraints811.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints811.gridy = 0;
+            gridBagConstraints811.weightx = 1.0D;
+            gridBagConstraints811.gridx = 4;
+            jLabel111 = new JLabel();
+            jLabel111.setText(" ");
+            panel21 = new JPanel();
+            panel21.setLayout(new GridBagLayout());
+            panel21.add(jLabel111, gridBagConstraints811);
+            panel21.add(getRadioGateTime(), gridBagConstraints14);
+            panel21.add(getRadioPlayTime(), gridBagConstraints15);
+        }
+        return panel21;
+    }
+
+    /**
+     * This method initializes jPanel321	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel321() {
+        if (jPanel321 == null) {
+            GridBagConstraints gridBagConstraints821 = new GridBagConstraints();
+            gridBagConstraints821.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints821.gridy = 0;
+            gridBagConstraints821.weightx = 1.0D;
+            gridBagConstraints821.gridx = 3;
+            jLabel121 = new BLabel();
+            jLabel121.setText(" ");
+            GridBagConstraints gridBagConstraints621 = new GridBagConstraints();
+            gridBagConstraints621.gridx = 1;
+            gridBagConstraints621.gridy = 0;
+            GridBagConstraints gridBagConstraints521 = new GridBagConstraints();
+            gridBagConstraints521.gridx = 0;
+            gridBagConstraints521.gridy = 0;
+            jPanel321 = new JPanel();
+            jPanel321.setLayout(new GridBagLayout());
+            jPanel321.add(getChkExportVocaloidNrpn1(), gridBagConstraints521);
+            jPanel321.add(getChkPreMeasure1(), gridBagConstraints621);
+            jPanel321.add(jLabel121, gridBagConstraints821);
+        }
+        return jPanel321;
+    }
+
+    /**
+     * This method initializes chkExportVocaloidNrpn1	
+     * 	
+     * @return org.kbinani.windows.forms.BCheckBox	
+     */
+    private BCheckBox getChkExportVocaloidNrpn1() {
+        if (chkExportVocaloidNrpn1 == null) {
+            chkExportVocaloidNrpn1 = new BCheckBox();
+            chkExportVocaloidNrpn1.setText("vocaloid NRPN");
+        }
+        return chkExportVocaloidNrpn1;
+    }
+
+    /**
+     * This method initializes chkPreMeasure1	
+     * 	
+     * @return org.kbinani.windows.forms.BCheckBox	
+     */
+    private BCheckBox getChkPreMeasure1() {
+        if (chkPreMeasure1 == null) {
+            chkPreMeasure1 = new BCheckBox();
+            chkPreMeasure1.setText("Export pre-measure part");
+        }
+        return chkPreMeasure1;
+    }
+
+    /**
+     * This method initializes radioGateTime	
+     * 	
+     * @return javax.swing.JRadioButton	
+     */
+    private JRadioButton getRadioGateTime() {
+        if (radioGateTime == null) {
+            radioGateTime = new BRadioButton();
+            radioGateTime.setText("gate-time");
+        }
+        return radioGateTime;
+    }
+
+    /**
+     * This method initializes radioPlayTime	
+     * 	
+     * @return javax.swing.JRadioButton	
+     */
+    private JRadioButton getRadioPlayTime() {
+        if (radioPlayTime == null) {
+            radioPlayTime = new BRadioButton();
+            radioPlayTime.setText("play-time");
+        }
+        return radioPlayTime;
+    }
+
+    /**
+     * This method initializes txtOffset	
+     * 	
+     * @return javax.swing.JTextField	
+     */
+    private JTextField getTxtOffset() {
+        if (txtOffset == null) {
+            txtOffset = new BTextBox();
+        }
+        return txtOffset;
+    }
 
 	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

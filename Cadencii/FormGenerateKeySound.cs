@@ -21,6 +21,7 @@ import org.kbinani.componentmodel.*;
 import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
+import org.kbinani.*;
 #else
 using System;
 using System.Windows.Forms;
@@ -35,6 +36,7 @@ namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
+    using BProgressChangedEventArgs = System.ComponentModel.ProgressChangedEventArgs;
 #endif
 
 #if JAVA
@@ -139,7 +141,7 @@ namespace org.kbinani.cadencii {
             bgWork.runWorkerAsync( arg );
         }
 
-        public static unsafe void GenerateSinglePhone( int note, String singer, String file, double amp ) {
+        public static void GenerateSinglePhone( int note, String singer, String file, double amp ) {
             String renderer = "";
             SingerConfig[] singers1 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
             int c = singers1.Length;
@@ -274,11 +276,18 @@ namespace org.kbinani.cadencii {
             m_cancel_required = false;
         }
 
-        private void bgWork_ProgressChanged( Object sender, System.ComponentModel.ProgressChangedEventArgs e ) {
-            this.Invoke( new updateTitleDelegate( this.updateTitle ), new Object[] { "Progress: " + e.ProgressPercentage + "%" } );
-        }
-
+#if !JAVA
         private delegate void updateTitleDelegate( String title );
+#endif
+
+        private void bgWork_ProgressChanged( Object sender, BProgressChangedEventArgs e ) {
+            String title = "Progress: " + e.ProgressPercentage + "%";
+#if JAVA
+            updateTitle( title );
+#else
+            this.Invoke( new updateTitleDelegate( this.updateTitle ), new Object[] { title } );
+#endif
+        }
 
         private void updateTitle( String title ) {
             setTitle( title );

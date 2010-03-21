@@ -34,6 +34,7 @@ using System;
 using System.Diagnostics;
 using System.Media;
 using System.Threading;
+using System.Text;
 using org.kbinani.apputil;
 using org.kbinani.componentmodel;
 using org.kbinani.java.awt;
@@ -4728,8 +4729,12 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "FormMain#FormMain_PreviewKeyDown" );
 #endif
-            BKeyEventArgs eDeleg = new BKeyEventArgs( e.KeyData );
-            processSpecialShortcutKey( eDeleg, true );
+#if JAVA
+            BKeyEventArgs ex = new BKeyEventArgs( e.getRawEvent() );
+#else
+            BKeyEventArgs ex = new BKeyEventArgs( e.KeyData );
+#endif
+            processSpecialShortcutKey( ex, true );
         }
 
         public void FormMain_Deactivate( Object sender, EventArgs e ) {
@@ -7326,7 +7331,12 @@ namespace org.kbinani.cadencii {
                                     while ( true ) {
                                         int x = 3 * sigma;
                                         while ( Math.Abs( x ) > 2 * sigma ) {
-                                            double y = (r.NextDouble() - 0.5) * 2.0;
+#if JAVA
+                                            double d = r.nextDouble();
+#else
+                                            double d = r.NextDouble();
+#endif
+                                            double y = (d - 0.5) * 2.0;
                                             x = (int)(sigma * sqrt2 * math.erfinv( y ));
                                         }
                                         draftClock = clock + x;
@@ -7412,26 +7422,39 @@ namespace org.kbinani.cadencii {
                             pbs.add( endClock, pbsAtEnd );
                         }
 
-                        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                        StringBuilder sb = new StringBuilder();
                         count = pit.size();
                         boolean first = true;
                         for ( int i = 0; i < count; i++ ) {
                             int clock = pit.getKeyClock( i );
                             if ( clock < startClock ) {
                                 int v = pit.getElementA( i );
+#if JAVA
+                                sb.append( (first ? "" : ",") + (clock + "=" + v) );
+#else
                                 sb.Append( (first ? "" : ",") + (clock + "=" + v) );
+#endif
                                 first = false;
                             } else if ( clock <= endClock ) {
                                 break;
                             }
                         }
-                        int start = (int)(r.NextDouble() * (patternPreset.Length - 1));
+#if JAVA
+                        double d = r.nextDouble();
+#else
+                        double d = r.NextDouble();
+#endif
+                        int start = (int)(d * (patternPreset.Length - 1));
                         for ( int clock = startClock; clock < endClock; clock += resolution ) {
                             int copyIndex = start + (clock - startClock);
                             int odd = copyIndex / patternPreset.Length;
                             copyIndex = copyIndex - patternPreset.Length * odd;
                             int v = (int)(patternPreset[copyIndex] * order);
+#if JAVA
+                            sb.append( (first ? "" : ",") + (clock + "=" + v) );
+#else
                             sb.Append( (first ? "" : ",") + (clock + "=" + v) );
+#endif
                             first = false;
                             //pit.add( clock, v );
                         }
@@ -7439,7 +7462,11 @@ namespace org.kbinani.cadencii {
                             int clock = pit.getKeyClock( i );
                             if ( endClock <= clock ) {
                                 int v = pit.getElementA( i );
+#if JAVA
+                                sb.append( (first ? "" : ",") + (clock + "=" + v) );
+#else
                                 sb.Append( (first ? "" : ",") + (clock + "=" + v) );
+#endif
                                 first = false;
                             }
                         }
@@ -8254,7 +8281,11 @@ namespace org.kbinani.cadencii {
         }
 
         public void picturePositionIndicator_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
+#if JAVA
+            BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
+#else
             BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
+#endif
             processSpecialShortcutKey( e0, true );
         }
         #endregion
@@ -8290,7 +8321,7 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-            String version_str = AppManager.getVersion();
+            String version_str = Utility.getVersion();
 #else
             String version_str = Utility.getVersion() + "\n\n" +
                                  Utility.getAssemblyNameAndFileVersion( typeof( org.kbinani.apputil.Util ) ) + "\n" +
@@ -8850,7 +8881,11 @@ namespace org.kbinani.cadencii {
         }
 
         public void trackSelector_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
+#if JAVA
+            BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
+#else
             BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
+#endif
             processSpecialShortcutKey( e0, true );
         }
 
@@ -11584,30 +11619,32 @@ namespace org.kbinani.cadencii {
             }
         }
 
+#if JAVA
         /// <summary>
         /// waveView用のwaveファイルを読込むスレッドで使用する
         /// </summary>
         /// <param name="arg"></param>
-#if JAVA
         public class LoadWaveProc extends Thread {
             public String file = "";
+            public int track;
 
-            public LoadWaveProc( String file ){
+            public LoadWaveProc( int track, String file ){
                 this.file = file;
+                this.track = track;
             }
 
             public void run(){
-                waveView.loadWave( file );
+                waveView.load( track, file );
             }
         }
-#else
+#endif
+
         public void loadWave( Object arg ) {
             Object[] argArr = (Object[])arg;
             String file = (String)argArr[0];
             int track = (Integer)argArr[1];
             waveView.load( track, file );
         }
-#endif
 
         /// <summary>
         /// menuVisualWaveform.isSelected()の値をもとに、splitterContainer2の表示状態を更新します
