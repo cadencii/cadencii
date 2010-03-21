@@ -281,7 +281,7 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPianoQuantizeOff = null;
     private BMenuItem cMenuPianoLengthOff = null;
     private BPanel panel3 = null;
-    private BPictureBox panelOverview = null;
+    private BPanel panelOverview = null;
     private BButton btnMooz = null;
     private BButton btnLeft1 = null;
     private BButton btnRight1 = null;
@@ -343,6 +343,7 @@ public class FormMain extends BForm {
     private BMenuItem menuVisualIconPalette = null;
     private JPanel jPanel = null;
     private JLabel jLabel = null;
+	private BPictureBox pictOverview = null;
 
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
@@ -522,7 +523,20 @@ public class FormMain extends BForm {
         return jPanel;
     }
 
-    public static void main( String[] args ){
+    /**
+	 * This method initializes pictOverview	
+	 * 	
+	 * @return org.kbinani.windows.forms.BPictureBox	
+	 */
+	private BPictureBox getPictOverview() {
+		if (pictOverview == null) {
+			pictOverview = new BPictureBox();
+			pictOverview.setLayout(new GridBagLayout());
+		}
+		return pictOverview;
+	}
+
+	public static void main( String[] args ){
        FormMain form = new FormMain( "" );
        form.setVisible( true );
     }
@@ -3878,9 +3892,10 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BPanel   
      */
-    private BPictureBox getPanelOverview() {
+    private BPanel getPanelOverview() {
         if (panelOverview == null) {
-            panelOverview = new BPictureBox();
+            panelOverview = new BPanel();
+            panelOverview.add(getPictOverview(), null);
         }
         return panelOverview;
     }
