@@ -203,9 +203,9 @@ public class FormMain extends BForm {
     private BLabel stripLblMidiIn = null;
     private BLabel jLabel5 = null;
     private BComboBox stripDDBtnSpeed = null;
-    private BPopupMenu cMenuTrackSelector = null;  //  @jve:decl-index=0:visual-constraint="749,73"
-    private BPopupMenu cMenuPiano = null;  //  @jve:decl-index=0:visual-constraint="764,258"
-    private BPopupMenu cMenuTrackTab = null;  //  @jve:decl-index=0:visual-constraint="752,356"
+    private BPopupMenu cMenuTrackSelector = null;  //  @jve:decl-index=0:visual-constraint="879,87"
+    private BPopupMenu cMenuPiano = null;  //  @jve:decl-index=0:visual-constraint="900,261"
+    private BPopupMenu cMenuTrackTab = null;  //  @jve:decl-index=0:visual-constraint="894,357"
     private BMenuItem cMenuTrackSelectorPointer = null;
     private BMenuItem cMenuTrackSelectorPencil = null;
     private BMenuItem cMenuTrackSelectorLine = null;
@@ -464,7 +464,7 @@ public class FormMain extends BForm {
             GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
             gridBagConstraints29.weightx = 1.0D;
             jLabel = new JLabel();
-            jLabel.setText("JLabel");
+            jLabel.setText(" ");
             GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
             gridBagConstraints28.gridx = 10;
             gridBagConstraints28.gridy = 0;
@@ -3894,8 +3894,17 @@ public class FormMain extends BForm {
      */
     private BPanel getPanelOverview() {
         if (panelOverview == null) {
+            GridBagConstraints gridBagConstraints30 = new GridBagConstraints();
+            gridBagConstraints30.gridheight = 0;
+            gridBagConstraints30.gridx = 1;
+            gridBagConstraints30.gridy = 1;
+            gridBagConstraints30.fill = GridBagConstraints.BOTH;
+            gridBagConstraints30.weightx = 1.0D;
+            gridBagConstraints30.weighty = 1.0D;
+            gridBagConstraints30.gridwidth = 0;
             panelOverview = new BPanel();
-            panelOverview.add(getPictOverview(), null);
+            panelOverview.setLayout(new GridBagLayout());
+            panelOverview.add(getPictOverview(), gridBagConstraints30);
         }
         return panelOverview;
     }

@@ -1,6 +1,8 @@
 package org.kbinani.windows.forms;
 
 import java.awt.Graphics;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -17,7 +19,8 @@ public class BPanel extends JPanel
                     implements MouseListener,
                                MouseMotionListener,
                                KeyListener,
-                               MouseWheelListener
+                               MouseWheelListener,
+                               FocusListener
 {
     private static final long serialVersionUID = -1767993910090796469L;
 
@@ -27,6 +30,7 @@ public class BPanel extends JPanel
         addMouseMotionListener( this );
         addKeyListener( this );
         addMouseWheelListener( this );
+        addFocusListener( this );
     }
     
     // root impl of MouseWheel event is in BButton
@@ -157,6 +161,24 @@ public class BPanel extends JPanel
             mouseUpEvent.raise( this, BMouseEventArgs.fromMouseEvent( e ) );
         }catch( Exception ex ){
             System.err.println( "BButton#mouseReleased; ex=" + ex );
+        }
+    }
+ 
+    // root impl of FocusListener is in BButton
+    public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
+    public BEvent<BEventHandler> leaveEvent = new BEvent<BEventHandler>();
+    public void focusGained(FocusEvent e) {
+        try{
+            enterEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BButton#focusGained; ex=" + ex );
+        }
+    }
+    public void focusLost(FocusEvent e) {
+        try{
+            leaveEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BButton#focusLost; ex=" + ex );
         }
     }
 

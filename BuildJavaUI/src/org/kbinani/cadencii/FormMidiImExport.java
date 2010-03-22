@@ -55,14 +55,10 @@ public class FormMidiImExport extends BForm {
     private JLabel jLabel13 = null;
     private JPanel panel21 = null;
     private JLabel jLabel111 = null;
-    private JPanel jPanel321 = null;
-    private BCheckBox chkExportVocaloidNrpn1 = null;
-    private BCheckBox chkPreMeasure1 = null;
-    private BLabel jLabel121 = null;
     private BRadioButton radioGateTime = null;
     private BRadioButton radioPlayTime = null;
     private BLabel lblOffset = null;
-    private BTextBox txtOffset = null;
+    private NumberTextBox txtOffset = null;
     private BLabel lblOffsetUnit = null;
 	
 	//SECTION-END-FIELD
@@ -572,61 +568,6 @@ public class FormMidiImExport extends BForm {
     }
 
     /**
-     * This method initializes jPanel321	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel321() {
-        if (jPanel321 == null) {
-            GridBagConstraints gridBagConstraints821 = new GridBagConstraints();
-            gridBagConstraints821.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints821.gridy = 0;
-            gridBagConstraints821.weightx = 1.0D;
-            gridBagConstraints821.gridx = 3;
-            jLabel121 = new BLabel();
-            jLabel121.setText(" ");
-            GridBagConstraints gridBagConstraints621 = new GridBagConstraints();
-            gridBagConstraints621.gridx = 1;
-            gridBagConstraints621.gridy = 0;
-            GridBagConstraints gridBagConstraints521 = new GridBagConstraints();
-            gridBagConstraints521.gridx = 0;
-            gridBagConstraints521.gridy = 0;
-            jPanel321 = new JPanel();
-            jPanel321.setLayout(new GridBagLayout());
-            jPanel321.add(getChkExportVocaloidNrpn1(), gridBagConstraints521);
-            jPanel321.add(getChkPreMeasure1(), gridBagConstraints621);
-            jPanel321.add(jLabel121, gridBagConstraints821);
-        }
-        return jPanel321;
-    }
-
-    /**
-     * This method initializes chkExportVocaloidNrpn1	
-     * 	
-     * @return org.kbinani.windows.forms.BCheckBox	
-     */
-    private BCheckBox getChkExportVocaloidNrpn1() {
-        if (chkExportVocaloidNrpn1 == null) {
-            chkExportVocaloidNrpn1 = new BCheckBox();
-            chkExportVocaloidNrpn1.setText("vocaloid NRPN");
-        }
-        return chkExportVocaloidNrpn1;
-    }
-
-    /**
-     * This method initializes chkPreMeasure1	
-     * 	
-     * @return org.kbinani.windows.forms.BCheckBox	
-     */
-    private BCheckBox getChkPreMeasure1() {
-        if (chkPreMeasure1 == null) {
-            chkPreMeasure1 = new BCheckBox();
-            chkPreMeasure1.setText("Export pre-measure part");
-        }
-        return chkPreMeasure1;
-    }
-
-    /**
      * This method initializes radioGateTime	
      * 	
      * @return javax.swing.JRadioButton	
@@ -657,9 +598,9 @@ public class FormMidiImExport extends BForm {
      * 	
      * @return javax.swing.JTextField	
      */
-    private JTextField getTxtOffset() {
+    private NumberTextBox getTxtOffset() {
         if (txtOffset == null) {
-            txtOffset = new BTextBox();
+            txtOffset = new NumberTextBox();
         }
         return txtOffset;
     }
