@@ -6005,10 +6005,18 @@ namespace org.kbinani.cadencii {
                                 String wavTo = PortUtil.combinePath( estimatedCacheDir, i + ".wav" );
                                 String xmlTo = PortUtil.combinePath( estimatedCacheDir, i + ".xml" );
                                 if ( PortUtil.isFileExists( wavFrom ) ) {
-                                    PortUtil.moveFile( wavFrom, wavTo );
+                                    try {
+                                        PortUtil.moveFile( wavFrom, wavTo );
+                                    } catch ( Exception ex ) {
+                                        PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
+                                    }
                                 }
                                 if ( PortUtil.isFileExists( xmlFrom ) ) {
-                                    PortUtil.moveFile( xmlFrom, xmlTo );
+                                    try {
+                                        PortUtil.moveFile( xmlFrom, xmlTo );
+                                    } catch ( Exception ex ) {
+                                        PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
+                                    }
                                 }
                             }
 
@@ -8374,7 +8382,11 @@ namespace org.kbinani.cadencii {
             int sampleRate;
 
             public SimpleWaveReceiver( String file, int sample_rate ) {
-                writer = new WaveWriter( file, 2, 16, sample_rate );
+                try {
+                    writer = new WaveWriter( file, 2, 16, sample_rate );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain$SimpleWaveReceiver#.ctor; ex=" + ex );
+                }
                 sampleRate = sample_rate;
             }
 
@@ -8383,7 +8395,11 @@ namespace org.kbinani.cadencii {
             }
 
             public void close() {
-                writer.close();
+                try {
+                    writer.close();
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain$SimpleWaveReceier#close; ex=" + ex );
+                }
             }
 
             public int getSampleRate() {
@@ -12304,7 +12320,11 @@ namespace org.kbinani.cadencii {
 
                 foreach ( SpecialShortcutHolder holder in specialShortcutHolders ) {
                     if ( holder.shortcut.getKeyCode() == keycode && holder.shortcut.getModifiers() == modifier ) {
-                        holder.menu.clickEvent.raise( holder.menu, new EventArgs() );
+                        try {
+                            holder.menu.clickEvent.raise( holder.menu, new EventArgs() );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
+                        }
                         return;
                     }
                 }
@@ -12377,7 +12397,12 @@ namespace org.kbinani.cadencii {
                         BKeys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
                         if ( specialGoToFirst != null && specialGoToFirst.Length > 0 ) {
                             KeyStroke ks = PortUtil.getKeyStrokeFromBKeys( specialGoToFirst );
-                            if ( e.KeyCode == ks.keys ) {
+#if JAVA
+                            if( e.KeyCode == ks.getKeyCode() )
+#else
+                            if ( e.KeyCode == ks.keys ) 
+#endif
+                            {
                                 AppManager.setCurrentClock( 0 );
                                 ensureCursorVisible();
                                 refreshScreen();

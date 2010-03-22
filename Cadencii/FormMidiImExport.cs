@@ -214,6 +214,7 @@ namespace org.kbinani.cadencii {
             return chkPreMeasure.isSelected();
         }
 
+        #region event handlers
         private void btnCheckAll_Click( Object sender, BEventArgs e ) {
             for ( int i = 0; i < listTrack.getItemCount( "" ); i++ ) {
                 listTrack.setItemCheckedAt( "", i, true );
@@ -264,11 +265,11 @@ namespace org.kbinani.cadencii {
             columnWidthNotes = listTrack.getColumnWidth( 2 );
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 
@@ -285,6 +286,7 @@ namespace org.kbinani.cadencii {
                 txtOffset.setType( NumberTextBox.ValueType.Double );
             }
         }
+        #endregion
 
         private void registerEventHandlers() {
 #if JAVA
@@ -300,9 +302,9 @@ namespace org.kbinani.cadencii {
             this.chkMetaText.Click += new System.EventHandler( this.chkMetaText_Click );
             this.chkExportVocaloidNrpn.CheckedChanged += new System.EventHandler( this.chkExportVocaloidNrpn_CheckedChanged );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
 #endif
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
             radioGateTime.checkedChangedEvent.add( new BEventHandler( this, "radioGateTime_CheckedChanged" ) );
             radioPlayTime.checkedChangedEvent.add( new BEventHandler( this, "radioPlayTime_CheckedChanged" ) );
         }

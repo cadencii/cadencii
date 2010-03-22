@@ -13,11 +13,8 @@ import org.kbinani.windows.forms.BLabel;
 
 //SECTION-END-IMPORT
 public class FormAskKeySoundGeneration extends BForm {
-// SECTION-BEGIN-FIELD
+//SECTION-BEGIN-FIELD
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private BLabel lblMessage = null;

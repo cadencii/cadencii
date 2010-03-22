@@ -118,10 +118,12 @@ namespace org.kbinani.cadencii {
             drawer[index].load( wave_path );
         }
 
+#if !JAVA
         protected override void OnPaint( PaintEventArgs e ) {
             base.OnPaint( e );
             paint( new Graphics2D( e.Graphics ) );
         }
+#endif
     }
 
 #if !JAVA

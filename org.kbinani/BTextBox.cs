@@ -314,6 +314,14 @@ namespace org.kbinani.windows.forms{
         public object getTag() {
             return base.Tag;
         }
+
+        public bool isEditable() {
+            return !base.ReadOnly;
+        }
+
+        public void setEditable( bool value ) {
+            base.ReadOnly = !value;
+        }
     }
 
 }

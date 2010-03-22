@@ -30,7 +30,7 @@ namespace org.kbinani.cadencii{
 #if JAVA
         public static void main( String[] args ){
             AppManager.init();
-            AppManager.mainWindow = new FormMain();
+            AppManager.mainWindow = new FormMain( "" );
             AppManager.mainWindow.setVisible( true );
         }
 #else

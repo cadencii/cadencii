@@ -15,6 +15,7 @@
 package org.kbinani.cadencii;
 
 import javax.sound.sampled.*;
+import org.kbinani.*;
 #else
 using System;
 using System.Runtime.InteropServices;
@@ -58,11 +59,15 @@ namespace org.kbinani.cadencii {
 #endif
 
         public static void setResolution( int value ) {
+#if JAVA
+            //TODO: fixme PlaySound#setResolution
+#else
             try {
                 SoundSetResolution( value );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "PlaySound#setResolution; ex=" + ex );
             }
+#endif
         }
 
         public static void init() {
@@ -79,6 +84,7 @@ namespace org.kbinani.cadencii {
 
         public static void kill() {
 #if JAVA
+            //TODO: fixme PlaySound#kill
 #else
             try {
                 SoundKill();

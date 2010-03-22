@@ -5,6 +5,9 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.kbinani.BEvent;
+import org.kbinani.BEventArgs;
+import org.kbinani.BEventHandler;
 import java.awt.Dimension;
 
 public class BNumericUpDown extends JPanel{
@@ -39,8 +42,15 @@ public class BNumericUpDown extends JPanel{
 	    increment = value;
 	}
 	
+	public BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
+	
 	private void update(){
 	    getTxtValue().setText( value + "" );
+	    try{
+	        valueChangedEvent.raise( this, new BEventArgs() );
+	    }catch( Exception ex ){
+	        System.out.println( "BNumericUpDown#update; ex=" + ex );
+	    }
 	}
 	
 	public float getValue(){
@@ -126,6 +136,16 @@ public class BNumericUpDown extends JPanel{
 			txtValue = new JTextField();
 			txtValue.setText("0");
 			txtValue.setHorizontalAlignment(JTextField.RIGHT);
+			txtValue.addKeyListener(new java.awt.event.KeyAdapter() {
+			    public void keyTyped(java.awt.event.KeyEvent e) {
+			        try{
+			            float draft = Float.parseFloat( txtValue.getText() );
+			            value = draft;
+			            update();
+			        }catch( Exception ex ){
+			        }
+			    }
+			});
 		}
 		return txtValue;
 	}

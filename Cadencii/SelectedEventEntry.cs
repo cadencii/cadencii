@@ -741,8 +741,8 @@ namespace org.kbinani.cadencii {
                             NoteHeadHandle aconfig = itr.next();
                             if ( description.Equals( aconfig.getDisplayString() ) ) {
                                 editing.ID.NoteHeadHandle = (NoteHeadHandle)aconfig.clone();
-                                editing.ID.NoteHeadHandle.Depth = last_depth;
-                                editing.ID.NoteHeadHandle.Duration = last_duration;
+                                editing.ID.NoteHeadHandle.setDepth( last_depth );
+                                editing.ID.NoteHeadHandle.setDuration( last_duration );
                                 break;
                             }
                         }

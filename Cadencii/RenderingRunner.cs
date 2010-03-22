@@ -102,7 +102,11 @@ namespace org.kbinani.cadencii {
             m_abort_required = true;
             while ( m_rendering ) {
 #if JAVA
-                Thread.sleep( 0 );
+                try{
+                    Thread.sleep( 0 );
+                }catch( InterruptedException ex ){
+                    break;
+                }
 #else
                 System.Windows.Forms.Application.DoEvents();
 #endif

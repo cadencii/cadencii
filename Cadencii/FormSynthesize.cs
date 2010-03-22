@@ -52,7 +52,7 @@ namespace org.kbinani.cadencii {
 #endif
         private VsqFileEx m_vsq;
         private int m_presend = 500;
-        private int[] m_tracks;
+        private Integer[] m_tracks;
         private String[] m_files;
         private int[] m_clock_start;
         private int[] m_clock_end;
@@ -73,7 +73,7 @@ namespace org.kbinani.cadencii {
                                boolean reflect_amp_to_wave )
 #if JAVA
         {
-            this( vsq, presend, new int[] { track }, new String[]{ file }, clock_start, clock_end, temp_premeasure, reflect_amp_to_wave, false );
+            this( vsq, presend, new Integer[] { track }, new String[]{ file }, new Integer[]{ clock_start }, new Integer[]{ clock_end }, reflect_amp_to_wave );
 #else
             : this( vsq, presend, new Integer[] { track }, new String[] { file }, new Integer[] { clock_start }, new Integer[] { clock_end }, reflect_amp_to_wave ) {
 #endif

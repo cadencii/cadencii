@@ -44,6 +44,9 @@ namespace org.kbinani.cadencii {
 #else
     public class FormGenerateKeySound : BForm {
 #endif
+        private BFolderBrowser folderBrowser;
+        private BBackgroundWorker bgWork;
+
         public class PrepareStartArgument {
             public String singer = "Miku";
             public double amplitude = 1.0;
@@ -62,7 +65,18 @@ namespace org.kbinani.cadencii {
         private boolean m_close_when_finished = false;
 
         public FormGenerateKeySound( boolean close_when_finished ) {
+#if JAVA
+            super();
+            initialize();
+            bgWork = new BBackgroundWorker();
+#else
             InitializeComponent();
+            bgWork = new BBackgroundWorker();
+            bgWork.WorkerReportsProgress = true;
+            bgWork.WorkerSupportsCancellation = true;
+#endif
+            folderBrowser = new BFolderBrowser();
+            
             m_close_when_finished = close_when_finished;
             m_singer_config1 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
             m_singer_config2 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
@@ -81,6 +95,16 @@ namespace org.kbinani.cadencii {
             }
             updateSinger();
             txtDir.setText( Utility.getKeySoundPath() );
+        }
+
+        private void registerEventHandlers() {
+            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "this.bgWork_DoWork" ) );
+            bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_RunWorkerCompleted" ) );
+#if JAVA
+            //TODO: fixme FormGenerateKeySound#registerEventHandlers; bgWork.progressChangedEvent
+#else
+            bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
+#endif
         }
 
         private void updateSinger() {
@@ -113,18 +137,22 @@ namespace org.kbinani.cadencii {
         }
 
         private void btnBrowse_Click( Object sender, BEventArgs e ) {
-            folderBrowser.SelectedPath = txtDir.getText();
-            if ( folderBrowser.ShowDialog() != DialogResult.OK ) {
+            folderBrowser.setSelectedPath( txtDir.getText() );
+            if ( folderBrowser.showDialog() != BDialogResult.OK ) {
                 return;
             }
-            txtDir.setText( folderBrowser.SelectedPath );
+            txtDir.setText( folderBrowser.getSelectedPath() );
         }
 
         private void btnCancel_Click( Object sender, BEventArgs e ) {
             if ( bgWork.isBusy() ) {
                 m_cancel_required = true;
                 while ( m_cancel_required ) {
+#if JAVA
+                    Thread.sleep( 0 );
+#else
                     Application.DoEvents();
+#endif
                 }
             } else {
                 this.close();
@@ -247,8 +275,8 @@ namespace org.kbinani.cadencii {
             }
 
             for ( int i = 0; i < 127; i++ ) {
-                string path = PortUtil.combinePath( dir, i + ".wav" );
-                Console.Write( "writing \"" + path + "\" ..." );
+                String path = PortUtil.combinePath( dir, i + ".wav" );
+                PortUtil.println( "writing \"" + path + "\" ..." );
                 if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
                     try {
                         GenerateSinglePhone( i, singer, path, amp );
@@ -307,7 +335,7 @@ namespace org.kbinani.cadencii {
         private void updateEnabled( boolean enabled ) {
             comboSinger.setEnabled( enabled );
             comboSingingSynthSystem.setEnabled( enabled );
-            txtDir.ReadOnly = !enabled;
+            txtDir.setEditable( enabled );
             btnBrowse.setEnabled( enabled );
             btnExecute.setEnabled( enabled );
             chkIgnoreExistingWavs.setEnabled( enabled );
@@ -334,8 +362,6 @@ namespace org.kbinani.cadencii {
             this.txtDir = new BTextBox();
             this.btnBrowse = new BButton();
             this.lblDir = new BLabel();
-            this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
-            this.bgWork = new BBackgroundWorker();
             this.SuspendLayout();
             // 
             // btnExecute
@@ -433,14 +459,6 @@ namespace org.kbinani.cadencii {
             this.lblDir.TabIndex = 9;
             this.lblDir.Text = "Output Path";
             // 
-            // bgWork
-            // 
-            this.bgWork.WorkerReportsProgress = true;
-            this.bgWork.WorkerSupportsCancellation = true;
-            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
-            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
-            this.bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
-            // 
             // Program
             // 
             this.ClientSize = new System.Drawing.Size( 373, 161 );
@@ -470,8 +488,6 @@ namespace org.kbinani.cadencii {
         private BCheckBox chkIgnoreExistingWavs;
         private BTextBox txtDir;
         private BButton btnBrowse;
-        private FolderBrowserDialog folderBrowser;
-        private BBackgroundWorker bgWork;
         private BLabel lblDir;
 
         #endregion

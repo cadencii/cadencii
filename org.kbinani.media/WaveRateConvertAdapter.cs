@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.media;
 
+import java.util.*;
 #else
 using System;
 
@@ -66,8 +67,8 @@ namespace org.kbinani.media {
                 aEnd--;
             }
 
-            double[] aLeft = new double[aEnd - aCount];
-            double[] aRight = new double[aEnd - aCount];
+            double[] aLeft = new double[(int)(aEnd - aCount)];
+            double[] aRight = new double[(int)(aEnd - aCount)];
             for ( long a = aCount; a < aEnd; a++ ) {
                 double x = a * invARate;
                 long bRequired = (long)(x * bRate);
@@ -100,7 +101,7 @@ namespace org.kbinani.media {
 
                 double s = (y1 - y0) / (x1 - x0);
                 double y = y0 + s * (x - x0);
-                aLeft[a - aCount] = y;
+                aLeft[(int)(a - aCount)] = y;
 
                 if ( indx0 >= 0 ) {
                     if ( indx0 < right.Length ) {
@@ -124,7 +125,7 @@ namespace org.kbinani.media {
                 }
                 s = (y1 - y0) / (x1 - x0);
                 y = y0 + s * (x - x0);
-                aRight[a - aCount] = y;
+                aRight[(int)(a - aCount)] = y;
             }
 
             receiver.append( aLeft, aRight );
@@ -155,8 +156,8 @@ namespace org.kbinani.media {
 #endif
                     }
                     for ( int i = 0; i < num; i++ ) {
-                        bBufLeft[i] = left[bBufBase + i - bCount];
-                        bBufRight[i] = right[bBufBase + i - bCount];
+                        bBufLeft[i] = left[(int)(bBufBase + i - bCount)];
+                        bBufRight[i] = right[(int)(bBufBase + i - bCount)];
                     }
                 }
             }

@@ -19,6 +19,9 @@ jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
 
 jcorlib: pp_cs2java.exe ./org.kbinani/*.cs
 	pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani"
+	$(CP) ".\build\java\org\kbinani\math.java" ".\BuildJavaUI\src\org\kbinani\math.java"
+	$(CP) ".\build\java\org\kbinani\cadencii\NumberTextBox.java" ".\BuildJavaUI\src\org\kbinani\cadencii\NumberTextBox.java"
+	$(CP) ".\build\java\org\kbinani\cadencii\NumericUpDownEx.java" ".\BuildJavaUI\src\org\kbinani\cadencii\NumericUpDownEx.java"
 
 japputil: pp_cs2java.exe ./org.kbinani.apputil/*.cs
 	pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ".\build\java" -encoding "UTF-8" -s -4 -c -t ".\org.kbinani.apputil"

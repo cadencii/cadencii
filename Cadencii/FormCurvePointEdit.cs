@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormCurvePointEdit.java
 
+import java.util.*;
 import java.awt.event.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;

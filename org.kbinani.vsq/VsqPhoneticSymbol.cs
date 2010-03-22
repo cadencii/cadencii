@@ -13,6 +13,8 @@
  */
 #if JAVA
 package org.kbinani.vsq;
+
+import org.kbinani.*;
 #else
 using System;
 using org.kbinani;

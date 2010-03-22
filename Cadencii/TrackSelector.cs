@@ -1114,9 +1114,6 @@ namespace org.kbinani.cadencii {
                     }
                     #endregion
 
-#if JAVA
-                    System.out.println( "TrackSelector#paint; (draw_target==null)=" + (draw_target == null) );
-#endif
                     if ( vsq_track != null ) {
                         Color color = AppManager.getHilightColor();
                         Color front = new Color( color.getRed(), color.getGreen(), color.getBlue(), 150 );
@@ -2190,11 +2187,12 @@ namespace org.kbinani.cadencii {
                         int draw_width = x2 - x1;
                         polyx.add( x1 ); polyy.add( yCoordFromValue( 0, type.getMaximum(), type.getMinimum() ) );
                         if ( type.equals( CurveType.VibratoRate ) ) {
-                            int last_y = yCoordFromValue( ve.ID.VibratoHandle.StartRate, type.getMaximum(), type.getMinimum() );
+                            int last_y = yCoordFromValue( ve.ID.VibratoHandle.getStartRate(), type.getMaximum(), type.getMinimum() );
                             polyx.add( x1 ); polyy.add( last_y );
-                            int c = ve.ID.VibratoHandle.RateBP.getCount();
+                            VibratoBPList ratebp = ve.ID.VibratoHandle.getRateBP();
+                            int c = ratebp.getCount();
                             for ( int i = 0; i < c; i++ ) {
-                                VibratoBPPair item = ve.ID.VibratoHandle.RateBP.getElement( i );
+                                VibratoBPPair item = ratebp.getElement( i );
                                 int x = x1 + (int)(item.X * draw_width);
                                 int y = yCoordFromValue( item.Y, type.getMaximum(), type.getMinimum() );
                                 polyx.add( x ); polyy.add( last_y );
@@ -2204,12 +2202,13 @@ namespace org.kbinani.cadencii {
                             polyx.add( x2 );
                             polyy.add( last_y );
                         } else {
-                            int last_y = yCoordFromValue( ve.ID.VibratoHandle.StartDepth, type.getMaximum(), type.getMinimum() );
+                            int last_y = yCoordFromValue( ve.ID.VibratoHandle.getStartDepth(), type.getMaximum(), type.getMinimum() );
                             polyx.add( x1 );
                             polyy.add( last_y );
-                            int c = ve.ID.VibratoHandle.DepthBP.getCount();
+                            VibratoBPList depthbp = ve.ID.VibratoHandle.getDepthBP();
+                            int c = depthbp.getCount();
                             for ( int i = 0; i < c; i++ ) {
-                                VibratoBPPair item = ve.ID.VibratoHandle.DepthBP.getElement( i );
+                                VibratoBPPair item = depthbp.getElement( i );
                                 int x = x1 + (int)(item.X * draw_width);
                                 int y = yCoordFromValue( item.Y, type.getMaximum(), type.getMinimum() );
                                 polyx.add( x ); polyy.add( last_y );
@@ -4385,9 +4384,9 @@ namespace org.kbinani.cadencii {
                                         VsqID item = (VsqID)ve.ID.clone();
                                         VibratoBPList target = null;
                                         if ( m_selected_curve.equals( CurveType.VibratoDepth ) ) {
-                                            target = item.VibratoHandle.DepthBP;
+                                            target = item.VibratoHandle.getDepthBP();
                                         } else {
-                                            target = item.VibratoHandle.RateBP;
+                                            target = item.VibratoHandle.getRateBP();
                                         }
                                         Vector<Float> bpx = new Vector<Float>();
                                         Vector<Integer> bpy = new Vector<Integer>();
@@ -4426,11 +4425,15 @@ namespace org.kbinani.cadencii {
                                             }
                                         }
                                         if ( m_selected_curve.equals( CurveType.VibratoDepth ) ) {
-                                            item.VibratoHandle.DepthBP = new VibratoBPList( PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
-                                                                                            PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) );
+                                            item.VibratoHandle.setDepthBP(
+                                                new VibratoBPList( 
+                                                    PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
+                                                    PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) ) );
                                         } else {
-                                            item.VibratoHandle.RateBP = new VibratoBPList( PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
-                                                                                           PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) );
+                                            item.VibratoHandle.setRateBP(
+                                                new VibratoBPList( 
+                                                    PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
+                                                    PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) ) );
                                         }
                                         internal_ids.add( ve.InternalID );
                                         items.add( item );
@@ -4630,9 +4633,9 @@ namespace org.kbinani.cadencii {
                                         if ( ve.ID.VibratoHandle != null ) {
                                             VibratoBPList target = null;
                                             if ( m_selected_curve.equals( CurveType.VibratoRate ) ) {
-                                                target = ve.ID.VibratoHandle.RateBP;
+                                                target = ve.ID.VibratoHandle.getRateBP();
                                             } else {
-                                                target = ve.ID.VibratoHandle.DepthBP;
+                                                target = ve.ID.VibratoHandle.getDepthBP();
                                             }
                                             if ( target.getCount() > 0 ) {
                                                 for ( int i = 0; i < target.getCount(); i++ ) {
@@ -4651,9 +4654,9 @@ namespace org.kbinani.cadencii {
                                                 bpy[i] = edit.get( i ).getValue();
                                             }
                                             if ( m_selected_curve.equals( CurveType.VibratoDepth ) ) {
-                                                id.VibratoHandle.DepthBP = new VibratoBPList( bpx, bpy );
+                                                id.VibratoHandle.setDepthBP( new VibratoBPList( bpx, bpy ) );
                                             } else {
-                                                id.VibratoHandle.RateBP = new VibratoBPList( bpx, bpy );
+                                                id.VibratoHandle.setRateBP( new VibratoBPList( bpx, bpy ) );
                                             }
                                             internal_ids.add( ve.InternalID );
                                             items.add( id );
@@ -4878,9 +4881,9 @@ namespace org.kbinani.cadencii {
                                         if ( ve.ID.VibratoHandle != null ) {
                                             VibratoBPList target = null;
                                             if ( m_selected_curve.equals( CurveType.VibratoRate ) ) {
-                                                target = ve.ID.VibratoHandle.RateBP;
+                                                target = ve.ID.VibratoHandle.getRateBP();
                                             } else {
-                                                target = ve.ID.VibratoHandle.DepthBP;
+                                                target = ve.ID.VibratoHandle.getDepthBP();
                                             }
                                             if ( target.getCount() > 0 ) {
                                                 for ( int i = 0; i < target.getCount(); i++ ) {
@@ -4899,9 +4902,9 @@ namespace org.kbinani.cadencii {
                                                 bpy[i] = edit.get( i ).getValue();
                                             }
                                             if ( m_selected_curve.equals( CurveType.VibratoDepth ) ) {
-                                                id.VibratoHandle.DepthBP = new VibratoBPList( bpx, bpy );
+                                                id.VibratoHandle.setDepthBP( new VibratoBPList( bpx, bpy ) );
                                             } else {
-                                                id.VibratoHandle.RateBP = new VibratoBPList( bpx, bpy );
+                                                id.VibratoHandle.setRateBP( new VibratoBPList( bpx, bpy ) );
                                             }
                                             internal_ids.add( ve.InternalID );
                                             items.add( id );
@@ -5192,20 +5195,23 @@ namespace org.kbinani.cadencii {
                     if ( 0f <= x && x <= 1f ) {
                         if ( m_selected_curve.equals( CurveType.VibratoRate ) ) {
                             if ( x == 0f ) {
-                                edited.VibratoHandle.StartRate = value;
+                                edited.VibratoHandle.setStartRate( value );
                             } else {
-                                if ( edited.VibratoHandle.RateBP.getCount() <= 0 ) {
-                                    edited.VibratoHandle.RateBP = new VibratoBPList( new float[] { x },
-                                                                                     new int[] { value } );
+                                if ( edited.VibratoHandle.getRateBP().getCount() <= 0 ) {
+                                    edited.VibratoHandle.setRateBP( new VibratoBPList( new float[] { x },
+                                                                                       new int[] { value } ) );
                                 } else {
                                     Vector<Float> xs = new Vector<Float>();
                                     Vector<Integer> vals = new Vector<Integer>();
                                     boolean first = true;
-                                    for ( int i = 0; i < edited.VibratoHandle.RateBP.getCount(); i++ ) {
-                                        if ( edited.VibratoHandle.RateBP.getElement( i ).X < x ) {
-                                            xs.add( edited.VibratoHandle.RateBP.getElement( i ).X );
-                                            vals.add( edited.VibratoHandle.RateBP.getElement( i ).Y );
-                                        } else if ( edited.VibratoHandle.RateBP.getElement( i ).X == x ) {
+                                    VibratoBPList ratebp = edited.VibratoHandle.getRateBP();
+                                    int c = ratebp.getCount();
+                                    for ( int i = 0; i < c; i++ ) {
+                                        VibratoBPPair itemi = ratebp.getElement( i );
+                                        if ( itemi.X < x ) {
+                                            xs.add( itemi.X );
+                                            vals.add( itemi.Y );
+                                        } else if ( itemi.X == x ) {
                                             xs.add( x );
                                             vals.add( value );
                                             first = false;
@@ -5215,34 +5221,39 @@ namespace org.kbinani.cadencii {
                                                 vals.add( value );
                                                 first = false;
                                             }
-                                            xs.add( edited.VibratoHandle.RateBP.getElement( i ).X );
-                                            vals.add( edited.VibratoHandle.RateBP.getElement( i ).Y );
+                                            xs.add( itemi.X );
+                                            vals.add( itemi.Y );
                                         }
                                     }
                                     if ( first ) {
                                         xs.add( x );
                                         vals.add( value );
                                     }
-                                    edited.VibratoHandle.RateBP = new VibratoBPList( PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
-                                                                                     PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) );
+                                    edited.VibratoHandle.setRateBP(
+                                        new VibratoBPList( 
+                                            PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
+                                            PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) ) );
                                 }
                             }
                         } else {
                             if ( x == 0f ) {
-                                edited.VibratoHandle.StartDepth = value;
+                                edited.VibratoHandle.setStartDepth( value );
                             } else {
-                                if ( edited.VibratoHandle.DepthBP.getCount() <= 0 ) {
-                                    edited.VibratoHandle.DepthBP = new VibratoBPList( new float[] { x },
-                                                                                      new int[] { value } );
+                                if ( edited.VibratoHandle.getDepthBP().getCount() <= 0 ) {
+                                    edited.VibratoHandle.setDepthBP(
+                                        new VibratoBPList( new float[] { x }, new int[] { value } ) );
                                 } else {
                                     Vector<Float> xs = new Vector<Float>();
                                     Vector<Integer> vals = new Vector<Integer>();
                                     boolean first = true;
-                                    for ( int i = 0; i < edited.VibratoHandle.DepthBP.getCount(); i++ ) {
-                                        if ( edited.VibratoHandle.DepthBP.getElement( i ).X < x ) {
-                                            xs.add( edited.VibratoHandle.DepthBP.getElement( i ).X );
-                                            vals.add( edited.VibratoHandle.DepthBP.getElement( i ).Y );
-                                        } else if ( edited.VibratoHandle.DepthBP.getElement( i ).X == x ) {
+                                    VibratoBPList depthbp = edited.VibratoHandle.getDepthBP();
+                                    int c = depthbp.getCount();
+                                    for ( int i = 0; i < c; i++ ) {
+                                        VibratoBPPair itemi = depthbp.getElement( i );
+                                        if ( itemi.X < x ) {
+                                            xs.add( itemi.X );
+                                            vals.add( itemi.Y );
+                                        } else if ( itemi.X == x ) {
                                             xs.add( x );
                                             vals.add( value );
                                             first = false;
@@ -5252,22 +5263,26 @@ namespace org.kbinani.cadencii {
                                                 vals.add( value );
                                                 first = false;
                                             }
-                                            xs.add( edited.VibratoHandle.DepthBP.getElement( i ).X );
-                                            vals.add( edited.VibratoHandle.DepthBP.getElement( i ).Y );
+                                            xs.add( itemi.X );
+                                            vals.add( itemi.Y );
                                         }
                                     }
                                     if ( first ) {
                                         xs.add( x );
                                         vals.add( value );
                                     }
-                                    edited.VibratoHandle.DepthBP = new VibratoBPList( PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
-                                                                                      PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) );
+                                    edited.VibratoHandle.setDepthBP(
+                                        new VibratoBPList( 
+                                            PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
+                                            PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) ) );
                                 }
                             }
                         }
-                        CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventChangeIDContaints( AppManager.getSelected(),
-                                                                                                              event_id,
-                                                                                                              edited ) );
+                        CadenciiCommand run = new CadenciiCommand( 
+                            VsqCommand.generateCommandEventChangeIDContaints( 
+                                AppManager.getSelected(),
+                                event_id,
+                                edited ) );
                         executeCommand( run, true );
                     }
                 } else {

@@ -27,7 +27,7 @@ namespace org.kbinani.cadencii {
     /// MouseWheel‚ÅIncrement‚¸‚Â’l‚ğ‘Œ¸‚³‚¹‚é‚±‚Æ‚Ì‚Å‚«‚éNumericUpDown
     /// </summary>
 #if JAVA
-    public class NumericUpDownEx extends BNumericUpDown{
+    public class NumericUpDownEx extends BNumericUpDown {
 #else
     public class NumericUpDownEx : BNumericUpDown {
 #endif

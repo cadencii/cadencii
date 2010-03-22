@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.media;
 
+import org.kbinani.*;
 #else
 using System;
 

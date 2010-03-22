@@ -14,7 +14,11 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormRandomize.java
+
 import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
@@ -46,32 +50,13 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private boolean lockRequired = false;
         
-        private NumericUpDownEx numStartBar;
-        private BLabel lblStart;
-        private BLabel lblStartBar;
-        private NumericUpDownEx numStartBeat;
-        private BLabel lblStartBeat;
-        private BLabel bLabel1;
-        private BLabel lblEndBeat;
-        private NumericUpDownEx numEndBeat;
-        private BLabel lblEndBar;
-        private BLabel lblEnd;
-        private NumericUpDownEx numEndBar;
-        private BCheckBox chkShift;
-        private BLabel lblShiftValue;
-        private BComboBox comboShiftValue;
-        private BComboBox comboPitPattern;
-        private BLabel lblPitPattern;
-        private BCheckBox chkPit;
-        private BComboBox comboPitValue;
-        private BLabel lblPitValue;
-        private BLabel lblResolution;
-        private NumericUpDownEx numResolution;
-        private BButton btnCancel;
-        private BButton btnOK;
-
         public FormRandomize() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             applyLanguage();
             chkShift.setSelected( lastPositionRandomizeEnabled );
@@ -292,6 +277,8 @@ namespace org.kbinani.cadencii {
         }
 
 #if JAVA
+        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormRandomize.java
+        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormRandomize.java
 #else
         #region UI impl for C#
         /// <summary>
@@ -654,6 +641,30 @@ namespace org.kbinani.cadencii {
 
         }
         #endregion
+
+        private NumericUpDownEx numStartBar;
+        private BLabel lblStart;
+        private BLabel lblStartBar;
+        private NumericUpDownEx numStartBeat;
+        private BLabel lblStartBeat;
+        private BLabel bLabel1;
+        private BLabel lblEndBeat;
+        private NumericUpDownEx numEndBeat;
+        private BLabel lblEndBar;
+        private BLabel lblEnd;
+        private NumericUpDownEx numEndBar;
+        private BCheckBox chkShift;
+        private BLabel lblShiftValue;
+        private BComboBox comboShiftValue;
+        private BComboBox comboPitPattern;
+        private BLabel lblPitPattern;
+        private BCheckBox chkPit;
+        private BComboBox comboPitValue;
+        private BLabel lblPitValue;
+        private BLabel lblResolution;
+        private NumericUpDownEx numResolution;
+        private BButton btnCancel;
+        private BButton btnOK;
 
         #endregion
 #endif

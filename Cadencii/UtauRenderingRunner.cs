@@ -318,10 +318,10 @@ namespace org.kbinani.cadencii {
                             totalcount++;
                         }
                         Iterator<PointD> itr = new VibratoPointIterator( m_vsq,
-                                                                         item.ID.VibratoHandle.RateBP,
-                                                                         item.ID.VibratoHandle.StartRate,
-                                                                         item.ID.VibratoHandle.DepthBP,
-                                                                         item.ID.VibratoHandle.StartDepth,
+                                                                         item.ID.VibratoHandle.getRateBP(),
+                                                                         item.ID.VibratoHandle.getStartRate(),
+                                                                         item.ID.VibratoHandle.getDepthBP(),
+                                                                         item.ID.VibratoHandle.getStartDepth(),
                                                                          item.Clock + item.ID.VibratoDelay,
                                                                          item.ID.getLength() - item.ID.VibratoDelay,
                                                                          (float)delta_sec );

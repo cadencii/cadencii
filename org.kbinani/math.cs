@@ -21,7 +21,7 @@ namespace org.kbinani {
 #endif
 
 #if JAVA
-    public class math{
+    public class math {
 #else
     public partial class math {
 #endif

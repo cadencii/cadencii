@@ -38,7 +38,12 @@ namespace org.kbinani.cadencii {
         private static boolean isChangeTempo = false;
 
         public FormExportMusicXml() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             registerEventHandlers();

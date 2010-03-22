@@ -178,8 +178,8 @@ namespace org.kbinani.cadencii {
             String icon_id = "";
             if ( m_note_head_handle != null ) {
                 icon_id = m_note_head_handle.IconID;
-                txtDuration.setText( m_note_head_handle.Duration + "" );
-                txtDepth.setText( m_note_head_handle.Depth + "" );
+                txtDuration.setText( m_note_head_handle.getDuration() + "" );
+                txtDepth.setText( m_note_head_handle.getDepth() + "" );
             } else {
                 txtDuration.setEnabled( false );
                 txtDepth.setEnabled( false );
@@ -229,8 +229,8 @@ namespace org.kbinani.cadencii {
                 txtDepth.setText( aconfig.getDepth() + "" );
             }
             m_note_head_handle = (NoteHeadHandle)aconfig.clone();
-            m_note_head_handle.Duration = trackDuration.getValue();
-            m_note_head_handle.Depth = trackDepth.getValue();
+            m_note_head_handle.setDuration( trackDuration.getValue() );
+            m_note_head_handle.setDepth( trackDepth.getValue() );
         }
 
         private void trackBendDepth_Scroll( Object sender, BEventArgs e ) {
@@ -382,14 +382,14 @@ namespace org.kbinani.cadencii {
         private void trackDuration_Scroll( Object sender, BEventArgs e ) {
             txtDuration.setText( trackDuration.getValue() + "" );
             if ( m_note_head_handle != null ) {
-                m_note_head_handle.Duration = trackDuration.getValue();
+                m_note_head_handle.setDuration( trackDuration.getValue() );
             }
         }
 
         private void trackDepth_Scroll( Object sender, BEventArgs e ) {
             txtDepth.setText( trackDepth.getValue() + "" );
             if ( m_note_head_handle != null ) {
-                m_note_head_handle.Depth = trackDepth.getValue();
+                m_note_head_handle.setDepth( trackDepth.getValue() );
             }
         }
 
@@ -405,7 +405,7 @@ namespace org.kbinani.cadencii {
                     txtDuration.setText( draft + "" );
                     trackDuration.setValue( draft );
                     if ( m_note_head_handle != null ) {
-                        m_note_head_handle.Duration = draft;
+                        m_note_head_handle.setDuration( draft );
                     }
                 }
             } catch ( Exception ex ) {
@@ -424,7 +424,7 @@ namespace org.kbinani.cadencii {
                     txtDepth.setText( draft + "" );
                     trackDepth.setValue( draft );
                     if ( m_note_head_handle != null ) {
-                        m_note_head_handle.Depth = trackDepth.getValue();
+                        m_note_head_handle.setDepth( trackDepth.getValue() );
                     }
                 }
             } catch ( Exception ex ) {

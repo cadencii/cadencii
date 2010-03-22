@@ -68,9 +68,11 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
+#if !JAVA
             this.mouseDownEvent.add( new BMouseEventHandler( this, "FormSplash_MouseDown" ) );
             this.mouseUpEvent.add( new BMouseEventHandler( this, "FormSplash_MouseUp" ) );
             this.mouseMoveEvent.add( new BMouseEventHandler( this, "FormSplash_MouseMove" ) );
+#endif
         }
 
 #if JAVA

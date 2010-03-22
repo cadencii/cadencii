@@ -15,6 +15,7 @@
 package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\cadencii\FormAskKeySoundGeneration.java
+
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 import org.kbinani.apputil.*;
@@ -33,13 +34,13 @@ namespace org.kbinani.cadencii {
 #else
     public class FormAskKeySoundGeneration : BForm {
 #endif
-        private BButton btnNo;
-        private BCheckBox chkAlwaysPerformThisCheck;
-        private BLabel lblMessage;
-        private BButton btnYes;
-    
         public FormAskKeySoundGeneration() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -154,6 +155,12 @@ namespace org.kbinani.cadencii {
             this.PerformLayout();
 
         }
+
+        private BButton btnNo;
+        private BCheckBox chkAlwaysPerformThisCheck;
+        private BLabel lblMessage;
+        private BButton btnYes;
+
 #endif
     }
 
