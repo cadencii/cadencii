@@ -238,7 +238,11 @@ namespace org.kbinani.cadencii {
                 }
 
                 if ( mixall && waveWriter != null ) {
-                    waveWriter.append( L, R );
+                    try {
+                        waveWriter.append( L, R );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );
+                    }
                 }
 
                 if ( mixall ) {

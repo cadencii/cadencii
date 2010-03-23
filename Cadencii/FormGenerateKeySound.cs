@@ -149,7 +149,11 @@ namespace org.kbinani.cadencii {
                 m_cancel_required = true;
                 while ( m_cancel_required ) {
 #if JAVA
-                    Thread.sleep( 0 );
+                    try{
+                        Thread.sleep( 0 );
+                    } catch ( InterruptedException ex ) {
+                        break;
+                    }
 #else
                     Application.DoEvents();
 #endif

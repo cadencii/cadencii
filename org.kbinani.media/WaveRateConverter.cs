@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.media;
 
+import java.io.*;
 import org.kbinani.*;
 #else
 using System;
@@ -111,7 +112,11 @@ namespace org.kbinani.media {
             return aTotalSamples;
         }
 
-        public void read( long index, int length, double[] left, double[] right ) {
+        public void read( long index, int length, double[] left, double[] right )
+#if JAVA
+            throws IOException
+#endif
+        {
             if ( bRate == aRate ) {
                 reader.read( index, length, left, right );
             } else {
@@ -166,7 +171,11 @@ namespace org.kbinani.media {
             }
         }
 
-        public void close() {
+        public void close() 
+#if JAVA
+            throws IOException
+#endif
+        {
             if ( reader == null ) {
                 return;
             }

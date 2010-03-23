@@ -344,6 +344,7 @@ public class FormMain extends BForm {
     private JPanel jPanel = null;
     private JLabel jLabel = null;
 	private BPictureBox pictOverview = null;
+    private BMenuItem menuHiddenPlayFromStartMarker = null;
 
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
@@ -536,7 +537,20 @@ public class FormMain extends BForm {
 		return pictOverview;
 	}
 
-	public static void main( String[] args ){
+	/**
+     * This method initializes menuHiddenPlayFromStartMarker	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenPlayFromStartMarker() {
+        if (menuHiddenPlayFromStartMarker == null) {
+            menuHiddenPlayFromStartMarker = new BMenuItem();
+            menuHiddenPlayFromStartMarker.setText("Play From Start Marker");
+        }
+        return menuHiddenPlayFromStartMarker;
+    }
+
+    public static void main( String[] args ){
        FormMain form = new FormMain( "" );
        form.setVisible( true );
     }
@@ -4162,6 +4176,7 @@ public class FormMain extends BForm {
             menuHidden.add(getMenuHiddenShorten());
             menuHidden.add(getMenuHiddenGoToStartMarker());
             menuHidden.add(getMenuHiddenGoToEndMarker());
+            menuHidden.add(getMenuHiddenPlayFromStartMarker());
         }
         return menuHidden;
     }

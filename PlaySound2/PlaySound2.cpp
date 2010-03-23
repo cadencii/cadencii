@@ -30,7 +30,6 @@ void SoundUnprepare() {
     }
     waveOutClose( wave_out );
     wave_out = NULL;
-    is_busy = false;
     LeaveCriticalSection( &locker );
 }
 

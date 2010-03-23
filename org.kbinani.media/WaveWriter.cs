@@ -72,7 +72,11 @@ namespace org.kbinani.media {
         /// <param name="length"></param>
         /// <param name="L"></param>
         /// <param name="R"></param>
-        public void replace( long pos, int length, double[] L, double[] R ) {
+        public void replace( long pos, int length, double[] L, double[] R ) 
+#if JAVA
+            throws IOException
+#endif
+        {
             long lastPos = m_stream.getFilePointer();
             long posFile = pos * m_channel * m_bit_per_sample / 8 + m_pos_data_chunk;
             long streamLen = m_stream.length();
@@ -358,7 +362,11 @@ namespace org.kbinani.media {
             m_total_samples += (int)total;
         }
 
-        public void append( double[] L, double[] R ) {
+        public void append( double[] L, double[] R ) 
+#if JAVA
+            throws IOException
+#endif
+        {
             int length = Math.Min( L.Length, R.Length );
             append( L, R, length );
         }

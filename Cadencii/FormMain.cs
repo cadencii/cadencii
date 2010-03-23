@@ -513,7 +513,6 @@ namespace org.kbinani.cadencii {
         /// AppManager.inputTextBoxがhideInputTextBoxによって隠された後、何回目のEnterキーの入力を受けたかを表すカウンター。
         /// </summary>
         private int numEnterKeyAfterHideInputTextBox = 0;
-        public BMenuItem menuHiddenPlayFromStartMarker;
         /// <summary>
         /// 特殊な取り扱いが必要なショートカットのキー列と、対応するメニューアイテムを保存しておくリスト。
         /// </summary>
@@ -7399,7 +7398,7 @@ namespace org.kbinani.cadencii {
                         int pattern = dlg.getPitRandomizePattern();
                         int value = dlg.getPitRandomizeValue();
                         double order = 1.0 / Math.Pow( 2.0, 5.0 - value );
-                        int[] patternPreset = pattern == 1 ? Utility.RANDOMIZE_PIT_PATTERN1 : pattern == 2 ? Utility.RANDOMIZE_PIT_PATTERN2 : Utility.RANDOMIZE_PIT_PATTERN3;
+                        int[] patternPreset = pattern == 1 ? Utility.getRandomizePitPattern1() : pattern == 2 ? Utility.getRandomizePitPattern2() : Utility.getRandomizePitPattern3();
                         int resolution = dlg.getResolution();
                         VsqBPList pit = work.getCurve( "pit" );
                         VsqBPList pbs = work.getCurve( "pbs" );
@@ -8370,40 +8369,6 @@ namespace org.kbinani.cadencii {
 #endif
                 }
                 m_versioninfo.setVisible( true );
-            }
-        }
-
-#if JAVA
-        class SimpleWaveReceiver implements IWaveReceiver {
-#else
-        class SimpleWaveReceiver : IWaveReceiver {
-#endif
-            WaveWriter writer = null;
-            int sampleRate;
-
-            public SimpleWaveReceiver( String file, int sample_rate ) {
-                try {
-                    writer = new WaveWriter( file, 2, 16, sample_rate );
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormMain$SimpleWaveReceiver#.ctor; ex=" + ex );
-                }
-                sampleRate = sample_rate;
-            }
-
-            public void append( double[] left, double[] right ) {
-                writer.append( left, right );
-            }
-
-            public void close() {
-                try {
-                    writer.close();
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormMain$SimpleWaveReceier#close; ex=" + ex );
-                }
-            }
-
-            public int getSampleRate() {
-                return sampleRate;
             }
         }
 
@@ -19969,6 +19934,8 @@ namespace org.kbinani.cadencii {
         public BMenuItem menuHiddenGoToEndMarker;
         private BMenuItem cMenuTrackTabPlayAfterSynth;
         private BMenuItem menuTrackPlayAfterSynth;
+        public BMenuItem menuHiddenPlayFromStartMarker;
+
         #endregion
 #endif
 

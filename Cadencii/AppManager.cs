@@ -2129,7 +2129,12 @@ namespace org.kbinani.cadencii {
         /// 設定ファイルが壊れていたり存在しない場合、デフォルトの設定が使われます。
         /// </summary>
         public static void loadConfig() {
-            String config_file = PortUtil.combinePath( Utility.getApplicationDataPath(), CONFIG_FILE_NAME );
+            String appdata = Utility.getApplicationDataPath();
+            if ( appdata.Equals( "" ) ) {
+                editorConfig = new EditorConfig();
+                return;
+            }
+            String config_file = PortUtil.combinePath( appdata, CONFIG_FILE_NAME );
             EditorConfig ret = null;
             if ( PortUtil.isFileExists( config_file ) ) {
                 try {
@@ -2139,7 +2144,7 @@ namespace org.kbinani.cadencii {
                     ret = null;
                 }
             } else {
-                config_file = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), CONFIG_FILE_NAME );
+                config_file = PortUtil.combinePath( appdata, CONFIG_FILE_NAME );
                 if ( PortUtil.isFileExists( config_file ) ) {
                     try {
                         ret = EditorConfig.deserialize( config_file );

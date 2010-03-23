@@ -357,7 +357,11 @@ namespace org.kbinani.cadencii {
                     PortUtil.println( "VSTiProxy#render; waiting (s_rendering_context!=null)" );
 #endif
 #if JAVA
-                    Thread.sleep( 0 );
+                    try{
+                        Thread.sleep( 0 );
+                    }catch( InterruptedException ex ){
+                        break;
+                    }
 #else
                     System.Windows.Forms.Application.DoEvents();
 #endif
