@@ -14,14 +14,15 @@ import javax.swing.JLabel;
 
 public class BLabel extends JLabel{
     private static final long serialVersionUID = -6416404129933688215L;
-    private boolean flg = true;
+    private int drawCount = 0;
     private GlyphVector gvtext;
+    private boolean autoEllipsis = false;
 
     public BLabel(){
         super();
         addComponentListener( new ComponentAdapter(){
             public void componentResized( ComponentEvent e ){
-                flg = true;
+                drawCount = 0;
                 repaint();
             }
         } );
@@ -49,19 +50,31 @@ public class BLabel extends JLabel{
         return gv;
     }
     
-    /*protected void paintComponent(Graphics g) {
-        //super.paintComponent( g );
-        Graphics2D g2 = (Graphics2D)g;
-        if( flg ){
-            Insets insets = getInsets();
-            int wrap = getWidth() - insets.left - insets.right;
-            FontRenderContext frc = g2.getFontRenderContext();
-            gvtext = getWrappedGlyphVector( getText(), wrap, getFont(), frc );
-            flg = false;
+    public void setAutoEllipsis( boolean value ){
+        autoEllipsis = value;
+    }
+    
+    public boolean getAutoEllipsis(){
+        return autoEllipsis;
+    }
+    
+    protected void paintComponent( Graphics g ){
+        if( autoEllipsis ){
+            Graphics2D g2 = (Graphics2D)g;
+            if( drawCount == 0 ){
+                Insets insets = getInsets();
+                int wrap = getWidth() - insets.left - insets.right;
+                FontRenderContext frc = g2.getFontRenderContext();
+                gvtext = getWrappedGlyphVector( getText(), wrap, getFont(), frc );
+                drawCount = 1;
+            }
+            g2.setPaint( getForeground() );
+            g2.drawGlyphVector( gvtext,
+                                getInsets().left,
+                                getInsets().top + getFont().getSize() );
+        }else{
+            super.paintComponent( g );
         }
-        g2.setPaint( getForeground() );
-        g2.drawGlyphVector( gvtext,
-                            getInsets().left,
-                            getInsets().top + getFont().getSize() );
-    }*/
+    }
+
 }

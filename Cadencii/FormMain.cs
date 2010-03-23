@@ -8377,6 +8377,17 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.curveOnPianoroll = !AppManager.curveOnPianoroll;
 
+            int mnemonic = menuFile.getMnemonic();
+            AppManager.showMessageBox( "mnemonic=" + new string( (char)mnemonic, 1 ) );
+            InputBox ib = new InputBox( "enter new mnemonic" );
+            if ( ib.showDialog() == BDialogResult.OK ) {
+                String s = ib.getResult();
+                if ( PortUtil.getStringLength( s ) > 0 ) {
+                    int code = (int)s[0];
+                    menuFile.setMnemonic( code );
+                }
+            }
+
             /*VsqFileEx vsq = AppManager.getVsqFile();
             int ms_presend = AppManager.editorConfig.PreSendTime;
             for ( int i = vsq.getPreMeasureClocks(); i < vsq.TotalClocks; i++ ) {
@@ -13268,18 +13279,29 @@ namespace org.kbinani.cadencii {
             stripBtnGrid.setToolTipText( _( "Grid" ) );
 
             #region main menu
-            menuFile.setText( _( "File" ) + "(&F)" );
-            menuFileNew.setText( _( "New" ) + "(&N)" );
-            menuFileOpen.setText( _( "Open" ) + "(&O)" );
-            menuFileOpenVsq.setText( _( "Open VSQ/Vocaloid Midi" ) + "(&V)" );
-            menuFileOpenUst.setText( _( "Open UTAU Project File" ) + "(&U)" );
-            menuFileSave.setText( _( "Save" ) + "(&S)" );
-            menuFileSaveNamed.setText( _( "Save As" ) + "(&A)" );
-            menuFileImport.setText( _( "Import" ) + "(&I)" );
+            menuFile.setText( _( "File" ) );
+            menuFile.setMnemonic( KeyEvent.VK_F );
+            menuFileNew.setText( _( "New" ) );
+            menuFileNew.setMnemonic( KeyEvent.VK_N );
+            menuFileOpen.setText( _( "Open" ) );
+            menuFileOpen.setMnemonic( KeyEvent.VK_O );
+            menuFileOpenVsq.setText( _( "Open VSQ/Vocaloid Midi" ) );
+            menuFileOpenVsq.setMnemonic( KeyEvent.VK_V );
+            menuFileOpenUst.setText( _( "Open UTAU Project File" ) );
+            menuFileOpenUst.setMnemonic( KeyEvent.VK_U );
+            menuFileSave.setText( _( "Save" ) );
+            menuFileSave.setMnemonic( KeyEvent.VK_S );
+            menuFileSaveNamed.setText( _( "Save As" ) );
+            menuFileSaveNamed.setMnemonic( KeyEvent.VK_A );
+            menuFileImport.setText( _( "Import" ) );
+            menuFileImport.setMnemonic( KeyEvent.VK_I );
             menuFileImportVsq.setText( _( "VSQ / Vocaloid Midi" ) );
-            menuFileExport.setText( _( "Export" ) + "(&E)" );
-            menuFileRecent.setText( _( "Recent Files" ) + "(&R)" );
-            menuFileQuit.setText( _( "Quit" ) + "(&Q)" );
+            menuFileExport.setText( _( "Export" ) );
+            menuFileExport.setMnemonic( KeyEvent.VK_E );
+            menuFileRecent.setText( _( "Recent Files" ) );
+            menuFileRecent.setMnemonic( KeyEvent.VK_R );
+            menuFileQuit.setText( _( "Quit" ) );
+            menuFileQuit.setMnemonic( KeyEvent.VK_Q );
 
             menuEdit.setText( _( "Edit" ) + "(&E)" );
             menuEditUndo.setText( _( "Undo" ) + "(&U)" );

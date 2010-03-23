@@ -428,6 +428,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static boolean curveOnPianoroll = false;
 
+
         #region 裏設定項目
         /// <summary>
         /// 再生中にWAVE波形の描画をスキップするかどうか（デフォルトはtrue）

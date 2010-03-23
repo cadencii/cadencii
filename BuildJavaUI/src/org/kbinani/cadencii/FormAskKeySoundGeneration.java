@@ -58,6 +58,8 @@ public class FormAskKeySoundGeneration extends BForm {
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.ipady = 16;
+            gridBagConstraints1.anchor = GridBagConstraints.WEST;
+            gridBagConstraints1.insets = new Insets(0, 16, 0, 0);
             gridBagConstraints1.gridy = 1;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.gridx = 0;
@@ -65,10 +67,11 @@ public class FormAskKeySoundGeneration extends BForm {
             gridBagConstraints.weighty = 1.0D;
             gridBagConstraints.fill = GridBagConstraints.BOTH;
             gridBagConstraints.ipadx = 0;
-            gridBagConstraints.insets = new Insets(16, 16, 16, 16);
+            gridBagConstraints.insets = new Insets(16, 16, 8, 16);
             gridBagConstraints.gridy = 0;
             lblMessage = new BLabel();
             lblMessage.setText("It seems some key-board sounds are missing.\nDo you want to re-generate them now?");
+            lblMessage.setAutoEllipsis(true);
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
             jPanel.add(lblMessage, gridBagConstraints);

@@ -31,6 +31,8 @@ namespace org.kbinani.cadencii {
 #else
     public class NumericUpDownEx : BNumericUpDown {
 #endif
+        private const long serialVersionUID = -4608658084088065812L;
+
         public NumericUpDownEx() {
 #if !JAVA
             this.GotFocus += new EventHandler( NumericUpDownEx_GotFocus );

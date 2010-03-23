@@ -63,13 +63,12 @@ public class BDelegate{
                 }
             }
             if( same ){
-                System.out.println( "BDelegate#.ctor; method found" );
                 m_method = method;
                 break;
             }
         }
         if( m_method == null ){
-            throw new Exception( "don't know such method" );
+            throw new Exception( "don't know such method '" + method_name + "'" );
         }
     }
     
@@ -87,7 +86,7 @@ public class BDelegate{
         try{
             ret = m_method.invoke( m_invoker, args );
         }catch( Exception ex ){
-            System.out.println( "BDelegate#invoke; ex=" + ex );
+            System.err.println( "BDelegate#invoke; ex=" + ex );
         }
         return ret;
     }

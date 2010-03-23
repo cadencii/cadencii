@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
+import javax.swing.JWindow;
 import javax.swing.UIManager;
 import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
@@ -144,6 +145,7 @@ public class BForm extends JFrame
     public class ShowDialogRunner implements Runnable{
         public void run(){
             setVisible( true );
+            m_closed = false;
             while( !m_closed ){
                 try{
                     Thread.sleep( 100 );

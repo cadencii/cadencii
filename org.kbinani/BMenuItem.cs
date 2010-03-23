@@ -382,6 +382,60 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        public int getMnemonic() {
+            String text = getText();
+            if ( text.Length < 2 ) {
+                return 0;
+            }
+
+            char lastc = text[0];
+            int detected = 0;
+            for ( int i = 1; i < text.Length; i++ ) {
+                char c = text[i];
+                if ( lastc == '&' && c != '&' ) {
+                    c = Char.ToUpper( c );
+                    int code = (int)c;
+                    if ( 48 <= code && code <= 57 ) {
+                        detected = code;
+                    } else if ( 65 <= code && code <= 90 ) {
+                        detected = code;
+                    }
+                }
+                lastc = c;
+            }
+            return detected;
+        }
+
+        public void setMnemonic( int value ) {
+            if ( value == 0 ) {
+                return;
+            }
+            if ( (value < 48 || 57 < value) && (value < 65 || 90 < value) ) {
+                return;
+            }
+
+            String text = getText();
+            if ( text.Length >= 2 ) {
+                char lastc = text[0];
+                int index = -1; // 第index文字目が、ニーモニック
+                for ( int i = 1; i < text.Length; i++ ) {
+                    char c = text[i];
+                    if ( lastc == '&' && c != '&' ) {
+                        index = i;
+                    }
+                    lastc = c;
+                }
+
+                if ( index >= 0 ) {
+                    string newtext = text.Substring( 0, index ) + new string( (char)value, 1 ) + ((index + 1 < text.Length) ? text.Substring( index + 1 ) : "");
+                    setText( newtext );
+                    return;
+                }
+            }
+
+            setText( text + "(&" + new string( (char)value, 1 ) + ")" );
+        }
+
         public bool isCheckOnClick() {
             return base.CheckOnClick;
         }

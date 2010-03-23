@@ -25,6 +25,14 @@ namespace org.kbinani.windows.forms{
             base.Text = value;
         }
 
+        public bool getAutoEllipsis() {
+            return base.AutoEllipsis;
+        }
+
+        public void setAutoEllipsis( bool value ) {
+            base.AutoEllipsis = value;
+        }
+
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {

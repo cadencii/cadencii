@@ -299,7 +299,7 @@ class pp_cs2java {
         using ( StreamWriter sw = new StreamWriter( tmp, false, enc ) )
         using ( StreamReader sr = new StreamReader( tmp2, Encoding.GetEncoding( s_encoding ) ) ) {
 #if DEBUG
-            Console.WriteLine( "path=" + path );
+            //Console.WriteLine( "path=" + path );
 #endif
             String line = "";
             int line_num = 0;
@@ -307,7 +307,7 @@ class pp_cs2java {
             String comment_indent = "";
             while ( (line = sr.ReadLine()) != null ) {
 #if DEBUG
-                Console.WriteLine( "pp_cs2java#preprocessCor; line=" + line );
+                //Console.WriteLine( "pp_cs2java#preprocessCor; line=" + line );
 #endif
                 string linetrim = line.Trim();
                 line_num++;
@@ -493,7 +493,7 @@ class pp_cs2java {
         }
 
 #if DEBUG
-		Console.WriteLine( "pp_cs2java#preprocessCor; package=" + package );
+		//Console.WriteLine( "pp_cs2java#preprocessCor; package=" + package );
 #endif
         String out_path = "";
         if ( package == "" ) {
@@ -519,7 +519,7 @@ class pp_cs2java {
             out_path = Path.Combine( out_path, Path.GetFileNameWithoutExtension( path ) + ".java" );
         }
 #if DEBUG
-        Console.WriteLine( "pp_cs2java#preprocessCor; out_path=" + out_path );
+        //Console.WriteLine( "pp_cs2java#preprocessCor; out_path=" + out_path );
 #endif
 
         if ( File.Exists( out_path ) ) {

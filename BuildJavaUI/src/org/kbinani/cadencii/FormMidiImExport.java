@@ -10,6 +10,7 @@ import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
@@ -18,9 +19,6 @@ import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BRadioButton;
-import org.kbinani.windows.forms.BTextBox;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
 //SECTION-END-IMPORT
 public class FormMidiImExport extends BForm {

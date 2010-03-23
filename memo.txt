@@ -14,6 +14,8 @@
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
 -org.kbinani.dllの*EventHandler.csのJava実装部分がBuildJavaUIからプリプロセッサ・インポートしない書き方になっているのでこれを直す．eclipseで開いたときこれらのイベントハンドラが無いとテスト実行できないので．
+-BMenuItem#setMnemonicでニーモニックを設定するように変更。
+-BDialogを実装し、BFrameとBDialogの区別を付ける。
 
 -v3.1.4todo------------------------------------------------------------
 -ピアノロール上でピッチベンドを編集する機能
