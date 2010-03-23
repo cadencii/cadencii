@@ -95,9 +95,6 @@ class makeRes{
                 string type = spl[1];
                 string tpath = spl[2];
                 string path = Path.Combine( basedir, tpath );
-                if( !File.Exists( path ) ){
-                    continue;
-                }
 
                 if( type == "Image" ){
                     string instance = "s_" + name;
