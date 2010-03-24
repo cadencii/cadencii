@@ -28,8 +28,6 @@ namespace org.kbinani.windows.forms {
     using boolean = System.Boolean;
 
     public class BForm : System.Windows.Forms.Form {
-        protected BDialogResult m_result = BDialogResult.CANCEL;
-
         // root impl of Load event
         #region event impl Load
         // root impl of Load event is in BForm.cs
@@ -136,41 +134,6 @@ namespace org.kbinani.windows.forms {
 
         public BForm()
             : base() {
-        }
-
-        public void setDialogResult( BDialogResult value ) {
-            switch ( value ) {
-                case BDialogResult.YES:
-                    this.DialogResult = System.Windows.Forms.DialogResult.Yes;
-                    break;
-                case BDialogResult.NO:
-                    this.DialogResult = System.Windows.Forms.DialogResult.No;
-                    break;
-                case BDialogResult.OK:
-                    this.DialogResult = System.Windows.Forms.DialogResult.OK;
-                    break;
-                case BDialogResult.CANCEL:
-                    this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-                    break;
-            }
-        }
-
-        public BDialogResult getDialogResult() {
-            return m_result;
-        }
-
-        public BDialogResult showDialog() {
-            System.Windows.Forms.DialogResult dr = base.ShowDialog();
-            if ( dr == System.Windows.Forms.DialogResult.OK ) {
-                m_result = BDialogResult.OK;
-            } else if ( dr == System.Windows.Forms.DialogResult.Cancel ) {
-                m_result = BDialogResult.CANCEL;
-            } else if ( dr == System.Windows.Forms.DialogResult.Yes ) {
-                m_result = BDialogResult.YES;
-            } else if ( dr == System.Windows.Forms.DialogResult.No ) {
-                m_result = BDialogResult.NO;
-            }
-            return m_result;
         }
 
         public void close() {
@@ -306,6 +269,7 @@ namespace org.kbinani.windows.forms {
         }
 #endif
 
+#if !COMPONENT_DISABLE_VISIBLE
         public bool isVisible() {
             return base.Visible;
         }
@@ -313,6 +277,7 @@ namespace org.kbinani.windows.forms {
         public void setVisible( bool value ) {
             base.Visible = value;
         }
+#endif
 
 #if COMPONENT_ENABLE_TOOL_TIP_TEXT
         public void setToolTipText( string value )

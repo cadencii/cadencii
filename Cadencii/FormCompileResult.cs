@@ -30,9 +30,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormCompileResult extends BForm {
+    public class FormCompileResult extends BDialog {
 #else
-    public class FormCompileResult : BForm {
+    public class FormCompileResult : BDialog {
 #endif
         public FormCompileResult( String message, String errors ) {
 #if JAVA

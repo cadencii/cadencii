@@ -31,9 +31,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormRealtimeConfig extends BForm {
+    public class FormRealtimeConfig extends BDialog {
 #else
-    public class FormRealtimeConfig : BForm {
+    public class FormRealtimeConfig : BDialog {
 #endif
         private boolean m_game_ctrl_enabled = false;
         private double m_last_event_processed;

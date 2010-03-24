@@ -1364,10 +1364,10 @@ namespace org.kbinani {
 
         public static String combinePath( String path1, String path2 ) {
 #if JAVA
-            if( path1.endsWith( File.separator ) ){
+            if( path1 != null && path1.endsWith( File.separator ) ){
                 path1 = path1.substring( 0, path1.length() - 1 );
             }
-            if( path2.startsWith( File.separator ) ){
+            if( path2 != null && path2.startsWith( File.separator ) ){
                 path2 = path2.substring( 1 );
             }
             return path1 + File.separator + path2;
@@ -1378,7 +1378,12 @@ namespace org.kbinani {
 
         public static String getTempPath() {
 #if JAVA
-            return System.getProperty( "java.io.tmpdir" );
+            String ret = System.getProperty( "java.io.tmpdir" );
+            if( ret == null ){
+                return "";
+            }else{
+                return ret;
+            }
 #else
             return Path.GetTempPath();
 #endif

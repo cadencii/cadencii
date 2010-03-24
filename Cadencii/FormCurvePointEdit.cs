@@ -37,9 +37,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormCurvePointEdit extends BForm {
+    public class FormCurvePointEdit extends BDialog {
 #else
-    public class FormCurvePointEdit : BForm {
+    public class FormCurvePointEdit : BDialog {
 #endif
         long m_editing_id = -1;
         CurveType m_curve;

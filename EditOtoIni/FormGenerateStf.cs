@@ -37,9 +37,9 @@ namespace org.kbinani.editotoini {
 #endif
 
 #if JAVA
-    public class FormGenerateStf extends BForm {
+    public class FormGenerateStf extends BDialog {
 #else
-    public class FormGenerateStf : BForm {
+    public class FormGenerateStf : BDialog {
 #endif
         public enum GenerateMode {
             FRQ,

@@ -16,7 +16,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.Font;
 import java.awt.Color;
 
-public class BFontChooser extends BForm {
+public class BFontChooser extends BDialog {
 
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;

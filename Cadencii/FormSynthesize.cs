@@ -46,9 +46,9 @@ namespace org.kbinani.cadencii {
     /// レンダリングの進捗状況を表示しながら，バックグラウンドでレンダリングを行うフォーム．フォームのLoadと同時にレンダリングが始まる．
     /// </summary>
 #if JAVA
-    public class FormSynthesize extends BForm {
+    public class FormSynthesize extends BDialog {
 #else
-    public class FormSynthesize : BForm {
+    public class FormSynthesize : BDialog {
 #endif
         private VsqFileEx m_vsq;
         private int m_presend = 500;

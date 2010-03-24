@@ -30,9 +30,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormTempoConfig extends BForm{
+    public class FormTempoConfig extends BDialog {
 #else
-    class FormTempoConfig : BForm {
+    class FormTempoConfig : BDialog {
 #endif
         public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, float tempo, int pre_measure ) {
 #if JAVA

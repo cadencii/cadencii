@@ -41,9 +41,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class Preference extends BForm {
+    public class Preference extends BDialog {
 #else
-    class Preference : BForm {
+    class Preference : BDialog {
 #endif
         Font m_base_font;
         Font m_screen_font;
@@ -1091,7 +1091,8 @@ namespace org.kbinani.cadencii {
 
         public void btnChangeMenuFont_Click( Object sender, BEventArgs e ) {
             fontDialog.setSelectedFont( getBaseFont() );
-            if ( fontDialog.showDialog() == BDialogResult.OK ) {
+            fontDialog.setVisible( true );
+            if ( fontDialog.getDialogResult() == BDialogResult.OK ) {
                 m_base_font = fontDialog.getSelectedFont();
             }
         }
@@ -1119,7 +1120,8 @@ namespace org.kbinani.cadencii {
 
         public void btnChangeScreenFont_Click( Object sender, BEventArgs e ) {
             fontDialog.setSelectedFont( m_screen_font );
-            if ( fontDialog.showDialog() == BDialogResult.OK ) {
+            fontDialog.setVisible( true );
+            if ( fontDialog.getDialogResult() == BDialogResult.OK ) {
                 m_screen_font = fontDialog.getSelectedFont();
             }
         }
@@ -1252,7 +1254,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void btnAdd_Click( Object sender, BEventArgs e ) {
-            if ( folderBrowserSingers.showDialog() == BDialogResult.OK ) {
+            folderBrowserSingers.setVisible( true );
+            if ( folderBrowserSingers.getDialogResult() == BDialogResult.OK ) {
                 String dir = folderBrowserSingers.getSelectedPath();
                 SingerConfig sc = new SingerConfig();
                 String character = PortUtil.combinePath( dir, "character.txt" );

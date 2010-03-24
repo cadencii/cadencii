@@ -35,9 +35,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormVibratoConfig extends BForm{
+    public class FormVibratoConfig extends BDialog{
 #else
-    public class FormVibratoConfig : BForm {
+    public class FormVibratoConfig : BDialog {
 #endif
         private VibratoHandle m_vibrato;
         private int m_note_length;

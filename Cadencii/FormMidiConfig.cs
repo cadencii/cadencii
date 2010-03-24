@@ -34,9 +34,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormMidiConfig extends BForm {
+    public class FormMidiConfig extends BDialog {
 #else
-    public unsafe class FormMidiConfig : BForm {
+    public unsafe class FormMidiConfig : BDialog {
 #endif
         private byte m_program_normal;
         private byte m_program_bell;

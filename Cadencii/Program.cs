@@ -108,7 +108,8 @@ namespace org.kbinani.cadencii{
 
         static void showSplash() {
             splash = new FormSplash();
-            splash.showDialog();
+            splash.setModal( true );
+            splash.setVisible( true );
         }
 
         static void closeSplash() {

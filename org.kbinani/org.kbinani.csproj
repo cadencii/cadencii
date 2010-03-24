@@ -75,6 +75,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BDelegate.cs" />
+    <Compile Include="BDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="BDialogResult.cs" />
     <Compile Include="BDoWorkEventArgs.cs" />
     <Compile Include="BDoWorkEventHandler.cs" />

@@ -138,7 +138,8 @@ namespace org.kbinani.cadencii {
 
         private void btnBrowse_Click( Object sender, BEventArgs e ) {
             folderBrowser.setSelectedPath( txtDir.getText() );
-            if ( folderBrowser.showDialog() != BDialogResult.OK ) {
+            folderBrowser.setVisible( true );
+            if ( folderBrowser.getDialogResult() != BDialogResult.OK ) {
                 return;
             }
             txtDir.setText( folderBrowser.getSelectedPath() );

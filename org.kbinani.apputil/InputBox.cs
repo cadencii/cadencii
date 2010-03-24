@@ -28,9 +28,9 @@ namespace org.kbinani.apputil {
 #endif
 
 #if JAVA
-    public class InputBox extends BForm{
+    public class InputBox extends BDialog {
 #else
-    public class InputBox : BForm {
+    public class InputBox : BDialog {
 #endif
         private BLabel lblMessage;
         private BButton btnCancel;

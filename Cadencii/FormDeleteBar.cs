@@ -30,9 +30,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormDeleteBar extends BForm{
+    public class FormDeleteBar extends BDialog {
 #else
-    class FormDeleteBar : BForm {
+    class FormDeleteBar : BDialog {
 #endif
         public FormDeleteBar( int max_barcount ) {
 #if JAVA

@@ -28,9 +28,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormSplash extends BForm {
+    public class FormSplash extends BDialog {
 #else
-    public class FormSplash : BForm {
+    public class FormSplash : BDialog {
 #endif
         boolean mouseDowned = false;
         Point mouseDownedLocation = new Point( 0, 0 );

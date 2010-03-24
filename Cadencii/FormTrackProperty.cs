@@ -32,9 +32,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormTrackProperty extends BForm{
+    public class FormTrackProperty extends BDialog {
 #else
-    public class FormTrackProperty : BForm {
+    public class FormTrackProperty : BDialog {
 #endif
         private int m_master_tuning;
 

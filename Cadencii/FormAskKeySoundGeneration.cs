@@ -30,9 +30,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormAskKeySoundGeneration extends BForm {
+    public class FormAskKeySoundGeneration extends BDialog {
 #else
-    public class FormAskKeySoundGeneration : BForm {
+    public class FormAskKeySoundGeneration : BDialog {
 #endif
         public FormAskKeySoundGeneration() {
 #if JAVA

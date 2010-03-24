@@ -1258,7 +1258,8 @@ namespace org.kbinani.editotoini {
             Vector<StfQueueArgs> list = new Vector<StfQueueArgs>();
             list.add( queue );
             FormGenerateStf form = new FormGenerateStf( m_oto_ini, list, FormGenerateStf.GenerateMode.STF );
-            form.showDialog();
+            form.setModal( true );
+            form.setVisible( true );
             form = null;
             checkSTFExistence();
             setEdited( true );
@@ -1290,7 +1291,8 @@ namespace org.kbinani.editotoini {
             Vector<StfQueueArgs> list = new Vector<StfQueueArgs>();
             list.add( queue );
             FormGenerateStf form = new FormGenerateStf( m_oto_ini, list, FormGenerateStf.GenerateMode.FRQ );
-            form.showDialog();
+            form.setModal( true );
+            form.setVisible( true );
             checkFRQExistence();
             setEdited( true );
         }

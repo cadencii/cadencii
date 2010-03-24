@@ -31,9 +31,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormExportMusicXml extends BForm {
+    public class FormExportMusicXml extends BDialog {
 #else
-    public class FormExportMusicXml : BForm {
+    public class FormExportMusicXml : BDialog {
 #endif
         private static boolean isChangeTempo = false;
 

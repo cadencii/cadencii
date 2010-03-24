@@ -42,9 +42,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormShortcutKeys extends BForm{
+    public class FormShortcutKeys extends BDialog {
 #else
-    public class FormShortcutKeys : BForm {
+    public class FormShortcutKeys : BDialog {
 #endif
         private TreeMap<String, ValuePair<String, BKeys[]>> m_dict;
         private TreeMap<String, ValuePair<String, BKeys[]>> m_first_dict;

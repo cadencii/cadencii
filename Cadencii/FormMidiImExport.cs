@@ -33,9 +33,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormMidiImExport extends BForm {
+    public class FormMidiImExport extends BDialog {
 #else
-    public class FormMidiImExport : BForm {
+    public class FormMidiImExport : BDialog {
 #endif
         public enum FormMidiMode {
             IMPORT,

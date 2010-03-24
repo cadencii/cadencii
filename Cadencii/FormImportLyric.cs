@@ -33,9 +33,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormImportLyric extends BForm {
+    public class FormImportLyric extends BDialog {
 #else
-    class FormImportLyric : BForm {
+    class FormImportLyric : BDialog {
 #endif
         private int m_max_notes = 1;
 

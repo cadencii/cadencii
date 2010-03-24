@@ -14,7 +14,7 @@ import java.awt.Insets;
 import java.io.File;
 import javax.swing.border.EtchedBorder;
 
-public class BFolderBrowser extends BForm {
+public class BFolderBrowser extends BDialog {
 
     private static final long serialVersionUID = 1L;
     private JTree jTree = null;
@@ -26,15 +26,6 @@ public class BFolderBrowser extends BForm {
     private BButton btnOK = null;
     private BButton btnCancel = null;
     private JFileChooser dialog = null;
-
-    @Override
-    public BDialogResult showDialog(){
-        if( dialog.showOpenDialog( this ) == JFileChooser.APPROVE_OPTION ){
-            return BDialogResult.OK;
-        }else{
-            return BDialogResult.CANCEL;
-        }
-    }
     
     public boolean isNewFolderButtonVisible(){
         return false;

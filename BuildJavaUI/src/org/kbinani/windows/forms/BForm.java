@@ -8,7 +8,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
-import javax.swing.JWindow;
 import javax.swing.UIManager;
 import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
@@ -25,7 +24,6 @@ public class BForm extends JFrame
     public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
-    private BDialogResult m_result = BDialogResult.CANCEL;
     private boolean m_closed = false;
     
     public BForm(){
@@ -155,27 +153,6 @@ public class BForm extends JFrame
             }
             setVisible( false );
         }
-    }
-    
-    public BDialogResult showDialog(){
-        try{
-            Thread t = new Thread( new ShowDialogRunner() );
-            t.start();
-            t.join();
-        }catch( Exception ex ){
-            System.out.println( "BForm#showDialog; ex=" + ex );
-        }
-        return m_result;
-    }
-    
-    public BDialogResult getDialogResult(){
-        return m_result;
-    }
-    
-    public void setDialogResult( BDialogResult value ){
-        m_closed = true;
-        m_result = value;
-        close();
     }
     
     public void componentHidden(ComponentEvent e) {

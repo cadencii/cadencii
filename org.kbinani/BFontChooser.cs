@@ -22,19 +22,27 @@ namespace org.kbinani.windows.forms {
 
     public class BFontChooser {
         public FontDialog dialog = null;
+        private BDialogResult m_result = BDialogResult.CANCEL;
 
         public BFontChooser() {
             dialog = new FontDialog();
         }
 
-        public BDialogResult showDialog() {
-            DialogResult dr = dialog.ShowDialog();
-            if ( dr == DialogResult.OK ) {
-                return BDialogResult.OK;
-            } else if ( dr == DialogResult.Cancel ) {
-                return BDialogResult.CANCEL;
+        public void setVisible( bool value ) {
+            if ( value ) {
+                DialogResult dr = dialog.ShowDialog();
+                if ( dr == DialogResult.OK ) {
+                    m_result = BDialogResult.OK;
+                } else if ( dr == DialogResult.Cancel ) {
+                    m_result = BDialogResult.CANCEL;
+                }
+            } else {
+                //do nothing
             }
-            return BDialogResult.CANCEL;
+        }
+
+        public BDialogResult getDialogResult() {
+            return m_result;
         }
 
         public void setSelectedFont( Font font ) {

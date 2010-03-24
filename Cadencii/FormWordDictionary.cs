@@ -35,9 +35,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormWordDictionary extends BForm{
+    public class FormWordDictionary extends BDialog {
 #else
-    class FormWordDictionary : BForm {
+    class FormWordDictionary : BDialog {
 #endif
         public FormWordDictionary() {
 #if JAVA

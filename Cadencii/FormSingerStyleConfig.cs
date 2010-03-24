@@ -35,9 +35,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormSingerStyleConfig extends BForm{
+    public class FormSingerStyleConfig extends BDialog {
 #else
-    class FormSingerStyleConfig : BForm {
+    class FormSingerStyleConfig : BDialog {
 #endif
         boolean m_apply_current_track = false;
 

@@ -37,9 +37,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormBezierPointEdit extends BForm {
+    public class FormBezierPointEdit extends BDialog {
 #else
-    public class FormBezierPointEdit : BForm {
+    public class FormBezierPointEdit : BDialog {
 #endif
         private BezierPoint m_point;
         private int m_min;

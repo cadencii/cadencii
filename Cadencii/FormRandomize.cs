@@ -31,9 +31,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormRandomize extends BForm {
+    public class FormRandomize extends BDialog {
 #else
-    public class FormRandomize : BForm {
+    public class FormRandomize : BDialog {
 #endif
         private static boolean lastPositionRandomizeEnabled = true;
         private static int lastPositionRandomizeValue = 3;

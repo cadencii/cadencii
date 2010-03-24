@@ -40,9 +40,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class VersionInfo extends BForm {
+    public class VersionInfo extends BDialog {
 #else
-    public class VersionInfo : BForm {
+    public class VersionInfo : BDialog {
 #endif
         double m_scroll_started;
         private AuthorListEntry[] m_credit;

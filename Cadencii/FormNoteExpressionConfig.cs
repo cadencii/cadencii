@@ -37,9 +37,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormNoteExpressionConfig extends BForm {
+    public class FormNoteExpressionConfig extends BDialog {
 #else
-    public class FormNoteExpressionConfig : BForm {
+    public class FormNoteExpressionConfig : BDialog {
 #endif
         boolean m_apply_current_track = false;
         NoteHeadHandle m_note_head_handle = null;

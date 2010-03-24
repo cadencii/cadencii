@@ -31,9 +31,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormInsertBar extends BForm{
+    public class FormInsertBar extends BDialog {
 #else
-    public class FormInsertBar : BForm {
+    public class FormInsertBar : BDialog {
 #endif
         public FormInsertBar( int max_position ) {
 #if JAVA

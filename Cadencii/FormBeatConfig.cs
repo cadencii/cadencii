@@ -31,9 +31,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormBeatConfig extends BForm{
+    public class FormBeatConfig extends BDialog {
 #else
-    public class FormBeatConfig : BForm {
+    public class FormBeatConfig : BDialog {
 #endif
         public void ApplyLanguage() {
             setTitle( _( "Beat Change" ) );
