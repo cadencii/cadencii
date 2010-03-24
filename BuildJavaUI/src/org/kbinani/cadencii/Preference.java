@@ -214,14 +214,7 @@ public class Preference extends JFrame {
 		gb.fill = GridBagConstraints.BOTH;
 		layout.setConstraints( tabPane, gb );
 	    this.getPanelUpper().add( tabPane );
-		try{
-	        //UIManager.setLookAndFeel( "com.sun.java.swing.plaf.mac.MacLookAndFeel" );
-	        UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
-			SwingUtilities.updateComponentTreeUI( this );
-		}catch( Exception ex ){
-            System.err.println( "Preference#.ctor; ex=" + ex );
-		}
-		
+	
 		//SECTION-END-CTOR
 	}
 

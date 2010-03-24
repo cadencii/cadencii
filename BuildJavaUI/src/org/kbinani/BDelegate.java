@@ -18,6 +18,7 @@ import java.lang.reflect.*;
 public class BDelegate{
     Method m_method = null;
     Object m_invoker = null;
+    String m_name = "";
     
     /**
      * このデリゲートが，指定されたアイテムと同じであればtrueを返します．
@@ -43,6 +44,7 @@ public class BDelegate{
     public BDelegate( Class<?> invoker, String method_name, Class<?> return_type, Class<?>... argument_type )
         throws Exception
     {
+        m_name = method_name;
         m_invoker = null;
         for( Method method : invoker.getDeclaredMethods() ){
             if( !method.getName().equals( method_name ) ){
@@ -86,7 +88,9 @@ public class BDelegate{
         try{
             ret = m_method.invoke( m_invoker, args );
         }catch( Exception ex ){
-            System.err.println( "BDelegate#invoke; ex=" + ex );
+            System.err.println( "BDelegate#invoke; name=" + m_name + 
+                "; class=" + m_method.getDeclaringClass().toString() + 
+                "; ex=" + ex );
         }
         return ret;
     }

@@ -16,7 +16,7 @@ class pp_cs2java {
     static bool s_recurse = false;
     static String s_encoding = "UTF-8";
     static bool s_ignore_empty = true; // プリプロセッサを通すと中身が空になるファイルを無視する場合はtrue
-    static bool s_ignore_unknown_package = true; // package句が見つからなかったファイルを無視する場合true
+    static bool s_ignore_unknown_package = false; // package句が見つからなかったファイルを無視する場合true
     static Stack<string> s_current_dirctive = new Stack<string>(); // 現在のプリプロセッサディレクティブ．いれこになっている場合についても対応
     static int s_shift_indent = 0; // インデント解除する桁数
     static bool s_parse_comment = false;
@@ -100,6 +100,7 @@ class pp_cs2java {
         Console.WriteLine( "                           (decrease if minus)" );
         Console.WriteLine( "    -encoding [enc. name]  set text file encoding" );
         Console.WriteLine( "    -m [path]              set path of source code for debug" );
+        Console.WriteLine( "    -u                     enable ignoring unknown package" );
         Console.WriteLine( "    -h,-help               print this help" );
     }
 
@@ -121,10 +122,13 @@ class pp_cs2java {
                 } else if ( current_parse == "-c" ) {
                     s_parse_comment = true;
                     current_parse = "";
+                } else if ( current_parse == "-u" ) {
+                    s_ignore_unknown_package = true;
+                    current_parse = "";
                 } else if ( current_parse.StartsWith( "-D" ) ) {
                     String def = current_parse.Substring( 2 );
                     if ( !s_defines.Contains( def ) ) {
-						s_defines.Add( def );
+                        s_defines.Add( def );
                     }
                     current_parse = "";
                 } else if ( current_parse == "-h" || current_parse == "-help" ) {

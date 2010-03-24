@@ -1,5 +1,5 @@
 ﻿/*
- * Program.cs
+ * Cadencii.cs
  * Copyright (C) 2009-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -12,8 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
-
+import org.kbinani.cadencii.*;
 #else
 using System;
 using System.Threading;
@@ -23,7 +22,7 @@ using org.kbinani.apputil;
 namespace org.kbinani.cadencii{
 #endif
 
-    public class Program {
+    public class Cadencii {
         static FormSplash splash = null;
         static Thread splashThread = null;
 

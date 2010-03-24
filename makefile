@@ -13,7 +13,9 @@ jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq resources
 	mono ./pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b "./build/java" -encoding "UTF-8" -s -4 -c -t "./Cadencii"
 	$(CP) "./build/java/org/kbinani/cadencii/NumberTextBox.java" "./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java"
 	$(CP) "./build/java/org/kbinani/cadencii/NumericUpDownEx.java" "./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java"
-	javac ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
+	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
+	$(CP) ./Cadencii/Cadencii.mf ./build/java/Cadencii.mf
+	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
 
 jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
 	mono ./pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b "./build/java" -encoding "UTF-8" -s -4 -c -t "./EditOtoIni"

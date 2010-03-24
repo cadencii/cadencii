@@ -11,18 +11,3 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Reflection;
-
-using org.kbinani.vsq;
-
-namespace org.kbinani.cadencii {
-
-}
