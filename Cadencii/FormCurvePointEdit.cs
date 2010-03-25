@@ -67,16 +67,19 @@ namespace org.kbinani.cadencii {
             btnRedo.setEnabled( AppManager.isRedoAvailable() );
         }
 
-        private String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
+        #region public methods
         public void applyLanguage() {
             setTitle( _( "Edit Value" ) );
             lblDataPointClock.setText( _( "Clock" ) );
             lblDataPointValue.setText( _( "Value" ) );
             btnApply.setText( _( "Apply" ) );
             btnExit.setText( _( "Exit" ) );
+        }
+        #endregion
+
+        #region helper methods
+        private String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
         private void applyValue( boolean mode_clock ) {
@@ -140,6 +143,29 @@ namespace org.kbinani.cadencii {
             m_changed = false;
         }
 
+
+        private void setResources() {
+        }
+
+        private void registerEventHandlers() {
+            btnForward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            btnBackward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            btnBackward2.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            btnForward2.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            btnApply.clickEvent.add( new BEventHandler( this, "btnApply_Click" ) );
+            txtDataPointClock.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
+            txtDataPointClock.keyUpEvent.add( new BKeyEventHandler( this, "commonTextBox_KeyUp" ) );
+            txtDataPointValue.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
+            txtDataPointValue.keyUpEvent.add( new BKeyEventHandler( this, "commonTextBox_KeyUp" ) );
+            btnBackward3.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            btnForward3.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
+            btnUndo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
+            btnRedo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
+            btnExit.clickEvent.add( new BEventHandler( this, "btnExit_Click" ) );
+        }
+        #endregion
+
+        #region event handlers
         public void commonTextBox_KeyUp( Object sender, BKeyEventArgs e ) {
 #if JAVA
             if ( (e.KeyValue & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ) {
@@ -258,34 +284,13 @@ namespace org.kbinani.cadencii {
         public void btnExit_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
+        #endregion
 
-        private void setResources() {
-        }
-
-        private void registerEventHandlers() {
-            this.btnForward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            this.btnBackward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            this.btnBackward2.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            this.btnForward2.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            this.btnApply.clickEvent.add( new BEventHandler( this, "btnApply_Click" ) );
-            this.txtDataPointClock.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-            this.txtDataPointClock.keyUpEvent.add( new BKeyEventHandler( this, "commonTextBox_KeyUp" ) );
-            this.txtDataPointValue.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-            this.txtDataPointValue.keyUpEvent.add( new BKeyEventHandler( this, "commonTextBox_KeyUp" ) );
-            this.btnBackward3.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            this.btnForward3.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            this.btnUndo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
-            this.btnRedo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
-            btnExit.clickEvent.add( new BEventHandler( this, "btnExit_Click" ) );
-        }
-
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormCurvePointEdit.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormCurvePointEdit.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -301,8 +306,6 @@ namespace org.kbinani.cadencii {
             }
             base.Dispose( disposing );
         }
-
-        #region Windows フォーム デザイナで生成されたコード
 
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
@@ -485,8 +488,6 @@ namespace org.kbinani.cadencii {
 
         }
 
-        #endregion
-
         private BButton btnForward;
         private BButton btnBackward;
         private BLabel lblDataPointValue;
@@ -501,8 +502,10 @@ namespace org.kbinani.cadencii {
         private BButton btnForward3;
         private BButton btnUndo;
         private BButton btnRedo;
-        #endregion
+
 #endif
+        #endregion
+
     }
 
 #if !JAVA

@@ -54,10 +54,13 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
+        #region public methods
         public float getSpeed() {
             return (float)numSpeed.getValue();
         }
+        #endregion
 
+        #region event handlers
         public void FormRealtimeConfig_Load( Object sender, BEventArgs e ) {
 #if JAVA
             System.err.println( "info; FormRealtimeConfig#FormRealtimeConfig_Load; not implemented yet; \"int num_joydev = 0\"" );
@@ -71,7 +74,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void timer_Tick( Object sender, BEventArgs e ) {
+        public void timer_Tick( Object sender, BEventArgs e ) {
 #if !JAVA
             try {
                 double now = PortUtil.getCurrentTime();
@@ -146,31 +149,29 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void btnStart_Click( Object sender, BEventArgs e ) {
+        public void btnStart_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
             close();
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
+        #endregion
 
+        #region helper methods
         private void registerEventHandlers() {
             loadEvent.add( new BEventHandler( this, "FormRealtimeConfig_Load" ) );
-#if JAVA
             timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
             btnStart.clickEvent.add( new BEventHandler( this, "btnStart_Click" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-#else
-            this.timer.Tick += new System.EventHandler( this.timer_Tick );
-            this.btnStart.Click += new System.EventHandler( this.btnStart_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
         }
 
         private void setResources() {
         }
+        #endregion
 
+        #region UI implementation
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormRealtimeConfig.java
@@ -315,6 +316,7 @@ namespace org.kbinani.cadencii {
         private BNumericUpDown numSpeed;
         #endregion
 #endif
+        #endregion
     }
 
 #if !JAVA

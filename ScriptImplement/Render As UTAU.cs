@@ -100,10 +100,10 @@ public class RenderAsUtau : Form {
         }
         CheckOkButtonAvailable();
         UpdateProfile();
-        ApplyLanguage();
+        applyLanguage();
     }
 
-    void ApplyLanguage() {
+    void applyLanguage() {
         if ( Messaging.getLanguage() == "ja" ) {
             groupSinger.Text = "音源";
             groupConfig.Text = "設定";

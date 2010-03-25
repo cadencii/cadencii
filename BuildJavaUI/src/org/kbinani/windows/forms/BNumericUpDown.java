@@ -49,7 +49,7 @@ public class BNumericUpDown extends JPanel{
 	    try{
 	        valueChangedEvent.raise( this, new BEventArgs() );
 	    }catch( Exception ex ){
-	        System.out.println( "BNumericUpDown#update; ex=" + ex );
+	        System.err.println( "BNumericUpDown#update; ex=" + ex );
 	    }
 	}
 	

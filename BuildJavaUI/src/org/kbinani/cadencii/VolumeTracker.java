@@ -8,9 +8,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BSlider;
 import org.kbinani.windows.forms.BTextBox;
+import javax.swing.JCheckBox;
 
 //SECTION-END-IMPORT
 public class VolumeTracker extends JPanel {
@@ -21,6 +23,8 @@ public class VolumeTracker extends JPanel {
 	private BSlider trackPanpot = null;
 	private BTextBox txtPanpot = null;
 	private BLabel lblTitle = null;
+    private BCheckBox chkMute = null;
+    private BCheckBox chkSolo = null;
 	
 	//SECTION-END-FIELD
 	/**
@@ -38,11 +42,18 @@ public class VolumeTracker extends JPanel {
 	 * @return void
 	 */
 	private void initialize() {
+		GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+		gridBagConstraints21.weightx = 1.0D;
+		gridBagConstraints21.anchor = GridBagConstraints.WEST;
+		GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+		gridBagConstraints12.weightx = 0.0D;
+		gridBagConstraints12.anchor = GridBagConstraints.WEST;
 		GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 		gridBagConstraints11.gridx = 0;
 		gridBagConstraints11.fill = GridBagConstraints.BOTH;
 		gridBagConstraints11.weightx = 1.0D;
-		gridBagConstraints11.gridy = 4;
+		gridBagConstraints11.gridwidth = 2;
+		gridBagConstraints11.gridy = 5;
 		lblTitle = new BLabel();
 		lblTitle.setText("TITLE");
 		lblTitle.setPreferredSize(new Dimension(85, 23));
@@ -50,35 +61,41 @@ public class VolumeTracker extends JPanel {
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 		gridBagConstraints3.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints3.gridy = 3;
+		gridBagConstraints3.gridy = 4;
 		gridBagConstraints3.weightx = 1.0;
 		gridBagConstraints3.insets = new Insets(0, 10, 10, 10);
+		gridBagConstraints3.gridwidth = 2;
 		gridBagConstraints3.gridx = 0;
 		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 		gridBagConstraints2.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints2.gridy = 2;
+		gridBagConstraints2.gridy = 3;
 		gridBagConstraints2.weightx = 1.0;
 		gridBagConstraints2.weighty = 0.0D;
 		gridBagConstraints2.insets = new Insets(3, 3, 3, 3);
+		gridBagConstraints2.gridwidth = 2;
 		gridBagConstraints2.gridx = 0;
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 		gridBagConstraints1.fill = GridBagConstraints.VERTICAL;
-		gridBagConstraints1.gridy = 1;
+		gridBagConstraints1.gridy = 2;
 		gridBagConstraints1.weightx = 1.0;
 		gridBagConstraints1.weighty = 1.0D;
 		gridBagConstraints1.insets = new Insets(10, 0, 10, 0);
+		gridBagConstraints1.gridwidth = 2;
 		gridBagConstraints1.gridx = 0;
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridy = 0;
+		gridBagConstraints.gridy = 1;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.weighty = 0.0D;
 		gridBagConstraints.insets = new Insets(10, 3, 0, 3);
+		gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.gridx = 0;
-		this.setSize(86, 275);
+		this.setSize(86, 284);
 		this.setLayout(new GridBagLayout());
-		this.setPreferredSize(new Dimension(85, 261));
+		this.setPreferredSize(new Dimension(85, 284));
 		this.setBackground(new Color(180, 180, 180));
+		this.add(getChkMute(), gridBagConstraints12);
+		this.add(getChkSolo(), gridBagConstraints21);
 		this.add(getTxtFeder(), gridBagConstraints);
 		this.add(getTrackFeder(), gridBagConstraints1);
 		this.add(getTrackPanpot(), gridBagConstraints2);
@@ -150,6 +167,32 @@ public class VolumeTracker extends JPanel {
 		}
 		return txtPanpot;
 	}
+
+    /**
+     * This method initializes chkMute	
+     * 	
+     * @return org.kbinani.windows.forms.BCheckBox	
+     */
+    private BCheckBox getChkMute() {
+        if (chkMute == null) {
+            chkMute = new BCheckBox();
+            chkMute.setText("M");
+        }
+        return chkMute;
+    }
+
+    /**
+     * This method initializes chkSolo	
+     * 	
+     * @return org.kbinani.windows.forms.BCheckBox	
+     */
+    private BCheckBox getChkSolo() {
+        if (chkSolo == null) {
+            chkSolo = new BCheckBox();
+            chkSolo.setText("S");
+        }
+        return chkSolo;
+    }
 
 	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

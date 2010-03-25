@@ -112,7 +112,7 @@ namespace org.kbinani.apputil {
 
         #endregion
 
-        public void ApplyLanguage() {
+        public void applyLanguage() {
             string about = string.Format( _( "About {0}" ), m_app_name );
             string credit = _( "Credit" );
             org.kbinani.java.awt.Dimension size1 = Util.measureString( about, new org.kbinani.java.awt.Font( btnFlip.Font ) );

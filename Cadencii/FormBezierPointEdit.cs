@@ -66,7 +66,7 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             m_parent = parent;
             m_curve_type = curve_type;
             m_track = AppManager.getSelected();
@@ -96,6 +96,27 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
+        #region public methods
+        public void applyLanguage() {
+            setTitle( _( "Edit Bezier Data Point" ) );
+
+            groupDataPoint.setTitle( _( "Data Poin" ) );
+            lblDataPointClock.setText( _( "Clock" ) );
+            lblDataPointValue.setText( _( "Value" ) );
+
+            groupLeft.setTitle( _( "Left Control Point" ) );
+            lblLeftClock.setText( _( "Clock" ) );
+            lblLeftValue.setText( _( "Value" ) );
+
+            groupRight.setTitle( _( "Right Control Point" ) );
+            lblRightClock.setText( _( "Clock" ) );
+            lblRightValue.setText( _( "Value" ) );
+
+            chkEnableSmooth.setText( _( "Smooth" ) );
+        }
+        #endregion
+
+        #region helper methods
         private void UpdateStatus() {
             txtDataPointClock.setText( m_point.getBase().getX() + "" );
             txtDataPointValue.setText( m_point.getBase().getY() + "" );
@@ -115,24 +136,31 @@ namespace org.kbinani.cadencii {
             return Messaging.getMessage( message );
         }
 
-        public void ApplyLanguage() {
-            setTitle( _( "Edit Bezier Data Point" ) );
-
-            groupDataPoint.setTitle( _( "Data Poin" ) );
-            lblDataPointClock.setText( _( "Clock" ) );
-            lblDataPointValue.setText( _( "Value" ) );
-
-            groupLeft.setTitle( _( "Left Control Point" ) );
-            lblLeftClock.setText( _( "Clock" ) );
-            lblLeftValue.setText( _( "Value" ) );
-
-            groupRight.setTitle( _( "Right Control Point" ) );
-            lblRightClock.setText( _( "Clock" ) );
-            lblRightValue.setText( _( "Value" ) );
-
-            chkEnableSmooth.setText( _( "Smooth" ) );
+        private void registerEventHandlers() {
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            chkEnableSmooth.checkedChangedEvent.add( new BEventHandler( this, "chkEnableSmooth_CheckedChanged" ) );
+            btnLeft.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
+            btnLeft.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
+            btnLeft.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
+            btnDataPoint.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
+            btnDataPoint.mouseDownEvent.add( new BMouseEventHandler( this, "btnDataPoint_MouseDown" ) );
+            btnDataPoint.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
+            btnRight.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
+            btnRight.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
+            btnRight.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
+            btnBackward.clickEvent.add( new BEventHandler( this, "btnBackward_Click" ) );
+            btnForward.clickEvent.add( new BEventHandler( this, "btnForward_Click" ) );
         }
 
+        private void setResources() {
+            this.btnLeft.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
+            this.btnDataPoint.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
+            this.btnRight.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
+        }
+        #endregion
+
+        #region event handlers
         public void btnOK_Click( Object sender, BEventArgs e ) {
             try {
                 int x, y;
@@ -305,37 +333,13 @@ namespace org.kbinani.cadencii {
         public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-            chkEnableSmooth.checkedChangedEvent.add( new BEventHandler( this, "chkEnableSmooth_CheckedChanged" ) );
-            btnLeft.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
-            btnLeft.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
-            btnLeft.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
-            btnDataPoint.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
-            btnDataPoint.mouseDownEvent.add( new BMouseEventHandler( this, "btnDataPoint_MouseDown" ) );
-            btnDataPoint.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
-            btnRight.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
-            btnRight.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
-            btnRight.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
-            btnBackward.clickEvent.add( new BEventHandler( this, "btnBackward_Click" ) );
-            btnForward.clickEvent.add( new BEventHandler( this, "btnForward_Click" ) );
-        }
-
-        private void setResources() {
-            this.btnLeft.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
-            this.btnDataPoint.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
-            this.btnRight.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
-        }
-
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormBezierPointEdit.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormBezierPointEdit.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -351,8 +355,6 @@ namespace org.kbinani.cadencii {
             }
             base.Dispose( disposing );
         }
-
-        #region Windows フォーム デザイナで生成されたコード
 
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
@@ -650,8 +652,6 @@ namespace org.kbinani.cadencii {
 
         }
 
-        #endregion
-
         private BButton btnCancel;
         private BButton btnOK;
         private BCheckBox chkEnableSmooth;
@@ -675,8 +675,9 @@ namespace org.kbinani.cadencii {
         private BButton btnRight;
         private BButton btnBackward;
         private BButton btnForward;
-        #endregion
+
 #endif
+        #endregion
     }
 
 #if !JAVA

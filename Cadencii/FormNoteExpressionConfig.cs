@@ -26,9 +26,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani;
 using org.kbinani.java.util;
+using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
@@ -44,11 +43,84 @@ namespace org.kbinani.cadencii {
         boolean m_apply_current_track = false;
         NoteHeadHandle m_note_head_handle = null;
 
+        public FormNoteExpressionConfig( SynthesizerType type, NoteHeadHandle note_head_handle ) {
+#if JAVA
+            super();
+            initialize();
+#else
+            InitializeComponent();
+#endif
+            registerEventHandlers();
+            setResources();
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+            applyLanguage();
+
+            if ( note_head_handle != null ) {
+                m_note_head_handle = (NoteHeadHandle)note_head_handle.clone();
+            }
+
+            if ( type == SynthesizerType.VOCALOID1 ) {
+#if JAVA
+                getContentPane().remove( groupDynamicsControl );
+                getContentPane().remove( panelVocaloid2Template );
+                getContentPane().remove( groupPitchControl );
+#else
+                flowLayoutPanel.Controls.Remove( groupDynamicsControl );
+                flowLayoutPanel.Controls.Remove( panelVocaloid2Template );
+                flowLayoutPanel.Controls.Remove( groupPitchControl );
+#endif
+            } else {
+#if JAVA
+                getContentPane().remove( groupAttack );
+#else
+                flowLayoutPanel.Controls.Remove( groupAttack );
+#endif
+            }
+
+            //comboAttackTemplateを更新
+            NoteHeadHandle empty = new NoteHeadHandle();
+            comboAttackTemplate.removeAllItems();
+            empty.IconID = "$01010000";
+            empty.setCaption( "[Non Attack]" );
+            comboAttackTemplate.addItem( empty );
+            comboAttackTemplate.setSelectedItem( empty );
+            String icon_id = "";
+            if ( m_note_head_handle != null ) {
+                icon_id = m_note_head_handle.IconID;
+                txtDuration.setText( m_note_head_handle.getDuration() + "" );
+                txtDepth.setText( m_note_head_handle.getDepth() + "" );
+            } else {
+                txtDuration.setEnabled( false );
+                txtDepth.setEnabled( false );
+                trackDuration.setEnabled( false );
+                trackDepth.setEnabled( false );
+            }
+            for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
+                NoteHeadHandle item = itr.next();
+                comboAttackTemplate.addItem( item );
+                if ( item.IconID.Equals( icon_id ) ) {
+                    comboAttackTemplate.setSelectedItem( comboAttackTemplate.getItemAt( comboAttackTemplate.getItemCount() - 1 ) );
+                }
+            }
+#if JAVA
+            comboAttackTemplate.selectedIndexChangedEvent.add( new BEventHandler( this, "comboAttackTemplate_SelectedIndexChanged" ) );
+#else
+            comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
+#endif
+
+#if !JAVA
+            Size current_size = this.ClientSize;
+            this.ClientSize = new Size( current_size.Width, flowLayoutPanel.ClientSize.Height + flowLayoutPanel.Top * 2 );
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+#endif
+        }
+
+        #region public methods
         public NoteHeadHandle getEditedNoteHeadHandle() {
             return m_note_head_handle;
         }
 
-        public void ApplyLanguage() {
+        public void applyLanguage() {
             lblTemplate.setText( _( "Template" ) + "(&T)" );
             groupPitchControl.setTitle( _( "Pitch Control" ) );
             lblBendDepth.setText( _( "Bend Depth" ) + "(&B)" );
@@ -68,10 +140,6 @@ namespace org.kbinani.cadencii {
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
 #endif
             setTitle( _( "Expression control property" ) );
-        }
-
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
         }
 
         public int getPMBendDepth() {
@@ -134,79 +202,40 @@ namespace org.kbinani.cadencii {
             txtAccent.setText( value + "" );
         }
 
-        public FormNoteExpressionConfig( SynthesizerType type, NoteHeadHandle note_head_handle ) {
-#if JAVA
-            super();
-            initialize();
-#else
-            InitializeComponent();
-#endif
-            registerEventHandlers();
-            setResources();
-            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
-            ApplyLanguage();
+        public boolean getApplyCurrentTrack() {
+            return m_apply_current_track;
+        }
+        #endregion
 
-            if ( note_head_handle != null ) {
-                m_note_head_handle = (NoteHeadHandle)note_head_handle.clone();
-            }
-            
-            if ( type == SynthesizerType.VOCALOID1 ) {
-#if JAVA
-                getContentPane().remove( groupDynamicsControl );
-                getContentPane().remove( panelVocaloid2Template );
-                getContentPane().remove( groupPitchControl );
-#else
-                flowLayoutPanel.Controls.Remove( groupDynamicsControl );
-                flowLayoutPanel.Controls.Remove( panelVocaloid2Template );
-                flowLayoutPanel.Controls.Remove( groupPitchControl );
-#endif
-            } else {
-#if JAVA
-                getContentPane().remove( groupAttack );
-#else
-                flowLayoutPanel.Controls.Remove( groupAttack );
-#endif
-            }
-
-            //comboAttackTemplateを更新
-            NoteHeadHandle empty = new NoteHeadHandle();
-            comboAttackTemplate.removeAllItems();
-            empty.IconID = "$01010000";
-            empty.setCaption( "[Non Attack]" );
-            comboAttackTemplate.addItem( empty );
-            comboAttackTemplate.setSelectedItem( empty );
-            String icon_id = "";
-            if ( m_note_head_handle != null ) {
-                icon_id = m_note_head_handle.IconID;
-                txtDuration.setText( m_note_head_handle.getDuration() + "" );
-                txtDepth.setText( m_note_head_handle.getDepth() + "" );
-            } else {
-                txtDuration.setEnabled( false );
-                txtDepth.setEnabled( false );
-                trackDuration.setEnabled( false );
-                trackDepth.setEnabled( false );
-            }
-            for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                NoteHeadHandle item = itr.next();
-                comboAttackTemplate.addItem( item );
-                if ( item.IconID.Equals( icon_id ) ) {
-                    comboAttackTemplate.setSelectedItem( comboAttackTemplate.getItemAt( comboAttackTemplate.getItemCount() - 1 ) );
-                }
-            }
-#if JAVA
-            comboAttackTemplate.selectedIndexChangedEvent.add( new BEventHandler( this, "comboAttackTemplate_SelectedIndexChanged" ) );
-#else
-            comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
-#endif
-
-#if !JAVA
-            Size current_size = this.ClientSize;
-            this.ClientSize = new Size( current_size.Width, flowLayoutPanel.ClientSize.Height + flowLayoutPanel.Top * 2 );
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-#endif
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
-        private void comboAttackTemplate_SelectedIndexChanged( Object sender, BEventArgs e ) {
+        private void registerEventHandlers() {
+            txtBendLength.textChangedEvent.add( new BEventHandler( this, "txtBendLength_TextChanged" ) );
+            txtBendDepth.textChangedEvent.add( new BEventHandler( this, "txtBendDepth_TextChanged" ) );
+            trackBendLength.valueChangedEvent.add( new BEventHandler( this, "trackBendLength_Scroll" ) );
+            trackBendDepth.valueChangedEvent.add( new BEventHandler( this, "trackBendDepth_Scroll" ) );
+            txtAccent.textChangedEvent.add( new BEventHandler( this, "txtAccent_TextChanged" ) );
+            txtDecay.textChangedEvent.add( new BEventHandler( this, "txtDecay_TextChanged" ) );
+            trackAccent.valueChangedEvent.add( new BEventHandler( this, "trackAccent_Scroll" ) );
+            trackDecay.valueChangedEvent.add( new BEventHandler( this, "trackDecay_Scroll" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            comboTemplate.selectedIndexChangedEvent.add( new BEventHandler( this, "comboBox1_SelectedIndexChanged" ) );
+            txtDepth.textChangedEvent.add( new BEventHandler( this, "txtDepth_TextChanged" ) );
+            txtDuration.textChangedEvent.add( new BEventHandler( this, "txtDuration_TextChanged" ) );
+            trackDepth.valueChangedEvent.add( new BEventHandler( this, "trackDepth_Scroll" ) );
+            trackDuration.valueChangedEvent.add( new BEventHandler( this, "trackDuration_Scroll" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+        }
+
+        private void setResources() {
+        }
+        #endregion
+
+        #region event handlers
+        public void comboAttackTemplate_SelectedIndexChanged( Object sender, BEventArgs e ) {
             int index = comboAttackTemplate.getSelectedIndex();
             if ( index < 0 ) {
                 return;
@@ -233,11 +262,11 @@ namespace org.kbinani.cadencii {
             m_note_head_handle.setDepth( trackDepth.getValue() );
         }
 
-        private void trackBendDepth_Scroll( Object sender, BEventArgs e ) {
+        public void trackBendDepth_Scroll( Object sender, BEventArgs e ) {
             txtBendDepth.setText( trackBendDepth.getValue() + "" );
         }
 
-        private void txtBendDepth_TextChanged( Object sender, BEventArgs e ) {
+        public void txtBendDepth_TextChanged( Object sender, BEventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtBendDepth.getText() );
                 if ( draft != trackBendDepth.getValue() ) {
@@ -255,11 +284,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void trackBendLength_Scroll( Object sender, BEventArgs e ) {
+        public void trackBendLength_Scroll( Object sender, BEventArgs e ) {
             txtBendLength.setText( trackBendLength.getValue() + "" );
         }
 
-        private void txtBendLength_TextChanged( Object sender, BEventArgs e ) {
+        public void txtBendLength_TextChanged( Object sender, BEventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtBendLength.getText() );
                 if ( draft != trackBendLength.getValue() ) {
@@ -277,11 +306,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void trackDecay_Scroll( Object sender, BEventArgs e ) {
+        public void trackDecay_Scroll( Object sender, BEventArgs e ) {
             txtDecay.setText( trackDecay.getValue() + "" );
         }
 
-        private void txtDecay_TextChanged( Object sender, BEventArgs e ) {
+        public void txtDecay_TextChanged( Object sender, BEventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtDecay.getText() );
                 if ( draft != trackDecay.getValue() ) {
@@ -299,11 +328,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void trackAccent_Scroll( Object sender, BEventArgs e ) {
+        public void trackAccent_Scroll( Object sender, BEventArgs e ) {
             txtAccent.setText( trackAccent.getValue() + "" );
         }
 
-        private void txtAccent_TextChanged( Object sender, BEventArgs e ) {
+        public void txtAccent_TextChanged( Object sender, BEventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtAccent.getText() );
                 if ( draft != trackAccent.getValue() ) {
@@ -321,11 +350,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 
-        private void comboBox1_SelectedIndexChanged( Object sender, BEventArgs e ) {
+        public void comboBox1_SelectedIndexChanged( Object sender, BEventArgs e ) {
             switch ( comboTemplate.getSelectedIndex() ) {
                 case 1:
                     setPMBendDepth( 8 );
@@ -365,7 +394,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnApply_Click( Object sender, BEventArgs e ) {
+        public void btnApply_Click( Object sender, BEventArgs e ) {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
                                   PortUtil.MSGBOX_YES_NO_OPTION,
@@ -375,25 +404,21 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public boolean getApplyCurrentTrack() {
-            return m_apply_current_track;
-        }
-
-        private void trackDuration_Scroll( Object sender, BEventArgs e ) {
+        public void trackDuration_Scroll( Object sender, BEventArgs e ) {
             txtDuration.setText( trackDuration.getValue() + "" );
             if ( m_note_head_handle != null ) {
                 m_note_head_handle.setDuration( trackDuration.getValue() );
             }
         }
 
-        private void trackDepth_Scroll( Object sender, BEventArgs e ) {
+        public void trackDepth_Scroll( Object sender, BEventArgs e ) {
             txtDepth.setText( trackDepth.getValue() + "" );
             if ( m_note_head_handle != null ) {
                 m_note_head_handle.setDepth( trackDepth.getValue() );
             }
         }
 
-        private void txtDuration_TextChanged( Object sender, BEventArgs e ) {
+        public void txtDuration_TextChanged( Object sender, BEventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtDuration.getText() );
                 if ( draft != trackDuration.getValue() ) {
@@ -412,7 +437,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void txtDepth_TextChanged( Object sender, BEventArgs e ) {
+        public void txtDepth_TextChanged( Object sender, BEventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtDepth.getText() );
                 if ( draft != trackDepth.getValue() ) {
@@ -431,34 +456,12 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-#if JAVA
-#else
-            this.txtBendLength.TextChanged += new System.EventHandler( this.txtBendLength_TextChanged );
-            this.txtBendDepth.TextChanged += new System.EventHandler( this.txtBendDepth_TextChanged );
-            this.trackBendLength.Scroll += new System.EventHandler( this.trackBendLength_Scroll );
-            this.trackBendDepth.Scroll += new System.EventHandler( this.trackBendDepth_Scroll );
-            this.txtAccent.TextChanged += new System.EventHandler( this.txtAccent_TextChanged );
-            this.txtDecay.TextChanged += new System.EventHandler( this.txtDecay_TextChanged );
-            this.trackAccent.Scroll += new System.EventHandler( this.trackAccent_Scroll );
-            this.trackDecay.Scroll += new System.EventHandler( this.trackDecay_Scroll );
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            this.comboTemplate.SelectedIndexChanged += new System.EventHandler( this.comboBox1_SelectedIndexChanged );
-            this.txtDepth.TextChanged += new System.EventHandler( this.txtDepth_TextChanged );
-            this.txtDuration.TextChanged += new System.EventHandler( this.txtDuration_TextChanged );
-            this.trackDepth.Scroll += new System.EventHandler( this.trackDepth_Scroll );
-            this.trackDuration.Scroll += new System.EventHandler( this.trackDuration_Scroll );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
-        }
-
-        private void setResources() {
-        }
-
+        #region UI implementation
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormNoteExpressionConfig.java
@@ -1014,6 +1017,8 @@ namespace org.kbinani.cadencii {
         private BLabel lblAttackTemplate;
         #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

@@ -46,12 +46,25 @@ namespace org.kbinani.cadencii {
             setResources();
         }
 
+        #region helper methods
         private void setResources() {
 #if !JAVA
             this.BackgroundImage = Resources.get_splash().image;
 #endif
         }
 
+        private void registerEventHandlers() {
+#if JAVA
+            //TODO: fixme: FormSplash#registerEventHandlers
+#else
+            mouseDownEvent.add( new BMouseEventHandler( this, "FormSplash_MouseDown" ) );
+            mouseUpEvent.add( new BMouseEventHandler( this, "FormSplash_MouseUp" ) );
+            mouseMoveEvent.add( new BMouseEventHandler( this, "FormSplash_MouseMove" ) );
+#endif
+        }
+        #endregion
+
+        #region event handlers
         public void FormSplash_MouseDown( Object sender, MouseEventArgs e ) {
             mouseDowned = true;
             mouseDownedLocation = new Point( e.X, e.Y );
@@ -66,15 +79,9 @@ namespace org.kbinani.cadencii {
             Point globalMouseLocation = PortUtil.getMousePosition();
             this.setLocation( globalMouseLocation.x - mouseDownedLocation.x, globalMouseLocation.y - mouseDownedLocation.y );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-#if !JAVA
-            this.mouseDownEvent.add( new BMouseEventHandler( this, "FormSplash_MouseDown" ) );
-            this.mouseUpEvent.add( new BMouseEventHandler( this, "FormSplash_MouseUp" ) );
-            this.mouseMoveEvent.add( new BMouseEventHandler( this, "FormSplash_MouseMove" ) );
-#endif
-        }
-
+        #region UI implementation
 #if JAVA
         private void initialize(){
             setSize( 500, 335 );
@@ -98,6 +105,8 @@ namespace org.kbinani.cadencii {
 
         }
 #endif
+        #endregion
+
     }
 
 #if !JAVA

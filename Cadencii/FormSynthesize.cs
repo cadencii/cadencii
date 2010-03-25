@@ -131,14 +131,11 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
+        #region public methods
         public void applyLanguage() {
             setTitle( _( "Synthesize" ) );
             lblSynthesizing.setText( _( "now synthesizing..." ) );
             btnCancel.setText( _( "Cancel" ) );
-        }
-
-        private static String _( String id ) {
-            return Messaging.getMessage( id );
         }
 
         /// <summary>
@@ -147,10 +144,11 @@ namespace org.kbinani.cadencii {
         public int getFinished() {
             return m_finished;
         }
+        #endregion
 
-        public void FormSynthesize_Load( Object sender, BEventArgs e ) {
-            lblTime.setText( "" );
-            Start();
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
         private void Start() {
@@ -178,7 +176,53 @@ namespace org.kbinani.cadencii {
             lblProgress.setText( value + "/" + m_tracks.Length );
         }
 
-        private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
+        private static String getTimeSpanString( long span ) {
+            int sec_per_day = 24 * 60 * 60;
+            int sec_per_hour = 60 * 60;
+            int sec_per_min = 60;
+            String ret = "";
+            boolean added = false;
+            int i = (int)(span / sec_per_day);
+            if ( i > 0 ) {
+                ret += i + _( "day" ) + " ";
+                added = true;
+                span -= i * sec_per_day;
+            }
+            i = (int)(span / sec_per_hour);
+            if ( added || i > 0 ) {
+                ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "hour" ) + " ";
+                added = true;
+                span -= i * sec_per_hour;
+            }
+            i = (int)(span / sec_per_min);
+            if ( added || i > 0 ) {
+                ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "min" ) + " ";
+                added = true;
+                span -= i * sec_per_min;
+            }
+            return ret + PortUtil.formatDecimal( added ? "00" : "0", span ) + _( "sec" );
+        }
+
+        private void registerEventHandlers() {
+            loadEvent.add( new BEventHandler( this, "FormSynthesize_Load" ) );
+            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
+            bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_RunWorkerCompleted" ) );
+            timer.tickEvent.add(  new BEventHandler( this, "timer_Tick" ) );
+            formClosingEvent.add( new BFormClosingEventHandler( this, "FormSynthesize_FormClosing" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+        }
+
+        private void setResources() {
+        }
+        #endregion
+
+        #region event handlers
+        public void FormSynthesize_Load( Object sender, BEventArgs e ) {
+            lblTime.setText( "" );
+            Start();
+        }
+
+        public void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
             try {
                 int channel = AppManager.editorConfig.WaveFileOutputChannel == 1 ? 1 : 2;
                 double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
@@ -277,7 +321,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void FormSynthesize_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void FormSynthesize_FormClosing( Object sender, BFormClosingEventArgs e ) {
             timer.stop();
             if ( m_rendering_started ) {
                 VSTiProxy.CurrentUser = "";
@@ -302,13 +346,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
+        public void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
             timer.stop();
             setDialogResult( BDialogResult.OK );
             close();
         }
 
-        private void timer_Tick( Object sender, BEventArgs e ) {
+        public void timer_Tick( Object sender, BEventArgs e ) {
             double progress = VSTiProxy.getProgress();
             long elapsed = (long)VSTiProxy.getElapsedSeconds();
             long remaining = (long)VSTiProxy.computeRemainintSeconds();
@@ -320,59 +364,14 @@ namespace org.kbinani.cadencii {
             progressOne.setValue( (int)progress > 100 ? 100 : (int)progress );
         }
 
-        private static String getTimeSpanString( long span ) {
-            int sec_per_day = 24 * 60 * 60;
-            int sec_per_hour = 60 * 60;
-            int sec_per_min = 60;
-            String ret = "";
-            boolean added = false;
-            int i = (int)(span / sec_per_day);
-            if ( i > 0 ) {
-                ret += i + _( "day" ) + " ";
-                added = true;
-                span -= i * sec_per_day;
-            }
-            i = (int)(span / sec_per_hour);
-            if ( added || i > 0 ) {
-                ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "hour" ) + " ";
-                added = true;
-                span -= i * sec_per_hour;
-            }
-            i = (int)(span / sec_per_min);
-            if ( added || i > 0 ) {
-                ret += PortUtil.formatDecimal( added ? "00" : "0", i ) + _( "min" ) + " ";
-                added = true;
-                span -= i * sec_per_min;
-            }
-            return ret + PortUtil.formatDecimal( added ? "00" : "0", span ) + _( "sec" );
-        }
-
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             isCancelRequired = true;
             VSTiProxy.abortRendering();
             setDialogResult( BDialogResult.CANCEL );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-            loadEvent.add( new BEventHandler( this, "FormSynthesize_Load" ) );
-#if JAVA
-            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
-            bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_RunWorkerCompleted" ) );
-            timer.tickEvent.add(  new BEventHandler( this, "timer_Tick" ) );
-            formClosingEvent.add( new BFormClosingEventHandler( this, "FormSynthesize_FormClosing" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-#else
-            this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );
-            this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );
-            this.timer.Tick += new System.EventHandler( this.timer_Tick );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormSynthesize_FormClosing );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
-        }
-
-        private void setResources() {
-        }
-
+        #region UI implementation
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormSynthesize.java
@@ -500,6 +499,7 @@ namespace org.kbinani.cadencii {
         private BLabel lblTime;
         #endregion
 #endif
+        #endregion
 
     }
 

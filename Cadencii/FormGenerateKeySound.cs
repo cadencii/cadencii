@@ -44,8 +44,9 @@ namespace org.kbinani.cadencii {
 #else
     public class FormGenerateKeySound : BForm {
 #endif
-        private BFolderBrowser folderBrowser;
-        private BBackgroundWorker bgWork;
+#if !JAVA
+        private delegate void updateTitleDelegate( String title );
+#endif
 
         public class PrepareStartArgument {
             public String singer = "Miku";
@@ -55,6 +56,9 @@ namespace org.kbinani.cadencii {
         }
 
         const int _SAMPLE_RATE = 44100;
+
+        private BFolderBrowser folderBrowser;
+        private BBackgroundWorker bgWork;
         private SingerConfig[] m_singer_config1;
         private SingerConfig[] m_singer_config2;
         private SingerConfig[] m_singer_config_utau;
@@ -97,6 +101,7 @@ namespace org.kbinani.cadencii {
             txtDir.setText( Utility.getKeySoundPath() );
         }
 
+        #region helper methods
         private void registerEventHandlers() {
             bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "this.bgWork_DoWork" ) );
             bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_RunWorkerCompleted" ) );
@@ -132,11 +137,31 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void comboSingingSynthSystem_SelectedIndexChanged( Object sender, BEventArgs e ) {
+        private void updateTitle( String title ) {
+            setTitle( title );
+        }
+
+        private void updateEnabled( boolean enabled ) {
+            comboSinger.setEnabled( enabled );
+            comboSingingSynthSystem.setEnabled( enabled );
+            txtDir.setEditable( enabled );
+            btnBrowse.setEnabled( enabled );
+            btnExecute.setEnabled( enabled );
+            chkIgnoreExistingWavs.setEnabled( enabled );
+            if ( enabled ) {
+                btnCancel.setText( "Close" );
+            } else {
+                btnCancel.setText( "Cancel" );
+            }
+        }
+        #endregion
+
+        #region event handlers
+        public void comboSingingSynthSystem_SelectedIndexChanged( Object sender, BEventArgs e ) {
             updateSinger();
         }
 
-        private void btnBrowse_Click( Object sender, BEventArgs e ) {
+        public void btnBrowse_Click( Object sender, BEventArgs e ) {
             folderBrowser.setSelectedPath( txtDir.getText() );
             folderBrowser.setVisible( true );
             if ( folderBrowser.getDialogResult() != BDialogResult.OK ) {
@@ -145,7 +170,7 @@ namespace org.kbinani.cadencii {
             txtDir.setText( folderBrowser.getSelectedPath() );
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             if ( bgWork.isBusy() ) {
                 m_cancel_required = true;
                 while ( m_cancel_required ) {
@@ -164,7 +189,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnExecute_Click( Object sender, BEventArgs e ) {
+        public void btnExecute_Click( Object sender, BEventArgs e ) {
             PrepareStartArgument arg = new PrepareStartArgument();
             arg.singer = (String)comboSinger.getSelectedItem();
             arg.amplitude = 1.0;
@@ -174,6 +199,69 @@ namespace org.kbinani.cadencii {
             bgWork.runWorkerAsync( arg );
         }
 
+        private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
+            PrepareStartArgument arg = (PrepareStartArgument)e.Argument;
+            String singer = arg.singer;
+            double amp = arg.amplitude;
+            String dir = arg.directory;
+            boolean replace = arg.replace;
+            // 音源を準備
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
+                PortUtil.createDirectory( dir );
+            }
+
+            for ( int i = 0; i < 127; i++ ) {
+                String path = PortUtil.combinePath( dir, i + ".wav" );
+                PortUtil.println( "writing \"" + path + "\" ..." );
+                if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
+                    try {
+                        GenerateSinglePhone( i, singer, path, amp );
+                        if ( PortUtil.isFileExists( path ) ) {
+                            try {
+                                Wave wv = new Wave( path );
+                                wv.trimSilence();
+                                wv.monoralize();
+                                wv.write( path );
+                            } catch ( Exception ex0 ) {
+                                PortUtil.stderr.println( "FormGenerateKeySound#bgWork_DoWork; ex0=" + ex0 );
+                            }
+                        }
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "FormGenerateKeySound#bgWork_DoWork; ex=" + ex );
+                    }
+                }
+                PortUtil.println( " done" );
+                if ( m_cancel_required ) {
+                    m_cancel_required = false;
+                    break;
+                }
+                bgWork.reportProgress( (int)(i / 127.0 * 100.0) );
+            }
+            m_cancel_required = false;
+        }
+
+        private void bgWork_ProgressChanged( Object sender, BProgressChangedEventArgs e ) {
+            String title = "Progress: " + e.ProgressPercentage + "%";
+#if JAVA
+            updateTitle( title );
+#else
+            this.Invoke( new updateTitleDelegate( this.updateTitle ), new Object[] { title } );
+#endif
+        }
+
+        public void Program_FormClosed( Object sender, FormClosedEventArgs e ) {
+            VSTiProxy.terminate();
+        }
+
+        public void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
+            updateEnabled( true );
+            if ( m_close_when_finished ) {
+                close();
+            }
+        }
+        #endregion
+
+        #region public static methods
         public static void GenerateSinglePhone( int note, String singer, String file, double amp ) {
             String renderer = "";
             SingerConfig[] singers1 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
@@ -267,95 +355,13 @@ namespace org.kbinani.cadencii {
                 }
             }
         }
+        #endregion
 
-        private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
-            PrepareStartArgument arg = (PrepareStartArgument)e.Argument;
-            String singer = arg.singer;
-            double amp = arg.amplitude;
-            String dir = arg.directory;
-            boolean replace = arg.replace;
-            // 音源を準備
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
-                PortUtil.createDirectory( dir );
-            }
-
-            for ( int i = 0; i < 127; i++ ) {
-                String path = PortUtil.combinePath( dir, i + ".wav" );
-                PortUtil.println( "writing \"" + path + "\" ..." );
-                if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
-                    try {
-                        GenerateSinglePhone( i, singer, path, amp );
-                        if ( PortUtil.isFileExists( path ) ) {
-                            try {
-                                Wave wv = new Wave( path );
-                                wv.trimSilence();
-                                wv.monoralize();
-                                wv.write( path );
-                            } catch( Exception ex0 ) {
-                                PortUtil.stderr.println( "FormGenerateKeySound#bgWork_DoWork; ex0=" + ex0 );
-                            }
-                        }
-                    } catch ( Exception ex ){
-                        PortUtil.stderr.println( "FormGenerateKeySound#bgWork_DoWork; ex=" + ex );
-                    }
-                }
-                PortUtil.println( " done" );
-                if ( m_cancel_required ) {
-                    m_cancel_required = false;
-                    break;
-                }
-                bgWork.reportProgress( (int)(i / 127.0 * 100.0) );
-            }
-            m_cancel_required = false;
-        }
-
-#if !JAVA
-        private delegate void updateTitleDelegate( String title );
-#endif
-
-        private void bgWork_ProgressChanged( Object sender, BProgressChangedEventArgs e ) {
-            String title = "Progress: " + e.ProgressPercentage + "%";
-#if JAVA
-            updateTitle( title );
-#else
-            this.Invoke( new updateTitleDelegate( this.updateTitle ), new Object[] { title } );
-#endif
-        }
-
-        private void updateTitle( String title ) {
-            setTitle( title );
-        }
-
-        private void Program_FormClosed( Object sender, FormClosedEventArgs e ) {
-            VSTiProxy.terminate();
-        }
-
-        private void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
-            updateEnabled( true );
-            if ( m_close_when_finished ) {
-                close();
-            }
-        }
-
-        private void updateEnabled( boolean enabled ) {
-            comboSinger.setEnabled( enabled );
-            comboSingingSynthSystem.setEnabled( enabled );
-            txtDir.setEditable( enabled );
-            btnBrowse.setEnabled( enabled );
-            btnExecute.setEnabled( enabled );
-            chkIgnoreExistingWavs.setEnabled( enabled );
-            if ( enabled ) {
-                btnCancel.setText( "Close" );
-            } else {
-                btnCancel.setText( "Cancel" );
-            }
-        }
-
+        #region UI implementation
 #if JAVA
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormGenerateKeySound.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormGenerateKeySound.java
 #else
-        #region UI Impl for C#
         private void InitializeComponent() {
             this.btnExecute = new BButton();
             this.btnCancel = new BButton();
@@ -495,8 +501,8 @@ namespace org.kbinani.cadencii {
         private BButton btnBrowse;
         private BLabel lblDir;
 
-        #endregion
 #endif
+        #endregion
 
     }
 

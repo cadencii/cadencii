@@ -43,22 +43,19 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             numStart.setMaximum( max_barcount );
             numEnd.setMaximum( max_barcount );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             setTitle( _( "Delete Bars" ) );
             lblStart.setText( _( "Start" ) );
             lblEnd.setText( _( "End" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
-        }
-
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
         }
 
         public int getStart() {
@@ -76,13 +73,11 @@ namespace org.kbinani.cadencii {
         public void setEnd( int value ) {
             numEnd.setValue( value );
         }
+        #endregion
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
-            setDialogResult( BDialogResult.OK );
-        }
-
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
-            setDialogResult( BDialogResult.CANCEL );
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
         private void registerEventHandlers() {
@@ -92,14 +87,23 @@ namespace org.kbinani.cadencii {
 
         private void setResources() {
         }
+        #endregion
 
+        #region event handlers
+        public void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
+        }
+
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+        #endregion
+
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormDeleteBar.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormDeleteBar.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -115,8 +119,6 @@ namespace org.kbinani.cadencii {
             }
             base.Dispose( disposing );
         }
-
-        #region Windows フォーム デザイナで生成されたコード
 
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
@@ -259,8 +261,6 @@ namespace org.kbinani.cadencii {
 
         }
 
-        #endregion
-
         private BButton btnOK;
         private BButton btnCancel;
         private BLabel label4;
@@ -269,8 +269,9 @@ namespace org.kbinani.cadencii {
         private BLabel lblStart;
         private NumericUpDownEx numEnd;
         private NumericUpDownEx numStart;
-        #endregion
+
 #endif
+        #endregion
     }
 
 #if !JAVA

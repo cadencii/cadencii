@@ -48,32 +48,18 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             setTitle( _( "User Dictionary Configuration" ) );
             lblAvailableDictionaries.setText( _( "Available Dictionaries" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
             btnUp.setText( _( "Up" ) );
             btnDown.setText( _( "Down" ) );
-        }
-
-        private static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
-        public void FormWordDictionary_Load( Object sender, BEventArgs e ) {
-            listDictionaries.clear();
-            for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
-                String name = SymbolTable.getSymbolTable( i ).getName();
-                boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
-                BListViewItem item = new BListViewItem( new String[] { name } );
-                listDictionaries.addItem( "", item, enabled );
-            }
-            listDictionaries.setColumnWidth( 0, listDictionaries.getWidth() );
         }
 
         public Vector<ValuePair<String, Boolean>> getResult() {
@@ -88,12 +74,42 @@ namespace org.kbinani.cadencii {
             }
             return ret;
         }
+        #endregion
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        private void registerEventHandlers() {
+            loadEvent.add( new BEventHandler( this, "FormWordDictionary_Load" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnUp.clickEvent.add( new BEventHandler( this, "btnUp_Click" ) );
+            btnDown.clickEvent.add( new BEventHandler( this, "btnDown_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+        }
+
+        private void setResources() {
+        }
+        #endregion
+
+        #region event handlers
+        public void FormWordDictionary_Load( Object sender, BEventArgs e ) {
+            listDictionaries.clear();
+            for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
+                String name = SymbolTable.getSymbolTable( i ).getName();
+                boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
+                BListViewItem item = new BListViewItem( new String[] { name } );
+                listDictionaries.addItem( "", item, enabled );
+            }
+            listDictionaries.setColumnWidth( 0, listDictionaries.getWidth() );
+        }
+
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 
-        private void btnUp_Click( Object sender, BEventArgs e ) {
+        public void btnUp_Click( Object sender, BEventArgs e ) {
             int index = listDictionaries.getSelectedIndex( "" );
             if ( index >= 1 ) {
                 try {
@@ -115,7 +131,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnDown_Click( Object sender, BEventArgs e ) {
+        public void btnDown_Click( Object sender, BEventArgs e ) {
             int index = listDictionaries.getSelectedIndex( "" );
             if ( 0 <= index && index + 1 < listDictionaries.getItemCount( "" ) ) {
                 try {
@@ -137,28 +153,12 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-            loadEvent.add( new BEventHandler( this, "FormWordDictionary_Load" ) );
-#if JAVA
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnUp.clickEvent.add( new BEventHandler( this, "btnUp_Click" ) );
-            btnDown.clickEvent.add( new BEventHandler( this, "btnDown_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-#else
-            btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            btnUp.Click += new System.EventHandler( this.btnUp_Click );
-            btnDown.Click += new System.EventHandler( this.btnDown_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
-        }
-
-        private void setResources() {
-        }
-
+        #region UI implementation
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormWordDictionary.java
@@ -311,6 +311,8 @@ namespace org.kbinani.cadencii {
         #endregion
 
 #endif
+        #endregion
+
     }
 
 #if !JAVA

@@ -94,24 +94,28 @@ public class BForm extends JFrame
         try{
             activatedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BForm#windowActivated; ex=" + ex );
+            System.err.println( "BForm#windowActivated; ex=" + ex );
         }
     }
     
     public void windowClosed( WindowEvent e ){
         m_closed = true;
         try{
-            formClosedEvent.raise( this, new BEventArgs() );
+            formClosedEvent.raise( this, new BFormClosedEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BForm#windowClosed; ex=" + ex );
+            System.err.println( "BForm#windowClosed; ex=" + ex );
         }
     }
     
     public void windowClosing( WindowEvent e ){
         try{
-            formClosingEvent.raise( this, new BEventArgs() );
+            BFormClosingEventArgs ev = new BFormClosingEventArgs();
+            formClosingEvent.raise( this, ev );
+            if( ev.Cancel ){
+                System.err.println( "fixme: org.kbinani.windows.forms.BForm#windowClosing; not implemented yet for e.Cancel=true" );
+            }
         }catch( Exception ex ){
-            System.out.println( "BForm#windowClosing; ex=" + ex );
+            System.err.println( "BForm#windowClosing; ex=" + ex );
         }
     }
     
@@ -119,7 +123,7 @@ public class BForm extends JFrame
         try{
             deactivateEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BForm#windowDeactivated; ex=" + ex );
+            System.err.println( "BForm#windowDeactivated; ex=" + ex );
         }
     }
     
@@ -133,7 +137,7 @@ public class BForm extends JFrame
         try{
             loadEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BForm#windowOpened; ex=" + ex );
+            System.err.println( "BForm#windowOpened; ex=" + ex );
         }
     }
     

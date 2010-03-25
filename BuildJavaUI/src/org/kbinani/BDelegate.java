@@ -91,8 +91,34 @@ public class BDelegate{
             System.err.println( "BDelegate#invoke; name=" + m_name + 
                 "; class=" + m_method.getDeclaringClass().toString() + 
                 "; ex=" + ex );
+            printThrowableRecurse( ex, 1 );
         }
         return ret;
+    }
+    
+    private void printThrowableRecurse( Throwable ex, int level ){
+        String space = "    ";
+        String header = "";
+        if( ex == null ){
+            return;
+        }
+        for( int i = 0; i < level; i++ ){
+            header += space;
+        }
+        System.err.println( header + ex.toString() );
+        StackTraceElement[] elements = ex.getStackTrace();
+        for( int i = 0; i < elements.length; i++ ){
+            StackTraceElement e = elements[i];
+            String file = e.getFileName();
+            if( file == null ){
+                continue;
+            }
+            if( file.equals( "" ) ){
+                continue;
+            }
+            System.err.println( header + e.getClassName() + "#" + e.getMethodName() + "[" + file + "(" + e.getLineNumber() + ")]" );
+        }
+        printThrowableRecurse( ex.getCause(), level + 1 );
     }
     
     private boolean compareType( Class<?> cls1, Class<?> cls2 ){

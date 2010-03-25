@@ -50,6 +50,13 @@ namespace org.kbinani.cadencii {
             chkChangeTempo.setSelected( isChangeTempo );
         }
 
+        #region public methods
+        public boolean isTempoConversionRequired() {
+            return chkChangeTempo.isSelected();
+        }
+        #endregion
+
+        #region helper methods
         private void applyLanguage() {
             setTitle( _( "Export MusicXML" ) );
             chkChangeTempo.setText( _( "Convert Gate-time" ) );
@@ -67,7 +74,9 @@ namespace org.kbinani.cadencii {
             btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
         }
+        #endregion
 
+        #region event handlers
         public void btnOK_Click( Object sender, EventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
@@ -79,19 +88,13 @@ namespace org.kbinani.cadencii {
         public void FormExportMusicXml_FormClosing( Object sender, BFormClosingEventArgs e ) {
             isChangeTempo = isTempoConversionRequired();
         }
+        #endregion
 
-        public boolean isTempoConversionRequired() {
-            return chkChangeTempo.isSelected();
-        }
-
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormExportMusicXml.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormExportMusicXml.java
-        #endregion
 #else
-        #region UI Impl for C#
-        #region Windows フォーム デザイナで生成されたコード
         private void InitializeComponent() {
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
@@ -159,7 +162,6 @@ namespace org.kbinani.cadencii {
             this.PerformLayout();
 
         }
-        #endregion
 
         private BButton btnCancel;
         private BCheckBox chkChangeTempo;
@@ -167,8 +169,9 @@ namespace org.kbinani.cadencii {
         private BLabel lblDescription;
         private BButton btnOK;
 
-        #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

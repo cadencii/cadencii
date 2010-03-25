@@ -44,16 +44,13 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             setTitle( _( "Note Property" ) );
-        }
-
-        private static String _( String id ) {
-            return Messaging.getMessage( id );
         }
 
         public BKeys[] getFormCloseShortcutKey() {
@@ -63,22 +60,28 @@ namespace org.kbinani.cadencii {
         public void setFormCloseShortcutKey( BKeys[] value ) {
             menuClose.setAccelerator( PortUtil.getKeyStrokeFromBKeys( value ) );
         }
+        #endregion
 
-        private void menuClose_Click( Object sender, BEventArgs e ) {
-            close();
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
         private void registerEventHandlers() {
-#if JAVA
             menuClose.clickEvent.add( new BEventHandler( this, "menuClose_Click" ) );
-#else
-            this.menuClose.Click += new System.EventHandler( this.menuClose_Click );
-#endif
         }
 
         private void setResources() {
         }
+        #endregion
 
+        #region event handlers
+        public void menuClose_Click( Object sender, BEventArgs e ) {
+            close();
+        }
+        #endregion
+
+        #region UI implementation
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormNoteProperty.java
@@ -170,6 +173,8 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuClose;
         #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

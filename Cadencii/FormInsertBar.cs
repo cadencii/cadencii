@@ -22,7 +22,6 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using org.kbinani.apputil;
-using org.kbinani;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
@@ -44,12 +43,13 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             numPosition.setMaximum( max_position );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             setTitle( _( "Insert Bars" ) );
             String th_prefix = _( "_PREFIX_TH_" );
             if ( th_prefix.Equals( "_PREFIX_TH_" ) ) {
@@ -68,10 +68,6 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
         public int getLength() {
             return (int)numLength.getValue();
         }
@@ -87,13 +83,11 @@ namespace org.kbinani.cadencii {
         public void setPosition( int value ) {
             numPosition.setValue( value );
         }
+        #endregion
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
-            setDialogResult( BDialogResult.OK );
-        }
-
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
-            setDialogResult( BDialogResult.CANCEL );
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
         private void registerEventHandlers() {
@@ -103,14 +97,23 @@ namespace org.kbinani.cadencii {
 
         private void setResources() {
         }
+        #endregion
 
+        #region event handlers
+        public void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
+        }
+
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+        #endregion
+
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormInsertBar.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormInsertBar.java
-        #endregion
 #else
-        #region UI Impl for C#
         private System.ComponentModel.IContainer components = null;
         private NumericUpDownEx numPosition;
         private NumericUpDownEx numLength;
@@ -133,7 +136,6 @@ namespace org.kbinani.cadencii {
             base.Dispose( disposing );
         }
 
-        #region Windows フォーム デザイナで生成されたコード
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
@@ -278,9 +280,9 @@ namespace org.kbinani.cadencii {
             this.PerformLayout();
 
         }
-        #endregion
-        #endregion
+
 #endif
+        #endregion
 
     }
 

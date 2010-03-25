@@ -74,7 +74,7 @@ namespace org.kbinani.cadencii {
             openUtauCore = new BFileChooser( "" );
             folderBrowserSingers = new BFolderBrowser();
             folderBrowserSingers.setNewFolderButtonVisible( false );
-            ApplyLanguage();
+            applyLanguage();
 
             comboVibratoLength.removeAllItems();
 #if JAVA
@@ -255,6 +255,7 @@ namespace org.kbinani.cadencii {
             setResources();
         }
 
+        #region public methods
         /// <summary>
         /// バッファーサイズの設定値（単位：ミリ秒）を取得します。
         /// </summary>
@@ -269,23 +270,6 @@ namespace org.kbinani.cadencii {
         /// <param name="value"></param>
         public void setBufferSize( int value ) {
             numBuffer.setValue( value );
-        }
-
-        public void chkLoadSecondaryVOCALOID1_CheckedChanged( Object sender, EventArgs e ) {
-            if ( VocaloSysUtil.isDSEVersion101Available() ) {
-                if ( chkLoadSecondaryVOCALOID1.isSelected() ) {
-                    chkLoadVocaloid100.setEnabled( true );
-                    chkLoadVocaloid101.setEnabled( true );
-                } else {
-                    if ( VocaloSysUtil.getDefaultDseVersion() == 100 ) {
-                        chkLoadVocaloid100.setEnabled( true );
-                        chkLoadVocaloid101.setEnabled( false );
-                    } else {
-                        chkLoadVocaloid100.setEnabled( false );
-                        chkLoadVocaloid101.setEnabled( true );
-                    }
-                }
-            }
         }
 
         public boolean isLoadSecondaryVocaloid1Dll() {
@@ -681,7 +665,7 @@ namespace org.kbinani.cadencii {
             chkScrollHorizontal.setSelected( value );
         }
 
-        public void ApplyLanguage() {
+        public void applyLanguage() {
             setTitle( _( "Preference" ) );
             btnCancel.setText( _( "Cancel" ) );
             btnOK.setText( _( "OK" ) );
@@ -798,7 +782,7 @@ namespace org.kbinani.cadencii {
             #endregion
 
             #region tabUtauSingers
-            listSingers.setColumnHeaders( new String[]{ _( "Program Change" ), _( "Name" ), _( "Path" ) } );
+            listSingers.setColumnHeaders( new String[] { _( "Program Change" ), _( "Name" ), _( "Path" ) } );
             btnAdd.setText( _( "Add" ) );
             btnRemove.setText( _( "Remove" ) );
             btnUp.setText( _( "Up" ) );
@@ -816,10 +800,6 @@ namespace org.kbinani.cadencii {
             groupSynthesizerDll.setTitle( _( "Synthesizer DLL Usage" ) );
             chkLoadSecondaryVOCALOID1.setText( _( "Load secondary VOCALOID1 DLL" ) );
             #endregion
-        }
-
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
         }
 
         public boolean isWaveFileOutputFromMasterTrack() {
@@ -967,7 +947,7 @@ namespace org.kbinani.cadencii {
 #else
             foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) )
 #endif
-            {
+ {
                 count++;
                 if ( count == index ) {
                     return avml;
@@ -984,7 +964,7 @@ namespace org.kbinani.cadencii {
 #else
             foreach ( AutoVibratoMinLengthEnum avml in Enum.GetValues( typeof( AutoVibratoMinLengthEnum ) ) )
 #endif
-            {
+ {
                 count++;
                 if ( avml == value ) {
                     comboAutoVibratoMinLength.setSelectedIndex( count );
@@ -1001,7 +981,7 @@ namespace org.kbinani.cadencii {
 #else
             foreach ( DefaultVibratoLengthEnum vt in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) )
 #endif
-            {
+ {
                 count++;
                 if ( index == count ) {
                     return vt;
@@ -1018,7 +998,7 @@ namespace org.kbinani.cadencii {
 #else
             foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) )
 #endif
-            {
+ {
                 count++;
                 if ( dvl == value ) {
                     comboVibratoLength.setSelectedIndex( count );
@@ -1089,6 +1069,69 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        public boolean isCommandKeyAsControl() {
+            return chkCommandKeyAsControl.isSelected();
+        }
+
+        public void setCommandKeyAsControl( boolean value ) {
+            chkCommandKeyAsControl.setSelected( value );
+        }
+
+        public String getPathResampler() {
+            return txtResampler.getText();
+        }
+
+        public void setPathResampler( String value ) {
+            txtResampler.setText( value );
+        }
+
+        public String getPathWavtool() {
+            return txtWavtool.getText();
+        }
+
+        public void setPathWavtool( String value ) {
+            txtWavtool.setText( value );
+        }
+
+        public String getPathAquesTone() {
+            return txtAquesTone.getText();
+        }
+
+        public void setPathAquesTone( String value ) {
+            txtAquesTone.setText( value );
+        }
+
+        public Vector<SingerConfig> getUtauSingers() {
+            return m_utau_singers;
+        }
+
+        public void setUtauSingers( Vector<SingerConfig> value ) {
+            m_utau_singers.clear();
+            for ( int i = 0; i < value.size(); i++ ) {
+                m_utau_singers.add( (SingerConfig)value.get( i ).clone() );
+            }
+            UpdateUtauSingerList();
+        }
+        #endregion
+
+        #region event handlers
+        public void chkLoadSecondaryVOCALOID1_CheckedChanged( Object sender, EventArgs e ) {
+            if ( VocaloSysUtil.isDSEVersion101Available() ) {
+                if ( chkLoadSecondaryVOCALOID1.isSelected() ) {
+                    chkLoadVocaloid100.setEnabled( true );
+                    chkLoadVocaloid101.setEnabled( true );
+                } else {
+                    if ( VocaloSysUtil.getDefaultDseVersion() == 100 ) {
+                        chkLoadVocaloid100.setEnabled( true );
+                        chkLoadVocaloid101.setEnabled( false );
+                    } else {
+                        chkLoadVocaloid100.setEnabled( false );
+                        chkLoadVocaloid101.setEnabled( true );
+                    }
+                }
+            }
+        }
+
         public void btnChangeMenuFont_Click( Object sender, BEventArgs e ) {
             fontDialog.setSelectedFont( getBaseFont() );
             fontDialog.setVisible( true );
@@ -1126,14 +1169,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        void UpdateFonts( String font_name ) {
-            if ( font_name.Equals( "" ) ) {
-                return;
-            }
-            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)getFont().getSize() );
-            Util.applyFontRecurse( this, font );
-        }
-
         public void comboPlatform_SelectedIndexChanged( Object sender, BEventArgs e ) {
             String title = (String)comboPlatform.getSelectedItem();
 #if JAVA
@@ -1141,21 +1176,13 @@ namespace org.kbinani.cadencii {
 #else
             foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) )
 #endif
-            {
+ {
                 if ( title.Equals( p + "" ) ) {
                     m_platform = p;
                     chkCommandKeyAsControl.setEnabled( p != PlatformEnum.Windows );
                     break;
                 }
             }
-        }
-
-        public boolean isCommandKeyAsControl() {
-            return chkCommandKeyAsControl.isSelected();
-        }
-
-        public void setCommandKeyAsControl( boolean value ) {
-            chkCommandKeyAsControl.setSelected( value );
         }
 
         public void btnResampler_Click( Object sender, BEventArgs e ) {
@@ -1207,52 +1234,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public String getPathResampler() {
-            return txtResampler.getText();
-        }
-
-        public void setPathResampler( String value ) {
-            txtResampler.setText( value );
-        }
-
-        public String getPathWavtool() {
-            return txtWavtool.getText();
-        }
-
-        public void setPathWavtool( String value ) {
-            txtWavtool.setText( value );
-        }
-
-        public String getPathAquesTone() {
-            return txtAquesTone.getText();
-        }
-
-        public void setPathAquesTone( String value ) {
-            txtAquesTone.setText( value );
-        }
-
-        public Vector<SingerConfig> getUtauSingers() {
-            return m_utau_singers;
-        }
-
-        public void setUtauSingers( Vector<SingerConfig> value ) {
-            m_utau_singers.clear();
-            for ( int i = 0; i < value.size(); i++ ) {
-                m_utau_singers.add( (SingerConfig)value.get( i ).clone() );
-            }
-            UpdateUtauSingerList();
-        }
-
-        private void UpdateUtauSingerList() {
-            listSingers.clear();
-            for ( int i = 0; i < m_utau_singers.size(); i++ ) {
-                m_utau_singers.get( i ).Program = i;
-                listSingers.addItem( "", new BListViewItem( new String[] { m_utau_singers.get( i ).Program + "",
-                                                                           m_utau_singers.get( i ).VOICENAME, 
-                                                                           m_utau_singers.get( i ).VOICEIDSTR } ) );
-            }
-        }
-
         public void btnAdd_Click( Object sender, BEventArgs e ) {
             folderBrowserSingers.setVisible( true );
             if ( folderBrowserSingers.getDialogResult() == BDialogResult.OK ) {
@@ -1292,10 +1273,6 @@ namespace org.kbinani.cadencii {
                 m_utau_singers.add( sc );
                 UpdateUtauSingerList();
             }
-        }
-
-        private int getUtauSingersSelectedIndex() {
-            return listSingers.getSelectedIndex( "" );
         }
 
         public void listSingers_SelectedIndexChanged( Object sender, BEventArgs e ) {
@@ -1360,6 +1337,34 @@ namespace org.kbinani.cadencii {
         public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
+        #endregion
+
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        private void UpdateFonts( String font_name ) {
+            if ( font_name.Equals( "" ) ) {
+                return;
+            }
+            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)getFont().getSize() );
+            Util.applyFontRecurse( this, font );
+        }
+
+        private void UpdateUtauSingerList() {
+            listSingers.clear();
+            for ( int i = 0; i < m_utau_singers.size(); i++ ) {
+                m_utau_singers.get( i ).Program = i;
+                listSingers.addItem( "", new BListViewItem( new String[] { m_utau_singers.get( i ).Program + "",
+                                                                           m_utau_singers.get( i ).VOICENAME, 
+                                                                           m_utau_singers.get( i ).VOICEIDSTR } ) );
+            }
+        }
+
+        private int getUtauSingersSelectedIndex() {
+            return listSingers.getSelectedIndex( "" );
+        }
 
         private void registerEventHandlers() {
             btnChangeScreenFont.clickEvent.add( new BEventHandler( this, "btnChangeScreenFont_Click" ) );
@@ -1382,7 +1387,9 @@ namespace org.kbinani.cadencii {
 
         private void setResources() {
         }
+        #endregion
 
+        #region UI implementation
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\Preference.java
@@ -3501,6 +3508,8 @@ namespace org.kbinani.cadencii {
         private BLabel lblBuffer;
         #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

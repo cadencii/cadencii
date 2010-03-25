@@ -44,7 +44,7 @@ public class BEventHandler{
         try{
             m_delegate.invoke( arguments );
         }catch( Exception ex ){
-            System.out.println( "BEventHandler#invoke; ex=" + ex );
+            System.err.println( "BEventHandler#invoke; ex=" + ex );
         }
     }
     

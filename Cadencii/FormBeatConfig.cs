@@ -16,11 +16,13 @@ package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormBeatConfig.java
 
+import java.awt.event.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
+using org.kbinani.java.awt.event_;
 using org.kbinani.apputil;
 using org.kbinani;
 using org.kbinani.windows.forms;
@@ -35,46 +37,6 @@ namespace org.kbinani.cadencii {
 #else
     public class FormBeatConfig : BDialog {
 #endif
-        public void ApplyLanguage() {
-            setTitle( _( "Beat Change" ) );
-            groupPosition.setTitle( _( "Position" ) );
-            groupBeat.setTitle( _( "Beat" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            lblStart.setText( _( "From" ) + "(&F)" );
-            chkEnd.setText( _( "To" ) + "(&T)" );
-            lblBar1.setText( _( "Measure" ) );
-            lblBar2.setText( _( "Measure" ) );
-        }
-
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
-        public int getStart() {
-            return (int)numStart.getValue();
-        }
-
-        public boolean isEndSpecified() {
-            return chkEnd.isSelected();
-        }
-
-        public int getEnd() {
-            return (int)numEnd.getValue();
-        }
-
-        public int getNumerator() {
-            return (int)numNumerator.getValue();
-        }
-
-        public int getDenominator() {
-            int ret = 1;
-            for ( int i = 0; i < comboDenominator.getSelectedIndex(); i++ ) {
-                ret *= 2;
-            }
-            return ret;
-        }
-
         public FormBeatConfig( int bar_count, int numerator, int denominator, boolean num_enabled, int pre_measure ) {
 #if JAVA
             super();
@@ -84,7 +46,7 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             //ClientSize = new Size( 278, 182 );
 
             numStart.setEnabled( num_enabled );
@@ -139,6 +101,62 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
+        #region public methods
+        public void applyLanguage() {
+            setTitle( _( "Beat Change" ) );
+            groupPosition.setTitle( _( "Position" ) );
+            groupBeat.setTitle( _( "Beat" ) );
+            btnOK.setText( _( "OK" ) );
+            btnCancel.setText( _( "Cancel" ) );
+            lblStart.setText( _( "From" ) );
+            lblStart.setDisplayedMnemonic( KeyEvent.VK_F );
+            chkEnd.setText( _( "To" ) );
+            chkEnd.setDisplayedMnemonicIndex( 0 );
+            lblBar1.setText( _( "Measure" ) );
+            lblBar2.setText( _( "Measure" ) );
+        }
+
+        public int getStart() {
+            return (int)numStart.getValue();
+        }
+
+        public boolean isEndSpecified() {
+            return chkEnd.isSelected();
+        }
+
+        public int getEnd() {
+            return (int)numEnd.getValue();
+        }
+
+        public int getNumerator() {
+            return (int)numNumerator.getValue();
+        }
+
+        public int getDenominator() {
+            int ret = 1;
+            for ( int i = 0; i < comboDenominator.getSelectedIndex(); i++ ) {
+                ret *= 2;
+            }
+            return ret;
+        }
+        #endregion
+
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        private void registerEventHandlers() {
+            chkEnd.checkedChangedEvent.add( new BEventHandler( this, "chkEnd_CheckedChanged" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+        }
+
+        private void setResources() {
+        }
+        #endregion
+
+        #region event handlers
         public void chkEnd_CheckedChanged( Object sender, BEventArgs e ) {
             numEnd.setEnabled( chkEnd.isSelected() );
         }
@@ -150,23 +168,13 @@ namespace org.kbinani.cadencii {
         public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-            chkEnd.checkedChangedEvent.add( new BEventHandler( this, "chkEnd_CheckedChanged" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-        }
-
-        private void setResources() {
-        }
-
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormBeatConfig.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormBeatConfig.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -182,8 +190,6 @@ namespace org.kbinani.cadencii {
             }
             base.Dispose( disposing );
         }
-
-        #region Windows フォーム デザイナで生成されたコード
 
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
@@ -422,8 +428,6 @@ namespace org.kbinani.cadencii {
 
         }
 
-        #endregion
-
         private BGroupBox groupPosition;
         private BGroupBox groupBeat;
         private BButton btnOK;
@@ -438,9 +442,8 @@ namespace org.kbinani.cadencii {
         private NumericUpDownEx numNumerator;
         private BLabel label2;
         private BComboBox comboDenominator;
-        #endregion
 #endif
-
+        #endregion
     }
 
 #if !JAVA

@@ -64,7 +64,7 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < 4; i++ ) {
                 m_povs.add( int.MinValue );
             }
-            ApplyLanguage();
+            applyLanguage();
 #if JAVA
             int num_dev = 0;
 #else
@@ -86,7 +86,8 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
 #if JAVA
             int num_dev = 0;
 #else
@@ -102,63 +103,6 @@ namespace org.kbinani.cadencii {
             btnCancel.setText( _( "Cancel" ) );
             btnReset.setText( _( "Reset And Exit" ) );
             btnSkip.setText( _( "Skip" ) );
-        }
-
-        public void timer_Tick( Object sender, BEventArgs e ) {
-            //int num_btn = vstidrv.JoyGetNumButtons( 0 );
-            byte[] btn;
-            int pov;
-#if JAVA
-            pov = -1;
-            btn = new byte[]{};
-#else
-            winmmhelp.JoyGetStatus( 0, out btn, out pov );
-#endif
-
-#if DEBUG
-            AppManager.debugWriteLine( "FormGameControlerConfig+timer_Tick" );
-            AppManager.debugWriteLine( "    pov=" + pov );
-#endif
-            boolean added = false;
-            if ( index <= 4 ) {
-                if ( pov >= 0 && !m_povs.contains( pov ) ) {
-                    m_povs.set( index - 1, pov );
-                    added = true;
-                }
-            } else {
-                for ( int i = 0; i < btn.Length; i++ ) {
-                    if ( btn[i] > 0x0 && !m_list.contains( i ) ) {
-                        m_list.set( index - 5, i );
-                        added = true;
-                        break;
-                    }
-                }
-            }
-            if ( added ) {
-                if ( index <= 8 ) {
-                    progressCount.setValue( index );
-                } else if ( index <= 12 ) {
-                    progressCount.setValue( index - 8 );
-                } else {
-                    progressCount.setValue( index - 12 );
-                }
-
-                if ( index == 8 ) {
-                    pictButton.setImage( Resources.get_btn2() );
-                    progressCount.setValue( 0 );
-                    progressCount.setMaximum( 4 );
-                } else if ( index == 12 ) {
-                    pictButton.setImage( Resources.get_btn3() );
-                    progressCount.setValue( 0 );
-                    progressCount.setMaximum( 2 );
-                }
-                if ( index == 14 ) {
-                    btnSkip.setEnabled( false );
-                    btnOK.setEnabled( true );
-                    timer.stop();
-                }
-                index++;
-            }
         }
 
         public int getRectangle() {
@@ -216,9 +160,81 @@ namespace org.kbinani.cadencii {
         public int getPovRight() {
             return m_povs.get( 3 );
         }
+        #endregion
 
+        #region helper methods
         private static String _( String id ) {
             return Messaging.getMessage( id );
+        }
+
+        private void registerEventHandlers() {
+            timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
+            btnSkip.clickEvent.add( new BEventHandler( this, "btnSkip_Click" ) );
+            btnReset.clickEvent.add( new BEventHandler( this, "btnReset_Click" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+        }
+
+        private void setResources() {
+        }
+        #endregion
+
+        #region event handlers
+        public void timer_Tick( Object sender, BEventArgs e ) {
+            //int num_btn = vstidrv.JoyGetNumButtons( 0 );
+            byte[] btn;
+            int pov;
+#if JAVA
+            pov = -1;
+            btn = new byte[]{};
+#else
+            winmmhelp.JoyGetStatus( 0, out btn, out pov );
+#endif
+
+#if DEBUG
+            AppManager.debugWriteLine( "FormGameControlerConfig+timer_Tick" );
+            AppManager.debugWriteLine( "    pov=" + pov );
+#endif
+            boolean added = false;
+            if ( index <= 4 ) {
+                if ( pov >= 0 && !m_povs.contains( pov ) ) {
+                    m_povs.set( index - 1, pov );
+                    added = true;
+                }
+            } else {
+                for ( int i = 0; i < btn.Length; i++ ) {
+                    if ( btn[i] > 0x0 && !m_list.contains( i ) ) {
+                        m_list.set( index - 5, i );
+                        added = true;
+                        break;
+                    }
+                }
+            }
+            if ( added ) {
+                if ( index <= 8 ) {
+                    progressCount.setValue( index );
+                } else if ( index <= 12 ) {
+                    progressCount.setValue( index - 8 );
+                } else {
+                    progressCount.setValue( index - 12 );
+                }
+
+                if ( index == 8 ) {
+                    pictButton.setImage( Resources.get_btn2() );
+                    progressCount.setValue( 0 );
+                    progressCount.setMaximum( 4 );
+                } else if ( index == 12 ) {
+                    pictButton.setImage( Resources.get_btn3() );
+                    progressCount.setValue( 0 );
+                    progressCount.setMaximum( 2 );
+                }
+                if ( index == 14 ) {
+                    btnSkip.setEnabled( false );
+                    btnOK.setEnabled( true );
+                    timer.stop();
+                }
+                index++;
+            }
         }
 
         public void btnSkip_Click( Object sender, BEventArgs e ) {
@@ -277,25 +293,13 @@ namespace org.kbinani.cadencii {
         public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-            timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
-            btnSkip.clickEvent.add( new BEventHandler( this, "btnSkip_Click" ) );
-            btnReset.clickEvent.add( new BEventHandler( this, "btnReset_Click" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-        }
-
-        private void setResources() {
-        }
-
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormGameControlerConfig.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormGameControlerConfig.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -311,8 +315,6 @@ namespace org.kbinani.cadencii {
             }
             base.Dispose( disposing );
         }
-
-        #region Windows フォーム デザイナで生成されたコード
 
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
@@ -430,8 +432,6 @@ namespace org.kbinani.cadencii {
 
         }
 
-        #endregion
-
         private BLabel lblMessage;
         private BPictureBox pictButton;
         private BProgressBar progressCount;
@@ -440,8 +440,9 @@ namespace org.kbinani.cadencii {
         private BButton btnCancel;
         private BButton btnReset;
 
-        #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

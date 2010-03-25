@@ -45,8 +45,6 @@ namespace org.kbinani.cadencii {
         #region Constants
         public const int WIDTH = 85;
         public const int HEIGHT = 284;
-        private BCheckBox chkMute;
-        private BCheckBox chkSolo;
 #if JAVA
         private static final int[][] _KEY = {
 #else
@@ -259,13 +257,6 @@ namespace org.kbinani.cadencii {
             trackFeder.setValue( v );
         }
 
-        private void VolumeTracker_Resize( Object sender, BEventArgs e ) {
-#if !JAVA
-            this.Width = WIDTH;
-            this.Height = HEIGHT;
-#endif
-        }
-
         private static int getFederFromYCoord( int y ) {
 #if JAVA
             int feder = _KEY[0][0];
@@ -332,7 +323,15 @@ namespace org.kbinani.cadencii {
             return y;
         }
 
-        private void trackFeder_ValueChanged( Object sender, BEventArgs e ) {
+        #region event handlers
+        public void VolumeTracker_Resize( Object sender, BEventArgs e ) {
+#if !JAVA
+            this.Width = WIDTH;
+            this.Height = HEIGHT;
+#endif
+        }
+
+        public void trackFeder_ValueChanged( Object sender, BEventArgs e ) {
             m_feder = getFederFromYCoord( 151 - (trackFeder.getValue() - 26) );
             txtFeder.setText( (m_feder / 10.0) + "" );
             try{
@@ -342,7 +341,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void trackPanpot_ValueChanged( Object sender, BEventArgs e ) {
+        public void trackPanpot_ValueChanged( Object sender, BEventArgs e ) {
             txtPanpot.setText( trackPanpot.getValue() + "" );
             try{
                 panpotChangedEvent.raise( this, new BEventArgs() );
@@ -351,7 +350,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void txtFeder_KeyDown( Object sender, BKeyEventArgs e ) {
+        public void txtFeder_KeyDown( Object sender, BKeyEventArgs e ) {
 #if JAVA
             if( (e.getKeyCode() & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ){
                 return;
@@ -378,7 +377,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void txtPanpot_KeyDown( Object sender, BKeyEventArgs e ) {
+        public void txtPanpot_KeyDown( Object sender, BKeyEventArgs e ) {
 #if JAVA
             if( (e.getKeyCode() & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ){
                 return;
@@ -420,23 +419,16 @@ namespace org.kbinani.cadencii {
                 PortUtil.stderr.println( "VolumeTracker#chkMute_Click; ex=" + ex );
             }
         }
+        #endregion
 
         private void registerEventHandlers() {
-#if JAVA
             trackFeder.valueChangedEvent.add( new BEventHandler( this, "trackFeder_ValueChanged" ) );
             trackPanpot.valueChangedEvent.add( new BEventHandler( this, "trackPanpot_ValueChanged" ) );
             txtPanpot.keyDownEvent.add( new BKeyEventHandler( this, "txtPanpot_KeyDown" ) );
             txtFeder.keyDownEvent.add( new BKeyEventHandler( this, "txtFeder_KeyDown" ) );
             //this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
-#else
-            this.trackFeder.ValueChanged += new System.EventHandler( this.trackFeder_ValueChanged );
-            this.trackPanpot.ValueChanged += new System.EventHandler( this.trackPanpot_ValueChanged );
-            this.txtPanpot.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtPanpot_KeyDown );
-            this.txtFeder.KeyDown += new System.Windows.Forms.KeyEventHandler( this.txtFeder_KeyDown );
-            this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
             chkSolo.clickEvent.add( new BEventHandler( this, "chkSolo_Click" ) );
             chkMute.clickEvent.add( new BEventHandler( this, "chkMute_Click" ) );
-#endif
         }
 
         private void setResources() {
@@ -600,6 +592,9 @@ namespace org.kbinani.cadencii {
         private BTextBox txtPanpot;
         private BLabel lblTitle;
         private BTextBox txtFeder;
+        private BCheckBox chkMute;
+        private BCheckBox chkSolo;
+
         #endregion
 #endif
     }

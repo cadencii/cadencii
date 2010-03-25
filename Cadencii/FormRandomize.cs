@@ -73,6 +73,7 @@ namespace org.kbinani.cadencii {
             lockRequired = false;
         }
 
+        #region helper methods
         /// <summary>
         /// numStartBar, numStartBeat, numEndBar, numEndBeatの値の範囲の妥当性をチェックする
         /// </summary>
@@ -150,6 +151,23 @@ namespace org.kbinani.cadencii {
             lockRequired = false;
         }
 
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        private void registerEventHandlers() {
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            numStartBar.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
+            numStartBeat.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
+            numEndBar.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
+            numEndBeat.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
+            chkShift.checkedChangedEvent.add( new BEventHandler( this, "chkShift_CheckedChanged" ) );
+            chkPit.checkedChangedEvent.add( new BEventHandler( this, "chkPit_CheckedChanged" ) );
+        }
+        #endregion
+
+        #region event handlers
         public void chkShift_CheckedChanged( Object sender, EventArgs e ) {
             boolean v = chkShift.isSelected();
             comboShiftValue.setEnabled( v );
@@ -186,7 +204,9 @@ namespace org.kbinani.cadencii {
             lastEndBeat = getEndBeat();
             setDialogResult( BDialogResult.OK );
         }
+        #endregion
 
+        #region public methods
         public int getResolution() {
             return (int)numResolution.getValue();
         }
@@ -239,11 +259,7 @@ namespace org.kbinani.cadencii {
             return draft;
         }
 
-        private static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
-        private void applyLanguage() {
+        public void applyLanguage() {
             lblStart.setText( _( "Start" ) );
             lblStartBar.setText( _( "bar" ) );
             lblStartBeat.setText( _( "beat" ) );
@@ -264,18 +280,9 @@ namespace org.kbinani.cadencii {
 
             setTitle( _( "Randomize" ) );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-            numStartBar.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
-            numStartBeat.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
-            numEndBar.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
-            numEndBeat.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
-            chkShift.checkedChangedEvent.add( new BEventHandler( this, "chkShift_CheckedChanged" ) );
-            chkPit.checkedChangedEvent.add( new BEventHandler( this, "chkPit_CheckedChanged" ) );
-        }
-
+        #region UI implementation
 #if JAVA
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormRandomize.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormRandomize.java
@@ -668,6 +675,8 @@ namespace org.kbinani.cadencii {
 
         #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

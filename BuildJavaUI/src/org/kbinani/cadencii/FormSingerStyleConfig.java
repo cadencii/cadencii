@@ -52,7 +52,7 @@ public class FormSingerStyleConfig extends BForm {
     private BButton btnOK = null;
     private BButton btnCancel = null;
     private JPanel jPanel = null;
-    private JButton btnApply = null;
+    private BButton btnApply = null;
 
     //SECTION-END-FIELD
     /**
@@ -560,11 +560,11 @@ public class FormSingerStyleConfig extends BForm {
     /**
      * This method initializes btnApply	
      * 	
-     * @return javax.swing.JButton	
+     * @return org.kbinani.windows.forms.BButton
      */
-    private JButton getBtnApply() {
+    private BButton getBtnApply() {
         if (btnApply == null) {
-            btnApply = new JButton();
+            btnApply = new BButton();
             btnApply.setText("Apply to current track(&C)");
         }
         return btnApply;

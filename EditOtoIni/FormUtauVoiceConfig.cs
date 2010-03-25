@@ -184,7 +184,7 @@ namespace org.kbinani.editotoini {
 
             UpdateScale();
             m_player = new MediaPlayer();
-            ApplyLanguage();
+            applyLanguage();
         }
 
 #if JAVA
@@ -299,7 +299,7 @@ namespace org.kbinani.editotoini {
         private void pictWave_MouseHover( Object sender, EventArgs e ) {
         }
 
-        public void ApplyLanguage() {
+        public void applyLanguage() {
             UpdateFormTitle();
 
             menuFile.setText( _( "File" ) + "(&F)" );
@@ -1144,7 +1144,7 @@ namespace org.kbinani.editotoini {
             if ( !PortUtil.isFileExists( path_config_cadencii ) ) {
                 return;
             }
-            ApplyLanguage();
+            applyLanguage();
         }
 
         private void FormUtauVoiceConfig_FormClosing( Object sender, FormClosingEventArgs e ) {

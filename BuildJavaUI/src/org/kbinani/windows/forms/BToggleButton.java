@@ -37,7 +37,7 @@ public class BToggleButton extends JToggleButton
         try{
             clickEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BButton#actionPerformed; ex=" + ex );
+            System.err.println( "BButton#actionPerformed; ex=" + ex );
         }
     }
 }

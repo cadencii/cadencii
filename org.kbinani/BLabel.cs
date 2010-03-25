@@ -33,6 +33,14 @@ namespace org.kbinani.windows.forms{
             base.AutoEllipsis = value;
         }
 
+        public int getDisplayedMnemonic() {
+            return BMenuItem.getMnemonicFromText( getText() );
+        }
+
+        public void setDisplayedMnemonic( int value ) {
+            setText( BMenuItem.setMnemonicFromText( getText(), value ) );
+        }
+
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {

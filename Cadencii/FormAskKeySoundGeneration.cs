@@ -46,28 +46,12 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        private static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
+        #region public methods
         public void applyLanguage() {
             lblMessage.setText( _( "It seems some key-board sounds are missing. Do you want to re-generate them now?" ) );
             chkAlwaysPerformThisCheck.setText( _( "Always perform this check when starting Cadencii." ) );
             btnYes.setText( _( "Yes" ) );
             btnNo.setText( _( "No" ) );
-        }
-
-        public void btnYes_Click( Object sender, BEventArgs e ) {
-            setDialogResult( BDialogResult.YES );
-        }
-
-        public void btnNo_Click( Object sender, BEventArgs e ) {
-            setDialogResult( BDialogResult.NO );
-        }
-
-        private void registerEventHandlers() {
-            btnYes.clickEvent.add( new BEventHandler( this, "btnYes_Click" ) );
-            btnNo.clickEvent.add( new BEventHandler( this, "btnNo_Click" ) );
         }
 
         public void setAlwaysPerformThisCheck( boolean value ) {
@@ -77,7 +61,30 @@ namespace org.kbinani.cadencii {
         public boolean isAlwaysPerformThisCheck() {
             return chkAlwaysPerformThisCheck.isSelected();
         }
+        #endregion
 
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        private void registerEventHandlers() {
+            btnYes.clickEvent.add( new BEventHandler( this, "btnYes_Click" ) );
+            btnNo.clickEvent.add( new BEventHandler( this, "btnNo_Click" ) );
+        }
+        #endregion
+
+        #region event handlers
+        public void btnYes_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.YES );
+        }
+
+        public void btnNo_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.NO );
+        }
+        #endregion
+
+        #region UI implementation
 #if JAVA
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\cadencii\FormAskKeySoundGeneration.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\cadencii\FormAskKeySoundGeneration.java
@@ -162,6 +169,7 @@ namespace org.kbinani.cadencii {
         private BButton btnYes;
 
 #endif
+        #endregion
     }
 
 #if !JAVA

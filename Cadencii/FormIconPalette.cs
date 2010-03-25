@@ -69,40 +69,30 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void applyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             setTitle( _( "Icon Palette" ) );
             chkTopMost.setText( _( "Top Most" ) );
-        }
-
-        private static String _( String id ) {
-            return Messaging.getMessage( id );
         }
 
         public void applyShortcut( KeyStroke shortcut ) {
             menuWindowHide.setAccelerator( shortcut );
         }
 
-        public void FormIconPalette_FormClosing( Object sender, BFormClosingEventArgs e ) {
-            e.Cancel = true;
-            setVisible( false );
+        public void setTopMost( boolean value ) {
+            chkTopMost.setSelected( value );
+        }
+        #endregion
+
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
         private void registerEventHandlers() {
             formClosingEvent.add( new BFormClosingEventHandler( this, "FormIconPalette_FormClosing" ) );
             menuWindowHide.clickEvent.add( new BEventHandler( this, "menuWindowHide_Click" ) );
             chkTopMost.checkedChangedEvent.add( new BEventHandler( this, "chkTopMost_CheckedChanged" ) );
-        }
-
-        public void chkTopMost_CheckedChanged( Object sender, EventArgs e ) {
-            setAlwaysOnTop( chkTopMost.isSelected() );
-        }
-
-        public void setTopMost( boolean value ) {
-            chkTopMost.setSelected( value );
-        }
-
-        public void menuWindowHide_Click( Object sender, EventArgs e ) {
-            close();
         }
 
         private void init() {
@@ -229,6 +219,21 @@ namespace org.kbinani.cadencii {
             setMaximumSize( size );
             setMinimumSize( size );
         }
+        #endregion
+
+        #region event handlers
+        public void FormIconPalette_FormClosing( Object sender, BFormClosingEventArgs e ) {
+            e.Cancel = true;
+            setVisible( false );
+        }
+
+        public void chkTopMost_CheckedChanged( Object sender, EventArgs e ) {
+            setAlwaysOnTop( chkTopMost.isSelected() );
+        }
+
+        public void menuWindowHide_Click( Object sender, EventArgs e ) {
+            close();
+        }
 
         public void handleCommonMouseDown( Object sender, BMouseEventArgs e ) {
             if ( AppManager.getEditMode() != EditMode.NONE ) {
@@ -258,12 +263,13 @@ namespace org.kbinani.cadencii {
             btn.DoDragDrop( handle, System.Windows.Forms.DragDropEffects.All );
 #endif
         }
+        #endregion
 
+        #region UI implementation
 #if JAVA
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormIconPalette.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormIconPalette.java
 #else
-        #region UI Impl for C#
         private void InitializeComponent() {
             this.menuBar = new org.kbinani.windows.forms.BMenuBar();
             this.menuWindow = new org.kbinani.windows.forms.BMenuItem();
@@ -331,8 +337,9 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuWindowHide;
         private BCheckBox chkTopMost;
 
-        #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

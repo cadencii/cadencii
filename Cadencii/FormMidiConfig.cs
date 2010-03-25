@@ -59,7 +59,7 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
 
             m_program_normal = MidiPlayer.ProgramNormal;
@@ -103,11 +103,8 @@ namespace org.kbinani.cadencii {
             chkRingBell.setSelected( MidiPlayer.RingBell );
         }
 
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             setTitle( _( "Metronome Config" ) );
             lblDeviceGeneral.setText( _( "MIDI Device" ) );
             lblDeviceMetronome.setText( _( "MIDI Device" ) );
@@ -123,7 +120,33 @@ namespace org.kbinani.cadencii {
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
         }
+        #endregion
 
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        private void registerEventHandlers() {
+            chkRingBell.checkedChangedEvent.add( new BEventHandler( this, "chkRingBell_CheckedChanged" ) );
+            chkPreview.checkedChangedEvent.add( new BEventHandler( this, "chkPreview_CheckedChanged" ) );
+            comboDeviceMetronome.selectedIndexChangedEvent.add( new BEventHandler( this, "comboDeviceMetronome_SelectedIndexChanged" ) );
+            comboDeviceGeneral.selectedIndexChangedEvent.add( new BEventHandler( this, "comboDeviceGeneral_SelectedIndexChanged" ) );
+            numPreUtterance.valueChangedEvent.add( new BEventHandler( this, "numPreUtterance_ValueChanged" ) );
+            numNoteBell.valueChangedEvent.add( new BEventHandler( this, "numNoteBell_ValueChanged" ) );
+            numNoteNormal.valueChangedEvent.add( new BEventHandler( this, "numNoteNormal_ValueChanged" ) );
+            numProgramBell.valueChangedEvent.add( new BEventHandler( this, "numProgramBell_ValueChanged" ) );
+            numProgramNormal.valueChangedEvent.add( new BEventHandler( this, "numProgramNormal_ValueChanged" ) );
+            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMidiConfig_FormClosing" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+        }
+
+        private void setResources() {
+        }
+        #endregion
+
+        #region event handlers
         public void numProgramNormal_ValueChanged( object sender, EventArgs e ) {
             MidiPlayer.ProgramNormal = (byte)numProgramNormal.Value;
         }
@@ -204,32 +227,13 @@ namespace org.kbinani.cadencii {
         public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-            chkRingBell.checkedChangedEvent.add( new BEventHandler( this, "chkRingBell_CheckedChanged" ) );
-            chkPreview.checkedChangedEvent.add( new BEventHandler( this, "chkPreview_CheckedChanged" ) );
-            comboDeviceMetronome.selectedIndexChangedEvent.add( new BEventHandler( this, "comboDeviceMetronome_SelectedIndexChanged" ) );
-            comboDeviceGeneral.selectedIndexChangedEvent.add( new BEventHandler( this, "comboDeviceGeneral_SelectedIndexChanged" ) );
-            numPreUtterance.valueChangedEvent.add( new BEventHandler( this, "numPreUtterance_ValueChanged" ) );
-            numNoteBell.valueChangedEvent.add( new BEventHandler( this, "numNoteBell_ValueChanged" ) );
-            numNoteNormal.valueChangedEvent.add( new BEventHandler( this, "numNoteNormal_ValueChanged" ) );
-            numProgramBell.valueChangedEvent.add( new BEventHandler( this, "numProgramBell_ValueChanged" ) );
-            numProgramNormal.valueChangedEvent.add( new BEventHandler( this, "numProgramNormal_ValueChanged" ) );
-            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMidiConfig_FormClosing" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-        }
-
-        private void setResources() {
-        }
-
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMidiConfig.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMidiConfig.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -245,8 +249,6 @@ namespace org.kbinani.cadencii {
             }
             base.Dispose( disposing );
         }
-
-        #region Windows フォーム デザイナで生成されたコード
 
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
@@ -537,8 +539,6 @@ namespace org.kbinani.cadencii {
 
         }
 
-        #endregion
-
         private BLabel lblDeviceMetronome;
         private BLabel lblProgramNormal;
         private BLabel lblProgramBell;
@@ -559,8 +559,10 @@ namespace org.kbinani.cadencii {
         private BGroupBox groupMetronome;
         private BLabel lblDeviceGeneral;
         private BComboBox comboDeviceGeneral;
-        #endregion
+
 #endif
+        #endregion
+
     }
 
 #if !JAVA

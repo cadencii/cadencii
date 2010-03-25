@@ -22,14 +22,14 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.java.awt;
 using org.kbinani.apputil;
+using org.kbinani.java.awt;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
-    using boolean = System.Boolean;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -56,7 +56,7 @@ namespace org.kbinani.cadencii {
 #else
             InitializeComponent();
 #endif
-            ApplyLanguage();
+            applyLanguage();
             setMode( FormMidiMode.EXPORT );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
@@ -71,7 +71,8 @@ namespace org.kbinani.cadencii {
             setResources();
         }
 
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 setTitle( _( "Midi Export" ) );
             } else if ( m_mode == FormMidiMode.IMPORT ) {
@@ -170,10 +171,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
         public boolean isVocaloidMetatext() {
             if ( chkNote.isSelected() ) {
                 return false;
@@ -213,21 +210,45 @@ namespace org.kbinani.cadencii {
         public boolean isPreMeasure() {
             return chkPreMeasure.isSelected();
         }
+        #endregion
+
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        private void registerEventHandlers() {
+            btnCheckAll.clickEvent.add( new BEventHandler( this, "btnCheckAll_Click" ) );
+            btnUncheckAll.clickEvent.add( new BEventHandler( this, "btnUnckeckAll_Click" ) );
+            chkNote.checkedChangedEvent.add( new BEventHandler( this, "chkNote_CheckedChanged" ) );
+            chkMetaText.clickEvent.add( new BEventHandler( this, "chkMetaText_Click" ) );
+            chkExportVocaloidNrpn.checkedChangedEvent.add( new BEventHandler( this, "chkExportVocaloidNrpn_CheckedChanged" ) );
+            chkExportVocaloidNrpn.checkedChangedEvent.add( new BEventHandler( this, "chkExportVocaloidNrpn_CheckedChanged" ) );
+            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMidiImExport_FormClosing" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            radioGateTime.checkedChangedEvent.add( new BEventHandler( this, "radioGateTime_CheckedChanged" ) );
+            radioPlayTime.checkedChangedEvent.add( new BEventHandler( this, "radioPlayTime_CheckedChanged" ) );
+        }
+
+        private void setResources() {
+        }
+        #endregion
 
         #region event handlers
-        private void btnCheckAll_Click( Object sender, BEventArgs e ) {
+        public void btnCheckAll_Click( Object sender, BEventArgs e ) {
             for ( int i = 0; i < listTrack.getItemCount( "" ); i++ ) {
                 listTrack.setItemCheckedAt( "", i, true );
             }
         }
 
-        private void btnUnckeckAll_Click( Object sender, BEventArgs e ) {
+        public void btnUnckeckAll_Click( Object sender, BEventArgs e ) {
             for ( int i = 0; i < listTrack.getItemCount( "" ); i++ ) {
                 listTrack.setItemCheckedAt( "", i, false );
             }
         }
 
-        private void chkExportVocaloidNrpn_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkExportVocaloidNrpn_CheckedChanged( Object sender, BEventArgs e ) {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 if ( chkExportVocaloidNrpn.isSelected() ) {
                     chkPreMeasure.setEnabled( false );
@@ -240,7 +261,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void chkNote_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkNote_CheckedChanged( Object sender, BEventArgs e ) {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 if ( chkNote.isSelected() ) {
                     chkMetaText.setEnabled( false );
@@ -253,13 +274,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void chkMetaText_Click( Object sender, BEventArgs e ) {
+        public void chkMetaText_Click( Object sender, BEventArgs e ) {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.isSelected();
             }
         }
 
-        private void FormMidiImExport_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void FormMidiImExport_FormClosing( Object sender, BFormClosingEventArgs e ) {
             columnWidthTrack = listTrack.getColumnWidth( 0 );
             columnWidthName = listTrack.getColumnWidth( 1 );
             columnWidthNotes = listTrack.getColumnWidth( 2 );
@@ -288,37 +309,11 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
-        private void registerEventHandlers() {
+        #region UI implementation
 #if JAVA
-            this.btnCheckAll.clickEvent.add( new BEventHandler( this, "btnCheckAll_Click" ) );
-            this.btnUncheckAll.clickEvent.add( new BEventHandler( this, "btnUnckeckAll_Click" ) );
-            this.chkNote.checkedChangedEvent.add( new BEventHandler( this, "chkNote_CheckedChanged" ) );
-            this.chkMetaText.clickEvent.add( new BEventHandler( this, "chkMetaText_Click" ) );
-            this.chkExportVocaloidNrpn.checkedChangedEvent.add( new BEventHandler( this, "chkExportVocaloidNrpn_CheckedChanged" ) );
-#else
-            this.btnCheckAll.Click += new System.EventHandler( this.btnCheckAll_Click );
-            this.btnUncheckAll.Click += new System.EventHandler( this.btnUnckeckAll_Click );
-            this.chkNote.CheckedChanged += new System.EventHandler( this.chkNote_CheckedChanged );
-            this.chkMetaText.Click += new System.EventHandler( this.chkMetaText_Click );
-            this.chkExportVocaloidNrpn.CheckedChanged += new System.EventHandler( this.chkExportVocaloidNrpn_CheckedChanged );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
-#endif
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-            radioGateTime.checkedChangedEvent.add( new BEventHandler( this, "radioGateTime_CheckedChanged" ) );
-            radioPlayTime.checkedChangedEvent.add( new BEventHandler( this, "radioPlayTime_CheckedChanged" ) );
-        }
-
-        private void setResources() {
-        }
-
-#if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMidiImExport.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMidiImExport.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -334,8 +329,6 @@ namespace org.kbinani.cadencii {
             }
             base.Dispose( disposing );
         }
-
-        #region Windows フォーム デザイナで生成されたコード
 
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
@@ -641,8 +634,6 @@ namespace org.kbinani.cadencii {
 
         }
 
-        #endregion
-
         private BButton btnCancel;
         private BButton btnOK;
         private BButton btnCheckAll;
@@ -663,8 +654,9 @@ namespace org.kbinani.cadencii {
         private NumberTextBox txtOffset;
         private BLabel lblOffsetUnit;
 
-        #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

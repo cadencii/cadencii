@@ -1019,9 +1019,6 @@ namespace org.kbinani.cadencii {
                 int clock_at_mouse = AppManager.clockFromXCoord( mouse.x );
                 int pbs_at_mouse = 0;
                 if ( m_curve_visible ) {
-#if JAVA
-                    System.out.println( "TrackSelector#paint; drawing curve editor..." );
-#endif
                     #region カーブエディタ
                     // カーブエディタの下の線
                     g.setColor( new Color( 156, 161, 169 ) );
@@ -1043,10 +1040,6 @@ namespace org.kbinani.cadencii {
                         g.setColor( s_brs_a072_255_255_255 );
                         g.fillRect( x0, HEADER, x1 - x0, getGraphHeight() );
                     }
-
-#if JAVA
-                    System.out.println( "TrackSelector#paint; drawing bar lines..." );
-#endif
 
                     #region 音符の境界
                     if ( AppManager.drawObjects != null && selected - 1 < AppManager.drawObjects.size() ) {
@@ -1340,9 +1333,6 @@ namespace org.kbinani.cadencii {
                 }
 
                 if ( m_curve_visible ) {
-#if JAVA
-                    System.out.println( "TrackSelector#paint; drawing list of curve types..." );
-#endif
                     #region カーブの種類一覧
                     Color font_color_normal = Color.black;
                     g.setColor( new Color( 212, 212, 212 ) );
@@ -1386,9 +1376,6 @@ namespace org.kbinani.cadencii {
                     #endregion
                 }
 
-#if JAVA
-                System.out.println( "TrackSelector#paint; drawing marker..." );
-#endif
                 #region 現在のマーカー
                 int marker_x = AppManager.xCoordFromClocks( AppManager.getCurrentClock() );
                 if ( key_width <= marker_x && marker_x <= size.width ) {
@@ -1457,9 +1444,7 @@ namespace org.kbinani.cadencii {
                             new Point( size.Width - 2, size.Height - 2 ) );*/
                 #endregion
             } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "TrackSelector#paint; ex= "+ ex );
-#endif
+                PortUtil.stderr.println( "TrackSelector#paint; ex= "+ ex );
             }
         }
 

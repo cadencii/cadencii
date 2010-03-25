@@ -305,7 +305,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// ボタンがDownされた位置。(座標はpictureBox基準)
         /// </summary>
-        public Point m_button_initial;
+        public Point m_button_initial = new Point();
         /// <summary>
         /// 真ん中ボタンがダウンされたときのvscrollのvalue値
         /// </summary>
@@ -334,7 +334,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// ピアノロールの右クリックが表示される直前のマウスの位置
         /// </summary>
-        public Point m_cMenuOpenedPosition;
+        public Point m_cMenuOpenedPosition = new Point();
         /// <summary>
         /// トラック名の入力に使用するテキストボックス
         /// </summary>
@@ -351,7 +351,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// EditMode=MoveEntryで，移動を開始する直前のマウスの仮想スクリーン上の位置
         /// </summary>
-        public Point m_mouse_move_init;
+        public Point m_mouse_move_init = new Point();
         /// <summary>
         /// EditMode=MoveEntryで，移動を開始する直前のマウスの位置と，音符の先頭との距離(ピクセル)
         /// </summary>
@@ -471,7 +471,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// AppManager.keyWidthを調節するモードに入る直前での、マウスのスクリーン座標
         /// </summary>
-        public Point m_key_length_splitter_initial_mouse;
+        public Point m_key_length_splitter_initial_mouse = new Point();
         /// <summary>
         /// AppManager.keyWidthを調節するモードに入る直前での、keyWidthの値
         /// </summary>
@@ -519,6 +519,7 @@ namespace org.kbinani.cadencii {
         private Vector<SpecialShortcutHolder> specialShortcutHolders = new Vector<SpecialShortcutHolder>();
         #endregion
 
+        #region constructor
         public FormMain( String file ) {
 #if JAVA
 		    super();
@@ -562,6 +563,7 @@ namespace org.kbinani.cadencii {
             getCMenuPiano();
             getCMenuTrackTab();
             getCMenuTrackSelector();
+
 #else
             InitializeComponent();
             timer = new BTimer( this.components );
@@ -903,7 +905,9 @@ namespace org.kbinani.cadencii {
                 }
             }
         }
+        #endregion
 
+        #region helper methods
         /// <summary>
         /// 選択された音符の長さを、指定したゲートタイム分長くします。
         /// </summary>
@@ -1072,6 +1076,145 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
+        /// pがrcの中にあるかどうかを判定します
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="rc"></param>
+        /// <returns></returns>
+        static boolean isInRect( Point p, Rectangle rc ) {
+            if ( rc.x <= p.x ) {
+                if ( p.x <= rc.x + rc.width ) {
+                    if ( rc.y <= p.y ) {
+                        if ( p.y <= rc.y + rc.height ) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private VsqEvent getItemAtClickedPosition( Point mouse_position, ByRef<Rectangle> rect ) {
+            rect.value = new Rectangle();
+            if ( mouse_position.x < AppManager.keyWidth || pictPianoRoll.getWidth() < mouse_position.x ) {
+                return null;
+            }
+            if ( mouse_position.y < 0 || pictPianoRoll.getHeight() < mouse_position.y ) {
+                return null;
+            }
+            int selected = AppManager.getSelected();
+            if ( selected < 1 ) {
+                return null;
+            }
+            lock ( AppManager.drawObjects ) {
+                Vector<DrawObject> dobj_list = AppManager.drawObjects.get( selected - 1 );
+                int count = dobj_list.size();
+                int start_to_draw_x = AppManager.startToDrawX;
+                int start_to_draw_y = getStartToDrawY();
+                int key_width = AppManager.keyWidth;
+                int pianoroll_width = pictPianoRoll.getWidth();
+                for ( int i = 0; i < count; i++ ) {
+                    DrawObject dobj = dobj_list.get( i );
+                    int x = dobj.pxRectangle.x + key_width - start_to_draw_x;
+                    int y = dobj.pxRectangle.y - start_to_draw_y;
+                    if ( mouse_position.x < x ) {
+                        continue;
+                    }
+                    if ( x + dobj.pxRectangle.width < mouse_position.x ) {
+                        continue;
+                    }
+                    if ( pianoroll_width < x ) {
+                        break;
+                    }
+                    if ( mouse_position.y < y ) {
+                        continue;
+                    }
+                    if ( y + dobj.pxRectangle.height < mouse_position.y ) {
+                        continue;
+                    }
+                    int internal_id = dobj.internalID;
+                    VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
+                    for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                        VsqEvent item = itr.next();
+                        if ( item.InternalID == internal_id ) {
+                            rect.value = new Rectangle( x, y, dobj.pxRectangle.width, dobj.pxRectangle.height );
+                            return item;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// マウス位置におけるIDを返します。該当するIDが無ければnullを返します
+        /// rectには、該当するIDがあればその画面上での形状を、該当するIDがなければ、
+        /// 画面上で最も近かったIDの画面上での形状を返します
+        /// </summary>
+        /// <param name="mouse_position"></param>
+        /// <returns></returns>
+        VsqEvent getItemAtClickedPosition_old( Point mouse_position, ByRef<Rectangle> rect ) {
+            rect.value = new Rectangle();
+            if ( AppManager.keyWidth <= mouse_position.x && mouse_position.x <= pictPianoRoll.getWidth() ) {
+                if ( 0 <= mouse_position.y && mouse_position.y <= pictPianoRoll.getHeight() ) {
+                    int selected = AppManager.getSelected();
+                    if ( selected >= 1 ) {
+                        VsqFileEx vsq = AppManager.getVsqFile();
+                        VsqTrack vsq_track = vsq.Track.get( selected );
+                        int track_height = AppManager.editorConfig.PxTrackHeight;
+                        int count = vsq_track.getEventCount();
+                        for ( int j = 0; j < count; j++ ) {
+                            VsqEvent itemj = vsq_track.getEvent( j );
+                            int clock = itemj.Clock;
+                            int internal_id = itemj.InternalID;
+                            // イベントで指定されたIDがLyricであった場合
+                            if ( itemj.ID.type == VsqIDType.Anote ) {
+                                if ( itemj.ID.LyricHandle == null ) {
+                                    continue;
+                                }
+                                // 発音長を取得
+                                int length = itemj.ID.getLength();
+                                int note = itemj.ID.Note;
+                                int x = AppManager.xCoordFromClocks( clock );
+                                int y = yCoordFromNote( note );
+                                int lyric_width = (int)(length * AppManager.scaleX);
+                                if ( x + lyric_width < 0 ) {
+                                    continue;
+                                } else if ( pictPianoRoll.getWidth() < x ) {
+                                    break;
+                                }
+                                if ( x <= mouse_position.x && mouse_position.x <= x + lyric_width ) {
+                                    if ( y + 1 <= mouse_position.y && mouse_position.y <= y + track_height ) {
+                                        rect.value = new Rectangle( x, y + 1, lyric_width, track_height );
+                                        return itemj;
+                                    }
+                                }
+                            } else if ( itemj.ID.type == VsqIDType.Aicon ) {
+                                if ( itemj.ID.IconDynamicsHandle == null ) {
+                                    continue;
+                                }
+                                int length = itemj.ID.getLength();
+                                int note = itemj.ID.Note;
+                                int x = AppManager.xCoordFromClocks( clock );
+                                int y = yCoordFromNote( note );
+                                //int lyric_width = 
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        private void changeCurrentClockView( Object sender, EventArgs e ) {
+            stripLblBeat.setText( AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator );
+            stripLblTempo.setText( PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo ) );
+            stripLblCursor.setText( AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock ) );
+        }
+        #endregion
+
+        #region public methods
+        /// <summary>
         /// 現在選択されている音符よりも1個前方の音符を選択しなおします。
         /// </summary>
         public void selectBackward() {
@@ -1188,14 +1331,5184 @@ namespace org.kbinani.cadencii {
             ensureVisible( clock );
         }
 
-        public void panelOverview_Enter( Object sender, EventArgs e ) {
-            pictPianoRoll.requestFocus();
-        }
-
         public void initResource() {
 #if ENABLE_MIDI
             m_strip_ddbtn_metronome.setIcon( new ImageIcon( Resources.get_alarm_clock() ) );
 #endif
+        }
+
+        public void changeRealtimeInputSpeed( float newv ) {
+            float old = AppManager.editorConfig.getRealtimeInputSpeed();
+            double now = PortUtil.getCurrentTime();
+            float play_time = (float)(now - AppManager.previewStartedTime) * old / newv;
+            int sec = (int)(Math.Floor( play_time ) + 0.1);
+            int millisec = (int)((play_time - sec) * 1000);
+            AppManager.previewStartedTime = now - (sec + millisec / 1000.0);
+#if ENABLE_MIDI
+            MidiPlayer.SetSpeed( newv, AppManager.previewStartedTime );
+#endif
+        }
+
+#if ENABLE_STRIP_DROPDOWN
+        /// <summary>
+        /// stripDDBtnSpeedの表示状態を更新します
+        /// </summary>
+        public void updateStripDDBtnSpeed() {
+            stripDDBtnSpeed.setText( _( "Speed" ) + " " + (AppManager.editorConfig.getRealtimeInputSpeed() * 100) + "%" );
+        }
+#endif
+
+        public int getOverviewStartToDrawX( int mouse_x ) {
+            float clock = mouse_x / m_overview_px_per_clock + m_overview_start_to_draw_clock;
+            int clock_at_left = (int)(clock - (pictPianoRoll.getWidth() - AppManager.keyWidth) / AppManager.scaleX / 2);
+            return (int)(clock_at_left * AppManager.scaleX);
+        }
+
+        public int getOverviewXCoordFromClock( int clock ) {
+            return (int)((clock - m_overview_start_to_draw_clock) * m_overview_px_per_clock);
+        }
+
+        public int getOverviewClockFromXCoord( int x, int start_to_draw_clock ) {
+            return (int)(x / m_overview_px_per_clock) + start_to_draw_clock;
+        }
+
+        public int getOverviewClockFromXCoord( int x ) {
+            return getOverviewClockFromXCoord( x, m_overview_start_to_draw_clock );
+        }
+
+#if JAVA
+        public class UpdateOverviewProc extends Thread{
+        public void run(){
+#else
+        public void updateOverview() {
+#endif
+            boolean д = true;
+            for ( ; д; ) {
+#if DEBUG
+                PortUtil.println( "updateOverview" );
+#endif
+#if JAVA
+                try{
+                    Thread.sleep( 100 );
+                }catch( InterruptedException ex ){
+                    break;
+                }
+#else
+                Thread.Sleep( 100 );
+#endif
+                double dt = PortUtil.getCurrentTime() - m_overview_btn_downed;
+                int draft = (int)(m_overview_start_to_draw_clock_initial_value + m_overview_direction * dt * _OVERVIEW_SCROLL_SPEED / m_overview_px_per_clock);
+                int clock = getOverviewClockFromXCoord( pictOverview.getWidth(), draft );
+                if ( AppManager.getVsqFile().TotalClocks < clock ) {
+                    draft = AppManager.getVsqFile().TotalClocks - (int)(pictOverview.getWidth() / m_overview_px_per_clock);
+                }
+                if ( draft < 0 ) {
+                    draft = 0;
+                }
+                m_overview_start_to_draw_clock = draft;
+#if JAVA
+                if ( this == null ) {
+#else
+                if ( this == null || (this != null && this.IsDisposed) ) {
+#endif
+                    break;
+                }
+                pictOverview.invalidate();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
+            }
+#if JAVA
+        }
+#endif
+        }
+
+        public void invalidatePictOverview( Object sender, EventArgs e ) {
+            pictOverview.invalidate();
+        }
+
+        public float getOverviewScaleX( int scale_count ) {
+            return (float)Math.Pow( 10.0, 0.2 * scale_count - 3.0 );
+        }
+
+        public void updateBgmMenuState() {
+            menuTrackBgm.removeAll();
+            int count = AppManager.getBgmCount();
+            if ( count > 0 ) {
+                for ( int i = 0; i < count; i++ ) {
+                    BgmFile item = AppManager.getBgm( i );
+                    BMenuItem menu = new BMenuItem();
+                    menu.setText( PortUtil.getFileName( item.file ) );
+                    menu.setToolTipText( item.file );
+
+                    BMenuItem menu_remove = new BMenuItem();
+                    menu_remove.setText( _( "Remove" ) );
+                    menu_remove.setToolTipText( item.file );
+                    menu_remove.setTag( (int)i );
+#if JAVA
+                    menu_remove.clickEvent.add( new BEventHandler( this, "handleBgmRemove_Click" ) );
+#else
+                    menu_remove.Click += new EventHandler( handleBgmRemove_Click );
+#endif
+                    menu.add( menu_remove );
+
+                    BMenuItem menu_start_after_premeasure = new BMenuItem();
+                    menu_start_after_premeasure.setText( _( "Start After Premeasure" ) );
+                    menu_start_after_premeasure.setName( "menu_start_after_premeasure" + i );
+                    menu_start_after_premeasure.setTag( (int)i );
+                    menu_start_after_premeasure.setCheckOnClick( true );
+                    menu_start_after_premeasure.setSelected( item.startAfterPremeasure );
+#if JAVA
+                    menu_start_after_premeasure.checkedChangedEvent.add( new BEventHandler( this, "handleBgmStartAfterPremeasure_CheckedChanged" ) );
+#else
+                    menu_start_after_premeasure.CheckedChanged += new EventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
+#endif
+                    menu.add( menu_start_after_premeasure );
+
+                    BMenuItem menu_offset_second = new BMenuItem();
+                    menu_offset_second.setText( _( "Set Offset Seconds" ) );
+                    menu_offset_second.setTag( (int)i );
+                    menu_offset_second.setToolTipText( item.readOffsetSeconds + " " + _( "seconds" ) );
+#if JAVA
+                    menu_offset_second.clickEvent.add( new BEventHandler( this, "handleBgmOffsetSeconds_Click" ) );
+#else
+                    menu_offset_second.Click += new EventHandler( handleBgmOffsetSeconds_Click );
+#endif
+                    menu.add( menu_offset_second );
+
+                    menuTrackBgm.add( menu );
+                }
+                menuTrackBgm.addSeparator();
+            }
+            BMenuItem menu_add = new BMenuItem();
+            menu_add.setText( _( "Add" ) );
+#if JAVA
+            menu_add.clickEvent.add( new BEventHandler( this, "handleBgmAdd_Click" ) );
+#else
+            menu_add.Click += new EventHandler( handleBgmAdd_Click );
+#endif
+            menuTrackBgm.add( menu_add );
+        }
+
+
+#if ENABLE_PROPERTY
+        public void updatePropertyPanelState( PanelState state ) {
+            if ( state == PanelState.Docked ) {
+                m_property_panel_container.Add( AppManager.propertyPanel );
+                AppManager.propertyWindow.setVisible( false );
+                menuVisualProperty.setSelected( true );
+                AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
+                splitContainerProperty.setSplitterFixed( false );
+                splitContainerProperty.Panel1MinSize = _PROPERTY_DOCK_MIN_WIDTH;
+                splitContainerProperty.setDividerLocation( AppManager.editorConfig.PropertyWindowStatus.DockWidth );
+                AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
+                AppManager.propertyWindow.setExtendedState( BForm.ICONIFIED );
+            } else if ( state == PanelState.Hidden ) {
+                AppManager.propertyWindow.setVisible( false );
+                menuVisualProperty.setSelected( false );
+                if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
+                    AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
+                }
+                AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Hidden;
+                splitContainerProperty.Panel1MinSize = 0;
+                splitContainerProperty.setDividerLocation( 0 );
+                splitContainerProperty.setSplitterFixed( true );
+            } else if ( state == PanelState.Window ) {
+                AppManager.propertyWindow.setVisible( true );
+                if ( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ) {
+                    AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
+                }
+                AppManager.propertyWindow.Controls.Add( AppManager.propertyPanel );
+                Point parent = this.getLocation();
+                XmlRectangle rc = AppManager.editorConfig.PropertyWindowStatus.Bounds;
+                Point property = new Point( rc.x, rc.y );
+                AppManager.propertyWindow.setBounds( new Rectangle( parent.x + property.x, parent.y + property.y, rc.Width, rc.Height ) );
+                normalizeFormLocation( AppManager.propertyWindow );
+                menuVisualProperty.setSelected( true );
+                if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
+                    AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
+                }
+                AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Window;
+                splitContainerProperty.Panel1MinSize = 0;
+                splitContainerProperty.setDividerLocation( 0 );
+                splitContainerProperty.setSplitterFixed( true );
+                AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Normal;
+            }
+        }
+#endif
+
+
+        /// <summary>
+        /// メインメニュー項目の中から，Nameプロパティがnameであるものを検索します．見つからなければnullを返す．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Object searchMenuItemFromName( String name ) {
+            int count = menuStripMain.getMenuCount();
+            for ( int i = 0; i < count; i++ ) {
+                Object tsi = menuStripMain.getMenu( i );
+                Object ret = searchMenuItemRecurse( name, tsi );
+                if ( ret != null ) {
+                    return ret;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 指定されたメニューアイテムから，Nameプロパティがnameであるものを再帰的に検索します．見つからなければnullを返す
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="tree"></param>
+        /// <returns></returns>
+        public Object searchMenuItemRecurse( String name, Object tree ) {
+            String tree_name = "";
+#if JAVA
+            JMenuItem menu = null;
+            if( tree instanceof JMenuItem ){
+                menu = (JMenuItem)tree;
+                tree_name = menu.getName();
+                if( tree_name == null ){
+                    tree_name = "";
+                }
+            }else{
+                return null;
+            }
+#else
+            System.Windows.Forms.ToolStripMenuItem menu = null;
+            if ( tree is System.Windows.Forms.ToolStripItem ) {
+                if ( tree is System.Windows.Forms.ToolStripMenuItem ) {
+                    menu = (System.Windows.Forms.ToolStripMenuItem)tree;
+                }
+                tree_name = ((System.Windows.Forms.ToolStripItem)tree).Name;
+            } else {
+                return null;
+            }
+#endif
+            if ( tree_name.Equals( name ) ) {
+                return tree;
+            } else {
+                if ( menu == null ) {
+                    return null;
+                }
+#if JAVA
+                int count = menu.getComponentCount();
+#else
+                int count = menu.DropDownItems.Count;
+#endif
+                for ( int i = 0; i < count; i++ ) {
+#if JAVA
+                    Component tsi = menu.getComponent( i );
+#else
+                    System.Windows.Forms.ToolStripItem tsi = menu.DropDownItems[i];
+#endif
+                    String tsi_name = "";
+#if JAVA
+                    if( tsi instanceof Component ){
+                        tsi_name = ((Component)tsi).getName();
+                        if( tsi_name == null ){
+                            tsi_name = "";
+                        }
+                    }else{
+                        continue;
+                    }
+#else
+                    if ( tsi is System.Windows.Forms.ToolStripItem ) {
+                        tsi_name = ((System.Windows.Forms.ToolStripItem)tsi).Name;
+                    } else {
+                        continue;
+                    }
+#endif
+                    if ( tsi_name.Equals( name ) ) {
+                        return tsi;
+                    }
+                    Object ret = searchMenuItemRecurse( name, tsi );
+                    if ( ret != null ) {
+                        return ret;
+                    }
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// フォームをマウス位置に出す場合に推奨されるフォーム位置を計算します
+        /// </summary>
+        /// <param name="dlg"></param>
+        /// <returns></returns>
+        public Point getFormPreferedLocation( BDialog dlg ) {
+            Point mouse = PortUtil.getMousePosition();
+            Rectangle rcScreen = PortUtil.getWorkingArea( this );
+            int top = mouse.y - dlg.getHeight() / 2;
+            if ( top + dlg.getHeight() > rcScreen.y + rcScreen.height ) {
+                // ダイアログの下端が隠れる場合、位置をずらす
+                top = rcScreen.y + rcScreen.height - dlg.getHeight();
+            }
+            if ( top < rcScreen.y ) {
+                // ダイアログの上端が隠れる場合、位置をずらす
+                top = rcScreen.y;
+            }
+            int left = mouse.x - dlg.getWidth() / 2;
+            if ( left + dlg.getWidth() > rcScreen.x + rcScreen.width ) {
+                left = rcScreen.x + rcScreen.width - dlg.getWidth();
+            }
+            return new Point( left, top );
+        }
+
+        public void updateLayout() {
+#if !JAVA
+            int width = panel1.Width;
+            int height = panel1.Height;
+
+            if ( AppManager.editorConfig.OverviewEnabled ) {
+                panelOverview.Height = _OVERVIEW_HEIGHT;
+            } else {
+                panelOverview.Height = 0;
+            }
+            panelOverview.Width = width;
+            int key_width = AppManager.keyWidth;
+            pictOverview.Left = key_width;
+            pictOverview.Width = panelOverview.Width - key_width;
+            pictOverview.Top = 0;
+            pictOverview.Height = panelOverview.Height;
+
+            btnMooz.setBounds( 3, 12, 23, 23 );
+            btnZoom.setBounds( 26, 12, 23, 23 );
+
+            picturePositionIndicator.Width = width;
+            picturePositionIndicator.Height = _PICT_POSITION_INDICATOR_HEIGHT;
+
+            hScroll.Top = 0;
+            hScroll.Left = key_width;
+            hScroll.Width = width - key_width - _SCROLL_WIDTH - trackBar.Width;
+            hScroll.Height = _SCROLL_WIDTH;
+
+            vScroll.Width = _SCROLL_WIDTH;
+            vScroll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH - panelOverview.Height;
+
+            pictPianoRoll.Width = width - _SCROLL_WIDTH;
+            pictPianoRoll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH - panelOverview.Height;
+
+            pictureBox3.Width = key_width - _SCROLL_WIDTH;
+            pictKeyLengthSplitter.Width = _SCROLL_WIDTH;
+            pictureBox3.Height = _SCROLL_WIDTH;
+            pictureBox2.Height = _SCROLL_WIDTH;
+            trackBar.Height = _SCROLL_WIDTH;
+
+            panelOverview.Top = 0;
+            panelOverview.Left = 0;
+
+            picturePositionIndicator.Top = panelOverview.Height;
+            picturePositionIndicator.Left = 0;
+
+            pictPianoRoll.Top = _PICT_POSITION_INDICATOR_HEIGHT + panelOverview.Height;
+            pictPianoRoll.Left = 0;
+
+            vScroll.Top = _PICT_POSITION_INDICATOR_HEIGHT + panelOverview.Height;
+            vScroll.Left = width - _SCROLL_WIDTH;
+
+            pictureBox3.Top = height - _SCROLL_WIDTH;
+            pictureBox3.Left = 0;
+            pictKeyLengthSplitter.Top = height - _SCROLL_WIDTH;
+            pictKeyLengthSplitter.Left = pictureBox3.Width;
+
+            hScroll.Top = height - _SCROLL_WIDTH;
+            hScroll.Left = pictureBox3.Width + pictKeyLengthSplitter.Width;
+
+            trackBar.Top = height - _SCROLL_WIDTH;
+            trackBar.Left = width - _SCROLL_WIDTH - trackBar.Width;
+
+            pictureBox2.Top = height - _SCROLL_WIDTH;
+            pictureBox2.Left = width - _SCROLL_WIDTH;
+
+            waveView.Top = 0;
+            waveView.Left = key_width;
+            waveView.Width = width - key_width;
+#endif
+        }
+
+        public void updateRendererMenu() {
+            if ( !VSTiProxy.isRendererAvailable( RendererKind.VOCALOID1_100 ) ) {
+                cMenuTrackTabRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
+            } else {
+                cMenuTrackTabRendererVOCALOID100.setIcon( null );
+                menuTrackRendererVOCALOID100.setIcon( null );
+            }
+
+            if ( !VSTiProxy.isRendererAvailable( RendererKind.VOCALOID1_101 ) ) {
+                cMenuTrackTabRendererVOCALOID101.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererVOCALOID101.setIcon( new ImageIcon( Resources.get_slash() ) );
+            } else {
+                cMenuTrackTabRendererVOCALOID101.setIcon( null );
+                menuTrackRendererVOCALOID101.setIcon( null );
+            }
+
+            if ( !VSTiProxy.isRendererAvailable( RendererKind.VOCALOID2 ) ) {
+                cMenuTrackTabRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
+            } else {
+                cMenuTrackTabRendererVOCALOID2.setIcon( null );
+                menuTrackRendererVOCALOID2.setIcon( null );
+            }
+
+            if ( !VSTiProxy.isRendererAvailable( RendererKind.UTAU ) ) {
+                cMenuTrackTabRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
+            } else {
+                cMenuTrackTabRendererUtau.setIcon( null );
+                menuTrackRendererUtau.setIcon( null );
+            }
+
+            if ( !VSTiProxy.isRendererAvailable( RendererKind.STRAIGHT_UTAU ) ) {
+                cMenuTrackTabRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
+            } else {
+                cMenuTrackTabRendererStraight.setIcon( null );
+                menuTrackRendererStraight.setIcon( null );
+            }
+
+            if ( !VSTiProxy.isRendererAvailable( RendererKind.AQUES_TONE ) ) {
+                cMenuTrackTabRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
+            } else {
+                cMenuTrackTabRendererAquesTone.setIcon( null );
+                menuTrackRendererAquesTone.setIcon( null );
+            }
+        }
+
+        public void drawUtauVibrato( Graphics2D g, UstVibrato vibrato, int note, int clock_start, int clock_width ) {
+            //SmoothingMode old = g.SmoothingMode;
+            //g.SmoothingMode = SmoothingMode.AntiAlias;
+            // 魚雷を描いてみる
+            int y0 = yCoordFromNote( note - 0.5f );
+            int x0 = AppManager.xCoordFromClocks( clock_start );
+            int px_width = AppManager.xCoordFromClocks( clock_start + clock_width ) - x0;
+            int boxheight = (int)(vibrato.Depth * 2 / 100.0f * AppManager.editorConfig.PxTrackHeight);
+            int px_shift = (int)(vibrato.Shift / 100.0 * vibrato.Depth / 100.0 * AppManager.editorConfig.PxTrackHeight);
+
+            // vibrato in
+            int cl_vibin_end = clock_start + (int)(clock_width * vibrato.In / 100.0);
+            int x_vibin_end = AppManager.xCoordFromClocks( cl_vibin_end );
+            Point ul = new Point( x_vibin_end, y0 - boxheight / 2 - px_shift );
+            Point dl = new Point( x_vibin_end, y0 + boxheight / 2 - px_shift );
+            g.setColor( Color.black );
+            g.drawPolygon( new int[] { x0, ul.x, dl.x },
+                           new int[] { y0, ul.y, dl.y },
+                           3 );
+
+            // vibrato out
+            int cl_vibout_start = clock_start + clock_width - (int)(clock_width * vibrato.Out / 100.0);
+            int x_vibout_start = AppManager.xCoordFromClocks( cl_vibout_start );
+            Point ur = new Point( x_vibout_start, y0 - boxheight / 2 - px_shift );
+            Point dr = new Point( x_vibout_start, y0 + boxheight / 2 - px_shift );
+            g.drawPolygon( new int[] { x0 + px_width, ur.x, dr.x },
+                           new int[] { y0, ur.y, dr.y },
+                           3 );
+
+            // box
+            int boxwidth = x_vibout_start - x_vibin_end;
+            if ( boxwidth > 0 ) {
+                g.drawPolygon( new int[] { ul.x, dl.x, dr.x, ur.x },
+                               new int[] { ul.y, dl.y, dr.y, ur.y },
+                               4 );
+            }
+
+#if DEBUG
+            BufferedWriter sw = new BufferedWriter( new FileWriter( "list.txt" ) );
+#endif
+            // buf1に、vibrato in/outによる増幅率を代入
+            float[] buf1 = new float[clock_width + 1];
+            for ( int clock = clock_start; clock <= clock_start + clock_width; clock++ ) {
+                buf1[clock - clock_start] = 1.0f;
+            }
+            // vibin
+            if ( cl_vibin_end - clock_start > 0 ) {
+                for ( int clock = clock_start; clock <= cl_vibin_end; clock++ ) {
+                    int i = clock - clock_start;
+                    buf1[i] *= i / (float)(cl_vibin_end - clock_start);
+#if DEBUG
+                    sw.write( "vibin: " + i + "\t" + buf1[i] );
+                    sw.newLine();
+#endif
+                }
+            }
+            if ( clock_start + clock_width - cl_vibout_start > 0 ) {
+                for ( int clock = clock_start + clock_width; clock >= cl_vibout_start; clock-- ) {
+                    int i = clock - clock_start;
+                    float v = (clock_start + clock_width - clock) / (float)(clock_start + clock_width - cl_vibout_start);
+                    buf1[i] = buf1[i] * v;
+#if DEBUG
+                    sw.write( "vibout: " + i + "\t" + buf1[i] );
+                    sw.newLine();
+#endif
+                }
+            }
+
+            // buf2に、shiftによるy座標のシフト量を代入
+            float[] buf2 = new float[clock_width + 1];
+            for ( int i = 0; i < clock_width; i++ ) {
+                buf2[i] = px_shift * buf1[i];
+            }
+            try {
+                double phase = 2.0 * Math.PI * vibrato.Phase / 100.0;
+                double omega = 2.0 * Math.PI / vibrato.Period;   //角速度(rad/msec)
+                double msec = AppManager.getVsqFile().getSecFromClock( clock_start - 1 ) * 1000.0;
+                float px_track_height = AppManager.editorConfig.PxTrackHeight;
+                phase -= (AppManager.getVsqFile().getSecFromClock( clock_start ) * 1000.0 - msec) * omega;
+                for ( int clock = clock_start; clock <= clock_start + clock_width; clock++ ) {
+                    int i = clock - clock_start;
+                    double t_msec = AppManager.getVsqFile().getSecFromClock( clock ) * 1000.0;
+                    phase += (t_msec - msec) * omega;
+                    msec = t_msec;
+                    buf2[i] += (float)(vibrato.Depth * 0.01f * px_track_height * buf1[i] * Math.Sin( phase ));
+                }
+                int[] listx = new int[clock_width + 1];
+                int[] listy = new int[clock_width + 1];
+                for ( int clock = clock_start; clock <= clock_start + clock_width; clock++ ) {
+                    int i = clock - clock_start;
+                    listx[i] = AppManager.xCoordFromClocks( clock );
+                    listy[i] = (int)(y0 + buf2[i]);
+                }
+#if DEBUG
+                AppManager.debugWriteLine( "DrawUtauVibrato" );
+                for ( int i = 0; i < listx.Length; i++ ) {
+                    sw.write( listx[i] + "\t" + listy[i] );
+                    sw.newLine();
+                }
+                sw.close();
+                sw = null;
+#endif
+                if ( listx.Length >= 2 ) {
+                    g.setColor( Color.red );
+                    g.drawPolygon( listx, listy, listx.Length );
+                }
+                //g.SmoothingMode = old;
+            } catch ( Exception oex ) {
+#if DEBUG
+                AppManager.debugWriteLine( "DrawUtauVibrato; oex=" + oex );
+#endif
+            }
+        }
+
+#if !JAVA
+        /// <summary>
+        /// listに登録されているToolStripを，座標の若い順にcontainerに追加します
+        /// </summary>
+        /// <param name="panel"></param>
+        /// <param name="list"></param>
+        public void addToolStripInPositionOrder( System.Windows.Forms.ToolStripPanel panel, Vector<BToolBar> list ) {
+            boolean[] reg = new boolean[list.size()];
+            for ( int i = 0; i < reg.Length; i++ ) {
+                reg[i] = false;
+            }
+            for ( int i = 0; i < list.size(); i++ ) {
+                Point p = new Point( int.MaxValue, int.MaxValue );
+                int index = -1;
+
+                // x座標の小さいやつを探す
+                for ( int j = 0; j < list.size(); j++ ) {
+                    if ( !reg[j] ) {
+                        BToolBar ts = list.get( j );
+                        if ( p.y > ts.Location.Y ) {
+                            index = j;
+                            p = new Point( ts.Location.X, ts.Location.Y );
+                        }
+                        if ( p.y >= ts.Location.Y && p.x > ts.Location.X ) {
+                            index = j;
+                            p = new Point( ts.Location.X, ts.Location.Y );
+                        }
+                    }
+                }
+
+                // コントロールを登録
+                panel.Join( list.get( index ), list.get( index ).Location );
+                reg[index] = true;
+            }
+        }
+#endif
+
+#if ENABLE_SCRIPT
+        /// <summary>
+        /// Palette Toolの表示を更新します
+        /// </summary>
+        public void updatePaletteTool() {
+            int count = 0;
+            int num_has_dialog = 0;
+            for ( Iterator<BToolStripButton> itr = m_palette_tools.iterator(); itr.hasNext(); ) {
+                BToolStripButton item = itr.next();
+                toolStripTool.add( item );
+            }
+            String lang = Messaging.getLanguage();
+            boolean first = true;
+            for ( Iterator<String> itr = PaletteToolServer.loadedTools.keySet().iterator(); itr.hasNext(); ) {
+                String id = itr.next();
+                count++;
+                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+#if !JAVA
+                System.Drawing.Bitmap icon = ipt.getIcon();
+#endif
+                String name = ipt.getName( lang );
+                String desc = ipt.getDescription( lang );
+
+                // toolStripPaletteTools
+                BToolStripButton tsb = new BToolStripButton();
+#if !JAVA
+                if ( icon != null ) {
+                    tsb.setIcon( new ImageIcon( icon ) );
+                }
+#endif
+                tsb.setText( name );
+                tsb.setToolTipText( desc );
+                tsb.setTag( id );
+                tsb.setCheckOnClick( false );
+#if JAVA
+                tsb.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
+#else
+                tsb.Click += new EventHandler( commonStripPaletteTool_Clicked );
+                tsb.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
+#endif
+                if ( first ) {
+                    toolStripTool.addSeparator();
+                    first = false;
+                }
+                m_palette_tools.add( tsb );
+                toolStripTool.add( tsb );
+
+                // cMenuTrackSelector
+                BMenuItem tsmi = new BMenuItem();
+                tsmi.setText( name );
+                tsmi.setToolTipText( desc );
+                tsmi.setTag( id );
+#if JAVA
+                tsmi.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
+#else
+                tsmi.Click += new EventHandler( commonStripPaletteTool_Clicked );
+#endif
+                cMenuTrackSelectorPaletteTool.add( tsmi );
+
+                // cMenuPiano
+                BMenuItem tsmi2 = new BMenuItem();
+                tsmi2.setText( name );
+                tsmi2.setToolTipText( desc );
+                tsmi2.setTag( id );
+#if JAVA
+                tsmi2.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
+#else
+                tsmi2.Click += new EventHandler( commonStripPaletteTool_Clicked );
+#endif
+                cMenuPianoPaletteTool.add( tsmi2 );
+
+                // menuSettingPaletteTool
+                if ( ipt.hasDialog() ) {
+                    BMenuItem tsmi3 = new BMenuItem();
+                    tsmi3.setText( name );
+                    tsmi3.setTag( id );
+#if JAVA
+                    tsmi3.clickEvent.add( new BEventHandler( this, "commonSettingPaletteTool" ) );
+#else
+                    tsmi3.Click += new EventHandler( commonSettingPaletteTool );
+#endif
+                    menuSettingPaletteTool.add( tsmi3 );
+                    num_has_dialog++;
+                }
+            }
+            if ( count == 0 ) {
+                cMenuTrackSelectorPaletteTool.setVisible( false );
+                cMenuPianoPaletteTool.setVisible( false );
+            }
+            if ( num_has_dialog == 0 ) {
+                menuSettingPaletteTool.setVisible( false );
+            }
+        }
+#endif
+
+        public void updateCopyAndPasteButtonStatus() {
+            // copy cut deleteの表示状態更新
+            boolean selected_is_null = (AppManager.getSelectedEventCount() == 0) &&
+                                       (AppManager.getSelectedTempoCount() == 0) &&
+                                       (AppManager.getSelectedTimesigCount() == 0) &&
+                                       (AppManager.getSelectedPointIDCount() == 0);
+
+            int selected_point_id_count = AppManager.getSelectedPointIDCount();
+            cMenuTrackSelectorCopy.setEnabled( selected_point_id_count > 0 );
+            cMenuTrackSelectorCut.setEnabled( selected_point_id_count > 0 );
+            cMenuTrackSelectorDeleteBezier.setEnabled( (AppManager.isCurveMode() && AppManager.getLastSelectedBezier() != null) );
+            if ( selected_point_id_count > 0 ) {
+                cMenuTrackSelectorDelete.setEnabled( true );
+            } else {
+                SelectedEventEntry last = AppManager.getLastSelectedEvent();
+                if ( last == null ) {
+                    cMenuTrackSelectorDelete.setEnabled( false );
+                } else {
+                    cMenuTrackSelectorDelete.setEnabled( last.original.ID.type == VsqIDType.Singer );
+                }
+            }
+
+            cMenuPianoCopy.setEnabled( !selected_is_null );
+            cMenuPianoCut.setEnabled( !selected_is_null );
+            cMenuPianoDelete.setEnabled( !selected_is_null );
+
+            menuEditCopy.setEnabled( !selected_is_null );
+            menuEditCut.setEnabled( !selected_is_null );
+            menuEditDelete.setEnabled( !selected_is_null );
+
+            ClipboardEntry ce = AppManager.getCopiedItems();
+            int copy_started_clock = ce.copyStartedClock;
+            TreeMap<CurveType, VsqBPList> copied_curve = ce.points;
+            TreeMap<CurveType, Vector<BezierChain>> copied_bezier = ce.beziers;
+            boolean copied_is_null = (ce.events.size() == 0) &&
+                                  (ce.tempo.size() == 0) &&
+                                  (ce.timesig.size() == 0) &&
+                                  (copied_curve.size() == 0) &&
+                                  (copied_bezier.size() == 0);
+            boolean enabled = !copied_is_null;
+            if ( copied_curve.size() == 1 ) {
+                // 1種類のカーブがコピーされている場合→コピーされているカーブの種類と、現在選択されているカーブの種類とで、最大値と最小値が一致している場合のみ、ペースト可能
+                CurveType ct = CurveType.Empty;
+                for ( Iterator<CurveType> itr = copied_curve.keySet().iterator(); itr.hasNext(); ) {
+                    CurveType c = itr.next();
+                    ct = c;
+                }
+                CurveType selected = trackSelector.getSelectedCurve();
+                if ( ct.getMaximum() == selected.getMaximum() &&
+                     ct.getMinimum() == selected.getMinimum() &&
+                     !selected.isScalar() && !selected.isAttachNote() ) {
+                    enabled = true;
+                } else {
+                    enabled = false;
+                }
+            } else if ( copied_curve.size() >= 2 ) {
+                // 複数種類のカーブがコピーされている場合→そのままペーストすればOK
+                enabled = true;
+            }
+            cMenuTrackSelectorPaste.setEnabled( enabled );
+            cMenuPianoPaste.setEnabled( enabled );
+            menuEditPaste.setEnabled( enabled );
+
+            /*int copy_started_clock;
+            boolean copied_is_null = (AppManager.GetCopiedEvent().Count == 0) &&
+                                  (AppManager.GetCopiedTempo( out copy_started_clock ).Count == 0) &&
+                                  (AppManager.GetCopiedTimesig( out copy_started_clock ).Count == 0) &&
+                                  (AppManager.GetCopiedCurve( out copy_started_clock ).Count == 0) &&
+                                  (AppManager.GetCopiedBezier( out copy_started_clock ).Count == 0);
+            menuEditCut.isEnabled() = !selected_is_null;
+            menuEditCopy.isEnabled() = !selected_is_null;
+            menuEditDelete.isEnabled() = !selected_is_null;
+            //stripBtnCopy.isEnabled() = !selected_is_null;
+            //stripBtnCut.isEnabled() = !selected_is_null;
+
+            if ( AppManager.GetCopiedEvent().Count != 0 ) {
+                menuEditPaste.isEnabled() = (AppManager.CurrentClock >= AppManager.VsqFile.getPreMeasureClocks());
+                //stripBtnPaste.isEnabled() = (AppManager.CurrentClock >= AppManager.VsqFile.getPreMeasureClocks());
+            } else {
+                menuEditPaste.isEnabled() = !copied_is_null;
+                //stripBtnPaste.isEnabled() = !copied_is_null;
+            }*/
+        }
+
+        /// <summary>
+        /// 現在の編集データを全て破棄する。DirtyCheckは行われない。
+        /// </summary>
+        public void clearExistingData() {
+            AppManager.clearCommandBuffer();
+            AppManager.clearSelectedBezier();
+            AppManager.clearSelectedEvent();
+            AppManager.clearSelectedTempo();
+            AppManager.clearSelectedTimesig();
+            if ( AppManager.isPlaying() ) {
+                AppManager.setPlaying( false );
+            }
+            waveView.unloadAll();
+        }
+
+        /// <summary>
+        /// 保存されていない編集内容があるかどうかチェックし、必要なら確認ダイアログを出す。
+        /// </summary>
+        /// <returns>保存されていない保存内容などない場合、または、保存する必要がある場合で（保存しなくてよいと指定された場合または保存が行われた場合）にtrueを返す</returns>
+        public boolean dirtyCheck() {
+            if ( m_edited ) {
+                String file = AppManager.getFileName();
+                if ( file.Equals( "" ) ) {
+                    file = "Untitled";
+                } else {
+                    file = PortUtil.getFileName( file );
+                }
+                BDialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
+                                                              _( "Affirmation" ),
+                                                              PortUtil.MSGBOX_YES_NO_CANCEL_OPTION,
+                                                              PortUtil.MSGBOX_QUESTION_MESSAGE );
+                if ( dr == BDialogResult.YES ) {
+                    if ( AppManager.getFileName().Equals( "" ) ) {
+                        int dr2 = saveXmlVsqDialog.showSaveDialog( this );
+                        if ( dr2 == BFileChooser.APPROVE_OPTION ) {
+                            AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        AppManager.saveTo( AppManager.getFileName() );
+                        return true;
+                    }
+                } else if ( dr == BDialogResult.NO ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        }
+
+#if JAVA
+        /// <summary>
+        /// waveView用のwaveファイルを読込むスレッドで使用する
+        /// </summary>
+        /// <param name="arg"></param>
+        public class LoadWaveProc extends Thread {
+            public String file = "";
+            public int track;
+
+            public LoadWaveProc( int track, String file ){
+                this.file = file;
+                this.track = track;
+            }
+
+            public void run(){
+                waveView.load( track, file );
+            }
+        }
+#endif
+
+        public void loadWave( Object arg ) {
+            Object[] argArr = (Object[])arg;
+            String file = (String)argArr[0];
+            int track = (Integer)argArr[1];
+            waveView.load( track, file );
+        }
+
+        /// <summary>
+        /// menuVisualWaveform.isSelected()の値をもとに、splitterContainer2の表示状態を更新します
+        /// </summary>
+        public void updateSplitContainer2Size() {
+            if ( menuVisualWaveform.isSelected() ) {
+                splitContainer2.setPanel2MinSize( _SPL2_PANEL2_MIN_HEIGHT );
+                splitContainer2.setSplitterFixed( false );
+                splitContainer2.setDividerSize( _SPL_SPLITTER_WIDTH );
+                if ( m_last_splitcontainer2_split_distance <= 0 || m_last_splitcontainer2_split_distance > splitContainer2.getHeight() ) {
+                    splitContainer2.setDividerLocation( (int)(splitContainer2.getHeight() * 0.9) );
+                } else {
+                    splitContainer2.setDividerLocation( m_last_splitcontainer2_split_distance );
+                }
+            } else {
+                m_last_splitcontainer2_split_distance = splitContainer2.getDividerLocation();
+                splitContainer2.setPanel2MinSize( 0 );
+                splitContainer2.setDividerSize( 0 );
+                splitContainer2.setDividerLocation( splitContainer2.getHeight() );
+                splitContainer2.setSplitterFixed( true );
+            }
+        }
+
+        /// <summary>
+        /// trackSelectorに表示するコントロールのカーブの種類を、AppManager.EditorConfigの設定に応じて更新します
+        /// </summary>
+        public void updateTrackSelectorVisibleCurve() {
+            if ( AppManager.editorConfig.CurveVisibleVelocity ) {
+                trackSelector.addViewingCurve( CurveType.VEL );
+            }
+            if ( AppManager.editorConfig.CurveVisibleAccent ) {
+                trackSelector.addViewingCurve( CurveType.Accent );
+            }
+            if ( AppManager.editorConfig.CurveVisibleDecay ) {
+                trackSelector.addViewingCurve( CurveType.Decay );
+            }
+            if ( AppManager.editorConfig.CurveVisibleVibratoRate ) {
+                trackSelector.addViewingCurve( CurveType.VibratoRate );
+            }
+            if ( AppManager.editorConfig.CurveVisibleVibratoDepth ) {
+                trackSelector.addViewingCurve( CurveType.VibratoDepth );
+            }
+            if ( AppManager.editorConfig.CurveVisibleDynamics ) {
+                trackSelector.addViewingCurve( CurveType.DYN );
+            }
+            if ( AppManager.editorConfig.CurveVisibleBreathiness ) {
+                trackSelector.addViewingCurve( CurveType.BRE );
+            }
+            if ( AppManager.editorConfig.CurveVisibleBrightness ) {
+                trackSelector.addViewingCurve( CurveType.BRI );
+            }
+            if ( AppManager.editorConfig.CurveVisibleClearness ) {
+                trackSelector.addViewingCurve( CurveType.CLE );
+            }
+            if ( AppManager.editorConfig.CurveVisibleOpening ) {
+                trackSelector.addViewingCurve( CurveType.OPE );
+            }
+            if ( AppManager.editorConfig.CurveVisibleGendorfactor ) {
+                trackSelector.addViewingCurve( CurveType.GEN );
+            }
+            if ( AppManager.editorConfig.CurveVisiblePortamento ) {
+                trackSelector.addViewingCurve( CurveType.POR );
+            }
+            if ( AppManager.editorConfig.CurveVisiblePit ) {
+                trackSelector.addViewingCurve( CurveType.PIT );
+            }
+            if ( AppManager.editorConfig.CurveVisiblePbs ) {
+                trackSelector.addViewingCurve( CurveType.PBS );
+            }
+            if ( AppManager.editorConfig.CurveVisibleHarmonics ) {
+                trackSelector.addViewingCurve( CurveType.harmonics );
+            }
+            if ( AppManager.editorConfig.CurveVisibleFx2Depth ) {
+                trackSelector.addViewingCurve( CurveType.fx2depth );
+            }
+            if ( AppManager.editorConfig.CurveVisibleReso1 ) {
+                trackSelector.addViewingCurve( CurveType.reso1freq );
+                trackSelector.addViewingCurve( CurveType.reso1bw );
+                trackSelector.addViewingCurve( CurveType.reso1amp );
+            }
+            if ( AppManager.editorConfig.CurveVisibleReso2 ) {
+                trackSelector.addViewingCurve( CurveType.reso2freq );
+                trackSelector.addViewingCurve( CurveType.reso2bw );
+                trackSelector.addViewingCurve( CurveType.reso2amp );
+            }
+            if ( AppManager.editorConfig.CurveVisibleReso3 ) {
+                trackSelector.addViewingCurve( CurveType.reso3freq );
+                trackSelector.addViewingCurve( CurveType.reso3bw );
+                trackSelector.addViewingCurve( CurveType.reso3amp );
+            }
+            if ( AppManager.editorConfig.CurveVisibleReso4 ) {
+                trackSelector.addViewingCurve( CurveType.reso4freq );
+                trackSelector.addViewingCurve( CurveType.reso4bw );
+                trackSelector.addViewingCurve( CurveType.reso4amp );
+            }
+            if ( AppManager.editorConfig.CurveVisibleEnvelope ) {
+                trackSelector.addViewingCurve( CurveType.Env );
+            }
+        }
+
+        /// <summary>
+        /// ウィンドウの表示内容に応じて、ウィンドウサイズの最小値を計算します
+        /// </summary>
+        /// <returns></returns>
+        public Dimension getWindowMinimumSize() {
+            Dimension current_minsize = new Dimension( getMinimumSize().width, getMinimumSize().height );
+#if JAVA
+            Dimension client = getContentPane().getSize();
+            Dimension current = getSize();
+            return new Dimension( current_minsize.width,
+                                  splitContainer1.getPanel2MinSize() +
+                                  _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.getMinimumSize().height +
+                                  menuStripMain.getHeight() +
+                                  (current.height - client.height) +
+                                  20 );
+#else
+            Dimension client = new Dimension( this.ClientSize.Width, this.ClientSize.Height );
+            Dimension current = new Dimension( this.Size.Width, this.Size.Height );
+            return new Dimension( current_minsize.width,
+                                  splitContainer1.getPanel2MinSize() +
+                                  _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.getMinimumSize().height +
+                                  toolStripContainer.TopToolStripPanel.Height +
+                                  menuStripMain.getHeight() + statusStrip1.Height +
+                                  (current.height - client.height) +
+                                  20 );
+#endif
+        }
+
+        /// <summary>
+        /// 現在のAppManager.inputTextBoxの状態を元に、歌詞の変更を反映させるコマンドを実行します
+        /// </summary>
+        public void executeLyricChangeCommand() {
+#if JAVA
+            if ( !AppManager.inputTextBox.isVisible() ) {
+#else
+            if ( !AppManager.inputTextBox.Enabled ) {
+#endif
+                return;
+            }
+#if !JAVA
+            if ( AppManager.inputTextBox.IsDisposed ) {
+                return;
+            }
+#endif
+            int selected = AppManager.getSelected();
+            SelectedEventEntry last_selected_event = AppManager.getLastSelectedEvent();
+            String original_phrase = last_selected_event.original.ID.LyricHandle.L0.Phrase;
+            String original_symbol = last_selected_event.original.ID.LyricHandle.L0.getPhoneticSymbol();
+            boolean symbol_protected = last_selected_event.original.ID.LyricHandle.L0.PhoneticSymbolProtected;
+            boolean phonetic_symbol_edit_mode = ((TagLyricTextBox)AppManager.inputTextBox.getTag()).isPhoneticSymbolEditMode();
+#if DEBUG
+            AppManager.debugWriteLine( "    original_phase,symbol=" + original_phrase + "," + original_symbol );
+            AppManager.debugWriteLine( "    phonetic_symbol_edit_mode=" + phonetic_symbol_edit_mode );
+            AppManager.debugWriteLine( "    AppManager.inputTextBox.setText(=" + AppManager.inputTextBox.getText() );
+#endif
+            String phrase;
+            ByRef<String> phonetic_symbol = new ByRef<String>( "" );
+            phrase = AppManager.inputTextBox.getText();
+            if ( !phonetic_symbol_edit_mode ) {
+                if ( AppManager.editorConfig.SelfDeRomanization ) {
+                    phrase = KanaDeRomanization.Attach( phrase );
+                }
+            }
+            if ( (phonetic_symbol_edit_mode && AppManager.inputTextBox.getText() != original_symbol) ||
+                 (!phonetic_symbol_edit_mode && phrase != original_phrase) ) {
+                TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
+                if ( phonetic_symbol_edit_mode ) {
+                    phrase = kvp.getBufferText();
+                    phonetic_symbol.value = AppManager.inputTextBox.getText();
+                    String[] spl = PortUtil.splitString( phonetic_symbol.value, new char[] { ' ' }, true );
+                    Vector<String> list = new Vector<String>();
+                    for ( int i = 0; i < spl.Length; i++ ) {
+                        String s = spl[i];
+                        if ( VsqPhoneticSymbol.isValidSymbol( s ) ) {
+                            list.add( s );
+                        }
+                    }
+                    phonetic_symbol.value = "";
+                    boolean first = true;
+                    for ( Iterator<String> itr = list.iterator(); itr.hasNext(); ) {
+                        String s = itr.next();
+                        if ( first ) {
+                            phonetic_symbol.value += s;
+                            first = false;
+                        } else {
+                            phonetic_symbol.value += " " + s;
+                        }
+                    }
+                    symbol_protected = true;
+                } else {
+                    if ( !symbol_protected ) {
+                        SymbolTable.attatch( phrase, phonetic_symbol );
+                    } else {
+                        phonetic_symbol.value = original_symbol;
+                    }
+                }
+#if DEBUG
+                AppManager.debugWriteLine( "    phrase,phonetic_symbol=" + phrase + "," + phonetic_symbol );
+#endif
+                VsqEvent item = (VsqEvent)last_selected_event.original.clone();
+                if ( phonetic_symbol_edit_mode ) {
+                    item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
+                } else {
+                    item.ID.LyricHandle.L0.Phrase = phrase;
+                    item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
+                    VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
+                    VsqEvent singer = vsq_track.getSingerEventAt( item.Clock );
+                    SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
+                    if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                        UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
+                        OtoArgs oa = db.attachFileNameFromLyric( phrase );
+                        item.UstEvent.PreUtterance = oa.msPreUtterance;
+                        item.UstEvent.VoiceOverlap = oa.msOverlap;
+                    }
+                }
+                if ( !original_symbol.Equals( phonetic_symbol.value ) ) {
+                    String[] spl = item.ID.LyricHandle.L0.getPhoneticSymbolList();
+                    int[] adjustment = new int[spl.Length];
+                    for ( int i = 0; i < adjustment.Length; i++ ) {
+                        adjustment[i] = VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0;
+                    }
+                    item.ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
+                }
+
+                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplace( selected, item ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                setEdited( true );
+            }
+        }
+
+        public void removeGameControler() {
+#if !JAVA
+            if ( m_timer != null ) {
+                m_timer.stop();
+                m_timer.Dispose();
+                m_timer = null;
+            }
+            m_game_mode = GameControlMode.DISABLED;
+            updateGameControlerStatus( null, null );
+#endif
+        }
+
+        public void loadGameControler() {
+#if !JAVA
+            try {
+                boolean init_success = false;
+                int num_joydev = winmmhelp.JoyInit();
+                if ( num_joydev <= 0 ) {
+                    init_success = false;
+                } else {
+                    init_success = true;
+                }
+                if ( init_success ) {
+                    m_game_mode = GameControlMode.NORMAL;
+                    stripLblGameCtrlMode.setIcon( null );
+                    stripLblGameCtrlMode.setText( m_game_mode.ToString() );
+                    m_timer = new BTimer();
+                    m_timer.setDelay( 10 );
+                    m_timer.Tick += new EventHandler( m_timer_Tick );
+                    m_timer.start();
+                } else {
+                    m_game_mode = GameControlMode.DISABLED;
+                }
+            } catch ( Exception ex ) {
+                m_game_mode = GameControlMode.DISABLED;
+#if DEBUG
+                AppManager.debugWriteLine( "FormMain+ReloadGameControler" );
+                AppManager.debugWriteLine( "    ex=" + ex );
+#endif
+            }
+            updateGameControlerStatus( null, null );
+#endif
+        }
+
+#if ENABLE_MIDI
+        public void reloadMidiIn() {
+            if ( m_midi_in != null ) {
+                m_midi_in.MidiReceived -= m_midi_in_MidiReceived;
+                m_midi_in.Dispose();
+                m_midi_in = null;
+            }
+            int portNumber = AppManager.editorConfig.MidiInPort.PortNumber;
+            int portNumberMtc = AppManager.editorConfig.MidiInPortMtc.PortNumber;
+#if DEBUG
+            PortUtil.println( "FormMain#reloadMidiIn; portNumber=" + portNumber + "; portNumberMtc=" + portNumberMtc );
+#endif
+            try {
+                m_midi_in = new MidiInDevice( portNumber );
+                m_midi_in.MidiReceived += m_midi_in_MidiReceived;
+#if ENABLE_MTC
+                if ( portNumber == portNumberMtc ) {
+                    m_midi_in.setReceiveSystemCommonMessage( true );
+                    m_midi_in.setReceiveSystemRealtimeMessage( true );
+                    m_midi_in.MidiReceived += handleMtcMidiReceived;
+                    m_midi_in.Start();
+                } else {
+                    m_midi_in.setReceiveSystemCommonMessage( false );
+                    m_midi_in.setReceiveSystemRealtimeMessage( false );
+                }
+#else
+                m_midi_in.setReceiveSystemCommonMessage( false );
+                m_midi_in.setReceiveSystemRealtimeMessage( false );
+#endif
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
+            }
+
+#if ENABLE_MTC
+            if ( m_midi_in_mtc != null ) {
+                m_midi_in_mtc.MidiReceived -= handleMtcMidiReceived;
+                m_midi_in_mtc.Dispose();
+                m_midi_in_mtc = null;
+            }
+            if ( portNumber != portNumberMtc ) {
+                try {
+                    m_midi_in_mtc = new MidiInDevice( AppManager.editorConfig.MidiInPortMtc.PortNumber );
+                    m_midi_in_mtc.MidiReceived += handleMtcMidiReceived;
+                    m_midi_in_mtc.setReceiveSystemCommonMessage( true );
+                    m_midi_in_mtc.setReceiveSystemRealtimeMessage( true );
+                    m_midi_in_mtc.Start();
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
+                }
+            }
+#endif
+            updateMidiInStatus();
+        }
+#endif
+
+#if ENABLE_MIDI
+        public void updateMidiInStatus() {
+            int midiport = AppManager.editorConfig.MidiInPort.PortNumber;
+            org.kbinani.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
+            if ( midiport < 0 || devices.Length <= 0 ) {
+                stripLblMidiIn.setText( _( "Disabled" ) );
+                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+            } else {
+                if ( midiport >= devices.Length ) {
+                    midiport = 0;
+                    AppManager.editorConfig.MidiInPort.PortNumber = midiport;
+                }
+                stripLblMidiIn.setText( devices[midiport].szPname );
+                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_piano() ) );
+            }
+        }
+#endif
+
+#if ENABLE_SCRIPT
+        /// <summary>
+        /// スクリプトフォルダ中のスクリプトへのショートカットを作成する
+        /// </summary>
+        public void updateScriptShortcut() {
+            // 既存のアイテムを削除
+            menuScript.removeAll();
+            // スクリプトをリロード
+            ScriptServer.reload();
+
+            // スクリプトごとのメニューを追加
+            int count = 0;
+            for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
+                String id = itr.next();
+                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower().Equals( "runonce" ) ) {
+                    continue;
+                }
+                String display = ScriptServer.getDisplayName( id );
+                String name = id.Replace( '.', '_' );
+                BMenuItem item = new BMenuItem();
+                item.setText( display );
+                item.setName( name );
+                item.setTag( id );
+                item.Click += new EventHandler( handleScriptMenuItem_Click );
+                menuScript.add( item );
+                count++;
+            }
+
+            // 「スクリプトのリストを更新」を追加
+            if ( count > 0 ) {
+                menuScript.addSeparator();
+            }
+            menuScript.add( menuScriptUpdate );
+            Util.applyToolStripFontRecurse( menuScript, AppManager.editorConfig.getBaseFont() );
+            applyShortcut();
+        }
+#endif
+        /// <summary>
+        /// 指定したノートナンバーが可視状態となるよう、縦スクロールバーを移動させます。
+        /// </summary>
+        /// <param name="note"></param>
+        public void ensureVisibleY( int note ) {
+            if ( note == 0 ) {
+                vScroll.setValue( vScroll.getMaximum() );
+                return;
+            } else if ( note == 127 ) {
+                vScroll.setValue( vScroll.getMinimum() );
+                return;
+            }
+            int height = vScroll.getHeight();
+            int noteTop = noteFromYCoord( 0 ); //画面上端でのノートナンバー
+            int noteBottom = noteFromYCoord( height ); // 画面下端でのノートナンバー
+
+            int maximum = vScroll.getMaximum();
+            int track_height = AppManager.editorConfig.PxTrackHeight;
+            if ( note < noteBottom ) {
+                // noteBottomがnoteになるようにstartToDrawYを変える
+                int draft = (127 - note) * track_height - height;
+                int value = draft * maximum / (128 * track_height - height);
+                vScroll.setValue( value );
+            } else if ( noteTop < note ) {
+                // noteTopがnoteになるようにstartToDrawYを変える
+                int draft = (127 - note) * track_height;
+                int value = draft * maximum / (128 * track_height - height);
+                vScroll.setValue( value );
+            }
+        }
+
+        /// <summary>
+        /// 指定したゲートタイムがピアノロール上で可視状態となるよう、横スクロールバーを移動させます。
+        /// </summary>
+        /// <param name="clock"></param>
+        public void ensureVisible( int clock ) {
+            // カーソルが画面内にあるかどうか検査
+            int clock_left = AppManager.clockFromXCoord( AppManager.keyWidth );
+            int clock_right = AppManager.clockFromXCoord( pictPianoRoll.getWidth() );
+            int uwidth = clock_right - clock_left;
+            if ( clock < clock_left || clock_right < clock ) {
+                int cl_new_center = (clock / uwidth) * uwidth + uwidth / 2;
+                float f_draft = cl_new_center - (pictPianoRoll.getWidth() / 2 + 34 - 70) / AppManager.scaleX;
+                if ( f_draft < 0f ) {
+                    f_draft = 0;
+                }
+                int draft = (int)(f_draft);
+                if ( draft < hScroll.getMinimum() ) {
+                    draft = hScroll.getMinimum();
+                } else if ( hScroll.getMaximum() < draft ) {
+                    draft = hScroll.getMaximum();
+                }
+                if ( hScroll.getValue() != draft ) {
+                    AppManager.drawStartIndex[AppManager.getSelected() - 1] = 0;
+                    hScroll.setValue( draft );
+                }
+            }
+        }
+
+        /// <summary>
+        /// プレイカーソルが見えるようスクロールする
+        /// </summary>
+        public void ensureCursorVisible() {
+            ensureVisible( AppManager.getCurrentClock() );
+        }
+
+        /// <summary>
+        /// 特殊なショートカットキーを処理します。
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="onPreviewKeyDown">PreviewKeyDownイベントから送信されてきた場合、true（送る側が設定する）</param>
+        public void processSpecialShortcutKey( BKeyEventArgs e, boolean onPreviewKeyDown ) {
+            boolean flipPlaying = false; // 再生/停止状態の切り替えが要求されたらtrue
+
+            // 最初に、特殊な取り扱いが必要なショートカット、について、
+            // 該当するショートカットがあればそいつらを発動する。
+            int modifier = PortUtil.getCurrentModifierKey();
+            if ( onPreviewKeyDown ) {
+                KeyStroke stroke = KeyStroke.getKeyStroke( e.KeyValue, modifier );
+                int keycode = stroke.getKeyCode();
+#if DEBUG
+                PortUtil.println( "FormMain#processSpecialShortcutKey; e.KeyCode=" + e.KeyCode + "; keycode=" + keycode + "; modifier=" + modifier );
+#endif
+
+                foreach ( SpecialShortcutHolder holder in specialShortcutHolders ) {
+                    if ( holder.shortcut.getKeyCode() == keycode && holder.shortcut.getModifiers() == modifier ) {
+                        try {
+                            holder.menu.clickEvent.raise( holder.menu, new EventArgs() );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
+                        }
+                        return;
+                    }
+                }
+            }
+
+            if ( modifier != KeyEvent.VK_UNDEFINED ) {
+                return;
+            }
+#if JAVA
+            if ( !AppManager.inputTextBox.isVisible() ) {
+#else
+            if ( !AppManager.inputTextBox.Enabled ) {
+#endif
+
+#if JAVA
+                if ( e.KeyValue == KeyEvent.VK_ENTER ) {
+#else
+                if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
+#endif
+                    numEnterKeyAfterHideInputTextBox++;
+                    if ( numEnterKeyAfterHideInputTextBox >= 2 ) {
+                        // 2回目以降しか受け付けないことにする
+                        flipPlaying = true;
+                    }
+#if JAVA
+                } else if ( e.KeyValue == KeyEvent.VK_SPACE ) {
+#else
+                } else if ( e.KeyCode == System.Windows.Forms.Keys.Space ) {
+#endif
+                    if ( !AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
+                        flipPlaying = true;
+                    }
+#if JAVA
+                } else if ( e.KeyValue == KeyEvent.VK_PERIOD ) {
+#else
+                } else if ( e.KeyCode == System.Windows.Forms.Keys.OemPeriod ) {
+#endif
+                    if ( !onPreviewKeyDown ) {
+
+                        if ( AppManager.isPlaying() ) {
+                            AppManager.setPlaying( false );
+                        } else {
+                            if ( !AppManager.startMarkerEnabled ) {
+                                AppManager.setCurrentClock( 0 );
+                            } else {
+                                AppManager.setCurrentClock( AppManager.startMarker );
+                            }
+                            refreshScreen();
+                        }
+                    }
+#if JAVA
+                } else if( e.KeyValue == KeyEvent.VK_ADD || e.KeyValue == KeyEvent.VK_PLUS || e.KeyValue == KeyEvent.VK_RIGHT ) {
+#else
+                } else if ( e.KeyCode == System.Windows.Forms.Keys.Add || e.KeyCode == System.Windows.Forms.Keys.Oemplus || e.KeyCode == System.Windows.Forms.Keys.Right ) {
+#endif
+                    if ( onPreviewKeyDown ) {
+                        forward();
+                    }
+#if JAVA
+                } else if ( e.KeyValue == KeyEvent.VK_MINUS || e.KeyValue == KeyEvent.VK_LEFT ) {
+#else
+                } else if ( e.KeyCode == System.Windows.Forms.Keys.Subtract || e.KeyCode == System.Windows.Forms.Keys.OemMinus || e.KeyCode == System.Windows.Forms.Keys.Left ) {
+#endif
+                    if ( onPreviewKeyDown ) {
+                        rewind();
+                    }
+                } else {
+                    if ( !AppManager.isPlaying() ) {
+                        // 最初に戻る、の機能を発動
+                        BKeys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
+                        if ( specialGoToFirst != null && specialGoToFirst.Length > 0 ) {
+                            KeyStroke ks = PortUtil.getKeyStrokeFromBKeys( specialGoToFirst );
+#if JAVA
+                            if( e.KeyCode == ks.getKeyCode() )
+#else
+                            if ( e.KeyCode == ks.keys )
+#endif
+ {
+                                AppManager.setCurrentClock( 0 );
+                                ensureCursorVisible();
+                                refreshScreen();
+                            }
+                        }
+                    }
+                }
+                if ( !onPreviewKeyDown && flipPlaying ) {
+                    if ( AppManager.isPlaying() ) {
+                        double elapsed = PlaySound.getPosition();
+                        double threshold = AppManager.forbidFlipPlayingThresholdSeconds;
+                        if ( threshold < 0 ) {
+                            threshold = 0.0;
+                        }
+                        if ( elapsed > threshold ) {
+                            timer.stop();
+                            AppManager.setPlaying( false );
+                        }
+                    } else {
+                        AppManager.setPlaying( true );
+                    }
+                }
+            }
+            return;
+            #region OLD CODES DO NOT REMOVE
+            /*if ( AppManager.EditorConfig.Platform == Platform.Macintosh ) {
+                if ( AppManager.EditorConfig.CommandKeyAsControl ) {
+                    #region menuStripMain
+                    if ( e.Alt && e.KeyCode == Keys.N && menuFileNew.isEnabled() ) {
+                        this.menuFileNew_Click( menuFileNew, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.O && menuFileOpen.isEnabled() ) {
+                        this.menuFileOpen_Click( menuFileOpen, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.S && menuFileSave.isEnabled() ) {
+                        this.menuFileSave_Click( menuFileSave, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.Q && menuFileQuit.isEnabled() ) {
+                        this.menuFileQuit_Click( menuFileQuit, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.Z && menuEditUndo.isEnabled() ) {
+                        this.menuEditUndo_Click( menuEditUndo, null );
+                        return;
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.isEnabled() ) {
+                        this.menuEditRedo_Click( this.menuEditRedo, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.X && this.menuEditCut.isEnabled() ) {
+                        this.menuEditCut_Click( this.menuEditCut, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.C && this.menuEditCopy.isEnabled() ) {
+                        this.menuEditCopy_Click( this.menuEditCopy, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuEditPaste.isEnabled() ) {
+                        this.menuEditPaste_Click( this.menuEditPaste, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.A && this.menuEditSelectAll.isEnabled() ) {
+                        this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
+                        return;
+                    } else if ( e.Alt && e.Shift && this.menuEditSelectAllEvents.isEnabled() ) {
+                        this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
+                        this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
+                        this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
+                        this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
+                        return;
+                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && e.Shift && this.menuHiddenVisualForwardParameter.isEnabled() ) {
+                        this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
+                        return;
+                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && e.Shift && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
+                        this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
+                        return;
+                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && this.menuHiddenTrackNext.isEnabled() ) {
+                        this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
+                        return;
+                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && this.menuHiddenTrackBack.isEnabled() ) {
+                        this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
+                        return;
+                    }
+                    #endregion
+
+                    #region cMenuPiano
+                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuPianoUndo.isEnabled() ) {
+                        this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
+                        return;
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
+                        this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuPianoCut.isEnabled() ) {
+                        this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
+                        this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
+                        this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
+                        return;
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
+                        this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
+                        return;
+                    }
+                    #endregion
+
+                    #region cMenuTrackSelector
+                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
+                        this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
+                        return;
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
+                        this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
+                        this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
+                        this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
+                        return;
+                    } else if ( e.Alt && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
+                        this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
+                        return;
+                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
+                        this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
+                        return;
+                    }
+                    #endregion
+                } else {
+                    boolean RButton = (e.KeyCode & Keys.RButton) == Keys.RButton;
+                    boolean Clear = (e.KeyCode & Keys.Clear) == Keys.Clear;
+                    boolean Return = (e.KeyCode & Keys.Return) == Keys.Return;
+                    boolean Pause = (e.KeyCode & Keys.Pause) == Keys.Pause;
+                    boolean FinalMode = (e.KeyCode & Keys.FinalMode) == Keys.FinalMode;
+                    boolean Cancel = (e.KeyCode & Keys.Cancel) == Keys.Cancel;
+                    boolean CapsLock = (e.KeyCode & Keys.CapsLock) == Keys.CapsLock;
+                    boolean LButton = (e.KeyCode & Keys.LButton) == Keys.LButton;
+                    boolean JunjaMode = (e.KeyCode & Keys.JunjaMode) == Keys.JunjaMode;
+                    boolean LineFeed = (e.KeyCode & Keys.LineFeed) == Keys.LineFeed;
+                    boolean ControlKey = (e.KeyCode & Keys.ControlKey) == Keys.ControlKey;
+                    boolean XButton1 = (e.KeyCode & Keys.XButton1) == Keys.XButton1;
+
+                    #region menuStripMain
+                    if ( RButton && Clear && (e.KeyCode & Keys.N) == Keys.N && menuFileNew.isEnabled() ) {
+                        this.menuFileNew_Click( menuFileNew, null );
+                        return;
+                    } else if ( RButton && Return && (e.KeyCode & Keys.O) == Keys.O && menuFileOpen.isEnabled() ) {
+                        this.menuFileOpen_Click( menuFileOpen, null );
+                        return;
+                    } else if ( Pause && (e.KeyCode & Keys.S) == Keys.S && menuFileSave.isEnabled() ) {
+                        this.menuFileSave_Click( menuFileSave, null );
+                        return;
+                    } else if ( ControlKey && (e.KeyCode & Keys.Q) == Keys.Q && menuFileQuit.isEnabled() ) {
+                        this.menuFileQuit_Click( menuFileQuit, null );
+                        return;
+                    } else if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && menuEditUndo.isEnabled() ) {
+                        this.menuEditUndo_Click( menuEditUndo, null );
+                        return;
+                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && menuEditRedo.isEnabled() ) {
+                        this.menuEditRedo_Click( this.menuEditRedo, null );
+                        return;
+                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.menuEditCut.isEnabled() ) {
+                        this.menuEditCut_Click( this.menuEditCut, null );
+                        return;
+                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.menuEditCopy.isEnabled() ) {
+                        this.menuEditCopy_Click( this.menuEditCopy, null );
+                        return;
+                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuEditPaste.isEnabled() ) {
+                        this.menuEditPaste_Click( this.menuEditPaste, null );
+                        return;
+                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAll.isEnabled() ) {
+                        this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
+                        return;
+                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAllEvents.isEnabled() ) {
+                        this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
+                        return;
+                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
+                        this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
+                        return;
+                    } else if ( JunjaMode && (e.KeyCode & Keys.W) == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
+                        this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
+                        return;
+                    } else if ( XButton1 && (e.KeyCode & Keys.E) == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
+                        this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
+                        return;
+                    } else if ( Clear && e.Control && e.Shift && this.menuHiddenVisualForwardParameter.isEnabled() ) {
+                        this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
+                        return;
+                    } else if ( LButton && LineFeed && e.Control && e.Shift && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
+                        this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
+                        return;
+                    } else if ( Clear && e.Control && this.menuHiddenTrackNext.isEnabled() ) {
+                        this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
+                        return;
+                    } else if ( LButton && LineFeed && e.Control && this.menuHiddenTrackBack.isEnabled() ) {
+                        this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
+                        return;
+                    }
+                    #endregion
+
+                    #region cMenuPiano
+                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuPianoUndo.isEnabled() ) {
+                        this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
+                        return;
+                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
+                        this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
+                        return;
+                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuPianoCut.isEnabled() ) {
+                        this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
+                        return;
+                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
+                        this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
+                        return;
+                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
+                        this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
+                        return;
+                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
+                        this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
+                        return;
+                    }
+                    #endregion
+
+                    #region cMenuTrackSelector
+                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
+                        this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
+                        return;
+                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
+                        this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
+                        return;
+                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
+                        this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
+                        return;
+                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
+                        this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
+                        return;
+                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
+                        this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
+                        return;
+                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
+                        this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
+                        return;
+                    }
+                    #endregion
+                }
+            } else {
+                #region menuStripMain
+                if ( e.Control && e.KeyCode == Keys.N && menuFileNew.isEnabled() ) {
+                    this.menuFileNew_Click( menuFileNew, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.O && menuFileOpen.isEnabled() ) {
+                    this.menuFileOpen_Click( menuFileOpen, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.S && menuFileSave.isEnabled() ) {
+                    this.menuFileSave_Click( menuFileSave, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.Q && menuFileQuit.isEnabled() ) {
+                    this.menuFileQuit_Click( menuFileQuit, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.Z && menuEditUndo.isEnabled() ) {
+                    this.menuEditUndo_Click( menuEditUndo, null );
+                    return;
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.isEnabled() ) {
+                    this.menuEditRedo_Click( this.menuEditRedo, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.X && this.menuEditCut.isEnabled() ) {
+                    this.menuEditCut_Click( this.menuEditCut, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.C && this.menuEditCopy.isEnabled() ) {
+                    this.menuEditCopy_Click( this.menuEditCopy, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.V && this.menuEditPaste.isEnabled() ) {
+                    this.menuEditPaste_Click( this.menuEditPaste, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.A && this.menuEditSelectAll.isEnabled() ) {
+                    this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
+                    return;
+                } else if ( e.Control && e.Shift && this.menuEditSelectAllEvents.isEnabled() ) {
+                    this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
+                    this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
+                    this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
+                    this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
+                    return;
+                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenVisualForwardParameter.isEnabled() ) {
+                    this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
+                    return;
+                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
+                    this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
+                    return;
+                } else if ( e.Control && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenTrackNext.isEnabled() ) {
+                    this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
+                    return;
+                } else if ( e.Control && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenTrackBack.isEnabled() ) {
+                    this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
+                    return;
+                }
+                #endregion
+
+                #region cMenuPiano
+                if ( e.Control && e.KeyCode == Keys.Z && cMenuPianoUndo.isEnabled() ) {
+                    this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
+                    return;
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
+                    this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuPianoCut.isEnabled() ) {
+                    this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
+                    this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
+                    this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
+                    return;
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
+                    this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
+                    return;
+                }
+                #endregion
+
+                #region cMenuTrackSelector
+                if ( e.Control && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
+                    this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
+                    return;
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
+                    this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
+                    this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
+                    this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
+                    return;
+                } else if ( e.Control && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
+                    this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
+                    return;
+                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
+                    this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
+                    return;
+                }
+                #endregion
+            }*/
+            #endregion
+        }
+
+        public void setHScrollRange( int draft_length ) {
+            int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
+            draft_length += 240;
+            if ( draft_length > hScroll.getMaximum() ) {
+                hScroll.setMaximum( draft_length );
+            }
+            if ( pictPianoRoll.getWidth() <= AppManager.keyWidth || hScroll.getWidth() <= _ARROWS ) {
+                return;
+            }
+            int large_change = (int)((pictPianoRoll.getWidth() - AppManager.keyWidth) / (float)AppManager.scaleX);
+            int box_width = (int)((hScroll.getWidth() - _ARROWS) * (float)large_change / (float)(hScroll.getMaximum() + large_change));
+            if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
+                box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
+                large_change = (int)((float)hScroll.getMaximum() * (float)box_width / (float)(hScroll.getWidth() - _ARROWS - box_width));
+            }
+            if ( large_change > 0 ) {
+                hScroll.setVisibleAmount( large_change );
+            }
+        }
+
+        public void setVScrollRange( int draft_length ) {
+            int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
+            if ( draft_length > vScroll.getMaximum() ) {
+                vScroll.setMaximum( draft_length );
+            }
+            int large_change = (int)pictPianoRoll.getHeight();
+            int box_width = (int)((vScroll.getHeight() - _ARROWS) * (float)large_change / (float)(vScroll.getMaximum() + large_change));
+            if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
+                box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
+                large_change = (int)((float)vScroll.getMaximum() * (float)box_width / (float)(vScroll.getWidth() - _ARROWS - box_width));
+            }
+            if ( large_change > 0 ) {
+                vScroll.setVisibleAmount( large_change );
+            }
+        }
+
+        public void refreshScreen() {
+#if JAVA
+            //refreshScreenCore( this, new EventArgs() );
+            repaint();
+#else
+            if ( !bgWorkScreen.IsBusy ) {
+                bgWorkScreen.RunWorkerAsync();
+            }
+#endif
+        }
+
+        public void flipMixerDialogVisible( boolean visible ) {
+            AppManager.mixerWindow.setVisible( visible );
+            AppManager.editorConfig.MixerVisible = visible;
+            menuVisualMixer.setSelected( visible );
+        }
+
+        /// <summary>
+        /// メニューのショートカットキーを、AppManager.EditorConfig.ShorcutKeysの内容に応じて変更します
+        /// </summary>
+        public void applyShortcut() {
+            specialShortcutHolders.clear();
+
+            if ( AppManager.editorConfig.Platform == PlatformEnum.Macintosh ) {
+                #region Platform.Macintosh
+                String _CO = "";
+                //if ( AppManager.EditorConfig.CommandKeyAsControl ) {
+#if JAVA
+                char[] arr = new char[]{ 0x2318 };
+                _CO = new String( arr );
+#else
+                _CO = new String( '\x2318', 1 );
+#endif
+                //} else {
+                //_CO = "^";
+                //}
+                String _SHIFT = "⇧";
+                //if ( AppManager.EditorConfig.CommandKeyAsControl ) {
+                #region menuStripMain
+                menuFileNew.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_N, InputEvent.META_MASK ) );
+                menuFileOpen.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_O, InputEvent.META_MASK ) );
+                menuFileSave.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_S, InputEvent.META_MASK ) );
+                menuFileQuit.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Q, InputEvent.META_MASK ) );
+
+                menuEditUndo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK ) );
+                menuEditRedo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
+                menuEditCut.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, InputEvent.META_MASK ) );
+                menuEditCopy.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, InputEvent.META_MASK ) );
+                menuEditPaste.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_V, InputEvent.META_MASK ) );
+                menuEditSelectAll.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK ) );
+                menuEditSelectAllEvents.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
+
+                menuHiddenEditFlipToolPointerPencil.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_W, InputEvent.META_MASK ) );
+                menuHiddenEditFlipToolPointerEraser.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_E, InputEvent.META_MASK ) );
+                menuHiddenVisualForwardParameter.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, 0 ) );
+                menuHiddenVisualBackwardParameter.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, 0 ) );
+                menuHiddenTrackNext.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_PAGE_DOWN, 0 ) );
+                menuHiddenTrackBack.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_PAGE_UP, 0 ) );
+                #endregion
+
+                #region cMenuPiano
+                cMenuPianoUndo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK ) );
+                cMenuPianoRedo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
+                cMenuPianoCut.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, InputEvent.META_MASK ) );
+                cMenuPianoCopy.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, InputEvent.META_MASK ) );
+                cMenuPianoSelectAll.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK ) );
+                cMenuPianoSelectAllEvents.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
+                #endregion
+
+                #region cMenuTrackSelector
+                cMenuTrackSelectorUndo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK ) );
+                cMenuTrackSelectorRedo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
+                cMenuTrackSelectorCut.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, InputEvent.META_MASK ) );
+                cMenuTrackSelectorCopy.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, InputEvent.META_MASK ) );
+                cMenuTrackSelectorPaste.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_V, InputEvent.META_MASK ) );
+                cMenuTrackSelectorSelectAll.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
+                #endregion
+                #endregion
+            } else {
+                TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary();
+                #region menuStripMain
+                for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
+                    String key = itr.next();
+                    if ( key.Equals( "menuEditCopy" ) || key.Equals( "menuEditCut" ) || key.Equals( "menuEditPaste" ) || key.Equals( "SpecialShortcutGoToFirst" ) ) {
+                        continue;
+                    }
+                    Object menu = searchMenuItemFromName( key );
+                    if ( menu != null ) {
+                        String menu_name = "";
+#if JAVA
+                        if( menu instanceof Component ){
+                            menu_name = ((Component)menu).getName();
+                        }else{
+                            continue;
+                        }
+#else
+                        if ( menu is BMenuItem ) {
+                            menu_name = ((BMenuItem)menu).Name;
+                        } else {
+                            continue;
+                        }
+#endif
+                        applyMenuItemShortcut( dict, menu, menu_name );
+                    }
+                }
+                if ( dict.containsKey( "menuEditCopy" ) ) {
+                    applyMenuItemShortcut( dict, menuHiddenCopy, "menuEditCopy" );
+                }
+                if ( dict.containsKey( "menuEditCut" ) ) {
+                    applyMenuItemShortcut( dict, menuHiddenCut, "menuEditCut" );
+                }
+                if ( dict.containsKey( "menuEditCopy" ) ) {
+                    applyMenuItemShortcut( dict, menuHiddenPaste, "menuEditPaste" );
+                }
+                #endregion
+
+                Vector<ValuePair<String, BMenuItem[]>> work = new Vector<ValuePair<String, BMenuItem[]>>();
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditUndo", new BMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditRedo", new BMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditCut", new BMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditCopy", new BMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditPaste", new BMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAll", new BMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAllEvents", new BMenuItem[] { cMenuPianoSelectAllEvents } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuEditDelete", new BMenuItem[] { menuEditDelete } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuVisualGridline", new BMenuItem[] { cMenuPianoGrid } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuJobLyric", new BMenuItem[] { cMenuPianoImportLyric } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuLyricExpressionProperty", new BMenuItem[] { cMenuPianoExpressionProperty } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuLyricVibratoProperty", new BMenuItem[] { cMenuPianoVibratoProperty } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOn", new BMenuItem[] { cMenuTrackTabTrackOn } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackAdd", new BMenuItem[] { cMenuTrackTabAdd } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackCopy", new BMenuItem[] { cMenuTrackTabCopy } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackDelete", new BMenuItem[] { cMenuTrackTabDelete } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderCurrent", new BMenuItem[] { cMenuTrackTabRenderCurrent } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderAll", new BMenuItem[] { cMenuTrackTabRenderAll } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[] { cMenuTrackTabOverlay } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID100 } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererUtau", new BMenuItem[] { cMenuTrackTabRendererUtau } ) );
+                int c = work.size();
+                for ( int j = 0; j < c; j++ ) {
+                    ValuePair<String, BMenuItem[]> item = work.get( j );
+                    if ( dict.containsKey( item.getKey() ) ) {
+                        BKeys[] k = dict.get( item.getKey() );
+                        String s = Utility.getShortcutDisplayString( k );
+#if !JAVA
+                        if ( s != "" ) {
+                            for ( int i = 0; i < item.getValue().Length; i++ ) {
+                                item.getValue()[i].ShortcutKeyDisplayString = s;
+                            }
+                        }
+#endif
+                    }
+                }
+
+                // ミキサーウィンドウ
+                if ( AppManager.mixerWindow != null ) {
+                    if ( dict.containsKey( "menuVisualMixer" ) ) {
+                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
+                        AppManager.mixerWindow.applyShortcut( shortcut );
+                    }
+                }
+
+                // アイコンパレット
+                if ( AppManager.iconPalette != null ) {
+                    if ( dict.containsKey( "menuVisualIconPalette" ) ) {
+                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualIconPalette" ) );
+                        AppManager.iconPalette.applyShortcut( shortcut );
+                    }
+                }
+
+                // スクリプトにショートカットを適用
+#if JAVA
+                MenuElement[] sub_menu_script = menuScript.getSubElements();
+                for ( int i = 0; i < sub_menu_script.Length; i++ ) {
+                    MenuElement tsi = sub_menu_script[i];
+                    MenuElement[] sub_tsi = tsi.getSubElements();
+                    if ( sub_tsi.Length == 1 ) {
+                        MenuElement dd_run = sub_tsi[0];
+#if DEBUG
+                        AppManager.debugWriteLine( "    dd_run.name=" + PortUtil.getComponentName( dd_run ) );
+#endif
+                        if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
+                            applyMenuItemShortcut( dict, tsi, PortUtil.getComponentName( tsi ) );
+                        }
+                    }
+                }
+#else
+                int count = menuScript.DropDownItems.Count;
+                for ( int i = 0; i < count; i++ ) {
+                    System.Windows.Forms.ToolStripItem tsi = menuScript.DropDownItems[i];
+                    if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
+                        System.Windows.Forms.ToolStripMenuItem tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                        if ( tsmi.DropDownItems.Count == 1 ) {
+                            System.Windows.Forms.ToolStripItem subtsi_tsmi = tsmi.DropDownItems[0];
+                            if ( subtsi_tsmi is System.Windows.Forms.ToolStripMenuItem ) {
+                                System.Windows.Forms.ToolStripMenuItem dd_run = (System.Windows.Forms.ToolStripMenuItem)subtsi_tsmi;
+                                if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
+                                    applyMenuItemShortcut( dict, tsmi, PortUtil.getComponentName( tsi ) );
+                                }
+                            }
+                        }
+                    }
+                }
+#endif
+            }
+        }
+
+        /// <summary>
+        /// dictの中から
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <param name="item"></param>
+        /// <param name="item_name"></param>
+        /// <param name="default_shortcut"></param>
+        public void applyMenuItemShortcut( TreeMap<String, BKeys[]> dict, Object item, String item_name ) {
+            try {
+                if ( dict.containsKey( item_name ) ) {
+#if JAVA
+                    if( item instanceof JMenuItem ){
+                        ((JMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
+                    }
+#else
+#if DEBUG
+                    if ( !(item is BMenuItem) ) {
+                        throw new Exception( "FormMain#applyMenuItemShortcut; item is NOT BMenuItem" );
+                    }
+#endif
+                    if ( item is BMenuItem ) {
+                        BMenuItem menu = (BMenuItem)item;
+                        BKeys[] keys = dict.get( item_name );
+                        System.Windows.Forms.Keys shortcut = PortUtil.getKeyStrokeFromBKeys( keys ).keys;
+
+                        if ( shortcut == System.Windows.Forms.Keys.Delete ) {
+                            menu.ShortcutKeyDisplayString = "Delete";
+                            menu.ShortcutKeys = System.Windows.Forms.Keys.None;
+                            specialShortcutHolders.add(
+                                new SpecialShortcutHolder( PortUtil.getKeyStrokeFromBKeys( keys ), menu ) );
+                        } else {
+                            try {
+                                menu.ShortcutKeyDisplayString = "";
+                                menu.ShortcutKeys = shortcut;
+                            } catch ( Exception ex ) {
+                                // ショートカットの適用に失敗する→特殊な取り扱いが必要
+                                menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
+                                menu.ShortcutKeys = System.Windows.Forms.Keys.None;
+                                specialShortcutHolders.add(
+                                    new SpecialShortcutHolder( PortUtil.getKeyStrokeFromBKeys( keys ), menu ) );
+#if DEBUG
+                                PortUtil.println( "FormMain#applyMenuItemShortcut; display_string=" + menu.ShortcutKeyDisplayString + "; menu.getName()=" + menu.getName() );
+#endif
+                            }
+                        }
+                    }
+#endif
+                } else {
+#if JAVA
+                    if( item instanceof JMenuItem ){
+                        ((JMenuItem)item).setAccelerator( KeyStroke.getKeyStroke( 0, 0 ) );
+                    }
+#else
+                    if ( item is BMenuItem ) {
+                        ((BMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( new BKeys[] { BKeys.None } ) );
+                    }
+#endif
+                }
+            } catch ( Exception ex ) {
+            }
+        }
+
+        /// <summary>
+        /// ソングポジションを1小節進めます
+        /// </summary>
+        public void forward() {
+            boolean playing = AppManager.isPlaying();
+            if ( playing ) {
+                return;
+            }
+            int current = AppManager.getVsqFile().getBarCountFromClock( AppManager.getCurrentClock() ) + 1;
+            int new_clock = AppManager.getVsqFile().getClockFromBarCount( current );
+            if ( new_clock <= hScroll.getMaximum() + (pictPianoRoll.getWidth() - AppManager.keyWidth) / AppManager.scaleX ) {
+                AppManager.setCurrentClock( new_clock );
+                ensureCursorVisible();
+                AppManager.setPlaying( playing );
+                refreshScreen();
+            }
+        }
+
+        /// <summary>
+        /// ソングポジションを1小節戻します
+        /// </summary>
+        public void rewind() {
+            boolean playing = AppManager.isPlaying();
+            if ( playing ) {
+                return;
+            }
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+            int cl_clock = AppManager.getCurrentClock();
+            int b_current = vsq.getBarCountFromClock( cl_clock );
+            if ( b_current > 0 ) {
+                int cl_b_current = vsq.getClockFromBarCount( b_current );
+                if ( cl_b_current >= cl_clock ) {
+                    b_current--;
+                }
+            }
+            int cl_new = vsq.getClockFromBarCount( b_current );
+            AppManager.setCurrentClock( cl_new );
+            ensureCursorVisible();
+            AppManager.setPlaying( playing );
+            refreshScreen();
+        }
+
+        /// <summary>
+        /// cMenuPianoの固定長音符入力の各メニューのチェック状態をm_pencil_modeを元に更新します
+        /// </summary>
+        public void updateCMenuPianoFixed() {
+            cMenuPianoFixed01.setSelected( false );
+            cMenuPianoFixed02.setSelected( false );
+            cMenuPianoFixed04.setSelected( false );
+            cMenuPianoFixed08.setSelected( false );
+            cMenuPianoFixed16.setSelected( false );
+            cMenuPianoFixed32.setSelected( false );
+            cMenuPianoFixed64.setSelected( false );
+            cMenuPianoFixed128.setSelected( false );
+            cMenuPianoFixedOff.setSelected( false );
+            cMenuPianoFixedTriplet.setSelected( false );
+            cMenuPianoFixedDotted.setSelected( false );
+            PencilModeEnum mode = m_pencil_mode.getMode();
+            if ( mode == PencilModeEnum.L1 ) {
+                cMenuPianoFixed01.setSelected( true );
+            } else if ( mode == PencilModeEnum.L2 ) {
+                cMenuPianoFixed02.setSelected( true );
+            } else if ( mode == PencilModeEnum.L4 ) {
+                cMenuPianoFixed04.setSelected( true );
+            } else if ( mode == PencilModeEnum.L8 ) {
+                cMenuPianoFixed08.setSelected( true );
+            } else if ( mode == PencilModeEnum.L16 ) {
+                cMenuPianoFixed16.setSelected( true );
+            } else if ( mode == PencilModeEnum.L32 ) {
+                cMenuPianoFixed32.setSelected( true );
+            } else if ( mode == PencilModeEnum.L64 ) {
+                cMenuPianoFixed64.setSelected( true );
+            } else if ( mode == PencilModeEnum.L128 ) {
+                cMenuPianoFixed128.setSelected( true );
+            } else if ( mode == PencilModeEnum.Off ) {
+                cMenuPianoFixedOff.setSelected( true );
+            }
+            cMenuPianoFixedTriplet.setSelected( m_pencil_mode.isTriplet() );
+            cMenuPianoFixedDotted.setSelected( m_pencil_mode.isDot() );
+        }
+
+        public void clearTempWave() {
+            String tmppath = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            if ( !PortUtil.isDirectoryExists( tmppath ) ) {
+                return;
+            }
+
+            // 今回このPCが起動されるよりも以前に，Cadenciiが残したデータを削除する
+            //TODO: システムカウンタは約49日でリセットされてしまい，厳密には実装できないようなので，保留．
+
+            // このFormMainのインスタンスが使用したデータを消去する
+            for ( int i = 1; i <= 16; i++ ) {
+                String file = PortUtil.combinePath( tmppath, i + ".wav" );
+                if ( PortUtil.isFileExists( file ) ) {
+                    for ( int error = 0; error < 100; error++ ) {
+                        try {
+                            PortUtil.deleteFile( file );
+                            break;
+                        } catch ( Exception ex ) {
+#if DEBUG
+                            org.kbinani.debug.push_log( "FormMain+ClearTempWave()" );
+                            org.kbinani.debug.push_log( "    ex=" + ex.ToString() );
+                            org.kbinani.debug.push_log( "    error_count=" + error );
+#endif
+#if JAVA
+                            try{
+                                Thread.sleep( 100 );
+                            }catch( Exception ex2 ){
+                            }
+#else
+                            Thread.Sleep( 100 );
+#endif
+                        }
+                    }
+                }
+            }
+            String whd = PortUtil.combinePath( tmppath, UtauRenderingRunner.FILEBASE + ".whd" );
+            if ( PortUtil.isFileExists( whd ) ) {
+                try {
+                    PortUtil.deleteFile( whd );
+                } catch ( Exception ex ) {
+                }
+            }
+            String dat = PortUtil.combinePath( tmppath, UtauRenderingRunner.FILEBASE + ".dat" );
+            if ( PortUtil.isFileExists( dat ) ) {
+                try {
+                    PortUtil.deleteFile( dat );
+                } catch ( Exception ex ) {
+                }
+            }
+        }
+
+        public void playPreviewSound( int note ) {
+            KeySoundPlayer.play( note );
+        }
+
+#if ENABLE_MOUSEHOVER
+        public void MouseHoverEventGenerator( Object arg ) {
+            int note = (int)arg;
+            if ( AppManager.editorConfig.MouseHoverTime > 0 ) {
+                Thread.Sleep( AppManager.editorConfig.MouseHoverTime );
+            }
+            KeySoundPlayer.play( note );
+        }
+#endif
+
+        public static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        public void applyLanguage() {
+            openXmlVsqDialog.clearChoosableFileFilter();
+            try {
+                openXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
+                openXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+            } catch ( Exception ex ) {
+                openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
+                openXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
+            }
+
+            saveXmlVsqDialog.clearChoosableFileFilter();
+            try {
+                saveXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
+                saveXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+            } catch ( Exception ex ) {
+                saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
+                saveXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
+            }
+
+            openUstDialog.clearChoosableFileFilter();
+            try {
+                openUstDialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
+                openUstDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+            } catch ( Exception ex ) {
+                openUstDialog.addFileFilter( "UTAU Script Format(*.ust)|*.ust" );
+                openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
+            }
+
+            openMidiDialog.clearChoosableFileFilter();
+            try {
+                openMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
+                openMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
+                openMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+            } catch ( Exception ex ) {
+                openMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
+                openMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
+                openMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
+            }
+
+            saveMidiDialog.clearChoosableFileFilter();
+            try {
+                saveMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
+                saveMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
+                saveMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+            } catch ( Exception ex ) {
+                saveMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
+                saveMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
+                saveMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
+            }
+
+            openWaveDialog.clearChoosableFileFilter();
+            try {
+                openWaveDialog.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
+                openWaveDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+            } catch ( Exception ex ) {
+                openWaveDialog.addFileFilter( "Wave File(*.wav)|*.wav" );
+                openWaveDialog.addFileFilter( "All Files(*.*)|*.*" );
+            }
+
+            stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
+#if JAVA
+            updateGameControlerStatus( this, new EventArgs() );
+#else
+            this.Invoke( new EventHandler( updateGameControlerStatus ) );
+#endif
+
+            stripBtnPointer.setText( _( "Pointer" ) );
+            stripBtnPointer.setToolTipText( _( "Pointer" ) );
+            stripBtnPencil.setText( _( "Pencil" ) );
+            stripBtnPencil.setToolTipText( _( "Pencil" ) );
+            stripBtnLine.setText( _( "Line" ) );
+            stripBtnLine.setToolTipText( _( "Line" ) );
+            stripBtnEraser.setText( _( "Eraser" ) );
+            stripBtnEraser.setToolTipText( _( "Eraser" ) );
+            stripBtnCurve.setText( _( "Curve" ) );
+            stripBtnCurve.setToolTipText( _( "Curve" ) );
+            stripBtnGrid.setText( _( "Grid" ) );
+            stripBtnGrid.setToolTipText( _( "Grid" ) );
+
+            #region main menu
+            menuFile.setText( _( "File" ) );
+            menuFile.setMnemonic( KeyEvent.VK_F );
+            menuFileNew.setText( _( "New" ) );
+            menuFileNew.setMnemonic( KeyEvent.VK_N );
+            menuFileOpen.setText( _( "Open" ) );
+            menuFileOpen.setMnemonic( KeyEvent.VK_O );
+            menuFileOpenVsq.setText( _( "Open VSQ/Vocaloid Midi" ) );
+            menuFileOpenVsq.setMnemonic( KeyEvent.VK_V );
+            menuFileOpenUst.setText( _( "Open UTAU Project File" ) );
+            menuFileOpenUst.setMnemonic( KeyEvent.VK_U );
+            menuFileSave.setText( _( "Save" ) );
+            menuFileSave.setMnemonic( KeyEvent.VK_S );
+            menuFileSaveNamed.setText( _( "Save As" ) );
+            menuFileSaveNamed.setMnemonic( KeyEvent.VK_A );
+            menuFileImport.setText( _( "Import" ) );
+            menuFileImport.setMnemonic( KeyEvent.VK_I );
+            menuFileImportVsq.setText( _( "VSQ / Vocaloid Midi" ) );
+            menuFileExport.setText( _( "Export" ) );
+            menuFileExport.setMnemonic( KeyEvent.VK_E );
+            menuFileRecent.setText( _( "Recent Files" ) );
+            menuFileRecent.setMnemonic( KeyEvent.VK_R );
+            menuFileQuit.setText( _( "Quit" ) );
+            menuFileQuit.setMnemonic( KeyEvent.VK_Q );
+
+            menuEdit.setText( _( "Edit" ) );
+            menuEdit.setMnemonic( KeyEvent.VK_E );
+            menuEditUndo.setText( _( "Undo" ) );
+            menuEditUndo.setMnemonic( KeyEvent.VK_U );
+            menuEditRedo.setText( _( "Redo" ) );
+            menuEditRedo.setMnemonic( KeyEvent.VK_R );
+            menuEditCut.setText( _( "Cut" ) );
+            menuEditCut.setMnemonic( KeyEvent.VK_T );
+            menuEditCopy.setText( _( "Copy" ) );
+            menuEditCopy.setMnemonic( KeyEvent.VK_C );
+            menuEditPaste.setText( _( "Paste" ) );
+            menuEditPaste.setMnemonic( KeyEvent.VK_P );
+            menuEditDelete.setText( _( "Delete" ) );
+            menuEditDelete.setMnemonic( KeyEvent.VK_D );
+            menuEditAutoNormalizeMode.setText( _( "Auto Normalize Mode" ) );
+            menuEditAutoNormalizeMode.setMnemonic( KeyEvent.VK_N );
+            menuEditSelectAll.setText( _( "Select All" ) );
+            menuEditSelectAll.setMnemonic( KeyEvent.VK_A );
+            menuEditSelectAllEvents.setText( _( "Select All Events" ) );
+            menuEditSelectAllEvents.setMnemonic( KeyEvent.VK_E );
+
+            menuVisual.setText( _( "View" ) );
+            menuVisual.setMnemonic( KeyEvent.VK_V );
+            menuVisualControlTrack.setText( _( "Control Track" ) );
+            menuVisualControlTrack.setMnemonic( KeyEvent.VK_C );
+            menuVisualMixer.setText( _( "Mixer" ) );
+            menuVisualMixer.setMnemonic( KeyEvent.VK_X );
+            menuVisualWaveform.setText( _( "Waveform" ) );
+            menuVisualWaveform.setMnemonic( KeyEvent.VK_W );
+            menuVisualProperty.setText( _( "Property Window" ) );
+            menuVisualOverview.setText( _( "Navigation" ) );
+            menuVisualOverview.setMnemonic( KeyEvent.VK_V );
+            menuVisualGridline.setText( _( "Grid Line" ) );
+            menuVisualGridline.setMnemonic( KeyEvent.VK_G );
+            menuVisualStartMarker.setText( _( "Start Marker" ) );
+            menuVisualStartMarker.setMnemonic( KeyEvent.VK_S );
+            menuVisualEndMarker.setText( _( "End Marker" ) );
+            menuVisualEndMarker.setMnemonic( KeyEvent.VK_E );
+            menuVisualLyrics.setText( _( "Lyrics/Phoneme" ) );
+            menuVisualLyrics.setMnemonic( KeyEvent.VK_L );
+            menuVisualNoteProperty.setText( _( "Note Expression/Vibrato" ) );
+            menuVisualNoteProperty.setMnemonic( KeyEvent.VK_N );
+            menuVisualPitchLine.setText( _( "Pitch Line" ) );
+            menuVisualPitchLine.setMnemonic( KeyEvent.VK_P );
+            menuVisualPluginUi.setText( _( "VSTi Plugin UI" ) );
+            menuVisualPluginUi.setMnemonic( KeyEvent.VK_U );
+            menuVisualIconPalette.setText( _( "Icon Palette" ) );
+            menuVisualIconPalette.setMnemonic( KeyEvent.VK_I );
+
+            menuJob.setText( _( "Job" ) );
+            menuJob.setMnemonic( KeyEvent.VK_J );
+            menuJobNormalize.setText( _( "Normalize Notes" ) );
+            menuJobNormalize.setMnemonic( KeyEvent.VK_N );
+            menuJobInsertBar.setText( _( "Insert Bars" ) );
+            menuJobInsertBar.setMnemonic( KeyEvent.VK_I );
+            menuJobDeleteBar.setText( _( "Delete Bars" ) );
+            menuJobDeleteBar.setMnemonic( KeyEvent.VK_D );
+            menuJobRandomize.setText( _( "Randomize" ) );
+            menuJobRandomize.setMnemonic( KeyEvent.VK_R );
+            menuJobConnect.setText( _( "Connect Notes" ) );
+            menuJobConnect.setMnemonic( KeyEvent.VK_C );
+            menuJobLyric.setText( _( "Insert Lyrics" ) );
+            menuJobLyric.setMnemonic( KeyEvent.VK_L );
+            menuJobRewire.setText( _( "Import ReWire Host Tempo" ) );
+            menuJobRewire.setMnemonic( KeyEvent.VK_T );
+            menuJobRealTime.setText( _( "Start Realtime Input" ) );
+            menuJobReloadVsti.setText( _( "Reload VSTi" ) );
+            menuJobReloadVsti.setMnemonic( KeyEvent.VK_R );
+
+            menuTrack.setText( _( "Track" ) );
+            menuTrack.setMnemonic( KeyEvent.VK_T );
+            menuTrackOn.setText( _( "Track On" ) );
+            menuTrackOn.setMnemonic( KeyEvent.VK_K );
+            menuTrackPlayAfterSynth.setText( _( "Play After Synth" ) );
+            menuTrackPlayAfterSynth.setMnemonic( KeyEvent.VK_P );
+            menuTrackAdd.setText( _( "Add Track" ) );
+            menuTrackAdd.setMnemonic( KeyEvent.VK_A );
+            menuTrackCopy.setText( _( "Copy Track" ) );
+            menuTrackCopy.setMnemonic( KeyEvent.VK_C );
+            menuTrackChangeName.setText( _( "Rename Track" ) );
+            menuTrackDelete.setText( _( "Delete Track" ) );
+            menuTrackDelete.setMnemonic( KeyEvent.VK_D );
+            menuTrackRenderCurrent.setText( _( "Render Current Track" ) );
+            menuTrackRenderCurrent.setMnemonic( KeyEvent.VK_T );
+            menuTrackRenderAll.setText( _( "Render All Tracks" ) );
+            menuTrackRenderAll.setMnemonic( KeyEvent.VK_S );
+            menuTrackOverlay.setText( _( "Overlay" ) );
+            menuTrackOverlay.setMnemonic( KeyEvent.VK_O );
+            menuTrackRenderer.setText( _( "Renderer" ) );
+            menuTrackRenderer.setMnemonic( KeyEvent.VK_R );
+
+            menuLyric.setText( _( "Lyrics" ) );
+            menuLyric.setMnemonic( KeyEvent.VK_L );
+            menuLyricExpressionProperty.setText( _( "Note Expression Property" ) );
+            menuLyricExpressionProperty.setMnemonic( KeyEvent.VK_E );
+            menuLyricVibratoProperty.setText( _( "Note Vibrato Property" ) );
+            menuLyricVibratoProperty.setMnemonic( KeyEvent.VK_V );
+            menuLyricPhonemeTransformation.setText( _( "Phoneme Transformation" ) );
+            menuLyricPhonemeTransformation.setMnemonic( KeyEvent.VK_T );
+            menuLyricDictionary.setText( _( "User Word Dictionary" ) );
+            menuLyricDictionary.setMnemonic( KeyEvent.VK_C );
+
+            menuScript.setText( _( "Script" ) );
+            menuScript.setMnemonic( KeyEvent.VK_C );
+            menuScriptUpdate.setText( _( "Update Script List" ) );
+            menuScriptUpdate.setMnemonic( KeyEvent.VK_U );
+
+            menuSetting.setText( _( "Setting" ) );
+            menuSetting.setMnemonic( KeyEvent.VK_S );
+            menuSettingPreference.setText( _( "Preference" ) );
+            menuSettingPreference.setMnemonic( KeyEvent.VK_P );
+            menuSettingGameControler.setText( _( "Game Controler" ) );
+            menuSettingGameControler.setMnemonic( KeyEvent.VK_G );
+            menuSettingGameControlerLoad.setText( _( "Load" ) );
+            menuSettingGameControlerLoad.setMnemonic( KeyEvent.VK_L );
+            menuSettingGameControlerRemove.setText( _( "Remove" ) );
+            menuSettingGameControlerRemove.setMnemonic( KeyEvent.VK_R );
+            menuSettingGameControlerSetting.setText( _( "Setting" ) );
+            menuSettingGameControlerSetting.setMnemonic( KeyEvent.VK_S );
+            menuSettingShortcut.setText( _( "Shortcut Key" ) );
+            menuSettingShortcut.setMnemonic( KeyEvent.VK_S );
+            menuSettingUtauVoiceDB.setText( _( "UTAU Voice DB" ) );
+            menuSettingUtauVoiceDB.setMnemonic( KeyEvent.VK_U );
+            menuSettingDefaultSingerStyle.setText( _( "Singing Style Defaults" ) );
+            menuSettingDefaultSingerStyle.setMnemonic( KeyEvent.VK_D );
+            menuSettingPositionQuantize.setText( _( "Quantize" ) );
+            menuSettingPositionQuantize.setMnemonic( KeyEvent.VK_Q );
+            menuSettingPositionQuantizeOff.setText( _( "Off" ) );
+            menuSettingPositionQuantizeTriplet.setText( _( "Triplet" ) );
+            menuSettingLengthQuantize.setText( _( "Length" ) );
+            menuSettingLengthQuantize.setMnemonic( KeyEvent.VK_L );
+            menuSettingLengthQuantizeOff.setText( _( "Off" ) );
+            menuSettingLengthQuantizeTriplet.setText( _( "Triplet" ) );
+            menuSettingSingerProperty.setText( _( "Singer Properties" ) );
+            menuSettingSingerProperty.setMnemonic( KeyEvent.VK_S );
+            menuSettingPaletteTool.setText( _( "Palette Tool" ) );
+            menuSettingPaletteTool.setMnemonic( KeyEvent.VK_T );
+
+            menuHelp.setText( _( "Help" ) );
+            menuHelp.setMnemonic( KeyEvent.VK_H );
+            menuHelpAbout.setText( _( "About Cadencii" ) );
+            menuHelpAbout.setMnemonic( KeyEvent.VK_A );
+
+            menuHiddenCopy.setText( _( "Copy" ) );
+            menuHiddenCut.setText( _( "Cut" ) );
+            menuHiddenEditFlipToolPointerEraser.setText( _( "Chagne Tool Pointer / Eraser" ) );
+            menuHiddenEditFlipToolPointerPencil.setText( _( "Change Tool Pointer / Pencil" ) );
+            menuHiddenEditLyric.setText( _( "Start Lyric Input" ) );
+            menuHiddenGoToEndMarker.setText( _( "GoTo End Marker" ) );
+            menuHiddenGoToStartMarker.setText( _( "GoTo Start Marker" ) );
+            menuHiddenLengthen.setText( _( "Lengthen" ) );
+            menuHiddenMoveDown.setText( _( "Move Down" ) );
+            menuHiddenMoveLeft.setText( _( "Move Left" ) );
+            menuHiddenMoveRight.setText( _( "Move Right" ) );
+            menuHiddenMoveUp.setText( _( "Move Up" ) );
+            menuHiddenPaste.setText( _( "Paste" ) );
+            menuHiddenPlayFromStartMarker.setText( _( "Play From Start Marker" ) );
+            menuHiddenSelectBackward.setText( _( "Select Backward" ) );
+            menuHiddenSelectForward.setText( _( "Select Forward" ) );
+            menuHiddenShorten.setText( _( "Shorten" ) );
+            menuHiddenTrackBack.setText( _( "Previous Track" ) );
+            menuHiddenTrackNext.setText( _( "Next Track" ) );
+            menuHiddenVisualBackwardParameter.setText( _( "Previous Control Curve" ) );
+            menuHiddenVisualForwardParameter.setText( _( "Next Control Curve" ) );
+            #endregion
+
+            #region cMenuPiano
+            cMenuPianoPointer.setText( _( "Arrow" ) );
+            cMenuPianoPointer.setMnemonic( KeyEvent.VK_A );
+            cMenuPianoPencil.setText( _( "Pencil" ) );
+            cMenuPianoPencil.setMnemonic( KeyEvent.VK_W );
+            cMenuPianoEraser.setText( _( "Eraser" ) );
+            cMenuPianoEraser.setMnemonic( KeyEvent.VK_E );
+            cMenuPianoPaletteTool.setText( _( "Palette Tool" ) );
+
+            cMenuPianoCurve.setText( _( "Curve" ) );
+            cMenuPianoCurve.setMnemonic( KeyEvent.VK_V );
+
+            cMenuPianoFixed.setText( _( "Note Fixed Length" ) );
+            cMenuPianoFixed.setMnemonic( KeyEvent.VK_N );
+            cMenuPianoFixedTriplet.setText( _( "Triplet" ) );
+            cMenuPianoFixedOff.setText( _( "Off" ) );
+            cMenuPianoFixedDotted.setText( _( "Dot" ) );
+            cMenuPianoQuantize.setText( _( "Quantize" ) );
+            cMenuPianoQuantize.setMnemonic( KeyEvent.VK_Q );
+            cMenuPianoQuantizeTriplet.setText( _( "Triplet" ) );
+            cMenuPianoQuantizeOff.setText( _( "Off" ) );
+            cMenuPianoLength.setText( _( "Length" ) );
+            cMenuPianoLength.setMnemonic( KeyEvent.VK_L );
+            cMenuPianoLengthTriplet.setText( _( "Triplet" ) );
+            cMenuPianoLengthOff.setText( _( "Off" ) );
+            cMenuPianoGrid.setText( _( "Show/Hide Grid Line" ) );
+            cMenuPianoGrid.setMnemonic( KeyEvent.VK_S );
+
+            cMenuPianoUndo.setText( _( "Undo" ) );
+            cMenuPianoUndo.setMnemonic( KeyEvent.VK_U );
+            cMenuPianoRedo.setText( _( "Redo" ) );
+            cMenuPianoRedo.setMnemonic( KeyEvent.VK_R );
+
+            cMenuPianoCut.setText( _( "Cut" ) );
+            cMenuPianoCut.setMnemonic( KeyEvent.VK_T );
+            cMenuPianoPaste.setText( _( "Paste" ) );
+            cMenuPianoPaste.setMnemonic( KeyEvent.VK_P );
+            cMenuPianoCopy.setText( _( "Copy" ) );
+            cMenuPianoCopy.setMnemonic( KeyEvent.VK_C );
+            cMenuPianoDelete.setText( _( "Delete" ) );
+            cMenuPianoDelete.setMnemonic( KeyEvent.VK_D );
+
+            cMenuPianoSelectAll.setText( _( "Select All" ) );
+            cMenuPianoSelectAll.setMnemonic( KeyEvent.VK_A );
+            cMenuPianoSelectAllEvents.setText( _( "Select All Events" ) );
+            cMenuPianoSelectAllEvents.setMnemonic( KeyEvent.VK_E );
+
+            cMenuPianoExpressionProperty.setText( _( "Note Expression Property" ) );
+            cMenuPianoExpressionProperty.setMnemonic( KeyEvent.VK_P );
+            cMenuPianoVibratoProperty.setText( _( "Note Vibrato Property" ) );
+            cMenuPianoImportLyric.setText( _( "Insert Lyrics" ) );
+            cMenuPianoImportLyric.setMnemonic( KeyEvent.VK_P );
+            #endregion
+
+            #region cMenuTrackTab
+            cMenuTrackTabTrackOn.setText( _( "Track On" ) );
+            cMenuTrackTabTrackOn.setMnemonic( KeyEvent.VK_K );
+            cMenuTrackTabPlayAfterSynth.setText( _( "Play After Synth" ) );
+            cMenuTrackTabPlayAfterSynth.setMnemonic( KeyEvent.VK_P );
+            cMenuTrackTabAdd.setText( _( "Add Track" ) );
+            cMenuTrackTabAdd.setMnemonic( KeyEvent.VK_A );
+            cMenuTrackTabCopy.setText( _( "Copy Track" ) );
+            cMenuTrackTabCopy.setMnemonic( KeyEvent.VK_C );
+            cMenuTrackTabChangeName.setText( _( "Rename Track" ) );
+            cMenuTrackTabDelete.setText( _( "Delete Track" ) );
+            cMenuTrackTabDelete.setMnemonic( KeyEvent.VK_D );
+
+            cMenuTrackTabRenderCurrent.setText( _( "Render Current Track" ) );
+            cMenuTrackTabRenderCurrent.setMnemonic( KeyEvent.VK_T );
+            cMenuTrackTabRenderAll.setText( _( "Render All Tracks" ) );
+            cMenuTrackTabRenderAll.setMnemonic( KeyEvent.VK_S );
+            cMenuTrackTabOverlay.setText( _( "Overlay" ) );
+            cMenuTrackTabOverlay.setMnemonic( KeyEvent.VK_O );
+            cMenuTrackTabRenderer.setText( _( "Renderer" ) );
+            cMenuTrackTabRenderer.setMnemonic( KeyEvent.VK_R );
+            #endregion
+
+            #region cMenuTrackSelector
+            cMenuTrackSelectorPointer.setText( _( "Arrow" ) );
+            cMenuTrackSelectorPointer.setMnemonic( KeyEvent.VK_A );
+            cMenuTrackSelectorPencil.setText( _( "Pencil" ) );
+            cMenuTrackSelectorPencil.setMnemonic( KeyEvent.VK_W );
+            cMenuTrackSelectorLine.setText( _( "Line" ) );
+            cMenuTrackSelectorLine.setMnemonic( KeyEvent.VK_L );
+            cMenuTrackSelectorEraser.setText( _( "Eraser" ) );
+            cMenuTrackSelectorEraser.setMnemonic( KeyEvent.VK_E );
+            cMenuTrackSelectorPaletteTool.setText( _( "Palette Tool" ) );
+
+            cMenuTrackSelectorCurve.setText( _( "Curve" ) );
+            cMenuTrackSelectorCurve.setMnemonic( KeyEvent.VK_V );
+
+            cMenuTrackSelectorUndo.setText( _( "Undo" ) );
+            cMenuTrackSelectorUndo.setMnemonic( KeyEvent.VK_U );
+            cMenuTrackSelectorRedo.setText( _( "Redo" ) );
+            cMenuTrackSelectorRedo.setMnemonic( KeyEvent.VK_R );
+
+            cMenuTrackSelectorCut.setText( _( "Cut" ) );
+            cMenuTrackSelectorCut.setMnemonic( KeyEvent.VK_T );
+            cMenuTrackSelectorCopy.setText( _( "Copy" ) );
+            cMenuTrackSelectorCopy.setMnemonic( KeyEvent.VK_C );
+            cMenuTrackSelectorPaste.setText( _( "Paste" ) );
+            cMenuTrackSelectorPaste.setMnemonic( KeyEvent.VK_P );
+            cMenuTrackSelectorDelete.setText( _( "Delete" ) );
+            cMenuTrackSelectorDelete.setMnemonic( KeyEvent.VK_D );
+            cMenuTrackSelectorDeleteBezier.setText( _( "Delete Bezier Point" ) );
+            cMenuTrackSelectorDeleteBezier.setMnemonic( KeyEvent.VK_B );
+
+            cMenuTrackSelectorSelectAll.setText( _( "Select All Events" ) );
+            cMenuTrackSelectorSelectAll.setMnemonic( KeyEvent.VK_E );
+            #endregion
+
+            stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
+
+            // Palette Tool
+#if DEBUG
+            AppManager.debugWriteLine( "FormMain#applyLanguage; Messaging.Language=" + Messaging.getLanguage() );
+#endif
+#if ENABLE_SCRIPT
+            int count = toolStripTool.getComponentCount();
+            for ( int i = 0; i < count; i++ ) {
+                Object tsi = toolStripTool.getComponentAtIndex( i );
+                if ( tsi is BToolStripButton ) {
+                    BToolStripButton tsb = (BToolStripButton)tsi;
+                    if ( tsb.getTag() != null && tsb.getTag() is String ) {
+                        String id = (String)tsb.getTag();
+                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                            tsb.setText( ipt.getName( Messaging.getLanguage() ) );
+                            tsb.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
+                        }
+                    }
+                }
+            }
+
+            foreach ( MenuElement tsi in cMenuPianoPaletteTool.getSubElements() ) {
+                if ( tsi is BMenuItem ) {
+                    BMenuItem tsmi = (BMenuItem)tsi;
+                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
+                        String id = (String)tsmi.getTag();
+                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
+                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
+                        }
+                    }
+                }
+            }
+
+            foreach ( MenuElement tsi in cMenuTrackSelectorPaletteTool.getSubElements() ) {
+                if ( tsi is BMenuItem ) {
+                    BMenuItem tsmi = (BMenuItem)tsi;
+                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
+                        String id = (String)tsmi.getTag();
+                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
+                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
+                        }
+                    }
+                }
+            }
+
+            foreach ( MenuElement tsi in menuSettingPaletteTool.getSubElements() ) {
+                if ( tsi is BMenuItem ) {
+                    BMenuItem tsmi = (BMenuItem)tsi;
+                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
+                        String id = (String)tsmi.getTag();
+                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
+                        }
+                    }
+                }
+            }
+
+            for ( Iterator<String> itr = PaletteToolServer.loadedTools.keySet().iterator(); itr.hasNext(); ) {
+                String id = (String)itr.next();
+                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                ipt.applyLanguage( Messaging.getLanguage() );
+            }
+#endif
+
+#if ENABLE_STRIP_DROPDOWN
+            updateStripDDBtnSpeed();
+#endif
+        }
+
+        public void importLyric() {
+#if DEBUG
+            AppManager.debugWriteLine( "ImportLyric" );
+#endif
+            int start = 0;
+            int selected = AppManager.getSelected();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+            int selectedid = AppManager.getLastSelectedEvent().original.InternalID;
+            int numEvents = vsq_track.getEventCount();
+            for ( int i = 0; i < numEvents; i++ ) {
+                if ( selectedid == vsq_track.getEvent( i ).InternalID ) {
+                    start = i;
+                    break;
+                }
+            }
+            int count = vsq_track.getEventCount() - 1 - start + 1;
+#if DEBUG
+            AppManager.debugWriteLine( "    count=" + count );
+#endif
+            FormImportLyric dlg = null;
+            try {
+                dlg = new FormImportLyric( count );
+                dlg.setLocation( getFormPreferedLocation( dlg ) );
+                dlg.setModal( true );
+                dlg.setVisible( true );
+                if ( dlg.getDialogResult() == BDialogResult.OK ) {
+                    String[] phrases = dlg.getLetters();
+#if DEBUG
+                    for ( int i = 0; i < phrases.Length; i++ ) {
+                        AppManager.debugWriteLine( "    " + phrases[i] );
+                    }
+#endif
+                    int min = Math.Min( count, phrases.Length );
+                    String[] new_phrases = new String[min];
+                    String[] new_symbols = new String[min];
+                    for ( int i = 0; i < min; i++ ) {
+                        new_phrases[i] = phrases[i];
+                        ByRef<String> symb = new ByRef<String>( "" );
+                        SymbolTable.attatch( phrases[i], symb );
+                        new_symbols[i] = symb.value;
+                    }
+                    VsqID[] new_ids = new VsqID[min];
+                    int[] ids = new int[min];
+                    for ( int i = start; i < start + min; i++ ) {
+                        VsqEvent item = vsq_track.getEvent( i );
+                        new_ids[i - start] = (VsqID)item.ID.clone();
+                        new_ids[i - start].LyricHandle.L0.Phrase = new_phrases[i - start];
+                        new_ids[i - start].LyricHandle.L0.setPhoneticSymbol( new_symbols[i - start] );
+                        ids[i - start] = item.InternalID;
+                    }
+                    CadenciiCommand run = new CadenciiCommand(
+                        VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, new_ids ) );
+                    AppManager.register( vsq.executeCommand( run ) );
+                    setEdited( true );
+                    repaint();
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( dlg != null ) {
+                    try {
+                        dlg.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+            }
+        }
+
+        public void editNoteVibratoProperty() {
+            SelectedEventEntry item = AppManager.getLastSelectedEvent();
+            if ( item == null ) {
+                return;
+            }
+
+            VsqEvent ev = item.original;
+            int selected = AppManager.getSelected();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+            SynthesizerType type = SynthesizerType.VOCALOID2;
+            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                type = SynthesizerType.VOCALOID1;
+            }
+            FormVibratoConfig dlg = null;
+            try {
+                dlg = new FormVibratoConfig( ev.ID.VibratoHandle, ev.ID.getLength(), AppManager.editorConfig.DefaultVibratoLength, type );
+                dlg.setLocation( getFormPreferedLocation( dlg ) );
+                dlg.setModal( true );
+                dlg.setVisible( true );
+                if ( dlg.getDialogResult() == BDialogResult.OK ) {
+                    VsqEvent edited = (VsqEvent)ev.clone();
+                    if ( dlg.getVibratoHandle() != null ) {
+                        edited.ID.VibratoHandle = (VibratoHandle)dlg.getVibratoHandle().clone();
+                        edited.ID.VibratoDelay = ev.ID.getLength() - dlg.getVibratoHandle().getLength();
+                    } else {
+                        edited.ID.VibratoHandle = null;
+                    }
+                    CadenciiCommand run = new CadenciiCommand(
+                        VsqCommand.generateCommandEventChangeIDContaints( selected, ev.InternalID, edited.ID ) );
+                    AppManager.register( vsq.executeCommand( run ) );
+                    setEdited( true );
+                    refreshScreen();
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( dlg != null ) {
+                    try {
+                        dlg.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+            }
+        }
+
+        public void editNoteExpressionProperty() {
+            SelectedEventEntry item = AppManager.getLastSelectedEvent();
+            if ( item == null ) {
+                return;
+            }
+
+            VsqEvent ev = item.original;
+            SynthesizerType type = SynthesizerType.VOCALOID2;
+            int selected = AppManager.getSelected();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                type = SynthesizerType.VOCALOID1;
+            }
+            FormNoteExpressionConfig dlg = null;
+            try {
+                dlg = new FormNoteExpressionConfig( type, ev.ID.NoteHeadHandle );
+                dlg.setPMBendDepth( ev.ID.PMBendDepth );
+                dlg.setPMBendLength( ev.ID.PMBendLength );
+                dlg.setPMbPortamentoUse( ev.ID.PMbPortamentoUse );
+                dlg.setDEMdecGainRate( ev.ID.DEMdecGainRate );
+                dlg.setDEMaccent( ev.ID.DEMaccent );
+
+                dlg.setLocation( getFormPreferedLocation( dlg ) );
+                dlg.setModal( true );
+                dlg.setVisible( true );
+                if ( dlg.getDialogResult() == BDialogResult.OK ) {
+                    VsqEvent edited = (VsqEvent)ev.clone();
+                    edited.ID.PMBendDepth = dlg.getPMBendDepth();
+                    edited.ID.PMBendLength = dlg.getPMBendLength();
+                    edited.ID.PMbPortamentoUse = dlg.getPMbPortamentoUse();
+                    edited.ID.DEMdecGainRate = dlg.getDEMdecGainRate();
+                    edited.ID.DEMaccent = dlg.getDEMaccent();
+                    edited.ID.NoteHeadHandle = dlg.getEditedNoteHeadHandle();
+                    CadenciiCommand run = new CadenciiCommand(
+                        VsqCommand.generateCommandEventChangeIDContaints( selected, ev.InternalID, edited.ID ) );
+                    AppManager.register( vsq.executeCommand( run ) );
+                    setEdited( true );
+                    refreshScreen();
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( dlg != null ) {
+                    try {
+                        dlg.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+            }
+        }
+
+        public int computeScrollValueFromWheelDelta( int delta ) {
+            double new_val = (double)hScroll.getValue() - delta * AppManager.editorConfig.WheelOrder / (5.0 * AppManager.scaleX);
+            if ( new_val < 0.0 ) {
+                new_val = 0;
+            }
+            int draft = (int)new_val;
+            if ( draft > hScroll.getMaximum() ) {
+                draft = hScroll.getMaximum();
+            } else if ( draft < hScroll.getMinimum() ) {
+                draft = hScroll.getMinimum();
+            }
+            return draft;
+        }
+
+        #region 音符の編集関連
+        public void selectAll() {
+            AppManager.clearSelectedEvent();
+            AppManager.clearSelectedTempo();
+            AppManager.clearSelectedTimesig();
+            AppManager.clearSelectedPoint();
+            int min = int.MaxValue;
+            int max = int.MinValue;
+            int premeasure = AppManager.getVsqFile().getPreMeasureClocks();
+            Vector<Integer> add_required = new Vector<Integer>();
+            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
+                VsqEvent ve = itr.next();
+                if ( premeasure <= ve.Clock ) {
+                    add_required.add( ve.InternalID );
+                    min = Math.Min( min, ve.Clock );
+                    max = Math.Max( max, ve.Clock + ve.ID.getLength() );
+                }
+            }
+            if ( add_required.size() > 0 ) {
+                AppManager.addSelectedEventAll( add_required );
+            }
+            foreach ( CurveType vct in Utility.CURVE_USAGE ) {
+                if ( vct.isScalar() || vct.isAttachNote() ) {
+                    continue;
+                }
+                VsqBPList target = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
+                int count = target.size();
+                if ( count >= 1 ) {
+                    //int[] keys = target.getKeys();
+                    int max_key = target.getKeyClock( count - 1 );
+                    max = Math.Max( max, target.getValue( max_key ) );
+                    for ( int i = 0; i < count; i++ ) {
+                        int key = target.getKeyClock( i );
+                        if ( premeasure <= key ) {
+                            min = Math.Min( min, key );
+                            break;
+                        }
+                    }
+                }
+            }
+            if ( min < premeasure ) {
+                min = premeasure;
+            }
+            if ( min < max ) {
+                //int stdx = AppManager.startToDrawX;
+                //min = xCoordFromClocks( min ) + stdx;
+                //max = xCoordFromClocks( max ) + stdx;
+                AppManager.wholeSelectedInterval = new SelectedRegion( min );
+                AppManager.wholeSelectedInterval.setEnd( max );
+                AppManager.setWholeSelectedIntervalEnabled( true );
+            }
+        }
+
+        public void selectAllEvent() {
+            AppManager.clearSelectedTempo();
+            AppManager.clearSelectedTimesig();
+            AppManager.clearSelectedEvent();
+            AppManager.clearSelectedPoint();
+            int premeasureclock = AppManager.getVsqFile().getPreMeasureClocks();
+            Vector<Integer> add_required = new Vector<Integer>();
+            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
+                VsqEvent ev = itr.next();
+                if ( ev.ID.type == VsqIDType.Anote && ev.Clock >= premeasureclock ) {
+                    add_required.add( ev.InternalID );
+                }
+            }
+            if ( add_required.size() > 0 ) {
+                AppManager.addSelectedEventAll( add_required );
+            }
+            refreshScreen();
+        }
+
+        public void deleteEvent() {
+#if DEBUG
+            AppManager.debugWriteLine( "DeleteEvent()" );
+            AppManager.debugWriteLine( "    AppManager.inputTextBox.isEnabled()=" + AppManager.inputTextBox.Enabled );
+#endif
+
+            if ( AppManager.inputTextBox.isVisible() ) {
+                return;
+            }
+#if ENABLE_PROPERTY
+            if ( AppManager.propertyPanel.isEditing() ) {
+                return;
+            }
+#endif
+
+            int selected = AppManager.getSelected();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+
+            if ( AppManager.getSelectedEventCount() > 0 ) {
+                Vector<Integer> ids = new Vector<Integer>();
+                boolean contains_aicon = false;
+                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                    SelectedEventEntry ev = itr.next();
+                    ids.add( ev.original.InternalID );
+                    if ( ev.original.ID.type == VsqIDType.Aicon ) {
+                        contains_aicon = true;
+                    }
+                }
+                VsqCommand run = VsqCommand.generateCommandEventDeleteRange( selected, ids );
+                if ( AppManager.isWholeSelectedIntervalEnabled() ) {
+                    VsqFileEx work = (VsqFileEx)vsq.clone();
+                    work.executeCommand( run );
+                    int stdx = AppManager.startToDrawX;
+                    int start_clock = AppManager.wholeSelectedInterval.getStart();
+                    int end_clock = AppManager.wholeSelectedInterval.getEnd();
+                    Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
+                    Vector<CurveType> types = new Vector<CurveType>();
+                    foreach ( CurveType vct in Utility.CURVE_USAGE ) {
+                        if ( vct.isScalar() || vct.isAttachNote() ) {
+                            continue;
+                        }
+                        Vector<BPPair> t = new Vector<BPPair>();
+                        t.add( new BPPair( start_clock, work.Track.get( selected ).getCurve( vct.getName() ).getValue( start_clock ) ) );
+                        t.add( new BPPair( end_clock, work.Track.get( selected ).getCurve( vct.getName() ).getValue( end_clock ) ) );
+                        curves.add( t );
+                        types.add( vct );
+                    }
+                    Vector<String> strs = new Vector<String>();
+                    for ( int i = 0; i < types.size(); i++ ) {
+                        strs.add( types.get( i ).getName() );
+                    }
+                    CadenciiCommand delete_curve = new CadenciiCommand( VsqCommand.generateCommandTrackCurveEditRange( selected,
+                                                                                                                       strs,
+                                                                                                                       curves ) );
+                    work.executeCommand( delete_curve );
+                    if ( contains_aicon ) {
+                        work.Track.get( selected ).reflectDynamics();
+                    }
+                    CadenciiCommand run2 = new CadenciiCommand( VsqCommand.generateCommandReplace( work ) );
+                    AppManager.register( vsq.executeCommand( run2 ) );
+                    setEdited( true );
+                } else {
+                    CadenciiCommand run2 = null;
+                    if ( contains_aicon ) {
+                        VsqFileEx work = (VsqFileEx)vsq.clone();
+                        work.executeCommand( run );
+                        VsqTrack vsq_track_copied = work.Track.get( selected );
+                        vsq_track_copied.reflectDynamics();
+                        run2 = VsqFileEx.generateCommandTrackReplace( selected,
+                                                                      vsq_track_copied,
+                                                                      work.AttachedCurves.get( selected - 1 ) );
+                    } else {
+                        run2 = new CadenciiCommand( run );
+                    }
+                    AppManager.register( vsq.executeCommand( run2 ) );
+                    setEdited( true );
+                    AppManager.clearSelectedEvent();
+                }
+                repaint();
+            } else if ( AppManager.getSelectedTempoCount() > 0 ) {
+                Vector<Integer> clocks = new Vector<Integer>();
+                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
+                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
+                    //SelectedTempoEntry value = AppManager.getSelectedTempo().get( key );
+                    if ( item.getKey() <= 0 ) {
+                        statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
+                        SystemSounds.Asterisk.Play();
+#endif
+                        return;
+                    }
+                    clocks.add( item.getKey() );
+                }
+                int[] dum = new int[clocks.size()];
+                for ( int i = 0; i < dum.Length; i++ ) {
+                    dum[i] = -1;
+                }
+                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
+                                                                                                       PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ), dum ) );
+                AppManager.register( vsq.executeCommand( run ) );
+                setEdited( true );
+                AppManager.clearSelectedTempo();
+                repaint();
+            } else if ( AppManager.getSelectedTimesigCount() > 0 ) {
+#if DEBUG
+                AppManager.debugWriteLine( "    Timesig" );
+#endif
+                int[] barcounts = new int[AppManager.getSelectedTimesigCount()];
+                int[] numerators = new int[AppManager.getSelectedTimesigCount()];
+                int[] denominators = new int[AppManager.getSelectedTimesigCount()];
+                int count = -1;
+                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
+                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
+                    int key = item.getKey();
+                    SelectedTimesigEntry value = item.getValue();
+                    count++;
+                    barcounts[count] = key;
+                    if ( key <= 0 ) {
+                        statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+#if !JAVA
+                        SystemSounds.Asterisk.Play();
+#endif
+                        return;
+                    }
+                    numerators[count] = -1;
+                    denominators[count] = -1;
+                }
+                CadenciiCommand run = new CadenciiCommand(
+                    VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
+                AppManager.register( vsq.executeCommand( run ) );
+                setEdited( true );
+                AppManager.clearSelectedTimesig();
+                repaint();
+            }
+            if ( AppManager.getSelectedPointIDCount() > 0 ) {
+#if DEBUG
+                AppManager.debugWriteLine( "    Curve" );
+#endif
+                String curve;
+                if ( !trackSelector.getSelectedCurve().isAttachNote() ) {
+                    curve = trackSelector.getSelectedCurve().getName();
+                    VsqBPList src = vsq_track.getCurve( curve );
+                    VsqBPList list = (VsqBPList)src.clone();
+                    Vector<Integer> remove_clock_queue = new Vector<Integer>();
+                    int count = list.size();
+                    for ( int i = 0; i < count; i++ ) {
+                        VsqBPPair item = list.getElementB( i );
+                        if ( AppManager.isSelectedPointContains( item.id ) ) {
+                            remove_clock_queue.add( list.getKeyClock( i ) );
+                        }
+                    }
+                    count = remove_clock_queue.size();
+                    for ( int i = 0; i < count; i++ ) {
+                        list.remove( remove_clock_queue.get( i ) );
+                    }
+                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackCurveReplace( selected,
+                                                                                                            trackSelector.getSelectedCurve().getName(),
+                                                                                                            list ) );
+                    AppManager.register( vsq.executeCommand( run ) );
+                    setEdited( true );
+                } else {
+                    //todo: FormMain+DeleteEvent; VibratoDepth, VibratoRateの場合
+                }
+                AppManager.clearSelectedPoint();
+                refreshScreen();
+            }
+        }
+
+        public void pasteEvent() {
+            int clock = AppManager.getCurrentClock();
+            int unit = AppManager.getPositionQuantizeClock();
+            clock = doQuantize( clock, unit );
+
+            VsqCommand add_event = null; // VsqEventを追加するコマンド
+
+            ClipboardEntry ce = AppManager.getCopiedItems();
+            int copy_started_clock = ce.copyStartedClock;
+            Vector<VsqEvent> copied_events = ce.events;
+#if DEBUG
+            PortUtil.println( "FormMain#pasteEvent; copy_started_clock=" + copy_started_clock );
+            PortUtil.println( "FormMain#pasteEvent; copied_events.size()=" + copied_events.size() );
+#endif
+            if ( copied_events.size() != 0 ) {
+                // VsqEventのペーストを行うコマンドを発行
+                int dclock = clock - copy_started_clock;
+                if ( clock >= AppManager.getVsqFile().getPreMeasureClocks() ) {
+                    Vector<VsqEvent> paste = new Vector<VsqEvent>();
+                    int count = copied_events.size();
+                    for ( int i = 0; i < count; i++ ) {
+                        VsqEvent item = (VsqEvent)copied_events.get( i ).clone();
+                        item.Clock = copied_events.get( i ).Clock + dclock;
+                        paste.add( item );
+                    }
+                    add_event = VsqCommand.generateCommandEventAddRange( AppManager.getSelected(), paste.toArray( new VsqEvent[] { } ) );
+                }
+            }
+            Vector<TempoTableEntry> copied_tempo = ce.tempo;
+            if ( copied_tempo.size() != 0 ) {
+                // テンポ変更の貼付けを実行
+                int dclock = clock - copy_started_clock;
+                int count = copied_tempo.size();
+                int[] clocks = new int[count];
+                int[] tempos = new int[count];
+                for ( int i = 0; i < count; i++ ) {
+                    TempoTableEntry item = copied_tempo.get( i );
+                    clocks[i] = item.Clock + dclock;
+                    tempos[i] = item.Tempo;
+                }
+                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, clocks, tempos ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                setEdited( true );
+                refreshScreen();
+                return;
+            }
+            Vector<TimeSigTableEntry> copied_timesig = ce.timesig;
+            if ( copied_timesig.size() > 0 ) {
+                // 拍子変更の貼付けを実行
+                int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
+                int min_barcount = copied_timesig.get( 0 ).BarCount;
+                for ( Iterator<TimeSigTableEntry> itr = copied_timesig.iterator(); itr.hasNext(); ) {
+                    TimeSigTableEntry tste = itr.next();
+                    min_barcount = Math.Min( min_barcount, tste.BarCount );
+                }
+                int dbarcount = bar_count - min_barcount;
+                int count = copied_timesig.size();
+                int[] barcounts = new int[count];
+                int[] numerators = new int[count];
+                int[] denominators = new int[count];
+                for ( int i = 0; i < count; i++ ) {
+                    TimeSigTableEntry item = copied_timesig.get( i );
+                    barcounts[i] = item.BarCount + dbarcount;
+                    numerators[i] = item.Numerator;
+                    denominators[i] = item.Denominator;
+                }
+                CadenciiCommand run = new CadenciiCommand(
+                    VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                setEdited( true );
+                refreshScreen();
+                return;
+            }
+
+            // BPPairの貼付け
+            VsqCommand edit_bpcurve = null; // BPListを変更するコマンド
+            TreeMap<CurveType, VsqBPList> copied_curve = ce.points;
+#if DEBUG
+            PortUtil.println( "FormMain#pasteEvent; copied_curve.size()=" + copied_curve.size() );
+#endif
+            if ( copied_curve.size() > 0 ) {
+                int dclock = clock - copy_started_clock;
+
+                TreeMap<String, VsqBPList> work = new TreeMap<String, VsqBPList>();
+                for ( Iterator<CurveType> itr = copied_curve.keySet().iterator(); itr.hasNext(); ) {
+                    CurveType curve = itr.next();
+                    VsqBPList list = copied_curve.get( curve );
+#if DEBUG
+                    AppManager.debugWriteLine( "FormMain#pasteEvent; curve=" + curve );
+#endif
+                    if ( curve.isScalar() ) {
+                        continue;
+                    }
+                    if ( list.size() <= 0 ) {
+                        continue;
+                    }
+                    if ( curve.isAttachNote() ) {
+                        //todo: FormMain+PasteEvent; VibratoRate, VibratoDepthカーブのペースト処理
+                    } else {
+                        VsqBPList target = (VsqBPList)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() ).clone();
+                        int count = list.size();
+#if DEBUG
+                        PortUtil.println( "FormMain#pasteEvent; list.getCount()=" + count );
+#endif
+                        int min = list.getKeyClock( 0 ) + dclock;
+                        int max = list.getKeyClock( count - 1 ) + dclock;
+                        int valueAtEnd = target.getValue( max );
+                        for ( int i = 0; i < target.size(); i++ ) {
+                            int cl = target.getKeyClock( i );
+                            if ( min <= cl && cl <= max ) {
+                                target.removeElementAt( i );
+                                i--;
+                            }
+                        }
+                        int lastClock = min;
+                        for ( int i = 0; i < count - 1; i++ ) {
+                            lastClock = list.getKeyClock( i ) + dclock;
+                            target.add( lastClock, list.getElementA( i ) );
+                        }
+                        // 最後のやつ
+                        if ( lastClock < max - 1 ) {
+                            target.add( max - 1, list.getElementA( count - 1 ) );
+                        }
+                        target.add( max, valueAtEnd );
+                        if ( copied_curve.size() == 1 ) {
+                            work.put( trackSelector.getSelectedCurve().getName(), target );
+                        } else {
+                            work.put( curve.getName(), target );
+                        }
+                    }
+                }
+#if DEBUG
+                PortUtil.println( "FormMain#pasteEvent; work.size()=" + work.size() );
+#endif
+                if ( work.size() > 0 ) {
+                    String[] curves = new String[work.size()];
+                    VsqBPList[] bplists = new VsqBPList[work.size()];
+                    int count = -1;
+                    for ( Iterator<String> itr = work.keySet().iterator(); itr.hasNext(); ) {
+                        String s = itr.next();
+                        count++;
+                        curves[count] = s;
+                        bplists[count] = work.get( s );
+                    }
+                    edit_bpcurve = VsqCommand.generateCommandTrackCurveReplaceRange( AppManager.getSelected(), curves, bplists );
+                }
+                AppManager.clearSelectedPoint();
+            }
+
+            // ベジエ曲線の貼付け
+            CadenciiCommand edit_bezier = null;
+            TreeMap<CurveType, Vector<BezierChain>> copied_bezier = ce.beziers;
+#if DEBUG
+            PortUtil.println( "FormMain#pasteEvent; copied_bezier.size()=" + copied_bezier.size() );
+#endif
+            if ( copied_bezier.size() > 0 ) {
+                int dclock = clock - copy_started_clock;
+                BezierCurves attached_curve = (BezierCurves)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).clone();
+                TreeMap<CurveType, Vector<BezierChain>> command_arg = new TreeMap<CurveType, Vector<BezierChain>>();
+                for ( Iterator<CurveType> itr = copied_bezier.keySet().iterator(); itr.hasNext(); ) {
+                    CurveType curve = itr.next();
+                    if ( curve.isScalar() ) {
+                        continue;
+                    }
+                    for ( Iterator<BezierChain> itr2 = copied_bezier.get( curve ).iterator(); itr2.hasNext(); ) {
+                        BezierChain bc = itr2.next();
+                        BezierChain bc_copy = (BezierChain)bc.clone();
+                        for ( Iterator<BezierPoint> itr3 = bc_copy.points.iterator(); itr3.hasNext(); ) {
+                            BezierPoint bp = itr3.next();
+                            bp.setBase( new PointD( bp.getBase().getX() + dclock, bp.getBase().getY() ) );
+                        }
+                        attached_curve.mergeBezierChain( curve, bc_copy );
+                    }
+                    Vector<BezierChain> arg = new Vector<BezierChain>();
+                    for ( Iterator<BezierChain> itr2 = attached_curve.get( curve ).iterator(); itr2.hasNext(); ) {
+                        BezierChain bc = itr2.next();
+                        arg.add( bc );
+                    }
+                    command_arg.put( curve, arg );
+                }
+                edit_bezier = VsqFileEx.generateCommandReplaceAttachedCurveRange( AppManager.getSelected(), command_arg );
+            }
+
+            int commands = 0;
+            commands += (add_event != null) ? 1 : 0;
+            commands += (edit_bpcurve != null) ? 1 : 0;
+            commands += (edit_bezier != null) ? 1 : 0;
+
+#if DEBUG
+            AppManager.debugWriteLine( "FormMain#pasteEvent; commands=" + commands );
+            AppManager.debugWriteLine( "FormMain#pasteEvent; (add_event != null)=" + (add_event != null) );
+            AppManager.debugWriteLine( "FormMain#pasteEvent; (edit_bpcurve != null)=" + (edit_bpcurve != null) );
+            AppManager.debugWriteLine( "FormMain#pasteEvent; (edit_bezier != null)=" + (edit_bezier != null) );
+#endif
+            if ( commands == 1 ) {
+                if ( add_event != null ) {
+                    CadenciiCommand run = new CadenciiCommand( add_event );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                } else if ( edit_bpcurve != null ) {
+                    CadenciiCommand run = new CadenciiCommand( edit_bpcurve );
+                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                } else if ( edit_bezier != null ) {
+                    AppManager.register( AppManager.getVsqFile().executeCommand( edit_bezier ) );
+                }
+                AppManager.getVsqFile().updateTotalClocks();
+                setEdited( true );
+                refreshScreen();
+            } else if ( commands > 1 ) {
+                VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().clone();
+                if ( add_event != null ) {
+                    work.executeCommand( add_event );
+                }
+                if ( edit_bezier != null ) {
+                    work.executeCommand( edit_bezier );
+                }
+                if ( edit_bpcurve != null ) {
+                    // edit_bpcurveのVsqCommandTypeはTrackEditCurveRangeしかありえない
+                    work.executeCommand( edit_bpcurve );
+                }
+                CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                AppManager.getVsqFile().updateTotalClocks();
+                setEdited( true );
+                refreshScreen();
+            }
+        }
+
+        /// <summary>
+        /// アイテムのコピーを行います
+        /// </summary>
+        public void copyEvent() {
+#if DEBUG
+            AppManager.debugWriteLine( "FormMain#copyEvent" );
+#endif
+            AppManager.clearClipBoard();
+            int min = int.MaxValue; // コピーされたアイテムの中で、最小の開始クロック
+
+            if ( AppManager.isWholeSelectedIntervalEnabled() ) {
+#if DEBUG
+                PortUtil.println( "FormMain#copyEvent; selected with CTRL key" );
+#endif
+                int stdx = AppManager.startToDrawX;
+                int start_clock = AppManager.wholeSelectedInterval.getStart();
+                int end_clock = AppManager.wholeSelectedInterval.getEnd();
+                ClipboardEntry ce = new ClipboardEntry();
+                ce.copyStartedClock = start_clock;
+                ce.points = new TreeMap<CurveType, VsqBPList>();
+                ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
+                for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
+                    CurveType vct = Utility.CURVE_USAGE[i];
+                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
+                    if ( list == null ) {
+                        continue;
+                    }
+                    Vector<BezierChain> tmp_bezier = new Vector<BezierChain>();
+                    copyCurveCor( AppManager.getSelected(),
+                                  vct,
+                                  start_clock,
+                                  end_clock,
+                                  tmp_bezier );
+                    VsqBPList tmp_bplist = new VsqBPList( list.getName(), list.getDefault(), list.getMinimum(), list.getMaximum() );
+                    int c = list.size();
+                    for ( int j = 0; j < c; j++ ) {
+                        int clock = list.getKeyClock( j );
+                        if ( start_clock <= clock && clock <= end_clock ) {
+                            tmp_bplist.add( clock, list.getElement( j ) );
+                        } else if ( end_clock < clock ) {
+                            break;
+                        }
+                    }
+                    ce.beziers.put( vct, tmp_bezier );
+                    ce.points.put( vct, tmp_bplist );
+                }
+
+                if ( AppManager.getSelectedEventCount() > 0 ) {
+                    Vector<VsqEvent> list = new Vector<VsqEvent>();
+                    for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                        SelectedEventEntry item = itr.next();
+                        if ( item.original.ID.type == VsqIDType.Anote ) {
+                            min = Math.Min( item.original.Clock, min );
+                            list.add( (VsqEvent)item.original.clone() );
+                        }
+                    }
+                    ce.events = list;
+                }
+                AppManager.setClipboard( ce );
+            } else if ( AppManager.getSelectedEventCount() > 0 ) {
+                Vector<VsqEvent> list = new Vector<VsqEvent>();
+                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                    SelectedEventEntry item = itr.next();
+                    min = Math.Min( item.original.Clock, min );
+                    list.add( (VsqEvent)item.original.clone() );
+                }
+                AppManager.setCopiedEvent( list, min );
+            } else if ( AppManager.getSelectedTempoCount() > 0 ) {
+                Vector<TempoTableEntry> list = new Vector<TempoTableEntry>();
+                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
+                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
+                    int key = item.getKey();
+                    SelectedTempoEntry value = item.getValue();
+                    min = Math.Min( value.original.Clock, min );
+                    list.add( (TempoTableEntry)value.original.clone() );
+                }
+                AppManager.setCopiedTempo( list, min );
+            } else if ( AppManager.getSelectedTimesigCount() > 0 ) {
+                Vector<TimeSigTableEntry> list = new Vector<TimeSigTableEntry>();
+                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
+                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
+                    int key = item.getKey();
+                    SelectedTimesigEntry value = item.getValue();
+                    min = Math.Min( value.original.Clock, min );
+                    list.add( (TimeSigTableEntry)value.original.clone() );
+                }
+                AppManager.setCopiedTimesig( list, min );
+            } else if ( AppManager.getSelectedPointIDCount() > 0 ) {
+                ClipboardEntry ce = new ClipboardEntry();
+                ce.points = new TreeMap<CurveType, VsqBPList>();
+                ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
+
+                ValuePair<Integer, Integer> t = trackSelector.getSelectedRegion();
+                int start = t.getKey();
+                int end = t.getValue();
+                ce.copyStartedClock = start;
+                Vector<BezierChain> tmp_bezier = new Vector<BezierChain>();
+                copyCurveCor( AppManager.getSelected(),
+                              trackSelector.getSelectedCurve(),
+                              start,
+                              end,
+                              tmp_bezier );
+                if ( tmp_bezier.size() > 0 ) {
+                    // ベジエ曲線が1個以上コピーされた場合
+                    // 範囲内のデータ点を追加する
+                    ce.beziers.put( trackSelector.getSelectedCurve(), tmp_bezier );
+                    CurveType curve = trackSelector.getSelectedCurve();
+                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
+                    if ( list != null ) {
+                        VsqBPList tmp_bplist = new VsqBPList( list.getName(), list.getDefault(), list.getMinimum(), list.getMaximum() );
+                        int c = list.size();
+                        for ( int i = 0; i < c; i++ ) {
+                            int clock = list.getKeyClock( i );
+                            if ( start <= clock && clock <= end ) {
+                                tmp_bplist.add( clock, list.getElement( i ) );
+                            } else if ( end < clock ) {
+                                break;
+                            }
+                        }
+                        ce.points.put( curve, tmp_bplist );
+                    }
+                } else {
+                    // ベジエ曲線がコピーされなかった場合
+                    // AppManager.selectedPointIDIteratorの中身のみを選択
+                    CurveType curve = trackSelector.getSelectedCurve();
+                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
+                    if ( list != null ) {
+                        VsqBPList tmp_bplist = new VsqBPList( curve.getName(), curve.getDefault(), curve.getMinimum(), curve.getMaximum() );
+                        for ( Iterator<Long> itr = AppManager.getSelectedPointIDIterator(); itr.hasNext(); ) {
+                            long id = itr.next();
+                            VsqBPPairSearchContext cxt = list.findElement( id );
+                            if ( cxt.index >= 0 ) {
+                                tmp_bplist.add( cxt.clock, cxt.point.value );
+                            }
+                        }
+                        if ( tmp_bplist.size() > 0 ) {
+                            ce.copyStartedClock = tmp_bplist.getKeyClock( 0 );
+                            ce.points.put( curve, tmp_bplist );
+                        }
+                    }
+                }
+                AppManager.setClipboard( ce );
+            }
+        }
+
+        public void cutEvent() {
+            // まずコピー
+            copyEvent();
+
+            int track = AppManager.getSelected();
+
+            // 選択されたノートイベントがあれば、まず、削除を行うコマンドを発行
+            VsqCommand delete_event = null;
+            boolean other_command_executed = false;
+            if ( AppManager.getSelectedEventCount() > 0 ) {
+                Vector<Integer> ids = new Vector<Integer>();
+                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                    SelectedEventEntry item = itr.next();
+                    ids.add( item.original.InternalID );
+                }
+                delete_event = VsqCommand.generateCommandEventDeleteRange( AppManager.getSelected(), ids );
+            }
+
+            // Ctrlキーを押しながらドラッグしたか、そうでないかで分岐
+            if ( AppManager.isWholeSelectedIntervalEnabled() || AppManager.getSelectedPointIDCount() > 0 ) {
+                int stdx = AppManager.startToDrawX;
+                int start_clock, end_clock;
+                if ( AppManager.isWholeSelectedIntervalEnabled() ) {
+                    start_clock = AppManager.wholeSelectedInterval.getStart();
+                    end_clock = AppManager.wholeSelectedInterval.getEnd();
+                } else {
+                    start_clock = trackSelector.getSelectedRegion().getKey();
+                    end_clock = trackSelector.getSelectedRegion().getValue();
+                }
+
+                // クローンを作成
+                VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().clone();
+                if ( delete_event != null ) {
+                    // 選択されたノートイベントがあれば、クローンに対して削除を実行
+                    work.executeCommand( delete_event );
+                }
+
+                // BPListに削除処理を施す
+                for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
+                    CurveType curve = Utility.CURVE_USAGE[i];
+                    VsqBPList list = work.Track.get( track ).getCurve( curve.getName() );
+                    if ( list == null ) {
+                        continue;
+                    }
+                    int c = list.size();
+                    Vector<Long> delete = new Vector<Long>();
+                    if ( AppManager.isWholeSelectedIntervalEnabled() ) {
+                        // 一括選択モード
+                        for ( int j = 0; j < c; j++ ) {
+                            int clock = list.getKeyClock( j );
+                            if ( start_clock <= clock && clock <= end_clock ) {
+                                delete.add( list.getElementB( j ).id );
+                            } else if ( end_clock < clock ) {
+                                break;
+                            }
+                        }
+                    } else {
+                        // 普通の範囲選択
+                        for ( Iterator<Long> itr = AppManager.getSelectedPointIDIterator(); itr.hasNext(); ) {
+                            long id = (Long)itr.next();
+                            delete.add( id );
+                        }
+                    }
+                    VsqCommand tmp = VsqCommand.generateCommandTrackCurveEdit2( track, curve.getName(), delete, new TreeMap<Integer, VsqBPPair>() );
+                    work.executeCommand( tmp );
+                }
+
+                // ベジエ曲線に削除処理を施す
+                Vector<CurveType> target_curve = new Vector<CurveType>();
+                if ( AppManager.isWholeSelectedIntervalEnabled() ) {
+                    // ctrlによる全選択モード
+                    for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
+                        CurveType ct = Utility.CURVE_USAGE[i];
+                        if ( ct.isScalar() || ct.isAttachNote() ) {
+                            continue;
+                        }
+                        target_curve.add( ct );
+                    }
+                } else {
+                    // 普通の選択モード
+                    target_curve.add( trackSelector.getSelectedCurve() );
+                }
+                work.AttachedCurves.get( AppManager.getSelected() - 1 ).deleteBeziers( target_curve, start_clock, end_clock );
+
+                // コマンドを発行し、実行
+                CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                this.setEdited( true );
+
+                other_command_executed = true;
+            } else if ( AppManager.getSelectedTempoCount() > 0 ) {
+                // テンポ変更のカット
+                int count = -1;
+                int[] dum = new int[AppManager.getSelectedTempoCount()];
+                int[] clocks = new int[AppManager.getSelectedTempoCount()];
+                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
+                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
+                    int key = item.getKey();
+                    SelectedTempoEntry value = item.getValue();
+                    count++;
+                    dum[count] = -1;
+                    clocks[count] = value.original.Clock;
+                }
+                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, clocks, dum ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                setEdited( true );
+                other_command_executed = true;
+            } else if ( AppManager.getSelectedTimesigCount() > 0 ) {
+                // 拍子変更のカット
+                int[] barcounts = new int[AppManager.getSelectedTimesigCount()];
+                int[] numerators = new int[AppManager.getSelectedTimesigCount()];
+                int[] denominators = new int[AppManager.getSelectedTimesigCount()];
+                int count = -1;
+                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
+                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
+                    int key = item.getKey();
+                    SelectedTimesigEntry value = item.getValue();
+                    count++;
+                    barcounts[count] = value.original.BarCount;
+                    numerators[count] = -1;
+                    denominators[count] = -1;
+                }
+                CadenciiCommand run = new CadenciiCommand(
+                    VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                setEdited( true );
+                other_command_executed = true;
+            }
+
+            // 冒頭で作成した音符イベント削除以外に、コマンドが実行されなかった場合
+            if ( delete_event != null && !other_command_executed ) {
+                CadenciiCommand run = new CadenciiCommand( delete_event );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                setEdited( true );
+            }
+
+            refreshScreen();
+        }
+
+        public void copyCurveCor(
+            int track,
+            CurveType curve_type,
+            int start,
+            int end,
+            Vector<BezierChain> copied_chain
+        ) {
+            for ( Iterator<BezierChain> itr = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( curve_type ).iterator(); itr.hasNext(); ) {
+                BezierChain bc = itr.next();
+                int len = bc.points.size();
+                if ( len < 2 ) {
+                    continue;
+                }
+                int chain_start = (int)bc.points.get( 0 ).getBase().getX();
+                int chain_end = (int)bc.points.get( len - 1 ).getBase().getX();
+                BezierChain add = null;
+                if ( start < chain_start && chain_start < end && end < chain_end ) {
+                    // (1) chain_start ~ end をコピー
+                    try {
+                        add = bc.extractPartialBezier( chain_start, end );
+                    } catch ( Exception ex ) {
+                        add = null;
+                    }
+                } else if ( chain_start <= start && end <= chain_end ) {
+                    // (2) start ~ endをコピー
+                    try {
+                        add = bc.extractPartialBezier( start, end );
+                    } catch ( Exception ex ) {
+                        add = null;
+                    }
+                } else if ( chain_start < start && start < chain_end && chain_end <= end ) {
+                    // (3) start ~ chain_endをコピー
+                    try {
+                        add = bc.extractPartialBezier( start, chain_end );
+                    } catch ( Exception ex ) {
+                        add = null;
+                    }
+                } else if ( start <= chain_start && chain_end <= end ) {
+                    // (4) 全部コピーでOK
+                    add = (BezierChain)bc.clone();
+                }
+                if ( add != null ) {
+                    copied_chain.add( add );
+                }
+            }
+        }
+        #endregion
+
+        #region トラックの編集関連
+        public void copyTrackCore() {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int selected = AppManager.getSelected();
+            VsqTrack track = (VsqTrack)vsq.Track.get( selected ).clone();
+            track.setName( track.getName() + " (1)" );
+            CadenciiCommand run = VsqFileEx.generateCommandAddTrack( track,
+                                                                     vsq.Mixer.Slave.get( selected - 1 ),
+                                                                     vsq.Track.size(),
+                                                                     vsq.AttachedCurves.get( selected - 1 ) ); ;
+            AppManager.register( vsq.executeCommand( run ) );
+            setEdited( true );
+            AppManager.mixerWindow.updateStatus();
+            refreshScreen();
+        }
+
+        public void changeTrackNameCore() {
+            if ( m_txtbox_track_name != null ) {
+#if !JAVA
+                if ( !m_txtbox_track_name.IsDisposed ) {
+                    m_txtbox_track_name.Dispose();
+                }
+#endif
+                m_txtbox_track_name = null;
+            }
+#if JAVA
+            m_txtbox_track_name = new TextBoxEx( this );
+#else
+            m_txtbox_track_name = new TextBoxEx();
+#endif
+            m_txtbox_track_name.setVisible( false );
+            int selector_width = trackSelector.getSelectorWidth();
+            int x = AppManager.keyWidth + (AppManager.getSelected() - 1) * selector_width;
+            m_txtbox_track_name.setLocation( x, trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB + 1 );
+            m_txtbox_track_name.setText( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName() );
+#if JAVA
+            m_txtbox_track_name.keyUpEvent.add( new BKeyEventHandler( this, "m_txtbox_track_name_KeyUp" ) );
+#else
+            m_txtbox_track_name.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            m_txtbox_track_name.KeyUp += new System.Windows.Forms.KeyEventHandler( m_txtbox_track_name_KeyUp );
+            m_txtbox_track_name.Parent = trackSelector;
+#endif
+            m_txtbox_track_name.setSize( selector_width, TrackSelector.OFFSET_TRACK_TAB );
+            m_txtbox_track_name.setVisible( true );
+            m_txtbox_track_name.requestFocus();
+            m_txtbox_track_name.selectAll();
+        }
+
+        public void deleteTrackCore() {
+            int selected = AppManager.getSelected();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( AppManager.showMessageBox(
+                    PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, vsq.Track.get( selected ).getName() ),
+                    _APP_NAME,
+                    PortUtil.MSGBOX_YES_NO_OPTION,
+                    PortUtil.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
+                CadenciiCommand run = VsqFileEx.generateCommandDeleteTrack( selected );
+                if ( selected >= 2 ) {
+                    AppManager.setSelected( selected - 1 );
+                }
+                AppManager.register( vsq.executeCommand( run ) );
+                updateDrawObjectList();
+                setEdited( true );
+                AppManager.mixerWindow.updateStatus();
+                refreshScreen();
+            }
+        }
+
+        public void addTrackCore() {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int i = vsq.Track.size();
+            String name = "Voice" + i;
+            String singer = "Miku";
+            CadenciiCommand run = VsqFileEx.generateCommandAddTrack( new VsqTrack( name, singer ),
+                                                                     new VsqMixerEntry( 0, 0, 0, 0 ),
+                                                                     i,
+                                                                     new BezierCurves() );
+            AppManager.register( vsq.executeCommand( run ) );
+            updateDrawObjectList();
+            setEdited( true );
+            AppManager.setSelected( i );
+            AppManager.mixerWindow.updateStatus();
+            refreshScreen();
+        }
+        #endregion
+
+        /// <summary>
+        /// length, positionの各Quantizeモードに応じて、表示状態を更新します
+        /// </summary>
+        public void applyQuantizeMode() {
+            cMenuPianoQuantize04.setSelected( false );
+            cMenuPianoQuantize08.setSelected( false );
+            cMenuPianoQuantize16.setSelected( false );
+            cMenuPianoQuantize32.setSelected( false );
+            cMenuPianoQuantize64.setSelected( false );
+            cMenuPianoQuantize128.setSelected( false );
+            cMenuPianoQuantizeOff.setSelected( false );
+
+#if ENABLE_STRIP_DROPDOWN
+            stripDDBtnQuantize04.setSelected( false );
+            stripDDBtnQuantize08.setSelected( false );
+            stripDDBtnQuantize16.setSelected( false );
+            stripDDBtnQuantize32.setSelected( false );
+            stripDDBtnQuantize64.setSelected( false );
+            stripDDBtnQuantize128.setSelected( false );
+            stripDDBtnQuantizeOff.setSelected( false );
+#endif
+
+            menuSettingPositionQuantize04.setSelected( false );
+            menuSettingPositionQuantize08.setSelected( false );
+            menuSettingPositionQuantize16.setSelected( false );
+            menuSettingPositionQuantize32.setSelected( false );
+            menuSettingPositionQuantize64.setSelected( false );
+            menuSettingPositionQuantize128.setSelected( false );
+            menuSettingPositionQuantizeOff.setSelected( false );
+
+#if !JAVA
+            stripDDBtnQuantize.setText( "QUANTIZE " + QuantizeModeUtil.getString( AppManager.editorConfig.getPositionQuantize() ) );
+#endif
+            if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p4 ) {
+                cMenuPianoQuantize04.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnQuantize04.setSelected( true );
+#endif
+                menuSettingPositionQuantize04.setSelected( true );
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p8 ) {
+                cMenuPianoQuantize08.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnQuantize08.setSelected( true );
+#endif
+                menuSettingPositionQuantize08.setSelected( true );
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p16 ) {
+                cMenuPianoQuantize16.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnQuantize16.setSelected( true );
+#endif
+                menuSettingPositionQuantize16.setSelected( true );
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p32 ) {
+                cMenuPianoQuantize32.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnQuantize32.setSelected( true );
+#endif
+                menuSettingPositionQuantize32.setSelected( true );
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p64 ) {
+                cMenuPianoQuantize64.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnQuantize64.setSelected( true );
+#endif
+                menuSettingPositionQuantize64.setSelected( true );
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p128 ) {
+                cMenuPianoQuantize128.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnQuantize128.setSelected( true );
+#endif
+                menuSettingPositionQuantize128.setSelected( true );
+            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.off ) {
+                cMenuPianoQuantizeOff.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnQuantizeOff.setSelected( true );
+#endif
+                menuSettingPositionQuantizeOff.setSelected( true );
+            }
+            cMenuPianoQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+#if ENABLE_STRIP_DROPDOWN
+            stripDDBtnQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+#endif
+            menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+
+            cMenuPianoLength04.setSelected( false );
+            cMenuPianoLength08.setSelected( false );
+            cMenuPianoLength16.setSelected( false );
+            cMenuPianoLength32.setSelected( false );
+            cMenuPianoLength64.setSelected( false );
+            cMenuPianoLength128.setSelected( false );
+            cMenuPianoLengthOff.setSelected( false );
+
+#if ENABLE_STRIP_DROPDOWN
+            stripDDBtnLength04.setSelected( false );
+            stripDDBtnLength08.setSelected( false );
+            stripDDBtnLength16.setSelected( false );
+            stripDDBtnLength32.setSelected( false );
+            stripDDBtnLength64.setSelected( false );
+            stripDDBtnLength128.setSelected( false );
+            stripDDBtnLengthOff.setSelected( false );
+#endif
+
+            menuSettingLengthQuantize04.setSelected( false );
+            menuSettingLengthQuantize08.setSelected( false );
+            menuSettingLengthQuantize16.setSelected( false );
+            menuSettingLengthQuantize32.setSelected( false );
+            menuSettingLengthQuantize64.setSelected( false );
+            menuSettingLengthQuantize128.setSelected( false );
+            menuSettingLengthQuantizeOff.setSelected( false );
+
+#if !JAVA
+            stripDDBtnLength.setText( "LENGTH " + QuantizeModeUtil.getString( AppManager.editorConfig.getLengthQuantize() ) );
+#endif
+            if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p4 ) {
+                cMenuPianoLength04.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnLength04.setSelected( true );
+#endif
+                menuSettingLengthQuantize04.setSelected( true );
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p8 ) {
+                cMenuPianoLength08.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnLength08.setSelected( true );
+#endif
+                menuSettingLengthQuantize08.setSelected( true );
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p16 ) {
+                cMenuPianoLength16.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnLength16.setSelected( true );
+#endif
+                menuSettingLengthQuantize16.setSelected( true );
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p32 ) {
+                cMenuPianoLength32.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnLength32.setSelected( true );
+#endif
+                menuSettingLengthQuantize32.setSelected( true );
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p64 ) {
+                cMenuPianoLength64.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnLength64.setSelected( true );
+#endif
+                menuSettingLengthQuantize64.setSelected( true );
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p128 ) {
+                cMenuPianoLength128.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnLength128.setSelected( true );
+#endif
+                menuSettingLengthQuantize128.setSelected( true );
+            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.off ) {
+                cMenuPianoLengthOff.setSelected( true );
+#if ENABLE_STRIP_DROPDOWN
+                stripDDBtnLengthOff.setSelected( true );
+#endif
+                menuSettingLengthQuantizeOff.setSelected( true );
+            }
+            cMenuPianoLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
+#if ENABLE_STRIP_DROPDOWN
+            stripDDBtnLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
+#endif
+            menuSettingLengthQuantizeTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
+        }
+
+        /// <summary>
+        /// 現在選択されている編集ツールに応じて、メニューのチェック状態を更新します
+        /// </summary>
+        public void applySelectedTool() {
+            EditTool tool = AppManager.getSelectedTool();
+
+            int count = toolStripTool.getComponentCount();
+            for ( int i = 0; i < count; i++ ) {
+                Object tsi = toolStripTool.getComponentAtIndex( i );
+                if ( tsi is BToolStripButton ) {
+                    BToolStripButton tsb = (BToolStripButton)tsi;
+                    Object tag = tsb.getTag();
+                    if ( tag != null && tag is String ) {
+#if ENABLE_SCRIPT
+                        if ( tool == EditTool.PALETTE_TOOL ) {
+                            String id = (String)tag;
+                            tsb.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
+                        } else
+#endif
+ {
+                            tsb.setSelected( false );
+                        }
+                    }
+                }
+            }
+            MenuElement[] items = cMenuTrackSelectorPaletteTool.getSubElements();
+            foreach ( MenuElement tsi in items ) {
+                if ( tsi is BMenuItem ) {
+                    BMenuItem tsmi = (BMenuItem)tsi;
+                    Object tag = tsmi.getTag();
+                    if ( tag != null && tag is String ) {
+#if ENABLE_SCRIPT
+                        if ( tool == EditTool.PALETTE_TOOL ) {
+                            String id = (String)tsmi.getTag();
+                            tsmi.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
+                        } else
+#endif
+ {
+                            tsmi.setSelected( false );
+                        }
+                    }
+                }
+            }
+
+            items = cMenuPianoPaletteTool.getSubElements();
+            foreach ( MenuElement tsi in items ) {
+                if ( tsi is BMenuItem ) {
+                    BMenuItem tsmi = (BMenuItem)tsi;
+                    Object tag = tsmi.getTag();
+                    if ( tag != null && tag is String ) {
+#if ENABLE_SCRIPT
+                        if ( tool == EditTool.PALETTE_TOOL ) {
+                            String id = (String)tsmi.getTag();
+                            tsmi.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
+                        } else
+#endif
+ {
+                            tsmi.setSelected( false );
+                        }
+                    }
+                }
+            }
+
+            EditTool selected_tool = AppManager.getSelectedTool();
+            if ( selected_tool == EditTool.ARROW ) {
+                cMenuPianoPointer.setSelected( true );
+                cMenuPianoPencil.setSelected( false );
+                cMenuPianoEraser.setSelected( false );
+
+                cMenuTrackSelectorPointer.setSelected( true );
+                cMenuTrackSelectorPencil.setSelected( false );
+                cMenuTrackSelectorLine.setSelected( false );
+                cMenuTrackSelectorEraser.setSelected( false );
+
+                stripBtnPointer.setSelected( true );
+                stripBtnPencil.setSelected( false );
+                stripBtnLine.setSelected( false );
+                stripBtnEraser.setSelected( false );
+            } else if ( selected_tool == EditTool.PENCIL ) {
+                cMenuPianoPointer.setSelected( false );
+                cMenuPianoPencil.setSelected( true );
+                cMenuPianoEraser.setSelected( false );
+
+                cMenuTrackSelectorPointer.setSelected( false );
+                cMenuTrackSelectorPencil.setSelected( true );
+                cMenuTrackSelectorLine.setSelected( false );
+                cMenuTrackSelectorEraser.setSelected( false );
+
+                stripBtnPointer.setSelected( false );
+                stripBtnPencil.setSelected( true );
+                stripBtnLine.setSelected( false );
+                stripBtnEraser.setSelected( false );
+            } else if ( selected_tool == EditTool.ERASER ) {
+                cMenuPianoPointer.setSelected( false );
+                cMenuPianoPencil.setSelected( false );
+                cMenuPianoEraser.setSelected( true );
+
+                cMenuTrackSelectorPointer.setSelected( false );
+                cMenuTrackSelectorPencil.setSelected( false );
+                cMenuTrackSelectorLine.setSelected( false );
+                cMenuTrackSelectorEraser.setSelected( true );
+
+                stripBtnPointer.setSelected( false );
+                stripBtnPencil.setSelected( false );
+                stripBtnLine.setSelected( false );
+                stripBtnEraser.setSelected( true );
+            } else if ( selected_tool == EditTool.LINE ) {
+                cMenuPianoPointer.setSelected( false );
+                cMenuPianoPencil.setSelected( false );
+                cMenuPianoEraser.setSelected( false );
+
+                cMenuTrackSelectorPointer.setSelected( false );
+                cMenuTrackSelectorPencil.setSelected( false );
+                cMenuTrackSelectorLine.setSelected( true );
+                cMenuTrackSelectorEraser.setSelected( false );
+
+                stripBtnPointer.setSelected( false );
+                stripBtnPencil.setSelected( false );
+                stripBtnLine.setSelected( true );
+                stripBtnEraser.setSelected( false );
+#if ENABLE_SCRIPT
+            } else if ( selected_tool == EditTool.PALETTE_TOOL ) {
+                cMenuPianoPointer.setSelected( false );
+                cMenuPianoPencil.setSelected( false );
+                cMenuPianoEraser.setSelected( false );
+
+                cMenuTrackSelectorPointer.setSelected( false );
+                cMenuTrackSelectorPencil.setSelected( false );
+                cMenuTrackSelectorLine.setSelected( false );
+                cMenuTrackSelectorEraser.setSelected( false );
+
+                stripBtnPointer.setSelected( false );
+                stripBtnPencil.setSelected( false );
+                stripBtnLine.setSelected( false );
+                stripBtnEraser.setSelected( false );
+#endif
+            }
+            cMenuPianoCurve.setSelected( AppManager.isCurveMode() );
+            cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
+            stripBtnCurve.setSelected( AppManager.isCurveMode() );
+        }
+
+        /// <summary>
+        /// 画面上のマウス位置におけるクロック値を元に，_toolbar_measureの場所表示文字列を更新します．
+        /// </summary>
+        /// <param name="mouse_pos_x"></param>
+        public void updatePositionViewFromMousePosition( int clock ) {
+            int barcount = AppManager.getVsqFile().getBarCountFromClock( clock );
+            //int numerator, denominator;
+            Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
+            int clock_per_beat = 480 / 4 * timesig.denominator;
+            int barcount_clock = AppManager.getVsqFile().getClockFromBarCount( barcount );
+            int beat = (clock - barcount_clock) / clock_per_beat;
+            int odd = clock - barcount_clock - beat * clock_per_beat;
+#if OBSOLUTE
+            m_toolbar_measure.Measure = (barcount - AppManager.VsqFile.PreMeasure + 1) + " : " + (beat + 1) + " : " + odd.ToString( "000" );
+#else
+            stripLblMeasure.setText( (barcount - AppManager.getVsqFile().getPreMeasure() + 1) + " : " + (beat + 1) + " : " + PortUtil.formatDecimal( "000", odd ) );
+#endif
+        }
+
+        /// <summary>
+        /// 描画すべきオブジェクトのリスト，AppManager.drawObjectsを更新します
+        /// </summary>
+        public void updateDrawObjectList() {
+            // AppManager.m_draw_objects
+            if ( AppManager.drawObjects == null ) {
+                AppManager.drawObjects = new Vector<Vector<DrawObject>>();
+            }
+            lock ( AppManager.drawObjects ) {
+                if ( AppManager.getVsqFile() == null ) {
+                    return;
+                }
+                for ( int i = 0; i < AppManager.drawStartIndex.Length; i++ ) {
+                    AppManager.drawStartIndex[i] = 0;
+                }
+                if ( AppManager.drawObjects != null ) {
+                    for ( Iterator<Vector<DrawObject>> itr = AppManager.drawObjects.iterator(); itr.hasNext(); ) {
+                        Vector<DrawObject> list = itr.next();
+                        list.clear();
+                    }
+                    AppManager.drawObjects.clear();
+                }
+
+                int xoffset = 6;// 6 + AppManager.keyWidth;
+                int yoffset = 127 * AppManager.editorConfig.PxTrackHeight;
+                float scalex = AppManager.scaleX;
+                Font SMALL_FONT = null;
+                try {
+                    SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
+                    int track_height = AppManager.editorConfig.PxTrackHeight;
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    int track_count = vsq.Track.size();
+                    for ( int track = 1; track < track_count; track++ ) {
+                        VsqTrack vsq_track = vsq.Track.get( track );
+                        Vector<DrawObject> tmp = new Vector<DrawObject>();
+
+                        // 音符イベント
+                        for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                            VsqEvent ev = itr.next();
+                            int timesig = ev.Clock;
+                            if ( ev.ID.LyricHandle != null ) {
+                                int length = ev.ID.getLength();
+                                int note = ev.ID.Note;
+                                int x = (int)(timesig * scalex + xoffset);
+                                int y = -note * track_height + yoffset;
+                                int lyric_width = (int)(length * scalex);
+                                String lyric_jp = ev.ID.LyricHandle.L0.Phrase;
+                                String lyric_en = ev.ID.LyricHandle.L0.getPhoneticSymbol();
+                                String title = Utility.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );
+                                int accent = ev.ID.DEMaccent;
+                                int vibrato_start = x + lyric_width;
+                                int vibrato_end = x;
+                                int vibrato_delay = lyric_width * 2;
+                                if ( ev.ID.VibratoHandle != null ) {
+                                    double rate = (double)ev.ID.VibratoDelay / (double)length;
+                                    vibrato_delay = _PX_ACCENT_HEADER + (int)((lyric_width - _PX_ACCENT_HEADER) * rate);
+                                }
+                                VibratoBPList rate_bp = null;
+                                VibratoBPList depth_bp = null;
+                                int rate_start = 0;
+                                int depth_start = 0;
+                                if ( ev.ID.VibratoHandle != null ) {
+                                    rate_bp = ev.ID.VibratoHandle.getRateBP();
+                                    depth_bp = ev.ID.VibratoHandle.getDepthBP();
+                                    rate_start = ev.ID.VibratoHandle.getStartRate();
+                                    depth_start = ev.ID.VibratoHandle.getStartDepth();
+                                }
+                                tmp.add( new DrawObject( DrawObjectType.Note,
+                                                         new Rectangle( x, y, lyric_width, track_height ),
+                                                         title,
+                                                         accent,
+                                                         ev.InternalID,
+                                                         vibrato_delay,
+                                                         false,
+                                                         ev.ID.LyricHandle.L0.PhoneticSymbolProtected,
+                                                         rate_bp,
+                                                         depth_bp,
+                                                         rate_start,
+                                                         depth_start,
+                                                         ev.ID.Note,
+                                                         ev.UstEvent.Envelope,
+                                                         length,
+                                                         timesig ) );
+                            }
+                        }
+
+                        // Dynaff, Crescendイベント
+                        for ( Iterator<VsqEvent> itr = vsq_track.getDynamicsEventIterator(); itr.hasNext(); ) {
+                            VsqEvent item = itr.next();
+                            IconDynamicsHandle handle = item.ID.IconDynamicsHandle;
+                            if ( handle == null ) {
+                                continue;
+                            }
+                            int clock = item.Clock;
+                            int length = item.ID.getLength();
+                            if ( length <= 0 ) {
+                                length = 1;
+                            }
+                            int raw_width = (int)(length * scalex);
+                            DrawObjectType type = DrawObjectType.Note;
+                            int width = 0;
+                            String str = "";
+                            if ( handle.isDynaffType() ) {
+                                // 強弱記号
+                                type = DrawObjectType.Dynaff;
+                                width = AppManager.DYNAFF_ITEM_WIDTH;
+                                int startDyn = handle.getStartDyn();
+                                if ( startDyn == 120 ) {
+                                    str = "fff";
+                                } else if ( startDyn == 104 ) {
+                                    str = "ff";
+                                } else if ( startDyn == 88 ) {
+                                    str = "f";
+                                } else if ( startDyn == 72 ) {
+                                    str = "mf";
+                                } else if ( startDyn == 56 ) {
+                                    str = "mp";
+                                } else if ( startDyn == 40 ) {
+                                    str = "p";
+                                } else if ( startDyn == 24 ) {
+                                    str = "pp";
+                                } else if ( startDyn == 8 ) {
+                                    str = "ppp";
+                                } else {
+                                    str = "?";
+                                }
+                            } else if ( handle.isCrescendType() ) {
+                                // クレッシェンド
+                                type = DrawObjectType.Crescend;
+                                width = raw_width;
+                                str = handle.IDS;
+                            } else if ( handle.isDecrescendType() ) {
+                                // デクレッシェンド
+                                type = DrawObjectType.Decrescend;
+                                width = raw_width;
+                                str = handle.IDS;
+                            }
+                            if ( type == DrawObjectType.Note ) {
+                                continue;
+                            }
+                            int note = item.ID.Note;
+                            int x = (int)(clock * scalex + xoffset);
+                            int y = -note * AppManager.editorConfig.PxTrackHeight + yoffset;
+                            tmp.add( new DrawObject( type,
+                                                     new Rectangle( x, y, width, track_height ),
+                                                     str,
+                                                     0,
+                                                     item.InternalID,
+                                                     0,
+                                                     false,
+                                                     false,
+                                                     null,
+                                                     null,
+                                                     0,
+                                                     0,
+                                                     item.ID.Note,
+                                                     null,
+                                                     length,
+                                                     clock ) );
+                        }
+
+                        // 重複部分があるかどうかを判定
+                        int count = tmp.size();
+                        for ( int i = 0; i < count - 1; i++ ) {
+                            DrawObject itemi = tmp.get( i );
+                            DrawObjectType parent_type = itemi.type;
+                            /*if ( itemi.type != DrawObjectType.Note ) {
+                                continue;
+                            }*/
+                            boolean overwrapped = false;
+                            int istart = itemi.clock;
+                            int iend = istart + itemi.length;
+                            if ( itemi.overlappe ) {
+                                continue;
+                            }
+                            for ( int j = i + 1; j < count; j++ ) {
+                                DrawObject itemj = tmp.get( j );
+                                if ( (itemj.type == DrawObjectType.Note && parent_type != DrawObjectType.Note) ||
+                                     (itemj.type != DrawObjectType.Note && parent_type == DrawObjectType.Note) ) {
+                                    continue;
+                                }
+                                int jstart = itemj.clock;
+                                int jend = jstart + itemj.length;
+                                if ( jstart <= istart ) {
+                                    if ( istart < jend ) {
+                                        overwrapped = true;
+                                        itemj.overlappe = true;
+                                        // breakできない．2個以上の重複を検出する必要があるので．
+                                    }
+                                }
+                                if ( istart <= jstart ) {
+                                    if ( jstart < iend ) {
+                                        overwrapped = true;
+                                        itemj.overlappe = true;
+                                    }
+                                }
+                            }
+                            if ( overwrapped ) {
+                                itemi.overlappe = true;
+                            }
+                        }
+                        Collections.sort( tmp );
+                        AppManager.drawObjects.add( tmp );
+                    }
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#updateDrawObjectList; ex=" + ex );
+                } finally {
+#if !JAVA
+                    if ( SMALL_FONT != null ) {
+                        SMALL_FONT.font.Dispose();
+                    }
+#endif
+                }
+            }
+        }
+
+        /// <summary>
+        /// _editor_configのRecentFilesを元に，menuFileRecentのドロップダウンアイテムを更新します
+        /// </summary>
+        public void updateRecentFileMenu() {
+            int added = 0;
+            menuFileRecent.removeAll();
+            if ( AppManager.editorConfig.RecentFiles != null ) {
+                for ( int i = 0; i < AppManager.editorConfig.RecentFiles.size(); i++ ) {
+                    String item = AppManager.editorConfig.RecentFiles.get( i );
+                    if ( item == null ) {
+                        continue;
+                    }
+                    if ( item != "" ) {
+                        String short_name = PortUtil.getFileName( item );
+                        boolean available = PortUtil.isFileExists( item );
+                        BMenuItem itm = new BMenuItem();
+                        itm.setText( short_name );
+                        if ( !available ) {
+                            itm.setToolTipText( _( "[file not found]" ) + " " );
+                        }
+                        itm.setToolTipText( itm.getToolTipText() + item );
+                        itm.setTag( item );
+                        itm.setEnabled( available );
+#if JAVA
+                        itm.clickEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_Click" ) );
+                        itm.mouseEnterEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_MouseEnter" ) );
+#else
+                        itm.Click += new EventHandler( handleRecentFileMenuItem_Click );
+                        itm.MouseEnter += new EventHandler( handleRecentFileMenuItem_MouseEnter );
+#endif
+                        menuFileRecent.add( itm );
+                        added++;
+                    }
+                }
+            } else {
+                AppManager.editorConfig.pushRecentFiles( "" );
+            }
+            if ( added == 0 ) {
+                menuFileRecent.setEnabled( false );
+            } else {
+                menuFileRecent.setEnabled( true );
+            }
+        }
+
+        /// <summary>
+        /// 最後に保存したときから変更されているかどうかを取得または設定します
+        /// </summary>
+        public boolean isEdited() {
+            return m_edited;
+        }
+
+        public void setEdited( boolean value ) {
+            m_edited = value;
+            String file = AppManager.getFileName();
+            if ( file.Equals( "" ) ) {
+                file = "Untitled";
+            } else {
+                file = PortUtil.getFileNameWithoutExtension( file );
+            }
+            if ( m_edited ) {
+                file += " *";
+            }
+            String title = file + " - " + _APP_NAME;
+            if ( !getTitle().Equals( title ) ) {
+                setTitle( title );
+            }
+            boolean redo = AppManager.isRedoAvailable();
+            boolean undo = AppManager.isUndoAvailable();
+            menuEditRedo.setEnabled( redo );
+            menuEditUndo.setEnabled( undo );
+            cMenuPianoRedo.setEnabled( redo );
+            cMenuPianoUndo.setEnabled( undo );
+            cMenuTrackSelectorRedo.setEnabled( redo );
+            cMenuTrackSelectorUndo.setEnabled( undo );
+            stripBtnUndo.setEnabled( undo );
+            stripBtnRedo.setEnabled( redo );
+            //AppManager.setRenderRequired( AppManager.getSelected(), true );
+            if ( AppManager.getVsqFile() != null ) {
+                int draft = AppManager.getVsqFile().TotalClocks;
+                if ( draft > hScroll.getMaximum() ) {
+                    setHScrollRange( draft );
+                }
+            }
+            updateDrawObjectList();
+
+#if ENABLE_PROPERTY
+            AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
+#endif
+        }
+
+        /// <summary>
+        /// 入力用のテキストボックスを初期化します
+        /// </summary>
+        public void showInputTextBox( String phrase, String phonetic_symbol, Point position, boolean phonetic_symbol_edit_mode ) {
+#if DEBUG
+            AppManager.debugWriteLine( "InitializeInputTextBox" );
+#endif
+            hideInputTextBox();
+#if JAVA
+            // TODO: FormMain#showInputTextBox
+#else
+            AppManager.inputTextBox.KeyUp += m_input_textbox_KeyUp;
+            AppManager.inputTextBox.KeyDown += m_input_textbox_KeyDown;
+            AppManager.inputTextBox.ImeModeChanged += m_input_textbox_ImeModeChanged;
+#endif
+            AppManager.inputTextBox.setImeModeOn( m_last_is_imemode_on );
+            if ( phonetic_symbol_edit_mode ) {
+                AppManager.inputTextBox.setTag( new TagLyricTextBox( phrase, true ) );
+                AppManager.inputTextBox.setText( phonetic_symbol );
+                AppManager.inputTextBox.setBackground( s_txtbox_backcolor );
+            } else {
+                AppManager.inputTextBox.setTag( new TagLyricTextBox( phonetic_symbol, false ) );
+                AppManager.inputTextBox.setText( phrase );
+                AppManager.inputTextBox.setBackground( Color.white );
+            }
+            AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
+            AppManager.inputTextBox.setLocation( position.x + 4, position.y + 2 );
+#if !JAVA
+            AppManager.inputTextBox.Parent = pictPianoRoll;
+#endif
+            AppManager.inputTextBox.setEnabled( true );
+            AppManager.inputTextBox.setVisible( true );
+            AppManager.inputTextBox.requestFocusInWindow();
+            AppManager.inputTextBox.selectAll();
+        }
+
+        public void hideInputTextBox() {
+#if JAVA
+            // TODO: FormMain#hideInputTextBox
+            /*AppManager.inputTextBox.KeyUp -= m_input_textbox_KeyUp;
+            AppManager.inputTextBox.KeyDown -= m_input_textbox_KeyDown;
+            AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;*/
+#else
+            AppManager.inputTextBox.KeyUp -= m_input_textbox_KeyUp;
+            AppManager.inputTextBox.KeyDown -= m_input_textbox_KeyDown;
+            AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;
+#endif
+            if ( AppManager.inputTextBox.getTag() != null && AppManager.inputTextBox.getTag() is TagLyricTextBox ) {
+                TagLyricTextBox tltb = (TagLyricTextBox)AppManager.inputTextBox.getTag();
+                m_last_symbol_edit_mode = tltb.isPhoneticSymbolEditMode();
+            }
+            AppManager.inputTextBox.setVisible( false );
+#if !JAVA
+            AppManager.inputTextBox.Parent = null;
+#endif
+            AppManager.inputTextBox.setEnabled( false );
+            pictPianoRoll.requestFocus();
+            numEnterKeyAfterHideInputTextBox = 0;
+        }
+
+        /// <summary>
+        /// 歌詞入力用テキストボックスのモード（歌詞/発音記号）を切り替えます
+        /// </summary>
+        public void flipInputTextBoxMode() {
+            TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
+            String new_value = AppManager.inputTextBox.getText();
+            if ( !kvp.isPhoneticSymbolEditMode() ) {
+                AppManager.inputTextBox.setBackground( s_txtbox_backcolor );
+            } else {
+                AppManager.inputTextBox.setBackground( Color.white );
+            }
+            AppManager.inputTextBox.setText( kvp.getBufferText() );
+            AppManager.inputTextBox.setTag( new TagLyricTextBox( new_value, !kvp.isPhoneticSymbolEditMode() ) );
+        }
+
+        /// <summary>
+        /// 音の高さを表すnoteから、画面に描くべきy座標を計算します
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
+        public int yCoordFromNote( float note ) {
+            return yCoordFromNote( note, getStartToDrawY() );
+        }
+
+        public int yCoordFromNote( float note, int start_to_draw_y ) {
+            return (int)(-1 * (note - 127.0f) * AppManager.editorConfig.PxTrackHeight) - start_to_draw_y;
+        }
+
+        /// <summary>
+        /// ピアノロール画面のy座標から、その位置における音の高さを取得します
+        /// </summary>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int noteFromYCoord( int y ) {
+            return 127 - (int)((double)(getStartToDrawY() + y) / (double)AppManager.editorConfig.PxTrackHeight);
+        }
+
+        /// <summary>
+        /// アンドゥ処理を行います
+        /// </summary>
+        public void undo() {
+            if ( AppManager.isUndoAvailable() ) {
+                AppManager.undo();
+                menuEditRedo.setEnabled( AppManager.isRedoAvailable() );
+                menuEditUndo.setEnabled( AppManager.isUndoAvailable() );
+                cMenuPianoRedo.setEnabled( AppManager.isRedoAvailable() );
+                cMenuPianoUndo.setEnabled( AppManager.isUndoAvailable() );
+                cMenuTrackSelectorRedo.setEnabled( AppManager.isRedoAvailable() );
+                cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
+                AppManager.mixerWindow.updateStatus();
+                setEdited( true );
+                updateDrawObjectList();
+
+#if ENABLE_PROPERTY
+                if ( AppManager.propertyPanel != null ) {
+                    AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
+                }
+#endif
+            }
+        }
+
+        /// <summary>
+        /// リドゥ処理を行います
+        /// </summary>
+        public void redo() {
+            if ( AppManager.isRedoAvailable() ) {
+                AppManager.redo();
+                menuEditRedo.setEnabled( AppManager.isRedoAvailable() );
+                menuEditUndo.setEnabled( AppManager.isUndoAvailable() );
+                cMenuPianoRedo.setEnabled( AppManager.isRedoAvailable() );
+                cMenuPianoUndo.setEnabled( AppManager.isUndoAvailable() );
+                cMenuTrackSelectorRedo.setEnabled( AppManager.isRedoAvailable() );
+                cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
+                AppManager.mixerWindow.updateStatus();
+                setEdited( true );
+                updateDrawObjectList();
+
+#if ENABLE_PROPERTY
+                if ( AppManager.propertyPanel != null ) {
+                    AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
+                }
+#endif
+            }
+        }
+
+        /// <summary>
+        /// 現在表示されているピアノロール画面の右上の、仮想スクリーン上座標で見たときのy座標(pixel)を取得します
+        /// </summary>
+        public int getStartToDrawY() {
+            return (int)((128 * AppManager.editorConfig.PxTrackHeight - vScroll.getHeight()) * (float)vScroll.getValue() / ((float)vScroll.getMaximum()));
+        }
+
+        public void openVsqCor( String file ) {
+            AppManager.readVsq( file );
+            if ( AppManager.getVsqFile().Track.size() >= 2 ) {
+                AppManager.setBaseTempo( AppManager.getVsqFile().getBaseTempo() );
+                setHScrollRange( AppManager.getVsqFile().TotalClocks );
+            }
+            AppManager.editorConfig.pushRecentFiles( file );
+            updateRecentFileMenu();
+            setEdited( false );
+            AppManager.clearCommandBuffer();
+            AppManager.mixerWindow.updateStatus();
+        }
+
+        public void updateMenuFonts() {
+            if ( AppManager.editorConfig.BaseFontName.Equals( "" ) ) {
+                return;
+            }
+            Font font = AppManager.editorConfig.getBaseFont();
+            Util.applyFontRecurse( this, font );
+            Util.applyContextMenuFontRecurse( cMenuPiano, font );
+            Util.applyContextMenuFontRecurse( cMenuTrackSelector, font );
+            if ( AppManager.mixerWindow != null ) {
+                Util.applyFontRecurse( AppManager.mixerWindow, font );
+            }
+            Util.applyContextMenuFontRecurse( cMenuTrackTab, font );
+            trackSelector.applyFont( font );
+            Util.applyToolStripFontRecurse( menuFile, font );
+            Util.applyToolStripFontRecurse( menuEdit, font );
+            Util.applyToolStripFontRecurse( menuVisual, font );
+            Util.applyToolStripFontRecurse( menuJob, font );
+            Util.applyToolStripFontRecurse( menuTrack, font );
+            Util.applyToolStripFontRecurse( menuLyric, font );
+            Util.applyToolStripFontRecurse( menuScript, font );
+            Util.applyToolStripFontRecurse( menuSetting, font );
+            Util.applyToolStripFontRecurse( menuHelp, font );
+            Util.applyFontRecurse( toolStripFile, font );
+            Util.applyFontRecurse( toolStripMeasure, font );
+            Util.applyFontRecurse( toolStripPosition, font );
+            Util.applyFontRecurse( toolStripTool, font );
+            if ( m_preference_dlg != null ) {
+                Util.applyFontRecurse( m_preference_dlg, font );
+            }
+
+            AppManager.baseFont10Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, 10 );
+            AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 8 );
+            AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 10 );
+            AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 );
+            AppManager.baseFont10OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont10 );
+            AppManager.baseFont8OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont8 );
+            AppManager.baseFont9OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont9 );
+        }
+
+        public void picturePositionIndicatorDrawTo( java.awt.Graphics g1 ) {
+            Graphics2D g = (Graphics2D)g1;
+            Font SMALL_FONT = null;
+            try {
+                SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
+                int width = picturePositionIndicator.getWidth();
+                int height = picturePositionIndicator.getHeight();
+
+                #region 小節ごとの線
+                int dashed_line_step = AppManager.getPositionQuantizeClock();
+                for ( Iterator<VsqBarLineType> itr = AppManager.getVsqFile().getBarLineIterator( AppManager.clockFromXCoord( width ) ); itr.hasNext(); ) {
+                    VsqBarLineType blt = itr.next();
+                    int local_clock_step = 480 * 4 / blt.getLocalDenominator();
+                    int x = AppManager.xCoordFromClocks( blt.clock() );
+                    if ( blt.isSeparator() ) {
+                        int current = blt.getBarCount() - AppManager.getVsqFile().getPreMeasure() + 1;
+                        g.setColor( s_pen_105_105_105 );
+                        g.drawLine( x, 3, x, 46 );
+                        // 小節の数字
+                        //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                        g.setColor( Color.black );
+                        g.setFont( SMALL_FONT );
+                        g.drawString( current + "", x + 4, 6 );
+                        //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+                    } else {
+                        g.setColor( s_pen_105_105_105 );
+                        g.drawLine( x, 11, x, 16 );
+                        g.drawLine( x, 26, x, 31 );
+                        g.drawLine( x, 41, x, 46 );
+                    }
+                    if ( dashed_line_step > 1 && AppManager.isGridVisible() ) {
+                        int numDashedLine = local_clock_step / dashed_line_step;
+                        for ( int i = 1; i < numDashedLine; i++ ) {
+                            int x2 = AppManager.xCoordFromClocks( blt.clock() + i * dashed_line_step );
+                            g.setColor( s_pen_065_065_065 );
+                            g.drawLine( x2, 9 + 5, x2, 14 + 3 );
+                            g.drawLine( x2, 24 + 5, x2, 29 + 3 );
+                            g.drawLine( x2, 39 + 5, x2, 44 + 3 );
+                        }
+                    }
+                }
+                #endregion
+
+                if ( AppManager.getVsqFile() != null ) {
+                    #region 拍子の変更
+                    for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
+                        int clock = AppManager.getVsqFile().TimesigTable.get( i ).Clock;
+                        int barcount = AppManager.getVsqFile().TimesigTable.get( i ).BarCount;
+                        int x = AppManager.xCoordFromClocks( clock );
+                        if ( width < x ) {
+                            break;
+                        }
+                        String s = AppManager.getVsqFile().TimesigTable.get( i ).Numerator + "/" + AppManager.getVsqFile().TimesigTable.get( i ).Denominator;
+                        g.setFont( SMALL_FONT );
+                        if ( AppManager.isSelectedTimesigContains( barcount ) ) {
+                            g.setColor( AppManager.getHilightColor() );
+                            g.drawString( s, x + 4, 36 );
+                        } else {
+                            g.setColor( Color.black );
+                            g.drawString( s, x + 4, 36 );
+                        }
+
+                        if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
+                            if ( AppManager.isSelectedTimesigContains( barcount ) ) {
+                                int edit_clock_x = AppManager.xCoordFromClocks( AppManager.getVsqFile().getClockFromBarCount( AppManager.getSelectedTimesig( barcount ).editing.BarCount ) );
+                                g.setColor( s_pen_187_187_255 );
+                                g.drawLine( edit_clock_x - 1, 32,
+                                            edit_clock_x - 1, picturePositionIndicator.getHeight() - 1 );
+                                g.setColor( s_pen_007_007_151 );
+                                g.drawLine( edit_clock_x, 32,
+                                            edit_clock_x, picturePositionIndicator.getHeight() - 1 );
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region テンポの変更
+                    g.setFont( SMALL_FONT );
+                    for ( int i = 0; i < AppManager.getVsqFile().TempoTable.size(); i++ ) {
+                        int clock = AppManager.getVsqFile().TempoTable.get( i ).Clock;
+                        int x = AppManager.xCoordFromClocks( clock );
+                        if ( width < x ) {
+                            break;
+                        }
+                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
+                        if ( AppManager.isSelectedTempoContains( clock ) ) {
+                            g.setColor( AppManager.getHilightColor() );
+                            g.drawString( s, x + 4, 21 );
+                        } else {
+                            g.setColor( Color.black );
+                            g.drawString( s, x + 4, 21 );
+                        }
+
+                        if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TEMPO ) {
+                            if ( AppManager.isSelectedTempoContains( clock ) ) {
+                                int edit_clock_x = AppManager.xCoordFromClocks( AppManager.getSelectedTempo( clock ).editing.Clock );
+                                g.setColor( s_pen_187_187_255 );
+                                g.drawLine( edit_clock_x - 1, 18,
+                                            edit_clock_x - 1, 32 );
+                                g.setColor( s_pen_007_007_151 );
+                                g.drawLine( edit_clock_x, 18,
+                                            edit_clock_x, 32 );
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                #region 外枠
+                /* 左(外側) */
+                g.setColor( new Color( 160, 160, 160 ) );
+                g.drawLine( 0, 0, 0, height - 1 );
+                /* 左(内側) */
+                g.setColor( new Color( 105, 105, 105 ) );
+                g.drawLine( 1, 1, 1, height - 2 );
+                /* 中(上側) */
+                g.setColor( new Color( 160, 160, 160 ) );
+                g.drawLine( 1, 47, width - 2, 47 );
+                /* 中(下側) */
+                g.setColor( new Color( 105, 105, 105 ) );
+                g.drawLine( 2, 48, width - 3, 48 );
+                // 右(外側)
+                g.setColor( Color.white );
+                g.drawLine( width - 1, 0, width - 1, height - 1 );
+                // 右(内側)
+                g.setColor( new Color( 241, 239, 226 ) );
+                g.drawLine( width - 2, 1, width - 2, height - 1 );
+                #endregion
+
+                #region 現在のマーカー
+                float xoffset = AppManager.keyWidth + AppManager.keyOffset - AppManager.startToDrawX;
+                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + xoffset);
+                if ( AppManager.keyWidth <= marker_x && marker_x <= width ) {
+                    g.setStroke( new BasicStroke( 2.0f ) );
+                    g.setColor( Color.white );
+                    g.drawLine( marker_x, 2, marker_x, height );
+                    g.setStroke( new BasicStroke() );
+                }
+                if ( AppManager.startMarkerEnabled ) {
+                    int x = AppManager.xCoordFromClocks( AppManager.startMarker );
+                    g.drawImage(
+                        Resources.get_start_marker(), x, 3, this );
+                }
+                if ( AppManager.endMarkerEnabled ) {
+                    int x = AppManager.xCoordFromClocks( AppManager.endMarker ) - 6;
+                    g.drawImage(
+                        Resources.get_end_marker(), x, 3, this );
+                }
+                #endregion
+
+                #region TEMPO & BEAT
+                // TEMPO BEATの文字の部分。小節数が被っている可能性があるので、塗り潰す
+                g.setColor( picturePositionIndicator.getBackground() );
+                g.fillRect( 2, 3, AppManager.keyWidth - 2, 45 );
+                // 横ライン上
+                g.setColor( new Color( 104, 104, 104 ) );
+                g.drawLine( 2, 17, width - 3, 17 );
+                // 横ライン中央
+                g.drawLine( 2, 32, width - 3, 32 );
+                // 横ライン下
+                g.drawLine( 2, 47, width - 3, 47 );
+                // 縦ライン
+                g.drawLine( AppManager.keyWidth, 2, AppManager.keyWidth, 46 );
+                /* TEMPO&BEATとピアノロールの境界 */
+                g.drawLine( AppManager.keyWidth, 48, width - 18, 48 );
+                g.setFont( SMALL_FONT );
+                g.setColor( Color.black );
+                g.drawString( "TEMPO", 11, 20 );
+                g.drawString( "BEAT", 11, 35 );
+                g.setColor( new Color( 172, 168, 153 ) );
+                g.drawLine( 0, 0, width, 0 );
+                g.setColor( new Color( 113, 111, 100 ) );
+                g.drawLine( 1, 1, width - 1, 1 );
+
+                #endregion
+            } catch ( Exception ex ) {
+            } finally {
+#if !JAVA
+                if ( SMALL_FONT != null && SMALL_FONT.font != null ) {
+                    SMALL_FONT.font.Dispose();
+                }
+#endif
+            }
+        }
+
+        public void overviewStopThread() {
+            if ( m_overview_update_thread != null ) {
+                try {
+#if JAVA
+                    m_overview_update_thread.stop();
+                    while( m_overview_update_thread.isAlive() ){
+                        Thread.sleep( 0 );
+                    }
+#else
+                    m_overview_update_thread.Abort();
+                    while ( m_overview_update_thread != null && m_overview_update_thread.IsAlive ) {
+                        System.Windows.Forms.Application.DoEvents();
+                    }
+#endif
+                } catch ( Exception ex ) {
+                }
+                m_overview_update_thread = null;
+            }
+        }
+
+        public void registerEventHandlers() {
+            loadEvent.add( new BEventHandler( this, "FormMain_Load" ) );
+            menuStripMain.mouseDownEvent.add( new BMouseEventHandler( this, "menuStrip1_MouseDown" ) );
+            menuFileNew.mouseEnterEvent.add( new BEventHandler( this, "menuFileNew_MouseEnter" ) );
+            menuFileNew.clickEvent.add( new BEventHandler( this, "commonFileNew_Click" ) );
+            menuFileOpen.mouseEnterEvent.add( new BEventHandler( this, "menuFileOpen_MouseEnter" ) );
+            menuFileOpen.clickEvent.add( new BEventHandler( this, "commonFileOpen_Click" ) );
+            menuFileSave.mouseEnterEvent.add( new BEventHandler( this, "menuFileSave_MouseEnter" ) );
+            menuFileSave.clickEvent.add( new BEventHandler( this, "commonFileSave_Click" ) );
+            menuFileSaveNamed.mouseEnterEvent.add( new BEventHandler( this, "menuFileSaveNamed_MouseEnter" ) );
+            menuFileSaveNamed.clickEvent.add( new BEventHandler( this, "menuFileSaveNamed_Click" ) );
+            menuFileOpenVsq.mouseEnterEvent.add( new BEventHandler( this, "menuFileOpenVsq_MouseEnter" ) );
+            menuFileOpenVsq.clickEvent.add( new BEventHandler( this, "menuFileOpenVsq_Click" ) );
+            menuFileOpenUst.mouseEnterEvent.add( new BEventHandler( this, "menuFileOpenUst_MouseEnter" ) );
+            menuFileOpenUst.clickEvent.add( new BEventHandler( this, "menuFileOpenUst_Click" ) );
+            menuFileImport.mouseEnterEvent.add( new BEventHandler( this, "menuFileImport_MouseEnter" ) );
+            menuFileImportVsq.mouseEnterEvent.add( new BEventHandler( this, "menuFileImportVsq_MouseEnter" ) );
+            menuFileImportVsq.clickEvent.add( new BEventHandler( this, "menuFileImportVsq_Click" ) );
+            menuFileImportMidi.mouseEnterEvent.add( new BEventHandler( this, "menuFileImportMidi_MouseEnter" ) );
+            menuFileImportMidi.clickEvent.add( new BEventHandler( this, "menuFileImportMidi_Click" ) );
+            menuFileExport.dropDownOpeningEvent.add( new BEventHandler( this, "menuFileExport_DropDownOpening" ) );
+            menuFileExportWave.mouseEnterEvent.add( new BEventHandler( this, "menuFileExportWave_MouseEnter" ) );
+            menuFileExportWave.clickEvent.add( new BEventHandler( this, "menuFileExportWave_Click" ) );
+            menuFileExportMidi.mouseEnterEvent.add( new BEventHandler( this, "menuFileExportMidi_MouseEnter" ) );
+            menuFileExportMidi.clickEvent.add( new BEventHandler( this, "menuFileExportMidi_Click" ) );
+            menuFileExportMusicXml.clickEvent.add( new BEventHandler( this, "menuFileExportMusicXml_Click" ) );
+            menuFileRecent.mouseEnterEvent.add( new BEventHandler( this, "menuFileRecent_MouseEnter" ) );
+            menuFileQuit.mouseEnterEvent.add( new BEventHandler( this, "menuFileQuit_MouseEnter" ) );
+            menuFileQuit.clickEvent.add( new BEventHandler( this, "menuFileQuit_Click" ) );
+            menuEdit.dropDownOpeningEvent.add( new BEventHandler( this, "menuEdit_DropDownOpening" ) );
+            menuEditUndo.mouseEnterEvent.add( new BEventHandler( this, "menuEditUndo_MouseEnter" ) );
+            menuEditUndo.clickEvent.add( new BEventHandler( this, "commonEditUndo_Click" ) );
+            menuEditRedo.mouseEnterEvent.add( new BEventHandler( this, "menuEditRedo_MouseEnter" ) );
+            menuEditRedo.clickEvent.add( new BEventHandler( this, "commonEditRedo_Click" ) );
+            menuEditCut.mouseEnterEvent.add( new BEventHandler( this, "menuEditCut_MouseEnter" ) );
+            menuEditCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
+            menuEditCopy.mouseEnterEvent.add( new BEventHandler( this, "menuEditCopy_MouseEnter" ) );
+            menuEditCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
+            menuEditPaste.mouseEnterEvent.add( new BEventHandler( this, "menuEditPaste_MouseEnter" ) );
+            menuEditPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
+            menuEditDelete.mouseEnterEvent.add( new BEventHandler( this, "menuEditDelete_MouseEnter" ) );
+            menuEditDelete.clickEvent.add( new BEventHandler( this, "menuEditDelete_Click" ) );
+            menuEditAutoNormalizeMode.mouseEnterEvent.add( new BEventHandler( this, "menuEditAutoNormalizeMode_MouseEnter" ) );
+            menuEditAutoNormalizeMode.clickEvent.add( new BEventHandler( this, "menuEditAutoNormalizeMode_Click" ) );
+            menuEditSelectAll.mouseEnterEvent.add( new BEventHandler( this, "menuEditSelectAll_MouseEnter" ) );
+            menuEditSelectAll.clickEvent.add( new BEventHandler( this, "menuEditSelectAll_Click" ) );
+            menuEditSelectAllEvents.mouseEnterEvent.add( new BEventHandler( this, "menuEditSelectAllEvents_MouseEnter" ) );
+            menuEditSelectAllEvents.clickEvent.add( new BEventHandler( this, "menuEditSelectAllEvents_Click" ) );
+            menuVisualControlTrack.checkedChangedEvent.add( new BEventHandler( this, "menuVisualControlTrack_CheckedChanged" ) );
+            menuVisualControlTrack.mouseEnterEvent.add( new BEventHandler( this, "menuVisualControlTrack_MouseEnter" ) );
+            menuVisualMixer.mouseEnterEvent.add( new BEventHandler( this, "menuVisualMixer_MouseEnter" ) );
+            menuVisualMixer.clickEvent.add( new BEventHandler( this, "menuVisualMixer_Click" ) );
+            menuVisualWaveform.checkedChangedEvent.add( new BEventHandler( this, "menuVisualWaveform_CheckedChanged" ) );
+            menuVisualWaveform.mouseEnterEvent.add( new BEventHandler( this, "menuVisualWaveform_MouseEnter" ) );
+            menuVisualProperty.mouseEnterEvent.add( new BEventHandler( this, "menuVisualProperty_MouseEnter" ) );
+            menuVisualProperty.clickEvent.add( new BEventHandler( this, "menuVisualProperty_Click" ) );
+            menuVisualGridline.checkedChangedEvent.add( new BEventHandler( this, "menuVisualGridline_CheckedChanged" ) );
+            menuVisualGridline.mouseEnterEvent.add( new BEventHandler( this, "menuVisualGridline_MouseEnter" ) );
+            menuVisualIconPalette.clickEvent.add( new BEventHandler( this, "menuVisualIconPalette_Click" ) );
+            menuVisualStartMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualStartMarker_MouseEnter" ) );
+            menuVisualStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
+            menuVisualEndMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualEndMarker_MouseEnter" ) );
+            menuVisualEndMarker.clickEvent.add( new BEventHandler( this, "handleEndMarker_Click" ) );
+            menuVisualLyrics.checkedChangedEvent.add( new BEventHandler( this, "menuVisualLyrics_CheckedChanged" ) );
+            menuVisualLyrics.mouseEnterEvent.add( new BEventHandler( this, "menuVisualLyrics_MouseEnter" ) );
+            menuVisualNoteProperty.checkedChangedEvent.add( new BEventHandler( this, "menuVisualNoteProperty_CheckedChanged" ) );
+            menuVisualNoteProperty.mouseEnterEvent.add( new BEventHandler( this, "menuVisualNoteProperty_MouseEnter" ) );
+            menuVisualPitchLine.checkedChangedEvent.add( new BEventHandler( this, "menuVisualPitchLine_CheckedChanged" ) );
+            menuVisualPitchLine.mouseEnterEvent.add( new BEventHandler( this, "menuVisualPitchLine_MouseEnter" ) );
+            menuVisualPluginUi.dropDownOpeningEvent.add( new BEventHandler( this, "menuVisualPluginUi_DropDownOpening" ) );
+            menuVisualPluginUiVocaloid100.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
+            menuVisualPluginUiVocaloid101.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
+            menuVisualPluginUiVocaloid2.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
+            menuVisualPluginUiAquesTone.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiAquesTone_Click" ) );
+            menuJob.dropDownOpeningEvent.add( new BEventHandler( this, "menuJob_DropDownOpening" ) );
+            menuJobNormalize.mouseEnterEvent.add( new BEventHandler( this, "menuJobNormalize_MouseEnter" ) );
+            menuJobNormalize.clickEvent.add( new BEventHandler( this, "menuJobNormalize_Click" ) );
+            menuJobInsertBar.mouseEnterEvent.add( new BEventHandler( this, "menuJobInsertBar_MouseEnter" ) );
+            menuJobInsertBar.clickEvent.add( new BEventHandler( this, "menuJobInsertBar_Click" ) );
+            menuJobDeleteBar.mouseEnterEvent.add( new BEventHandler( this, "menuJobDeleteBar_MouseEnter" ) );
+            menuJobDeleteBar.clickEvent.add( new BEventHandler( this, "menuJobDeleteBar_Click" ) );
+            menuJobRandomize.mouseEnterEvent.add( new BEventHandler( this, "menuJobRandomize_MouseEnter" ) );
+            menuJobRandomize.clickEvent.add( new BEventHandler( this, "menuJobRandomize_Click" ) );
+            menuJobConnect.mouseEnterEvent.add( new BEventHandler( this, "menuJobConnect_MouseEnter" ) );
+            menuJobConnect.clickEvent.add( new BEventHandler( this, "menuJobConnect_Click" ) );
+            menuJobLyric.mouseEnterEvent.add( new BEventHandler( this, "menuJobLyric_MouseEnter" ) );
+            menuJobLyric.clickEvent.add( new BEventHandler( this, "menuJobLyric_Click" ) );
+            menuJobRewire.mouseEnterEvent.add( new BEventHandler( this, "menuJobRewire_MouseEnter" ) );
+            menuJobRealTime.mouseEnterEvent.add( new BEventHandler( this, "menuJobRealTime_MouseEnter" ) );
+            menuJobRealTime.clickEvent.add( new BEventHandler( this, "menuJobRealTime_Click" ) );
+            menuJobReloadVsti.mouseEnterEvent.add( new BEventHandler( this, "menuJobReloadVsti_MouseEnter" ) );
+            menuJobReloadVsti.clickEvent.add( new BEventHandler( this, "menuJobReloadVsti_Click" ) );
+            menuTrack.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrack_DropDownOpening" ) );
+            menuTrackOn.mouseEnterEvent.add( new BEventHandler( this, "menuTrackOn_MouseEnter" ) );
+            menuTrackOn.clickEvent.add( new BEventHandler( this, "commonTrackOn_Click" ) );
+            menuTrackPlayAfterSynth.clickEvent.add( new BEventHandler( this, "commonPlayAfterSynth_Click" ) );
+            menuTrackAdd.mouseEnterEvent.add( new BEventHandler( this, "menuTrackAdd_MouseEnter" ) );
+            menuTrackAdd.clickEvent.add( new BEventHandler( this, "menuTrackAdd_Click" ) );
+            menuTrackCopy.mouseEnterEvent.add( new BEventHandler( this, "menuTrackCopy_MouseEnter" ) );
+            menuTrackCopy.clickEvent.add( new BEventHandler( this, "menuTrackCopy_Click" ) );
+            menuTrackChangeName.mouseEnterEvent.add( new BEventHandler( this, "menuTrackChangeName_MouseEnter" ) );
+            menuTrackChangeName.clickEvent.add( new BEventHandler( this, "menuTrackChangeName_Click" ) );
+            menuTrackDelete.mouseEnterEvent.add( new BEventHandler( this, "menuTrackDelete_MouseEnter" ) );
+            menuTrackDelete.clickEvent.add( new BEventHandler( this, "menuTrackDelete_Click" ) );
+            menuTrackRenderCurrent.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRenderCurrent_MouseEnter" ) );
+            menuTrackRenderCurrent.clickEvent.add( new BEventHandler( this, "menuTrackRenderCurrent_Click" ) );
+            menuTrackRenderAll.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRenderAll_MouseEnter" ) );
+            menuTrackRenderAll.clickEvent.add( new BEventHandler( this, "commonTrackRenderAll_Click" ) );
+            menuTrackOverlay.mouseEnterEvent.add( new BEventHandler( this, "menuTrackOverlay_MouseEnter" ) );
+            menuTrackOverlay.clickEvent.add( new BEventHandler( this, "menuTrackOverlay_Click" ) );
+            menuTrackRenderer.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRenderer_MouseEnter" ) );
+            menuTrackRenderer.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrackRenderer_DropDownOpening" ) );
+            menuTrackRendererVOCALOID100.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererVOCALOID1_MouseEnter" ) );
+            menuTrackRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            menuTrackRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            menuTrackRendererVOCALOID2.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererVOCALOID2_MouseEnter" ) );
+            menuTrackRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            menuTrackRendererUtau.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererUtau_MouseEnter" ) );
+            menuTrackRendererUtau.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            menuTrackRendererStraight.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            menuTrackRendererAquesTone.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            menuTrackManager.clickEvent.add( new BEventHandler( this, "menuTrackManager_Click" ) );
+            menuLyricExpressionProperty.clickEvent.add( new BEventHandler( this, "menuLyricExpressionProperty_Click" ) );
+            menuLyricVibratoProperty.clickEvent.add( new BEventHandler( this, "menuLyricVibratoProperty_Click" ) );
+            menuLyricDictionary.clickEvent.add( new BEventHandler( this, "menuLyricDictionary_Click" ) );
+            menuLyricPhonemeTransformation.clickEvent.add( new BEventHandler( this, "menuLyricPhonemeTransformation_Click" ) );
+            menuScriptUpdate.clickEvent.add( new BEventHandler( this, "menuScriptUpdate_Click" ) );
+            menuSetting.dropDownOpeningEvent.add( new BEventHandler( this, "menuSetting_DropDownOpening" ) );
+            menuSettingPreference.clickEvent.add( new BEventHandler( this, "menuSettingPreference_Click" ) );
+            menuSettingGameControlerSetting.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerSetting_Click" ) );
+            menuSettingGameControlerLoad.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerLoad_Click" ) );
+            menuSettingGameControlerRemove.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerRemove_Click" ) );
+            menuSettingShortcut.clickEvent.add( new BEventHandler( this, "menuSettingShortcut_Click" ) );
+#if ENABLE_MIDI
+            menuSettingMidi.clickEvent.add( new BEventHandler( this, "menuSettingMidi_Click" ) );
+#endif
+            menuSettingUtauVoiceDB.clickEvent.add( new BEventHandler( this, "menuSettingUtauVoiceDB_Click" ) );
+            menuSettingDefaultSingerStyle.clickEvent.add( new BEventHandler( this, "menuSettingDefaultSingerStyle_Click" ) );
+            menuSettingPositionQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            menuSettingPositionQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            menuSettingPositionQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            menuSettingPositionQuantize32.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            menuSettingPositionQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            menuSettingPositionQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            menuSettingPositionQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            menuSettingPositionQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_positionQuantizeTriplet" ) );
+            menuSettingLengthQuantize04.clickEvent.add( new BEventHandler( this, "h_lengthQuantize04" ) );
+            menuSettingLengthQuantize08.clickEvent.add( new BEventHandler( this, "h_lengthQuantize08" ) );
+            menuSettingLengthQuantize16.clickEvent.add( new BEventHandler( this, "h_lengthQuantize16" ) );
+            menuSettingLengthQuantize32.clickEvent.add( new BEventHandler( this, "h_lengthQuantize32" ) );
+            menuSettingLengthQuantize64.clickEvent.add( new BEventHandler( this, "h_lengthQuantize64" ) );
+            menuSettingLengthQuantize128.clickEvent.add( new BEventHandler( this, "h_lengthQuantize128" ) );
+            menuSettingLengthQuantizeOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
+            menuSettingLengthQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
+            menuHelpAbout.clickEvent.add( new BEventHandler( this, "menuHelpAbout_Click" ) );
+            menuHelpDebug.clickEvent.add( new BEventHandler( this, "menuHelpDebug_Click" ) );
+            menuHiddenEditLyric.clickEvent.add( new BEventHandler( this, "menuHiddenEditLyric_Click" ) );
+            menuHiddenEditFlipToolPointerPencil.clickEvent.add( new BEventHandler( this, "menuHiddenEditFlipToolPointerPencil_Click" ) );
+            menuHiddenEditFlipToolPointerEraser.clickEvent.add( new BEventHandler( this, "menuHiddenEditFlipToolPointerEraser_Click" ) );
+            menuHiddenVisualForwardParameter.clickEvent.add( new BEventHandler( this, "menuHiddenVisualForwardParameter_Click" ) );
+            menuHiddenVisualBackwardParameter.clickEvent.add( new BEventHandler( this, "menuHiddenVisualBackwardParameter_Click" ) );
+            menuHiddenTrackNext.clickEvent.add( new BEventHandler( this, "menuHiddenTrackNext_Click" ) );
+            menuHiddenTrackBack.clickEvent.add( new BEventHandler( this, "menuHiddenTrackBack_Click" ) );
+            menuHiddenCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
+            menuHiddenPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
+            menuHiddenCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
+            menuHiddenSelectBackward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectBackward_Click" ) );
+            menuHiddenSelectForward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectForward_Click" ) );
+            menuHiddenMoveUp.clickEvent.add( new BEventHandler( this, "menuHiddenMoveUp_Click" ) );
+            menuHiddenMoveDown.clickEvent.add( new BEventHandler( this, "menuHiddenMoveDown_Click" ) );
+            menuHiddenMoveLeft.clickEvent.add( new BEventHandler( this, "menuHiddenMoveLeft_Click" ) );
+            menuHiddenMoveRight.clickEvent.add( new BEventHandler( this, "menuHiddenMoveRight_Click" ) );
+            menuHiddenLengthen.clickEvent.add( new BEventHandler( this, "menuHiddenLengthen_Click" ) );
+            menuHiddenShorten.clickEvent.add( new BEventHandler( this, "menuHiddenShorten_Click" ) );
+            menuHiddenGoToEndMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToEndMarker_Click" ) );
+            menuHiddenGoToStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToStartMarker_Click" ) );
+            menuHiddenPlayFromStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenPlayFromStartMarker_Click" ) );
+
+            cMenuPiano.openingEvent.add( new BCancelEventHandler( this, "cMenuPiano_Opening" ) );
+            cMenuPianoPointer.clickEvent.add( new BEventHandler( this, "cMenuPianoPointer_Click" ) );
+            cMenuPianoPencil.clickEvent.add( new BEventHandler( this, "cMenuPianoPencil_Click" ) );
+            cMenuPianoEraser.clickEvent.add( new BEventHandler( this, "cMenuPianoEraser_Click" ) );
+            cMenuPianoCurve.clickEvent.add( new BEventHandler( this, "cMenuPianoCurve_Click" ) );
+            cMenuPianoFixed01.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed01_Click" ) );
+            cMenuPianoFixed02.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed02_Click" ) );
+            cMenuPianoFixed04.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed04_Click" ) );
+            cMenuPianoFixed08.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed08_Click" ) );
+            cMenuPianoFixed16.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed16_Click" ) );
+            cMenuPianoFixed32.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed32_Click" ) );
+            cMenuPianoFixed64.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed64_Click" ) );
+            cMenuPianoFixed128.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed128_Click" ) );
+            cMenuPianoFixedOff.clickEvent.add( new BEventHandler( this, "cMenuPianoFixedOff_Click" ) );
+            cMenuPianoFixedTriplet.clickEvent.add( new BEventHandler( this, "cMenuPianoFixedTriplet_Click" ) );
+            cMenuPianoFixedDotted.clickEvent.add( new BEventHandler( this, "cMenuPianoFixedDotted_Click" ) );
+            cMenuPianoQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            cMenuPianoQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            cMenuPianoQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            cMenuPianoQuantize32.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            cMenuPianoQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            cMenuPianoQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            cMenuPianoQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            cMenuPianoQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_positionQuantizeTriplet" ) );
+            cMenuPianoLength04.clickEvent.add( new BEventHandler( this, "h_lengthQuantize04" ) );
+            cMenuPianoLength08.clickEvent.add( new BEventHandler( this, "h_lengthQuantize08" ) );
+            cMenuPianoLength16.clickEvent.add( new BEventHandler( this, "h_lengthQuantize16" ) );
+            cMenuPianoLength32.clickEvent.add( new BEventHandler( this, "h_lengthQuantize32" ) );
+            cMenuPianoLength64.clickEvent.add( new BEventHandler( this, "h_lengthQuantize64" ) );
+            cMenuPianoLength128.clickEvent.add( new BEventHandler( this, "h_lengthQuantize128" ) );
+            cMenuPianoLengthOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
+            cMenuPianoLengthTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
+            cMenuPianoGrid.clickEvent.add( new BEventHandler( this, "cMenuPianoGrid_Click" ) );
+            cMenuPianoUndo.clickEvent.add( new BEventHandler( this, "cMenuPianoUndo_Click" ) );
+            cMenuPianoRedo.clickEvent.add( new BEventHandler( this, "cMenuPianoRedo_Click" ) );
+            cMenuPianoCut.clickEvent.add( new BEventHandler( this, "cMenuPianoCut_Click" ) );
+            cMenuPianoCopy.clickEvent.add( new BEventHandler( this, "cMenuPianoCopy_Click" ) );
+            cMenuPianoPaste.clickEvent.add( new BEventHandler( this, "cMenuPianoPaste_Click" ) );
+            cMenuPianoDelete.clickEvent.add( new BEventHandler( this, "cMenuPianoDelete_Click" ) );
+            cMenuPianoSelectAll.clickEvent.add( new BEventHandler( this, "cMenuPianoSelectAll_Click" ) );
+            cMenuPianoSelectAllEvents.clickEvent.add( new BEventHandler( this, "cMenuPianoSelectAllEvents_Click" ) );
+            cMenuPianoImportLyric.clickEvent.add( new BEventHandler( this, "cMenuPianoImportLyric_Click" ) );
+            cMenuPianoExpressionProperty.clickEvent.add( new BEventHandler( this, "cMenuPianoProperty_Click" ) );
+            cMenuPianoVibratoProperty.clickEvent.add( new BEventHandler( this, "cMenuPianoVibratoProperty_Click" ) );
+            cMenuTrackTab.openingEvent.add( new BCancelEventHandler( this, "cMenuTrackTab_Opening" ) );
+            cMenuTrackTabTrackOn.clickEvent.add( new BEventHandler( this, "commonTrackOn_Click" ) );
+            cMenuTrackTabPlayAfterSynth.clickEvent.add( new BEventHandler( this, "commonPlayAfterSynth_Click" ) );
+            cMenuTrackTabAdd.clickEvent.add( new BEventHandler( this, "cMenuTrackTabAdd_Click" ) );
+            cMenuTrackTabCopy.clickEvent.add( new BEventHandler( this, "cMenuTrackTabCopy_Click" ) );
+            cMenuTrackTabChangeName.clickEvent.add( new BEventHandler( this, "cMenuTrackTabChangeName_Click" ) );
+            cMenuTrackTabDelete.clickEvent.add( new BEventHandler( this, "cMenuTrackTabDelete_Click" ) );
+            cMenuTrackTabRenderCurrent.clickEvent.add( new BEventHandler( this, "cMenuTrackTabRenderCurrent_Click" ) );
+            cMenuTrackTabRenderAll.clickEvent.add( new BEventHandler( this, "commonTrackRenderAll_Click" ) );
+            cMenuTrackTabOverlay.clickEvent.add( new BEventHandler( this, "cMenuTrackTabOverlay_Click" ) );
+            cMenuTrackTabRenderer.dropDownOpeningEvent.add( new BEventHandler( this, "cMenuTrackTabRenderer_DropDownOpening" ) );
+            cMenuTrackTabRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            cMenuTrackTabRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            cMenuTrackTabRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            cMenuTrackTabRendererUtau.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            cMenuTrackTabRendererStraight.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            cMenuTrackTabRendererAquesTone.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            cMenuTrackSelector.openingEvent.add( new BCancelEventHandler( this, "cMenuTrackSelector_Opening" ) );
+            cMenuTrackSelectorPointer.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPointer_Click" ) );
+            cMenuTrackSelectorPencil.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPencil_Click" ) );
+            cMenuTrackSelectorLine.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorLine_Click" ) );
+            cMenuTrackSelectorEraser.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorEraser_Click" ) );
+            cMenuTrackSelectorCurve.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorCurve_Click" ) );
+            cMenuTrackSelectorUndo.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorUndo_Click" ) );
+            cMenuTrackSelectorRedo.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorRedo_Click" ) );
+            cMenuTrackSelectorCut.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorCut_Click" ) );
+            cMenuTrackSelectorCopy.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorCopy_Click" ) );
+            cMenuTrackSelectorPaste.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPaste_Click" ) );
+            cMenuTrackSelectorDelete.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorDelete_Click" ) );
+            cMenuTrackSelectorDeleteBezier.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorDeleteBezier_Click" ) );
+            cMenuTrackSelectorSelectAll.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorSelectAll_Click" ) );
+            trackBar.valueChangedEvent.add( new BEventHandler( this, "trackBar_ValueChanged" ) );
+            trackBar.mouseDownEvent.add( new BMouseEventHandler( this, "trackBar_MouseDown" ) );
+            trackBar.enterEvent.add( new BEventHandler( this, "trackBar_Enter" ) );
+            bgWorkScreen.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWorkScreen_DoWork" ) );
+            timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
+            pictKeyLengthSplitter.mouseMoveEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseMove" ) );
+            pictKeyLengthSplitter.mouseDownEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseDown" ) );
+            pictKeyLengthSplitter.mouseUpEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseUp" ) );
+            btnRight1.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
+            btnRight1.mouseUpEvent.add( new BMouseEventHandler( this, "btnRight_MouseUp" ) );
+            btnRight1.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
+            btnLeft2.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
+            btnLeft2.mouseUpEvent.add( new BMouseEventHandler( this, "btnLeft_MouseUp" ) );
+            btnLeft2.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
+            btnZoom.clickEvent.add( new BEventHandler( this, "btnZoom_Click" ) );
+            btnMooz.clickEvent.add( new BEventHandler( this, "btnMooz_Click" ) );
+            btnLeft1.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
+            btnLeft1.mouseUpEvent.add( new BMouseEventHandler( this, "btnLeft_MouseUp" ) );
+            btnLeft1.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
+            btnRight2.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
+            btnRight2.mouseUpEvent.add( new BMouseEventHandler( this, "btnRight_MouseUp" ) );
+            btnRight2.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
+            pictOverview.mouseMoveEvent.add( new BMouseEventHandler( this, "pictOverview_MouseMove" ) );
+            pictOverview.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDoubleClick" ) );
+            pictOverview.mouseDownEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDown" ) );
+            pictOverview.paintEvent.add( new BPaintEventHandler( this, "pictOverview_Paint" ) );
+            pictOverview.mouseUpEvent.add( new BMouseEventHandler( this, "pictOverview_MouseUp" ) );
+            pictOverview.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
+            pictOverview.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
+            vScroll.valueChangedEvent.add( new BEventHandler( this, "vScroll_ValueChanged" ) );
+            vScroll.resizeEvent.add( new BEventHandler( this, "vScroll_Resize" ) );
+            vScroll.enterEvent.add( new BEventHandler( this, "vScroll_Enter" ) );
+            hScroll.valueChangedEvent.add( new BEventHandler( this, "hScroll_ValueChanged" ) );
+            hScroll.resizeEvent.add( new BEventHandler( this, "hScroll_Resize" ) );
+            hScroll.enterEvent.add( new BEventHandler( this, "hScroll_Enter" ) );
+            picturePositionIndicator.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "picturePositionIndicator_PreviewKeyDown" ) );
+            picturePositionIndicator.mouseMoveEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseMove" ) );
+            picturePositionIndicator.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseDoubleClick" ) );
+            picturePositionIndicator.mouseDownEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseDown" ) );
+            picturePositionIndicator.mouseUpEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseUp" ) );
+            picturePositionIndicator.paintEvent.add( new BPaintEventHandler( this, "picturePositionIndicator_Paint" ) );
+            pictPianoRoll.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "pictPianoRoll_PreviewKeyDown" ) );
+            pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
+            pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "pictPianoRoll_KeyUp" ) );
+            pictPianoRoll.mouseMoveEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseMove" ) );
+            pictPianoRoll.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDoubleClick" ) );
+            pictPianoRoll.mouseClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseClick" ) );
+            pictPianoRoll.mouseDownEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDown" ) );
+            pictPianoRoll.mouseUpEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseUp" ) );
+            pictPianoRoll.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
+#if !JAVA
+            this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
+            this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
+            this.DragOver += new System.Windows.Forms.DragEventHandler( FormMain_DragOver );
+            this.DragLeave += new EventHandler( FormMain_DragLeave );
+#endif
+            pictureBox3.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox3_MouseDown" ) );
+            pictureBox2.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseDown" ) );
+            stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
+            stripBtnPencil.clickEvent.add( new BEventHandler( this, "stripBtnPencil_Click" ) );
+            stripBtnLine.clickEvent.add( new BEventHandler( this, "stripBtnLine_Click" ) );
+            stripBtnEraser.clickEvent.add( new BEventHandler( this, "stripBtnEraser_Click" ) );
+            stripBtnGrid.checkedChangedEvent.add( new BEventHandler( this, "stripBtnGrid_CheckedChanged" ) );
+            stripBtnCurve.clickEvent.add( new BEventHandler( this, "stripBtnCurve_Click" ) );
+#if !JAVA
+            toolStripContainer.TopToolStripPanel.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
+            stripDDBtnSpeed.dropDownOpeningEvent.add( new BEventHandler( this, "stripDDBtnSpeed_DropDownOpening" ) );
+            stripDDBtnSpeedTextbox.keyDownEvent.add( new BKeyEventHandler( this, "stripDDBtnSpeedTextbox_KeyDown" ) );
+            stripDDBtnSpeed033.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed033_Click" ) );
+            stripDDBtnSpeed050.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed050_Click" ) );
+            stripDDBtnSpeed100.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed100_Click" ) );
+            stripDDBtnLength04.clickEvent.add( new BEventHandler( this, "h_lengthQuantize04" ) );
+            stripDDBtnLength08.clickEvent.add( new BEventHandler( this, "h_lengthQuantize08" ) );
+            stripDDBtnLength16.clickEvent.add( new BEventHandler( this, "h_lengthQuantize16" ) );
+            stripDDBtnLength32.clickEvent.add( new BEventHandler( this, "h_lengthQuantize32" ) );
+            stripDDBtnLength64.clickEvent.add( new BEventHandler( this, "h_lengthQuantize64" ) );
+            stripDDBtnLength128.clickEvent.add( new BEventHandler( this, "h_lengthQuantize128" ) );
+            stripDDBtnLengthOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
+            stripDDBtnLengthTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
+            stripDDBtnQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            stripDDBtnQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            stripDDBtnQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            stripDDBtnQuantize32.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            stripDDBtnQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            stripDDBtnQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            stripDDBtnQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
+            stripDDBtnQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_positionQuantizeTriplet" ) );
+#endif
+            stripBtnFileNew.clickEvent.add( new BEventHandler( this, "commonFileNew_Click" ) );
+            stripBtnFileOpen.clickEvent.add( new BEventHandler( this, "commonFileOpen_Click" ) );
+            stripBtnFileSave.clickEvent.add( new BEventHandler( this, "commonFileSave_Click" ) );
+            stripBtnCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
+            stripBtnCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
+            stripBtnPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
+            stripBtnUndo.clickEvent.add( new BEventHandler( this, "commonEditUndo_Click" ) );
+            stripBtnRedo.clickEvent.add( new BEventHandler( this, "commonEditRedo_Click" ) );
+            stripBtnMoveTop.clickEvent.add( new BEventHandler( this, "stripBtnMoveTop_Click" ) );
+            stripBtnRewind.clickEvent.add( new BEventHandler( this, "stripBtnRewind_Click" ) );
+            stripBtnForward.clickEvent.add( new BEventHandler( this, "stripBtnForward_Click" ) );
+            stripBtnMoveEnd.clickEvent.add( new BEventHandler( this, "stripBtnMoveEnd_Click" ) );
+            stripBtnPlay.clickEvent.add( new BEventHandler( this, "stripBtnPlay_Click" ) );
+            stripBtnStop.clickEvent.add( new BEventHandler( this, "stripBtnStop_Click" ) );
+            stripBtnScroll.clickEvent.add( new BEventHandler( this, "stripBtnScroll_Click" ) );
+            stripBtnLoop.clickEvent.add( new BEventHandler( this, "stripBtnLoop_Click" ) );
+            stripBtnStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
+            stripBtnEndMarker.clickEvent.add( new BEventHandler( this, "handleEndMarker_Click" ) );
+            deactivateEvent.add( new BEventHandler( this, "FormMain_Deactivate" ) );
+            activatedEvent.add( new BEventHandler( this, "FormMain_Activated" ) );
+            formClosedEvent.add( new BFormClosedEventHandler( this, "FormMain_FormClosed" ) );
+            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMain_FormClosing" ) );
+            previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "FormMain_PreviewKeyDown" ) );
+            panelOverview.enterEvent.add( new BEventHandler( this, "panelOverview_Enter" ) );
+        }
+
+        public void setResources() {
+            try {
+                this.stripBtnPointer.setIcon( new ImageIcon( Resources.get_arrow_135() ) );
+                this.stripBtnPencil.setIcon( new ImageIcon( Resources.get_pencil() ) );
+                this.stripBtnLine.setIcon( new ImageIcon( Resources.get_layer_shape_line() ) );
+                this.stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
+                this.stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
+                this.stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
+                this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
+                this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+                this.stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
+                this.stripBtnFileOpen.setIcon( new ImageIcon( Resources.get_folder_horizontal_open() ) );
+                this.stripBtnFileSave.setIcon( new ImageIcon( Resources.get_disk() ) );
+                this.stripBtnCut.setIcon( new ImageIcon( Resources.get_scissors() ) );
+                this.stripBtnCopy.setIcon( new ImageIcon( Resources.get_documents() ) );
+                this.stripBtnPaste.setIcon( new ImageIcon( Resources.get_clipboard_paste() ) );
+                this.stripBtnUndo.setIcon( new ImageIcon( Resources.get_arrow_skip_180() ) );
+                this.stripBtnRedo.setIcon( new ImageIcon( Resources.get_arrow_skip() ) );
+                this.stripBtnMoveTop.setIcon( new ImageIcon( Resources.get_control_stop_180() ) );
+                this.stripBtnRewind.setIcon( new ImageIcon( Resources.get_control_double_180() ) );
+                this.stripBtnForward.setIcon( new ImageIcon( Resources.get_control_double() ) );
+                this.stripBtnMoveEnd.setIcon( new ImageIcon( Resources.get_control_stop() ) );
+                this.stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
+                this.stripBtnStop.setIcon( new ImageIcon( Resources.get_control_pause() ) );
+                this.stripBtnScroll.setIcon( new ImageIcon( Resources.get_arrow_circle_double() ) );
+                this.stripBtnLoop.setIcon( new ImageIcon( Resources.get_arrow_return() ) );
+                this.stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
+                this.stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
+                setIconImage( Resources.get_icon() );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#setResources; ex=" + ex );
+            }
+        }
+        #endregion // public methods
+
+        #region event handlers
+        public void panelOverview_Enter( Object sender, EventArgs e ) {
+            pictPianoRoll.requestFocus();
         }
 
 #if ENABLE_MIDI
@@ -1459,12 +6772,6 @@ namespace org.kbinani.cadencii {
         }
 
         #region AppManager
-        private void changeCurrentClockView( Object sender, EventArgs e ) {
-            stripLblBeat.setText( AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator );
-            stripLblTempo.setText( PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo ) );
-            stripLblCursor.setText( AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock ) );
-        }
-
         public void AppManager_CurrentClockChanged( Object sender, EventArgs e ) {
 #if JAVA
             changeCurrentClockView( null, null );
@@ -4326,6 +9633,9 @@ namespace org.kbinani.cadencii {
             }
 #endif
             PlaySound.kill();
+#if JAVA
+            System.exit( 0 );
+#endif
         }
 
         public void FormMain_FormClosing( Object sender, BFormClosingEventArgs e ) {
@@ -6361,7 +11671,7 @@ namespace org.kbinani.cadencii {
                 if ( !Messaging.getLanguage().Equals( AppManager.editorConfig.Language ) ) {
                     Messaging.setLanguage( AppManager.editorConfig.Language );
                     applyLanguage();
-                    m_preference_dlg.ApplyLanguage();
+                    m_preference_dlg.applyLanguage();
                     AppManager.mixerWindow.applyLanguage();
 #if JAVA
                     if ( m_versioninfo != null ) {
@@ -6371,7 +11681,7 @@ namespace org.kbinani.cadencii {
                         m_versioninfo.applyLanguage();
                     }
 #if ENABLE_PROPERTY
-                    AppManager.propertyWindow.ApplyLanguage();
+                    AppManager.propertyWindow.applyLanguage();
                     AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
 #endif
                 }
@@ -10251,27 +15561,6 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public void changeRealtimeInputSpeed( float newv ) {
-            float old = AppManager.editorConfig.getRealtimeInputSpeed();
-            double now = PortUtil.getCurrentTime();
-            float play_time = (float)(now - AppManager.previewStartedTime) * old / newv;
-            int sec = (int)(Math.Floor( play_time ) + 0.1);
-            int millisec = (int)((play_time - sec) * 1000);
-            AppManager.previewStartedTime = now - (sec + millisec / 1000.0);
-#if ENABLE_MIDI
-            MidiPlayer.SetSpeed( newv, AppManager.previewStartedTime );
-#endif
-        }
-
-#if ENABLE_STRIP_DROPDOWN
-        /// <summary>
-        /// stripDDBtnSpeedの表示状態を更新します
-        /// </summary>
-        public void updateStripDDBtnSpeed() {
-            stripDDBtnSpeed.setText( _( "Speed" ) + " " + (AppManager.editorConfig.getRealtimeInputSpeed() * 100) + "%" );
-        }
-#endif
-
         public void menuSetting_DropDownOpening( Object sender, EventArgs e ) {
             menuSettingMidi.setEnabled( AppManager.getEditMode() != EditMode.REALTIME );
         }
@@ -10339,12 +15628,6 @@ namespace org.kbinani.cadencii {
                 m_overview_start_to_draw_clock = draft;
                 refreshScreen();
             }
-        }
-
-        public int getOverviewStartToDrawX( int mouse_x ) {
-            float clock = mouse_x / m_overview_px_per_clock + m_overview_start_to_draw_clock;
-            int clock_at_left = (int)(clock - (pictPianoRoll.getWidth() - AppManager.keyWidth) / AppManager.scaleX / 2);
-            return (int)(clock_at_left * AppManager.scaleX);
         }
 
         public void pictOverview_MouseDown( Object sender, BMouseEventArgs e ) {
@@ -10486,18 +15769,6 @@ namespace org.kbinani.cadencii {
             g.setStroke( new BasicStroke() );
         }
 
-        public int getOverviewXCoordFromClock( int clock ) {
-            return (int)((clock - m_overview_start_to_draw_clock) * m_overview_px_per_clock);
-        }
-
-        public int getOverviewClockFromXCoord( int x, int start_to_draw_clock ) {
-            return (int)(x / m_overview_px_per_clock) + start_to_draw_clock;
-        }
-
-        public int getOverviewClockFromXCoord( int x ) {
-            return getOverviewClockFromXCoord( x, m_overview_start_to_draw_clock );
-        }
-
         public void pictOverview_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
             m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
             int draft_stdx = getOverviewStartToDrawX( e.X );
@@ -10579,54 +15850,6 @@ namespace org.kbinani.cadencii {
             overviewStopThread();
         }
 
-#if JAVA
-        public class UpdateOverviewProc extends Thread{
-        public void run(){
-#else
-        public void updateOverview() {
-#endif
-            boolean д = true;
-            for ( ; д; ) {
-#if DEBUG
-                PortUtil.println( "updateOverview" );
-#endif
-#if JAVA
-                try{
-                    Thread.sleep( 100 );
-                }catch( InterruptedException ex ){
-                    break;
-                }
-#else
-                Thread.Sleep( 100 );
-#endif
-                double dt = PortUtil.getCurrentTime() - m_overview_btn_downed;
-                int draft = (int)(m_overview_start_to_draw_clock_initial_value + m_overview_direction * dt * _OVERVIEW_SCROLL_SPEED / m_overview_px_per_clock);
-                int clock = getOverviewClockFromXCoord( pictOverview.getWidth(), draft );
-                if ( AppManager.getVsqFile().TotalClocks < clock ) {
-                    draft = AppManager.getVsqFile().TotalClocks - (int)(pictOverview.getWidth() / m_overview_px_per_clock);
-                }
-                if ( draft < 0 ) {
-                    draft = 0;
-                }
-                m_overview_start_to_draw_clock = draft;
-#if JAVA
-                if ( this == null ) {
-#else
-                if ( this == null || (this != null && this.IsDisposed) ) {
-#endif
-                    break;
-                }
-                pictOverview.invalidate();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
-            }
-#if JAVA
-        }
-#endif
-        }
-
-        public void invalidatePictOverview( Object sender, EventArgs e ) {
-            pictOverview.invalidate();
-        }
-
         public void btnMooz_Click( Object sender, EventArgs e ) {
             int draft = m_overview_scale_count - 1;
             if ( draft < _OVERVIEW_SCALE_COUNT_MIN ) {
@@ -10647,69 +15870,6 @@ namespace org.kbinani.cadencii {
             m_overview_px_per_clock = getOverviewScaleX( m_overview_scale_count );
             AppManager.editorConfig.OverviewScaleCount = m_overview_scale_count;
             refreshScreen();
-        }
-
-        public float getOverviewScaleX( int scale_count ) {
-            return (float)Math.Pow( 10.0, 0.2 * scale_count - 3.0 );
-        }
-
-        public void updateBgmMenuState() {
-            menuTrackBgm.removeAll();
-            int count = AppManager.getBgmCount();
-            if ( count > 0 ) {
-                for ( int i = 0; i < count; i++ ) {
-                    BgmFile item = AppManager.getBgm( i );
-                    BMenuItem menu = new BMenuItem();
-                    menu.setText( PortUtil.getFileName( item.file ) );
-                    menu.setToolTipText( item.file );
-
-                    BMenuItem menu_remove = new BMenuItem();
-                    menu_remove.setText( _( "Remove" ) );
-                    menu_remove.setToolTipText( item.file );
-                    menu_remove.setTag( (int)i );
-#if JAVA
-                    menu_remove.clickEvent.add( new BEventHandler( this, "handleBgmRemove_Click" ) );
-#else
-                    menu_remove.Click += new EventHandler( handleBgmRemove_Click );
-#endif
-                    menu.add( menu_remove );
-
-                    BMenuItem menu_start_after_premeasure = new BMenuItem();
-                    menu_start_after_premeasure.setText( _( "Start After Premeasure" ) );
-                    menu_start_after_premeasure.setName( "menu_start_after_premeasure" + i );
-                    menu_start_after_premeasure.setTag( (int)i );
-                    menu_start_after_premeasure.setCheckOnClick( true );
-                    menu_start_after_premeasure.setSelected( item.startAfterPremeasure );
-#if JAVA
-                    menu_start_after_premeasure.checkedChangedEvent.add( new BEventHandler( this, "handleBgmStartAfterPremeasure_CheckedChanged" ) );
-#else
-                    menu_start_after_premeasure.CheckedChanged += new EventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
-#endif
-                    menu.add( menu_start_after_premeasure );
-
-                    BMenuItem menu_offset_second = new BMenuItem();
-                    menu_offset_second.setText( _( "Set Offset Seconds" ) );
-                    menu_offset_second.setTag( (int)i );
-                    menu_offset_second.setToolTipText( item.readOffsetSeconds + " " + _( "seconds" ) );
-#if JAVA
-                    menu_offset_second.clickEvent.add( new BEventHandler( this, "handleBgmOffsetSeconds_Click" ) );
-#else
-                    menu_offset_second.Click += new EventHandler( handleBgmOffsetSeconds_Click );
-#endif
-                    menu.add( menu_offset_second );
-
-                    menuTrackBgm.add( menu );
-                }
-                menuTrackBgm.addSeparator();
-            }
-            BMenuItem menu_add = new BMenuItem();
-            menu_add.setText( _( "Add" ) );
-#if JAVA
-            menu_add.clickEvent.add( new BEventHandler( this, "handleBgmAdd_Click" ) );
-#else
-            menu_add.Click += new EventHandler( handleBgmAdd_Click );
-#endif
-            menuTrackBgm.add( menu_add );
         }
 
         public void handleBgmOffsetSeconds_Click( Object sender, EventArgs e ) {
@@ -10851,642 +16011,6 @@ namespace org.kbinani.cadencii {
             updateBgmMenuState();
         }
 
-#if ENABLE_PROPERTY
-        public void updatePropertyPanelState( PanelState state ) {
-            if ( state == PanelState.Docked ) {
-                m_property_panel_container.Add( AppManager.propertyPanel );
-                AppManager.propertyWindow.setVisible( false );
-                menuVisualProperty.setSelected( true );
-                AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
-                splitContainerProperty.setSplitterFixed( false );
-                splitContainerProperty.Panel1MinSize = _PROPERTY_DOCK_MIN_WIDTH;
-                splitContainerProperty.setDividerLocation( AppManager.editorConfig.PropertyWindowStatus.DockWidth );
-                AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
-                AppManager.propertyWindow.setExtendedState( BForm.ICONIFIED );
-            } else if ( state == PanelState.Hidden ) {
-                AppManager.propertyWindow.setVisible( false );
-                menuVisualProperty.setSelected( false );
-                if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
-                    AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
-                }
-                AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Hidden;
-                splitContainerProperty.Panel1MinSize = 0;
-                splitContainerProperty.setDividerLocation( 0 );
-                splitContainerProperty.setSplitterFixed( true );
-            } else if ( state == PanelState.Window ) {
-                AppManager.propertyWindow.setVisible( true );
-                if ( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ) {
-                    AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
-                }
-                AppManager.propertyWindow.Controls.Add( AppManager.propertyPanel );
-                Point parent = this.getLocation();
-                XmlRectangle rc = AppManager.editorConfig.PropertyWindowStatus.Bounds;
-                Point property = new Point( rc.x, rc.y );
-                AppManager.propertyWindow.setBounds( new Rectangle( parent.x + property.x, parent.y + property.y, rc.Width, rc.Height ) );
-                normalizeFormLocation( AppManager.propertyWindow );
-                menuVisualProperty.setSelected( true );
-                if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
-                    AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
-                }
-                AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Window;
-                splitContainerProperty.Panel1MinSize = 0;
-                splitContainerProperty.setDividerLocation( 0 );
-                splitContainerProperty.setSplitterFixed( true );
-                AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Normal;
-            }
-        }
-#endif
-
-        /// <summary>
-        /// VsqEvent, VsqBPList, BezierCurvesの全てのクロックを、tempoに格納されているテンポテーブルに
-        /// 合致するようにシフトします．ただし，このメソッド内ではtargetのテンポテーブルは変更せず，クロック値だけが変更される．
-        /// </summary>
-        /// <param name="work"></param>
-        /// <param name="tempo"></param>
-        public static void shiftClockToMatchWith( VsqFileEx target, VsqFile tempo, double shift_seconds ) {
-            // テンポをリプレースする場合。
-            // まずクロック値を、リプレース後のモノに置き換え
-            for ( int track = 1; track < target.Track.size(); track++ ) {
-                // ノート・歌手イベントをシフト
-                for ( Iterator<VsqEvent> itr = target.Track.get( track ).getEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = itr.next();
-                    if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
-                        continue;
-                    }
-                    int clock = item.Clock;
-                    double sec_start = target.getSecFromClock( clock ) + shift_seconds;
-                    double sec_end = target.getSecFromClock( clock + item.ID.getLength() ) + shift_seconds;
-                    int clock_start = (int)tempo.getClockFromSec( sec_start );
-                    int clock_end = (int)tempo.getClockFromSec( sec_end );
-                    item.Clock = clock_start;
-                    item.ID.setLength( clock_end - clock_start );
-                    if ( item.ID.VibratoHandle != null ) {
-                        double sec_vib_start = target.getSecFromClock( clock + item.ID.VibratoDelay ) + shift_seconds;
-                        int clock_vib_start = (int)tempo.getClockFromSec( sec_vib_start );
-                        item.ID.VibratoDelay = clock_vib_start - clock_start;
-                        item.ID.VibratoHandle.setLength( clock_end - clock_vib_start );
-                    }
-                }
-
-                // コントロールカーブをシフト
-                for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
-                    CurveType ct = Utility.CURVE_USAGE[j];
-                    VsqBPList item = target.Track.get( track ).getCurve( ct.getName() );
-                    if ( item == null ) {
-                        continue;
-                    }
-                    VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
-                    for ( int i = 0; i < item.size(); i++ ) {
-                        int clock = item.getKeyClock( i );
-                        int value = item.getElement( i );
-                        double sec = target.getSecFromClock( clock ) + shift_seconds;
-                        if ( sec >= 0 ) {
-                            int clock_new = (int)tempo.getClockFromSec( sec );
-                            repl.add( clock_new, value );
-                        }
-                    }
-                    target.Track.get( track ).setCurve( ct.getName(), repl );
-                }
-
-                // ベジエカーブをシフト
-                for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
-                    CurveType ct = Utility.CURVE_USAGE[j];
-                    Vector<BezierChain> list = target.AttachedCurves.get( track - 1 ).get( ct );
-                    if ( list == null ) {
-                        continue;
-                    }
-                    for ( Iterator<BezierChain> itr = list.iterator(); itr.hasNext(); ) {
-                        BezierChain chain = itr.next();
-                        for ( Iterator<BezierPoint> itr2 = chain.points.iterator(); itr2.hasNext(); ) {
-                            BezierPoint point = itr2.next();
-                            PointD bse = new PointD( tempo.getClockFromSec( target.getSecFromClock( point.getBase().getX() ) + shift_seconds ),
-                                                     point.getBase().getY() );
-                            double rx = point.getBase().getX() + point.controlRight.getX();
-                            double new_rx = tempo.getClockFromSec( target.getSecFromClock( rx ) + shift_seconds );
-                            PointD ctrl_r = new PointD( new_rx - bse.getX(), point.controlRight.getY() );
-
-                            double lx = point.getBase().getX() + point.controlLeft.getX();
-                            double new_lx = tempo.getClockFromSec( target.getSecFromClock( lx ) + shift_seconds );
-                            PointD ctrl_l = new PointD( new_lx - bse.getX(), point.controlLeft.getY() );
-                            point.setBase( bse );
-                            point.controlLeft = ctrl_l;
-                            point.controlRight = ctrl_r;
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// メインメニュー項目の中から，Nameプロパティがnameであるものを検索します．見つからなければnullを返す．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public Object searchMenuItemFromName( String name ) {
-            int count = menuStripMain.getMenuCount();
-            for ( int i = 0; i < count; i++ ) {
-                Object tsi = menuStripMain.getMenu( i );
-                Object ret = searchMenuItemRecurse( name, tsi );
-                if ( ret != null ) {
-                    return ret;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// 指定されたメニューアイテムから，Nameプロパティがnameであるものを再帰的に検索します．見つからなければnullを返す
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="tree"></param>
-        /// <returns></returns>
-        public Object searchMenuItemRecurse( String name, Object tree ) {
-            String tree_name = "";
-#if JAVA
-            JMenuItem menu = null;
-            if( tree instanceof JMenuItem ){
-                menu = (JMenuItem)tree;
-                tree_name = menu.getName();
-                if( tree_name == null ){
-                    tree_name = "";
-                }
-            }else{
-                return null;
-            }
-#else
-            System.Windows.Forms.ToolStripMenuItem menu = null;
-            if ( tree is System.Windows.Forms.ToolStripItem ){
-                if ( tree is System.Windows.Forms.ToolStripMenuItem ) {
-                    menu = (System.Windows.Forms.ToolStripMenuItem)tree;
-                }
-                tree_name = ((System.Windows.Forms.ToolStripItem)tree).Name;
-            } else {
-                return null;
-            }
-#endif
-            if ( tree_name.Equals( name ) ) {
-                return tree;
-            } else {
-                if ( menu == null ) {
-                    return null;
-                }
-#if JAVA
-                int count = menu.getComponentCount();
-#else
-                int count = menu.DropDownItems.Count;
-#endif
-                for ( int i = 0; i < count; i++ ) {
-#if JAVA
-                    Component tsi = menu.getComponent( i );
-#else
-                    System.Windows.Forms.ToolStripItem tsi = menu.DropDownItems[i];
-#endif
-                    String tsi_name = "";
-#if JAVA
-                    if( tsi instanceof Component ){
-                        tsi_name = ((Component)tsi).getName();
-                        if( tsi_name == null ){
-                            tsi_name = "";
-                        }
-                    }else{
-                        continue;
-                    }
-#else
-                    if ( tsi is System.Windows.Forms.ToolStripItem ) {
-                        tsi_name = ((System.Windows.Forms.ToolStripItem)tsi).Name;
-                    } else {
-                        continue;
-                    }
-#endif
-                    if ( tsi_name.Equals( name ) ) {
-                        return tsi;
-                    }
-                    Object ret = searchMenuItemRecurse( name, tsi );
-                    if ( ret != null ) {
-                        return ret;
-                    }
-                }
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// フォームのタイトルバーが画面内に入るよう、Locationを正規化します
-        /// </summary>
-        /// <param name="form"></param>
-        public static void normalizeFormLocation( BForm dlg ) {
-            Rectangle rcScreen = PortUtil.getWorkingArea( dlg );
-            int top = dlg.getY();
-            if ( top + dlg.getHeight() > rcScreen.y + rcScreen.height ) {
-                // ダイアログの下端が隠れる場合、位置をずらす
-                top = rcScreen.y + rcScreen.height - dlg.getHeight();
-            }
-            if ( top < rcScreen.y ) {
-                // ダイアログの上端が隠れる場合、位置をずらす
-                top = rcScreen.y;
-            }
-            int left = dlg.getX();
-            if ( left + dlg.getWidth() > rcScreen.x + rcScreen.width ) {
-                left = rcScreen.x + rcScreen.width - dlg.getWidth();
-            }
-            if ( left < rcScreen.x ) {
-                left = rcScreen.x;
-            }
-            dlg.setLocation( left, top );
-        }
-
-        /// <summary>
-        /// フォームをマウス位置に出す場合に推奨されるフォーム位置を計算します
-        /// </summary>
-        /// <param name="dlg"></param>
-        /// <returns></returns>
-        public Point getFormPreferedLocation( BDialog dlg ) {
-            Point mouse = PortUtil.getMousePosition();
-            Rectangle rcScreen = PortUtil.getWorkingArea( this );
-            int top = mouse.y - dlg.getHeight() / 2;
-            if ( top + dlg.getHeight() > rcScreen.y + rcScreen.height ) {
-                // ダイアログの下端が隠れる場合、位置をずらす
-                top = rcScreen.y + rcScreen.height - dlg.getHeight();
-            }
-            if ( top < rcScreen.y ) {
-                // ダイアログの上端が隠れる場合、位置をずらす
-                top = rcScreen.y;
-            }
-            int left = mouse.x - dlg.getWidth() / 2;
-            if ( left + dlg.getWidth() > rcScreen.x + rcScreen.width ) {
-                left = rcScreen.x + rcScreen.width - dlg.getWidth();
-            }
-            return new Point( left, top );
-        }
-
-        public void updateLayout() {
-#if !JAVA
-            int width = panel1.Width;
-            int height = panel1.Height;
-
-            if ( AppManager.editorConfig.OverviewEnabled ) {
-                panelOverview.Height = _OVERVIEW_HEIGHT;
-            } else {
-                panelOverview.Height = 0;
-            }
-            panelOverview.Width = width;
-            int key_width = AppManager.keyWidth;
-            pictOverview.Left = key_width;
-            pictOverview.Width = panelOverview.Width - key_width;
-            pictOverview.Top = 0;
-            pictOverview.Height = panelOverview.Height;
-
-            btnMooz.setBounds( 3, 12, 23, 23 );
-            btnZoom.setBounds( 26, 12, 23, 23 );
-
-            picturePositionIndicator.Width = width;
-            picturePositionIndicator.Height = _PICT_POSITION_INDICATOR_HEIGHT;
-
-            hScroll.Top = 0;
-            hScroll.Left = key_width;
-            hScroll.Width = width - key_width - _SCROLL_WIDTH - trackBar.Width;
-            hScroll.Height = _SCROLL_WIDTH;
-
-            vScroll.Width = _SCROLL_WIDTH;
-            vScroll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH - panelOverview.Height;
-
-            pictPianoRoll.Width = width - _SCROLL_WIDTH;
-            pictPianoRoll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH - panelOverview.Height;
-
-            pictureBox3.Width = key_width - _SCROLL_WIDTH;
-            pictKeyLengthSplitter.Width = _SCROLL_WIDTH;
-            pictureBox3.Height = _SCROLL_WIDTH;
-            pictureBox2.Height = _SCROLL_WIDTH;
-            trackBar.Height = _SCROLL_WIDTH;
-
-            panelOverview.Top = 0;
-            panelOverview.Left = 0;
-
-            picturePositionIndicator.Top = panelOverview.Height;
-            picturePositionIndicator.Left = 0;
-
-            pictPianoRoll.Top = _PICT_POSITION_INDICATOR_HEIGHT + panelOverview.Height;
-            pictPianoRoll.Left = 0;
-
-            vScroll.Top = _PICT_POSITION_INDICATOR_HEIGHT + panelOverview.Height;
-            vScroll.Left = width - _SCROLL_WIDTH;
-
-            pictureBox3.Top = height - _SCROLL_WIDTH;
-            pictureBox3.Left = 0;
-            pictKeyLengthSplitter.Top = height - _SCROLL_WIDTH;
-            pictKeyLengthSplitter.Left = pictureBox3.Width;
-
-            hScroll.Top = height - _SCROLL_WIDTH;
-            hScroll.Left = pictureBox3.Width + pictKeyLengthSplitter.Width;
-
-            trackBar.Top = height - _SCROLL_WIDTH;
-            trackBar.Left = width - _SCROLL_WIDTH - trackBar.Width;
-
-            pictureBox2.Top = height - _SCROLL_WIDTH;
-            pictureBox2.Left = width - _SCROLL_WIDTH;
-
-            waveView.Top = 0;
-            waveView.Left = key_width;
-            waveView.Width = width - key_width;
-#endif
-        }
-
-        public void updateRendererMenu() {
-            if ( !VSTiProxy.isRendererAvailable( RendererKind.VOCALOID1_100 ) ) {
-                cMenuTrackTabRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererVOCALOID100.setIcon( null );
-                menuTrackRendererVOCALOID100.setIcon( null );
-            }
-
-            if ( !VSTiProxy.isRendererAvailable( RendererKind.VOCALOID1_101 ) ) {
-                cMenuTrackTabRendererVOCALOID101.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererVOCALOID101.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererVOCALOID101.setIcon( null );
-                menuTrackRendererVOCALOID101.setIcon( null );
-            }
-
-            if ( !VSTiProxy.isRendererAvailable( RendererKind.VOCALOID2 ) ) {
-                cMenuTrackTabRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererVOCALOID2.setIcon( null );
-                menuTrackRendererVOCALOID2.setIcon( null );
-            }
-
-            if ( !VSTiProxy.isRendererAvailable( RendererKind.UTAU ) ) {
-                cMenuTrackTabRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererUtau.setIcon( null );
-                menuTrackRendererUtau.setIcon( null );
-            }
-
-            if ( !VSTiProxy.isRendererAvailable( RendererKind.STRAIGHT_UTAU ) ) {
-                cMenuTrackTabRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererStraight.setIcon( null );
-                menuTrackRendererStraight.setIcon( null );
-            }
-
-            if ( !VSTiProxy.isRendererAvailable( RendererKind.AQUES_TONE ) ) {
-                cMenuTrackTabRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererAquesTone.setIcon( null );
-                menuTrackRendererAquesTone.setIcon( null );
-            }
-        }
-
-        public void drawUtauVibrato( Graphics2D g, UstVibrato vibrato, int note, int clock_start, int clock_width ) {
-            //SmoothingMode old = g.SmoothingMode;
-            //g.SmoothingMode = SmoothingMode.AntiAlias;
-            // 魚雷を描いてみる
-            int y0 = yCoordFromNote( note - 0.5f );
-            int x0 = AppManager.xCoordFromClocks( clock_start );
-            int px_width = AppManager.xCoordFromClocks( clock_start + clock_width ) - x0;
-            int boxheight = (int)(vibrato.Depth * 2 / 100.0f * AppManager.editorConfig.PxTrackHeight);
-            int px_shift = (int)(vibrato.Shift / 100.0 * vibrato.Depth / 100.0 * AppManager.editorConfig.PxTrackHeight);
-
-            // vibrato in
-            int cl_vibin_end = clock_start + (int)(clock_width * vibrato.In / 100.0);
-            int x_vibin_end = AppManager.xCoordFromClocks( cl_vibin_end );
-            Point ul = new Point( x_vibin_end, y0 - boxheight / 2 - px_shift );
-            Point dl = new Point( x_vibin_end, y0 + boxheight / 2 - px_shift );
-            g.setColor( Color.black );
-            g.drawPolygon( new int[] { x0, ul.x, dl.x },
-                           new int[] { y0, ul.y, dl.y },
-                           3 );
-
-            // vibrato out
-            int cl_vibout_start = clock_start + clock_width - (int)(clock_width * vibrato.Out / 100.0);
-            int x_vibout_start = AppManager.xCoordFromClocks( cl_vibout_start );
-            Point ur = new Point( x_vibout_start, y0 - boxheight / 2 - px_shift );
-            Point dr = new Point( x_vibout_start, y0 + boxheight / 2 - px_shift );
-            g.drawPolygon( new int[] { x0 + px_width, ur.x, dr.x },
-                           new int[] { y0, ur.y, dr.y },
-                           3 );
-
-            // box
-            int boxwidth = x_vibout_start - x_vibin_end;
-            if ( boxwidth > 0 ) {
-                g.drawPolygon( new int[] { ul.x, dl.x, dr.x, ur.x },
-                               new int[] { ul.y, dl.y, dr.y, ur.y },
-                               4 );
-            }
-
-#if DEBUG
-            BufferedWriter sw = new BufferedWriter( new FileWriter( "list.txt" ) );
-#endif
-            // buf1に、vibrato in/outによる増幅率を代入
-            float[] buf1 = new float[clock_width + 1];
-            for ( int clock = clock_start; clock <= clock_start + clock_width; clock++ ) {
-                buf1[clock - clock_start] = 1.0f;
-            }
-            // vibin
-            if ( cl_vibin_end - clock_start > 0 ) {
-                for ( int clock = clock_start; clock <= cl_vibin_end; clock++ ) {
-                    int i = clock - clock_start;
-                    buf1[i] *= i / (float)(cl_vibin_end - clock_start);
-#if DEBUG
-                    sw.write( "vibin: " + i + "\t" + buf1[i] );
-                    sw.newLine();
-#endif
-                }
-            }
-            if ( clock_start + clock_width - cl_vibout_start > 0 ) {
-                for ( int clock = clock_start + clock_width; clock >= cl_vibout_start; clock-- ) {
-                    int i = clock - clock_start;
-                    float v = (clock_start + clock_width - clock) / (float)(clock_start + clock_width - cl_vibout_start);
-                    buf1[i] = buf1[i] * v;
-#if DEBUG
-                    sw.write( "vibout: " + i + "\t" + buf1[i] );
-                    sw.newLine();
-#endif
-                }
-            }
-
-            // buf2に、shiftによるy座標のシフト量を代入
-            float[] buf2 = new float[clock_width + 1];
-            for ( int i = 0; i < clock_width; i++ ) {
-                buf2[i] = px_shift * buf1[i];
-            }
-            try {
-                double phase = 2.0 * Math.PI * vibrato.Phase / 100.0;
-                double omega = 2.0 * Math.PI / vibrato.Period;   //角速度(rad/msec)
-                double msec = AppManager.getVsqFile().getSecFromClock( clock_start - 1 ) * 1000.0;
-                float px_track_height = AppManager.editorConfig.PxTrackHeight;
-                phase -= (AppManager.getVsqFile().getSecFromClock( clock_start ) * 1000.0 - msec) * omega;
-                for ( int clock = clock_start; clock <= clock_start + clock_width; clock++ ) {
-                    int i = clock - clock_start;
-                    double t_msec = AppManager.getVsqFile().getSecFromClock( clock ) * 1000.0;
-                    phase += (t_msec - msec) * omega;
-                    msec = t_msec;
-                    buf2[i] += (float)(vibrato.Depth * 0.01f * px_track_height * buf1[i] * Math.Sin( phase ));
-                }
-                int[] listx = new int[clock_width + 1];
-                int[] listy = new int[clock_width + 1];
-                for ( int clock = clock_start; clock <= clock_start + clock_width; clock++ ) {
-                    int i = clock - clock_start;
-                    listx[i] = AppManager.xCoordFromClocks( clock );
-                    listy[i] = (int)(y0 + buf2[i]);
-                }
-#if DEBUG
-                AppManager.debugWriteLine( "DrawUtauVibrato" );
-                for ( int i = 0; i < listx.Length; i++ ) {
-                    sw.write( listx[i] + "\t" + listy[i] );
-                    sw.newLine();
-                }
-                sw.close();
-                sw = null;
-#endif
-                if ( listx.Length >= 2 ) {
-                    g.setColor( Color.red );
-                    g.drawPolygon( listx, listy, listx.Length );
-                }
-                //g.SmoothingMode = old;
-            } catch ( Exception oex ) {
-#if DEBUG
-                AppManager.debugWriteLine( "DrawUtauVibrato; oex=" + oex );
-#endif
-            }
-        }
-
-#if !JAVA
-        /// <summary>
-        /// listに登録されているToolStripを，座標の若い順にcontainerに追加します
-        /// </summary>
-        /// <param name="panel"></param>
-        /// <param name="list"></param>
-        public void addToolStripInPositionOrder( System.Windows.Forms.ToolStripPanel panel, Vector<BToolBar> list ) {
-            boolean[] reg = new boolean[list.size()];
-            for ( int i = 0; i < reg.Length; i++ ) {
-                reg[i] = false;
-            }
-            for ( int i = 0; i < list.size(); i++ ) {
-                Point p = new Point( int.MaxValue, int.MaxValue );
-                int index = -1;
-
-                // x座標の小さいやつを探す
-                for ( int j = 0; j < list.size(); j++ ) {
-                    if ( !reg[j] ) {
-                        BToolBar ts = list.get( j );
-                        if ( p.y > ts.Location.Y ) {
-                            index = j;
-                            p = new Point( ts.Location.X, ts.Location.Y );
-                        }
-                        if ( p.y >= ts.Location.Y && p.x > ts.Location.X ) {
-                            index = j;
-                            p = new Point( ts.Location.X, ts.Location.Y );
-                        }
-                    }
-                }
-
-                // コントロールを登録
-                panel.Join( list.get( index ), list.get( index ).Location );
-                reg[index] = true;
-            }
-        }
-#endif
-
-#if ENABLE_SCRIPT
-        /// <summary>
-        /// Palette Toolの表示を更新します
-        /// </summary>
-        public void updatePaletteTool() {
-            int count = 0;
-            int num_has_dialog = 0;
-            for ( Iterator<BToolStripButton> itr = m_palette_tools.iterator(); itr.hasNext(); ) {
-                BToolStripButton item = itr.next();
-                toolStripTool.add( item );
-            }
-            String lang = Messaging.getLanguage();
-            boolean first = true;
-            for ( Iterator<String> itr = PaletteToolServer.loadedTools.keySet().iterator(); itr.hasNext(); ) {
-                String id = itr.next();
-                count++;
-                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-#if !JAVA
-                System.Drawing.Bitmap icon = ipt.getIcon();
-#endif
-                String name = ipt.getName( lang );
-                String desc = ipt.getDescription( lang );
-
-                // toolStripPaletteTools
-                BToolStripButton tsb = new BToolStripButton();
-#if !JAVA
-                if ( icon != null ) {
-                    tsb.setIcon( new ImageIcon( icon ) );
-                }
-#endif
-                tsb.setText( name );
-                tsb.setToolTipText( desc );
-                tsb.setTag( id );
-                tsb.setCheckOnClick( false );
-#if JAVA
-                tsb.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
-#else
-                tsb.Click += new EventHandler( commonStripPaletteTool_Clicked );
-                tsb.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
-#endif
-                if ( first ) {
-                    toolStripTool.addSeparator();
-                    first = false;
-                }
-                m_palette_tools.add( tsb );
-                toolStripTool.add( tsb );
-
-                // cMenuTrackSelector
-                BMenuItem tsmi = new BMenuItem();
-                tsmi.setText( name );
-                tsmi.setToolTipText( desc );
-                tsmi.setTag( id );
-#if JAVA
-                tsmi.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
-#else
-                tsmi.Click += new EventHandler( commonStripPaletteTool_Clicked );
-#endif
-                cMenuTrackSelectorPaletteTool.add( tsmi );
-
-                // cMenuPiano
-                BMenuItem tsmi2 = new BMenuItem();
-                tsmi2.setText( name );
-                tsmi2.setToolTipText( desc );
-                tsmi2.setTag( id );
-#if JAVA
-                tsmi2.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
-#else
-                tsmi2.Click += new EventHandler( commonStripPaletteTool_Clicked );
-#endif
-                cMenuPianoPaletteTool.add( tsmi2 );
-
-                // menuSettingPaletteTool
-                if ( ipt.hasDialog() ) {
-                    BMenuItem tsmi3 = new BMenuItem();
-                    tsmi3.setText( name );
-                    tsmi3.setTag( id );
-#if JAVA
-                    tsmi3.clickEvent.add( new BEventHandler( this, "commonSettingPaletteTool" ) );
-#else
-                    tsmi3.Click += new EventHandler( commonSettingPaletteTool );
-#endif
-                    menuSettingPaletteTool.add( tsmi3 );
-                    num_has_dialog++;
-                }
-            }
-            if ( count == 0 ) {
-                cMenuTrackSelectorPaletteTool.setVisible( false );
-                cMenuPianoPaletteTool.setVisible( false );
-            }
-            if ( num_has_dialog == 0 ) {
-                menuSettingPaletteTool.setVisible( false );
-            }
-        }
-#endif
-
         public void commonSettingPaletteTool( Object sender, EventArgs e ) {
 #if ENABLE_SCRIPT
             if ( sender is BMenuItem ) {
@@ -11524,505 +16048,12 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void updateCopyAndPasteButtonStatus() {
-            // copy cut deleteの表示状態更新
-            boolean selected_is_null = (AppManager.getSelectedEventCount() == 0) &&
-                                       (AppManager.getSelectedTempoCount() == 0) &&
-                                       (AppManager.getSelectedTimesigCount() == 0) &&
-                                       (AppManager.getSelectedPointIDCount() == 0);
-
-            int selected_point_id_count = AppManager.getSelectedPointIDCount();
-            cMenuTrackSelectorCopy.setEnabled( selected_point_id_count > 0 );
-            cMenuTrackSelectorCut.setEnabled( selected_point_id_count > 0 );
-            cMenuTrackSelectorDeleteBezier.setEnabled( (AppManager.isCurveMode() && AppManager.getLastSelectedBezier() != null) );
-            if ( selected_point_id_count > 0 ) {
-                cMenuTrackSelectorDelete.setEnabled( true );
-            } else {
-                SelectedEventEntry last = AppManager.getLastSelectedEvent();
-                if ( last == null ) {
-                    cMenuTrackSelectorDelete.setEnabled( false );
-                } else {
-                    cMenuTrackSelectorDelete.setEnabled( last.original.ID.type == VsqIDType.Singer );
-                }
-            }
-
-            cMenuPianoCopy.setEnabled( !selected_is_null );
-            cMenuPianoCut.setEnabled( !selected_is_null );
-            cMenuPianoDelete.setEnabled( !selected_is_null );
-
-            menuEditCopy.setEnabled( !selected_is_null );
-            menuEditCut.setEnabled( !selected_is_null );
-            menuEditDelete.setEnabled( !selected_is_null );
-
-            ClipboardEntry ce = AppManager.getCopiedItems();
-            int copy_started_clock = ce.copyStartedClock;
-            TreeMap<CurveType, VsqBPList> copied_curve = ce.points;
-            TreeMap<CurveType, Vector<BezierChain>> copied_bezier = ce.beziers;
-            boolean copied_is_null = (ce.events.size() == 0) &&
-                                  (ce.tempo.size() == 0) &&
-                                  (ce.timesig.size() == 0) &&
-                                  (copied_curve.size() == 0) &&
-                                  (copied_bezier.size() == 0);
-            boolean enabled = !copied_is_null;
-            if ( copied_curve.size() == 1 ) {
-                // 1種類のカーブがコピーされている場合→コピーされているカーブの種類と、現在選択されているカーブの種類とで、最大値と最小値が一致している場合のみ、ペースト可能
-                CurveType ct = CurveType.Empty;
-                for ( Iterator<CurveType> itr = copied_curve.keySet().iterator(); itr.hasNext(); ) {
-                    CurveType c = itr.next();
-                    ct = c;
-                }
-                CurveType selected = trackSelector.getSelectedCurve();
-                if ( ct.getMaximum() == selected.getMaximum() &&
-                     ct.getMinimum() == selected.getMinimum() &&
-                     !selected.isScalar() && !selected.isAttachNote() ) {
-                    enabled = true;
-                } else {
-                    enabled = false;
-                }
-            } else if ( copied_curve.size() >= 2 ) {
-                // 複数種類のカーブがコピーされている場合→そのままペーストすればOK
-                enabled = true;
-            }
-            cMenuTrackSelectorPaste.setEnabled( enabled );
-            cMenuPianoPaste.setEnabled( enabled );
-            menuEditPaste.setEnabled( enabled );
-
-            /*int copy_started_clock;
-            boolean copied_is_null = (AppManager.GetCopiedEvent().Count == 0) &&
-                                  (AppManager.GetCopiedTempo( out copy_started_clock ).Count == 0) &&
-                                  (AppManager.GetCopiedTimesig( out copy_started_clock ).Count == 0) &&
-                                  (AppManager.GetCopiedCurve( out copy_started_clock ).Count == 0) &&
-                                  (AppManager.GetCopiedBezier( out copy_started_clock ).Count == 0);
-            menuEditCut.isEnabled() = !selected_is_null;
-            menuEditCopy.isEnabled() = !selected_is_null;
-            menuEditDelete.isEnabled() = !selected_is_null;
-            //stripBtnCopy.isEnabled() = !selected_is_null;
-            //stripBtnCut.isEnabled() = !selected_is_null;
-
-            if ( AppManager.GetCopiedEvent().Count != 0 ) {
-                menuEditPaste.isEnabled() = (AppManager.CurrentClock >= AppManager.VsqFile.getPreMeasureClocks());
-                //stripBtnPaste.isEnabled() = (AppManager.CurrentClock >= AppManager.VsqFile.getPreMeasureClocks());
-            } else {
-                menuEditPaste.isEnabled() = !copied_is_null;
-                //stripBtnPaste.isEnabled() = !copied_is_null;
-            }*/
-        }
-
-        /// <summary>
-        /// 現在の編集データを全て破棄する。DirtyCheckは行われない。
-        /// </summary>
-        public void clearExistingData() {
-            AppManager.clearCommandBuffer();
-            AppManager.clearSelectedBezier();
-            AppManager.clearSelectedEvent();
-            AppManager.clearSelectedTempo();
-            AppManager.clearSelectedTimesig();
-            if ( AppManager.isPlaying() ) {
-                AppManager.setPlaying( false );
-            }
-            waveView.unloadAll();
-        }
-
-        /// <summary>
-        /// 保存されていない編集内容があるかどうかチェックし、必要なら確認ダイアログを出す。
-        /// </summary>
-        /// <returns>保存されていない保存内容などない場合、または、保存する必要がある場合で（保存しなくてよいと指定された場合または保存が行われた場合）にtrueを返す</returns>
-        public boolean dirtyCheck() {
-            if ( m_edited ) {
-                String file = AppManager.getFileName();
-                if ( file.Equals( "" ) ) {
-                    file = "Untitled";
-                } else {
-                    file = PortUtil.getFileName( file );
-                }
-                BDialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
-                                                              _( "Affirmation" ),
-                                                              PortUtil.MSGBOX_YES_NO_CANCEL_OPTION,
-                                                              PortUtil.MSGBOX_QUESTION_MESSAGE );
-                if ( dr == BDialogResult.YES ) {
-                    if ( AppManager.getFileName().Equals( "" ) ) {
-                        int dr2 = saveXmlVsqDialog.showSaveDialog( this );
-                        if ( dr2 == BFileChooser.APPROVE_OPTION ) {
-                            AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        AppManager.saveTo( AppManager.getFileName() );
-                        return true;
-                    }
-                } else if ( dr == BDialogResult.NO ) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return true;
-            }
-        }
-
-#if JAVA
-        /// <summary>
-        /// waveView用のwaveファイルを読込むスレッドで使用する
-        /// </summary>
-        /// <param name="arg"></param>
-        public class LoadWaveProc extends Thread {
-            public String file = "";
-            public int track;
-
-            public LoadWaveProc( int track, String file ){
-                this.file = file;
-                this.track = track;
-            }
-
-            public void run(){
-                waveView.load( track, file );
-            }
-        }
-#endif
-
-        public void loadWave( Object arg ) {
-            Object[] argArr = (Object[])arg;
-            String file = (String)argArr[0];
-            int track = (Integer)argArr[1];
-            waveView.load( track, file );
-        }
-
-        /// <summary>
-        /// menuVisualWaveform.isSelected()の値をもとに、splitterContainer2の表示状態を更新します
-        /// </summary>
-        public void updateSplitContainer2Size() {
-            if ( menuVisualWaveform.isSelected() ) {
-                splitContainer2.setPanel2MinSize( _SPL2_PANEL2_MIN_HEIGHT );
-                splitContainer2.setSplitterFixed( false );
-                splitContainer2.setDividerSize( _SPL_SPLITTER_WIDTH );
-                if ( m_last_splitcontainer2_split_distance <= 0 || m_last_splitcontainer2_split_distance > splitContainer2.getHeight() ) {
-                    splitContainer2.setDividerLocation( (int)(splitContainer2.getHeight() * 0.9) );
-                } else {
-                    splitContainer2.setDividerLocation( m_last_splitcontainer2_split_distance );
-                }
-            } else {
-                m_last_splitcontainer2_split_distance = splitContainer2.getDividerLocation();
-                splitContainer2.setPanel2MinSize( 0 );
-                splitContainer2.setDividerSize( 0 );
-                splitContainer2.setDividerLocation( splitContainer2.getHeight() );
-                splitContainer2.setSplitterFixed( true );
-            }
-        }
-
-        /// <summary>
-        /// trackSelectorに表示するコントロールのカーブの種類を、AppManager.EditorConfigの設定に応じて更新します
-        /// </summary>
-        public void updateTrackSelectorVisibleCurve() {
-            if ( AppManager.editorConfig.CurveVisibleVelocity ) {
-                trackSelector.addViewingCurve( CurveType.VEL );
-            }
-            if ( AppManager.editorConfig.CurveVisibleAccent ) {
-                trackSelector.addViewingCurve( CurveType.Accent );
-            }
-            if ( AppManager.editorConfig.CurveVisibleDecay ) {
-                trackSelector.addViewingCurve( CurveType.Decay );
-            }
-            if ( AppManager.editorConfig.CurveVisibleVibratoRate ) {
-                trackSelector.addViewingCurve( CurveType.VibratoRate );
-            }
-            if ( AppManager.editorConfig.CurveVisibleVibratoDepth ) {
-                trackSelector.addViewingCurve( CurveType.VibratoDepth );
-            }
-            if ( AppManager.editorConfig.CurveVisibleDynamics ) {
-                trackSelector.addViewingCurve( CurveType.DYN );
-            }
-            if ( AppManager.editorConfig.CurveVisibleBreathiness ) {
-                trackSelector.addViewingCurve( CurveType.BRE );
-            }
-            if ( AppManager.editorConfig.CurveVisibleBrightness ) {
-                trackSelector.addViewingCurve( CurveType.BRI );
-            }
-            if ( AppManager.editorConfig.CurveVisibleClearness ) {
-                trackSelector.addViewingCurve( CurveType.CLE );
-            }
-            if ( AppManager.editorConfig.CurveVisibleOpening ) {
-                trackSelector.addViewingCurve( CurveType.OPE );
-            }
-            if ( AppManager.editorConfig.CurveVisibleGendorfactor ) {
-                trackSelector.addViewingCurve( CurveType.GEN );
-            }
-            if ( AppManager.editorConfig.CurveVisiblePortamento ) {
-                trackSelector.addViewingCurve( CurveType.POR );
-            }
-            if ( AppManager.editorConfig.CurveVisiblePit ) {
-                trackSelector.addViewingCurve( CurveType.PIT );
-            }
-            if ( AppManager.editorConfig.CurveVisiblePbs ) {
-                trackSelector.addViewingCurve( CurveType.PBS );
-            }
-            if ( AppManager.editorConfig.CurveVisibleHarmonics ) {
-                trackSelector.addViewingCurve( CurveType.harmonics );
-            }
-            if ( AppManager.editorConfig.CurveVisibleFx2Depth ) {
-                trackSelector.addViewingCurve( CurveType.fx2depth );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso1 ) {
-                trackSelector.addViewingCurve( CurveType.reso1freq );
-                trackSelector.addViewingCurve( CurveType.reso1bw );
-                trackSelector.addViewingCurve( CurveType.reso1amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso2 ) {
-                trackSelector.addViewingCurve( CurveType.reso2freq );
-                trackSelector.addViewingCurve( CurveType.reso2bw );
-                trackSelector.addViewingCurve( CurveType.reso2amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso3 ) {
-                trackSelector.addViewingCurve( CurveType.reso3freq );
-                trackSelector.addViewingCurve( CurveType.reso3bw );
-                trackSelector.addViewingCurve( CurveType.reso3amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso4 ) {
-                trackSelector.addViewingCurve( CurveType.reso4freq );
-                trackSelector.addViewingCurve( CurveType.reso4bw );
-                trackSelector.addViewingCurve( CurveType.reso4amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleEnvelope ) {
-                trackSelector.addViewingCurve( CurveType.Env );
-            }
-        }
-
-        /// <summary>
-        /// ウィンドウの表示内容に応じて、ウィンドウサイズの最小値を計算します
-        /// </summary>
-        /// <returns></returns>
-        public Dimension getWindowMinimumSize() {
-            Dimension current_minsize = new Dimension( getMinimumSize().width, getMinimumSize().height );
-#if JAVA
-            Dimension client = getContentPane().getSize();
-            Dimension current = getSize();
-            return new Dimension( current_minsize.width,
-                                  splitContainer1.getPanel2MinSize() +
-                                  _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.getMinimumSize().height +
-                                  menuStripMain.getHeight() +
-                                  (current.height - client.height) +
-                                  20 );
-#else
-            Dimension client = new Dimension( this.ClientSize.Width, this.ClientSize.Height );
-            Dimension current = new Dimension( this.Size.Width, this.Size.Height );
-            return new Dimension( current_minsize.width,
-                                  splitContainer1.getPanel2MinSize() +
-                                  _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.getMinimumSize().height +
-                                  toolStripContainer.TopToolStripPanel.Height +
-                                  menuStripMain.getHeight() + statusStrip1.Height +
-                                  (current.height - client.height) +
-                                  20 );
-#endif
-        }
-
-        /// <summary>
-        /// 現在のAppManager.inputTextBoxの状態を元に、歌詞の変更を反映させるコマンドを実行します
-        /// </summary>
-        public void executeLyricChangeCommand() {
-#if JAVA
-            if ( !AppManager.inputTextBox.isVisible() ) {
-#else
-            if ( !AppManager.inputTextBox.Enabled ) {
-#endif
-                return;
-            }
-#if !JAVA
-            if ( AppManager.inputTextBox.IsDisposed ) {
-                return;
-            }
-#endif
-            int selected = AppManager.getSelected();
-            SelectedEventEntry last_selected_event = AppManager.getLastSelectedEvent();
-            String original_phrase = last_selected_event.original.ID.LyricHandle.L0.Phrase;
-            String original_symbol = last_selected_event.original.ID.LyricHandle.L0.getPhoneticSymbol();
-            boolean symbol_protected = last_selected_event.original.ID.LyricHandle.L0.PhoneticSymbolProtected;
-            boolean phonetic_symbol_edit_mode = ((TagLyricTextBox)AppManager.inputTextBox.getTag()).isPhoneticSymbolEditMode();
-#if DEBUG
-            AppManager.debugWriteLine( "    original_phase,symbol=" + original_phrase + "," + original_symbol );
-            AppManager.debugWriteLine( "    phonetic_symbol_edit_mode=" + phonetic_symbol_edit_mode );
-            AppManager.debugWriteLine( "    AppManager.inputTextBox.setText(=" + AppManager.inputTextBox.getText() );
-#endif
-            String phrase;
-            ByRef<String> phonetic_symbol = new ByRef<String>( "" );
-            phrase = AppManager.inputTextBox.getText();
-            if ( !phonetic_symbol_edit_mode ) {
-                if ( AppManager.editorConfig.SelfDeRomanization ) {
-                    phrase = KanaDeRomanization.Attach( phrase );
-                }
-            }
-            if ( (phonetic_symbol_edit_mode && AppManager.inputTextBox.getText() != original_symbol) ||
-                 (!phonetic_symbol_edit_mode && phrase != original_phrase) ) {
-                TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
-                if ( phonetic_symbol_edit_mode ) {
-                    phrase = kvp.getBufferText();
-                    phonetic_symbol.value = AppManager.inputTextBox.getText();
-                    String[] spl = PortUtil.splitString( phonetic_symbol.value, new char[] { ' ' }, true );
-                    Vector<String> list = new Vector<String>();
-                    for ( int i = 0; i < spl.Length; i++ ) {
-                        String s = spl[i];
-                        if ( VsqPhoneticSymbol.isValidSymbol( s ) ) {
-                            list.add( s );
-                        }
-                    }
-                    phonetic_symbol.value = "";
-                    boolean first = true;
-                    for ( Iterator<String> itr = list.iterator(); itr.hasNext(); ) {
-                        String s = itr.next();
-                        if ( first ) {
-                            phonetic_symbol.value += s;
-                            first = false;
-                        } else {
-                            phonetic_symbol.value += " " + s;
-                        }
-                    }
-                    symbol_protected = true;
-                } else {
-                    if ( !symbol_protected ) {
-                        SymbolTable.attatch( phrase, phonetic_symbol );
-                    } else {
-                        phonetic_symbol.value = original_symbol;
-                    }
-                }
-#if DEBUG
-                AppManager.debugWriteLine( "    phrase,phonetic_symbol=" + phrase + "," + phonetic_symbol );
-#endif
-                VsqEvent item = (VsqEvent)last_selected_event.original.clone();
-                if ( phonetic_symbol_edit_mode ) {
-                    item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
-                } else {
-                    item.ID.LyricHandle.L0.Phrase = phrase;
-                    item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
-                    VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
-                    VsqEvent singer = vsq_track.getSingerEventAt( item.Clock );
-                    SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
-                    if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                        UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
-                        OtoArgs oa = db.attachFileNameFromLyric( phrase );
-                        item.UstEvent.PreUtterance = oa.msPreUtterance;
-                        item.UstEvent.VoiceOverlap = oa.msOverlap;
-                    }
-                }
-                if ( !original_symbol.Equals( phonetic_symbol.value ) ) {
-                    String[] spl = item.ID.LyricHandle.L0.getPhoneticSymbolList();
-                    int[] adjustment = new int[spl.Length];
-                    for ( int i = 0; i < adjustment.Length; i++ ) {
-                        adjustment[i] = VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0;
-                    }
-                    item.ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
-                }
-
-                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplace( selected, item ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                setEdited( true );
-            }
-        }
-
-        public void removeGameControler() {
-#if !JAVA
-            if ( m_timer != null ) {
-                m_timer.stop();
-                m_timer.Dispose();
-                m_timer = null;
-            }
-            m_game_mode = GameControlMode.DISABLED;
-            updateGameControlerStatus( null, null );
-#endif
-        }
-
-        public void loadGameControler() {
-#if !JAVA
-            try {
-                boolean init_success = false;
-                int num_joydev = winmmhelp.JoyInit();
-                if ( num_joydev <= 0 ) {
-                    init_success = false;
-                } else {
-                    init_success = true;
-                }
-                if ( init_success ) {
-                    m_game_mode = GameControlMode.NORMAL;
-                    stripLblGameCtrlMode.setIcon( null );
-                    stripLblGameCtrlMode.setText( m_game_mode.ToString() );
-                    m_timer = new BTimer();
-                    m_timer.setDelay( 10 );
-                    m_timer.Tick += new EventHandler( m_timer_Tick );
-                    m_timer.start();
-                } else {
-                    m_game_mode = GameControlMode.DISABLED;
-                }
-            } catch ( Exception ex ) {
-                m_game_mode = GameControlMode.DISABLED;
-#if DEBUG
-                AppManager.debugWriteLine( "FormMain+ReloadGameControler" );
-                AppManager.debugWriteLine( "    ex=" + ex );
-#endif
-            }
-            updateGameControlerStatus( null, null );
-#endif
-        }
-
-#if ENABLE_MIDI
-        public void reloadMidiIn() {
-            if ( m_midi_in != null ) {
-                m_midi_in.MidiReceived -= m_midi_in_MidiReceived;
-                m_midi_in.Dispose();
-                m_midi_in = null;
-            }
-            int portNumber = AppManager.editorConfig.MidiInPort.PortNumber;
-            int portNumberMtc = AppManager.editorConfig.MidiInPortMtc.PortNumber;
-#if DEBUG
-            PortUtil.println( "FormMain#reloadMidiIn; portNumber=" + portNumber + "; portNumberMtc=" + portNumberMtc );
-#endif
-            try {
-                m_midi_in = new MidiInDevice( portNumber );
-                m_midi_in.MidiReceived += m_midi_in_MidiReceived;
 #if ENABLE_MTC
-                if ( portNumber == portNumberMtc ) {
-                    m_midi_in.setReceiveSystemCommonMessage( true );
-                    m_midi_in.setReceiveSystemRealtimeMessage( true );
-                    m_midi_in.MidiReceived += handleMtcMidiReceived;
-                    m_midi_in.Start();
-                } else {
-                    m_midi_in.setReceiveSystemCommonMessage( false );
-                    m_midi_in.setReceiveSystemRealtimeMessage( false );
-                }
-#else
-                m_midi_in.setReceiveSystemCommonMessage( false );
-                m_midi_in.setReceiveSystemRealtimeMessage( false );
-#endif
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
-            }
-
-#if ENABLE_MTC
-            if ( m_midi_in_mtc != null ) {
-                m_midi_in_mtc.MidiReceived -= handleMtcMidiReceived;
-                m_midi_in_mtc.Dispose();
-                m_midi_in_mtc = null;
-            }
-            if ( portNumber != portNumberMtc ) {
-                try {
-                    m_midi_in_mtc = new MidiInDevice( AppManager.editorConfig.MidiInPortMtc.PortNumber );
-                    m_midi_in_mtc.MidiReceived += handleMtcMidiReceived;
-                    m_midi_in_mtc.setReceiveSystemCommonMessage( true );
-                    m_midi_in_mtc.setReceiveSystemRealtimeMessage( true );
-                    m_midi_in_mtc.Start();
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
-                }
-            }
-#endif
-            updateMidiInStatus();
-        }
-#endif
-
         /// <summary>
         /// MTC用のMIDI-INデバイスからMIDIを受信します。
         /// </summary>
         /// <param name="now"></param>
         /// <param name="dataArray"></param>
-#if ENABLE_MTC
         private void handleMtcMidiReceived( double now, byte[] dataArray ) {
             byte data = (byte)(dataArray[1] & 0x0f);
             byte type = (byte)((dataArray[1] >> 4) & 0x0f);
@@ -12166,62 +16197,6 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-#if ENABLE_MIDI
-        public void updateMidiInStatus() {
-            int midiport = AppManager.editorConfig.MidiInPort.PortNumber;
-            org.kbinani.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
-            if ( midiport < 0 || devices.Length <= 0 ) {
-                stripLblMidiIn.setText( _( "Disabled" ) );
-                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                if ( midiport >= devices.Length ) {
-                    midiport = 0;
-                    AppManager.editorConfig.MidiInPort.PortNumber = midiport;
-                }
-                stripLblMidiIn.setText( devices[midiport].szPname );
-                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_piano() ) );
-            }
-        }
-#endif
-
-#if ENABLE_SCRIPT
-        /// <summary>
-        /// スクリプトフォルダ中のスクリプトへのショートカットを作成する
-        /// </summary>
-        public void updateScriptShortcut() {
-            // 既存のアイテムを削除
-            menuScript.removeAll();
-            // スクリプトをリロード
-            ScriptServer.reload();
-
-            // スクリプトごとのメニューを追加
-            int count = 0;
-            for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
-                String id = itr.next();
-                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower().Equals( "runonce" ) ) {
-                    continue;
-                }
-                String display = ScriptServer.getDisplayName( id );
-                String name = id.Replace( '.', '_' );
-                BMenuItem item = new BMenuItem();
-                item.setText( display );
-                item.setName( name );
-                item.setTag( id );
-                item.Click += new EventHandler( handleScriptMenuItem_Click );
-                menuScript.add( item );
-                count++;
-            }
-
-            // 「スクリプトのリストを更新」を追加
-            if ( count > 0 ) {
-                menuScript.addSeparator();
-            }
-            menuScript.add( menuScriptUpdate );
-            Util.applyToolStripFontRecurse( menuScript, AppManager.editorConfig.getBaseFont() );
-            applyShortcut();
-        }
-#endif
-
 #if ENABLE_SCRIPT
         public void handleScriptMenuItem_Click( Object sender, EventArgs e ) {
 
@@ -12262,561 +16237,6 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        /// <summary>
-        /// 指定したノートナンバーが可視状態となるよう、縦スクロールバーを移動させます。
-        /// </summary>
-        /// <param name="note"></param>
-        public void ensureVisibleY( int note ) {
-            if ( note == 0 ) {
-                vScroll.setValue( vScroll.getMaximum() );
-                return;
-            } else if ( note == 127 ) {
-                vScroll.setValue( vScroll.getMinimum() );
-                return;
-            }
-            int height = vScroll.getHeight();
-            int noteTop = noteFromYCoord( 0 ); //画面上端でのノートナンバー
-            int noteBottom = noteFromYCoord( height ); // 画面下端でのノートナンバー
-
-            int maximum = vScroll.getMaximum();
-            int track_height = AppManager.editorConfig.PxTrackHeight;
-            if ( note < noteBottom ) {
-                // noteBottomがnoteになるようにstartToDrawYを変える
-                int draft = (127 - note) * track_height - height;
-                int value = draft * maximum / (128 * track_height - height);
-                vScroll.setValue( value );
-            } else if ( noteTop < note ) {
-                // noteTopがnoteになるようにstartToDrawYを変える
-                int draft = (127 - note) * track_height;
-                int value = draft * maximum / (128 * track_height - height);
-                vScroll.setValue( value );
-            }
-        }
-
-        /// <summary>
-        /// 指定したゲートタイムがピアノロール上で可視状態となるよう、横スクロールバーを移動させます。
-        /// </summary>
-        /// <param name="clock"></param>
-        public void ensureVisible( int clock ) {
-            // カーソルが画面内にあるかどうか検査
-            int clock_left = AppManager.clockFromXCoord( AppManager.keyWidth );
-            int clock_right = AppManager.clockFromXCoord( pictPianoRoll.getWidth() );
-            int uwidth = clock_right - clock_left;
-            if ( clock < clock_left || clock_right < clock ) {
-                int cl_new_center = (clock / uwidth) * uwidth + uwidth / 2;
-                float f_draft = cl_new_center - (pictPianoRoll.getWidth() / 2 + 34 - 70) / AppManager.scaleX;
-                if ( f_draft < 0f ) {
-                    f_draft = 0;
-                }
-                int draft = (int)(f_draft);
-                if ( draft < hScroll.getMinimum() ) {
-                    draft = hScroll.getMinimum();
-                } else if ( hScroll.getMaximum() < draft ) {
-                    draft = hScroll.getMaximum();
-                }
-                if ( hScroll.getValue() != draft ) {
-                    AppManager.drawStartIndex[AppManager.getSelected() - 1] = 0;
-                    hScroll.setValue( draft );
-                }
-            }
-        }
-
-        /// <summary>
-        /// プレイカーソルが見えるようスクロールする
-        /// </summary>
-        public void ensureCursorVisible() {
-            ensureVisible( AppManager.getCurrentClock() );
-        }
-
-        /// <summary>
-        /// 特殊なショートカットキーを処理します。
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="onPreviewKeyDown">PreviewKeyDownイベントから送信されてきた場合、true（送る側が設定する）</param>
-        public void processSpecialShortcutKey( BKeyEventArgs e, boolean onPreviewKeyDown ) {
-            boolean flipPlaying = false; // 再生/停止状態の切り替えが要求されたらtrue
-
-            // 最初に、特殊な取り扱いが必要なショートカット、について、
-            // 該当するショートカットがあればそいつらを発動する。
-            int modifier = PortUtil.getCurrentModifierKey();
-            if ( onPreviewKeyDown ) {
-                KeyStroke stroke = KeyStroke.getKeyStroke( e.KeyValue, modifier );
-                int keycode = stroke.getKeyCode();
-#if DEBUG
-                PortUtil.println( "FormMain#processSpecialShortcutKey; e.KeyCode=" + e.KeyCode + "; keycode=" + keycode + "; modifier=" + modifier );
-#endif
-
-                foreach ( SpecialShortcutHolder holder in specialShortcutHolders ) {
-                    if ( holder.shortcut.getKeyCode() == keycode && holder.shortcut.getModifiers() == modifier ) {
-                        try {
-                            holder.menu.clickEvent.raise( holder.menu, new EventArgs() );
-                        } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
-                        }
-                        return;
-                    }
-                }
-            }
-
-            if ( modifier != KeyEvent.VK_UNDEFINED ) {
-                return;
-            }
-#if JAVA
-            if ( !AppManager.inputTextBox.isVisible() ) {
-#else
-            if ( !AppManager.inputTextBox.Enabled ) {
-#endif
-
-#if JAVA
-                if ( e.KeyValue == KeyEvent.VK_ENTER ) {
-#else
-                if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
-#endif
-                    numEnterKeyAfterHideInputTextBox++;
-                    if ( numEnterKeyAfterHideInputTextBox >= 2 ) {
-                        // 2回目以降しか受け付けないことにする
-                        flipPlaying = true;
-                    }
-#if JAVA
-                } else if ( e.KeyValue == KeyEvent.VK_SPACE ) {
-#else
-                } else if ( e.KeyCode == System.Windows.Forms.Keys.Space ) {
-#endif
-                    if ( !AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
-                        flipPlaying = true;
-                    }
-#if JAVA
-                } else if ( e.KeyValue == KeyEvent.VK_PERIOD ) {
-#else
-                } else if ( e.KeyCode == System.Windows.Forms.Keys.OemPeriod ) {
-#endif
-                    if ( !onPreviewKeyDown ) {
-
-                        if ( AppManager.isPlaying() ) {
-                            AppManager.setPlaying( false );
-                        } else {
-                            if ( !AppManager.startMarkerEnabled ) {
-                                AppManager.setCurrentClock( 0 );
-                            } else {
-                                AppManager.setCurrentClock( AppManager.startMarker );
-                            }
-                            refreshScreen();
-                        }
-                    }
-#if JAVA
-                } else if( e.KeyValue == KeyEvent.VK_ADD || e.KeyValue == KeyEvent.VK_PLUS || e.KeyValue == KeyEvent.VK_RIGHT ) {
-#else
-                } else if ( e.KeyCode == System.Windows.Forms.Keys.Add || e.KeyCode == System.Windows.Forms.Keys.Oemplus || e.KeyCode == System.Windows.Forms.Keys.Right ) {
-#endif
-                    if ( onPreviewKeyDown ) {
-                        forward();
-                    }
-#if JAVA
-                } else if ( e.KeyValue == KeyEvent.VK_MINUS || e.KeyValue == KeyEvent.VK_LEFT ) {
-#else
-                } else if ( e.KeyCode == System.Windows.Forms.Keys.Subtract || e.KeyCode == System.Windows.Forms.Keys.OemMinus || e.KeyCode == System.Windows.Forms.Keys.Left ) {
-#endif
-                    if ( onPreviewKeyDown ) {
-                        rewind();
-                    }
-                } else {
-                    if ( !AppManager.isPlaying() ) {
-                        // 最初に戻る、の機能を発動
-                        BKeys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
-                        if ( specialGoToFirst != null && specialGoToFirst.Length > 0 ) {
-                            KeyStroke ks = PortUtil.getKeyStrokeFromBKeys( specialGoToFirst );
-#if JAVA
-                            if( e.KeyCode == ks.getKeyCode() )
-#else
-                            if ( e.KeyCode == ks.keys ) 
-#endif
-                            {
-                                AppManager.setCurrentClock( 0 );
-                                ensureCursorVisible();
-                                refreshScreen();
-                            }
-                        }
-                    }
-                }
-                if ( !onPreviewKeyDown && flipPlaying ) {
-                    if ( AppManager.isPlaying() ) {
-                        double elapsed = PlaySound.getPosition();
-                        double threshold = AppManager.forbidFlipPlayingThresholdSeconds;
-                        if ( threshold < 0 ) {
-                            threshold = 0.0;
-                        }
-                        if ( elapsed > threshold ) {
-                            timer.stop();
-                            AppManager.setPlaying( false );
-                        }
-                    } else {
-                        AppManager.setPlaying( true );
-                    }
-                }
-            }
-            return;
-            #region OLD CODES DO NOT REMOVE
-            /*if ( AppManager.EditorConfig.Platform == Platform.Macintosh ) {
-                if ( AppManager.EditorConfig.CommandKeyAsControl ) {
-                    #region menuStripMain
-                    if ( e.Alt && e.KeyCode == Keys.N && menuFileNew.isEnabled() ) {
-                        this.menuFileNew_Click( menuFileNew, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.O && menuFileOpen.isEnabled() ) {
-                        this.menuFileOpen_Click( menuFileOpen, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.S && menuFileSave.isEnabled() ) {
-                        this.menuFileSave_Click( menuFileSave, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.Q && menuFileQuit.isEnabled() ) {
-                        this.menuFileQuit_Click( menuFileQuit, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.Z && menuEditUndo.isEnabled() ) {
-                        this.menuEditUndo_Click( menuEditUndo, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.isEnabled() ) {
-                        this.menuEditRedo_Click( this.menuEditRedo, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.X && this.menuEditCut.isEnabled() ) {
-                        this.menuEditCut_Click( this.menuEditCut, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.C && this.menuEditCopy.isEnabled() ) {
-                        this.menuEditCopy_Click( this.menuEditCopy, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuEditPaste.isEnabled() ) {
-                        this.menuEditPaste_Click( this.menuEditPaste, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.A && this.menuEditSelectAll.isEnabled() ) {
-                        this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && this.menuEditSelectAllEvents.isEnabled() ) {
-                        this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
-                        this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
-                        this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
-                        this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
-                        return;
-                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && e.Shift && this.menuHiddenVisualForwardParameter.isEnabled() ) {
-                        this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
-                        return;
-                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && e.Shift && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
-                        this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
-                        return;
-                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && this.menuHiddenTrackNext.isEnabled() ) {
-                        this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
-                        return;
-                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && this.menuHiddenTrackBack.isEnabled() ) {
-                        this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
-                        return;
-                    }
-                    #endregion
-
-                    #region cMenuPiano
-                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuPianoUndo.isEnabled() ) {
-                        this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
-                        this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuPianoCut.isEnabled() ) {
-                        this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
-                        this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
-                        this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
-                        this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
-                        return;
-                    }
-                    #endregion
-
-                    #region cMenuTrackSelector
-                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
-                        this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
-                        this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
-                        this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
-                        this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
-                        this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
-                        this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
-                        return;
-                    }
-                    #endregion
-                } else {
-                    boolean RButton = (e.KeyCode & Keys.RButton) == Keys.RButton;
-                    boolean Clear = (e.KeyCode & Keys.Clear) == Keys.Clear;
-                    boolean Return = (e.KeyCode & Keys.Return) == Keys.Return;
-                    boolean Pause = (e.KeyCode & Keys.Pause) == Keys.Pause;
-                    boolean FinalMode = (e.KeyCode & Keys.FinalMode) == Keys.FinalMode;
-                    boolean Cancel = (e.KeyCode & Keys.Cancel) == Keys.Cancel;
-                    boolean CapsLock = (e.KeyCode & Keys.CapsLock) == Keys.CapsLock;
-                    boolean LButton = (e.KeyCode & Keys.LButton) == Keys.LButton;
-                    boolean JunjaMode = (e.KeyCode & Keys.JunjaMode) == Keys.JunjaMode;
-                    boolean LineFeed = (e.KeyCode & Keys.LineFeed) == Keys.LineFeed;
-                    boolean ControlKey = (e.KeyCode & Keys.ControlKey) == Keys.ControlKey;
-                    boolean XButton1 = (e.KeyCode & Keys.XButton1) == Keys.XButton1;
-
-                    #region menuStripMain
-                    if ( RButton && Clear && (e.KeyCode & Keys.N) == Keys.N && menuFileNew.isEnabled() ) {
-                        this.menuFileNew_Click( menuFileNew, null );
-                        return;
-                    } else if ( RButton && Return && (e.KeyCode & Keys.O) == Keys.O && menuFileOpen.isEnabled() ) {
-                        this.menuFileOpen_Click( menuFileOpen, null );
-                        return;
-                    } else if ( Pause && (e.KeyCode & Keys.S) == Keys.S && menuFileSave.isEnabled() ) {
-                        this.menuFileSave_Click( menuFileSave, null );
-                        return;
-                    } else if ( ControlKey && (e.KeyCode & Keys.Q) == Keys.Q && menuFileQuit.isEnabled() ) {
-                        this.menuFileQuit_Click( menuFileQuit, null );
-                        return;
-                    } else if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && menuEditUndo.isEnabled() ) {
-                        this.menuEditUndo_Click( menuEditUndo, null );
-                        return;
-                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && menuEditRedo.isEnabled() ) {
-                        this.menuEditRedo_Click( this.menuEditRedo, null );
-                        return;
-                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.menuEditCut.isEnabled() ) {
-                        this.menuEditCut_Click( this.menuEditCut, null );
-                        return;
-                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.menuEditCopy.isEnabled() ) {
-                        this.menuEditCopy_Click( this.menuEditCopy, null );
-                        return;
-                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuEditPaste.isEnabled() ) {
-                        this.menuEditPaste_Click( this.menuEditPaste, null );
-                        return;
-                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAll.isEnabled() ) {
-                        this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
-                        return;
-                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAllEvents.isEnabled() ) {
-                        this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
-                        return;
-                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
-                        this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
-                        return;
-                    } else if ( JunjaMode && (e.KeyCode & Keys.W) == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
-                        this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
-                        return;
-                    } else if ( XButton1 && (e.KeyCode & Keys.E) == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
-                        this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
-                        return;
-                    } else if ( Clear && e.Control && e.Shift && this.menuHiddenVisualForwardParameter.isEnabled() ) {
-                        this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
-                        return;
-                    } else if ( LButton && LineFeed && e.Control && e.Shift && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
-                        this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
-                        return;
-                    } else if ( Clear && e.Control && this.menuHiddenTrackNext.isEnabled() ) {
-                        this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
-                        return;
-                    } else if ( LButton && LineFeed && e.Control && this.menuHiddenTrackBack.isEnabled() ) {
-                        this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
-                        return;
-                    }
-                    #endregion
-
-                    #region cMenuPiano
-                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuPianoUndo.isEnabled() ) {
-                        this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
-                        return;
-                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
-                        this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
-                        return;
-                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuPianoCut.isEnabled() ) {
-                        this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
-                        return;
-                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
-                        this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
-                        return;
-                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
-                        this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
-                        return;
-                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
-                        this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
-                        return;
-                    }
-                    #endregion
-
-                    #region cMenuTrackSelector
-                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
-                        this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
-                        return;
-                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
-                        this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
-                        return;
-                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
-                        this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
-                        return;
-                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
-                        this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
-                        return;
-                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
-                        this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
-                        return;
-                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
-                        this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
-                        return;
-                    }
-                    #endregion
-                }
-            } else {
-                #region menuStripMain
-                if ( e.Control && e.KeyCode == Keys.N && menuFileNew.isEnabled() ) {
-                    this.menuFileNew_Click( menuFileNew, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.O && menuFileOpen.isEnabled() ) {
-                    this.menuFileOpen_Click( menuFileOpen, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.S && menuFileSave.isEnabled() ) {
-                    this.menuFileSave_Click( menuFileSave, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.Q && menuFileQuit.isEnabled() ) {
-                    this.menuFileQuit_Click( menuFileQuit, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.Z && menuEditUndo.isEnabled() ) {
-                    this.menuEditUndo_Click( menuEditUndo, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.isEnabled() ) {
-                    this.menuEditRedo_Click( this.menuEditRedo, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.X && this.menuEditCut.isEnabled() ) {
-                    this.menuEditCut_Click( this.menuEditCut, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.C && this.menuEditCopy.isEnabled() ) {
-                    this.menuEditCopy_Click( this.menuEditCopy, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.V && this.menuEditPaste.isEnabled() ) {
-                    this.menuEditPaste_Click( this.menuEditPaste, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.A && this.menuEditSelectAll.isEnabled() ) {
-                    this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
-                    return;
-                } else if ( e.Control && e.Shift && this.menuEditSelectAllEvents.isEnabled() ) {
-                    this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
-                    this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
-                    this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
-                    this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
-                    return;
-                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenVisualForwardParameter.isEnabled() ) {
-                    this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
-                    return;
-                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
-                    this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
-                    return;
-                } else if ( e.Control && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenTrackNext.isEnabled() ) {
-                    this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
-                    return;
-                } else if ( e.Control && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenTrackBack.isEnabled() ) {
-                    this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
-                    return;
-                }
-                #endregion
-
-                #region cMenuPiano
-                if ( e.Control && e.KeyCode == Keys.Z && cMenuPianoUndo.isEnabled() ) {
-                    this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
-                    this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuPianoCut.isEnabled() ) {
-                    this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
-                    this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
-                    this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
-                    this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
-                    return;
-                }
-                #endregion
-
-                #region cMenuTrackSelector
-                if ( e.Control && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
-                    this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
-                    this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
-                    this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
-                    this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
-                    this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
-                    this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
-                    return;
-                }
-                #endregion
-            }*/
-            #endregion
-        }
-
-        public void setHScrollRange( int draft_length ) {
-            int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
-            draft_length += 240;
-            if ( draft_length > hScroll.getMaximum() ) {
-                hScroll.setMaximum( draft_length );
-            }
-            if ( pictPianoRoll.getWidth() <= AppManager.keyWidth || hScroll.getWidth() <= _ARROWS ) {
-                return;
-            }
-            int large_change = (int)((pictPianoRoll.getWidth() - AppManager.keyWidth) / (float)AppManager.scaleX);
-            int box_width = (int)((hScroll.getWidth() - _ARROWS) * (float)large_change / (float)(hScroll.getMaximum() + large_change));
-            if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
-                box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
-                large_change = (int)((float)hScroll.getMaximum() * (float)box_width / (float)(hScroll.getWidth() - _ARROWS - box_width));
-            }
-            if ( large_change > 0 ) {
-                hScroll.setVisibleAmount( large_change );
-            }
-        }
-
-        public void setVScrollRange( int draft_length ) {
-            int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
-            if ( draft_length > vScroll.getMaximum() ) {
-                vScroll.setMaximum( draft_length );
-            }
-            int large_change = (int)pictPianoRoll.getHeight();
-            int box_width = (int)((vScroll.getHeight() - _ARROWS) * (float)large_change / (float)(vScroll.getMaximum() + large_change));
-            if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
-                box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
-                large_change = (int)((float)vScroll.getMaximum() * (float)box_width / (float)(vScroll.getWidth() - _ARROWS - box_width));
-            }
-            if ( large_change > 0 ) {
-                vScroll.setVisibleAmount( large_change );
-            }
-        }
-
         public void refreshScreenCore( Object sender, EventArgs e ) {
             pictPianoRoll.repaint();
             picturePositionIndicator.repaint();
@@ -12827,3101 +16247,6 @@ namespace org.kbinani.cadencii {
             if ( AppManager.editorConfig.OverviewEnabled ) {
                 pictOverview.repaint();
             }
-        }
-
-        public void refreshScreen() {
-#if JAVA
-            refreshScreenCore( this, new EventArgs() );
-#else
-            if ( !bgWorkScreen.IsBusy ) {
-                bgWorkScreen.RunWorkerAsync();
-            }
-#endif
-        }
-
-        public void flipMixerDialogVisible( boolean visible ) {
-            AppManager.mixerWindow.setVisible( visible );
-            AppManager.editorConfig.MixerVisible = visible;
-            menuVisualMixer.setSelected( visible );
-        }
-
-        /// <summary>
-        /// メニューのショートカットキーを、AppManager.EditorConfig.ShorcutKeysの内容に応じて変更します
-        /// </summary>
-        public void applyShortcut() {
-            specialShortcutHolders.clear();
-
-            if ( AppManager.editorConfig.Platform == PlatformEnum.Macintosh ) {
-                #region Platform.Macintosh
-                String _CO = "";
-                //if ( AppManager.EditorConfig.CommandKeyAsControl ) {
-#if JAVA
-                char[] arr = new char[]{ 0x2318 };
-                _CO = new String( arr );
-#else
-                _CO = new String( '\x2318', 1 );
-#endif
-                //} else {
-                //_CO = "^";
-                //}
-                String _SHIFT = "⇧";
-                //if ( AppManager.EditorConfig.CommandKeyAsControl ) {
-                #region menuStripMain
-                menuFileNew.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_N, InputEvent.META_MASK ) );
-                menuFileOpen.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_O, InputEvent.META_MASK ) );
-                menuFileSave.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_S, InputEvent.META_MASK ) );
-                menuFileQuit.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Q, InputEvent.META_MASK ) );
-
-                menuEditUndo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK ) );
-                menuEditRedo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                menuEditCut.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, InputEvent.META_MASK ) );
-                menuEditCopy.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, InputEvent.META_MASK ) );
-                menuEditPaste.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_V, InputEvent.META_MASK ) );
-                menuEditSelectAll.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK ) );
-                menuEditSelectAllEvents.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-
-                menuHiddenEditFlipToolPointerPencil.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_W, InputEvent.META_MASK ) );
-                menuHiddenEditFlipToolPointerEraser.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_E, InputEvent.META_MASK ) );
-                menuHiddenVisualForwardParameter.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, 0 ) );
-                menuHiddenVisualBackwardParameter.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, 0 ) );
-                menuHiddenTrackNext.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_PAGE_DOWN, 0 ) );
-                menuHiddenTrackBack.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_PAGE_UP, 0 ) );
-                #endregion
-
-                #region cMenuPiano
-                cMenuPianoUndo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK ) );
-                cMenuPianoRedo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                cMenuPianoCut.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, InputEvent.META_MASK ) );
-                cMenuPianoCopy.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, InputEvent.META_MASK ) );
-                cMenuPianoSelectAll.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK ) );
-                cMenuPianoSelectAllEvents.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                #endregion
-
-                #region cMenuTrackSelector
-                cMenuTrackSelectorUndo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK ) );
-                cMenuTrackSelectorRedo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                cMenuTrackSelectorCut.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, InputEvent.META_MASK ) );
-                cMenuTrackSelectorCopy.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, InputEvent.META_MASK ) );
-                cMenuTrackSelectorPaste.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_V, InputEvent.META_MASK ) );
-                cMenuTrackSelectorSelectAll.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                #endregion
-                #endregion
-            } else {
-                TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary();
-                #region menuStripMain
-                for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
-                    String key = itr.next();
-                    if ( key.Equals( "menuEditCopy" ) || key.Equals( "menuEditCut" ) || key.Equals( "menuEditPaste" ) || key.Equals( "SpecialShortcutGoToFirst" ) ) {
-                        continue;
-                    }
-                    Object menu = searchMenuItemFromName( key );
-                    if ( menu != null ) {
-                        String menu_name = "";
-#if JAVA
-                        if( menu instanceof Component ){
-                            menu_name = ((Component)menu).getName();
-                        }else{
-                            continue;
-                        }
-#else
-                        if ( menu is BMenuItem ) {
-                            menu_name = ((BMenuItem)menu).Name;
-                        } else {
-                            continue;
-                        }
-#endif
-                        applyMenuItemShortcut( dict, menu, menu_name );
-                    }
-                }
-                if ( dict.containsKey( "menuEditCopy" ) ) {
-                    applyMenuItemShortcut( dict, menuHiddenCopy, "menuEditCopy" );
-                }
-                if ( dict.containsKey( "menuEditCut" ) ) {
-                    applyMenuItemShortcut( dict, menuHiddenCut, "menuEditCut" );
-                }
-                if ( dict.containsKey( "menuEditCopy" ) ) {
-                    applyMenuItemShortcut( dict, menuHiddenPaste, "menuEditPaste" );
-                }
-                #endregion
-
-                Vector<ValuePair<String, BMenuItem[]>> work = new Vector<ValuePair<String, BMenuItem[]>>();
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditUndo", new BMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditRedo", new BMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditCut", new BMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditCopy", new BMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditPaste", new BMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAll", new BMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAllEvents", new BMenuItem[] { cMenuPianoSelectAllEvents } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditDelete", new BMenuItem[] { menuEditDelete } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuVisualGridline", new BMenuItem[] { cMenuPianoGrid } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuJobLyric", new BMenuItem[] { cMenuPianoImportLyric } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuLyricExpressionProperty", new BMenuItem[] { cMenuPianoExpressionProperty } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuLyricVibratoProperty", new BMenuItem[] { cMenuPianoVibratoProperty } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOn", new BMenuItem[] { cMenuTrackTabTrackOn } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackAdd", new BMenuItem[] { cMenuTrackTabAdd } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackCopy", new BMenuItem[] { cMenuTrackTabCopy } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackDelete", new BMenuItem[] { cMenuTrackTabDelete } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderCurrent", new BMenuItem[] { cMenuTrackTabRenderCurrent } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderAll", new BMenuItem[] { cMenuTrackTabRenderAll } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[] { cMenuTrackTabOverlay } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID100 } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererUtau", new BMenuItem[] { cMenuTrackTabRendererUtau } ) );
-                int c = work.size();
-                for ( int j = 0; j < c; j++ ) {
-                    ValuePair<String, BMenuItem[]> item = work.get( j );
-                    if ( dict.containsKey( item.getKey() ) ) {
-                        BKeys[] k = dict.get( item.getKey() );
-                        String s = Utility.getShortcutDisplayString( k );
-#if !JAVA
-                        if ( s != "" ) {
-                            for ( int i = 0; i < item.getValue().Length; i++ ) {
-                                item.getValue()[i].ShortcutKeyDisplayString = s;
-                            }
-                        }
-#endif
-                    }
-                }
-
-                // ミキサーウィンドウ
-                if ( AppManager.mixerWindow != null ) {
-                    if ( dict.containsKey( "menuVisualMixer" ) ) {
-                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
-                        AppManager.mixerWindow.applyShortcut( shortcut );
-                    }
-                }
-
-                // アイコンパレット
-                if ( AppManager.iconPalette != null ) {
-                    if ( dict.containsKey( "menuVisualIconPalette" ) ) {
-                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualIconPalette" ) );
-                        AppManager.iconPalette.applyShortcut( shortcut );
-                    }
-                }
-
-                // スクリプトにショートカットを適用
-#if JAVA
-                MenuElement[] sub_menu_script = menuScript.getSubElements();
-                for ( int i = 0; i < sub_menu_script.Length; i++ ) {
-                    MenuElement tsi = sub_menu_script[i];
-                    MenuElement[] sub_tsi = tsi.getSubElements();
-                    if ( sub_tsi.Length == 1 ) {
-                        MenuElement dd_run = sub_tsi[0];
-#if DEBUG
-                        AppManager.debugWriteLine( "    dd_run.name=" + PortUtil.getComponentName( dd_run ) );
-#endif
-                        if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
-                            applyMenuItemShortcut( dict, tsi, PortUtil.getComponentName( tsi ) );
-                        }
-                    }
-                }
-#else
-                int count = menuScript.DropDownItems.Count;
-                for ( int i = 0; i < count; i++ ) {
-                    System.Windows.Forms.ToolStripItem tsi = menuScript.DropDownItems[i];
-                    if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
-                        System.Windows.Forms.ToolStripMenuItem tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
-                        if ( tsmi.DropDownItems.Count == 1 ) {
-                            System.Windows.Forms.ToolStripItem subtsi_tsmi = tsmi.DropDownItems[0];
-                            if ( subtsi_tsmi is System.Windows.Forms.ToolStripMenuItem ) {
-                                System.Windows.Forms.ToolStripMenuItem dd_run = (System.Windows.Forms.ToolStripMenuItem)subtsi_tsmi;
-                                if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
-                                    applyMenuItemShortcut( dict, tsmi, PortUtil.getComponentName( tsi ) );
-                                }
-                            }
-                        }
-                    }
-                }
-#endif
-            }
-        }
-
-        /// <summary>
-        /// dictの中から
-        /// </summary>
-        /// <param name="dict"></param>
-        /// <param name="item"></param>
-        /// <param name="item_name"></param>
-        /// <param name="default_shortcut"></param>
-        public void applyMenuItemShortcut( TreeMap<String, BKeys[]> dict, Object item, String item_name ) {
-            try {
-                if ( dict.containsKey( item_name ) ) {
-#if JAVA
-                    if( item instanceof JMenuItem ){
-                        ((JMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
-                    }
-#else
-#if DEBUG
-                    if ( !(item is BMenuItem) ){
-                        throw new Exception( "FormMain#applyMenuItemShortcut; item is NOT BMenuItem" );
-                    }
-#endif
-                    if ( item is BMenuItem ) {
-                        BMenuItem menu = (BMenuItem)item;
-                        BKeys[] keys = dict.get( item_name );
-                        System.Windows.Forms.Keys shortcut = PortUtil.getKeyStrokeFromBKeys( keys ).keys;
-
-                        if ( shortcut == System.Windows.Forms.Keys.Delete ) {
-                            menu.ShortcutKeyDisplayString = "Delete";
-                            menu.ShortcutKeys = System.Windows.Forms.Keys.None;
-                            specialShortcutHolders.add( 
-                                new SpecialShortcutHolder( PortUtil.getKeyStrokeFromBKeys( keys ), menu ) );
-                        } else {
-                            try {
-                                menu.ShortcutKeyDisplayString = "";
-                                menu.ShortcutKeys = shortcut;
-                            } catch ( Exception ex ) {
-                                // ショートカットの適用に失敗する→特殊な取り扱いが必要
-                                menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
-                                menu.ShortcutKeys = System.Windows.Forms.Keys.None;
-                                specialShortcutHolders.add( 
-                                    new SpecialShortcutHolder( PortUtil.getKeyStrokeFromBKeys( keys ), menu ) );
-#if DEBUG
-                                PortUtil.println( "FormMain#applyMenuItemShortcut; display_string=" + menu.ShortcutKeyDisplayString + "; menu.getName()=" + menu.getName() );
-#endif
-                            }
-                        }
-                    }
-#endif
-                } else {
-#if JAVA
-                    if( item instanceof JMenuItem ){
-                        ((JMenuItem)item).setAccelerator( KeyStroke.getKeyStroke( 0, 0 ) );
-                    }
-#else
-                    if ( item is BMenuItem ) {
-                        ((BMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( new BKeys[] { BKeys.None } ) );
-                    }
-#endif
-                }
-            } catch ( Exception ex ) {
-            }
-        }
-
-        /// <summary>
-        /// ソングポジションを1小節進めます
-        /// </summary>
-        public void forward() {
-            boolean playing = AppManager.isPlaying();
-            if ( playing ) {
-                return;
-            }
-            int current = AppManager.getVsqFile().getBarCountFromClock( AppManager.getCurrentClock() ) + 1;
-            int new_clock = AppManager.getVsqFile().getClockFromBarCount( current );
-            if ( new_clock <= hScroll.getMaximum() + (pictPianoRoll.getWidth() - AppManager.keyWidth) / AppManager.scaleX ) {
-                AppManager.setCurrentClock( new_clock );
-                ensureCursorVisible();
-                AppManager.setPlaying( playing );
-                refreshScreen();
-            }
-        }
-
-        /// <summary>
-        /// ソングポジションを1小節戻します
-        /// </summary>
-        public void rewind() {
-            boolean playing = AppManager.isPlaying();
-            if ( playing ) {
-                return;
-            }
-            VsqFileEx vsq = AppManager.getVsqFile();
-            if ( vsq == null ) {
-                return;
-            }
-            int cl_clock = AppManager.getCurrentClock();
-            int b_current = vsq.getBarCountFromClock( cl_clock );
-            if ( b_current > 0 ) {
-                int cl_b_current = vsq.getClockFromBarCount( b_current );
-                if ( cl_b_current >= cl_clock ) {
-                    b_current--;
-                }
-            }
-            int cl_new = vsq.getClockFromBarCount( b_current );
-            AppManager.setCurrentClock( cl_new );
-            ensureCursorVisible();
-            AppManager.setPlaying( playing );
-            refreshScreen();
-        }
-
-        /// <summary>
-        /// cMenuPianoの固定長音符入力の各メニューのチェック状態をm_pencil_modeを元に更新します
-        /// </summary>
-        public void updateCMenuPianoFixed() {
-            cMenuPianoFixed01.setSelected( false );
-            cMenuPianoFixed02.setSelected( false );
-            cMenuPianoFixed04.setSelected( false );
-            cMenuPianoFixed08.setSelected( false );
-            cMenuPianoFixed16.setSelected( false );
-            cMenuPianoFixed32.setSelected( false );
-            cMenuPianoFixed64.setSelected( false );
-            cMenuPianoFixed128.setSelected( false );
-            cMenuPianoFixedOff.setSelected( false );
-            cMenuPianoFixedTriplet.setSelected( false );
-            cMenuPianoFixedDotted.setSelected( false );
-            PencilModeEnum mode = m_pencil_mode.getMode();
-            if ( mode == PencilModeEnum.L1 ) {
-                cMenuPianoFixed01.setSelected( true );
-            } else if ( mode == PencilModeEnum.L2 ) {
-                cMenuPianoFixed02.setSelected( true );
-            } else if ( mode == PencilModeEnum.L4 ) {
-                cMenuPianoFixed04.setSelected( true );
-            } else if ( mode == PencilModeEnum.L8 ) {
-                cMenuPianoFixed08.setSelected( true );
-            } else if ( mode == PencilModeEnum.L16 ) {
-                cMenuPianoFixed16.setSelected( true );
-            } else if ( mode == PencilModeEnum.L32 ) {
-                cMenuPianoFixed32.setSelected( true );
-            } else if ( mode == PencilModeEnum.L64 ) {
-                cMenuPianoFixed64.setSelected( true );
-            } else if ( mode == PencilModeEnum.L128 ) {
-                cMenuPianoFixed128.setSelected( true );
-            } else if ( mode == PencilModeEnum.Off ) {
-                cMenuPianoFixedOff.setSelected( true );
-            }
-            cMenuPianoFixedTriplet.setSelected( m_pencil_mode.isTriplet() );
-            cMenuPianoFixedDotted.setSelected( m_pencil_mode.isDot() );
-        }
-
-        public void clearTempWave() {
-            String tmppath = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
-            if ( !PortUtil.isDirectoryExists( tmppath ) ) {
-                return;
-            }
-
-            // 今回このPCが起動されるよりも以前に，Cadenciiが残したデータを削除する
-            //TODO: システムカウンタは約49日でリセットされてしまい，厳密には実装できないようなので，保留．
-
-            // このFormMainのインスタンスが使用したデータを消去する
-            for ( int i = 1; i <= 16; i++ ) {
-                String file = PortUtil.combinePath( tmppath, i + ".wav" );
-                if ( PortUtil.isFileExists( file ) ) {
-                    for ( int error = 0; error < 100; error++ ) {
-                        try {
-                            PortUtil.deleteFile( file );
-                            break;
-                        } catch ( Exception ex ) {
-#if DEBUG
-                            org.kbinani.debug.push_log( "FormMain+ClearTempWave()" );
-                            org.kbinani.debug.push_log( "    ex=" + ex.ToString() );
-                            org.kbinani.debug.push_log( "    error_count=" + error );
-#endif
-#if JAVA
-                            try{
-                                Thread.sleep( 100 );
-                            }catch( Exception ex2 ){
-                            }
-#else
-                            Thread.Sleep( 100 );
-#endif
-                        }
-                    }
-                }
-            }
-            String whd = PortUtil.combinePath( tmppath, UtauRenderingRunner.FILEBASE + ".whd" );
-            if ( PortUtil.isFileExists( whd ) ) {
-                try {
-                    PortUtil.deleteFile( whd );
-                } catch ( Exception ex ) {
-                }
-            }
-            String dat = PortUtil.combinePath( tmppath, UtauRenderingRunner.FILEBASE + ".dat" );
-            if ( PortUtil.isFileExists( dat ) ) {
-                try {
-                    PortUtil.deleteFile( dat );
-                } catch ( Exception ex ) {
-                }
-            }
-        }
-
-        public void playPreviewSound( int note ) {
-            KeySoundPlayer.play( note );
-        }
-
-#if ENABLE_MOUSEHOVER
-        public void MouseHoverEventGenerator( Object arg ) {
-            int note = (int)arg;
-            if ( AppManager.editorConfig.MouseHoverTime > 0 ) {
-                Thread.Sleep( AppManager.editorConfig.MouseHoverTime );
-            }
-            KeySoundPlayer.play( note );
-        }
-#endif
-
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
-        public void applyLanguage() {
-            openXmlVsqDialog.clearChoosableFileFilter();
-            try {
-                openXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
-                openXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-            } catch ( Exception ex ) {
-                openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
-                openXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
-            }
-
-            saveXmlVsqDialog.clearChoosableFileFilter();
-            try {
-                saveXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
-                saveXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-            } catch ( Exception ex ) {
-                saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
-                saveXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
-            }
-
-            openUstDialog.clearChoosableFileFilter();
-            try {
-                openUstDialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
-                openUstDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-            } catch ( Exception ex ) {
-                openUstDialog.addFileFilter( "UTAU Script Format(*.ust)|*.ust" );
-                openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
-            }
-
-            openMidiDialog.clearChoosableFileFilter();
-            try {
-                openMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
-                openMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
-                openMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-            } catch ( Exception ex ) {
-                openMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
-                openMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-                openMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
-            }
-
-            saveMidiDialog.clearChoosableFileFilter();
-            try {
-                saveMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
-                saveMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
-                saveMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-            } catch ( Exception ex ) {
-                saveMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
-                saveMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-                saveMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
-            }
-
-            openWaveDialog.clearChoosableFileFilter();
-            try {
-                openWaveDialog.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
-                openWaveDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-            } catch ( Exception ex ) {
-                openWaveDialog.addFileFilter( "Wave File(*.wav)|*.wav" );
-                openWaveDialog.addFileFilter( "All Files(*.*)|*.*" );
-            }
-
-            stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
-#if JAVA
-            updateGameControlerStatus( this, new EventArgs() );
-#else
-            this.Invoke( new EventHandler( updateGameControlerStatus ) );
-#endif
-
-            stripBtnPointer.setText( _( "Pointer" ) );
-            stripBtnPointer.setToolTipText( _( "Pointer" ) );
-            stripBtnPencil.setText( _( "Pencil" ) );
-            stripBtnPencil.setToolTipText( _( "Pencil" ) );
-            stripBtnLine.setText( _( "Line" ) );
-            stripBtnLine.setToolTipText( _( "Line" ) );
-            stripBtnEraser.setText( _( "Eraser" ) );
-            stripBtnEraser.setToolTipText( _( "Eraser" ) );
-            stripBtnCurve.setText( _( "Curve" ) );
-            stripBtnCurve.setToolTipText( _( "Curve" ) );
-            stripBtnGrid.setText( _( "Grid" ) );
-            stripBtnGrid.setToolTipText( _( "Grid" ) );
-
-            #region main menu
-            menuFile.setText( _( "File" ) );
-            menuFile.setMnemonic( KeyEvent.VK_F );
-            menuFileNew.setText( _( "New" ) );
-            menuFileNew.setMnemonic( KeyEvent.VK_N );
-            menuFileOpen.setText( _( "Open" ) );
-            menuFileOpen.setMnemonic( KeyEvent.VK_O );
-            menuFileOpenVsq.setText( _( "Open VSQ/Vocaloid Midi" ) );
-            menuFileOpenVsq.setMnemonic( KeyEvent.VK_V );
-            menuFileOpenUst.setText( _( "Open UTAU Project File" ) );
-            menuFileOpenUst.setMnemonic( KeyEvent.VK_U );
-            menuFileSave.setText( _( "Save" ) );
-            menuFileSave.setMnemonic( KeyEvent.VK_S );
-            menuFileSaveNamed.setText( _( "Save As" ) );
-            menuFileSaveNamed.setMnemonic( KeyEvent.VK_A );
-            menuFileImport.setText( _( "Import" ) );
-            menuFileImport.setMnemonic( KeyEvent.VK_I );
-            menuFileImportVsq.setText( _( "VSQ / Vocaloid Midi" ) );
-            menuFileExport.setText( _( "Export" ) );
-            menuFileExport.setMnemonic( KeyEvent.VK_E );
-            menuFileRecent.setText( _( "Recent Files" ) );
-            menuFileRecent.setMnemonic( KeyEvent.VK_R );
-            menuFileQuit.setText( _( "Quit" ) );
-            menuFileQuit.setMnemonic( KeyEvent.VK_Q );
-
-            menuEdit.setText( _( "Edit" ) );
-            menuEdit.setMnemonic( KeyEvent.VK_E );
-            menuEditUndo.setText( _( "Undo" ) );
-            menuEditUndo.setMnemonic( KeyEvent.VK_U );
-            menuEditRedo.setText( _( "Redo" ) );
-            menuEditRedo.setMnemonic( KeyEvent.VK_R );
-            menuEditCut.setText( _( "Cut" ) );
-            menuEditCut.setMnemonic( KeyEvent.VK_T );
-            menuEditCopy.setText( _( "Copy" ) );
-            menuEditCopy.setMnemonic( KeyEvent.VK_C );
-            menuEditPaste.setText( _( "Paste" ) );
-            menuEditPaste.setMnemonic( KeyEvent.VK_P );
-            menuEditDelete.setText( _( "Delete" ) );
-            menuEditDelete.setMnemonic( KeyEvent.VK_D );
-            menuEditAutoNormalizeMode.setText( _( "Auto Normalize Mode" ) );
-            menuEditAutoNormalizeMode.setMnemonic( KeyEvent.VK_N );
-            menuEditSelectAll.setText( _( "Select All" ) );
-            menuEditSelectAll.setMnemonic( KeyEvent.VK_A );
-            menuEditSelectAllEvents.setText( _( "Select All Events" ) );
-            menuEditSelectAllEvents.setMnemonic( KeyEvent.VK_E );
-
-            menuVisual.setText( _( "View" ) );
-            menuVisual.setMnemonic( KeyEvent.VK_V );
-            menuVisualControlTrack.setText( _( "Control Track" ) );
-            menuVisualControlTrack.setMnemonic( KeyEvent.VK_C );
-            menuVisualMixer.setText( _( "Mixer" ) );
-            menuVisualMixer.setMnemonic( KeyEvent.VK_X );
-            menuVisualWaveform.setText( _( "Waveform" ) );
-            menuVisualWaveform.setMnemonic( KeyEvent.VK_W );
-            menuVisualProperty.setText( _( "Property Window" ) );
-            menuVisualOverview.setText( _( "Navigation" ) );
-            menuVisualOverview.setMnemonic( KeyEvent.VK_V );
-            menuVisualGridline.setText( _( "Grid Line" ) );
-            menuVisualGridline.setMnemonic( KeyEvent.VK_G );
-            menuVisualStartMarker.setText( _( "Start Marker" ) );
-            menuVisualStartMarker.setMnemonic( KeyEvent.VK_S );
-            menuVisualEndMarker.setText( _( "End Marker" ) );
-            menuVisualEndMarker.setMnemonic( KeyEvent.VK_E );
-            menuVisualLyrics.setText( _( "Lyrics/Phoneme" ) );
-            menuVisualLyrics.setMnemonic( KeyEvent.VK_L );
-            menuVisualNoteProperty.setText( _( "Note Expression/Vibrato" ) );
-            menuVisualNoteProperty.setMnemonic( KeyEvent.VK_N );
-            menuVisualPitchLine.setText( _( "Pitch Line" ) );
-            menuVisualPitchLine.setMnemonic( KeyEvent.VK_P );
-            menuVisualPluginUi.setText( _( "VSTi Plugin UI" ) );
-            menuVisualPluginUi.setMnemonic( KeyEvent.VK_U );
-            menuVisualIconPalette.setText( _( "Icon Palette" ) );
-            menuVisualIconPalette.setMnemonic( KeyEvent.VK_I );
-
-            menuJob.setText( _( "Job" ) );
-            menuJob.setMnemonic( KeyEvent.VK_J );
-            menuJobNormalize.setText( _( "Normalize Notes" ) );
-            menuJobNormalize.setMnemonic( KeyEvent.VK_N );
-            menuJobInsertBar.setText( _( "Insert Bars" ) );
-            menuJobInsertBar.setMnemonic( KeyEvent.VK_I );
-            menuJobDeleteBar.setText( _( "Delete Bars" ) );
-            menuJobDeleteBar.setMnemonic( KeyEvent.VK_D );
-            menuJobRandomize.setText( _( "Randomize" ) );
-            menuJobRandomize.setMnemonic( KeyEvent.VK_R );
-            menuJobConnect.setText( _( "Connect Notes" ) );
-            menuJobConnect.setMnemonic( KeyEvent.VK_C );
-            menuJobLyric.setText( _( "Insert Lyrics" ) );
-            menuJobLyric.setMnemonic( KeyEvent.VK_L );
-            menuJobRewire.setText( _( "Import ReWire Host Tempo" ) );
-            menuJobRewire.setMnemonic( KeyEvent.VK_T );
-            menuJobRealTime.setText( _( "Start Realtime Input" ) );
-            menuJobReloadVsti.setText( _( "Reload VSTi" ) );
-            menuJobReloadVsti.setMnemonic( KeyEvent.VK_R );
-
-            menuTrack.setText( _( "Track" ) );
-            menuTrack.setMnemonic( KeyEvent.VK_T );
-            menuTrackOn.setText( _( "Track On" ) );
-            menuTrackOn.setMnemonic( KeyEvent.VK_K );
-            menuTrackPlayAfterSynth.setText( _( "Play After Synth" ) );
-            menuTrackPlayAfterSynth.setMnemonic( KeyEvent.VK_P );
-            menuTrackAdd.setText( _( "Add Track" ) );
-            menuTrackAdd.setMnemonic( KeyEvent.VK_A );
-            menuTrackCopy.setText( _( "Copy Track" ) );
-            menuTrackCopy.setMnemonic( KeyEvent.VK_C );
-            menuTrackChangeName.setText( _( "Rename Track" ) );
-            menuTrackDelete.setText( _( "Delete Track" ) );
-            menuTrackDelete.setMnemonic( KeyEvent.VK_D );
-            menuTrackRenderCurrent.setText( _( "Render Current Track" ) );
-            menuTrackRenderCurrent.setMnemonic( KeyEvent.VK_T );
-            menuTrackRenderAll.setText( _( "Render All Tracks" ) );
-            menuTrackRenderAll.setMnemonic( KeyEvent.VK_S );
-            menuTrackOverlay.setText( _( "Overlay" ) );
-            menuTrackOverlay.setMnemonic( KeyEvent.VK_O );
-            menuTrackRenderer.setText( _( "Renderer" ) );
-            menuTrackRenderer.setMnemonic( KeyEvent.VK_R );
-
-            menuLyric.setText( _( "Lyrics" ) );
-            menuLyric.setMnemonic( KeyEvent.VK_L );
-            menuLyricExpressionProperty.setText( _( "Note Expression Property" ) );
-            menuLyricExpressionProperty.setMnemonic( KeyEvent.VK_E );
-            menuLyricVibratoProperty.setText( _( "Note Vibrato Property" ) );
-            menuLyricVibratoProperty.setMnemonic( KeyEvent.VK_V );
-            menuLyricPhonemeTransformation.setText( _( "Phoneme Transformation" ) );
-            menuLyricPhonemeTransformation.setMnemonic( KeyEvent.VK_T );
-            menuLyricDictionary.setText( _( "User Word Dictionary" ) );
-            menuLyricDictionary.setMnemonic( KeyEvent.VK_C );
-
-            menuScript.setText( _( "Script" ) );
-            menuScript.setMnemonic( KeyEvent.VK_C );
-            menuScriptUpdate.setText( _( "Update Script List" ) );
-            menuScriptUpdate.setMnemonic( KeyEvent.VK_U );
-
-            menuSetting.setText( _( "Setting" ) );
-            menuSetting.setMnemonic( KeyEvent.VK_S );
-            menuSettingPreference.setText( _( "Preference" ) );
-            menuSettingPreference.setMnemonic( KeyEvent.VK_P );
-            menuSettingGameControler.setText( _( "Game Controler" ) );
-            menuSettingGameControler.setMnemonic( KeyEvent.VK_G );
-            menuSettingGameControlerLoad.setText( _( "Load" ) );
-            menuSettingGameControlerLoad.setMnemonic( KeyEvent.VK_L );
-            menuSettingGameControlerRemove.setText( _( "Remove" ) );
-            menuSettingGameControlerRemove.setMnemonic( KeyEvent.VK_R );
-            menuSettingGameControlerSetting.setText( _( "Setting" ) );
-            menuSettingGameControlerSetting.setMnemonic( KeyEvent.VK_S );
-            menuSettingShortcut.setText( _( "Shortcut Key" ) );
-            menuSettingShortcut.setMnemonic( KeyEvent.VK_S );
-            menuSettingUtauVoiceDB.setText( _( "UTAU Voice DB" ) );
-            menuSettingUtauVoiceDB.setMnemonic( KeyEvent.VK_U );
-            menuSettingDefaultSingerStyle.setText( _( "Singing Style Defaults" ) );
-            menuSettingDefaultSingerStyle.setMnemonic( KeyEvent.VK_D );
-            menuSettingPositionQuantize.setText( _( "Quantize" ) );
-            menuSettingPositionQuantize.setMnemonic( KeyEvent.VK_Q );
-            menuSettingPositionQuantizeOff.setText( _( "Off" ) );
-            menuSettingPositionQuantizeTriplet.setText( _( "Triplet" ) );
-            menuSettingLengthQuantize.setText( _( "Length" ) );
-            menuSettingLengthQuantize.setMnemonic( KeyEvent.VK_L );
-            menuSettingLengthQuantizeOff.setText( _( "Off" ) );
-            menuSettingLengthQuantizeTriplet.setText( _( "Triplet" ) );
-            menuSettingSingerProperty.setText( _( "Singer Properties" ) );
-            menuSettingSingerProperty.setMnemonic( KeyEvent.VK_S );
-            menuSettingPaletteTool.setText( _( "Palette Tool" ) );
-            menuSettingPaletteTool.setMnemonic( KeyEvent.VK_T );
-
-            menuHelp.setText( _( "Help" ) );
-            menuHelp.setMnemonic( KeyEvent.VK_H );
-            menuHelpAbout.setText( _( "About Cadencii" ) );
-            menuHelpAbout.setMnemonic( KeyEvent.VK_A );
-
-            menuHiddenCopy.setText( _( "Copy" ) );
-            menuHiddenCut.setText( _( "Cut" ) );
-            menuHiddenEditFlipToolPointerEraser.setText( _( "Chagne Tool Pointer / Eraser" ) );
-            menuHiddenEditFlipToolPointerPencil.setText( _( "Change Tool Pointer / Pencil" ) );
-            menuHiddenEditLyric.setText( _( "Start Lyric Input" ) );
-            menuHiddenGoToEndMarker.setText( _( "GoTo End Marker" ) );
-            menuHiddenGoToStartMarker.setText( _( "GoTo Start Marker" ) );
-            menuHiddenLengthen.setText( _( "Lengthen" ) );
-            menuHiddenMoveDown.setText( _( "Move Down" ) );
-            menuHiddenMoveLeft.setText( _( "Move Left" ) );
-            menuHiddenMoveRight.setText( _( "Move Right" ) );
-            menuHiddenMoveUp.setText( _( "Move Up" ) );
-            menuHiddenPaste.setText( _( "Paste" ) );
-            menuHiddenPlayFromStartMarker.setText( _( "Play From Start Marker" ) );
-            menuHiddenSelectBackward.setText( _( "Select Backward" ) );
-            menuHiddenSelectForward.setText( _( "Select Forward" ) );
-            menuHiddenShorten.setText( _( "Shorten" ) );
-            menuHiddenTrackBack.setText( _( "Previous Track" ) );
-            menuHiddenTrackNext.setText( _( "Next Track" ) );
-            menuHiddenVisualBackwardParameter.setText( _( "Previous Control Curve" ) );
-            menuHiddenVisualForwardParameter.setText( _( "Next Control Curve" ) );
-            #endregion
-
-            #region cMenuPiano
-            cMenuPianoPointer.setText( _( "Arrow" ) );
-            cMenuPianoPointer.setMnemonic( KeyEvent.VK_A );
-            cMenuPianoPencil.setText( _( "Pencil" ) );
-            cMenuPianoPencil.setMnemonic( KeyEvent.VK_W );
-            cMenuPianoEraser.setText( _( "Eraser" ) );
-            cMenuPianoEraser.setMnemonic( KeyEvent.VK_E );
-            cMenuPianoPaletteTool.setText( _( "Palette Tool" ) );
-
-            cMenuPianoCurve.setText( _( "Curve" ) );
-            cMenuPianoCurve.setMnemonic( KeyEvent.VK_V );
-
-            cMenuPianoFixed.setText( _( "Note Fixed Length" ) );
-            cMenuPianoFixed.setMnemonic( KeyEvent.VK_N );
-            cMenuPianoFixedTriplet.setText( _( "Triplet" ) );
-            cMenuPianoFixedOff.setText( _( "Off" ) );
-            cMenuPianoFixedDotted.setText( _( "Dot" ) );
-            cMenuPianoQuantize.setText( _( "Quantize" ) );
-            cMenuPianoQuantize.setMnemonic( KeyEvent.VK_Q );
-            cMenuPianoQuantizeTriplet.setText( _( "Triplet" ) );
-            cMenuPianoQuantizeOff.setText( _( "Off" ) );
-            cMenuPianoLength.setText( _( "Length" ) );
-            cMenuPianoLength.setMnemonic( KeyEvent.VK_L );
-            cMenuPianoLengthTriplet.setText( _( "Triplet" ) );
-            cMenuPianoLengthOff.setText( _( "Off" ) );
-            cMenuPianoGrid.setText( _( "Show/Hide Grid Line" ) );
-            cMenuPianoGrid.setMnemonic( KeyEvent.VK_S );
-
-            cMenuPianoUndo.setText( _( "Undo" ) );
-            cMenuPianoUndo.setMnemonic( KeyEvent.VK_U );
-            cMenuPianoRedo.setText( _( "Redo" ) );
-            cMenuPianoRedo.setMnemonic( KeyEvent.VK_R );
-
-            cMenuPianoCut.setText( _( "Cut" ) );
-            cMenuPianoCut.setMnemonic( KeyEvent.VK_T );
-            cMenuPianoPaste.setText( _( "Paste" ) );
-            cMenuPianoPaste.setMnemonic( KeyEvent.VK_P );
-            cMenuPianoCopy.setText( _( "Copy" ) );
-            cMenuPianoCopy.setMnemonic( KeyEvent.VK_C );
-            cMenuPianoDelete.setText( _( "Delete" ) );
-            cMenuPianoDelete.setMnemonic( KeyEvent.VK_D );
-
-            cMenuPianoSelectAll.setText( _( "Select All" ) );
-            cMenuPianoSelectAll.setMnemonic( KeyEvent.VK_A );
-            cMenuPianoSelectAllEvents.setText( _( "Select All Events" ) );
-            cMenuPianoSelectAllEvents.setMnemonic( KeyEvent.VK_E );
-
-            cMenuPianoExpressionProperty.setText( _( "Note Expression Property" ) );
-            cMenuPianoExpressionProperty.setMnemonic( KeyEvent.VK_P );
-            cMenuPianoVibratoProperty.setText( _( "Note Vibrato Property" ) );
-            cMenuPianoImportLyric.setText( _( "Insert Lyrics" ) );
-            cMenuPianoImportLyric.setMnemonic( KeyEvent.VK_P );
-            #endregion
-
-            #region cMenuTrackTab
-            cMenuTrackTabTrackOn.setText( _( "Track On" ) );
-            cMenuTrackTabTrackOn.setMnemonic( KeyEvent.VK_K );
-            cMenuTrackTabPlayAfterSynth.setText( _( "Play After Synth" ) );
-            cMenuTrackTabPlayAfterSynth.setMnemonic( KeyEvent.VK_P );
-            cMenuTrackTabAdd.setText( _( "Add Track" ) );
-            cMenuTrackTabAdd.setMnemonic( KeyEvent.VK_A );
-            cMenuTrackTabCopy.setText( _( "Copy Track" ) );
-            cMenuTrackTabCopy.setMnemonic( KeyEvent.VK_C );
-            cMenuTrackTabChangeName.setText( _( "Rename Track" ) );
-            cMenuTrackTabDelete.setText( _( "Delete Track" ) );
-            cMenuTrackTabDelete.setMnemonic( KeyEvent.VK_D );
-
-            cMenuTrackTabRenderCurrent.setText( _( "Render Current Track" ) );
-            cMenuTrackTabRenderCurrent.setMnemonic( KeyEvent.VK_T );
-            cMenuTrackTabRenderAll.setText( _( "Render All Tracks" ) );
-            cMenuTrackTabRenderAll.setMnemonic( KeyEvent.VK_S );
-            cMenuTrackTabOverlay.setText( _( "Overlay" ) );
-            cMenuTrackTabOverlay.setMnemonic( KeyEvent.VK_O );
-            cMenuTrackTabRenderer.setText( _( "Renderer" ) );
-            cMenuTrackTabRenderer.setMnemonic( KeyEvent.VK_R );
-            #endregion
-
-            #region cMenuTrackSelector
-            cMenuTrackSelectorPointer.setText( _( "Arrow" ) );
-            cMenuTrackSelectorPointer.setMnemonic( KeyEvent.VK_A );
-            cMenuTrackSelectorPencil.setText( _( "Pencil" ) );
-            cMenuTrackSelectorPencil.setMnemonic( KeyEvent.VK_W );
-            cMenuTrackSelectorLine.setText( _( "Line" ) );
-            cMenuTrackSelectorLine.setMnemonic( KeyEvent.VK_L );
-            cMenuTrackSelectorEraser.setText( _( "Eraser" ) );
-            cMenuTrackSelectorEraser.setMnemonic( KeyEvent.VK_E );
-            cMenuTrackSelectorPaletteTool.setText( _( "Palette Tool" ) );
-
-            cMenuTrackSelectorCurve.setText( _( "Curve" ) );
-            cMenuTrackSelectorCurve.setMnemonic( KeyEvent.VK_V );
-
-            cMenuTrackSelectorUndo.setText( _( "Undo" ) );
-            cMenuTrackSelectorUndo.setMnemonic( KeyEvent.VK_U );
-            cMenuTrackSelectorRedo.setText( _( "Redo" ) );
-            cMenuTrackSelectorRedo.setMnemonic( KeyEvent.VK_R );
-
-            cMenuTrackSelectorCut.setText( _( "Cut" ) );
-            cMenuTrackSelectorCut.setMnemonic( KeyEvent.VK_T );
-            cMenuTrackSelectorCopy.setText( _( "Copy" ) );
-            cMenuTrackSelectorCopy.setMnemonic( KeyEvent.VK_C );
-            cMenuTrackSelectorPaste.setText( _( "Paste" ) );
-            cMenuTrackSelectorPaste.setMnemonic( KeyEvent.VK_P );
-            cMenuTrackSelectorDelete.setText( _( "Delete" ) );
-            cMenuTrackSelectorDelete.setMnemonic( KeyEvent.VK_D );
-            cMenuTrackSelectorDeleteBezier.setText( _( "Delete Bezier Point" ) );
-            cMenuTrackSelectorDeleteBezier.setMnemonic( KeyEvent.VK_B );
-
-            cMenuTrackSelectorSelectAll.setText( _( "Select All Events" ) );
-            cMenuTrackSelectorSelectAll.setMnemonic( KeyEvent.VK_E );
-            #endregion
-
-            stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
-
-            // Palette Tool
-#if DEBUG
-            AppManager.debugWriteLine( "FormMain.ApplyLanguage; Messaging.Language=" + Messaging.getLanguage() );
-#endif
-#if ENABLE_SCRIPT
-            int count = toolStripTool.getComponentCount();
-            for ( int i = 0; i < count; i++ ){
-                Object tsi = toolStripTool.getComponentAtIndex( i );
-                if ( tsi is BToolStripButton ) {
-                    BToolStripButton tsb = (BToolStripButton)tsi;
-                    if ( tsb.getTag() != null && tsb.getTag() is String ) {
-                        String id = (String)tsb.getTag();
-                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsb.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsb.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
-                        }
-                    }
-                }
-            }
-
-            foreach ( MenuElement tsi in cMenuPianoPaletteTool.getSubElements() ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                        String id = (String)tsmi.getTag();
-                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
-                        }
-                    }
-                }
-            }
-
-            foreach ( MenuElement tsi in cMenuTrackSelectorPaletteTool.getSubElements() ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                        String id = (String)tsmi.getTag();
-                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
-                        }
-                    }
-                }
-            }
-
-            foreach ( MenuElement tsi in menuSettingPaletteTool.getSubElements() ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                        String id = (String)tsmi.getTag();
-                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
-                        }
-                    }
-                }
-            }
-
-            for ( Iterator<String> itr = PaletteToolServer.loadedTools.keySet().iterator(); itr.hasNext(); ) {
-                String id = (String)itr.next();
-                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                ipt.applyLanguage( Messaging.getLanguage() );
-            }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-            updateStripDDBtnSpeed();
-#endif
-        }
-
-        public void importLyric() {
-#if DEBUG
-            AppManager.debugWriteLine( "ImportLyric" );
-#endif
-            int start = 0;
-            int selected = AppManager.getSelected();
-            VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( selected );
-            int selectedid = AppManager.getLastSelectedEvent().original.InternalID;
-            int numEvents = vsq_track.getEventCount();
-            for ( int i = 0; i < numEvents; i++ ) {
-                if ( selectedid == vsq_track.getEvent( i ).InternalID ) {
-                    start = i;
-                    break;
-                }
-            }
-            int count = vsq_track.getEventCount() - 1 - start + 1;
-#if DEBUG
-            AppManager.debugWriteLine( "    count=" + count );
-#endif
-            FormImportLyric dlg = null;
-            try {
-                dlg = new FormImportLyric( count );
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                dlg.setModal( true );
-                dlg.setVisible( true );
-                if ( dlg.getDialogResult() == BDialogResult.OK ) {
-                    String[] phrases = dlg.GetLetters();
-#if DEBUG
-                    for ( int i = 0; i < phrases.Length; i++ ) {
-                        AppManager.debugWriteLine( "    " + phrases[i] );
-                    }
-#endif
-                    int min = Math.Min( count, phrases.Length );
-                    String[] new_phrases = new String[min];
-                    String[] new_symbols = new String[min];
-                    for ( int i = 0; i < min; i++ ) {
-                        new_phrases[i] = phrases[i];
-                        ByRef<String> symb = new ByRef<String>( "" );
-                        SymbolTable.attatch( phrases[i], symb );
-                        new_symbols[i] = symb.value;
-                    }
-                    VsqID[] new_ids = new VsqID[min];
-                    int[] ids = new int[min];
-                    for ( int i = start; i < start + min; i++ ) {
-                        VsqEvent item = vsq_track.getEvent( i );
-                        new_ids[i - start] = (VsqID)item.ID.clone();
-                        new_ids[i - start].LyricHandle.L0.Phrase = new_phrases[i - start];
-                        new_ids[i - start].LyricHandle.L0.setPhoneticSymbol( new_symbols[i - start] );
-                        ids[i - start] = item.InternalID;
-                    }
-                    CadenciiCommand run = new CadenciiCommand(
-                        VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, new_ids ) );
-                    AppManager.register( vsq.executeCommand( run ) );
-                    setEdited( true );
-                    repaint();
-                }
-            } catch ( Exception ex ) {
-            } finally {
-                if ( dlg != null ) {
-                    try {
-                        dlg.close();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-            }
-        }
-
-        public void editNoteVibratoProperty() {
-            SelectedEventEntry item = AppManager.getLastSelectedEvent();
-            if ( item == null ) {
-                return;
-            }
-
-            VsqEvent ev = item.original;
-            int selected = AppManager.getSelected();
-            VsqFileEx vsq = AppManager.getVsqFile();
-            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
-            SynthesizerType type = SynthesizerType.VOCALOID2;
-            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                type = SynthesizerType.VOCALOID1;
-            }
-            FormVibratoConfig dlg = null;
-            try {
-                dlg = new FormVibratoConfig( ev.ID.VibratoHandle, ev.ID.getLength(), AppManager.editorConfig.DefaultVibratoLength, type );
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                dlg.setModal( true );
-                dlg.setVisible( true );
-                if ( dlg.getDialogResult() == BDialogResult.OK ) {
-                    VsqEvent edited = (VsqEvent)ev.clone();
-                    if ( dlg.getVibratoHandle() != null ) {
-                        edited.ID.VibratoHandle = (VibratoHandle)dlg.getVibratoHandle().clone();
-                        edited.ID.VibratoDelay = ev.ID.getLength() - dlg.getVibratoHandle().getLength();
-                    } else {
-                        edited.ID.VibratoHandle = null;
-                    }
-                    CadenciiCommand run = new CadenciiCommand(
-                        VsqCommand.generateCommandEventChangeIDContaints( selected, ev.InternalID, edited.ID ) );
-                    AppManager.register( vsq.executeCommand( run ) );
-                    setEdited( true );
-                    refreshScreen();
-                }
-            } catch ( Exception ex ) {
-            } finally {
-                if ( dlg != null ) {
-                    try {
-                        dlg.close();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-            }
-        }
-
-        public void editNoteExpressionProperty() {
-            SelectedEventEntry item = AppManager.getLastSelectedEvent();
-            if ( item == null ) {
-                return;
-            }
-
-            VsqEvent ev = item.original;
-            SynthesizerType type = SynthesizerType.VOCALOID2;
-            int selected = AppManager.getSelected();
-            VsqFileEx vsq = AppManager.getVsqFile();
-            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
-            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                type = SynthesizerType.VOCALOID1;
-            }
-            FormNoteExpressionConfig dlg = null;
-            try {
-                dlg = new FormNoteExpressionConfig( type, ev.ID.NoteHeadHandle );
-                dlg.setPMBendDepth( ev.ID.PMBendDepth );
-                dlg.setPMBendLength( ev.ID.PMBendLength );
-                dlg.setPMbPortamentoUse( ev.ID.PMbPortamentoUse );
-                dlg.setDEMdecGainRate( ev.ID.DEMdecGainRate );
-                dlg.setDEMaccent( ev.ID.DEMaccent );
-
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                dlg.setModal( true );
-                dlg.setVisible( true );
-                if ( dlg.getDialogResult() == BDialogResult.OK ) {
-                    VsqEvent edited = (VsqEvent)ev.clone();
-                    edited.ID.PMBendDepth = dlg.getPMBendDepth();
-                    edited.ID.PMBendLength = dlg.getPMBendLength();
-                    edited.ID.PMbPortamentoUse = dlg.getPMbPortamentoUse();
-                    edited.ID.DEMdecGainRate = dlg.getDEMdecGainRate();
-                    edited.ID.DEMaccent = dlg.getDEMaccent();
-                    edited.ID.NoteHeadHandle = dlg.getEditedNoteHeadHandle();
-                    CadenciiCommand run = new CadenciiCommand(
-                        VsqCommand.generateCommandEventChangeIDContaints( selected, ev.InternalID, edited.ID ) );
-                    AppManager.register( vsq.executeCommand( run ) );
-                    setEdited( true );
-                    refreshScreen();
-                }
-            } catch ( Exception ex ) {
-            } finally {
-                if ( dlg != null ) {
-                    try {
-                        dlg.close();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-            }
-        }
-
-        public int computeScrollValueFromWheelDelta( int delta ) {
-            double new_val = (double)hScroll.getValue() - delta * AppManager.editorConfig.WheelOrder / (5.0 * AppManager.scaleX);
-            if ( new_val < 0.0 ) {
-                new_val = 0;
-            }
-            int draft = (int)new_val;
-            if ( draft > hScroll.getMaximum() ) {
-                draft = hScroll.getMaximum();
-            } else if ( draft < hScroll.getMinimum() ) {
-                draft = hScroll.getMinimum();
-            }
-            return draft;
-        }
-
-        #region 音符の編集関連
-        public void selectAll() {
-            AppManager.clearSelectedEvent();
-            AppManager.clearSelectedTempo();
-            AppManager.clearSelectedTimesig();
-            AppManager.clearSelectedPoint();
-            int min = int.MaxValue;
-            int max = int.MinValue;
-            int premeasure = AppManager.getVsqFile().getPreMeasureClocks();
-            Vector<Integer> add_required = new Vector<Integer>();
-            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
-                VsqEvent ve = itr.next();
-                if ( premeasure <= ve.Clock ) {
-                    add_required.add( ve.InternalID );
-                    min = Math.Min( min, ve.Clock );
-                    max = Math.Max( max, ve.Clock + ve.ID.getLength() );
-                }
-            }
-            if ( add_required.size() > 0 ) {
-                AppManager.addSelectedEventAll( add_required );
-            }
-            foreach ( CurveType vct in Utility.CURVE_USAGE ) {
-                if ( vct.isScalar() || vct.isAttachNote() ) {
-                    continue;
-                }
-                VsqBPList target = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
-                int count = target.size();
-                if ( count >= 1 ) {
-                    //int[] keys = target.getKeys();
-                    int max_key = target.getKeyClock( count - 1 );
-                    max = Math.Max( max, target.getValue( max_key ) );
-                    for ( int i = 0; i < count; i++ ) {
-                        int key = target.getKeyClock( i );
-                        if ( premeasure <= key ) {
-                            min = Math.Min( min, key );
-                            break;
-                        }
-                    }
-                }
-            }
-            if ( min < premeasure ) {
-                min = premeasure;
-            }
-            if ( min < max ) {
-                //int stdx = AppManager.startToDrawX;
-                //min = xCoordFromClocks( min ) + stdx;
-                //max = xCoordFromClocks( max ) + stdx;
-                AppManager.wholeSelectedInterval = new SelectedRegion( min );
-                AppManager.wholeSelectedInterval.setEnd( max );
-                AppManager.setWholeSelectedIntervalEnabled( true );
-            }
-        }
-
-        public void selectAllEvent() {
-            AppManager.clearSelectedTempo();
-            AppManager.clearSelectedTimesig();
-            AppManager.clearSelectedEvent();
-            AppManager.clearSelectedPoint();
-            int premeasureclock = AppManager.getVsqFile().getPreMeasureClocks();
-            Vector<Integer> add_required = new Vector<Integer>();
-            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
-                VsqEvent ev = itr.next();
-                if ( ev.ID.type == VsqIDType.Anote && ev.Clock >= premeasureclock ) {
-                    add_required.add( ev.InternalID );
-                }
-            }
-            if ( add_required.size() > 0 ) {
-                AppManager.addSelectedEventAll( add_required );
-            }
-            refreshScreen();
-        }
-
-        public void deleteEvent() {
-#if DEBUG
-            AppManager.debugWriteLine( "DeleteEvent()" );
-            AppManager.debugWriteLine( "    AppManager.inputTextBox.isEnabled()=" + AppManager.inputTextBox.Enabled );
-#endif
-
-            if ( AppManager.inputTextBox.isVisible() ) {
-                return;
-            }
-#if ENABLE_PROPERTY
-            if ( AppManager.propertyPanel.isEditing() ) {
-                return;
-            }
-#endif
-
-            int selected = AppManager.getSelected();
-            VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( selected );
-
-            if ( AppManager.getSelectedEventCount() > 0 ) {
-                Vector<Integer> ids = new Vector<Integer>();
-                boolean contains_aicon = false;
-                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry ev = itr.next();
-                    ids.add( ev.original.InternalID );
-                    if ( ev.original.ID.type == VsqIDType.Aicon ) {
-                        contains_aicon = true;
-                    }
-                }
-                VsqCommand run = VsqCommand.generateCommandEventDeleteRange( selected, ids );
-                if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                    VsqFileEx work = (VsqFileEx)vsq.clone();
-                    work.executeCommand( run );
-                    int stdx = AppManager.startToDrawX;
-                    int start_clock = AppManager.wholeSelectedInterval.getStart();
-                    int end_clock = AppManager.wholeSelectedInterval.getEnd();
-                    Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
-                    Vector<CurveType> types = new Vector<CurveType>();
-                    foreach ( CurveType vct in Utility.CURVE_USAGE ) {
-                        if ( vct.isScalar() || vct.isAttachNote() ) {
-                            continue;
-                        }
-                        Vector<BPPair> t = new Vector<BPPair>();
-                        t.add( new BPPair( start_clock, work.Track.get( selected ).getCurve( vct.getName() ).getValue( start_clock ) ) );
-                        t.add( new BPPair( end_clock, work.Track.get( selected ).getCurve( vct.getName() ).getValue( end_clock ) ) );
-                        curves.add( t );
-                        types.add( vct );
-                    }
-                    Vector<String> strs = new Vector<String>();
-                    for ( int i = 0; i < types.size(); i++ ) {
-                        strs.add( types.get( i ).getName() );
-                    }
-                    CadenciiCommand delete_curve = new CadenciiCommand( VsqCommand.generateCommandTrackCurveEditRange( selected,
-                                                                                                                       strs,
-                                                                                                                       curves ) );
-                    work.executeCommand( delete_curve );
-                    if ( contains_aicon ) {
-                        work.Track.get( selected ).reflectDynamics();
-                    }
-                    CadenciiCommand run2 = new CadenciiCommand( VsqCommand.generateCommandReplace( work ) );
-                    AppManager.register( vsq.executeCommand( run2 ) );
-                    setEdited( true );
-                } else {
-                    CadenciiCommand run2 = null;
-                    if ( contains_aicon ) {
-                        VsqFileEx work = (VsqFileEx)vsq.clone();
-                        work.executeCommand( run );
-                        VsqTrack vsq_track_copied = work.Track.get( selected );
-                        vsq_track_copied.reflectDynamics();
-                        run2 = VsqFileEx.generateCommandTrackReplace( selected,
-                                                                      vsq_track_copied,
-                                                                      work.AttachedCurves.get( selected - 1 ) );
-                    } else {
-                        run2 = new CadenciiCommand( run );
-                    }
-                    AppManager.register( vsq.executeCommand( run2 ) );
-                    setEdited( true );
-                    AppManager.clearSelectedEvent();
-                }
-                repaint();
-            } else if ( AppManager.getSelectedTempoCount() > 0 ) {
-                Vector<Integer> clocks = new Vector<Integer>();
-                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
-                    //SelectedTempoEntry value = AppManager.getSelectedTempo().get( key );
-                    if ( item.getKey() <= 0 ) {
-                        statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
-#if !JAVA
-                        SystemSounds.Asterisk.Play();
-#endif
-                        return;
-                    }
-                    clocks.add( item.getKey() );
-                }
-                int[] dum = new int[clocks.size()];
-                for ( int i = 0; i < dum.Length; i++ ) {
-                    dum[i] = -1;
-                }
-                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
-                                                                                                       PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ), dum ) );
-                AppManager.register( vsq.executeCommand( run ) );
-                setEdited( true );
-                AppManager.clearSelectedTempo();
-                repaint();
-            } else if ( AppManager.getSelectedTimesigCount() > 0 ) {
-#if DEBUG
-                AppManager.debugWriteLine( "    Timesig" );
-#endif
-                int[] barcounts = new int[AppManager.getSelectedTimesigCount()];
-                int[] numerators = new int[AppManager.getSelectedTimesigCount()];
-                int[] denominators = new int[AppManager.getSelectedTimesigCount()];
-                int count = -1;
-                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
-                    int key = item.getKey();
-                    SelectedTimesigEntry value = item.getValue();
-                    count++;
-                    barcounts[count] = key;
-                    if ( key <= 0 ) {
-                        statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
-#if !JAVA
-                        SystemSounds.Asterisk.Play();
-#endif
-                        return;
-                    }
-                    numerators[count] = -1;
-                    denominators[count] = -1;
-                }
-                CadenciiCommand run = new CadenciiCommand(
-                    VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
-                AppManager.register( vsq.executeCommand( run )  );
-                setEdited( true );
-                AppManager.clearSelectedTimesig();
-                repaint();
-            }
-            if ( AppManager.getSelectedPointIDCount() > 0 ) {
-#if DEBUG
-                AppManager.debugWriteLine( "    Curve" );
-#endif
-                String curve;
-                if ( !trackSelector.getSelectedCurve().isAttachNote() ) {
-                    curve = trackSelector.getSelectedCurve().getName();
-                    VsqBPList src = vsq_track.getCurve( curve );
-                    VsqBPList list = (VsqBPList)src.clone();
-                    Vector<Integer> remove_clock_queue = new Vector<Integer>();
-                    int count = list.size();
-                    for ( int i = 0; i < count; i++ ) {
-                        VsqBPPair item = list.getElementB( i );
-                        if ( AppManager.isSelectedPointContains( item.id ) ) {
-                            remove_clock_queue.add( list.getKeyClock( i ) );
-                        }
-                    }
-                    count = remove_clock_queue.size();
-                    for ( int i = 0; i < count; i++ ) {
-                        list.remove( remove_clock_queue.get( i ) );
-                    }
-                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackCurveReplace( selected,
-                                                                                                            trackSelector.getSelectedCurve().getName(),
-                                                                                                            list ) );
-                    AppManager.register( vsq.executeCommand( run ) );
-                    setEdited( true );
-                } else {
-                    //todo: FormMain+DeleteEvent; VibratoDepth, VibratoRateの場合
-                }
-                AppManager.clearSelectedPoint();
-                refreshScreen();
-            }
-        }
-
-        public void pasteEvent() {
-            int clock = AppManager.getCurrentClock();
-            int unit = AppManager.getPositionQuantizeClock();
-            clock = doQuantize( clock, unit );
-
-            VsqCommand add_event = null; // VsqEventを追加するコマンド
-
-            ClipboardEntry ce = AppManager.getCopiedItems();
-            int copy_started_clock = ce.copyStartedClock;
-            Vector<VsqEvent> copied_events = ce.events;
-#if DEBUG
-            PortUtil.println( "FormMain#pasteEvent; copy_started_clock=" + copy_started_clock );
-            PortUtil.println( "FormMain#pasteEvent; copied_events.size()=" + copied_events.size() );
-#endif
-            if ( copied_events.size() != 0 ) {
-                // VsqEventのペーストを行うコマンドを発行
-                int dclock = clock - copy_started_clock;
-                if ( clock >= AppManager.getVsqFile().getPreMeasureClocks() ) {
-                    Vector<VsqEvent> paste = new Vector<VsqEvent>();
-                    int count = copied_events.size();
-                    for ( int i = 0; i < count; i++ ) {
-                        VsqEvent item = (VsqEvent)copied_events.get( i ).clone();
-                        item.Clock = copied_events.get( i ).Clock + dclock;
-                        paste.add( item );
-                    }
-                    add_event = VsqCommand.generateCommandEventAddRange( AppManager.getSelected(), paste.toArray( new VsqEvent[] { } ) );
-                }
-            }
-            Vector<TempoTableEntry> copied_tempo = ce.tempo;
-            if ( copied_tempo.size() != 0 ) {
-                // テンポ変更の貼付けを実行
-                int dclock = clock - copy_started_clock;
-                int count = copied_tempo.size();
-                int[] clocks = new int[count];
-                int[] tempos = new int[count];
-                for ( int i = 0; i < count; i++ ) {
-                    TempoTableEntry item = copied_tempo.get( i );
-                    clocks[i] = item.Clock + dclock;
-                    tempos[i] = item.Tempo;
-                }
-                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, clocks, tempos ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                setEdited( true );
-                refreshScreen();
-                return;
-            }
-            Vector<TimeSigTableEntry> copied_timesig = ce.timesig;
-            if ( copied_timesig.size() > 0 ) {
-                // 拍子変更の貼付けを実行
-                int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
-                int min_barcount = copied_timesig.get( 0 ).BarCount;
-                for ( Iterator<TimeSigTableEntry> itr = copied_timesig.iterator(); itr.hasNext(); ) {
-                    TimeSigTableEntry tste = itr.next();
-                    min_barcount = Math.Min( min_barcount, tste.BarCount );
-                }
-                int dbarcount = bar_count - min_barcount;
-                int count = copied_timesig.size();
-                int[] barcounts = new int[count];
-                int[] numerators = new int[count];
-                int[] denominators = new int[count];
-                for ( int i = 0; i < count; i++ ) {
-                    TimeSigTableEntry item = copied_timesig.get( i );
-                    barcounts[i] = item.BarCount + dbarcount;
-                    numerators[i] = item.Numerator;
-                    denominators[i] = item.Denominator;
-                }
-                CadenciiCommand run = new CadenciiCommand(
-                    VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                setEdited( true );
-                refreshScreen();
-                return;
-            }
-
-            // BPPairの貼付け
-            VsqCommand edit_bpcurve = null; // BPListを変更するコマンド
-            TreeMap<CurveType, VsqBPList> copied_curve = ce.points;
-#if DEBUG
-            PortUtil.println( "FormMain#pasteEvent; copied_curve.size()=" + copied_curve.size() );
-#endif
-            if ( copied_curve.size() > 0 ) {
-                int dclock = clock - copy_started_clock;
-
-                TreeMap<String, VsqBPList> work = new TreeMap<String, VsqBPList>();
-                for ( Iterator<CurveType> itr = copied_curve.keySet().iterator(); itr.hasNext(); ) {
-                    CurveType curve = itr.next();
-                    VsqBPList list = copied_curve.get( curve );
-#if DEBUG
-                    AppManager.debugWriteLine( "FormMain#pasteEvent; curve=" + curve );
-#endif
-                    if ( curve.isScalar() ) {
-                        continue;
-                    }
-                    if ( list.size() <= 0 ) {
-                        continue;
-                    }
-                    if ( curve.isAttachNote() ) {
-                        //todo: FormMain+PasteEvent; VibratoRate, VibratoDepthカーブのペースト処理
-                    } else {
-                        VsqBPList target = (VsqBPList)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() ).clone();
-                        int count = list.size();
-#if DEBUG
-                        PortUtil.println( "FormMain#pasteEvent; list.getCount()=" + count );
-#endif
-                        int min = list.getKeyClock( 0 ) + dclock;
-                        int max = list.getKeyClock( count - 1 ) + dclock;
-                        int valueAtEnd = target.getValue( max );
-                        for ( int i = 0; i < target.size(); i++ ) {
-                            int cl = target.getKeyClock( i );
-                            if ( min <= cl && cl <= max ) {
-                                target.removeElementAt( i );
-                                i--;
-                            }
-                        }
-                        int lastClock = min;
-                        for ( int i = 0; i < count - 1; i++ ) {
-                            lastClock = list.getKeyClock( i ) + dclock;
-                            target.add( lastClock, list.getElementA( i ) );
-                        }
-                        // 最後のやつ
-                        if ( lastClock < max - 1 ) {
-                            target.add( max - 1, list.getElementA( count - 1 ) );
-                        }
-                        target.add( max, valueAtEnd );
-                        if ( copied_curve.size() == 1 ) {
-                            work.put( trackSelector.getSelectedCurve().getName(), target );
-                        } else {
-                            work.put( curve.getName(), target );
-                        }
-                    }
-                }
-#if DEBUG
-                PortUtil.println( "FormMain#pasteEvent; work.size()=" + work.size() );
-#endif
-                if ( work.size() > 0 ) {
-                    String[] curves = new String[work.size()];
-                    VsqBPList[] bplists = new VsqBPList[work.size()];
-                    int count = -1;
-                    for ( Iterator<String> itr = work.keySet().iterator(); itr.hasNext(); ) {
-                        String s = itr.next();
-                        count++;
-                        curves[count] = s;
-                        bplists[count] = work.get( s );
-                    }
-                    edit_bpcurve = VsqCommand.generateCommandTrackCurveReplaceRange( AppManager.getSelected(), curves, bplists );
-                }
-                AppManager.clearSelectedPoint();
-            }
-
-            // ベジエ曲線の貼付け
-            CadenciiCommand edit_bezier = null;
-            TreeMap<CurveType, Vector<BezierChain>> copied_bezier = ce.beziers;
-#if DEBUG
-            PortUtil.println( "FormMain#pasteEvent; copied_bezier.size()=" + copied_bezier.size() );
-#endif
-            if ( copied_bezier.size() > 0 ) {
-                int dclock = clock - copy_started_clock;
-                BezierCurves attached_curve = (BezierCurves)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).clone();
-                TreeMap<CurveType, Vector<BezierChain>> command_arg = new TreeMap<CurveType, Vector<BezierChain>>();
-                for ( Iterator<CurveType> itr = copied_bezier.keySet().iterator(); itr.hasNext(); ) {
-                    CurveType curve = itr.next();
-                    if ( curve.isScalar() ) {
-                        continue;
-                    }
-                    for ( Iterator<BezierChain> itr2 = copied_bezier.get( curve ).iterator(); itr2.hasNext(); ) {
-                        BezierChain bc = itr2.next();
-                        BezierChain bc_copy = (BezierChain)bc.clone();
-                        for ( Iterator<BezierPoint> itr3 = bc_copy.points.iterator(); itr3.hasNext(); ) {
-                            BezierPoint bp = itr3.next();
-                            bp.setBase( new PointD( bp.getBase().getX() + dclock, bp.getBase().getY() ) );
-                        }
-                        attached_curve.mergeBezierChain( curve, bc_copy );
-                    }
-                    Vector<BezierChain> arg = new Vector<BezierChain>();
-                    for ( Iterator<BezierChain> itr2 = attached_curve.get( curve ).iterator(); itr2.hasNext(); ) {
-                        BezierChain bc = itr2.next();
-                        arg.add( bc );
-                    }
-                    command_arg.put( curve, arg );
-                }
-                edit_bezier = VsqFileEx.generateCommandReplaceAttachedCurveRange( AppManager.getSelected(), command_arg );
-            }
-
-            int commands = 0;
-            commands += (add_event != null) ? 1 : 0;
-            commands += (edit_bpcurve != null) ? 1 : 0;
-            commands += (edit_bezier != null) ? 1 : 0;
-
-#if DEBUG
-            AppManager.debugWriteLine( "FormMain#pasteEvent; commands=" + commands );
-            AppManager.debugWriteLine( "FormMain#pasteEvent; (add_event != null)=" + (add_event != null) );
-            AppManager.debugWriteLine( "FormMain#pasteEvent; (edit_bpcurve != null)=" + (edit_bpcurve != null) );
-            AppManager.debugWriteLine( "FormMain#pasteEvent; (edit_bezier != null)=" + (edit_bezier != null) );
-#endif
-            if ( commands == 1 ) {
-                if ( add_event != null ) {
-                    CadenciiCommand run = new CadenciiCommand( add_event );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                } else if ( edit_bpcurve != null ) {
-                    CadenciiCommand run = new CadenciiCommand( edit_bpcurve );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                } else if ( edit_bezier != null ) {
-                    AppManager.register( AppManager.getVsqFile().executeCommand( edit_bezier ) );
-                }
-                AppManager.getVsqFile().updateTotalClocks();
-                setEdited( true );
-                refreshScreen();
-            } else if ( commands > 1 ) {
-                VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().clone();
-                if ( add_event != null ) {
-                    work.executeCommand( add_event );
-                }
-                if ( edit_bezier != null ) {
-                    work.executeCommand( edit_bezier );
-                }
-                if ( edit_bpcurve != null ) {
-                    // edit_bpcurveのVsqCommandTypeはTrackEditCurveRangeしかありえない
-                    work.executeCommand( edit_bpcurve );
-                }
-                CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                AppManager.getVsqFile().updateTotalClocks();
-                setEdited( true );
-                refreshScreen();
-            }
-        }
-
-        /// <summary>
-        /// アイテムのコピーを行います
-        /// </summary>
-        public void copyEvent() {
-#if DEBUG
-            AppManager.debugWriteLine( "FormMain#copyEvent" );
-#endif
-            AppManager.clearClipBoard();
-            int min = int.MaxValue; // コピーされたアイテムの中で、最小の開始クロック
-
-            if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-#if DEBUG
-                PortUtil.println( "FormMain#copyEvent; selected with CTRL key" );
-#endif
-                int stdx = AppManager.startToDrawX;
-                int start_clock = AppManager.wholeSelectedInterval.getStart();
-                int end_clock = AppManager.wholeSelectedInterval.getEnd();
-                ClipboardEntry ce = new ClipboardEntry();
-                ce.copyStartedClock = start_clock;
-                ce.points = new TreeMap<CurveType, VsqBPList>();
-                ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
-                for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
-                    CurveType vct = Utility.CURVE_USAGE[i];
-                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
-                    if ( list == null ) {
-                        continue;
-                    }
-                    Vector<BezierChain> tmp_bezier = new Vector<BezierChain>();
-                    copyCurveCor( AppManager.getSelected(),
-                                  vct,
-                                  start_clock,
-                                  end_clock,
-                                  tmp_bezier );
-                    VsqBPList tmp_bplist = new VsqBPList( list.getName(), list.getDefault(), list.getMinimum(), list.getMaximum() );
-                    int c = list.size();
-                    for ( int j = 0; j < c; j++ ) {
-                        int clock = list.getKeyClock( j );
-                        if ( start_clock <= clock && clock <= end_clock ) {
-                            tmp_bplist.add( clock, list.getElement( j ) );
-                        } else if ( end_clock < clock ) {
-                            break;
-                        }
-                    }
-                    ce.beziers.put( vct, tmp_bezier );
-                    ce.points.put( vct, tmp_bplist );
-                }
-
-                if ( AppManager.getSelectedEventCount() > 0 ) {
-                    Vector<VsqEvent> list = new Vector<VsqEvent>();
-                    for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                        SelectedEventEntry item = itr.next();
-                        if ( item.original.ID.type == VsqIDType.Anote ) {
-                            min = Math.Min( item.original.Clock, min );
-                            list.add( (VsqEvent)item.original.clone() );
-                        }
-                    }
-                    ce.events = list;
-                }
-                AppManager.setClipboard( ce );
-            } else if ( AppManager.getSelectedEventCount() > 0 ) {
-                Vector<VsqEvent> list = new Vector<VsqEvent>();
-                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
-                    min = Math.Min( item.original.Clock, min );
-                    list.add( (VsqEvent)item.original.clone() );
-                }
-                AppManager.setCopiedEvent( list, min );
-            } else if ( AppManager.getSelectedTempoCount() > 0 ) {
-                Vector<TempoTableEntry> list = new Vector<TempoTableEntry>();
-                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
-                    int key = item.getKey();
-                    SelectedTempoEntry value = item.getValue();
-                    min = Math.Min( value.original.Clock, min );
-                    list.add( (TempoTableEntry)value.original.clone() );
-                }
-                AppManager.setCopiedTempo( list, min );
-            } else if ( AppManager.getSelectedTimesigCount() > 0 ) {
-                Vector<TimeSigTableEntry> list = new Vector<TimeSigTableEntry>();
-                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
-                    int key = item.getKey();
-                    SelectedTimesigEntry value = item.getValue();
-                    min = Math.Min( value.original.Clock, min );
-                    list.add( (TimeSigTableEntry)value.original.clone() );
-                }
-                AppManager.setCopiedTimesig( list, min );
-            } else if ( AppManager.getSelectedPointIDCount() > 0 ) {
-                ClipboardEntry ce = new ClipboardEntry();
-                ce.points = new TreeMap<CurveType, VsqBPList>();
-                ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
-
-                ValuePair<Integer, Integer> t = trackSelector.getSelectedRegion();
-                int start = t.getKey();
-                int end = t.getValue();
-                ce.copyStartedClock = start;
-                Vector<BezierChain> tmp_bezier = new Vector<BezierChain>();
-                copyCurveCor( AppManager.getSelected(),
-                              trackSelector.getSelectedCurve(),
-                              start,
-                              end,
-                              tmp_bezier );
-                if ( tmp_bezier.size() > 0 ) {
-                    // ベジエ曲線が1個以上コピーされた場合
-                    // 範囲内のデータ点を追加する
-                    ce.beziers.put( trackSelector.getSelectedCurve(), tmp_bezier );
-                    CurveType curve = trackSelector.getSelectedCurve();
-                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
-                    if ( list != null ) {
-                        VsqBPList tmp_bplist = new VsqBPList( list.getName(), list.getDefault(), list.getMinimum(), list.getMaximum() );
-                        int c = list.size();
-                        for ( int i = 0; i < c; i++ ) {
-                            int clock = list.getKeyClock( i );
-                            if ( start <= clock && clock <= end ) {
-                                tmp_bplist.add( clock, list.getElement( i ) );
-                            } else if ( end < clock ) {
-                                break;
-                            }
-                        }
-                        ce.points.put( curve, tmp_bplist );
-                    }
-                } else {
-                    // ベジエ曲線がコピーされなかった場合
-                    // AppManager.selectedPointIDIteratorの中身のみを選択
-                    CurveType curve = trackSelector.getSelectedCurve();
-                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
-                    if ( list != null ) {
-                        VsqBPList tmp_bplist = new VsqBPList( curve.getName(), curve.getDefault(), curve.getMinimum(), curve.getMaximum() );
-                        for ( Iterator<Long> itr = AppManager.getSelectedPointIDIterator(); itr.hasNext(); ) {
-                            long id = itr.next();
-                            VsqBPPairSearchContext cxt = list.findElement( id );
-                            if ( cxt.index >= 0 ) {
-                                tmp_bplist.add( cxt.clock, cxt.point.value );
-                            }
-                        }
-                        if ( tmp_bplist.size() > 0 ) {
-                            ce.copyStartedClock = tmp_bplist.getKeyClock( 0 );
-                            ce.points.put( curve, tmp_bplist );
-                        }
-                    }
-                }
-                AppManager.setClipboard( ce );
-            }
-        }
-
-        public void cutEvent() {
-            // まずコピー
-            copyEvent();
-
-            int track = AppManager.getSelected();
-
-            // 選択されたノートイベントがあれば、まず、削除を行うコマンドを発行
-            VsqCommand delete_event = null;
-            boolean other_command_executed = false;
-            if ( AppManager.getSelectedEventCount() > 0 ) {
-                Vector<Integer> ids = new Vector<Integer>();
-                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
-                    ids.add( item.original.InternalID );
-                }
-                delete_event = VsqCommand.generateCommandEventDeleteRange( AppManager.getSelected(), ids );
-            }
-
-            // Ctrlキーを押しながらドラッグしたか、そうでないかで分岐
-            if ( AppManager.isWholeSelectedIntervalEnabled() || AppManager.getSelectedPointIDCount() > 0 ) {
-                int stdx = AppManager.startToDrawX;
-                int start_clock, end_clock;
-                if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                    start_clock = AppManager.wholeSelectedInterval.getStart();
-                    end_clock = AppManager.wholeSelectedInterval.getEnd();
-                } else {
-                    start_clock = trackSelector.getSelectedRegion().getKey();
-                    end_clock = trackSelector.getSelectedRegion().getValue();
-                }
-
-                // クローンを作成
-                VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().clone();
-                if ( delete_event != null ) {
-                    // 選択されたノートイベントがあれば、クローンに対して削除を実行
-                    work.executeCommand( delete_event );
-                }
-
-                // BPListに削除処理を施す
-                for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
-                    CurveType curve = Utility.CURVE_USAGE[i];
-                    VsqBPList list = work.Track.get( track ).getCurve( curve.getName() );
-                    if ( list == null ) {
-                        continue;
-                    }
-                    int c = list.size();
-                    Vector<Long> delete = new Vector<Long>();
-                    if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                        // 一括選択モード
-                        for ( int j = 0; j < c; j++ ) {
-                            int clock = list.getKeyClock( j );
-                            if ( start_clock <= clock && clock <= end_clock ) {
-                                delete.add( list.getElementB( j ).id );
-                            } else if ( end_clock < clock ) {
-                                break;
-                            }
-                        }
-                    } else {
-                        // 普通の範囲選択
-                        for ( Iterator<Long> itr = AppManager.getSelectedPointIDIterator(); itr.hasNext(); ) {
-                            long id = (Long)itr.next();
-                            delete.add( id );
-                        }
-                    }
-                    VsqCommand tmp = VsqCommand.generateCommandTrackCurveEdit2( track, curve.getName(), delete, new TreeMap<Integer, VsqBPPair>() );
-                    work.executeCommand( tmp );
-                }
-
-                // ベジエ曲線に削除処理を施す
-                Vector<CurveType> target_curve = new Vector<CurveType>();
-                if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                    // ctrlによる全選択モード
-                    for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
-                        CurveType ct = Utility.CURVE_USAGE[i];
-                        if ( ct.isScalar() || ct.isAttachNote() ) {
-                            continue;
-                        }
-                        target_curve.add( ct );
-                    }
-                } else {
-                    // 普通の選択モード
-                    target_curve.add( trackSelector.getSelectedCurve() );
-                }
-                work.AttachedCurves.get( AppManager.getSelected() - 1 ).deleteBeziers( target_curve, start_clock, end_clock );
-
-                // コマンドを発行し、実行
-                CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                this.setEdited( true );
-
-                other_command_executed = true;
-            } else if ( AppManager.getSelectedTempoCount() > 0 ) {
-                // テンポ変更のカット
-                int count = -1;
-                int[] dum = new int[AppManager.getSelectedTempoCount()];
-                int[] clocks = new int[AppManager.getSelectedTempoCount()];
-                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
-                    int key = item.getKey();
-                    SelectedTempoEntry value = item.getValue();
-                    count++;
-                    dum[count] = -1;
-                    clocks[count] = value.original.Clock;
-                }
-                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, clocks, dum ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                setEdited( true );
-                other_command_executed = true;
-            } else if ( AppManager.getSelectedTimesigCount() > 0 ) {
-                // 拍子変更のカット
-                int[] barcounts = new int[AppManager.getSelectedTimesigCount()];
-                int[] numerators = new int[AppManager.getSelectedTimesigCount()];
-                int[] denominators = new int[AppManager.getSelectedTimesigCount()];
-                int count = -1;
-                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
-                    int key = item.getKey();
-                    SelectedTimesigEntry value = item.getValue();
-                    count++;
-                    barcounts[count] = value.original.BarCount;
-                    numerators[count] = -1;
-                    denominators[count] = -1;
-                }
-                CadenciiCommand run = new CadenciiCommand(
-                    VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                setEdited( true );
-                other_command_executed = true;
-            }
-
-            // 冒頭で作成した音符イベント削除以外に、コマンドが実行されなかった場合
-            if ( delete_event != null && !other_command_executed ) {
-                CadenciiCommand run = new CadenciiCommand( delete_event );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                setEdited( true );
-            }
-
-            refreshScreen();
-        }
-
-        public void copyCurveCor(
-            int track,
-            CurveType curve_type,
-            int start,
-            int end,
-            Vector<BezierChain> copied_chain
-        ) {
-            for ( Iterator<BezierChain> itr = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( curve_type ).iterator(); itr.hasNext(); ) {
-                BezierChain bc = itr.next();
-                int len = bc.points.size();
-                if ( len < 2 ) {
-                    continue;
-                }
-                int chain_start = (int)bc.points.get( 0 ).getBase().getX();
-                int chain_end = (int)bc.points.get( len - 1 ).getBase().getX();
-                BezierChain add = null;
-                if ( start < chain_start && chain_start < end && end < chain_end ) {
-                    // (1) chain_start ~ end をコピー
-                    try{
-                        add = bc.extractPartialBezier( chain_start, end );
-                    }catch( Exception ex ){
-                        add = null;
-                    }
-                } else if ( chain_start <= start && end <= chain_end ) {
-                    // (2) start ~ endをコピー
-                    try {
-                        add = bc.extractPartialBezier( start, end );
-                    } catch ( Exception ex ) {
-                        add = null;
-                    }
-                } else if ( chain_start < start && start < chain_end && chain_end <= end ) {
-                    // (3) start ~ chain_endをコピー
-                    try {
-                        add = bc.extractPartialBezier( start, chain_end );
-                    } catch ( Exception ex ) {
-                        add = null;
-                    }
-                } else if ( start <= chain_start && chain_end <= end ) {
-                    // (4) 全部コピーでOK
-                    add = (BezierChain)bc.clone();
-                }
-                if ( add != null ) {
-                    copied_chain.add( add );
-                }
-            }
-        }
-        #endregion
-
-        #region トラックの編集関連
-        public void copyTrackCore() {
-            VsqFileEx vsq = AppManager.getVsqFile();
-            int selected = AppManager.getSelected();
-            VsqTrack track = (VsqTrack)vsq.Track.get( selected ).clone();
-            track.setName( track.getName() + " (1)" );
-            CadenciiCommand run = VsqFileEx.generateCommandAddTrack( track,
-                                                                     vsq.Mixer.Slave.get( selected - 1 ),
-                                                                     vsq.Track.size(),
-                                                                     vsq.AttachedCurves.get( selected - 1 ) ); ;
-            AppManager.register( vsq.executeCommand( run ) );
-            setEdited( true );
-            AppManager.mixerWindow.updateStatus();
-            refreshScreen();
-        }
-
-        public void changeTrackNameCore() {
-            if ( m_txtbox_track_name != null ) {
-#if !JAVA
-                if ( !m_txtbox_track_name.IsDisposed ) {
-                    m_txtbox_track_name.Dispose();
-                }
-#endif
-                m_txtbox_track_name = null;
-            }
-#if JAVA
-            m_txtbox_track_name = new TextBoxEx( this );
-#else
-            m_txtbox_track_name = new TextBoxEx();
-#endif
-            m_txtbox_track_name.setVisible( false );
-            int selector_width = trackSelector.getSelectorWidth();
-            int x = AppManager.keyWidth + (AppManager.getSelected() - 1) * selector_width;
-            m_txtbox_track_name.setLocation( x, trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB + 1 );
-            m_txtbox_track_name.setText( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName() );
-#if JAVA
-            m_txtbox_track_name.keyUpEvent.add( new BKeyEventHandler( this, "m_txtbox_track_name_KeyUp" ) );
-#else
-            m_txtbox_track_name.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            m_txtbox_track_name.KeyUp += new System.Windows.Forms.KeyEventHandler( m_txtbox_track_name_KeyUp );
-            m_txtbox_track_name.Parent = trackSelector;
-#endif
-            m_txtbox_track_name.setSize( selector_width, TrackSelector.OFFSET_TRACK_TAB );
-            m_txtbox_track_name.setVisible( true );
-            m_txtbox_track_name.requestFocus();
-            m_txtbox_track_name.selectAll();
-        }
-
-        public void deleteTrackCore() {
-            int selected = AppManager.getSelected();
-            VsqFileEx vsq = AppManager.getVsqFile();
-            if ( AppManager.showMessageBox(
-                    PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, vsq.Track.get( selected ).getName() ),
-                    _APP_NAME,
-                    PortUtil.MSGBOX_YES_NO_OPTION,
-                    PortUtil.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
-                CadenciiCommand run = VsqFileEx.generateCommandDeleteTrack( selected );
-                if ( selected >= 2 ) {
-                    AppManager.setSelected( selected - 1 );
-                }
-                AppManager.register( vsq.executeCommand( run ) );
-                updateDrawObjectList();
-                setEdited( true );
-                AppManager.mixerWindow.updateStatus();
-                refreshScreen();
-            }
-        }
-
-        public void addTrackCore() {
-            VsqFileEx vsq = AppManager.getVsqFile();
-            int i = vsq.Track.size();
-            String name = "Voice" + i;
-            String singer = "Miku";
-            CadenciiCommand run = VsqFileEx.generateCommandAddTrack( new VsqTrack( name, singer ),
-                                                                     new VsqMixerEntry( 0, 0, 0, 0 ),
-                                                                     i,
-                                                                     new BezierCurves() );
-            AppManager.register( vsq.executeCommand( run ) );
-            updateDrawObjectList();
-            setEdited( true );
-            AppManager.setSelected( i );
-            AppManager.mixerWindow.updateStatus();
-            refreshScreen();
-        }
-        #endregion
-
-        /// <summary>
-        /// length, positionの各Quantizeモードに応じて、表示状態を更新します
-        /// </summary>
-        public void applyQuantizeMode() {
-            cMenuPianoQuantize04.setSelected( false );
-            cMenuPianoQuantize08.setSelected( false );
-            cMenuPianoQuantize16.setSelected( false );
-            cMenuPianoQuantize32.setSelected( false );
-            cMenuPianoQuantize64.setSelected( false );
-            cMenuPianoQuantize128.setSelected( false );
-            cMenuPianoQuantizeOff.setSelected( false );
-
-#if ENABLE_STRIP_DROPDOWN
-            stripDDBtnQuantize04.setSelected( false );
-            stripDDBtnQuantize08.setSelected( false );
-            stripDDBtnQuantize16.setSelected( false );
-            stripDDBtnQuantize32.setSelected( false );
-            stripDDBtnQuantize64.setSelected( false );
-            stripDDBtnQuantize128.setSelected( false );
-            stripDDBtnQuantizeOff.setSelected( false );
-#endif
-
-            menuSettingPositionQuantize04.setSelected( false );
-            menuSettingPositionQuantize08.setSelected( false );
-            menuSettingPositionQuantize16.setSelected( false );
-            menuSettingPositionQuantize32.setSelected( false );
-            menuSettingPositionQuantize64.setSelected( false );
-            menuSettingPositionQuantize128.setSelected( false );
-            menuSettingPositionQuantizeOff.setSelected( false );
-
-#if !JAVA
-            stripDDBtnQuantize.setText( "QUANTIZE " + QuantizeModeUtil.getString( AppManager.editorConfig.getPositionQuantize() ) );
-#endif
-            if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p4 ) {
-                cMenuPianoQuantize04.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize04.setSelected( true );
-#endif
-                menuSettingPositionQuantize04.setSelected( true );
-            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p8 ) {
-                cMenuPianoQuantize08.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize08.setSelected( true );
-#endif
-                menuSettingPositionQuantize08.setSelected( true );
-            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p16 ) {
-                cMenuPianoQuantize16.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize16.setSelected( true );
-#endif
-                menuSettingPositionQuantize16.setSelected( true );
-            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p32 ) {
-                cMenuPianoQuantize32.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize32.setSelected( true );
-#endif
-                menuSettingPositionQuantize32.setSelected( true );
-            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p64 ) {
-                cMenuPianoQuantize64.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize64.setSelected( true );
-#endif
-                menuSettingPositionQuantize64.setSelected( true );
-            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p128 ) {
-                cMenuPianoQuantize128.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize128.setSelected( true );
-#endif
-                menuSettingPositionQuantize128.setSelected( true );
-            } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.off ) {
-                cMenuPianoQuantizeOff.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantizeOff.setSelected( true );
-#endif
-                menuSettingPositionQuantizeOff.setSelected( true );
-            }
-            cMenuPianoQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
-#if ENABLE_STRIP_DROPDOWN
-            stripDDBtnQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
-#endif
-            menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
-
-            cMenuPianoLength04.setSelected( false );
-            cMenuPianoLength08.setSelected( false );
-            cMenuPianoLength16.setSelected( false );
-            cMenuPianoLength32.setSelected( false );
-            cMenuPianoLength64.setSelected( false );
-            cMenuPianoLength128.setSelected( false );
-            cMenuPianoLengthOff.setSelected( false );
-
-#if ENABLE_STRIP_DROPDOWN
-            stripDDBtnLength04.setSelected( false );
-            stripDDBtnLength08.setSelected( false );
-            stripDDBtnLength16.setSelected( false );
-            stripDDBtnLength32.setSelected( false );
-            stripDDBtnLength64.setSelected( false );
-            stripDDBtnLength128.setSelected( false );
-            stripDDBtnLengthOff.setSelected( false );
-#endif
-
-            menuSettingLengthQuantize04.setSelected( false );
-            menuSettingLengthQuantize08.setSelected( false );
-            menuSettingLengthQuantize16.setSelected( false );
-            menuSettingLengthQuantize32.setSelected( false );
-            menuSettingLengthQuantize64.setSelected( false );
-            menuSettingLengthQuantize128.setSelected( false );
-            menuSettingLengthQuantizeOff.setSelected( false );
-
-#if !JAVA
-            stripDDBtnLength.setText( "LENGTH " + QuantizeModeUtil.getString( AppManager.editorConfig.getLengthQuantize() ) );
-#endif
-            if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p4 ) {
-                cMenuPianoLength04.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength04.setSelected( true );
-#endif
-                menuSettingLengthQuantize04.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p8 ) {
-                cMenuPianoLength08.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength08.setSelected( true );
-#endif
-                menuSettingLengthQuantize08.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p16 ) {
-                cMenuPianoLength16.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength16.setSelected( true );
-#endif
-                menuSettingLengthQuantize16.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p32 ) {
-                cMenuPianoLength32.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength32.setSelected( true );
-#endif
-                menuSettingLengthQuantize32.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p64 ) {
-                cMenuPianoLength64.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength64.setSelected( true );
-#endif
-                menuSettingLengthQuantize64.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p128 ) {
-                cMenuPianoLength128.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength128.setSelected( true );
-#endif
-                menuSettingLengthQuantize128.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.off ) {
-                cMenuPianoLengthOff.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLengthOff.setSelected( true );
-#endif
-                menuSettingLengthQuantizeOff.setSelected( true );
-            }
-            cMenuPianoLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
-#if ENABLE_STRIP_DROPDOWN
-            stripDDBtnLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
-#endif
-            menuSettingLengthQuantizeTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
-        }
-
-        /// <summary>
-        /// 現在選択されている編集ツールに応じて、メニューのチェック状態を更新します
-        /// </summary>
-        public void applySelectedTool() {
-            EditTool tool = AppManager.getSelectedTool();
-
-            int count = toolStripTool.getComponentCount();
-            for ( int i = 0; i < count; i++ ) {
-                Object tsi = toolStripTool.getComponentAtIndex( i );
-                if ( tsi is BToolStripButton ) {
-                    BToolStripButton tsb = (BToolStripButton)tsi;
-                    Object tag = tsb.getTag();
-                    if ( tag != null && tag is String ) {
-#if ENABLE_SCRIPT
-                        if ( tool == EditTool.PALETTE_TOOL ) {
-                            String id = (String)tag;
-                            tsb.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
-                        } else
-#endif
- {
-                            tsb.setSelected( false );
-                        }
-                    }
-                }
-            }
-            MenuElement[] items = cMenuTrackSelectorPaletteTool.getSubElements();
-            foreach ( MenuElement tsi in items ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    Object tag = tsmi.getTag();
-                    if ( tag != null && tag is String ) {
-#if ENABLE_SCRIPT
-                        if ( tool == EditTool.PALETTE_TOOL ) {
-                            String id = (String)tsmi.getTag();
-                            tsmi.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
-                        } else
-#endif
-                        {
-                            tsmi.setSelected( false );
-                        }
-                    }
-                }
-            }
-
-            items = cMenuPianoPaletteTool.getSubElements();
-            foreach ( MenuElement tsi in items ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    Object tag = tsmi.getTag();
-                    if ( tag != null && tag is String ) {
-#if ENABLE_SCRIPT
-                        if ( tool == EditTool.PALETTE_TOOL ) {
-                            String id = (String)tsmi.getTag();
-                            tsmi.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
-                        } else
-#endif
- {
-                            tsmi.setSelected( false );
-                        }
-                    }
-                }
-            }
-
-            EditTool selected_tool = AppManager.getSelectedTool();
-            if ( selected_tool == EditTool.ARROW ) {
-                cMenuPianoPointer.setSelected( true );
-                cMenuPianoPencil.setSelected( false );
-                cMenuPianoEraser.setSelected( false );
-
-                cMenuTrackSelectorPointer.setSelected( true );
-                cMenuTrackSelectorPencil.setSelected( false );
-                cMenuTrackSelectorLine.setSelected( false );
-                cMenuTrackSelectorEraser.setSelected( false );
-
-                stripBtnPointer.setSelected( true );
-                stripBtnPencil.setSelected( false );
-                stripBtnLine.setSelected( false );
-                stripBtnEraser.setSelected( false );
-            } else if ( selected_tool == EditTool.PENCIL ) {
-                cMenuPianoPointer.setSelected( false );
-                cMenuPianoPencil.setSelected( true );
-                cMenuPianoEraser.setSelected( false );
-
-                cMenuTrackSelectorPointer.setSelected( false );
-                cMenuTrackSelectorPencil.setSelected( true );
-                cMenuTrackSelectorLine.setSelected( false );
-                cMenuTrackSelectorEraser.setSelected( false );
-
-                stripBtnPointer.setSelected( false );
-                stripBtnPencil.setSelected( true );
-                stripBtnLine.setSelected( false );
-                stripBtnEraser.setSelected( false );
-            } else if ( selected_tool == EditTool.ERASER ) {
-                cMenuPianoPointer.setSelected( false );
-                cMenuPianoPencil.setSelected( false );
-                cMenuPianoEraser.setSelected( true );
-
-                cMenuTrackSelectorPointer.setSelected( false );
-                cMenuTrackSelectorPencil.setSelected( false );
-                cMenuTrackSelectorLine.setSelected( false );
-                cMenuTrackSelectorEraser.setSelected( true );
-
-                stripBtnPointer.setSelected( false );
-                stripBtnPencil.setSelected( false );
-                stripBtnLine.setSelected( false );
-                stripBtnEraser.setSelected( true );
-            } else if ( selected_tool == EditTool.LINE ) {
-                cMenuPianoPointer.setSelected( false );
-                cMenuPianoPencil.setSelected( false );
-                cMenuPianoEraser.setSelected( false );
-
-                cMenuTrackSelectorPointer.setSelected( false );
-                cMenuTrackSelectorPencil.setSelected( false );
-                cMenuTrackSelectorLine.setSelected( true );
-                cMenuTrackSelectorEraser.setSelected( false );
-
-                stripBtnPointer.setSelected( false );
-                stripBtnPencil.setSelected( false );
-                stripBtnLine.setSelected( true );
-                stripBtnEraser.setSelected( false );
-#if ENABLE_SCRIPT
-            } else if ( selected_tool == EditTool.PALETTE_TOOL ) {
-                cMenuPianoPointer.setSelected( false );
-                cMenuPianoPencil.setSelected( false );
-                cMenuPianoEraser.setSelected( false );
-
-                cMenuTrackSelectorPointer.setSelected( false );
-                cMenuTrackSelectorPencil.setSelected( false );
-                cMenuTrackSelectorLine.setSelected( false );
-                cMenuTrackSelectorEraser.setSelected( false );
-
-                stripBtnPointer.setSelected( false );
-                stripBtnPencil.setSelected( false );
-                stripBtnLine.setSelected( false );
-                stripBtnEraser.setSelected( false );
-#endif
-            }
-            cMenuPianoCurve.setSelected( AppManager.isCurveMode() );
-            cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
-            stripBtnCurve.setSelected( AppManager.isCurveMode() );
-        }
-
-        /// <summary>
-        /// 画面上のマウス位置におけるクロック値を元に，_toolbar_measureの場所表示文字列を更新します．
-        /// </summary>
-        /// <param name="mouse_pos_x"></param>
-        public void updatePositionViewFromMousePosition( int clock ) {
-            int barcount = AppManager.getVsqFile().getBarCountFromClock( clock );
-            //int numerator, denominator;
-            Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
-            int clock_per_beat = 480 / 4 * timesig.denominator;
-            int barcount_clock = AppManager.getVsqFile().getClockFromBarCount( barcount );
-            int beat = (clock - barcount_clock) / clock_per_beat;
-            int odd = clock - barcount_clock - beat * clock_per_beat;
-#if OBSOLUTE
-            m_toolbar_measure.Measure = (barcount - AppManager.VsqFile.PreMeasure + 1) + " : " + (beat + 1) + " : " + odd.ToString( "000" );
-#else
-            stripLblMeasure.setText( (barcount - AppManager.getVsqFile().getPreMeasure() + 1) + " : " + (beat + 1) + " : " + PortUtil.formatDecimal( "000", odd ) );
-#endif
-        }
-
-        /// <summary>
-        /// 描画すべきオブジェクトのリスト，AppManager.drawObjectsを更新します
-        /// </summary>
-        public void updateDrawObjectList() {
-            // AppManager.m_draw_objects
-            if ( AppManager.drawObjects == null ) {
-                AppManager.drawObjects = new Vector<Vector<DrawObject>>();
-            }
-            lock ( AppManager.drawObjects ) {
-                if ( AppManager.getVsqFile() == null ) {
-                    return;
-                }
-                for ( int i = 0; i < AppManager.drawStartIndex.Length; i++ ) {
-                    AppManager.drawStartIndex[i] = 0;
-                }
-                if ( AppManager.drawObjects != null ) {
-                    for ( Iterator<Vector<DrawObject>> itr = AppManager.drawObjects.iterator(); itr.hasNext(); ) {
-                        Vector<DrawObject> list = itr.next();
-                        list.clear();
-                    }
-                    AppManager.drawObjects.clear();
-                }
-
-                int xoffset = 6;// 6 + AppManager.keyWidth;
-                int yoffset = 127 * AppManager.editorConfig.PxTrackHeight;
-                float scalex = AppManager.scaleX;
-                Font SMALL_FONT = null;
-                try {
-                    SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
-                    int track_height = AppManager.editorConfig.PxTrackHeight;
-                    VsqFileEx vsq = AppManager.getVsqFile();
-                    int track_count = vsq.Track.size();
-                    for ( int track = 1; track < track_count; track++ ) {
-                        VsqTrack vsq_track = vsq.Track.get( track );
-                        Vector<DrawObject> tmp = new Vector<DrawObject>();
-
-                        // 音符イベント
-                        for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
-                            VsqEvent ev = itr.next();
-                            int timesig = ev.Clock;
-                            if ( ev.ID.LyricHandle != null ) {
-                                int length = ev.ID.getLength();
-                                int note = ev.ID.Note;
-                                int x = (int)(timesig * scalex + xoffset);
-                                int y = -note * track_height + yoffset;
-                                int lyric_width = (int)(length * scalex);
-                                String lyric_jp = ev.ID.LyricHandle.L0.Phrase;
-                                String lyric_en = ev.ID.LyricHandle.L0.getPhoneticSymbol();
-                                String title = Utility.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );
-                                int accent = ev.ID.DEMaccent;
-                                int vibrato_start = x + lyric_width;
-                                int vibrato_end = x;
-                                int vibrato_delay = lyric_width * 2;
-                                if ( ev.ID.VibratoHandle != null ) {
-                                    double rate = (double)ev.ID.VibratoDelay / (double)length;
-                                    vibrato_delay = _PX_ACCENT_HEADER + (int)((lyric_width - _PX_ACCENT_HEADER) * rate);
-                                }
-                                VibratoBPList rate_bp = null;
-                                VibratoBPList depth_bp = null;
-                                int rate_start = 0;
-                                int depth_start = 0;
-                                if ( ev.ID.VibratoHandle != null ) {
-                                    rate_bp = ev.ID.VibratoHandle.getRateBP();
-                                    depth_bp = ev.ID.VibratoHandle.getDepthBP();
-                                    rate_start = ev.ID.VibratoHandle.getStartRate();
-                                    depth_start = ev.ID.VibratoHandle.getStartDepth();
-                                }
-                                tmp.add( new DrawObject( DrawObjectType.Note,
-                                                         new Rectangle( x, y, lyric_width, track_height ),
-                                                         title,
-                                                         accent,
-                                                         ev.InternalID,
-                                                         vibrato_delay,
-                                                         false,
-                                                         ev.ID.LyricHandle.L0.PhoneticSymbolProtected,
-                                                         rate_bp,
-                                                         depth_bp,
-                                                         rate_start,
-                                                         depth_start,
-                                                         ev.ID.Note,
-                                                         ev.UstEvent.Envelope,
-                                                         length,
-                                                         timesig ) );
-                            }
-                        }
-
-                        // Dynaff, Crescendイベント
-                        for ( Iterator<VsqEvent> itr = vsq_track.getDynamicsEventIterator(); itr.hasNext(); ) {
-                            VsqEvent item = itr.next();
-                            IconDynamicsHandle handle = item.ID.IconDynamicsHandle;
-                            if ( handle == null ) {
-                                continue;
-                            }
-                            int clock = item.Clock;
-                            int length = item.ID.getLength();
-                            if ( length <= 0 ) {
-                                length = 1;
-                            }
-                            int raw_width = (int)(length * scalex);
-                            DrawObjectType type = DrawObjectType.Note;
-                            int width = 0;
-                            String str = "";
-                            if ( handle.isDynaffType() ) {
-                                // 強弱記号
-                                type = DrawObjectType.Dynaff;
-                                width = AppManager.DYNAFF_ITEM_WIDTH;
-                                int startDyn = handle.getStartDyn();
-                                if ( startDyn == 120 ) {
-                                    str = "fff";
-                                } else if ( startDyn == 104 ) {
-                                    str = "ff";
-                                } else if ( startDyn == 88 ) {
-                                    str = "f";
-                                } else if ( startDyn == 72 ) {
-                                    str = "mf";
-                                } else if ( startDyn == 56 ) {
-                                    str = "mp";
-                                } else if ( startDyn == 40 ) {
-                                    str = "p";
-                                } else if ( startDyn == 24 ) {
-                                    str = "pp";
-                                } else if ( startDyn == 8 ) {
-                                    str = "ppp";
-                                } else {
-                                    str = "?";
-                                }
-                            } else if ( handle.isCrescendType() ) {
-                                // クレッシェンド
-                                type = DrawObjectType.Crescend;
-                                width = raw_width;
-                                str = handle.IDS;
-                            } else if ( handle.isDecrescendType() ) {
-                                // デクレッシェンド
-                                type = DrawObjectType.Decrescend;
-                                width = raw_width;
-                                str = handle.IDS;
-                            }
-                            if ( type == DrawObjectType.Note ) {
-                                continue;
-                            }
-                            int note = item.ID.Note;
-                            int x = (int)(clock * scalex + xoffset);
-                            int y = -note * AppManager.editorConfig.PxTrackHeight + yoffset;
-                            tmp.add( new DrawObject( type,
-                                                     new Rectangle( x, y, width, track_height ),
-                                                     str,
-                                                     0,
-                                                     item.InternalID,
-                                                     0,
-                                                     false,
-                                                     false,
-                                                     null,
-                                                     null,
-                                                     0,
-                                                     0,
-                                                     item.ID.Note,
-                                                     null,
-                                                     length,
-                                                     clock ) );
-                        }
-
-                        // 重複部分があるかどうかを判定
-                        int count = tmp.size();
-                        for ( int i = 0; i < count - 1; i++ ) {
-                            DrawObject itemi = tmp.get( i );
-                            DrawObjectType parent_type = itemi.type;
-                            /*if ( itemi.type != DrawObjectType.Note ) {
-                                continue;
-                            }*/
-                            boolean overwrapped = false;
-                            int istart = itemi.clock;
-                            int iend = istart + itemi.length;
-                            if ( itemi.overlappe ) {
-                                continue;
-                            }
-                            for ( int j = i + 1; j < count; j++ ) {
-                                DrawObject itemj = tmp.get( j );
-                                if ( (itemj.type == DrawObjectType.Note && parent_type != DrawObjectType.Note) ||
-                                     (itemj.type != DrawObjectType.Note && parent_type == DrawObjectType.Note) ) {
-                                    continue;
-                                }
-                                int jstart = itemj.clock;
-                                int jend = jstart + itemj.length;
-                                if ( jstart <= istart ) {
-                                    if ( istart < jend ) {
-                                        overwrapped = true;
-                                        itemj.overlappe = true;
-                                        // breakできない．2個以上の重複を検出する必要があるので．
-                                    }
-                                }
-                                if ( istart <= jstart ) {
-                                    if ( jstart < iend ) {
-                                        overwrapped = true;
-                                        itemj.overlappe = true;
-                                    }
-                                }
-                            }
-                            if ( overwrapped ) {
-                                itemi.overlappe = true;
-                            }
-                        }
-                        Collections.sort( tmp );
-                        AppManager.drawObjects.add( tmp );
-                    }
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormMain#updateDrawObjectList; ex=" + ex );
-                } finally {
-#if !JAVA
-                    if ( SMALL_FONT != null ) {
-                        SMALL_FONT.font.Dispose();
-                    }
-#endif
-                }
-            }
-        }
-
-        /// <summary>
-        /// _editor_configのRecentFilesを元に，menuFileRecentのドロップダウンアイテムを更新します
-        /// </summary>
-        public void updateRecentFileMenu() {
-            int added = 0;
-            menuFileRecent.removeAll();
-            if ( AppManager.editorConfig.RecentFiles != null ) {
-                for ( int i = 0; i < AppManager.editorConfig.RecentFiles.size(); i++ ) {
-                    String item = AppManager.editorConfig.RecentFiles.get( i );
-                    if ( item == null ) {
-                        continue;
-                    }
-                    if ( item != "" ) {
-                        String short_name = PortUtil.getFileName( item );
-                        boolean available = PortUtil.isFileExists( item );
-                        BMenuItem itm = new BMenuItem();
-                        itm.setText( short_name );
-                        if ( !available ) {
-                            itm.setToolTipText( _( "[file not found]" ) + " " );
-                        }
-                        itm.setToolTipText( itm.getToolTipText() + item );
-                        itm.setTag( item );
-                        itm.setEnabled( available );
-#if JAVA
-                        itm.clickEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_Click" ) );
-                        itm.mouseEnterEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_MouseEnter" ) );
-#else
-                        itm.Click += new EventHandler( handleRecentFileMenuItem_Click );
-                        itm.MouseEnter += new EventHandler( handleRecentFileMenuItem_MouseEnter );
-#endif
-                        menuFileRecent.add( itm );
-                        added++;
-                    }
-                }
-            } else {
-                AppManager.editorConfig.pushRecentFiles( "" );
-            }
-            if ( added == 0 ) {
-                menuFileRecent.setEnabled( false );
-            } else {
-                menuFileRecent.setEnabled( true );
-            }
-        }
-
-        /// <summary>
-        /// 最後に保存したときから変更されているかどうかを取得または設定します
-        /// </summary>
-        public boolean isEdited() {
-            return m_edited;
-        }
-
-        public void setEdited( boolean value ) {
-            m_edited = value;
-            String file = AppManager.getFileName();
-            if ( file.Equals( "" ) ) {
-                file = "Untitled";
-            } else {
-                file = PortUtil.getFileNameWithoutExtension( file );
-            }
-            if ( m_edited ) {
-                file += " *";
-            }
-            String title = file + " - " + _APP_NAME;
-            if ( !getTitle().Equals( title ) ) {
-                setTitle( title );
-            }
-            boolean redo = AppManager.isRedoAvailable();
-            boolean undo = AppManager.isUndoAvailable();
-            menuEditRedo.setEnabled( redo );
-            menuEditUndo.setEnabled( undo );
-            cMenuPianoRedo.setEnabled( redo );
-            cMenuPianoUndo.setEnabled( undo );
-            cMenuTrackSelectorRedo.setEnabled( redo );
-            cMenuTrackSelectorUndo.setEnabled( undo );
-            stripBtnUndo.setEnabled( undo );
-            stripBtnRedo.setEnabled( redo );
-            //AppManager.setRenderRequired( AppManager.getSelected(), true );
-            if ( AppManager.getVsqFile() != null ) {
-                int draft = AppManager.getVsqFile().TotalClocks;
-                if ( draft > hScroll.getMaximum() ) {
-                    setHScrollRange( draft );
-                }
-            }
-            updateDrawObjectList();
-
-#if ENABLE_PROPERTY
-            AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
-#endif
-        }
-
-        /// <summary>
-        /// 入力用のテキストボックスを初期化します
-        /// </summary>
-        public void showInputTextBox( String phrase, String phonetic_symbol, Point position, boolean phonetic_symbol_edit_mode ) {
-#if DEBUG
-            AppManager.debugWriteLine( "InitializeInputTextBox" );
-#endif
-            hideInputTextBox();
-#if JAVA
-            // TODO: FormMain#showInputTextBox
-#else
-            AppManager.inputTextBox.KeyUp += m_input_textbox_KeyUp;
-            AppManager.inputTextBox.KeyDown += m_input_textbox_KeyDown;
-            AppManager.inputTextBox.ImeModeChanged += m_input_textbox_ImeModeChanged;
-#endif
-            AppManager.inputTextBox.setImeModeOn( m_last_is_imemode_on );
-            if ( phonetic_symbol_edit_mode ) {
-                AppManager.inputTextBox.setTag( new TagLyricTextBox( phrase, true ) );
-                AppManager.inputTextBox.setText( phonetic_symbol );
-                AppManager.inputTextBox.setBackground( s_txtbox_backcolor );
-            } else {
-                AppManager.inputTextBox.setTag( new TagLyricTextBox( phonetic_symbol, false ) );
-                AppManager.inputTextBox.setText( phrase );
-                AppManager.inputTextBox.setBackground( Color.white );
-            }
-            AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
-            AppManager.inputTextBox.setLocation( position.x + 4, position.y + 2 );
-#if !JAVA
-            AppManager.inputTextBox.Parent = pictPianoRoll;
-#endif
-            AppManager.inputTextBox.setEnabled( true );
-            AppManager.inputTextBox.setVisible( true );
-            AppManager.inputTextBox.requestFocusInWindow();
-            AppManager.inputTextBox.selectAll();
-        }
-
-        public void hideInputTextBox() {
-#if JAVA
-            // TODO: FormMain#hideInputTextBox
-            /*AppManager.inputTextBox.KeyUp -= m_input_textbox_KeyUp;
-            AppManager.inputTextBox.KeyDown -= m_input_textbox_KeyDown;
-            AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;*/
-#else
-            AppManager.inputTextBox.KeyUp -= m_input_textbox_KeyUp;
-            AppManager.inputTextBox.KeyDown -= m_input_textbox_KeyDown;
-            AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;
-#endif
-            if ( AppManager.inputTextBox.getTag() != null && AppManager.inputTextBox.getTag() is TagLyricTextBox ) {
-                TagLyricTextBox tltb = (TagLyricTextBox)AppManager.inputTextBox.getTag();
-                m_last_symbol_edit_mode = tltb.isPhoneticSymbolEditMode();
-            }
-            AppManager.inputTextBox.setVisible( false );
-#if !JAVA
-            AppManager.inputTextBox.Parent = null;
-#endif
-            AppManager.inputTextBox.setEnabled( false );
-            pictPianoRoll.requestFocus();
-            numEnterKeyAfterHideInputTextBox = 0;
-        }
-
-        /// <summary>
-        /// 歌詞入力用テキストボックスのモード（歌詞/発音記号）を切り替えます
-        /// </summary>
-        public void flipInputTextBoxMode() {
-            TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
-            String new_value = AppManager.inputTextBox.getText();
-            if ( !kvp.isPhoneticSymbolEditMode() ) {
-                AppManager.inputTextBox.setBackground( s_txtbox_backcolor );
-            } else {
-                AppManager.inputTextBox.setBackground( Color.white );
-            }
-            AppManager.inputTextBox.setText( kvp.getBufferText() );
-            AppManager.inputTextBox.setTag( new TagLyricTextBox( new_value, !kvp.isPhoneticSymbolEditMode() ) );
-        }
-
-        /// <summary>
-        /// 音の高さを表すnoteから、画面に描くべきy座標を計算します
-        /// </summary>
-        /// <param name="note"></param>
-        /// <returns></returns>
-        public int yCoordFromNote( float note ) {
-            return yCoordFromNote( note, getStartToDrawY() );
-        }
-
-        public int yCoordFromNote( float note, int start_to_draw_y ) {
-            return (int)(-1 * (note - 127.0f) * AppManager.editorConfig.PxTrackHeight) - start_to_draw_y;
-        }
-
-        /// <summary>
-        /// ピアノロール画面のy座標から、その位置における音の高さを取得します
-        /// </summary>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public int noteFromYCoord( int y ) {
-            return 127 - (int)((double)(getStartToDrawY() + y) / (double)AppManager.editorConfig.PxTrackHeight);
-        }
-
-        /// <summary>
-        /// アンドゥ処理を行います
-        /// </summary>
-        public void undo() {
-            if ( AppManager.isUndoAvailable() ) {
-                AppManager.undo();
-                menuEditRedo.setEnabled( AppManager.isRedoAvailable() );
-                menuEditUndo.setEnabled( AppManager.isUndoAvailable() );
-                cMenuPianoRedo.setEnabled( AppManager.isRedoAvailable() );
-                cMenuPianoUndo.setEnabled( AppManager.isUndoAvailable() );
-                cMenuTrackSelectorRedo.setEnabled( AppManager.isRedoAvailable() );
-                cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
-                AppManager.mixerWindow.updateStatus();
-                setEdited( true );
-                updateDrawObjectList();
-
-#if ENABLE_PROPERTY
-                if ( AppManager.propertyPanel != null ) {
-                    AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
-                }
-#endif
-            }
-        }
-
-        /// <summary>
-        /// リドゥ処理を行います
-        /// </summary>
-        public void redo() {
-            if ( AppManager.isRedoAvailable() ) {
-                AppManager.redo();
-                menuEditRedo.setEnabled( AppManager.isRedoAvailable() );
-                menuEditUndo.setEnabled( AppManager.isUndoAvailable() );
-                cMenuPianoRedo.setEnabled( AppManager.isRedoAvailable() );
-                cMenuPianoUndo.setEnabled( AppManager.isUndoAvailable() );
-                cMenuTrackSelectorRedo.setEnabled( AppManager.isRedoAvailable() );
-                cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
-                AppManager.mixerWindow.updateStatus();
-                setEdited( true );
-                updateDrawObjectList();
-
-#if ENABLE_PROPERTY
-                if ( AppManager.propertyPanel != null ) {
-                    AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
-                }
-#endif
-            }
-        }
-
-        /// <summary>
-        /// 現在表示されているピアノロール画面の右上の、仮想スクリーン上座標で見たときのy座標(pixel)を取得します
-        /// </summary>
-        public int getStartToDrawY() {
-            return (int)((128 * AppManager.editorConfig.PxTrackHeight - vScroll.getHeight()) * (float)vScroll.getValue() / ((float)vScroll.getMaximum()));
-        }
-
-        /// <summary>
-        /// pがrcの中にあるかどうかを判定します
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="rc"></param>
-        /// <returns></returns>
-        static boolean isInRect( Point p, Rectangle rc ) {
-            if ( rc.x <= p.x ) {
-                if ( p.x <= rc.x + rc.width ) {
-                    if ( rc.y <= p.y ) {
-                        if ( p.y <= rc.y + rc.height ) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-        private VsqEvent getItemAtClickedPosition( Point mouse_position, ByRef<Rectangle> rect ) {
-            rect.value = new Rectangle();
-            if ( mouse_position.x < AppManager.keyWidth || pictPianoRoll.getWidth() < mouse_position.x ) {
-                return null;
-            }
-            if ( mouse_position.y < 0 || pictPianoRoll.getHeight() < mouse_position.y ) {
-                return null;
-            }
-            int selected = AppManager.getSelected();
-            if ( selected < 1 ) {
-                return null;
-            }
-            lock ( AppManager.drawObjects ) {
-                Vector<DrawObject> dobj_list = AppManager.drawObjects.get( selected - 1 );
-                int count = dobj_list.size();
-                int start_to_draw_x = AppManager.startToDrawX;
-                int start_to_draw_y = getStartToDrawY();
-                int key_width = AppManager.keyWidth;
-                int pianoroll_width = pictPianoRoll.getWidth();
-                for ( int i = 0; i < count; i++ ) {
-                    DrawObject dobj = dobj_list.get( i );
-                    int x = dobj.pxRectangle.x + key_width - start_to_draw_x;
-                    int y = dobj.pxRectangle.y - start_to_draw_y;
-                    if ( mouse_position.x < x ) {
-                        continue;
-                    }
-                    if( x + dobj.pxRectangle.width < mouse_position.x ) {
-                        continue;
-                    }
-                    if ( pianoroll_width < x ) {
-                        break;
-                    }
-                    if ( mouse_position.y < y ) {
-                        continue;
-                    }
-                    if ( y + dobj.pxRectangle.height < mouse_position.y ) {
-                        continue;
-                    }
-                    int internal_id = dobj.internalID;
-                    VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
-                    for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
-                        VsqEvent item = itr.next();
-                        if ( item.InternalID == internal_id ) {
-                            rect.value = new Rectangle( x, y, dobj.pxRectangle.width, dobj.pxRectangle.height );
-                            return item;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// マウス位置におけるIDを返します。該当するIDが無ければnullを返します
-        /// rectには、該当するIDがあればその画面上での形状を、該当するIDがなければ、
-        /// 画面上で最も近かったIDの画面上での形状を返します
-        /// </summary>
-        /// <param name="mouse_position"></param>
-        /// <returns></returns>
-        VsqEvent getItemAtClickedPosition_old( Point mouse_position, ByRef<Rectangle> rect ) {
-            rect.value = new Rectangle();
-            if ( AppManager.keyWidth <= mouse_position.x && mouse_position.x <= pictPianoRoll.getWidth() ) {
-                if ( 0 <= mouse_position.y && mouse_position.y <= pictPianoRoll.getHeight() ) {
-                    int selected = AppManager.getSelected();
-                    if ( selected >= 1 ) {
-                        VsqFileEx vsq = AppManager.getVsqFile();
-                        VsqTrack vsq_track = vsq.Track.get( selected );
-                        int track_height = AppManager.editorConfig.PxTrackHeight;
-                        int count = vsq_track.getEventCount();
-                        for ( int j = 0; j < count; j++ ) {
-                            VsqEvent itemj = vsq_track.getEvent( j );
-                            int clock = itemj.Clock;
-                            int internal_id = itemj.InternalID;
-                            // イベントで指定されたIDがLyricであった場合
-                            if ( itemj.ID.type == VsqIDType.Anote ){
-                                if ( itemj.ID.LyricHandle == null ){
-                                    continue;
-                                }
-                                // 発音長を取得
-                                int length = itemj.ID.getLength();
-                                int note = itemj.ID.Note;
-                                int x = AppManager.xCoordFromClocks( clock );
-                                int y = yCoordFromNote( note );
-                                int lyric_width = (int)(length * AppManager.scaleX);
-                                if ( x + lyric_width < 0 ) {
-                                    continue;
-                                } else if ( pictPianoRoll.getWidth() < x ) {
-                                    break;
-                                }
-                                if ( x <= mouse_position.x && mouse_position.x <= x + lyric_width ) {
-                                    if ( y + 1 <= mouse_position.y && mouse_position.y <= y + track_height ) {
-                                        rect.value = new Rectangle( x, y + 1, lyric_width, track_height );
-                                        return itemj;
-                                    }
-                                }
-                            } else if ( itemj.ID.type == VsqIDType.Aicon ) {
-                                if ( itemj.ID.IconDynamicsHandle == null ) {
-                                    continue;
-                                }
-                                int length = itemj.ID.getLength();
-                                int note = itemj.ID.Note;
-                                int x = AppManager.xCoordFromClocks( clock );
-                                int y = yCoordFromNote( note );
-                                //int lyric_width = 
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        public void openVsqCor( String file ) {
-            AppManager.readVsq( file );
-            if ( AppManager.getVsqFile().Track.size() >= 2 ) {
-                AppManager.setBaseTempo( AppManager.getVsqFile().getBaseTempo() );
-                setHScrollRange( AppManager.getVsqFile().TotalClocks );
-            }
-            AppManager.editorConfig.pushRecentFiles( file );
-            updateRecentFileMenu();
-            setEdited( false );
-            AppManager.clearCommandBuffer();
-            AppManager.mixerWindow.updateStatus();
-        }
-
-        public void updateMenuFonts() {
-            if ( AppManager.editorConfig.BaseFontName.Equals( "" ) ) {
-                return;
-            }
-            Font font = AppManager.editorConfig.getBaseFont();
-            Util.applyFontRecurse( this, font );
-            Util.applyContextMenuFontRecurse( cMenuPiano, font );
-            Util.applyContextMenuFontRecurse( cMenuTrackSelector, font );
-            if ( AppManager.mixerWindow != null ) {
-                Util.applyFontRecurse( AppManager.mixerWindow, font );
-            }
-            Util.applyContextMenuFontRecurse( cMenuTrackTab, font );
-            trackSelector.applyFont( font );
-            Util.applyToolStripFontRecurse( menuFile, font );
-            Util.applyToolStripFontRecurse( menuEdit, font );
-            Util.applyToolStripFontRecurse( menuVisual, font );
-            Util.applyToolStripFontRecurse( menuJob, font );
-            Util.applyToolStripFontRecurse( menuTrack, font );
-            Util.applyToolStripFontRecurse( menuLyric, font );
-            Util.applyToolStripFontRecurse( menuScript, font );
-            Util.applyToolStripFontRecurse( menuSetting, font );
-            Util.applyToolStripFontRecurse( menuHelp, font );
-            Util.applyFontRecurse( toolStripFile, font );
-            Util.applyFontRecurse( toolStripMeasure, font );
-            Util.applyFontRecurse( toolStripPosition, font );
-            Util.applyFontRecurse( toolStripTool, font );
-            if ( m_preference_dlg != null ) {
-                Util.applyFontRecurse( m_preference_dlg, font );
-            }
-
-            AppManager.baseFont10Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, 10 );
-            AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 8 );
-            AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 10 );
-            AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 );
-            AppManager.baseFont10OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont10 );
-            AppManager.baseFont8OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont8 );
-            AppManager.baseFont9OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont9 );
-        }
-
-        public void picturePositionIndicatorDrawTo( java.awt.Graphics g1 ) {
-            Graphics2D g = (Graphics2D)g1;
-            Font SMALL_FONT = null;
-            try {
-                SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
-                int width = picturePositionIndicator.getWidth();
-                int height = picturePositionIndicator.getHeight();
-
-                #region 小節ごとの線
-                int dashed_line_step = AppManager.getPositionQuantizeClock();
-                for ( Iterator<VsqBarLineType> itr = AppManager.getVsqFile().getBarLineIterator( AppManager.clockFromXCoord( width ) ); itr.hasNext(); ) {
-                    VsqBarLineType blt = itr.next();
-                    int local_clock_step = 480 * 4 / blt.getLocalDenominator();
-                    int x = AppManager.xCoordFromClocks( blt.clock() );
-                    if ( blt.isSeparator() ) {
-                        int current = blt.getBarCount() - AppManager.getVsqFile().getPreMeasure() + 1;
-                        g.setColor( s_pen_105_105_105 );
-                        g.drawLine( x, 3, x, 46 );
-                        // 小節の数字
-                        //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                        g.setColor( Color.black );
-                        g.setFont( SMALL_FONT );
-                        g.drawString( current + "", x + 4, 6 );
-                        //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-                    } else {
-                        g.setColor( s_pen_105_105_105 );
-                        g.drawLine( x, 11, x, 16 );
-                        g.drawLine( x, 26, x, 31 );
-                        g.drawLine( x, 41, x, 46 );
-                    }
-                    if ( dashed_line_step > 1 && AppManager.isGridVisible() ) {
-                        int numDashedLine = local_clock_step / dashed_line_step;
-                        for ( int i = 1; i < numDashedLine; i++ ) {
-                            int x2 = AppManager.xCoordFromClocks( blt.clock() + i * dashed_line_step );
-                            g.setColor( s_pen_065_065_065 );
-                            g.drawLine( x2, 9 + 5, x2, 14 + 3 );
-                            g.drawLine( x2, 24 + 5, x2, 29 + 3 );
-                            g.drawLine( x2, 39 + 5, x2, 44 + 3 );
-                        }
-                    }
-                }
-                #endregion
-
-                if ( AppManager.getVsqFile() != null ) {
-                    #region 拍子の変更
-                    for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
-                        int clock = AppManager.getVsqFile().TimesigTable.get( i ).Clock;
-                        int barcount = AppManager.getVsqFile().TimesigTable.get( i ).BarCount;
-                        int x = AppManager.xCoordFromClocks( clock );
-                        if ( width < x ) {
-                            break;
-                        }
-                        String s = AppManager.getVsqFile().TimesigTable.get( i ).Numerator + "/" + AppManager.getVsqFile().TimesigTable.get( i ).Denominator;
-                        g.setFont( SMALL_FONT );
-                        if ( AppManager.isSelectedTimesigContains( barcount ) ) {
-                            g.setColor( AppManager.getHilightColor() );
-                            g.drawString( s, x + 4, 36 );
-                        } else {
-                            g.setColor( Color.black );
-                            g.drawString( s, x + 4, 36 );
-                        }
-
-                        if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
-                            if ( AppManager.isSelectedTimesigContains( barcount ) ) {
-                                int edit_clock_x = AppManager.xCoordFromClocks( AppManager.getVsqFile().getClockFromBarCount( AppManager.getSelectedTimesig( barcount ).editing.BarCount ) );
-                                g.setColor( s_pen_187_187_255 );
-                                g.drawLine( edit_clock_x - 1, 32,
-                                            edit_clock_x - 1, picturePositionIndicator.getHeight() - 1 );
-                                g.setColor( s_pen_007_007_151 );
-                                g.drawLine( edit_clock_x, 32,
-                                            edit_clock_x, picturePositionIndicator.getHeight() - 1 );
-                            }
-                        }
-                    }
-                    #endregion
-
-                    #region テンポの変更
-                    g.setFont( SMALL_FONT );
-                    for ( int i = 0; i < AppManager.getVsqFile().TempoTable.size(); i++ ) {
-                        int clock = AppManager.getVsqFile().TempoTable.get( i ).Clock;
-                        int x = AppManager.xCoordFromClocks( clock );
-                        if ( width < x ) {
-                            break;
-                        }
-                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
-                        if ( AppManager.isSelectedTempoContains( clock ) ) {
-                            g.setColor( AppManager.getHilightColor() );
-                            g.drawString( s, x + 4, 21 );
-                        } else {
-                            g.setColor( Color.black );
-                            g.drawString( s, x + 4, 21 );
-                        }
-
-                        if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TEMPO ) {
-                            if ( AppManager.isSelectedTempoContains( clock ) ) {
-                                int edit_clock_x = AppManager.xCoordFromClocks( AppManager.getSelectedTempo( clock ).editing.Clock );
-                                g.setColor( s_pen_187_187_255 );
-                                g.drawLine( edit_clock_x - 1, 18,
-                                            edit_clock_x - 1, 32 );
-                                g.setColor( s_pen_007_007_151 );
-                                g.drawLine( edit_clock_x, 18,
-                                            edit_clock_x, 32 );
-                            }
-                        }
-                    }
-                    #endregion
-                }
-
-                #region 外枠
-                /* 左(外側) */
-                g.setColor( new Color( 160, 160, 160 ) );
-                g.drawLine( 0, 0, 0, height - 1 );
-                /* 左(内側) */
-                g.setColor( new Color( 105, 105, 105 ) );
-                g.drawLine( 1, 1, 1, height - 2 );
-                /* 中(上側) */
-                g.setColor( new Color( 160, 160, 160 ) );
-                g.drawLine( 1, 47, width - 2, 47 );
-                /* 中(下側) */
-                g.setColor( new Color( 105, 105, 105 ) );
-                g.drawLine( 2, 48, width - 3, 48 );
-                // 右(外側)
-                g.setColor( Color.white );
-                g.drawLine( width - 1, 0, width - 1, height - 1 );
-                // 右(内側)
-                g.setColor( new Color( 241, 239, 226 ) );
-                g.drawLine( width - 2, 1, width - 2, height - 1 );
-                #endregion
-
-                #region 現在のマーカー
-                float xoffset = AppManager.keyWidth + AppManager.keyOffset - AppManager.startToDrawX;
-                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + xoffset);
-                if ( AppManager.keyWidth <= marker_x && marker_x <= width ) {
-                    g.setStroke( new BasicStroke( 2.0f ) );
-                    g.setColor( Color.white );
-                    g.drawLine( marker_x, 2, marker_x, height );
-                    g.setStroke( new BasicStroke() );
-                }
-                if ( AppManager.startMarkerEnabled ) {
-                    int x = AppManager.xCoordFromClocks( AppManager.startMarker );
-                    g.drawImage(
-                        Resources.get_start_marker(), x, 3, this );
-                }
-                if ( AppManager.endMarkerEnabled ) {
-                    int x = AppManager.xCoordFromClocks( AppManager.endMarker ) - 6;
-                    g.drawImage(
-                        Resources.get_end_marker(), x, 3, this );
-                }
-                #endregion
-
-                #region TEMPO & BEAT
-                // TEMPO BEATの文字の部分。小節数が被っている可能性があるので、塗り潰す
-                g.setColor( picturePositionIndicator.getBackground() );
-                g.fillRect( 2, 3, AppManager.keyWidth - 2, 45 );
-                // 横ライン上
-                g.setColor( new Color( 104, 104, 104 ) );
-                g.drawLine( 2, 17, width - 3, 17 );
-                // 横ライン中央
-                g.drawLine( 2, 32, width - 3, 32 );
-                // 横ライン下
-                g.drawLine( 2, 47, width - 3, 47 );
-                // 縦ライン
-                g.drawLine( AppManager.keyWidth, 2, AppManager.keyWidth, 46 );
-                /* TEMPO&BEATとピアノロールの境界 */
-                g.drawLine( AppManager.keyWidth, 48, width - 18, 48 );
-                g.setFont( SMALL_FONT );
-                g.setColor( Color.black );
-                g.drawString( "TEMPO", 11, 20 );
-                g.drawString( "BEAT", 11, 35 );
-                g.setColor( new Color( 172, 168, 153 ) );
-                g.drawLine( 0, 0, width, 0 );
-                g.setColor( new Color( 113, 111, 100 ) );
-                g.drawLine( 1, 1, width - 1, 1 );
-
-                #endregion
-            } catch ( Exception ex ) {
-            } finally {
-#if !JAVA
-                if ( SMALL_FONT != null && SMALL_FONT.font != null ) {
-                    SMALL_FONT.font.Dispose();
-                }
-#endif
-            }
-        }
-
-        public void menuTrackManager_Click( Object sender, EventArgs e ) {
-
         }
 
         public void pictKeyLengthSplitter_MouseDown( Object sender, BMouseEventArgs e ) {
@@ -15965,399 +16290,8 @@ namespace org.kbinani.cadencii {
             overviewStopThread();
         }
 
-        public void overviewStopThread() {
-            if ( m_overview_update_thread != null ) {
-                try {
-#if JAVA
-                    m_overview_update_thread.stop();
-                    while( m_overview_update_thread.isAlive() ){
-                        Thread.sleep( 0 );
-                    }
-#else
-                    m_overview_update_thread.Abort();
-                    while ( m_overview_update_thread != null && m_overview_update_thread.IsAlive ) {
-                        System.Windows.Forms.Application.DoEvents();
-                    }
-#endif
-                } catch ( Exception ex ) {
-                }
-                m_overview_update_thread = null;
-            }
-        }
+        public void menuTrackManager_Click( Object sender, EventArgs e ) {
 
-        public void registerEventHandlers() {
-            loadEvent.add( new BEventHandler( this, "FormMain_Load" ) );
-            menuStripMain.mouseDownEvent.add( new BMouseEventHandler( this, "menuStrip1_MouseDown" ) );
-            menuFileNew.mouseEnterEvent.add( new BEventHandler( this, "menuFileNew_MouseEnter" ) );
-            menuFileNew.clickEvent.add( new BEventHandler( this, "commonFileNew_Click" ) );
-            menuFileOpen.mouseEnterEvent.add( new BEventHandler( this, "menuFileOpen_MouseEnter" ) );
-            menuFileOpen.clickEvent.add( new BEventHandler( this, "commonFileOpen_Click" ) );
-            menuFileSave.mouseEnterEvent.add( new BEventHandler( this, "menuFileSave_MouseEnter" ) );
-            menuFileSave.clickEvent.add( new BEventHandler( this, "commonFileSave_Click" ) );
-            menuFileSaveNamed.mouseEnterEvent.add( new BEventHandler( this, "menuFileSaveNamed_MouseEnter" ) );
-            menuFileSaveNamed.clickEvent.add( new BEventHandler( this, "menuFileSaveNamed_Click" ) );
-            menuFileOpenVsq.mouseEnterEvent.add( new BEventHandler( this, "menuFileOpenVsq_MouseEnter" ) );
-            menuFileOpenVsq.clickEvent.add( new BEventHandler( this, "menuFileOpenVsq_Click" ) );
-            menuFileOpenUst.mouseEnterEvent.add( new BEventHandler( this, "menuFileOpenUst_MouseEnter" ) );
-            menuFileOpenUst.clickEvent.add( new BEventHandler( this, "menuFileOpenUst_Click" ) );
-            menuFileImport.mouseEnterEvent.add( new BEventHandler( this, "menuFileImport_MouseEnter" ) );
-            menuFileImportVsq.mouseEnterEvent.add( new BEventHandler( this, "menuFileImportVsq_MouseEnter" ) );
-            menuFileImportVsq.clickEvent.add( new BEventHandler( this, "menuFileImportVsq_Click" ) );
-            menuFileImportMidi.mouseEnterEvent.add( new BEventHandler( this, "menuFileImportMidi_MouseEnter" ) );
-            menuFileImportMidi.clickEvent.add( new BEventHandler( this, "menuFileImportMidi_Click" ) );
-            menuFileExport.dropDownOpeningEvent.add( new BEventHandler( this, "menuFileExport_DropDownOpening" ) );
-            menuFileExportWave.mouseEnterEvent.add( new BEventHandler( this, "menuFileExportWave_MouseEnter" ) );
-            menuFileExportWave.clickEvent.add( new BEventHandler( this, "menuFileExportWave_Click" ) );
-            menuFileExportMidi.mouseEnterEvent.add( new BEventHandler( this, "menuFileExportMidi_MouseEnter" ) );
-            menuFileExportMidi.clickEvent.add( new BEventHandler( this, "menuFileExportMidi_Click" ) );
-            menuFileExportMusicXml.clickEvent.add( new BEventHandler( this, "menuFileExportMusicXml_Click" ) );
-            menuFileRecent.mouseEnterEvent.add( new BEventHandler( this, "menuFileRecent_MouseEnter" ) );
-            menuFileQuit.mouseEnterEvent.add( new BEventHandler( this, "menuFileQuit_MouseEnter" ) );
-            menuFileQuit.clickEvent.add( new BEventHandler( this, "menuFileQuit_Click" ) );
-            menuEdit.dropDownOpeningEvent.add( new BEventHandler( this, "menuEdit_DropDownOpening" ) );
-            menuEditUndo.mouseEnterEvent.add( new BEventHandler( this, "menuEditUndo_MouseEnter" ) );
-            menuEditUndo.clickEvent.add( new BEventHandler( this, "commonEditUndo_Click" ) );
-            menuEditRedo.mouseEnterEvent.add( new BEventHandler( this, "menuEditRedo_MouseEnter" ) );
-            menuEditRedo.clickEvent.add( new BEventHandler( this, "commonEditRedo_Click" ) );
-            menuEditCut.mouseEnterEvent.add( new BEventHandler( this, "menuEditCut_MouseEnter" ) );
-            menuEditCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
-            menuEditCopy.mouseEnterEvent.add( new BEventHandler( this, "menuEditCopy_MouseEnter" ) );
-            menuEditCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
-            menuEditPaste.mouseEnterEvent.add( new BEventHandler( this, "menuEditPaste_MouseEnter" ) );
-            menuEditPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
-            menuEditDelete.mouseEnterEvent.add( new BEventHandler( this, "menuEditDelete_MouseEnter" ) );
-            menuEditDelete.clickEvent.add( new BEventHandler( this, "menuEditDelete_Click" ) );
-            menuEditAutoNormalizeMode.mouseEnterEvent.add( new BEventHandler( this, "menuEditAutoNormalizeMode_MouseEnter" ) );
-            menuEditAutoNormalizeMode.clickEvent.add( new BEventHandler( this, "menuEditAutoNormalizeMode_Click" ) );
-            menuEditSelectAll.mouseEnterEvent.add( new BEventHandler( this, "menuEditSelectAll_MouseEnter" ) );
-            menuEditSelectAll.clickEvent.add( new BEventHandler( this, "menuEditSelectAll_Click" ) );
-            menuEditSelectAllEvents.mouseEnterEvent.add( new BEventHandler( this, "menuEditSelectAllEvents_MouseEnter" ) );
-            menuEditSelectAllEvents.clickEvent.add( new BEventHandler( this, "menuEditSelectAllEvents_Click" ) );
-            menuVisualControlTrack.checkedChangedEvent.add( new BEventHandler( this, "menuVisualControlTrack_CheckedChanged" ) );
-            menuVisualControlTrack.mouseEnterEvent.add( new BEventHandler( this, "menuVisualControlTrack_MouseEnter" ) );
-            menuVisualMixer.mouseEnterEvent.add( new BEventHandler( this, "menuVisualMixer_MouseEnter" ) );
-            menuVisualMixer.clickEvent.add( new BEventHandler( this, "menuVisualMixer_Click" ) );
-            menuVisualWaveform.checkedChangedEvent.add( new BEventHandler( this, "menuVisualWaveform_CheckedChanged" ) );
-            menuVisualWaveform.mouseEnterEvent.add( new BEventHandler( this, "menuVisualWaveform_MouseEnter" ) );
-            menuVisualProperty.mouseEnterEvent.add( new BEventHandler( this, "menuVisualProperty_MouseEnter" ) );
-            menuVisualProperty.clickEvent.add( new BEventHandler( this, "menuVisualProperty_Click" ) );
-            menuVisualGridline.checkedChangedEvent.add( new BEventHandler( this, "menuVisualGridline_CheckedChanged" ) );
-            menuVisualGridline.mouseEnterEvent.add( new BEventHandler( this, "menuVisualGridline_MouseEnter" ) );
-            menuVisualIconPalette.clickEvent.add( new BEventHandler( this, "menuVisualIconPalette_Click" ) );
-            menuVisualStartMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualStartMarker_MouseEnter" ) );
-            menuVisualStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
-            menuVisualEndMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualEndMarker_MouseEnter" ) );
-            menuVisualEndMarker.clickEvent.add( new BEventHandler( this, "handleEndMarker_Click" ) );
-            menuVisualLyrics.checkedChangedEvent.add( new BEventHandler( this, "menuVisualLyrics_CheckedChanged" ) );
-            menuVisualLyrics.mouseEnterEvent.add( new BEventHandler( this, "menuVisualLyrics_MouseEnter" ) );
-            menuVisualNoteProperty.checkedChangedEvent.add( new BEventHandler( this, "menuVisualNoteProperty_CheckedChanged" ) );
-            menuVisualNoteProperty.mouseEnterEvent.add( new BEventHandler( this, "menuVisualNoteProperty_MouseEnter" ) );
-            menuVisualPitchLine.checkedChangedEvent.add( new BEventHandler( this, "menuVisualPitchLine_CheckedChanged" ) );
-            menuVisualPitchLine.mouseEnterEvent.add( new BEventHandler( this, "menuVisualPitchLine_MouseEnter" ) );
-            menuVisualPluginUi.dropDownOpeningEvent.add( new BEventHandler( this, "menuVisualPluginUi_DropDownOpening" ) );
-            menuVisualPluginUiVocaloid100.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
-            menuVisualPluginUiVocaloid101.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
-            menuVisualPluginUiVocaloid2.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
-            menuVisualPluginUiAquesTone.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiAquesTone_Click" ) );
-            menuJob.dropDownOpeningEvent.add( new BEventHandler( this, "menuJob_DropDownOpening" ) );
-            menuJobNormalize.mouseEnterEvent.add( new BEventHandler( this, "menuJobNormalize_MouseEnter" ) );
-            menuJobNormalize.clickEvent.add( new BEventHandler( this, "menuJobNormalize_Click" ) );
-            menuJobInsertBar.mouseEnterEvent.add( new BEventHandler( this, "menuJobInsertBar_MouseEnter" ) );
-            menuJobInsertBar.clickEvent.add( new BEventHandler( this, "menuJobInsertBar_Click" ) );
-            menuJobDeleteBar.mouseEnterEvent.add( new BEventHandler( this, "menuJobDeleteBar_MouseEnter" ) );
-            menuJobDeleteBar.clickEvent.add( new BEventHandler( this, "menuJobDeleteBar_Click" ) );
-            menuJobRandomize.mouseEnterEvent.add( new BEventHandler( this, "menuJobRandomize_MouseEnter" ) );
-            menuJobRandomize.clickEvent.add( new BEventHandler( this, "menuJobRandomize_Click" ) );
-            menuJobConnect.mouseEnterEvent.add( new BEventHandler( this, "menuJobConnect_MouseEnter" ) );
-            menuJobConnect.clickEvent.add( new BEventHandler( this, "menuJobConnect_Click" ) );
-            menuJobLyric.mouseEnterEvent.add( new BEventHandler( this, "menuJobLyric_MouseEnter" ) );
-            menuJobLyric.clickEvent.add( new BEventHandler( this, "menuJobLyric_Click" ) );
-            menuJobRewire.mouseEnterEvent.add( new BEventHandler( this, "menuJobRewire_MouseEnter" ) );
-            menuJobRealTime.mouseEnterEvent.add( new BEventHandler( this, "menuJobRealTime_MouseEnter" ) );
-            menuJobRealTime.clickEvent.add( new BEventHandler( this, "menuJobRealTime_Click" ) );
-            menuJobReloadVsti.mouseEnterEvent.add( new BEventHandler( this, "menuJobReloadVsti_MouseEnter" ) );
-            menuJobReloadVsti.clickEvent.add( new BEventHandler( this, "menuJobReloadVsti_Click" ) );
-            menuTrack.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrack_DropDownOpening" ) );
-            menuTrackOn.mouseEnterEvent.add( new BEventHandler( this, "menuTrackOn_MouseEnter" ) );
-            menuTrackOn.clickEvent.add( new BEventHandler( this, "commonTrackOn_Click" ) );
-            menuTrackPlayAfterSynth.clickEvent.add( new BEventHandler( this, "commonPlayAfterSynth_Click" ) );
-            menuTrackAdd.mouseEnterEvent.add( new BEventHandler( this, "menuTrackAdd_MouseEnter" ) );
-            menuTrackAdd.clickEvent.add( new BEventHandler( this, "menuTrackAdd_Click" ) );
-            menuTrackCopy.mouseEnterEvent.add( new BEventHandler( this, "menuTrackCopy_MouseEnter" ) );
-            menuTrackCopy.clickEvent.add( new BEventHandler( this, "menuTrackCopy_Click" ) );
-            menuTrackChangeName.mouseEnterEvent.add( new BEventHandler( this, "menuTrackChangeName_MouseEnter" ) );
-            menuTrackChangeName.clickEvent.add( new BEventHandler( this, "menuTrackChangeName_Click" ) );
-            menuTrackDelete.mouseEnterEvent.add( new BEventHandler( this, "menuTrackDelete_MouseEnter" ) );
-            menuTrackDelete.clickEvent.add( new BEventHandler( this, "menuTrackDelete_Click" ) );
-            menuTrackRenderCurrent.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRenderCurrent_MouseEnter" ) );
-            menuTrackRenderCurrent.clickEvent.add( new BEventHandler( this, "menuTrackRenderCurrent_Click" ) );
-            menuTrackRenderAll.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRenderAll_MouseEnter" ) );
-            menuTrackRenderAll.clickEvent.add( new BEventHandler( this, "commonTrackRenderAll_Click" ) );
-            menuTrackOverlay.mouseEnterEvent.add( new BEventHandler( this, "menuTrackOverlay_MouseEnter" ) );
-            menuTrackOverlay.clickEvent.add( new BEventHandler( this, "menuTrackOverlay_Click" ) );
-            menuTrackRenderer.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRenderer_MouseEnter" ) );
-            menuTrackRenderer.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrackRenderer_DropDownOpening" ) );
-            menuTrackRendererVOCALOID100.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererVOCALOID1_MouseEnter" ) );
-            menuTrackRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererVOCALOID2.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererVOCALOID2_MouseEnter" ) );
-            menuTrackRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererUtau.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererUtau_MouseEnter" ) );
-            menuTrackRendererUtau.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererStraight.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererAquesTone.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackManager.clickEvent.add( new BEventHandler( this, "menuTrackManager_Click" ) );
-            menuLyricExpressionProperty.clickEvent.add( new BEventHandler( this, "menuLyricExpressionProperty_Click" ) );
-            menuLyricVibratoProperty.clickEvent.add( new BEventHandler( this, "menuLyricVibratoProperty_Click" ) );
-            menuLyricDictionary.clickEvent.add( new BEventHandler( this, "menuLyricDictionary_Click" ) );
-            menuLyricPhonemeTransformation.clickEvent.add( new BEventHandler( this, "menuLyricPhonemeTransformation_Click" ) );
-            menuScriptUpdate.clickEvent.add( new BEventHandler( this, "menuScriptUpdate_Click" ) );
-            menuSetting.dropDownOpeningEvent.add( new BEventHandler( this, "menuSetting_DropDownOpening" ) );
-            menuSettingPreference.clickEvent.add( new BEventHandler( this, "menuSettingPreference_Click" ) );
-            menuSettingGameControlerSetting.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerSetting_Click" ) );
-            menuSettingGameControlerLoad.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerLoad_Click" ) );
-            menuSettingGameControlerRemove.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerRemove_Click" ) );
-            menuSettingShortcut.clickEvent.add( new BEventHandler( this, "menuSettingShortcut_Click" ) );
-#if ENABLE_MIDI
-            menuSettingMidi.clickEvent.add( new BEventHandler( this, "menuSettingMidi_Click" ) );
-#endif
-            menuSettingUtauVoiceDB.clickEvent.add( new BEventHandler( this, "menuSettingUtauVoiceDB_Click" ) );
-            menuSettingDefaultSingerStyle.clickEvent.add( new BEventHandler( this, "menuSettingDefaultSingerStyle_Click" ) );
-            menuSettingPositionQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize32.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_positionQuantizeTriplet" ) );
-            menuSettingLengthQuantize04.clickEvent.add( new BEventHandler( this, "h_lengthQuantize04" ) );
-            menuSettingLengthQuantize08.clickEvent.add( new BEventHandler( this, "h_lengthQuantize08" ) );
-            menuSettingLengthQuantize16.clickEvent.add( new BEventHandler( this, "h_lengthQuantize16" ) );
-            menuSettingLengthQuantize32.clickEvent.add( new BEventHandler( this, "h_lengthQuantize32" ) );
-            menuSettingLengthQuantize64.clickEvent.add( new BEventHandler( this, "h_lengthQuantize64" ) );
-            menuSettingLengthQuantize128.clickEvent.add( new BEventHandler( this, "h_lengthQuantize128" ) );
-            menuSettingLengthQuantizeOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
-            menuSettingLengthQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
-            menuHelpAbout.clickEvent.add( new BEventHandler( this, "menuHelpAbout_Click" ) );
-            menuHelpDebug.clickEvent.add( new BEventHandler( this, "menuHelpDebug_Click" ) );
-            menuHiddenEditLyric.clickEvent.add( new BEventHandler( this, "menuHiddenEditLyric_Click" ) );
-            menuHiddenEditFlipToolPointerPencil.clickEvent.add( new BEventHandler( this, "menuHiddenEditFlipToolPointerPencil_Click" ) );
-            menuHiddenEditFlipToolPointerEraser.clickEvent.add( new BEventHandler( this, "menuHiddenEditFlipToolPointerEraser_Click" ) );
-            menuHiddenVisualForwardParameter.clickEvent.add( new BEventHandler( this, "menuHiddenVisualForwardParameter_Click" ) );
-            menuHiddenVisualBackwardParameter.clickEvent.add( new BEventHandler( this, "menuHiddenVisualBackwardParameter_Click" ) );
-            menuHiddenTrackNext.clickEvent.add( new BEventHandler( this, "menuHiddenTrackNext_Click" ) );
-            menuHiddenTrackBack.clickEvent.add( new BEventHandler( this, "menuHiddenTrackBack_Click" ) );
-            menuHiddenCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
-            menuHiddenPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
-            menuHiddenCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
-            menuHiddenSelectBackward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectBackward_Click" ) );
-            menuHiddenSelectForward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectForward_Click" ) );
-            menuHiddenMoveUp.clickEvent.add( new BEventHandler( this, "menuHiddenMoveUp_Click" ) );
-            menuHiddenMoveDown.clickEvent.add( new BEventHandler( this, "menuHiddenMoveDown_Click" ) );
-            menuHiddenMoveLeft.clickEvent.add( new BEventHandler( this, "menuHiddenMoveLeft_Click" ) );
-            menuHiddenMoveRight.clickEvent.add( new BEventHandler( this, "menuHiddenMoveRight_Click" ) );
-            menuHiddenLengthen.clickEvent.add( new BEventHandler( this, "menuHiddenLengthen_Click" ) );
-            menuHiddenShorten.clickEvent.add( new BEventHandler( this, "menuHiddenShorten_Click" ) );
-            menuHiddenGoToEndMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToEndMarker_Click" ) );
-            menuHiddenGoToStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToStartMarker_Click" ) );
-            menuHiddenPlayFromStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenPlayFromStartMarker_Click" ) );
-
-            cMenuPiano.openingEvent.add( new BCancelEventHandler( this, "cMenuPiano_Opening" ) );
-            cMenuPianoPointer.clickEvent.add( new BEventHandler( this, "cMenuPianoPointer_Click" ) );
-            cMenuPianoPencil.clickEvent.add( new BEventHandler( this, "cMenuPianoPencil_Click" ) );
-            cMenuPianoEraser.clickEvent.add( new BEventHandler( this, "cMenuPianoEraser_Click" ) );
-            cMenuPianoCurve.clickEvent.add( new BEventHandler( this, "cMenuPianoCurve_Click" ) );
-            cMenuPianoFixed01.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed01_Click" ) );
-            cMenuPianoFixed02.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed02_Click" ) );
-            cMenuPianoFixed04.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed04_Click" ) );
-            cMenuPianoFixed08.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed08_Click" ) );
-            cMenuPianoFixed16.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed16_Click" ) );
-            cMenuPianoFixed32.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed32_Click" ) );
-            cMenuPianoFixed64.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed64_Click" ) );
-            cMenuPianoFixed128.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed128_Click" ) );
-            cMenuPianoFixedOff.clickEvent.add( new BEventHandler( this, "cMenuPianoFixedOff_Click" ) );
-            cMenuPianoFixedTriplet.clickEvent.add( new BEventHandler( this, "cMenuPianoFixedTriplet_Click" ) );
-            cMenuPianoFixedDotted.clickEvent.add( new BEventHandler( this, "cMenuPianoFixedDotted_Click" ) );
-            cMenuPianoQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize32.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_positionQuantizeTriplet" ) );
-            cMenuPianoLength04.clickEvent.add( new BEventHandler( this, "h_lengthQuantize04" ) );
-            cMenuPianoLength08.clickEvent.add( new BEventHandler( this, "h_lengthQuantize08" ) );
-            cMenuPianoLength16.clickEvent.add( new BEventHandler( this, "h_lengthQuantize16" ) );
-            cMenuPianoLength32.clickEvent.add( new BEventHandler( this, "h_lengthQuantize32" ) );
-            cMenuPianoLength64.clickEvent.add( new BEventHandler( this, "h_lengthQuantize64" ) );
-            cMenuPianoLength128.clickEvent.add( new BEventHandler( this, "h_lengthQuantize128" ) );
-            cMenuPianoLengthOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
-            cMenuPianoLengthTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
-            cMenuPianoGrid.clickEvent.add( new BEventHandler( this, "cMenuPianoGrid_Click" ) );
-            cMenuPianoUndo.clickEvent.add( new BEventHandler( this, "cMenuPianoUndo_Click" ) );
-            cMenuPianoRedo.clickEvent.add( new BEventHandler( this, "cMenuPianoRedo_Click" ) );
-            cMenuPianoCut.clickEvent.add( new BEventHandler( this, "cMenuPianoCut_Click" ) );
-            cMenuPianoCopy.clickEvent.add( new BEventHandler( this, "cMenuPianoCopy_Click" ) );
-            cMenuPianoPaste.clickEvent.add( new BEventHandler( this, "cMenuPianoPaste_Click" ) );
-            cMenuPianoDelete.clickEvent.add( new BEventHandler( this, "cMenuPianoDelete_Click" ) );
-            cMenuPianoSelectAll.clickEvent.add( new BEventHandler( this, "cMenuPianoSelectAll_Click" ) );
-            cMenuPianoSelectAllEvents.clickEvent.add( new BEventHandler( this, "cMenuPianoSelectAllEvents_Click" ) );
-            cMenuPianoImportLyric.clickEvent.add( new BEventHandler( this, "cMenuPianoImportLyric_Click" ) );
-            cMenuPianoExpressionProperty.clickEvent.add( new BEventHandler( this, "cMenuPianoProperty_Click" ) );
-            cMenuPianoVibratoProperty.clickEvent.add( new BEventHandler( this, "cMenuPianoVibratoProperty_Click" ) );
-            cMenuTrackTab.openingEvent.add( new BCancelEventHandler( this, "cMenuTrackTab_Opening" ) );
-            cMenuTrackTabTrackOn.clickEvent.add( new BEventHandler( this, "commonTrackOn_Click" ) );
-            cMenuTrackTabPlayAfterSynth.clickEvent.add( new BEventHandler( this, "commonPlayAfterSynth_Click" ) );
-            cMenuTrackTabAdd.clickEvent.add( new BEventHandler( this, "cMenuTrackTabAdd_Click" ) );
-            cMenuTrackTabCopy.clickEvent.add( new BEventHandler( this, "cMenuTrackTabCopy_Click" ) );
-            cMenuTrackTabChangeName.clickEvent.add( new BEventHandler( this, "cMenuTrackTabChangeName_Click" ) );
-            cMenuTrackTabDelete.clickEvent.add( new BEventHandler( this, "cMenuTrackTabDelete_Click" ) );
-            cMenuTrackTabRenderCurrent.clickEvent.add( new BEventHandler( this, "cMenuTrackTabRenderCurrent_Click" ) );
-            cMenuTrackTabRenderAll.clickEvent.add( new BEventHandler( this, "commonTrackRenderAll_Click" ) );
-            cMenuTrackTabOverlay.clickEvent.add( new BEventHandler( this, "cMenuTrackTabOverlay_Click" ) );
-            cMenuTrackTabRenderer.dropDownOpeningEvent.add( new BEventHandler( this, "cMenuTrackTabRenderer_DropDownOpening" ) );
-            cMenuTrackTabRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererUtau.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererStraight.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererAquesTone.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackSelector.openingEvent.add( new BCancelEventHandler( this, "cMenuTrackSelector_Opening" ) );
-            cMenuTrackSelectorPointer.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPointer_Click" ) );
-            cMenuTrackSelectorPencil.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPencil_Click" ) );
-            cMenuTrackSelectorLine.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorLine_Click" ) );
-            cMenuTrackSelectorEraser.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorEraser_Click" ) );
-            cMenuTrackSelectorCurve.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorCurve_Click" ) );
-            cMenuTrackSelectorUndo.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorUndo_Click" ) );
-            cMenuTrackSelectorRedo.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorRedo_Click" ) );
-            cMenuTrackSelectorCut.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorCut_Click" ) );
-            cMenuTrackSelectorCopy.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorCopy_Click" ) );
-            cMenuTrackSelectorPaste.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPaste_Click" ) );
-            cMenuTrackSelectorDelete.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorDelete_Click" ) );
-            cMenuTrackSelectorDeleteBezier.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorDeleteBezier_Click" ) );
-            cMenuTrackSelectorSelectAll.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorSelectAll_Click" ) );
-            trackBar.valueChangedEvent.add( new BEventHandler( this, "trackBar_ValueChanged" ) );
-            trackBar.mouseDownEvent.add( new BMouseEventHandler( this, "trackBar_MouseDown" ) );
-            trackBar.enterEvent.add( new BEventHandler( this, "trackBar_Enter" ) );
-            bgWorkScreen.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWorkScreen_DoWork" ) );
-            timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
-            pictKeyLengthSplitter.mouseMoveEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseMove" ) );
-            pictKeyLengthSplitter.mouseDownEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseDown" ) );
-            pictKeyLengthSplitter.mouseUpEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseUp" ) );
-            btnRight1.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
-            btnRight1.mouseUpEvent.add( new BMouseEventHandler( this, "btnRight_MouseUp" ) );
-            btnRight1.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
-            //btnRight1.enterEvent.add( new BEventHandler( this, "commonOverviewButtons_Enter" ) );
-            btnLeft2.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
-            btnLeft2.mouseUpEvent.add( new BMouseEventHandler( this, "btnLeft_MouseUp" ) );
-            btnLeft2.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
-            //btnLeft2.enterEvent.add( new BEventHandler( this, "commonOverviewButtons_Enter" ) );
-            btnZoom.clickEvent.add( new BEventHandler( this, "btnZoom_Click" ) );
-            //btnZoom.enterEvent.add( new BEventHandler( this, "commonOverviewButtons_Enter" ) );
-            btnMooz.clickEvent.add( new BEventHandler( this, "btnMooz_Click" ) );
-            //btnMooz.enterEvent.add( new BEventHandler( this, "commonOverviewButtons_Enter" ) );
-            btnLeft1.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
-            btnLeft1.mouseUpEvent.add( new BMouseEventHandler( this, "btnLeft_MouseUp" ) );
-            btnLeft1.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
-            //btnLeft1.enterEvent.add( new BEventHandler( this, "commonOverviewButtons_Enter" ) );
-            btnRight2.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
-            btnRight2.mouseUpEvent.add( new BMouseEventHandler( this, "btnRight_MouseUp" ) );
-            btnRight2.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
-            //btnRight2.enterEvent.add( new BEventHandler( this, "commonOverviewButtons_Enter" ) );
-            pictOverview.mouseMoveEvent.add( new BMouseEventHandler( this, "pictOverview_MouseMove" ) );
-            pictOverview.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDoubleClick" ) );
-            pictOverview.mouseDownEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDown" ) );
-            pictOverview.paintEvent.add( new BPaintEventHandler( this, "pictOverview_Paint" ) );
-            pictOverview.mouseUpEvent.add( new BMouseEventHandler( this, "pictOverview_MouseUp" ) );
-            pictOverview.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
-            pictOverview.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
-            vScroll.valueChangedEvent.add( new BEventHandler( this, "vScroll_ValueChanged" ) );
-            vScroll.resizeEvent.add( new BEventHandler( this, "vScroll_Resize" ) );
-            vScroll.enterEvent.add( new BEventHandler( this, "vScroll_Enter" ) );
-            hScroll.valueChangedEvent.add( new BEventHandler( this, "hScroll_ValueChanged" ) );
-            hScroll.resizeEvent.add( new BEventHandler( this, "hScroll_Resize" ) );
-            hScroll.enterEvent.add( new BEventHandler( this, "hScroll_Enter" ) );
-            //picturePositionIndicator.mouseLeaveEvent.add( new BEventHandler( this, "picturePositionIndicator_MouseLeave" ) );
-            picturePositionIndicator.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "picturePositionIndicator_PreviewKeyDown" ) );
-            picturePositionIndicator.mouseMoveEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseMove" ) );
-            picturePositionIndicator.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseDoubleClick" ) );
-            picturePositionIndicator.mouseDownEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseDown" ) );
-            picturePositionIndicator.mouseUpEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseUp" ) );
-            picturePositionIndicator.paintEvent.add( new BPaintEventHandler( this, "picturePositionIndicator_Paint" ) );
-            pictPianoRoll.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "pictPianoRoll_PreviewKeyDown" ) );
-            pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
-            pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "pictPianoRoll_KeyUp" ) );
-            pictPianoRoll.mouseMoveEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseMove" ) );
-            pictPianoRoll.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDoubleClick" ) );
-            pictPianoRoll.mouseClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseClick" ) );
-            pictPianoRoll.mouseDownEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDown" ) );
-            pictPianoRoll.mouseUpEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseUp" ) );
-            pictPianoRoll.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
-#if !JAVA
-            this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
-            this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
-            this.DragOver += new System.Windows.Forms.DragEventHandler( FormMain_DragOver );
-            this.DragLeave += new EventHandler( FormMain_DragLeave );
-#endif
-            pictureBox3.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox3_MouseDown" ) );
-            pictureBox2.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseDown" ) );
-            stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
-            stripBtnPencil.clickEvent.add( new BEventHandler( this, "stripBtnPencil_Click" ) );
-            stripBtnLine.clickEvent.add( new BEventHandler( this, "stripBtnLine_Click" ) );
-            stripBtnEraser.clickEvent.add( new BEventHandler( this, "stripBtnEraser_Click" ) );
-            stripBtnGrid.checkedChangedEvent.add( new BEventHandler( this, "stripBtnGrid_CheckedChanged" ) );
-            stripBtnCurve.clickEvent.add( new BEventHandler( this, "stripBtnCurve_Click" ) );
-#if !JAVA
-            toolStripContainer.TopToolStripPanel.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
-            stripDDBtnSpeed.dropDownOpeningEvent.add( new BEventHandler( this, "stripDDBtnSpeed_DropDownOpening" ) );
-            stripDDBtnSpeedTextbox.keyDownEvent.add( new BKeyEventHandler( this, "stripDDBtnSpeedTextbox_KeyDown" ) );
-            stripDDBtnSpeed033.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed033_Click" ) );
-            stripDDBtnSpeed050.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed050_Click" ) );
-            stripDDBtnSpeed100.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed100_Click" ) );
-            stripDDBtnLength04.clickEvent.add( new BEventHandler( this, "h_lengthQuantize04" ) );
-            stripDDBtnLength08.clickEvent.add( new BEventHandler( this, "h_lengthQuantize08" ) );
-            stripDDBtnLength16.clickEvent.add( new BEventHandler( this, "h_lengthQuantize16" ) );
-            stripDDBtnLength32.clickEvent.add( new BEventHandler( this, "h_lengthQuantize32" ) );
-            stripDDBtnLength64.clickEvent.add( new BEventHandler( this, "h_lengthQuantize64" ) );
-            stripDDBtnLength128.clickEvent.add( new BEventHandler( this, "h_lengthQuantize128" ) );
-            stripDDBtnLengthOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
-            stripDDBtnLengthTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
-            stripDDBtnQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize32.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_positionQuantizeTriplet" ) );
-#endif
-            stripBtnFileNew.clickEvent.add( new BEventHandler( this, "commonFileNew_Click" ) );
-            stripBtnFileOpen.clickEvent.add( new BEventHandler( this, "commonFileOpen_Click" ) );
-            stripBtnFileSave.clickEvent.add( new BEventHandler( this, "commonFileSave_Click" ) );
-            stripBtnCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
-            stripBtnCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
-            stripBtnPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
-            stripBtnUndo.clickEvent.add( new BEventHandler( this, "commonEditUndo_Click" ) );
-            stripBtnRedo.clickEvent.add( new BEventHandler( this, "commonEditRedo_Click" ) );
-            stripBtnMoveTop.clickEvent.add( new BEventHandler( this, "stripBtnMoveTop_Click" ) );
-            stripBtnRewind.clickEvent.add( new BEventHandler( this, "stripBtnRewind_Click" ) );
-            stripBtnForward.clickEvent.add( new BEventHandler( this, "stripBtnForward_Click" ) );
-            stripBtnMoveEnd.clickEvent.add( new BEventHandler( this, "stripBtnMoveEnd_Click" ) );
-            stripBtnPlay.clickEvent.add( new BEventHandler( this, "stripBtnPlay_Click" ) );
-            stripBtnStop.clickEvent.add( new BEventHandler( this, "stripBtnStop_Click" ) );
-            stripBtnScroll.clickEvent.add( new BEventHandler( this, "stripBtnScroll_Click" ) );
-            stripBtnLoop.clickEvent.add( new BEventHandler( this, "stripBtnLoop_Click" ) );
-            stripBtnStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
-            stripBtnEndMarker.clickEvent.add( new BEventHandler( this, "handleEndMarker_Click" ) );
-            deactivateEvent.add( new BEventHandler( this, "FormMain_Deactivate" ) );
-            activatedEvent.add( new BEventHandler( this, "FormMain_Activated" ) );
-            formClosedEvent.add( new BFormClosedEventHandler( this, "FormMain_FormClosed" ) );
-            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMain_FormClosing" ) );
-            //keyUpEvent.add( new BKeyEventHandler( this, "FormMain_KeyUp" ) );
-            previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "FormMain_PreviewKeyDown" ) );
-            panelOverview.enterEvent.add( new BEventHandler( this, "panelOverview_Enter" ) );
         }
 
 #if !JAVA
@@ -16401,9 +16335,9 @@ namespace org.kbinani.cadencii {
             }
             Point locPianoroll = pictPianoRoll.getLocationOnScreen();
             int keywidth = AppManager.keyWidth;
-            Rectangle rcPianoroll = new Rectangle( locPianoroll.x + keywidth, 
-                                                   locPianoroll.y, 
-                                                   pictPianoRoll.getWidth() - keywidth, 
+            Rectangle rcPianoroll = new Rectangle( locPianoroll.x + keywidth,
+                                                   locPianoroll.y,
+                                                   pictPianoRoll.getWidth() - keywidth,
                                                    pictPianoRoll.getHeight() );
             if ( !isInRect( new Point( e.X, e.Y ), rcPianoroll ) ) {
                 return;
@@ -16433,7 +16367,7 @@ namespace org.kbinani.cadencii {
             if ( note < 0 || 128 < note ) {
                 return;
             }
-            
+
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track.get( selected );
             VsqTrack work = (VsqTrack)vsq_track.clone();
@@ -16466,43 +16400,117 @@ namespace org.kbinani.cadencii {
             }
         }
 #endif
+        #endregion
 
-        public void setResources() {
-            try {
-                this.stripBtnPointer.setIcon( new ImageIcon( Resources.get_arrow_135() ) );
-                this.stripBtnPencil.setIcon( new ImageIcon( Resources.get_pencil() ) );
-                this.stripBtnLine.setIcon( new ImageIcon( Resources.get_layer_shape_line() ) );
-                this.stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
-                this.stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
-                this.stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
-                this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
-                this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
-                this.stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
-                this.stripBtnFileOpen.setIcon( new ImageIcon( Resources.get_folder_horizontal_open() ) );
-                this.stripBtnFileSave.setIcon( new ImageIcon( Resources.get_disk() ) );
-                this.stripBtnCut.setIcon( new ImageIcon( Resources.get_scissors() ) );
-                this.stripBtnCopy.setIcon( new ImageIcon( Resources.get_documents() ) );
-                this.stripBtnPaste.setIcon( new ImageIcon( Resources.get_clipboard_paste() ) );
-                this.stripBtnUndo.setIcon( new ImageIcon( Resources.get_arrow_skip_180() ) );
-                this.stripBtnRedo.setIcon( new ImageIcon( Resources.get_arrow_skip() ) );
-                this.stripBtnMoveTop.setIcon( new ImageIcon( Resources.get_control_stop_180() ) );
-                this.stripBtnRewind.setIcon( new ImageIcon( Resources.get_control_double_180() ) );
-                this.stripBtnForward.setIcon( new ImageIcon( Resources.get_control_double() ) );
-                this.stripBtnMoveEnd.setIcon( new ImageIcon( Resources.get_control_stop() ) );
-                this.stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
-                this.stripBtnStop.setIcon( new ImageIcon( Resources.get_control_pause() ) );
-                this.stripBtnScroll.setIcon( new ImageIcon( Resources.get_arrow_circle_double() ) );
-                this.stripBtnLoop.setIcon( new ImageIcon( Resources.get_arrow_return() ) );
-                this.stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
-                this.stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
-                setIconImage( Resources.get_icon() );
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormMain#setResources; ex=" + ex );
+        #region public static methods
+        /// <summary>
+        /// VsqEvent, VsqBPList, BezierCurvesの全てのクロックを、tempoに格納されているテンポテーブルに
+        /// 合致するようにシフトします．ただし，このメソッド内ではtargetのテンポテーブルは変更せず，クロック値だけが変更される．
+        /// </summary>
+        /// <param name="work"></param>
+        /// <param name="tempo"></param>
+        public static void shiftClockToMatchWith( VsqFileEx target, VsqFile tempo, double shift_seconds ) {
+            // テンポをリプレースする場合。
+            // まずクロック値を、リプレース後のモノに置き換え
+            for ( int track = 1; track < target.Track.size(); track++ ) {
+                // ノート・歌手イベントをシフト
+                for ( Iterator<VsqEvent> itr = target.Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
+                    if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
+                        continue;
+                    }
+                    int clock = item.Clock;
+                    double sec_start = target.getSecFromClock( clock ) + shift_seconds;
+                    double sec_end = target.getSecFromClock( clock + item.ID.getLength() ) + shift_seconds;
+                    int clock_start = (int)tempo.getClockFromSec( sec_start );
+                    int clock_end = (int)tempo.getClockFromSec( sec_end );
+                    item.Clock = clock_start;
+                    item.ID.setLength( clock_end - clock_start );
+                    if ( item.ID.VibratoHandle != null ) {
+                        double sec_vib_start = target.getSecFromClock( clock + item.ID.VibratoDelay ) + shift_seconds;
+                        int clock_vib_start = (int)tempo.getClockFromSec( sec_vib_start );
+                        item.ID.VibratoDelay = clock_vib_start - clock_start;
+                        item.ID.VibratoHandle.setLength( clock_end - clock_vib_start );
+                    }
+                }
+
+                // コントロールカーブをシフト
+                for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
+                    CurveType ct = Utility.CURVE_USAGE[j];
+                    VsqBPList item = target.Track.get( track ).getCurve( ct.getName() );
+                    if ( item == null ) {
+                        continue;
+                    }
+                    VsqBPList repl = new VsqBPList( item.getName(), item.getDefault(), item.getMinimum(), item.getMaximum() );
+                    for ( int i = 0; i < item.size(); i++ ) {
+                        int clock = item.getKeyClock( i );
+                        int value = item.getElement( i );
+                        double sec = target.getSecFromClock( clock ) + shift_seconds;
+                        if ( sec >= 0 ) {
+                            int clock_new = (int)tempo.getClockFromSec( sec );
+                            repl.add( clock_new, value );
+                        }
+                    }
+                    target.Track.get( track ).setCurve( ct.getName(), repl );
+                }
+
+                // ベジエカーブをシフト
+                for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
+                    CurveType ct = Utility.CURVE_USAGE[j];
+                    Vector<BezierChain> list = target.AttachedCurves.get( track - 1 ).get( ct );
+                    if ( list == null ) {
+                        continue;
+                    }
+                    for ( Iterator<BezierChain> itr = list.iterator(); itr.hasNext(); ) {
+                        BezierChain chain = itr.next();
+                        for ( Iterator<BezierPoint> itr2 = chain.points.iterator(); itr2.hasNext(); ) {
+                            BezierPoint point = itr2.next();
+                            PointD bse = new PointD( tempo.getClockFromSec( target.getSecFromClock( point.getBase().getX() ) + shift_seconds ),
+                                                     point.getBase().getY() );
+                            double rx = point.getBase().getX() + point.controlRight.getX();
+                            double new_rx = tempo.getClockFromSec( target.getSecFromClock( rx ) + shift_seconds );
+                            PointD ctrl_r = new PointD( new_rx - bse.getX(), point.controlRight.getY() );
+
+                            double lx = point.getBase().getX() + point.controlLeft.getX();
+                            double new_lx = tempo.getClockFromSec( target.getSecFromClock( lx ) + shift_seconds );
+                            PointD ctrl_l = new PointD( new_lx - bse.getX(), point.controlLeft.getY() );
+                            point.setBase( bse );
+                            point.controlLeft = ctrl_l;
+                            point.controlRight = ctrl_r;
+                        }
+                    }
+                }
             }
         }
 
+        /// <summary>
+        /// フォームのタイトルバーが画面内に入るよう、Locationを正規化します
+        /// </summary>
+        /// <param name="form"></param>
+        public static void normalizeFormLocation( BForm dlg ) {
+            Rectangle rcScreen = PortUtil.getWorkingArea( dlg );
+            int top = dlg.getY();
+            if ( top + dlg.getHeight() > rcScreen.y + rcScreen.height ) {
+                // ダイアログの下端が隠れる場合、位置をずらす
+                top = rcScreen.y + rcScreen.height - dlg.getHeight();
+            }
+            if ( top < rcScreen.y ) {
+                // ダイアログの上端が隠れる場合、位置をずらす
+                top = rcScreen.y;
+            }
+            int left = dlg.getX();
+            if ( left + dlg.getWidth() > rcScreen.x + rcScreen.width ) {
+                left = rcScreen.x + rcScreen.width - dlg.getWidth();
+            }
+            if ( left < rcScreen.x ) {
+                left = rcScreen.x;
+            }
+            dlg.setLocation( left, top );
+        }
+        #endregion
+
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
         BMenuItem stripDDBtnQuantize04 = null;
         BMenuItem stripDDBtnQuantize08 = null;
@@ -16512,9 +16520,7 @@ namespace org.kbinani.cadencii {
         BMenuItem stripDDBtnQuantize128 = null;
         BMenuItem stripDDBtnQuantizeOff = null;
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMain.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
@@ -16525,8 +16531,6 @@ namespace org.kbinani.cadencii {
             }
             base.Dispose( disposing );
         }
-
-        #region Windows フォーム デザイナで生成されたコード
 
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
@@ -19761,7 +19765,6 @@ namespace org.kbinani.cadencii {
             this.PerformLayout();
 
         }
-        #endregion
 
         private System.ComponentModel.IContainer components;
 
@@ -20119,8 +20122,8 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuTrackPlayAfterSynth;
         public BMenuItem menuHiddenPlayFromStartMarker;
 
-        #endregion
 #endif
+        #endregion
 
     }
 

@@ -28,6 +28,7 @@ import org.kbinani.windows.forms.BSplitPane;
 import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BVScrollBar;
+import javax.swing.WindowConstants;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -562,6 +563,7 @@ public class FormMain extends BForm {
      */
     private void initialize() {
         this.setSize(852, 561);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setContentPane(getJContentPane());
         this.setJMenuBar(getMenuStripMain());
         this.setJMenuBar(getMenuStripMain());
@@ -2230,8 +2232,8 @@ public class FormMain extends BForm {
             panel1.setLayout(new GridBagLayout());
             panel1.add(getPictPianoRoll(), gridBagConstraints7);
             panel1.add(getVScroll(), gridBagConstraints8);
-            panel1.add(getHScroll(), gridBagConstraints9);
             panel1.add(getPictureBox3(), gridBagConstraints10);
+            panel1.add(getHScroll(), gridBagConstraints9);
             panel1.add(getTrackBar(), gridBagConstraints11);
             panel1.add(getJPanel2(), gridBagConstraints16);
         }

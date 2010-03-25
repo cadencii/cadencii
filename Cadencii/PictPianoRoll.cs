@@ -160,18 +160,12 @@ namespace org.kbinani.cadencii {
         public void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
             try {
-#if JAVA
-                System.out.println( "PictPianoRoll#paint" );
-#endif
                 Dimension window_size = new Dimension( getWidth(), getHeight() );
                 Point p = pointToClient( PortUtil.getMousePosition() );
                 Point mouse_position = new Point( p.x, p.y );
                 int start_draw_x = AppManager.startToDrawX;
                 int start_draw_y = (AppManager.mainWindow != null) ? AppManager.mainWindow.getStartToDrawY() : 0;
 
-#if JAVA
-                System.out.println( "PictPianoRoll#paint; (AppManager.editorConfig==null)=" + (AppManager.editorConfig == null) );
-#endif
                 int width = window_size.width;
                 int height = window_size.height;
                 int track_height = AppManager.editorConfig.PxTrackHeight;
@@ -192,9 +186,6 @@ namespace org.kbinani.cadencii {
                 BasicStroke defaultStroke = new BasicStroke();
                 BasicStroke dashedStroke = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f );
 
-#if JAVA
-                System.out.println( "PictPianoRoll#paint; (AppManager.inputTextBox==null)=" + (AppManager.inputTextBox == null) );
-#endif
                 if ( AppManager.getSelectedEventCount() > 0 && AppManager.inputTextBox.isVisible() ) {
                     VsqEvent original = AppManager.getLastSelectedEvent().original;
                     int event_x = (int)(original.Clock * scalex + xoffset);
@@ -218,15 +209,9 @@ namespace org.kbinani.cadencii {
                 int key_width = AppManager.keyWidth;
                 int selected = AppManager.getSelected();
 
-#if JAVA
-                System.out.println( "PictPianoRoll#paint; (vsq==null)=" + (vsq == null) );
-#endif
                 if ( vsq != null ) {
                     renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
                 }
-#if JAVA
-                System.out.println( "PictPianoRoll#paint; (renderer == null)=" + (renderer == null) + "; renderer=" + renderer );
-#endif
 
                 if ( renderer == RendererKind.UTAU ) {
                     black = AppManager.editorConfig.PianorollColorUtauBlack.getColor();

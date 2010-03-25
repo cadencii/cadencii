@@ -43,22 +43,21 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             label1.setText( message );
             textBox1.setText( errors );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             textBox1.setText( _( "Script Compilation Result" ) );
         }
+        #endregion
 
+        #region helper methods
         private static String _( String id ) {
             return Messaging.getMessage( id );
-        }
-
-        public void btnOK_Click( Object sender, BEventArgs e ) {
-            setDialogResult( BDialogResult.OK );
         }
 
         private void setResources() {
@@ -67,14 +66,19 @@ namespace org.kbinani.cadencii {
         private void registerEventHandlers() {
             btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
         }
+        #endregion
 
+        #region event handlers
+        public void btnOK_Click( Object sender, BEventArgs e ) {
+            setDialogResult( BDialogResult.OK );
+        }
+        #endregion
+
+        #region UI implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormCompileResult.java
         //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormCompileResult.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -90,8 +94,6 @@ namespace org.kbinani.cadencii {
             }
             base.Dispose( disposing );
         }
-
-        #region Windows フォーム デザイナで生成されたコード
 
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
@@ -156,13 +158,12 @@ namespace org.kbinani.cadencii {
 
         }
 
-        #endregion
-
         private BLabel label1;
         private BTextBox textBox1;
         private BButton btnOK;
-        #endregion
+
 #endif
+        #endregion
     }
 
 #if !JAVA

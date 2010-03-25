@@ -47,28 +47,42 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             m_master_tuning = master_tuning_in_cent;
             txtMasterTuning.setText( master_tuning_in_cent.ToString() );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             lblMasterTuning.setText( _( "Master Tuning in Cent" ) );
             setTitle( _( "Track Property" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
         }
 
+        public int getMasterTuningInCent() {
+            return m_master_tuning;
+        }
+        #endregion
+
+        #region helper methods
         private String _( String id ) {
             return Messaging.getMessage( id );
         }
 
-        public int getMasterTuningInCent() {
-            return m_master_tuning;
+        private void registerEventHandlers() {
+            txtMasterTuning.textChangedEvent.add( new BEventHandler( this, "txtMasterTuning_TextChanged" ) );
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
         }
 
-        private void txtMasterTuning_TextChanged( Object sender, BEventArgs e ) {
+        private void setResources() {
+        }
+        #endregion
+
+        #region event handlers
+        public void txtMasterTuning_TextChanged( Object sender, BEventArgs e ) {
             int v = m_master_tuning;
             try {
                 v = PortUtil.parseInt( txtMasterTuning.getText() );
@@ -77,23 +91,16 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
+        #endregion
 
-        private void registerEventHandlers() {
-            this.txtMasterTuning.TextChanged += new System.EventHandler( this.txtMasterTuning_TextChanged );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-        }
-
-        private void setResources() {
-        }
-
+        #region UI implementation
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormTrackProperty.java
@@ -200,6 +207,8 @@ namespace org.kbinani.cadencii {
         private BTextBox txtMasterTuning;
         #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

@@ -92,16 +92,35 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        public string getText() {
+            return base.Text.Replace( "&", "" );
+        }
+
+        public void setText( string text ) {
+            if ( 0 <= m_mnemonic_index && m_mnemonic_index < text.Length ) {
+                text = text.Substring( 0, m_mnemonic_index ) + "&" + (m_mnemonic_index + 1 < text.Length ? text.Substring( m_mnemonic_index ) : "");
+            }
+            base.Text = text;
+        }
+
         // root implementation of javax.swing.AbstractButton
         #region javax.swing.AbstractButton
         // root implementation of javax.swing.AbstractButton is in BMenuItem.cs
-        public string getText() {
-            return base.Text;
+        int m_mnemonic_index = -1;
+        public void setDisplayedMnemonicIndex( int value ) {
+            string text = getText();
+            if ( 0 <= value && value < text.Length ) {
+                m_mnemonic_index = value;
+                setText( text );
+            } else {
+                m_mnemonic_index = -1;
+            }
         }
 
-        public void setText( string value ) {
-            base.Text = value;
+        public int getDisplayedMnemonicIndex() {
+            return m_mnemonic_index;
         }
+
 #if ABSTRACT_BUTTON_ENABLE_IS_SELECTED
         public bool isSelected() {
             return base.Checked;
@@ -111,6 +130,7 @@ namespace org.kbinani.windows.forms {
             base.Checked = value;
         }
 #endif
+
         public org.kbinani.java.awt.Icon getIcon() {
             org.kbinani.java.awt.Icon ret = new org.kbinani.java.awt.Icon();
             ret.image = base.Image;
@@ -382,8 +402,8 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
-        public int getMnemonic() {
-            String text = getText();
+        #region static helper methods
+        public static int getMnemonicFromText( string text ) {
             if ( text.Length < 2 ) {
                 return 0;
             }
@@ -406,15 +426,14 @@ namespace org.kbinani.windows.forms {
             return detected;
         }
 
-        public void setMnemonic( int value ) {
+        public static string setMnemonicFromText( string text, int value ) {
             if ( value == 0 ) {
-                return;
+                return text;
             }
             if ( (value < 48 || 57 < value) && (value < 65 || 90 < value) ) {
-                return;
+                return text;
             }
 
-            String text = getText();
             if ( text.Length >= 2 ) {
                 char lastc = text[0];
                 int index = -1; // 第index文字目が、ニーモニック
@@ -428,12 +447,20 @@ namespace org.kbinani.windows.forms {
 
                 if ( index >= 0 ) {
                     string newtext = text.Substring( 0, index ) + new string( (char)value, 1 ) + ((index + 1 < text.Length) ? text.Substring( index + 1 ) : "");
-                    setText( newtext );
-                    return;
+                    return newtext;
                 }
             }
+            text = text + "(&" + new string( (char)value, 1 ) + ")";
+            return text;
+        }
+        #endregion
 
-            setText( text + "(&" + new string( (char)value, 1 ) + ")" );
+        public int getMnemonic() {
+            return getMnemonicFromText( getText() );
+        }
+
+        public void setMnemonic( int value ) {
+            setText( setMnemonicFromText( getText(), value ) );
         }
 
         public bool isCheckOnClick() {

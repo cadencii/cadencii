@@ -48,7 +48,7 @@ namespace org.kbinani.apputil {
             m_version = version;
             m_app_name = app_name;
             InitializeComponent();
-            ApplyLanguage();
+            applyLanguage();
 
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );

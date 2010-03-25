@@ -18,9 +18,9 @@ public class BTimer extends Timer implements ActionListener {
     
     public void actionPerformed( ActionEvent e ){
         try{
-            tickEvent.raise( new BEventArgs() );
+            tickEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BTimer#actionPerformed; ex=" + ex );
+            System.err.println( "BTimer#actionPerformed; ex=" + ex );
         }
     }
 }

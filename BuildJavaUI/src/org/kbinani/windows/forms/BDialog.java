@@ -106,7 +106,7 @@ public class BDialog extends JDialog
         try{
             activatedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BForm#windowActivated; ex=" + ex );
+            System.err.println( "BForm#windowActivated; ex=" + ex );
         }
     }
     
@@ -115,7 +115,7 @@ public class BDialog extends JDialog
         try{
             formClosedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BForm#windowClosed; ex=" + ex );
+            System.err.println( "BForm#windowClosed; ex=" + ex );
         }
     }
     
@@ -123,7 +123,7 @@ public class BDialog extends JDialog
         try{
             formClosingEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BForm#windowClosing; ex=" + ex );
+            System.err.println( "BForm#windowClosing; ex=" + ex );
         }
     }
     
@@ -131,7 +131,7 @@ public class BDialog extends JDialog
         try{
             deactivateEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BForm#windowDeactivated; ex=" + ex );
+            System.err.println( "BForm#windowDeactivated; ex=" + ex );
         }
     }
     
@@ -145,7 +145,7 @@ public class BDialog extends JDialog
         try{
             loadEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BForm#windowOpened; ex=" + ex );
+            System.err.println( "BForm#windowOpened; ex=" + ex );
         }
     }
     

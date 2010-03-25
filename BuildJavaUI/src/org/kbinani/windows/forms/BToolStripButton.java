@@ -33,7 +33,7 @@ public class BToolStripButton extends JToggleButton implements ActionListener{
         try{
             clickEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.out.println( "BToolStripButton#actionPerformed; ex=" + ex );
+            System.err.println( "BToolStripButton#actionPerformed; ex=" + ex );
         }
     }
     

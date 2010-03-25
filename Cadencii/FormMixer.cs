@@ -63,6 +63,30 @@ namespace org.kbinani.cadencii {
         public event TopMostChangedEventHandler TopMostChanged;
 #endif
 
+        public FormMixer( FormMain parent ) {
+#if JAVA
+            super();
+            initialize();
+#else
+            InitializeComponent();
+#endif
+            registerEventHandlers();
+            setResources();
+            volumeMaster.setFeder( 0 );
+            volumeMaster.setMuted( false );
+            volumeMaster.setSolo( true );
+            volumeMaster.setNumber( "Master" );
+            volumeMaster.setPanpot( 0 );
+            volumeMaster.setSoloButtonVisible( false );
+            volumeMaster.setTitle( "" );
+            applyLanguage();
+            m_parent = parent;
+#if !JAVA
+            this.SetStyle( ControlStyles.DoubleBuffer, true );
+#endif
+        }
+
+        #region public methods
         public void updateSoloMute() {
 #if DEBUG
             PortUtil.println( "FormMixer#updateSoloMute" );
@@ -112,10 +136,6 @@ namespace org.kbinani.cadencii {
         public void applyLanguage() {
             setTitle( _( "Mixer" ) );
             chkTopmost.setText( _( "Top Most" ) );
-        }
-
-        private static String _( String id ) {
-            return Messaging.getMessage( id );
         }
 
         public void updateStatus() {
@@ -255,6 +275,38 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+        public void setShowTopMost( boolean value ) {
+            setAlwaysOnTop( value );
+            chkTopmost.setSelected( value );
+        }
+        #endregion
+
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        private void registerEventHandlers() {
+            menuVisualReturn.clickEvent.add( new BEventHandler( this, "menuVisualReturn_Click" ) );
+#if JAVA
+            //TODO: fixme: FormMixer#registerEventHandlers; paint event handler for panel1
+#else
+            panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
+#endif
+            hScroll.valueChangedEvent.add( new BEventHandler( this, "veScrollBar_ValueChanged" ) );
+            volumeMaster.panpotChangedEvent.add( new BEventHandler( this, "volumeMaster_PanpotChanged" ) );
+            volumeMaster.federChangedEvent.add( new BEventHandler( this, "volumeMaster_FederChanged" ) );
+            chkTopmost.checkedChangedEvent.add( new BEventHandler( this, "chkTopmost_CheckedChanged" ) );
+            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMixer_FormClosing" ) );
+            volumeMaster.muteButtonClick.add( new BEventHandler( this, "volumeMaster_MuteButtonClick" ) );
+        }
+
+        private void setResources() {
+            setIconImage( Resources.get_icon() );
+        }
+        #endregion
+
+        #region event handlers
         public void FormMixer_PanpotChanged( Object sender, BEventArgs e ) {
             if ( sender == null ) return;
             if ( !(sender is VolumeTracker) ) return;
@@ -331,40 +383,17 @@ namespace org.kbinani.cadencii {
             updateSoloMute();
         }
 
-        public FormMixer( FormMain parent ) {
-#if JAVA
-            super();
-            initialize();
-#else
-            InitializeComponent();
-#endif
-            registerEventHandlers();
-            setResources();
-            volumeMaster.setFeder( 0 );
-            volumeMaster.setMuted( false );
-            volumeMaster.setSolo( true );
-            volumeMaster.setNumber( "Master" );
-            volumeMaster.setPanpot( 0 );
-            volumeMaster.setSoloButtonVisible( false );
-            volumeMaster.setTitle( "" );
-            applyLanguage();
-            m_parent = parent;
-#if !JAVA
-            this.SetStyle( ControlStyles.DoubleBuffer, true );
-#endif
-        }
-
-        private void menuVisualReturn_Click( Object sender, BEventArgs e ) {
+        public void menuVisualReturn_Click( Object sender, BEventArgs e ) {
             m_parent.flipMixerDialogVisible( false );
         }
 
-        private void FormMixer_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void FormMixer_FormClosing( Object sender, BFormClosingEventArgs e ) {
             m_parent.flipMixerDialogVisible( false );
             e.Cancel = true;
         }
 
 #if !JAVA
-        private void panel1_Paint( Object sender, PaintEventArgs e ) {
+        public void panel1_Paint( Object sender, PaintEventArgs e ) {
             int stdx = hScroll.getValue();
             using ( Pen pen_102_102_102 = new Pen( System.Drawing.Color.FromArgb( 102, 102, 102 ) ) ) {
                 for ( int i = 0; i < m_tracker.size(); i++ ) {
@@ -378,7 +407,7 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        private void veScrollBar_ValueChanged( Object sender, BEventArgs e ) {
+        public void veScrollBar_ValueChanged( Object sender, BEventArgs e ) {
             int stdx = hScroll.getValue();
             for ( int i = 0; i < m_tracker.size(); i++ ) {
                 m_tracker.get( i ).setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
@@ -428,7 +457,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void chkTopmost_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkTopmost_CheckedChanged( Object sender, BEventArgs e ) {
 #if JAVA
             try{
                 topMostChangedEvent.raise( this, chkTopmost.isSelected() );
@@ -446,37 +475,9 @@ namespace org.kbinani.cadencii {
         public boolean isShowTopMost() {
             return isAlwaysOnTop();
         }
+        #endregion
 
-        public void setShowTopMost( boolean value ) {
-            setAlwaysOnTop( value );
-            chkTopmost.setSelected( value );
-        }
-
-        private void registerEventHandlers() {
-#if JAVA
-            menuVisualReturn.clickEvent.add( new BEventHandler( this, "menuVisualReturn_Click" ) );
-//            panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
-            hScroll.valueChangedEvent.add( new BEventHandler( this, "veScrollBar_ValueChanged" ) );
-            volumeMaster.panpotChangedEvent.add( new BEventHandler( this, "volumeMaster_PanpotChanged" ) );
-            volumeMaster.federChangedEvent.add( new BEventHandler( this, "volumeMaster_FederChanged" ) );
-            chkTopmost.checkedChangedEvent.add( new BEventHandler( this, "chkTopmost_CheckedChanged" ) );
-            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMixer_FormClosing" ) );
-#else
-            this.menuVisualReturn.Click += new System.EventHandler( this.menuVisualReturn_Click );
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
-            this.hScroll.ValueChanged += new System.EventHandler( this.veScrollBar_ValueChanged );
-            this.volumeMaster.panpotChangedEvent.add( new BEventHandler( this, "volumeMaster_PanpotChanged" ) );
-            this.volumeMaster.federChangedEvent.add( new BEventHandler( this, "volumeMaster_FederChanged" ) );
-            this.chkTopmost.CheckedChanged += new System.EventHandler( this.chkTopmost_CheckedChanged );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormMixer_FormClosing );
-#endif
-            volumeMaster.muteButtonClick.add( new BEventHandler( this, "volumeMaster_MuteButtonClick" ) );
-        }
-
-        private void setResources() {
-            setIconImage( Resources.get_icon() );
-        }
-
+        #region UI implementation
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormMixer.java
@@ -615,6 +616,8 @@ namespace org.kbinani.cadencii {
         private BCheckBox chkTopmost;
         #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA

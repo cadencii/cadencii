@@ -167,11 +167,11 @@ public class BListView extends JPanel implements MouseMotionListener{
         }
 
         public void setColumnHeaderCor( String[] headers ){
-            int count = tableModel.getColumnCount();
+            int count = Math.max( tableModel.getColumnCount(), headers.length + 1 );
             String[] actual = new String[count];
             actual[0] = "";
-            for( int i = 0; i < headers.length && i + 1 < count; i++ ){
-                actual[i + 1] = headers[i];
+            for( int i = 1; i < count && i - 1 < headers.length; i++ ){
+                actual[i] = headers[i - 1];
             }
             tableModel.setColumnIdentifiers( actual );
             updateColumnModel();

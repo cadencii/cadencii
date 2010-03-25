@@ -67,7 +67,7 @@ namespace org.kbinani.cadencii {
 
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
 
             comboVibratoType.removeAllItems();
             VibratoHandle empty = new VibratoHandle();
@@ -104,28 +104,20 @@ namespace org.kbinani.cadencii {
                 txtVibratoLength.setText( s );
             }
 
-#if JAVA
             comboVibratoType.selectedIndexChangedEvent.add( new BEventHandler( this, "comboVibratoType_SelectedIndexChanged" ) );
             txtVibratoLength.textChangedEvent.add( new BEventHandler( this, "txtVibratoLength_TextChanged" ) );
-#else
-            comboVibratoType.SelectedIndexChanged += new System.EventHandler( this.comboVibratoType_SelectedIndexChanged );
-            txtVibratoLength.TextChanged += new System.EventHandler( txtVibratoLength_TextChanged );
-#endif
 
             m_note_length = note_length;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             setTitle( _( "Vibrato property" ) );
             lblVibratoLength.setText( _( "Vibrato length" ) + "(&L)" );
             lblVibratoType.setText( _( "Vibrato Type" ) + "(&T)" );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
-        }
-
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
         }
 
         /// <summary>
@@ -134,12 +126,28 @@ namespace org.kbinani.cadencii {
         public VibratoHandle getVibratoHandle() {
             return m_vibrato;
         }
+        #endregion
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
+        private void registerEventHandlers() {
+            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+        }
+
+        private void setResources() {
+        }
+        #endregion
+
+        #region event handlers
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 
-        private void comboVibratoType_SelectedIndexChanged( Object sender, BEventArgs e ) {
+        public void comboVibratoType_SelectedIndexChanged( Object sender, BEventArgs e ) {
             int index = comboVibratoType.getSelectedIndex();
             if ( index >= 0 ) {
                 String s = ((VibratoHandle)comboVibratoType.getItemAt( index )).IconID;
@@ -167,7 +175,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void txtVibratoLength_TextChanged( Object sender, BEventArgs e ) {
+        public void txtVibratoLength_TextChanged( Object sender, BEventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "txtVibratoLength_TextChanged" );
             AppManager.debugWriteLine( "    (m_vibrato==null)=" + (m_vibrato == null) );
@@ -194,22 +202,10 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
-
-        private void registerEventHandlers() {
-#if JAVA
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-#else
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
-        }
-
-        private void setResources() {
-        }
+        #endregion
 
 #if JAVA
         #region UI Impl for Java

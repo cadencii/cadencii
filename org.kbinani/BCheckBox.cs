@@ -267,13 +267,33 @@ namespace org.kbinani.windows.forms {
 
         #region javax.swing.AbstractButton
         // root implementation of javax.swing.AbstractButton is in BMenuItem.cs
+        int m_mnemonic_index = -1;
+        public void setDisplayedMnemonicIndex( int value ) {
+            string text = getText();
+            if ( 0 <= value && value < text.Length ) {
+                m_mnemonic_index = value;
+                setText( text );
+            } else {
+                m_mnemonic_index = -1;
+            }
+        }
+
+        public int getDisplayedMnemonicIndex() {
+            return m_mnemonic_index;
+        }
+
         public string getText() {
-            return base.Text;
+            return base.Text.Replace( "&", "" );
         }
 
         public void setText( string value ) {
-            base.Text = value;
+            string text = getText();
+            if ( 0 <= m_mnemonic_index && m_mnemonic_index < text.Length ) {
+                text = text.Substring( 0, m_mnemonic_index ) + "&" + (m_mnemonic_index + 1 < text.Length ? text.Substring( m_mnemonic_index ) : "");
+            }
+            base.Text = text;
         }
+
 #if ABSTRACT_BUTTON_ENABLE_IS_SELECTED
         public bool isSelected() {
             return base.Checked;
@@ -283,6 +303,7 @@ namespace org.kbinani.windows.forms {
             base.Checked = value;
         }
 #endif
+
         public org.kbinani.java.awt.Icon getIcon() {
             org.kbinani.java.awt.Icon ret = new org.kbinani.java.awt.Icon();
             ret.image = base.Image;

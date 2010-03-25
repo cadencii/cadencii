@@ -43,7 +43,7 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-            ApplyLanguage();
+            applyLanguage();
             numBar.setMinimum( -pre_measure + 1 );
             numBar.setMaximum( 100000 );
             numBar.setValue( bar_count );
@@ -58,11 +58,8 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
-
-        public void ApplyLanguage() {
+        #region public methods
+        public void applyLanguage() {
             setTitle( _( "Global Tempo" ) );
             groupPosition.setTitle( _( "Position" ) );
             lblBar.setText( _( "Measure" ) + "(&M)" );
@@ -84,13 +81,21 @@ namespace org.kbinani.cadencii {
         public float getTempo() {
             return numTempo.getValue();
         }
+        #endregion
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        #region event handlers
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 
-        private void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
+        }
+        #endregion
+
+        #region helper methods
+        private static String _( String id ) {
+            return Messaging.getMessage( id );
         }
 
         private void registerEventHandlers() {
@@ -103,7 +108,9 @@ namespace org.kbinani.cadencii {
 
         private void setResources() {
         }
+        #endregion
 
+        #region event handlers
 #if JAVA
         #region UI Impl for Java
         //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormTempoConfig.java
@@ -327,6 +334,8 @@ namespace org.kbinani.cadencii {
         private NumericUpDownEx numTempo;
         #endregion
 #endif
+        #endregion
+
     }
 
 #if !JAVA
