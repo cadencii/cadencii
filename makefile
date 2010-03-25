@@ -34,7 +34,7 @@ jmedia: pp_cs2java.exe ./org.kbinani.media/*.cs
 jvsq: pp_cs2java.exe ./org.kbinani.vsq/*.cs
 	mono ./pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ./build/java -encoding "UTF-8" -s -4 -c -t ./org.kbinani.vsq
 
-pp_cs2java.exe: $(TARGET)/org.kbinani.dll ./pp_cs2java/Program.cs
+pp_cs2java.exe: first $(TARGET)/org.kbinani.dll ./pp_cs2java/Program.cs
 	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT) -define:DEBUG
 	$(CP) $(TARGET)/org.kbinani.dll ./org.kbinani.dll
 
