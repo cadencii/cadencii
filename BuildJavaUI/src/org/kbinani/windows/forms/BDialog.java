@@ -18,40 +18,24 @@ public class BDialog extends JDialog
                               KeyListener, 
                               ComponentListener
 {
-    private static final long serialVersionUID = 4199432523695081596L;
     public BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
     public BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
-    private boolean m_closed = false;
     private BDialogResult m_result = BDialogResult.CANCEL;
+    private boolean m_closed = false;
     
     public BDialog(){
-        this( "" );
-    }
-    
-    public BDialog( String title ){
         super();
-        setTitle( title );
         addWindowListener( this );
         addKeyListener( this );
         addComponentListener( this );
         try{
             UIManager.getInstalledLookAndFeels();
             UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-        }catch( Exception ex ){
-            System.err.println( "BDialog#.ctor; ex=" + ex );
+        }catch( Exception e ){
         }
-    }
-    
-    public void setDialogResult( BDialogResult value ){
-        m_result = value;
-        setVisible( false );
-    }
-    
-    public BDialogResult getDialogResult(){
-        return m_result;
     }
     
     // root imol of KeyListener is in BButton
@@ -106,7 +90,7 @@ public class BDialog extends JDialog
         try{
             activatedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.err.println( "BForm#windowActivated; ex=" + ex );
+            System.out.println( "BForm#windowActivated; ex=" + ex );
         }
     }
     
@@ -115,7 +99,7 @@ public class BDialog extends JDialog
         try{
             formClosedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.err.println( "BForm#windowClosed; ex=" + ex );
+            System.out.println( "BForm#windowClosed; ex=" + ex );
         }
     }
     
@@ -123,7 +107,7 @@ public class BDialog extends JDialog
         try{
             formClosingEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.err.println( "BForm#windowClosing; ex=" + ex );
+            System.out.println( "BForm#windowClosing; ex=" + ex );
         }
     }
     
@@ -131,7 +115,7 @@ public class BDialog extends JDialog
         try{
             deactivateEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.err.println( "BForm#windowDeactivated; ex=" + ex );
+            System.out.println( "BForm#windowDeactivated; ex=" + ex );
         }
     }
     
@@ -145,26 +129,21 @@ public class BDialog extends JDialog
         try{
             loadEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.err.println( "BForm#windowOpened; ex=" + ex );
+            System.out.println( "BForm#windowOpened; ex=" + ex );
         }
     }
     
     public BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
     
-    public class ShowDialogRunner implements Runnable{
-        public void run(){
-            setVisible( true );
-            m_closed = false;
-            while( !m_closed ){
-                try{
-                    Thread.sleep( 100 );
-                }catch( Exception ex ){
-                    break;
-                }
-            }
-            setVisible( false );
-        }
+    public BDialogResult getDialogResult(){
+        return m_result;
+    }
+    
+    public void setDialogResult( BDialogResult value ){
+        m_closed = true;
+        m_result = value;
+        setVisible( false );
     }
     
     public void componentHidden(ComponentEvent e) {

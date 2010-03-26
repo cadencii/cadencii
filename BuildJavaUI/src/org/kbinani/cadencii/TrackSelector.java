@@ -10,6 +10,7 @@ import javax.swing.JToolTip;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPopupMenu;
+import java.awt.Color;
 
 //SECTION-END-IMPORT
 public class TrackSelector extends JPanel {
@@ -80,6 +81,7 @@ public class TrackSelector extends JPanel {
     private void initialize() {
         this.setLayout(new BorderLayout());
         this.setSize(new Dimension(525, 200));
+        this.setBackground(new Color(169, 169, 169));
         this.add(getVScroll(), BorderLayout.EAST);    		
     }
 

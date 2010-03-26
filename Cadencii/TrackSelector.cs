@@ -924,6 +924,9 @@ namespace org.kbinani.cadencii {
         }
 
         public void paint( Graphics graphics ) {
+#if JAVA
+            super.paint( graphics );
+#endif
             Dimension size = new Dimension( getWidth() - vScroll.getWidth() + 2, getHeight() );
             Graphics2D g = (Graphics2D)graphics;
             Color brs_string = Color.black;
@@ -1963,9 +1966,6 @@ namespace org.kbinani.cadencii {
         }
 
         private void drawAttachedCurve( Graphics2D g, Vector<BezierChain> chains ) {
-#if JAVA
-            System.out.println( "TrackSelector#paint; drawAttachedCurve" );
-#endif
 #if DEBUG
             try {
                 BezierCurves t;
@@ -2096,12 +2096,6 @@ namespace org.kbinani.cadencii {
 
         // TODO: TrackSelector+DrawVibratoControlCurve; かきかけ
         public void drawVibratoControlCurve( Graphics2D g, VsqTrack draw_target, CurveType type, Color color, boolean is_front ) {
-#if JAVA
-            System.out.println( "TrackSelector#paint; drawVibratoControlCurve" );
-#endif
-#if DEBUG
-            //AppManager.DebugWriteLine( "TrackSelector+DrawVibratoControlCurve" );
-#endif
             Shape last_clip = g.getClip();
             int graph_height = getGraphHeight();
             g.clipRect( AppManager.keyWidth, HEADER,
@@ -2223,10 +2217,6 @@ namespace org.kbinani.cadencii {
         /// <param name="list"></param>
         /// <param name="color"></param>
         public void drawVsqBPList_impl( Graphics2D g, VsqBPList list, Color color, boolean is_front ) {
-#if JAVA
-            System.out.println( "TrackSelector#paint; drawVsqBPList" );
-            System.out.println( "TrackSelector#paint; (list==null)=" + (list == null) );
-#endif
             int max = list.getMaximum();
             int min = list.getMinimum();
             int height = getGraphHeight();
@@ -2392,10 +2382,6 @@ namespace org.kbinani.cadencii {
         /// <param name="list"></param>
         /// <param name="color"></param>
         public void drawVsqBPList( Graphics2D g, VsqBPList list, Color color, boolean is_front ) {
-#if JAVA
-            System.out.println( "TrackSelector#paint; drawVsqBPList" );
-            System.out.println( "TrackSelector#paint; (list==null)=" + (list == null) );
-#endif
             int max = list.getMaximum();
             int min = list.getMinimum();
             int graphHeight = getGraphHeight();
@@ -2892,9 +2878,6 @@ namespace org.kbinani.cadencii {
         }
 
         private void TrackSelector_MouseMove( Object sender, BMouseEventArgs e ) {
-#if DEBUG
-            //AppManager.DebugWriteLine( "TrackSelectro_MouseMove" );
-#endif
             int value = valueFromYCoord( e.Y );
             int value_raw = value;
             int max = m_selected_curve.getMaximum();

@@ -163,6 +163,7 @@ public class BPictureBox extends JPanel
 
     public BEvent<BPaintEventHandler> paintEvent = new BEvent<BPaintEventHandler>();
     public void paint( Graphics g1 ){
+        super.paint( g1 );
         if ( m_image != null ){
             Graphics2D g = (Graphics2D)g1;
             g.drawImage( m_image, 0, 0, m_image.getWidth( this ), m_image.getHeight( this ), this );

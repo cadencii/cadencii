@@ -29,6 +29,7 @@ import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BVScrollBar;
 import javax.swing.WindowConstants;
+import java.awt.Color;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -534,6 +535,7 @@ public class FormMain extends BForm {
 		if (pictOverview == null) {
 			pictOverview = new BPictureBox();
 			pictOverview.setLayout(new GridBagLayout());
+			pictOverview.setBackground(new Color(106, 108, 108));
 		}
 		return pictOverview;
 	}
@@ -4092,6 +4094,7 @@ public class FormMain extends BForm {
             picturePositionIndicator = new BPanel();
             picturePositionIndicator.setLayout(new GridBagLayout());
             picturePositionIndicator.setPreferredSize(new Dimension(421, 48));
+            picturePositionIndicator.setBackground(new Color(169, 169, 169));
         }
         return picturePositionIndicator;
     }
