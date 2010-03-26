@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * NumericUpDownEx.cs
  * Copyright (C) 2008-2010 kbinani
  *
@@ -24,7 +24,7 @@ namespace org.kbinani.cadencii {
 #endif
 
     /// <summary>
-    /// MouseWheel‚ÅIncrement‚¸‚Â’l‚ğ‘Œ¸‚³‚¹‚é‚±‚Æ‚Ì‚Å‚«‚éNumericUpDown
+    /// MouseWheelï¿½ï¿½Incrementï¿½ï¿½ï¿½Â’lï¿½ğ‘Œï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é‚±ï¿½Æ‚Ì‚Å‚ï¿½ï¿½ï¿½NumericUpDown
     /// </summary>
 #if JAVA
     public class NumericUpDownEx extends BNumericUpDown {

@@ -1,4 +1,4 @@
-#if JAVA
+﻿#if JAVA
 /*
  * XmlMember.java
  * Copyright (C) 2009-2010 kbinani
