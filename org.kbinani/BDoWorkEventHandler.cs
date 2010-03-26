@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentmodel\BDoWorkEventHandler.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/BDoWorkEventHandler.java
 #else
 using System;
 using System.ComponentModel;

@@ -13,7 +13,7 @@
  */
 #define COMPONENT_ENABLE_REPAINT
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BPanel.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BPanel.java
 #else
 namespace org.kbinani.windows.forms {
     public class BPanel : System.Windows.Forms.UserControl {

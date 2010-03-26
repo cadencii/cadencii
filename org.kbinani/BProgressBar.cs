@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BProgressBar.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BProgressBar.java
 #else
 namespace org.kbinani.windows.forms {
 

@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\VolumeTracker.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/VolumeTracker.java
 
 import java.awt.event.*;
 import org.kbinani.*;
@@ -436,8 +436,8 @@ namespace org.kbinani.cadencii {
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\VolumeTracker.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\VolumeTracker.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/VolumeTracker.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/VolumeTracker.java
         #endregion
 #else
         #region UI Impl for C#

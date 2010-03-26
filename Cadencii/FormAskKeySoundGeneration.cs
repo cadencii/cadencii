@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\cadencii\FormAskKeySoundGeneration.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGeneration.java
 
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
@@ -86,8 +86,8 @@ namespace org.kbinani.cadencii {
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\cadencii\FormAskKeySoundGeneration.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\cadencii\FormAskKeySoundGeneration.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGeneration.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGeneration.java
 #else
         private void InitializeComponent() {
             this.btnNo = new org.kbinani.windows.forms.BButton();

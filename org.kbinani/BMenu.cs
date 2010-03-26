@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BMenu.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BMenu.java
 #else
 #define ABSTRACT_BUTTON_ENABLE_IS_SELECTED
 #define COMPONENT_PARENT_AS_OWNERITEM

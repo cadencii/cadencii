@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentmodel\BRunWorkerCompletedEventHandler.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/BRunWorkerCompletedEventHandler.java
 #else
 using System;
 using System.ComponentModel;

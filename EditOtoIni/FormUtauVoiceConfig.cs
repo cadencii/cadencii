@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.editotoini;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormUtauVoiceConfig.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/EditOtoIni/FormUtauVoiceConfig.java
 import java.util.*;
 import java.io.*;
 import java.awt.*;
@@ -1443,8 +1443,8 @@ namespace org.kbinani.editotoini {
         }
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormUtauVoiceConfig.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\EditOtoIni\FormUtauVoiceConfig.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/EditOtoIni/FormUtauVoiceConfig.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/EditOtoIni/FormUtauVoiceConfig.java
         #endregion
 #else
         #region UI Impl for C#

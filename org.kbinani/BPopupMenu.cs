@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BPopupMenu.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BPopupMenu.java
 #else
 #define COMPONENT_ENABLE_LOCATION
 using System;

@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\componentmodel\BBackgroundWorker.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/BBackgroundWorker.java
 #else
 using org.kbinani;
 

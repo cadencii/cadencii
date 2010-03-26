@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormTempoConfig.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormTempoConfig.java
 
 import org.kbinani.*;
 import org.kbinani.apputil.*;
@@ -113,8 +113,8 @@ namespace org.kbinani.cadencii {
         #region event handlers
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormTempoConfig.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormTempoConfig.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormTempoConfig.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormTempoConfig.java
         #endregion
 #else
         #region UI Impl for C#

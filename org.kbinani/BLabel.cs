@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BLabel.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BLabel.java
 #else
 namespace org.kbinani.windows.forms{
 

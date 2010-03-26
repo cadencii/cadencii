@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\BEventHandler.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/BEventHandler.java
 #else
 using System;
 using System.Reflection;

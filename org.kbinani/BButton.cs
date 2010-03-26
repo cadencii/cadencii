@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ..\BuildJavaUI\src\org\kbinani\windows\forms\BButton.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BButton.java
 #else
 #define COMPONENT_ENABLE_FOCUS
 #define COMPONENT_ENABLE_LOCATION

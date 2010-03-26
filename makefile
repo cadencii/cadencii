@@ -9,7 +9,7 @@ all: first $(TARGET)/Cadencii.exe
 first: ./first.pl
 	perl ./first.pl
 
-jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq resources
+jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq ./Cadencii/Resources.cs
 	mono ./pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ./build/java -encoding "UTF-8" -s -4 -c -t ./Cadencii
 	$(CP) ./build/java/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java
 	$(CP) ./build/java/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
@@ -38,10 +38,10 @@ pp_cs2java.exe: first $(TARGET)/org.kbinani.dll ./pp_cs2java/Program.cs
 	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT) -define:DEBUG
 	$(CP) $(TARGET)/org.kbinani.dll ./org.kbinani.dll
 
-$(TARGET)/Cadencii.exe: resources ./Cadencii/*.cs $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(TARGET)/PlaySound.dll
+$(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(TARGET)/PlaySound.dll
 	gmcs -recurse:./Cadencii/*.cs -define:MONO,ENABLE_VOCALOID,ENABLE_AQUESTONE,ENABLE_MIDI,ENABLE_PROPERTY -out:$(TARGET)/Cadencii.exe -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll,$(TARGET)/org.kbinani.apputil.dll,$(TARGET)/org.kbinani.media.dll,$(TARGET)/org.kbinani.vsq.dll -unsafe+ -codepage:utf8 $(MCS_OPT)
 
-resources: ./Cadencii/Resources.list makeRes.exe
+./Cadencii/REsources.cs: ./Cadencii/Resources.list makeRes.exe
 	mono ./makeRes.exe -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
 
 makeRes.exe: ./makeRes.cs

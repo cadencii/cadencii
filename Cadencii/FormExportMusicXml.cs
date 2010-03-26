@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormExportMusicXml.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormExportMusicXml.java
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 import org.kbinani.apputil.*;
@@ -92,8 +92,8 @@ namespace org.kbinani.cadencii {
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormExportMusicXml.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormExportMusicXml.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormExportMusicXml.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormExportMusicXml.java
 #else
         private void InitializeComponent() {
             this.btnCancel = new org.kbinani.windows.forms.BButton();

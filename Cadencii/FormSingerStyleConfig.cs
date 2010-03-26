@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ..\BuildJavaUI\src\org\kbinani\Cadencii\FormSingerStyleConfig.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormSingerStyleConfig.java
 
 import java.awt.*;
 import org.kbinani.*;
@@ -318,8 +318,8 @@ namespace org.kbinani.cadencii {
         #region UI implementation
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormSingerStyleConfig.java
-        //INCLUDE-SECTION METHOD ..\BuildJavaUI\src\org\kbinani\Cadencii\FormSingerStyleConfig.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormSingerStyleConfig.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormSingerStyleConfig.java
         #endregion
 #else
         #region UI Impl for C#
